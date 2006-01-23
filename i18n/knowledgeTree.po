@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-12 16:29+0200\n"
+"POT-Creation-Date: 2006-01-23 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,95 +16,136 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/documentmanagement/documentutil.inc.php:401
-#: lib/documentmanagement/documentutil.inc.php:419
+#: lib/documentmanagement/documentutil.inc.php:411
+#: lib/documentmanagement/documentutil.inc.php:429
 #, php-format
 msgid "    (trigger %s)"
 msgstr ""
 
-#: i18n/templates.c:1988
+#: i18n/templates.c:2264
 msgid "#itemCount# items, #batchSize# per page"
 msgstr ""
 
-#: i18n/templates.c:545
+#: i18n/templates.c:707
 msgid "#name#'s authentication is handled by the <strong>#provider#</strong>."
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:99
+#: plugins/ktcore/admin/deletedDocuments.php:112
 #, php-format
 msgid "%d documents expunged."
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:93
+#: plugins/ktcore/admin/archivedDocuments.php:94
 #, php-format
 msgid "%d documents made active."
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:342
+#: plugins/ktcore/admin/deletedDocuments.php:190
+#, php-format
+msgid "%d documents restored."
+msgstr ""
+
+#: plugins/ktstandard/KTSubscriptions.php:354
 #, php-format
 msgid "%d successful, %d failures"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:89
+#: plugins/ktcore/admin/archivedDocuments.php:90
 #, php-format
 msgid "%s could not be made \"live\"."
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:46
-#: plugins/ktcore/admin/deletedDocuments.php:72
+#: plugins/ktcore/admin/deletedDocuments.php:57
+#: plugins/ktcore/admin/deletedDocuments.php:83
+#: plugins/ktcore/admin/deletedDocuments.php:133
 #, php-format
 msgid "%s is not a deleted document. Aborting expunge"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:49
-#: plugins/ktcore/admin/archivedDocuments.php:75
+#: plugins/ktcore/admin/deletedDocuments.php:157
+#, php-format
+msgid "%s is not a deleted document. Aborting restore"
+msgstr ""
+
+#: plugins/ktcore/admin/archivedDocuments.php:50
+#: plugins/ktcore/admin/archivedDocuments.php:76
 #, php-format
 msgid "%s is not an archived document. Aborting restore."
 msgstr ""
 
-#: i18n/templates.c:1418
+#: i18n/templates.c:2069
+msgid "&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved."
+msgstr ""
+
+#: i18n/templates.c:1673
 msgid "<strong>or</strong> to a new behaviour called"
 msgstr ""
 
-#: i18n/templates.c:1226 i18n/templates.c:1241
+#: i18n/templates.c:1475 i18n/templates.c:1490
 msgid "A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each field can depend on the user's selections for the others."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:28
-#: plugins/ktcore/admin/documentFields.php:54
+#: plugins/ktcore/admin/documentFields.php:61
+msgid "A brief description of the information stored in this field."
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:32
+#: plugins/ktcore/admin/documentFields.php:58
 msgid "A brief description of the information stored in this fieldset."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:29
+#: i18n/templates.c:98
+msgid "A checked-out document may not be modified by others. Please ensure that you check-in your documents to the repository as soon as you have finished working with them."
+msgstr ""
+
+#: i18n/templates.c:1508
+msgid "A fieldset is a collection of fields that comprise a defined set of document metadata. You may add, edit or delete members of this fieldset collection below."
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:33
 msgid "A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system."
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:67 plugins/ktcore/admin/workflows.php:71
-#: plugins/ktcore/admin/workflows.php:365
+#: plugins/ktcore/admin/workflows.php:67
+#: plugins/ktcore/admin/workflows.php:423
 msgid "A human-readable name for the state."
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:71
+msgid "A human-readable name for the transition."
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:33 plugins/ktcore/admin/workflows.php:56
 msgid "A human-readable name for the workflow."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:27
-#: plugins/ktcore/admin/documentFields.php:52
+#: plugins/ktcore/admin/documentFields.php:31
 #: plugins/ktcore/admin/documentFields.php:56
+#: plugins/ktcore/admin/documentFields.php:60
 msgid "A human-readable name, used in add and edit forms."
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:200
+#: plugins/ktstandard/KTEmail.php:212
 msgid "A message for those who receive the document"
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:53
-#: plugins/ktcore/admin/documentLinks.php:82
+#: lib/alert/AlertContent.inc:81
+#, php-format
+msgid "A new document '%s' has been added to folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:70
+#, php-format
+msgid "A new folder ' %s ' has been added to folder ' %s '%s.<br>Please clear this subscription alert by clicking on the following link: %s"
+msgstr ""
+
+#: plugins/ktcore/admin/documentLinks.php:50
+#: plugins/ktcore/admin/documentLinks.php:79
 msgid "A short brief description of the relationship implied by this link type."
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:62
-#: plugins/ktcore/admin/groupManagement.php:341
+#: plugins/ktcore/admin/groupManagement.php:60
+#: plugins/ktcore/admin/groupManagement.php:339
 msgid "A short name for the group.  e.g. <strong>administrators</strong>."
 msgstr ""
 
@@ -112,12 +153,16 @@ msgstr ""
 msgid "A short name that is shown to users whenever permissions must be assigned."
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:24
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:15
+msgid "A short name which helps identify this source of authentication data."
+msgstr ""
+
+#: plugins/ktcore/admin/documentTypes.php:23
 msgid "A short, human-readable name for the document type."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:52
-#: plugins/ktcore/admin/documentLinks.php:81
+#: plugins/ktcore/admin/documentLinks.php:49
+#: plugins/ktcore/admin/documentLinks.php:78
 msgid "A short, human-readable name for the link type."
 msgstr ""
 
@@ -126,28 +171,41 @@ msgstr ""
 msgid "A short, human-readable name for the role."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:31
+#: plugins/ktcore/admin/workflows.php:204
+msgid "A state by that name already exists"
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:35
 msgid "A system fieldset is one that is never displayed to a user, and is used only by the document management system."
 msgstr ""
 
-#: lib/browse/BrowseColumns.inc.php:29
+#: plugins/ktcore/admin/workflows.php:377
+msgid "A transition by that name already exists"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:375
+msgid "A user with that username already exists"
+msgstr ""
+
+#: lib/browse/BrowseColumns.inc.php:34
 msgid "Abstract"
 msgstr ""
 
-#: i18n/templates.c:1811
+#: i18n/templates.c:2087
 msgid "Action"
 msgstr ""
 
-#: i18n/templates.c:1586
+#: i18n/templates.c:1844
 msgid "Actions controlled"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:272
+#: plugins/ktcore/admin/workflows.php:310
 msgid "Actions set"
 msgstr ""
 
-#: bin/generate-buttons.php:5 i18n/templates.c:353 i18n/templates.c:440
-#: i18n/templates.c:881 i18n/templates.c:1298 i18n/templates.c:2084
+#: bin/generate-buttons.php:5 i18n/templates.c:392 i18n/templates.c:488
+#: i18n/templates.c:1055 i18n/templates.c:1406 i18n/templates.c:1553
+#: i18n/templates.c:2372
 msgid "Add"
 msgstr ""
 
@@ -155,119 +213,158 @@ msgstr ""
 msgid "Add Comment"
 msgstr ""
 
-#: i18n/templates.c:38 i18n/templates.c:239
+#: i18n/templates.c:41 i18n/templates.c:278
 msgid "Add Field to set"
 msgstr ""
 
-#: i18n/templates.c:935
+#: i18n/templates.c:1112
 msgid "Add Link Type"
 msgstr ""
 
-#: i18n/templates.c:275
+#: i18n/templates.c:314
 msgid "Add New Subcategory"
 msgstr ""
 
-#: i18n/templates.c:752
+#: i18n/templates.c:935
 msgid "Add a Role"
 msgstr ""
 
-#: plugins/ktcore/folder/addDocument.php:18
-#: plugins/ktcore/folder/addDocument.php:49 i18n/templates.c:875
-#: i18n/templates.c:878
+#: plugins/ktcore/folder/addDocument.php:40
+#: plugins/ktcore/folder/addDocument.php:72 i18n/templates.c:1049
+#: i18n/templates.c:1052
 msgid "Add a document"
 msgstr ""
 
-#: i18n/templates.c:929
+#: i18n/templates.c:1106
 msgid "Add a link type"
 msgstr ""
 
-#: i18n/templates.c:431
+#: i18n/templates.c:479
 msgid "Add a new dynamic permission"
 msgstr ""
 
-#: i18n/templates.c:1193 i18n/templates.c:1268 i18n/templates.c:1502
+#: i18n/templates.c:1439 i18n/templates.c:1520 i18n/templates.c:1760
 msgid "Add a new field"
 msgstr ""
 
-#: i18n/templates.c:1709
+#: plugins/ktcore/admin/groupManagement.php:333
+#: plugins/ktcore/admin/groupManagement.php:336 i18n/templates.c:755
+msgid "Add a new group"
+msgstr ""
+
+#: i18n/templates.c:1970
 msgid "Add a new source"
 msgstr ""
 
-#: i18n/templates.c:470
+#: i18n/templates.c:626
 msgid "Add a new user"
 msgstr ""
 
-#: i18n/templates.c:704
+#: i18n/templates.c:887
 msgid "Add a unit"
 msgstr ""
 
-#: i18n/templates.c:506
+#: i18n/templates.c:662
 msgid "Add a user"
 msgstr ""
 
-#: i18n/templates.c:509
+#: i18n/templates.c:668
 msgid "Add a user from an authentication source"
 msgstr ""
 
-#: i18n/templates.c:1706
+#: i18n/templates.c:1967
 msgid "Add an authentication source"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:199
+#: i18n/templates.c:395
+msgid "Add another set of criteria"
+msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:211
 msgid "Add extra email addresses here"
 msgstr ""
 
-#: i18n/templates.c:1211 i18n/templates.c:1271 i18n/templates.c:1520
+#: i18n/templates.c:1457 i18n/templates.c:1526 i18n/templates.c:1778
 msgid "Add field"
 msgstr ""
 
-#: i18n/templates.c:218 i18n/templates.c:221
+#: i18n/templates.c:224 i18n/templates.c:227
 msgid "Add folder"
 msgstr ""
 
-#: i18n/templates.c:515
+#: i18n/templates.c:674
 msgid "Add from source"
 msgstr ""
 
-#: i18n/templates.c:1295
+#: i18n/templates.c:1550
 msgid "Add new values"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:31
+#: plugins/ktcore/KTCorePlugin.php:68
 msgid "Add or remove groups from the system."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:30
+#: plugins/ktcore/KTCorePlugin.php:65
 msgid "Add or remove users from the system."
 msgstr ""
 
-#: i18n/templates.c:47 i18n/templates.c:56 i18n/templates.c:248
-#: i18n/templates.c:257
+#: i18n/templates.c:50 i18n/templates.c:59 i18n/templates.c:287
+#: i18n/templates.c:296
 msgid "Add to Fieldset"
 msgstr ""
 
-#: i18n/templates.c:290
+#: i18n/templates.c:329
 msgid "Add to category"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:215
-#: plugins/ktcore/admin/groupManagement.php:324
+#: plugins/ktcore/admin/groupManagement.php:213
+#: plugins/ktcore/admin/groupManagement.php:322
 msgid "Added"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:430
+#: plugins/ktcore/admin/userManagement.php:454
 msgid "Added to groups"
 msgstr ""
 
-#: lib/dispatcher.inc.php:235
+#: config/siteMap.inc:42 lib/dispatcher.inc.php:245
 msgid "Administration"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:439
+#: config/siteMap.inc:45 search/booleanSearch.php:28
+#: search/booleanSearch.php:71 i18n/templates.c:2258
+msgid "Advanced Search"
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:449
 msgid "All done..."
 msgstr ""
 
-#: i18n/templates.c:518
+#: i18n/templates.c:563 i18n/templates.c:566
+msgid "Allocate Groups to Role"
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:86 plugins/ktcore/KTPermissions.php:87
+#: i18n/templates.c:509
+msgid "Allocate Roles"
+msgstr ""
+
+#: i18n/templates.c:590 i18n/templates.c:593
+msgid "Allocate User to Role"
+msgstr ""
+
+#: i18n/templates.c:524
+msgid "Allocated users"
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:377 plugins/ktcore/KTPermissions.php:419
+msgid "Allocation changed."
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:231
+msgid "Already using a different descriptor."
+msgstr ""
+
+#: i18n/templates.c:677
 msgid "Alternatively, you can manually create a user within KnowledgeTree below."
 msgstr ""
 
@@ -275,15 +372,15 @@ msgstr ""
 msgid "An empty string was given"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:117
+#: lib/documentmanagement/documentutil.inc.php:116
 msgid "An error occurred while storing the new file"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:134
+#: lib/documentmanagement/documentutil.inc.php:131
 msgid "An error occurred while storing this document in the database"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:199
+#: plugins/ktcore/KTDocumentActions.php:217
 msgid "An error occurred while trying to check in the document"
 msgstr ""
 
@@ -291,29 +388,36 @@ msgstr ""
 msgid "An error occurred, and no error message was given"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:200
-#: plugins/ktcore/folder/addDocument.php:73
+#: lib/validation/dispatchervalidation.inc.php:204
 msgid "An internal error occurred receiving the uploaded document"
+msgstr ""
+
+#: lib/validation/dispatchervalidation.inc.php:290
+msgid "An invalid email address was given"
 msgstr ""
 
 #: bin/generate-buttons.php:21
 msgid "Approve"
 msgstr ""
 
-#: bin/generate-buttons.php:33 i18n/templates.c:203
+#: bin/generate-buttons.php:33 i18n/templates.c:209 i18n/templates.c:212
 msgid "Archive"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkUpload.php:20
+#: plugins/ktcore/folder/BulkUpload.php:41
 msgid "Archive file"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:48
+#: lib/alert/AlertContent.inc:63
+msgid "Archived Document"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:110
 msgid "Archived Document Restoration"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:18
-#: plugins/ktcore/admin/archivedDocuments.php:35
+#: plugins/ktcore/admin/archivedDocuments.php:19
+#: plugins/ktcore/admin/archivedDocuments.php:36 i18n/templates.c:1160
 msgid "Archived Documents"
 msgstr ""
 
@@ -323,64 +427,65 @@ msgstr ""
 msgid "As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people."
 msgstr ""
 
-#: bin/generate-buttons.php:18 i18n/templates.c:1118
+#: bin/generate-buttons.php:18 i18n/templates.c:1334
 msgid "Assign"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:10
+#: plugins/ktcore/KTCorePlugin.php:53
 msgid "Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."
 msgstr ""
 
-#: i18n/templates.c:1415
+#: i18n/templates.c:1670
 msgid "Assign to behaviour"
 msgstr ""
 
-#: i18n/templates.c:560 i18n/templates.c:659
+#: i18n/templates.c:725 i18n/templates.c:836
 msgid "Assigned Groups"
 msgstr ""
 
-#: i18n/templates.c:1634
+#: i18n/templates.c:1892
 msgid "Assigned Permissions"
 msgstr ""
 
-#: i18n/templates.c:1094 i18n/templates.c:1097
+#: i18n/templates.c:1304 i18n/templates.c:1307
 msgid "Associate Fieldsets"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:198
+#: plugins/ktstandard/KTEmail.php:210
 msgid "Attach document"
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:9
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:36
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:69
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:109
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:123
-#: i18n/templates.c:542
+#: plugins/ktcore/KTCorePlugin.php:36
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:11
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:38
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:71
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:111
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:125
+#: i18n/templates.c:704
 msgid "Authentication"
 msgstr ""
 
-#: i18n/templates.c:1703
+#: i18n/templates.c:1961
 msgid "Authentication Sources"
 msgstr ""
 
-#: presentation/login.php:118
+#: login.php:121
 msgid "Authentication failure.  Please try again."
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:22
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:24
 msgid "Authentication provider"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:89
+#: plugins/ktcore/admin/documentTypes.php:87
 msgid "Available Fieldsets"
 msgstr ""
 
-#: i18n/templates.c:557 i18n/templates.c:656
+#: i18n/templates.c:572 i18n/templates.c:722 i18n/templates.c:833
 msgid "Available Groups"
 msgstr ""
 
-#: i18n/templates.c:683
+#: i18n/templates.c:599 i18n/templates.c:863
 msgid "Available Users"
 msgstr ""
 
@@ -389,7 +494,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: i18n/templates.c:1121
+#: i18n/templates.c:1337
 msgid "Back to folder"
 msgstr ""
 
@@ -398,15 +503,15 @@ msgstr ""
 msgid "Base DN"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:327
+#: plugins/ktcore/admin/documentFields.php:358
 msgid "Became conditional"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:342
+#: plugins/ktcore/admin/documentFields.php:373
 msgid "Became no longer conditional"
 msgstr ""
 
-#: i18n/templates.c:1250
+#: i18n/templates.c:1499
 msgid "Become conditional"
 msgstr ""
 
@@ -414,18 +519,13 @@ msgstr ""
 msgid "Begin"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:64
-#: plugins/ktstandard/KTDiscussion.php:141
+#: plugins/ktstandard/KTDiscussion.php:68
+#: plugins/ktstandard/KTDiscussion.php:146
 msgid "Body"
 msgstr ""
 
-#: i18n/templates.c:332 i18n/templates.c:1982
+#: config/siteMap.inc:46 i18n/templates.c:371 i18n/templates.c:1385
 msgid "Boolean Search"
-msgstr ""
-
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:25
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:64
-msgid "Boolean search"
 msgstr ""
 
 #: plugins/ktcore/admin/managePermissions.php:33
@@ -433,41 +533,45 @@ msgstr ""
 msgid "Both names not given"
 msgstr ""
 
-#: bin/generate-buttons.php:34
-#: presentation/lookAndFeel/knowledgeTree/browse.php:54
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:31
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:40
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:49
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:19
+#: view.php:34 bin/generate-buttons.php:34 browse.php:83 edit.php:41
+#: search/simpleSearch.php:46 search/booleanSearch.php:22
 msgid "Browse"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:78
+#: lib/templating/kt3template.inc.php:76
 msgid "Browse Collections"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:176
+#: lib/templating/kt3template.inc.php:174
 msgid "Browse Documents"
+msgstr ""
+
+#: plugins/ktcore/KTPortlets.php:39
+msgid "Browse Documents By"
 msgstr ""
 
 #: i18n/templates.c:20
 msgid "Built-in"
 msgstr ""
 
-#: i18n/templates.c:317
+#: i18n/templates.c:356
 msgid "Built-in set."
 msgstr ""
 
-#: i18n/templates.c:452 i18n/templates.c:461
+#: i18n/templates.c:491 i18n/templates.c:500
 msgid "Bulk import"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:81
-#: plugins/ktcore/folder/BulkUpload.php:73
+#: plugins/ktcore/folder/BulkImport.php:86
+#: plugins/ktcore/folder/BulkUpload.php:94
 msgid "Bulk import failed"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:198
+#: plugins/ktcore/KTCorePlugin.php:36 i18n/templates.c:1964
+msgid "By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data."
+msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:210
 msgid "By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."
 msgstr ""
 
@@ -475,57 +579,63 @@ msgstr ""
 msgid "Can't delete built-in permission"
 msgstr ""
 
-#: bin/generate-buttons.php:6 i18n/templates.c:182 i18n/templates.c:197
-#: i18n/templates.c:209 i18n/templates.c:527 i18n/templates.c:539
-#: i18n/templates.c:572 i18n/templates.c:584 i18n/templates.c:596
-#: i18n/templates.c:671 i18n/templates.c:698 i18n/templates.c:764
-#: i18n/templates.c:818 i18n/templates.c:923 i18n/templates.c:2063
+#: bin/generate-buttons.php:6 i18n/templates.c:188 i18n/templates.c:203
+#: i18n/templates.c:215 i18n/templates.c:242 i18n/templates.c:260
+#: i18n/templates.c:587 i18n/templates.c:614 i18n/templates.c:686
+#: i18n/templates.c:701 i18n/templates.c:737 i18n/templates.c:752
+#: i18n/templates.c:770 i18n/templates.c:848 i18n/templates.c:878
+#: i18n/templates.c:947 i18n/templates.c:1004 i18n/templates.c:1100
+#: i18n/templates.c:2351
 msgid "Cancel"
 msgstr ""
 
-#: i18n/templates.c:287
+#: i18n/templates.c:326
 msgid "Category"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:70
+#: plugins/ktcore/admin/documentFields.php:591
 msgid "Category added"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:75
+#: plugins/ktcore/admin/documentFields.php:596
 msgid "Category removed."
 msgstr ""
 
-#: i18n/templates.c:1181 i18n/templates.c:1235 i18n/templates.c:1289
-#: i18n/templates.c:1490
+#: i18n/templates.c:1427 i18n/templates.c:1484 i18n/templates.c:1544
+#: i18n/templates.c:1748
 msgid "Change"
 msgstr ""
 
-#: i18n/templates.c:548 i18n/templates.c:551
+#: i18n/templates.c:710 i18n/templates.c:716
 msgid "Change #name#'s Groups"
 msgstr ""
 
-#: lib/authentication/builtinauthenticationprovider.inc.php:18
+#: lib/authentication/builtinauthenticationprovider.inc.php:20
 #, php-format
 msgid "Change %s's password"
 msgstr ""
 
-#: i18n/templates.c:1430
+#: i18n/templates.c:1685
 msgid "Change Assignments for this field."
 msgstr ""
 
-#: i18n/templates.c:578
+#: i18n/templates.c:1250 i18n/templates.c:1256
+msgid "Change Document Type"
+msgstr ""
+
+#: i18n/templates.c:743
 msgid "Change Group Details"
 msgstr ""
 
-#: i18n/templates.c:944
+#: i18n/templates.c:1121
 msgid "Change Link Type"
 msgstr ""
 
-#: i18n/templates.c:650
+#: i18n/templates.c:827
 msgid "Change Sub-Groups in #name#"
 msgstr ""
 
-#: i18n/templates.c:533
+#: i18n/templates.c:692
 msgid "Change User Details"
 msgstr ""
 
@@ -533,91 +643,87 @@ msgstr ""
 msgid "Change User Password"
 msgstr ""
 
-#: i18n/templates.c:806 i18n/templates.c:809
+#: i18n/templates.c:992 i18n/templates.c:995
 msgid "Change User's Password"
 msgstr ""
 
-#: i18n/templates.c:758
+#: i18n/templates.c:941
 msgid "Change a role's details"
 msgstr ""
 
-#: i18n/templates.c:710
+#: i18n/templates.c:893
 msgid "Change a unit's details"
 msgstr ""
 
-#: i18n/templates.c:1385
+#: i18n/templates.c:1640
 msgid "Change master field"
 msgstr ""
 
-#: i18n/templates.c:734
+#: i18n/templates.c:917
 msgid "Change organisation details"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:52
+#: plugins/ktcore/KTCorePlugin.php:118
 msgid "Change the help files that are displayed to users."
 msgstr ""
 
-#: i18n/templates.c:575
+#: i18n/templates.c:740
 msgid "Change the system's information about group <strong>#name</strong>"
 msgstr ""
 
-#: i18n/templates.c:812
-msgid "Change the user's password."
+#: i18n/templates.c:998
+msgid "Change the user's password. Password rules may have been defined that this new password must abide by."
 msgstr ""
 
-#: i18n/templates.c:1373
+#: i18n/templates.c:1628
 msgid "Change to complex"
 msgstr ""
 
-#: i18n/templates.c:1364
+#: i18n/templates.c:1619
 msgid "Change to simple"
 msgstr ""
 
-#: i18n/templates.c:788
+#: i18n/templates.c:974
 msgid "Change your password"
 msgstr ""
 
-#: i18n/templates.c:791 i18n/templates.c:803
+#: i18n/templates.c:977 i18n/templates.c:989
 msgid "Change your password."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:516
+#: plugins/ktcore/admin/documentFields.php:547
 msgid "Changed to complex"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:503
+#: plugins/ktcore/admin/documentFields.php:534
 msgid "Changed to simple"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/foldermanagement/folderDocumentTypes.php:60
-msgid "Changes made"
-msgstr ""
-
-#: plugins/ktcore/admin/documentTypes.php:123
-#: plugins/ktcore/admin/documentTypes.php:135
+#: plugins/ktcore/admin/documentTypes.php:130
+#: plugins/ktcore/admin/documentTypes.php:149
 msgid "Changes not saved"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:96
-#: plugins/ktcore/admin/documentFields.php:210
-#: plugins/ktcore/admin/workflows.php:131
-#: plugins/ktcore/admin/workflows.php:159
-#: plugins/ktcore/admin/workflows.php:244
-#: plugins/ktcore/admin/workflows.php:258
-#: plugins/ktcore/admin/workflows.php:310
-#: plugins/ktcore/admin/workflows.php:480
+#: plugins/ktcore/admin/documentFields.php:102
+#: plugins/ktcore/admin/documentFields.php:241
+#: plugins/ktcore/admin/workflows.php:139
+#: plugins/ktcore/admin/workflows.php:179
+#: plugins/ktcore/admin/workflows.php:282
+#: plugins/ktcore/admin/workflows.php:296
+#: plugins/ktcore/admin/workflows.php:348
+#: plugins/ktcore/admin/workflows.php:538
 msgid "Changes saved"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:65
+#: plugins/ktcore/admin/documentFields.php:586
 msgid "Changes saved."
 msgstr ""
 
-#: i18n/templates.c:1376
+#: i18n/templates.c:1631
 msgid "Changing the conditional type set will remove all existing field ordering!"
 msgstr ""
 
-#: i18n/templates.c:1388
+#: i18n/templates.c:1643
 msgid "Changing the master field set will remove all existing field ordering!"
 msgstr ""
 
@@ -633,43 +739,51 @@ msgstr ""
 msgid "Check Out"
 msgstr ""
 
-#: i18n/templates.c:1352
+#: i18n/templates.c:1607
 msgid "Check completeness"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:47
+#: lib/alert/AlertContent.inc:60
+msgid "Checked In Document"
+msgstr ""
+
+#: lib/alert/AlertContent.inc:61
+msgid "Checked Out Document"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:106
 msgid "Checked Out Document Control"
 msgstr ""
 
-#: i18n/templates.c:884
+#: i18n/templates.c:1058
 msgid "Checked Out Documents"
 msgstr ""
 
-#: i18n/templates.c:914
+#: i18n/templates.c:1067 i18n/templates.c:1091
 msgid "Checked out by"
 msgstr ""
 
-#: i18n/templates.c:128 i18n/templates.c:131
+#: i18n/templates.c:134 i18n/templates.c:137
 msgid "Checkin"
 msgstr ""
 
-#: i18n/templates.c:122
+#: i18n/templates.c:128
 msgid "Checking in a document updates the document and allows others to check out the document."
 msgstr ""
 
-#: i18n/templates.c:134
+#: i18n/templates.c:140
 msgid "Checking out a document reserves it for your exclusive use.  This ensures that you can edit the document without anyone else changing the document and placing it into the document management system."
 msgstr ""
 
-#: i18n/templates.c:140 i18n/templates.c:143
+#: i18n/templates.c:146 i18n/templates.c:149
 msgid "Checkout"
 msgstr ""
 
-#: i18n/templates.c:1919 i18n/templates.c:1925 i18n/templates.c:1928
-#: i18n/templates.c:1934 i18n/templates.c:1940 i18n/templates.c:1946
-#: i18n/templates.c:1952 i18n/templates.c:1958 i18n/templates.c:1964
-#: i18n/templates.c:1967 i18n/templates.c:1970 i18n/templates.c:1973
-#: i18n/templates.c:1976
+#: i18n/templates.c:2195 i18n/templates.c:2201 i18n/templates.c:2204
+#: i18n/templates.c:2210 i18n/templates.c:2216 i18n/templates.c:2222
+#: i18n/templates.c:2228 i18n/templates.c:2234 i18n/templates.c:2240
+#: i18n/templates.c:2243 i18n/templates.c:2246 i18n/templates.c:2249
+#: i18n/templates.c:2252
 msgid "Clear Alert"
 msgstr ""
 
@@ -677,23 +791,27 @@ msgstr ""
 msgid "Clear All"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:13
-msgid "Collections"
+#: i18n/templates.c:2312 i18n/templates.c:2315
+msgid "Close this thread"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:200 i18n/templates.c:1820
+#: i18n/templates.c:1706
+msgid "Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata."
+msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:212 i18n/templates.c:2096
 msgid "Comment"
 msgstr ""
 
-#: i18n/templates.c:1760
+#: i18n/templates.c:2030
 msgid "Compare"
 msgstr ""
 
-#: i18n/templates.c:1358
+#: i18n/templates.c:1613
 msgid "Complex"
 msgstr ""
 
-#: i18n/templates.c:422 i18n/templates.c:437
+#: i18n/templates.c:470 i18n/templates.c:485
 msgid "Condition"
 msgstr ""
 
@@ -701,318 +819,305 @@ msgstr ""
 msgid "Condition is a saved search, but not a condition"
 msgstr ""
 
-#: i18n/templates.c:1355
+#: i18n/templates.c:1610
 msgid "Conditional type"
 msgstr ""
 
-#: i18n/templates.c:1238
+#: i18n/templates.c:1487
 msgid "Conditionality"
 msgstr ""
 
-#: i18n/templates.c:383
+#: plugins/ktcore/KTCorePlugin.php:83 i18n/templates.c:431
 msgid "Conditions"
+msgstr ""
+
+#: plugins/ktcore/admin/conditions.php:12
+msgid "Conditions Management"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:115
 msgid "Configuration updated"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:12
-msgid "Configure the information that needs to be collected about different kinds of documents."
+#: plugins/ktcore/KTCorePlugin.php:59
+msgid "Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:44
+#: plugins/ktcore/KTCorePlugin.php:101
 msgid "Configure the process documents go through."
 msgstr ""
 
-#: i18n/templates.c:992 i18n/templates.c:1007
+#: i18n/templates.c:1178 i18n/templates.c:1193
 msgid "Confirm De-archival"
 msgstr ""
 
-#: i18n/templates.c:1043
+#: i18n/templates.c:1226
 msgid "Confirm Expunge"
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:36
+#: plugins/ktcore/admin/deletedDocuments.php:47
 #, php-format
 msgid "Confirm Expunge of %d documents"
 msgstr ""
 
-#: i18n/templates.c:902
+#: i18n/templates.c:1079
 msgid "Confirm Forced Check-in"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:71
-#: plugins/ktcore/admin/userManagement.php:166
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:57
+#: plugins/ktcore/admin/userManagement.php:166 preferences.php:58
 msgid "Confirm Password"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:39
+#: i18n/templates.c:1232 i18n/templates.c:1244
+msgid "Confirm Restore"
+msgstr ""
+
+#: plugins/ktcore/admin/archivedDocuments.php:40
+#: plugins/ktcore/admin/deletedDocuments.php:123
+#: plugins/ktcore/admin/deletedDocuments.php:125
 #, php-format
 msgid "Confirm Restore of %d documents"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:71
-#: plugins/ktcore/admin/userManagement.php:166
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:57
+#: plugins/ktcore/admin/userManagement.php:166 preferences.php:58
 msgid "Confirm the password specified above."
 msgstr ""
 
-#: i18n/templates.c:1757
+#: i18n/templates.c:2027
 msgid "Content Version"
 msgstr ""
 
-#: i18n/templates.c:1817
+#: i18n/templates.c:2093
 msgid "Content version"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:32
+#: plugins/ktcore/KTCorePlugin.php:71
 msgid "Control Units"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:42
-msgid "Control which kinds of documents have which sets of information associated with them."
+#: plugins/ktcore/KTCorePlugin.php:51
+msgid "Control which users can log in, and are part of which groups and organisational units, from these management panels."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:9
-msgid "Control which users can log in, and are part of which groups and organisational units from these management panels."
-msgstr ""
-
-#: i18n/templates.c:1139
+#: i18n/templates.c:1355
 msgid "Convert"
 msgstr ""
 
-#: i18n/templates.c:1133
+#: i18n/templates.c:1349
 msgid "Convert to Trees."
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:40
-#, php-format
-msgid "Converted %s to a tree."
-msgstr ""
-
-#: i18n/templates.c:410 i18n/templates.c:839
+#: i18n/templates.c:461 i18n/templates.c:1025
 msgid "Copy"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:324
+#: plugins/ktcore/admin/documentFields.php:355
 msgid "Could not become conditional"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:44
+#: plugins/ktcore/admin/documentTypes.php:42
 msgid "Could not create document type"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:158
+#: plugins/ktcore/admin/documentFields.php:188
 msgid "Could not create field"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:49
+#: plugins/ktcore/KTFolderActions.php:47
 msgid "Could not create folder in the document management system"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:144
+#: plugins/ktcore/admin/workflows.php:164
 msgid "Could not create workflow"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:178
+#: plugins/ktcore/admin/workflows.php:215
 msgid "Could not create workflow state"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:345
+#: plugins/ktcore/admin/workflows.php:403
 msgid "Could not create workflow transition"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:526
+#: plugins/ktcore/admin/documentFields.php:557
 msgid "Could not delete fieldset"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:67
+#: plugins/ktcore/admin/manageHelp.php:68
 msgid "Could not delete specified item"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:54
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:63
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:76
+#: plugins/ktcore/admin/manageHelp.php:55
+#: plugins/ktcore/admin/manageHelp.php:64
+#: plugins/ktcore/admin/manageHelp.php:77
 msgid "Could not find specified item"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:111
+#: plugins/ktcore/admin/documentTypes.php:118
 msgid "Could not save document type changes"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:207
+#: plugins/ktcore/admin/documentFields.php:238
 msgid "Could not save field changes"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:93
+#: plugins/ktcore/admin/documentFields.php:99
 msgid "Could not save fieldset changes"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:339
+#: plugins/ktcore/admin/documentFields.php:370
 msgid "Could not stop being conditional"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:490
+#: plugins/ktcore/admin/documentFields.php:521
 msgid "Could not to complete"
 msgstr ""
 
-#: i18n/templates.c:113
+#: i18n/templates.c:107
 msgid "Crash Course in KnowledgeTree"
 msgstr ""
 
-#: i18n/templates.c:8 i18n/templates.c:1061 i18n/templates.c:1475
-#: i18n/templates.c:1550 i18n/templates.c:1598
+#: i18n/templates.c:8 i18n/templates.c:1271 i18n/templates.c:1733
+#: i18n/templates.c:1808 i18n/templates.c:1856
 msgid "Create"
 msgstr ""
 
-#: i18n/templates.c:329
+#: i18n/templates.c:368
 msgid "Create Fieldset"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:338
-msgid "Create New Group"
-msgstr ""
-
-#: i18n/templates.c:320
+#: i18n/templates.c:359
 msgid "Create a new Fieldset"
 msgstr ""
 
-#: i18n/templates.c:587
-msgid "Create a new Group"
-msgstr ""
-
-#: plugins/ktcore/admin/savedSearch.php:29
-#: plugins/ktcore/admin/conditions.php:34 i18n/templates.c:386
+#: plugins/ktcore/admin/savedSearch.php:36
+#: plugins/ktcore/admin/conditions.php:25
+#: plugins/ktcore/admin/conditions.php:26
+#: plugins/ktcore/admin/conditions.php:34 i18n/templates.c:434
 msgid "Create a new condition"
 msgstr ""
 
-#: i18n/templates.c:1547
+#: i18n/templates.c:1805
 msgid "Create a new document field set"
 msgstr ""
 
-#: i18n/templates.c:1472
+#: i18n/templates.c:1730
 msgid "Create a new document fieldset"
 msgstr ""
 
-#: i18n/templates.c:1052
+#: i18n/templates.c:1262
 msgid "Create a new document type"
-msgstr ""
-
-#: i18n/templates.c:590
-msgid "Create a new group."
 msgstr ""
 
 #: i18n/templates.c:5
 msgid "Create a new permission"
 msgstr ""
 
-#: i18n/templates.c:365
+#: i18n/templates.c:407
 msgid "Create a new saved search"
 msgstr ""
 
-#: i18n/templates.c:1562
+#: i18n/templates.c:1820
 msgid "Create a new state"
 msgstr ""
 
-#: i18n/templates.c:2018 i18n/templates.c:2021
+#: i18n/templates.c:2300 i18n/templates.c:2303
 msgid "Create a new thread"
 msgstr ""
 
-#: i18n/templates.c:1577
+#: i18n/templates.c:1835
 msgid "Create a new transition"
 msgstr ""
 
-#: i18n/templates.c:521 i18n/templates.c:2057
+#: i18n/templates.c:680 i18n/templates.c:2345
 msgid "Create a new user"
 msgstr ""
 
-#: i18n/templates.c:1595
+#: i18n/templates.c:1853
 msgid "Create a new workflow"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:37
-msgid "Create or Delete permissions."
+#: plugins/ktcore/KTCorePlugin.php:78
+msgid "Create or delete permissions."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:38
-msgid "Create or Delete roles"
+#: plugins/ktcore/KTCorePlugin.php:80
+msgid "Create or delete roles"
 msgstr ""
 
-#: i18n/templates.c:1565
+#: i18n/templates.c:1823
 msgid "Create state"
 msgstr ""
 
-#: i18n/templates.c:1580
+#: i18n/templates.c:1838
 msgid "Create transition"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/browse.php:83
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:70
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:73
+#: browse.php:161 search/simpleSearch.php:67 search/booleanSearch.php:86
 msgid "Created"
 msgstr ""
 
-#: i18n/templates.c:1856 i18n/templates.c:1883
+#: i18n/templates.c:2132 i18n/templates.c:2159
 msgid "Created by"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:373
+#: plugins/ktcore/admin/userManagement.php:397
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:190
 msgid "Created new user"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:186
+#: plugins/ktcore/admin/manageHelp.php:122
+msgid "Created replacement."
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:183
 msgid "Creating database entry"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:423
+#: lib/documentmanagement/documentutil.inc.php:433
 msgid "Creating transaction"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/browse.php:85
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:73
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:76
-#: i18n/templates.c:2003
+#: browse.php:163 lib/browse/Criteria.inc:630 search/simpleSearch.php:70
+#: search/booleanSearch.php:89 i18n/templates.c:2282
 msgid "Creator"
 msgstr ""
 
-#: i18n/templates.c:344
+#: i18n/templates.c:383 i18n/templates.c:1397
 msgid "Criteria"
 msgstr ""
 
-#: i18n/templates.c:338
+#: i18n/templates.c:377 i18n/templates.c:1391
 msgid "Criteria Group"
 msgstr ""
 
-#: i18n/templates.c:1763
-msgid "Current"
-msgstr ""
-
-#: i18n/templates.c:1331
+#: i18n/templates.c:1586
 msgid "Current Conditional Fieldsets"
 msgstr ""
 
-#: i18n/templates.c:26 i18n/templates.c:227
+#: i18n/templates.c:29 i18n/templates.c:266
 msgid "Current Fields in Set"
 msgstr ""
 
-#: i18n/templates.c:1688
+#: i18n/templates.c:1946
 msgid "Current workflow settings"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:80
-#: lib/templating/kt3template.inc.php:170 admin.php:34 admin.php:57
+#: lib/templating/kt3template.inc.php:78
+#: lib/templating/kt3template.inc.php:168 admin.php:34 admin.php:57
 msgid "DMS Administration"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:77
-#: lib/templating/kt3template.inc.php:173
-#: lib/templating/kt3template.inc.php:188
-#: presentation/lookAndFeel/knowledgeTree/dashboard.php:65
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:27
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:50
+#: lib/alert/AlertContent.inc:52
+msgid "DMS Subscription Alert"
+msgstr ""
+
+#: lib/templating/kt3template.inc.php:75
+#: lib/templating/kt3template.inc.php:171
+#: lib/templating/kt3template.inc.php:186 preferences.php:25
+#: preferences.php:49 dashboard.php:65 help.php:38
 msgid "Dashboard"
 msgstr ""
 
@@ -1020,64 +1125,93 @@ msgstr ""
 msgid "Database error:"
 msgstr ""
 
-#: i18n/templates.c:1814
+#: i18n/templates.c:2090
 msgid "Date"
 msgstr ""
 
-#: bin/generate-buttons.php:15 i18n/templates.c:17 i18n/templates.c:158
-#: i18n/templates.c:161 i18n/templates.c:314 i18n/templates.c:488
-#: i18n/templates.c:497 i18n/templates.c:626 i18n/templates.c:641
-#: i18n/templates.c:773 i18n/templates.c:779 i18n/templates.c:1463
-#: i18n/templates.c:1538
+#: lib/browse/Criteria.inc:633
+msgid "Date Created"
+msgstr ""
+
+#: lib/browse/Criteria.inc:642
+msgid "Date Modified"
+msgstr ""
+
+#: bin/generate-buttons.php:15 i18n/templates.c:17 i18n/templates.c:164
+#: i18n/templates.c:167 i18n/templates.c:353 i18n/templates.c:422
+#: i18n/templates.c:644 i18n/templates.c:653 i18n/templates.c:800
+#: i18n/templates.c:815 i18n/templates.c:956 i18n/templates.c:962
+#: i18n/templates.c:1145 i18n/templates.c:1721 i18n/templates.c:1796
+#: i18n/templates.c:2039
 msgid "Delete"
 msgstr ""
 
-#: i18n/templates.c:1073
+#: lib/foldermanagement/folderutil.inc.php:198
+msgid "Delete Aborted. Unexpected failure to delete document: "
+msgstr ""
+
+#: i18n/templates.c:617
+msgid "Delete Files and Folders"
+msgstr ""
+
+#: i18n/templates.c:23
+msgid "Delete Permission"
+msgstr ""
+
+#: i18n/templates.c:1283
 msgid "Delete Type"
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:15
-#: plugins/ktcore/admin/deletedDocuments.php:32 i18n/templates.c:1013
+#: plugins/ktcore/admin/deletedDocuments.php:14
+#: plugins/ktcore/admin/deletedDocuments.php:43
+#: plugins/ktcore/admin/deletedDocuments.php:119 i18n/templates.c:1199
 msgid "Deleted Documents"
 msgstr ""
 
-#: i18n/templates.c:152
+#: i18n/templates.c:158
 msgid "Deleting a document marks it as no longer being displayed.  The document management system does not remove the document entirely, and it can be restored at a later stage."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:172
-#: plugins/ktcore/KTDocumentActions.php:618
-#: plugins/ktcore/folder/addDocument.php:22
+#: plugins/ktcore/KTDocumentActions.php:190
+#: plugins/ktcore/KTDocumentActions.php:592
 msgid "Describe the changes made to the document."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:172 i18n/templates.c:962
-#: i18n/templates.c:1283
+#: plugins/ktstandard/KTDiscussion.php:154
+msgid "Describe the reason for closing this thread"
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:190 i18n/templates.c:1139
+#: i18n/templates.c:1538
 msgid "Description"
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:78
-#: plugins/ktcore/admin/workflows.php:372
+#: plugins/ktcore/admin/workflows.php:430
 msgid "Destination State"
+msgstr ""
+
+#: browse.php:352
+msgid "Destination folder"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:77
 msgid "Details updated"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:66
+#: plugins/ktcore/admin/documentFields.php:72
 msgid "Different field types can have different properties."
 msgstr ""
 
-#: i18n/templates.c:1307
+#: i18n/templates.c:1562
 msgid "Disable"
 msgstr ""
 
-#: i18n/templates.c:1088
+#: i18n/templates.c:1298
 msgid "Disassociate Fieldsets"
 msgstr ""
 
-#: lib/actions/documentaction.inc.php:132 lib/actions/folderaction.inc.php:124
+#: lib/actions/documentaction.inc.php:141 lib/actions/folderaction.inc.php:137
 msgid "Dispatcher component of action not implemented."
 msgstr ""
 
@@ -1085,7 +1219,7 @@ msgstr ""
 msgid "Display Name"
 msgstr ""
 
-#: i18n/templates.c:2081
+#: i18n/templates.c:2369
 msgid "Distinguished Name (LDAP DN)"
 msgstr ""
 
@@ -1093,12 +1227,16 @@ msgstr ""
 msgid "Distinguished name"
 msgstr ""
 
-#: i18n/templates.c:890
+#: i18n/templates.c:1064
 msgid "Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:40
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:48
+#: plugins/ktcore/KTDocumentActions.php:287
+#, php-format
+msgid "Document \"%s\" Deleted."
+msgstr ""
+
+#: view.php:43 edit.php:49
 msgid "Document Actions"
 msgstr ""
 
@@ -1107,73 +1245,85 @@ msgstr ""
 msgid "Document Checkout"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:179
+#: lib/browse/Criteria.inc:648
+msgid "Document Contents"
+msgstr ""
+
+#: lib/templating/kt3template.inc.php:177
 msgid "Document Details"
 msgstr ""
 
-#: plugins/ktcore/admin/manageConditionals.php:18
-#: plugins/ktcore/admin/documentFields.php:21
+#: plugins/ktcore/admin/manageConditionals.php:23
+#: plugins/ktcore/admin/documentFields.php:20 i18n/templates.c:1316
 msgid "Document Field Management"
 msgstr ""
 
-#: i18n/templates.c:1523
+#: i18n/templates.c:1781
 msgid "Document Fields"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:42 i18n/templates.c:1448
+#: plugins/ktcore/KTCorePlugin.php:93 i18n/templates.c:1703
 msgid "Document Fieldsets"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:179
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:219
-#: i18n/templates.c:1799
+#: view.php:182 view.php:225
 msgid "Document History"
 msgstr ""
 
-#: i18n/templates.c:1748 i18n/templates.c:1805
+#: i18n/templates.c:2018 i18n/templates.c:2081
 msgid "Document History for KnowledgeTree New UI Presentation"
 msgstr ""
 
-#: i18n/templates.c:926
+#: i18n/templates.c:1103
 msgid "Document Link Type Management"
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:45
-#: plugins/ktcore/admin/documentLinks.php:74
+#: plugins/ktcore/admin/documentLinks.php:42
+#: plugins/ktcore/admin/documentLinks.php:71
 msgid "Document Links"
 msgstr ""
 
-#: i18n/templates.c:908 i18n/templates.c:980 i18n/templates.c:1001
-#: i18n/templates.c:1019 i18n/templates.c:1037
+#: plugins/ktcore/KTCorePlugin.php:58
+#: plugins/ktcore/admin/manageConditionals.php:22 i18n/templates.c:1313
+msgid "Document Metadata and Workflow Configuration"
+msgstr ""
+
+#: i18n/templates.c:1085 i18n/templates.c:1166 i18n/templates.c:1187
+#: i18n/templates.c:1205 i18n/templates.c:1223 i18n/templates.c:1241
 msgid "Document Name"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:11
+#: plugins/ktcore/KTCorePlugin.php:56
 msgid "Document Storage"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:28
-#: plugins/ktcore/folder/BulkUpload.php:27
-#: plugins/ktcore/folder/addDocument.php:29 i18n/templates.c:1070
-#: i18n/templates.c:1076 i18n/templates.c:1862 i18n/templates.c:1892
+#: lib/browse/Criteria.inc:636 plugins/ktcore/KTPortlets.php:50
+#: plugins/ktcore/folder/BulkImport.php:33
+#: plugins/ktcore/folder/BulkUpload.php:48
+#: plugins/ktcore/folder/addDocument.php:52 i18n/templates.c:1280
+#: i18n/templates.c:1286 i18n/templates.c:2138 i18n/templates.c:2168
 msgid "Document Type"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:12
-msgid "Document Type Configuration"
+#: edit.php:136
+msgid "Document Type Changed.  Please review the information below, and update as appropriate."
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:19
-#: plugins/ktcore/admin/documentTypes.php:69
+#: plugins/ktcore/admin/documentTypes.php:18
+#: plugins/ktcore/admin/documentTypes.php:67
 msgid "Document Type Management"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:41 i18n/templates.c:1049
-#: i18n/templates.c:1115
+#: browse.php:141 plugins/ktcore/KTCorePlugin.php:89 i18n/templates.c:1259
+#: i18n/templates.c:1331
 msgid "Document Types"
 msgstr ""
 
-#: i18n/templates.c:1670
+#: plugins/ktcore/folder/addDocument.php:52
+msgid "Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below."
+msgstr ""
+
+#: i18n/templates.c:1928
 msgid "Document Workflow"
 msgstr ""
 
@@ -1187,6 +1337,10 @@ msgstr ""
 msgid "Document archived"
 msgstr ""
 
+#: plugins/ktcore/KTDocumentActions.php:556
+msgid "Document archived."
+msgstr ""
+
 #: lib/dashboard/Notification.inc.php:161
 #: lib/subscriptions/subscriptions.inc.php:650
 msgid "Document checked in"
@@ -1197,11 +1351,11 @@ msgstr ""
 msgid "Document checked out"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:388
+#: lib/documentmanagement/documentutil.inc.php:398
 msgid "Document created"
 msgstr ""
 
-#: i18n/templates.c:1679
+#: i18n/templates.c:1937
 msgid "Document has no assigned workflow."
 msgstr ""
 
@@ -1215,7 +1369,7 @@ msgstr ""
 msgid "Document moved"
 msgstr ""
 
-#: i18n/templates.c:821
+#: i18n/templates.c:1007
 msgid "Document permissions"
 msgstr ""
 
@@ -1231,40 +1385,44 @@ msgstr ""
 msgid "Document restored"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:374
-#: plugins/ktcore/KTDocumentActions.php:427
+#: plugins/ktcore/KTDocumentActions.php:351
+#: plugins/ktcore/KTDocumentActions.php:404
 msgid "Document to move"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:59
+#: plugins/ktcore/admin/documentTypes.php:57
 msgid "Document type could not be deleted"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:47
+#: plugins/ktcore/admin/documentTypes.php:45
 msgid "Document type created"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:63
+#: plugins/ktcore/admin/documentTypes.php:61
 msgid "Document type deleted"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:54
+#: plugins/ktcore/admin/documentTypes.php:52
 msgid "Document type still in use, could not be deleted"
 msgstr ""
 
-#: i18n/templates.c:1103
+#: i18n/templates.c:1319
 msgid "Document types"
 msgstr ""
 
-#: i18n/templates.c:1016
-msgid "Documents which are deleted by users are hidden from view,  but still available for restoration.  Since this consumes system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary."
+#: i18n/templates.c:1202
+msgid "Documents which are deleted by users are hidden from view   but still available for restoration.  Since \"soft deletes\" consume system resources, it  is possible to <strong>expunge</strong> these documents.  Alternatively, you  can <strong>restore</strong> them as necessary."
+msgstr ""
+
+#: lib/foldermanagement/folderutil.inc.php:185
+msgid "Documents: "
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:92
 msgid "Domain"
 msgstr ""
 
-#: i18n/templates.c:86 i18n/templates.c:119
+#: i18n/templates.c:113 i18n/templates.c:125
 msgid "Don't show me this again."
 msgstr ""
 
@@ -1276,16 +1434,17 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:167
+#: plugins/ktcore/KTFolderActions.php:170
 msgid "Dynamic permission added"
 msgstr ""
 
-#: bin/generate-buttons.php:20 i18n/templates.c:311 i18n/templates.c:374
-#: i18n/templates.c:395 i18n/templates.c:404 i18n/templates.c:485
-#: i18n/templates.c:494 i18n/templates.c:617 i18n/templates.c:632
-#: i18n/templates.c:719 i18n/templates.c:725 i18n/templates.c:743
-#: i18n/templates.c:746 i18n/templates.c:770 i18n/templates.c:776
-#: i18n/templates.c:827 i18n/templates.c:965 i18n/templates.c:1337
+#: bin/generate-buttons.php:20 i18n/templates.c:350 i18n/templates.c:419
+#: i18n/templates.c:443 i18n/templates.c:452 i18n/templates.c:548
+#: i18n/templates.c:551 i18n/templates.c:641 i18n/templates.c:650
+#: i18n/templates.c:791 i18n/templates.c:806 i18n/templates.c:902
+#: i18n/templates.c:908 i18n/templates.c:926 i18n/templates.c:929
+#: i18n/templates.c:953 i18n/templates.c:959 i18n/templates.c:1013
+#: i18n/templates.c:1142 i18n/templates.c:1592
 msgid "Edit"
 msgstr ""
 
@@ -1294,32 +1453,40 @@ msgstr ""
 msgid "Edit %s's groups"
 msgstr ""
 
-#: i18n/templates.c:1424
+#: i18n/templates.c:1679
 msgid "Edit Behaviour"
 msgstr ""
 
-#: i18n/templates.c:1130
+#: i18n/templates.c:1346
 msgid "Edit Categorisation"
 msgstr ""
 
-#: i18n/templates.c:1403
+#: i18n/templates.c:1658
 msgid "Edit Complex Conditional Metadata"
 msgstr ""
 
-#: i18n/templates.c:1274
+#: config/siteMap.inc:39
+msgid "Edit Document"
+msgstr ""
+
+#: i18n/templates.c:1529
 msgid "Edit Field"
 msgstr ""
 
-#: i18n/templates.c:23 i18n/templates.c:224
+#: i18n/templates.c:26 i18n/templates.c:263
 msgid "Edit Fieldset"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:59
+#: plugins/ktcore/admin/groupManagement.php:57
 #, php-format
 msgid "Edit Group (%s)"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:52
+#: i18n/templates.c:530
+msgid "Edit Groups"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:118
 msgid "Edit Help files"
 msgstr ""
 
@@ -1327,121 +1494,135 @@ msgstr ""
 msgid "Edit LDAP info"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:105 i18n/templates.c:272
+#: plugins/ktcore/admin/documentFields.php:626 i18n/templates.c:311
 msgid "Edit Lookup Tree"
 msgstr ""
 
-#: i18n/templates.c:530
+#: plugins/ktcore/admin/savedSearch.php:104
+#: plugins/ktcore/admin/conditions.php:82
+msgid "Edit Search"
+msgstr ""
+
+#: i18n/templates.c:689
 msgid "Edit User Details"
 msgstr ""
 
-#: i18n/templates.c:938
+#: i18n/templates.c:527
+msgid "Edit Users"
+msgstr ""
+
+#: i18n/templates.c:1115
 msgid "Edit a link type"
 msgstr ""
 
-#: i18n/templates.c:392
+#: plugins/ktcore/admin/savedSearch.php:97
+#: plugins/ktcore/admin/conditions.php:75
+msgid "Edit an existing condition"
+msgstr ""
+
+#: i18n/templates.c:440
 msgid "Edit existing conditions"
 msgstr ""
 
-#: i18n/templates.c:371
-msgid "Edit existing saved searches"
-msgstr ""
-
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:45
+#: plugins/ktcore/admin/manageHelp.php:46
 msgid "Edit help item"
 msgstr ""
 
-#: i18n/templates.c:1730
+#: i18n/templates.c:1997
 msgid "Edit provider configuration"
 msgstr ""
 
-#: i18n/templates.c:1724
+#: i18n/templates.c:1991
 msgid "Edit standard configuration"
 msgstr ""
 
-#: i18n/templates.c:1610
+#: i18n/templates.c:1868
 msgid "Edit state properties"
 msgstr ""
 
-#: i18n/templates.c:1661
+#: i18n/templates.c:1919
 msgid "Edit transition properties"
 msgstr ""
 
-#: i18n/templates.c:1556
+#: i18n/templates.c:1814
 msgid "Edit workflow properties"
 msgstr ""
 
-#: i18n/templates.c:1733
+#: i18n/templates.c:2000
 msgid "Editing"
 msgstr ""
 
-#: i18n/templates.c:1433
+#: i18n/templates.c:1688
 msgid "Editing Fieldset Rules (Simple)"
 msgstr ""
 
-#: i18n/templates.c:1409
+#: i18n/templates.c:1664
 msgid "Editing behaviour <strong>Jack</strong>"
 msgstr ""
 
-#: bin/generate-buttons.php:38 i18n/templates.c:1994
+#: plugins/ktcore/admin/manageHelp.php:38
+msgid "Editing: "
+msgstr ""
+
+#: bin/generate-buttons.php:38 i18n/templates.c:2273
 msgid "Email"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:68
 #: plugins/ktcore/admin/userManagement.php:122
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:142
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:35
+#: preferences.php:34
 msgid "Email Address"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:69
 #: plugins/ktcore/admin/userManagement.php:123
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:143
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:36
+#: preferences.php:35
 msgid "Email Notifications"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:199
+#: plugins/ktstandard/KTEmail.php:211
 msgid "Email addresses"
 msgstr ""
 
-#: i18n/templates.c:1991
+#: i18n/templates.c:2270
 msgid "Email document"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:248
+#: plugins/ktstandard/KTEmail.php:261
 msgid "Email sent"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:220
+#: plugins/ktcore/admin/documentFields.php:251
 msgid "Empty lookup not added"
 msgstr ""
 
-#: i18n/templates.c:1319
+#: i18n/templates.c:1574
 msgid "Enable"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:28
+#: plugins/ktcore/admin/groupManagement.php:26
 msgid "Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:32
+#: plugins/ktcore/admin/userManagement.php:30
 msgid "Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:445
+#: plugins/ktcore/admin/documentFields.php:476
 msgid "Error adding Fields"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:94
+#: plugins/ktcore/admin/documentFields.php:615
 msgid "Error building tree. Is this a valid tree-lookup field?"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:514
+#: plugins/ktcore/admin/documentFields.php:545
 msgid "Error changing to complex"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:501
+#: plugins/ktcore/admin/documentFields.php:532
 msgid "Error changing to simple"
 msgstr ""
 
@@ -1457,63 +1638,71 @@ msgstr ""
 msgid "Error finding permission"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:242
+#: plugins/ktstandard/KTDiscussion.php:231
+msgid "Error getting permission"
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:280
 msgid "Error saving state"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:270
+#: plugins/ktcore/admin/workflows.php:308
 msgid "Error saving state enabled actions"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:478
+#: plugins/ktcore/admin/workflows.php:536
 msgid "Error saving transition"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:256
+#: plugins/ktcore/admin/workflows.php:294
 msgid "Error saving transitions"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:129
+#: plugins/ktcore/admin/workflows.php:136
 msgid "Error saving workflow"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:157
+#: plugins/ktcore/admin/workflows.php:177
 msgid "Error saving workflow controlled actions"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:464
+#: plugins/ktcore/admin/documentFields.php:495
 msgid "Error setting master field"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:85
+#: plugins/ktcore/admin/manageHelp.php:93
 msgid "Error updating item"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:53
+#: plugins/ktcore/admin/documentFields.php:57
 msgid "Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works."
 msgstr ""
 
-#: i18n/templates.c:299
+#: i18n/templates.c:338
 msgid "Existing Fieldsets"
 msgstr ""
 
-#: i18n/templates.c:1451
+#: i18n/templates.c:413
+msgid "Existing Searches"
+msgstr ""
+
+#: i18n/templates.c:1709
 msgid "Existing document fieldsets"
 msgstr ""
 
-#: i18n/templates.c:1064
+#: i18n/templates.c:1274
 msgid "Existing document types"
 msgstr ""
 
-#: i18n/templates.c:1526
+#: i18n/templates.c:1784
 msgid "Existing generic document fields"
 msgstr ""
 
-#: i18n/templates.c:1187 i18n/templates.c:1259 i18n/templates.c:1496
+#: i18n/templates.c:1433 i18n/templates.c:1511 i18n/templates.c:1754
 msgid "Existing members"
 msgstr ""
 
-#: i18n/templates.c:1394
+#: i18n/templates.c:1649
 msgid "Existing ordering"
 msgstr ""
 
@@ -1521,40 +1710,48 @@ msgstr ""
 msgid "Existing permissions"
 msgstr ""
 
-#: i18n/templates.c:1712
+#: i18n/templates.c:1976
 msgid "Existing sources"
 msgstr ""
 
-#: i18n/templates.c:1568
+#: i18n/templates.c:1826
 msgid "Existing states"
 msgstr ""
 
-#: i18n/templates.c:1997
+#: i18n/templates.c:2276
 msgid "Existing threads"
 msgstr ""
 
-#: i18n/templates.c:1583
+#: i18n/templates.c:1841
 msgid "Existing transitions"
 msgstr ""
 
-#: i18n/templates.c:1601
+#: i18n/templates.c:1859
 msgid "Existing workflows"
 msgstr ""
 
-#: bin/generate-buttons.php:28 i18n/templates.c:986 i18n/templates.c:1025
+#: bin/generate-buttons.php:28 i18n/templates.c:1208
 msgid "Expunge"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:49
-msgid "Expunge Deleted Documents"
-msgstr ""
-
-#: plugins/ktcore/admin/groupManagement.php:306
+#: plugins/ktcore/admin/groupManagement.php:304
 #, php-format
 msgid "Failed to add %s to %s"
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:100
+#: plugins/ktcore/KTPermissions.php:372 plugins/ktcore/KTPermissions.php:414
+msgid "Failed to change the role allocation."
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:212
+msgid "Failed to create the role allocation."
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:55
+msgid "Failed to delete search"
+msgstr ""
+
+#: plugins/ktcore/admin/deletedDocuments.php:113
 msgid "Failed to expunge"
 msgstr ""
 
@@ -1566,145 +1763,164 @@ msgstr ""
 msgid "Failed to locate template"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:317
+#: browse.php:455
+msgid "Failed to move the folder: "
+msgstr ""
+
+#: plugins/ktcore/admin/groupManagement.php:315
 #, php-format
 msgid "Failed to remove %s from %s"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:117
+#: plugins/ktcore/admin/deletedDocuments.php:191
+msgid "Failed to restore"
+msgstr ""
+
+#: plugins/ktcore/admin/groupManagement.php:115
 msgid "Failed to set group details."
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:62
+#: plugins/ktcore/admin/orgManagement.php:60
 msgid "Failed to update org name."
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:68
+#: plugins/ktcore/admin/unitManagement.php:66
 msgid "Failed to update unit name."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:207
-#: plugins/ktcore/admin/userManagement.php:323
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:96
+#: plugins/ktcore/admin/userManagement.php:342 preferences.php:105
 msgid "Failed to update user."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:134
+#: preferences.php:147
 msgid "Failed to update your details."
 msgstr ""
 
-#: i18n/templates.c:428 i18n/templates.c:449 i18n/templates.c:833
-#: i18n/templates.c:857
+#: lib/foldermanagement/folderutil.inc.php:210
+msgid "Failure deleting folders."
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:465
+msgid "Failure to generate folderlisting."
+msgstr ""
+
+#: i18n/templates.c:476 i18n/templates.c:1019
 msgid "False"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:439
+#: plugins/ktcore/admin/documentFields.php:470
 msgid "Field cannot be its own parent field"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:162
-#: plugins/ktcore/admin/documentFields.php:164
+#: plugins/ktcore/admin/documentFields.php:192
+#: plugins/ktcore/admin/documentFields.php:194
 msgid "Field created"
 msgstr ""
 
-#: i18n/templates.c:59 i18n/templates.c:260
+#: i18n/templates.c:62 i18n/templates.c:299
 msgid "Field has conditions attached to it."
 msgstr ""
 
-#: i18n/templates.c:1391
+#: i18n/templates.c:1646
 msgid "Field ordering"
 msgstr ""
 
-#: i18n/templates.c:1277
+#: i18n/templates.c:1532
 msgid "Field properties"
 msgstr ""
 
-#: i18n/templates.c:1460 i18n/templates.c:1535
+#: i18n/templates.c:1718 i18n/templates.c:1793
 msgid "Fields"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:448
+#: plugins/ktcore/admin/documentFields.php:479
 msgid "Fields ordered"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:354
+#: plugins/ktcore/admin/documentFields.php:385
 msgid "Fields removed"
 msgstr ""
 
-#: i18n/templates.c:1127
+#: i18n/templates.c:1343
 msgid "Fields that have lookup categories."
 msgstr ""
 
-#: i18n/templates.c:29 i18n/templates.c:41 i18n/templates.c:230
-#: i18n/templates.c:242
+#: i18n/templates.c:32 i18n/templates.c:44 i18n/templates.c:269
+#: i18n/templates.c:281
 msgid "Fields which are currently not included in any set can be added to this set."
 msgstr ""
 
-#: i18n/templates.c:1085 i18n/templates.c:1169 i18n/templates.c:1214
-#: i18n/templates.c:1478
+#: i18n/templates.c:1295 i18n/templates.c:1415 i18n/templates.c:1460
+#: i18n/templates.c:1736
 msgid "Fieldset"
 msgstr ""
 
-#: i18n/templates.c:68 i18n/templates.c:269
+#: i18n/templates.c:71 i18n/templates.c:308
 msgid "Fieldset cannot be made conditional. One of the fields must not be a lookup."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:133
+#: plugins/ktcore/admin/documentFields.php:151
 msgid "Fieldset created"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:528
+#: plugins/ktcore/admin/documentFields.php:559
 msgid "Fieldset deleted"
 msgstr ""
 
-#: i18n/templates.c:1184 i18n/templates.c:1256 i18n/templates.c:1493
+#: i18n/templates.c:1430 i18n/templates.c:1505 i18n/templates.c:1751
 msgid "Fieldset members"
 msgstr ""
 
-#: i18n/templates.c:1172 i18n/templates.c:1223 i18n/templates.c:1481
+#: i18n/templates.c:1418 i18n/templates.c:1469 i18n/templates.c:1739
 msgid "Fieldset properties"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:138
+#: plugins/ktcore/admin/documentTypes.php:152
 msgid "Fieldsets associated."
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:126
+#: plugins/ktcore/admin/documentTypes.php:133
 msgid "Fieldsets removed."
 msgstr ""
 
-#: i18n/templates.c:1334
+#: i18n/templates.c:1589
 msgid "Fieldsets that are marked as conditional."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:171
-#: plugins/ktcore/folder/addDocument.php:21
+#: plugins/ktcore/KTDocumentActions.php:189
+#: plugins/ktcore/folder/addDocument.php:43
 msgid "File"
 msgstr ""
 
-#: i18n/templates.c:1853 i18n/templates.c:1880
+#: lib/browse/Criteria.inc:645
+msgid "File Size"
+msgstr ""
+
+#: i18n/templates.c:2129 i18n/templates.c:2156
 msgid "File is a"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:205
-#: plugins/ktcore/folder/addDocument.php:78
+#: lib/validation/dispatchervalidation.inc.php:209
 msgid "File uploads are disabled in your PHP configuration"
 msgstr ""
 
-#: i18n/templates.c:563 i18n/templates.c:566 i18n/templates.c:662
-#: i18n/templates.c:665 i18n/templates.c:689 i18n/templates.c:692
+#: i18n/templates.c:578 i18n/templates.c:581 i18n/templates.c:605
+#: i18n/templates.c:608 i18n/templates.c:728 i18n/templates.c:731
+#: i18n/templates.c:839 i18n/templates.c:842 i18n/templates.c:869
+#: i18n/templates.c:872
 msgid "Filter"
 msgstr ""
 
-#: i18n/templates.c:83
-msgid "Find out what's different in <strong>KT 3</strong>."
+#: i18n/templates.c:122
+msgid "Find out what's new in <strong>KT 3</strong>."
 msgstr ""
 
-#: i18n/templates.c:1109
+#: plugins/ktcore/KTPortlets.php:48 i18n/templates.c:1325
 msgid "Folder"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/browse.php:91
+#: browse.php:121
 msgid "Folder Actions"
 msgstr ""
 
@@ -1713,11 +1929,11 @@ msgstr ""
 msgid "Folder added"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:29
+#: plugins/ktcore/KTFolderActions.php:27
 msgid "Folder name"
 msgstr ""
 
-#: i18n/templates.c:398
+#: i18n/templates.c:446
 msgid "Folder permissions"
 msgstr ""
 
@@ -1728,109 +1944,127 @@ msgstr ""
 msgid "Folder removed"
 msgstr ""
 
-#: i18n/templates.c:212
+#: i18n/templates.c:218
 msgid "Folders are one way of organising documents in the document management system.  Folders provide meaning in the traditional file storage way - through a path through which one will browse that describes the content more specifically as one enters folders."
 msgstr ""
 
-#: i18n/templates.c:920
+#: lib/foldermanagement/folderutil.inc.php:188
+msgid "Folders: "
+msgstr ""
+
+#: i18n/templates.c:1097
 msgid "Force Checkin"
 msgstr ""
 
-#: i18n/templates.c:794
-msgid "From here you can adjust certain basic preferences about how you work with KnowledgeTree."
-msgstr ""
-
-#: i18n/templates.c:950
+#: i18n/templates.c:1127
 msgid "From this panel you can edit or delete existing link types."
 msgstr ""
 
-#: i18n/templates.c:1457 i18n/templates.c:1532
+#: i18n/templates.c:1715 i18n/templates.c:1790
 msgid "Generic"
 msgstr ""
 
-#: i18n/templates.c:1847 i18n/templates.c:1874
+#: i18n/templates.c:2123 i18n/templates.c:2150
 msgid "Generic Information"
 msgstr ""
 
-#: i18n/templates.c:419 i18n/templates.c:434
+#: i18n/templates.c:467 i18n/templates.c:482
 msgid "Group"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:374
+#: plugins/ktcore/admin/groupManagement.php:372
 #, php-format
 msgid "Group \"%s\" created."
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:385
+#: plugins/ktcore/admin/groupManagement.php:383
 #, php-format
 msgid "Group \"%s\" deleted."
 msgstr ""
 
-#: i18n/templates.c:599
+#: i18n/templates.c:773
 msgid "Group Administration"
 msgstr ""
 
+#: plugins/ktcore/admin/groupManagement.php:15
 #: plugins/ktcore/admin/groupManagement.php:17
-#: plugins/ktcore/admin/groupManagement.php:19
-#: plugins/ktcore/admin/groupManagement.php:50
-#: plugins/ktcore/admin/groupManagement.php:334
+#: plugins/ktcore/admin/groupManagement.php:48
+#: plugins/ktcore/admin/groupManagement.php:332
 msgid "Group Management"
 msgstr ""
 
-#: i18n/templates.c:491
+#: i18n/templates.c:647
 msgid "Group Memberships"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:28
-#: plugins/ktcore/admin/groupManagement.php:62
-#: plugins/ktcore/admin/groupManagement.php:341 i18n/templates.c:611
+#: plugins/ktcore/admin/groupManagement.php:26
+#: plugins/ktcore/admin/groupManagement.php:60
+#: plugins/ktcore/admin/groupManagement.php:339 i18n/templates.c:785
 msgid "Group Name"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:120
+#: plugins/ktcore/admin/groupManagement.php:118
 msgid "Group details updated."
 msgstr ""
 
-#: i18n/templates.c:500 i18n/templates.c:1625
+#: i18n/templates.c:656 i18n/templates.c:1883
 msgid "Groups"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:406
+#: i18n/templates.c:824
+msgid "Groups may contain other groups, allowing for a convenient way to build tree's of users and efficiently assign security privileges."
+msgstr ""
+
+#: i18n/templates.c:542
+msgid "Groups:"
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:464
 msgid "Guard Condition."
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:388
+#: plugins/ktcore/admin/workflows.php:446
 msgid "Guard Group."
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:85
-#: plugins/ktcore/admin/workflows.php:380
+#: plugins/ktcore/admin/workflows.php:438
 msgid "Guard Permission."
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:396
+#: plugins/ktcore/admin/workflows.php:454
 msgid "Guard Role."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:20
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:37
+#: lib/alert/AlertContent.inc:116
+#, php-format
+msgid "Hello %s"
+msgstr ""
+
+#: config/siteMap.inc:55 help.php:39
+msgid "Help"
+msgstr ""
+
+#: plugins/ktcore/admin/manageHelp.php:20
+#: plugins/ktcore/admin/manageHelp.php:22
+#: plugins/ktcore/admin/manageHelp.php:37
 msgid "Help Administration"
 msgstr ""
 
-#: i18n/templates.c:98
-msgid "Help!  Something went wrong!"
+#: i18n/templates.c:92
+msgid "Help! Something went wrong!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/dashboard.php:64
+#: dashboard.php:64
 msgid "Home"
 msgstr ""
 
-#: i18n/templates.c:302
+#: i18n/templates.c:341
 msgid "Human Name"
 msgstr ""
 
-#: i18n/templates.c:887
-msgid "If a checked-out document has been lost, or the user who checked a document out has not checked it back in, it may be necessary to override the \"checked-out\" status of a document. Use the <strong>force checkin</strong> action in the listing below to override the checked-out status."
+#: lib/browse/Criteria.inc:639
+msgid "ID"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:123
@@ -1842,59 +2076,71 @@ msgstr ""
 msgid "If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:36
+#: preferences.php:35
 msgid "If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>"
 msgstr ""
 
-#: i18n/templates.c:77 i18n/templates.c:92
-msgid "If this is your first KnowledgeTree installation, or if you've just upgraded from KnowledgeTree 2.x, we've put together some information which might help you get to grips with the new system."
+#: i18n/templates.c:86
+msgid "If this is your first KnowledgeTree installation,  or if you've just upgraded from KnowledgeTree 2.x, we've put together some information  to help you familiarise yourself with the new system."
 msgstr ""
 
-#: i18n/templates.c:215
+#: i18n/templates.c:116
+msgid "If this is your first KnowledgeTree installation,  or if you've just upgraded from KnowledgeTree 2.x, we've put together some information  which might help you get to grips with the new system."
+msgstr ""
+
+#: i18n/templates.c:221
 msgid "If you do not intend to add a folder, you should <a href=\"#link#\">cancel this action</a>."
 msgstr ""
 
-#: i18n/templates.c:200
+#: i18n/templates.c:206
 msgid "If you do not intend to archive this document, you should <a href=\"#link#\">cancel the archive</a>."
 msgstr ""
 
-#: i18n/templates.c:155
+#: i18n/templates.c:161
 msgid "If you do not intend to delete this document, you should <a href=\"#link#\">cancel the deletion</a>."
 msgstr ""
 
-#: i18n/templates.c:125 i18n/templates.c:137
+#: i18n/templates.c:131 i18n/templates.c:143
 msgid "If you do not intend to edit the document, and you do not wish to prevent others from changing the document, you should <a href=\"#link#\">cancel this checkout</a>."
 msgstr ""
 
-#: i18n/templates.c:167 i18n/templates.c:188
+#: i18n/templates.c:173 i18n/templates.c:194
 msgid "If you do not intend to move this document, you should <a href=\"#link#\">cancel the move</a>."
 msgstr ""
 
-#: i18n/templates.c:458
+#: i18n/templates.c:497
 msgid "Import"
 msgstr ""
 
-#: i18n/templates.c:977
-msgid "In order to keep the documents which are visible useful to end users, it is possible to <strong>archive</strong> old documents.  Users who want to see these old documents need to request their restoration - these requests will typically be done within the system, and will generate a notification to you."
+#: i18n/templates.c:512
+msgid "In many cases, workflow actions will be assigned to certain <strong>roles</strong>     (e.g. Manager, Interviewer, Researcher, Journalist).  You can assign these roles     to specific groups in particular areas of the document management system."
 msgstr ""
 
-#: i18n/templates.c:1217
+#: i18n/templates.c:1163
+msgid "In order to keep the documents which are visible useful  to end users it is possible to <strong>archive</strong> old documents.  Users who  want to see these old documents need to request their restoration. These requests  will typically be done within the system and will generate a  notification to you."
+msgstr ""
+
+#: i18n/templates.c:2267
+msgid "In some circumstances it is useful to view all  documents of a given <strong>document type</strong>. Select a <strong>document type</strong> from the list below  to view all relevant documents."
+msgstr ""
+
+#: i18n/templates.c:1463
 msgid "Incomplete"
 msgstr ""
 
-#: i18n/templates.c:1616
+#: i18n/templates.c:1874
 msgid "Inform Which Users?"
 msgstr ""
 
-#: i18n/templates.c:836
+#: i18n/templates.c:1022
 msgid "Inherited from"
 msgstr ""
 
-#: i18n/templates.c:407
+#: i18n/templates.c:458
 msgid "Inherited from:"
 msgstr ""
 
-#: i18n/templates.c:512
+#: i18n/templates.c:671
 msgid "Instead of manually creating the user within the document management system, the user can be found within an authentication source (such as an LDAP directory) that has already been configured.  This ensures that the user is correctly set up with limited intervention from the administrator, and that the user will not need to remember an additional password for the document management system."
 msgstr ""
 
@@ -1902,41 +2148,76 @@ msgstr ""
 msgid "Insufficient permissions to perform action"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:103
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:165
+#: browse.php:509
+msgid "Invalid Document selected."
+msgstr ""
+
+#: edit.php:102 edit.php:153 edit.php:222
 msgid "Invalid Document."
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:28
+#: browse.php:501
+msgid "Invalid Folder selected."
+msgstr ""
+
+#: plugins/ktcore/admin/orgManagement.php:26
 msgid "Invalid Organisation"
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:44
-#: plugins/ktcore/admin/deletedDocuments.php:70
+#: plugins/ktcore/KTPermissions.php:195 plugins/ktcore/KTPermissions.php:224
+msgid "Invalid Role."
+msgstr ""
+
+#: plugins/ktcore/admin/deletedDocuments.php:55
+#: plugins/ktcore/admin/deletedDocuments.php:81
+#: plugins/ktcore/admin/deletedDocuments.php:131
 msgid "Invalid document id specified. Aborting expunge"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:47
-#: plugins/ktcore/admin/archivedDocuments.php:73
+#: plugins/ktcore/admin/deletedDocuments.php:155
+msgid "Invalid document id specified. Aborting restore"
+msgstr ""
+
+#: plugins/ktcore/admin/archivedDocuments.php:48
+#: plugins/ktcore/admin/archivedDocuments.php:74
 msgid "Invalid document id specified. Aborting restore."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:267
+#: view.php:280
 msgid "Invalid document to compare against."
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:51
-#: plugins/ktcore/folder/BulkUpload.php:50
+#: plugins/ktcore/folder/BulkImport.php:56
+#: plugins/ktcore/folder/BulkUpload.php:71
 msgid "Invalid document type provided"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:35
-#: plugins/ktcore/admin/manageLookupTrees.php:55
+#: edit.php:237
+msgid "Invalid document type specified for change."
+msgstr ""
+
+#: browse.php:396
+msgid "Invalid document."
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:576
 msgid "Invalid field."
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:295
+#: browse.php:279
+msgid "Invalid folder selected."
+msgstr ""
+
+#: browse.php:451
+msgid "Invalid folder."
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:333
 msgid "Invalid groups specified"
+msgstr ""
+
+#: help.php:60 help.php:61 help.php:86 help.php:87
+msgid "Invalid help location specified."
 msgstr ""
 
 #: lib/validation/dispatchervalidation.inc.php:43
@@ -1944,36 +2225,48 @@ msgstr ""
 msgid "Invalid identifier provided for: %s"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:54
+#: plugins/ktcore/folder/BulkImport.php:59
 msgid "Invalid path provided"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:288
+#: plugins/ktcore/admin/workflows.php:326
 msgid "Invalid roles specified"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:302
+#: edit.php:133
+msgid "Invalid type selected."
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:340
 msgid "Invalid users specified"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:69
+#: i18n/templates.c:1061
+msgid "It may be necessary to override the <strong>checked-out</strong> status of a document if:  <ul>  <li>the local copy of the checked-out document has been lost;</li>  <li>the user who did the check-out is not currently available to check it back in.</li>  </ul>  Use the <strong>force checkin</strong> action in the listing below to  override the checked-out status."
+msgstr ""
+
+#: plugins/ktcore/admin/manageHelp.php:70
 msgid "Item deleted"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:87
+#: plugins/ktcore/admin/manageHelp.php:95
 msgid "Item updated"
 msgstr ""
 
-#: i18n/templates.c:71
+#: i18n/templates.c:77
 msgid "Items that require your attention"
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:86
+#: plugins/ktcore/admin/documentFields.php:607
 msgid "Keyword moved to base of tree."
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:81
+#: plugins/ktcore/admin/documentFields.php:602
 msgid "Keywords added to category."
+msgstr ""
+
+#: i18n/templates.c:884
+msgid "KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and users and groups may be assigned to these units."
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:139
@@ -2000,120 +2293,122 @@ msgstr ""
 msgid "LDAP Server Type"
 msgstr ""
 
-#: i18n/templates.c:2078
+#: i18n/templates.c:2366
 msgid "LDAP User Name"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/browse.php:84
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:71
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:72
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:74
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:75
+#: browse.php:162 search/simpleSearch.php:68 search/simpleSearch.php:69
+#: search/booleanSearch.php:87 search/booleanSearch.php:88
 msgid "Last Modified"
 msgstr ""
 
-#: i18n/templates.c:2012
+#: i18n/templates.c:2291
 msgid "Last activity"
 msgstr ""
 
-#: i18n/templates.c:1859 i18n/templates.c:1889
+#: i18n/templates.c:2135 i18n/templates.c:2165
 msgid "Last update by"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:43
+#: plugins/ktcore/KTCorePlugin.php:97
 msgid "Link Type Management"
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:132
+#: plugins/ktcore/admin/documentLinks.php:129
 msgid "Link Type created."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:116
+#: plugins/ktcore/admin/documentLinks.php:113
 msgid "Link Type updated."
 msgstr ""
 
-#: i18n/templates.c:284
+#: i18n/templates.c:323
 msgid "Link free keywords."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:151
+#: plugins/ktcore/admin/documentLinks.php:148
 msgid "Link types deleted."
 msgstr ""
 
-#: i18n/templates.c:1082
+#: i18n/templates.c:1292
 msgid "Linked Fieldsets"
 msgstr ""
 
-#: i18n/templates.c:893 i18n/templates.c:911 i18n/templates.c:983
-#: i18n/templates.c:1004 i18n/templates.c:1022 i18n/templates.c:1040
+#: i18n/templates.c:1070 i18n/templates.c:1088 i18n/templates.c:1169
+#: i18n/templates.c:1190
 msgid "Location"
 msgstr ""
 
-#: bin/generate-buttons.php:41 i18n/templates.c:1142
+#: bin/generate-buttons.php:41 i18n/templates.c:1358
 msgid "Login"
 msgstr ""
 
-#: presentation/login.php:112 presentation/login.php:123
+#: login.php:115 login.php:126
 msgid "Login failed.  Please check your username and password, and try again."
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:85
+#: config/siteMap.inc:58 lib/templating/kt3template.inc.php:83
 msgid "Logout"
 msgstr ""
 
-#: i18n/templates.c:1205 i18n/templates.c:1514
+#: i18n/templates.c:1451 i18n/templates.c:1772
 msgid "Lookup"
 msgstr ""
 
-#: i18n/templates.c:1292
+#: i18n/templates.c:1547
 msgid "Lookup Values"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:226
+#: plugins/ktcore/admin/documentFields.php:257
 msgid "Lookup added"
 msgstr ""
 
-#: i18n/templates.c:1136
+#: i18n/templates.c:1352
 msgid "Lookup fields without categories."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:312
+#: plugins/ktcore/admin/documentFields.php:343
 msgid "Lookup stickiness toggled"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:275
+#: plugins/ktcore/admin/documentFields.php:306
 msgid "Lookups disabled"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:293
+#: plugins/ktcore/admin/documentFields.php:324
 msgid "Lookups enabled"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:257
+#: plugins/ktcore/admin/documentFields.php:288
 msgid "Lookups removed"
 msgstr ""
 
-#: i18n/templates.c:50 i18n/templates.c:251
+#: i18n/templates.c:53 i18n/templates.c:290
 msgid "Make this fieldset conditional"
 msgstr ""
 
-#: i18n/templates.c:308
+#: i18n/templates.c:347
 msgid "Manage"
 msgstr ""
 
-#: i18n/templates.c:947
+#: i18n/templates.c:1124
 msgid "Manage Existing Link Types"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:31
+#: plugins/ktcore/KTCorePlugin.php:68
 msgid "Manage Groups"
 msgstr ""
 
-#: i18n/templates.c:1124
+#: plugins/ktcore/KTPermissions.php:301 plugins/ktcore/KTPermissions.php:302
+#, php-format
+msgid "Manage Groups for Role"
+msgstr ""
+
+#: i18n/templates.c:1340
 msgid "Manage Lookup Trees"
 msgstr ""
 
-#: i18n/templates.c:722 i18n/templates.c:728
+#: i18n/templates.c:905 i18n/templates.c:911
 msgid "Manage Members"
 msgstr ""
 
@@ -2122,75 +2417,100 @@ msgstr ""
 msgid "Manage Permissions"
 msgstr ""
 
-#: i18n/templates.c:647
+#: i18n/templates.c:821
 msgid "Manage Sub-Groups in #name#"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:30 i18n/templates.c:620
-#: i18n/templates.c:635
+#: plugins/ktcore/KTCorePlugin.php:65 i18n/templates.c:794
+#: i18n/templates.c:809
 msgid "Manage Users"
 msgstr ""
 
-#: i18n/templates.c:674 i18n/templates.c:677
+#: plugins/ktcore/KTPermissions.php:255 plugins/ktcore/KTPermissions.php:256
+#, php-format
+msgid "Manage Users for Role"
+msgstr ""
+
+#: i18n/templates.c:851 i18n/templates.c:857
 msgid "Manage Users in #name#"
 msgstr ""
 
-#: plugins/ktcore/admin/manageConditionals.php:101 i18n/templates.c:1361
+#: plugins/ktcore/KTCorePlugin.php:57
+msgid "Manage checked-out, archived and deleted documents."
+msgstr ""
+
+#: plugins/ktcore/admin/manageConditionals.php:102 i18n/templates.c:1616
 msgid "Manage complex conditional"
 msgstr ""
 
-#: i18n/templates.c:1244
+#: i18n/templates.c:1493
 msgid "Manage conditional"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:416
+#: plugins/ktcore/admin/documentFields.php:447
 msgid "Manage conditional field"
 msgstr ""
 
-#: plugins/ktcore/admin/manageConditionals.php:60
-#: plugins/ktcore/admin/manageConditionals.php:98 i18n/templates.c:1340
+#: plugins/ktcore/admin/manageConditionals.php:64
+#: plugins/ktcore/admin/manageConditionals.php:100 i18n/templates.c:1595
 msgid "Manage conditional fieldset"
 msgstr ""
 
-#: i18n/templates.c:62 i18n/templates.c:263
+#: i18n/templates.c:65 i18n/templates.c:302
 msgid "Manage conditions."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:11
-msgid "Manage how and where the actual documents will be stored, work with document archives and deal with other document related problems."
+#: plugins/ktcore/KTCorePlugin.php:84
+msgid "Manage criteria which determine whether a user is permitted to perform a system action."
 msgstr ""
 
-#: i18n/templates.c:1301
+#: i18n/templates.c:1556
 msgid "Manage lookup tree"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:233
+#: plugins/ktcore/admin/groupManagement.php:231
 #, php-format
 msgid "Manage members of %s"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:133
+#: plugins/ktcore/admin/groupManagement.php:131
 #, php-format
 msgid "Manage members of group %s"
 msgstr ""
 
-#: plugins/ktcore/admin/manageConditionals.php:63 i18n/templates.c:1370
+#: plugins/ktcore/KTCorePlugin.php:125
+msgid "Manage plugins"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:122
+msgid "Manage saved searches - searches available by default to all users."
+msgstr ""
+
+#: plugins/ktcore/admin/manageConditionals.php:66 i18n/templates.c:1625
 msgid "Manage simple conditional"
 msgstr ""
 
-#: i18n/templates.c:623 i18n/templates.c:638
+#: i18n/templates.c:797 i18n/templates.c:812
 msgid "Manage sub-groups"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:61
+#: plugins/ktstandard/KTSubscriptions.php:82
 msgid "Manage subscriptions"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:41
+#: plugins/ktcore/KTCorePlugin.php:90
 msgid "Manage the different classes of document which can be added to the system."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:466
+#: plugins/ktcore/KTCorePlugin.php:94
+msgid "Manage the different types of information that can be associated with classes of documents."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:98
+msgid "Manage the different ways documents can be associated with one another."
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:497
 msgid "Master field set"
 msgstr ""
 
@@ -2200,79 +2520,98 @@ msgstr ""
 msgid "Maximum Sessions"
 msgstr ""
 
-#: i18n/templates.c:686
+#: i18n/templates.c:575
+msgid "Member groups"
+msgstr ""
+
+#: i18n/templates.c:602 i18n/templates.c:866
 msgid "Member users"
 msgstr ""
 
-#: i18n/templates.c:1742
-msgid "Metadata History"
-msgstr ""
-
-#: i18n/templates.c:1754
+#: i18n/templates.c:2024
 msgid "Metadata Version"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:14
+#: plugins/ktcore/KTCorePlugin.php:60
 msgid "Miscellaneous"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:73
 #: plugins/ktcore/admin/userManagement.php:124
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:144
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:37
+#: preferences.php:36
 msgid "Mobile Number"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:56
+#: lib/alert/AlertContent.inc:59
+msgid "Modified Document"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:54
 #: plugins/ktcore/admin/userManagement.php:98
 #: plugins/ktcore/admin/userManagement.php:107
 msgid "Modify User Details"
 msgstr ""
 
-#: bin/generate-buttons.php:24 i18n/templates.c:170 i18n/templates.c:179
-#: i18n/templates.c:191 i18n/templates.c:194 i18n/templates.c:206
+#: bin/generate-buttons.php:24 i18n/templates.c:176 i18n/templates.c:185
+#: i18n/templates.c:197 i18n/templates.c:200 i18n/templates.c:233
+#: i18n/templates.c:239 i18n/templates.c:248 i18n/templates.c:257
+#: i18n/templates.c:2042
 msgid "Move"
+msgstr ""
+
+#: i18n/templates.c:230 i18n/templates.c:245
+msgid "Move Files and Folders"
 msgstr ""
 
 #: bin/generate-buttons.php:39
 msgid "Move Here"
 msgstr ""
 
-#: i18n/templates.c:164 i18n/templates.c:185
+#: browse.php:343
+msgid "Move cancelled."
+msgstr ""
+
+#: browse.php:461
+msgid "Move completed."
+msgstr ""
+
+#: lib/alert/AlertContent.inc:62
+msgid "Moved Document"
+msgstr ""
+
+#: i18n/templates.c:170 i18n/templates.c:191
 msgid "Moving a document relocates the document within the document repository."
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:68
+#: plugins/ktcore/admin/documentFields.php:589
 msgid "Must enter a name for the new category."
 msgstr ""
 
-#: plugins/ktcore/admin/manageLookupTrees.php:33
-msgid "Must select a field to convert."
-msgstr ""
-
-#: plugins/ktcore/admin/manageLookupTrees.php:53
+#: plugins/ktcore/admin/documentFields.php:574
 msgid "Must select a field to edit."
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:13
-#: plugins/ktcore/admin/documentTypes.php:24
+#: lib/browse/Criteria.inc:624
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:15
+#: plugins/ktcore/admin/documentTypes.php:23
 #: plugins/ktcore/admin/roleManagement.php:49
 #: plugins/ktcore/admin/roleManagement.php:55
 #: plugins/ktcore/admin/userManagement.php:67
 #: plugins/ktcore/admin/userManagement.php:121
 #: plugins/ktcore/admin/workflows.php:33 plugins/ktcore/admin/workflows.php:56
 #: plugins/ktcore/admin/workflows.php:67 plugins/ktcore/admin/workflows.php:71
-#: plugins/ktcore/admin/workflows.php:365
+#: plugins/ktcore/admin/workflows.php:423
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:141
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:34
-#: i18n/templates.c:323 i18n/templates.c:479 i18n/templates.c:959
-#: i18n/templates.c:1175 i18n/templates.c:1196 i18n/templates.c:1280
-#: i18n/templates.c:1454 i18n/templates.c:1484 i18n/templates.c:1505
-#: i18n/templates.c:1529 i18n/templates.c:1718 i18n/templates.c:2075
+#: preferences.php:33 i18n/templates.c:362 i18n/templates.c:635
+#: i18n/templates.c:1136 i18n/templates.c:1421 i18n/templates.c:1442
+#: i18n/templates.c:1535 i18n/templates.c:1712 i18n/templates.c:1742
+#: i18n/templates.c:1763 i18n/templates.c:1787 i18n/templates.c:1985
+#: i18n/templates.c:2363
 msgid "Name"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:114
+#: plugins/ktcore/admin/documentTypes.php:121
 msgid "Name changed."
 msgstr ""
 
@@ -2280,179 +2619,244 @@ msgstr ""
 msgid "Name of condition"
 msgstr ""
 
-#: i18n/templates.c:305 i18n/templates.c:326 i18n/templates.c:1178
-#: i18n/templates.c:1487
+#: i18n/templates.c:344 i18n/templates.c:365 i18n/templates.c:1424
+#: i18n/templates.c:1745
 msgid "Namespace"
 msgstr ""
 
-#: bin/generate-buttons.php:31 i18n/templates.c:368 i18n/templates.c:389
+#: bin/generate-buttons.php:31 i18n/templates.c:410 i18n/templates.c:437
 msgid "New"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:118
+#: lib/alert/AlertContent.inc:56
+msgid "New Document"
+msgstr ""
+
+#: lib/alert/AlertContent.inc:53
+msgid "New Folder"
+msgstr ""
+
+#: plugins/ktcore/admin/manageHelp.php:110
+#: plugins/ktcore/admin/manageHelp.php:111
+msgid "New Help File"
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:40
+msgid "New Saved Search"
+msgstr ""
+
+#: plugins/ktstandard/KTDiscussion.php:122
 msgid "New thread created"
 msgstr ""
 
-#: i18n/templates.c:116
-msgid "New to Document Management, or to  KnowledgeTree&trade; 3?  We've written some quick documentation"
+#: i18n/templates.c:110
+msgid "New to Document Management, or to   KnowledgeTree&trade; 3?  We've written some quick documentation to help you along"
 msgstr ""
 
 #: bin/generate-buttons.php:7
 msgid "Next"
 msgstr ""
 
-#: i18n/templates.c:1232 i18n/templates.c:1469 i18n/templates.c:1544
+#: i18n/templates.c:1481 i18n/templates.c:1727 i18n/templates.c:1802
 msgid "No"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:74
+#: i18n/templates.c:428
+msgid "No Saved Searches have been defined."
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:50
+msgid "No Such search"
+msgstr ""
+
+#: plugins/ktcore/admin/groupManagement.php:72
 msgid "No Unit"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:234
+#: browse.php:241 browse.php:338
+msgid "No action selected."
+msgstr ""
+
+#: plugins/ktcore/admin/documentFields.php:265
 msgid "No action specified"
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:61
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:86
+#: plugins/ktcore/admin/deletedDocuments.php:39
+msgid "No action specified."
+msgstr ""
+
+#: i18n/templates.c:1979
+msgid "No additional authentication sources have been defined."
+msgstr ""
+
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:63
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:88
 msgid "No authentication provider chosen"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:86
-#: plugins/ktstandard/KTDiscussion.php:170
+#: plugins/ktstandard/KTDiscussion.php:90
+#: plugins/ktstandard/KTDiscussion.php:186
 msgid "No body provided"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:80
+#: plugins/ktcore/admin/manageHelp.php:81
 msgid "No description given"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:99
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:161
+#: edit.php:98 edit.php:149 edit.php:218
 msgid "No document specified for editing."
 msgstr ""
 
-#: i18n/templates.c:899
+#: i18n/templates.c:1076
 msgid "No documents are currently checked out."
 msgstr ""
 
-#: i18n/templates.c:989
+#: i18n/templates.c:1175
 msgid "No documents are marked as archived."
 msgstr ""
 
-#: i18n/templates.c:1028
+#: i18n/templates.c:1214
 msgid "No documents are marked as deleted."
 msgstr ""
 
-#: i18n/templates.c:1985
+#: i18n/templates.c:2261
 msgid "No documents or folders available in this location."
 msgstr ""
 
-#: i18n/templates.c:1010 i18n/templates.c:1046
+#: i18n/templates.c:1196 i18n/templates.c:1229 i18n/templates.c:1247
 msgid "No documents were selected."
 msgstr ""
 
-#: i18n/templates.c:32 i18n/templates.c:233
+#: i18n/templates.c:35 i18n/templates.c:272
 msgid "No fields associated with this fieldset."
 msgstr ""
 
-#: i18n/templates.c:1091
+#: i18n/templates.c:1310
+msgid "No fieldsets are available to be added.  To add a fieldset, please go to  DMS Administration"
+msgstr ""
+
+#: i18n/templates.c:1301
 msgid "No fieldsets are currently associated with this type."
 msgstr ""
 
-#: plugins/ktcore/folder/addDocument.php:72
-msgid "No file was selected to be uploaded to KnowledgeTree"
-msgstr ""
-
-#: lib/validation/dispatchervalidation.inc.php:199
+#: lib/validation/dispatchervalidation.inc.php:203
 msgid "No file was selected to be uploaded to the document management system"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:187
+#: plugins/ktcore/KTDocumentActions.php:205
 msgid "No file was uploaded"
 msgstr ""
 
-#: i18n/templates.c:44 i18n/templates.c:53 i18n/templates.c:245
-#: i18n/templates.c:254
+#: browse.php:347
+msgid "No folder selected."
+msgstr ""
+
+#: i18n/templates.c:47 i18n/templates.c:56 i18n/templates.c:284
+#: i18n/templates.c:293
 msgid "No free fields."
 msgstr ""
 
-#: i18n/templates.c:281
+#: i18n/templates.c:320
 msgid "No free keywords.  Use the \"unlink\" action on a keyword to  make it available."
 msgstr ""
 
-#: i18n/templates.c:1769
+#: help.php:51 help.php:52
+msgid "No help page specified."
+msgstr ""
+
+#: i18n/templates.c:2036
 msgid "No items in the category."
 msgstr ""
 
-#: i18n/templates.c:74
+#: i18n/templates.c:80
 msgid "No items require your attention."
 msgstr ""
 
-#: i18n/templates.c:974
+#: i18n/templates.c:1157
 msgid "No link administrator changeable link types available."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:251
-#: plugins/ktcore/admin/documentFields.php:268
-#: plugins/ktcore/admin/documentFields.php:286
-#: plugins/ktcore/admin/documentFields.php:304
+#: plugins/ktcore/admin/documentFields.php:282
+#: plugins/ktcore/admin/documentFields.php:299
+#: plugins/ktcore/admin/documentFields.php:317
+#: plugins/ktcore/admin/documentFields.php:335
 msgid "No lookups selected"
 msgstr ""
 
-#: i18n/templates.c:1379
+#: i18n/templates.c:1634
 msgid "No master field is set, please select the master field"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:43
+#: plugins/ktcore/KTFolderActions.php:41 edit.php:227
 msgid "No name given"
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:57
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:82
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:59
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:84
 msgid "No name provided"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:441
+#: plugins/ktcore/KTDocumentActions.php:418
 msgid "No reason given"
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:231
+#: plugins/ktstandard/KTDiscussion.php:237
+msgid "No reason provided"
+msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:244
 msgid "No recipients set"
 msgstr ""
 
-#: i18n/templates.c:644
+#: i18n/templates.c:560
+msgid "No roles defined in the Role Administration area."
+msgstr ""
+
+#: i18n/templates.c:818
 msgid "No search specified, or no results for your search."
 msgstr ""
 
-#: i18n/templates.c:503 i18n/templates.c:2072
+#: i18n/templates.c:659 i18n/templates.c:2360
 msgid "No search specified, or no results for your search.  Please choose some criteria from the list above to find users."
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:82
-#: plugins/ktstandard/KTDiscussion.php:166
+#: plugins/ktstandard/KTDiscussion.php:86
+#: plugins/ktstandard/KTDiscussion.php:182
 msgid "No subject provided"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:310
+#: plugins/ktstandard/KTSubscriptions.php:322
 msgid "No subscriptions were chosen"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:128
-#: plugins/ktcore/admin/groupManagement.php:179
-#: plugins/ktcore/admin/groupManagement.php:228
+#: browse.php:250
+msgid "No such action."
+msgstr ""
+
+#: plugins/ktcore/admin/groupManagement.php:126
+#: plugins/ktcore/admin/groupManagement.php:177
+#: plugins/ktcore/admin/groupManagement.php:226
 msgid "No such group."
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:251 plugins/ktcore/KTPermissions.php:297
+#: plugins/ktcore/KTPermissions.php:343 plugins/ktcore/KTPermissions.php:385
+msgid "No such role allocation."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:237
 msgid "No such user."
 msgstr ""
 
-#: i18n/templates.c:1655
+#: plugins/ktcore/admin/manageHelp.php:87
+msgid "No title given"
+msgstr ""
+
+#: i18n/templates.c:1913
 msgid "No transitions defined."
 msgstr ""
 
-#: i18n/templates.c:1646
+#: i18n/templates.c:1904
 msgid "No transitions lead to this state."
 msgstr ""
 
@@ -2460,16 +2864,17 @@ msgstr ""
 msgid "No valid LDAP user chosen"
 msgstr ""
 
-#: i18n/templates.c:1676 i18n/templates.c:1868 i18n/templates.c:1898
-#: i18n/templates.c:1901
+#: i18n/templates.c:1934 i18n/templates.c:2144 i18n/templates.c:2174
+#: i18n/templates.c:2177
 msgid "No workflow"
 msgstr ""
 
-#: i18n/templates.c:1202 i18n/templates.c:1511
+#: i18n/templates.c:1448 i18n/templates.c:1769
 msgid "Normal"
 msgstr ""
 
-#: i18n/templates.c:953 i18n/templates.c:995 i18n/templates.c:1031
+#: i18n/templates.c:1130 i18n/templates.c:1181 i18n/templates.c:1217
+#: i18n/templates.c:1235
 msgid "Note"
 msgstr ""
 
@@ -2477,61 +2882,64 @@ msgstr ""
 msgid "Note that the options which are available depends on previous choices within this fieldset."
 msgstr ""
 
-#: i18n/templates.c:149
+#: i18n/templates.c:155
 msgid "Once the document has been downloaded, you should <a href=\"#link#\">return to the document view</a>."
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:78
-#: plugins/ktcore/admin/workflows.php:372
+#: plugins/ktcore/admin/workflows.php:430
 msgid "Once this transition is complete, which state should the document be in?"
 msgstr ""
 
-#: i18n/templates.c:1400
+#: i18n/templates.c:1973
+msgid "Only the standard database authentication is currently available. If you need to use a different authentication type (e.g. LDAP) you will need to  ensure that the Plugin is enabled."
+msgstr ""
+
+#: i18n/templates.c:1655
 msgid "Order"
 msgstr ""
 
-#: i18n/templates.c:1397
+#: i18n/templates.c:1652
 msgid "Order fields"
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:67
+#: plugins/ktcore/admin/orgManagement.php:65
 msgid "Org name changed to"
 msgstr ""
 
+#: plugins/ktcore/admin/orgManagement.php:12
 #: plugins/ktcore/admin/orgManagement.php:14
-#: plugins/ktcore/admin/orgManagement.php:16
 msgid "Organisation Management"
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:29 i18n/templates.c:740
+#: plugins/ktcore/admin/orgManagement.php:27 i18n/templates.c:923
 msgid "Organisation Name"
 msgstr ""
 
-#: i18n/templates.c:731
+#: i18n/templates.c:914
 msgid "Orgnisation Administration"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:47
+#: i18n/templates.c:545
+msgid "Override Parent Allocation"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:107
 msgid "Override the checked-out status of documents if a user has failed to do so."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:70
-#: plugins/ktcore/admin/userManagement.php:165
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:56
-#: i18n/templates.c:1151
+#: plugins/ktcore/admin/userManagement.php:165 preferences.php:57
+#: i18n/templates.c:1367
 msgid "Password"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:21
+#: plugins/ktcore/folder/BulkImport.php:26
 msgid "Path"
 msgstr ""
 
-#: i18n/templates.c:1700
+#: i18n/templates.c:1958
 msgid "Perform Transition"
-msgstr ""
-
-#: plugins/ktcore/KTAdminPlugins.php:49
-msgid "Permanently expunge deleted documents."
 msgstr ""
 
 #: i18n/templates.c:11
@@ -2546,39 +2954,62 @@ msgstr ""
 msgid "Permission deleted"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:37
+#: plugins/ktcore/KTCorePlugin.php:78
 msgid "Permissions"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:134
-#: plugins/ktcore/KTFolderActions.php:140
-#: plugins/ktcore/KTFolderActions.php:146
+#: plugins/ktcore/KTFolderActions.php:143
+#: plugins/ktcore/KTFolderActions.php:149
 msgid "Permissions updated"
 msgstr ""
 
-#: i18n/templates.c:1163
+#: i18n/templates.c:2051 i18n/templates.c:2057
+msgid "Please  note"
+msgstr ""
+
+#: i18n/templates.c:1379
 msgid "Please be aware that - depending on your selections - new values may become available."
 msgstr ""
 
-#: i18n/templates.c:905
-msgid "Please confirm that this is the document that you wish to checkin."
+#: i18n/templates.c:1472
+msgid "Please complete the following fields to edit the fieldset's properties and then click <strong>Change</strong>. Required fields are marked with a red square."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:107
-#: plugins/ktcore/admin/documentLinks.php:124
+#: i18n/templates.c:665
+msgid "Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled."
+msgstr ""
+
+#: i18n/templates.c:695
+msgid "Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled."
+msgstr ""
+
+#: i18n/templates.c:1082
+msgid "Please confirm that this is the document that you wish to check-in."
+msgstr ""
+
+#: plugins/ktcore/admin/documentLinks.php:104
+#: plugins/ktcore/admin/documentLinks.php:121
 msgid "Please enter information for all fields."
 msgstr ""
 
-#: i18n/templates.c:1145
+#: i18n/templates.c:764
+msgid "Please enter the Group's details below and then click <strong>create group</strong>. Fields marked with a red square are required."
+msgstr ""
+
+#: i18n/templates.c:1361
 msgid "Please enter your details below to login."
 msgstr ""
 
-#: presentation/login.php:107
+#: login.php:110
 msgid "Please enter your password."
 msgstr ""
 
-#: presentation/login.php:103
+#: login.php:106
 msgid "Please enter your username."
+msgstr ""
+
+#: i18n/templates.c:623
+msgid "Please give a reason for deleting these files.  This  will be recorded in the documents' \"Transaction History\""
 msgstr ""
 
 #: plugins/ktcore/admin/roleManagement.php:73
@@ -2586,28 +3017,32 @@ msgstr ""
 msgid "Please give the role a name."
 msgstr ""
 
-#: i18n/templates.c:1778 i18n/templates.c:1784
-msgid "Please note"
+#: i18n/templates.c:236
+msgid "Please give these final details."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:58
+#: i18n/templates.c:518
+msgid "Please note that changing role allocations may take a some time, depending on the number of folders below this one."
+msgstr ""
+
+#: search/simpleSearch.php:55
 msgid "Please provide a search term"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:113
 #: plugins/ktcore/admin/userManagement.php:158
-#: plugins/ktcore/admin/userManagement.php:380
-#: plugins/ktcore/admin/userManagement.php:391
+#: plugins/ktcore/admin/userManagement.php:404
+#: plugins/ktcore/admin/userManagement.php:415
 msgid "Please select a user first."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:195
-#: plugins/ktcore/admin/userManagement.php:304
+#: plugins/ktcore/admin/userManagement.php:323
 msgid "Please select a user to modify first."
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:56
-#: plugins/ktcore/admin/groupManagement.php:94
+#: plugins/ktcore/admin/groupManagement.php:54
+#: plugins/ktcore/admin/groupManagement.php:92
 msgid "Please select a valid group."
 msgstr ""
 
@@ -2616,62 +3051,65 @@ msgstr ""
 msgid "Please select a valid role first."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:139
+#: plugins/ktcore/admin/documentLinks.php:136
 msgid "Please select one or more link types to delete."
 msgstr ""
 
-#: i18n/templates.c:1619
+#: i18n/templates.c:1877
 msgid "Please select which roles or groups should be informed when this state is reached."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:69
+#: plugins/ktcore/admin/documentLinks.php:66
 msgid "Please specify a link type to edit."
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:100
+#: plugins/ktcore/admin/documentLinks.php:97
 msgid "Please specify a link type to update."
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:97
-#: plugins/ktcore/admin/groupManagement.php:357
+#: plugins/ktcore/admin/groupManagement.php:95
+#: plugins/ktcore/admin/groupManagement.php:355
 msgid "Please specify a name for the group."
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:60
+#: plugins/ktcore/admin/unitManagement.php:58
 msgid "Please specify a unit name."
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:54
+#: plugins/ktcore/admin/unitManagement.php:52
 msgid "Please specify a unit."
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:54
+#: plugins/ktcore/admin/orgManagement.php:52
 msgid "Please specify an org name."
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:48
+#: plugins/ktcore/admin/orgManagement.php:46
 msgid "Please specify an organisation."
+msgstr ""
+
+#: plugins/ktcore/admin/plugins.php:19
+msgid "Plugins"
 msgstr ""
 
 #: plugins/ktcore/admin/roleManagement.php:119
 msgid "Possible cause"
 msgstr ""
 
-#: i18n/templates.c:2024 i18n/templates.c:2027 i18n/templates.c:2036
+#: i18n/templates.c:2306 i18n/templates.c:2309 i18n/templates.c:2324
 msgid "Post a reply"
 msgstr ""
 
-#: i18n/templates.c:2030
+#: i18n/templates.c:2318
 msgid "Posted"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:84
-#: lib/templating/kt3template.inc.php:185
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:20
+#: config/siteMap.inc:52 lib/templating/kt3template.inc.php:82
+#: lib/templating/kt3template.inc.php:183 preferences.php:18
 msgid "Preferences"
 msgstr ""
 
-#: i18n/templates.c:293
+#: i18n/templates.c:332
 msgid "Preview"
 msgstr ""
 
@@ -2679,25 +3117,25 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: i18n/templates.c:1160
+#: i18n/templates.c:1376
 msgid "Project Details"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:270
+#: lib/validation/dispatchervalidation.inc.php:274
 #, php-format
 msgid "Provided variable %s is not a valid %s"
 msgstr ""
 
-#: i18n/templates.c:1721
+#: i18n/templates.c:1988
 msgid "Provider"
 msgstr ""
 
-#: i18n/templates.c:1727
+#: i18n/templates.c:1994
 msgid "Provider configuration"
 msgstr ""
 
-#: lib/authentication/authenticationprovider.inc.php:54
-#: lib/authentication/authenticationprovider.inc.php:58
+#: lib/authentication/authenticationprovider.inc.php:56
+#: lib/authentication/authenticationprovider.inc.php:60
 msgid "Provider does not support editing"
 msgstr ""
 
@@ -2705,60 +3143,77 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
-#: i18n/templates.c:1916
+#: i18n/templates.c:2192
 msgid "Read Document"
 msgstr ""
 
-#: i18n/templates.c:80
+#: i18n/templates.c:119
 msgid "Read the admin introduction."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:67
-#: plugins/ktcore/KTDocumentActions.php:251
-#: plugins/ktcore/KTDocumentActions.php:429
-#: plugins/ktcore/KTDocumentActions.php:547
+#: browse.php:353 browse.php:473 plugins/ktcore/KTDocumentActions.php:82
+#: plugins/ktcore/KTDocumentActions.php:266
+#: plugins/ktcore/KTDocumentActions.php:406
+#: plugins/ktcore/KTDocumentActions.php:521
+#: plugins/ktstandard/KTDiscussion.php:154
 msgid "Reason"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:618
+#: plugins/ktcore/KTDocumentActions.php:592
 msgid "Reason for transition"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:125
+msgid "Register new plugins, disable plugins, and so forth"
 msgstr ""
 
 #: bin/generate-buttons.php:13
 msgid "Reject"
 msgstr ""
 
-#: bin/generate-buttons.php:25 i18n/templates.c:35 i18n/templates.c:236
-#: i18n/templates.c:1313 i18n/templates.c:1325
+#: bin/generate-buttons.php:25 i18n/templates.c:38 i18n/templates.c:275
+#: i18n/templates.c:1568 i18n/templates.c:1580
 msgid "Remove"
 msgstr ""
 
-#: i18n/templates.c:971
+#: i18n/templates.c:1154
 msgid "Remove Link Type(s)"
 msgstr ""
 
-#: i18n/templates.c:1247
+#: i18n/templates.c:1496
 msgid "Remove conditional"
 msgstr ""
 
-#: i18n/templates.c:1190 i18n/templates.c:1265 i18n/templates.c:1499
+#: i18n/templates.c:1436 i18n/templates.c:1517 i18n/templates.c:1757
 msgid "Remove fields"
 msgstr ""
 
-#: i18n/templates.c:2048
+#: i18n/templates.c:2336
 msgid "Remove subscription"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:216
-#: plugins/ktcore/admin/groupManagement.php:325
+#: plugins/ktcore/admin/groupManagement.php:214
+#: plugins/ktcore/admin/groupManagement.php:323
 msgid "Removed"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:431
+#: lib/alert/AlertContent.inc:57 lib/alert/AlertContent.inc:58
+msgid "Removed Document"
+msgstr ""
+
+#: lib/alert/AlertContent.inc:54 lib/alert/AlertContent.inc:55
+msgid "Removed Folder"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:455
 msgid "Removed from groups"
 msgstr ""
 
-#: i18n/templates.c:2009
+#: plugins/ktcore/admin/manageHelp.php:105
+msgid "Replacement already exists."
+msgstr ""
+
+#: i18n/templates.c:2288
 msgid "Replies"
 msgstr ""
 
@@ -2766,17 +3221,17 @@ msgstr ""
 msgid "Reply"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:194
+#: plugins/ktstandard/KTDiscussion.php:210
 msgid "Reply posted"
 msgstr ""
 
-#: i18n/templates.c:1823 i18n/templates.c:1826 i18n/templates.c:1829
-#: i18n/templates.c:1832 i18n/templates.c:1835 i18n/templates.c:1838
-#: i18n/templates.c:1841 i18n/templates.c:1844
+#: i18n/templates.c:2099 i18n/templates.c:2102 i18n/templates.c:2105
+#: i18n/templates.c:2108 i18n/templates.c:2111 i18n/templates.c:2114
+#: i18n/templates.c:2117 i18n/templates.c:2120
 msgid "Required"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:225
+#: lib/validation/dispatchervalidation.inc.php:229
 #, php-format
 msgid "Required value %s not set"
 msgstr ""
@@ -2785,7 +3240,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: bin/generate-buttons.php:26
+#: bin/generate-buttons.php:26 i18n/templates.c:1211
 msgid "Restore"
 msgstr ""
 
@@ -2793,20 +3248,44 @@ msgstr ""
 msgid "Restore Here"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:48
+#: i18n/templates.c:1172
+msgid "Restore from Archive"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:110
 msgid "Restore old (archived) documents, usually at a user's request."
 msgstr ""
 
-#: i18n/templates.c:1112
+#: plugins/ktcore/KTCorePlugin.php:113
+msgid "Restore or Expunge Deleted Documents"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:113
+msgid "Restore previously deleted documents, or permanently expunge them."
+msgstr ""
+
+#: lib/alert/AlertContent.inc:64
+msgid "Restored Document"
+msgstr ""
+
+#: i18n/templates.c:1328
 msgid "Restrict document types"
 msgstr ""
 
-#: i18n/templates.c:335
+#: i18n/templates.c:374 i18n/templates.c:1388
 msgid "Return items which match &nbsp;#options# of the <strong>criteria groups</strong> specified."
 msgstr ""
 
-#: i18n/templates.c:341
+#: i18n/templates.c:380
+msgid "Return items which match &nbsp;#options# of the criteria specified below."
+msgstr ""
+
+#: i18n/templates.c:1394
 msgid "Return items which match &nbsp;#options# of the criteria specified."
+msgstr ""
+
+#: i18n/templates.c:521
+msgid "Role"
 msgstr ""
 
 #: plugins/ktcore/admin/roleManagement.php:83
@@ -2824,82 +3303,118 @@ msgstr ""
 msgid "Role \"%s\" updated."
 msgstr ""
 
-#: i18n/templates.c:749
+#: i18n/templates.c:932
 msgid "Role Administration"
 msgstr ""
 
 #: plugins/ktcore/admin/roleManagement.php:39
-#: plugins/ktcore/admin/roleManagement.php:41
+#: plugins/ktcore/admin/roleManagement.php:40
 msgid "Role Management"
 msgstr ""
 
-#: i18n/templates.c:767
+#: i18n/templates.c:950
 msgid "Role Name"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:38 i18n/templates.c:1622
+#: plugins/ktcore/KTPermissions.php:217
+msgid "Role allocation created."
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:243
+msgid "Role now uses parent."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:80 i18n/templates.c:1880
 msgid "Roles"
 msgstr ""
 
-#: i18n/templates.c:380
-msgid "Run"
-msgstr ""
-
-#: i18n/templates.c:377
-msgid "Run a saved search"
-msgstr ""
-
-#: plugins/ktcore/admin/savedSearch.php:31
-#: plugins/ktcore/admin/conditions.php:37 i18n/templates.c:1613
-#: i18n/templates.c:1631 i18n/templates.c:1652 i18n/templates.c:1667
-#: i18n/templates.c:2051 i18n/templates.c:2054
+#: plugins/ktcore/admin/savedSearch.php:38
+#: plugins/ktcore/admin/conditions.php:37 i18n/templates.c:1871
+#: i18n/templates.c:1889 i18n/templates.c:1910 i18n/templates.c:1925
+#: i18n/templates.c:2339 i18n/templates.c:2342
 msgid "Save"
 msgstr ""
 
-#: i18n/templates.c:1736
+#: i18n/templates.c:2006
 msgid "Save Changes"
 msgstr ""
 
-#: i18n/templates.c:362
+#: search/booleanSearch.php:74
+msgid "Saved Search"
+msgstr ""
+
+#: search/booleanSearch.php:75
+msgid "Saved Search: "
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:15
+msgid "Saved Searches"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:121 i18n/templates.c:401
 msgid "Saved searches"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:221
+#: i18n/templates.c:404
+msgid "Saved searches are searches which are particular to your location For example, you could define a search which returns all documents in a particular workflow state, or all documents which are considered \"common\" within your organisation (leave policy, newsletters, etc.) based on a category or fieldset value."
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:219
 msgid "Saving metadata"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:393
+#: lib/documentmanagement/documentutil.inc.php:403
 msgid "Scanning file"
 msgstr ""
 
-#: bin/generate-buttons.php:19 lib/templating/kt3template.inc.php:182
-#: plugins/ktcore/KTPortlets.php:11 i18n/templates.c:359
+#: bin/generate-buttons.php:19 lib/templating/kt3template.inc.php:180
+#: plugins/ktcore/KTPortlets.php:11 i18n/templates.c:398 i18n/templates.c:1412
 msgid "Search"
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:58
+msgid "Search Deleted"
+msgstr ""
+
+#: i18n/templates.c:416
+msgid "Search Name"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:94
 msgid "Search Password"
 msgstr ""
 
+#: search/booleanSearch.php:72
+msgid "Search Results"
+msgstr ""
+
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:93
 msgid "Search User"
 msgstr ""
 
-#: i18n/templates.c:602
+#: i18n/templates.c:776
 msgid "Search for groups"
 msgstr ""
 
-#: plugins/ktcore/admin/savedSearch.php:65
-#: plugins/ktcore/admin/conditions.php:71
+#: plugins/ktcore/admin/savedSearch.php:141
+#: plugins/ktcore/admin/savedSearch.php:171
+#: plugins/ktcore/admin/conditions.php:118
+#: plugins/ktcore/admin/conditions.php:148
 msgid "Search not saved"
 msgstr ""
 
-#: plugins/ktcore/admin/savedSearch.php:67
-#: plugins/ktcore/admin/conditions.php:73
+#: plugins/ktcore/admin/savedSearch.php:143
+#: plugins/ktcore/admin/savedSearch.php:173
+#: plugins/ktcore/admin/conditions.php:120
+#: plugins/ktcore/admin/conditions.php:150
 msgid "Search saved"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:10
+#: lib/browse/Criteria.inc:657
+msgid "Searchable Text"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:52
 msgid "Security Management"
 msgstr ""
 
@@ -2907,51 +3422,59 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: i18n/templates.c:1328
+#: i18n/templates.c:1583
 msgid "Select Fieldset"
 msgstr ""
 
-#: i18n/templates.c:1427
+#: i18n/templates.c:1682
 msgid "Select a behaviour from this list to change the         items which are available."
 msgstr ""
 
-#: i18n/templates.c:1067
+#: i18n/templates.c:1277
 msgid "Select a document type from the list below to change its details, or click on the delete button to remove it from the system."
 msgstr ""
 
-#: i18n/templates.c:1571
+#: i18n/templates.c:1829
 msgid "Select a state to update its properties."
 msgstr ""
 
-#: i18n/templates.c:1604
+#: i18n/templates.c:1862
 msgid "Select a workflow to modify."
 msgstr ""
 
-#: i18n/templates.c:1106
+#: i18n/templates.c:1322
 msgid "Select document types allowed in folder"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:89
+#: plugins/ktcore/admin/documentTypes.php:87
 msgid "Select the fieldsets which you wish to associate with this document type"
 msgstr ""
 
-#: i18n/templates.c:653
-msgid "Select the groups which should be part of this group."
+#: i18n/templates.c:830
+msgid "Select the groups from the left-hand list that you would like to add to this group and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>. Only groups that are logically capable of being included in this group will be available to be added."
 msgstr ""
 
-#: i18n/templates.c:554
-msgid "Select the groups which should contain this user."
+#: i18n/templates.c:569
+msgid "Select the groups which should be part of this role."
 msgstr ""
 
-#: i18n/templates.c:1664
+#: i18n/templates.c:719
+msgid "Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>."
+msgstr ""
+
+#: i18n/templates.c:1922
 msgid "Select the target state of the transition, and select the permission, group, and/or role necessary to perform the transition.  Selecting more than one of permission, group, or role will require that the user wishing to perform the transition fulfil every requirement."
 msgstr ""
 
-#: i18n/templates.c:680
-msgid "Select the users which should be part of this group."
+#: i18n/templates.c:860
+msgid "Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:433
+#: i18n/templates.c:596
+msgid "Select the users which should be part of this role."
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:443
 msgid "Sending subscriptions"
 msgstr ""
 
@@ -2963,54 +3486,54 @@ msgstr ""
 msgid "Server name"
 msgstr ""
 
-#: i18n/templates.c:1589
+#: i18n/templates.c:1847
 msgid "Set controlled actions"
 msgstr ""
 
-#: i18n/templates.c:1382
+#: i18n/templates.c:1637
 msgid "Set master field"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:484
+#: plugins/ktcore/admin/documentFields.php:515
 msgid "Set to complete"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:64
-#: plugins/ktcore/admin/groupManagement.php:343
-msgid "Should all the members of this group be given <strong>system</strong> administration privilidges?"
+#: plugins/ktcore/admin/groupManagement.php:62
+#: plugins/ktcore/admin/groupManagement.php:341
+msgid "Should all the members of this group be given <strong>system</strong> administration privileges?"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:63
-#: plugins/ktcore/admin/groupManagement.php:342
-msgid "Should all the members of this group be given <strong>unit</strong> administration privilidges?"
+#: plugins/ktcore/admin/groupManagement.php:61
+#: plugins/ktcore/admin/groupManagement.php:340
+msgid "Should all the members of this group be given <strong>unit</strong> administration privileges?"
 msgstr ""
 
-#: i18n/templates.c:1367
+#: i18n/templates.c:1622
 msgid "Simple"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php:50
+#: search/simpleSearch.php:47
 msgid "Simple Search"
 msgstr ""
 
-#: i18n/templates.c:104
-msgid "Since a document which is checked out cannot be modified by anyone else, it is important to check them back in as soon as you have made the apppriate changes."
+#: i18n/templates.c:779
+msgid "Since there may be many groups in the system, please type a few letters from the group's name to begin. Alternatively, <a href=\"?show_all=1\">view all groups</a> (note that this action may take some time if you have many groups)."
 msgstr ""
 
-#: i18n/templates.c:605
-msgid "Since there may be many groups in the system, please type a few letters from the group's name to begin. Alternatively, <a href=\"?show_all=1\">view all groups</a> (note that this may be very slow if you have many groups."
-msgstr ""
-
-#: i18n/templates.c:2066
+#: i18n/templates.c:2354
 msgid "Since there may be many users in the system, please provider a few letters from the person's user name to begin."
 msgstr ""
 
-#: i18n/templates.c:473
+#: i18n/templates.c:629
 msgid "Since there may be many users in the system, please select a group from the list below, or type a few letters from the person's username to begin. Alternatively, <a href=\"?show_all=1\">view all users</a> (note that this may be very slow if you have many users."
 msgstr ""
 
-#: plugins/ktcore/authentication/authenticationadminpage.inc.php:99
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:101
 msgid "Source created"
+msgstr ""
+
+#: i18n/templates.c:620
+msgid "Specify Reason for Delete"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:70
@@ -3018,39 +3541,35 @@ msgstr ""
 msgid "Specify an initial password for the user."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:13
-msgid "Specify how groups of documents are displayed in browse and search mode."
+#: i18n/templates.c:761
+msgid "Specify group details"
 msgstr ""
 
-#: i18n/templates.c:932
+#: i18n/templates.c:1109
 msgid "Specify the details for a new link type below."
 msgstr ""
 
-#: i18n/templates.c:941
+#: i18n/templates.c:1118
 msgid "Specify the details for the link type below."
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:43
-msgid "Specify the different \"link types\" - ways to relate different documents togeter."
-msgstr ""
-
-#: plugins/ktcore/KTAdminPlugins.php:32
+#: plugins/ktcore/KTCorePlugin.php:71
 msgid "Specify which organisation units are available."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:56
+#: preferences.php:57
 msgid "Specify your new password."
 msgstr ""
 
-#: i18n/templates.c:1715
+#: i18n/templates.c:1982
 msgid "Standard configuration"
 msgstr ""
 
-#: i18n/templates.c:1685
+#: i18n/templates.c:1943
 msgid "Start Workflow"
 msgstr ""
 
-#: i18n/templates.c:1682
+#: i18n/templates.c:1940
 msgid "Start workflow on document"
 msgstr ""
 
@@ -3058,16 +3577,16 @@ msgstr ""
 msgid "Starting State"
 msgstr ""
 
-#: i18n/templates.c:1607 i18n/templates.c:1694
+#: i18n/templates.c:1865 i18n/templates.c:1952 i18n/templates.c:2294
 msgid "State"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:206
+#: lib/documentmanagement/documentutil.inc.php:204
 msgid "Storing contents"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:63
-#: plugins/ktstandard/KTDiscussion.php:140 i18n/templates.c:2000
+#: plugins/ktstandard/KTDiscussion.php:67
+#: plugins/ktstandard/KTDiscussion.php:145 i18n/templates.c:2279
 msgid "Subject"
 msgstr ""
 
@@ -3079,15 +3598,15 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:289
+#: plugins/ktstandard/KTSubscriptions.php:301
 msgid "Subscription Management"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:26 i18n/templates.c:2045
+#: plugins/ktstandard/KTSubscriptions.php:47 i18n/templates.c:2333
 msgid "Subscriptions"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:340
+#: plugins/ktstandard/KTSubscriptions.php:352
 msgid "Subscriptions removed"
 msgstr ""
 
@@ -3096,8 +3615,8 @@ msgstr ""
 msgid "Successfully forced \"%s\" to be checked in."
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:64
-#: plugins/ktcore/admin/groupManagement.php:343
+#: plugins/ktcore/admin/groupManagement.php:62
+#: plugins/ktcore/admin/groupManagement.php:341
 msgid "System Administrators"
 msgstr ""
 
@@ -3105,32 +3624,77 @@ msgstr ""
 msgid "System Name"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:428 i18n/templates.c:173
+#: plugins/ktcore/KTDocumentActions.php:405 i18n/templates.c:179
+#: i18n/templates.c:251
 msgid "Target folder"
 msgstr ""
 
-#: i18n/templates.c:65 i18n/templates.c:266
+#: i18n/templates.c:68 i18n/templates.c:305
 msgid "Test conditions"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkUpload.php:20
+#: plugins/ktcore/folder/BulkUpload.php:41
 msgid "The archive file containing the documents you wish to add to the document management system."
 msgstr ""
 
-#: i18n/templates.c:455
+#: i18n/templates.c:494
 msgid "The bulk import facility allows for a number of documents to be added to the document management system easily. Provide a path on the <strong>server</strong>, and all documents and folders within that path will be added to the document management system."
 msgstr ""
 
-#: i18n/templates.c:464
+#: i18n/templates.c:503
 msgid "The bulk upload facility allows for a number of documents to be added to the document management system. Provide an archive (ZIP) file from your local computer, and all documents and folders within that archive will be added to the document management system."
 msgstr ""
 
-#: plugins/ktcore/folder/addDocument.php:21
+#: plugins/ktcore/folder/addDocument.php:43
 msgid "The contents of the document to be added to the document management system."
 msgstr ""
 
+#: lib/alert/AlertContent.inc:108
+#, php-format
+msgid "The document '%s' has been archived%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:96
+#, php-format
+msgid "The document '%s' has been checked in%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:100
+#, php-format
+msgid "The document '%s' has been checked out%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:92
+#, php-format
+msgid "The document '%s' has been modified%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:104
+#, php-format
+msgid "The document '%s' has been moved from folder '%s' to folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:89
+#, php-format
+msgid "The document '%s' has been removed from folder '%s'%s.<br>Your subscription to this document has been removed also."
+msgstr ""
+
+#: lib/alert/AlertContent.inc:85
+#, php-format
+msgid "The document '%s' has been removed from folder '%s'.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:112
+#, php-format
+msgid "The document '%s' has been restored from the archive%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
 #: lib/widgets/fieldsetDisplay.inc.php:278
-msgid "The document title is used as the main name of a document through the KnowledgeTree."
+msgid "The document title is used as the main name of a document throughout KnowledgeTree&trade;."
+msgstr ""
+
+#: plugins/ktcore/folder/addDocument.php:44
+msgid "The document title is used as the main name of a document throughout KnowledgeTree."
 msgstr ""
 
 #: plugins/ktcore/admin/documentCheckout.php:67
@@ -3138,7 +3702,7 @@ msgstr ""
 msgid "The document you specified appears to be invalid."
 msgstr ""
 
-#: i18n/templates.c:146
+#: i18n/templates.c:152
 msgid "The document you wish to check out will begin to download soon.  If it does not automatically start to download, you can use <a href=\"#link#\">this link</a> to start it yourself."
 msgstr ""
 
@@ -3148,12 +3712,30 @@ msgstr ""
 msgid "The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:194
+#: plugins/ktcore/KTDocumentActions.php:212
 msgid "The file name of the uploaded file does not match the file name of the document in the system"
 msgstr ""
 
-#: i18n/templates.c:176
+#: lib/alert/AlertContent.inc:77
+#, php-format
+msgid "The folder '%s' has been removed from folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "
+msgstr ""
+
+#: lib/alert/AlertContent.inc:74
+#, php-format
+msgid "The folder '%s' has been removed from folder '%s'%s.<br>Your subscription to this folder has been removed also."
+msgstr ""
+
+#: i18n/templates.c:182
 msgid "The folder given below is where the document is going to be moved to.  Use the folder collection and path below to browse to the folder you wish to move the documents into."
+msgstr ""
+
+#: browse.php:352
+msgid "The folder which will contain the previously selected files and folders."
+msgstr ""
+
+#: i18n/templates.c:2003
+msgid "The following document metadata is available for editing."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:67
@@ -3162,12 +3744,12 @@ msgstr ""
 msgid "The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>"
 msgstr ""
 
-#: i18n/templates.c:1850 i18n/templates.c:1877
-msgid "The information in this section is stored by the KnowledgeTree&trade; for every         document."
+#: i18n/templates.c:2126 i18n/templates.c:2153
+msgid "The information in this section is stored by KnowledgeTree&trade; for every          document."
 msgstr ""
 
 #: lib/widgets/fieldsetDisplay.inc.php:288
-msgid "The information in this section is stored by the KnowledgeTree&trade; for every document."
+msgid "The information in this section is stored by KnowledgeTree&trade; for every document."
 msgstr ""
 
 #: plugins/ktcore/admin/managePermissions.php:15
@@ -3191,37 +3773,44 @@ msgstr ""
 msgid "The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will have an SMS delivered to it with notifications.  e.g. <strong>999 9999 999</strong>"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:29
+#: plugins/ktcore/KTFolderActions.php:27
 msgid "The name for the new folder."
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:29
+#: plugins/ktcore/admin/orgManagement.php:27
 msgid "The organisation's visible name.  e.g. <strong>Tech Support</strong>"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:187
-#: plugins/ktcore/admin/userManagement.php:351
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:79
+#: plugins/ktcore/admin/userManagement.php:370 preferences.php:80
 msgid "The passwords you specified do not match."
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:21
+#: plugins/ktcore/folder/BulkImport.php:26
 msgid "The path containing the documents to be added to the document management system."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:547
+#: browse.php:353
+msgid "The reason for moving these documents and folders, for historical purposes."
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:521
 msgid "The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:67
+#: plugins/ktcore/KTDocumentActions.php:82
 msgid "The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:429
+#: browse.php:473
+msgid "The reason for the deletion of these documents and folders for historical purposes."
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:406
 msgid "The reason for this document to be moved."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:251
+#: plugins/ktcore/KTDocumentActions.php:266
 msgid "The reason for this document to be removed."
 msgstr ""
 
@@ -3229,39 +3818,37 @@ msgstr ""
 msgid "The system rejected your value for this field."
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:63
-#: plugins/ktstandard/KTDiscussion.php:140
+#: plugins/ktstandard/KTDiscussion.php:67
+#: plugins/ktstandard/KTDiscussion.php:145
 msgid "The topic of discussion in this thread"
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:26
-#: plugins/ktcore/admin/unitManagement.php:34
+#: plugins/ktcore/authentication/authenticationadminpage.inc.php:24
+msgid "The type of source (e.g. <strong>LDAP</strong>)"
+msgstr ""
+
+#: plugins/ktcore/admin/unitManagement.php:24
+#: plugins/ktcore/admin/unitManagement.php:32
 msgid "The unit's visible name.  e.g. <strong>Tech Support</strong>"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:171
+#: plugins/ktcore/KTDocumentActions.php:189
 msgid "The updated document."
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:197
-#: plugins/ktcore/folder/addDocument.php:70
+#: lib/validation/dispatchervalidation.inc.php:201
 msgid "The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:196
-#: plugins/ktcore/folder/addDocument.php:69
+#: lib/validation/dispatchervalidation.inc.php:200
 msgid "The uploaded file is larger than the PHP upload_max_filesize setting"
 msgstr ""
 
-#: plugins/ktcore/folder/addDocument.php:71
-msgid "The uploaded file was not fully uploaded to KnowledgeTree"
-msgstr ""
-
-#: lib/validation/dispatchervalidation.inc.php:198
+#: lib/validation/dispatchervalidation.inc.php:202
 msgid "The uploaded file was not fully uploaded to the document management system"
 msgstr ""
 
-#: i18n/templates.c:917
+#: i18n/templates.c:1094
 msgid "The user who checked this document out is no longer valid."
 msgstr ""
 
@@ -3272,81 +3859,78 @@ msgstr ""
 #: plugins/ktcore/admin/userManagement.php:66
 #: plugins/ktcore/admin/userManagement.php:120
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:140
-msgid "The username the user will enter to gain access to the KnowledgeTree.  e.g. <strong>jsmith</strong>"
+msgid "The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>"
 msgstr ""
 
-#: i18n/templates.c:782
+#: i18n/templates.c:965
 msgid "There are currently no roles created within the system."
 msgstr ""
 
-#: i18n/templates.c:2015
+#: i18n/templates.c:2297
 msgid "There are no existing threads for this document"
 msgstr ""
 
-#: i18n/templates.c:1100
-msgid "There are no fieldsets available for adding."
-msgstr ""
-
-#: plugins/ktcore/KTDocumentActions.php:560
+#: plugins/ktcore/KTDocumentActions.php:534
 msgid "There was a database error while trying to archive this file"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:97
+#: plugins/ktcore/KTDocumentActions.php:117
 msgid "There was a problem checking out the document."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:287
+#: lib/documentmanagement/documentutil.inc.php:584
 msgid "There was a problem deleting the document from storage."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:271
+#: lib/documentmanagement/documentutil.inc.php:562
 msgid "There was a problem deleting the document from the database."
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:95
-#: plugins/ktstandard/KTSubscriptions.php:244
+#: plugins/ktstandard/KTSubscriptions.php:115
+#: plugins/ktstandard/KTSubscriptions.php:258
 msgid "There was a problem subscribing you to this document"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:126
+#: plugins/ktstandard/KTSubscriptions.php:145
 msgid "There was a problem unsubscribing you from this document"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:276
+#: plugins/ktstandard/KTSubscriptions.php:289
 msgid "There was a problem unsubscribing you from this folder"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:456
+#: browse.php:401 plugins/ktcore/KTDocumentActions.php:433
 msgid "There was a problem updating the document's location in the database"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:464
+#: browse.php:407 plugins/ktcore/KTDocumentActions.php:441
 msgid "There was a problem updating the document's location in the repository storage"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:106
-#: plugins/ktstandard/KTDiscussion.php:183
+#: plugins/ktstandard/KTDiscussion.php:110
+#: plugins/ktstandard/KTDiscussion.php:199
 msgid "There was an error adding the comment to the thread"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:97
+#: plugins/ktstandard/KTDiscussion.php:101
 msgid "There was an error creating a new thread"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:112
-#: plugins/ktstandard/KTDiscussion.php:188
+#: plugins/ktstandard/KTDiscussion.php:116
+#: plugins/ktstandard/KTDiscussion.php:204
+#: plugins/ktstandard/KTDiscussion.php:249
 msgid "There was an error updating the thread with the new comment"
 msgstr ""
 
-#: i18n/templates.c:869
+#: i18n/templates.c:1043
 msgid "These documents are not on the filesystem"
 msgstr ""
 
-#: i18n/templates.c:872
+#: i18n/templates.c:1046
 msgid "These documents have versions not on the filesystem"
 msgstr ""
 
-#: i18n/templates.c:866
+#: i18n/templates.c:1040
 msgid "These folders are not on the filesystem"
 msgstr ""
 
@@ -3354,152 +3938,183 @@ msgstr ""
 msgid "This Dashlet is incomplete."
 msgstr ""
 
-#: i18n/templates.c:1802
-msgid "This allows you to have a brief overview of the history of the document."
+#: lib/email/Email.inc:213
+msgid "This bug can be found on this page"
 msgstr ""
 
-#: i18n/templates.c:1406
+#: i18n/templates.c:1661
 msgid "This column is not active."
 msgstr ""
 
-#: i18n/templates.c:1220
+#: i18n/templates.c:1466
 msgid "This conditional fieldset cannot be used"
 msgstr ""
 
-#: i18n/templates.c:1343
+#: i18n/templates.c:1598
 msgid "This conditional fieldset is marked such that it cannot be used.  This happens when the fieldset has been edited and has not been set to complete.  Setting the fieldset to complete will do a check to see if the fieldset is usable by the user."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:240
-#: plugins/ktcore/KTDocumentActions.php:357
+#: plugins/ktcore/KTDocumentActions.php:255
+#: plugins/ktcore/KTDocumentActions.php:334
 msgid "This document can't be deleted because it is checked out"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:56
+#: plugins/ktcore/KTDocumentActions.php:71
 msgid "This document is already checked out"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:158
+#: plugins/ktcore/KTDocumentActions.php:176
 msgid "This document is checked out, but not by you"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:153
+#: i18n/templates.c:1253
+msgid "This document is currently of type #doctype#.  If this is incorrect, you can change it here."
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:171
 msgid "This document is not checked out"
 msgstr ""
 
-#: i18n/templates.c:1346
+#: i18n/templates.c:1601
 msgid "This error prevents this fieldset from being set to complete"
 msgstr ""
 
-#: i18n/templates.c:1436
+#: i18n/templates.c:1691
 msgid "This field is not controlled by the currently active group."
 msgstr ""
 
-#: i18n/templates.c:1253
+#: i18n/templates.c:1502
 msgid "This fieldset cannot be made conditional, since it contains fields which are not lookup types."
 msgstr ""
 
-#: i18n/templates.c:1904 i18n/templates.c:1910
-msgid "This is the data assigned to the <strong>#name#</strong> aspect of this document."
+#: lib/browse/FolderBrowser.inc:112
+msgid "This folder does not exist"
 msgstr ""
 
-#: i18n/templates.c:1745
-msgid "This lists the older versions of the document, as the metadata about it has been changed."
+#: i18n/templates.c:2180 i18n/templates.c:2186
+msgid "This is the data assigned to the <strong>#name#</strong> aspect of this document."
 msgstr ""
 
 #: lib/dashboard/Notification.inc.php:111
 msgid "This notification handler does not support publication."
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:224
+#: lib/templating/kt3template.inc.php:222
 msgid "This page did not produce any content"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:20
+#: i18n/templates.c:2015
+msgid "This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content."
+msgstr ""
+
+#: i18n/templates.c:2078
+msgid "This page provides details of all activities that have been carried out on the document."
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:32
 msgid "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS."
 msgstr ""
 
-#: lib/browse/BrowseColumns.inc.php:59
-#: plugins/ktcore/folder/addDocument.php:22
+#: plugins/ktstandard/KTDiscussion.php:255
+msgid "Thread closed"
+msgstr ""
+
+#: lib/browse/Criteria.inc:627 lib/browse/BrowseColumns.inc.php:64
+#: plugins/ktcore/folder/addDocument.php:44
 msgid "Title"
 msgstr ""
 
-#: i18n/templates.c:1055
+#: i18n/templates.c:1523
+msgid "To add a new field, enter the field's name, description and field type below and then click <strong>Add field</strong>. If the field type requires additional lookup values you will be prompted to enter them."
+msgstr ""
+
+#: i18n/templates.c:74
+msgid "To customise a help file, please visit that file   via the help system and click on <strong>customise this help file</strong>."
+msgstr ""
+
+#: i18n/templates.c:1265
 msgid "To start the process of creating a new document type, please enter a name for the type below."
 msgstr ""
 
-#: i18n/templates.c:1310 i18n/templates.c:1322
+#: i18n/templates.c:1565 i18n/templates.c:1577
 msgid "Toggle stickiness"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:409
+#: i18n/templates.c:2075
+msgid "Transaction History"
+msgstr ""
+
+#: lib/browse/Criteria.inc:654
+msgid "Transaction Text"
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:419
 msgid "Transforming file"
 msgstr ""
 
-#: i18n/templates.c:1658
+#: i18n/templates.c:1916
 msgid "Transition"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:646
+#: plugins/ktcore/KTDocumentActions.php:633
 msgid "Transition performed"
 msgstr ""
 
-#: i18n/templates.c:1697
+#: i18n/templates.c:1955
 msgid "Transition to another workflow state"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:617
+#: plugins/ktcore/KTDocumentActions.php:590
 msgid "Transition to perform"
 msgstr ""
 
-#: i18n/templates.c:1574 i18n/templates.c:1640
+#: i18n/templates.c:1832 i18n/templates.c:1898
 msgid "Transitions"
 msgstr ""
 
-#: i18n/templates.c:1649
+#: i18n/templates.c:1907
 msgid "Transitions from this state"
 msgstr ""
 
-#: i18n/templates.c:1643
+#: i18n/templates.c:1901
 msgid "Transitions to this state"
 msgstr ""
 
-#: i18n/templates.c:1208 i18n/templates.c:1517
+#: i18n/templates.c:1454 i18n/templates.c:1775
 msgid "Tree"
 msgstr ""
 
-#: i18n/templates.c:425 i18n/templates.c:446 i18n/templates.c:830
-#: i18n/templates.c:854
+#: i18n/templates.c:473 i18n/templates.c:1016
 msgid "True"
 msgstr ""
 
-#: i18n/templates.c:1349
+#: i18n/templates.c:1604
 msgid "Try to set to complete"
 msgstr ""
 
-#: i18n/templates.c:1199 i18n/templates.c:1286 i18n/templates.c:1508
+#: i18n/templates.c:1445 i18n/templates.c:1541 i18n/templates.c:1766
 msgid "Type"
 msgstr ""
 
-#: i18n/templates.c:1079
+#: i18n/templates.c:1289
 msgid "Type-specific field sets"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:198
+#: plugins/ktcore/admin/groupManagement.php:196
 #, php-format
 msgid "Unable to add user \"%s\" to group \"%s\""
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:413
+#: plugins/ktcore/admin/userManagement.php:437
 #, php-format
 msgid "Unable to add user to group \"%s\""
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:102
-msgid "Unable to backup document prior to upload"
+#: plugins/ktcore/KTPermissions.php:238
+msgid "Unable to change role allocation."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:104
+#: plugins/ktcore/admin/manageHelp.php:120
 msgid "Unable to create replacement"
 msgstr ""
 
@@ -3519,12 +4134,20 @@ msgstr ""
 msgid "Unable to find the document's creator"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:209
+#: plugins/ktcore/KTPermissions.php:479
+msgid "Unable to get documents in folder: "
+msgstr ""
+
+#: plugins/ktcore/KTPermissions.php:473
+msgid "Unable to locate folder: "
+msgstr ""
+
+#: plugins/ktcore/admin/groupManagement.php:207
 #, php-format
 msgid "Unable to remove user \"%s\" from group \"%s\""
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:424
+#: plugins/ktcore/admin/userManagement.php:448
 #, php-format
 msgid "Unable to remove user from group \"%s\""
 msgstr ""
@@ -3533,44 +4156,44 @@ msgstr ""
 msgid "Unable to update role."
 msgstr ""
 
-#: i18n/templates.c:1412
+#: i18n/templates.c:1667
 msgid "Unassigned/Unavailable"
 msgstr ""
 
-#: i18n/templates.c:1157
+#: i18n/templates.c:1373
 msgid "Undo change"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:78
+#: plugins/ktcore/admin/groupManagement.php:76
 msgid "Unit"
 msgstr ""
 
-#: i18n/templates.c:701
+#: i18n/templates.c:881
 msgid "Unit Administration"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:63
-#: plugins/ktcore/admin/groupManagement.php:342
+#: plugins/ktcore/admin/groupManagement.php:61
+#: plugins/ktcore/admin/groupManagement.php:340
 msgid "Unit Administrators"
 msgstr ""
 
+#: plugins/ktcore/admin/unitManagement.php:14
 #: plugins/ktcore/admin/unitManagement.php:16
-#: plugins/ktcore/admin/unitManagement.php:18
 msgid "Unit Management"
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:26
-#: plugins/ktcore/admin/unitManagement.php:34 i18n/templates.c:614
-#: i18n/templates.c:716
+#: plugins/ktcore/admin/unitManagement.php:24
+#: plugins/ktcore/admin/unitManagement.php:32 i18n/templates.c:788
+#: i18n/templates.c:899
 msgid "Unit Name"
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:73
+#: plugins/ktcore/admin/unitManagement.php:71
 #, php-format
 msgid "Unit name changed to \"%s\""
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:240
+#: plugins/ktcore/admin/documentFields.php:271
 msgid "Unknown action specified"
 msgstr ""
 
@@ -3578,7 +4201,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:230
+#: lib/validation/dispatchervalidation.inc.php:234
 #, php-format
 msgid "Unknown validation function for required value %s"
 msgstr ""
@@ -3591,7 +4214,7 @@ msgstr ""
 msgid "Unsubscribe"
 msgstr ""
 
-#: bin/generate-buttons.php:17 i18n/templates.c:416 i18n/templates.c:845
+#: bin/generate-buttons.php:17 i18n/templates.c:455 i18n/templates.c:1031
 msgid "Update"
 msgstr ""
 
@@ -3599,218 +4222,260 @@ msgstr ""
 msgid "Update Password"
 msgstr ""
 
-#: i18n/templates.c:1559
+#: plugins/ktcore/admin/savedSearch.php:99
+#: plugins/ktcore/admin/conditions.php:77
+msgid "Update Saved Search"
+msgstr ""
+
+#: i18n/templates.c:1817
 msgid "Update workflow properties"
 msgstr ""
 
-#: i18n/templates.c:800
+#: i18n/templates.c:986
 msgid "Update your details"
 msgstr ""
 
-#: i18n/templates.c:467
+#: i18n/templates.c:506
 msgid "Upload"
 msgstr ""
 
-#: i18n/templates.c:413 i18n/templates.c:842
+#: i18n/templates.c:533
+msgid "Use Parent"
+msgstr ""
+
+#: i18n/templates.c:554 i18n/templates.c:557
+msgid "Use parent's allocation"
+msgstr ""
+
+#: i18n/templates.c:464 i18n/templates.c:1028
 msgid "Use parent's permissions"
 msgstr ""
 
-#: i18n/templates.c:296
+#: i18n/templates.c:335
 msgid "Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.     To edit a category (including adding or removing keywords) click on the \"edit\" link."
 msgstr ""
 
-#: i18n/templates.c:443 i18n/templates.c:851 i18n/templates.c:1751
-#: i18n/templates.c:1808
+#: i18n/templates.c:254
+msgid "Use the folder collection and path below to browse to the folder you wish to move the documents into."
+msgstr ""
+
+#: i18n/templates.c:2021 i18n/templates.c:2084
 msgid "User"
 msgstr ""
 
+#: plugins/ktcore/admin/userManagement.php:20
 #: plugins/ktcore/admin/userManagement.php:22
-#: plugins/ktcore/admin/userManagement.php:24
-#: plugins/ktcore/admin/userManagement.php:54
+#: plugins/ktcore/admin/userManagement.php:52
 #: plugins/ktcore/admin/userManagement.php:94
 #: plugins/ktcore/admin/userManagement.php:105
 #: plugins/ktcore/admin/userManagement.php:150
 msgid "User Management"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:384
+#: plugins/ktcore/admin/userManagement.php:408
 msgid "User deleted"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:211
-#: plugins/ktcore/admin/userManagement.php:327
+#: plugins/ktcore/admin/userManagement.php:346
 msgid "User information updated."
-msgstr ""
-
-#: i18n/templates.c:848
-msgid "User permissions"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:214
 msgid "User's name"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:32
+#: plugins/ktcore/admin/userManagement.php:30
 #: plugins/ktcore/admin/userManagement.php:66
 #: plugins/ktcore/admin/userManagement.php:120
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:140
-#: i18n/templates.c:482 i18n/templates.c:1148
+#: i18n/templates.c:638 i18n/templates.c:1364
 msgid "Username"
 msgstr ""
 
-#: i18n/templates.c:1628
+#: i18n/templates.c:1886
 msgid "Users"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:9
+#: plugins/ktcore/KTCorePlugin.php:50
 msgid "Users and Groups"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:528
+#: i18n/templates.c:854
+msgid "Users may be associated with Groups which are then used to grant these users security privileges."
+msgstr ""
+
+#: i18n/templates.c:713 i18n/templates.c:746 i18n/templates.c:758
+msgid "Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system."
+msgstr ""
+
+#: i18n/templates.c:539
+msgid "Users:"
+msgstr ""
+
+#: lib/documentmanagement/documentutil.inc.php:620
 msgid "Validation Failed"
 msgstr ""
 
-#: i18n/templates.c:347
+#: i18n/templates.c:386 i18n/templates.c:1400
 msgid "Values"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:14
-msgid "Various settings which do not fit into the other categories, including help, etc."
+#: plugins/ktcore/KTCorePlugin.php:61
+msgid "Various settings which do not fit into the other categories, including managing help and saved searches."
 msgstr ""
 
-#: i18n/templates.c:1772
+#: i18n/templates.c:2045
 msgid "Version Comparison"
 msgstr ""
 
-#: i18n/templates.c:401 i18n/templates.c:824
+#: i18n/templates.c:2012
+msgid "Version History"
+msgstr ""
+
+#: i18n/templates.c:449 i18n/templates.c:1010
 msgid "View"
 msgstr ""
 
-#: i18n/templates.c:107 i18n/templates.c:1931 i18n/templates.c:1937
-#: i18n/templates.c:1943
+#: config/siteMap.inc:38 i18n/templates.c:101 i18n/templates.c:2207
+#: i18n/templates.c:2213 i18n/templates.c:2219
 msgid "View Document"
 msgstr ""
 
-#: i18n/templates.c:1955 i18n/templates.c:1961
+#: i18n/templates.c:2231 i18n/templates.c:2237
 msgid "View Folder"
 msgstr ""
 
-#: i18n/templates.c:1922
+#: i18n/templates.c:2198
 msgid "View New Folder"
 msgstr ""
 
-#: i18n/templates.c:1949
+#: i18n/templates.c:2225
 msgid "View New Location"
 msgstr ""
 
-#: i18n/templates.c:2006
+#: i18n/templates.c:425
+msgid "View Results"
+msgstr ""
+
+#: i18n/templates.c:2285
 msgid "Views"
 msgstr ""
 
-#: i18n/templates.c:89
+#: i18n/templates.c:515
+msgid "Warning:"
+msgstr ""
+
+#: i18n/templates.c:83
 msgid "Welcome to the KnowledgeTree 3 Beta"
 msgstr ""
 
-#: i18n/templates.c:95
-msgid "What's a Beta?"
+#: i18n/templates.c:89
+msgid "What is a Beta?"
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:64
 msgid "When a document has this workflow applied to it, to which state should it initially be set"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:78
+#: plugins/ktcore/admin/groupManagement.php:76
 msgid "Which Unit is this group part of?"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:406
+#: plugins/ktcore/admin/workflows.php:464
 msgid "Which condition (stored search) must be satisfied before the transition can take place?"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:388
+#: plugins/ktcore/admin/workflows.php:446
 msgid "Which group must the user belong to in order to follow this transition?"
 msgstr ""
 
 #: plugins/ktcore/admin/workflows.php:85
-#: plugins/ktcore/admin/workflows.php:380
+#: plugins/ktcore/admin/workflows.php:438
 msgid "Which permission must the user have in order to follow this transition?"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:396
+#: plugins/ktcore/admin/workflows.php:454
 msgid "Which role must the user have in order to follow this transition?"
 msgstr ""
 
-#: i18n/templates.c:1637
+#: i18n/templates.c:1895
 msgid "While in this workflow state, additional permissions may be given.  This is done either to expose the document to more users or to allow a particular role to be fulfilled before a workflow transition can be accomplished."
 msgstr ""
 
-#: i18n/templates.c:1553 i18n/templates.c:1592 i18n/templates.c:1691
+#: i18n/templates.c:1811 i18n/templates.c:1850 i18n/templates.c:1949
 msgid "Workflow"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:146
+#: browse.php:164
+msgid "Workflow State"
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:166
 msgid "Workflow created"
 msgstr ""
 
-#: i18n/templates.c:1673
+#: i18n/templates.c:1931
 msgid "Workflow is a description of a document's lifecycle.  It is made up of workflow states, which describe where in the lifecycle the document is, and workflow transitions, which describe the next steps within the lifecycle of the document."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:635
+#: plugins/ktcore/KTDocumentActions.php:615
 msgid "Workflow started"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:180
+#: lib/browse/Criteria.inc:651
+msgid "Workflow state"
+msgstr ""
+
+#: plugins/ktcore/admin/workflows.php:218
 msgid "Workflow state created"
 msgstr ""
 
-#: i18n/templates.c:1865 i18n/templates.c:1895
+#: i18n/templates.c:2141 i18n/templates.c:2171
 msgid "Workflow status"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:347
+#: plugins/ktcore/admin/workflows.php:405
 msgid "Workflow transition created"
 msgstr ""
 
-#: plugins/ktcore/KTAdminPlugins.php:44 plugins/ktcore/admin/workflows.php:29
+#: plugins/ktcore/KTCorePlugin.php:101 plugins/ktcore/admin/workflows.php:29
 #: plugins/ktcore/admin/workflows.php:89
-#: plugins/ktcore/admin/workflows.php:205
-#: plugins/ktcore/admin/workflows.php:411
+#: plugins/ktcore/admin/workflows.php:243
+#: plugins/ktcore/admin/workflows.php:469
 msgid "Workflows"
 msgstr ""
 
-#: i18n/templates.c:863
+#: i18n/templates.c:1037
 msgid "Would remove these files"
 msgstr ""
 
-#: i18n/templates.c:860
+#: i18n/templates.c:1034
 msgid "Would remove these folders (and all their contents)"
 msgstr ""
 
-#: i18n/templates.c:1229 i18n/templates.c:1466 i18n/templates.c:1541
+#: i18n/templates.c:1478 i18n/templates.c:1724 i18n/templates.c:1799
 msgid "Yes"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:88
-#: plugins/ktstandard/KTSubscriptions.php:237
+#: plugins/ktstandard/KTSubscriptions.php:108
+#: plugins/ktstandard/KTSubscriptions.php:251
 msgid "You are already subscribed to that document"
 msgstr ""
 
-#: i18n/templates.c:1790 i18n/templates.c:1793
+#: i18n/templates.c:2063 i18n/templates.c:2066
 msgid "You are here"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:68
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:252
+#: view.php:70 view.php:264
 msgid "You are not allowed to view this document"
 msgstr ""
 
-#: i18n/templates.c:2042
+#: i18n/templates.c:2330
 msgid "You are subscribed to the folders and documents listed below.  You can remove your subscription by selecting the folders and documents to which you no longer wish to subscribe."
 msgstr ""
 
-#: lib/validation/dispatchervalidation.inc.php:193
-#: plugins/ktcore/folder/addDocument.php:66
+#: lib/validation/dispatchervalidation.inc.php:197
 msgid "You did not select a valid document to upload"
 msgstr ""
 
@@ -3818,33 +4483,61 @@ msgstr ""
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:447
+#: plugins/ktstandard/KTDiscussion.php:234
+msgid "You do not have permission to close this thread"
+msgstr ""
+
+#: lib/foldermanagement/folderutil.inc.php:190
+msgid "You do not have permission to delete these items. "
+msgstr ""
+
+#: plugins/ktcore/KTDocumentActions.php:424
 msgid "You do not have permission to move a document to this location"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:93
-#: plugins/ktstandard/KTSubscriptions.php:242
+#: browse.php:383
+msgid "You do not have permission to move items to this location"
+msgstr ""
+
+#: plugins/ktstandard/KTSubscriptions.php:113
+#: plugins/ktstandard/KTSubscriptions.php:256
 msgid "You have been subscribed to this document"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:124
+#: plugins/ktstandard/KTSubscriptions.php:143
 msgid "You have been unsubscribed from this document"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:274
+#: plugins/ktstandard/KTSubscriptions.php:287
 msgid "You have been unsubscribed from this folder"
 msgstr ""
 
-#: i18n/templates.c:110
+#: i18n/templates.c:104
 msgid "You have no documents which are currently checked out."
 msgstr ""
 
-#: i18n/templates.c:2039
+#: i18n/templates.c:2327
 msgid "You have no subscriptions"
 msgstr ""
 
-#: presentation/login.php:95
+#: i18n/templates.c:980
+msgid "You may change details about yourself by editing the entries below. Once you have completed the form, click on <strong>Update your details</strong>."
+msgstr ""
+
+#: i18n/templates.c:968
+msgid "You may change your password by entering it in the fields below. Your system administrator may have defined certain rules (such as minimum password length) that your password must abide by."
+msgstr ""
+
+#: login.php:98
 msgid "You must have cookies enabled to use the document management system."
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:297
+msgid "You must provide a name"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:302
+msgid "You must provide a username"
 msgstr ""
 
 #: plugins/ktcore/admin/documentCheckout.php:62
@@ -3852,120 +4545,141 @@ msgstr ""
 msgid "You must select a document to check in first."
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:334
+#: plugins/ktcore/admin/documentTypes.php:142
+msgid "You must select at least one fieldset"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:353
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:161
 msgid "You must specify a name for the user."
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:336
+#: plugins/ktcore/admin/userManagement.php:355
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:163
 msgid "You must specify a new username."
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:185
-#: plugins/ktcore/admin/userManagement.php:349
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:77
+#: plugins/ktcore/admin/userManagement.php:368
 msgid "You must specify a password for the user."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:110
+#: preferences.php:78
+msgid "You must specify a password."
+msgstr ""
+
+#: preferences.php:122
 msgid "You must specify your name."
 msgstr ""
 
-#: plugins/ktcore/admin/savedSearch.php:48
-#: plugins/ktcore/admin/conditions.php:54
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:55
+#: browse.php:490
+msgid "You must supply a reason"
+msgstr ""
+
+#: plugins/ktcore/admin/savedSearch.php:128
+#: plugins/ktcore/admin/savedSearch.php:155
+#: plugins/ktcore/admin/conditions.php:105
+#: plugins/ktcore/admin/conditions.php:131 search/booleanSearch.php:60
 msgid "You need to have at least 1 condition."
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:119
+#: plugins/ktstandard/KTSubscriptions.php:138
 msgid "You were not subscribed to that document"
 msgstr ""
 
-#: plugins/ktstandard/KTSubscriptions.php:269
+#: plugins/ktstandard/KTSubscriptions.php:282
 msgid "You were not subscribed to that folder"
 msgstr ""
 
-#: i18n/templates.c:101
+#: i18n/templates.c:95
 msgid "Your Checked-out Documents"
 msgstr ""
 
-#: i18n/templates.c:785 i18n/templates.c:797
+#: i18n/templates.c:971 i18n/templates.c:983
 msgid "Your Details"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:49
+#: preferences.php:48
 msgid "Your Password"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:26
+#: preferences.php:24
 msgid "Your Preferences"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:64
-#: plugins/ktstandard/KTDiscussion.php:141
+#: plugins/ktstandard/KTDiscussion.php:68
+#: plugins/ktstandard/KTDiscussion.php:146
 msgid "Your contribution to the discussion in this thread"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:138
+#: preferences.php:151
 msgid "Your details have been updated."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:35
+#: preferences.php:34
 msgid "Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:34
+#: preferences.php:33
 msgid "Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:37
+#: preferences.php:36
 msgid "Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/preferences.php:100
+#: preferences.php:109
 msgid "Your password has been changed."
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:55
+#: preferences.php:87
+#, php-format
+msgid "Your password is too short - passwords must be at least %d characters long."
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:53
 #: plugins/ktcore/admin/userManagement.php:95
 msgid "add a new user"
 msgstr ""
 
-#: i18n/templates.c:356
+#: i18n/templates.c:1409
 msgid "add another set of criteria"
 msgstr ""
 
-#: plugins/ktcore/folder/addDocument.php:17
-#: plugins/ktcore/folder/addDocument.php:48
+#: plugins/ktcore/folder/addDocument.php:39
+#: plugins/ktcore/folder/addDocument.php:71
 msgid "add document"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:26
+#: plugins/ktcore/KTFolderActions.php:24
 msgid "add folder"
 msgstr ""
 
-#: i18n/templates.c:278
+#: i18n/templates.c:317
 msgid "add new category"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:544
+#: plugins/ktcore/KTDocumentActions.php:518
 msgid "archiving"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkImport.php:18
+#: config/siteMap.inc:37
+msgid "browse documents"
+msgstr ""
+
+#: plugins/ktcore/folder/BulkImport.php:23
 msgid "bulk import"
 msgstr ""
 
-#: plugins/ktcore/folder/BulkUpload.php:17
+#: plugins/ktcore/folder/BulkUpload.php:38
 msgid "bulk upload"
 msgstr ""
 
-#: i18n/templates.c:2033
+#: i18n/templates.c:2321
 msgid "by #name# at #date#"
 msgstr ""
 
-#: i18n/templates.c:815
+#: i18n/templates.c:1001
 msgid "change password"
 msgstr ""
 
@@ -3973,19 +4687,19 @@ msgstr ""
 msgid "change user password"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:257
+#: view.php:270
 msgid "compare versions"
 msgstr ""
 
-#: i18n/templates.c:1766
+#: i18n/templates.c:2033
 msgid "compare with current"
 msgstr ""
 
-#: i18n/templates.c:1913
+#: i18n/templates.c:2189
 msgid "conditional data."
 msgstr ""
 
-#: plugins/ktcore/admin/deletedDocuments.php:38
+#: plugins/ktcore/admin/deletedDocuments.php:49
 #, php-format
 msgid "confirm expunge of %d documents"
 msgstr ""
@@ -3994,67 +4708,63 @@ msgstr ""
 msgid "confirm forced check-in"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:41
+#: plugins/ktcore/admin/archivedDocuments.php:42
 #, php-format
 msgid "confirm restore of %d documents"
 msgstr ""
 
-#: i18n/templates.c:1421
+#: i18n/templates.c:1676
 msgid "create behaviour"
 msgstr ""
 
-#: i18n/templates.c:593
+#: i18n/templates.c:767
 msgid "create group"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:335
-msgid "create new group"
-msgstr ""
-
-#: i18n/templates.c:755
+#: i18n/templates.c:938
 msgid "create new role"
 msgstr ""
 
-#: i18n/templates.c:707
+#: i18n/templates.c:890
 msgid "create new unit"
 msgstr ""
 
-#: i18n/templates.c:524 i18n/templates.c:2060
+#: i18n/templates.c:683 i18n/templates.c:2348
 msgid "create user"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:26
+#: search/booleanSearch.php:29
 msgid "defining search"
 msgstr ""
 
-#: i18n/templates.c:956
+#: i18n/templates.c:1133
 msgid "deleting a link type will delete <strong>all</strong> links of that type within the system."
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:58
-#: plugins/ktstandard/KTDiscussion.php:130
+#: plugins/ktstandard/KTDiscussion.php:62
+#: plugins/ktstandard/KTDiscussion.php:134
 msgid "discussion"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:79
+#: view.php:81
 msgid "document details"
 msgstr ""
 
-#: i18n/templates.c:1445
+#: i18n/templates.c:1700
 msgid "done"
 msgstr ""
 
-#: plugins/ktcore/admin/documentTypes.php:95 i18n/templates.c:1262
-#: i18n/templates.c:1439
+#: plugins/ktcore/admin/documentTypes.php:93 i18n/templates.c:1514
+#: i18n/templates.c:1694
 msgid "edit"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:172
-#: plugins/ktcore/admin/documentFields.php:186
+#: plugins/ktcore/admin/documentFields.php:202
+#: plugins/ktcore/admin/documentFields.php:216
 msgid "edit field"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:51
+#: plugins/ktcore/admin/groupManagement.php:49
 msgid "edit group"
 msgstr ""
 
@@ -4062,7 +4772,7 @@ msgstr ""
 msgid "edit groups"
 msgstr ""
 
-#: i18n/templates.c:968
+#: i18n/templates.c:1148 i18n/templates.c:1151
 msgid "edit link type"
 msgstr ""
 
@@ -4074,30 +4784,37 @@ msgstr ""
 msgid "editing LDAP settings"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:367
+#: plugins/ktcore/KTDocumentActions.php:20
+#, php-format
+msgid "fDocumentId=%d"
+msgstr ""
+
+#: plugins/ktcore/admin/userManagement.php:391
 #: plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php:186
 msgid "failed to create user."
 msgstr ""
 
-#: i18n/templates.c:350
+#: i18n/templates.c:389 i18n/templates.c:1403
 msgid "first select a type of query"
 msgstr ""
 
-#: i18n/templates.c:896
+#: i18n/templates.c:1073
 msgid "force checkin"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:157
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php:212
+#: view.php:160 view.php:215
 msgid "history"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/browse.php:70
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php:61
+#: i18n/templates.c:536
+msgid "inherited from parent folder."
+msgstr ""
+
+#: browse.php:110 edit.php:62
 msgid "invalid folder"
 msgstr ""
 
-#: plugins/ktcore/admin/archivedDocuments.php:20
+#: plugins/ktcore/admin/archivedDocuments.php:21
 msgid "list"
 msgstr ""
 
@@ -4105,7 +4822,7 @@ msgstr ""
 msgid "list checked out documents"
 msgstr ""
 
-#: i18n/templates.c:1154
+#: i18n/templates.c:1370
 msgid "login"
 msgstr ""
 
@@ -4113,12 +4830,12 @@ msgstr ""
 msgid "logout"
 msgstr ""
 
-#: plugins/ktcore/admin/groupManagement.php:132
-#: plugins/ktcore/admin/groupManagement.php:232
+#: plugins/ktcore/admin/groupManagement.php:130
+#: plugins/ktcore/admin/groupManagement.php:230
 msgid "manage members"
 msgstr ""
 
-#: i18n/templates.c:1871
+#: i18n/templates.c:2147
 msgid "manage workflow"
 msgstr ""
 
@@ -4126,105 +4843,109 @@ msgstr ""
 msgid "modify user details"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:368
-#: plugins/ktcore/KTDocumentActions.php:420
+#: plugins/ktcore/KTDocumentActions.php:345
+#: plugins/ktcore/KTDocumentActions.php:397
 msgid "move"
 msgstr ""
 
-#: i18n/templates.c:1058
+#: i18n/templates.c:1268
 msgid "new"
 msgstr ""
 
-#: i18n/templates.c:1907
+#: plugins/ktcore/KTPermissions.php:176
+msgid "no groups"
+msgstr ""
+
+#: i18n/templates.c:2183
 msgid "no value"
 msgstr ""
 
-#: i18n/templates.c:629
+#: i18n/templates.c:803
 msgid "not part of a unit"
 msgstr ""
 
-#: i18n/templates.c:1034
+#: i18n/templates.c:1220
 msgid "please confirm that you want to delete these documents."
 msgstr ""
 
-#: i18n/templates.c:998
+#: i18n/templates.c:1184
 msgid "please confirm that you want to restore these documents from an archived state."
 msgstr ""
 
-#: i18n/templates.c:1166 i18n/templates.c:1442
+#: i18n/templates.c:1238
+msgid "please confirm that you want to restore these documents."
+msgstr ""
+
+#: i18n/templates.c:1382 i18n/templates.c:1697
 msgid "save"
 msgstr ""
 
-#: i18n/templates.c:536 i18n/templates.c:569 i18n/templates.c:668
-#: i18n/templates.c:695
+#: i18n/templates.c:584 i18n/templates.c:611 i18n/templates.c:698
+#: i18n/templates.c:734 i18n/templates.c:845 i18n/templates.c:875
 msgid "save changes"
 msgstr ""
 
-#: i18n/templates.c:581
+#: i18n/templates.c:749
 msgid "save changes to group"
 msgstr ""
 
-#: i18n/templates.c:1979
+#: i18n/templates.c:2255
 msgid "search"
 msgstr ""
 
-#: i18n/templates.c:608
+#: i18n/templates.c:782
 msgid "search for groups"
 msgstr ""
 
-#: i18n/templates.c:476 i18n/templates.c:2069
+#: i18n/templates.c:632 i18n/templates.c:2357
 msgid "search for users"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php:65
-msgid "searching"
-msgstr ""
-
-#: plugins/ktcore/admin/groupManagement.php:18
+#: plugins/ktcore/admin/groupManagement.php:16
 msgid "select a group"
 msgstr ""
 
-#: plugins/ktcore/admin/orgManagement.php:15
+#: plugins/ktcore/admin/orgManagement.php:13
 msgid "select a organisation"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php:21
+#: plugins/ktcore/admin/manageHelp.php:21
 msgid "select a section"
 msgstr ""
 
-#: plugins/ktcore/admin/unitManagement.php:17
+#: plugins/ktcore/admin/unitManagement.php:15
 msgid "select a unit"
 msgstr ""
 
-#: plugins/ktcore/admin/userManagement.php:23
+#: plugins/ktcore/admin/userManagement.php:21
 msgid "select a user"
 msgstr ""
 
-#: i18n/templates.c:1775
+#: i18n/templates.c:2048
 msgid "showing comparison between versions #from# and #to#"
 msgstr ""
 
-#: i18n/templates.c:1739 i18n/templates.c:1796
+#: i18n/templates.c:2009 i18n/templates.c:2072
 msgid "showing information for <strong>version #version#</strong>"
 msgstr ""
 
-#: plugins/ktcore/admin/workflows.php:212
+#: plugins/ktcore/admin/workflows.php:250
 msgid "state"
 msgstr ""
 
-#: i18n/templates.c:1304
+#: i18n/templates.c:1559
 msgid "stuck, will never be disabled when synchronising from another source"
 msgstr ""
 
-#: i18n/templates.c:1316
+#: i18n/templates.c:1571
 msgid "stuck, will never be enabled when synchronising from another source"
 msgstr ""
 
-#: i18n/templates.c:1781 i18n/templates.c:1787
-msgid "the information for version #version# comes from an older version of KnowledgeTree, and may be incorrect."
+#: i18n/templates.c:2054 i18n/templates.c:2060
+msgid "the information for version  #version# comes from an older version of KnowledgeTree and may be  incorrect."
 msgstr ""
 
-#: i18n/templates.c:1886
+#: i18n/templates.c:2162
 msgid "this cannot not change between versions"
 msgstr ""
 
@@ -4233,36 +4954,36 @@ msgstr ""
 msgid "unknown type"
 msgstr ""
 
-#: i18n/templates.c:737
+#: i18n/templates.c:920
 msgid "update organisation information"
 msgstr ""
 
-#: i18n/templates.c:761
+#: i18n/templates.c:944
 msgid "update role information"
 msgstr ""
 
-#: i18n/templates.c:713
+#: i18n/templates.c:896
 msgid "update unit information"
 msgstr ""
 
-#: plugins/ktcore/admin/documentLinks.php:46
-#: plugins/ktcore/admin/documentLinks.php:75
-#: plugins/ktcore/admin/deletedDocuments.php:17
+#: plugins/ktcore/admin/documentLinks.php:43
+#: plugins/ktcore/admin/documentLinks.php:72
+#: plugins/ktcore/admin/deletedDocuments.php:16
 msgid "view"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFields.php:22
+#: plugins/ktcore/admin/documentFields.php:26
 msgid "view fieldsets"
 msgstr ""
 
-#: plugins/ktstandard/KTDiscussion.php:136
+#: plugins/ktstandard/KTDiscussion.php:140
 msgid "viewing comments"
 msgstr ""
 
-#: plugins/ktcore/KTFolderActions.php:67
+#: plugins/ktcore/KTFolderActions.php:65
 msgid "viewing permissions"
 msgstr ""
 
-#: plugins/ktcore/KTDocumentActions.php:597
+#: plugins/ktcore/KTDocumentActions.php:570
 msgid "workflow"
 msgstr ""
