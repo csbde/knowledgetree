@@ -111,7 +111,9 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
         $sName = $this->oValidator->validateEntityName('DocumentType', 'document type', $_REQUEST['name'], $aErrorOptions);
 
+        $oDocumentType->setName($sName);
         $res = $oDocumentType->update();
+        
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _('Could not save document type changes'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);

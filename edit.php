@@ -142,6 +142,8 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 
 	// "standard document editing"
     function do_main($newType=false) {
+	    $this->oPage->setBreadcrumbDetails("edit");
+
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_("No document specified for editing."));

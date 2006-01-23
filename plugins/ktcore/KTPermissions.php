@@ -22,6 +22,8 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.permissions';
 
     function do_main() {
+        $this->oPage->setBreadcrumbDetails("permissions");
+
         $oTemplate = $this->oValidator->validateTemplate("ktcore/document/document_permissions");
         $oPO = KTPermissionObject::get($this->oDocument->getPermissionObjectID());
         $aPermissions = KTPermission::getList();
