@@ -16,6 +16,7 @@ require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 
 class BrowseColumn {
@@ -83,8 +84,7 @@ class TitleColumn extends BrowseColumn {
     }
 
     function buildDocumentLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "documenturl", $GLOBALS['KTRootUrl'] . '/view.php');
-        return $baseurl . '?fDocumentId=' .  $aDataRow["document"]->getId();
+        return KTBrowseUtil::getUrlForDocument($aDataRow["document"]->getId());
     }
 
     function buildFolderLink($aDataRow) {
