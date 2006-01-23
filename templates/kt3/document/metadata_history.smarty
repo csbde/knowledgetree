@@ -17,7 +17,7 @@
         <tbody>
           {foreach item=oVersion from=$versions}
             <tr class="{cycle options=even,odd}">
-                <td class="username">{$context->getUserForId($oVersion->getModifiedUserId())}</td>
+                <td class="username">{$context->getUserForId($oVersion->getVersionCreatorId())}</td>
                 <td class="date">{$oVersion->getMetadataVersion()}</td>
 {capture assign=version}{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}{/capture}
 {capture assign=versionid}{$oVersion->getContentVersionId()}{/capture}
