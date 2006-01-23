@@ -12,6 +12,7 @@ lifecycle of the document.{/i18n}
 
 <p>{i18n}Document has no assigned workflow.{/i18n}</p>
 
+{if $aWorkflows}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset><legend>{i18n}Start workflow on document{/i18n}</legend>
 <input type="hidden" name="action" value="startWorkflow" />
@@ -22,6 +23,15 @@ lifecycle of the document.{/i18n}
 </div>
 </fieldset>
 </form>
+{else}
+<h3>{i18n}No defined workflows{/i18n}</h3>
+<div class="ktError">
+<p>{i18n}There are no defined workflows which can be started on this
+document.  An administrator can create workflows to map the lifecycle of
+a document.  Contact your administrator to discuss
+workflows.{/i18n}</p>
+</div>
+{/if}
 
 {else}
 
