@@ -350,9 +350,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // FIXME generate and pass the error stack to adduser.
         
         $name = KTUtil::arrayGet($_REQUEST, 'name');
-        if (empty($name)) { $this->errorRedirectToMain(_('You must specify a name for the user.')); }
+        if (empty($name)) { $this->errorRedirectTo('addUser', _('You must specify a name for the user.')); }
         $username = KTUtil::arrayGet($_REQUEST, 'username');
-        if (empty($name)) { $this->errorRedirectToMain(_('You must specify a new username.')); }
+        if (empty($name)) { $this->errorRedirectTo('addUser', _('You must specify a new username.')); }
         // FIXME check for non-clashing usernames.
         
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
@@ -365,9 +365,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         if (empty($password)) { 
-            $this->errorRedirectToMain(_("You must specify a password for the user."));
+            $this->errorRedirectTo('addUser', _("You must specify a password for the user."));
         } else if ($password !== $confirm_password) {
-            $this->errorRedirectToMain(_("The passwords you specified do not match."));
+            $this->errorRedirectTo('addUser', _("The passwords you specified do not match."));
+        }
+        
+        $dupUser =& User::getByUserName($username);
+        if(!PEAR::isError($dupUser)) {
+            $this->errorRedirectTo('addUser', _("A user with that username already exists"));
         }
         
         $oUser =& User::createFromArray(array(

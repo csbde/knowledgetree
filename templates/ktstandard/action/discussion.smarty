@@ -1,6 +1,6 @@
 {if $threads}
 <h3>{i18n}Existing threads{/i18n}</h3>
-<table class="listing" cellspacing="0" cellpadding="0">
+<table class="kt_collection" cellspacing="0" cellpadding="0">
   <thead>
     <tr>
       <th>{i18n}Subject{/i18n}</th>
