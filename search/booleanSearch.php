@@ -42,6 +42,10 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     function do_performSearch() {
         $title = null;
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
+
+        if (is_null(KTUtil::arrayGet($datavars["subgroup"][0], "values"))) {
+            $this->errorRedirectToMain("No search parameters given");
+        }
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
         }
