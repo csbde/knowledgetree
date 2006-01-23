@@ -10,7 +10,8 @@ body
 .floatClear
 {
     clear: both;
-    height: 1px;
+    height: 1px !important;
+    margin: 0; border: 0; padding: 0;
 }
 
 #kt-wrapper
@@ -499,7 +500,7 @@ a.main_nav_item {
 
 .detail_fieldset h3
 {
-    margin: 2em 0 0.25em 0;
+    margin: 0em 0 0.25em 0;
 }
 
 
