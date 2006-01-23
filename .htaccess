@@ -40,6 +40,9 @@ SetEnv kt_htaccess_worked yes
 LimitRequestBody 0
 DirectoryIndex index.html index.php
 Options none
+Options +ExecCGI
+Options +SymLinksIfOwnerMatch
+#AcceptPathInfo On
 
 #
 # If you are having uploading larger documents, adjust the 16M examples
@@ -55,20 +58,14 @@ php_value max_input_time -1
 php_value max_execution_time 90
 </IfModule>
 
-#<IfModule mod_negotiation.c>
-#Options +MultiViews
-#<IfModule mod_env.c>
-#SetEnv kt_no_extensions yes
-#</IfModule>
-#</IfModule>
-#<IfModule !mod_negotiation.c>
 #<IfModule mod_rewrite.c>
 #RewriteEngine On
+#RewriteBase /
 #RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{REQUEST_FILENAME}.php -f
-#RewriteRule ^(.*)$ $1.php
+#RewriteRule !^[^/]*.php - [C]
+#RewriteRule ^([^/]*)([/].+)? $1.php [E=kt_path_info:$2,E=kt_orig_file:$1.php]
 #<IfModule mod_env.c>
 #SetEnv kt_no_extensions yes
-#</IfModule>
 #</IfModule>
 #</IfModule>
