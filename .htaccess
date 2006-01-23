@@ -61,6 +61,10 @@ php_value max_execution_time 90
 #<IfModule mod_rewrite.c>
 #RewriteEngine On
 #RewriteBase /
+## Set RewriteBase to the base directory that KnowledgeTree is viewable
+## from via the web.  So http://foo.org/ is /, and
+## http://bar.com/knowledgeTree/ is /knowledgeTree
+##RewriteBase /knowledgeTree
 #RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{REQUEST_FILENAME}.php -f
 #RewriteRule !^[^/]*.php - [C]
