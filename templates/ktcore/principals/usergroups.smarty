@@ -5,9 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
-<strong>FIXME</strong> there are potential unexpected
-side-effects to this when used by unitAdmins.</p>
+<p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateGroups" />
@@ -20,8 +18,8 @@ side-effects to this when used by unitAdmins.</p>
    
    <fieldset>
       <legend>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the groups which should
-contain this user.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
+
+<p class="descriptiveText">{i18n}Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>.{/i18n}</p>
 
 <table border="0" width="600">
    <thead>

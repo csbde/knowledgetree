@@ -1,6 +1,6 @@
 <h2>{i18n}Document Fieldsets{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> add documentation about what fieldsets are, and how to use them.</p>
+<p class="descriptiveText">{i18n}Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata.{/i18n}</p>
 
 { if $fieldsets}
 <h3>{i18n}Existing document fieldsets{/i18n}</h3>
@@ -52,8 +52,6 @@
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset><legend>{i18n}Create a new document fieldset{/i18n}</legend>
-
-<p class="descriptiveText"><strong>FIXME</strong> add documentation about what fieldsets are, and how to use them.</p>
 
 
 <input type="hidden" name="action" value="new" />

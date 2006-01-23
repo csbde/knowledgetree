@@ -13,7 +13,7 @@
 <legend>{i18n}Fieldset properties{/i18n}</legend>
 
 <p class="descriptiveText">
-  <strong>FIXME</strong> add help text for fieldset editing.
+  {i18n}Please complete the following fields to edit the fieldset's properties and then click <strong>Change</strong>. Required fields are marked with a red square.{/i18n}
 </p>
 
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
@@ -110,7 +110,7 @@ field can depend on the user's selections for the others.{/i18n}
 <h3>{i18n}Fieldset members{/i18n}</h3>
 
 <p class="descriptiveText">
-  <strong>FIXME</strong> add help text for fieldset members.
+  {i18n}A fieldset is a collection of fields that comprise a defined set of document metadata. You may add, edit or delete members of this fieldset collection below.{/i18n}
 </p>
 
 
@@ -144,7 +144,7 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 <fieldset>
 <legend>{i18n}Add a new field{/i18n}</legend>
 
-<p class="descriptiveText"><strong>FIXME</strong> add help text for field creation.</p>
+<p class="descriptiveText">{i18n}To add a new field, enter the field's name, description and field type below and then click <strong>Add field</strong>. If the field type requires additional lookup values you will be prompted to enter them.{/i18n}</p>
 
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="newfield">

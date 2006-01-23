@@ -9,7 +9,7 @@
 <p class="descriptiveText">{i18n}Since there may be many groups in the
 system, please type a few letters from the group's name to begin.
 Alternatively, <a href="?show_all=1">view all groups</a> (note that this
-may be very slow if you have many groups.{/i18n}</p>
+action may take some time if you have many groups).{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}

@@ -1,13 +1,13 @@
 <h2>{i18n}Add a new group{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Add a new group{/i18n}</p>
+<p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createGroup" />
    
    <fieldset>
       <legend>{i18n}Specify group details{/i18n}</legend>
-      <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
+      <p class="descriptiveText">{i18n}Please enter the Group's details below and then click <strong>create group</strong>. Fields marked with a red square are required.{/i18n}</p>
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}
       {/foreach}

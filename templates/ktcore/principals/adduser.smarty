@@ -1,6 +1,6 @@
 <h2>{i18n}Add a user{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
+<p class="descriptiveText">{i18n}Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled.{/i18n}</p>
 
 {if $authentication_sources}
    <form action="{$smarty.server.PHP_SELF}" method="POST">
