@@ -107,9 +107,18 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     $sTitle = "Document: " . $sDocumentName . " from " .  $oSendingUser->getName();
     $oEmail = new Email();
     $oDocument = Document::get($iDocumentID);
-    $sDocumentPath = $oDocument->getPath();
+
+    // Request a standard file path so that it can be attached to the
+    // email
+    $oStorage =& KTStorageManagerUtil::getSingleton();
+    $sDocumentPath = $oStorage->temporaryFile($oDocument);
+
     $sDocumentFileName = $oDocument->getFileName();
     $res = $oEmail->sendAttachment($sDestEmailAddress, $sTitle, $sMessage, $sDocumentPath, $sDocumentFileName);
+
+    // Tell the storage we don't need the temporary file anymore.
+    $oStorage->freeTemporaryFile($sDocumentPath);
+
     if (PEAR::isError($res)) {
         $default->log->error($res->getMessage());
         $aEmailErrors[] = $res->getMessage();
