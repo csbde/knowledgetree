@@ -1,0 +1,21 @@
+<h2>{i18n}Move Files and Folders{/i18n}</h2>
+
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>{i18n}Move{/i18n}</legend>
+<input type="hidden" name="action" value="move" />
+<input type="hidden" name="fMoveCode" value="{$move_code}" />
+<input type="hidden" name="fFolderId" value="{$folder}" />
+
+<p class="descriptiveText">{i18n}Please give these final details.{/i18n}</p>
+
+{foreach item=oWidget from=$form_fields}
+{$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+<input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
+</div>
+</fieldset>
+</form>
