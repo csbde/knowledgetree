@@ -104,7 +104,7 @@ class KTDocumentUtil {
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
 
-        $oDocument->startNewContentVersion();
+        $oDocument->startNewContentVersion($oUser);
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
