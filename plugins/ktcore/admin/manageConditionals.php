@@ -20,7 +20,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $this->ru = $default->rootUrl;
         // this is not useful:  we _still_ don't chain through the right dispatcher (!)
         $this->aBreadcrumbs[] = array('url' => $default->rootUrl . '/admin.php/documents', 'name' => _('Document Metadata and Workflow Configuration'));
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Field Management'));
+        $this->aBreadcrumbs[] = array('url' => $default->rootUrl . '/admin.php/documents/fieldmanagement', 'name' => _('Document Field Management'));
 
 
     }
