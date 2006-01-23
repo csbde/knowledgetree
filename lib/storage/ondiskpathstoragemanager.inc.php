@@ -154,47 +154,19 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 * return boolean true on successful move, false otherwhise
 	 */
 	function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
-		global $default;
-		
         $oConfig =& KTConfig::getSingleton();
-        $sCurrentPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), KTDocumentCore::_generateFolderPath($oSourceFolder->getID()), $oDocument->getFileName());
-        $sDestinationPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
-		
-		// find all the previous versions of this document and move them
-		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
-		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
-		
-		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
-        $aParams = array($oDocument->getID(), CHECKOUT);
-		$result = $sql->query(array($sQuery, $aParams));
-        if (!$result) {
-        	$default->log->error("KTOnDiskPathStorageManager->moveDocument error looking up document versions, id=" . $oDocument->getID());
-        }	
+        $aContentVersions = KTDocumentContentVersion::getByDocument($oDocument);
+        $sDocumentRoot = $oConfig->get('urls/documentRoot');
 
-        while ($sql->next_record()) {
-            $sVersion = $sql->f("version");
-            if ($sVersion <> $oDocument->getVersion()) {
-                $sSourcePath = $sCurrentPath . "-" . $sVersion;
-                $sDestinationPath = $sDestinationPath . "-" . $sVersion;
-                // move it to the new folder
-                $default->log->info("KTOnDiskPathStorageManager->moveDocument moving $sSourcePath to $sDestinationPath");
-                $res = KTUtil::moveFile($sSourcePath, $sDestinationPath);
-                if (PEAR::isError($res)) {
-                    // FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-                    $default->log->error("KTOnDiskPathStorageManager->moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
-                }
-            }
+        foreach ($aContentVersions as $oVersion) {
+            $sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oSourceFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
+            $sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
+            $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+            $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
+            $res = KTUtil::moveFile($sFullOldPath, $sFullNewPath);
+            $oVersion->setStoragePath($sNewPath);
+            $oVersion->update();
         }
-
-		// now move the current version		
-        $res = KTUtil::moveFile($sCurrentPath, $sDestinationPath);
-		if (PEAR::isError($res)) {
-			$default->log->error("KTOnDiskPathStorageManager->moveDocument couldn't move $sCurrentPath to $sDestinationPath, documentID=" . $oDocument->getID());
-            return $res;
-        }
-        $sStoragePath = sprintf("%s/%s", KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
-        $this->setPath($oDocument, $sStoragePath);
         return true;
 	}
 	
