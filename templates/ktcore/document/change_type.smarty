@@ -1,0 +1,20 @@
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="changeType" />
+<input type="hidden" name="fDocumentId" value="{$document->getId()}" />
+
+<fieldset>
+<legend>{i18n}Change Document Type{/i18n}</legend>
+{capture assign=doctype}<strong>{$document_type->getName()}</strong>{/capture}
+<p class="descriptiveText">{i18n arg_doctype=$doctype}This document is currently of type #doctype#.  If this
+is incorrect, you can change it here.{/i18n}</p>
+
+<select name="fDocType">
+{foreach item=oDocType from=$doctypes}
+    <option value="{$oDocType->getId()}" {if ($oDocType->getId() == $document_type->getId())}selected="true"{/if}>{$oDocType->getName()}</option>
+{/foreach}
+</select>
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Change Document Type{/i18n}" />
+</div>
+</fieldset>
+</form>
