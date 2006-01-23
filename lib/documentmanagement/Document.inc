@@ -395,6 +395,7 @@ class Document {
     function startNewMetadataVersion() {
         $this->_oDocumentMetadataVersion->iId = -1;
         $this->_oDocumentMetadataVersion->iMetadataVersion++;
+        $this->_oDocumentMetadataVersion->dVersionCreated = getCurrentDateTime();
         $this->_oDocumentMetadataVersion->create();
         $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
         $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
@@ -409,6 +410,7 @@ class Document {
         }
         $this->_oDocumentMetadataVersion->iId = -1;
         $this->_oDocumentMetadataVersion->iMetadataVersion++;
+        $this->_oDocumentMetadataVersion->dVersionCreated = getCurrentDateTime();
         $this->_oDocumentMetadataVersion->iContentVersionId = $this->_oDocumentContentVersion->getId();
         $res = $this->_oDocumentMetadataVersion->create();
         if (PEAR::isError($res)) {
