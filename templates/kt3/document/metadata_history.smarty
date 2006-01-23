@@ -20,7 +20,8 @@
                 <td class="username">{$context->getUserForId($oVersion->getModifiedUserId())}</td>
                 <td class="date">{$oVersion->getMetadataVersion()}</td>
 {capture assign=version}{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}{/capture}
-                <td class="date"><a href="{$downloadaction->getURL()}&version={$version}">{$version}</a></td>
+{capture assign=versionid}{$oVersion->getContentVersionId()}{/capture}
+                <td class="date"><a href="{$downloadaction->getURL()}&version={$versionid}">{$version}</a></td>
                 <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with current{/i18n}</a></td>                
             </tr>
             {/foreach}

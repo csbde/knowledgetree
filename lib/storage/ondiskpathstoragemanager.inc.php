@@ -35,6 +35,8 @@
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 
 // used for well-known MIME deterministic techniques
 if (!extension_loaded('fileinfo')) {
@@ -97,7 +99,6 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
-            header("Content-Location: ".$oDocument->getFileName());
 
             readfile($sPath);
         } else {
@@ -118,21 +119,22 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return true;
     }
     
-    function downloadVersion($oDocument, $sVersion) {
+    function downloadVersion($oDocument, $iVersionId) {
         //get the document
-        $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
-        if (file_exists($sDocumentFileSystemPath)) {
+        $oContentVersion = KTDocumentContentVersion::get($iVersionId);
+        $oConfig =& KTConfig::getSingleton();
+        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
+        if (file_exists($sPath)) {
             //set the correct headers
             header("Content-Type: " .
                     KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
-            header("Content-Length: ".  filesize($sDocumentFileSystemPath));
+            header("Content-Length: ".  filesize($sPath));
             // prefix the filename presented to the browser to preserve the document extension
             header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
-            header("Content-Location: ".$oDocument->getFileName());
-            readfile($sDocumentFileSystemPath);
+            readfile($sPath);
         } else {
             return false;
         }
