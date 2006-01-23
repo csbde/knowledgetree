@@ -43,9 +43,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $title = null;
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
 
-        if (is_null(KTUtil::arrayGet($datavars["subgroup"][0], "values"))) {
-            $this->errorRedirectToMain("No search parameters given");
-        }
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
         }
@@ -58,6 +55,10 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $oSearch = KTSavedSearch::get($iSavedSearchId);
             $datavars = $oSearch->getSearch();
             $title = $oSearch->getName();
+        }
+
+        if (is_null(KTUtil::arrayGet($datavars["subgroup"][0], "values"))) {
+            $this->errorRedirectToMain("No search parameters given");
         }
         
         if (empty($datavars)) {
