@@ -4,6 +4,10 @@ require_once(KT_LIB_DIR . "/actions/folderaction.inc.php");
 require_once(KT_LIB_DIR . "/import/zipimportstorage.inc.php");
 require_once(KT_LIB_DIR . "/import/bulkimport.inc.php");
 
+require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
+require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
+require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
+
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
 class KTBulkUploadFolderAction extends KTFolderAction {
