@@ -275,7 +275,8 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     function do_delete() {
         global $default;
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $this->oValidator->notEmpty($sReason);
+        $this->oValidator->validateString($sReason, 
+            array('redirect_to' => array('', sprintf('fDocumentId=%d', $this->oDocument->getId()))));
         
         
         $res = KTDocumentUtil::delete($this->oDocument, $sReason);
