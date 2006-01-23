@@ -223,6 +223,11 @@ class KTInit {
             $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
             $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
         }
+        $env_path_info = KTUtil::arrayGet($_SERVER, 'REDIRECT_kt_path_info');
+        if (empty($path_info) && !empty($env_path_info)) {
+            $_SERVER['PATH_INFO'] = $env_path_info;
+            $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+        }
 
         // KTS-50: IIS (and probably most non-Apache web servers) don't
         // set REQUEST_URI.  Fake it.
@@ -230,6 +235,9 @@ class KTInit {
         if (empty($request_uri)) {
             $_SERVER['REQUEST_URI'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
         }
+
+        $script_name = KTUtil::arrayGet($_SERVER, 'SCRIPT_NAME');
+        $php_self = KTUtil::arrayGet($_SERVER, 'PHP_SELF');
 
         $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
         if (!empty($kt_path_info)) {
