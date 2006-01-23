@@ -79,12 +79,15 @@ class KTSavedSearchDispatcher extends KTStandardDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         // we need to help out here, since it gets unpleasant inside the template.
+        
         foreach ($aSearch['subgroup'] as $isg => $as) {
             $aSubgroup =& $aSearch['subgroup'][$isg];
-            foreach ($aSubgroup['values'] as $iv => $t) {
-                $datavars =& $aSubgroup['values'][$iv];
-                $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
-                $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+            if (is_array($aSubgroup['values'])) {
+                foreach ($aSubgroup['values'] as $iv => $t) {
+                    $datavars =& $aSubgroup['values'][$iv];
+                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
+                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+                }
             }
         }
         
