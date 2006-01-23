@@ -328,7 +328,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		//return '<pre>' . print_r($field_values, true) . '</pre>';
 		$this->startTransaction();
 		
-		$oDocument->startNewMetadataVersion();
+		$oDocument->startNewMetadataVersion($this->oUser);
 		if (PEAR::isError($res)) {
 		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
 		}

@@ -392,16 +392,19 @@ class Document {
         return $oDocument;
     }
 
-    function startNewMetadataVersion() {
+    function startNewMetadataVersion($oUser) {
+        $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentMetadataVersion->iId = -1;
         $this->_oDocumentMetadataVersion->iMetadataVersion++;
         $this->_oDocumentMetadataVersion->dVersionCreated = getCurrentDateTime();
+        $this->_oDocumentMetadataVersion->iVersionCreatorId = $iUserId;
         $this->_oDocumentMetadataVersion->create();
         $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
         $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
     }
 
-    function startNewContentVersion() {
+    function startNewContentVersion($oUser) {
+        $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentContentVersion->iId = -1;
         $res = $this->_oDocumentContentVersion->create();
         if (PEAR::isError($res)) {
@@ -411,6 +414,7 @@ class Document {
         $this->_oDocumentMetadataVersion->iId = -1;
         $this->_oDocumentMetadataVersion->iMetadataVersion++;
         $this->_oDocumentMetadataVersion->dVersionCreated = getCurrentDateTime();
+        $this->_oDocumentMetadataVersion->iVersionCreatorId = $iUserId;
         $this->_oDocumentMetadataVersion->iContentVersionId = $this->_oDocumentContentVersion->getId();
         $res = $this->_oDocumentMetadataVersion->create();
         if (PEAR::isError($res)) {
