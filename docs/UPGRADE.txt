@@ -1,6 +1,13 @@
 KnowledgeTree Upgrade instructions
 ==================================
 
+* Please Note that KT3 Beta 4 is the first post-2.0.x version to support
+  a sane upgrade path.  WE STRONGLY RECOMMEND YOU MAKE A BACKUP BEFORE
+  YOU START.  Please help us by submitting any bugs you find in the migration
+  process at 
+  
+  http://support.ktdms.com
+
 Before you upgrade
 ------------------
 

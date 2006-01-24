@@ -99,6 +99,15 @@ KnowledgeTree Installation Notes
    - in a web browser go to your KnowledgeTree installation via the web
    - default user is "admin" with password "admin"
 
+*  Register the standard plugins.
+   - in a web browser go to "DMS Administration" , then "Miscellaneous",
+     then "Manage Plugins"
+   - click "Reread plugins" to load the list of available plugins.
+   - enable the plugins as required.
+   
+   * Please note: *
+   Fulltext indexing of files (e.g. checking their contents) needs to be
+   activated from this menu or the full-text search WILL NOT work.
 
 File Indexing
 -------------

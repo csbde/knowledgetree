@@ -1,0 +1,140 @@
+Windows Specific Installation Instructions
+==========================================
+
+Installation on Windows XP and 2003 requires a slightly different approach to
+the *NIX one.  
+
+The easiest installation approach is to use our Windows installer.  You can
+find this for download on SourceForge, alongside our usual install bundles:
+
+  http://sourceforge.net/projects/kt-dms
+
+Manual Install (XAMPP)
+----------------------
+
+If you need to do a manual installation of KnowledgeTree for some reason,
+we recommend using a bundled version of Apache, MySQL and PHP.  For testing 
+purposes, we use XAMPP (version 1.5.1):
+
+  http://www.apachefriends.org/en/xampp.html
+
+General procedure:
+
+  * Install XAMPP
+  
+  * Extract the KnowledgeTree zipfile inside the XAMPP htdocs directory.  If
+    you installed XAMPP in
+    
+      c:\Program Files\xampp
+      
+    then you need to extract KnowledgeTree so that its files are in 
+    
+      c:\Program Files\xampp\htdocs\knowledgeTree
+      
+    This will be referred to as "<knowledgeTree>" in paths from here on.
+      
+  * Conduct the Pre-installation checkup.  Assuming you are running XAMPP on 
+    "localhost", visit
+  
+      http://localhost/knowledgeTree/setup/
+      
+  * Configure the Database.  The most effective way to do this with XAMPP is 
+    to use phpmyadmin:
+    
+      http://localhost/phpmyadmin/
+      
+      1.  Create a new database (call it "dms")
+      2.  Create the tables:
+      
+        - open the "dms" database from the left-menu/.
+        - go to "SQL" at the top of the screen.
+        - Where it says "Location of the text file" click browse and then run:
+        
+          * <knowledgeTree>\sql\mysql\install\structure.sql
+          * <knowledgeTree>\sql\mysql\install\data.sql
+          * <knowledgeTree>\sql\mysql\install\user.sql
+          
+  *  Configure your installation in <knowledgeTree>config\config.ini:
+
+   - The default configuration will determine many settings on your
+     installation automatically, and this is the preferred method of
+     running KnowledgeTree.  Please do not manually set these settings
+     unless you know what you are doing.
+
+   - The default configuration uses the database username and password
+     in the user.sql file mentioned above, use the local host for the
+     database, and use the database named 'dms'.  If you follow the
+     examples above in setting up the database, this means KnowledgeTree
+     should be fully configured to start working.
+
+   - However, you should change this once you've performed your initial
+     evalution of KnowledgeTree for the security of your documents.
+
+   - The following settings in config/environment.php control the
+     database connectivity, and can be set as shown:
+     
+        [db]
+        dbHost           = localhost
+        dbName           = dms
+        dbUser           = myuser
+        dbPass           = mypassword
+        
+  * Check the post-installation checklist:
+
+    If your knowledgeTree installation is at http://localhost/, go to:
+
+      http://localhost/setup/
+
+    And click on "Post-installation checkup".
+    
+  *  Login:
+   - in a web browser go to your KnowledgeTree installation via the web
+   - default user is "admin" with password "admin"
+
+  *  Register the standard plugins.
+  
+   - in a web browser go to "DMS Administration" , then "Miscellaneous",
+     then "Manage Plugins"
+   - click "Reread plugins" to load the list of available plugins.
+   - enable the plugins as required.
+   
+    * Please note: *
+   Fulltext indexing of files (e.g. checking their contents) needs to be
+   activated from this menu or the full-text search WILL NOT work.
+   
+
+File Indexing
+-------------
+
+The file indexing facilities of KnowledgeTree make use of external
+programs to perform their jobs.
+
+At the moment, the "catdoc" (http://www.45.free.net/~vitus/ice/catdoc/)
+and "xpdf" packages contains all the external programs you need.
+Installing this package is beyond the scope of this document - please
+consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
+to see how others have approached this on your platform. 
+
+You can find Windows specific installation instructions here:
+
+  http://support.ktdms.com/confluence/display/KTWiki/Windows+XP+installation+instructions
+  
+
+Troubleshooting
+---------------
+
+Please make sure that your KnowledgeTree installation passes all the
+pre- and post-installation checkups first.
+
+Refer to the Frequently Asked Questions list on the KnowledgeTree Wiki
+at http://support.ktdms.com/confluence/
+
+Ask on the KnowledgeTree forums on http://forum.ktdms.com/.
+
+If you have found a bug, please report it to the KnowledgeTree bug
+reporting system at http://support.ktdms.com/.
+
+Upgrading
+---------
+
+Refer to docs/UPGRADE.txt
