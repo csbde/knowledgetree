@@ -5,10 +5,16 @@
         document.{/i18n}
     </p>
     <dl class="metadata versioned">
+        <dt>{i18n}Document Filename{/i18n}</dt>
+        <dd>
+            <div class="current">{$filename} ({$context->_sizeHelper($document->getSize())})</div>
+            <div class="previous">{$comparison_filename} ({$context->_sizeHelper($comparison_document->getSize())})</div>
+        </dd>
+    
         <dt>{i18n}File is a{/i18n} </dt>
         <dd>
-            <div class="current">{$context->_mimeHelper($document->getMimeTypeID())} ({$context->_sizeHelper($document->getSize())})</div>
-            <div class="previous">{$context->_mimeHelper($comparison_document->getMimeTypeID())} ({$context->_sizeHelper($comparison_document->getSize())})</div>
+            <div class="current">{$context->_mimeHelper($document->getMimeTypeID())}</div>
+            <div class="previous">{$context->_mimeHelper($comparison_document->getMimeTypeID())}</div>
         </dd>
 
         <dt>{i18n}Created by{/i18n}</dt>

@@ -5,8 +5,11 @@
         document.{/i18n}
     </p>
     <dl class="metadata">
+        <dt>{i18n}Document Filename{/i18n}</dt>
+        <dd>{$filename} ({$context->_sizeHelper($document->getSize())})</dd>
+        
         <dt>{i18n}File is a{/i18n} </dt>
-        <dd>{$context->_mimeHelper($document->getMimeTypeID())} ({$context->_sizeHelper($document->getSize())})</dd>
+        <dd>{$context->_mimeHelper($document->getMimeTypeID())}</dd>
 
         <dt>{i18n}Created by{/i18n}</dt>
         <dd>{$creator} ({$creation_date})</dd>

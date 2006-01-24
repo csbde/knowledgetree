@@ -9,6 +9,7 @@ href="?action=addUser">{i18n}Add a new user{/i18n}</a>.</p>
 
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="do_search" value="1" />
 <fieldset>
 <legend>Search for users</legend>
 <p class="descriptiveText">{i18n}Since there may be many users in the system, please
@@ -26,6 +27,11 @@ very slow if you have many users.{/i18n}</p>
 </fieldset>
 </form>
 
+{if (no_search === true)}
+
+{else}
+
+   {if (!empty($search_results))}
 <table class="listing">
 <thead>
    <tr>
@@ -37,7 +43,6 @@ very slow if you have many users.{/i18n}</p>
    </tr>
 </thead>
 <tbody>
-   {if (!empty($search_results))}
    <!-- do we want to batch here? -->
      {foreach item=oUser from=$search_results}
      <tr>
@@ -48,21 +53,12 @@ very slow if you have many users.{/i18n}</p>
         <td><a href="?action=editgroups&user_id={$oUser->getId()}">{i18n}Groups{/i18n}</a></td>  
      </tr>   
      {/foreach}
-   {else}  
-   <tr>
-      <td colspan="5" class="ktInfo">
-         <!-- never show a very large set, if you can help it. -->
-         <p>
-{i18n}
-No search specified, or no results for your search.  Please choose some
-criteria from the list above to find users.
-{/i18n}
-</p>
-      </td>
-   </tr>
-   {/if}
-<!--
-   
--->
+
 </tbody>
 </table>
+
+{else}
+<div class="ktError"><p>{i18n}No results for your search.{/i18n}</p></div>
+
+{/if}
+{/if}
