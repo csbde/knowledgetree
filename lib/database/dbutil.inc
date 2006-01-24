@@ -144,7 +144,9 @@ class DBUtil {
             $aFieldValues['id'] = $res;
         }
         $res = $db->autoExecute($sTable, $aFieldValues);
-        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
+        if ($default->queryLog) {
+            $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
+        }
         if ($res === DB_OK) {
             return $aFieldValues['id'];
         }
