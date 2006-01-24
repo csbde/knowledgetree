@@ -77,6 +77,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     var $query = null;
     var $resultURL;
     var $sHelpPage = 'ktcore/browse/browse.html';
+    var $editable;
 
     function BrowseDispatcher() {
         $this->aBreadcrumbs = array(
@@ -88,6 +89,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
     function check() {
         $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', "folder"); 
         $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
+        $this->editable = false;
+        
         
         // catch the alternative actions.
         if ($action != 'main') {
@@ -97,6 +100,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         // if we're going to main ...
         if ($this->browse_mode == 'folder') {
             // which folder.
+            $this->editable = true;
             $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
             $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
             if ($folder_id == 0) {
@@ -125,8 +129,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->resultURL = "?fFolderId=" . $oFolder->getId();        
             
         } else if ($this->browse_mode == 'category') {
+            $this->editable = false;
             return false;
         } else if ($this->browse_mode == 'document_type') {
+            $this->editable = false;
             // FIXME implement document_type browsing.
             $doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
             $oDocType = DocumentType::get($doctype);
@@ -196,7 +202,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               "context" => $this,
               "collection" => $collection,
               'browse_mode' => $this->browse_mode,
-              'isEditable' => true,
+              'isEditable' => $this->editable,
         );
         return $oTemplate->render($aTemplateData);
     }   
