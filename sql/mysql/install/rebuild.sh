@@ -1,6 +1,6 @@
 #!/bin/sh
 
-db=ktpristine
+db=dms
 
 mysqladmin -u root -f drop $db
 mysqladmin -u root create $db
