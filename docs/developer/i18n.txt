@@ -10,25 +10,11 @@ internationalisation.
 Testing
 -------
 - install gettext command line utilities
+- Run the following to extract translatable text from the templates:
+  $ rm -f i18n/templates.c
+  $ php bin/smarty_to_gettext.php . > i18n/templates.c
 - run xgettext to generate .po files eg.
-Neil quite likes:
-  $ find . -type f | xgettext --no-wrap -d knowledgeTree -L PHP -s -f - -o i18n/knowledgeTree.po
-
-Michael was using:
-  xgettext --files-from=i18n/file-list -LPHP --keyword=_ --no-wrap --msgid-bugs-address="kt-i18n@jamwarehouse.com" -o knowledgeTree.po
-
-- write a test translation by editing the po file appropriately.  if you have problems with the order of parameters, because your language's
-  ordering is different then in english. You can use the $ to change order eg: 
-        msgid "Upgrading item %d of %d"
-        msgstr "... %2$d ... %1$d ..."
-- construct the right directory structure inside i18n eg.
-  $ mkdir -p i18n/es/LC_MESSAGES/	        
-- upgrade the existing .po files in each translation using:
-  $ mv knowledgeTree.po old.po
-  $ msgmerge --no-wrap old.po ../knowledgeTree.po --output-file=knowledgeTree.po
-  $ rm old.po
-- use msgfmt to compile your translated .po file to a .mo
-  $ msgfmt --check $knowldgeTree.po --output-file=i18n/$es/LC_MESSAGES/knowledgeTree.mo
-- change $default->defaultLanguage in config/environment.php and verify your translation.
+  $ find . -type f -name "*.php" -o -name "*.inc" | xgettext --no-wrap -d knowledgeTree -L PHP -s -f - -o i18n/knowledgeTree.po
+  $ echo i18n/templates.c | xgettext --no-wrap -d knowledgeTree -j -s -f - -o i18n/knowledgeTree.po
 
 $Id$
