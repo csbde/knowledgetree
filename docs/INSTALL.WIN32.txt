@@ -17,6 +17,14 @@ we recommend using a bundled version of Apache, MySQL and PHP.  For testing
 purposes, we use XAMPP (version 1.5.1):
 
   http://www.apachefriends.org/en/xampp.html
+  
+NOTE
+  
+  At this time, KnowledgeTree 3 supports only PHP 4.x, so please ensure that
+  your XAMPP install is using PHP 4.
+  
+  Details can be found inside the XAMPP control panel, under the menu item
+  PHP Switch.
 
 General procedure:
 
