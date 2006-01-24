@@ -13,8 +13,6 @@ ALTER TABLE `document_transactions` CHANGE COLUMN `filename` `filename` char(255
 ALTER TABLE `document_transactions` CHANGE COLUMN `version` `version` char(50) default NULL; # was varchar(50) default NULL
 ALTER TABLE `document_types_lookup` CHANGE COLUMN `name` `name` char(100) default NULL; # was varchar(100) default NULL
 ALTER TABLE `groups_lookup` CHANGE COLUMN `name` `name` char(100) NOT NULL default ''; # was varchar(100) default NULL
-ALTER TABLE `help_replacement` DROP COLUMN `title`; # was varchar(255) NOT NULL default ''
-ALTER TABLE `help_replacement` CHANGE COLUMN `name` `name` varchar(100) NOT NULL default ''; # was varchar(255) NOT NULL default ''
 DROP TABLE IF EXISTS `language_lookup`;
 ALTER TABLE `links` CHANGE COLUMN `url` `url` char(100) NOT NULL default ''; # was varchar(100) default NULL
 ALTER TABLE `links` CHANGE COLUMN `name` `name` char(100) NOT NULL default ''; # was varchar(100) default NULL
