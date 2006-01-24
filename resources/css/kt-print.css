@@ -1,0 +1,20 @@
+/* Print Stylesheet for KT3
+ *
+ */
+ 
+#logobar,
+#navbar,
+#portletbar,
+#content h1,
+#copyrightbar
+{ display: none; }
+
+#content 
+{
+   padding-left: 0;
+}
+
+#content h2 {
+   font-size: 125%;
+}
+
