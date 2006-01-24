@@ -1,7 +1,7 @@
 KnowledgeTree Document Management System
 ----------------------------------------
 
-Welcome to the first KnowledgeTree 3 beta.  While it represents a
+Welcome to the fourth KnowledgeTree 3 beta.  While it represents a
 significant improvement to the visible and background components of
 KnowledgeTree, it is not yet ready for production use.  It is
 recommended that you ensure you have backups of anything you put into

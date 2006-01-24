@@ -5,3 +5,9 @@ phpmailer - http://phpmailer.sourceforge.net (LGPL)
 
 Mark Round's AuthLDAP class (class.AuthLDAP.php):
 http://phpclasses.dknss.com/browse/package/893.html (GPL)
+
+Javascript
+MochiKit - http://www.mochikit.com/   (MIT License)
+JS Calendar - http://dynarch.com/mishoo/calendar.epl (LGPL)
+TinyMCE - http://sourceforge.net/projects/tinymce/ (LGPL)
+Option Transfer Widget - http://www.mattkruse.com/ (Custom License)
