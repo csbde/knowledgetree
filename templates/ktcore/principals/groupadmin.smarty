@@ -20,7 +20,10 @@ action may take some time if you have many groups).{/i18n}</p>
 </div class="form_actions">
 </fieldset>
 </form>
+{if ($no_search === true)}
 
+{else}
+{if (!empty($search_results))}
 <table class="listing">
 <thead>
    <tr>
@@ -33,7 +36,7 @@ action may take some time if you have many groups).{/i18n}</p>
    </tr>
 </thead>
 <tbody>
-   {if (!empty($search_results))}
+   
    <!-- do we want to batch here? -->
      {foreach item=oGroup from=$search_results}
      <tr>
@@ -52,12 +55,12 @@ href="?action=manageSubgroups&group_id={$oGroup->getId()}">{i18n}Manage sub-grou
 class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
      </tr>   
      {/foreach}
-   {else}  
-   <tr>
-      <td colspan="7" class="ktInfo">
-         <p>{i18n}No search specified, or no results for your search.{/i18n}</p>
-      </td>
-   </tr>
-   {/if}
+   
 </tbody>
 </table>
+
+{else}
+<div class="ktError"><p>{i18n}No results for your search.{/i18n}</p></div>
+
+{/if}
+{/if}

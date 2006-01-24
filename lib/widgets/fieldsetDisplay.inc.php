@@ -185,6 +185,8 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "document_data" => $aDocumentData,
             "document" => $aDocumentData["document"],
 
+			"filename" => $document->getFileName(),
+			
             "creator" => $creator,
             "creation_date" => $creation_date,
             
@@ -249,6 +251,9 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "document_data" => $aDocumentData,
             "document" => $aDocumentData["document"],
 
+			"filename" => $document->getFileName(),
+			"comparison_filename" => $comparison_document->getFileName(),
+			
             "creator" => $creator,
             "creation_date" => $creation_date,
             

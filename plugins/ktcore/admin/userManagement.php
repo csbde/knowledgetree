@@ -25,6 +25,13 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
     
+        $no_search = true;
+        
+        if (KTUtil::arrayGet($_REQUEST, 'do_search', false) != false) {
+            $no_search = false;
+        }
+        
+        
         
         $search_fields = array();
         $search_fields[] =  new KTStringWidget(_('Username'),_("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'name', $name, $this->oPage, true);
@@ -35,6 +42,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $search_results =& User::getList('WHERE username LIKE "%' . DBUtil::escapeSimple($name) . '%"');
         } else if ($show_all !== false) {
             $search_results =& User::getList();
+            $no_search = false;
         }
         
         $oTemplating = new KTTemplating;        
@@ -43,6 +51,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "context" => $this,
             "search_fields" => $search_fields,
             "search_results" => $search_results,
+            'no_search' => $no_search,
         );
         return $oTemplate->render($aTemplateData);
     }

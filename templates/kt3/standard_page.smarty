@@ -5,9 +5,13 @@
     <title>{$page->title} | {$page->systemName}</title>
     
     <!-- CSS Files. -->
+    
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
+    
+       <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
+           media="print" />
     
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}

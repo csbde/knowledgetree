@@ -21,6 +21,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 	
+        $no_search = true;
+        
+        if (KTUtil::arrayGet($_REQUEST, 'do_search', false) != false) {
+            $no_search = false;
+        }
 		
 		$search_fields = array();
 		$search_fields[] =  new KTStringWidget(_('Group Name'),_("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
@@ -29,6 +34,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 			$search_results =& Group::getList('WHERE name LIKE "%' . DBUtil::escapeSimple($name) . '%"');
 		} else if ($show_all !== false) {
 			$search_results =& Group::getList();
+			$no_search = false;
 		}
 
 			
@@ -38,6 +44,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 			"context" => $this,
 			"search_fields" => $search_fields,
 			"search_results" => $search_results,
+			'no_search' => $no_search,
 		);
 		return $oTemplate->render($aTemplateData);
     }

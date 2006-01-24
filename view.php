@@ -124,10 +124,21 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             array_push($fieldsets, new $displayClass($oFieldset));
         }
 		
+		
+		$checkout_user = 'Unknown user';
+		if ($oDocument->getIsCheckedOut() == 1) {
+		    $oCOU = User::get($oDocument->getCheckedOutUserId());
+			if (!(PEAR::isError($oCOU) || ($oCOU == false))) {
+				$checkout_user = $oCOU->getName();
+			}
+		}
+		
+		
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document");
 		$aTemplateData = array(
               "context" => $this,
+			  "sCheckoutUser" => $checkout_user,
 			  "document_id" => $document_id,
 			  "document" => $oDocument,
 			  "document_data" => $document_data,

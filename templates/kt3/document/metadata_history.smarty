@@ -22,7 +22,13 @@
 {capture assign=version}{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}{/capture}
 {capture assign=versionid}{$oVersion->getContentVersionId()}{/capture}
                 <td class="date"><a href="{$downloadaction->getURL()}&version={$versionid}">{$version}</a></td>
-                <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with current{/i18n}</a></td>                
+                <td class="compare">
+                {if ($document->getMetadataVersion() == $oVersion->getMetadataVersion())}
+                   <strong>{i18n}current version{/i18n}</strong>
+                {else}
+                   <a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with current{/i18n}</a></td>                
+                {/if}
+                </td>                
             </tr>
             {/foreach}
         </tbody>
