@@ -224,6 +224,14 @@ class UserColumn extends BrowseColumn {
 // use the _name_ parameter + _f_ + id to create a non-clashing checkbox.
 
 class SelectionColumn extends BrowseColumn {
+    var $show_documents;
+    var $show_folders;
+
+    function SelectionColumn ($sLabel, $sName, $bShowFolders = true, $bShowDocs = true) {
+        $this->show_documents = $bShowDocs;
+        $this->show_folders = $bShowFolders;
+        parent::BrowseColumn($sLabel, $sName);
+    }
 
     function renderHeader($sReturnURL) { 
         // FIXME clean up access to oPage.
@@ -234,26 +242,27 @@ class SelectionColumn extends BrowseColumn {
         
     }
     
-    // use inline, since its just too heavy to even _think_ about using smarty.
+    // only include the _f or _d IF WE HAVE THE OTHER TYPE.
     function renderData($aDataRow) { 
         $localname = $this->name;
-        if ($aDataRow["type"] === "folder") { $localname .= "_f[]"; $v = $aDataRow["folderid"]; }
-        else { $localname .= "_d[]"; $v = $aDataRow["docid"]; }
+        
+        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+            if ($this->show_documents) {
+                $localname .= "_f[]"; 
+            }
+            $v = $aDataRow["folderid"]; 
+        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            if ($this->show_folders) {
+                $localname .= "_d[]"; 
+            }
+            $v = $aDataRow["docid"]; 
+        } else { 
+            return '&nbsp;'; 
+        }
         
         return '<input type="checkbox" name="' . $localname . '" onactivate="activateRow(this)" value="' . $v . '"/>';
     }
     
-    function _mimeHelper($iMimeTypeId) {
-        // FIXME lazy cache this.
-        $sQuery = 'SELECT icon_path FROM mime_types WHERE id = ?';
-        $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
-        
-        if ($res[0] !== null) {
-           return $res[0];
-        } else {
-           return 'unspecified_type';
-        }
-    }
 }
 
 

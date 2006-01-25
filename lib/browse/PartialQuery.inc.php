@@ -365,4 +365,45 @@ class FolderBrowseQuery extends BrowseQuery {
     }
 }
 
+class ArchivedBrowseQuery extends BrowseQuery {
+    function _getDocumentQuery($aOptions = null) {
+        $oUser = User::get($_SESSION['userID']);
+        $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
+        $aPotentialWhere = array($sPermissionString, 'D.folder_id = ?', 'D.status_id = ' . ARCHIVED);
+        $aWhere = array();
+        foreach ($aPotentialWhere as $sWhere) {
+            if (empty($sWhere)) {
+                continue;
+            }
+            if ($sWhere == "()") {
+                continue;
+            }
+            $aWhere[] = $sWhere;
+        }
+        $sWhere = "";
+        if ($aWhere) {
+            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+        }
+
+        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
+
+        $sQuery = sprintf("SELECT %s FROM %s AS D
+                LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
+                LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
+                %s %s",
+                $sSelect, KTUtil::getTableName("documents"),
+                KTUtil::getTableName("document_metadata_version"),
+                KTUtil::getTableName("document_content_version"),
+                $sPermissionJoin, $sWhere);
+        $aParams = array();
+        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams[] = $this->folder_id;
+        return array($sQuery, $aParams);
+    }
+}
+
 ?>
