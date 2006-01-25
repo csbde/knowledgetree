@@ -1,0 +1,30 @@
+<h2>{i18n}Select Document Version to compare against{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content.{/i18n}</p>
+
+    <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">
+
+        <thead>
+            <tr>
+                <th class="username">{i18n}User{/i18n}</th>
+                <th class="date">{i18n}Metadata Version{/i18n}</th>
+                <th class="compare">{i18n}Compare{/i18n}</th>
+            </tr>
+        </thead>
+        <tbody>
+          {foreach item=oVersion from=$versions}
+            <tr class="{cycle options=even,odd}">
+                <td class="username">{$context->getUserForId($oVersion->getVersionCreatorId())}</td>
+                <td class="date">{$oVersion->getMetadataVersion()}</td>
+                <td class="compare">
+                {if ($document->getCurrentMetadataVersionId() == $oVersion->getCurrentMetadataVersionId())}
+                   <strong>{i18n}comparing against this version{/i18n}</strong>
+                {else}
+                   <a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$document->getCurrentMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare{/i18n}</a>
+                {/if}
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+        
+    </table>

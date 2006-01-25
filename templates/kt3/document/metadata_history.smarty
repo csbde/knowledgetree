@@ -10,7 +10,8 @@
                 <th class="username">{i18n}User{/i18n}</th>
                 <th class="date">{i18n}Metadata Version{/i18n}</th>
                 <th class="date">{i18n}Content Version{/i18n}</th>
-                <th class="compare">{i18n}Compare{/i18n}</th>
+                <th class="compare">{i18n}Compare with Current{/i18n}</th>
+                <th class="compare">{i18n}Compare with Other Version{/i18n}</th>
 
             </tr>
         </thead>
@@ -26,9 +27,10 @@
                 {if ($document->getMetadataVersion() == $oVersion->getMetadataVersion())}
                    <strong>{i18n}current version{/i18n}</strong>
                 {else}
-                   <a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with current{/i18n}</a></td>                
+                   <a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with current{/i18n}</a></td>                
                 {/if}
-                </td>                
+                </td>     
+                <td><a href="{$smarty.server.PHP_SELF}?action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare with other version{/i18n}</a></td>
             </tr>
             {/foreach}
         </tbody>
