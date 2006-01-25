@@ -15,6 +15,7 @@ class KTPage {
     /** resources are "filename"->1 to allow subcomponents to require items. */
     var $js_resources = Array();
     var $css_resources = Array();
+	var $ie_only_css = Array();
     var $js_standalone = Array();
     var $css_standalone = Array();
 	
@@ -54,6 +55,8 @@ class KTPage {
         );
         $this->requireCSSResources($aCSS);
         
+        // IE only
+        $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
         /* default js files initialisation */
         $aJS = Array();
         $this->requireJSResources($aJS);
@@ -90,7 +93,8 @@ class KTPage {
     /* javascript handling */    
     // require that the specified JS file is referenced.
     function requireJSResource($sResourceURL) {
-        $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+	    $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+		
     }
     
     // require that the specified JS files are referenced.
@@ -115,8 +119,12 @@ class KTPage {
     
     /* css handling */
     // require that the specified CSS file is referenced.
-    function requireCSSResource($sResourceURL) {
-        $this->css_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+    function requireCSSResource($sResourceURL, $ieOnly = false) {
+        if ($ieOnly !== true) {
+            $this->css_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+		} else {
+		    $this->ie_only_css[$sResourceURL] = 1;
+		}
     }
     
     // require that the specified CSS files are referenced.
@@ -129,6 +137,10 @@ class KTPage {
     // list the distinct CSS resources.
     function getCSSResources() {
         return array_keys($this->css_resources);
+    }
+	
+	function getCSSResourcesForIE() {
+        return array_keys($this->ie_only_css);
     }
 
     function requireCSSStandalone($sCSS) {

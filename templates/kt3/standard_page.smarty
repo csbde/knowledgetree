@@ -13,6 +13,15 @@
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
     
+    <!-- evil CSS workarounds - inspired by Plone's approach -->
+    <!-- Internet Explorer CSS Fixes -->
+    <!--[if lt IE 7]>
+        {foreach item=sResourceURL from=$page->getCSSResourcesForIE()}
+        <style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
+        {/foreach}
+    <![endif]-->    
+    
+    
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
        <style>

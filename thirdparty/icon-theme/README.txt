@@ -1,13 +1,9 @@
 Note about icon themes:
 
-it is strongly recommended that you replace this with an icon-theme 
-naming convention compliant icon-theme.  For example, we generally use
-the Tango icon theme (www.tango-project.org).  However, since this
-is licensed under a Creative Commons license we are unable to distribute it
-with the main content.
+Firstly, the icons we are using are drawn partially from "Silky" (see
+CREDITS.txt in the knowledgeTree docs folder.) with some adjustments to
+fit the naming convention, and to provide GIF versions for IE.
 
-Simple copy the contents of the tango theme into this directory to use it.
+GIF versions override PNG versions in kt-ie-icons.css
 
-If you get _no_ icons, ensure that there is a .htaccess file inside that directory
-(e.g. if you symlink from /usr/share/icons/).
-
+Use of icons conforming to the Freedesktop "Icon Theme" spec is also possible.

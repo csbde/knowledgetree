@@ -122,8 +122,8 @@ class TitleColumn extends BrowseColumn {
         $sQuery = 'SELECT icon_path FROM mime_types WHERE id = ?';
         $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
         
-        if ($res[0] !== null) {
-           return $res[0];
+        if ($res['icon_path'] !== null) {
+           return $res['icon_path'];
         } else {
            return 'unspecified_type';
         }

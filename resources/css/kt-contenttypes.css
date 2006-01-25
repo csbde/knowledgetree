@@ -10,13 +10,17 @@
     padding-left: 25px;
     padding-top: 5px;
     padding-bottom: 5px;
+    padding-right: 0;
     margin-right: 25px;
 }
 
-.contenttype.ms-presentation { background-image: url(../../resources/mimetypes/powerp.gif); }
-.contenttype.ms-word { background-image: url(../../resources/mimetypes/word.gif); }
-.contenttype.ms-excel { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-office-spreadsheet.png); }
-.contenttype.oo-impress { background-image: url(../..resources/mimetypes/ooimpress.gif); }
+.contenttype.office { background-image: url(../../resources/mimetypes/office.png); }
+.contenttype.word { background-image: url(../../resources/mimetypes/word.png); }
+.contenttype.database { background-image: url(../../resources/mimetypes/database.png); }
+.contenttype.excel { background-image: url(../../resources/mimetypes/excel.png); }
+.contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.png); }
+.contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.png); }
 
+.contenttype.txt,
 .contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.png); }
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png); }
