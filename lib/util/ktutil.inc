@@ -449,6 +449,21 @@ class KTUtil {
         return $oUrl->getUrl();
     }
     // }}}
+
+    // {{{ isAbsolutePath
+    function isAbsolutePath($sPath) {
+        if (substr($sFilename, 0, 1) == '/') {
+            return true;
+        }
+        if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':/')) {
+            return true;
+        }
+        if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':\\')) {
+            return true;
+        }
+        return false;
+    }
+    // }}}
 }
 
 ?>

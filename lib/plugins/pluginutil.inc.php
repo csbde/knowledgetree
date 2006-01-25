@@ -32,9 +32,16 @@ class KTPluginResourceRegistry {
 class KTPluginUtil {
     function loadPlugins () {
         $oPlugins = KTPluginEntity::getList();
+        if (count($oPlugins) === 0) {
+            KTPluginUtil::registerPlugins();
+        }
         $aPaths = array(KT_DIR . '/plugins/ktcore/KTCorePlugin.php');
         foreach ($oPlugins as $oPlugin) {
-            $aPaths[] = $oPlugin->getPath();
+            $sPath = $oPlugin->getPath();
+            if (!KTUtil::isAbsolutePath($sPath)) {
+                $sPath = sprintf("%s/%s", KT_DIR, $sPath);
+            }
+            $aPaths[] = $sPath;
         }
         $aPaths = array_unique($aPaths);
         foreach ($aPaths as $sPath) {

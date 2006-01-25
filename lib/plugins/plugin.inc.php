@@ -87,11 +87,8 @@ class KTPlugin {
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
-        } else if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':\\')) {
-            $sFilename = $this->sFilename;
-        } else if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':/')) {
-            $sFilename = $this->sFilename;
-        } else if (substr($sFilename, 0, 1) != '/') {
+        }
+        if (!KTUtil::isAbsolutePath($sFilename)) {
             if ($this->sFilename) {
                 $sDirPath = dirname($this->sFilename);
                 $sFilename = sprintf("%s/%s", $sDirPath, $sFilename);
@@ -188,11 +185,18 @@ class KTPlugin {
         return;
     }
 
+    function stripKtDir($sFilename) {
+        if (strpos($sFilename, KT_DIR) === 0) {
+            return substr($sFilename, strlen(KT_DIR) + 1);
+        }
+        return $sFilename;
+    }
+
     function register() {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         if (!PEAR::isError($oEntity)) {
             $oEntity->updateFromArray(array(
-                'path' => $this->sFilename,
+                'path' => $this->stripKtDir($this->sFilename),
                 'version' => $this->iVersion,
             ));
             return $oEntity;
@@ -200,9 +204,9 @@ class KTPlugin {
 
         $oEntity = KTPluginEntity::createFromArray(array(
             'namespace' => $this->sNamespace,
-            'path' => $this->sFilename,
+            'path' => $this->stripKtDir($this->sFilename),
             'version' => $this->iVersion,
-            'disabled' => 1,
+            'disabled' => 0,
         ));
         if (PEAR::isError($oEntity)) {
             return $oEntity;
