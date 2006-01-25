@@ -38,8 +38,8 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/viewsource');
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
-        $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
-        $this->oPage->setBreadcrumbDetails('viewing');
+        $this->aBreadcrumbs[] = array('name' => $oSource->getName());
+        $this->oPage->setTitle(sprintf(_("Authentication source: %s"), $oSource->getName()));
         $sProvider = $oSource->getAuthenticationProvider();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
