@@ -255,7 +255,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	// this gets in:
 	//   fDocumentId (document to compare against)
 	//   fComparisonVersion (the metadata_version of the appropriate document)
-	function do_viewComparison() {	    
+	function do_viewComparison() {	 
+	    
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
@@ -264,10 +265,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		$document_data["document_id"] = $document_id;
 		
+		
+		$base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
+		
 		// try get the document.
-		$oDocument =& Document::get($document_id);
+		$oDocument =& Document::get($document_id, $base_version);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+		    $this->oPage->addError('The base document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
@@ -360,7 +364,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 			
 		// FIXME handle ad-hoc fieldsets.
-		
+		$this->addPortlets();
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/compare_document");
 		$aTemplateData = array(
@@ -381,6 +385,55 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	    return ''; // allow normal rendering of errors.
 		// FIXME show something useful / generic.
 	}
+	
+	function do_startComparison() {	    
+		$document_data = array();
+		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+		if ($document_id === null) { 
+		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+			return $this->do_error();
+		}
+		$document_data["document_id"] = $document_id;
+
+		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
+		if ($comparison_version=== null) { 
+		    $this->oPage->addError('No comparison version was requested.  Please <a href="?action=history&fDocumentId='.$document_id.'">select a version</a>.');
+			return $this->do_error();
+		}		
+		
+		// try get the document.
+		$oDocument =& Document::get($document_id, $comparison_version);
+		if (PEAR::isError($oDocument)) {
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+			return $this->do_error();		
+		}
+		if (!Permission::userHasDocumentReadPermission($oDocument)) {
+		    // FIXME inconsistent.
+		    $this->oPage->addError(_('You are not allowed to view this document'));
+		    return $this->do_error();
+		}
+		$this->oDocument =& $oDocument;
+        $aOptions = array("final" => false);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
+		$this->oPage->setBreadcrumbDetails(_("Select Document Version to compare against"));
+					
+		$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+            $aVersions[] = Document::get($oDocument->getId(), $oVersion->getId());
+        }
+		
+		$oTemplating = new KTTemplating;
+		$oTemplate = $oTemplating->loadTemplate("ktcore/document/comparison_version_select");
+		$aTemplateData = array(
+              "context" => $this,
+			  "document_id" => $document_id,
+			  "document" => $oDocument,
+			  "versions" => $aVersions,
+              'downloadaction' => $oAction,
+		);
+		return $oTemplate->render($aTemplateData);
+    }
 	
 	function getUserForId($iUserId) {
 	    $u = User::get($iUserId);
