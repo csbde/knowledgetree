@@ -18,7 +18,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $sDisplayName = 'Add a Folder';
     var $sName = 'ktcore.actions.folder.addFolder';
 
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.addFolder";
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("add folder"));
