@@ -6,11 +6,6 @@
 .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
 .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
 .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
-
-.contenttype {
-    margin-right: 0;
-}
-
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
