@@ -427,5 +427,20 @@ class Document {
         $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
         $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
     }
+
+    function delete() {
+        $this->_oDocumentCore->iMetadataVersionId = null;
+        $this->_oDocumentCore->update();
+        $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this);
+        foreach ($aMetadataVersions as $oVersion) {
+            $oVersion->delete();
+        }
+        $aContentVersions = KTDocumentContentVersion::getByDocument($this);
+        foreach ($aContentVersions as $oVersion) {
+            $oVersion->delete();
+        }
+        $this->_oDocumentCore->delete();
+        return true;
+    }
 }
 ?>
