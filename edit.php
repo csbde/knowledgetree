@@ -53,38 +53,13 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     }
     
     function addBreadcrumbs() {
-        $folder_id = $this->oDocument->getFolderId(); // conveniently, will be 0 if not possible.
-        if ($folder_id == 0) { $folder_id = 1; }
         
-        // here we need the folder object to do the breadcrumbs.
-        $oFolder =& Folder::get($folder_id);
-        if (PEAR::isError($oFolder)) {
-           $this->oPage->addError(_("invalid folder"));
-           $folder_id = 1;
-           $oFolder =& Folder::get($folder_id);
-        }
+		$aOptions = array(
+            "documentaction" => "editDocument",
+            "folderaction" => "browse",
+        );        
         
-        // do the breadcrumbs.
-
-        // skip root.
-        $folder_path_names = array_slice($oFolder->getPathArray(), 1);
-        $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
-        
-        $parents = count($folder_path_ids);
-        
-        if ($parents != 0) {
-            foreach (range(0,$parents) as $index) {
-                $this->aBreadcrumbs[] = array("url" => KTBrowseUtil::getUrlForFolder($folder_path_ids[$index]), "name" => $folder_path_names[$index]);
-            }
-        }
-        
-        // now add this folder, _if we aren't in 1_.
-        if ($folder_id != 1) {
-            $this->aBreadcrumbs[] = array("url" => KTBrowseUtil::getUrlForFolder($folder_id), "name" => $oFolder->getName());
-        }
-        
-        // now add the document
-        $this->aBreadcrumbs[] = array("name" => $this->oDocument->getName());
+		$this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
     }
 
     function errorPage($errorMessage) {
@@ -93,6 +68,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     }
 
 	function do_selectType() {
+		
 	    $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_("No document specified for editing."));
@@ -101,6 +77,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         if (PEAR::isError($oDocument)) {
             $this->errorPage(_("Invalid Document."));
         }
+		
+		$this->oDocument = $oDocument;
+		
+		$this->addBreadcrumbs();
+		$this->oPage->setBreadcrumbDetails(_('Change Document Type'));
 		
 	    $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
 		$aDocTypes = DocumentType::getList();
