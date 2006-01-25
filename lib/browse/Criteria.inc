@@ -396,9 +396,9 @@ class GenericMetadataCriterion extends BrowseCriterion {
         global $default;
         $sQuery = "SELECT DFL.value as value " .
               "FROM $default->document_fields_link_table AS DFL " .
-              "WHERE DFL.document_id = ? " .
+              "WHERE DFL.metadata_version_id = ? " .
               "AND DFL.document_field_id = ?";
-        $aParams = array($oDocument->getID(), $this->getID());
+        $aParams = array($oDocument->getMetadataVersionId(), $this->getID());
 
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'value');
         if (PEAR::isError($res)) {
@@ -453,7 +453,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
     function searchJoinSQL () {
         global $default;
-        return "LEFT JOIN $default->document_fields_link_table AS $this->sSearchTable ON $this->sSearchTable.document_id = D.id";
+        return "LEFT JOIN $default->document_fields_link_table AS $this->sSearchTable ON $this->sSearchTable.metadata_version_id = D.metadata_version_id";
     }
 }
 
