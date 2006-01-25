@@ -11,3 +11,6 @@ MochiKit - http://www.mochikit.com/   (MIT License)
 JS Calendar - http://dynarch.com/mishoo/calendar.epl (LGPL)
 TinyMCE - http://sourceforge.net/projects/tinymce/ (LGPL)
 Option Transfer Widget - http://www.mattkruse.com/ (Custom License)
+
+Icons
+"Silk" - http://www.famfamfam.com/lab/icons/silk/ (CC Attribution License)

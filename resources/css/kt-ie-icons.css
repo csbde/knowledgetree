@@ -1,0 +1,22 @@
+.ktInfo p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) center left no-repeat; }
+.ktError p {     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
+.ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
+
+.ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.gif) top left no-repeat; }
+.ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
+.ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
+.ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
+
+.contenttype {
+    margin-right: 0;
+}
+
+.contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
+.contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
+.contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
+.contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.gif); }
+.contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
+
+.contenttype.txt,
+.contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
+.contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
