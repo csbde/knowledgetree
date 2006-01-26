@@ -151,13 +151,13 @@ class Document {
 
     // {{{ update
     function update($bPathMove = false) {
-        $res = $this->_oDocumentCore->update();
+        $res = $this->_oDocumentCore->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
         
-        $res = $this->_oDocumentContentVersion->update();
+        $res = $this->_oDocumentContentVersion->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
         
-        $res = $this->_oDocumentMetadataVersion->update();
+        $res = $this->_oDocumentMetadataVersion->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
 
         return $res;
