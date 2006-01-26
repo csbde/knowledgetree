@@ -1,7 +1,11 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
+<fieldset>
+<legend>Add New Group</legend>
+<p class="descriptiveText">{i18n}Groups allow you to assign permissions and roles to a 
+number of different users at once.{/i18n}</p>
 <p><a href="?action=addGroup" class="ktAction ktAddGroup" style="float: left; padding-right: 0.5em;">Add Group</a><a href="?action=addGroup">Add a new group</a>.</p>
-
+</fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
