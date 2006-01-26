@@ -1,0 +1,29 @@
+<h2>{i18n}Archived Documents{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}In order to keep the documents which are visible useful
+to end users it is possible to <strong>archive</strong> old documents.  Users who
+want to see these old documents need to request their restoration. These requests
+will typically be done within the system and will generate a
+notification to you.{/i18n}
+</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="confirm_restore" />
+<p class="descriptiveText">{i18n}Use the folder collection and path below to
+browse to the folder you wish to move the documents into.{/i18n}</p>
+
+<input type="hidden" name="fFolderId" value="{$folder->getId()}" />
+{foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
+<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
+{if !$smarty.foreach.bc.last}
+&raquo;
+{/if}
+{/foreach}
+{$collection->render()}
+</div>
+
+<div class="form_actions">
+<input type="submit" name="submit[move]" value="{i18n}Restore{/i18n}" />
+</div>
+</fieldset>
+</form>
