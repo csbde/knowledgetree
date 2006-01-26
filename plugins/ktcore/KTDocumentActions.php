@@ -427,11 +427,20 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         $this->startTransaction();
 
+        $oOriginalFolder = Folder::get($this->oDocument->getFolderId());
+        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
+        $iDocumentPermissionObjectId = $this->oDocument->getPermissionObjectId();
+
+        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
+            $this->oDocument->setPermissionObjectId($this->oFolder->getPermissionObjectId());
+        }
+
         //put the document in the new folder
         $this->oDocument->setFolderID($this->oFolder->getId());
         if (!$this->oDocument->update(true)) {
             $this->errorRedirectTo("main", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         }
+
 
         //move the document on the file system
         $oStorage =& KTStorageManagerUtil::getSingleton();
