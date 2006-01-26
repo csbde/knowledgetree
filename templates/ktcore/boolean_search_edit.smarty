@@ -46,8 +46,9 @@ legend { border: 1px dotted #999;}
 <!-- this is bad, but we really don't need a roundtrip -->
 <div style="display: none" id="search-criteria-container">
     <select name="querytype">
-        {foreach item=oCriteria from=$aCriteria}
+        {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
         <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+		{/if}
         {/foreach}
     </select>
 </div>
@@ -108,8 +109,9 @@ legend { border: 1px dotted #999;}
 			
                 <tr>
                     <td><select name="querytype">
-                         {foreach item=oCriteria from=$aCriteria}
+                         {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
                              <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+							 {/if}
                         {/foreach}
                         </select>
                         </td>
