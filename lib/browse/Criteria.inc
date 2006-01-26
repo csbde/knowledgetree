@@ -46,6 +46,7 @@ class BrowseCriterion {
     var $iID;
     var $bString = false;
     var $sSearchTable = "D";
+    var $bVisible = true;
 
     function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->sDisplay =& $sDisplay;
@@ -468,6 +469,8 @@ class DateModifiedCriterion extends DateCreatedCriterion {
 
 class SizeCriterion extends BrowseCriterion {
     var $sSearchTable = "DC";
+    var $bVisible = false;
+    
     function documentDisplay ($oDocument) {
         return $oDocument->getFileSize();
     }
