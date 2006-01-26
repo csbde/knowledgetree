@@ -103,6 +103,11 @@ body
 {
     border-bottom: 1px solid white;
 }
+
+.ktLoggedInUser {
+    font-weight: bold;
+}
+
 /*
 a.main_nav_item {
     background: transparent url(../../resources/graphics/home-navbar.gif) center left no-repeat;
@@ -580,9 +585,9 @@ a.main_nav_item {
 .ktInfo
 {
     padding: 0 1em;
-    border: 1px solid #ffc21e;
+    border: 1px solid #c5c5c5;
     margin: 0.5em 0;
-    background: #ffdd80;
+    background: #dedede;
 }
 
 .ktInfo p {
@@ -654,6 +659,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.png) top left no-repeat; }
 
 /* =========== standard listings. */
+
+
 
 .listing td {
    padding: 0.5em;

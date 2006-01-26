@@ -1,0 +1,58 @@
+{$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
+<h2>{i18n}Manage States{/i18n}</h2>
+
+<p class="descriptiveText">As documents move through their lifecycle, they
+are placed in certain <strong>states</strong>.  For example, an invoice
+which has been mailed might be in the "Pending" <strong>state</strong> after
+the "sent" <strong>transition</strong> has been performed by a user.</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Create a new state{/i18n}</legend>
+
+<p class="descriptiveText">Please note that additional configuration is
+possible on states beyond what is specified here (e.g. which users to notify
+about the document, etc).  Please edit the state
+to access and modify these other properties.</p>
+
+<input type="hidden" name="action" value="newState" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+
+{* Standard Form *}
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Create state{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+{if (empty($workflow_info.states))}
+<div class="ktInfo"><p>This workflow does not define any states.</p></div>
+{else}
+<ul id="workflow-states-list">
+{foreach item=oState from=$workflow_info.states}
+    <li><span class="workflow_element">State:</span> <a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" class="workflow_label">{$oState->getName()}</a>
+    <ul>
+        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Notified groups & roles:{/i18n}</a>
+        {$context->getNotificationStringForState($oState)}
+        </li>
+        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Actions available: {/i18n}</a>
+        {$context->getActionStringForState($oState)}
+        </li>
+      
+        <li><a href="{$smarty.server.PHP_SELF}?action=editTransitions&fWorkflowId={$oWorkflow->getId()}">{i18n}Transitions available: {/i18n}</a>
+        {$context->getTransitionFromStringForState($oState)}
+        </li>
+      
+        <li>{i18n}Transitions to this state: {/i18n}
+        {$context->getTransitionToStringForState($oState)}
+        </li>
+    </ul>
+    </li>
+{/foreach}
+</ul>
+{/if}

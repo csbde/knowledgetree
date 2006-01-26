@@ -1,0 +1,73 @@
+{$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
+<h2>{i18n}Manage Actions{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}An important part of workflow is controlling which
+actions are available to users at various stages.  For example, it may be 
+necessary to prevent the "Edit Metadata" action from being used when a document
+is "published". Doing this is a two step process:  first, you need to specify
+that "Edit Metadata" is an action you wish to control within this workflow; second,
+you need to specify that the action is <strong>not</strong> to be made available
+when documents are in the "published" state.{/i18n}</p>
+
+<form>
+<fieldset><legend>{i18n}Specify Controlled Actions{/i18n}</legend>
+<p class="descriptiveText">{i18n}Select the actions you want this workflow
+to control from the list below.  Actions you do not specify will be available no 
+matter what the state of the document.{/i18n}</p>
+
+<input type="hidden" name="action" value="setWorkflowActions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+
+
+{entity_checkboxes name="fActions" entities="$aActions" idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected" separator="<br />"}
+{foreach from=$aCheckboxes item=sCheckbox}
+{$sCheckbox}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" name="submit" value="{i18n}Set controlled actions{/i18n}" />
+</div>
+
+</fieldset>
+</form>
+
+<h3>Assign Actions to States</h3>
+
+<p class="descriptiveText">The table below lists the actions you have specified 
+as controlled by this workflow, and all the states within the workflow.  From here 
+you can assign those actions to the various states in this workflow.</p>
+
+{if (empty($aActionsSelected))}
+<div class="ktInfo"><p>{i18n}No actions are controlled by this workflow.  All actions
+will be available at all states.{/i18n}</p></div>
+{else}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="updateActionAvailability" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<table class="kt_collection" style="width: auto;">
+<thead>
+  <tr>
+    <th>&nbsp;</th>
+    {foreach from=$aActions item=oAction}
+    <th>{$oAction->getDisplayName()}</th>
+    {/foreach}
+  </tr>
+</thead>
+<tbody>
+{foreach item=oState from=$workflow_info.states}
+  <tr class='{cycle values="odd,even"}'>
+    <td>{$oState->getName()}</td>
+    {foreach item=oAction from=$aActions}
+      <td><input type="checkbox" name="fAvailableActions[{$oState->getId()}][{$oAction->getName()}]" {if ($context->actionAvailable($oAction, $oState))}checked="true"{/if}/></td>
+    {/foreach}
+  </tr>
+{/foreach}
+</tbody>
+</table>
+
+<div class="form_actions">
+  <input type="submit" value="{i18n}Update Action Availability{/i18n}" />
+</div>
+</form>
+{/if}
+

@@ -72,7 +72,7 @@ class TitleColumn extends BrowseColumn {
     function renderFolderLink($aDataRow) {
         $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
         $outStr .= $aDataRow["folder"]->getName();
-        $outStr .= '</a>';
+        $outStr .= '</a> ';
         return $outStr;
     }
 

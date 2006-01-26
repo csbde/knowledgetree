@@ -25,7 +25,7 @@ lifecycle of the document.{/i18n}
 </form>
 {else}
 <h3>{i18n}No defined workflows{/i18n}</h3>
-<div class="ktError">
+<div class="ktInfo">
 <p>{i18n}There are no defined workflows which can be started on this
 document.  An administrator can create workflows to map the lifecycle of
 a document.  Contact your administrator to discuss

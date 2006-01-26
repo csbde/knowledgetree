@@ -64,9 +64,7 @@
 
       <!-- user menu -->
       <li class="pref">{if ($page->user)}
-        Logged in as <strong>{$page->user->getName()}</strong>
-        {else}
-        FIXME:  page does not set user.
+        <span class="ktLoggedInUser">{$page->user->getName()}</span>
         {/if}
         &middot;
         

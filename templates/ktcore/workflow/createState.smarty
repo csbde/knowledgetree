@@ -1,4 +1,4 @@
-<h2>{i18n}State{/i18n}: {$oState->getName()|escape}</h2>
+<h2>{i18n}New State{/i18n}</h2>
 
 <p class="descriptiveText">As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
@@ -19,7 +19,7 @@ the "sent" <strong>transition</strong> has been performed by a user.</p>
 </div>
 </fieldset>
 </form>
-{*
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveInform" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -39,20 +39,25 @@ informed when this state is reached.{/i18n}</p>
 {/foreach}
 {/if}
 
-{if $aGroups}
 <h3>{i18n}Groups{/i18n}</h3>
 {entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
-{/if}
 
-{if (empty($aGroups) && empty($aRoles))}
-<div class="ktInfo"><p>{i18n}No groups or roles are defined in the DMS.{/i18n}</p></div>
-{/if}
+{*
+<h3>{i18n}Users{/i18n}</h3>
+{entity_checkboxes entities=$aUsers name="fUserIds" multiple="true" selected=$aInformed.user assign=aBoxes}
+{foreach from=$aBoxes item=sBox}
+{$sBox}<br />
+{/foreach}
+<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
+
+</form>
+*}
 
 </fieldset>
-*}
+
 
 {*
 <h3>{i18n}Assigned Permissions{/i18n}</h3>
@@ -108,8 +113,6 @@ title="Transition
 
 
 
-
-{if (!empty($aActions))}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>Actions allowed</legend>
@@ -118,6 +121,7 @@ title="Transition
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 <input type="hidden" name="fStateId" value="{$oState->getId()}" />
 
+{if (!empty($aActions))}
 <ul>
 {entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
 {foreach from=$aCheckboxes item=sCheckbox}
@@ -127,11 +131,9 @@ title="Transition
 <div class="form_actions">
   <input type="submit" name="submit" value="Set allowed actions" />
 </div>
+{else}
+No actions defined.
+{/if}
 </fieldset>
 </form>
-{else}
-<div class="ktInfo"><p>No actions are controlled by this workflow, so all actions are available when
-documents are in this state.</p></div>
-{/if}
-
 
