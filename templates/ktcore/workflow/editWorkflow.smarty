@@ -1,6 +1,6 @@
-<h2>{i18n}Workflow{/i18n}: {$oWorkflow->getName()|escape}</h2>
+{$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
 
-
+<h2>{i18n}Workflow Overview{/i18n}: {$oWorkflow->getName()|escape}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
@@ -18,98 +18,34 @@
 </fieldset>
 </form>
 
-<h3>States</h3>
-<p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Create a new state{/i18n}</legend>
-<input type="hidden" name="action" value="newState" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<p class="descriptiveText">{i18n}This page allows you to get a quick overview of the
+workflow.  To modify items, either select them from the overview below,
+or use the "Workflow" menu on the left to create new ones.{/i18n}</p>
 
-
-{foreach item=oWidget from=$add_state_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Create state{/i18n}" />
-</div>
-</fieldset>
-</form>
-
-{if $aStates}
-<h4>{i18n}Existing states{/i18n}</h4>
-<p class="descriptiveText">{i18n}Select a state to update its properties.{/i18n}</p>
-<ul>
-{foreach from=$aStates item=oState}
-  <li><a
-href="?action=editState&fWorkflowId={$oWorkflow->getId()}&fStateId={$oState->getId()}"
-title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
-{/foreach}
-</ul>
-{/if}
-
-
-
-
-{* check that there are states, and, if not, don't show transitions *}
-{if $aStates}
-
-<h3>{i18n}Transitions{/i18n}</h3>
-
-<p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Create a new transition{/i18n}</legend>
-<input type="hidden" name="action" value="newTransition" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-
-
-{foreach item=oWidget from=$add_transition_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Create transition{/i18n}" />
-</div>
-</fieldset>
-</form>
-
-
-{if $aTransitions}
-<h3>{i18n}Existing transitions{/i18n}</h3>
-
-<ul>
-{foreach from=$aTransitions item=oTransition}
-  <li><a
-href="?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}"
-title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
+{if (empty($aStates))}
+<div class="ktInfo"><p>This workflow does not define any states.  Please use the 
+Workflow menu (on the left) to create new states.</p></div>
+{else}
+<ul id="workflow-states-list">
+{foreach item=oState from=$aStates}
+    <li><span class="workflow_element">State:</span> <a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" class="workflow_label">{$oState->getName()}</a>
+    <ul>
+        <li>{i18n}Notified groups &amp; roles:{/i18n}
+        {$context->getNotificationStringForState($oState)}
+        </li>
+        <li>{i18n}Actions available: {/i18n}
+        {$context->getActionStringForState($oState)}
+        </li>
+      
+        <li>{i18n}Transitions available: {/i18n}
+        {$context->getTransitionFromStringForState($oState)}
+        </li>
+      
+        <li>{i18n}Transitions to this state: {/i18n}
+        {$context->getTransitionToStringForState($oState)}
+        </li>
+    </ul>
+    </li>
 {/foreach}
 </ul>
 {/if}
-
-{/if}
-
-
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Actions controlled{/i18n}</legend>
-
-<p class="descriptiveText"><strong>FIXME</strong> be helpful</p>
-
-<input type="hidden" name="action" value="setWorkflowActions" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-
-<ul>
-{entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
-{foreach from=$aCheckboxes item=sCheckbox}
-<li>{$sCheckbox}</li>
-{/foreach}
-</ul>
-<div class="form_actions">
-   <input type="submit" name="submit" value="{i18n}Set controlled actions{/i18n}" />
-</div>
-</fieldset>
-</form>

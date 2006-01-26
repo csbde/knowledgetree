@@ -1,4 +1,9 @@
-<h2>{i18n}Workflow{/i18n}</h2>
+<h2>{i18n}Workflows{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Workflow is a description of a document's lifecycle.  It is made up of
+workflow states, which describe where in the lifecycle the document is,
+and workflow transitions, which describe the next steps within the
+lifecycle of the document.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>

@@ -585,7 +585,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $oUser =& User::get($_SESSION['userID']);
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
-        $aWorkflows = KTWorkflow::getList();
+        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
 
         $fieldErrors = null;
         

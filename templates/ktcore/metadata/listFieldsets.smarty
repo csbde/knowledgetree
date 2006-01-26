@@ -60,7 +60,7 @@
   {$oWidget->render()}
 {/foreach}
 
-<div class="form_actions"
+<div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Create{/i18n}" />
 </div>
 </fieldset>

@@ -1,0 +1,5 @@
+<ul class="actionlist">
+{foreach from=$aAdminPages item=aAdminPage}
+   <li><a href="{$aAdminPage.url}">{$aAdminPage.name}</a></li>
+{/foreach}
+</ul>
