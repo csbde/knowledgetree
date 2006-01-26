@@ -149,7 +149,7 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
             'fields' => $fields,
             'source' => $oSource,
             'search_results' => $aSearchResults,
-            'dn' => $dn,
+            'dn' => $aResults[$aAttributes[0]],
         );
         return $oTemplate->render($aTemplateData);
     }
