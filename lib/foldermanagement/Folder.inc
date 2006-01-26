@@ -180,7 +180,6 @@ class Folder extends KTEntity {
 		global $default;
 		$sPath = $this->generateFullFolderPath($iFolderID);
 		$sPath = substr($sPath, 1, strlen($sPath));
-		$sPath = addslashes($sPath);
 		return $sPath;			
 	}
 
