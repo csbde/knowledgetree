@@ -6,12 +6,18 @@
 .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
 .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
 .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.gif) top left no-repeat; }
+.ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.gif) top left no-repeat; }
+
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
+.contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.gif); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
+.contenttype.image { background-image: url(../../resources/mimetypes/image.gif); }
+.contenttype.compressed { background-image: url(../../resources/mimetypes/compressed.gif); }
 
 .contenttype.txt,
+.contenttype.text,
 .contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }

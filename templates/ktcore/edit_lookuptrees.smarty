@@ -5,10 +5,28 @@
 
 <h2>{i18n}Edit Lookup Tree{/i18n}: {$field->getName()}</h2>
 
+<p class="descriptiveText">{i18n}Many "lookup" fields make sense in a hierachy:
+countries are part of continents and sub-continents, school classes are part of grades
+and programs, Powerbooks are Apple Macs, while Thinkpads are made by Lenovo.  This 
+page will allow you to arrange the lookups in the field in a hierachy.  All changes
+are immediately stored, so when you are done simply navigate back to the field menu.{/i18n}</p>
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-  <legend>{i18n}Add New Subcategory{/i18n}</legend>
+  <legend>{i18n arg_category="$category_name"}Add New Subcategory to <strong>#category#</strong>{/i18n}</legend>
+  
+  <p class="descriptiveText">{i18n}In order to organise the options into a "tree", you 
+  need to add subcategories at each level.  The "top" level is called the root, and 
+  holds all the toplevel items.  "Root" will not be shown to the final user, but 
+  provides a single "parent" to the toplevel items.{/i18n}</p>
+  
+  <p class="descriptiveText">{i18n}As an example, if you are creating a tree of the
+  countries in the world, the actual countries would be <strong>keywords</strong> 
+  (e.g. South Africa, England, Pakistan, India).  The highest group of categories 
+  would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by 
+  subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-saharan Africa, 
+  Austalasia.{/i18n}</p>
   
   
   
@@ -20,24 +38,33 @@
 <input type="text" name="category_name"/>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="{i18n}add new category{/i18n}" />
+  <input type="submit" name="submit" value="{i18n}add new subcategory{/i18n}" />
 </div>
 </fieldset>
 </form>
+
 {if ($currentNode != 0)}
 {if (empty($freechildren))}
-<p>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
-make it available.{/i18n}</p>
+<p class="descriptiveText">{i18n}Keywords which are directly below the 
+  <strong>Root</strong> are considered "free" &mdash; they are not attached to 
+  a subcategory.  Only free keywords can be associated with a subcategory.  To
+  free a keyword, click on the "unlink" command next to it in the preview tree below.  
+  Deleting a subcategory will automatically unlink all keywords below it (including
+  those in subcategories of the subcategory).
+  {/i18n}</p>
+
+<div class="ktInfo"><p>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
+make it available.{/i18n}</p></div>
 {else}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-  <legend>{i18n}Link free keywords.{/i18n}</legend>
-  
-<p>{i18n}Category{/i18n}: <strong>{if ($currentNode == 0)}
-Root
-{else}
-{$tree->mapnodes[$currentNode]->getName()}
-{/if}</strong></p>  
+  <legend>{i18n arg_category=$category_name}Attach keywords to <strong>#category#</strong>{/i18n}</legend>
+
+  <p class="descriptiveText">{i18n}Keywords which are directly below the 
+  <strong>Root</strong> are considered "free" &mdash; they are not attached to 
+  a subcategory.  Only free keywords can be associated with a subcategory.  To
+  free a keyword, click on the "unlink" command next to it in the preview tree below.
+  {/i18n}</p>
   
   <input type="hidden" name="field_id" value="{$field->getId()}" />
   <input type="hidden" name="action" value="editTree" /> 
@@ -62,9 +89,10 @@ Root
 
 
 <h2>{i18n}Preview{/i18n}</h2>
-<div class="helpText">
+<div><p class="descriptiveText">
     {i18n}Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.
     To edit a category (including adding or removing keywords) click on the "edit" link.{/i18n}
+    </p>
 </div>
 
 {$renderedTree}

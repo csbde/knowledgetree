@@ -33,7 +33,7 @@ Workflow menu (on the left) to create new states.</p></div>
         <li>{i18n}Notified groups &amp; roles:{/i18n}
         {$context->getNotificationStringForState($oState)}
         </li>
-        <li>{i18n}Actions available: {/i18n}
+        <li>{i18n}Controlled Actions available: {/i18n}
         {$context->getActionStringForState($oState)}
         </li>
       

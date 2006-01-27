@@ -48,8 +48,8 @@ will be available at all states.{/i18n}</p></div>
 <thead>
   <tr>
     <th>&nbsp;</th>
-    {foreach from=$aActions item=oAction}
-    <th>{$oAction->getDisplayName()}</th>
+    {foreach from=$aActionsSelected item=sAction}
+    <th>{$workflow_info.actions_by_name.$sAction->getDisplayName()}</th>
     {/foreach}
   </tr>
 </thead>
@@ -57,8 +57,8 @@ will be available at all states.{/i18n}</p></div>
 {foreach item=oState from=$workflow_info.states}
   <tr class='{cycle values="odd,even"}'>
     <td>{$oState->getName()}</td>
-    {foreach item=oAction from=$aActions}
-      <td><input type="checkbox" name="fAvailableActions[{$oState->getId()}][{$oAction->getName()}]" {if ($context->actionAvailable($oAction, $oState))}checked="true"{/if}/></td>
+    {foreach item=sAction from=$aActionsSelected}
+      <td><input type="checkbox" name="fAvailableActions[{$oState->getId()}][{$sAction}]" {if ($context->actionAvailable($sAction, $oState))}checked="true"{/if}/></td>
     {/foreach}
   </tr>
 {/foreach}
