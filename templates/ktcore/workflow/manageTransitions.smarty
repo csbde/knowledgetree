@@ -5,27 +5,15 @@ Each step that needs to be followed in the document's lifecycle could
 map to a transition, and can be allowed or denied by a combination
 of roles, permissions and groups.{/i18n}</p>
 
-<p class="descriptiveText">{i18n}Use the form below to create a new Transition, and
-assign or edit existing transitions using the table below.{/i18n}</p>
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>{i18n}Create a new state{/i18n}</legend>
+<legend>{i18n}Create a new transition{/i18n}</legend>
 
-<input type="hidden" name="action" value="newTransition" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<a href="{$smarty.server.PHP_SELF}?action=createTransition&fWorkflowId={$oWorkflow->getId()}"
+   class="ktAction ktAdd ktInline">{i18n}Create a new transition{/i18n}</a>
+<a href="{$smarty.server.PHP_SELF}?action=createTransition&fWorkflowId={$oWorkflow->getId()}"
+   >{i18n}Create a new transition{/i18n}</a>
 
-{* Standard Form *}
-
-{foreach item=oWidget from=$add_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Create transition{/i18n}" />
-</div>
 </fieldset>
-</form>
 
 <h3>{i18n}Transition Availability{/i18n}</h3>
 

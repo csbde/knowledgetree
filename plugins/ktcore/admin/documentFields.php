@@ -626,12 +626,19 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $this->oPage->setTitle(_('Edit Lookup Tree'));
 
         //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
-
+		
+		if ($current_node == 0) { $category_name = 'Root'; }
+		else {
+			$oNode = MDTreeNode::get($current_node);
+			$category_name = $oNode->getName();
+		}
+		
         $aTemplateData = array(
             "field" => $oField,
             "tree" => $fieldTree,
             "renderedTree" => $renderedTree,
             "currentNode" => $current_node,
+			'category_name' => $category_name,
             "freechildren" => $free_metadata,
             "context" => $this,
         );
@@ -752,7 +759,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         }
         else
         {
-           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'">add items</a> ';
+           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'">attach keywords</a> ';
            $actionStr .= '| <a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory">delete</a>';
         }
         $actionStr .= ")";

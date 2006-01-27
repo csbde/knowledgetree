@@ -7,133 +7,69 @@ the "sent" <strong>transition</strong> has been performed by a user.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>{i18n}Edit state properties{/i18n}</legend>
-<input type="hidden" name="action" value="saveState" />
+<legend>{i18n}Create a new state{/i18n}</legend>
+
+<p class="descriptiveText">Please note that additional configuration is
+possible on states beyond what is specified here (e.g. which users to notify
+about the document, etc).  Please edit the state
+to access and modify these other properties.</p>
+
+<input type="hidden" name="action" value="newState" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="hidden" name="fStateId" value="{$oState->getId()}" />
-{foreach item=oWidget from=$editForm}
+
+{* Standard Form *}
+
+{foreach item=oWidget from=$add_fields}
   {$oWidget->render()}
 {/foreach}
-<div class="form_actions">
-    <input type="submit" name="submit" value="{i18n}Save{/i18n}" />
-</div>
-</fieldset>
-</form>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="saveInform" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+{*
 
-<fieldset>
-<legend>{i18n}Inform Which Users?{/i18n}</legend>
+<div class="field">
+<label>Informed Users</label>
 <p class="descriptiveText">{i18n}Please select which roles or groups should be
 informed when this state is reached.{/i18n}</p>
 
 
 {if $aRoles}
-<h3>{i18n}Roles{/i18n}</h3>
+<p>{i18n}Roles{/i18n}</p>
 {entity_checkboxes entities=$aRoles name="fRoleIds" multiple="true" selected=$aInformed.role assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
-{$sBox}<br />
+{$sBox}
 {/foreach}
 {/if}
 
-<h3>{i18n}Groups{/i18n}</h3>
+<p>{i18n}Groups{/i18n}</p>
 {entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
-{$sBox}<br />
+{$sBox}
 {/foreach}
-
-{*
-<h3>{i18n}Users{/i18n}</h3>
-{entity_checkboxes entities=$aUsers name="fUserIds" multiple="true" selected=$aInformed.user assign=aBoxes}
-{foreach from=$aBoxes item=sBox}
-{$sBox}<br />
-{/foreach}
-<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
-
-</form>
-*}
-
-</fieldset>
-
-
-{*
-<h3>{i18n}Assigned Permissions{/i18n}</h3>
-<p class="descriptiveText">{i18n}While in this workflow state, additional permissions
-may be given.  This is done either to expose the document to more users
-or to allow a particular role to be fulfilled before a workflow
-transition can be accomplished.{/i18n}</p>
-*}
-
-
-<fieldset>
-<legend>{i18n}Transitions{/i18n}</legend>
-
-<p class="descriptiveText">{i18n}Transitions are how documents move from one
-state to another.  Typically, most transitions can only be performed by people
-with a specific <strong>role</strong> (e.g. Manager) or part of a specific group
-(e.g. Marketing Department).{/i18n}</p>
-
-{if $aTransitionsTo}
-<h3>{i18n}Transitions to this state{/i18n}</h3>
-{if (!empty($aTransitionsTo))}
-<ul>
-{foreach from=$aTransitionsTo item=oTransition}
-  <li><a
-href="?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}"
-title="Transition
-{$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
-{/foreach}
-</ul>
-
-{/if}
-{else}
-<div class="ktInfo"><p>{i18n}No transitions lead to this state.{/i18n}</p></div>
-{/if}
-
-<h3>{i18n}Transitions from this state{/i18n}</h3>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="saveTransitions" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="hidden" name="fStateId" value="{$oState->getId()}" />
-
-{if (!empty($aTransitions))}
-{entity_checkboxes entities=$aTransitions name="fTransitionIds" multiple="true" selected=$aTransitionsSelected separator="<br />"}
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 </div>
-{else}
-<div class="ktInfo"><p>{i18n}No transitions have been defined for this workflow.{/i18n}</p></div>
-{/if}
-</form>
-</fieldset>
 
+*}
 
-
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>Actions allowed</legend>
-
-<input type="hidden" name="action" value="setStateActions" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="hidden" name="fStateId" value="{$oState->getId()}" />
-
+<div class="field">
+<label>Actions Allowed</label>
+<p class="descriptiveText">Workflows can control which actions (edit metadata,
+download, etc.) are available on a given document.  Please specify which of
+the actions controlled by this workflow are available when the document is in
+this state.</p>
 {if (!empty($aActions))}
-<ul>
+
 {entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
 {foreach from=$aCheckboxes item=sCheckbox}
-<li>{$sCheckbox}</li>
+{$sCheckbox}
 {/foreach}
-</ul>
-<div class="form_actions">
-  <input type="submit" name="submit" value="Set allowed actions" />
-</div>
+
+
 {else}
-No actions defined.
+<div class="ktInfo"<p>{i18n}No actions are controlled by this workflow.{/i18n}</p></div>
 {/if}
+</div>
+
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Create state{/i18n}" />
+</div>
+
 </fieldset>
-</form>
 

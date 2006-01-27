@@ -6,29 +6,16 @@ are placed in certain <strong>states</strong>.  For example, an invoice
 which has been mailed might be in the "Pending" <strong>state</strong> after
 the "sent" <strong>transition</strong> has been performed by a user.</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>{i18n}Create a new state{/i18n}</legend>
+<legend>Create a new state</legend>
+<p class="descriptiveText">A critical part of workflow is the creation of
+various different states for documents.</p>
+<a href="{$smarty.server.PHP_SELF}?action=createState&fWorkflowId={$oWorkflow->getId()}"
+   class="ktAction ktInline ktAdd">{i18n}Create a new state{/i18n}</a>
+<a href="{$smarty.server.PHP_SELF}?action=createState&fWorkflowId={$oWorkflow->getId()}">{i18n}Create a new state{/i18n}</a>
 
-<p class="descriptiveText">Please note that additional configuration is
-possible on states beyond what is specified here (e.g. which users to notify
-about the document, etc).  Please edit the state
-to access and modify these other properties.</p>
-
-<input type="hidden" name="action" value="newState" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-
-{* Standard Form *}
-
-{foreach item=oWidget from=$add_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Create state{/i18n}" />
-</div>
 </fieldset>
-</form>
+
 
 {if (empty($workflow_info.states))}
 <div class="ktInfo"><p>This workflow does not define any states.</p></div>
@@ -40,7 +27,7 @@ to access and modify these other properties.</p>
         <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Notified groups & roles:{/i18n}</a>
         {$context->getNotificationStringForState($oState)}
         </li>
-        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Actions available: {/i18n}</a>
+        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Controlled Actions available: {/i18n}</a>
         {$context->getActionStringForState($oState)}
         </li>
       

@@ -637,6 +637,11 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     cursor: pointer;
 }
 
+.ktAction.ktInline {
+    float: left; 
+    padding-right: 0.5em;
+}
+
 .ktHelp { 
     background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
     float: right;
@@ -657,6 +662,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.png) top left no-repeat; }
 .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
 .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.png) top left no-repeat; }
+.ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.png) top left no-repeat; }
 
 /* =========== standard listings. */
 

@@ -1,0 +1,39 @@
+<h2>{i18n}Manage Transitions{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Transitions are what drive the workflow of documents.
+Each step that needs to be followed in the document's lifecycle could
+map to a transition, and can be allowed or denied by a combination
+of roles, permissions and groups.{/i18n}</p>
+
+<p class="descriptiveText">{i18n}Use the form below to create a new Transition, and
+assign or edit existing transitions using the table below.{/i18n}</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Create a new transition{/i18n}</legend>
+
+<input type="hidden" name="action" value="newTransition" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+
+{* Standard Form *}
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="field">
+<label>Source States</label>
+<p class="descriptiveText">{i18n}Please select which states this transition should be available from.  <strong>Note</strong>
+that transitions are never available from their target state, even if you specify it below.{/i18n}</p>
+
+{foreach item=oState from=$workflow_info.states}
+<label><input type="checkbox" name="fStatesAvailableIn[{$oState->getId()}]" />{$oState->getName()}</label>
+{/foreach}
+</div>
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Create transition{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+</form>

@@ -20,7 +20,10 @@
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.png); }
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.png); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.png); }
+.contenttype.image { background-image: url(../../resources/mimetypes/image.png); }
+.contenttype.compressed { background-image: url(../../resources/mimetypes/compressed.png); }
 
 .contenttype.txt,
+.contenttype.text,
 .contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.png); }
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png); }
