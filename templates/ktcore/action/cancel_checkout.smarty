@@ -1,0 +1,17 @@
+<h2>{i18n}Cancel Checkout{/i18n}</h2>
+
+<p class="descriptiveText">If you do not want to have this document be checked-out,
+please give a reason and cancel the checkout.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<fieldset><legend>{i18n}Checkin{/i18n}</legend>
+<input type="hidden" name="action" value="checkin" />
+<input type="hidden" name="fDocumentId" value="{$document->getId()}" />
+{foreach from=$checkin_fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Cancel Checkout{/i18n}" />
+</div>
+</fieldset>
+</form>

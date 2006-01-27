@@ -110,11 +110,11 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         
         // checkout cancelled transaction
         $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document checked out cancelled", 'ktcore.transactions.force_checkin');
-        if ($oDocumentTransaction->create()) {
-            $default->log->debug("editDocCheckoutBL.php created forced checkin document transaction for document ID=" . $oDocument->getID());                                    	
-        } else {
-            $default->log->error("editDocCheckoutBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
-        }                                    		
+        $res = $oDocumentTransaction->create();
+        if (PEAR::isError($res) || ($res == false)) {
+            $this->rollbackTransaction();
+            return $this->errorRedirectToMain(_("Failed to force the document's checkin."));
+        }
         $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
         return $this->successRedirectToMain(sprintf(_('Successfully forced "%s" to be checked in.'), $oDocument->getName()));
     }

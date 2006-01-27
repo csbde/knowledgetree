@@ -4,12 +4,6 @@ anyone else changing the document and placing it into the document
 management system.{/i18n}</p>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
-{capture assign=link}
-{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
-{/capture}
-<p class="descriptiveText">{i18n arg_link=$link}If you do not intend to edit the document, and you
-do not wish to prevent others from changing the document, you should
-<a href="#link#">cancel this checkout</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset><legend>{i18n}Checkout{/i18n}</legend>

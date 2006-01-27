@@ -100,16 +100,6 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
         $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
 
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'reason' => $sReason,
-        ));
-        return $oTemplate->render();
-    }
-
-    function do_checkout_final() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $this->oValidator->notEmpty($sReason);
 
         // flip the checkout status
         $this->oDocument->setIsCheckedOut(true);
@@ -139,6 +129,18 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sReason, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'reason' => $sReason,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_checkout_final() {
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $this->oValidator->notEmpty($sReason);
+
         
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->download($this->oDocument);
@@ -223,6 +225,88 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     }
 }
 // }}}
+
+
+// {{{ KTDocumentCheckInAction
+class KTDocumentCancelCheckOutAction extends KTDocumentAction {
+    var $sDisplayName = 'Cancel Checkout';
+    var $sName = 'ktcore.actions.document.cancelcheckout';
+
+    var $_sShowPermission = "ktcore.permissions.write";
+
+    function getInfo() {
+        if (!$this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+
+        if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
+            return null;
+        }
+        return parent::getInfo();
+    }
+
+    function check() {
+        $res = parent::check();
+        if ($res !== true) {
+            return $res;
+        }
+        if (!$this->oDocument->getIsCheckedOut()) {
+            $_SESSION['KTErrorMessage'][] = _("This document is not checked out");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
+            $_SESSION['KTErrorMessage'][] = _("This document is checked out, but not by you");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        return true;
+    }
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("cancel checkin");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
+        
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
+        $checkin_fields = array();
+        $checkin_fields[] = new KTStringWidget(_('Reason'), _('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'checkin_fields' => $checkin_fields,
+            'document' => $this->oDocument,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_checkin() {
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $sReason = $this->oValidator->notEmpty($sReason);
+        
+        global $default;
+
+        $this->startTransaction();
+        // actually do the checkin.
+        $this->oDocument->setIsCheckedOut(0);
+        $this->oDocument->setCheckedOutUserID(-1);
+        if (!$this->oDocument->update()) {
+            $this->rollbackTransaction();
+            return $this->errorRedirectToMain(_("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
+        }
+        
+        // checkout cancelled transaction
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document checked out cancelled", 'ktcore.transactions.force_checkin');
+        $res = $oDocumentTransaction->create();
+        if (PEAR::isError($res) || ($res == false)) {
+            $this->rollbackTransaction();
+            return $this->errorRedirectToMain(_("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
+        }
+        $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
+        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
+    }
+}
+// }}}
+
 
 // {{{ KTDocumentEditAction
 class KTDocumentEditAction extends KTDocumentAction {
@@ -540,6 +624,15 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     }
 
     function do_archive() {
+    
+        $aErrorOptions = array(
+            'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
+            'message' => "You must provide a reason"
+        );
+        
+        $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
+    
+    
         $this->startTransaction();
         $this->oDocument->setStatusID(ARCHIVED);
         if (!$this->oDocument->update()) {
@@ -547,6 +640,9 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, sprintf(_("Document archived: %s"), $sReason), 'ktcore.transactions.update');
+        $oDocumentTransaction->create();
+        
         $this->commitTransaction();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
