@@ -109,8 +109,10 @@ class Session {
     function verify($bDownload = false) {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
         // this is a workaround for an SSL download bug with IE.
-        session_cache_limiter('private');
+        session_cache_limiter('none');
         session_start();
+        header("Cache-Control: must-revalidate");
+        header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600) . " GMT");
         $sessionID = session_id();
         if (strlen($sessionID) > 0) {
             // initialise return status
