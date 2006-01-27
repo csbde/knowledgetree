@@ -60,7 +60,7 @@ class DocumentTransaction {
 		$this->iDocumentID = $oDocument->getID();
 		$this->sComment = $sNewComment;
 		$this->sTransactionNS = $sTransactionNS;
-		$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
+		$this->sVersion = KTUtil::arrayGet($aOptions, 'version', $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber());
 		$oFolder = Folder::get($oDocument->getFolderId());
 		$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
 		

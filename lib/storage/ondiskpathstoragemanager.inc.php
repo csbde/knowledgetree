@@ -124,6 +124,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
+        $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
         if (file_exists($sPath)) {
             //set the correct headers
             header("Content-Type: " .
