@@ -129,6 +129,10 @@ class KTDocumentAction extends KTStandardDispatcher {
                 }
             }
         }
+		
+		// catch non-enabled state.
+		if ($this->_disable()) { return false; }
+		
         $aOptions = array(
             "final" => false,
             "documentaction" => "viewDocument",
