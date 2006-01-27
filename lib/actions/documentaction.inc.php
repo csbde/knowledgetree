@@ -25,6 +25,8 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
+              
+        
         parent::KTStandardDispatcher();
     }
 
@@ -134,6 +136,13 @@ class KTDocumentAction extends KTStandardDispatcher {
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+
+
+	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
+		$oPortlet = new KTActionPortlet(_("Document Actions"));
+		$oPortlet->setActions($actions, $this->sName);
+		$this->oPage->addPortlet($oPortlet);              
+            
         return true;
     }
 

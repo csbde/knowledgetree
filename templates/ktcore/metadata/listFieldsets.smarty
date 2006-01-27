@@ -8,19 +8,18 @@
 <table class="listing" cellpadding="1.5em" cellspacing="0">
   <thead>
     <tr>
-      <th colspan="2">{i18n}Name{/i18n}</th>
-      <th>{i18n}Generic{/i18n}</th>
+      <th>{i18n}Name{/i18n}</th>
+      <th>{i18n}Is Generic{/i18n}</th>
       <th>{i18n}Fields{/i18n}</th>
+	  <th>{i18n}Edit{/i18n}</th>
+	  <th>{i18n}Delete{/i18n}</th>
     </tr>
   </thead>
   <tbody>
 {foreach from=$fieldsets item=oFieldset}
     <tr>
-	  <td>
-	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
-	  </td>
       <td>
-        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
+         { $oFieldset->getName() }
         </a>
       </td>
       <td>
@@ -33,15 +32,22 @@
       <td>
 {assign var="aFields" value=$oFieldset->getFields()}
 {if $aFields}
-<ul>
-{foreach from=$aFields item=oField}
-  <li>{$oField->getName()}</li>
+
+{foreach from=$aFields item=oField name=fields}
+{$oField->getName()}{if (!$smarty.foreach.fields.last)}, {/if} 
 {/foreach}
-</ul>
+
 {else}
-&nbsp;
+&mdash;
 {/if}
       </td>
+	  <td>
+	     <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>
+	  </td>
+	  <td>
+	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+	  </td>
+	  
     </tr>
   </tbody>
 {/foreach}

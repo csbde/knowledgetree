@@ -139,6 +139,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$aTemplateData = array(
               "context" => $this,
 			  "sCheckoutUser" => $checkout_user,
+			  "isCheckoutUser" => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
 			  "document_id" => $document_id,
 			  "document" => $oDocument,
 			  "document_data" => $document_data,
