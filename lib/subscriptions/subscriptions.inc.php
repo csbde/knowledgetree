@@ -291,7 +291,7 @@ class SubscriptionEvent {
 			}
 		}
     }
-    function CheckinDocument($oModifiedDocument, $oParentFolder)  { 
+    function CheckInDocument($oModifiedDocument, $oParentFolder)  { 
         $content = new SubscriptionContent(); // needed for i18n	
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
@@ -305,7 +305,7 @@ class SubscriptionEvent {
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckinDocument";		
+		    $aNotificationOptions['event_type'] = "CheckInDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
 			
 			// now the email content.			
@@ -330,7 +330,7 @@ class SubscriptionEvent {
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckinDocument";		
+		    $aNotificationOptions['event_type'] = "CheckInDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
 			
 			// now the email content.			
@@ -344,7 +344,7 @@ class SubscriptionEvent {
 			}
 		}
     }
-    function CheckoutDocument($oModifiedDocument, $oParentFolder)  { 
+    function CheckOutDocument($oModifiedDocument, $oParentFolder)  { 
         $content = new SubscriptionContent(); // needed for i18n	
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
@@ -358,7 +358,7 @@ class SubscriptionEvent {
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckoutDocument";		
+		    $aNotificationOptions['event_type'] = "CheckOutDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
 			
 			// now the email content.			
@@ -383,7 +383,7 @@ class SubscriptionEvent {
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckoutDocument";		
+		    $aNotificationOptions['event_type'] = "CheckOutDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
 			
 			// now the email content.			

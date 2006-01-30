@@ -414,6 +414,7 @@ CREATE TABLE `document_type_fieldsets_link` (
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
+  `disabled` int(1) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=InnoDB;

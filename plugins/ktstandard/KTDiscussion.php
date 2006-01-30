@@ -130,6 +130,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $iCommentId = $oThread->getFirstCommentId();
         $oComment = DiscussionComment::get($iCommentId);
 
+        // breadcrumbs...
         $this->aBreadcrumbs[] = array(
             'name' => _('discussion'),
             'url' => $_SERVER['PHP_SELF'] . sprintf('?fDocumentId=%d', $this->oDocument->getId()),
@@ -138,6 +139,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'name' => $oComment->getSubject(),
         );
         $this->oPage->setBreadcrumbDetails(_("viewing comments"));
+        
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/discussion_thread');
         
         // Fields for new thread creation
@@ -153,6 +155,10 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
             $closeFields[] = new KTTextWidget(_("Reason"), _("Describe the reason for closing this thread"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
         }
+        
+        // increment views
+        $oThread->incrementNumberOfViews();
+        $oThread->update();
 
         $aTemplateData = array(
             'context' => &$this,
@@ -190,6 +196,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         // Start the transaction comment creation
         $this->startTransaction();
 
+        // Create comment
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
@@ -199,10 +206,16 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $aErrorOptions['message'] = _("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
 
+        // Update thread
         $oThread->setLastCommentId($oComment->getId());
+        $oThread->incrementNumberOfReplies();
+
         $res = $oThread->update();
+        
         $aErrorOptions['message'] = _("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
+
+
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();

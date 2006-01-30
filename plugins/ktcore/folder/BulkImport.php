@@ -25,10 +25,13 @@ class KTBulkImportFolderAction extends KTFolderAction {
         $add_fields = array();
         $add_fields[] = new KTStringWidget(_('Path'), _('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
 
-        $aVocab = array();
+        $aVocab = array('' => _('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
-            $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
         }
+
         $fieldOptions = array("vocab" => $aVocab);
         $add_fields[] = new KTLookupWidget(_('Document Type'), 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 

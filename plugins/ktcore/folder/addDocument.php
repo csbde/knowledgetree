@@ -44,10 +44,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $add_fields[] = new KTStringWidget(_('Title'), _('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
 
         
-        $aVocab = array();
+        $aVocab = array('' => _('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
-            $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
         }
+        
         $fieldOptions = array("vocab" => $aVocab);
         $add_fields[] = new KTLookupWidget(_('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
@@ -96,7 +99,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             }
         }
 
-        $this->oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId']);
+        $aErrorOptions['message'] = _("Please select a valid document type");
+        $this->oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
 
         $aOptions = array(
             'contents' => new KTFSFileLike($aFile['tmp_name']),

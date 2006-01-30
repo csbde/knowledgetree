@@ -62,6 +62,36 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         exit(0);
     }
 
+    function do_disable() {
+        $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
+        
+        $oDocumentType->setDisabled(true);
+        $res = $oDocumentType->update();
+        
+        if (PEAR::isError($res) || ($res === false)) {
+            $this->errorRedirectTo('main', _('Could not disable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            exit(0);
+        }
+        
+        $this->successRedirectToMain(_('Document type disabled'));
+        exit(0);
+    }
+
+    function do_enable() {
+        $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
+        
+        $oDocumentType->setDisabled(false);
+        $res = $oDocumentType->update();
+        
+        if (PEAR::isError($res) || ($res === false)) {
+            $this->errorRedirectTo('main', _('Could not enable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            exit(0);
+        }
+        
+        $this->successRedirectToMain(_('Document type enabled'));
+        exit(0);
+    }
+
     function do_edit() {
         
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Type Management'));

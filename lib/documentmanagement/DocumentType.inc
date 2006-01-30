@@ -30,10 +30,13 @@ class DocumentType extends KTEntity {
 	var $iId;
 	/** document type name */
 	var $sName;
+	/** disabled boolean */
+	var $bDisabled;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
+		'bDisabled' => 'disabled'
     );
 	
 	/**
@@ -47,6 +50,7 @@ class DocumentType extends KTEntity {
 		//object not created yet
 		$this->iId = -1;
 		$this->sName = $sNewName;
+		$this->bDisabled = false;
 	}
 	
 	/**
@@ -79,9 +83,36 @@ class DocumentType extends KTEntity {
 		$this->sName = $sNewValue;
 	}
 
+
+
+	/**
+	* Get the document type's disabled status
+	*
+	* @return Boolean document type's disabled status
+	*
+	*/
+	function getDisabled() {
+		return $this->bDisabled;
+	}
+	
+	/**
+	* Set the document type's disabled status
+	*
+	* @param 	document type's new disabled status
+	*
+	*/
+	function setDisabled($bNewValue) {
+		$this->bDisabled = ($bNewValue) ? true : false;
+	}
+
+
+
+
+
     function _fieldValues () {
         return array(
             'name' => $this->sName,
+			'disabled' => $this->bDisabled,
         );
     }
 
@@ -155,6 +186,7 @@ class DocumentType extends KTEntity {
 			if ($sql->next_record()) {
 				$oDocumentType = & new DocumentType($sql->f("name"));
 				$oDocumentType->iId = $sql->f("id");
+				$oDocumentType->bDisabled = $sql->f("disabled");
 				return $oDocumentType;
 			}
 			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = document_types";

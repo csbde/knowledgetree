@@ -13,6 +13,7 @@ is incorrect, you can change it here.{/i18n}</p>
     <option value="{$oDocType->getId()}" {if ($oDocType->getId() == $document_type->getId())}selected="true"{/if}>{$oDocType->getName()}</option>
 {/foreach}
 </select>
+
 <div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Change Document Type{/i18n}" />
 </div>
