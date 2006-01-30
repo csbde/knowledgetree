@@ -346,15 +346,14 @@ class UpgradeFunctions {
                 'description' => $aRow['description'],
                 'status_id' => $aRow['status_id'],
                 'metadata_version' => $iMetadataVersion,
-                'version_created' => $aRow['created'],
-                'version_creator_id' => $aRow['creator_id'],
+                'version_created' => $aRow['modified'],
+                'version_creator_id' => $aRow['modified_user_id'],
             );
             $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
+            $aMetadataVersionIds[] = $iMetadataId;
             if (PEAR::isError($iMetadataId)) {
                 var_dump($iMetadataId);
             }
-
-            DBUtil::runQuery(array("UPDATE $sDocumentsTable SET metadata_version_id = ? WHERE id = ?", array($iMetadataId, $aRow['id'])));
 
             $sDFLTable = KTUtil::getTableName('document_fields_link');
             $aInfo = DBUtil::getResultArray(array("SELECT document_field_id, value FROM $sDFLTable WHERE metadata_version_id IS NULL AND document_id = ?", array($aRow['id'])));
@@ -365,6 +364,7 @@ class UpgradeFunctions {
                     DBUtil::autoInsert($sDFLTable, $aInfoRow);
                 }
             }
+            DBUtil::runQuery(array("UPDATE $sDocumentsTable SET metadata_version_id = ? WHERE id = ?", array($iMetadataId, $aRow['id'])));
             DBUtil::runQuery(array("DELETE FROM $sDFLTable WHERE metadata_version_id IS NULL AND document_id = ?", array($aRow['id'])));
         }
         DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=1");
