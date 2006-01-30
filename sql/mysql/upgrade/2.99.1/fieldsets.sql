@@ -81,6 +81,7 @@ CREATE TABLE `zseq_fieldsets` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
+ALTER TABLE `document_fields` TYPE=InnoDB;
 ALTER TABLE `document_fields` ADD INDEX `parent_fieldset` (`parent_fieldset`);
 ALTER TABLE `document_fields` ADD CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 ALTER TABLE `fieldsets` ADD COLUMN `is_complex` tinyint(1) NOT NULL default '0';
