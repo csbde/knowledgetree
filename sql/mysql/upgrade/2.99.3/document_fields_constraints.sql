@@ -1,4 +1,5 @@
 SET FOREIGN_KEY_CHECKS=0;
+ALTER TABLE `document_fields_link` TYPE=InnoDB;
 ALTER TABLE `document_fields_link` ADD INDEX `document_id` (`document_id`);
 ALTER TABLE `document_fields_link` ADD INDEX `document_field_id` (`document_field_id`);
 ALTER TABLE `document_fields_link` ADD CONSTRAINT `document_fields_link_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE;
