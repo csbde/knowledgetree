@@ -1,5 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
+ALTER TABLE `users` TYPE=InnoDB;
 ALTER TABLE `users` ADD COLUMN `authentication_details` varchar(255) default NULL;
 ALTER TABLE `users` ADD COLUMN `authentication_source_id` int(11) default NULL;
 ALTER TABLE `users` ADD INDEX `authentication_source` (`authentication_source_id`);
