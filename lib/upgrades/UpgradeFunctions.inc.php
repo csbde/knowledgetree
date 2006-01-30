@@ -271,11 +271,63 @@ class UpgradeFunctions {
 
     // {{{ normaliseDocuments
     function normaliseDocuments() {
-        $sTable = KTUtil::getTableName('documents');
+        $sDocumentsTable = KTUtil::getTableName('documents');
         DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=0");
-        $aDocuments = DBUtil::getResultArray("SELECT * FROM $sTable WHERE metadata_version_id IS NULL");
+        $aDocuments = DBUtil::getResultArray("SELECT * FROM $sDocumentsTable WHERE metadata_version_id IS NULL");
+        $oConfig = KTConfig::getSingleton();
+
         foreach ($aDocuments as $aRow) {
-            print "Document ID: " . $aRow['id'];
+            $aMetadataVersionIds = array();
+            $sTransTable = KTUtil::getTableName("document_transactions");
+            $sQuery = "SELECT DISTINCT version, datetime, user_id FROM $sTransTable WHERE document_id = ? AND transaction_namespace = ?";
+            $aParams = array($aRow['id'], 'ktcore.transactions.check_out');
+            $sCurrentVersion = sprintf("%d.%d", $aRow['major_version'], $aRow['minor_version']);
+            $aVersions = DBUtil::getResultArray(array($sQuery, $aParams));
+
+            $iMetadataVersion = 0;
+            foreach ($aVersions as $sVersionInfo) {
+                $sVersion = $sVersionInfo['version'];
+                $sDate = $sVersionInfo['datetime'];
+                $iUserId = $sVersionInfo['user_id'];
+                $aVersionSplit = split("\.", $sVersion);
+                $iMajor = $aVersionSplit[0];
+                $iMinor = $aVersionSplit[1];
+                $sStoragePath = $aRow['storage_path'] . "-" . $sVersion;
+                $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $sStoragePath);
+                
+                if ($sCurrentVersion == $sVersion) {
+                    continue;
+                }
+
+                if (!file_exists($sPath)) {
+                    continue;
+                }
+
+                $aContentInfo = array(
+                    'document_id' => $aRow['id'],
+                    'filename' => $aRow['filename'],
+                    'size' => filesize($sPath),
+                    'mime_id' => $aRow['mime_id'],
+                    'major_version' => $iMajor,
+                    'minor_version' => $iMinor,
+                    'storage_path' => $sStoragePath,
+                );
+                $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
+                $aMetadataInfo = array(
+                    'document_id' => $aRow['id'],
+                    'content_version_id' => $iContentId,
+                    'document_type_id' => $aRow['document_type_id'],
+                    'name' => $aRow['name'],
+                    'description' => $aRow['description'],
+                    'status_id' => $aRow['status_id'],
+                    'metadata_version' => $iMetadataVersion,
+                    'version_created' => $sDate,
+                    'version_creator_id' => $iUserId,
+                );
+                $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
+                $aMetadataVersionIds[] = $iMetadataId;
+                $iMetadataVersion++;
+            }
             $aContentInfo = array(
                 'document_id' => $aRow['id'],
                 'filename' => $aRow['filename'],
@@ -286,7 +338,6 @@ class UpgradeFunctions {
                 'storage_path' => $aRow['storage_path'],
             );
             $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
-            print "Content ID: " . $iContentId;
             $aMetadataInfo = array(
                 'document_id' => $aRow['id'],
                 'content_version_id' => $iContentId,
@@ -294,32 +345,30 @@ class UpgradeFunctions {
                 'name' => $aRow['name'],
                 'description' => $aRow['description'],
                 'status_id' => $aRow['status_id'],
-                'metadata_version' => $aRow['metadata_version'],
+                'metadata_version' => $iMetadataVersion,
                 'version_created' => $aRow['created'],
                 'version_creator_id' => $aRow['creator_id'],
             );
             $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
-            print "Metadata ID: " . $iMetadataId;
             if (PEAR::isError($iMetadataId)) {
                 var_dump($iMetadataId);
             }
-            DBUtil::runQuery(array("UPDATE $sTable SET metadata_version_id = ?  WHERE id = ?", array($iMetadataId, $aRow['id'])));
-            print "\n";
+
+            DBUtil::runQuery(array("UPDATE $sDocumentsTable SET metadata_version_id = ? WHERE id = ?", array($iMetadataId, $aRow['id'])));
+
+            $sDFLTable = KTUtil::getTableName('document_fields_link');
+            $aInfo = DBUtil::getResultArray(array("SELECT document_field_id, value FROM $sDFLTable WHERE metadata_version_id IS NULL AND document_id = ?", array($aRow['id'])));
+            foreach ($aInfo as $aInfoRow) {
+                unset($aInfoRow['id']);
+                foreach ($aMetadataVersionIds as $iMetadataVersionId) {
+                    $aInfoRow['metadata_version_id'] = $iMetadataVersionId;
+                    DBUtil::autoInsert($sDFLTable, $aInfoRow);
+                }
+            }
+            DBUtil::runQuery(array("DELETE FROM $sDFLTable WHERE metadata_version_id IS NULL AND document_id = ?", array($aRow['id'])));
         }
         DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=1");
         
-        $aDocumentMap = array();
-        $sTable = KTUtil::getTableName('document_fields_link');
-        $sDocumentsTable = KTUtil::getTableName('documents');
-        $aInfo = DBUtil::getResultArray("SELECT id, document_id, document_field_id, value FROM $sTable WHERE metadata_version_id IS NULL");
-        foreach ($aInfo as $aRow) {
-            $iMetadataVersionId = KTUtil::arrayGet($aDocumentMap, $aRow['document_id']);
-            if (empty($iMetadataVersionId)) {
-                $iMetadataVersionId = DBUtil::getOneResultKey(array("SELECT metadata_version_id FROM $sDocumentsTable WHERE id = ?", array($aRow['document_id'])), 'metadata_version_id');
-                $aDocumentMap[$aRow['document_id']] = $iMetadataVersionId;
-            }
-            DBUtil::runQuery(array("UPDATE $sTable SET metadata_version_id = ? WHERE id = ?", array($iMetadataVersionId, $aRow['id'])));
-        }
     }
     // }}}
 }
