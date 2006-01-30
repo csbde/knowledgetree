@@ -40,7 +40,8 @@ class KTDispatcherValidation {
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            $this->oDispatcher->errorPage(sprintf(_("Invalid identifier provided for: %s"), $entity_name));
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', sprintf(_("Invalid identifier provided for: %s"), $entity_name));
+            $this->handleError($aOptions);
         }
         return $oEntity;
     }

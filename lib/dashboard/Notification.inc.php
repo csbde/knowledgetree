@@ -201,6 +201,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 	// resolve the object type based on the alert type.
 	function _getEventObject($sAlertType, $id) {
         $t = KTUtil::arrayGet($this->_eventObjectMap, $sAlertType ,'');
+		
 		if ($t == 'document') {
 		    $o = Document::get($id);
 			if (PEAR::isError($o) || ($o == false)) { return null; 
@@ -283,6 +284,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 		$info = $this->_getSubscriptionData($oKTNotification);
 		
 		$object_type = $this->_getEventObjectType($info['event_type']);
+		
 		if ($object_type == '') {
 		    $_SESSION['KTErrorMessage'][] = 'This notification has no "target".  Please report as a bug that this subscription should only have a clear action.' . $object_type;		
 		    exit(redirect(generateControllerLink('dashboard')));

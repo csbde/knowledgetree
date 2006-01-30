@@ -11,12 +11,15 @@ dl.kt-discussion-comment > dt {
 
 <dl class="kt-discussion-comment">
   <dt>{i18n}Posted{/i18n}</dt>
-  {capture name=$name}
+  
+  {capture assign=name}
   {$creator->getName()}
   {/capture}
-  {capture name=$date}
+  
+  {capture assign=date}
   {$comment->getDate()}
   {/capture}
+  
   <dd>{i18n arg_name=$name arg_date=$date}by #name# at #date#{/i18n}</dd>
   <dt>Subject</dt>
   <dd>{$comment->getSubject()}</dd>

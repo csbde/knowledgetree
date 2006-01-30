@@ -1,3 +1,9 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
 <h2>{i18n}Deleted Documents{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view 
@@ -5,10 +11,6 @@ but still available for restoration.  Since "soft deletes" consume system resour
 is possible to <strong>expunge</strong> these documents.  Alternatively, you
 can <strong>restore</strong> them as necessary.{/i18n}</p>
 
-<p class="descriptiveText"><strong>FIXME</strong> its probably very useful to add
-more information about the documents below - e.g. when was it deleted (last modified?)</p>
-
-<p class="descriptiveText"><strong>FIXME</strong> Have a "select all" toggler here.</p>
 
 {if (!empty($documents))}
 
@@ -16,18 +18,20 @@ more information about the documents below - e.g. when was it deleted (last modi
 
 <input type="hidden" name="action" value="branchConfirm" />
 
-<table class="listing">
+<table class="kt_collection">
   <thead>
     <tr>
-      <th>&nbsp;</th>
+      <th style="width:2em"><input type="checkbox" onclick="toggleSelectFor(this, 'selected_docs')" title="toggle all"/></th>
       <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Last Modification{/i18n}</th>
     </tr>
-  </thead>
+  </thead>  
   <tbody>
     {foreach item=oDoc from=$documents}
     <tr>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()}</td>
+      <td>{$oDoc->getLastModifiedDate()}</td>
     </tr>
     {/foreach}
   </tbody>

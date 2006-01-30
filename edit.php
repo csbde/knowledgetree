@@ -83,9 +83,18 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$this->addBreadcrumbs();
 		$this->oPage->setBreadcrumbDetails(_('Change Document Type'));
 		
-	    $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
 		$aDocTypes = DocumentType::getList();
-	
+
+
+        $aDocTypes = array();
+        foreach (DocumentType::getList() as $oDocumentType) {
+            if(!$oDocumentType->getDisabled()) {
+                $aDocTypes[] = $oDocumentType;
+            }
+        }
+
+	    $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
+		
 	    $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate("ktcore/document/change_type");       
         $aTemplateData = array(

@@ -40,9 +40,11 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $add_fields = array();
         $add_fields[] = new KTFileUploadWidget(_('Archive file'), _('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true);
 
-        $aVocab = array();
+        $aVocab = array('' => _('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
-            $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
         }
         $fieldOptions = array("vocab" => $aVocab);
         $add_fields[] = new KTLookupWidget(_('Document Type'), 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);

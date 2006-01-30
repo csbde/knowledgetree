@@ -28,24 +28,37 @@ its details, or click on the delete button to remove it from the
 system.{/i18n}</p>
 
 <table class="listing" cellspacing="0" cellpadding="0">
+
   <thead>
     <tr>
-      <th colspan="2">{i18n}Document Type{/i18n}</th>
+      <th colspan="3">{i18n}Document Type{/i18n}</th>
     </tr>
   </thead>
+  
   <tbody>
+
 {foreach from=$document_types item=oDocumentType}
-<tr><td>
-{ if $oDocumentType->isUsed() }
- &nbsp;
-{ else }
-<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}" class="ktAction ktDelete">{i18n}Delete Type{/i18n}</a>
+<tr>
+
+<td>
+    { $oDocumentType->getName() }
+    </a>
+</td>
+
+<td>
+    <a href="?action=edit&fDocumentTypeId={$oDocumentType->getId()}">Edit</a>
+</td>
+
+<td>
+{if $oDocumentType->getDisabled()}
+    <a href="?action=enable&fDocumentTypeId={$oDocumentType->getId()}">{i18n}Enable{/i18n}</a>
+{else}
+    <a href="?action=disable&fDocumentTypeId={$oDocumentType->getId()}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
-<td>
-<a href="?action=edit&fDocumentTypeId={$oDocumentType->getId()}"> { $oDocumentType->getName() }
-</a>
-</td></tr>
+
+
+</tr>
   </tbody>
 {/foreach}
 </table>
