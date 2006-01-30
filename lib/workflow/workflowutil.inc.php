@@ -87,6 +87,10 @@ class KTWorkflowUtil {
         $iDocumentId = KTUtil::getId($oDocument);
         $iWorkflowId = KTUtil::getId($oWorkflow);
         $oWorkflow =& KTWorkflow::get($iWorkflowId);
+        // null workflow == remove workflow.
+        if (is_null($oWorkflow) || PEAR::isError($oWorkflow) || ($oWorkflow == false)) {
+            return true; // delete and no-act.
+        }
         $iStartStateId = $oWorkflow->getStartStateId();
         if (empty($iStartStateId)) {
             return PEAR::raiseError('Cannot assign workflow with no starting state set');
@@ -101,6 +105,46 @@ class KTWorkflowUtil {
         return DBUtil::autoInsert($sTable, $aValues, $aOptions);
     }
     // }}}
+    
+
+    // {{{ changeWorkflowOnDocument
+    /**
+     * Starts the workflow process on a document, placing it into the
+     * starting workflow state for the given workflow.
+     */
+    function changeWorkflowOnDocument ($oWorkflow, $oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        $iWorkflowId = KTUtil::getId($oWorkflow);
+        $oWorkflow =& KTWorkflow::get($iWorkflowId);
+        
+        if (empty($iStartStateId)) {
+            return PEAR::raiseError('Cannot assign workflow with no starting state set');
+        }
+        $oOldWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
+        if ((!(PEAR::isError($oOldWorkflow) || ($oOldWorkflow == false))) && ($oOldWorkflow->getId() == $oWorkflow->getId())) {
+            return true;         // all fine - no change required.
+        }
+        
+        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('workflow_documents');
+        $sQuery .= ' WHERE document_id = ?';
+        $aParams = array($iDocumentId);
+        DBUtil::runQuery(array($sQuery, $aParams));
+        
+        if (is_null($oWorkflow) || PEAR::isError($oWorkflow) || ($oWorkflow == false)) {
+            return true; // delete and no-act.
+        }
+        
+        $iStartStateId = $oWorkflow->getStartStateId();
+        $aOptions = array('noid' => true);
+        $aValues = array(
+            'document_id' => $iDocumentId,
+            'workflow_id' => $iWorkflowId,
+            'state_id' => $iStartStateId,
+        );
+        $sTable = KTUtil::getTableName('workflow_documents');
+        return DBUtil::autoInsert($sTable, $aValues, $aOptions);
+    }
+    // }}}    
 
     // {{{ getControlledActionsForWorkflow
     /**

@@ -29,6 +29,8 @@ require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
 require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
+require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+
 
 class KTEditDocumentDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
@@ -317,7 +319,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		// FIXME handle md versions.
 		//return '<pre>' . print_r($field_values, true) . '</pre>';
 		$this->startTransaction();
-		
+		$iPreviousMetadataVersionId = $oDocument->getMetadataVersionId();
 		$oDocument->startNewMetadataVersion($this->oUser);
 		if (PEAR::isError($res)) {
 		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
@@ -427,6 +429,21 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   
 		   
 		} else {
+		   
+		   // post-triggers.
+		   $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+		   $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+                
+		   foreach ($aTriggers as $aTrigger) {
+		       $sTrigger = $aTrigger[0];
+			   $oTrigger = new $sTrigger;
+			   $aInfo = array(
+			       "document" => $oDocument,
+			   );
+			   $oTrigger->setInfo($aInfo);
+			   $ret = $oTrigger->postValidate();
+		   }
+		   
 		   $this->commitTransaction();
 		   
 		   // now we need to say we're ok.
