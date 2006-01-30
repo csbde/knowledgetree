@@ -1,0 +1,46 @@
+<h2>{i18n}Workflow Allocation by Document Type{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Workflow types are allocated by Document Type in this
+KnowledgeTree installation.  Documents will be assigned workflow based on their document
+type, and will have their allocated workflows changed if their types change.  Naturally,
+if the workflows change then the documents will lose any "progress" in the old 
+workflow.{/i18n}</p>
+
+<p class="descriptiveText">{i18n}Document Types with no pre-allocated workflow will
+either have no workflow set (for new documents) or keep their old workflow (for
+documents which have had their type changed.{/i18n}</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Workflow Allocations{/i18n}</legend>
+<p class="descriptiveText">{i18n}Please select the appropriate workflows for each document type.{/i18n}</p>
+
+<table class="listing" cellspacing="0">
+<thead>
+    <tr>
+        <th>{i18n}Document Type{/i18n}</th>
+        <th>{i18n}Workflow{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+{foreach item=oType from=$types}
+    <tr>
+        <td>{$oType->getName()}</td>
+        <td>
+          <select name="fDocumentTypeAssignment[{$oType->getId()}]">
+              <option value="" >No automatic workflow</option>
+              {foreach item=oWorkflow from=$workflows}
+              <option value="{$oWorkflow->getId()}" {if ($context->isActiveWorkflow($oType, $oWorkflow, $types_mapping))}selected="true"{/if}>{$oWorkflow->getName()}</option>
+              {/foreach}
+          </select>
+        </td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+<div class="form_actions">
+   <input type='submit' value="{i18n}Apply{/i18n}" />
+   <input type="hidden" name="action" value="update" />
+</div>
+</fieldset>
+</form>

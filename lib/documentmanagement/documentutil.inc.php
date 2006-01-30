@@ -43,6 +43,9 @@ require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
+// WORKFLOW
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
         if (is_numeric($oDocument)) {
@@ -76,7 +79,7 @@ class KTDocumentUtil {
             $oVersionDFL->setDocumentID($iVersionDocumentID);
             $res = $oVersionDFL->create();
         }
-
+        
         return $oVersionDocument;
     }
 
@@ -317,6 +320,7 @@ class KTDocumentUtil {
             $aRow['metadata_version_id'] = $iNewMetadataVersion;
             DBUtil::autoInsert($sTable, $aRow);
         }
+        
     }
 
     // {{{ setIncomplete
@@ -445,6 +449,20 @@ class KTDocumentUtil {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
+        
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('add', 'postValidate');
+                
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            
+        }
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("All done...")));
 

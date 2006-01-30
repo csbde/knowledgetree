@@ -70,6 +70,12 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+        // since we actually check the doc out, then download it ...
+        if (($_REQUEST[$this->event_var] == 'checkout_final') && ($this->oDocument->getCheckedOutUserID() == $_SESSION['userID'])) { 
+             return true; 
+        }
+        
+        // "normal".
         if ($this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _("This document is already checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
