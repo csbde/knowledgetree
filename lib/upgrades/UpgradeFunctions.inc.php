@@ -6,7 +6,8 @@ class UpgradeFunctions {
         "2.0.6" => array("addTemplateMimeTypes"),
         "2.0.8" => array("setPermissionObject"),
         "2.99.1" => array("createFieldSets"),
-        "2.99.7" => array("normaliseDocuments"), #, "createLdapAuthenticationProvider"),
+        "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
+        "2.99.8" => array("fixUnits"), #, "createLdapAuthenticationProvider"),
     );
 
     var $descriptions = array(
@@ -21,6 +22,8 @@ class UpgradeFunctions {
         "setPermissionObject" => 1,
         "createFieldSets" => 1,
         "normaliseDocuments" => 1,
+        "fixUnits" => 1,
+        'applyDiscussionUpgrade' => -1,
     );
 
     // {{{ _setPermissionFolder
@@ -369,6 +372,39 @@ class UpgradeFunctions {
         }
         DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=1");
         
+    }
+    // }}}
+
+    // {{{ applyDiscussionUpgrade
+    function applyDiscussionUpgrade() {
+        $sUpgradesTable = KTUtil::getTableName('upgrades');
+        $bIsVersionApplied = DBUtil::getOneResultKey("SELECT MAX(result) AS result FROM $sUpgradesTable WHERE descriptor = 'upgrade*2.99.7*99*upgrade2.99.7'", "result");
+        if (empty($bIsVersionApplied)) {
+            // print "Version is not applied!<br />\n";
+            return;
+        }
+
+        $bIsDiscussionApplied = DBUtil::getOneResultKey("SELECT MAX(result) AS result FROM $sUpgradesTable WHERE descriptor = 'sql*2.99.7*0*2.99.7/discussion.sql'", "result");
+        if (!empty($bIsDiscussionApplied)) {
+            // print "Discussion is applied!<br />\n";
+            return;
+        }
+        // print "Discussion is not applied!<br />\n";
+
+        $f = array(
+            'descriptor' => 'sql*2.99.7*0*2.99.7/discussion.sql',
+            'result' => true,
+        );
+        $res = DBUtil::autoInsert($sUpgradesTable, $f);
+        return;
+    }
+    // }}}
+
+    // {{{ fixUnits
+    function fixUnits() {
+        $sGULTable = KTUtil::getTableName("groups_units");
+        $aGroupUnits = DBUtil::getResultArray("SELECT group_id, unit_id FROM $sGULTable");
+        exit(0);
     }
     // }}}
 }
