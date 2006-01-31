@@ -13,6 +13,7 @@ class KTDispatchStandardRedirector {
 
 class KTDispatcher {
     var $event_var = "action";
+    var $cancel_var = "kt_cancel";
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
 	var $oValidator = null;
@@ -23,6 +24,14 @@ class KTDispatcher {
     }
 
     function dispatch () {
+        if (array_key_exists($this->cancel_var, $_REQUEST)) {
+            $var = $_REQUEST[$this->cancel_var];
+            if (is_array($var)) {
+                $keys = array_keys($var);
+                redirect($keys[0]);
+                exit(0);
+            }
+        }
         $method = 'do_main';
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = $_REQUEST[$this->event_var];
