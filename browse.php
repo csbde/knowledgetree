@@ -498,6 +498,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $res = KTUtil::arrayGet($_REQUEST,'sReason');
         $sReason = $this->oValidator->notEmpty($res, $aErrorOptions);
         
+        
+        
         // FIXME we need to sort out the (inconsistent) use of transactions here.
         $aFolders = array();
         $aDocuments = array();
@@ -511,6 +513,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         foreach ($aDocumentSelection as $id) {
             $oD = Document::get($id);
+            if (!Permission::userHasDocumentWritePermission($oD)) {
+                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the documen: %s'), $oD->getName()));             
+            }
             if (PEAR::isError($oD) || ($oD == false)) {
                 return $this->errorRedirectToMain(_('Invalid Document selected.'));
             } else {
