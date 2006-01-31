@@ -13,7 +13,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/MDTree.inc');
 
 
 // FIXME shouldn't this inherit from AdminDispatcher?
-class KTDocumentFieldDispatcher extends KTStandardDispatcher {
+class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 
     function check() {
