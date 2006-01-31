@@ -39,8 +39,6 @@ class Folder extends KTEntity {
 	var $iParentID;
 	/** primary key of user who created folder */
 	var $iCreatorID;	
-	/** primary key of unit to which this folder belongs */
-	var $iUnitID;
 	/** public status of folder */
 	var $bIsPublic = false;
 	/** comma deliminated string of parent ids */
@@ -61,7 +59,6 @@ class Folder extends KTEntity {
         'sDescription' => 'description',
         'iParentID' => 'parent_id',
         'iCreatorID' => 'creator_id',
-        'iUnitID' => 'unit_id',
         'bIsPublic' => 'is_public',
         'sFullPath' => 'full_path',
         'sParentFolderIDs' => 'parent_folder_ids',
@@ -70,28 +67,6 @@ class Folder extends KTEntity {
         'bRestrictDocumentTypes' => 'restrict_document_types',
     );
     // }}}
-	
-	/**
-	* Folder class constructor
-	*
-	* @param $sNewName				Folder name
-	* @param $sNewDescription		Folder description
-	* @param $iNewParentID			Primary key of parent folder
-	* @param $iNewCreatorID			Primary key of user who created folder
-	* @param $iNewDocumentTypeID	Primary key of document type folder will hold
-	* @param $iNewUnitID			Primary key of unit to which folder belongs
-	* @param $bNewIsPublic			Folder public status (is the folder public or not?)
-	*/
-	function Folder($sNewName = null, $sNewDescription = null, $iNewParentID = null, $iNewCreatorID = null, $iNewUnitID = null, $bNewIsPublic = false) {
-		//id of -1 means that the object has not yet been stored in the database
-		$this->iId = -1;
-		$this->sName = $sNewName;
-		$this->sDescription = $sNewDescription;
-		$this->iParentID = $iNewParentID;
-		$this->iCreatorID = $iNewCreatorID;		
-		$this->iUnitID = $iNewUnitID;
-		$this->bIsPublic = $bNewIsPublic;
-	}
 	
 	function getID() { return $this->iId; }
 	function getName() { return $this->sName; }
@@ -102,8 +77,6 @@ class Folder extends KTEntity {
 	function setParentID($iNewValue) { $this->iParentID = $iNewValue; }
 	function getCreatorID() { return $this->iCreatorID; }
 	function setCreatorID($iNewValue) { $this->iCreatorID = $iNewValue; }
-	function getUnitID() { return $this->iUnitID; }
-	function setUnitID($iNewValue) { $this->iUnitID = $iNewValue; }
 	function getIsPublic() { return $this->bIsPublic; }
 	function setIsPublic($bNewValue) { $this->bIsPublic = $bNewValue; }
 	function getFullPath() { return $this->sFullPath; }
@@ -192,7 +165,6 @@ class Folder extends KTEntity {
             'description' => $this->sDescription,
             'parent_id' => $this->iParentID,
             'creator_id' => $this->iCreatorID,
-            'unit_id' => $this->iUnitID,
             'is_public' => KTUtil::anyToBool($this->bIsPublic),
             'full_path' => $this->sFullPath,
             'parent_folder_ids' => $this->sParentFolderIDs,
@@ -561,29 +533,6 @@ class Folder extends KTEntity {
 		return false;
 	}
 	
-	
-	/**
-	* Checks if a folder is a unit's root folder.
-	* A folder is assumed to be a unit's root folder if it has the
-	* same name as a unit and has an appropriate description
-	* 
-	*/
-	function folderIsUnitRootFolder($iFolderID) {
-		global $default;
-		$sQuery = "SELECT F.id FROM $default->folders_table AS F " .
-				  "INNER JOIN $default->folders_table AS P ON F.parent_id=P.id " .
-		          "INNER JOIN $default->units_table AS U ON F.unit_id=U.id " .
-		          "WHERE F.id = ? " .
-		          " AND P.unit_id<>F.unit_id ";	
-        $aParams = array($iFolderID);
-		$sql = $default->db;
-		$sql->query(array($sQuery, $aParams));
-		if ($sql->next_record()) {
-			return true;
-		}
-		return false;
-	}
-
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(
             'parent_id' => $iParentID,
