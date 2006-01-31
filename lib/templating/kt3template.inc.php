@@ -178,7 +178,8 @@ class KTPage {
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
 			$this->componentLabel = _('DMS Administration');
-			$this->componentClass = 'administration';	    
+			$this->componentClass = 'administration';
+			$this->menu['administration']['active'] = 1;
 		} else if ($sSection == 'dashboard') {
 		    $this->componentLabel = _('Dashboard');
             $this->componentClass = 'dashboard';	    

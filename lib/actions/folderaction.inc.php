@@ -113,7 +113,9 @@ class KTFolderAction extends KTStandardDispatcher {
 
     function check() {
         $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
-
+        
+        if ($this->_disable()) { return false; }
+        
         if (!is_null($this->_sShowPermission)) {
             $oPermission =& KTPermission::getByName($this->_sShowPermission);
             if (!PEAR::isError($oPermission)) {
@@ -130,6 +132,12 @@ class KTFolderAction extends KTStandardDispatcher {
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
+
+        $portlet = new KTActionPortlet(_("Folder Actions"));
+        $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);        
+        $portlet->setActions($aActions,null);
+        $this->oPage->addPortlet($portlet);            
+            
         return true;
     }
 

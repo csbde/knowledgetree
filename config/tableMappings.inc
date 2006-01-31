@@ -148,4 +148,5 @@ $default->document_metadata_version_table = "document_metadata_version";
 $default->document_content_version_table = "document_content_version";
 $default->trigger_selection_table = "trigger_selection";
 $default->type_workflow_map_table = "type_workflow_map";
+$default->folder_workflow_map_table = "folder_workflow_map";
 ?>
