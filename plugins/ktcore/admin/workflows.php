@@ -20,6 +20,10 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/groups/Group.inc');
+require_once(KT_LIB_DIR . '/roles/Role.inc');
+
 class WorkflowNavigationPortlet extends KTPortlet {   
     var $oWorkflow;
 
@@ -202,7 +206,58 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     }
     
     function getNotificationStringForState($oState) {
-        return _('No roles and groups notified.');
+        $aAllowed = KTWorkflowUtil::getInformedForState($oState);
+        
+        $aUsers = array();
+        $aGroups = array();
+        $aRoles = array();
+        
+        foreach (KTUtil::arrayGet($aAllowed,'user',array()) as $iUserId) {
+            $oU = User::get($iUserId);
+            if (PEAR::isError($oU) || ($oU == false)) {
+                continue;
+            } else {
+                $aUsers[] = $oU->getName();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aAllowed,'group',array()) as $iGroupId) {
+            $oG = Group::get($iGroupId);
+            if (PEAR::isError($oG) || ($oG == false)) {
+                continue;
+            } else {
+                $aGroups[] = $oG->getName();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aAllowed,'role',array()) as $iRoleId) {
+            $oR = Role::get($iRoleId);
+            if (PEAR::isError($oR) || ($oR == false)) {
+                continue;
+            } else {
+                $aRoles[] = $oR->getName();
+            }
+        }
+        
+        $sNotify = '';
+        if (!empty($aUsers)) {
+            $sNotify .= '<em>' . _('Users:') . '</em>';
+            $sNotify .= implode(', ', $aUsers);
+        }
+        
+        if (!empty($aGroups)) {
+            $sNotify .= '<em>' . _('Groups:') . '</em>';
+            $sNotify .= implode(', ', $aGroups);
+        }
+        
+        if (!empty($aRoles)) {
+            $sNotify .= '<em>' . _('Roles:') . '</em>';
+            $sNotify .= implode(', ', $aRoles);
+        }
+        
+        if (empty($sNotify)) { $sNotify = _('No users to be notified.'); }
+        
+        return $sNotify;
     }
   
     function transitionAvailable($oTransition, $oState) {
@@ -735,33 +790,28 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $sTargetAction = 'editState';
         $sTargetParams = 'fWorkflowId=' . $oWorkflow->getId() .  '&fStateId=' .  $oState->getId();
-        $aRoleIds = KTUtil::arrayGet($_REQUEST, 'fRoleIds');
-        if (empty($aRoleIds)) {
-            $aRoleIds = array();
+        $aNotification = (array) KTUtil::arrayGet($_REQUEST, 'fNotification');
+        
+        if (empty($aNotification['role'])) {
+            $aNotification['role'] = array();
         }
-        if (!is_array($aRoleIds)) {
+        if (!is_array($aNotification['role'])) {
             $this->errorRedirectTo($sTargetAction, _('Invalid roles specified'), $sTargetParams);
         }
-        $aGroupIds = KTUtil::arrayGet($_REQUEST, 'fGroupIds');
-        if (empty($aGroupIds)) {
-            $aGroupIds = array();
+        
+        if (empty($aNotification['group'])) {
+            $aNotification['group'] = array();
         }
-        if (!is_array($aGroupIds)) {
+        if (!is_array($aNotification['group'])) {
             $this->errorRedirectTo($sTargetAction, _('Invalid groups specified'), $sTargetParams);
         }
-        $aUserIds = KTUtil::arrayGet($_REQUEST, 'fUserIds');
-        if (empty($aUserIds)) {
-            $aUserIds = array();
+        
+        $aNotification['user'] = array(); // force override
+        
+        $res = KTWorkflowUtil::setInformedForState($oState, $aNotification);
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo($sTargetAction, sprintf(_('Failed to update the notification lists: %s'),$res->getMessage()), $sTargetParams); 
         }
-        if (!is_array($aUserIds)) {
-            $this->errorRedirectTo($sTargetAction, _('Invalid users specified'), $sTargetParams);
-        }
-        $aAllowed = array(
-            'role' => $aRoleIds,
-            'group' => $aGroupIds,
-            'user' => $aUserIds,
-        );
-        KTWorkflowUtil::setInformedForState($oState, $aAllowed);
         $this->successRedirectTo($sTargetAction, _('Changes saved'), $sTargetParams);
     }
     // }}}

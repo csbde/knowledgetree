@@ -1,0 +1,10 @@
+<dt class="actionitem">{$document_name}</dt>
+<dd class="actionmessage">
+    {i18n arg_name=$document_name arg_state=$state_name}The document <strong>#name#</strong> has changed to 
+    state <strong>#state#</strong>, and you are specified as one of the users to inform
+    about documents in this state.{/i18n}
+    <div class="actionoptions">
+    <a href="{$absoluteRootUrl}/notify.php?id={$notify_id}">{i18n}View Document{/i18n}</a>
+    | <a href="{$absoluteRootUrl}/notify.php?id={$notify_id}&notify_action=clear">{i18n}Clear Alert{/i18n}</a>
+    </div>
+</dd>

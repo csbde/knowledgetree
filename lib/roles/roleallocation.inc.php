@@ -121,7 +121,7 @@ class RoleAllocation extends KTEntity {
 		foreach ($aUsers as $iUserId) {
 		    $oUser = User::get($iUserId);
 			if (!(PEAR::isError($oUser) || ($oUser == false))) {
-			    $aFullUsers[] = $oUser;
+			    $aFullUsers[$iUserId] = $oUser;
 			}
 		}
 		
@@ -144,7 +144,7 @@ class RoleAllocation extends KTEntity {
 		foreach ($aGroups as $iGroupId) {
 		    $oGroup = Group::get($iGroupId);
 			if (!(PEAR::isError($oGroup) || ($oGroup == false))) {
-			    $aFullGroups[] = $oGroup;
+			    $aFullGroups[$iGroupId] = $oGroup;
 			}
 		}
 		

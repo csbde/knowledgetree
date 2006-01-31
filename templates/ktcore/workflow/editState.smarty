@@ -19,7 +19,8 @@ the "sent" <strong>transition</strong> has been performed by a user.</p>
 </div>
 </fieldset>
 </form>
-{*
+
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveInform" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -33,7 +34,7 @@ informed when this state is reached.{/i18n}</p>
 
 {if $aRoles}
 <h3>{i18n}Roles{/i18n}</h3>
-{entity_checkboxes entities=$aRoles name="fRoleIds" multiple="true" selected=$aInformed.role assign=aBoxes}
+{entity_checkboxes entities=$aRoles name="fNotification[role]" multiple="true" selected=$aInformed.role assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
@@ -41,7 +42,7 @@ informed when this state is reached.{/i18n}</p>
 
 {if $aGroups}
 <h3>{i18n}Groups{/i18n}</h3>
-{entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
+{entity_checkboxes entities=$aGroups name="fNotification[group]" multiple="true" selected=$aInformed.group assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
@@ -49,10 +50,14 @@ informed when this state is reached.{/i18n}</p>
 
 {if (empty($aGroups) && empty($aRoles))}
 <div class="ktInfo"><p>{i18n}No groups or roles are defined in the DMS.{/i18n}</p></div>
+{else}
+<div class="form_actions">
+  <input type="submit" value="{i18n}Update users to inform{/i18n}" />
+</div>
 {/if}
 
 </fieldset>
-*}
+</form>
 
 {*
 <h3>{i18n}Assigned Permissions{/i18n}</h3>
