@@ -31,94 +31,79 @@ class DocumentLink extends KTEntity {
 	/** primary key value */
 	var $iId;
 	/** primary key of user responsible for creating document */
-	var $iParentDocumentID;
+	var $iParentDocumentId;
 	/** document title name */	
-	var $iChildDocumentID;
+	var $iChildDocumentId;
     /** type of link */
-    var $iLinkTypeID;
+    var $iLinkTypeId;
+
+
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'iParentDocumentId' => 'parent_document_id',
+        'iChildDocumentId' => 'child_document_id',
+        'iLinkTypeId' => 'link_type_id',
+    );
+
 
 	/**
 	* Default constructor
 	*
 	* @param 	Parent document primary key
 	* @param 	Child document primary key
+	* @param 	Link type primary key
 	*
 	*/
-	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID, $iLinkTypeID) {
+	function DocumentLink($iNewParentDocumentID = null, $iNewChildDocumentID = null, $iLinkTypeId = null) {
 		//object not created yet
 		global $default;
 		$this->iId = -1;
-		$this->iParentDocumentID = $iNewParentDocumentID;
-		$this->iChildDocumentID = $iNewChildDocumentID;
-		$this->iLinkTypeID = $iLinkTypeID;
+		$this->iParentDocumentId = $iNewParentDocumentID;
+		$this->iChildDocumentId = $iNewChildDocumentID;
+		$this->iLinkTypeId = $iLinkTypeId;
 	}
 
-	/**
-	* Get the document field's primary key value
-	*
-	* @return int document field's primary key value
-	*
-	*/
-	function getID() {
-		return $this->iId;
-	}
+	function getID() { return $this->iId; }
+	function getParentDocumentID() { return $this->iParentDocumentId; }
+	function setParentDocumentID($iNewValue) { $this->iParentDocumentId = $iNewValue; }
+	function getChildDocumentID() { return $this->iChildDocumentId;	}
+	function setChildDocumentID($iNewValue) { $this->iChildDocumentId = $iNewValue; }
+	function getLinkTypeID() { return $this->iLinkTypeId; }
+	function setLinkTypeID($iNewValue) { $this->iLinkTypeId = $iNewValue; }
 
 	/**
-	* Get the primary key of the parent document
+	* Helper getters
 	*/
-	function getParentDocumentID() {
-		return $this->iParentDocumentID;
-	}
-
+	
 	/**
-	* Set the primary key of the parent document
-	*
-	* @param 	Primary key of parent document
-	*
+	* get parent document
 	*/
-	function setParentDocumentID($iNewValue) {
-		$this->iParentDocumentID = $iNewValue;
-	}
-
+	function & getParentDocument() {
+	    return Document::get($this->getParentDocumentId());
+    }
+	
 	/**
-	* Get the child document's primary key
-	*
-	* @return int primary key of child document
-	*
+	* get child document
 	*/
-	function getChildDocumentID() {
-		return $this->iChildDocumentID;
-	}
-
+	function & getChildDocument() {
+	    $oDocument = Document::get($this->getChildDocumentId());
+		return $oDocument;
+    }
+	
 	/**
-	* Set the child document's primary key
-	*
-	* @param 	Primary key of child document
-	*
+	* get link type
 	*/
-	function setChildDocumentID($iNewValue) {
-		$this->iChildDocumentID = $iNewValue;
-	}
+	function & getLinkType() {
+	    return LinkType::get($this->getLinkTypeId());
+    }
 
-	/**
-	* Get the primary key of the link type
-	*/
-	function getLinkTypeID() {
-		return $this->iLinkTypeID;
-	}
 
-	/**
-	* Set the primary key of the link type
-	*/
-	function setLinkTypeID($iNewValue) {
-		$this->iLinkTypeID = $iNewValue;
-	}
 
     function _fieldValues () {
         return array(
-            'parent_document_id' => $this->iParentDocumentID,
-            'child_document_id' => $this->iChildDocumentID,
-            'link_type_id' => $this->iLinkTypeID,
+            'parent_document_id' => $this->iParentDocumentId,
+            'child_document_id' => $this->iChildDocumentId,
+            'link_type_id' => $this->iLinkTypeId,
         );
     }
 
@@ -127,16 +112,11 @@ class DocumentLink extends KTEntity {
         return $default->document_link_table;
     }
 
-	/**
-	* Static function.
-	* Given a document_fields primary key it will create a 
-	* DocumentFields object and populate it with the 
-	* corresponding database values
-	*
-	* @return DocumentField populated DocumentField object on successful query, false otherwise and set $_SESSION["errorMessage"]
-	*/
+
+	// static boilerplate
 	function & get($iDocumentLinkID) {
 		global $default;
+		
 		$sql = $default->db;
 		$result = $sql->query(array("SELECT * FROM $default->document_link_table WHERE id = ?", $iDocumentLinkID));/*ok*/
 		if ($result) {
@@ -151,5 +131,34 @@ class DocumentLink extends KTEntity {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+    function getList($sWhereClause = null) {
+        return KTEntityUtil::getList2('DocumentLink', $sWhereClause);
+    }
+	function &createFromArray($aArray) { return KTEntityUtil::createFromArray('DocumentLink', $aArray); }
+
+    /**
+     * Static function
+     * Get a list of DocumentLinks where iDocumentId is the parent
+     *
+     * @param  Integer  Document ID of parent
+     *
+     * @return Array array of DocumentLink objects, false otherwise.
+     */
+    function getLinksFromDocument($iDocumentId) {
+        return KTEntityUtil::getList2('DocumentLink', sprintf("parent_document_id = %d", $iDocumentId));
+    }
+	
+    /**
+     * Static function
+     * Get a list of DocumentLinks where iDocumentId is the child
+     *
+     * @param  Integer  Document ID of child
+     *
+     * @return Array array of DocumentLink objects, false otherwise.
+     */
+    function getLinksToDocument($iDocumentId) {
+        return KTEntityUtil::getList2('DocumentLink', sprintf("child_document_id = %d", $iDocumentId));
+    }
 }
+
 ?>

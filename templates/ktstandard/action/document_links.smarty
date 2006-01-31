@@ -1,0 +1,74 @@
+<h2>{i18n}Document Links{/i18n}</h2>
+
+
+<p class="descriptiveText">{i18n}The current links to and from this document are displayed below.{/i18n}</p>
+
+
+<table class="kt_collection" cellspacing="0" cellpadding="0" style="width: auto;">
+    <thead>
+        <tr>
+            <th style="width:1em">&nbsp;</th>
+            <th>{i18n}Target{/i18n}</th>
+            <th>{i18n}Type{/i18n}</th>
+            <th>{i18n}Relationship{/i18n}</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+
+
+
+
+
+{if $links_from || $links_to}    
+    
+{foreach from=$links_from item=link}
+
+{assign var="type" value=$link->getLinkType()}
+{assign var="target" value=$link->getChildDocument()}
+
+        <tr>
+            <td><a href="?action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}" class="ktAction ktDelete">Delete</a></td>
+            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
+            <td>{$type->getName()}</td>
+            <td>Linked <b>from</b> this document</td>
+        </tr>
+        
+{/foreach}      
+
+{foreach from=$links_to item=link}
+
+{assign var="type" value=$link->getLinkType()}
+{assign var="target" value=$link->getParentDocument()}
+
+        <tr>
+            <td>
+{if $write_permission}
+            <a class="ktAction ktDelete">Delete</a></td>
+{else}
+&nbsp;
+{/if}
+            <td><a href="{$target->getId()}">{$target->getName()}</a></td> 
+            <td>{$type->getName()}</td>
+            <td>Links <b>to</b> this document</td>
+        </tr>
+        
+{/foreach}      
+
+
+{else}
+<tr><td colspan="4" align="center">There are no links to or from this document.</td></tr>
+{/if}
+
+
+
+    </tbody>
+</table>
+<br/>
+
+
+{if $write_permission}
+<a class="ktAction ktAdd ktInline" href="?action=new&fDocumentId={$context->oDocument->getId()}">Add a new link</a>
+<a href="?action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}">Add a new link</a>.
+{/if}
+
