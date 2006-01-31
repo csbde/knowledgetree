@@ -11,7 +11,7 @@ $sectionName = "Administration";
 require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . '/metadata/fieldbehaviour.inc.php');
 
-class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
+class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
     function do_main() {
         return "Ajax Error.";

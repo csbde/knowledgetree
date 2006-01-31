@@ -5,7 +5,7 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
 require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 
-class KTConditionDispatcher extends KTStandardDispatcher {
+class KTConditionDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 
     function check() {

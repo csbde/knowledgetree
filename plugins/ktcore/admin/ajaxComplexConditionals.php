@@ -12,7 +12,7 @@ require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldbehaviour.inc.php");
 require_once(KT_LIB_DIR . "/metadata/valueinstance.inc.php");
 
-class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
+class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
         return "Ajax Error: no action specified.";
     }
