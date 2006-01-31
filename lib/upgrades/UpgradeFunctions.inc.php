@@ -402,9 +402,32 @@ class UpgradeFunctions {
 
     // {{{ fixUnits
     function fixUnits() {
+        // First, assign the unit to a group directly on the group
+        // table, not via the group_units table, since groups could only
+        // belong to a single unit anyway.
         $sGULTable = KTUtil::getTableName("groups_units");
+        $sGroupsTable = KTUtil::getTableName('groups');
         $aGroupUnits = DBUtil::getResultArray("SELECT group_id, unit_id FROM $sGULTable");
-        exit(0);
+        foreach ($aGroupUnits as $aRow) {
+            // $curunit = DBUtil::getOneResultKey(array("SELECT unit_id FROM $sGroupsTable WHERE id = ?", array($aRow['group_id'])), "unit_id");
+            DBUtil::autoUpdate($sGroupsTable, array('unit_id' => $aRow['unit_id']), $aRow['group_id']);
+        }
+
+        // Now, assign the unit folder id to the unit directly, instead
+        // of storing the unit_id on every folder beneath the unit
+        // folder.
+        $sFoldersTable = KTUtil::getTableName('folders');
+        $sUnitsTable = KTUtil::getTableName('units');
+        $sQuery = "SELECT id FROM folders WHERE unit_id = ? ORDER BY LENGTH(parent_folder_ids) LIMIT 1";
+        $aUnitIds = DBUtil::getResultArrayKey("SELECT id FROM $sUnitsTable", 'id');
+        foreach ($aUnitIds as $iUnitId) {
+            $aParams = array($iUnitId);
+            $iFolderId = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+            if (!empty($iFolderId)) {
+                DBUtil::autoUpdate($sUnitsTable, array('folder_id' => $iFolderId), $iUnitId);
+            }
+        }
+        return true;
     }
     // }}}
 }
