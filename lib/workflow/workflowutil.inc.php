@@ -10,6 +10,13 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 require_once(KT_LIB_DIR . '/roles/roleallocation.inc.php');
 
+require_once(KT_LIB_DIR . '/groups/Group.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/roles/Role.inc');
+
+require_once(KT_LIB_DIR . '/dashboard/Notification.inc.php');
+
+
 class KTWorkflowUtil {
     // {{{ saveTransitionsFrom
     /**
@@ -102,7 +109,16 @@ class KTWorkflowUtil {
             'state_id' => $iStartStateId,
         );
         $sTable = KTUtil::getTableName('workflow_documents');
-        return DBUtil::autoInsert($sTable, $aValues, $aOptions);
+        $res = DBUtil::autoInsert($sTable, $aValues, $aOptions);
+        
+        // FIXME does this function as expected?
+        $oUser = User::get($_SESSION['userID']);
+        
+        $oTargetState = KTWorkflowState::get($iStartStateId);
+        KTWorkflowUtil::informUsersForState($oTargetState, 
+            KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
+        
+        return $res;
     }
     // }}}
     
@@ -142,6 +158,14 @@ class KTWorkflowUtil {
             'state_id' => $iStartStateId,
         );
         $sTable = KTUtil::getTableName('workflow_documents');
+        
+        $oUser = User::get($_SESSION['userID']);
+        $oTargetState = KTWorkflowState::get($iStartStateId);
+        
+        KTWorkflowUtil::informUsersForState($oTargetState, 
+            KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
+        
+        
         return DBUtil::autoInsert($sTable, $aValues, $aOptions);
     }
     // }}}    
@@ -457,7 +481,100 @@ class KTWorkflowUtil {
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
 
+        KTWorkflowUtil::informUsersForState($oTargetState, KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, $sComments);
+
         return true;
+    }
+    // }}}
+
+    // {{{ informUsersForState
+    function informUsersForState($oState, $aInformed, $oDocument, $oUser, $sComments) {
+        // say no to duplicates.
+        
+        KTWorkflowNotification::clearNotificationsForDocument($oDocument);
+
+        $aUsers = array();
+        $aGroups = array();
+        $aRoles = array();
+        
+        foreach (KTUtil::arrayGet($aInformed,'user',array()) as $iUserId) {
+            $oU = User::get($iUserId);
+            if (PEAR::isError($oU) || ($oU == false)) {
+                continue;
+            } else {
+                $aUsers[$oU->getId()] = $oU();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aInformed,'group',array()) as $iGroupId) {
+            $oG = Group::get($iGroupId);
+            if (PEAR::isError($oG) || ($oG == false)) {
+                continue;
+            } else {
+                $aGroups[$oG->getId()] = $oG();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aInformed,'role',array()) as $iRoleId) {
+            $oR = Role::get($iRoleId);
+            if (PEAR::isError($oR) || ($oR == false)) {
+                continue;
+            } else {
+                $aRoles[] = $oR;
+            }
+        }
+        
+        
+        
+        // FIXME extract this into a util - I see us using this again and again.
+        // start with roles ... roles _only_ ever contain groups.
+        foreach ($aRoles as $oRole) {
+            $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $oRole->getId());
+            $aRoleUsers = $oRoleAllocation->getUsers();
+            $aRoleGroups = $oRoleAllocation->getGroups();
+            
+            foreach ($aRoleUsers as $id => $oU) {
+                $aUsers[$id] = $oU;
+            }
+            foreach ($aRoleGroups as $id => $oGroup) {
+                $aGroups[$id] = $oGroup;
+            }
+        }
+        
+        
+        
+        // we now have a (potentially overlapping) set of groups, which may
+        // have subgroups.
+        //
+        // what we need to do _now_ is build a canonical set of groups, and then
+        // generate the singular user-base.
+        
+        $aGroupMembershipSet = GroupUtil::buildGroupArray();
+        $aAllIds = array_keys($aGroups);
+        foreach ($aGroups as $id => $oGroup) {
+            $aAllIds = array_merge($aGroupMembershipSet[$id], $aAllIds);
+        }
+        
+        foreach ($aAllIds as $id) {
+            if (!array_key_exists($id, $aGroups)) {
+                $aGroups[$id] = Group::get($id);
+            }
+        }
+        
+        // now, merge this (again) into the user-set.
+        foreach ($aGroups as $oGroup) {
+            $aNewUsers = $oGroup->getUsers();
+            foreach ($aNewUsers as $id => $oU) {
+                if (!array_key_exists($id, $aUsers)) {
+                    $aUsers[$id] = $oU;
+                }
+            }
+        }
+        
+        // and done.  
+        foreach ($aUsers as $oU) {
+            KTWorkflowNotification::newNotificationForDocument($oDocument, $oU, $oState, $oUser, $sComments);
+        }
     }
     // }}}
 

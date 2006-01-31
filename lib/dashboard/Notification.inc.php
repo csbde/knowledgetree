@@ -9,6 +9,10 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+
 /**
  * class Notification
  *
@@ -71,6 +75,9 @@ class KTNotification extends KTEntity {
 	function render() {
 		$notificationRegistry =& KTNotificationRegistry::getSingleton();
 		$handler = $notificationRegistry->getHandler($this->sType);
+		
+		if (is_null($handler)) { return null; } 
+		
 		return $handler->handleNotification($this);
 	}
 	
@@ -312,5 +319,60 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 }
 
 $notificationRegistry->registerNotificationHandler("ktcore/subscriptions","KTSubscriptionNotification");
+
+class KTWorkflowNotification extends KTNotificationHandler {
+
+    function & clearNotificationsForDocument($oDocument) {
+		$aNotifications = KTNotification::getList('data_int_1 = ' . $oDocument->getId());
+		foreach ($aNotifications as $oNotification) {
+			$oNotification->delete();
+		}
+		
+	}
+
+	function & newNotificationForDocument($oDocument, $oUser, $oState, $oActor, $sComments) { 
+		$aInfo = array(); 
+		$aInfo['sData1'] = $oState->getName();
+		$aInfo['sData2'] = $sComments;
+		$aInfo['iData1'] = $oDocument->getId();
+		$aInfo['iData2'] = $oActor->getId();
+		$aInfo['sType'] = 'ktcore/workflow';
+		$aInfo['dCreationDate'] = getCurrentDateTime(); 
+		$aInfo['iUserId'] = $oUser->getId();
+		$aInfo['sLabel'] = $oDocument->getName();
+		
+		return KTNotification::createFromArray($aInfo);
+	}
+
+	function handleNotification($oKTNotification) { 
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/workflow_notification');
+        $oTemplate->setData(array(
+            'context' => $this,
+			'document_id' => $oKTNotification->getIntData1(),
+			'state_name' => $oKTNotification->getStrData1(),
+			'actor' => User::get($oKTNotification->getIntData2()),
+			'document_name' => $oKTNotification->getLabel(),
+			'notify_id' => $oKTNotification->getId(),
+        ));
+        return $oTemplate->render();
+	}
+	
+	function resolveNotification($oKTNotification) {
+	    $notify_action = KTUtil::arrayGet($_REQUEST, 'notify_action', null);
+		if ($notify_action == 'clear') {
+		    $_SESSION['KTInfoMessage'][] = _('Workflow Notification cleared.');
+			$oKTNotification->delete();
+			exit(redirect(generateControllerLink('dashboard')));
+		}
+		
+		$params = 'fDocumentId=' . $oKTNotification->getIntData1();
+		$url = generateControllerLink('viewDocument', $params);
+		$oKTNotification->delete(); // clear the alert.
+		exit(redirect($url));
+	}
+}
+
+$notificationRegistry->registerNotificationHandler("ktcore/workflow","KTWorkflowNotification");
 
 ?>
