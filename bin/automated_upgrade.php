@@ -19,11 +19,26 @@ $query = sprintf('SELECT value FROM %s WHERE name = "knowledgeTreeVersion"', $de
 $lastVersion = DBUtil::getOneResultKey($query, 'value');
 $currentVersion = $default->systemVersion;
 
+$action = $_SERVER['argv'][1];
+if (empty($action)) {
+    $action = 'show';
+}
+
 $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
 $i = 1;
 foreach ($upgrades as $step) {
-    print "Upgrade step $i: " . $step->getDescription() . "\n";
+    print "Upgrade step $i: " . $step->getDescription();
+    $bApplied = $step->isAlreadyApplied();
+    $i++;
+    if ($bApplied) {
+        print " (already applied)\n";
+        continue;
+    }
+    print "\n";
+    if ($action == 'show') {
+        continue;
+    }
     $res = $step->performUpgrade();
     print "    RESULT: ";
     if ($res === true) {
@@ -38,7 +53,6 @@ foreach ($upgrades as $step) {
         }
     }
     print "\n";
-    $i++;
 }
 
 ?>
