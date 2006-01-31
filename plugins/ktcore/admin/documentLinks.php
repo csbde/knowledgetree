@@ -139,6 +139,11 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         $count = 0;
         foreach ($types_to_delete as $link_id) {
             $oLinkType = LinkType::get($link_id);
+
+            foreach(DocumentLink::getList(sprintf("link_type_id = %d", $link_id)) as $oLink) {
+                $oLink->delete();
+            }
+            
             $oLinkType->delete(); // technically, this is a bad thing
             $count += 1; 
         }

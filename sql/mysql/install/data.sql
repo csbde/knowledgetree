@@ -167,7 +167,7 @@ INSERT INTO `document_transaction_types_lookup` VALUES (16, 'Workflow state tran
 -- Dumping data for table `document_types_lookup`
 -- 
 
-INSERT INTO `document_types_lookup` VALUES (1, 'Default');
+INSERT INTO `document_types_lookup` VALUES (1, 'Default',0);
 
 -- 
 -- Dumping data for table `documents`

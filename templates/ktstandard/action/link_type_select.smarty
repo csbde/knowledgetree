@@ -1,0 +1,21 @@
+<h2>{i18n}Add Link{/i18n}</h2>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+
+<input type="hidden" name="action" value="make_link" />
+<input type="hidden" name="fDocumentId" value="{$parent_id}" />
+<input type="hidden" name="fTargetDocumentId" value="{$target_id}" />
+
+<fieldset>
+<legend>{i18n}Select a link type.{/i18n}</legend>
+
+{foreach item=oWidget from=$fields}
+{$oWidget->render()}
+{/foreach}
+</fieldset>
+
+<div class="form_actions">
+<input type="submit" name="submit[move]" value="{i18n}Link{/i18n}" />
+</div>
+</fieldset>
+</form>
