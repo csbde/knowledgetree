@@ -9,68 +9,111 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
+require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
+require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
+require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
+
+require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
+
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
+    var $bAutomaticTransaction = true;
+
+    function check() {
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Unit Management'));
+        return parent::check();
+    }
+
     function do_main() {
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Unit Management'));
 		$this->oPage->setBreadcrumbDetails(_('select a unit'));
 		$this->oPage->setTitle(_("Unit Management"));
 
-		$unit_id= KTUtil::arrayGet($_REQUEST, 'unit_id', null);
-		if ($unit_id === null) { $for_edit = false; }
-		else { $for_edit = true; }
-	
-		
-		$add_fields = array();
-		$add_fields[] =  new KTStringWidget(_('Unit Name'),_("The unit's visible name.  e.g. <strong>Tech Support</strong>"), 'name', null, $this->oPage, true);
-
 		$unit_list =& Unit::getList();
 		
-		$edit_fields = array();
-		$edit_unit = null;
-		if ($for_edit === true) {
-		    $oUnit = Unit::get($unit_id);
-		    $edit_fields[] =  new KTStringWidget(_('Unit Name'),_("The unit's visible name.  e.g. <strong>Tech Support</strong>"), 'name', $oUnit->getName(), $this->oPage, true);
-        }
-			
 		$oTemplating = new KTTemplating;        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/unitadmin");
 		$aTemplateData = array(
 			"context" => $this,
-			"add_fields" => $add_fields,
-			"for_edit" => $for_edit,
-			"edit_fields" => $edit_fields,
-			"edit_unit" => $oUnit,
 			"unit_list" => $unit_list,
 		);
  		return $oTemplate->render($aTemplateData);
     }
 
-	function do_updateUnit() {
-	    $unit_id = KTUtil::arrayGet($_REQUEST, 'unit_id');
-		$oUnit = Unit::get($unit_id);
-		if (PEAR::isError($oUnit) || ($oUnit == false)) {
-		    $this->errorRedirectToMain(_('Please specify a unit.'));
-			exit(0);
-		}
-		
-		$unit_name = KTUtil::arrayGet($_REQUEST, 'name', null);
-		if (empty($unit_name)) {
-		    $this->errorRedirectToMain(_('Please specify a unit name.'));
-			exit(0);
-		}
-		
-		$this->startTransaction();
-		$oUnit->setName($unit_name);
-		$res = $oUnit->update();
-		if (PEAR::isError($res)) {
-		    $this->errorRedirectToMain(_('Failed to update unit name.'));
-			exit(0);
-		}
-		
-		$this->commitTransaction();
-		$this->successRedirectToMain(sprintf(_('Unit name changed to "%s"'), $unit_name));
-	}
-	
+    function do_addUnit() {
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+        $_REQUEST['fFolderId'] = $iFolderId;
+        $oFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+
+        $this->oPage->setBreadcrumbDetails(_('Add a new unit'));
+
+        $this->oPage->setTitle(_("Add a new unit"));
+
+        $edit_fields = array();
+        $add_fields[] =  new KTStringWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
+
+        $collection = new DocumentCollection();
+        $collection->addColumn(new KTUnitTitleColumn("Test 1 (title)","title"));
+        $qObj = new FolderBrowseQuery($oFolder->getId());
+        $collection->setQueryObject($qObj);
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+
+        $resultURL = sprintf("?action=addUnit&fFolderId=%d", $oFolder->getId());
+        $collection->setBatching($resultURL, $batchPage, $batchSize);
+
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+
+        $collection->setSorting($displayControl, $displayOrder);
+
+        $collection->getResults();
+
+        $aBreadcrumbs = array();
+        $folder_path_names = $oFolder->getPathArray();
+        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        if ($folder_path_ids[0] == 0) {
+            $folder_path_ids = array();
+            array_shift($folder_path_names);
+        }
+        $folder_path_ids[] = $oFolder->getId();
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $url = sprintf("?action=addUnit&fFolderId=%d", $id);
+            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+        }
+
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
+        $aTemplateData = array(
+            "context" => $this,
+            "add_fields" => $add_fields,
+            "collection" => $collection,
+            "collection_breadcrumbs" => $aBreadcrumbs,
+            "folder" => $oFolder,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_createUnit() {
+        $sName = $this->oValidator->validateString($_REQUEST['unit_name']);
+        $oParentFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+
+        $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
+        $oUnit = Unit::createFromArray(array(
+            'name' => $sName,
+            'folderid' => $oFolder->getId(),
+        ));
+        return $this->successRedirectToMain('Unit created');
+    }
 }
+
+class KTUnitTitleColumn extends TitleColumn {
+    function buildFolderLink($aDataRow) {
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=addUnit&fFolderId=' . $aDataRow['folder']->getId());
+    }
+}
+
 
 ?>

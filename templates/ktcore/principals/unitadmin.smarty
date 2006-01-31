@@ -1,62 +1,31 @@
 <h2>{i18n}Unit Administration{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and users and groups may be assigned to these units.{/i18n}</p>
+<p class="descriptiveText">{i18n}KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.{/i18n}</p>
 
-{if ($for_edit === false)}
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>{i18n}Add a unit{/i18n}</legend>
-
-<input type="hidden" name="action" value="createUnit" />
-
-{foreach item=oWidget from=$add_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-   <input type="submit" value="{i18n}create new unit{/i18n}" />
-</div class="form_actions">
+<legend>Add New Unit</legend>
+<p class="descriptiveText">{i18n}Units allow you to delegate a portion
+of the document management system to a particular part of your
+organisation.  Unit administrators have additional right within that
+portion of the document management system, and they can also adjust the
+membership of groups that belong to the unit.{/i18n}</p>
+<p><a href="?action=addGroup" class="ktAction ktAddGroup ktInline">Add Unit</a><a href="?action=addUnit">Add a new unit</a>.</p>
 </fieldset>
-</form>
-
-{else}
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Change a unit's details{/i18n}</legend>
-
-<input type="hidden" name="action" value="updateUnit" />
-<input type="hidden" name="unit_id" value="{$edit_unit->getId()}" />
-
-{foreach item=oWidget from=$edit_fields}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions">
-   <input type="submit" value="{i18n}update unit information{/i18n}" />
-</div class="form_actions">
-</fieldset>
-</form>
-
-
-{/if}
 
 <table class="listing">
 <thead>
    <tr>
       <th>{i18n}Unit Name{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Manage Members{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {foreach item=oUnit from=$unit_list}
      <tr>
         <td>{$oUnit->getName()}</td>
-        <td><a href="?action=editGroup&unit_id={$oUnit->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <!-- <td><a
-href="?action=manageMembers&unit_id={$oUnit->getId()}">{i18n}Manage Members{/i18n}</a></td> -->
+        <td><a href="?action=editUnit&unit_id={$oUnit->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="?action=deleteUnit&unit_id={$oUnit->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
      </tr>   
      {/foreach}
 </tbody>
