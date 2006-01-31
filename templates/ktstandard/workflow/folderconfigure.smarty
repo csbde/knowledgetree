@@ -1,0 +1,26 @@
+<h2>{i18n}Configure Workflows for this Folder{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}This installation of KnowledgeTree allocates workflows
+to documents by their location.  To specify the workflow to be used by all documents 
+<strong>directly</strong> in this folder, please specify the workflow below.  Otherwise,
+users will be able to choose the workflow, and some documents may have no workflow
+attached.{/i18n}</p>
+
+<p class="descriptiveText">{i18n}Note that documents which are moved into this folder
+will change to use this workflow, and if their previous workflow was different
+they will lose any progress they have made in that workflow.{/i18n}</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="allocate" />
+<input type="hidden" name="fFolderId" value="{$folder_id}" />
+<fieldset>
+<legend>{i18n}Select appropriate workflow{/i18n}</legend>
+
+{foreach item=oWidget from=$fields}
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+   <input type="submit" value="{i18n}Assign Workflow{/i18n}" />
+</div>
+</fieldset>
+</form>

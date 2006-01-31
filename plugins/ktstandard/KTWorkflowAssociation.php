@@ -29,25 +29,22 @@ class KTWorkflowAssociationDelegator {
     var $_document;
 
     function KTWorkflowAssociationDelegator() {
-
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('workflow', 'objectModification');
-
+        
         // if we have _some_ triggers.
         if (!empty($aTriggers)) {
             $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
             $sQuery .= ' WHERE event_ns = ?';
             $aParams = array('ktstandard.workflowassociation.handler');
             $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
-            
+        
             if (PEAR::isError($res)) { $this->_handler = new KTWorkflowAssociationHandler(); }
             
             if (array_key_exists($res, $aTriggers)) {
                 $this->_handler = new $aTriggers[$res][0];
             }
             else {
-                global $default;
-                $default->log->debug('KTWorkflowAssociationDelegator failed to acquire trigger selection');
                 $this->_handler = new KTWorkflowAssociationHandler();                 
             }
         }
@@ -109,5 +106,6 @@ $oPluginRegistry->registerPlugin('KTWorkflowAssociationPlugin', 'ktstandard.work
 /* include others */
 
 require_once('workflow/TypeAssociator.php');
+require_once('workflow/FolderAssociator.php');
 
 ?>
