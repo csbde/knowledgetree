@@ -37,6 +37,8 @@ class Group extends KTEntity {
 	var $bIsUnitAdmin;
 	/** is the group a sys admin */
 	var $bIsSysAdmin;
+    /** which unit the group belongs to */
+	var $iUnitId;;
 	
 	
 	function Group($sNewName = null, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
@@ -47,12 +49,12 @@ class Group extends KTEntity {
 	}
 
 	var $_aFieldToSelect = array(
-			'iId' => 'id',
-            'sName' => 'name',
-            'bIsUnitAdmin' => 'is_unit_admin',
-			'bIsSysAdmin' => 'is_sys_admin',
-			'iUnitId' => 'unit_id',
-		);
+        'iId' => 'id',
+        'sName' => 'name',
+        'bIsUnitAdmin' => 'is_unit_admin',
+        'bIsSysAdmin' => 'is_sys_admin',
+        'iUnitId' => 'unit_id',
+    );
 
     function _table () {
         global $default;
@@ -99,21 +101,8 @@ class Group extends KTEntity {
 	*
 	* @return Group populated Group object on successful query, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function & get($iGroupID) {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT * FROM $default->groups_table WHERE id = ?", $iGroupID));/*ok*/
-		if ($result) {
-			if ($sql->next_record()) {
-				$oGroup = & new Group($sql->f("name"), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
-				$oGroup->iId = $iGroupID;
-				return $oGroup;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupID . " table = $default->groups_table";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+	function & get($iId) {
+        return KTEntityUtil::get('Group', $iId);
 	}
 
    /**
@@ -150,11 +139,11 @@ class Group extends KTEntity {
         global $default;
         require_once(KT_LIB_DIR . '/users/User.inc');
         $sQuery = "SELECT user_id FROM $default->users_groups_table WHERE group_id = ?";
-        $aParams = array($this->getID());
-        $aUserIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "user_id");
+        $aParams = array($this->getId());
+        $aUserIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), "user_id");
         $aMembers = array();
-        foreach ($aUserIDs as $iUserID) {
-            $oUser = User::get($iUserID);
+        foreach ($aUserIds as $iUserId) {
+            $oUser = User::get($iUserId);
             if ($oUser !== false) {
                 $aMembers[] = $oUser;
             }
@@ -165,11 +154,11 @@ class Group extends KTEntity {
     function &getMemberGroups() {
         global $default;
         $sQuery = "SELECT member_group_id FROM $default->groups_groups_table WHERE parent_group_id = ?";
-        $aParams = array($this->getID());
-        $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "member_group_id");
+        $aParams = array($this->getId());
+        $aGroupIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), "member_group_id");
         $aMembers = array();
-        foreach ($aGroupIDs as $iGroupID) {
-            $oGroup = Group::get($iGroupID);
+        foreach ($aGroupIds as $iGroupId) {
+            $oGroup = Group::get($iGroupId);
             if ($oGroup !== false) {
                 $aMembers[] = $oGroup;
             }
@@ -182,11 +171,11 @@ class Group extends KTEntity {
         global $default;
 
         $sQuery = "DELETE FROM $default->users_groups_table WHERE group_id = ?";
-        $aParams = array($this->getID());
+        $aParams = array($this->getId());
         DBUtil::runQuery(array($sQuery, $aParams));
 
         $sQuery = "DELETE FROM $default->groups_units_table WHERE group_id = ?";
-        $aParams = array($this->getID());
+        $aParams = array($this->getId());
         DBUtil::runQuery(array($sQuery, $aParams));
 
         return parent::delete();
@@ -199,7 +188,7 @@ class Group extends KTEntity {
 
         $sQuery = "SELECT COUNT(*) AS number_of_entries FROM $default->users_groups_table
             WHERE group_id = ? AND user_id = ?";
-        $aParams = array($this->getID(), $iUserId);
+        $aParams = array($this->getId(), $iUserId);
         $res = (int)DBUtil::getOneResultKey(array($sQuery, $aParams), "number_of_entries");
         if (PEAR::isError($res)) {
             return $res;
@@ -218,8 +207,8 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "user_id" => $oUser->getID(),
-            "group_id" => $this->getID(),
+            "user_id" => $oUser->getId(),
+            "group_id" => $this->getId(),
         );
         $res = DBUtil::autoInsert($default->users_groups_table, $aParams);
         if (PEAR::isError($res)) {
@@ -236,8 +225,8 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "user_id" => $oUser->getID(),
-            "group_id" => $this->getID(),
+            "user_id" => $oUser->getId(),
+            "group_id" => $this->getId(),
         );
         $res = DBUtil::whereDelete($default->users_groups_table, $aParams);
         if (PEAR::isError($res)) {
@@ -257,8 +246,8 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "parent_group_id" => $this->getID(),
-            "member_group_id" => $oGroup->getID(),
+            "parent_group_id" => $this->getId(),
+            "member_group_id" => $oGroup->getId(),
         );
         $res = DBUtil::autoInsert($default->groups_groups_table, $aParams);
         if (PEAR::isError($res)) {
@@ -275,8 +264,8 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "parent_group_id" => $this->getID(),
-            "member_group_id" => $oGroup->getID(),
+            "parent_group_id" => $this->getId(),
+            "member_group_id" => $oGroup->getId(),
         );
         $res = DBUtil::whereDelete($default->groups_groups_table, $aParams);
         if (PEAR::isError($res)) {
@@ -295,7 +284,7 @@ class Group extends KTEntity {
 
         $sQuery = "SELECT COUNT(*) AS number_of_entries FROM $default->groups_groups_table
             WHERE parent_group_id = ? AND member_group_id = ?";
-        $aParams = array($this->getID(), $oGroup->getID());
+        $aParams = array($this->getId(), $oGroup->getId());
         $res = (int)DBUtil::getOneResultKey(array($sQuery, $aParams), "number_of_entries");
         if (PEAR::isError($res)) {
             return $res;
