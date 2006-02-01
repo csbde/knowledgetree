@@ -1,6 +1,5 @@
 <?php 
 /**
- * $Id$
  *
  * Represents a document link as per the database document_link table.
  * Links a child document to a parent document.  Direction of relationship
@@ -22,8 +21,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * @version $Revision$
- * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Bryn Divey, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
 class DocumentLink extends KTEntity {

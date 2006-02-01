@@ -71,8 +71,9 @@ class RoleAllocation extends KTEntity {
 		$sQuery = "SELECT ra.id as `id` FROM " . $raTable . " AS ra " .
 		' LEFT JOIN ' . $fTable . ' AS f ON (f.id = ra.folder_id) ' .
 		' WHERE f.id IN ' . $folders .
+		' AND ra.role_id = ?' .
 		' ORDER BY CHAR_LENGTH(f.parent_folder_ids) desc, f.parent_folder_ids DESC; ';
-		$aParams = array();
+		$aParams = array($iRoleId);
 		
 		$aRoleAllocIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 		

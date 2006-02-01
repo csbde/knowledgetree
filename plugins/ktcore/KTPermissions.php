@@ -475,8 +475,8 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			
 			KTPermissionUtil::updatePermissionLookup($oFolder);
 			$aDocList =& Document::getList(array('folder_id = ?', $active_folder));
-			if (PEAR::isError($aDocList) || ($aDocList == false)) {
-			    $this->errorRedirectToMain(_('Unable to get documents in folder: ') . $active_folder);
+			if (PEAR::isError($aDocList) || ($aDocList === false)) {
+			    $this->errorRedirectToMain(sprintf(_('Unable to get documents in folder %s: %s'), $active_folder, $aDocList->getMessage()));
 			}
 			
 			foreach ($aDocList as $oDoc) { 
