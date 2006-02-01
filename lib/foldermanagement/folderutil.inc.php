@@ -41,7 +41,6 @@ class KTFolderUtil {
             'description' => $sFolderName,
             'parentid' => $oParentFolder->getID(),
             'creatorid' => $oUser->getID(),
-            'unitid' => $oParentFolder->getUnitID(),
         ));
         if (PEAR::isError($oFolder)) {
             return $oFolder;
