@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jan 20, 2006 at 05:07 PM
--- Server version: 4.1.15
--- PHP Version: 4.4.0-3
+-- Generation Time: Feb 01, 2006 at 01:51 PM
+-- Server version: 5.0.18
+-- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
@@ -167,7 +167,7 @@ INSERT INTO `document_transaction_types_lookup` VALUES (16, 'Workflow state tran
 -- Dumping data for table `document_types_lookup`
 -- 
 
-INSERT INTO `document_types_lookup` VALUES (1, 'Default',0);
+INSERT INTO `document_types_lookup` VALUES (1, 'Default', 0);
 
 -- 
 -- Dumping data for table `documents`
@@ -213,11 +213,16 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 
 
 -- 
+-- Dumping data for table `folder_workflow_map`
+-- 
+
+
+-- 
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, '0', '', 1, 2, 0);
-INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', 1, 2, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, 2, 0);
+INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 2, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -233,15 +238,9 @@ INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 
 -- Dumping data for table `groups_lookup`
 -- 
 
-INSERT INTO `groups_lookup` VALUES (1, 'System Administrators', 1, 0);
-INSERT INTO `groups_lookup` VALUES (2, 'Unit Administrators', 0, 1);
-INSERT INTO `groups_lookup` VALUES (3, 'Anonymous', 0, 0);
-
--- 
--- Dumping data for table `groups_units_link`
--- 
-
-INSERT INTO `groups_units_link` VALUES (1, 2, 1);
+INSERT INTO `groups_lookup` VALUES (1, 'System Administrators', 1, 0, NULL);
+INSERT INTO `groups_lookup` VALUES (2, 'Unit Administrators', 0, 1, 1);
+INSERT INTO `groups_lookup` VALUES (3, 'Anonymous', 0, 0, NULL);
 
 -- 
 -- Dumping data for table `help`
@@ -374,7 +373,7 @@ INSERT INTO `mime_types` VALUES (1, 'ai', 'application/postscript', 'pdf');
 INSERT INTO `mime_types` VALUES (2, 'aif', 'audio/x-aiff', NULL);
 INSERT INTO `mime_types` VALUES (3, 'aifc', 'audio/x-aiff', NULL);
 INSERT INTO `mime_types` VALUES (4, 'aiff', 'audio/x-aiff', NULL);
-INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'txt');
+INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'text');
 INSERT INTO `mime_types` VALUES (6, 'au', 'audio/basic', NULL);
 INSERT INTO `mime_types` VALUES (7, 'avi', 'video/x-msvideo', NULL);
 INSERT INTO `mime_types` VALUES (8, 'bcpio', 'application/x-bcpio', NULL);
@@ -403,7 +402,7 @@ INSERT INTO `mime_types` VALUES (30, 'hqx', 'application/mac-binhex40', NULL);
 INSERT INTO `mime_types` VALUES (31, 'htm', 'text/html', 'html');
 INSERT INTO `mime_types` VALUES (32, 'html', 'text/html', 'html');
 INSERT INTO `mime_types` VALUES (33, 'ice', 'x-conference/x-cooltalk', NULL);
-INSERT INTO `mime_types` VALUES (34, 'ief', 'image/ief', NULL);
+INSERT INTO `mime_types` VALUES (34, 'ief', 'image/ief', 'image');
 INSERT INTO `mime_types` VALUES (35, 'iges', 'model/iges', NULL);
 INSERT INTO `mime_types` VALUES (36, 'igs', 'model/iges', NULL);
 INSERT INTO `mime_types` VALUES (37, 'jpe', 'image/jpeg', 'image');
@@ -640,7 +639,7 @@ INSERT INTO `status_lookup` VALUES (4, 'Archived');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.7');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.8');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -657,10 +656,20 @@ INSERT INTO `time_unit_lookup` VALUES (2, 'Months');
 INSERT INTO `time_unit_lookup` VALUES (3, 'Days');
 
 -- 
+-- Dumping data for table `trigger_selection`
+-- 
+
+
+-- 
+-- Dumping data for table `type_workflow_map`
+-- 
+
+
+-- 
 -- Dumping data for table `units_lookup`
 -- 
 
-INSERT INTO `units_lookup` VALUES (1, 'Default Unit');
+INSERT INTO `units_lookup` VALUES (1, 'Default Unit', 2);
 
 -- 
 -- Dumping data for table `units_organisations_link`
@@ -721,6 +730,17 @@ INSERT INTO `upgrades` VALUES (47, 'func*2.99.7*1*normaliseDocuments', 'Normalis
 INSERT INTO `upgrades` VALUES (48, 'sql*2.99.7*10*2.99.7/10-documents_normalisation.sql', 'Database upgrade to version 2.99.7: Documents normalisation', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
 INSERT INTO `upgrades` VALUES (49, 'sql*2.99.7*20*2.99.7/20-fields.sql', 'Database upgrade to version 2.99.7: Fields', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
 INSERT INTO `upgrades` VALUES (50, 'upgrade*2.99.7*99*upgrade2.99.7', 'Upgrade from version 2.99.5 to 2.99.7', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (51, 'sql*2.99.7*0*2.99.7/discussion.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (52, 'func*2.99.7*-1*applyDiscussionUpgrade', 'func upgrade to version 2.99.7 phase -1', '2006-02-01 13:51:35', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (53, 'sql*2.99.8*0*2.99.8/category-correction.sql', 'Database upgrade to version 2.99.8: Category-correction', '2006-02-01 13:51:35', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (54, 'sql*2.99.8*0*2.99.8/mime_types.sql', 'Database upgrade to version 2.99.8: Mime types', '2006-02-01 13:51:35', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (55, 'sql*2.99.8*0*2.99.8/type_workflow_map.sql', 'Database upgrade to version 2.99.8: Type workflow map', '2006-02-01 13:51:35', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (56, 'sql*2.99.8*0*2.99.8/units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (57, 'sql*2.99.8*0*2.99.8/disabled_documenttypes.sql', 'Database upgrade to version 2.99.8: Disabled documenttypes', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (58, 'sql*2.99.8*0*2.99.8/trigger_selection.sql', 'Database upgrade to version 2.99.8: Trigger selection', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (59, 'func*2.99.8*1*fixUnits', 'func upgrade to version 2.99.8 phase 1', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (60, 'sql*2.99.8*10*2.99.8/10-units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (61, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-01 13:51:36', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 
 -- 
 -- Dumping data for table `users`
@@ -984,12 +1004,6 @@ INSERT INTO `zseq_groups_groups_link` VALUES (1);
 INSERT INTO `zseq_groups_lookup` VALUES (3);
 
 -- 
--- Dumping data for table `zseq_groups_units_link`
--- 
-
-INSERT INTO `zseq_groups_units_link` VALUES (1);
-
--- 
 -- Dumping data for table `zseq_help`
 -- 
 
@@ -1149,7 +1163,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (50);
+INSERT INTO `zseq_upgrades` VALUES (61);
 
 -- 
 -- Dumping data for table `zseq_users`

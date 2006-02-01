@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jan 24, 2006 at 11:02 AM
+-- Generation Time: Feb 01, 2006 at 01:24 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -414,9 +414,10 @@ CREATE TABLE `document_type_fieldsets_link` (
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
-  `disabled` int(1) NOT NULL default '0',
+  `disabled` tinyint(4) NOT NULL,
   UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  KEY `disabled` (`disabled`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -573,6 +574,19 @@ CREATE TABLE `folder_subscriptions` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `folder_workflow_map`
+-- 
+
+CREATE TABLE `folder_workflow_map` (
+  `folder_id` int(11) NOT NULL default '0',
+  `workflow_id` int(11) default NULL,
+  PRIMARY KEY  (`folder_id`),
+  UNIQUE KEY `folder_id` (`folder_id`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `folders`
 -- 
 
@@ -582,7 +596,6 @@ CREATE TABLE `folders` (
   `description` varchar(255) default NULL,
   `parent_id` int(11) default NULL,
   `creator_id` int(11) default NULL,
-  `unit_id` int(11) default NULL,
   `is_public` tinyint(1) NOT NULL default '0',
   `parent_folder_ids` text,
   `full_path` text,
@@ -592,7 +605,6 @@ CREATE TABLE `folders` (
   UNIQUE KEY `id` (`id`),
   KEY `fk_parent_id` (`parent_id`),
   KEY `fk_creator_id` (`creator_id`),
-  KEY `fk_unit_id` (`unit_id`),
   KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_lookup_id` (`permission_lookup_id`)
 ) TYPE=InnoDB;
@@ -639,23 +651,10 @@ CREATE TABLE `groups_lookup` (
   `name` char(100) NOT NULL default '',
   `is_sys_admin` tinyint(1) NOT NULL default '0',
   `is_unit_admin` tinyint(1) NOT NULL default '0',
+  `unit_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `groups_units_link`
--- 
-
-CREATE TABLE `groups_units_link` (
-  `id` int(11) NOT NULL default '0',
-  `group_id` int(11) NOT NULL default '0',
-  `unit_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_group_id` (`group_id`),
-  KEY `fk_unit_id` (`unit_id`)
+  UNIQUE KEY `name` (`name`),
+  KEY `unit_id` (`unit_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1095,24 +1094,27 @@ CREATE TABLE `time_unit_lookup` (
 -- 
 
 CREATE TABLE `trigger_selection` (
-   `event_ns` varchar(255) not null default '' UNIQUE,
-   PRIMARY KEY (`event_ns`),
-   `selection_ns` varchar(255) not null default ''
+  `event_ns` varchar(255) NOT NULL default '',
+  `selection_ns` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`event_ns`),
+  UNIQUE KEY `event_ns` (`event_ns`)
 ) TYPE=InnoDB;
 
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `type_workflow_map`
+-- 
+
 CREATE TABLE `type_workflow_map` (
-    `document_type_id` INT(11) NOT NULL DEFAULT 0 UNIQUE,
-    PRIMARY KEY (`document_type_id`),
-    `workflow_id` INT UNSIGNED             -- can be null.
-    ) TYPE=InnoDB;
-    
-CREATE TABLE `folder_workflow_map` (
-    `folder_id` INT(11) NOT NULL DEFAULT 0 UNIQUE,
-    PRIMARY KEY (`folder_id`),
-    `workflow_id` INT(11)             -- can be null.
-    ) TYPE=InnoDB;
+  `document_type_id` int(11) NOT NULL default '0',
+  `workflow_id` int(10) unsigned default NULL,
+  PRIMARY KEY  (`document_type_id`),
+  UNIQUE KEY `document_type_id` (`document_type_id`)
+) TYPE=InnoDB;
 
 -- --------------------------------------------------------
+
 -- 
 -- Table structure for table `units_lookup`
 -- 
@@ -1120,8 +1122,10 @@ CREATE TABLE `folder_workflow_map` (
 CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) NOT NULL default '',
+  `folder_id` int(11) NOT NULL,
   UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `folder_id` (`folder_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1365,7 +1369,7 @@ CREATE TABLE `zseq_archiving_type_lookup` (
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1387,7 +1391,7 @@ CREATE TABLE `zseq_browse_criteria` (
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1464,7 +1468,7 @@ CREATE TABLE `zseq_document_archiving_link` (
 CREATE TABLE `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1519,7 +1523,7 @@ CREATE TABLE `zseq_document_link_types` (
 CREATE TABLE `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1574,7 +1578,7 @@ CREATE TABLE `zseq_document_type_fields_link` (
 CREATE TABLE `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1607,7 +1611,7 @@ CREATE TABLE `zseq_documents` (
 CREATE TABLE `zseq_field_behaviours` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1618,7 +1622,7 @@ CREATE TABLE `zseq_field_behaviours` (
 CREATE TABLE `zseq_field_value_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1684,7 +1688,7 @@ CREATE TABLE `zseq_folders_users_roles_link` (
 CREATE TABLE `zseq_groups_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1696,17 +1700,6 @@ CREATE TABLE `zseq_groups_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `zseq_groups_units_link`
--- 
-
-CREATE TABLE `zseq_groups_units_link` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1728,7 +1721,7 @@ CREATE TABLE `zseq_help` (
 CREATE TABLE `zseq_help_replacement` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1761,7 +1754,7 @@ CREATE TABLE `zseq_metadata_lookup` (
 CREATE TABLE `zseq_metadata_lookup_tree` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1794,7 +1787,7 @@ CREATE TABLE `zseq_news` (
 CREATE TABLE `zseq_notifications` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1838,7 +1831,7 @@ CREATE TABLE `zseq_permission_descriptors` (
 CREATE TABLE `zseq_permission_dynamic_conditions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1893,7 +1886,7 @@ CREATE TABLE `zseq_permissions` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1904,7 +1897,7 @@ CREATE TABLE `zseq_plugins` (
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1926,7 +1919,7 @@ CREATE TABLE `zseq_roles` (
 CREATE TABLE `zseq_saved_searches` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2003,7 +1996,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=51 ;
+) TYPE=MyISAM AUTO_INCREMENT=61 ;
 
 -- --------------------------------------------------------
 
@@ -2036,7 +2029,7 @@ CREATE TABLE `zseq_users_groups_link` (
 CREATE TABLE `zseq_workflow_states` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2047,7 +2040,7 @@ CREATE TABLE `zseq_workflow_states` (
 CREATE TABLE `zseq_workflow_transitions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2058,7 +2051,7 @@ CREATE TABLE `zseq_workflow_transitions` (
 CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- 
 -- Constraints for dumped tables
@@ -2127,6 +2120,12 @@ ALTER TABLE `field_value_instances`
 -- 
 ALTER TABLE `fieldsets`
   ADD CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE SET NULL;
+
+-- 
+-- Constraints for table `groups_lookup`
+-- 
+ALTER TABLE `groups_lookup`
+  ADD CONSTRAINT `groups_lookup_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `units_lookup` (`id`);
 
 -- 
 -- Constraints for table `permission_assignments`
