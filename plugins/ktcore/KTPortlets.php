@@ -47,6 +47,7 @@ class KTBrowseModePortlet extends KTPortlet {
         $modes = array(
             'folder' => array('name' => _('Folder'), 'target' => "main"),            
             'document_type' => array('name' => _('Document Type'), 'target' => 'selectType'),
+            'lookup_value' => array('name' => _('Lookup Value'), 'target' => 'selectField'),
         );        
         
         $oTemplating = new KTTemplating;        
