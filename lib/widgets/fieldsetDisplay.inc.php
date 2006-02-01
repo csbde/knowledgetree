@@ -330,6 +330,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             "document" => $aDocumentData["document"],
             "fieldset" => $this->fieldset,
             "fieldset_values" => $fieldset_values,
+			"description" => $this->fieldset->getDescription(),
         );
         return $oTemplate->render($aTemplateData);        
     }

@@ -1,10 +1,7 @@
 <div class="detail_fieldset">
     <h3>{$fieldset->getName()}</h3>
-    <p class="descriptiveText">
-{capture assign=name}
-{$fieldset->getName()}
-{/capture}
-        {i18n arg_name=$name}This is the data assigned to the <strong>#name#</strong> aspect of this document.{/i18n}
+        <p class="descriptiveText">
+        {$description}
     </p>
     
     <dl class="metadata">
