@@ -210,9 +210,13 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $fields[] = new KTCheckboxWidget(_("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
         $fields[] = new KTTextWidget(_("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage);
         $fields[] = new KTTextWidget(_("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true);
+        $aGroups = Group::getList();
+        $aUsers = User::getEmailUsers();
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
+            'groups' => $aGroups,
+            'users' => $aUsers,
         );
         return $oTemplate->render($aTemplateData);
     }
