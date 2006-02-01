@@ -37,7 +37,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $oDocumentType =& DocumentType::createFromArray(array(
             'name' => $sName,
         ));
-        
+
         if (PEAR::isError($oDocumentType)) {
             $this->errorRedirectToMain(_('Could not create document type'));
             exit(0);
@@ -102,12 +102,14 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         
         
         $aCurrentFieldsets =& KTFieldset::getForDocumentType($oDocumentType);
+        $aCurrentFieldsetIds = array_map(array("KTUtil", "getId"), $aCurrentFieldsets);
         $aAvailableFieldsets =& KTFieldset::getNonGenericFieldsets();
-        $aAvailableFieldsets = array_diff($aAvailableFieldsets, $aCurrentFieldsets);
-        
+        $aAvailableFieldsetIds =& array_map(array("KTUtil", "getId"), $aAvailableFieldsets);
+        $aAvailableFieldsetIds = array_diff($aAvailableFieldsetIds, $aCurrentFieldsetIds);
         
         $vocab = array();
-        foreach ($aAvailableFieldsets as $oFieldset) {
+        foreach ($aAvailableFieldsetIds as $iFieldsetId) {
+            $oFieldset = KTFieldset::get($iFieldsetId);
             $vocab[$oFieldset->getId()] = $oFieldset->getName();
         }
         $aOptions = array();
