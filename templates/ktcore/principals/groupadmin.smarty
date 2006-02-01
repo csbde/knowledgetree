@@ -45,10 +45,14 @@ action may take some time if you have many groups).{/i18n}</p>
      {foreach item=oGroup from=$search_results}
      <tr>
         <td>{$oGroup->getName()}</td>
-        <td>{if (!$oGroup->hasUnit())}<span class="descriptiveText">{i18n}not part of a unit{/i18n}</span>{else} 
-            {$context->_getUnitName($oGroup)}
-            
-        {/if}</td>
+        <td>
+{assign var=sUnitName value=$context->_getUnitName($oGroup)}
+{if !$sUnitName}
+<span class="descriptiveText">{i18n}not part of a unit{/i18n}</span>
+{else} 
+{$context->_getUnitName($oGroup)}
+{/if}
+	</td>
         <td><a href="?action=editGroup&group_id={$oGroup->getId()}"
 class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a
