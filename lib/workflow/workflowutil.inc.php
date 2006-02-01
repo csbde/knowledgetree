@@ -502,7 +502,7 @@ class KTWorkflowUtil {
             if (PEAR::isError($oU) || ($oU == false)) {
                 continue;
             } else {
-                $aUsers[$oU->getId()] = $oU();
+                $aUsers[$oU->getId()] = $oU;
             }
         }
         
@@ -511,7 +511,7 @@ class KTWorkflowUtil {
             if (PEAR::isError($oG) || ($oG == false)) {
                 continue;
             } else {
-                $aGroups[$oG->getId()] = $oG();
+                $aGroups[$oG->getId()] = $oG;
             }
         }
         
