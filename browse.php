@@ -426,7 +426,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         foreach ($aMoveStack['documents'] as $iDocId) {
             $this->startTransaction();
             
-            $oDoc = Document::Get($iDocId);
+            $oDoc = Document::get($iDocId);
             if (PEAR::isError($oDoc)) { 
                 $this->errorRedirectToMain(_('Invalid document.'));
             }
@@ -441,7 +441,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $oDoc->update(true);
                 errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             }
-            $oDoc->update();
     
             $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
                 $oDocumentFolder->getFullPath(),
