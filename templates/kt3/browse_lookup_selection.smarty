@@ -1,0 +1,11 @@
+<h2>Select a Field</h2>
+
+<p class="descriptiveText">{i18n}In some circumstances it is useful to view all
+documents with a given value for a lookup field.  Select the lookup field from the list below
+to view all relevant documents.{/i18n}</p>
+
+<ul>
+{foreach item=oField from=$fields}
+  <li><a href="{$smarty.server.PHP_SELF}?action=selectLookup&fField={$oField->getId()}&fBrowseMode=field">{$oField->getName()}</a></li>
+{/foreach}
+</ul>

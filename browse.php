@@ -37,6 +37,7 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
@@ -99,14 +100,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         // if we're going to main ...
         if ($this->browse_mode == 'folder') {
-            // which folder.
             $this->editable = true;
             $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
             $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
             if ($folder_id == 0) {
                 $folder_id = 1;
             }
-
+            
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
             $this->oFolder =& $oFolder;
@@ -121,16 +121,27 @@ class BrowseDispatcher extends KTStandardDispatcher {
             
             $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($oFolder));
-
+                
             $portlet = new KTActionPortlet(_("Folder Actions"));
             $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);        
             $portlet->setActions($aActions,null);
             $this->oPage->addPortlet($portlet);
             $this->resultURL = "?fFolderId=" . $oFolder->getId();        
-            
-        } else if ($this->browse_mode == 'category') {
+        } else if ($this->browse_mode == 'lookup_value') {
             $this->editable = false;
-            return false;
+            $field = KTUtil::arrayGet($_REQUEST, 'fField', null);
+            $oField = DocumentField::get($field);
+            if (PEAR::isError($oField) || ($oField == false)) {
+                $this->errorRedirectToMain('No Field selected.');
+                exit(0);            
+            }
+            $value = KTUtil::arrayGet($_REQUEST, 'fValue', null);
+            $oValue = MetaData::get($value);
+            if (PEAR::isError($oValue) || ($oValue == false)) {
+                $this->errorRedirectToMain('No Value selected.');
+                exit(0);            
+            }
+            $this->oQuery = new ValueBrowseQuery($oField, $oValue);
         } else if ($this->browse_mode == 'document_type') {
             $this->editable = false;
             // FIXME implement document_type browsing.
@@ -147,9 +158,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs[] = array('name' => _('Document Types')); 
             
             $this->resultURL = "?fType=" . $doctype . "&fBrowseMode=document_type";        
-            
-            
-            
         } else {
             // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
             return false;
@@ -207,16 +215,37 @@ class BrowseDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }   
     
-    function do_selectCategory() {
-        $this->errorRedirectToMain('category browsing is not yet implemented.');
-            
+    function do_selectField() {
+        $aFields = DocumentField::getList('has_lookup = 1');
+        
         $oTemplating = new KTTemplating;
-        $oTemplate = $oTemplating->loadTemplate("kt3/browse_category");
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_selection");
         $aTemplateData = array(
               "context" => $this,
+              "fields" => $aFields,
         );
         return $oTemplate->render($aTemplateData);
     }
+    
+    function do_selectLookup() {
+        $field = KTUtil::arrayGet($_REQUEST, 'fField', null);
+        $oField = DocumentField::get($field);
+        if (PEAR::isError($oField) || ($oField == false) || (!$oField->getHasLookup())) {
+            $this->errorRedirectToMain('No Field selected.');
+            exit(0);            
+        }
+        
+        $aValues = MetaData::getByDocumentField($oField);
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_value");
+        $aTemplateData = array(
+              "context" => $this,
+              "oField" => $oField,
+              "values" => $aValues,
+        );
+        return $oTemplate->render($aTemplateData);
+    }    
     
     function do_selectType() {
         $aTypes = DocumentType::getList();

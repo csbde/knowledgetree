@@ -300,6 +300,32 @@ class TypeBrowseQuery extends SimpleSearchQuery {
     }
 }
 
+class ValueBrowseQuery extends SimpleSearchQuery {
+    var $iFieldId;
+    var $sValueName;
+    
+    function ValueBrowseQuery($oField, $oValue) {
+        $this->iFieldId = $oField->getId();
+        $this->sValueName = $oValue->getName();
+    }
+
+    function getQuery($aOptions = null) {
+        $aSubgroup = array(
+            'values' => array(
+                array('type' => $this->iFieldId, 'data' => array('bmd' . $this->iFieldId => $this->sValueName)),
+                array('sql' => array('D.status_id = 1')),
+            ),
+            'join' => 'AND',
+        );
+        $aCriteriaSet = array(
+            'subgroup' => array($aSubgroup),
+            'join' => 'AND',
+        );
+        $oUser = User::get($_SESSION['userID']);
+        return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
+    }
+}
+
 class BooleanSearchQuery extends PartialQuery {  
     // FIXME cache permission lookups, etc.
     var $datavars;
