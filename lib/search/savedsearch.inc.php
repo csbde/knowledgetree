@@ -106,6 +106,14 @@ class KTSavedSearch extends KTEntity {
         return KTEntityUtil::getList2('KTSavedSearch', $sWhereClause);
     }
 
+    function &getSearches() {
+        return KTEntityUtil::getByDict('KTSavedSearch', array(
+            'is_condition' => false,
+        ), array(
+            'multi' => true,
+        ));
+    }
+
     function &getConditions() {
         return KTEntityUtil::getByDict('KTSavedSearch', array(
             'is_condition' => true,
@@ -113,6 +121,7 @@ class KTSavedSearch extends KTEntity {
             'multi' => true,
         ));
     }
+
     function &getSystemSearches($sWhereClause = null) {
         return KTEntityUtil::getByDict('KTSavedSearch', array(
             'is_condition' => false,
