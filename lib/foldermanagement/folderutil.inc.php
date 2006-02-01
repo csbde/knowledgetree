@@ -198,7 +198,10 @@ class KTFolderUtil {
                 return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());
             }
         }
-        
+
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage->removeFolderTree($oStartFolder);
+
         // documents all cleared.
         $sQuery = 'DELETE FROM ' . KTUtil::getTableName('folders') . ' WHERE id IN (' . DBUtil::paramArray($aFolderIds) . ')';
         $aParams = $aFolderIds;
