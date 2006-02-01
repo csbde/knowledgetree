@@ -84,61 +84,28 @@ class User extends KTEntity {
         return $default->users_table;
     }
 
-    /** Get the user's login name */
     function getUserName() { return $this->sUserName; }
-    /** Set the user's login name */
     function setUserName($sNewValue) { $this->sUserName = $sNewValue; }
-
-    /** Set the user's password */
     function setPassword($sNewValue) { $this->sPassword = $sNewValue; $this->bPasswordChanged = true; }
-    /** Get the user's maximum disk quota */
     function getQuotaMax() { return $this->iQuotaMax; }
-    /** Set the user's maximum disk quota */
     function setQuotaMax($iNewValue) { $this->iQuotaMax = $iNewValue; }
-
-    /** Set the user's name */
     function setName($sNewValue) { $this->sName = $sNewValue; }
-    /** gets the user's name */
     function getName() { return $this->sName; }
-
-    /** Get the user's currrently used quota */
     function getQuotaCurrent() { return $this->iQuotaCurrent; }
-
-    /** Get the user's email  address */
     function getEmail() { return $this->sEmail; }
-    /** Set the user's email address */
     function setEmail($sNewValue) { $this->sEmail = $sNewValue; }
-
-    /** Get the user's mobile phone number */
     function getMobile() { return $this->sMobile; }
-    /** Set the user's mobile phone number */
     function setMobile($sNewValue) { $this->sMobile = $sNewValue; }
-
-    /** Get the user's email notification status */
     function getEmailNotification() { return $this->bEmailNotification; }
-    /** Set the user's email notification status */
     function setEmailNotification($bNewValue) { $this->bEmailNotification = KTUtil::anyToBool($bNewValue); }
-
-    /** Get the user's SMS (mobile phone) notification status */
     function getSmsNotification() { return $this->bSmsNotification; }
-    /** Set the user's SMS (mobile phone) notification status */
     function setSmsNotification($bNewValue) { $this->bSmsNotification = $bNewValue; }
-
-    /** Get the user's LDAP distinguished name */
     function getLdapDn() { return $this->sLdapDn; }
-    /** Set the user's LDAP distinguished name */
     function setLdapDn($sNewValue) { $this->sLdapDn = $sNewValue; }
-
-    /** Get the user's maximum number of concurrent sessions */
     function getMaxSessions() { return $this->iMaxSessions; }
-    /** Set the user's maximum number of concurrent sessions */
     function setMaxSessions($iNewValue) { $this->iMaxSessions = $iNewValue; }
-
-    /** Get the primary key for the language preferred by the user */
     function getLanguageID() { return $this->iLanguageIDID; }
-    /** Set the primary key of the language preferred by the user */
     function setLanguageID($iNewValue) { $this->iLanguageIDID = $iNewValue; }
-
     function getAuthenticationSourceId() { return $this->iAuthenticationSourceId; }
     function setAuthenticationSourceId($iNewValue) { $this->iAuthenticationSourceId = $iNewValue; }
     function getAuthenticationDetails() { return $this->sAuthenticationDetails; }
@@ -212,6 +179,21 @@ class User extends KTEntity {
     */
     function getList($sWhereClause = null) {
         return KTEntityUtil::getList(User::_table(), 'User', $sWhereClause);
+    }
+
+    function getEmailUsers() {
+        $aEnabledUsers = KTEntityUtil::getByDict('User', array(
+            'email_notification' => true,
+        ), array(
+            'multi' => true,
+        ));
+        $aUsers = array();
+        foreach ($aEnabledUsers as $oUser) {
+            if ($oUser->getEmail()) {
+                $aUsers[] = $oUser;
+            }
+        }
+        return $aUsers;
     }
 
     /**
