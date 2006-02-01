@@ -110,13 +110,31 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
         if (file_exists($sPath)) {
-            return PEAR::raiseError("Path already exists");
+            // It already exists - let's just use it.
+            return;
         }
         $res = @mkdir($sPath, 0755);
         if ($res === false) {
             return PEAR::raiseError("Couldn't create folder");
         }
         return true;
+    }
+
+    function removeFolder($oFolder) {
+        $oConfig =& KTConfig::getSingleton();
+        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
+        if (!file_exists($sPath)) {
+            return true;
+        }
+        @rmdir($sPath);
+        // No point erroring out if the rmdir fails.
+        return true;
+    }
+
+    function removeFolderTree($oFolder) {
+        $oConfig =& KTConfig::getSingleton();
+        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
+        KTUtil::deleteDirectory($sPath);
     }
     
     function downloadVersion($oDocument, $iVersionId) {
