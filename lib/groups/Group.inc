@@ -38,7 +38,7 @@ class Group extends KTEntity {
 	/** is the group a sys admin */
 	var $bIsSysAdmin;
     /** which unit the group belongs to */
-	var $iUnitId;;
+	var $iUnitId;
 	
 	
 	function Group($sNewName = null, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
