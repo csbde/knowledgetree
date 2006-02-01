@@ -145,6 +145,15 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         }
         $aInfo['transitions_to_state'] = $aTransitionsToState;
         
+        // finally, check if any documents are associated with this workflow,
+        // and set the "delete" toggle.
+        $sQuery = 'SELECT document_id FROM ' . KTUtil::getTableName('workflow_documents');
+        $sQuery .= ' WHERE workflow_id = ? ';
+        $aParams = array($oWorkflow->getId());
+        
+        $aDocList = DBUtil::getResultArray(array($sQuery, $aParams));
+        $aInfo['can_delete'] = (empty($aDocList));
+        
         $this->aWorkflowInfo = $aInfo;
         
         return $aInfo;
@@ -756,6 +765,18 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     }
     // }}}
 
+    function do_deleteState() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
+        $aInfo = $this->buildWorkflowInfo($oWorkflow);
+        if (!$aInfo['can_delete']) { $this->errorRedirectTo('manageStates', _('May not delete items from an active workflow'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        $this->startTransaction();
+        $res = $oState->delete();         // does this handle referential integrity?
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        $this->commitTransaction();
+        $this->successRedirectTo('manageStates', _('State deleted.'), 'fWorkflowId=' . $oWorkflow->getId());
+    }
+
     // {{{ do_saveTransitions
     function do_saveTransitions() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
@@ -769,6 +790,21 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         exit(0);
     }
     // }}}
+    
+    function do_deleteTransition() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& KTWorkflowTransition::get($_REQUEST['fTransitionId']);
+        if (PEAR::isError($oTransition)) {
+            $this->errorRedirectTo('manageTransitions', _('Invalid transition'),'fWorkflowId=' . $oWorkflow->getId()); 
+        }
+        $aInfo = $this->buildWorkflowInfo($oWorkflow);
+        if (!$aInfo['can_delete']) { $this->errorRedirectTo('manageTransitions', _('May not delete items from an active workflow'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        $this->startTransaction();
+        $res = $oTransition->delete();         // does this handle referential integrity?
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageTransitions', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        $this->commitTransaction();
+        $this->successRedirectTo('manageTransitions', _('Transition deleted.'), 'fWorkflowId=' . $oWorkflow->getId());
+    }    
     
     // {{{ do_setStateActions
     function do_setStateActions() {

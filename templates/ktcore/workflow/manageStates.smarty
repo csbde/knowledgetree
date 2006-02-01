@@ -1,10 +1,13 @@
 {$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
 <h2>{i18n}Manage States{/i18n}</h2>
 
-<p class="descriptiveText">As documents move through their lifecycle, they
+<p class="descriptiveText">{i18n}As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
 which has been mailed might be in the "Pending" <strong>state</strong> after
-the "sent" <strong>transition</strong> has been performed by a user.</p>
+the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
+
+<p class="descriptiveText">{i18n}<strong>Please Note:</strong> you can only delete states or transitions 
+while the workflow has no documents or document-versions assigned to the workflow.{/i18n}</p>
 
 <fieldset>
 <legend>Create a new state</legend>
@@ -23,6 +26,7 @@ various different states for documents.</p>
 <ul id="workflow-states-list">
 {foreach item=oState from=$workflow_info.states}
     <li><span class="workflow_element">State:</span> <a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" class="workflow_label">{$oState->getName()}</a>
+        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{$smarty.server.PHP_SELF}?action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
         <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Notified groups & roles:{/i18n}</a>
         {$context->getNotificationStringForState($oState)}

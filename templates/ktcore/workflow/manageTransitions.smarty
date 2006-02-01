@@ -5,6 +5,11 @@ Each step that needs to be followed in the document's lifecycle could
 map to a transition, and can be allowed or denied by a combination
 of roles, permissions and groups.{/i18n}</p>
 
+
+<p class="descriptiveText">{i18n}<strong>Please Note:</strong> you can only delete states or transitions 
+while the workflow has no documents or document-versions assigned to the workflow.{/i18n}</p>
+
+
 <fieldset>
 <legend>{i18n}Create a new transition{/i18n}</legend>
 
@@ -42,6 +47,7 @@ or use the checkboxes to assign which states the transition is available from.</
   <tr class='{cycle values="odd,even"}'>
     <td>
       <a href="{$smarty.server.PHP_SELF}?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}">{$oTransition->getName()}</a>
+      {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{$smarty.server.PHP_SELF}?action=deleteTransition&fTransitionId={$oTransition->getId()}&fWorkflowId={$oWorkflow->getId()}" >{i18n}Delete{/i18n}</a></span>{/if}
     </td>
     {foreach item=oState from=$workflow_info.states}
       <td>
