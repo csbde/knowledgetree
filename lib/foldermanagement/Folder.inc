@@ -299,8 +299,8 @@ class Folder extends KTEntity {
     *
     * @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
     */
-    function getList($sWhereClause = null) {
-        return KTEntityUtil::getList(Folder::_table(), 'Folder', $sWhereClause);
+    function getList($sWhereClause = null, $aOptions = null) {
+        return KTEntityUtil::getList2('Folder', $sWhereClause, $aOptions);
     }
 
 	/**
