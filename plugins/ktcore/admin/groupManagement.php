@@ -69,10 +69,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$edit_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
 		
 		// grab all units.
-		$unit = $oGroup->getUnit();
-		if ($unit == null) { $unitId = 0; }
-		else { $unitId = $unit->getID(); }
-		
+		$unitId = $oGroup->getUnitId();
+		if ($unitId == null) { $unitId = 0; }		
 		
 		$oUnits = Unit::getList();
 		$vocab = array();
@@ -113,9 +111,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
 		$unit_id = KTUtil::arrayGet($_REQUEST, 'unit_id', 0);
 		if ($unit_id == 0) { // not set, or set to 0.
-		    $oGroup->clearUnit(); // safe.
+		    $oGroup->setUnitId(null); // safe.
 		} else {
-		    $oGroup->setUnit($unit_id);
+		    $oGroup->setUnitId($unit_id);
 		}
 		
 		$res = $oGroup->update();
