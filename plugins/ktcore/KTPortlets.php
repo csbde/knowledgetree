@@ -14,7 +14,7 @@ class KTSearchPortlet extends KTPortlet {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
         
-        $aSearches = KTSavedSearch::getList();
+        $aSearches = KTSavedSearch::getSearches();
         // empty on error.
         if (PEAR::isError($aSearches)) { 
             $aSearches = array(); 
