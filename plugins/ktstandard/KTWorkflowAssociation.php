@@ -70,6 +70,12 @@ class KTWorkflowAssociationDelegator {
 class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->addTrigger($this->_document);
+        
+        // catch disabled workflows.
+        if ($oWorkflow->getStartStateId() === null) {
+            return ;          
+        }
+        
         $ret = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
@@ -78,6 +84,12 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
 class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->editTrigger($this->_document);
+        
+        // catch disabled workflows.
+        if ($oWorkflow->getStartStateId() === null) {
+            return ;          
+        }
+                
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
@@ -86,6 +98,12 @@ class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
 class KTWADMoveTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->moveTrigger($this->_document);
+        
+        // catch disabled workflows.
+        if ($oWorkflow->getStartStateId() === null) {
+            return ;          
+        }
+                
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }

@@ -66,7 +66,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         $sQuery = 'SELECT document_type_id, workflow_id FROM ' . KTUtil::getTableName('type_workflow_map');
         $aParams = array();
         $res = DBUtil::getResultArray(array($sQuery, $aParams));
-        $aWorkflows = KTWorkflow::getList();
+        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
         $aTypes = DocumentType::getList();
         
         $aTypeMapping = array();
