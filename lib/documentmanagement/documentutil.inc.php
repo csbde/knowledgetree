@@ -167,6 +167,8 @@ class KTDocumentUtil {
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
         
+        KTDocumentUtil::updateSearchableText($oDocument);
+        
         return true;
     }
 
