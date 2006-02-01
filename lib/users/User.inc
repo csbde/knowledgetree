@@ -182,13 +182,8 @@ class User extends KTEntity {
     }
 
     function getEmailUsers() {
-        $aEnabledUsers = KTEntityUtil::getByDict('User', array(
-            'email_notification' => true,
-        ), array(
-            'multi' => true,
-        ));
         $aUsers = array();
-        foreach ($aEnabledUsers as $oUser) {
+        foreach (User::getList() as $oUser) {
             if ($oUser->getEmail()) {
                 $aUsers[] = $oUser;
             }
