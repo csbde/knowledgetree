@@ -372,6 +372,7 @@ if (array_key_exists('HTTPS', $_SERVER)) {
 $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
 $oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
 $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", true);
+$oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskPathStorageManager');
 $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
 $oKTConfig->setdefaultns("tweaks", "browseToRoot", false);
 $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
