@@ -238,7 +238,7 @@ class KTPermissionUtil {
 
         // if we have roles:  nearest folder.
         $iRoleSourceFolder = null;
-        if (is_a($oFolderOrDocument, 'Document')) { $iRoleSourceFolder = $oFolderOrDocument->getFolderID(); }
+        if (is_a($oFolderOrDocument, 'KTDocumentCore') || is_a($oFolderOrDocument, 'Document')) { $iRoleSourceFolder = $oFolderOrDocument->getFolderID(); }
         else { $iRoleSourceFolder = $oFolderOrDocument->getId(); }
             
         // very minor perf win:  map role_id (in context) to PD.
