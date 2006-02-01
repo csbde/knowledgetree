@@ -25,12 +25,37 @@ lifecycle of the document.{/i18n}</p>
 
 {if $aWorkflow}
 <h3>{i18n}Existing workflows{/i18n}</h3>
-<p class="descriptiveText">{i18n}Select a workflow to modify.{/i18n}</p>
-<ul>
+<p class="descriptiveText">{i18n}Select a workflow to modify. To enable a disabled workflow, edit it and set a proper starting state.{/i18n}</p>
+
+<table class="listing" style="width:auto">
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Edit</th>
+      <th>&nbsp</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+  
 {foreach from=$aWorkflow item=oWorkflow}
-  <li><a href="?action=editWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">{$oWorkflow->getName()}</a></li>
+{assign var="startId" value=$oWorkflow->getStartStateId()}
+
+    <tr>
+      <td>{$oWorkflow->getName()}</td>
+      <td>{if $startId===NULL}Disabled{else}Enabled{/if}</td>
+      <td><a class="ktAction ktEdit" href="?action=editWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">Edit</a></td>
+      <td>
+        {if $startId!==NULL}<a href="?action=disableWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">Disable</a>
+        {else}&nbsp;{/if}
+      </td>
+    </tr>  
 {/foreach}
-</ul>
+  </tbody>
+</table>
+
 {/if}
 
 

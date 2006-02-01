@@ -438,6 +438,35 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     }
     // }}}
 
+
+
+    // {{{ do_disableWorkflow
+    function do_disableWorkflow() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        
+        $this->startTransaction();
+        
+        $oWorkflow->setStartStateId(null);       
+        $res = $oWorkflow->update();
+        
+        $this->oValidator->notErrorFalse($res, array(
+            'redirect_to' => array('main'),
+            'message' => _('Error saving workflow'),
+        ));
+
+        $this->commitTransaction();
+        
+        $this->successRedirectToMain(_('Changes saved'));
+        exit(0);
+    }
+    // }}}
+
+
+
+
+
+
+
     function do_manageActions() {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/manageActions');
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);     
