@@ -198,7 +198,7 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default',0);
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO `fieldsets` VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0, 'The category to which the document belongs.');
+INSERT INTO `fieldsets` VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0, 'Categorisation information for the document. ');
 
 -- 
 -- Dumping data for table `folder_doctypes_link`

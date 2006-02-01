@@ -1,0 +1,2 @@
+UPDATE `document_fields` SET description = 'The category to which the document belongs.' WHERE id = 1;
+UPDATE `fieldsets` SET description = 'Categorisation information for the document. ' WHERE `namespace` = 'local.category';
