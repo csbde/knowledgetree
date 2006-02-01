@@ -167,7 +167,20 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notError($oDynamicCondition, $aOptions);
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);
+        KTPermissionUtil::updatePermissionLookupForPO($oPO);
         $this->successRedirectToMain(_("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
+    }
+
+    function do_removeDynamicCondition() {
+        $aOptions = array(
+            'redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()),
+        );
+        $oDynamicCondition =& $this->oValidator->validateDynamicCondition($_REQUEST['fDynamicConditionId'], $aOptions);
+        $res = $oDynamicCondition->delete();
+        $this->oValidator->notError($res, $aOptions);
+        $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
+        KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        $this->successRedirectToMain(_("Dynamic permission removed"), "fFolderId=" . $this->oFolder->getId());
     }
 }
 
