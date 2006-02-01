@@ -45,22 +45,19 @@ addLoadEvent(kt_email_onload);
 
 <table>
 <tr><td valign="top" colspan="3"><strong>Groups</strong></td></tr><tr><td valign="top" width=1%>
-<select name="groupSelect" size="4" multiple>
-<OPTION value="3" onDblClick="optGroup.transferRight()" >
-Anonymous</OPTION>
-<OPTION value="4" onDblClick="optGroup.transferRight()" >
-Stuff</OPTION>
-<OPTION value="1" onDblClick="optGroup.transferRight()" >
-System Administrators</OPTION>
-<OPTION value="2" onDblClick="optGroup.transferRight()" >
-Unit Administrators</OPTION>
 
+<select name="groupSelect" size="4" multiple>
+{foreach from=$groups item=oGroup}
+<OPTION value="{$oGroup->getId()}" onDblClick="optGroup.transferRight()" >{$oGroup->getName()}</OPTION>
+{/foreach}
 </select></td><td width=1%><input TYPE="button" NAME="right" VALUE="&gt;&gt;" ONCLICK="optGroup.transferRight()"><input TYPE="button" NAME="left" VALUE="&lt;&lt;" ONCLICK="optGroup.transferLeft()"></td><td><select name="chosenGroups" size="5" multiple><option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option></select></td></tr>
 
 <tr><td colspan="3"><strong>Users</strong></td><tr>
 <tr><td><select name="userSelect" size="4" multiple>
-<OPTION value="1" onDblClick="optUser.transferRight()">
-Administrator</OPTION>
+{foreach from=$users item=oUser}
+<OPTION value="{$oUser->getId()}" onDblClick="optUser.transferRight()">
+{$oUser->getName()}</OPTION>
+{/foreach}
 </select></td><td><input TYPE="button" NAME="right" VALUE="&gt;&gt;" ONCLICK="optUser.transferRight()"><input TYPE="button" NAME="left" VALUE="&lt;&lt;" ONCLICK="optUser.transferLeft()"></td><td width="30%"><select name="chosenUsers" size="5" multiple><option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option></select></td></tr>
 
 </table>
