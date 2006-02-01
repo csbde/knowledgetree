@@ -35,7 +35,9 @@ matter what the state of the document.{/i18n}</p>
 
 <p class="descriptiveText">The table below lists the actions you have specified 
 as controlled by this workflow, and all the states within the workflow.  From here 
-you can assign those actions to the various states in this workflow.</p>
+you can assign those actions to the various states in this workflow.  Checked items 
+are available to users whose permissions would normally allow them when the document is
+in that state.  Unchecked items are not available to any users.</p>
 
 {if (empty($aActionsSelected))}
 <div class="ktInfo"><p>{i18n}No actions are controlled by this workflow.  All actions
