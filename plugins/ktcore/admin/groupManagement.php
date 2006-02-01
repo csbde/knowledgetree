@@ -278,7 +278,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     }    
 
 	function _getUnitName($oGroup) {
-		$u =  $oGroup->getUnit();
+        $iUnitId = $oGroup->getUnitId();
+        if (empty($iUnitId)) {
+            return null;
+        }
+		$u = Unit::get($iUnitId);
 		
 		return $u->getName();
 	}  
