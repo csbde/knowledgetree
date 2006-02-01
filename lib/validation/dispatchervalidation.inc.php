@@ -215,6 +215,11 @@ class KTDispatcherValidation {
         return $aFile;
     }
 
+    function &validateDynamicCondition($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/permissions/permissiondynamiccondition.inc.php');
+        return $this->validateEntity('KTPermissionDynamicCondition', $iId, $aOptions);
+    }
+
     function validateDict($aDict, $aValidation, $aOptions = null) {
         foreach ($aValidation as $k => $aValidatorInfo) {
             $sDictValue = KTUtil::arrayGet($aDict, $k, null);

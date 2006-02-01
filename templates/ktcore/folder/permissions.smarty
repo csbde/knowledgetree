@@ -188,9 +188,12 @@ parent's permissions{/i18n}</a>]
 <h2>Dynamic permissions</h2>
 
 { if $dynamic_conditions }
-<table class="pretty" cellpadding="0" cellspacing="0">
+<table class="pretty" cellpadding="0" cellspacing="0" width="100%">
   <thead>
     <tr>
+{ if $edit }
+      <th>&nbsp;</th>
+{ /if }
       <th>{i18n}Group{/i18n}</th>
       <th>{i18n}Condition{/i18n}</th>
 {foreach from=$permissions item=oPerm}
@@ -206,6 +209,12 @@ $this->assign("oGroup", Group::get($this->_tpl_vars['oDynamicCondition']->getGro
 $this->assign("oCondition", KTSavedSearch::get($this->_tpl_vars['oDynamicCondition']->getConditionId()));
 $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignment());
 {/php}
+{ if $edit }
+  <td>
+{capture assign=sQS}action=removeDynamicCondition&fFolderId={$iFolderId}&fDynamicConditionId={$oDynamicCondition->getId()}{/capture}
+     <a href="{$smarty.server.PHP_SELF|addQueryString:"$sQS"}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+  </td>
+{/if}
     <td>{$oGroup->getName()}</td>
     <td>{$oCondition->getName()}</td>
 {foreach from=$permissions item=oPerm}
