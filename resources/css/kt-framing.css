@@ -293,6 +293,11 @@ a.main_nav_item {
     color: #666;
 }
 
+#content .descriptiveText.important {
+    padding-left: 25px;
+    color: black;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+}
 
 
 

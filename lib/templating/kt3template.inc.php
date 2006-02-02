@@ -59,7 +59,14 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
         /* default js files initialisation */
         $aJS = Array();
+		$aJS[] = 'thirdpartyjs/MochiKit/Base.js';
+		$aJS[] = 'thirdpartyjs/MochiKit/Iter.js';
+		$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
+		$aJS[] = 'resources/js/kt-utility.js';
         $this->requireJSResources($aJS);
+        
+        // this is horrid, but necessary.
+		$this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _('Are you sure you wish to delete this item?') . '"));');
         
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?

@@ -5,7 +5,7 @@
 <fieldset>
 <legend>{i18n}Edit transition properties{/i18n}</legend>
 
-<p class="helpText">{i18n}Select the target state of the transition, and
+<p class="descriptiveText">{i18n}Select the target state of the transition, and
 select the permission, group, and/or role necessary to perform the
 transition.  Selecting more than one of permission, group, or role will
 require that the user wishing to perform the transition fulfil every
