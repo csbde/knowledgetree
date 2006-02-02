@@ -394,13 +394,7 @@ class KTDocumentMoveColumn extends TitleColumn {
         parent::TitleColumn($sLabel, $sName);
     }
     function buildFolderLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
-        if (empty($kt_path_info)) {
-            return sprintf('%s?fDocumentId=%d&fFolderId=%d', $baseurl, $this->oDocument->getId(), $aDataRow["folder"]->getId());
-        } else {
-            return sprintf('%s?kt_path_info=%s&fDocumentId=%d&fFolderId=%d', $baseurl, $kt_path_info, $this->oDocument->getId(), $aDataRow["folder"]->getId());
-        }
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $aDataRow["folder"]->getId()));
     }
 }
 
@@ -451,7 +445,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = sprintf("?fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId());
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -473,7 +467,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = sprintf("?fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $id);
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
 
