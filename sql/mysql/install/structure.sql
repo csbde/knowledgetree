@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 01, 2006 at 01:24 PM
+-- Generation Time: Feb 02, 2006 at 04:58 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -1930,7 +1930,7 @@ CREATE TABLE `zseq_saved_searches` (
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1996,7 +1996,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=61 ;
+) TYPE=MyISAM AUTO_INCREMENT=63 ;
 
 -- --------------------------------------------------------
 
