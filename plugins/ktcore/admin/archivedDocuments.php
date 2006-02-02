@@ -25,13 +25,7 @@ class KTArchiveTitle extends TitleColumn {
     }    
        
     function buildFolderLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
-        if (empty($kt_path_info)) {
-            return sprintf('%s?fFolderId=%d', $baseurl, $aDataRow["folder"]->getId());
-        } else {
-            return sprintf('%s?kt_path_info=%s&fFolderId=%d', $baseurl, $kt_path_info, $aDataRow["folder"]->getId());
-        }
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $aDataRow["folder"]->getId()));
     }
 }
 
@@ -61,7 +55,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = sprintf("?fFolderId=%d&action=browse", $sMoveCode, $oFolder->getId());
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d&action=browse", $sMoveCode, $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -83,7 +77,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = sprintf("?fFolderId=%d", $sMoveCode, $id);
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d", $sMoveCode, $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         
