@@ -58,13 +58,7 @@ class KTMassMoveColumn extends TitleColumn {
     }
     
     function buildFolderLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
-        if (empty($kt_path_info)) {
-            return sprintf('%s?fMoveCode=%s&fFolderId=%d&action=startMove', $baseurl, $this->sMoveCode, $aDataRow["folder"]->getId());
-        } else {
-            return sprintf('%s?kt_path_info=%s&fMoveCode=%s&fFolderId=%d&action=startMove', $baseurl, $kt_path_info, $this->sMoveCode, $aDataRow["folder"]->getId());
-        }
+        return KTUtil::addQueryStringSelf(sprintf('MoveCode=%s&fFolderId=%d&action=startMove', $this->sMoveCode, $aDataRow["folder"]->getId()));
     }
 }
 
