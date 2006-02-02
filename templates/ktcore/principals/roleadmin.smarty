@@ -1,6 +1,6 @@
 <h2>{i18n}Role Administration{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> Overview of roles.</p>
+<p class="descriptiveText">{i18n}Workflow actions may be assigned to certain roles within the DMS. User groups are allocated to roles on a per-directory basis and are inherited from the root folder of the DMS. Roles may for example include "Document Creator", "Document Reviewer", "Document Publisher".{/i18n}</p>
 
 {if ($for_edit === false)}
 

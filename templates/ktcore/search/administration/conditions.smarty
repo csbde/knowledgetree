@@ -1,4 +1,7 @@
-<h2>{i18n}Conditions{/i18n}</h2>
+<h2>{i18n}Dynamic Conditions{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Dynamic Conditions give the administrator the cability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.{/i18n}</p>
+
 
 <h3>{i18n}Create a new condition{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">

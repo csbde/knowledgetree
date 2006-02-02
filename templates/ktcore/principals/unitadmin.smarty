@@ -4,9 +4,9 @@
 
 <fieldset>
 <legend>Add New Unit</legend>
-<p class="descriptiveText">{i18n}Units allow you to delegate a portion
-of the document management system to a particular part of your
-organisation.  Unit administrators have additional right within that
+<p class="descriptiveText">{i18n}Units allow you to delegate the administration of a portion
+of the DMS repository to a particular part of your
+organisation.  Unit administrators have additional rights within that
 portion of the document management system, and they can also adjust the
 membership of groups that belong to the unit.{/i18n}</p>
 <p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Unit</a><a href="{addQS}action=addUnit{/addQS}">Add a new unit</a>.</p>

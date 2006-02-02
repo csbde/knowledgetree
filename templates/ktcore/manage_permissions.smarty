@@ -1,6 +1,6 @@
 <h2>{i18n}Existing permissions{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> add a useful explanation about permissions.</p>
+<p class="descriptiveText">{i18n}Permissions are descriptors used to ascertain whether groups of users have access to certain functionality. The built-in permissions below facilitate the default functionality of the DMS and can't be changed. Plugin developers may choose to add additional permissions below that manage access to their plugins functionality.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>

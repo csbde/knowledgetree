@@ -21,7 +21,7 @@ href="{addQS}action=addUser{/addQS}">{i18n}Add a new user{/i18n}</a></p>
 <p class="descriptiveText">{i18n}Since there may be many users in the system, please
 select a group from the list below, or type a few letters from the person's username
 to begin. Alternatively, <a href="{addQS}show_all=1{/addQS}">view all users</a> (note that this may be
-very slow if you have many users.{/i18n}</p>
+very slow if you have many users).{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}

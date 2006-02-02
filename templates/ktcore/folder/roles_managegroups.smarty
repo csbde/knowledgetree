@@ -5,7 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<p class="descriptiveText"><strong>FIXME</strong> help text for role-editing.  </p>
+<p class="descriptiveText">{i18n}Groups must be allocated to roles to ensure that the workflow transition this role is supposed to support can be acted upon by a user.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="grouproleform">
    <input type="hidden" name="action" value="setRoleGroups" />

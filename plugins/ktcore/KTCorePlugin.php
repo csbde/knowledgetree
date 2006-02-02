@@ -69,7 +69,7 @@ class KTCorePlugin extends KTPlugin {
             _("Manage Groups"), _("Add or remove groups from the system."),
             'admin/groupManagement.php', null);
         $this->registerAdminPage("units", 'KTUnitAdminDispatcher', "principals",
-            _("Control Units"), _("Specify which organisation units are available."),
+            _("Control Units"), _("Specify which organisational units are available within the repository."),
             'admin/unitManagement.php', null);
         // disabled until it actually makes sense.
         //$this->registerAdminPage("orgs",'KTOrgAdminDispatcher',"principals", "Control Organisations","Specify which organisations are available.", 'admin/orgManagement.php', null);
@@ -81,7 +81,7 @@ class KTCorePlugin extends KTPlugin {
             _("Roles"), _("Create or delete roles"),
             'admin/roleManagement.php', null);
         $this->registerAdminPage("conditions", 'KTConditionDispatcher', "security",
-            _("Conditions"),
+            _("Dynamic Conditions"),
             _("Manage criteria which determine whether a user is permitted to perform a system action."),
             'admin/conditions.php', null);
 
