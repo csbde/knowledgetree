@@ -167,7 +167,7 @@ class KTBrowseUtil {
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
-                $url = "?fFolderId=" . $id;
+                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, "fFolderId=" . $id);
                 }
@@ -181,7 +181,7 @@ class KTBrowseUtil {
                 $aBreadcrumbs[] = array("name" => $oFolder->getName());
             } else {
                 $id = $oFolder->getId();
-                $url = "?fFolderId=" . $id;
+                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, "fFolderId=" . $id);
                 }
@@ -202,7 +202,7 @@ class KTBrowseUtil {
         $iFolderId = $oDocument->getFolderId();
         $aBreadcrumbs = KTBrowseUtil::breadcrumbsForFolder($iFolderId, $aOptions);
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
-        $url = "?fDocumentId=" . $oDocument->getId();
+        $url = KTUtil::addQueryStringSelf("fDocumentId=" . $oDocument->getId());
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, "fDocumentId=" .  $oDocument->getId());
         }
