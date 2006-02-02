@@ -72,7 +72,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
 		$batchSize = 20;
 		
-		$resultURL = "?fSearchableText=" . $searchable_text;
+		$resultURL = KTUtil::addQueryStringSelf("fSearchableText=" . $searchable_text);
 		$collection->setBatching($resultURL, $batchPage, $batchSize); 
 		
 		

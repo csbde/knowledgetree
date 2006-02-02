@@ -13,26 +13,16 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 class KTDocumentLinkTitle extends TitleColumn {
     
     function buildDocumentLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
         $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        return sprintf('%s?action=type_select&fDocumentId=%d&fTargetDocumentId=%d', $baseurl, $parentDocumentId, $aDataRow["document"]->getId());
+        return KTUtil::addQueryStringSelf(sprintf('action=type_select&fDocumentId=%d&fTargetDocumentId=%d', $baseurl, $parentDocumentId, $aDataRow["document"]->getId()));
     }
 
     function buildFolderLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
         $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         
-        if (empty($kt_path_info)) {
-            return sprintf('%s?action=new&fDocumentId=%d&fFolderId=%d', $baseurl, $parentDocumentId, $aDataRow["folder"]->getId());
-        } else {
-            return sprintf('%s?kt_path_info=%s&action=new&ftDocumentId=%d&fFolderId=%d', $baseurl, $kt_path_info, $parentDocumentId, $aDataRow["folder"]->getId());
-        }
+        return KTUtil::addQueryStringSelf(sprintf('action=new&fDocumentId=%d&fFolderId=%d', $baseurl, $parentDocumentId, $aDataRow["folder"]->getId()));
     }
 }
-
-
-
 
 class KTDocumentLinks extends KTPlugin {
     var $sNamespace = "ktstandard.documentlinks.plugin";
@@ -112,7 +102,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = sprintf("?action=new&fDocumentId=%d", $oParentDocument->getId());
+        $resultURL = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d", $oParentDocument->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -135,7 +125,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = sprintf("?action=new&fDocumentId=%d&fFolderId=%d", $oParentDocument->getId(), $id);
+            $url = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d&fFolderId=%d", $oParentDocument->getId(), $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         

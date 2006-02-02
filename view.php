@@ -287,7 +287,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
 		if ($comparison_version=== null) { 
-		    $this->oPage->addError('No comparison version was requested.  Please <a href="?action=history&fDocumentId='.$document_id.'">select a version</a>.');
+		    $this->oPage->addError('No comparison version was requested.  Please <a href="' . KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id) . '">select a version</a>.');
 			return $this->do_error();
 		}
 		
@@ -398,7 +398,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
 		if ($comparison_version=== null) { 
-		    $this->oPage->addError('No comparison version was requested.  Please <a href="?action=history&fDocumentId='.$document_id.'">select a version</a>.');
+		    $this->oPage->addError('No comparison version was requested.  Please <a href="' . KTUtil::addQueryStringSelf('action=history&fDocumentId='.$document_id) . '">select a version</a>.');
 			return $this->do_error();
 		}		
 		
