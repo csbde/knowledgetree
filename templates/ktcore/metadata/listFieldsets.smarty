@@ -42,10 +42,10 @@
 {/if}
       </td>
 	  <td>
-	     <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>
+	     <a href="{addQS}action=edit&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>
 	  </td>
 	  <td>
-	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+	     <a href="{addQS}action=delete&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
 	  </td>
 	  
     </tr>

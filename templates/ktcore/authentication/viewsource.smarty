@@ -8,13 +8,13 @@
   <dt>{i18n}Provider{/i18n}</dt>
   <dd>{$provider->getName()}</dd>
 </dl>
-<a href="?action=editsource&source_id={$source->getId()}">{i18n}Edit standard configuration{/i18n}</a>
+<a href="{addQS}action=editsource&source_id={$source->getId()}{/addQS}">{i18n}Edit standard configuration{/i18n}</a>
 </fieldset>
 
 {assign var=provider_stuff value=$provider->showSource($source)}
 {if $provider_stuff}
 <fieldset><legend>{i18n}Provider configuration{/i18n}</legend>
 {$provider_stuff}
-<a href="?action=editsourceprovider&source_id={$source->getId()}">{i18n}Edit provider configuration{/i18n}</a>
+<a href="{addQS}action=editsourceprovider&source_id={$source->getId()}{/addQS}">{i18n}Edit provider configuration{/i18n}</a>
 </fieldset>
 {/if}

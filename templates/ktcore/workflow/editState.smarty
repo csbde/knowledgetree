@@ -82,7 +82,7 @@ with a specific <strong>role</strong> (e.g. Manager) or part of a specific group
 <ul>
 {foreach from=$aTransitionsTo item=oTransition}
   <li><a
-href="?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}"
+href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}{/addQS}"
 title="Transition
 {$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
 {/foreach}
