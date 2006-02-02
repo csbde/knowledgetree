@@ -9,7 +9,7 @@ that "Edit Metadata" is an action you wish to control within this workflow; seco
 you need to specify that the action is <strong>not</strong> to be made available
 when documents are in the "published" state.{/i18n}</p>
 
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset><legend>{i18n}Specify Controlled Actions{/i18n}</legend>
 <p class="descriptiveText">{i18n}Select the actions you want this workflow
 to control from the list below.  Actions you do not specify will be available no 
