@@ -139,7 +139,7 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
             } else {
             	$url = generateControllerUrl("login");
             }
-            $redirect = urlencode($_SERVER["PHP_SELF"] . "?" . $_SERVER["QUERY_STRING"]);
+            $redirect = urlencode(KTUtil::addQueryStringSelf($_SERVER["QUERY_STRING"]));
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
                 // this session verification failure represents either the first visit to

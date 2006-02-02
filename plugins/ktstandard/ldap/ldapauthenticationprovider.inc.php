@@ -36,7 +36,9 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
     }
 
     function showUserSource($oUser, $oSource) {
-        return '<a href="?action=editUserSource&user_id=' . $oUser->getId() .'">' . _('Edit LDAP info') . '</a>';
+        $sQuery = sprintf("action=editUserSource&user_id=%d", $oUser->getId());
+        $sUrl = KTUtil::addQueryStringSelf($sQuery);
+        return '<a href="' . $sUrl . '">' . _('Edit LDAP info') . '</a>';
     }
 
     function do_editUserSource() {

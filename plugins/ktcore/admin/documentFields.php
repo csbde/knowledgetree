@@ -721,7 +721,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // since the root is virtual, we need to fake it here.
         // the inner section is generised.
         $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
-        $treeStr .= ' (<a href="?action=editTree&field_id='.$treeToRender->field_id.'&current_node=0">edit</a>)';
+        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$treeToRender->field_id.'&current_node=0') . '">edit</a>)';
         $treeStr .= '<ul>';
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
@@ -755,12 +755,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     function _evilActionHelper($iFieldId, $bIsKeyword, $current_node) {
         $actionStr = " (";
         if ($bIsKeyword === true) {
-           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&keyword_id='.$current_node.'&subaction=unlinkKeyword">unlink</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$iFieldId.'&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">unlink</a>';
         }
         else
         {
-           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'">attach keywords</a> ';
-           $actionStr .= '| <a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory">delete</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSlef('action=editTree&field_id=' . $iFieldId . '&current_node=' . $current_node) .'">attach keywords</a> ';
+           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory') . '">delete</a>';
         }
         $actionStr .= ")";
         return $actionStr;

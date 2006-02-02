@@ -133,7 +133,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         // breadcrumbs...
         $this->aBreadcrumbs[] = array(
             'name' => _('discussion'),
-            'url' => $_SERVER['PHP_SELF'] . sprintf('?fDocumentId=%d', $this->oDocument->getId()),
+            'query' => sprintf('fDocumentId=%d', $this->oDocument->getId()),
         );
         $this->aBreadcrumbs[] = array(
             'name' => $oComment->getSubject(),

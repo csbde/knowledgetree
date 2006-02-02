@@ -101,7 +101,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'] . '?action=addUser', 'name' => _('add a new user'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _('add a new user'));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
         $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
         $oProvider->oPage->setTitle(_("Modify User Details"));
