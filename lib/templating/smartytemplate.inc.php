@@ -233,7 +233,7 @@ class KTSmartyTemplate extends KTTemplate {
     }
 
     function addQueryStringSelf($qs) {
-        return KTUtil::addQueryString($qs);
+        return KTUtil::addQueryStringSelf($qs);
     }
 }
 
