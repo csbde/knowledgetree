@@ -245,6 +245,7 @@ class KTInit {
             $_SERVER["PATH_INFO"] = $kt_path_info;
         }
 
+        $oConfig =& KTConfig::getSingleton();
         $sServerName = $oConfig->get('KnowledgeTree/serverName');
         $_SERVER['HTTP_HOST'] = $sServerName;
     }
