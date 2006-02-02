@@ -77,6 +77,9 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('entity_radios', array('KTSmartyTemplate', 'entity_radios'));
         $smarty->register_block('i18n', array('KTSmartyTemplate', 'i18n_block'), false);
         $smarty->register_modifier('addQueryString', array('KTSmartyTemplate', 'addQueryString'));
+        $smarty->register_modifier('addQS', array('KTSmartyTemplate', 'addQueryString'));
+        $smarty->register_modifier('addQueryStringSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
+        $smarty->register_modifier('addQSSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -227,6 +230,10 @@ class KTSmartyTemplate extends KTTemplate {
 
     function addQueryString($url, $qs) {
         return KTUtil::addQueryString($url, $qs);
+    }
+
+    function addQueryStringSelf($qs) {
+        return KTUtil::addQueryString($qs);
     }
 }
 
