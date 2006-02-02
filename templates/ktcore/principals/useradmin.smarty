@@ -8,9 +8,9 @@
 credentials through this section.  Even if you are using an external source
 of login information like <strong>LDAP</strong>, you will need to use this section
 to retrieve their information from the external source.{/i18n}</p>
-<p><a href="?action=addUser" class="ktAction ktAddUser" style="float:
+<p><a href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser" style="float:
 left; padding-right: 0.5em;">{i18n}Add a new user{/i18n}</a><a
-href="?action=addUser">{i18n}Add a new user{/i18n}</a>.</p>
+href="{addQS}action=addUser{/addQS}">{i18n}Add a new user{/i18n}</a></p>
 </fieldset>
 
 <!-- we roll both in here. -->
@@ -20,7 +20,7 @@ href="?action=addUser">{i18n}Add a new user{/i18n}</a>.</p>
 <legend>Search for users</legend>
 <p class="descriptiveText">{i18n}Since there may be many users in the system, please
 select a group from the list below, or type a few letters from the person's username
-to begin. Alternatively, <a href="?show_all=1">view all users</a> (note that this may be
+to begin. Alternatively, <a href="{addQS}show_all=1{/addQS}">view all users</a> (note that this may be
 very slow if you have many users.{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
@@ -52,9 +52,10 @@ very slow if you have many users.{/i18n}</p>
      <tr>
         <td>{$oUser->getName()}</td>
         <td>{$oUser->getUsername()}</td>
-        <td><a href="?action=editUser&user_id={$oUser->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a onclick="javascript:return confirm('{i18n}Are you sure you wish to delete this user?{/i18n}');" href="?action=deleteuser&user_id={$oUser->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
-        <td><a href="?action=editgroups&user_id={$oUser->getId()}">{i18n}Groups{/i18n}</a></td>  
+        <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a onclick="javascript:return confirm('{i18n}Are you sure
+you wish to delete this user?{/i18n}');" href="{addQS}action=deleteuser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}{/addQS}">{i18n}Groups{/i18n}</a></td>  
      </tr>   
      {/foreach}
 
