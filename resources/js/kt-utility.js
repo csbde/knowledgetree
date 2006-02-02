@@ -10,10 +10,19 @@ function initDeleteProtection(message) {
     
     function setClickFunction(fn, node) {
         // addToCallStack(node,'onClick',fn);
+        if (node.tagName == 'SPAN') {
+            var ahrefs = node.getElementsByTagName('A');
+            if (ahrefs.length == 1) { node = ahrefs[0]; }
+            else { return null; }
+        }
         if (isUndefinedOrNull(node.onclick)) { 
             node.onclick = fn;
         }
     }
+    
+    forEach(elements, partial(setClickFunction, fn));
+    
+    elements = getElementsByTagAndClassName('SPAN', 'ktDelete');
     
     forEach(elements, partial(setClickFunction, fn));
     

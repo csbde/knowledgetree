@@ -8,6 +8,7 @@ number of different users at once.{/i18n}</p>
 </fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="do_search" value="1" />
 <fieldset>
 <legend>{i18n}Search for groups{/i18n}</legend>
 <p class="descriptiveText">{i18n}Since there may be many groups in the
