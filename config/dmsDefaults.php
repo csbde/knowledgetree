@@ -244,6 +244,9 @@ class KTInit {
             $_SERVER["PHP_SELF"] .= "?kt_path_info=" . $kt_path_info;
             $_SERVER["PATH_INFO"] = $kt_path_info;
         }
+
+        $sServerName = $oConfig->get('KnowledgeTree/serverName');
+        $_SERVER['HTTP_HOST'] = $sServerName;
     }
     // }}}
 
@@ -357,8 +360,6 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
-$KTInit->setupServerVariables();
-
 $oKTConfig =& KTConfig::getSingleton();
 
 $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
@@ -383,6 +384,8 @@ $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
 $oKTConfig->setdefaultns("import", "unzip", 'unzip');
 
 $KTInit->readConfig();
+
+$KTInit->setupServerVariables();
 
 // instantiate log
 $loggingSupport = $KTInit->setupLogging();
