@@ -261,7 +261,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // FIXME replace OptionTransfer.js.  me no-likey.
         
         // FIXME this is hideous.  refactor the transfer list stuff completely.
-        $initJS = 'var optGroup = new OptionTransfer("groupSelect[]","chosenGroups[]"); ' .
+        $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
         'function startTrans() { var f = getElement("usergroupform"); ' .
         ' optGroup.saveAddedRightOptions("groupAdded"); ' .
         ' optGroup.saveRemovedRightOptions("groupRemoved"); ' .

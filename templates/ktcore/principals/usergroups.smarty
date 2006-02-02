@@ -32,7 +32,7 @@
    <tbody>
       <tr>
          <td valign="top" width="1%">
-           <select name="groupSelect[]" size="10" multiple="multiple">
+           <select name="groupSelect" size="10" multiple="multiple">
                {foreach item=oGroup from=$unused_groups}
                <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
                {/foreach}
@@ -43,7 +43,7 @@
             <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
          </td>
          <td valign="top" width="1%">
-            <select name="chosenGroups[]" size="10" multiple="multiple">
+            <select name="chosenGroups" size="10" multiple="multiple">
                {foreach item=oGroup from=$user_groups}
                <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
                {/foreach}
