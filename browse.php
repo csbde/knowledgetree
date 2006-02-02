@@ -493,6 +493,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     function do_startDelete() {
         $this->oPage->setTitle('Delete Files and Folders');
         $this->oPage->setBreadcrumbDetails('Delete Files and Folders');
+        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
     
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
@@ -504,6 +505,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/mass_delete");
         $aTemplateData = array(
               "context" => $this,
+              "folder_id" => $fFolderId,
               'form_fields' => $aFields,
               'folders' => $aFolderSelection,
               'documents' => $aDocumentSelection,
@@ -514,6 +516,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
     function do_doDelete() {
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
+        
+        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         
         $aErrorOptions = array('message' => _('You must supply a reason'));
         
@@ -558,10 +562,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
         }
         
-        if ($this->oFolder == null) {
-            $oFI = 1;
-        } else { $oFI = $this->oFolder->getId(); }
-        $this->successRedirectToMain('Folders and Documents Deleted.',sprintf('fFolderId=%d', $oFI));
+        $this->successRedirectToMain('Folders and Documents Deleted.',sprintf('fFolderId=%d', $fFolderId));
     }
 }
 

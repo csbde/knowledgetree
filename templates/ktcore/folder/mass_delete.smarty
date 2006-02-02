@@ -6,6 +6,7 @@
 <p class="descriptiveText">{i18n}Please give a reason for deleting these files.  This 
 will be recorded in the documents' "Transaction History"{/i18n}</p>
 <input type="hidden" name="action" value="doDelete" />
+<input type="hidden" name="fFolderId" value="{$folder_id}" />
 
 {* Include the document/folder ids *}
 

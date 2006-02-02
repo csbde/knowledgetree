@@ -371,7 +371,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         $this->oValidator->validateString($sReason, 
             array('redirect_to' => array('', sprintf('fDocumentId=%d', $this->oDocument->getId()))));
         
-        
+        $fFolderId = $this->oDocument->getFolderId();
         $res = KTDocumentUtil::delete($this->oDocument, $sReason);
         if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
@@ -381,7 +381,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         }
         
         
-        controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderId());
+        controllerRedirect('browse', 'fFolderId=' .  $fFolderId);
         exit(0);
     }
 }
