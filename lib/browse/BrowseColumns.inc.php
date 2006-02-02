@@ -88,8 +88,7 @@ class TitleColumn extends BrowseColumn {
     }
 
     function buildFolderLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        return $baseurl . '?fFolderId='.$aDataRow["folder"]->getId();
+        return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
     }
     
     // use inline, since its just too heavy to even _think_ about using smarty.
