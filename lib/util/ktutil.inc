@@ -450,6 +450,12 @@ class KTUtil {
     }
     // }}}
 
+    // {{{ addQueryStringSelf
+    function addQueryStringSelf($qs) {
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);
+    }
+    // }}}
+
     // {{{ isAbsolutePath
     function isAbsolutePath($sPath) {
         if (substr($sPath, 0, 1) == '/') {
