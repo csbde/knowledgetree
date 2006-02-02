@@ -4,7 +4,7 @@
     state <strong>#state#</strong>, and you are specified as one of the users to inform
     about documents in this state.{/i18n}
     <div class="actionoptions">
-    <a href="{$absoluteRootUrl}/notify.php?id={$notify_id}">{i18n}View Document{/i18n}</a>
-    | <a href="{$absoluteRootUrl}/notify.php?id={$notify_id}&notify_action=clear">{i18n}Clear Alert{/i18n}</a>
+    <a href="{ktLink base="notify.php" query="id=`$notify_id`"}">{i18n}View Document{/i18n}</a>
+    | <a href="{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
     </div>
 </dd>
