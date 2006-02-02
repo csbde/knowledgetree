@@ -3,9 +3,11 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
+{capture assign=sLocation}action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}{/capture}
+
 {capture assign=sJavascript}
 function doCheckout () {ldelim}
-	document.location.href = "?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}";
+	document.location.href = "{$sLocation|addQSSelf}";
 {rdelim}
 function scheduleCheckout () {ldelim}
 	callLater(2, doCheckout);
@@ -14,9 +16,7 @@ addLoadEvent(scheduleCheckout);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-{capture assign=link}
-?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}
-{/capture}
+{capture assign=link}{$sLocation|addQSSelf}{/capture}
 <p class="descriptiveText">{i18n arg_link=$link}The document you wish to
 check out will begin to download soon.  If it does not automatically
 start to download, you can use <a href="#link#">this link</a> to start
