@@ -530,7 +530,10 @@ class KTWorkflowUtil {
         // start with roles ... roles _only_ ever contain groups.
         foreach ($aRoles as $oRole) {
             $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $oRole->getId());
-            $aRoleUsers = $oRoleAllocation->getUsers();
+            if (is_null($oRoleAllocation) || PEAR::isError($oRoleAllocation)) {
+		continue; 
+	    }
+	    $aRoleUsers = $oRoleAllocation->getUsers();
             $aRoleGroups = $oRoleAllocation->getGroups();
             
             foreach ($aRoleUsers as $id => $oU) {
