@@ -46,9 +46,9 @@ lifecycle of the document.{/i18n}</p>
     <tr>
       <td>{$oWorkflow->getName()}</td>
       <td>{if $startId===NULL}Disabled{else}Enabled{/if}</td>
-      <td><a class="ktAction ktEdit" href="?action=editWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">Edit</a></td>
+      <td><a class="ktAction ktEdit" href="{addQS}action=editWorkflow&fWorkflowId={$oWorkflow->getId()}{/addQS}" title="Workflow: {$oWorkflow->getId()}">Edit</a></td>
       <td>
-        {if $startId!==NULL}<a href="?action=disableWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">Disable</a>
+        {if $startId!==NULL}<a href="{addQS}action=disableWorkflow&fWorkflowId={$oWorkflow->getId()}{/addQS}" title="Workflow: {$oWorkflow->getId()}">Disable</a>
         {else}&nbsp;{/if}
       </td>
     </tr>  

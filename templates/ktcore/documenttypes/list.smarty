@@ -46,14 +46,14 @@ system.{/i18n}</p>
 </td>
 
 <td>
-    <a href="?action=edit&fDocumentTypeId={$oDocumentType->getId()}">Edit</a>
+    <a href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">Edit</a>
 </td>
 
 <td>
 {if $oDocumentType->getDisabled()}
-    <a href="?action=enable&fDocumentTypeId={$oDocumentType->getId()}">{i18n}Enable{/i18n}</a>
+    <a href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
-    <a href="?action=disable&fDocumentTypeId={$oDocumentType->getId()}">{i18n}Disable{/i18n}</a>
+    <a href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
 

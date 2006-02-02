@@ -15,11 +15,11 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr>
 	  <td>
-        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a> 	  
+        <a href="{addQS}action=edit&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a> 	  
 	  </td>
       <td>
         
-		<a href="?action=edit&fFieldsetId={$oFieldset->getId()}">
+		<a href="{addQS}action=edit&fFieldsetId={$oFieldset->getId()}{/addQS}">
 		   { $oFieldset->getName() }
         </a>
       </td>

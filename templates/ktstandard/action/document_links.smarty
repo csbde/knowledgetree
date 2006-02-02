@@ -28,7 +28,7 @@
 {assign var="target" value=$link->getChildDocument()}
 
         <tr>
-            <td><a href="?action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}" class="ktAction ktDelete">Delete</a></td>
+            <td><a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a></td>
             <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
             <td>{$type->getName()}</td>
             <td>Linked <b>from</b> this document</td>
@@ -68,7 +68,7 @@
 
 
 {if $write_permission}
-<a class="ktAction ktAdd ktInline" href="?action=new&fDocumentId={$context->oDocument->getId()}">Add a new link</a>
-<a href="?action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}">Add a new link</a>.
+<a class="ktAction ktAdd ktInline" href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}{/addQS}">Add a new link</a>
+<a href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{addQS}">Add a new link</a>.
 {/if}
 

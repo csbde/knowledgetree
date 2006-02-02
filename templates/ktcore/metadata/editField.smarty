@@ -51,9 +51,7 @@
 
 {if $oField->getHasLookup() and $oField->getHasLookupTree()}
 {assign var=iFieldId value=$oField->getId()}
-<a
-href="?action=editTree&field_id={$iFieldId}">{i18n}Manage
-lookup tree{/i18n}</a>
+<a href="{addQS}action=editTree&field_id={$iFieldId}{/addQS}">{i18n}Manage lookup tree{/i18n}</a>
 {/if}
 
 {if $aEnabledMetadata}

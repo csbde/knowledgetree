@@ -27,7 +27,7 @@ value=$oDocument->getCheckedOutUserId()}{php}$oUser =
 User::get($this->_tpl_vars['iUserId']);  if ($oUser) { print
 $oUser->getName(); }{/php}</td>
             <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
-            <td><a href="?action=confirm&fDocumentId={$oDocument->getId()}">{i18n}force checkin{/i18n}</a></td>
+            <td><a href="{addQS}action=confirm&fDocumentId={$oDocument->getId()}{/addQS}">{i18n}force checkin{/i18n}</a></td>
         </tr>
       {/foreach}
     </tbody>
