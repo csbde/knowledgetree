@@ -36,7 +36,7 @@ asd
      {foreach item=oOrg from=$org_list}
      <tr>
         <td>{$oOrg->getName()}</td>
-        <td><a href="?org_id={$oOrg->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}org_id={$oOrg->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 
      </tr>   
      {/foreach}

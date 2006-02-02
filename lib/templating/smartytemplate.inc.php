@@ -77,6 +77,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('entity_radios', array('KTSmartyTemplate', 'entity_radios'));
         $smarty->register_block('i18n', array('KTSmartyTemplate', 'i18n_block'), false);
         $smarty->register_modifier('addQueryString', array('KTSmartyTemplate', 'addQueryString'));
+        $smarty->register_function('ktLink', array('KTSmartyTemplate', 'ktLink'));
         $smarty->register_modifier('addQS', array('KTSmartyTemplate', 'addQueryString'));
         $smarty->register_modifier('addQueryStringSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         $smarty->register_modifier('addQSSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
@@ -240,9 +241,29 @@ class KTSmartyTemplate extends KTTemplate {
         return KTUtil::addQueryString($url, $qs);
     }
 
+    
+    /* 
+     * ktLink generates a fully prepared link for KT.
+     *
+     * It takes into account kt_path_info requirements,
+     * rootUrl requirements, etc.
+     *
+     * To do this effectively, you need three things:
+     *
+     *   @param base              e.g. /admin.php
+     *   @param subpath           e.g. /security/permissions/
+     *   @param query             e.g. fFolder=1&fMyVar=2
+     *
+     */
+    function ktLink($params, &$smarty) {
+        return KTUtil::ktLink($params['base'], $params['subpath'], $params['query']);
+    }
+
+
     function addQueryStringSelf($qs) {
         return KTUtil::addQueryStringSelf($qs);
     }
+
 }
 
 ?>

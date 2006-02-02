@@ -121,6 +121,11 @@ Installing this package is beyond the scope of this document - please
 consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
 to see how others have approached this on your platform. 
 
+NOTE:  if you install the packages outside of the path normally searched
+by your operating system (e.g. in c:\antiword or /usr/local/bin) you will
+need to specify the _full_ path to the actual applications (e.g. 
+/usr/local/bin/pdftotext).
+
 Troubleshooting
 ---------------
 

@@ -450,6 +450,27 @@ class KTUtil {
     }
     // }}}
 
+    // {{{ ktLink
+    function ktLink($base, $subpath='', $qs='') {
+        $KTConfig =& KTConfig::getSingleton();
+        $root = $KTConfig->get("KnowledgeTree/rootUrl");
+        $url = $root . '/' . $base;
+        $query = '';
+        
+        $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
+        if ($hasPathInfo) {
+            $url .= $subpath;
+        } else {
+            $query = 'kt_path_info=' . $subpath;
+            if (!empty($qs)) {
+               $query .= '&';
+            }
+        }
+        $query .= $qs;
+        return KTUtil::addQueryString($url, $query);
+    }
+    // }}}
+
     // {{{ addQueryStringSelf
     function addQueryStringSelf($qs) {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);

@@ -47,7 +47,7 @@
             </td> -->
             <td>
                <a
-href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}"
+href="{addQS}action=deletePermission&id={$oPerm->getId()}{/addQS}"
 class="ktAction ktDelete">{i18n}Delete Permission{/i18n}</a>
             </td>
           { /if }
