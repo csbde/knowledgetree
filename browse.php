@@ -126,7 +126,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);        
             $portlet->setActions($aActions,null);
             $this->oPage->addPortlet($portlet);
-            $this->resultURL = "?fFolderId=" . $oFolder->getId();        
+            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d", $oFolder->getId()));
         } else if ($this->browse_mode == 'lookup_value') {
             $this->editable = false;
             $field = KTUtil::arrayGet($_REQUEST, 'fField', null);
@@ -157,7 +157,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             // FIXME probably want to redirect to self + action=selectType
             $this->aBreadcrumbs[] = array('name' => _('Document Types')); 
             
-            $this->resultURL = "?fType=" . $doctype . "&fBrowseMode=document_type";        
+            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fType=%s&fBrowseMode=document_type", $doctype));;
         } else {
             // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
             return false;
@@ -325,7 +325,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = sprintf("?fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $oFolder->getId());
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -347,7 +347,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = sprintf("?fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $id);
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         
