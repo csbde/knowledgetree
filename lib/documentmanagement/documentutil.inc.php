@@ -119,8 +119,10 @@ class KTDocumentUtil {
     }
 
     function &_add($oFolder, $sFilename, $oUser, $aOptions) {
+        global $default;
+        
         $oContents = KTUtil::arrayGet($aOptions, 'contents');
-        $aMetadata = KTUtil::arrayGet($aOptions, 'metadata');
+        $aMetadata = KTUtil::arrayGet($aOptions, 'metadata', null, false);
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
 
@@ -146,7 +148,6 @@ class KTDocumentUtil {
 
         if (is_null($oContents)) {
             $res = KTDocumentUtil::setIncomplete($oDocument, "contents");
-            var_dump($res);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
                 return $res;
