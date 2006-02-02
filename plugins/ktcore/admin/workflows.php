@@ -36,11 +36,10 @@ class WorkflowNavigationPortlet extends KTPortlet {
         if (is_null($this->oWorkflow)) { return _('No Workflow Selected.'); }
     
         $aAdminPages = array();
-        $aAdminPages[] = array('name' => _('Overview'), 'url' => KTUtil::addQueryStringSelf('action=editWorkflow&fWorkflowId=' . $this->oWorkflow->getId()));
-        $aAdminPages[] = array('name' => _('States'), 'url' => KTUtil::addQueryStringSelf('action=manageStates&fWorkflowId=' . $this->oWorkflow->getId()));
-        $aAdminPages[] = array('name' => _('Transitions'), 'url' => KTUtil::addQueryStringSelf('action=manageTransitions&fWorkflowId=' . $this->oWorkflow->getId()));
-        $aAdminPages[] = array('name' => _('Actions'), 'url' => KTUtil::addQueryStringSelf('action=manageActions&fWorkflowId=' . $this->oWorkflow->getId()));
-
+        $aAdminPages[] = array('name' => _('Overview'), 'query' => 'action=editWorkflow&fWorkflowId=' . $this->oWorkflow->getId());
+        $aAdminPages[] = array('name' => _('States'), 'query' => 'action=manageStates&fWorkflowId=' . $this->oWorkflow->getId());
+        $aAdminPages[] = array('name' => _('Transitions'), 'query' => 'action=manageTransitions&fWorkflowId=' . $this->oWorkflow->getId());
+        $aAdminPages[] = array('name' => _('Actions'), 'query' => 'action=manageActions&fWorkflowId=' . $this->oWorkflow->getId());
     
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("ktcore/workflow/admin_portlet");
@@ -208,7 +207,8 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         }
         
         foreach ($aInfo['transitions_to_state'][$oState->getId()] as $aTransition) { 
-            $aT[] = sprintf('<a href="%s?action=editTransition&fWorkflowId=%d&fTransitionId=%d">%s</a>', $_SERVER['PHP_SELF'], $aInfo['workflow']->getId(), $aTransition->getId() ,$aTransition->getName()); 
+            $sUrl = KTUtil::addQueryStringSelf(sprintf('action=editTransition&fWorkflowId=%d&fTransitionId=%d', $aInfo['workflow']->getId(), $aTransition->getId())); 
+            $aT[] = sprintf('<a href="%s">%s</a>', $sUrl, $aTransition->getName()); 
         }
         
         return implode(', ',$aT);
@@ -302,7 +302,8 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         $aT = array();
         foreach ($aInfo['transitions_from_state'][$oState->getId()] as $aTransition) { 
-            $aT[] = sprintf('<a href="%s?action=editTransition&fWorkflowId=%d&fTransitionId=%d">%s</a>', $_SERVER['PHP_SELF'], $aInfo['workflow']->getId(), $aTransition->getId() ,$aTransition->getName()); 
+            $sUrl = KTUtil::addQueryStringSelf(sprintf('action=editTransition&fWorkflowId=%d&fTransitionId=%d', $aInfo['workflow']->getId(), $aTransition->getId())); 
+            $aT[] = sprintf('<a href="%s">%s</a>', $sUrl, $aTransition->getName()); 
         }
         return implode(', ', $aT);
     }

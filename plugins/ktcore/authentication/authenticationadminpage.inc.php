@@ -109,7 +109,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
-        $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
+        $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => KTUtil::addQueryStringSelf("source_id=" . $oSource->getId()));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
         $oProvider->dispatch();
@@ -123,7 +123,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
-        $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
+        $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => KTUtil::addQueryStringSelf("source_id=" . $oSource->getId()));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
         $oProvider->dispatch();

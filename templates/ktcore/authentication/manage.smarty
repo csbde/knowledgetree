@@ -32,7 +32,7 @@ ensure that the Plugin is enabled.{/i18n}<p></div>
 
 <ul>
 {foreach from=$sources item=oSource}
-  <li><a href="{addQS}action=viewsource&source_id={$oSource->getId()}">{$oSource->getName()}{/addQS}</a></li>
+  <li><a href="{addQS}action=viewsource&source_id={$oSource->getId()}{/addQS}">{$oSource->getName()}</a></li>
 {/foreach}
 </ul>
 {else}

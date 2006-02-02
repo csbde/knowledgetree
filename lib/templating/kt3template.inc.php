@@ -282,6 +282,8 @@ class KTPage {
                $sUrl = KTUtil::addQueryString($sUrl, $sQuery);
            }
 		   $aTuple["url"] = $sUrl;
+        } else if ($aActionTuple["query"]) {
+           $aTuple['url'] = KTUtil::addQueryStringSelf($aActionTuple["query"]);
 		} else {
 		   $aTuple["url"] = false;
 		}
