@@ -80,6 +80,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_modifier('addQS', array('KTSmartyTemplate', 'addQueryString'));
         $smarty->register_modifier('addQueryStringSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         $smarty->register_modifier('addQSSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
+        $smarty->register_block('addQS', array('KTSmartyTemplate', 'addQueryStringBlock'), false);
         return $smarty->fetch($this->sPath);
     }
 
@@ -115,6 +116,13 @@ class KTSmartyTemplate extends KTTemplate {
         $content = trim($content);
         $content = $oi18n->gettext($content);
         return str_replace(array_keys($replacements), array_values($replacements), $content);
+    }
+
+    function addQueryStringBlock($params, $content, &$smarty, &$repeat) {
+        if (empty($content)) {
+            return;
+        }
+        return KTUtil::addQueryStringSelf($content);
     }
 
     function entity_select ($params, &$smarty) {
