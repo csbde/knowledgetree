@@ -97,12 +97,10 @@ td.false { background-color: #ffaaaa; text-align: centre }
 padding: 2px; padding-right: 1em; padding-left: 1em">
 { if $inherited }
 {i18n}Inherited from{/i18n}: {$inherited}
-{* [<a
-href="{$smarty.server.PHP_SELF}?action=copyPermissions&fDocumentID={$iDocumentID}">{i18n}Copy{/i18n}</a>]
-*}
+{* [<a href="{addQS}action=copyPermissions&fDocumentID={$iDocumentID}{/addQS}">{i18n}Copy{/i18n}</a>] *}
 { else }
 [<a
-href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fDocumentID={$iDocumentID}">{i18n}Use
+href="{addQS}action=inheritPermissions&fDocumentID={$iDocumentID}{/addQS}">{i18n}Use
 parent's permissions{/i18n}</a>]
 { /if }
 </span>

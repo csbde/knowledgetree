@@ -20,7 +20,7 @@
                 {if ($document->getCurrentMetadataVersionId() == $oVersion->getCurrentMetadataVersionId())}
                    <strong>{i18n}comparing against this version{/i18n}</strong>
                 {else}
-                   <a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$document->getCurrentMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}compare{/i18n}</a>
+                   <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$document->getCurrentMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare{/i18n}</a>
                 {/if}
                 </td>
             </tr>

@@ -31,8 +31,8 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 {foreach item=oSearch from=$saved_searches}
     <tr>
         <td>{$oSearch->getName()}</td>
-        <td><a href="{$smarty.server.PHP_SELF}?action=edit&fSavedSearchId={$oSearch->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="{$smarty.server.PHP_SELF}?action=delete&fSavedSearchId={$oSearch->getId()}" class="ktAction ktDelete">Edit</a></td>
+        <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="{addQS}action=delete&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktDelete">Edit</a></td>
         <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">Run Search</a></td>
     </tr>
 {/foreach}

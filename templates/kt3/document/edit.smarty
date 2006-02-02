@@ -13,7 +13,7 @@
 
 <h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
 
-<p class="descriptiveText">{i18n}Change the <strong><a href="{$smarty.server.PHP_SELF}?action=selectType&fDocumentId={$document->getId()}">document type</a></strong>{/i18n}</p>
+<p class="descriptiveText">{i18n}Change the <strong><a href="{addQS}action=selectType&fDocumentId={$document->getId()}{/addQS}">document type</a></strong>{/i18n}</p>
 
 <p class="descriptiveText">{i18n}The following document metadata is available for editing.{/i18n}</p>
 

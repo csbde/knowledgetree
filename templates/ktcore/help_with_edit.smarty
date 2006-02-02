@@ -5,5 +5,5 @@
 {/if}
 
 <hr />
-<p><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}" class="ktAction ktEdit" style="float:
+<p><a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="?action=customise&name=`$target_name`"}" class="ktAction ktEdit" style="float:
 left; padding-right: 0.5em;">{i18n}Edit this help page.{/i18n}</a><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}">{i18n}Edit this help page.{/i18n}</a></p>

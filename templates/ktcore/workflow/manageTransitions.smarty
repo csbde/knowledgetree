@@ -13,9 +13,9 @@ while the workflow has no documents or document-versions assigned to the workflo
 <fieldset>
 <legend>{i18n}Create a new transition{/i18n}</legend>
 
-<a href="{$smarty.server.PHP_SELF}?action=createTransition&fWorkflowId={$oWorkflow->getId()}"
+<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    class="ktAction ktAdd ktInline">{i18n}Create a new transition{/i18n}</a>
-<a href="{$smarty.server.PHP_SELF}?action=createTransition&fWorkflowId={$oWorkflow->getId()}"
+<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    >{i18n}Create a new transition{/i18n}</a>
 
 </fieldset>
@@ -46,8 +46,8 @@ or use the checkboxes to assign which states the transition is available from.</
   {foreach item=oTransition from=$workflow_info.transitions}
   <tr class='{cycle values="odd,even"}'>
     <td>
-      <a href="{$smarty.server.PHP_SELF}?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}">{$oTransition->getName()}</a>
-      {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{$smarty.server.PHP_SELF}?action=deleteTransition&fTransitionId={$oTransition->getId()}&fWorkflowId={$oWorkflow->getId()}" >{i18n}Delete{/i18n}</a></span>{/if}
+      <a href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}{/addQS}">{$oTransition->getName()}</a>
+      {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteTransition&fTransitionId={$oTransition->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     </td>
     {foreach item=oState from=$workflow_info.states}
       <td>
