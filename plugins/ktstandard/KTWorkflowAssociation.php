@@ -72,7 +72,7 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
         $oWorkflow = $this->_handler->addTrigger($this->_document);
         
         // catch disabled workflows.
-        if (!is_null($oWorkflow) && $oWorkflow->getStartStateId() === null) {
+        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
             return ;          
         }
         
@@ -86,7 +86,7 @@ class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
         $oWorkflow = $this->_handler->editTrigger($this->_document);
         
         // catch disabled workflows.
-        if (!is_null($oWorkflow) && $oWorkflow->getStartStateId() === null) {
+        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
             return ;          
         }
                 
@@ -100,7 +100,7 @@ class KTWADMoveTrigger extends KTWorkflowAssociationDelegator {
         $oWorkflow = $this->_handler->moveTrigger($this->_document);
         
         // catch disabled workflows.
-        if (!is_null($oWorkflow) && $oWorkflow->getStartStateId() === null) {
+        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
             return ;          
         }
                 
