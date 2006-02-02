@@ -38,7 +38,7 @@ MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
 </div>
 { /if }
 <div class="view" id="view">
-<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<table class="kt_collection" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
 <th>Group</th>
@@ -65,7 +65,7 @@ MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
 </tbody>
 </table>
 
-<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<table class="kt_collection" cellspacing="0" cellpadding="0" border="0" width="100%">
 <thead>
 <tr>
 <th>Role</th>
@@ -100,7 +100,7 @@ MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="fFolderId" value="{$iFolderId}">
-<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
 <th>Group</th>
@@ -129,7 +129,7 @@ value="{$iGroupId}"></td>
 </tbody>
 </table>
 
-<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<table class="kt_collection" cellspacing="0" cellpadding="0" border="0" width="100%">
 <thead>
 <tr>
 <th>Role</th>
@@ -186,7 +186,7 @@ parent's permissions{/i18n}</a>]
 <h2>Dynamic permissions</h2>
 
 { if $dynamic_conditions }
-<table class="pretty" cellpadding="0" cellspacing="0" width="100%">
+<table class="kt_collection" cellpadding="0" cellspacing="0">
   <thead>
     <tr>
 { if $edit }
@@ -232,7 +232,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 { if $edit }
 <h3>{i18n}Add a new dynamic permission{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<table class="pretty" cellpadding="0" cellspacing="0">
+<table class="kt_collection" cellpadding="0" cellspacing="0">
 <input type="hidden" name="action" value="newDynamicPermission" />
 <input type="hidden" name="fFolderId" value="{$iFolderId}" />
 <thead>
