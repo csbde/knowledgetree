@@ -455,22 +455,16 @@ class KTUtil {
     function ktLink($base, $subpath='', $qs='') {
         $KTConfig =& KTConfig::getSingleton();
         $root = $KTConfig->get("KnowledgeTree/rootUrl");
-        $url = $root . '/' . $base;
-        $url = $base;
-        $query = '';
+        $url = generateLink($base);
         
         $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
         if ($hasPathInfo) {
             $url .= $subpath;
         } else {
-            $query = 'kt_path_info=' . $subpath;
-            if (!empty($qs)) {
-               $query .= '&';
-            }
+            $url = KTUtil::addQueryString($url, "kt_path_info=" . $subpath);
         }
-        $query .= $qs;
         
-        return KTUtil::addQueryString($url, $query);
+        return KTUtil::addQueryString($url, $qs);
     }
     // }}}
 
