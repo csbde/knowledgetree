@@ -57,7 +57,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = sprintf("?action=addUnit&fFolderId=%d", $oFolder->getId());
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit&fFolderId=%d", $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -80,7 +80,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = sprintf("?action=addUnit&fFolderId=%d", $id);
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit&fFolderId=%d", $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
 
