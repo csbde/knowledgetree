@@ -126,8 +126,7 @@ field can depend on the user's selections for the others.{/i18n}
   <li><input type="checkbox" name="fields[]"
 value="{$oField->getId()}" />
 {$oField->getName()|escape}
-(<a
-href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">{i18n}edit{/i18n}</a>)
+(<a href="{addQS}action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}{/addQS}">{i18n}edit{/i18n}</a>)
 </li>
 {/foreach}
 </ul>

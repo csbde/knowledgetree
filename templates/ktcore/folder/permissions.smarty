@@ -174,11 +174,9 @@ value="{$iRoleId}"></td>
 padding: 2px; padding-right: 1em; padding-left: 1em">
 { if $inherited }
 {i18n}Inherited from:{/i18n} {$inherited}
-[<a
-href="{$smarty.server.PHP_SELF}?action=copyPermissions&fFolderId={$iFolderId}">{i18n}Copy{/i18n}</a>]
+[<a href="{addQS}action=copyPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Copy{/i18n}</a>]
 { else }
-[<a
-href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fFolderId={$iFolderId}">{i18n}Use
+[<a href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Use
 parent's permissions{/i18n}</a>]
 { /if }
 </span>

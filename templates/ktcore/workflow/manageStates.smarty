@@ -13,9 +13,9 @@ while the workflow has no documents or document-versions assigned to the workflo
 <legend>Create a new state</legend>
 <p class="descriptiveText">A critical part of workflow is the creation of
 various different states for documents.</p>
-<a href="{$smarty.server.PHP_SELF}?action=createState&fWorkflowId={$oWorkflow->getId()}"
+<a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    class="ktAction ktInline ktAdd">{i18n}Create a new state{/i18n}</a>
-<a href="{$smarty.server.PHP_SELF}?action=createState&fWorkflowId={$oWorkflow->getId()}">{i18n}Create a new state{/i18n}</a>
+<a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Create a new state{/i18n}</a>
 
 </fieldset>
 
@@ -25,17 +25,17 @@ various different states for documents.</p>
 {else}
 <ul id="workflow-states-list">
 {foreach item=oState from=$workflow_info.states}
-    <li><span class="workflow_element">State:</span> <a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" class="workflow_label">{$oState->getName()}</a>
-        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{$smarty.server.PHP_SELF}?action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}" >{i18n}Delete{/i18n}</a></span>{/if}
+    <li><span class="workflow_element">State:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
+        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
-        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Notified groups & roles:{/i18n}</a>
+        <li><a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Notified groups & roles:{/i18n}</a>
         {$context->getNotificationStringForState($oState)}
         </li>
-        <li><a href="{$smarty.server.PHP_SELF}?action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}">{i18n}Controlled Actions available: {/i18n}</a>
+        <li><a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Controlled Actions available: {/i18n}</a>
         {$context->getActionStringForState($oState)}
         </li>
       
-        <li><a href="{$smarty.server.PHP_SELF}?action=editTransitions&fWorkflowId={$oWorkflow->getId()}">{i18n}Transitions available: {/i18n}</a>
+        <li><a href="{addQS}action=editTransitions&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Transitions available: {/i18n}</a>
         {$context->getTransitionFromStringForState($oState)}
         </li>
       

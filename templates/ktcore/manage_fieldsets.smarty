@@ -17,13 +17,11 @@
      </td>
      
      <td>
-       <a
-           href="{$smarty.server.PHP_SELF}?action=editFieldset&id={$oFieldSet->getId()}">{i18n}Edit{/i18n}</a>
+       <a href="{addQS}action=editFieldset&id={$oFieldSet->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
      </td>
      <td>
        {if $oFieldSet->bMandatory == false}
-       <a
-           href="{$smarty.server.PHP_SELF}?action=deleteFieldset&id={$oFieldSet->getId()}">{i18n}Delete{/i18n}</a>
+       <a href="{addQS}action=deleteFieldset&id={$oFieldSet->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
        {else}
        {i18n}Built-in set.{/i18n}
        {/if}

@@ -36,11 +36,11 @@ role allocations may take a some time, depending on the number of folders below 
            {/if}
         </td>
         {if ($aRole.allocation_id === null)}
-        <td colspan="2"><a href="{$smarty.server.PHP_SELF}?action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}">{i18n}Override Parent Allocation{/i18n}</a></td>
+        <td colspan="2"><a href="{addQS}action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}">{i18n}Override Parent Allocation{/i18n}</a></td>
         {else}
-<!--        <td><a href="{$smarty.server.PHP_SELF}?action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td> -->
-        <td><a href="{$smarty.server.PHP_SELF}?action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td>
-        <td><a href="{$smarty.server.PHP_SELF}?action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktDelete" title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
+<!--        <td><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td> -->
+        <td><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td>
+        <td><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete" title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
         {/if}
     </tr>
 {/foreach}

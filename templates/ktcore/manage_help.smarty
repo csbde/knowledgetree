@@ -16,10 +16,10 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 { foreach item=oHelpReplacement from=$helpreplacements }
 <tr class="{cycle values="odd,even"}">
 <td>
-<a href="{$smarty.server.PHP_SELF}?action=editReplacement&id={$oHelpReplacement->iId}">{ $oHelpReplacement->sName }</a>
+<a href="{addQS}action=editReplacement&id={$oHelpReplacement->iId}{/addQS}">{ $oHelpReplacement->sName }</a>
 </td>
 <td>
-<a href="{$smarty.server.PHP_SELF}?action=deleteReplacement&id={$oHelpReplacement->iId}">Delete</a>
+<a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->iId}{/addQS}">Delete</a>
 </td>
 </tr>
 { /foreach }
