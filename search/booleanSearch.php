@@ -100,7 +100,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 
         $sSearch = md5(serialize($aCriteriaSet));
         $_SESSION['boolean_search'][$sSearch] = $aCriteriaSet;
-        $resultURL = "?action=performSearch&boolean_search_id=" . urlencode($sSearch);
+        $resultURL = KTUtil::addQueryStringSelf("action=performSearch&boolean_search_id=" . urlencode($sSearch));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
 
