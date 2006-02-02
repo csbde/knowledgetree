@@ -47,60 +47,6 @@ require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
-    function createMetadataVersion($oDocument) {
-        if (is_numeric($oDocument)) {
-            $oDocument =& Document::get($oDocument);
-            if (PEAR::isError($oDocument)) {
-                return $oDocument;
-            }
-        }
-        // XXX: PHP5 clone
-        $oVersionDocument = $oDocument;
-        $oVersionDocument->iId = -1;
-        $oVersionDocument->setStatusID(STATUS_VERSION);
-        $oVersionDocument->setLiveDocumentID($oDocument->getID());
-        $oVersionDocument->setIsCheckedOut(false);
-        $oVersionDocument->setCheckedOutUserID(null);
-        $res = $oVersionDocument->create();
-        if ($res !== true) {
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-            // XXX: Remove when Document uses PEAR Errors
-            return PEAR::raiseError($_SESSION["errorMessage"]);
-        }
-
-        $aFields =& DocumentFieldLink::getByDocument($oDocument);
-        $iVersionDocumentID = $oVersionDocument->getID();
-        foreach ($aFields as $oDFL) {
-            // XXX: PHP5 clone
-            $oVersionDFL = $oDFL;
-            $oVersionDFL->iId = -1;
-            $oVersionDFL->setDocumentID($iVersionDocumentID);
-            $res = $oVersionDFL->create();
-        }
-        
-        return $oVersionDocument;
-    }
-
-    function bumpVersion($oDocument) {
-        if (is_numeric($oDocument)) {
-            $oDocument =& Document::get($oDocument);
-            if (PEAR::isError($oDocument)) {
-                return $oDocument;
-            }
-        }
-        $oDocument->setMetadataVersion($oDocument->getMetadataVersion()+1);
-        return $oDocument->update();
-    }
-
-    function setModified($oDocument, $oUser) {
-        $oDocument =& KTUtil::getObject('Document', $oDocument);
-        $oDocument->setLastModifiedDate(getCurrentDateTime());
-        $oDocument->setModifiedUserId(KTUtil::getId($oUser));
-        return $oDocument->update();
-    }
-
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $iFileSize = filesize($sFilename);

@@ -15,7 +15,6 @@ DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
 DEFINE("STATUS_INCOMPLETE", 5);
-DEFINE("STATUS_VERSION", 6);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
