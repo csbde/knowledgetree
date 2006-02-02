@@ -298,7 +298,7 @@ class KTPage {
 		    return null;
 		}
 		
-		return '/help.php/' . $this->helpPage; // FIXME handle auto-url
+		return KTUtil::ktLink('help.php',$this->helpPage); 
 	}
 }
 

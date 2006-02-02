@@ -36,10 +36,10 @@ class WorkflowNavigationPortlet extends KTPortlet {
         if (is_null($this->oWorkflow)) { return _('No Workflow Selected.'); }
     
         $aAdminPages = array();
-        $aAdminPages[] = array('name' => _('Overview'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], '?action=editWorkflow&fWorkflowId=' . $this->oWorkflow->getId()));
-        $aAdminPages[] = array('name' => _('States'), 'url' => $_SERVER['PHP_SELF'] . '?action=manageStates&fWorkflowId=' . $this->oWorkflow->getId());
-        $aAdminPages[] = array('name' => _('Transitions'), 'url' => $_SERVER['PHP_SELF'] . '?action=manageTransitions&fWorkflowId=' . $this->oWorkflow->getId());
-        $aAdminPages[] = array('name' => _('Actions'), 'url' => $_SERVER['PHP_SELF'] . '?action=manageActions&fWorkflowId=' . $this->oWorkflow->getId());
+        $aAdminPages[] = array('name' => _('Overview'), 'url' => KTUtil::addQueryStringSelf('action=editWorkflow&fWorkflowId=' . $this->oWorkflow->getId()));
+        $aAdminPages[] = array('name' => _('States'), 'url' => KTUtil::addQueryStringSelf('action=manageStates&fWorkflowId=' . $this->oWorkflow->getId()));
+        $aAdminPages[] = array('name' => _('Transitions'), 'url' => KTUtil::addQueryStringSelf('action=manageTransitions&fWorkflowId=' . $this->oWorkflow->getId()));
+        $aAdminPages[] = array('name' => _('Actions'), 'url' => KTUtil::addQueryStringSelf('action=manageActions&fWorkflowId=' . $this->oWorkflow->getId()));
 
     
         $oTemplating = new KTTemplating;        

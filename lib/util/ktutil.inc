@@ -442,6 +442,7 @@ class KTUtil {
     function addQueryString($url, $qs) {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
         $oUrl = new Net_URL($url);
+        
         $aQs = $oUrl->_parseRawQuerystring($qs);
         foreach ($aQs as $k => $v) {
             $oUrl->addQueryString($k, $v);
@@ -455,6 +456,7 @@ class KTUtil {
         $KTConfig =& KTConfig::getSingleton();
         $root = $KTConfig->get("KnowledgeTree/rootUrl");
         $url = $root . '/' . $base;
+        $url = $base;
         $query = '';
         
         $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
@@ -467,6 +469,7 @@ class KTUtil {
             }
         }
         $query .= $qs;
+        
         return KTUtil::addQueryString($url, $query);
     }
     // }}}

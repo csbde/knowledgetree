@@ -130,7 +130,7 @@
 <div id="content">
 
 <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
-{if ($page->getHelpURL() != null)} <a class="ktHelp" href="{$rootUrl}{$page->getHelpURL()}">Help</a> {/if}
+{if ($page->getHelpURL() != null)} <a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
 </h1>
 
 <!-- any status / error messages get added here. -->
