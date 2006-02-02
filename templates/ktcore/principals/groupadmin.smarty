@@ -4,7 +4,7 @@
 <legend>Add New Group</legend>
 <p class="descriptiveText">{i18n}Groups allow you to assign permissions and roles to a 
 number of different users at once.{/i18n}</p>
-<p><a href="?action=addGroup" class="ktAction ktAddGroup" style="float: left; padding-right: 0.5em;">Add Group</a><a href="?action=addGroup">Add a new group</a>.</p>
+<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Group</a><a href="{addQS}action=addGroup{/addQS}">Add a new group</a>.</p>
 </fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -12,7 +12,7 @@ number of different users at once.{/i18n}</p>
 <legend>{i18n}Search for groups{/i18n}</legend>
 <p class="descriptiveText">{i18n}Since there may be many groups in the
 system, please type a few letters from the group's name to begin.
-Alternatively, <a href="?show_all=1">view all groups</a> (note that this
+Alternatively, <a href="{addQS}show_all=1{/addQS}">view all groups</a> (note that this
 action may take some time if you have many groups).{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
@@ -53,13 +53,13 @@ action may take some time if you have many groups).{/i18n}</p>
 {$context->_getUnitName($oGroup)}
 {/if}
 	</td>
-        <td><a href="?action=editGroup&group_id={$oGroup->getId()}"
+        <td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}{/addQS}"
 class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a
-href="?action=manageUsers&group_id={$oGroup->getId()}">{i18n}Manage Users{/i18n}</a></td>  
+href="{addQS}action=manageUsers&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
         <td><a
-href="?action=manageSubgroups&group_id={$oGroup->getId()}">{i18n}Manage sub-groups{/i18n}</a></td>
-        <td><a href="?action=deleteGroup&group_id={$oGroup->getId()}"
+href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}{/addQS}"
 class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
      </tr>   
      {/foreach}

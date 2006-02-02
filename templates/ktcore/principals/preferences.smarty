@@ -15,7 +15,7 @@
     <div class="form_actions">
         <input type="submit" value="{i18n}Update your details{/i18n}" />
         <!-- FIXME add CSS for secondary actions. -->
-        <p><a href="?action=setPassword">{i18n}Change your password.{/i18n}</a></p>
+        <p><a href="{addQS}action=setPassword{/addQS}">{i18n}Change your password.{/i18n}</a></p>
     </div>
 </fieldset>
 

@@ -13,7 +13,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     
     function AdminSplashDispatcher() {
         $this->aBreadcrumbs = array(
-            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => 'Administration'),
+            array('url' => $_SERVER['PHP_SELF'], 'name' => 'Administration'),
         );
     
         parent::KTAdminDispatcher();
@@ -37,7 +37,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $aTemplateData = array(
               "context" => $this,
               "categories" => $categories,
-              "baseurl" => KTUtil::getRequestScriptName($_SERVER),
+              "baseurl" => $_SERVER['PHP_SELF'],
         );
         return $oTemplate->render($aTemplateData);				
     }
@@ -51,7 +51,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $aCategory = $oRegistry->getCategory($category);		
         
         $aItems = $oRegistry->getItemsForCategory($category);
-        $this->aBreadcrumbs[] = array("name" => $aCategory["title"]);
+        $this->aBreadcrumbs[] = array("name" => $aCategory["title"], "url" => KTUtil::ktLink('admin.php',$category));
 
         
         $this->oPage->title = _("DMS Administration") . ": " . $aCategory["title"];
@@ -61,13 +61,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               "context" => $this,
               "category" => $aCategory,
               "items" => $aItems, 
-              "baseurl" => KTUtil::getRequestScriptName($_SERVER),
+              "baseurl" =>  $_SERVER['PHP_SELF'],
         );
         return $oTemplate->render($aTemplateData);				
     }
 }
 
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+
 $sub_url = trim($sub_url);
 $sub_url= trim($sub_url, "/");
 
@@ -84,8 +85,8 @@ if (empty($sub_url)) {
        $aCategory = $oRegistry->getCategory($aParts[0]);			   
        
        $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => 'Administration');
-       $oDispatcher->aBreadcrumbs[] = array("name" => $aCategory['title'], "url" => KTUtil::getRequestScriptName($_SERVER) . '/' . $aParts[0]);
+       $oDispatcher->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => 'Administration');
+       $oDispatcher->aBreadcrumbs[] = array("name" => $aCategory['title'], "url" => KTUtil::ktLink('admin.php',$aParts[0]));
     } else {
        // FIXME (minor) redirect to no-suburl?
        $oDispatcher = new AdminSplashDispatcher();

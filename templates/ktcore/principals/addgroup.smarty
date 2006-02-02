@@ -13,7 +13,7 @@
       {/foreach}
       <div class="form_actions">
          <input type="submit" value="{i18n}create group{/i18n}" />
-         <a href="?action=main" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+         <a href="{addQS}action=main{/addQS}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
       </div>
    </fieldset>
    </form>

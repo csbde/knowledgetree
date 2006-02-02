@@ -1,4 +1,4 @@
-<h2>{i18n}Manage conditional fieldset{/i18n}<h2>
+<h2>{i18n}Manage conditional fieldset{/i18n}</h2>
 
 {if $sIncomplete || !$oFieldset->getIsComplete()}
 <div class="ktError">
@@ -27,9 +27,9 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
 <h2>{i18n}Conditional type{/i18n}</h2>
 
 {if $oFieldset->getIsComplex()}
-{i18n}Complex{/i18n}: <a
+<p>{i18n}Complex{/i18n}: <a
 href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
-complex conditional{/i18n}</a>
+complex conditional{/i18n}</a></p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToSimple" />
@@ -39,8 +39,9 @@ complex conditional{/i18n}</a>
 
 {else}
 
-{i18n}Simple{/i18n}: <a
+<p>{i18n}Simple{/i18n}: <a
 href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
+</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToComplex" />
