@@ -13,9 +13,8 @@ while the workflow has no documents or document-versions assigned to the workflo
 <legend>Create a new state</legend>
 <p class="descriptiveText">A critical part of workflow is the creation of
 various different states for documents.</p>
-<a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}"
-   class="ktAction ktInline ktAdd">{i18n}Create a new state{/i18n}</a>
-<a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Create a new state{/i18n}</a>
+<span class="ktActionLink ktAdd"><a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}"
+   >{i18n}Create a new state{/i18n}</a></span>
 
 </fieldset>
 
