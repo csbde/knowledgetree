@@ -110,10 +110,13 @@ class KTWorkflowUtil {
         );
         $sTable = KTUtil::getTableName('workflow_documents');
         $res = DBUtil::autoInsert($sTable, $aValues, $aOptions);
-        
+		
+        if (PEAR::isError($res)) { return $res; }
+		
         // FIXME does this function as expected?
         $oUser = User::get($_SESSION['userID']);
-        
+		
+        KTPermissionUtil::updatePermissionLookup($oDocument);
         $oTargetState = KTWorkflowState::get($iStartStateId);
         KTWorkflowUtil::informUsersForState($oTargetState, 
             KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
@@ -162,11 +165,16 @@ class KTWorkflowUtil {
         $oUser = User::get($_SESSION['userID']);
         $oTargetState = KTWorkflowState::get($iStartStateId);
         
+        $res = DBUtil::autoInsert($sTable, $aValues, $aOptions);
+        
+        if (PEAR::isError($res)) { return $res; }
+        
+        KTPermissionUtil::updatePermissionLookup($oDocument);
         KTWorkflowUtil::informUsersForState($oTargetState, 
             KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
         
         
-        return DBUtil::autoInsert($sTable, $aValues, $aOptions);
+        return $res;
     }
     // }}}    
 
@@ -481,6 +489,7 @@ class KTWorkflowUtil {
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
 
+		KTPermissionUtil::updatePermissionLookup($oDocument);
         KTWorkflowUtil::informUsersForState($oTargetState, KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, $sComments);
 
         return true;
@@ -574,9 +583,12 @@ class KTWorkflowUtil {
             }
         }
         
+        
         // and done.  
         foreach ($aUsers as $oU) {
-            KTWorkflowNotification::newNotificationForDocument($oDocument, $oU, $oState, $oUser, $sComments);
+		    if (!PEAR::isError($oU)) {
+                KTWorkflowNotification::newNotificationForDocument($oDocument, $oU, $oState, $oUser, $sComments);
+			}
         }
     }
     // }}}
