@@ -7,12 +7,12 @@ CREATE TABLE `role_allocations` (
   `permission_descriptor_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `folder_id` (`folder_id`)
-) ENGINE=InnoDB ;
+) TYPE=InnoDB ;
 
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM ;
+) TYPE=MyISAM ;
 
 
 SET FOREIGN_KEY_CHECKS=1;

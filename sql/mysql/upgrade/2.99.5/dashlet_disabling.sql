@@ -8,13 +8,13 @@ CREATE TABLE `dashlet_disables` (
   UNIQUE KEY `id` (`id`),
   INDEX (`user_id`),
   INDEX (`dashlet_namespace`)
-) ENGINE=InnoDB ;
+) TYPE=InnoDB ;
 
 
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM ;
+) TYPE=MyISAM ;
 
 
 SET FOREIGN_KEY_CHECKS=1;

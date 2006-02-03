@@ -7,10 +7,10 @@ CREATE TABLE `plugins` (
   `data` text,
   PRIMARY KEY  (`id`),
   KEY `name` (`namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) TYPE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM DEFAULT CHARSET=latin1;
 
