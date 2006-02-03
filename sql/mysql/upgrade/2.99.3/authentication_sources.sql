@@ -16,11 +16,11 @@ CREATE TABLE `authentication_sources` (
   `is_group_source` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `namespace` (`namespace`)
-) ENGINE=InnoDB;
+) TYPE=InnoDB;
 
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;
+) TYPE=MyISAM;
 
 SET FOREIGN_KEY_CHECKS=1;
