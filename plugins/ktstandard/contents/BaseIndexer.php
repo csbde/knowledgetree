@@ -59,6 +59,7 @@ class KTBaseIndexerTrigger {
         $contents = $this->extract_contents($sFile, $myfilename);
         
         unlink($myfilename);
+        
         if (empty($contents)) {
             return;
         }
@@ -72,7 +73,7 @@ class KTBaseIndexerTrigger {
         // FIXME this suggests that we should move the _old_ document_searchable_text across to the old-document's id if its a checkin.
         DBUtil::runQuery(array('DELETE FROM ' . $sTable . ' WHERE document_id = ?', array($this->oDocument->getId())));
         DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
-        
+
     }
     
     // handles certain, _very_ simple reader types.

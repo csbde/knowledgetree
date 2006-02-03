@@ -84,7 +84,6 @@ class KTPage {
 		$this->menu = array(
 		    "dashboard" => $this->_actionHelper(array("name" => _("Dashboard"), "action" => "dashboard", "active" => 0)),
 			"browse" => $this->_actionHelper(array("name" => _("Browse Collections"), "action" => "browse", "active" => 0)),
-			
 			"administration" => $this->_actionHelper(array("name" => _("DMS Administration"), "action" => "administration", "active" => 0)),
 		);
 		
@@ -262,6 +261,13 @@ class KTPage {
 				$this->title = $this->breadcrumbSection['label'];
 			} else {
 			    $this->title = $this->componentLabel;
+			}
+		}
+		
+		// FIXME we need a more complete solution to navigation restriction
+		if (!is_null($this->menu['administration'])) {
+			if (!Permission::userIsSystemAdministrator($this->user->getId())) {
+			    unset($this->menu['administration']);
 			}
 		}
 		

@@ -250,19 +250,19 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         $sNotify = '';
         if (!empty($aUsers)) {
-            $sNotify .= '<em>' . _('Users:') . '</em>';
+            $sNotify .= '<em>' . _('Users:') . '</em> ';
             $sNotify .= implode(', ', $aUsers);
         }
         
         if (!empty($aGroups)) {
             if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
-            $sNotify .= '<em>' . _('Groups:') . '</em>';
+            $sNotify .= '<em>' . _('Groups:') . '</em> ';
             $sNotify .= implode(', ', $aGroups);
         }
         
         if (!empty($aRoles)) {
             if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
-            $sNotify .= '<em>' . _('Roles:') . '</em>';
+            $sNotify .= '<em>' . _('Roles:') . '</em> ';
             $sNotify .= implode(', ', $aRoles);
         }
         
