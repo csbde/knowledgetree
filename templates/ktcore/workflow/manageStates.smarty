@@ -30,9 +30,12 @@ various different states for documents.</p>
         <li><a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Notified groups & roles:{/i18n}</a>
         {$context->getNotificationStringForState($oState)}
         </li>
+        
         <li><a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Controlled Actions available: {/i18n}</a>
         {$context->getActionStringForState($oState)}
         </li>
+        
+        <li>{i18n}Permissions overridden:{/i18n} {$context->getPermissionStringForState($oState)}</li>
       
         <li><a href="{addQS}action=editTransitions&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Transitions available: {/i18n}</a>
         {$context->getTransitionFromStringForState($oState)}

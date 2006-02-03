@@ -265,7 +265,7 @@ class KTPage {
 		}
 		
 		// FIXME we need a more complete solution to navigation restriction
-		if (!is_null($this->menu['administration'])) {
+		if (!is_null($this->menu['administration']) && !is_null($this->user)) {
 			if (!Permission::userIsSystemAdministrator($this->user->getId())) {
 			    unset($this->menu['administration']);
 			}
