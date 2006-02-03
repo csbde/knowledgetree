@@ -69,7 +69,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $vocab['lookup'] = 'Lookup';
         $vocab['tree'] = 'Tree';
         $typeOptions = array("vocab" => $vocab);
-        $createFields[] =& new KTLookupWidget('Type',_('Different field types can have different properties.'), 
+        $createFields[] =& new KTLookupWidget('Type',_('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.'), 
         'type', null, $this->oPage, true, null,  null, $typeOptions);
         
         

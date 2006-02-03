@@ -1,8 +1,6 @@
 <h2>{i18n}Document Link Type Management{/i18n}</h2>
 
-<p class="descriptiveText">Within the <strong>KnowledgeTree</strong> it is possible for users
-to create links between related documents.  Each of these links has a certain type. 
-<strong>FIXME</strong> this help text is useless.</p>
+<p class="descriptiveText">Within KnowledgeTree it is possible for users to create links between related documents. Link types may include constructs such as "associated with" and "duplicated by". Please create link types required by your organisation below.</p>
 
 {if ($add_form)}
 

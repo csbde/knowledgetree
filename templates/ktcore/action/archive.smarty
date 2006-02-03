@@ -1,4 +1,4 @@
-<p class="descriptiveText">FIXME: Descriptive text.</p>
+<p class="descriptiveText">Archiving a document changes the document's state to invisible to non-administrative users. Only an Administrator may unarchive a document. Please note that this is a non-permanent change and does not delete the document from the repository.</p>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
 {capture assign=link}

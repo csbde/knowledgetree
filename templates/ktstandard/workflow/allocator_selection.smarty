@@ -3,9 +3,7 @@
 <form action="{$smarty.server.php_self}" method="POST">
 <fieldset>
 <legend>{i18n}Workflow Allocation Plugins{/i18n}</legend>
-<p class="descriptiveText">{i18n}In order to have documents be automatically associated
-with a workflow on creation or modification (as appropriate), please select the 
-plugin that should handle allocation from the list below.{/i18n}</p>
+<p class="descriptiveText">{i18n}Documents may be associated on creation or modification with a workflow. Workflow assignment may occur on a per <strong>Folder</strong> or per <strong>Document Type</strong> basis and only one mode may be selected for the system. In order to automatically associate documents with a workflow, please select the appropriate plugin from the list below.{/i18n}</p>
 
 {foreach item=oWidget from=$trigger_fields}
  {$oWidget->render()}
