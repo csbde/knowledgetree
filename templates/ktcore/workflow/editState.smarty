@@ -1,3 +1,25 @@
+{capture assign=sCSS}{literal}
+
+td.true { background-color: #aaffaa; text-align: centre }
+td.false { background-color: #ffaaaa; text-align: centre }
+.edit { display: none; }
+.view { display: block; }
+
+.tablebutton {
+    margin: 0em;
+    margin-right: 1em;
+    border: 1px solid #cccccc;
+}
+.activebutton {
+    background-color: #eeeeff;
+}
+.inactivebutton {
+    background-color: #ffeeee;
+}
+
+{/literal}{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
+
 <h2>{i18n}State{/i18n}: {$oState->getName()|escape}</h2>
 
 <p class="descriptiveText">As documents move through their lifecycle, they
@@ -110,10 +132,6 @@ title="Transition
 </form>
 </fieldset>
 
-
-
-
-
 {if (!empty($aActions))}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
@@ -138,5 +156,78 @@ title="Transition
 <div class="ktInfo"><p>No actions are controlled by this workflow, so all actions are available when
 documents are in this state.</p></div>
 {/if}
+
+
+{if (!empty($permissions))}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Controlled Permissions</legend>
+
+<input type="hidden" name="action" value="setStatePermissions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+
+<ul>
+{entity_checkboxes name="fPermissions" entities=$permissions idmethod="getName" method="getHumanName" assign="aCheckboxes" selected="$state_permissions"}
+{foreach from=$aCheckboxes item=sCheckbox}
+<li>{$sCheckbox}</li>
+{/foreach}
+</ul>
+<div class="form_actions">
+  <input type="submit" name="submit" value="Set controlled permissions" />
+</div>
+</fieldset>
+</form>
+
+{if (!empty($state_permissions))}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<input type="hidden" name="action" value="assignStatePermissions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+
+<table cellspacing="0" class="kt_collection">
+<thead>
+  <tr>
+    <th>Role or Group</th>
+    {foreach from=$state_permissions item=sPermName}
+    <th>{$permissions.$sPermName->getHumanName()}</th>
+    {/foreach}
+  </tr>
+</thead>
+<tbody>
+{ foreach item=oRole from=$aRoles }
+<tr>
+    <td><span class="descriptiveText">{i18n}Role:{/i18n} </span>{$oRole->getName()}</td>
+    { foreach from=$state_permissions item=sPermName }
+    <td><input type="checkbox" name="fPermissions[{$sPermName}][role][]" value="{$oRole->getId()}" {if ($context->getRoleHasPermissionInState($oRole, $sPermName, $oState))}checked="true"{/if}/></td>
+    { /foreach }
+</tr>
+{ /foreach }
+{ foreach item=oGroup from=$aGroups }
+<tr>
+    <td><span class="descriptiveText">{i18n}Group:{/i18n} </span>{$oGroup->getName()}</td>
+    { foreach from=$state_permissions item=sPermName }
+    <td><input type="checkbox" name="fPermissions[{$sPermName}][group][]" value="{$oGroup->getId()}"{if ($context->getGroupHasPermissionInState($oGroup, $sPermName, $oState))}checked="true"{/if}/></td>
+    { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
+<div class="form_actions">
+<input type="submit" value="{i18n}Update Allocated Permissions{/i18n}"/>
+</div>
+
+</form>
+{/if}
+
+{else}
+<div class="ktInfo"><p>No permissions have been created within KnowledgeTree.</p></div>
+{/if}
+
+
+
+
 
 

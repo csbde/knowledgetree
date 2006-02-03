@@ -8,6 +8,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowstatepermissionsassignment.php');
 
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
@@ -144,6 +145,24 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         }
         $aInfo['transitions_to_state'] = $aTransitionsToState;
         
+        $aPerms = KTPermission::getList();
+        $aKeyPerms = array();
+        foreach ($aPerms as $oPerm) { $aKeyPerms[$oPerm->getName()] = $oPerm; }
+        $aInfo['permissions'] = $aKeyPerms;
+        
+        // temporarily create a debug mapping.
+        $aPermissionsByState = array();
+        foreach ($aInfo['states'] as $oState) {
+            $aPerms = KTWorkflowStatePermissionAssignment::getByState($oState->getId());
+            $aPermsAssigned = array();
+            foreach ($aPerms as $oPermAlloc) {
+                $oPerm = KTPermission::get($oPermAlloc->getPermissionId());
+                $aPermsAssigned[$oPermAlloc->getId()] = $oPerm->getName();
+            }            
+            $aPermissionsByState[$oState->getId()] = $aPermsAssigned;
+        }
+        $aInfo['permissions_by_state'] = $aPermissionsByState;       
+        
         // finally, check if any documents are associated with this workflow,
         // and set the "delete" toggle.
         $sQuery = 'SELECT document_id FROM ' . KTUtil::getTableName('workflow_documents');
@@ -157,6 +176,37 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         return $aInfo;
     }
+    
+    function getPermissionAssignmentsForState($oState) {
+        $aAllocs = array();
+        foreach ($this->aWorkflowInfo['permissions_by_state'][$oState->getId()] as $iAllocId => $sPermName) {
+            $oAlloc = KTWorkflowStatePermissionAssignment::get($iAllocId);
+            $aAllocs[$sPermName] = $oAlloc->getAllowed();
+        }
+        $this->aWorkflowInfo['permission_allocations_for_state'] = array();
+        $this->aWorkflowInfo['permission_allocations_for_state'][$oState->getId()] = $aAllocs;
+        return $aAllocs;
+    }
+    
+    function getRoleHasPermissionInState($oRole, $sPermName, $oState) {
+        $perms = $this->aWorkflowInfo['permission_allocations_for_state'][$oState->getId()];
+        if (is_null($perms)) { return false; }
+        $aAllowed = $perms[$sPermName];
+        if (is_null($aAllowed['role'])) { return false; }
+        $aRoles = $aAllowed['role'];
+        if (array_search($oRole->getId(), $aRoles) === false) { return false; }
+        else { return true; }
+    }
+    
+    function getGroupHasPermissionInState($oGroup, $sPermName, $oState) {
+        $perms = $this->aWorkflowInfo['permission_allocations_for_state'][$oState->getId()];
+        if (is_null($perms)) { return false; }
+        $aAllowed = $perms[$sPermName];
+        if (is_null($aAllowed['group'])) { return false; }
+        $aGroups = $aAllowed['group'];
+        if (array_search($oGroup->getId(), $aGroups) === false) { return false; }
+        else { return true; }
+    }    
     
     
     function getActionStringForState($oState) {
@@ -309,6 +359,26 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         }
         return implode(', ', $aT);
     }
+    
+    function getPermissionStringForState($oState) {
+        $aStr = '';
+        $aInfo = $this->aWorkflowInfo;
+        $aPerms = (array) $aInfo['permissions_by_state'][$oState->getId()];
+        
+        if (empty($aPerms)) {
+            $aStr = _('No permissions are changed in this state.');
+            return $aStr;
+        }
+        
+        $aPermNames = array();
+        foreach ($aPerms as $sPerm) {
+            $aPermNames[] = $aInfo['permissions'][$sPerm]->getHumanName();
+        }
+        $aStr = implode(', ', $aPermNames);        
+        
+        return $aStr;
+    }
+    
     
     // {{{ WORKFLOW HANDLING
     // {{{ do_main
@@ -740,6 +810,9 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editState');
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
+        
+        $aInfo = $this->buildWorkflowInfo($oWorkflow);
+        
         $aTransitionsTo =& KTWorkflowTransition::getByTargetState($oState);
         $aTransitionIdsTo = array();
         foreach ($aTransitionsTo as $oTransition) {
@@ -758,11 +831,14 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         $aInformed = KTWorkflowUtil::getInformedForState($oState);
         
-        
         $editForm = array();
         $editForm[] = new KTStringWidget(_('Name'), _('A human-readable name for this state.  This is shown on the "Browse" page, as well as on the user\'s workflow page.'), 'fName', $oState->getName(), $this->oPage, true);
         
+        
+        $this->getPermissionAssignmentsForState($oState);
+        
         $oTemplate->setData(array(
+            'context' => $this,
             'oWorkflow' => $oWorkflow,
             'oState' => $oState,
             'oNotifyRole' => $oRole,
@@ -776,6 +852,8 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'aUsers' => User::getList(),
             'aInformed' => $aInformed,
             'editForm' => $editForm,
+            'permissions' => $aInfo['permissions'],
+            'state_permissions' => $aInfo['permissions_by_state'][$oState->getId()],
         ));
         return $oTemplate;
     }
@@ -807,6 +885,82 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }
         $this->commitTransaction();
         $this->successRedirectTo('manageStates', _('State deleted.'), 'fWorkflowId=' . $oWorkflow->getId());
+    }
+
+    function do_setStatePermissions() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
+        
+        $aInfo = $this->buildWorkflowInfo($oWorkflow);
+        $aExistingAlloc = $aInfo['permissions_by_state'][$oState->getId()];
+        
+        $aPermissions = (array) KTUtil::arrayGet($_REQUEST, 'fPermissions');
+        
+        $doWork = false;
+        $aEmptyAllowed = array();
+        
+        $this->startTransaction();
+        
+        foreach ($aPermissions as $sPermName) {
+            // lets not do too much work here.
+            $id = array_search($sPermName, $aExistingAlloc);
+            if ($id === false) {
+                $doWork = true;       // going to need to regen the perm array
+                $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aEmptyAllowed);
+                $aOpts = array(
+                    'StateId' => $oState->getId(),
+                    'PermissionId' => $aInfo['permissions'][$sPermName]->getId(),
+                    'DescriptorId' => $oDescriptor->getId(),
+                );
+                $res = KTWorkflowStatePermissionAssignment::createFromArray($aOpts);
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectTo('editState',_('Failed to create permission assignment: ') . $res->getMessage(),sprintf('fStateId=%d&fWorkflowId=%d',$oState->getId(),$oWorkflow->getId()));
+                }
+                
+            } else {
+                // now, _don't_ delete later
+                unset($aExistingAlloc[$id]);
+            }
+        }
+        
+        // now remove the _old_ (unset) assignments.
+        foreach ($aExistingAlloc as $iAllocId => $sPerm) {
+            $oAlloc = KTWorkflowStatePermissionAssignment::get($iAllocId);
+            $oAlloc->delete();
+        }
+        
+        // FIXME implement:
+        // $this->_regenStatePermissionLookups($oState);
+        
+        $this->successRedirectTo('editState', _('Permissions for workflow assigned'),sprintf('fStateId=%d&fWorkflowId=%d',$oState->getId(),$oWorkflow->getId())); 
+    }
+    
+    function do_assignStatePermissions() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
+        
+        $aInfo = $this->buildWorkflowInfo($oWorkflow);
+        $aAlloc = $aInfo['permissions_by_state'][$oState->getId()];
+        
+        $aPermissionAllowed = (array) KTUtil::arrayGet($_REQUEST, 'fPermissions');
+        $exitQS = sprintf('fStateId=%d&fWorkflowId=%d',$oState->getId(),$oWorkflow->getId());
+        
+        $this->startTransaction();
+        
+        // we now walk the alloc'd perms, and go.
+        foreach ($aAlloc as $iAllocId => $sPermName) {
+            $aAllowed = (array) $aPermissionAllowed[$sPermName]; // is already role, group, etc.
+            $oAlloc = KTWorkflowStatePermissionAssignment::get($iAllocId);
+            //var_dump($aAllowed);
+            $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);            
+            if (PEAR::isError($oDescriptor)) { $this->errorRedirectTo('editState', _('Failed to allocate as specified.'), $exitQS); } 
+            
+            $oAlloc->setDescriptorId($oDescriptor->getId());
+            $res = $oAlloc->update();
+            if (PEAR::isError($res)) { $this->errorRedirectTo('editState', _('Failed to allocate as specified.'), $exitQS); }             
+        }
+        
+        $this->successRedirectTo('editState', _('Permissions Allocated.'), $exitQS);
     }
 
     // {{{ do_saveTransitions

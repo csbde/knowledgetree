@@ -36,7 +36,9 @@ Workflow menu (on the left) to create new states.</p></div>
         <li>{i18n}Controlled Actions available: {/i18n}
         {$context->getActionStringForState($oState)}
         </li>
-      
+        
+        <li>{i18n}Permissions overridden:{/i18n} {$context->getPermissionStringForState($oState)}</li>
+            
         <li>{i18n}Transitions available: {/i18n}
         {$context->getTransitionFromStringForState($oState)}
         </li>
