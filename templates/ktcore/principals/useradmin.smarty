@@ -53,8 +53,7 @@ very slow if you have many users).{/i18n}</p>
         <td>{$oUser->getName()}</td>
         <td>{$oUser->getUsername()}</td>
         <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a onclick="javascript:return confirm('{i18n}Are you sure
-you wish to delete this user?{/i18n}');" href="{addQS}action=deleteuser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteuser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}{/addQS}">{i18n}Groups{/i18n}</a></td>  
      </tr>   
      {/foreach}
