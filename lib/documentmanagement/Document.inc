@@ -305,6 +305,22 @@ class Document {
     }
     // }}}
 
+    // {{{ getByState
+    function &getByState($oState) {
+        $iStateId = KTUtil::getId($oState);
+        $sTable = KTUtil::getTableName('workflow_documents');
+        $sQuery = sprintf('SELECT document_id FROM %s WHERE state_id = ?', $sTable);
+        $aParams = array($iStateId);
+        $aIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'document_id');
+        
+        $aList = array();
+        foreach ($aIds as $iId) {
+            $aList[] = Document::get($iId);
+        }
+        return $aList;
+    }
+    // }}}
+
     // STATIC
     function &createFromArray($aOptions) {
         if (KTUtil::arrayGet($aOptions, "size") === null) {
