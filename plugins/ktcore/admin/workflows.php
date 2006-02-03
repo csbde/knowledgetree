@@ -880,11 +880,51 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $aInfo = $this->buildWorkflowInfo($oWorkflow);
         if (!$aInfo['can_delete']) { $this->errorRedirectTo('manageStates', _('May not delete items from an active workflow'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        
         $this->startTransaction();
+
+        // clearing for integrity
+        // transitions starting from that state.
+        $sTable = KTUtil::getTableName('workflow_state_transitions');
+        $aQuery = array(
+            "DELETE FROM $sTable WHERE state_id = ?",
+            array($oState->getId()),
+        );
+        $res = DBUtil::runQuery($aQuery);        
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to clear references to item'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        
+        // transitions ending in that state
+        $aTransitionNames = array();
+        $aTransitionsToDelete = KTWorkflowTransition::getList('target_state_id = ' . $oState->getId());
+        foreach ($aTransitionsToDelete as $oTransition) {
+            $sTable = KTUtil::getTableName('workflow_state_transitions');
+            $aQuery = array(
+                "DELETE FROM $sTable WHERE transition_id = ?",
+                array($oTransition->getId()),
+            );
+            $res = DBUtil::runQuery($aQuery);        
+            if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to remove transition references for: ') . $oTransition->getName(), 'fWorkflowId=' . $oWorkflow->getId()); }
+            
+            $res = $oTransition->delete();
+            if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to remove transition: ') . $oTransition->getName(), 'fWorkflowId=' . $oWorkflow->getId()); }
+            
+            $aTransitionNames[] = $oTransition->getName();
+        }
+        
+        // finally, delete the state
         $res = $oState->delete();         // does this handle referential integrity?
-        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }        
+        
         $this->commitTransaction();
-        $this->successRedirectTo('manageStates', _('State deleted.'), 'fWorkflowId=' . $oWorkflow->getId());
+        if (!empty($aTransitionNames)) {
+            $sTransitionNames = implode (', ', $aTransitionNames);
+            $msg = sprintf(_('State deleted. Also deleted transitions ending in that state: %s'), $sTransitionNames);
+        } else {
+            $msg = _('State deleted.');
+        }
+        
+        $this->successRedirectTo('manageStates', $msg, 'fWorkflowId=' . $oWorkflow->getId());
+        
     }
 
     function do_setStatePermissions() {
@@ -986,6 +1026,15 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aInfo = $this->buildWorkflowInfo($oWorkflow);
         if (!$aInfo['can_delete']) { $this->errorRedirectTo('manageTransitions', _('May not delete items from an active workflow'), 'fWorkflowId=' . $oWorkflow->getId()); }
         $this->startTransaction();
+        
+        $sTable = KTUtil::getTableName('workflow_state_transitions');
+        $aQuery = array(
+            "DELETE FROM $sTable WHERE transition_id = ?",
+            array($oTransition->getId()),
+        );
+        $res = DBUtil::runQuery($aQuery);        
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageTransitions', _('Unable to remove transition references for: ') . $oTransition->getName(), 'fWorkflowId=' . $oWorkflow->getId()); }                            
+        
         $res = $oTransition->delete();         // does this handle referential integrity?
         if (PEAR::isError($res)) { $this->errorRedirectTo('manageTransitions', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }
         $this->commitTransaction();
@@ -1104,11 +1153,11 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $newTransition = $res;
         
         foreach ($aStateId as $iStateId) {
-            if ($iStateId == $res->getTargetStateId()) { continue; }
+            if ($iStateId == ($newTransition->getTargetStateId())) { continue; }
             $oState = $aInfo['states'][$iStateId];
             
             $aTransitions = KTWorkflowTransition::getBySourceState($oState);
-            $aTransitions[] = $res;
+            $aTransitions[] = $newTransition;
             $aTransitionIds = array();
             foreach ($aTransitions as $oTransition) {
                 $aTransitionIds[] = $oTransition->getId();
