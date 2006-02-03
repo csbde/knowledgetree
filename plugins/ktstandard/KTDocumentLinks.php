@@ -14,13 +14,13 @@ class KTDocumentLinkTitle extends TitleColumn {
     
     function buildDocumentLink($aDataRow) {
         $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        return KTUtil::addQueryStringSelf(sprintf('action=type_select&fDocumentId=%d&fTargetDocumentId=%d', $baseurl, $parentDocumentId, $aDataRow["document"]->getId()));
+        return KTUtil::addQueryStringSelf(sprintf('action=type_select&fDocumentId=%d&fTargetDocumentId=%d', $parentDocumentId, $aDataRow["document"]->getId()));
     }
 
     function buildFolderLink($aDataRow) {
         $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         
-        return KTUtil::addQueryStringSelf(sprintf('action=new&fDocumentId=%d&fFolderId=%d', $baseurl, $parentDocumentId, $aDataRow["folder"]->getId()));
+        return KTUtil::addQueryStringSelf(sprintf('action=new&fDocumentId=%d&fFolderId=%d', $parentDocumentId, $aDataRow["folder"]->getId()));
     }
 }
 
