@@ -69,7 +69,8 @@ class KTWorkflowStatePermissionAssignment extends KTEntity {
             KTEntityUtil::getList2('KTWorkflowStatePermissionAssignment', $sWhereClause);
     }
     
-    function &getByState($iStateId) {
+    function &getByState($oState) {
+        $iStateId = KTUtil::getId($oState);
         return KTEntityUtil::GetList2('KTWorkflowStatePermissionAssignment', 'workflow_state_id = ' . $iStateId);
     }
     
