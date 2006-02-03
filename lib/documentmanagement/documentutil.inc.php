@@ -579,6 +579,21 @@ class KTDocumentUtil {
         
     }
     // }}}
+    
+    function reindexDocument($oDocument) {
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            if ($aTrigger[1]) {
+                require_once($aTrigger[1]);
+            }
+            $oTrigger = new $sTrigger;
+            $oTrigger->setDocument($oDocument);
+            $oTrigger->transform();
+        }
+        KTDocumentUtil::updateSearchableText($oDocument);
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {

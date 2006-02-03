@@ -313,6 +313,11 @@ class Document {
         if (KTUtil::arrayGet($aOptions, "mimetypeid") === null) {
             $aOptions['mimetypeid'] = 0;
         }
+        /*
+        if (KTUtil::arrayGet($aOptions, "statusid") === null) {
+            $aOptions['statusid'] = LIVE;
+        }
+        */
         $oDocument = new Document();
         $aOptions = array_change_key_case($aOptions);
         

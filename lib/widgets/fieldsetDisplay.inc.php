@@ -315,9 +315,6 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         foreach ($fields as $oField) {
             $val = KTUtil::arrayGet($aDocumentData["field_values"], $oField->getId(), null);
             $fieldset_values[] = array("field" => $oField, "value" => $val, );
-            //var_dump($aDocumentData["field_values"]);
-            //var_dump($oField->getId());
-            print '<br />';
         }
         
         
