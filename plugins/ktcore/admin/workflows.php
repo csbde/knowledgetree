@@ -972,6 +972,8 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         // FIXME implement:
         // $this->_regenStatePermissionLookups($oState);
         
+        KTPermissionUtil::updatePermissionLookupForState($oState);
+        
         $this->successRedirectTo('editState', _('Permissions for workflow assigned'),sprintf('fStateId=%d&fWorkflowId=%d',$oState->getId(),$oWorkflow->getId())); 
     }
     
@@ -999,6 +1001,8 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $res = $oAlloc->update();
             if (PEAR::isError($res)) { $this->errorRedirectTo('editState', _('Failed to allocate as specified.'), $exitQS); }             
         }
+        
+        KTPermissionUtil::updatePermissionLookupForState($oState);
         
         $this->successRedirectTo('editState', _('Permissions Allocated.'), $exitQS);
     }
