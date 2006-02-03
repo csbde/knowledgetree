@@ -30,7 +30,13 @@
                    <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with current{/i18n}</a></td>                
                 {/if}
                 </td>     
-                <td><a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a></td>
+                <td>
+                {if (count($versions) == 1)}
+                &mdash;
+                {else}
+                <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
+                {/if}
+                </td>
             </tr>
             {/foreach}
         </tbody>
