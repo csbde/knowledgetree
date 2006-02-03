@@ -8,7 +8,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
-require_once(KT_LIB_DIR . '/workflow/workflowstatepermissionsassignment.php');
+require_once(KT_LIB_DIR . '/workflow/workflowstatepermissionsassignment.inc.php');
 
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
