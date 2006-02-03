@@ -117,9 +117,10 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $aBreadcrumbs = array();
         $folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        
+
         if ($folder_path_ids[0] == 0) {
-            $folder_path_ids = array();
+            array_shift($folder_path_ids);
+            array_shift($folder_path_names);
         }
         $folder_path_ids[] = $oFolder->getId();
 
@@ -222,9 +223,6 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $this->startTransaction();
         
         $oDocumentLink =& DocumentLink::createFromArray(array(
-/*            'parent_document_id' => $oParentDocument->getId(),
-            'child_document_id'  => $oTargetDocument->getId(),
-            'link_type_id'       => $oLinkType->getId(),*/
             'iParentDocumentId' => $oParentDocument->getId(),
             'iChildDocumentId'  => $oTargetDocument->getId(),
             'iLinkTypeId'       => $oLinkType->getId(),
