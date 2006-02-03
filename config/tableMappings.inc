@@ -149,4 +149,5 @@ $default->document_content_version_table = "document_content_version";
 $default->trigger_selection_table = "trigger_selection";
 $default->type_workflow_map_table = "type_workflow_map";
 $default->folder_workflow_map_table = "folder_workflow_map";
+$default->workflow_state_permission_assignments_table = "workflow_state_permission_assignments";
 ?>
