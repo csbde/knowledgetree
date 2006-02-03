@@ -12,6 +12,8 @@ require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 
+require_once(KT_LIB_DIR . "/workflow/workflowstatepermissionsassignment.inc.php");
+
 class KTPermissionUtil {
     // {{{ generateDescriptor
     /**
@@ -112,6 +114,15 @@ class KTPermissionUtil {
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
         $res = $oPermissionAssignment->update();
         return $res;
+    }
+    // }}}
+
+    // {{{ updatePermissionLookupForState
+    function updatePermissionLookupForState($oState) {
+        $aDocuments = Document::getByState($oState);
+        foreach ($aDocuments as $oDocument) {
+            KTPermissionUtil::updatePermissionLookup($oDocument);
+        }
     }
     // }}}
 
@@ -233,6 +244,26 @@ class KTPermissionUtil {
                         }
                     }
                 }
+            }
+        }
+
+        if (!is_a($oFolderOrDocument, 'Folder')) {
+            $oState = KTWorkflowUtil::getWorkflowStateForDocument($oFolderOrDocument);
+            $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oState);
+            foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
+                $iPermissionId = $oAssignment->getPermissionId();
+                $iPermissionDescriptorId = $oAssignment->getDescriptorId();
+
+                $oPD = KTPermissionDescriptor::get($iPermissionDescriptorId);
+                $aGroupIDs = $oPD->getGroups();
+                $aUserIDs = array();
+                $aRoleIDs = $oPD->getRoles();
+                $aAllowed = array(
+                    "group" => $aGroupIDs,
+                    "user" => $aUserIDs,
+                    "role" => $aRoleIDs,
+                );
+                $aMapPermAllowed[$iPermissionId] = $aAllowed;
             }
         }
 
