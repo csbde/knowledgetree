@@ -72,11 +72,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $aBreadcrumbs = array();
         $folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        $folder_path_ids[] = $oFolder->getId();
         if ($folder_path_ids[0] == 0) {
-            $folder_path_ids = array();
+            array_shift($folder_path_ids);
             array_shift($folder_path_names);
         }
-        $folder_path_ids[] = $oFolder->getId();
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
