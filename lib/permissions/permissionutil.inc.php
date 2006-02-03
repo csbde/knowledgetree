@@ -249,21 +249,23 @@ class KTPermissionUtil {
 
         if (!is_a($oFolderOrDocument, 'Folder')) {
             $oState = KTWorkflowUtil::getWorkflowStateForDocument($oFolderOrDocument);
-            $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oState);
-            foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
-                $iPermissionId = $oAssignment->getPermissionId();
-                $iPermissionDescriptorId = $oAssignment->getDescriptorId();
-
-                $oPD = KTPermissionDescriptor::get($iPermissionDescriptorId);
-                $aGroupIDs = $oPD->getGroups();
-                $aUserIDs = array();
-                $aRoleIDs = $oPD->getRoles();
-                $aAllowed = array(
-                    "group" => $aGroupIDs,
-                    "user" => $aUserIDs,
-                    "role" => $aRoleIDs,
-                );
-                $aMapPermAllowed[$iPermissionId] = $aAllowed;
+            if (!(PEAR::isError($oState) || is_null($oState) || ($oState == false))) {
+                $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oState);
+                foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
+                    $iPermissionId = $oAssignment->getPermissionId();
+                    $iPermissionDescriptorId = $oAssignment->getDescriptorId();
+                    
+                    $oPD = KTPermissionDescriptor::get($iPermissionDescriptorId);
+                    $aGroupIDs = $oPD->getGroups();
+                    $aUserIDs = array();
+                    $aRoleIDs = $oPD->getRoles();
+                    $aAllowed = array(
+                        "group" => $aGroupIDs,
+                        "user" => $aUserIDs,
+                        "role" => $aRoleIDs,
+                    );
+                    $aMapPermAllowed[$iPermissionId] = $aAllowed;
+                }
             }
         }
 
