@@ -69,6 +69,7 @@
 
 {if $write_permission}
 <a class="ktAction ktAdd ktInline" href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}{/addQS}">Add a new link</a>
-<a href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{addQS}">Add a new link</a>.
+<a
+href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">Add a new link</a>.
 {/if}
 
