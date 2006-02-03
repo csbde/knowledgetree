@@ -1,14 +1,13 @@
 <h2>{i18n}Workflow Allocation by Document Type{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}Workflow types are allocated by Document Type in this
-KnowledgeTree installation.  Documents will be assigned workflow based on their document
-type, and will have their allocated workflows changed if their types change.  Naturally,
-if the workflows change then the documents will lose any "progress" in the old 
+KnowledgeTree installation.  Documents will be assigned a workflow based on their document
+type and will have their allocated workflows changed if their document type changes.  Naturally,
+if the workflow changes then the documents will lose any "progress" in the old 
 workflow.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}Document Types with no pre-allocated workflow will
-either have no workflow set (for new documents) or keep their old workflow (for
-documents which have had their type changed.{/i18n}</p>
+either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed).{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
