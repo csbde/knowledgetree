@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.{/i18n}</p>
 
 <fieldset>
-<legend>Add New Unit</legend>
+<legend>{i18n}Add New Unit{/i18n}</legend>
 <p class="descriptiveText">{i18n}Units allow you to delegate the administration of a portion
 of the DMS repository to a particular part of your
 organisation.  Unit administrators have additional rights within that
@@ -16,16 +16,20 @@ membership of groups that belong to the unit.{/i18n}</p>
 <thead>
    <tr>
       <th>{i18n}Unit Name{/i18n}</th>
+{*
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Delete{/i18n}</th>
+*}
    </tr>
 </thead>
 <tbody>
      {foreach item=oUnit from=$unit_list}
      <tr>
         <td>{$oUnit->getName()}</td>
+{*
         <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+*}
      </tr>   
      {/foreach}
 </tbody>
