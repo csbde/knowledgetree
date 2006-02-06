@@ -155,6 +155,28 @@ class Permission {
              "AND UGL.user_id = ?", $iUserID));
         return $sql->next_record();        
     }
+
+    function isUnitAdministratorForFolder($oUser, $oFolder) {
+        $sUnitTable = KTUtil::getTableName('units');
+        $sFolderIds = $oFolder->getParentFolderIds();
+        $aFolderIds = split(",", $sFolderIds);
+        $aFolderIds[] = $oFolder->getId();
+
+        $sParams = DBUtil::paramArray($aFolderIds);
+        $aParams = $aFolderIds;
+        $sQuery = "SELECT id FROM $sUnitTable WHERE folder_id IN ($sParams)";
+        $aUnitIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+
+        foreach($aUnitIds as $iUnitId) {
+            $aGroups = Group::getUnitAdministratorGroupsByUnit($iUnitId);
+            foreach ($aGroups as $oGroup) {
+                if ($oGroup->hasMember($oUser)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 ?>
