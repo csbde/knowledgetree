@@ -47,7 +47,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
         $this->oPage->setTitle(_("Add a new unit"));
 
-        $edit_fields = array();
+        $add_fields = array();
         $add_fields[] =  new KTStringWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
 
         $collection = new DocumentCollection();
@@ -106,6 +106,33 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'folderid' => $oFolder->getId(),
         ));
         return $this->successRedirectToMain('Unit created');
+    }
+
+    function do_editUnit() {
+        $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
+
+        $fields = array();
+        $fields[] =  new KTStringWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
+
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/editunit');
+        $aTemplateData = array(
+            "context" => $this,
+            "edit_unit" => $oUnit,
+            "edit_fields" => $fields,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_saveUnit() {
+        $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
+        $sName =& $this->oValidator->validateString($_REQUEST['unit_name']);
+        $oUnit->setName($sName);
+        $res = $oUnit->update();
+        if (($res == false) || (PEAR::isError($res))) {
+            return $this->errorRedirectToMain(_('Failed to set unit details.'));
+        }
+        $this->successRedirectToMain(_("Unit details updated"));
+        
     }
 }
 
