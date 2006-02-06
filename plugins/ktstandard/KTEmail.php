@@ -207,8 +207,15 @@ class KTDocumentEmailAction extends KTDocumentAction {
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
         $fields = array();
-        $fields[] = new KTCheckboxWidget(_("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
-        $fields[] = new KTTextWidget(_("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage);
+        $oConfig = KTConfig::getSingleton();
+        $bAttachment = $oConfig->get('email/allowAttachment', false);
+        $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
+        if ($bAttachment) {
+            $fields[] = new KTCheckboxWidget(_("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
+        }
+        if ($bEmailAddresses) {
+            $fields[] = new KTTextWidget(_("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage);
+        }
         $fields[] = new KTTextWidget(_("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true);
         $aGroups = Group::getList();
         $aUsers = User::getEmailUsers();
@@ -224,6 +231,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
     function do_email() {
         $groupNewRight = trim($_REQUEST['groupNewRight'], chr(160));
         $userNewRight = trim($_REQUEST['userNewRight'], chr(160));
+
         $fEmailAddresses = trim($_REQUEST['fEmailAddresses']);
         $fAttachDocument = $_REQUEST['fAttachDocument'];
         $fComment = $this->oValidator->validateString($_REQUEST['fComment'],
@@ -242,6 +250,18 @@ class KTDocumentEmailAction extends KTDocumentAction {
         if (!empty($fEmailAddresses)) {
             $aEmailAddresses = explode(" ", $fEmailAddresses);
         }
+
+        $oConfig = KTConfig::getSingleton();
+        $bAttachment = $oConfig->get('email/allowAttachment', false);
+        $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
+        
+        if (empty($bAttachment)) {
+            $fAttachDocument = false;
+        }
+        if (empty($bEmailAddresses)) {
+            $aEmailAddresses = array();
+        }
+
 
         //if we're going to send a mail, first make there is someone to send it to
         if ((count($aGroupIDs) == 0) && (count($aUserIDs) == 0) && (count($aEmailAddresses) == 0)) {
