@@ -261,7 +261,6 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         }
         if (KTUtil::arrayGet($submit, 'chosen')) {
             $id = KTUtil::arrayGet($_REQUEST, 'id');
-            var_dump($id);
             if (!empty($id)) {
                 return $this->_do_editGroupFromSource();
             } else {
@@ -317,7 +316,7 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
             'fields' => $fields,
             'source' => $oSource,
             'search_results' => $aSearchResults,
-            'dn' => $dn,
+            'dn' => $aAttributes['dn'],
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -338,12 +337,16 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
             "isunitadmin" => $is_unitadmin,
             "issysadmin" => $is_sysadmin,
             "authenticationdetails" => $dn,
+            "authenticationsourceid" => $oSource->getId(),
         ));
 
         if (PEAR::isError($oGroup) || ($oGroup == false)) {
             $this->errorRedirectToMain(_("failed to create group."));
             exit(0);
         }
+
+        $oAuthenticator = $this->getAuthenticator($oSource);
+        $oAuthenticator->synchroniseGroup($oGroup);
 
         $this->successRedirectToMain(_('Created new group') . ': ' . $oGroup->getName());
         exit(0);
