@@ -1,12 +1,6 @@
 KnowledgeTree Internationalisation (i18n)
 -----------------------------------------
 
-KnowledgeTree 3 beta 1 contains many non-internationalised texts, for
-example within templates.  We would appreciate input on how best to
-approach internationalisation within templates.  Please use the
-KnowledgeTree forums at http://forum.ktdms.com/ to discuss
-internationalisation.
-	
 Testing
 -------
 - install gettext command line utilities
