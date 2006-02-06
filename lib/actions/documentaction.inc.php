@@ -120,18 +120,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
-        if (!is_null($this->_sShowPermission)) {
-            $oPermission =& KTPermission::getByName($this->_sShowPermission);
-            if (!PEAR::isError($oPermission)) {
-                $res = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
-                if (!$res) {
-                    return false;
-                }
-            }
-        }
-		
-		// catch non-enabled state.
-		if ($this->_disable()) { return false; }
+		if (!$this->_show()) { return false; }
 		
         $aOptions = array(
             "final" => false,
