@@ -911,9 +911,16 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $aTransitionNames[] = $oTransition->getName();
         }
         
+        // if its the default state, change.
+        if ($oState->getId() == $oWorkflow->getStartStateId()) {
+            $oWorkflow->setStartStateId(null);
+            $res = $oWorkflow->update();
+            if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to change workflow starting state: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId()); }
+        }
+        
         // finally, delete the state
         $res = $oState->delete();         // does this handle referential integrity?
-        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item'), 'fWorkflowId=' . $oWorkflow->getId()); }        
+        if (PEAR::isError($res)) { $this->errorRedirectTo('manageStates', _('Unable to delete item: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId()); }        
         
         $this->commitTransaction();
         if (!empty($aTransitionNames)) {
