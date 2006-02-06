@@ -58,7 +58,7 @@ class KTMassMoveColumn extends TitleColumn {
     }
     
     function buildFolderLink($aDataRow) {
-        return KTUtil::addQueryStringSelf(sprintf('MoveCode=%s&fFolderId=%d&action=startMove', $this->sMoveCode, $aDataRow["folder"]->getId()));
+        return KTUtil::addQueryStringSelf(sprintf('fMoveCode=%s&fFolderId=%d&action=startMove', $this->sMoveCode, $aDataRow["folder"]->getId()));
     }
 }
 
@@ -294,8 +294,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
             $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
             
+            
+            
             $sMoveCode = KTUtil::randomString();
             $aMoveData = array('folders' => $aFolderSelection, 'documents' => $aDocumentSelection);
+            
+            var_dump($aMoveData);
             
             $moves = KTUtil::arrayGet($_SESSION, 'moves', array());
             $moves = (array) $moves; // ?
@@ -403,6 +407,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $aMoveStack = $_SESSION['moves'][$move_code];
         
+        
         $oTargetFolder = Folder::get($target_folder);
         
         if (PEAR::isError($oTargetFolder)) {
@@ -425,31 +430,42 @@ class BrowseDispatcher extends KTStandardDispatcher {
             if (PEAR::isError($oDoc)) { 
                 $this->errorRedirectToMain(_('Invalid document.'));
             }
-            $oDocumentFolder = Folder::get($oDoc->getFolderID());
-            $oDoc->setFolderID($target_folder);
-            if (!$oDoc->update(true)) {
-                $this->errorRedirectTo("main", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+                
+            $oOriginalFolder = Folder::get($oDoc->getFolderId());
+            $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
+            $iDocumentPermissionObjectId = $oDoc->getPermissionObjectId();
+    
+            if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
+                $oDoc->setPermissionObjectId($oTargetFolder->getPermissionObjectId());
             }
+    
+            //put the document in the new folder
+            $oDoc->setFolderID($oTargetFolder->getId());
+            $res = $oDoc->update(true);
+            if (!$res) {
+                $this->errorRedirectTo("move", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
+            }    
             
-            if (!$oStorage->moveDocument($oDoc, $oDocumentFolder, $oTargetFolder)) {
-                $oDoc->setFolderID($oDocumentFolder->getId());
+            //move the document on the file system
+            $oStorage =& KTStorageManagerUtil::getSingleton();
+            if (!$oStorage->moveDocument($oDoc, $oOriginalFolder, $oTargetFolder)) {
+                $oDoc->setFolderID($oOriginalFolder->getId());
                 $oDoc->update(true);
-                errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+                $this->errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
             }
     
             $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
-                $oDocumentFolder->getFullPath(),
-                $oDocumentFolder->getName(),
+                $oOriginalFolder->getFullPath(),
+                $oOriginalFolder->getName(),
                 $oTargetFolder->getFullPath(),
                 $oTargetFolder->getName(),
-                $sReason);
+                $reason);
     
             // create the document transaction record
             
             $oDocumentTransaction = & new DocumentTransaction($oDoc, $sMoveMessage, 'ktcore.transactions.move');
-            $oDocumentTransaction->create();            
-        
-        
+            $oDocumentTransaction->create();
+
             $this->commitTransaction();
             
             $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
