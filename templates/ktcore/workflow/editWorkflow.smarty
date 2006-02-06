@@ -22,23 +22,24 @@
 workflow.  To modify items, either select them from the overview below,
 or use the "Workflow" menu on the left to create new ones.{/i18n}</p>
 
-{if (empty($aStates))}
-<div class="ktInfo"><p>This workflow does not define any states.  Please use the 
-Workflow menu (on the left) to create new states.</p></div>
+{if (empty($workflow_info.states))}
+<div class="ktInfo"><p>This workflow does not define any states.</p></div>
 {else}
 <ul id="workflow-states-list">
-{foreach item=oState from=$aStates}
+{foreach item=oState from=$workflow_info.states}
     <li><span class="workflow_element">State:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
+        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
-        <li>{i18n}Notified groups &amp; roles:{/i18n}
+        <li>{i18n}Notified groups & roles:{/i18n}
         {$context->getNotificationStringForState($oState)}
         </li>
+        
         <li>{i18n}Controlled Actions available: {/i18n}
         {$context->getActionStringForState($oState)}
         </li>
         
         <li>{i18n}Permissions overridden:{/i18n} {$context->getPermissionStringForState($oState)}</li>
-            
+      
         <li>{i18n}Transitions available: {/i18n}
         {$context->getTransitionFromStringForState($oState)}
         </li>
