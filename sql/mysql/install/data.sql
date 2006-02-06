@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 02, 2006 at 04:58 PM
+-- Generation Time: Feb 06, 2006 at 12:26 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -238,9 +238,9 @@ INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 
 -- Dumping data for table `groups_lookup`
 -- 
 
-INSERT INTO `groups_lookup` VALUES (1, 'System Administrators', 1, 0, NULL);
-INSERT INTO `groups_lookup` VALUES (2, 'Unit Administrators', 0, 1, 1);
-INSERT INTO `groups_lookup` VALUES (3, 'Anonymous', 0, 0, NULL);
+INSERT INTO `groups_lookup` VALUES (1, 'System Administrators', 1, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `groups_lookup` VALUES (2, 'Unit Administrators', 0, 1, 1, NULL, NULL, NULL);
+INSERT INTO `groups_lookup` VALUES (3, 'Anonymous', 0, 0, NULL, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `help`
@@ -732,17 +732,19 @@ INSERT INTO `upgrades` VALUES (48, 'sql*2.99.7*10*2.99.7/10-documents_normalisat
 INSERT INTO `upgrades` VALUES (49, 'sql*2.99.7*20*2.99.7/20-fields.sql', 'Database upgrade to version 2.99.7: Fields', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
 INSERT INTO `upgrades` VALUES (50, 'upgrade*2.99.7*99*upgrade2.99.7', 'Upgrade from version 2.99.5 to 2.99.7', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
 INSERT INTO `upgrades` VALUES (51, 'sql*2.99.7*0*2.99.7/discussion.sql', '', '0000-00-00 00:00:00', 1, NULL);
-INSERT INTO `upgrades` VALUES (52, 'func*2.99.7*-1*applyDiscussionUpgrade', 'func upgrade to version 2.99.7 phase -1', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (53, 'sql*2.99.8*0*2.99.8/category-correction.sql', 'Database upgrade to version 2.99.8: Category-correction', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (54, 'sql*2.99.8*0*2.99.8/mime_types.sql', 'Database upgrade to version 2.99.8: Mime types', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (55, 'sql*2.99.8*0*2.99.8/type_workflow_map.sql', 'Database upgrade to version 2.99.8: Type workflow map', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (56, 'sql*2.99.8*0*2.99.8/units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (57, 'sql*2.99.8*0*2.99.8/disabled_documenttypes.sql', 'Database upgrade to version 2.99.8: Disabled documenttypes', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (58, 'sql*2.99.8*0*2.99.8/trigger_selection.sql', 'Database upgrade to version 2.99.8: Trigger selection', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (59, 'func*2.99.8*1*fixUnits', 'func upgrade to version 2.99.8 phase 1', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (60, 'sql*2.99.8*10*2.99.8/10-units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-02 16:56:02', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Database upgrade to version 2.99.8: Status', '2006-02-02 16:56:03', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (62, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-02 16:56:03', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (52, 'func*2.99.7*-1*applyDiscussionUpgrade', 'func upgrade to version 2.99.7 phase -1', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (53, 'sql*2.99.8*0*2.99.8/mime_types.sql', 'Database upgrade to version 2.99.8: Mime types', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (54, 'sql*2.99.8*0*2.99.8/category-correction.sql', 'Database upgrade to version 2.99.8: Category-correction', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (55, 'sql*2.99.8*0*2.99.8/trigger_selection.sql', 'Database upgrade to version 2.99.8: Trigger selection', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (56, 'sql*2.99.8*0*2.99.8/units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (57, 'sql*2.99.8*0*2.99.8/type_workflow_map.sql', 'Database upgrade to version 2.99.8: Type workflow map', '2006-02-06 12:23:41', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (58, 'sql*2.99.8*0*2.99.8/disabled_documenttypes.sql', 'Database upgrade to version 2.99.8: Disabled documenttypes', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (59, 'func*2.99.8*1*fixUnits', 'func upgrade to version 2.99.8 phase 1', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (60, 'sql*2.99.8*10*2.99.8/10-units.sql', 'Database upgrade to version 2.99.8: Units', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Database upgrade to version 2.99.8: Status', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 
 -- 
 -- Dumping data for table `users`
@@ -772,6 +774,11 @@ INSERT INTO `users_groups_link` VALUES (3, 3, 3);
 
 -- 
 -- Dumping data for table `workflow_state_actions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_state_permission_assignments`
 -- 
 
 
@@ -1165,7 +1172,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (62);
+INSERT INTO `zseq_upgrades` VALUES (64);
 
 -- 
 -- Dumping data for table `zseq_users`
@@ -1178,6 +1185,11 @@ INSERT INTO `zseq_users` VALUES (3);
 -- 
 
 INSERT INTO `zseq_users_groups_link` VALUES (3);
+
+-- 
+-- Dumping data for table `zseq_workflow_state_permission_assignments`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_workflow_states`
