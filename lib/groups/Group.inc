@@ -39,7 +39,9 @@ class Group extends KTEntity {
 	var $bIsSysAdmin;
     /** which unit the group belongs to */
 	var $iUnitId;
-	
+    var $sAuthenticationDetails = null;
+    var $sAuthenticationDetails2 = null;
+    var $iAuthenticationSourceId = null;
 	
 	function Group($sNewName = null, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
 		$this->iId = -1;
@@ -54,6 +56,9 @@ class Group extends KTEntity {
         'bIsUnitAdmin' => 'is_unit_admin',
         'bIsSysAdmin' => 'is_sys_admin',
         'iUnitId' => 'unit_id',
+        'sAuthenticationDetails' => 'authentication_details_s1',
+        'sAuthenticationDetails2' => 'authentication_details_s2',
+        'iAuthenticationSourceId' => 'authentication_source_id',
     );
 
     function _table () {
@@ -75,6 +80,12 @@ class Group extends KTEntity {
     function setName($sNewValue) { $this->sName = $sNewValue; }
     function getUnitId() { return $this->iUnitId; }
     function setUnitId($iNewValue) { $this->iUnitId = $iNewValue; }
+    function getAuthenticationDetails() { return $this->sAuthenticationDetails; }
+    function setAuthenticationDetails($mValue) { $this->sAuthenticationDetails = $mValue; }
+    function getAuthenticationDetails2() { return $this->sAuthenticationDetails2; }
+    function setAuthenticationDetails2($mValue) { $this->sAuthenticationDetails2 = $mValue; }
+    function getAuthenticationSourceId() { return $this->iAuthenticationSourceId; }
+    function setAuthenticationSourceId($mValue) { $this->iAuthenticationSourceId = $mValue; }
     // }}}
 
 		
@@ -200,6 +211,21 @@ class Group extends KTEntity {
     }
     // }}}
 
+    // {{{ setMembers
+    function setMembers($aUsers) {
+        $sTable = KTUtil::getTableName('users_groups');
+        $aParams = array(
+            "group_id" => $this->getId(),
+        );
+        $res = DBUtil::whereDelete($sTable, $aParams);
+        foreach ($aUsers as $iUserId) {
+            $iUserId = KTUtil::getId($iUserId);
+            $this->addMember($iUserId);
+        }
+        return;
+    }
+    // }}}
+
     // {{{ addMember
     function addMember($oUser) {
         global $default;
@@ -207,7 +233,7 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "user_id" => $oUser->getId(),
+            "user_id" => KTUtil::getId($oUser),
             "group_id" => $this->getId(),
         );
         $res = DBUtil::autoInsert($default->users_groups_table, $aParams);
@@ -225,7 +251,7 @@ class Group extends KTEntity {
             return true;
         }
         $aParams = array(
-            "user_id" => $oUser->getId(),
+            "user_id" => KTUtil::getId($oUser),
             "group_id" => $this->getId(),
         );
         $res = DBUtil::whereDelete($default->users_groups_table, $aParams);
