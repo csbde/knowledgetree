@@ -46,7 +46,17 @@ class KTFolderAction extends KTStandardDispatcher {
         if (PEAR::isError($oPermission)) {
             return true;
         }
-        return (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder) || (($this->_bAdminAlwaysAvailable) && (Permission::userIsSystemAdministrator($this->oUser->getId()))));
+
+        if ($this->_bAdminAlwaysAvailable) {
+            if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
+                return true;
+            }
+            if (Permission::isUnitAdministratorForFolder($this->oUser, $this->oFolder)) {
+                return true;
+            }
+        }
+        
+        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
     }
 
     function _disable() {
@@ -114,17 +124,8 @@ class KTFolderAction extends KTStandardDispatcher {
     function check() {
         $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
         
-        if ($this->_disable()) { return false; }
+        if (!$this->_show()) { return false; }
         
-        if (!is_null($this->_sShowPermission)) {
-            $oPermission =& KTPermission::getByName($this->_sShowPermission);
-            if (!PEAR::isError($oPermission)) {
-                $res = (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder) || (($this->_bAdminAlwaysAvailable) && (Permission::userIsSystemAdministrator($this->oUser->getId()))));
-                if (!$res) {
-                    return false;
-                }
-            }
-        }
         $aOptions = array(
             "final" => false,
             "documentaction" => "viewDocument",
