@@ -1,0 +1,50 @@
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<p class="descriptiveText">{i18n}Since there may be many groups in the
+system, please provider a few letters from the groups's name to
+begin.{/i18n}</p>
+
+<input type="hidden" name="action" value="addGroupFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<fieldset><legend>Search for group</legend>
+{foreach from=$fields item=oWidget}
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+   <input type="submit" value="{i18n}search for groups{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+{if !$search_results}
+      <div class="ktInfo">
+         <!-- never show a very large set, if you can help it. -->
+         <p>{i18n}No search specified, or no results for your search.  Please choose some criteria from the list above to find groups.{/i18n}</p>
+      </div>
+{else}
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="addGroupFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<table class="listing">
+<thead>
+   <tr>
+      <th>{i18n}Group Name{/i18n}</th>
+      <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
+   </tr>
+</thead>
+<tbody>
+   <!-- do we want to batch here? -->
+     {foreach item=potential_group from=$search_results}
+     <tr>
+        <td><input type="radio" name="id"
+value="{$potential_group.dn}" />{$potential_group.cn}</td>
+        <td>{$potential_group.dn}</td>
+     </tr>
+     {/foreach}
+<!--
+
+-->
+</tbody>
+</table>
+<input type="submit" name="submit[chosen]" value="{i18n}Add{/i18n}" />
+</form>
+{/if}
