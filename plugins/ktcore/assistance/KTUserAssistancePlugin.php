@@ -13,8 +13,8 @@ class KTUserAssistance extends KTPlugin {
     var $sNamespace = 'ktcore.userassistance';
 
     function setup() {
-        $this->registerDashlet('KTUserTutorialDashlet', 'ktcore.dashlet.usertutorial', __FILE__);
-        $this->registerDashlet('KTAdminTutorialDashlet', 'ktcore.dashlet.admintutorial', __FILE__);
+        //$this->registerDashlet('KTUserTutorialDashlet', 'ktcore.dashlet.usertutorial', __FILE__);
+        //$this->registerDashlet('KTAdminTutorialDashlet', 'ktcore.dashlet.admintutorial', __FILE__);
         $this->registerPage('kt3b1-what-is-a-beta', 'KTUserAssistB1WhatIs', __FILE__);
         $this->registerPage('kt-bug-reporting-guide', 'KTUserAssistBugReportingGUide', __FILE__);
         $this->registerPage('admin-quickguide', 'KTUserAssistAdminQuickguide', __FILE__);
