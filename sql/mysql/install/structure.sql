@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 02, 2006 at 04:58 PM
+-- Generation Time: Feb 06, 2006 at 12:24 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -652,9 +652,14 @@ CREATE TABLE `groups_lookup` (
   `is_sys_admin` tinyint(1) NOT NULL default '0',
   `is_unit_admin` tinyint(1) NOT NULL default '0',
   `unit_id` int(11) default NULL,
+  `authentication_details_s2` varchar(255) default NULL,
+  `authentication_details_s1` varchar(255) default NULL,
+  `authentication_source_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
-  KEY `unit_id` (`unit_id`)
+  KEY `unit_id` (`unit_id`),
+  KEY `authentication_details_s1` (`authentication_details_s1`),
+  KEY `authentication_source_id` (`authentication_source_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1178,10 +1183,10 @@ CREATE TABLE `users` (
   `mobile` varchar(255) default NULL,
   `email_notification` tinyint(1) NOT NULL default '0',
   `sms_notification` tinyint(1) NOT NULL default '0',
-  `ldap_dn` varchar(255) default NULL,
+  `authentication_details_s1` varchar(255) default NULL,
   `max_sessions` int(11) default NULL,
   `language_id` int(11) default NULL,
-  `authentication_details` varchar(255) default NULL,
+  `authentication_details_s2` varchar(255) default NULL,
   `authentication_source_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `username` (`username`),
@@ -1242,6 +1247,23 @@ CREATE TABLE `workflow_state_actions` (
   `action_name` char(255) NOT NULL default '0',
   KEY `state_id` (`state_id`),
   KEY `action_name` (`action_name`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_state_permission_assignments`
+-- 
+
+CREATE TABLE `workflow_state_permission_assignments` (
+  `id` int(11) NOT NULL,
+  `workflow_state_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `permission_descriptor_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `permission_id` (`permission_id`),
+  KEY `permission_descriptor_id` (`permission_descriptor_id`),
+  KEY `workflow_state_id` (`workflow_state_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1996,7 +2018,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=63 ;
+) TYPE=MyISAM AUTO_INCREMENT=65 ;
 
 -- --------------------------------------------------------
 
@@ -2019,6 +2041,17 @@ CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflow_state_permission_assignments`
+-- 
+
+CREATE TABLE `zseq_workflow_state_permission_assignments` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2190,6 +2223,13 @@ ALTER TABLE `saved_searches`
 -- 
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`authentication_source_id`) REFERENCES `authentication_sources` (`id`) ON DELETE SET NULL;
+
+-- 
+-- Constraints for table `workflow_state_permission_assignments`
+-- 
+ALTER TABLE `workflow_state_permission_assignments`
+  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_7` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`),
+  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_8` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`);
 
 -- 
 -- Constraints for table `workflow_states`
