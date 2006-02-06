@@ -10,7 +10,12 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
+require_once(KT_LIB_DIR . "/authentication/authenticationsource.inc.php");
+require_once(KT_LIB_DIR . "/authentication/authenticationproviderregistry.inc.php");
+require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php");
+
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
+    // {{{ do_main
     function do_main() {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('select a group'));
@@ -48,9 +53,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		);
 		return $oTemplate->render($aTemplateData);
     }
+    // }}}
 
-
-
+    // {{{ do_editGroup
     function do_editGroup() {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('edit group'));
@@ -89,7 +94,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		);
 		return $oTemplate->render($aTemplateData);
     }
+    // }}}
 
+    // {{{ do_saveGroup
 	function do_saveGroup() {
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 		$oGroup = Group::get($group_id);
@@ -122,19 +129,46 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->commitTransaction();
 		$this->successRedirectToMain(_('Group details updated.'));
 	}
+    // }}}
+    function _do_manageUsers_source() {
+        $oGroup =& $this->oValidator->validateGroup($_REQUEST['group_id']);
 
+        $aGroupUsers = $oGroup->getMembers();
 
+        $oTemplate = $this->oValidator->validateTemplate("ktcore/principals/groups_sourceusers");
+        $aTemplateData = array(
+            "context" => $this,
+			'group_users' => $aGroupUsers,
+			'group' => $oGroup,
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+
+    function do_synchroniseGroup() {
+        require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
+        $oGroup =& $this->oValidator->validateGroup($_REQUEST['group_id']);
+        $res = KTAuthenticationUtil::synchroniseGroupToSource($oGroup);
+        $this->successRedirectTo('manageusers', 'Group synchronised', sprintf('group_id=%d', $oGroup->getId()));
+        exit(0);
+    }
+
+    // {{{ do_manageusers
     function do_manageusers() {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
             $this->errorRedirectToMain(_('No such group.'));
         }
-        
+
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
         $this->aBreadcrumbs[] = array('name' => $oGroup->getName());
         $this->oPage->setBreadcrumbDetails(_('manage members'));
         $this->oPage->setTitle(sprintf(_('Manage members of group %s'), $oGroup->getName()));
-        
+
+        $iSourceId = $oGroup->getAuthenticationSourceId();
+        if (!empty($iSourceId)) {
+            return $this->_do_manageUsers_source();
+        }
         
         // FIXME replace OptionTransfer.js.  me no-likey.
         
@@ -173,8 +207,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         );
         return $oTemplate->render($aTemplateData);        
     }    
+    // }}}
 
-
+    // {{{ do_updateUserMembers
     function do_updateUserMembers() {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
@@ -221,9 +256,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->commitTransaction();
         $this->successRedirectToMain($msg);
     }
+    // }}}
 	
-
 	// FIXME copy-paste ...
+    // {{{ do_managesubgroups
     function do_managesubgroups() {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
@@ -274,7 +310,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         );
         return $oTemplate->render($aTemplateData);        
     }    
+    // }}}
 
+    // {{{ _getUnitName
 	function _getUnitName($oGroup) {
         $iUnitId = $oGroup->getUnitId();
         if (empty($iUnitId)) {
@@ -284,8 +322,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 		return $u->getName();
 	}  
+    // }}}
 
 	// FIXME copy-paste ...
+    // {{{ do_updateGroupMembers
     function do_updateGroupMembers() {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
@@ -335,8 +375,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
         $this->successRedirectToMain($msg);
     }	
+    // }}}
 	
-	
+    // {{{ do_addGroup
     function do_addGroup() {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('Add a new group'));
@@ -348,16 +389,30 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$add_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
 		$add_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
 		$add_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+
+        $aAuthenticationSources = array();
+        $aAllAuthenticationSources =& KTAuthenticationSource::getList();
+        foreach ($aAllAuthenticationSources as $oSource) {
+            $sProvider = $oSource->getAuthenticationProvider();
+            $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
+            if ($oProvider->bGroupSource) {
+                $aAuthenticationSources[] = $oSource;
+            }
+        }
 			
 		$oTemplating = new KTTemplating;        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/addgroup");
 		$aTemplateData = array(
 			"context" => $this,
 			"add_fields" => $add_fields,
+            "authentication_sources" => $aAuthenticationSources,
 		);
 		return $oTemplate->render($aTemplateData);
     }
+    // }}}
 
+    // {{{ do_createGroup
 	function do_createGroup() {
 
 		$group_name = KTUtil::arrayGet($_REQUEST, 'group_name');
@@ -380,7 +435,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->commitTransaction();
 		$this->successRedirectToMain(sprintf(_('Group "%s" created.'), $group_name));
 	}
+    // }}}
 
+    // {{{ do_deleteGroup
     function do_deleteGroup() {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
@@ -391,7 +448,29 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oValidator->notError($res, $aErrorOptions);
         $this->successRedirectToMain(sprintf(_('Group "%s" deleted.'), $sGroupName));
     }
-	
+    // }}}
+
+    // {{{ authentication provider stuff
+
+    // {{{ do_addGroupFromSource
+    function do_addGroupFromSource() {
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $sProvider = $oSource->getAuthenticationProvider();
+        $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+        $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
+
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addGroup'), 'name' => _('add a new group'));
+        $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
+        $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
+        $oProvider->oPage->setTitle(_("Modify Group Details"));
+
+        $oProvider->dispatch();
+        exit(0);
+    }
+    // }}}
+
+    // }}}
 }
 
 ?>
