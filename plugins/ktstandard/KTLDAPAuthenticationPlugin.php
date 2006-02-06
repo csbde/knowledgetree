@@ -10,6 +10,9 @@ class KTLDAPAuthenticationPlugin extends KTPlugin {
         $this->registerAuthenticationProvider('LDAP Authentication',
             'KTLDAPAuthenticationProvider', 'ktstandard.authentication.ldapprovider',
             'ldap/ldapauthenticationprovider.inc.php');
+        $this->registerAuthenticationProvider('ActiveDirectory Authentication',
+            'KTActiveDirectoryAuthenticationProvider', 'ktstandard.authentication.adprovider',
+            'ldap/activedirectoryauthenticationprovider.inc.php');
     }
 }
 
