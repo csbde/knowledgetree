@@ -6,6 +6,8 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     var $sName;
     var $sNamespace;
     var $bHasSource = false;
+    var $bUserSource = true;
+    var $bGroupSource = false;
 
     function KTAuthenticationProvider() {
         return parent::KTStandardDispatcher();
