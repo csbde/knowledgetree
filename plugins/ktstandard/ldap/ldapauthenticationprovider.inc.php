@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once(KT_LIB_DIR . '/authentication/class.AuthLdap.php');
+require_once("Net/LDAP.php");
 
 class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
     var $sName = "LDAP authentication provider";
@@ -55,8 +56,7 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
 
         $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
 
-        $aDetails = unserialize($oUser->getAuthenticationDetails());
-        $dn = KTUtil::arrayGet($aDetails, 'dn', "");
+        $dn = $oUser->getAuthenticationDetails();
 
         $fields = array();
         $fields[] = new KTStringWidget(_('Distinguished name'), _('The location of this user in the LDAP tree'), 'dn', $dn, $this->oPage, true);
@@ -73,8 +73,11 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& $this->oValidator->validateUser($user_id);
 
-        $aDetails['dn'] = KTUtil::arrayGet($_REQUEST, 'dn', "");
-        $oUser->setAuthenticationDetails(serialize($aDetails));
+        $dn = KTUtil::arrayGet($_REQUEST, 'dn', "");
+        if (empty($dn)) {
+            $this->errorRedirectToMain("Error validating LDAP details");
+        }
+        $oUser->setAuthenticationDetails($dn);
         $oUser->update();
         $this->successRedirectTo("editUser", _("Details updated"),
             sprintf('user_id=%d', $oUser->getId()));
@@ -127,15 +130,10 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
 
         $aConfig = unserialize($oSource->getConfig());
-        if ($aConfig['servertype'] == "ActiveDirectory") {
-            $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "userPrincipalName", "telephonenumber");
-        } else {
-            $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
-        }
+        $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $aResults = $oAuthenticator->getUser($id, $aAttributes);
-        $aResults = $aResults[$id];
         
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_('LDAP DN'), _('The location of the user within the LDAP directory.'), 'dn', $aResults[$aAttributes[0]], $this->oPage);
@@ -180,7 +178,7 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
             "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
             "MaxSessions" => $max_sessions,
             "authenticationsourceid" => $oSource->getId(),
-            "authenticationdetails" => serialize(array('dn' => $dn)),
+            "authenticationdetails" => $dn,
             "password" => "",
         ));
 
@@ -216,27 +214,16 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         $fields[] = new KTStringWidget(_("User's name"), _("The user's name, or part thereof, to find the user that you wish to add"), 'name', '', $this->oPage, true);
 
         $oAuthenticator = $this->getAuthenticator($oSource);
-        $sIdentifierField = $oAuthenticator->oLdap->getUserIdentifier();
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (!empty($name)) {
-            $oAuthenticator = $this->getAuthenticator($oSource);
-            $aSearchResults = $oAuthenticator->searchUsers($name, array('cn', 'dn', $sIdentifierField));
+            $aSearchResults = $oAuthenticator->searchUsers($name);
         }
         
-        /*
-        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all');
-        if (!empty($show_all)) {
-            $oAuthenticator = $this->getAuthenticator($oSource);
-            $aSearchResults = $oAuthenticator->searchUsers('', array('cn', 'dn'));
-        }
-        */
-
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
             'source' => $oSource,
             'search_results' => $aSearchResults,
-            'identifier_field' => $sIdentifierField,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -257,48 +244,44 @@ class LDAPAuthenticator extends Authenticator {
     var $oLdap;
 
     /**
-     * Creates a new instance of the LDAPAuthenticator
+     * Creates a new instance of the ActiveDirectoryAuthenticator
      *
-     * @param string the LDAP server to connect to for validation (optional)
-     * @param string the dn branch to perform the authentication against (optional)
-     * @param string the ldap server type (optional)
+     *
      */
     function LDAPAuthenticator($oSource) {
         $this->oSource =& $oSource;
         $aConfig = unserialize($oSource->getConfig());
         $this->sLdapServer = $aConfig['servername'];
         $this->sBaseDN = $aConfig['basedn'];
-        $this->sServerType = $aConfig['servertype'];
         $this->sLdapDomain = $aConfig['domain'];
         $this->sSearchUser = $aConfig['searchuser'];
         $this->sSearchPassword = $aConfig['searchpassword'];
 
-        // initialise and setup ldap class
-        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain, $this->sSearchUser, $this->sSearchPassword);
-    }
+        require_once('Net/LDAP.php');
+        $config = array(
+            'dn' => $this->sSearchUser,
+            'password' => $this->sSearchPassword,
+            'host' => $this->sLdapServer,
+            'base' => $this->sBaseDN,
+        );
 
-    /**
-     * Checks the user's password against the LDAP directory
+        $this->oLdap =& Net_LDAP::connect($config);
+    }
+     /**      * Authenticate the user against the LDAP directory
      *
-     * @param string the name of the user to check
+     * @param string the user to authenticate
      * @param string the password to check
      * @return boolean true if the password is correct, else false
      */
     function checkPassword($oUser, $sPassword) {
-        $aDetails = unserialize($oUser->getAuthenticationDetails());
-        if ($this->oLdap->connect()) {
-            $sBindDn = $aDetails['dn'];
-            if ($this->sServerType == "ActiveDirectory") {
-                $sBindDn = sprintf("%s@%s", $oUser->getUserName(), $this->sLdapDomain);
-            }
-            if ($this->oLdap->authBind($sBindDn, $sPassword)) {
-                return true;
-            } else {
-                return PEAR::raiseError("LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText);
-            }
-        } else {
-            return PEAR::raiseError('LDAP server unreachable');
-        }
+        $dn = $oUser->getAuthenticationDetails();
+        $config = array(
+            'host' => $this->sLdapServer,
+            'base' => $this->sBaseDN,
+        );
+        $oLdap =& Net_LDAP::connect($config);
+        $res = $oLdap->reBind($dn, $sPassword);
+        return $res;
     }
 
 
@@ -309,24 +292,20 @@ class LDAPAuthenticator extends Authenticator {
      * @param array the attributes to return from the search
      * @return array containing the users found
      */
-    function getUser($sUserName, $aAttributes) {
-        global $default;
-        // connect and search
-        if ( $this->oLdap->connect() ) {
-            // search for the users
-            // append and prepend wildcards
-            $aUserResults = $this->oLdap->getUsers($sUserName, $aAttributes);
-            if ($aUserResults) {
-                // return the array
-                return $aUserResults;
-            } else {
-                // the search failed, return empty array
-                return array();
-            }
-        } else {
-            $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
-            return false;
+    function getUser($dn) {
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
         }
+        $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
+
+        $oEntry = $this->oLdap->getEntry($dn, $aAttributes);
+        $aAttr = $oEntry->attributes();
+        $aAttr['dn'] = $oEntry->dn();
+
+        foreach ($aAttr as $k => $v) {
+            $aRet[strtolower($k)] = $v;
+        }
+        return $aRet;
     }
 
     /**
@@ -336,24 +315,67 @@ class LDAPAuthenticator extends Authenticator {
      * @param array the attributes to return from the search
      * @return array containing the users found
      */
-    function searchUsers($sUserNameSearch, $aAttributes) {
-        global $default;
-        // connect and search
-        if ( $this->oLdap->connect() ) {
-            // search for the users
-            // append and prepend wildcards
-            $aUserResults = $this->oLdap->getUsers("*" . $sUserNameSearch . "*", $aAttributes);
-            if ($aUserResults) {
-                // return the array
-                return $aUserResults;
-            } else {
-                // the search failed, return empty array
-                return array();
-            }
-        } else {
-            $default->log->error("LDAPAuthentication::searchUsers LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText);
-            return false;
+    function searchUsers($sSearch) {
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
         }
+
+        $aParams = array(
+            'scope' => 'sub',
+            'attributes' => array('cn', 'dn'),
+        );
+
+        $rootDn = $this->sBaseDN;
+        if (is_array($rootDn)) {
+            $rootDn = join(",", $rootDn);
+        }
+        $sFilter = sprintf('(&(objectClass=posixAccount)(|(uid=*%s*)(samaccountname=*%s*)(cn=*%s*)))', $sSearch, $sSearch, $sSearch);
+        $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
+        if (PEAR::isError($oResult)) {
+            return $oResult;
+        }
+        $aRet = array();
+        foreach($oResult->entries() as $oEntry) {
+            $aAttr = $oEntry->attributes();
+            $aAttr['dn'] = $oEntry->dn();
+            $aRet[] = $aAttr;
+        }
+        return $aRet;
+    }
+
+    function searchGroups($sSearch) {
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
+        }
+
+        $aParams = array(
+            'scope' => 'sub',
+            'attributes' => array('cn', 'dn', 'displayName'),
+        );
+        $rootDn = $oAuthenticator->sBaseDN;
+        if (is_array($rootDn)) {
+            $rootDn = join(",", $rootDn);
+        }
+        $sFilter = sprintf('(&(objectClass=group)(cn=*%s*))', $sSearch);
+        $oResults = $this->oLdap->search($rootDn, $sFilter, $aParams);
+        $aRet = array();
+        foreach($oResults->entries() as $oEntry) {
+            $aAttr = $oEntry->attributes();
+            $aAttr['dn'] = $oEntry->dn();
+            $aRet[] = $aAttr;
+        }
+        return $aRet;
+    }
+
+    function getGroup($dn) {
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
+        }
+
+        $oEntry = $this->oLdap->getEntry($dn, array('cn'));
+        $aAttr = $oEntry->attributes();
+        $aAttr['dn'] = $oEntry->dn();
+        return $aAttr;
     }
 }
 
