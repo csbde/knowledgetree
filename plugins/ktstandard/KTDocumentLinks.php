@@ -20,7 +20,7 @@ class KTDocumentLinkTitle extends TitleColumn {
             $outStr .= $aDataRow["document"]->getName();
             $outStr .= '</a>';
         } else { 
-            $outStr = $aDataRow["document"]->getName();
+            $outStr = $aDataRow["document"]->getName() . ' <span class="descriptiveText">(' . _('you cannot link to the source document') . ')';
         }
         return $outStr;
     }
