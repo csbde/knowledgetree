@@ -28,7 +28,6 @@ begin.{/i18n}</p>
 <thead>
    <tr>
       <th>{i18n}Name{/i18n}</th>
-      <th>{i18n}LDAP User Name{/i18n}</th>
       <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
    </tr>
 </thead>
@@ -37,8 +36,7 @@ begin.{/i18n}</p>
      {foreach item=potential_user from=$search_results}
      <tr>
         <td><input type="radio" name="id"
-value="{$potential_user.$identifier_field}" />{$potential_user.cn}</td>
-        <td>{$potential_user.$identifier_field}</td>
+value="{$potential_user.dn}" />{$potential_user.cn}</td>
         <td>{$potential_user.dn}</td>
      </tr>
      {/foreach}
