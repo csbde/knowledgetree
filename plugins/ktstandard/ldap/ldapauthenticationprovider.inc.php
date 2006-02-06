@@ -90,9 +90,9 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         $aConfig = unserialize($oSource->getConfig());
         $fields = array();
         $fields[] = new KTStringWidget(_('Server name'), 'The host name or IP address of the LDAP server', 'servername', $aConfig['servername'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_('Base DN'), 'FIXME', 'basedn', $aConfig['basedn'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_('Search User'), 'FIXME', 'searchuser', $aConfig['searchuser'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_('Search Password'), 'FIXME', 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Base DN'), 'The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)', 'basedn', $aConfig['basedn'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Search User'), 'The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)', 'searchuser', $aConfig['searchuser'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Search Password'), 'The password for the user account in the LDAP directory that performs searches', 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
