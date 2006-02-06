@@ -12,15 +12,26 @@ class KTAuthenticationUtil {
     }
 
     function &getAuthenticatorForUser($oUser) {
-        $iAuthenticationSourceId = $oUser->getAuthenticationSourceId();
-        if (empty($iAuthenticationSourceId)) {
-            $oProvider = new KTBuiltinAuthenticationProvider;
-        } else {
-            $oSource = KTAuthenticationSource::get($iAuthenticationSourceId);
+        $iSourceId = $oUser->getAuthenticationSourceId();
+        return KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
+    }
+
+    function &getAuthenticatorForSource($oSource) {
+        if ($oSource) {
+            $oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
             $sProvider = $oSource->getAuthenticationProvider();
             $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
-            $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
+            $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
+        } else {
+            $oProvider = new KTBuiltinAuthenticationProvider;
         }
         return $oProvider->getAuthenticator($oSource);
+    }
+
+    function synchroniseGroupToSource($oGroup) {
+        $oGroup =& KTUtil::getObject('Group', $oGroup);
+        $iSourceId = $oGroup->getAuthenticationSourceId();
+        $oAuthenticator = KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
+        return $oAuthenticator->synchroniseGroup($oGroup);
     }
 }
