@@ -1,9 +1,9 @@
 <h2>{i18n}Welcome to the KnowledgeTree 3 Release Candidate{/i18n}</h2>
-<p class="descriptiveText">{i18n}If this is your first KnowledgeTree installation,
-or if you've just upgraded from KnowledgeTree 2.x, we've put together some information
-to help you familiarise yourself with the new system.{/i18n}</p>
+<p class="descriptiveText">{i18n}We believe that KnowledgeTree 3.0 Release Candidate 
+is now stable enough for production evaluation. If you are intending on installing 
+KnowledgeTree over the next few months we strongly urge you to evaluate the 
+3.0 Release Candidate and consider it for production use. 
+There will be an upgrade path for 3.0 Release Candidate to 3.0 Final.{/i18n}</p>
 
-<a
-href="{$rootUrl}/plugin.php/ktcore.userassistance/kt3b1-what-is-a-beta">{i18n}What is a Beta?{/i18n}</a> |
 <a
 href="{$rootUrl}/plugin.php/ktcore.userassistance/kt-bug-reporting-guide">{i18n}Help! Something went wrong!{/i18n}</a>
