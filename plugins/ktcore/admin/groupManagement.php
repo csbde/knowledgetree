@@ -389,6 +389,15 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$add_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
 		$add_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
 		$add_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+		// grab all units.
+		
+		$oUnits = Unit::getList();
+		$vocab = array();
+		$vocab[0] = _('No Unit');
+		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
+		$aOptions = array('vocab' => $vocab);
+		
+		$add_fields[] =  new KTLookupWidget(_('Unit'),_('Which Unit is this group part of?'), 'unit_id', 0, $this->oPage, false, null, null, $aOptions);
 
         $aAuthenticationSources = array();
         $aAllAuthenticationSources =& KTAuthenticationSource::getList();
@@ -421,6 +430,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		if ($is_unitadmin !== false) { $is_unitadmin = true; }
 		$is_sysadmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
 		if ($is_sysadmin !== false) { $is_sysadmin = true; }
+		$unit_id = KTUtil::arrayGet($_REQUEST, 'unit_id', null);
 		
 		$this->startTransaction();
 		
@@ -428,6 +438,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		     'sName' => $group_name,
 			 'bIsUnitAdmin' => $is_unitadmin,
 			 'bIsSysAdmin' => $is_sysadmin,
+			 'UnitId' => $unit_id,
 		));
 		//$res = $oGroup->create();
 		//if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain('Failed to create group "' . $group_name . '"'); }
