@@ -11,6 +11,19 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 
 class KTDocumentLinkTitle extends TitleColumn {
+
+    function renderDocumentLink($aDataRow) {
+        $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        
+        if ($aDataRow["document"]->getId() != $parentDocumentId) {
+            $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
+            $outStr .= $aDataRow["document"]->getName();
+            $outStr .= '</a>';
+        } else { 
+            $outStr = $aDataRow["document"]->getName();
+        }
+        return $outStr;
+    }
     
     function buildDocumentLink($aDataRow) {
         $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
