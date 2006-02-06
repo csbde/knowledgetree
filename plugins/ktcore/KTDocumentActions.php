@@ -696,9 +696,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 $aVocab[$oTransition->getId()] = $oTransition->showDescription();
             }
             $fieldOptions = array("vocab" => $aVocab);
-            $transition_fields[] = new KTLookupWidget(_('Transition to perform'), 'FIXME', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+            $transition_fields[] = new KTLookupWidget(_('Transition to perform'), 'The transition listed will cause the document to change from its current state to the listed destination state.', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
             $transition_fields[] = new KTTextWidget(
-                _('Reason for transition'), _('Describe the changes made to the document.'), 
+                _('Reason for transition'), _('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'), 
                 'fComments', "", 
                 $this->oPage, true, null, null,
                 array('cols' => 80, 'rows' => 4));
