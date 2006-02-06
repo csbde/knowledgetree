@@ -13,7 +13,6 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         $this->aConfigMap = array(
             'servername' => _('LDAP Server'),
             'basedn' => _('Base DN'),
-            'domain' => _('LDAP Server Domain'),
             'searchuser' => _('LDAP Search User'),
             'searchpassword' => _('LDAP Search Password'),
         );
@@ -100,7 +99,6 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         $fields = array();
         $fields[] = new KTStringWidget(_('Server name'), 'The host name or IP address of the LDAP server', 'servername', $aConfig['servername'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Base DN'), 'FIXME', 'basedn', $aConfig['basedn'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_('Domain'), 'FIXME', 'domain', $aConfig['domain'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Search User'), 'FIXME', 'searchuser', $aConfig['searchuser'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Search Password'), 'FIXME', 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
         $aTemplateData = array(
@@ -378,7 +376,6 @@ class ActiveDirectoryAuthenticator extends Authenticator {
         $aConfig = unserialize($oSource->getConfig());
         $this->sLdapServer = $aConfig['servername'];
         $this->sBaseDN = $aConfig['basedn'];
-        $this->sLdapDomain = $aConfig['domain'];
         $this->sSearchUser = $aConfig['searchuser'];
         $this->sSearchPassword = $aConfig['searchpassword'];
 
