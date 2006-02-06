@@ -4,14 +4,14 @@
 {if $link_types}
 <p class="descriptiveText">{i18n}Select a target document to link to.{/i18n}
 </p>
-
+<!--
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-
+-->
 <p class="descriptiveText">{i18n}Use the folder collection and path below to
 browse to the document you wish to link to.{/i18n}</p>
-
+<!--
 <input type="hidden" name="fFolderId" value="{$folder->getId()}" />
-
+-->
 {foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
 
 <a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
@@ -24,14 +24,13 @@ browse to the document you wish to link to.{/i18n}</p>
 
 
 {$collection->render()}
-</div>
-
+<!--
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Link{/i18n}" />
 </div>
 </fieldset>
 </form>
-
+-->
 {else}
 <div class="ktInfo"><p>
 {i18n}No link types are defined. Please ask the administrator to add them.{/i18n}</p></div>
