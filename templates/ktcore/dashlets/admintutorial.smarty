@@ -3,8 +3,6 @@
 or if you've just upgraded from KnowledgeTree 2.x, we've put together some information
 which might help you get to grips with the new system.{/i18n}</p>
 
-<div class="ktError"><p class="descriptiveText"><strong>FIXME</strong> This currently doesn't work.</p></div>
-
 <a
 href="{$rootUrl}/plugin.php/ktcore.userassistance/admin-quickguide">{i18n}Read the admin introduction.{/i18n}</a> |
 <a

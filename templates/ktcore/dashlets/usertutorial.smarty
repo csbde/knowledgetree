@@ -2,8 +2,6 @@
 <p class="descriptiveText">{i18n}New to Document Management, or to 
 KnowledgeTree&trade; 3?  We've written some quick documentation to help you along{/i18n}</p>
 
-<div class="ktError"><p class="descriptiveText"><strong>FIXME</strong> This currently doesn't work.</p></div>
-
 <a href="#">Take the crash course.</a> |
 <a href="#">Learn about KnowledgeTree 3.</a> |
 <a href="{"action=disableDashlet&fNamespace=ktcore.dashlet.usertutorial"|addQSSelf}">{i18n}Don't show me this again.{/i18n}</a>
