@@ -322,6 +322,17 @@ class Group extends KTEntity {
     }
     // }}}
 
+    // getUnitAdministratorGroupsByUnit
+    function getUnitAdministratorGroupsByUnit($oUnit) {
+        $iUnitId = KTUtil::getId($oUnit);
+        return KTEntityUtil::getByDict('Group', array(
+            'is_unit_admin' => true,
+            'unit_id' => $iUnitId,
+        ), array(
+            'multi' => 'true',
+        ));
+    }
+
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('Group', $aOptions); }
 }
 
