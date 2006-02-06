@@ -1,7 +1,7 @@
 KnowledgeTree Installation Notes
 --------------------------------
 
-*  KnowledgeTree 3 beta 1 requires the following software to run:
+*  KnowledgeTree requires the following software to run:
    -  Apache 1.3 or above
    -  MySQL 4.0 or above with INNODB support
    -  PHP 4.3.0 or above, but not yet PHP 5.0
