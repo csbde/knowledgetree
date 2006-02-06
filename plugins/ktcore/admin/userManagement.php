@@ -321,7 +321,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         
         $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
         
-        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
+        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3', false);
         
         // FIXME more validation would be useful.
         // validated and ready..
@@ -368,7 +368,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
         $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
-        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
+        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3', false);
         // FIXME check for numeric max_sessions... db-error else?
         $password = KTUtil::arrayGet($_REQUEST, 'password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        

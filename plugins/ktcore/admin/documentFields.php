@@ -199,7 +199,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     // {{{ do_editField
     function do_editField() {
-        $this->oPage->setBreadcrumbDetails(_("edit field"));
+        $this->oPage->setBreadcrumbDetails(_("Edit field"));
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
@@ -231,8 +231,21 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
 
+		$aErrorOptions = array(
+			'redirect_to' => array('editField','fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId()),
+		);	
+		
+		$sName = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'), 
+			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a name")));
+		if ($sName != $oField->getName()) { 
+		    $sName = $this->oValidator->validateEntityName("DocumentField", "field", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
+		}		
+			
+		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
+			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+
         $oField->setName($_REQUEST['name']);
-        $oField->setDescription($_REQUEST['description']);
+        $oField->setDescription($sDescription);
         $res = $oField->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('editField', _('Could not save field changes'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
