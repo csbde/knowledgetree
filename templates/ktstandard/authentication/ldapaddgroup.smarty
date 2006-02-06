@@ -1,0 +1,17 @@
+
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="addGroupFromSource" />
+   <input type="hidden" name="source_id" value="{$source->getId()}" />
+   <fieldset>
+      <legend>{i18n}Create a new group{/i18n}</legend>
+      {foreach item=oWidget from=$fields}
+        {$oWidget->render()}
+      {/foreach}
+      <input type="hidden" name="dn" value="{$dn}" />
+      <div class="form_actions">
+         <input type="submit" name="submit[create]" value="{i18n}create group{/i18n}" />
+         <a href="{$smarty.server.PHP_SELF}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+      </div>
+   </fieldset>
+   </form>
+
