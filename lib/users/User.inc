@@ -46,8 +46,6 @@ class User extends KTEntity {
     var $bEmailNotification = false;
     /** notify user via sms (mobile phone) status */
     var $bSmsNotification = false;
-    /** user's ldap identification */
-    var $sLdapDn = "";
     /** maxiumum concurrent sessions user may have */
     var $iMaxSessions = 5;
     /** primary key of language preferred by user */
@@ -58,6 +56,7 @@ class User extends KTEntity {
     var $iAuthenticationSourceId = null;
     /** authentication details so that the source knows who this user is */
     var $sAuthenticationDetails = null;
+    var $sAuthenticationDetails2 = null;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -70,11 +69,11 @@ class User extends KTEntity {
         'sMobile' => 'mobile',
         'bEmailNotification' => 'email_notification',
         'bSmsNotification' => 'sms_notification',
-        'sLdapDn' => 'ldap_dn',
         'iMaxSessions' => 'max_sessions',
         'iLanguageID' => 'language_id',
         'iAuthenticationSourceId' => 'authentication_source_id',
-        'sAuthenticationDetails' => 'authentication_details',
+        'sAuthenticationDetails' => 'authentication_details_s1',
+        'sAuthenticationDetails2' => 'authentication_details_s2',
     );
 
     var $_bUsePearError = true;
@@ -100,8 +99,6 @@ class User extends KTEntity {
     function setEmailNotification($bNewValue) { $this->bEmailNotification = KTUtil::anyToBool($bNewValue); }
     function getSmsNotification() { return $this->bSmsNotification; }
     function setSmsNotification($bNewValue) { $this->bSmsNotification = $bNewValue; }
-    function getLdapDn() { return $this->sLdapDn; }
-    function setLdapDn($sNewValue) { $this->sLdapDn = $sNewValue; }
     function getMaxSessions() { return $this->iMaxSessions; }
     function setMaxSessions($iNewValue) { $this->iMaxSessions = $iNewValue; }
     function getLanguageID() { return $this->iLanguageIDID; }
@@ -110,6 +107,8 @@ class User extends KTEntity {
     function setAuthenticationSourceId($iNewValue) { $this->iAuthenticationSourceId = $iNewValue; }
     function getAuthenticationDetails() { return $this->sAuthenticationDetails; }
     function setAuthenticationDetails($sNewValue) { $this->sAuthenticationDetails = $sNewValue; }
+    function getAuthenticationDetails2() { return $this->sAuthenticationDetails2; }
+    function setAuthenticationDetails2($sNewValue) { $this->sAuthenticationDetails2 = $sNewValue; }
 
 	/**
 	* Delete the current object from the database
@@ -325,5 +324,14 @@ class User extends KTEntity {
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
 	function &getByUserName($sUserName, $aOptions = null) {
         return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
+    }
+
+    function &getByAuthenticationSourceAndDetails($oSource, $sDetails, $aOptions = null) {
+        $iSourceId = KTUtil::getId($oSource);
+
+        return KTEntityUtil::getByDict('User', array(
+            'authentication_source_id' => $iSourceId,
+            'authentication_details_s1' => $sDetails,
+        ), $aOptions);
     }
 }
