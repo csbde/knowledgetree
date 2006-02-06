@@ -2,6 +2,30 @@
 
 <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
+{if $authentication_sources}
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="addGroupFromSource" />
+   <fieldset><legend>{i18n}Add a group from an authentication source{/i18n}</legend>
+
+<p class="descriptiveText">{i18n}Instead of manually creating the group within
+the document management system, the group can be found within an
+authentication source (such as an LDAP directory) that has already been
+configured.  This ensures that the group is correctly set up with limited
+intervention from the administrator, and that the group's membership
+will be maintained as it is in the authentication source.{/i18n}</p>
+
+   {entity_select name="source_id" entities=$authentication_sources}
+   <div class="form_actions ">
+     <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+   </div>
+   </fieldset>
+   </form>
+</p>
+
+<p class="descriptiveText">{i18n}Alternatively, you can manually create a user
+within KnowledgeTree below.{/i18n}</p>
+{/if}
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createGroup" />
    
