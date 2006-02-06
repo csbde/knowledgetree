@@ -117,7 +117,7 @@ File Indexing
 The file indexing facilities of KnowledgeTree make use of external
 programs to perform their jobs.
 
-At the moment, the "catdoc" (http://www.45.free.net/~vitus/ice/catdoc/)
+At the moment, the "antiword" (http://www.informatik.uni-frankfurt.de/~markus/antiword/)
 and "xpdf" packages contains all the external programs you need.
 Installing this package is beyond the scope of this document - please
 consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
