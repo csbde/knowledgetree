@@ -12,6 +12,9 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
 class KTPage {
 
+    var $hide_section = false;
+	var $secondary_title = null;
+
     /** resources are "filename"->1 to allow subcomponents to require items. */
     var $js_resources = Array();
     var $css_resources = Array();
@@ -229,6 +232,9 @@ class KTPage {
 	function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . "called <strong>setSubmitMethod (no-act)</strong>"); }
 	function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . "called <strong>setHasRequiredFields (no-act)</strong>"); }
 	function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . "called <strong>setAdditionalJavascript (no-act)</strong>"); }
+    
+	function hideSection() { $this->hide_section = true; }
+	function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
     
     /* final render call. */
     function render() {

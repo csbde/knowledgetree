@@ -25,7 +25,13 @@
  */
  
 require_once("../../../config/dmsDefaults.php");
-echo "<center><b>" . _("You do not have permission to access this page.") . "<br>";
-echo "<a href=\"javascript:history.go(-1)\">" . _("Back") . "</a> OR " . generateControllerLink("logout", "", _("logout"));
-echo "</b></center>";
+require_once(KT_LIB_DIR . "/dispatcher.inc.php");
+
+class BlockDispatcher extends KTStandardDispatcher {
+    function check() { return false; }
+}
+
+$oD =& new BlockDispatcher();
+$oD->dispatch();
+
 ?>

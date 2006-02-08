@@ -62,6 +62,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         );        
         
 		$this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+		
+		if (!is_null($this->oDocument)) { 
+			$this->oPage->setSecondaryTitle($this->oDocument->getName());
+		}
+		
     }
 
     function errorPage($errorMessage) {
@@ -81,7 +86,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         }
 		
 		$this->oDocument = $oDocument;
-		
+		$this->addPortlets("Edit");
 		$this->addBreadcrumbs();
 		$this->oPage->setBreadcrumbDetails(_('Change Document Type'));
 		

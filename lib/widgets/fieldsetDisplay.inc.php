@@ -111,16 +111,19 @@ class KTFieldsetDisplay {
     function _mimeHelper($iMimeTypeId) {
         // FIXME lazy cache this.
         // FIXME extend mime_types to have something useful to say.
-        $sQuery = 'SELECT mimetypes FROM mime_types WHERE id = ?';
-        $res = DBUtil::getOneResultKey(array($sQuery, array($iMimeTypeId)), 'mimetypes');
+        $sQuery = 'SELECT * FROM mime_types WHERE id = ?';
+        $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
         
         if (PEAR::isError($res)) {
             return _('unknown type');
         }
-        if (empty($res)) {
-            return _('unknown type');
-        }
-        return $res;
+		
+        if (!empty($res['friendly_name'])) {
+            return _($res['friendly_name']);
+        } else {
+		    return sprintf('%s File', $res['filetypes']);
+		}
+
     }
     
     
@@ -217,8 +220,8 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         $creation_date = $this->_dateHelper($document->getCreatedDateTime());
 
         // last mod
-        $last_modified_date = $this->_dateHelper($document->getLastModifiedDate());
-        $comparison_last_modified_date = $this->_dateHelper($comparison_document->getLastModifiedDate());
+        $last_modified_date = $this->_dateHelper($document->getVersionCreated());
+        $comparison_last_modified_date = $this->_dateHelper($comparison_document->getVersionCreated());
         
         // document type // FIXME move this to view.php
         $document_type = $aDocumentData["document_type"]->getName();
@@ -226,10 +229,12 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
+           $modified_user = "<span class='ktError'>" . _("Unable to find the document's modifier") . "</span>";
         } else {
            $modified_user = $modified_user->getName();
         }
+		
+
 
         $comparison_modified_user =& User::get($comparison_document->getModifiedUserId());
         if (PEAR::isError($comparison_modified_user)) {
@@ -260,8 +265,8 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "last_modified_by" => $modified_user,
             "last_modified_date" => $last_modified_date,
             
-            "comparison_last_modified_by" => "<span class='ktInlineError'><strong>fixme</strong> extract the last participant</span>",
-            "comparison_last_modified_date" => $last_modified_date,
+            "comparison_last_modified_by" => $comparison_modified_user,
+            "comparison_last_modified_date" => $comparison_last_modified_date,
             
             "document_type" => $document_type,
             "comparison_document_type" => $comparison_document_type,

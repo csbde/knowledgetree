@@ -7,14 +7,18 @@
     <dl class="metadata versioned">
         <dt>{i18n}Document Filename{/i18n}</dt>
         <dd>
-            <div class="current">{$filename} ({$context->_sizeHelper($document->getSize())})</div>
-            <div class="previous">{$comparison_filename} ({$context->_sizeHelper($comparison_document->getSize())})</div>
+            {capture assign="oldval"}{$comparison_filename} ({$context->_sizeHelper($comparison_document->getSize())}){/capture}
+            {capture assign="newval"}{$filename} ({$context->_sizeHelper($document->getSize())}){/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous">{$oldval}</div>
         </dd>
     
         <dt>{i18n}File is a{/i18n} </dt>
         <dd>
-            <div class="current">{$context->_mimeHelper($document->getMimeTypeID())}</div>
-            <div class="previous">{$context->_mimeHelper($comparison_document->getMimeTypeID())}</div>
+            {capture assign="oldval"}{$context->_mimeHelper($comparison_document->getMimeTypeID())}{/capture}
+            {capture assign="newval"}{$context->_mimeHelper($document->getMimeTypeID())}{/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous">{$oldval}</div>
         </dd>
 
         <dt>{i18n}Created by{/i18n}</dt>
@@ -24,33 +28,35 @@
 
         <dt>{i18n}Last update by{/i18n}</dt>
         <dd>
-            <div class="current">{$last_modified_by} ({$last_modified_date})</div>
-            <div class="previous">{$last_modified_by} ({$comparison_last_modified_date})</div>
+            {capture assign="oldval"}{$comparison_last_modified_by} ({$comparison_last_modified_date}){/capture}
+            {capture assign="newval"}{$last_modified_by} ({$last_modified_date}){/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous">{$oldval}</div>        
         </dd>
 
 
         <dt>{i18n}Document Type{/i18n}</dt>
         <dd>
-            <div class="current">{$document_type}</div>
-            <div class="previous">{$comparison_document_type}</div>
+            {capture assign="oldval"}{$comparison_document_type}{/capture}
+            {capture assign="newval"}{$document_type}{/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous">{$oldval}</div>             
         </dd>
 
         <dt>{i18n}Workflow status{/i18n}</dt>
         <dd>
-            <div class="current">
-{if $workflow_state}
-{$workflow_state->getName()}
-{else}
-{i18n}No workflow{/i18n}
-{/if}
-</div>
-            <div class="previous">
-{if $comparison_workflow_state}
+            {capture assign="oldval"}{if $comparison_workflow_state}
 {$comparison_workflow_state->getName()}
 {else}
 {i18n}No workflow{/i18n}
-{/if}
-</div>
+{/if}{/capture}
+            {capture assign="newval"}{if $workflow_state}
+{$workflow_state->getName()}
+{else}
+{i18n}No workflow{/i18n}
+{/if}{/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous">{$oldval}</div>
         </dd>
             
     </dl>

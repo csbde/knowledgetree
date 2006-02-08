@@ -135,6 +135,8 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$oPortlet = new KTActionPortlet(_("Document Actions"));
 		$oPortlet->setActions($actions, $this->sName);
 		$this->oPage->addPortlet($oPortlet);              
+		
+		$this->oPage->setSecondaryTitle($this->oDocument->getName());
             
         return true;
     }

@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{$page->title} | {$page->systemName}</title>
+    <title>{$page->title}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title}{/if} | {$page->systemName}</title>
     
     <!-- CSS Files. -->
     
@@ -83,6 +83,7 @@
     </ul>
 </div>
 
+{if (!$page->hide_section)}
 <div id="breadcrumbs">
 <span class="additional">{i18n}You are here{/i18n}: </span>
 {if ($page->breadcrumbSection !== false)}
@@ -111,7 +112,7 @@
 <span class="additional">({$page->breadcrumbDetails})</span> 
 {/if}
 </div>
-
+{/if}
 <div id="kt-wrapper">
 <div id="portletbar">
 
@@ -128,11 +129,11 @@
 
 </div>
 <div id="content">
-
+{if (!$page->hide_section)}
 <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
 {if ($page->getHelpURL() != null)} <a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
 </h1>
-
+{/if}
 <!-- any status / error messages get added here. -->
 {if (!empty($page->errStack))}
 <div class="ktError">

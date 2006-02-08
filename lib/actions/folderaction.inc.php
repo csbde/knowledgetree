@@ -139,6 +139,8 @@ class KTFolderAction extends KTStandardDispatcher {
         $portlet->setActions($aActions,null);
         $this->oPage->addPortlet($portlet);            
             
+        $this->oPage->setSecondaryTitle($this->oFolder->getName());          
+        
         return true;
     }
 
