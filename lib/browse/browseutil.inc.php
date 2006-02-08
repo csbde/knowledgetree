@@ -35,7 +35,7 @@ class KTBrowseUtil {
         $sFolderPath = dirname($sPath);
         
         $aFolderInfo = KTBrowseUtil::_folderOrDocument($sFolderPath);
-
+        
         if ($aFolderInfo === false) {
             return $aFolderInfo;
         }
@@ -61,7 +61,12 @@ class KTBrowseUtil {
             return array($id, null, null);
         }
 
-        $sQuery = "SELECT id FROM documents WHERE folder_id = ? AND filename = ?";
+        $sQuery = sprintf("SELECT d.id FROM %s AS d" .
+        " LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)" .
+        " WHERE d.folder_id = ? AND dc.filename = ?", 
+        KTUtil::getTableName(documents),
+        KTUtil::getTableName('document_metadata_version'),
+        KTUtil::getTableName('document_content_version'));
         $aParams = array($iFolderID, $sFileName);
         $iDocumentID = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
     
@@ -90,7 +95,7 @@ class KTBrowseUtil {
         $sFolderPath = dirname($sPath);
 
         $aFolderNames = split('/', $sFolderPath);
-
+        
         $iFolderID = 0;
 
         $aRemaining = $aFolderNames;
@@ -115,10 +120,15 @@ class KTBrowseUtil {
             $iFolderID = (int)$id;
         }
 
-        $sQuery = "SELECT id FROM documents WHERE folder_id = ? AND filename = ?";
+        $sQuery = sprintf("SELECT d.id FROM %s AS d" .
+        " LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)" .
+        " WHERE d.folder_id = ? AND dc.filename = ?", 
+        KTUtil::getTableName(documents),
+        KTUtil::getTableName('document_metadata_version'),
+        KTUtil::getTableName('document_content_version'));
         $aParams = array($iFolderID, $sFileName);
         $iDocumentID = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-
+        
         if (PEAR::isError($iDocumentID)) {
             // XXX: log error
             return false;
@@ -128,6 +138,7 @@ class KTBrowseUtil {
             $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
             $aParams = array($iFolderID, $sFileName);
             $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+            
             if (PEAR::isError($id)) {
                 // XXX: log error
                 return false;
@@ -139,9 +150,6 @@ class KTBrowseUtil {
                 // XXX: log error
                 return array($iFolderID, false);
             }
-            /* if (substr($path, -1) !== "/") {
-                header("Location: " . $_SERVER["PHP_SELF"] . "/");
-            } */
             return array($id, null);
         }
 

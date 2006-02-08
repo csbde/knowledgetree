@@ -106,36 +106,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
         $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
 
-
-        // flip the checkout status
-        $this->oDocument->setIsCheckedOut(true);
-        // set the user checking the document out
-        $this->oDocument->setCheckedOutUserID($_SESSION["userID"]);
-        // update it
-        if (!$this->oDocument->update()) {
-            $_SESSION['KTErrorMessage'][] = _("There was a problem checking out the document.");
-            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        $this->startTransaction();
+        $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
+        if (PEAR::isError($res)) {
+            return $this->errorRedirectToMain(sprintf(_('Failed to check out the document: %s'), $res->getMessage()));
         }
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('checkout', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                "document" => $this->oDocument,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-            if (PEAR::isError($ret)) {
-                $this->oDocument->delete();
-                return $ret;
-            }
-        }
-
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sReason, 'ktcore.transactions.check_out');
-        $oDocumentTransaction->create();
-
+        
+        $this->commitTransaction();
         $oTemplate->setData(array(
             'context' => &$this,
             'reason' => $sReason,

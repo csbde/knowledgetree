@@ -104,10 +104,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$document_data["field_values"] = $field_values;
 		
-		
-		// FIXME generate portlets
-		// FIXME generate breadcrumb
-		
 		// Fieldset generation.
 		// 
 		//   we need to create a set of FieldsetDisplay objects

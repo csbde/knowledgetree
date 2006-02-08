@@ -118,6 +118,38 @@ class KTDocumentUtil {
         return true;
     }
 
+    function checkout($oDocument, $sCheckoutComment, $oUser) {
+        if ($oDocument->getIsCheckedOut()) {
+            return PEAR::raiseError('Already checked out.');
+        }
+        
+        // FIXME at the moment errors this _does not_ rollback.
+        
+        $this->oDocument->setIsCheckedOut(true);
+        $this->oDocument->setCheckedOutUserID($oUser->getId());
+        if (!$this->oDocument->update()) { return PEAR::raiseError(_("There was a problem checking out the document.")); }
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('checkout', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
+
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
+        $oDocumentTransaction->create();
+    
+        return true;
+    }
+
     function &_add($oFolder, $sFilename, $oUser, $aOptions) {
         global $default;
         
