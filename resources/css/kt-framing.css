@@ -480,6 +480,10 @@ a.main_nav_item {
     display: block;
     border-width: 1px;
 }
+.metadata.versioned dd .current.different {
+    padding-left: 25px;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+}
 
 .document_details .document_history thead th {
     text-align: left;
@@ -633,7 +637,6 @@ a.main_nav_item {
     margin: 0.5em;
 }
 
-
 /* ========== kt actions 
 
 These are used to mark up various different "actions" (e.g. cut, copy, delete).
@@ -691,6 +694,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktActionLink.ktAddUser, .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.png) top left no-repeat; }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.png) top left no-repeat; }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.png) top left no-repeat; }
 
 /* =========== standard listings. */
 

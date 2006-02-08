@@ -11,7 +11,7 @@
     <dl class="metadata versioned">
       {foreach item=aFieldPair from=$fieldset_values}
         <dt>{$aFieldPair.field->getName()}</dt>
-        <dd><div class="current">
+        <dd><div class="current {if ($aFieldPair.current_value != $aFieldPair.previous_value)}different{/if}">
             {if ($aFieldPair.current_value !== null)}{$aFieldPair.current_value}
             {else}<span class="ktInlineError">no value in this version</span>{/if}
             </div><div class="previous">

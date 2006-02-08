@@ -103,6 +103,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
             
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
+
+            $this->oPage->setTitle(_('Browse'));
+            $this->oPage->setSecondaryTitle($oFolder->getName());
+            
             $this->oFolder =& $oFolder;
             if (PEAR::isError($oFolder)) {
                 $this->oPage->addError(_("invalid folder"));
@@ -166,6 +170,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
         $collection->addColumn(new TitleColumn("Test 1 (title)","title"));
+        $collection->addColumn(new DownloadColumn('','download'));
         $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
         $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
         $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));

@@ -71,6 +71,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 
+		$this->oPage->setSecondaryTitle($oDocument->getName());
+
         $aOptions = array(
             "documentaction" => "viewDocument",
             "folderaction" => "browse",
@@ -167,6 +169,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// fixme check perms
 		
 		$this->oDocument =& $oDocument;
+		
+		$this->oPage->setSecondaryTitle($oDocument->getName());
+		
         $aOptions = array("final" => false);
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("history"));
@@ -191,7 +196,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		
 		// render pass.
-		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
+		$this->oPage->title = _("Document History");
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document_history");
 		$aTemplateData = array(
@@ -221,7 +226,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			return $this->do_error();		
 		}
 		// fixme check perms
-		
+		$this->oPage->setSecondaryTitle($oDocument->getName());
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
 		$this->oPage->setBreadcrumbDetails(_("history"));
@@ -234,7 +239,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 		
 		// render pass.
-		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
+		$this->oPage->title = _("Document History");
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
 
@@ -281,6 +286,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
+		$this->oPage->setSecondaryTitle($oDocument->getName());
         $aOptions = array("final" => false);
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("compare versions"));
@@ -414,6 +420,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
+		$this->oPage->setSecondaryTitle($oDocument->getName());
         $aOptions = array("final" => false);
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("Select Document Version to compare against"));

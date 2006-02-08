@@ -1,3 +1,5 @@
+<h2>{i18n}Add a folder{/i18n}</h2>
+
 <p class="descriptiveText">{i18n}Folders are one way of organising documents
 in the document management system.  Folders provide meaning in the
 traditional file storage way - through a file path.{/i18n}</p>

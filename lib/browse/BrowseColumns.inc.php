@@ -129,6 +129,8 @@ class TitleColumn extends BrowseColumn {
     }
 }
 
+
+
 class DateColumn extends BrowseColumn {
     var $field_function;
     
@@ -292,6 +294,31 @@ class WorkflowColumn extends BrowseColumn {
         } else {
             return $oState->getName() . ' <span class="descriptiveText">(' . $oWorkflow->getName() . ')</span>';
         }
+    }
+}
+
+class DownloadColumn extends BrowseColumn {
+    
+    function renderHeader($sReturnURL) {         
+        $text = $this->label; 
+        
+        return $text;
+    }
+    
+
+    function renderData($aDataRow) { 
+        $localname = $this->name;
+
+        
+        // only _ever_ show this folder documents.
+        if ($aDataRow["type"] === "folder") { 
+            return '&nbsp;';
+        }
+    
+        // FIXME at some point we may want to hide this if the user doens't have the download action, but its OK for now.
+        $link = KTUtil::ktLink('action.php','ktcore.actions.document.view', 'fDocumentId=' . $aDataRow['document']->getId());
+        $outStr = sprintf('<a href="%s" class="ktAction ktDownload" title="%s">%s</a>', $link, _('Download Document'), _('Download Document'));
+        return $outStr;
     }
 }
 
