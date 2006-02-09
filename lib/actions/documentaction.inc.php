@@ -13,9 +13,6 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
 
-    var $_bDisabled;
-    var $_sDisabledText = null;
-
     var $sSection = "view_details";
     var $aBreadcrumbs = array(
         array('action' => 'browse', 'name' => 'Browse'),
@@ -46,29 +43,10 @@ class KTDocumentAction extends KTStandardDispatcher {
         if (PEAR::isError($oPermission)) {
             return true;
         }
-        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
-    }
-
-    function _disable() {
-        if ($this->_bDisabled === true) {
-            return true;
-        }
         if (!KTWorkflowUtil::actionEnabledForDocument($this->oDocument, $this->sName)) {
-            $this->_sDisabledText = "Workflow does not allow this action at this time";
-            return true;
-        }
-        if (is_null($this->_sDisablePermission)) {
             return false;
         }
-        $oPermission =& KTPermission::getByName($this->_sDisablePermission);
-        if (PEAR::isError($oPermission)) {
-            return false;
-        }
-        $bResult = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
-        if ($bResult === false) {
-            $this->_sDisabledText = "Insufficient privileges";
-        }
-        return !$bResult;
+        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
     }
 
     function getURL() {
@@ -92,11 +70,9 @@ class KTDocumentAction extends KTStandardDispatcher {
         $url = $this->getURL();
 
         $aInfo = array(
-            'disabled' => $this->_disable(),
             'description' => $this->sDescription,
             'name' => $this->sDisplayName,
             'url' => $url,
-            'disabled_text' => $this->_sDisabledText,
         );
         return $this->customiseInfo($aInfo);
     }
@@ -129,7 +105,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
-
 
 	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
 		$oPortlet = new KTActionPortlet(_("Document Actions"));
