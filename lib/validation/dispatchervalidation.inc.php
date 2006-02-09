@@ -307,9 +307,15 @@ class KTDispatcherValidation {
     
     /* assuming something has a 'getList' static method, this may work */
     function validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions) {
-        $aMethod = array($sEntityTypeName, 'getList');
+        $aMethod = array($sEntityTypeName,  'getList');
+        $sExtraCondition = KTUtil::arrayGet($aOptions, 'extra_condition', false);
+        
+        $sCondition = "name = '$sName'";
+        if($sExtraCondition) {
+            $sCondition .= " and $sExtraCondition";
+        }
 
-        $aList =& call_user_func($aMethod, "name = '$sName'");
+        $aList =& call_user_func($aMethod, $sCondition);
         if(count($aList)) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("A $sHumanEntityTypeName with that name already exists"));
             $this->handleError($aOptions);

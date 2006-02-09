@@ -8,6 +8,7 @@
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.gif) top left no-repeat; }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.gif) top left no-repeat; }
 .ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.gif) top left no-repeat; }
+.ktActionLink.ktBack .ktAction.ktBack { background: transparent url(../../thirdparty/icon-theme/16x16/actions/back.gif) top left no-repeat; }
 
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }

@@ -1,0 +1,33 @@
+/* ------------------ discussion styling ------------------ */
+
+dl.kt-discussion-comment {
+    padding: 0.5em;
+}
+
+dl.kt-discussion-comment dt .subject {
+    font-weight: bold;
+}
+
+dl.kt-discussion-comment dt .text {
+    font-size: smaller;
+}
+
+dl.kt-discussion-comment dt .date {
+    color: #888;
+    font-size: smaller;
+}
+
+/*
+dl.kt-discussion-comment dd {
+}
+*/
+dl.odd-comment {
+    background-color: #f3f3f3;
+}
+
+
+
+.kt-discussion-post-link {
+    font-size: smaller;
+}
+

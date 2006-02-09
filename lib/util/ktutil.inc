@@ -488,6 +488,18 @@ class KTUtil {
         return false;
     }
     // }}}
+
+
+    // {{{ formatPlainText
+    /* formats input text for discussion body. replaces newlines
+    with <br/> tags to allow for paragraphing. should also strip
+    html elements.
+    */
+    function formatPlainText($sText) {
+        return str_replace("\n", '<br/>', str_replace("\r\n", '<br/>', trim($sText)));
+    }
+    // }}}
+
 }
 
 ?>

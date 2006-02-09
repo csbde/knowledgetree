@@ -49,7 +49,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oSearch = KTSavedSearch::get($id);
         
         if (PEAR::isError($oSearch) || ($oSearch == false)) {
-            $this->errorRedirectToMain('No Such search');
+            $this->errorRedirectToMain('No such dynamic condition');
         }
         
         $aSearch = $oSearch->getSearch();
@@ -63,10 +63,13 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         // we need to help out here, since it gets unpleasant inside the template.
         foreach ($aSearch['subgroup'] as $isg => $as) {
             $aSubgroup =& $aSearch['subgroup'][$isg];
-            foreach ($aSubgroup['values'] as $iv => $t) {
-                $datavars =& $aSubgroup['values'][$iv];
-                $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
-                $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+
+            if(count($aSubgroup['values'])) {
+                foreach ($aSubgroup['values'] as $iv => $t) {
+                    $datavars =& $aSubgroup['values'][$iv];
+                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
+                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+                }
             }
         }
         
@@ -74,12 +77,12 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $aTemplateData = array(
             "title" => _("Edit an existing condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => _("Update Saved Search"),
+            "searchButton" => _("Update Dynamic Condition"),
             'aSearch' => $aSearch,
             'context' => $this,
             'iSearchId' => $oSearch->getId(),
             'old_name' => $oSearch->getName(),
-            'sNameTitle' => _('Edit Search'),
+            'sNameTitle' => _('Edit Dynamic Condition'),
         );
         return $oTemplate->render($aTemplateData);        
     }
@@ -92,7 +95,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oSearch = KTSavedSearch::get($id);
         
         if (PEAR::isError($oSearch) || ($oSearch == false)) {
-            $this->errorRedirectToMain('No Such search');
+            $this->errorRedirectToMain('No such dynamic condition');
         }
         
         
@@ -117,7 +120,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             'redirect_to' => 'main',
             'message' => _('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Search saved'));
+        $this->successRedirectToMain(_('Dynamic condition saved'));
     }    
 
     // XXX: Rename to do_save
@@ -131,7 +134,13 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
         }
 
-        $sName = $_REQUEST['name'];
+        $sName = $this->oValidator->validateEntityName(
+            'KTSavedSearch', 
+            'dynamic condition', 
+            KTUtil::arrayGet($_REQUEST, 'name'), 
+            array('extra_condition' => 'is_condition', 'redirect_to' => array('new'))
+        );
+        
         $sNamespace = KTUtil::nameToLocalNamespace('Saved searches', $sName);
 
         $oSearch = KTSavedSearch::createFromArray(array(
@@ -147,7 +156,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             'redirect_to' => 'main',
             'message' => _('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Search saved'));
+        $this->successRedirectToMain(_('Dynamic condition saved'));
     }
 }
 

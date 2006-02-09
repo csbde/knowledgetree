@@ -712,6 +712,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.png) top left no-repeat; }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.png) top left no-repeat; }
 .ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.png) top left no-repeat; }
+.ktActionLink.ktBack, .ktAction.ktBack { background: transparent url(../../thirdparty/icon-theme/16x16/actions/back.png) top left no-repeat; }
 
 /* =========== standard listings. */
 
