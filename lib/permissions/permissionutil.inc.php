@@ -12,6 +12,7 @@ require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 
+require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowstatepermissionsassignment.inc.php");
 
 class KTPermissionUtil {
