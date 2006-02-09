@@ -305,9 +305,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());        
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
-                $this->errorRedirectToMain(_('Please select documents or folders first.'));
-                exit(0);
-            }        
+            $this->errorRedirectToMain(_('Please select documents or folders first.'));
+            exit(0);
+        }        
         
         if ($target == 'delete') {
             return $this->do_startDelete();
@@ -331,16 +331,60 @@ class BrowseDispatcher extends KTStandardDispatcher {
         if ($sMoveCode == null) {
             $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
             $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
-            
+
+            $aCantMove = array();
+            $aFinalDocumentSelection = array();
+            $aMoveData = array('folders' => $aFolderSelection, 'documents' => array());
+            foreach ($aDocumentSelection as $iDocumentId) {
+                $oDocument = Document::get($iDocumentId);
+                if (!KTDocumentUtil::canBeMoved($oDocument)) {
+                    $aCantMove['documents'][] = $iDocumentId;
+                    continue;
+                }
+                $aMoveData['documents'][] = $iDocumentId;
+            }
             
             $sMoveCode = KTUtil::randomString();
-            $aMoveData = array('folders' => $aFolderSelection, 'documents' => $aDocumentSelection);
-            
             $moves = KTUtil::arrayGet($_SESSION, 'moves', array());
             $moves = (array) $moves; // ?
             $moves[$sMoveCode] = $aMoveData;
             $_SESSION['moves'] = $moves; // ...
         }
+
+        if (!empty($aCantMove)) {
+            $cantMoveItems = array();
+            $cantMoveItems['folders'] = array();
+            $cantMoveItems['documents'] = array();
+
+            $folderStr = '';
+            $documentStr = '';
+            
+            if (!empty($aCantMove['folders'])) {
+                $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+                foreach ($aCantMove['folders'] as $iFolderId) {
+                    $oF = Folder::get($iFolderId);
+                    $cantMoveItems['folders'][] = $oF->getName();
+                }
+                $folderStr .= implode(', ', $cantMoveItems['folders']);
+            }
+            
+            if (!empty($aCantMove['documents'])) {
+                $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+                foreach ($aCantMove['documents'] as $iDocId) {
+                    $oD = Document::get($iDocId);
+                    $cantMoveItems['documents'][] = $oD->getName();
+                }
+                $documentStr .= implode(', ', $cantMoveItems['documents']);
+            }
+
+            if (!empty($folderStr)) {
+                $_SESSION["KTErrorMessage"][] = _("The following folders can not be moved") . ": " . $folderStr;
+            }
+            if (!empty($documentStr)) {
+                $_SESSION["KTErrorMessage"][] = _("The following documents can not be moved") . ": " . $documentStr;
+            }
+        }
+
         
         
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
@@ -348,6 +392,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain(_('Invalid folder selected.'));
             exit(0);
         }
+
+        $moveSet = $_SESSION['moves'][$sMoveCode];
+
+        if (empty($moveSet['folders']) && empty($moveSet['documents'])) {
+            $this->errorRedirectToMain(_('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
+            exit(0);
+        }        
         
         // Setup the collection for move display.
         
@@ -388,7 +439,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         
         // now show the items...
-        $moveSet = $_SESSION['moves'][$sMoveCode];
         $moveItems = array();
         $moveItems['folders'] = array();
         $moveItems['documents'] = array();
