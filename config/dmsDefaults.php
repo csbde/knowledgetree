@@ -381,6 +381,9 @@ $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
 $oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
 $oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
 
+$oKTConfig->setdefaultns("ui", "ieGIF", true);
+$oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
+
 $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
 $oKTConfig->setdefaultns("import", "unzip", 'unzip');
 

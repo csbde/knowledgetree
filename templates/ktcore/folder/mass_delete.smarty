@@ -18,6 +18,17 @@ will be recorded in the documents' "Transaction History"{/i18n}</p>
 <input type="hidden" name="selection_f[]" value="{$iFolderId}" />
 {/foreach}
 
+
+
+<div class="field">
+<label>Items to delete</label>
+<p class="descriptiveText">{i18n}The items that you selected to delete.{/i18n}</p>
+{if ($folder_string)}{$folder_string}<br />{/if}
+{if ($document_string)}{$document_string}{/if}
+</div>
+
+
+
 {foreach item=oWidget from=$form_fields}
 {$oWidget->render()}
 {/foreach}

@@ -57,6 +57,19 @@ class KTMassMoveColumn extends TitleColumn {
         parent::TitleColumn($sLabel, $sName);
     }
     
+    function renderFolderLink($aDataRow) {
+        $aFolders = $_SESSION['moves'][$this->sMoveCode]['folders'];
+        if (array_search($aDataRow['folder']->getId(), $aFolders) === false) {
+            $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
+            $outStr .= $aDataRow["folder"]->getName();
+            $outStr .= '</a>';
+        } else { 
+            $outStr = $aDataRow["folder"]->getName() . ' <span class="descriptiveText">(' . _('you cannot move folders to themselves') . ')';
+        }
+        return $outStr;    
+    
+    }
+    
     function buildFolderLink($aDataRow) {
         return KTUtil::addQueryStringSelf(sprintf('fMoveCode=%s&fFolderId=%d&action=startMove', $this->sMoveCode, $aDataRow["folder"]->getId()));
     }
@@ -275,6 +288,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain(_('No action selected.'));
             exit(0);
         }
+
+        $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
+        $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());        
+        if (empty($aFolderSelection) && empty($aDocumentSelection)) {
+                $this->errorRedirectToMain(_('Please select documents or folders first.'));
+                exit(0);
+            }        
         
         if ($target == 'delete') {
             return $this->do_startDelete();
@@ -300,18 +320,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
             
             
-            
             $sMoveCode = KTUtil::randomString();
             $aMoveData = array('folders' => $aFolderSelection, 'documents' => $aDocumentSelection);
-            
-            var_dump($aMoveData);
             
             $moves = KTUtil::arrayGet($_SESSION, 'moves', array());
             $moves = (array) $moves; // ?
             $moves[$sMoveCode] = $aMoveData;
             $_SESSION['moves'] = $moves; // ...
         }
-
+        
+        
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) { 
             $this->errorRedirectToMain(_('Invalid folder selected.'));
@@ -355,6 +373,34 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         
+        
+        // now show the items...
+        $moveSet = $_SESSION['moves'][$sMoveCode];
+        $moveItems = array();
+        $moveItems['folders'] = array();
+        $moveItems['documents'] = array();
+        
+        $folderStr = '';
+        $documentStr = '';
+        
+        if (!empty($moveSet['folders'])) {
+            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            foreach ($moveSet['folders'] as $iFolderId) {
+                $oF = Folder::get($iFolderId);
+                $moveItems['folders'][] = $oF->getName();
+            }
+            $folderStr .= implode(', ', $moveItems['folders']);
+        }
+        
+        if (!empty($moveSet['documents'])) {
+            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            foreach ($moveSet['documents'] as $iDocId) {
+                $oD = Document::get($iDocId);
+                $moveItems['documents'][] = $oD->getName();
+            }
+            $documentStr .= implode(', ', $moveItems['documents']);
+        }
+        
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/mass_move");
         $aTemplateData = array(
@@ -363,6 +409,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'move_code' => $sMoveCode,
               'collection' => $collection,
               'collection_breadcrumbs' => $aBreadcrumbs,
+              'folders' => $folderStr,
+              'documents' => $documentStr,
         );
         
         return $oTemplate->render($aTemplateData);       
@@ -520,6 +568,33 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
         
+
+        // now show the items...
+        $delItems = array();
+        $delItems['folders'] = array();
+        $delItems['documents'] = array();
+        
+        $folderStr = '';
+        $documentStr = '';
+        
+        if (!empty($aFolderSelection)) {
+            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            foreach ($aFolderSelection as $iFolderId) {
+                $oF = Folder::get($iFolderId);
+                $delItems['folders'][] = $oF->getName();
+            }
+            $folderStr .= implode(', ', $delItems['folders']);
+        }
+        
+        if (!empty($aDocumentSelection)) {
+            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            foreach ($aDocumentSelection as $iDocId) {
+                $oD = Document::get($iDocId);
+                $delItems['documents'][] = $oD->getName();
+            }
+            $documentStr .= implode(', ', $delItems['documents']);
+        }
+        
         $aFields = array();
         $aFields[] = new KTStringWidget(_('Reason'), _('The reason for the deletion of these documents and folders for historical purposes.'), 'sReason', "", $this->oPage, true);
         
@@ -531,6 +606,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'form_fields' => $aFields,
               'folders' => $aFolderSelection,
               'documents' => $aDocumentSelection,
+              'folder_string' => $folderStr,
+              'document_string' => $documentStr,
         );
         return $oTemplate->render($aTemplateData);        
     }

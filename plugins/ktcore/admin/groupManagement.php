@@ -21,9 +21,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->oPage->setBreadcrumbDetails(_('select a group'));
 		$this->oPage->setTitle(_("Group Management"));
 		
+		$KTConfig =& KTConfig::getSingleton();
+        $alwaysAll = $KTConfig->get("alwaysShowAll");
 		
 		$name = KTUtil::arrayGet($_REQUEST, 'name');
-		$show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
+		$show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 	
         $no_search = true;

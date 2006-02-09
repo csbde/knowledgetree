@@ -155,7 +155,8 @@
 {$page->contents}
 
 <div id="copyrightbar">
-{i18n}&copy; 2006 <a href="http://www.ktdms.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved.{/i18n}
+{i18n}&copy; 2006 <a href="http://www.ktdms.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
+&mdash; {i18n arg_version="$systemversion"}KnowledgeTree Version: #version#{/i18n}
 </div>
 
 </div>

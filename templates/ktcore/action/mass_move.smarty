@@ -6,6 +6,13 @@
 <input type="hidden" name="action" value="finaliseMove" />
 <input type="hidden" name="fMoveCode" value="{$move_code}" />
 
+<div class="field">
+<label>Items to move</label>
+<p class="descriptiveText">{i18n}The items that you selected to move.{/i18n}</p>
+{if ($folders)}{$folders}<br />{/if}
+{if ($documents)}{$documents}{/if}
+</div>
+
 <div class="field ">
 <label for="fFolderId">{i18n}Target folder{/i18n}</label>
 <p class="descriptiveText">{i18n}Use the folder collection and path below to
