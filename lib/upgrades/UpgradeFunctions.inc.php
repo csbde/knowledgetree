@@ -302,14 +302,16 @@ class UpgradeFunctions {
                     continue;
                 }
 
-                if (!file_exists($sPath)) {
-                    continue;
+                if (file_exists($sPath)) {
+                    $iFileSize = filesize($sPath);
+                } else {
+                    $iFileSize = $aRow['size'];
                 }
 
                 $aContentInfo = array(
                     'document_id' => $aRow['id'],
                     'filename' => $aRow['filename'],
-                    'size' => filesize($sPath),
+                    'size' => $iFileSize,
                     'mime_id' => $aRow['mime_id'],
                     'major_version' => $iMajor,
                     'minor_version' => $iMinor,
