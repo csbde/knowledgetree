@@ -41,6 +41,8 @@ class Document {
     
     function getFolderID() { return $this->_oDocumentCore->getFolderId(); }
     function setFolderID($iNewValue) { $this->_oDocumentCore->setFolderId($iNewValue); }
+
+    function getFullPath() { return $this->_oDocumentCore->getFullPath(); }
     
     function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
     function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
