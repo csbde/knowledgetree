@@ -137,48 +137,6 @@ class DocumentField extends KTEntity {
         return KTEntityUtil::get('DocumentField', $iId);
     }
 
-	/**
-	 * Returns the DocumentTypes mapped to this document field
-	 */
-	function getDocumentTypes() {
-		global $default;
-		$aDocumentTypes = array();
-		$sql = $default->db;
-		$sQuery = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = ?";/*ok*/
-        $aParams = array($this->iId);
-		if ($sql->query(array($sQuery, $aParams))) {
-			while ($sql->next_record()) {
-      			$aDocumentTypes[] = & DocumentType::get($sql->f("document_type_id"));
-      		}
-			return $aDocumentTypes;
-		} else{
-			return false;
-		}
-	}
-	
-	/** 
-	 * Given a documenttype...will find all fields belonging to it
- 	 *
-	 * @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	 */
-	function isFieldLinkedToType() {
-		global $default;
-		$sql = $default->db;
-		$sQuery = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = ?";/*ok*/
-        $aParams = array($this->iId);
-		if ($sql->query(array($sQuery, $aParams))) {
-			$rows = $sql->num_rows($sql);
-	      	if ($rows > 0) {
-	      		// instantiate the document types and return
-				return true;
-			} else{
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-
 	// FIXME: add a data type class!	
 	/* Static function.  Given a documenttype...will find all fields belongin to it
 	*
