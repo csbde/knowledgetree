@@ -78,7 +78,7 @@ class KTActionPortlet extends KTPortlet {
         foreach ($actions as $action) {
             $aInfo = $action->getInfo();
             
-            if (($aInfo !== null) and ($aInfo["disabled"] === false)) {
+            if ($aInfo !== null) {
                 if ($aInfo["name"] == $currentaction) {
                     unset($aInfo["url"]);
                 }
