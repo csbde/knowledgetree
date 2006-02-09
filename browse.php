@@ -114,6 +114,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $folder_id = 1;
             }
             
+            $_REQUEST['fBrowseMode'] = 'folder';
+            
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
 
@@ -230,6 +232,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
     function do_selectField() {
         $aFields = DocumentField::getList('has_lookup = 1');
         
+        if (empty($aFields)) {
+            $this->errorRedirectToMain('No lookup fields available.');
+            exit(0);
+        } 
+        
+        $_REQUEST['fBrowseMode'] = 'lookup_value';
+        
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_selection");
         $aTemplateData = array(
@@ -247,6 +256,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
             exit(0);            
         }
         
+        $_REQUEST['fBrowseMode'] = 'lookup_value';        
+        
         $aValues = MetaData::getByDocumentField($oField);
         
         $oTemplating = new KTTemplating;
@@ -262,6 +273,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
     function do_selectType() {
         $aTypes = DocumentType::getList();
         // FIXME what is the error message?
+        
+        $_REQUEST['fBrowseMode'] = 'document_type';
         
         if (empty($aTypes)) {
             $this->errorRedirectToMain('No document types available.');
@@ -559,7 +572,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_('Move completed.'), sprintf('fFolderId=%d', $target_folder));
     }
     
-   
     function do_startDelete() {
         $this->oPage->setTitle('Delete Files and Folders');
         $this->oPage->setBreadcrumbDetails('Delete Files and Folders');

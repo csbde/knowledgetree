@@ -43,7 +43,7 @@ class KTBrowseModePortlet extends KTPortlet {
 
     function render() {    
         // this is unfortunate, but such is life.
-        $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
+        $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(
             'folder' => array('name' => _('Folder'), 'target' => "main"),            
             'document_type' => array('name' => _('Document Type'), 'target' => 'selectType'),
