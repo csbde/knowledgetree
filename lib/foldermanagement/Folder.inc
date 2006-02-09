@@ -419,29 +419,6 @@ class Folder extends KTEntity {
 	
 	/**
 	* Static function
-	* Gets the default document type for a folder (where default is simply the first one)
-	*
-	* @param $iFolderID
-	*
-	* @return integer document type primary key, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getDefaultFolderDocumentType($iFolderID) {
-		global $default, $lang_err_database;
-		if (Folder::folderExistsID($iFolderID)) {
-			$sql = $default->db;
-			$sql->query(array("SELECT document_type_id FROM " . $default->folder_doctypes_table . " WHERE folder_id = ?", $iFolderID));/*ok*/
-			if ($sql->next_record()) {
-				return $sql->f("document_type_id");
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			
-		}
-		//error message set by Folder::folderExists
-		return false;
-	}
-	
-	/**
-	* Static function
 	* Checks if a given folder already exists using the folder name
 	*
 	* @param $sName			Name of folder
@@ -515,23 +492,6 @@ class Folder extends KTEntity {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}    
-	
-	/**
-	* Checks if a document type is already
-	* linked to a folder
-	* 
-	*/
-	function folderIsLinkedToDocType($iFolderID, $iDocTypeID) {
-		global $default;
-		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->folder_doctypes_table WHERE document_type_id = ? and folder_id = ?";/*ok*/
-        $aParams = array($iDocTypeID, $iFolderID);
-		$sql->query(array($sQuery, $aParams));
-		if ($sql->next_record()) {
-			return true;
-		}
-		return false;
-	}
 	
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(
