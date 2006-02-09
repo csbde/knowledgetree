@@ -150,27 +150,6 @@ class DocumentType extends KTEntity {
     }
 	
 	/**
-	* Delete the current document from the database.  Set the primary key to -1 
-	* on successful deletion
-	*
-	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function deleteAllFieldLinks() {	
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->document_type_fields_table . "  WHERE document_type_id = $this->iId");
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}			
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	/**
 	* Static function.
 	* Given a document_fields primary key it will create a 
 	* DocumentTypes object and populate it with the 
