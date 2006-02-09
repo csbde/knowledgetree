@@ -772,7 +772,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
         else
         {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSlef('action=editTree&field_id=' . $iFieldId . '&current_node=' . $current_node) .'">attach keywords</a> ';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id=' . $iFieldId . '&current_node=' . $current_node) .'">attach keywords</a> ';
            $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory') . '">delete</a>';
         }
         $actionStr .= ")";
