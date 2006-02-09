@@ -626,6 +626,16 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::updateSearchableText($oDocument);
     }
+
+    function canBeMoved($oDocument) {
+        if ($oDocument->getIsCheckedOut()) {
+            return false;
+        }
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
+            return false;
+        }
+        return true;
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {
