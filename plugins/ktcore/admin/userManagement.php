@@ -20,9 +20,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('select a user'));
         $this->oPage->setTitle(_("User Management"));
-        
+		
+		$KTConfig =& KTConfig::getSingleton();
+        $alwaysAll = $KTConfig->get("alwaysShowAll");
+		
         $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
+        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
     
         $no_search = true;

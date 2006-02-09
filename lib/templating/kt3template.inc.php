@@ -238,7 +238,7 @@ class KTPage {
     
     /* final render call. */
     function render() {
-
+	    global $default; 
         if (empty($this->contents)) {
             $this->contents = "";
         }
@@ -281,6 +281,7 @@ class KTPage {
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
             "page" => $this,
+			"systemversion" => $default->systemVersion,
         );
         
         // unlike the rest of KT, we use echo here.
