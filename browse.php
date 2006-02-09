@@ -155,6 +155,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 exit(0);            
             }
             $this->oQuery = new ValueBrowseQuery($oField, $oValue);
+            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value));
+            $this->aBreadcrumbs[] = array('name' => _('Lookup Values'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectField')); 
+            $this->aBreadcrumbs[] = array('name' => $oField->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId()));             
+            $this->aBreadcrumbs[] = array('name' => $oField->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value)));             
         } else if ($this->browse_mode == 'document_type') {
             $this->editable = false;
             // FIXME implement document_type browsing.
@@ -168,7 +172,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->oQuery =  new TypeBrowseQuery($oDocType);
             
             // FIXME probably want to redirect to self + action=selectType
-            $this->aBreadcrumbs[] = array('name' => _('Document Types')); 
+            $this->aBreadcrumbs[] = array('name' => _('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType')); 
+            $this->aBreadcrumbs[] = array('name' => $oDocType->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'fBrowseMode=document_type&fType=' . $oDocType->getId())); 
             
             $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fType=%s&fBrowseMode=document_type", $doctype));;
         } else {

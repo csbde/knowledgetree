@@ -67,6 +67,14 @@ class KTStorageManager {
     }
 
     /**
+     * Perform any storage changes necessary to account for a copied
+     * document object.
+     */
+     function copy ($oSrcDocument, &$oNewDocument) {
+        return PEAR::raiseError("Not implemented");     
+     }
+
+    /**
      * Performs any storage changes necessary to account for the
      * document being marked as deleted.
      */

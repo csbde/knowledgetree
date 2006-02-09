@@ -318,6 +318,33 @@ class KTUtil {
         }
     }
     // }}}
+    
+    // {{{ copyFile
+    function copyFile ($sSrc, $sDst) {
+        // Only 4.3.3 and above allow us to use rename across partitions
+        // on Unix-like systems.
+        if (OS_UNIX) {
+            $aSrcStat = stat($sSrc);
+            if ($aSrcStat === false) {
+                return PEAR::raiseError("Couldn't stat source file: $sSrc");
+            }
+            $aDstStat = stat(dirname($sDst));
+            if ($aDstStat === false) {
+                return PEAR::raiseError("Couldn't stat destination location: $sDst");
+            }
+
+            $res = @copy($sSrc, $sDst);
+            if ($res === false) {
+                return PEAR::raiseError("Could not copy to destination: $sDst");
+            }
+        } else {
+            $res = @copy($sSrc, $sDst);
+            if ($res === false) {
+                return PEAR::raiseError("Could not copy to destination: $sDst");
+            }
+        }
+    }
+    // }}}    
 
     // {{{ getTableName
     /**
