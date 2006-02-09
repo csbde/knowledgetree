@@ -207,6 +207,39 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
     }
     // }}}
 
+    // {{{ _do_massCreateUsers
+    function _do_massCreateUsers() {
+        $aIds = KTUtil::arrayGet($_REQUEST, 'id');
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $oAuthenticator = $this->getAuthenticator($oSource);
+        $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "userprincipalname", "telephonenumber");
+        $aNames = array();
+        foreach ($aIds as $sId) {
+            $aResults = $oAuthenticator->getUser($sId);
+            $dn = $aResults[$aAttributes[0]];
+            $sUserName = $aResults[$aAttributes[1]];
+            $sName = join(" ", array($aResults[$aAttributes[2]], $aResults[$aAttributes[3]]));
+            $sEmailAddress = $aResults[$aAttributes[4]];
+            $sMobileNumber = $aResults[$aAttributes[5]];
+
+            $oUser = User::createFromArray(array(
+                "Username" => $sUserName,
+                "Name" => $sName,
+                "Email" => $sEmailAddress,
+                "EmailNotification" => true,
+                "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
+                "MaxSessions" => 3,
+                "authenticationsourceid" => $oSource->getId(),
+                "authenticationdetails" => $dn,
+                "authenticationdetails2" => $sUserName,
+                "password" => "",
+            ));
+            $aNames[] = $sName;
+        }
+        $this->successRedirectToMain(_("Added users") . ": " . join(', ', $aNames));
+    }
+    // }}}
+
     // {{{ do_addUserFromSource
     function do_addUserFromSource() {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit');
@@ -215,8 +248,13 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         }
         if (KTUtil::arrayGet($submit, 'chosen')) {
             $id = KTUtil::arrayGet($_REQUEST, 'id');
+            $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
             if (!empty($id)) {
-                return $this->_do_editUserFromSource();
+                if ($massimport) {
+                    return $this->_do_massCreateUsers();
+                } else {
+                    return $this->_do_editUserFromSource();
+                }
             } else {
                 $this->oPage->addError(_("No valid LDAP user chosen"));
             }
@@ -228,10 +266,11 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapsearchuser');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_("User's name"), _("The user's name, or part thereof, to find the user that you wish to add"), 'name', '', $this->oPage, true);
+        $fields[] = new KTStringWidget(_("User's name"), _("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_("Mass import"), _("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)"), 'massimport', false, $this->oPage, true);
 
         $oAuthenticator = $this->getAuthenticator($oSource);
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
         if (!empty($name)) {
             $aSearchResults = $oAuthenticator->searchUsers($name, array('cn', 'dn', $sIdentifierField));
             if (PEAR::isError($aSearchResults)) {
@@ -239,6 +278,8 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
                 $aSearchResults = null;
             }
         }
+
+        $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
         
         $aTemplateData = array(
             'context' => &$this,
@@ -246,6 +287,7 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
             'source' => $oSource,
             'search_results' => $aSearchResults,
             'identifier_field' => $sIdentifierField,
+            'massimport' => $massimport,
         );
         return $oTemplate->render($aTemplateData);
     }

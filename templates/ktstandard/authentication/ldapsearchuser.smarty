@@ -1,3 +1,9 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <p class="descriptiveText">{i18n}Since there may be many users in the
 system, please provider a few letters from the person's user name to
@@ -24,9 +30,11 @@ begin.{/i18n}</p>
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="addUserFromSource" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
+<input type="hidden" name="massimport" value="{$massimport}" />
 <table class="listing">
 <thead>
    <tr>
+      <th style="width:2em"><input type="checkbox" onclick="toggleSelectFor(this, 'id')" title="toggle all" /></th>
       <th>{i18n}Name{/i18n}</th>
       <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
    </tr>
@@ -35,8 +43,12 @@ begin.{/i18n}</p>
    <!-- do we want to batch here? -->
      {foreach item=potential_user from=$search_results}
      <tr>
-        <td><input type="radio" name="id"
-value="{$potential_user.dn}" />{$potential_user.cn}</td>
+{if $massimport}
+        <td><input type="checkbox" name="id[]" value="{$potential_user.dn}" /></td>
+{else}
+        <td><input type="radio" name="id" value="{$potential_user.dn}" /></td>
+{/if}
+	<td>{$potential_user.cn}</td>
         <td>{$potential_user.dn}</td>
      </tr>
      {/foreach}
