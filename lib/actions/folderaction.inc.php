@@ -14,9 +14,6 @@ class KTFolderAction extends KTStandardDispatcher {
     
     var $_bAdminAlwaysAvailable = false;
 
-    var $_bDisabled;
-    var $_sDisabledText = null;
-
     var $sSection = "browse";
     var $aBreadcrumbs = array(
         array('action' => 'browse', 'name' => 'Browse'),
@@ -59,24 +56,6 @@ class KTFolderAction extends KTStandardDispatcher {
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
     }
 
-    function _disable() {
-        if ($this->_bDisabled === true) {
-            return true;
-        }
-        if (is_null($this->_sDisablePermission)) {
-            return false;
-        }
-        $oPermission =& KTPermission::getByName($this->_sDisablePermission);
-        if (PEAR::isError($oPermission)) {
-            return false;
-        }
-        $bResult = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
-        if ($bResult === false) {
-            $this->_sDisabledText = "Insufficient privileges";
-        }
-        return !$bResult;
-    }
-
     function getURL() {
         $oKTConfig =& KTConfig::getSingleton();
         $sExt = ".php";
@@ -96,11 +75,9 @@ class KTFolderAction extends KTStandardDispatcher {
         }
 
         $aInfo = array(
-            'disabled' => $this->_disable(),
             'description' => $this->sDescription,
             'name' => $this->sDisplayName,
             'url' => $this->getURL(),
-            'disabled_text' => $this->_sDisabledText,
         );
         return $this->customiseInfo($aInfo);
     }
