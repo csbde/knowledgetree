@@ -78,6 +78,7 @@ links of that type within the system.{/i18n}</p>
   {/foreach}
 </tbody>
 </table>
+
 {else}
 
 <p><strong>{i18n}No link administrator changeable link types available.{/i18n}</strong>

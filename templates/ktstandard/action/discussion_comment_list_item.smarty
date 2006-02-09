@@ -1,34 +1,21 @@
-{capture assign=sCSS}{literal}
-dl.kt-discussion-comment > dt {
-    font-weight: bold;
-}
+{$context->oPage->requireCSSResource('resources/css/kt-discussion.css')}
 
-.kt-discussion-post-link {
-    font-size: smaller;
-}
-{/literal}{/capture}
-{$context->oPage->requireCSSStandalone($sCSS)}
-
+{if $cycle}
 <dl class="kt-discussion-comment">
-  <dt>{i18n}Posted{/i18n}</dt>
+{else}
+<dl class="kt-discussion-comment odd-comment">
+{/if}
   
-  {capture assign=name}
-  {$creator->getName()}
-  {/capture}
+  <dt>
+    <span class="subject">{$comment->getSubject()}</span>
+    by
+    <span class="author">{$creator->getName()}</span>
+    <span class="date">({$comment->getDate()})</span>
+  </dt>
   
-  {capture assign=date}
-  {$comment->getDate()}
-  {/capture}
-  
-  <dd>{i18n arg_name=$name arg_date=$date}by #name# at #date#{/i18n}</dd>
-  <dt>Subject</dt>
-  <dd>{$comment->getSubject()}</dd>
-
-  <dt>Body</dt>
   <dd>{$comment->getBody()}</dd>
+
 </dl>
 
-{if not $state}
-<a class="kt-discussion-post-link" href="#kt-discussion-post">{i18n}Post a reply{/i18n}</a>
-{/if}
+
 

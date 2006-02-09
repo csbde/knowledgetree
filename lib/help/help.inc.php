@@ -93,7 +93,7 @@ class KTHelp {
         }
         
         if (($mime_type == 'image/png') || ($mime_type == 'image/gif') || ($mime_type == 'image/jpeg')) {
-        
+            return true;        
         }
         
         return false;

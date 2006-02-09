@@ -1,9 +1,18 @@
 {if (!$help_body)}
 <div class="ktError"><p>No content specified for this help file yet. <strong>Edit it first.</strong></p></div>
 {else}
+
+{$context->oPage->requireJSResource("resources/js/help.js")}
+<input type="hidden" name="back_key" id="back_key" value="{$back_key}"/>
+
+<div id="kt_help_body">
 {$help_body}
+</div>
 {/if}
 
 <hr />
 <p><a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="?action=customise&name=`$target_name`"}" class="ktAction ktEdit" style="float:
-left; padding-right: 0.5em;">{i18n}Edit this help page.{/i18n}</a><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}">{i18n}Edit this help page.{/i18n}</a></p>
+left; padding-right: 0.5em;">{i18n}Edit this help page.{/i18n}</a><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}">{i18n}Edit this help page.{/i18n}</a><br/>
+
+<a href="{$rootUrl}/help.php?action=go_back&back_key={$back_key}" class="ktAction ktBack" style="float:
+left; padding-right: 0.5em;">{i18n}Return to where you came from.{/i18n}</a><a href="{$rootUrl}/help.php?action=go_back&back_key={$back_key}">{i18n}Return to where you came from.{/i18n}</a></p>

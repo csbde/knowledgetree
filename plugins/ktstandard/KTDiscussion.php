@@ -40,15 +40,21 @@ class KTDiscussionThreadListRenderer {
 }
 
 class KTCommentListRenderer {
+    var $bCycle = false;
+    
     function render($context, $oComment, $oThread) {
         $this->oComment = $oComment;
+        $this->bCycle = !$this->bCycle;
+
         $oTemplate = $context->oValidator->validateTemplate('ktstandard/action/discussion_comment_list_item');
         $oCreator = User::get($oComment->getUserId());
+        
         $oTemplate->setData(array(
             'comment' => $oComment,
             'state'   => $oThread->getState(),
             'creator' => $oCreator,
             'context' => $context,
+            'cycle'   => $this->bCycle,
         ));
         return $oTemplate->render();
     }
@@ -105,7 +111,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
             'subject' => $sSubject,
-            'body' => $sBody,
+            'body' => KTUtil::formatPlainText($sBody),
         ));
         $aErrorOptions['message'] = _("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -201,7 +207,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
             'subject' => $sSubject,
-            'body' => $sBody,
+            'body' => KTUtil::formatPlainText($sBody),
         ));
         $aErrorOptions['message'] = _("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);

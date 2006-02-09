@@ -20,7 +20,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/search/administration/savedsearches');
         $oTemplate->setData(array(
-            'saved_searches' => KTSavedSearch::getList(),
+            'saved_searches' => KTSavedSearch::getSearches(),
             'context' => $this,
         ));
         return $oTemplate->render();
@@ -149,7 +149,14 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
     // XXX: Rename to do_save
     function do_performSearch() {
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
-        $sName = KTUtil::arrayGet($_REQUEST, 'name');
+        
+        $sName = $this->oValidator->validateEntityName(
+            'KTSavedSearch', 
+            'saved search', 
+            KTUtil::arrayGet($_REQUEST, 'name'), 
+            array('extra_condition' => 'not is_condition', 'redirect_to' => array('new'))
+        );
+            
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
         }

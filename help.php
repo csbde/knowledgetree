@@ -42,10 +42,15 @@ class HelpDispatcher extends KTStandardDispatcher {
 
     function is_replacement() { return $this->bIsReplacement; }
 
-    function do_main() {
-    
+    function do_main() {        
+        // store referer
+        $sBackKey = KTUtil::arrayGet($_REQUEST, 'back_key', false);
+        if(!$sBackKey) {
+            $sReferer = KTUtil::arrayGet($_SERVER ,'HTTP_REFERER');
+            $sBackKey = KTUtil::randomString();            
+            $_SESSION[$sBackKey] = $sReferer;
+        } 
         
-    
         $pathinfo = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
         if (empty($pathinfo)) {
             $this->oPage->setTitle(_('No help page specified.'));
@@ -65,7 +70,6 @@ class HelpDispatcher extends KTStandardDispatcher {
         // We now check for substitute help files.  try to generate an error.
         $oReplacementHelp = KTHelpReplacement::getByName($help_path);
         
-        // OK.  we know its an image, or html.
         if (KTHelp::isImageFile($help_path)) {
             KTHelp::outputHelpImage($help_path);
         } else {
@@ -104,10 +108,22 @@ class HelpDispatcher extends KTStandardDispatcher {
               "context" => $this,
               "help_body" => $aHelpInfo['body'],
               "target_name" => $_SERVER['PATH_INFO'],
+              "back_key" => $sBackKey,
         );
         return $oTemplate->render($aTemplateData);
     }
 
+    function do_go_back() {        
+        // get referer
+        $sBackKey = KTUtil::arrayGet($_REQUEST, 'back_key', false);        
+        if($sBackKey) {
+            $sReferer = $_SESSION[$sBackKey];
+            redirect($sReferer);
+            exit(0);
+        } else {
+            $this->errorRedirectToMain(_("Invalid return key from help system."));
+        }        
+    }
 }
 
 $oDispatcher = new HelpDispatcher();
