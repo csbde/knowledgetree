@@ -101,6 +101,7 @@ class KTDocumentCore extends KTEntity {
     function getMetadataVersion() { return $this->iMetadataVersion; }
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
     
+    function getFullPath() { return $this->sFullPath; }
     // }}}
 
     // {{{ getParentId
