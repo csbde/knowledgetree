@@ -71,8 +71,6 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("units", 'KTUnitAdminDispatcher', "principals",
             _("Control Units"), _("Specify which organisational units are available within the repository."),
             'admin/unitManagement.php', null);
-        // disabled until it actually makes sense.
-        //$this->registerAdminPage("orgs",'KTOrgAdminDispatcher',"principals", "Control Organisations","Specify which organisations are available.", 'admin/orgManagement.php', null);
 
         // security
         $this->registerAdminPage("permissions", 'ManagePermissionsDispatcher', "security",
