@@ -168,7 +168,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$this->oPage->setSecondaryTitle($oDocument->getName());
 		
-        $aOptions = array("final" => false);
+        $aOptions = array(
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
@@ -224,7 +227,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// fixme check perms
 		$this->oPage->setSecondaryTitle($oDocument->getName());
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
+		$aOptions = array(
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
 		
@@ -283,7 +290,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		$this->oDocument =& $oDocument;
 		$this->oPage->setSecondaryTitle($oDocument->getName());
-        $aOptions = array("final" => false);
+		$aOptions = array(
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("compare versions"));
 		
@@ -417,7 +427,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		$this->oDocument =& $oDocument;
 		$this->oPage->setSecondaryTitle($oDocument->getName());
-        $aOptions = array("final" => false);
+		$aOptions = array(
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("Select Document Version to compare against"));
 					

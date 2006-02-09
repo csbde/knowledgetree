@@ -7,6 +7,17 @@
 <input type="hidden" name="fMoveCode" value="{$move_code}" />
 <input type="hidden" name="fFolderId" value="{$folder}" />
 
+
+
+<div class="field">
+<label>Items to move</label>
+<p class="descriptiveText">{i18n}The items that you selected to move.{/i18n}</p>
+{if ($folders)}{$folders}<br />{/if}
+{if ($documents)}{$documents}{/if}
+</div>
+
+
+
 <p class="descriptiveText">{i18n}Please give these final details.{/i18n}</p>
 
 {foreach item=oWidget from=$form_fields}

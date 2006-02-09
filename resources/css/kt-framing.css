@@ -577,6 +577,23 @@ a.main_nav_item {
     background-color: #fafafa;
 }
 
+.kt_collection .folder_row.odd td {
+    background-color: #ededed;
+}
+
+.kt_collection .folder_row td {
+    background-color: #e5e5e5;
+}
+
+.kt_collection .folder_row td.sort_on {
+    background-color: #dbdbdb;
+}
+
+.kt_collection .folder_row.odd td.sort_on {
+    background-color: #e8e8e8;
+}
+
+
 .kt_collection .odd td 
 {
     background-color: #fafafa;
