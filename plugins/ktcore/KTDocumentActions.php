@@ -553,6 +553,172 @@ class KTDocumentMoveAction extends KTDocumentAction {
 }
 // }}}
 
+
+class KTDocumentCopyColumn extends TitleColumn {
+    function KTDocumentCopyColumn($sLabel, $sName, $oDocument) {
+        $this->oDocument = $oDocument;
+        parent::TitleColumn($sLabel, $sName);
+    }
+    function buildFolderLink($aDataRow) {
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $aDataRow["folder"]->getId()));
+    }
+}
+
+// {{{ KTDocumentMoveAction
+class KTDocumentCopyAction extends KTDocumentAction {
+    var $sDisplayName = 'Copy';
+    var $sName = 'ktcore.actions.document.copy';
+
+    var $_sShowPermission = "ktcore.permissions.read";
+
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+        return parent::getInfo();
+    }
+
+    function check() {
+        $res = parent::check();
+        if ($res !== true) {
+            return $res;
+        }
+        if ($this->oDocument->getIsCheckedOut()) {
+            $_SESSION["KTErrorMessage"][]= _("This document can't be copied because it is checked out");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
+        $this->oFolder = $this->oValidator->validateFolder($iFolderId);
+        $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
+        return true;
+    }
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails(_("Copy"));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy');
+        $move_fields = array();
+        $aNames = $this->oDocumentFolder->getPathArray();
+        $aNames[] = $this->oDocument->getName();
+        $sDocumentName = join(" &raquo; ", $aNames);
+        $move_fields[] = new KTStaticTextWidget(_('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        
+        $collection = new DocumentCollection();
+        $collection->addColumn(new KTDocumentMoveColumn("Test 1 (title)","title", $this->oDocument));
+        $qObj = new FolderBrowseQuery($this->oFolder->getId());
+        $collection->setQueryObject($qObj);
+        
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+        
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        $collection->setBatching($resultURL, $batchPage, $batchSize);
+        
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+        
+        $collection->setSorting($displayControl, $displayOrder);
+        
+        $collection->getResults();
+        
+        $aBreadcrumbs = array();
+        $folder_path_names = $this->oFolder->getPathArray();
+        $folder_path_ids = explode(',', $this->oFolder->getParentFolderIds());
+        $folder_path_ids[] = $this->oFolder->getId();
+        if ($folder_path_ids[0] == 0) {
+            array_shift($folder_path_ids);
+            array_shift($folder_path_names);
+        }
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $id));
+            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+        }
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'move_fields' => $move_fields,
+            'collection' => $collection,
+            'collection_breadcrumbs' => $aBreadcrumbs,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_copy() {
+        $this->oPage->setBreadcrumbDetails(_("Copy"));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy_final');
+        $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
+        $aNames = $this->oDocumentFolder->getPathArray();
+        $aNames[] = $this->oDocument->getName();
+        $sDocumentName = join(" &raquo; ", $aNames);
+        $move_fields = array();
+        $move_fields[] = new KTStaticTextWidget(_('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget(_('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
+        $move_fields[] = new KTStringWidget(_('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'move_fields' => $move_fields,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_copy_final() {
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $aOptions = array(
+            'message' => _("No reason given"),
+            'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
+        );
+        $this->oValidator->notEmpty($sReason, $aOptions);
+
+        if (!Permission::userHasFolderWritePermission($this->oFolder)) {
+            $this->errorRedirectTo("main", _("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            exit(0);
+        }
+        
+        // FIXME agree on document-duplication rules re: naming, etc.
+        
+        $this->startTransaction();
+
+        $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder);
+        if (PEAR::isError($oNewDoc)) {
+            $this->errorRedirectTo("main", _("Failed to move document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            exit(0);
+        }
+
+        $this->commitTransaction();
+        
+        
+        // FIXME do we need to refactor all trigger usage into the util function?
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('copyDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $oNewDocument,
+                "old_folder" => $this->oDocumentFolder,
+                "new_folder" => $this->oFolder,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+        }
+        
+        $aOptions = array('user' => $oUser);
+        $oDocumentTransaction = & new DocumentTransaction($oNewDoc, "Document copied from old version.", 'ktcore.transactions.create', $aOptions);
+        $res = $oDocumentTransaction->create();
+        
+        $_SESSION['KTInfoMessage'][] = _('Document copied.');
+        
+        controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
+        exit(0);
+    }
+}
+// }}}
+
 // {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     var $sDisplayName = 'Transaction History';

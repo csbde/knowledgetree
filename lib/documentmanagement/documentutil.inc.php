@@ -627,6 +627,7 @@ class KTDocumentUtil {
         KTDocumentUtil::updateSearchableText($oDocument);
     }
 
+
     function canBeMoved($oDocument) {
         if ($oDocument->getIsCheckedOut()) {
             return false;
@@ -636,6 +637,78 @@ class KTDocumentUtil {
         }
         return true;
     }
+
+
+    function copy($oDocument, $oDestinationFolder) {
+        // 1. generate a new triad of content, metadata and core objects.
+        // 2. update the storage path.
+        
+        
+        // grab the "source "data
+        $sTable = KTUtil::getTableName('documents');
+        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
+        $aParams = array($oDocument->getId());
+        $aCoreRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        unset($aCoreRow['id']);
+
+        $aCoreRow['folder_id'] = $oDestinationFolder->getId(); // new location.
+        $id = DBUtil::autoInsert($sTable, $aCoreRow);
+        if (PEAR::isError($id)) { return $id; }
+        // we still have a bogus md_version, but integrity holds, so fix it now.
+        $oCore = KTDocumentCore::get($id);
+        
+        $sTable = KTUtil::getTableName('document_metadata_version');
+        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
+        $aParams = array($oDocument->getMetadataVersionId());
+        $aMDRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        unset($aMDRow['id']);
+        $aMDRow['document_id'] = $oCore->getId();
+        $id = DBUtil::autoInsert($sTable, $aMDRow);
+        if (PEAR::isError($id)) { return $id; }
+        $oCore->setMetadataVersionId($id);
+        $oMDV = KTDocumentMetadataVersion::get($id);
+        
+        $sTable = KTUtil::getTableName('document_content_version');
+        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
+        $aParams = array($oDocument->_oDocumentContentVersion->getId());
+        $aContentRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        unset($aContentRow['id']);
+        $aContentRow['document_id'] = $oCore->getId();
+        $id = DBUtil::autoInsert($sTable, $aContentRow);
+        if (PEAR::isError($id)) { return $id; }
+        $oMDV->setContentVersionId($id);
+        
+        $res = $oCore->update();
+        if (PEAR::isError($res)) { return $res; }
+        $res = $oMDV->update();
+        if (PEAR::isError($res)) { return $res; }
+        
+        // now, we have a semi-sane document object. get it.
+        $oNewDocument = Document::get($oCore->getId());
+        
+        // copy the metadata from old to new.
+        $res = KTDocumentUtil::copyMetadata($oNewDocument, $oDocument->getMetadataVersionId());
+        if (PEAR::isError($res)) { return $res; }
+        
+        // finally, copy the actual file.
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $res = $oStorage->copy($oDocument, $oNewDocument);
+
+
+        $oOriginalFolder = Folder::get($oDocument->getFolderId());
+        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
+        $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
+
+        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
+            $oNewDocument->setPermissionObjectId($oDestinationFolder->getPermissionObjectId());
+        }
+        
+        $res = $oNewDocument->update();
+        if (PEAR::isError($res)) { return $res; }
+        
+        return $oNewDocument;
+    }
+
 }
 
 class KTMetadataValidationError extends PEAR_Error {

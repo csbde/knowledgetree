@@ -239,7 +239,27 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return KTUtil::moveDirectory($sSrc, $sDst);
     }
 	
-	
+	/**
+     * Perform any storage changes necessary to account for a copied
+     * document object.
+     */
+     function copy($oSrcDocument, &$oNewDocument) {
+        // we get the Folder object	
+		$oVersion = $oNewDocument->_oDocumentContentVersion;
+		$oConfig =& KTConfig::getSingleton();
+		$sDocumentRoot = $oConfig->get('urls/documentRoot');
+		
+		$sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oSrcDocument->getFolderID()), $oSrcDocument->_oDocumentContentVersion->getId(), $oSrcDocument->_oDocumentContentVersion->getFileName());
+		$sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oNewDocument->getFolderID()), $oNewDocument->_oDocumentContentVersion->getId(), $oNewDocument->_oDocumentContentVersion->getFileName());
+		$sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+		$sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
+		
+		$res = KTUtil::copyFile($sFullOldPath, $sFullNewPath);
+		if (PEAR::isError($res)) { return $res; }
+		$oVersion->setStoragePath($sNewPath);
+		$oVersion->update();		
+     }
+	 
 	/**
 	 * Deletes a document- moves it to the Deleted/ folder
 	 *
