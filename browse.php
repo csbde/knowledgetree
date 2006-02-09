@@ -503,6 +503,33 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFields[] = new KTStringWidget(_('Reason'), _('The reason for moving these documents and folders, for historical purposes.'), 'sReason', "", $this->oPage, true); 
         
         
+        // now show the items...
+        $moveSet = $_SESSION['moves'][$move_code];
+        $moveItems = array();
+        $moveItems['folders'] = array();
+        $moveItems['documents'] = array();
+        
+        $folderStr = '';
+        $documentStr = '';
+        
+        if (!empty($moveSet['folders'])) {
+            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            foreach ($moveSet['folders'] as $iFolderId) {
+                $oF = Folder::get($iFolderId);
+                $moveItems['folders'][] = $oF->getName();
+            }
+            $folderStr .= implode(', ', $moveItems['folders']);
+        }
+        
+        if (!empty($moveSet['documents'])) {
+            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            foreach ($moveSet['documents'] as $iDocId) {
+                $oD = Document::get($iDocId);
+                $moveItems['documents'][] = $oD->getName();
+            }
+            $documentStr .= implode(', ', $moveItems['documents']);
+        }
+        
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/finalise_mass_move");
         $aTemplateData = array(
@@ -510,6 +537,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'form_fields' => $aFields,
               'folder' => $target_folder,
               'move_code' => $move_code,
+              'folders' => $folderStr,
+              'documents' => $documentStr,              
         );
         return $oTemplate->render($aTemplateData);        
     }

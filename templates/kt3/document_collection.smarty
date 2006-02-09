@@ -16,7 +16,7 @@
         <tbody>
           {if ($context->itemCount != 0)}
             {foreach item=folder_row_id from=$context->activeset.folders name=rowiter}
-            <tr class="{cycle name=rows values=",odd"}">
+            <tr class="{cycle name=rows values=",odd"} folder_row">
               {foreach item=oColumn from=$context->columns name=coliter}
                 <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
                    {$oColumn->renderData($context->getFolderInfo($folder_row_id.id))} 

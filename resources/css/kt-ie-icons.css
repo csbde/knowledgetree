@@ -2,11 +2,12 @@
 .ktError p {     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
 .ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
 
-.ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.gif) top left no-repeat; }
-.ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
-.ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
-.ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.gif) top left no-repeat; }
-.ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.gif) top left no-repeat; }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.gif) top left no-repeat; }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.gif) top left no-repeat; }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.gif) top left no-repeat; }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.gif) top left no-repeat; }
 
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
@@ -16,6 +17,7 @@
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
 .contenttype.image { background-image: url(../../resources/mimetypes/image.gif); }
 .contenttype.compressed { background-image: url(../../resources/mimetypes/compressed.gif); }
+.contenttype.html { background-image: url(../../resources/mimetypes/html.gif); }
 
 .contenttype.txt,
 .contenttype.text,

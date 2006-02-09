@@ -40,7 +40,7 @@ class KTPage {
 	var $helpPage = null;
     
     /** the "component".  Used to set the page header (see documentation for explanation). */
-    var $componentLabel = 'Browse Collections';
+    var $componentLabel = 'Browse Documents';
     var $componentClass = 'browse_collections';
     
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
@@ -86,7 +86,7 @@ class KTPage {
 		// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
 		$this->menu = array(
 		    "dashboard" => $this->_actionHelper(array("name" => _("Dashboard"), "action" => "dashboard", "active" => 0)),
-			"browse" => $this->_actionHelper(array("name" => _("Browse Collections"), "action" => "browse", "active" => 0)),
+			"browse" => $this->_actionHelper(array("name" => _("Browse Documents"), "action" => "browse", "active" => 0)),
 			"administration" => $this->_actionHelper(array("name" => _("DMS Administration"), "action" => "administration", "active" => 0)),
 		);
 		
