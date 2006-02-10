@@ -284,6 +284,10 @@ class KTPage {
             "page" => $this,
 			"systemversion" => $default->systemVersion,
         );
+        $oConfig = KTConfig::getSingleton();
+        if ($oConfig->get("ui/automaticRefresh", false)) {
+            $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
+        }
         
         // unlike the rest of KT, we use echo here.
         echo $oTemplate->render($aTemplateData);
