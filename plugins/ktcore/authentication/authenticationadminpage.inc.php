@@ -147,9 +147,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         if (method_exists($oProvider, 'do_newsource')) {
-            $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
-
-            return $oProvider->dispatch();
+            return $oProvider->subDispatch($this);
         }
 
         return $this->do_newsource_final();
@@ -203,9 +201,8 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'name' => $oSource->getName(),
             'query' => sprintf('action=viewsource&source_id=%d', $oSource->getId()),
         );
-        $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
-        $oProvider->dispatch();
+        $oProvider->subDispatch($this);
         exit(0);
     }
 
@@ -216,9 +213,8 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => KTUtil::addQueryStringSelf("source_id=" . $oSource->getId()));
-        $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
-        $oProvider->dispatch();
+        $oProvider->subDispatch($this);
         exit(0);
     }
 }
