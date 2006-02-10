@@ -8,34 +8,38 @@ These <strong>Authentication Sources</strong> allow the system administrator to
 specify additional sources of authentication data.{/i18n}</p>
 
 {if $providers}
-<form method="POST">
-<fieldset><legend>{i18n}Add an authentication source{/i18n}</legend>
-<input type="hidden" name="action" value="newsource" />
-
-{foreach from=$fields item=oWidget}
-  {$oWidget->render()}
-{/foreach}
-
-<div class="form_actions ">
-  <input type="submit" name="submit" value="{i18n}Add a new source{/i18n}" />
-</div>
-</fieldset>
-</form>
+<p><a href="{addQS}action=addSource{/addQS}" class="ktAction ktAddGroup
+ktInline">Add authentication source</a><a href="{addQS}action=addSource{/addQS}">Add a new
+authentication source</a>.</p>
 {else}
 <div class="ktInfo"><p>{i18n}Only the standard database authentication is currently available.
 If you need to use a different authentication type (e.g. LDAP) you will need to 
 ensure that the Plugin is enabled.{/i18n}<p></div>
 {/if}
 
-{if $sources}
-<h3>{i18n}Existing sources{/i18n}</h3>
-
-<ul>
-{foreach from=$sources item=oSource}
-  <li><a href="{addQS}action=viewsource&source_id={$oSource->getId()}{/addQS}">{$oSource->getName()}</a></li>
-{/foreach}
-</ul>
-{else}
+{if empty($sources)}
 <div class="ktInfo"><p>{i18n}No additional authentication sources have been defined.{/i18n}</p></div>
-{/if}
+{else}
+<table class="listing">
+<thead>
+   <tr>
+      <th>{i18n}Authentication source{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Edit Provider Information{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
+   </tr>
+</thead>
+<tbody>
+     {foreach item=oSource from=$sources}
+     <tr>
+        <td>{$oSource->getName()}</td>
+        <td><a href="{addQS}action=editSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=editSourceProvider&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+     </tr>
+     {/foreach}
+</tbody>
+</table>
 
+
+{/if}

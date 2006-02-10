@@ -1,0 +1,13 @@
+<form method="POST">
+<fieldset><legend>{i18n}Add an authentication source{/i18n}</legend>
+<input type="hidden" name="action" value="newsource" />
+
+{foreach from=$fields item=oWidget}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="{i18n}Add a new source{/i18n}" />
+</div>
+</fieldset>
+</form>

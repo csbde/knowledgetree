@@ -282,7 +282,7 @@ class Group extends KTEntity {
         return true;
     }
     // }}}
-    //
+
     // {{{ removeMemberGroup
     function removeMemberGroup($oGroup) {
         global $default;
@@ -331,6 +331,16 @@ class Group extends KTEntity {
         ), array(
             'multi' => 'true',
         ));
+    }
+
+    function getByAuthenticationSource($oSource, $aOptions = null) {
+        $iSourceId = KTUtil::getId($oSource);
+        $aOptions = KTUtil::meldOptions($aOptions, array(
+            'multi' => true,
+        ));
+        return KTEntityUtil::getByDict('Group', array(
+            'authentication_source_id' => $iSourceId,
+        ), $aOptions);
     }
 
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('Group', $aOptions); }
