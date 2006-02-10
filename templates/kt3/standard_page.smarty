@@ -12,6 +12,10 @@
     
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
+
+{if $refreshTimeout}
+       <meta http-equiv="refresh" content="{$refreshTimeout}" />
+{/if}
     
     <!-- evil CSS workarounds - inspired by Plone's approach -->
     <!-- Internet Explorer CSS Fixes -->
