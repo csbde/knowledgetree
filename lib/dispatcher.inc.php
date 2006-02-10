@@ -53,7 +53,7 @@ class KTDispatcher {
     }
 
     function subDispatch(&$oOrigDispatcher) {
-        $this->aBreadcrumbs = $oOrigDispatcher;
+        $this->aBreadcrumbs = $oOrigDispatcher->aBreadcrumbs;
         $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
         return $this->dispatch();
     }
