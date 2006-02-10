@@ -73,7 +73,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $fields[] = new KTStringWidget(_("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
         $fields[] = new KTTextWidget(_("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
-        $threads = DiscussionThread::getList();
+        $threads = DiscussionThread::getList(array('document_id=?', array($this->oDocument->getId())));
 
         $aTemplateData = array(
             'context' => &$this,
