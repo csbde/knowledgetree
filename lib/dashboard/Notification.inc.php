@@ -341,7 +341,18 @@ class KTWorkflowNotification extends KTNotificationHandler {
 		$aInfo['iUserId'] = $oUser->getId();
 		$aInfo['sLabel'] = $oDocument->getName();
 		
-		return KTNotification::createFromArray($aInfo);
+		$oNotification = KTNotification::createFromArray($aInfo);
+		
+		$handler = new KTWorkflowNotification();
+		
+		if ($oUser->getEmailNotification() && (strlen($oUser->getEmail()) > 0)) {
+			$emailContent = $handler->handleNotification($oNotification);
+			$emailSubject = sprintf(_('Workflow Notification: %s'), $oDocument->getName());
+			$oEmail = new EmailAlert($oUser->getEmail(), $emailSubject, $emailContent);
+			$oEmail->send();
+		}
+		
+		return $oNotification;
 	}
 
 	function handleNotification($oKTNotification) { 
