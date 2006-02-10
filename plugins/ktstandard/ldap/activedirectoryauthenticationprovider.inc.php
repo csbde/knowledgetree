@@ -15,6 +15,8 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
             'basedn' => _('Base DN'),
             'searchuser' => _('LDAP Search User'),
             'searchpassword' => _('LDAP Search Password'),
+            'searchattributes' => _('Search Attributes'),
+            'objectclasses' => _('Object Classes'),
         );
         return parent::KTAuthenticationProvider();
     }
@@ -30,7 +32,11 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         foreach ($this->aConfigMap as $sSettingName => $sName) {
             $sRet .= "  <dt>$sName</dt>\n";
             $sValue = KTUtil::arrayGet($aConfig, $sSettingName, _("Unset"));
-            $sRet .= "  <dd>" . $sValue . "</dd>\n";
+            if (is_array($sValue)) {
+                $sRet .= "  <dd>" . join("<br />", $sValue) . "</dd>\n";
+            } else {
+                $sRet .= "  <dd>" . $sValue . "</dd>\n";
+            }
         }
         $sRet .= "</dl>\n";
         return $sRet;
@@ -96,11 +102,19 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
         $iSourceId = KTUtil::arrayGet($_REQUEST, 'source_id');
         $oSource = KTAuthenticationSource::get($iSourceId);
         $aConfig = unserialize($oSource->getConfig());
+        $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
+        $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         $fields = array();
         $fields[] = new KTStringWidget(_('Server name'), 'The host name or IP address of the LDAP server', 'servername', $aConfig['servername'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Base DN'), 'The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)', 'basedn', $aConfig['basedn'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Search User'), 'The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)', 'searchuser', $aConfig['searchuser'], $this->oPage, true);
         $fields[] = new KTStringWidget(_('Search Password'), 'The password for the user account in the LDAP directory that performs searches', 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
+        $aOptions = array(
+            'rows' => 7,
+            'cols' => 25,
+        );
+        $fields[] = new KTTextWidget(_('Search Attributes'), 'The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)', 'searchattributes_nls', join("\n", $aConfig['searchattributes']), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_('Object Classes'), 'The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)', 'objectclasses_nls', join("\n", $aConfig['objectclasses']), $this->oPage, true, null, null, $aOptions);
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
@@ -114,15 +128,22 @@ class KTActiveDirectoryAuthenticationProvider extends KTAuthenticationProvider {
     function do_performEditSourceProvider() {
         $iSourceId = KTUtil::arrayGet($_REQUEST, 'source_id');
         $oSource = KTAuthenticationSource::get($iSourceId);
-        $aConfig = array();
+        $aConfig = unserialize($oSource->getConfig());
+        $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
+        $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         foreach ($this->aConfigMap as $k => $v) {
+            $sValue = KTUtil::arrayGet($_REQUEST, $k . '_nls');
+            if ($sValue) {
+                $aConfig[$k] = split("\n", $sValue);
+                continue;
+            }
             $sValue = KTUtil::arrayGet($_REQUEST, $k);
             if ($sValue) {
                 $aConfig[$k] = $sValue;
             }
         }
         $oSource->setConfig(serialize($aConfig));
-        $oSource->update();
+        $res = $oSource->update();
         $this->successRedirectTo('viewsource', _("Configuration updated"), 'source_id=' . $oSource->getId());
     }
     // }}}
@@ -420,6 +441,14 @@ class ActiveDirectoryAuthenticator extends Authenticator {
         $this->sBaseDN = $aConfig['basedn'];
         $this->sSearchUser = $aConfig['searchuser'];
         $this->sSearchPassword = $aConfig['searchpassword'];
+        $this->aObjectClasses = KTUtil::arrayGet($aConfig, 'objectclasses');
+        if (empty($this->aObjectClasses)) {
+            $this->aObjectClasses = array('user', 'inetOrgPerson', 'posixAccount');
+        }
+        $this->aSearchAttributes = KTUtil::arrayGet($aConfig, 'searchattributes');
+        if (empty($this->aSearchAttributes)) {
+            $this->aSearchAttributes = array('cn', 'samaccountname');
+        }
 
         require_once('Net/LDAP.php');
         $config = array(
@@ -494,7 +523,15 @@ class ActiveDirectoryAuthenticator extends Authenticator {
         if (is_array($rootDn)) {
             $rootDn = join(",", $rootDn);
         }
-        $sFilter = sprintf('(&(objectClass=user)(|(samaccountname=*%s*)(cn=*%s*)))', $sSearch, $sSearch);
+        $sObjectClasses = "|";
+        foreach ($this->aObjectClasses as $sObjectClass) {
+            $sObjectClasses .= sprintf('(objectClass=%s)', $sObjectClass);
+        }
+        $sSearchAttributes = "|";
+        foreach ($this->aSearchAttributes as $sSearchAttribute) {
+            $sSearchAttributes .= sprintf('(%s=*%s*)', $sSearchAttribute, $sSearch);
+        }
+        $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
         $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
         if (PEAR::isError($oResult)) {
             return $oResult;
