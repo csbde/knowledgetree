@@ -17,7 +17,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 
     function getData() {
-        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => _('Help Administration'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Help Administration'));
         $this->oPage->setBreadcrumbDetails(_('select a section'));
         $this->oPage->setTitle(_('Help Administration'));
         $oTemplating = new KTTemplating;
@@ -34,7 +34,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 
     function getReplacementItemData($oHelpReplacement) {
-        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => _('Help Administration'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Help Administration'));
         $this->oPage->setTitle(_('Editing: ') . $oHelpReplacement->getTitle());
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
