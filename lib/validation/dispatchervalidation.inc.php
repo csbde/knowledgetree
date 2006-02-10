@@ -225,6 +225,26 @@ class KTDispatcherValidation {
         return $this->validateEntity('Unit', $iId, $aOptions);
     }
 
+    function &validateAuthenticationSource($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/authentication/authenticationsource.inc.php');
+        return $this->validateEntity('KTAuthenticationSource', $iId, $aOptions);
+    }
+
+    function validateAuthenticationProvider($sNamespace, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/authentication/authenticationprovider.inc.php');
+        $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+        $aProviders = $oRegistry->getAuthenticationProvidersInfo();
+        foreach ($aProviders as $aProvider) {
+            if ($sNamespace == $aProvider[2]) {
+                return $sNamespace;
+            }
+        }
+        $aOptions = $aOptions;
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("Invalid authentication source"));
+        $this->handleError($aOptions);
+        return $sNamespace;
+    }
+
     function validateDict($aDict, $aValidation, $aOptions = null) {
         foreach ($aValidation as $k => $aValidatorInfo) {
             $sDictValue = KTUtil::arrayGet($aDict, $k, null);

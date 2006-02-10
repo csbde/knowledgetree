@@ -326,6 +326,16 @@ class User extends KTEntity {
         return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
     }
 
+    function getByAuthenticationSource($oSource, $aOptions = null) {
+        $iSourceId = KTUtil::getId($oSource);
+        $aOptions = KTUtil::meldOptions($aOptions, array(
+            'multi' => true,
+        ));
+        return KTEntityUtil::getByDict('User', array(
+            'authentication_source_id' => $iSourceId,
+        ), $aOptions);
+    }
+
     function &getByAuthenticationSourceAndDetails($oSource, $sDetails, $aOptions = null) {
         $iSourceId = KTUtil::getId($oSource);
 
