@@ -709,6 +709,43 @@ class KTDocumentUtil {
         return $oNewDocument;
     }
 
+    function rename($oDocument, $sNewFilename, $oUser) {
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
+        $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
+        $oOldContentVersion = $oDocument->_oDocumentContentVersion;
+        $oDocument->startNewContentVersion($oUser);
+        KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
+        $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
+
+        if (!$res) {
+            return PEAR::raiseError(_("An error occurred while storing the new file"));
+        }
+
+        $oDocument->setLastModifiedDate(getCurrentDateTime());
+        $oDocument->setModifiedUserId($oUser->getId());
+        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
+        $bSuccess = $oDocument->update();
+        if ($bSuccess !== true) {
+            if (PEAR::isError($bSuccess)) {
+                return $bSuccess;
+            }
+            return PEAR::raiseError(_("An error occurred while storing this document in the database"));
+        }
+
+        // create the document transaction record
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'Document renamed', 'ktcore.transactions.update');
+        $oDocumentTransaction->create();
+        
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->ModifyDocument($oDocument, $oFolder);
+        
+        return true;    
+    }
+
 }
 
 class KTMetadataValidationError extends PEAR_Error {
