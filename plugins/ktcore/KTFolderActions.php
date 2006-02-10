@@ -48,7 +48,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
-        controllerRedirect('browse', sprintf('fFolderId=%d', $this->oFolder->getId()));
+        controllerRedirect('browse', sprintf('fFolderId=%d', $res->getId()));
         exit(0);
     }
 }
