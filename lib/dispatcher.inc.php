@@ -52,6 +52,12 @@ class KTDispatcher {
         }
     }
 
+    function subDispatch(&$oOrigDispatcher) {
+        $this->aBreadcrumbs = $oOrigDispatcher;
+        $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
+        return $this->dispatch();
+    }
+
     function startTransaction() {
         DBUtil::startTransaction();
         $this->bTransactionStarted = true;
