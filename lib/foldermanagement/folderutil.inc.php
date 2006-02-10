@@ -217,6 +217,140 @@ class KTFolderUtil {
         
         return true;
     }
+    
+    function copy($oFolder, $oDestFolder, $oUser, $sReason) {
+        //
+        // FIXME the failure cleanup code here needs some serious work.
+        //
+        $oPerm = KTPermission::getByName('ktcore.permissions.read');
+        $oBaseFolderPerm = KTPermission::getByName('ktcore.permissions.addFolder');
+        
+        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDestFolder)) {
+            return PEAR::raiseError(_('You are not allowed to create folders in the destination.'));
+        }
+        
+        $aFolderIds = array(); // of oFolder
+        $aDocuments = array(); // of oDocument
+        $aFailedDocuments = array(); // of String
+        $aFailedFolders = array(); // of String
+        
+        $aRemainingFolders = array($oFolder->getId());
+        
+        DBUtil::startTransaction();
+        
+        while (!empty($aRemainingFolders)) {
+            $iFolderId = array_pop($aRemainingFolders);
+            $oFolder = Folder::get($iFolderId);
+            if (PEAR::isError($oFolder) || ($oFolder == false)) {
+                DBUtil::rollback();
+                return PEAR::raiseError(sprintf('Failure resolving child folder with id = %d.', $iFolderId));
+            }
+            
+            // don't just stop ... plough on.
+            if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                $aFolderIds[] = $iFolderId;
+            } else {
+                $aFailedFolders[] = $oFolder->getName();
+            }
+            
+            // child documents
+            $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
+            foreach ($aChildDocs as $oDoc) {
+                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                    $aDocuments[] = $oDoc;
+                } else {
+                    $aFailedDocuments[] = $oDoc->getName();
+                }
+            }
+            
+            // child folders.
+            $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
+            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+        }
+              
+        if ((!empty($aFailedDocuments) || (!empty($aFailedFolders)))) {
+            $sFD = '';
+            $sFF = '';
+            if (!empty($aFailedDocuments)) {
+                $sFD = _('Documents: ') . array_join(', ', $aFailedDocuments) . '. ';
+            }
+            if (!empty($aFailedFolders)) {
+                $sFF = _('Folders: ') . array_join(', ', $aFailedFolders) . '.';
+            }
+            return PEAR::raiseError(_('You do not have permission to copy these items. ') . $sFD . $sFF);
+        }
+        
+        // first we walk the tree, creating in the new location as we go.
+        // essentially this is an "ok" pass.
+        
+        $aFolderMap = array();
+        
+        $sTable = KTUtil::getTableName('folders');
+        $sGetQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ? ';
+        $aParams = array($oFolder->getId());
+        $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
+        unset($aRow['id']);
+        $aRow['parent_id'] = $oDestFolder->getId();
+        $id = DBUtil::autoInsert($sTable, $aRow);
+        if (PEAR::isError($id)) {
+            DBUtil::rollback();
+            return $id;
+        }
+        $aFolderMap[$oFolder->getId()] = $id;
+        
+        $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oFolder->getId())), array('ids' => true));
+        
+        
+        while (!empty($aRemainingFolders)) {
+            $iFolderId = array_pop($aRemainingFolders);
+            
+            $aParams = array($iFolderId);
+            $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
+            unset($aRow['id']);
+            
+            // since we are nested, we will have solved the parent first.
+            $aRow['parent_id'] = $aFolderMap[$aRow['parent_id']]; 
+            
+            $id = DBUtil::autoInsert($sTable, $aRow);
+            if (PEAR::isError($id)) {
+                DBUtil::rollback();
+                return $id;
+            }
+            $aFolderMap[$iFolderId] = $id;
+            
+            $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
+            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+        }
+        
+        // now we can go ahead.
+        foreach ($aDocuments as $oDocument) {
+            $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]);
+            $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
+            if (PEAR::isError($res)) {
+                DBUtil::rollback();
+                return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());
+            }
+        }
+
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage->removeFolderTree($oStartFolder);
+
+        // documents all cleared.
+        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('folders') . ' WHERE id IN (' . DBUtil::paramArray($aFolderIds) . ')';
+        $aParams = $aFolderIds;
+        
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+
+        if (PEAR::isError($res)) {
+            DBUtil::rollback();
+            return PEAR::raiseError(_('Failure deleting folders.'));
+        }
+        
+        // and store
+        DBUtil::commit();
+        
+        return true;    
+    }
 }
 
 ?>
