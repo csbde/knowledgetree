@@ -239,6 +239,40 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return KTUtil::moveDirectory($sSrc, $sDst);
     }
 	
+    function renameFolder($oFolder, $sNewName) {
+        $table = "document_content_version";
+        $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
+        $aParams = array(
+            sprintf("%s/%s", $oFolder->getFullPath(), $sNewName),
+            strlen($oFolder->getFullPath() . '/' . $oFolder->getName()) + 1,
+            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+        );
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        $oConfig =& KTConfig::getSingleton();
+        $sSrc = sprintf("%s/%s/%s",
+            $oConfig->get('urls/documentRoot'),
+            $oFolder->getFullPath(),
+            $oFolder->getName()
+        );
+        $sDst = sprintf("%s/%s/%s",
+            $oConfig->get('urls/documentRoot'),
+            $oFolder->getFullPath(),
+			$sNewName
+        );
+        $res = @rename($sSrc, $sDst);
+		if (PEAR::isError($res) || ($res == false)) { 
+		    print '<br /> -- unable to move ' . $sSrc . ' to ' . $sDst . '    ';
+		    return false;
+		    // return PEAR::raiseError('unable to move directory to ' . $sDst); 
+		}		
+		
+		return true;
+    }	
+	
 	/**
      * Perform any storage changes necessary to account for a copied
      * document object.
@@ -258,6 +292,30 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		if (PEAR::isError($res)) { return $res; }
 		$oVersion->setStoragePath($sNewPath);
 		$oVersion->update();		
+     }
+	 
+	 /**
+     * Perform any storage changes necessary to account for a renamed
+     * document object.
+	 * someone else _must_ call the update on $oDocument
+     */
+     function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
+        // we get the Folder object	
+		$oVersion =& $oDocument->_oDocumentContentVersion;	
+		$oConfig =& KTConfig::getSingleton();
+		$sDocumentRoot = $oConfig->get('urls/documentRoot');
+		
+		$sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oOldContentVersion->getId(), $oOldContentVersion->getFileName());
+		$sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oDocument->_oDocumentContentVersion->getId(), $sNewFilename);
+		$sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+		$sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
+		
+		$res = KTUtil::copyFile($sFullOldPath, $sFullNewPath);
+		if (PEAR::isError($res)) { return $res; }
+		
+		$oVersion->setStoragePath($sNewPath);
+		// someone else _must_ call the update.
+		return true;		 // RES ?= PEAR::raiseError('.');
      }
 	 
 	/**

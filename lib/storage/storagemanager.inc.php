@@ -65,6 +65,10 @@ class KTStorageManager {
     function moveFolder ($oFolder, $oDestFolder) {
         return PEAR::raiseError("Not implemented");
     }
+    
+    function renameFolder($oFolder, $sNewName) {
+        return PEAR::raiseError("Not implemented");
+    }
 
     /**
      * Perform any storage changes necessary to account for a copied
@@ -111,6 +115,10 @@ class KTStorageManager {
     }
 
     function createFolder($sFolderPath) {
+        return PEAR::raiseError("Not implemented");
+    }
+    
+    function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
         return PEAR::raiseError("Not implemented");
     }
 }
