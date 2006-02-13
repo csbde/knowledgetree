@@ -87,14 +87,19 @@ class KTFolderPermissionsAction extends KTFolderAction {
                 $aMapPermissionRole[$iPermissionId][$iId] = true;
             }
         }
-
+        
+        $bEdit = true;
+        $edit_mode = KTUtil::arrayGet($_REQUEST, 'edit_mode', false);
+        if ($edit_mode == false) { $bEdit = false; }
+        
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
         if ($oInherited === $this->oFolder) {
-            $bEdit = true;
+            ; // leave edit mode as per request.
         } else {
             $iInheritedFolderId = $oInherited->getId();
             $sInherited = join(" &raquo; ", $oInherited->getPathArray());
 
+            // you cannot edit an inherited item.
             $bEdit = false;
         }
 
@@ -151,8 +156,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_newDynamicPermission() {
-        $oGroup =& $this->oValidator->validateGroup($_REQUEST['fGroupId']);
-        $oCondition =& $this->oValidator->validateCondition($_REQUEST['fConditionId']);
+        $aOptions = array(
+            'redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()),
+        );
+        $oGroup =& $this->oValidator->validateGroup($_REQUEST['fGroupId'], $aOptions);
+        $oCondition =& $this->oValidator->validateCondition($_REQUEST['fConditionId'], $aOptions);
         $aPermissionIds = $_REQUEST['fPermissionIds'];
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
@@ -161,9 +169,6 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'conditionid' => $oCondition->getId(),
             'permissionobjectid' => $oPO->getId(),
         ));
-        $aOptions = array(
-            'redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()),
-        );
         $this->oValidator->notError($oDynamicCondition, $aOptions);
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);

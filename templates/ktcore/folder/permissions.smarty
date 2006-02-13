@@ -6,6 +6,7 @@ be allocated to roles and groups.{/i18n}</p></div>
 {else}
 
 
+
 {if $iFolderId != 1}
 <div class="ktInfo">
 { if $inherited }
@@ -91,12 +92,23 @@ value="{$iGroupId}"></td>
 { /foreach }
 </tbody>
 </table>
-{if $edit}
 <div class="form_actions">
+{if $edit}
   <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
+  <a href="{addQS}fFolderId={$iFolderId}{/addQS}" class="ktCancelLink">Cancel</a>
+{else}
+{* non-inherited view mode. *}
+{if ((!$inherited) && (!$edit)) }
+<a class="ktAction ktInline ktEdit"
+   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">Edit Permission Assignments</a>
+<a
+   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">Edit Permission Assignments</a>
+   
+{/if}
+{/if}
 </div>
 </form>
-{/if}
+
 { /if }
 
 
