@@ -278,6 +278,8 @@ class KTPage {
 			}
 		}
 		
+		header('Content-type: text/html; charset=UTF-8');
+		
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
