@@ -29,6 +29,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 ini_set('magic_quotes_runtime', '0');
+ini_set('arg_separator.output', '&');
 
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
@@ -115,6 +116,7 @@ class KTInit {
                 $default->defaultLanguage = $sLocale;
             }
             putenv('LANG=' . $default->defaultLanguage);
+            putenv('LANGUAGE=' . $default->defaultLanguage);
             setlocale(LC_ALL, $default->defaultLanguage);
             // Set the text domain
             $sDomain = 'knowledgeTree';
@@ -328,7 +330,12 @@ class KTInit {
     function readConfig () {
         global $default;
         $oKTConfig =& KTConfig::getSingleton();
-        $oKTConfig->loadFile(KT_DIR . "/config/config.ini");
+        $sConfigFile = trim(file_get_contents(KT_DIR .  "/config/config-path"));
+        if (KTUtil::isAbsolutePath($sConfigFile)) {
+            $oKTConfig->loadFile($sConfigFile);
+        } else {
+            $oKTConfig->loadFile(sprintf("%s/%s", KT_DIR, $sConfigFile));
+        }
         foreach (array_keys($oKTConfig->flat) as $k) {
             $v = $oKTConfig->get($k);
             if ($v === "default") {
