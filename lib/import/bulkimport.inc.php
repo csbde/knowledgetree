@@ -40,6 +40,7 @@ class KTBulkImportManager {
             $aOptions = array();
         }
         $this->aMetadata = KTUtil::arrayGet($aOptions, 'metadata', array());
+        $this->oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype', null); // DocUtil::_add will do the right thing.
     }
 
     function import() {
@@ -93,6 +94,7 @@ class KTBulkImportManager {
             // XXX: Multiversion Import
             'contents' => $aInfo->aVersions[0],
             'metadata' => $this->aMetadata,
+            'documenttype' => $this->oDocumentType,
         );
         $oDocument =& KTDocumentUtil::add($oFolder, basename($sPath), $this->oUser, $aOptions);
         return $oDocument;
