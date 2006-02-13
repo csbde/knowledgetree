@@ -434,7 +434,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
         $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aSearch = array('document_field_id = ?', $this->getID());
-        $aMetaData = MetaData::getList($aSearch);/*ok*/
+        $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aMetaData as $oMetaData) {
             $sSelStr = '';

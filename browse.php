@@ -107,7 +107,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         // if we're going to main ...
         if ($this->browse_mode == 'folder') {
-            $this->editable = true;
+            
+            
             $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
             $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
             if ($folder_id == 0) {
@@ -118,7 +119,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
             
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
-
+            
+            $oPerm = KTPermission::getByName('ktcore.permissions.write');
+            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+                $this->editable = true;
+            } else {
+                $this->editable = false;
+            }
+            
             $this->oPage->setTitle(_('Browse'));
             $this->oPage->setSecondaryTitle($oFolder->getName());
             
@@ -565,7 +573,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         if (!Permission::userHasFolderWritePermission($oTargetFolder)) {
-            $this->errorRedirectTo("main", _("You do not have permission to move items to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _("You do not have permission to move items to this location"), sprintf("fFolderId=%d", $oTargetFolder->getId()));
             exit(0);
         }
         
