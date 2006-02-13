@@ -56,7 +56,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $sDisplayName = 'Checkout';
     var $sName = 'ktcore.actions.document.checkout';
 
-    var $_sDisablePermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.write";
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -296,6 +296,8 @@ class KTDocumentEditAction extends KTDocumentAction {
     var $sDisplayName = 'Edit metadata';
     var $sName = 'ktcore.actions.document.edit';
 
+    var $_sShowPermission = "ktcore.permissions.write";
+
     function getURL() {
         return generateControllerLink("editDocument", sprintf("fDocumentId=%d", $this->oDocument->getID()));
     }
@@ -307,7 +309,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     var $sDisplayName = 'Delete';
     var $sName = 'ktcore.actions.document.delete';
 
-    var $_sDisablePermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.write";
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {

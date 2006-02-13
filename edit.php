@@ -32,11 +32,37 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 
 
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+
 class KTEditDocumentDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
     var $oDocument = null;
     var $oFolder = null;
     var $sSection = "view_details";
+
+	function check() {
+		if (!parent::check()) { return false; }
+		
+		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (empty($document_id)) {
+            $this->errorPage(_("No document specified for editing."));
+        }
+        $oDocument = Document::get($document_id);
+        if (PEAR::isError($oDocument)) {
+            $this->errorPage(_("Invalid Document."));
+        }
+        
+        $this->oDocument = $oDocument;
+		$oPerm = KTPermission::getByName('ktcore.permissions.write');	
+		
+		if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $this->oDocument)) { return false; }
+		
+		
+		
+		
+		return true;
+	}
 
     function KTEditDocumentDispatcher() {
         $this->aBreadcrumbs = array(
