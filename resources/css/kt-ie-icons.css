@@ -2,13 +2,15 @@
 .ktError p {     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
 .ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
 
-.ktActionLink.ktDelete, .ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.gif) top left no-repeat; }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif) top left no-repeat; }
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif) top left no-repeat; }
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.gif) top left no-repeat; }
-.ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.gif) top left no-repeat; }
-.ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.gif) top left no-repeat; }
-.ktActionLink.ktBack .ktAction.ktBack { background: transparent url(../../thirdparty/icon-theme/16x16/actions/back.gif) top left no-repeat; }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.gif); }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif); }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.gif); }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.gif); }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.gif); }
+.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.gif); }
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.gif); }
+.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.gif); }
 
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }

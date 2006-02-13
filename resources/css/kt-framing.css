@@ -571,6 +571,9 @@ a.main_nav_item {
     overflow: hidden;
 }
 
+.centered, .kt_collection thead th.centered { text-align: center; }
+.centered .ktAction { margin-left: auto; margin-right: auto; width: 100%; }
+
 .kt_collection td.sort_on {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
@@ -677,11 +680,16 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 0px !important;
     height /**/: 16px;
     width: 16px;
-    cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: transparent;    
 }
 
 .ktActionLink {
     padding-left: 25px;
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-color: transparent;
 }
 
 .ktAction.ktInline {
@@ -706,13 +714,15 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png) top left no-repeat; }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.png) top left no-repeat; }
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/group-new.png) top left no-repeat; }
-.ktActionLink.ktAdd, .ktAction.ktAdd { background: transparent url(../../thirdparty/icon-theme/16x16/actions/add.png) top left no-repeat; }
-.ktActionLink.ktDownload, .ktAction.ktDownload { background: transparent url(../../resources/graphics/download.png) top left no-repeat; }
-.ktActionLink.ktBack, .ktAction.ktBack { background: transparent url(../../thirdparty/icon-theme/16x16/actions/back.png) top left no-repeat; }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png); }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.png); }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.png); }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.png); }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.png); }
+.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.png); }
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.png); }
+.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
 
 /* =========== standard listings. */
 

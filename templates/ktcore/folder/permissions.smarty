@@ -1,201 +1,120 @@
-{capture assign=sCSS}{literal}
-
-td.true { background-color: #aaffaa; text-align: centre }
-td.false { background-color: #ffaaaa; text-align: centre }
-.edit { display: none; }
-.view { display: block; }
-
-.tablebutton {
-    margin: 0em;
-    margin-right: 1em;
-    border: 1px solid #cccccc;
-}
-.activebutton {
-    background-color: #eeeeff;
-}
-.inactivebutton {
-    background-color: #ffeeee;
-}
-
-{/literal}{/capture}
-{$context->oPage->requireCSSStandalone($sCSS)}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
-
 <h2>{i18n}Folder permissions{/i18n}</h2>
 
-{ if $edit }
-<div style="text-align: right">
-<span class="tablebutton activebutton">
-<a href="javascript:MochiKit.DOM.showElement('view');
-MochiKit.DOM.hideElement('edit');">{i18n}View{/i18n}</a>
-</span>
-<span class="tablebutton inactivebutton">
-<a href="javascript:MochiKit.DOM.showElement('edit');
-MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
+{if ((empty($roles) && empty($groups)))}
+<div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only
+be allocated to roles and groups.{/i18n}</p></div>
+{else}
+
+
+{if $iFolderId != 1}
+<div class="ktInfo">
+{ if $inherited }
+<p>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n} 
+<a class="ktActionLink ktEdit"
+   href="{addQS}action=copyPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Override Permissions{/i18n}</a> </p>
+{ else }
+<p>{i18n}This folder defines its own permissions.{/i18n} 
+<a class="ktActionLink ktDelete"
+   href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
+{ /if }
 </span>
 </div>
 { /if }
-<div class="view" id="view">
-<table class="kt_collection" cellspacing="0" cellpadding="0" border="0">
-<thead>
-<tr>
-<th>Group</th>
-{ foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
-{ /foreach }
-</tr>
-</thead>
-<tbody>
-{ foreach item=oGroup from=$groups }
-<td>{$oGroup->getId()} / {$oGroup->getName()}</td>
-  { assign var=iGroupId value=$oGroup->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
-{ if $bHasPerm }
-<td class="true">True</td>
-{ else }
-<td class="false">False</td>
-{ /if }
-  { /foreach }
-</tr>
-{ /foreach }
-</tbody>
-</table>
 
-<table class="kt_collection" cellspacing="0" cellpadding="0" border="0" width="100%">
-<thead>
-<tr>
-<th>Role</th>
-{ foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
-{ /foreach }
-</tr>
-</thead>
-<tbody>
-{ foreach item=oRole from=$roles }
-<td>{$oRole->getId()} / {$oRole->getName()}</td>
-  { assign var=iRoleId value=$oRole->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
-{ if $bHasPerm }
-<td class="true">True</td>
-{ else }
-<td class="false">False</td>
-{ /if }
-  { /foreach }
-</tr>
-{ /foreach }
-</tbody>
-</table>
-
-</div>
-
-
-{ if $edit }
-<div class="edit" id="edit">
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="fFolderId" value="{$iFolderId}">
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th>Group</th>
+<th width="40%">Role or Group</th>
 { foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+<th title="{$oPerm->sName}" class="centered">{$oPerm->sHumanName}</th>
 { /foreach }
 </tr>
 </thead>
 <tbody>
-{ foreach item=oGroup from=$groups }
-<td>{$oGroup->getId()} / {$oGroup->getName()}</td>
-  { assign var=iGroupId value=$oGroup->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
-{ if $bHasPerm }
-<td class="true"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}" checked="true"></td>
-{ else }
-<td class="false"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}"></td>
-{ /if }
-  { /foreach }
-</tr>
-{ /foreach }
-</tbody>
-</table>
 
-<table class="kt_collection" cellspacing="0" cellpadding="0" border="0" width="100%">
-<thead>
-<tr>
-<th>Role</th>
-{ foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
-{ /foreach }
-</tr>
-</thead>
-
-<tbody>
 { foreach item=oRole from=$roles }
-<td>{$oRole->getId()} / {$oRole->getName()}</td>
+<td><span class="descriptiveText">{i18n}Role:{/i18n}</span> {$oRole->getName()}</td>
   { assign var=iRoleId value=$oRole->getId() }
   { foreach item=oPerm from=$permissions }
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
 
+{ if $edit}
 { if $bHasPerm }
-<td class="true"><input type="checkbox" name="foo[{$iPermId}][role][]"
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
 value="{$iRoleId}" checked="true"></td>
 { else }
-<td class="false"><input type="checkbox" name="foo[{$iPermId}][role][]"
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
 value="{$iRoleId}"></td>
 { /if }
+{else}
+{ if $bHasPerm }
+<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+{ else }
+<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
+{ /if }
+{/if}
+  { /foreach }
+</tr>
+{ /foreach }
+
+
+{ foreach item=oGroup from=$groups }
+<td><span class="descriptiveText">{i18n}Group:{/i18n}</span> {$oGroup->getName()}</td>
+  { assign var=iGroupId value=$oGroup->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
+
+{ if $edit}
+{ if $bHasPerm }
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}" checked="true"></td>
+{ else }
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}"></td>
+{ /if }
+{else}
+{ if $bHasPerm }
+<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+{ else }
+<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
+{ /if }
+{/if}
+
+
   { /foreach }
 </tr>
 { /foreach }
 </tbody>
 </table>
-
-<input type="submit" name="submit" value="{i18n}Update{/i18n}">
+{if $edit}
+<div class="form_actions">
+  <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
+</div>
 </form>
-
-</div>
+{/if}
 { /if }
 
 
-
-{if $iFolderId != 1}
-<div style="text-align: center; padding-top: 2px">
-<span style="border: 1px solid #cccccc; background-color: #ffeeee;
-padding: 2px; padding-right: 1em; padding-left: 1em">
-{ if $inherited }
-{i18n}Inherited from:{/i18n} {$inherited}
-[<a href="{addQS}action=copyPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Copy{/i18n}</a>]
-{ else }
-[<a href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Use
-parent's permissions{/i18n}</a>]
-{ /if }
-</span>
-</div>
-{ /if }
-
+{if (!empty($conditions))}
+{if ($edit || $dynamic_conditions)}
 <h2>Dynamic permissions</h2>
-
+{/if}
 { if $dynamic_conditions }
 <table class="kt_collection" cellpadding="0" cellspacing="0">
   <thead>
     <tr>
 { if $edit }
-      <th>&nbsp;</th>
+      <th width="1%">Remove</th>
 { /if }
       <th>{i18n}Group{/i18n}</th>
       <th>{i18n}Condition{/i18n}</th>
 {foreach from=$permissions item=oPerm}
-      <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+      <th title="{$oPerm->sName}"  class="centered">{$oPerm->sHumanName}</th>
 {/foreach}
     </tr>
   </thead>
@@ -218,9 +137,9 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 {foreach from=$permissions item=oPerm}
   {assign var=bHasPerm value=$oPerm->getId()|in_array:$aPermissions}
   { if $bHasPerm }
-    <td class="true">{i18n}True{/i18n}</td>
-  { else }
-    <td class="false">{i18n}False{/i18n}</td>
+<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+{ else }
+<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
   { /if }
 {/foreach}
     </tr>
@@ -240,7 +159,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
   <th>{i18n}Group{/i18n}</th>
   <th>{i18n}Condition{/i18n}</th>
 {foreach from=$permissions item=oPerm}
-  <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+  <th title="{$oPerm->sName}"  class="centered">{$oPerm->sHumanName}</th>
 {/foreach}
 </tr>
 </thead>
@@ -250,7 +169,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
   <td>{entity_select entities=$conditions name=fConditionId none=true}</td>
 {entity_checkboxes entities=$permissions name=fPermissionIds assign=aPermissionCheckboxes method="none"}
 {foreach from=$aPermissionCheckboxes item=sCheckbox}
-  <td>{$sCheckbox}</td>
+  <td class="centered">{$sCheckbox}</td>
 {/foreach}
 </tr>
 </tbody>
@@ -258,3 +177,4 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 <input type="submit" name="submit" value="{i18n}Add{/i18n}" />
 </form>
 { /if }
+{/if}
