@@ -28,6 +28,10 @@ class KTDispatcher {
             $var = $_REQUEST[$this->cancel_var];
             if (is_array($var)) {
                 $keys = array_keys($var);
+                if ($keys[0] == 0) {
+                    redirect($_SERVER['PHP_SELF']);
+                    exit(0);
+                }
                 redirect($keys[0]);
                 exit(0);
             }
