@@ -134,7 +134,8 @@ class MetaData extends KTEntity {
         return KTEntityUtil::getByDict('MetaData', array(
             'document_field_id' => $iDocumentFieldId,
         ), array(
-            'multi' => 'true'
+            'multi' => 'true',
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -150,6 +151,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
+			'orderby' => 'name ASC',			
         ));
     }
 
@@ -163,7 +165,8 @@ class MetaData extends KTEntity {
             'document_field_id' => $iDocumentFieldId,
             'disabled' => false,
         ), array(
-            'multi' => 'true'
+            'multi' => 'true',
+			'orderby' => 'name ASC',			
         ));
     }
 
@@ -174,6 +177,7 @@ class MetaData extends KTEntity {
             'disabled' => true,
         ), array(
             'multi' => true,
+			'orderby' => 'name ASC',			
         ));
     }
 
@@ -186,6 +190,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
+			'orderby' => 'name ASC',			
         ));
     }
 
@@ -198,6 +203,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
+			'orderby' => 'name ASC',			
         ));
     }
 
