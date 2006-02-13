@@ -172,9 +172,11 @@ class KTFolderUtil {
      *   - step-by-step delete.
      */
     
-    function delete($oStartFolder, $oUser, $sReason) {
+    function delete($oStartFolder, $oUser, $sReason, $aOptions = null) {
         // FIXME: we need to work out if "write" is the right perm.
         $oPerm = KTPermission::getByName('ktcore.permissions.write');
+
+        $bIgnorePermissions = KTUtil::arrayGet($aOptions, 'ignore_permissions');
         
         $aFolderIds = array(); // of oFolder
         $aDocuments = array(); // of oDocument
@@ -194,7 +196,7 @@ class KTFolderUtil {
             }
             
             // don't just stop ... plough on.
-            if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+            if ($bIgnorePermissions || KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
                 $aFolderIds[] = $iFolderId;
             } else {
                 $aFailedFolders[] = $oFolder->getName();
@@ -203,7 +205,7 @@ class KTFolderUtil {
             // child documents
             $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
             foreach ($aChildDocs as $oDoc) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                if ($bIgnorePermissions || KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
                     $aDocuments[] = $oDoc;
                 } else {
                     $aFailedDocuments[] = $oDoc->getName();
