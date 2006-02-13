@@ -1,7 +1,7 @@
 <h2>Edit Unit Details</h2>
 
 <p class="descriptiveText">{i18n arg_name=$edit_unit->getName()}Change
-the system's information about unit <strong>#name</strong>{/i18n}</p>
+the system's information about unit <strong>#name#</strong>{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="saveUnit" />
