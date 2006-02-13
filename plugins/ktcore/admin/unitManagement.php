@@ -129,8 +129,45 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         if (($res == false) || (PEAR::isError($res))) {
             return $this->errorRedirectToMain(_('Failed to set unit details.'));
         }
+        $iFolderId = $oUnit->getFolderId();
+        $oFolder = Folder::get($iFolderId);
+        if (!PEAR::isError($oFolder) && ($oFolder !== false)) {
+            KTFolderUtil::rename($oFolder, $sName, $this->oUser);
+        }
+
         $this->successRedirectToMain(_("Unit details updated"));
-        
+    }
+
+    function do_deleteUnit() {
+        $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
+
+        $fields = array();
+        $fields[] = new KTCheckboxWidget(_('Delete folder'), _('Each unit has an associated folder.  While the unit is being deleted, there may be some documents within the associated folder.  By unselecting this option, they will not be removed.'), 'delete_folder', true, $this->oPage, true);
+
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/deleteunit');
+        $aTemplateData = array(
+            "context" => $this,
+            "unit" => $oUnit,
+            "fields" => $fields,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_removeUnit() {
+        $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
+        $bDeleteFolder = KTUtil::arrayGet($_REQUEST, 'delete_folder', false);
+        if ($bDeleteFolder) {
+            $iFolderId = $oUnit->getFolderId();
+            $oFolder = Folder::get($iFolderId);
+            if (!PEAR::isError($oFolder) && ($oFolder !== false)) {
+                $aOptions = array(
+                    'ignore_permissions' => true,
+                );
+                KTFolderUtil::delete($oFolder, $this->oUser, "Unit deleted", $aOptions);
+            }
+        }
+        $oUnit->delete();
+        $this->successRedirectToMain("Unit removed");
     }
 }
 

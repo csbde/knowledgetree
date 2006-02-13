@@ -1,0 +1,19 @@
+<h2>Delete Unit</h2>
+
+<p class="descriptiveText">{i18n arg_name=$unit->getName()}Delete
+unit <strong>#name#</strong> from the system{/i18n}</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="removeUnit" />
+   <input type="hidden" name="unit_id" value="{$unit->getId()}" />
+   <fieldset>
+      <legend>{i18n}Delete Unit{/i18n}</legend>
+      {foreach item=oWidget from=$fields}
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="{i18n}Delete unit{/i18n}" />
+         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+      </div>
+   </fieldset>
+   </form>
