@@ -525,6 +525,10 @@ class KTDocumentUtil {
         $sDocumentTitle = $oDocument->getName();
         $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments . " " . $sDocumentFilename . " " . $sDocumentTitle;
         $sTable = KTUtil::getTableName('document_searchable_text');
+        $aDelete = array(
+            "document_id" => $iDocumentId,
+        );
+        DBUtil::whereDelete($sTable, $aDelete);
         $aInsert = array(
             "document_id" => $iDocumentId,
             "document_text" => $sSearchableText,
