@@ -172,7 +172,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_('LDAP DN'), _('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
         $fields[] =  new KTStringWidget(_('Username'), _('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
-        $fields[] =  new KTStringWidget(_('Name'), _('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', join(" ", array($aResults[$this->aAttributes[2]], $aResults[$this->aAttributes[3]])), $this->oPage, true);
+        $fields[] =  new KTStringWidget(_('Name'), _('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $aResults[$this->aAttributes[0]], $this->oPage, true);
         $fields[] =  new KTStringWidget(_('Email Address'), _('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $aResults[$this->aAttributes[4]], $this->oPage, false);
         $fields[] =  new KTCheckboxWidget(_('Email Notifications'), _('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', true, $this->oPage, false);
         $fields[] =  new KTStringWidget(_('Mobile Number'), _('The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will have an SMS delivered to it with notifications.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $aResults[$this->aAttributes[5]], $this->oPage, false);
@@ -241,7 +241,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             $aResults = $oAuthenticator->getUser($sId);
             $dn = $sId;
             $sUserName = $aResults[$this->aAttributes[1]];
-            $sName = join(" ", array($aResults[$this->aAttributes[2]], $aResults[$this->aAttributes[3]]));
+            $sName = $aResults[$this->aAttributes[0]];
             $sEmailAddress = $aResults[$this->aAttributes[4]];
             $sMobileNumber = $aResults[$this->aAttributes[5]];
 
