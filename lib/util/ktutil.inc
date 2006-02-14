@@ -182,6 +182,10 @@ class KTUtil {
         if (OS_WINDOWS) {
             $sCmd = "start /b \"kt\" " . $sCmd;
         }
+        $sPopen = KTUtil::arrayGet($aOptions, 'popen');
+        if ($sPopen) {
+            return popen($sCmd, $sPopen);
+        }
         return exec($sCmd);
     }
     // }}}
