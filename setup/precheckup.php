@@ -292,6 +292,7 @@ PHP you are running, and which modules are available.</p>
 <?=boolSetting('Session auto start','session.auto_start','OFF')?>
 <?=emptySetting('Automatic prepend file','auto_prepend_file')?>
 <?=emptySetting('Automatic append file','auto_append_file')?>
+<?=emptySetting('Open base directory','open_basedir')?>
 <?=stringSetting('Default MIME type', 'default_mimetype', 'text/html')?>
   </tbody>
 </table>
