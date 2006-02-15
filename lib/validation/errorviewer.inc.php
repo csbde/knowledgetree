@@ -13,11 +13,11 @@ class KTErrorViewerRegistry {
     }
 
     function register($sViewerClassName, $sHandledClass) {
-        $this->aViewers[$sHandledClass] = $sViewerClassName;
+        $this->aViewers[strtolower($sHandledClass)] = $sViewerClassName;
     }
 
     function getViewer($oError) {
-        $sErrorClass = get_class($oError);
+        $sErrorClass = strtolower(get_class($oError));
 
         // Try for direct hit first
         $sClass = $sErrorClass;
@@ -77,14 +77,56 @@ class KTErrorViewer {
     }
 
     function viewFull() {
-        return $this->oError->getString();
+        return $this->oError->toString();
+    }
+
+    function page() {
+        $ret  = "<h2>Error</h2>\n\n";
+        $ret .= "<dl>\n";
+        $ret .= "\t<dt>Error type</dt>\n";
+        $ret .= "\t<dd>" . $this->oError->getMessage() . "</dd>\n";
+        $sInfo = $this->parseUserInfo();
+        if ($sInfo) {
+            $ret .= "\t<dt>Additional information</dt>\n";
+            $ret .= "\t<dd>" . $sInfo . "</dd>\n";
+        }
+        $ret .= "</dl>\n";
+        return $ret;
+    }
+
+    function parseUserInfo() {
+        $sUserInfo = $this->oError->getUserInfo();
+        return $sUserInfo;
     }
 }
 $oEVRegistry->register("KTErrorViewer", "PEAR_Error");
 
 class KTDBErrorViewer extends KTErrorViewer {
     function view() {
-        return _("Database error:") . " " . $this->oError->errorMessage();
+        return _("Database error:") . " " . $this->oError->getMessage();
+    }
+
+    function page() {
+        $ret  = "<h2>Database Error</h2>\n\n";
+        $ret .= "<dl>\n";
+        $ret .= "\t<dt>Error type</dt>\n";
+        $ret .= "\t<dd>" . $this->oError->getMessage() . "</dd>\n";
+        $sInfo = $this->parseUserInfo();
+        if ($sInfo) {
+            $ret .= "\t<dt>Additional information</dt>\n";
+            $ret .= "\t<dd>" . $sInfo . "</dd>\n";
+        }
+        $ret .= "</dl>\n";
+        return $ret;
+    }
+
+    function parseUserInfo() {
+        $sUserInfo = $this->oError->getUserInfo();
+        $aMatches = array();
+        if (preg_match("#^ ?\[nativecode=(Can't connect to local.*) \(13\)#", $sUserInfo, $aMatches)) {
+            return $aMatches[1];
+        }
+        return $sUserInfo;
     }
 }
 $oEVRegistry->register("KTDBErrorViewer", "DB_Error");
