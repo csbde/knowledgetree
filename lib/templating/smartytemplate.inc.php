@@ -26,6 +26,7 @@
 
 require_once(KT_LIB_DIR . "/templating/template.inc.php");
 require_once(KT_DIR . "/thirdparty/Smarty/Smarty.class.php");
+require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
 
 class KTSmartyTemplate extends KTTemplate {
     function KTSmartyTemplate ($sPath) {
