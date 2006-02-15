@@ -37,9 +37,15 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 		
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
+        $iSourceId = $oUser->getAuthenticationSourceId();
+        $bChangePassword = true;
+        if ($iSourceId) {
+            $bChangePassword = false;
+        }
 		$aTemplateData = array(
               "context" => $this,
 			  'edit_fields' => $edit_fields,
+              "show_password" => $bChangePassword,
 		);
 		return $oTemplate->render($aTemplateData);    
     }
