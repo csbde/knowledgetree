@@ -73,13 +73,22 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     
         $aOptions = array('autocomplete' => false);
         
+        // sometimes even admin is restricted in what they can do.
+
+		$KTConfig =& KTConfig::getSingleton();
+		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+		$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
+		$passwordAddRequirement = '';
+		if ($restrictAdmin) {
+		     $passwordAddRequirement = ' ' . sprintf('Password must be at least %d characters long.', $minLength);
+		}
         
         $add_fields = array();
         $add_fields[] =  new KTStringWidget(_('Username'),_('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', null, $this->oPage, true, null, null, $aOptions);
         $add_fields[] =  new KTStringWidget(_('Name'),_('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTStringWidget(_('Email Address'), _('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', null, $this->oPage, false, null, null, $aOptions);        
         $add_fields[] =  new KTCheckboxWidget(_('Email Notifications'), _("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', true, $this->oPage, false, null, null, $aOptions);        
-        $add_fields[] =  new KTPasswordWidget(_('Password'), _('Specify an initial password for the user.'), 'password', null, $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTPasswordWidget(_('Password'), _('Specify an initial password for the user.') . $passwordAddRequirement, 'password', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTPasswordWidget(_('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
         // nice, easy bits.
         $add_fields[] =  new KTStringWidget(_('Mobile Number'), _("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
@@ -162,7 +171,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('change user password'));
         $this->oPage->setTitle(_("Change User Password"));
-        
+                
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& User::get($user_id);
         
@@ -193,11 +202,18 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
-        if (empty($password)) { 
+   		$KTConfig =& KTConfig::getSingleton();
+		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+		$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));   
+
+        
+        if ($restrictAdmin && (strlen($password) < $minLength)) {
+		    $this->errorRedirectToMain(sprintf(_("The password must be at least %d characters long."), $minLength));
+		} else if (empty($password)) { 
             $this->errorRedirectToMain(_("You must specify a password for the user."));
         } else if ($password !== $confirm_password) {
             $this->errorRedirectToMain(_("The passwords you specified do not match."));
-        }
+        } 
         // FIXME more validation would be useful.
         // validated and ready..
         $this->startTransaction();
@@ -376,7 +392,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
-        if (empty($password)) { 
+        $KTConfig =& KTConfig::getSingleton();
+		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+		$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
+
+        
+        if ($restrictAdmin && (strlen($password) < $minLength)) {
+		    $this->errorRedirectTo('addUser', sprintf(_("The password must be at least %d characters long."), $minLength));
+		} else if (empty($password)) { 
             $this->errorRedirectTo('addUser', _("You must specify a password for the user."));
         } else if ($password !== $confirm_password) {
             $this->errorRedirectTo('addUser', _("The passwords you specified do not match."));

@@ -17,6 +17,16 @@ function getColumnForField(field_id) {
     return getElement('md_'+field_id);
 }
 
+function getButtonsForField(field_id) {
+    return getElement('buttons_'+field_id);
+}
+
+function getNameForField(field_id) {
+    var h = getElement('header_'+field_id);
+    //alert(field_id);
+    return scrapeText(h);
+}
+
 function getFieldIdFromColumn(column) {
     return column.id.substr(3,column.id.length);
 }
@@ -29,6 +39,7 @@ function setActiveFields(active_fields) {
         var column = getColumnForField(active_fields[i]);
         setElementClass(column, 'active');
     }
+    
 }
 
 // takes a field, and sets all items in active_lookups to be active.  other items are deleted.
@@ -99,13 +110,13 @@ function do_handleAjaxError(err_source, err) {
 }
 
 // from a selected_lookup, get the fixed_field and pass through, getting the items that selection currently activates.
-function updateActiveLookups(selected_lookup) {
+function updateActiveLookups(selected_lookup, lookup_label) {
    
    simpleLog('DEBUG','function updateActiveLookups called.');
    var req = getXMLHttpRequest();
    req.open('GET',target_url+'?action=updateActiveLookups&active_field='+current_fixed+'&selected_lookup='+selected_lookup, true);
    var deferred = sendXMLHttpRequest(req);
-   deferred.addCallback(do_updateActiveLookups);
+   deferred.addCallback(partial(do_updateActiveLookups, lookup_label));
    deferred.addErrback(partial(do_handleAjaxError, 'updateActiveLookups'));
 }
 
@@ -152,7 +163,7 @@ function storeRelationship(selected_lookup, child_lookups) {
 
   // inform the user that something has happened.
   // FIXME this isn't i18n friendly.
-  addInformationNote('Values updated at ' + new Date());
+  addInformationNote('Dependencies saved. (at ' + new Date() + ')');
   
   deferred.addCallback(do_updateActiveLookups);
   deferred.addErrback(partial(do_handleAjaxError, 'storeRelationship'));
@@ -187,7 +198,7 @@ function do_updateActiveFields(req) {
 
 // should receive a simple-enough set of "field" elements, 
 // filled with "lookup" items. 
-function do_updateActiveLookups(req) {
+function do_updateActiveLookups(label, req) {
    simpleLog('DEBUG','AJAX function do_updateActiveLookups triggered');
    var active_fields = Array();
    var incoming_fields = req.responseXML.getElementsByTagName('field');
@@ -211,6 +222,8 @@ function do_updateActiveLookups(req) {
             setActiveLookupsForField(active_fields[i].field_id, active_fields[i].lookups);
         }
    }
+   
+   addInformationNote('Dependencies for value "'+label+' loaded."(at ' + new Date() + ')');
 }
 
 
@@ -220,18 +233,26 @@ function setExclusiveEditing(field_id) {
     var rootItem = getConditionalTable();
     var columns = rootItem.getElementsByTagName('TD');
     for (var i=0; i<columns.length; i++) {
-        setElementClass(columns[i], 'inactive');
-        var item_list = getElementsByTagAndClassName('SELECT','item_list',columns[i])[0];   // FIXME catch potential failure here (pathalogical)
-        item_list.multiple=true;
-        updateNodeAttributes(item_list, {'onchange':null});
+        var col = columns[i];
+        if (hasElementClass(col, "buttonset")) { setElementClass(col, 'buttonset inactive'); }
+        else {
+            setElementClass(columns[i], 'inactive');
+            var item_list = getElementsByTagAndClassName('SELECT','item_list',columns[i])[0];   // FIXME catch potential failure here (pathalogical)
+            item_list.multiple=true;
+            updateNodeAttributes(item_list, {'onchange':null});
+        }
     }
 
     // get the "right" column.
     var column = getColumnForField(field_id);
+    simpleLog('DEBUG','setExclusiveEditing found column' + column + ' for id ' + field_id);
     setElementClass(column, 'active editing');
     var item_list = getElementsByTagAndClassName('SELECT','item_list',column)[0];   // FIXME catch potential failure here (pathalogical)            
     item_list.multiple = false;
     updateNodeAttributes(item_list, {'onchange':partial(handleChangedSelection, field_id, item_list)});
+
+    var buttons = getButtonsForField(field_id);
+    setElementClass(buttons, 'buttonset active editing');
 
     simpleLog('ERROR','setExclusiveEditing needs to alter the options so nothing is selected.');
 }
@@ -248,6 +269,7 @@ function editSimpleField(field_id) {
     setExclusiveEditing(field_id);
     updateActiveFields(); // trigger an update of the backend.
     // rest is asynchronous.
+    addInformationNote('Now editing field "'+getNameForField(field_id)+'".');
 }
 
 
@@ -279,7 +301,8 @@ function finishSimpleField(field_id) {
 
 // called when a single-view dropdown is activated.
 function handleChangedSelection(field_id, select_input) {
-    updateActiveLookups(select_input.value);    // handles everything for us.
+    addInformationNote('Loading Dependencies for value "'+scrapeText(select_input.options[select_input.selectedIndex])+'"(at ' + new Date() + ')');
+    updateActiveLookups(select_input.value, scrapeText(select_input.options[select_input.selectedIndex]));    // handles everything for us.
 }
 
 // push onto the "fixed" stack the field which is being edited at the moment.

@@ -1,5 +1,9 @@
 /* ------------------ generic ------------------ */
 
+html { 
+    height: 100%;
+}
+
 body
 {
     padding: 1em ; border: 0; margin: 0;
@@ -14,10 +18,12 @@ body
     margin: 0; border: 0; padding: 0;
 }
 
+/*
 #kt-wrapper
 {
     position: relative;
 }
+*/
 
 .copyright {
     margin-top: 1em;
@@ -173,8 +179,8 @@ a.main_nav_item {
 {
     position: absolute;
     width: 14em;
-    left: 0;
-    top: 0;
+    left: 1em;
+/*    top: 0; */           /* stupid IE bug:  absolute position ate my scrollbars */
     background: transparent;
     margin: 0 10px 0 0 ;
     border: 0;

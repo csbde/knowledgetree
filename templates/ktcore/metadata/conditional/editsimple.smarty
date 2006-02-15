@@ -3,16 +3,20 @@
 /* inactivity */
 .active .inactivity_message { display: none; }
 
+select { width: 100%; }
+
+.edit_button { margin-bottom: 0.5em; }
 .save_button,
-.done_button { display: none; }
+.done_button { display: none; margin-bottom: 0.5em;}
 
 .active.editing .save_button,
 .active.editing .done_button { display: block; }
 
 .active.editing .edit_button { display: none; }
 
-
 .active { position: relative; }
+td { vertical-align: top; }
+.buttonset.inactive { background: transparent; }
 
 .inactive { background: #ccc; position: relative; }
 .inactive .fixed_message, 
@@ -61,14 +65,24 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 <h2>{i18n}Editing Fieldset Rules (Simple){/i18n}</h2>
 
+<p class="descriptiveText">To make a value in a <strong>child field</strong>available to the user when another value is 
+selected in a <strong>parent field</strong>, first ensure that the parent field is being edited (it will have "save" and "done" 
+as the buttons at the bottom of the column) and then select the value for the parent field.  Now select the value(s) in 
+the child column(s) you wish to be available to the user when the parent field's value is selected,
+and click "save".  Note you that you can use Ctrl-&lt;click&gt; to select multiple child values
+at the same time.</p>
+
+<p class="descriptiveText important">Changes made here are stored immediately, without you needing to
+refresh the page.</p>
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
 <table id="simple_conditional_edit">
 <tr>
-  <th>Column 1</th>
-  <th>Column 2</th>
-  <th>Column 3</th>
+{foreach from=$aFields item=oField}
+  <th id="header_{$oField->getId()}">{$oField->getName()}</th>
+{/foreach}
 </tr>
 <tr valign="top">
 
@@ -76,21 +90,27 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
   <td class="inactive" id="md_{$oField->getId()}">
      <p class="inactivity_message">{i18n}This field is not controlled by the currently active group.{/i18n}</p>
      <div class="lookup_items">
-     <h3>Field: {$oField->getName()}</h3>
          <select class="item_list">
   {foreach from=$oField->getValues() item=oMetaData}
 				<option value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</option>
   {/foreach}
            </select>
-         <div class="buttonset">
-             <input type="button" value="{i18n}edit{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
-             <input type="button" value="{i18n}save{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
-             <input type="button" value="{i18n}done{/i18n}" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
-         </div>
+
      </div>
   </td>
 {/foreach}
   
+</tr>
+<tr>
+{foreach from=$aFields item=oField}
+   <td class="buttonset" id="buttons_{$oField->getId()}">
+         <div class="form_actions">
+             <input type="button" value="{i18n}edit field{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
+             <input type="button" value="{i18n}save this dependency{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
+             <input type="button" value="{i18n}finished with this field{/i18n}" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
+         </div>
+   </td>
+{/foreach}		 
 </tr>
 </table>
 <!--
