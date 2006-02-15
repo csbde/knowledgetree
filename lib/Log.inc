@@ -76,11 +76,11 @@ class KTLegacyLog {
         if (!file_exists($this->logFile)) {
             $res = @touch($this->logFile);
             if ($res === false) {
-                return new PEAR_Error('Failed to create log file (check permissions)');
+                return new PEAR_Error('Failed to create log file ' . $this->logFile . ' (check permissions)');
             }
         }
         if (!is_writable($this->logFile)) {
-            return new PEAR_Error('Cannot write to log file (check permissions)');
+            return new PEAR_Error('Cannot write to log file ' . $this->logFile . ' (check permissions)');
         }
     }
 
