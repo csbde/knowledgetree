@@ -1,12 +1,28 @@
 <h2>{i18n}Manage conditional fieldset{/i18n}</h2>
 
+<p class="descriptiveText">Conditional fieldsets allow you to restrict the options
+a user has for values in some fields based on the values in other fields.  There
+are two kinds of conditional fieldsets:  <strong>Simple</strong> and <strong>Complex</strong>
+.  Simple fieldsets should be sufficient for most things:  they allow you to say that 
+the values of one field are restricted to a certain subset of values if another field
+has a specific value.  For example, you could say that if the field "Street" is "Jeffrey", 
+then the field "Residents" must be one of "Jones","Smith" or "Friedman".</p>
+
+<p class="descriptiveText">Complex fieldsets allow you to give far more detailed structure to
+your information:  The value of "Residents" can depend not only on "Street", but on
+how the user was allowed to select the specific street (given another field).</p>
+
+{* don't show warnings until the basics are done. *}
+
+{if ($oMasterField && empty($free_fields))}
 {if $sIncomplete || !$oFieldset->getIsComplete()}
-<div class="ktError">
+<div class="ktInfo">
 <p>{i18n}This conditional fieldset is marked such that it
 cannot be used.  This happens when the fieldset has been edited and has
 not been set to complete.  Setting the fieldset to complete will do a
 check to see if the fieldset is usable by the user.{/i18n}</p>
 </div>
+{/if}
 
 {if $sIncomplete}
 <div class="ktError">
@@ -27,9 +43,12 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
 <h2>{i18n}Conditional type{/i18n}</h2>
 
 {if $oFieldset->getIsComplex()}
-<p>{i18n}Complex{/i18n}: <a
+<p>{i18n}The fieldset is currently designated as <strong>Complex</strong>{/i18n}</p> 
+
+{if ($oMasterField && empty($free_fields))}<p><a
+class="ktActionLink ktEdit"
 href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
-complex conditional{/i18n}</a></p>
+complex conditional{/i18n}</a></p>{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToSimple" />
@@ -39,9 +58,13 @@ complex conditional{/i18n}</a></p>
 
 {else}
 
-<p>{i18n}Simple{/i18n}: <a
+<p>{i18n}The fieldset is currently designated as <strong>Simple</strong>{/i18n}</p> 
+
+{if ($oMasterField && empty($free_fields))}<p><a
+class="ktActionLink ktEdit"
 href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
 </p>
+{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToComplex" />
@@ -54,9 +77,10 @@ href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editFieldset
 <p>{i18n}Changing the conditional type set will remove all existing field
 ordering!{/i18n}</p>
 
-<h2>Master field</h2>
+
 
 {if !$oMasterField}
+<h2>Master field</h2>
 {i18n}No master field is set, please select the master field{/i18n}:
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -70,15 +94,26 @@ ordering!{/i18n}</p>
 {else}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Master field</legend>
 <input type="hidden" name="action" value="setMasterField" />
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 
+<p class="descriptiveText">In order to have a chain of conditions, one initial field
+must be shown to the user.  This is called the <strong>master field</strong>.</p>
+
+<div class="form">
+<p class="descriptiveText important">{i18n}Changing the master field set will remove all existing field
+ordering!{/i18n}</p>
 {entity_select entities=$oFieldset->getFields() name="fFieldId" selected=$oMasterField->getId()}
+</div>
+<div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Change master field{/i18n}" />
+</div>
+</fieldset>
 </form>
 
-<p>{i18n}Changing the master field set will remove all existing field
-ordering!{/i18n}</p>
+
 
 <h2>{i18n}Field ordering{/i18n}</h2>
 
@@ -92,30 +127,38 @@ $this->assign("oParentField", DocumentField::get($this->_tpl_vars['aRow']['paren
 $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_field_id']));
 {/php}
   <li>
-<span title="Field Id {$oParentField->getId()}">Field {$oParentField->getName()|escape}</span>
-affects the values available in
-<span title="Field Id {$oChildField->getId()}">field {$oChildField->getName()|escape}</span>
+    {$oParentField->getName()|escape}
+<span class="descriptiveText">controls the values available in</span> 
+    {$oChildField->getName()|escape}
 </li>
 {/foreach}
 </ul>
 {/if}
 
 { if $free_fields }
-<h3>{i18n}Order fields{/i18n}</h2>
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="action" value="orderFields" />
 
-The available values of the selected fields:
-<br />
-{entity_select entities=$free_fields name="fFreeFieldIds[]" multiple="yes"}
-<br />
-are conditional on the values of this field:
-<br />
+<legend>{i18n}Order Fields{/i18n}</legend>
+
+<div class="field">
+<p class="descriptiveText">The value of the field</p>
 {entity_select entities=$parent_fields name="fParentFieldId"}
-<br />
+</div>
+
+<div class="field">
+<p class="descriptiveText">controls the values of the following fields</p>
+{entity_select entities=$free_fields name="fFreeFieldIds[]" multiple="yes"}
+</div>
+
+<div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Order{/i18n}" />
+</div>
+</fieldset>
 </form>
 {/if}
 

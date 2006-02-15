@@ -155,7 +155,7 @@ class Group extends KTEntity {
         $aMembers = array();
         foreach ($aUserIds as $iUserId) {
             $oUser = User::get($iUserId);
-            if ($oUser !== false) {
+            if ((!PEAR::isError($oUser)) && ($oUser !== false)) {
                 $aMembers[] = $oUser;
             }
         }
@@ -170,7 +170,7 @@ class Group extends KTEntity {
         $aMembers = array();
         foreach ($aGroupIds as $iGroupId) {
             $oGroup = Group::get($iGroupId);
-            if ($oGroup !== false) {
+            if ((!PEAR::isError($oUser)) && ($oGroup !== false)) {
                 $aMembers[] = $oGroup;
             }
         }

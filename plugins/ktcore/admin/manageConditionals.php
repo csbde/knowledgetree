@@ -19,8 +19,8 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         global $default;
         $this->ru = $default->rootUrl;
         // this is not useful:  we _still_ don't chain through the right dispatcher (!)
-        $this->aBreadcrumbs[] = array('url' => $default->rootUrl . '/admin.php/documents', 'name' => _('Document Metadata and Workflow Configuration'));
-        $this->aBreadcrumbs[] = array('url' => $default->rootUrl . '/admin.php/documents/fieldmanagement', 'name' => _('Document Field Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents'), 'name' => _('Document Metadata and Workflow Configuration'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents/fieldmanagement'), 'name' => _('Document Field Management'));
 
 
     }
@@ -49,10 +49,11 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
          *  we can then render in/out.   Everything "intelligent" happens
          *  in AJAX (doing it with submits sucks arse.
          * 
-         *  FIXME we fake it here with nested arrays...
          */
+        
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
+        
         $this->aBreadcrumbs[] = array(
             'url' => $this->ru . '/admin.php/documents/fieldmanagement',
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
@@ -69,7 +70,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
-            "iMasterFieldId" => $aFields[0]->getId(),
+            "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -104,7 +105,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
-            "iMasterFieldId" => $aFields[0]->getId(),
+            "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
         return $oTemplate->render($aTemplateData);
     }

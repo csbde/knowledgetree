@@ -223,10 +223,10 @@ class KTFolderUtil {
             $sFD = '';
             $sFF = '';
             if (!empty($aFailedDocuments)) {
-                $sFD = _('Documents: ') . array_join(', ', $aFailedDocuments) . '. ';
+                $sFD = _('Documents: ') . implode(', ', $aFailedDocuments) . '. ';
             }
             if (!empty($aFailedFolders)) {
-                $sFF = _('Folders: ') . array_join(', ', $aFailedFolders) . '.';
+                $sFF = _('Folders: ') . implode(', ', $aFailedFolders) . '.';
             }
             return PEAR::raiseError(_('You do not have permission to delete these items. ') . $sFD . $sFF);
         }
@@ -267,7 +267,7 @@ class KTFolderUtil {
         $oPerm = KTPermission::getByName('ktcore.permissions.read');
         $oBaseFolderPerm = KTPermission::getByName('ktcore.permissions.addFolder');
         
-        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDestFolder)) {
+        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oBaseFolderPerm, $oDestFolder)) {
             return PEAR::raiseError(_('You are not allowed to create folders in the destination.'));
         }
         
@@ -298,7 +298,7 @@ class KTFolderUtil {
             // child documents
             $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
             foreach ($aChildDocs as $oDoc) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDoc)) {
                     $aDocuments[] = $oDoc;
                 } else {
                     $aFailedDocuments[] = $oDoc->getName();
@@ -314,16 +314,19 @@ class KTFolderUtil {
             $sFD = '';
             $sFF = '';
             if (!empty($aFailedDocuments)) {
-                $sFD = _('Documents: ') . array_join(', ', $aFailedDocuments) . '. ';
+                $sFD = _('Documents: ') . implode(', ', $aFailedDocuments) . '. ';
             }
             if (!empty($aFailedFolders)) {
-                $sFF = _('Folders: ') . array_join(', ', $aFailedFolders) . '.';
+                $sFF = _('Folders: ') . implode(', ', $aFailedFolders) . '.';
             }
             return PEAR::raiseError(_('You do not have permission to copy these items. ') . $sFD . $sFF);
         }
         
         // first we walk the tree, creating in the new location as we go.
         // essentially this is an "ok" pass.
+        
+        
+        $oStorage =& KTStorageManagerUtil::getSingleton();        
         
         $aFolderMap = array();
         
@@ -339,7 +342,13 @@ class KTFolderUtil {
             return $id;
         }
         $aFolderMap[$oFolder->getId()] = $id;
-        
+        $oNewBaseFolder = Folder::get($id);
+        $res = $oStorage->createFolder($oNewBaseFolder);
+        if (PEAR::isError($res)) {
+            // it doesn't exist, so rollback and raise..
+            DBUtil::rollback();
+            return $res;
+        }
         $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oFolder->getId())), array('ids' => true));
         
         
@@ -359,33 +368,29 @@ class KTFolderUtil {
                 return $id;
             }
             $aFolderMap[$iFolderId] = $id;
+            $oNewFolder = Folder::get($id);
+            $res = $oStorage->createFolder($oNewFolder);
+            if (PEAR::isError($res)) {
+                // first delete, then rollback, then fail out.
+                $oStorage->removeFolder($oNewBaseFolder);
+                DBUtil::rollback();
+                return $res;
+            }
             
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
             $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
         }
         
+        
+        
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]);
             $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
-            if (PEAR::isError($res)) {
+            if (PEAR::isError($res) || ($res === false)) {
                 DBUtil::rollback();
-                return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());
+                return PEAR::raiseError(_('Delete Aborted. Unexpected failure to copydocument: ') . $oDocument->getName() . $res->getMessage());
             }
-        }
-
-        $oStorage =& KTStorageManagerUtil::getSingleton();
-        $oStorage->removeFolderTree($oStartFolder);
-
-        // documents all cleared.
-        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('folders') . ' WHERE id IN (' . DBUtil::paramArray($aFolderIds) . ')';
-        $aParams = $aFolderIds;
-        
-        $res = DBUtil::runQuery(array($sQuery, $aParams));
-
-        if (PEAR::isError($res)) {
-            DBUtil::rollback();
-            return PEAR::raiseError(_('Failure deleting folders.'));
         }
         
         // and store

@@ -191,6 +191,53 @@ function getPOSTRequest(fullurl) {
     return req;
 }
 
+function removeFromBehaviour(field_id) {
+    var action = 'removeFromBehaviour';    
+
+    simpleLog('DEBUG','initiating item list update on field '+field_id);
+    
+    var formKeys = Array();
+    var formValues = Array();
+    // action
+    formKeys.push('action');
+    formValues.push(action);
+    
+    // fieldset-id
+    formKeys.push('fieldset_id');
+    formValues.push(getFieldsetId());
+    // field_id
+    formKeys.push('field_id');
+    formValues.push(field_id);
+
+	// get the assigned items that are selected.
+	var column = getColumnForField(field_id);
+	var assigned_sources = getElementsByTagAndClassName('SELECT','assigned_item_list', column);
+	if (assigned_sources.length == 0) {
+	   simpleLog('ERROR','Unable to locate assigned items.');
+	   return;
+	} 
+	var assigned_select = assigned_sources[0];
+	for (var i=0; i<assigned_select.options.length; i++) {
+	    var opt = assigned_select.options[i];
+		if (opt.selected) {
+		    formKeys.push('fieldsToRemove[]');
+			formValues.push(opt.value);
+		}
+	}
+
+
+    // boilerplate.
+    var POSTval = queryString(formKeys, formValues);
+    var req = getPOSTRequest(targeturl);
+    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var deferred = sendXMLHttpRequest(req, POSTval);
+    deferred.addCallback(partial(do_removeItems, field_id));
+    deferred.addErrback(handleError);
+}
+
+function do_removeItems(field_id, req) {
+    updateItemListForField(field_id);
+}
 
 // updates the item list for a given field to the items which are "free".
 function updateItemListForField(field_id) { 
@@ -226,6 +273,39 @@ function updateItemListForField(field_id) {
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_updateItemList, field_id));
     deferred.addErrback(handleError);
+	
+	
+	
+	
+	action = 'getAssignedList';
+	
+	formKeys = Array();
+	formValues = Array();
+	
+	formKeys.push('action');
+    formValues.push(action);
+    // we need the fixed parent (or null - both are equivalent).
+    formKeys.push('parent_behaviour');
+    if (fixed_value == null) {
+       formValues.push('');
+    } else {
+        formValues.push(fixed_value);
+    }
+    // fieldset-id
+    formKeys.push('fieldset_id');
+    formValues.push(getFieldsetId());
+    // field_id
+    formKeys.push('field_id');
+    formValues.push(field_id);
+
+
+    // boilerplate.
+    POSTval = queryString(formKeys, formValues);
+    req2 = getPOSTRequest(targeturl);
+    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var deferred2 = sendXMLHttpRequest(req2, POSTval);
+    deferred2.addCallback(partial(do_updateAssignedItemList, field_id));
+    deferred2.addErrback(handleError);
  }
 
 // updates the available behaviours for a given field.
@@ -453,6 +533,34 @@ function do_updateItemList(field_id, req) {
     var is_sources = getElementsByTagAndClassName('select','item_list',column);
     if (is_sources.length == 0) {
         simpleLog('ERROR','Could not find the item list in field '+field_id);
+        return;
+    }
+    var item_select = is_sources[0];
+    replaceChildNodes(item_select, itemNodes);
+}
+
+
+function do_updateAssignedItemList(field_id, req) {
+    simpleLog('DEBUG','entering callback for assigned-item-list update.');
+    var items = req.responseXML.getElementsByTagName('item');
+	
+    var itemNodes = Array();
+    for (var i=0; i<items.length; i++) {
+        var item = items[i];
+        itemNodes.push(createDOM('option',{'value':item.getAttribute('value')},item.getAttribute('label')));
+    }
+    // now, find the array and replaceChildNodes() it.
+    var column = getColumnForField(field_id);
+	var assigned_wrapper = getElementsByTagAndClassName('DIV','assigned_items',column)[0];
+	
+	if (itemNodes.length == 0) {
+		setElementClass(assigned_wrapper, 'assigned_items empty');
+	} else { setElementClass(assigned_wrapper, 'assigned_items'); }
+	
+	
+    var is_sources = getElementsByTagAndClassName('select','assigned_item_list',column);
+    if (is_sources.length == 0) {
+        simpleLog('ERROR','Could not find the assigned item list in field '+field_id);
         return;
     }
     var item_select = is_sources[0];

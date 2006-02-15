@@ -62,6 +62,88 @@ class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
         return $oTemplate->render();
     } 
     
+    function do_removeFromBehaviour() {
+        $oFieldset =& $this->oValidator->validateFieldset(KTUtil::arrayGet($_REQUEST, 'fieldset_id'));
+        $field_id = KTUtil::arrayGet($_REQUEST, 'field_id'); 
+        $oField =& $this->oValidator->validateField(KTUtil::arrayGet($_REQUEST, 'field_id'));
+        
+        header('Content-type: application/xml');
+        
+        $instances = (array) KTUtil::arrayGet($_REQUEST, 'fieldsToRemove');
+        
+        $this->startTransaction();
+        
+        foreach ($instances as $iInstanceId) {
+            $oInstance = KTValueInstance::get($iInstanceId);
+            if (PEAR::isError($oInstance) || ($oInstance === false)) {
+                $this->rollbackTransaction();
+                return 'Not OK.';
+            }
+            
+            $res = $oInstance->delete();
+            if (PEAR::isError($res) || ($res === false)) {
+                $this->rollbackTransaction();
+                return 'Not OK.';
+            }
+        }
+        
+        $this->commitTransaction();
+        
+        return '<empty>OK.</empty>';
+    }
+    
+    // get the list of ASSIGNED items for a given column, under a certain parent behaviour.
+    function do_getAssignedList() {
+        $parent_behaviour = KTUtil::arrayGet($_REQUEST, 'parent_behaviour'); 
+        //$fieldset_id = KTUtil::arrayGet($_REQUEST, 'fieldset_id'); // 
+        $oFieldset =& $this->oValidator->validateFieldset(KTUtil::arrayGet($_REQUEST, 'fieldset_id'));
+        $field_id = KTUtil::arrayGet($_REQUEST, 'field_id'); 
+        $oField =& $this->oValidator->validateField(KTUtil::arrayGet($_REQUEST, 'field_id'));
+        
+        header('Content-type: application/xml');
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/conditional/ajax_complex_get_item_list');
+
+        $aValues = array();
+        $aBehaviours = array();
+        foreach ($oField->getValues() as $oValue) {
+            if (empty($parent_behaviour)) {
+                $oInstance = KTValueInstance::getByLookupSingle($oValue);
+                if (!empty($oInstance)) {
+                    if (is_null($aBehaviours[$oInstance->getBehaviourId()])) {
+                        $aBehaviours[$oInstance->getBehaviourId()] = KTFieldBehaviour::get($oInstance->getBehaviourId());
+                    }
+                    $aValues[$oInstance->getId()] = $oValue->getName() . ' - ' . $aBehaviours[$oInstance->getBehaviourId()]->getName();
+                }
+                // No parent behaviour (thus master column), so any
+                // instance will do to prevent showing this value
+                continue;
+            }
+
+            $iInstanceId = KTValueInstance::getByLookupAndParentBehaviour($oValue, $parent_behaviour, array('ids' => true));
+            
+            if (!empty($iInstanceId)) {
+                
+                $oInstance = KTValueInstance::get($iInstanceId);
+                
+                //print $oInstance->getBehaviourId() . ' - ';
+                //continue;
+                
+                if (is_null($aBehaviours[$oInstance->getBehaviourId()])) {
+                    $aBehaviours[$oInstance->getBehaviourId()] = KTFieldBehaviour::get($oInstance->getBehaviourId());
+                }
+                
+                $aValues[$oInstance->getId()] = $oValue->getName() . ' - ' . $aBehaviours[$oInstance->getBehaviourId()]->getName();
+            }
+        }
+        $aData = array(
+            'values' => $aValues,
+        );
+        $oTemplate->setData($aData);
+        
+        return $oTemplate->render();
+    } 
+    
     function do_getBehaviourList() {
         $parent_behaviour = KTUtil::arrayGet($_REQUEST, 'parent_behaviour'); 
         $fieldset_id = KTUtil::arrayGet($_REQUEST, 'fieldset_id'); 

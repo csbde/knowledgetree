@@ -15,6 +15,12 @@
 .inactive .behaviour_edit_options 
 { display: none; }
 
+.inactive .assigned_items { display: none; }
+
+.assigned_items.empty select { display: none; }
+.assigned_items.empty .assigned_items_message { display: block; color: #666; }
+.assigned_items_message { display: none; }
+
 .helpText { color: #666; }
 {/literal}
 {/capture}
@@ -36,6 +42,17 @@ addLoadEvent(updateActiveFields);
 {$context->oPage->requireJSStandalone($sJS)}
 
 <h2>{i18n}Edit Complex Conditional Metadata{/i18n}</h2>
+
+<p class="descriptiveText">Complex Conditional Metadata depends on what are 
+called "behaviours".  Essentially, behaviours are assigned to a <strong>single</strong>
+field, and can contain any number of values that are available in that field.  Each field
+can have multiple behaviours assigned to it.</p>
+
+<p class="descriptiveText important">Each behaviour can cause a number of other behaviours &mdash; in
+the field's <strong>child</strong> fields &mdash; to become available.  By assigning values
+to behaviours, and creating relationships between behaviours, you can create extremely complex 
+relationships between available lookup values.</p>
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
@@ -54,6 +71,21 @@ addLoadEvent(updateActiveFields);
 	<h3>{$oField->getName()}</h3>
      <p class="inactivity_message">{i18n}This column is not active.{/i18n}</p>
      <p class="fixed_message">{i18n}Editing behaviour <strong>Jack</strong>{/i18n}</p>
+	 <div class="assigned_items">
+	 <h3>{i18n}Assigned Items{/i18n}</h3>
+	     <select class="assigned_item_list" multiple="true">
+		  <!--     These are orphaned - we fire a "activate" command on load / available.
+            <option value="-1">Test 1</option>
+            <option value="-2">Test 2</option>
+            <option value="-3">Test 3</option>
+            <option value="-4">Test 4</option>
+		  -->
+         </select>	 
+		 <br /><input class="assigned_item_list" type="button" value="{i18n}remove behaviour{/i18n}" onclick="removeFromBehaviour({$oField->getId()});" />
+		 <p class="assigned_items_message">No items have been assigned with the current
+		 parent behaviour.</p>
+	 </div>
+	 
      <div class="unassigned_items">
      <h3>{i18n}Unassigned/Unavailable{/i18n}</h3>
          <select class="item_list" multiple="true">
@@ -93,9 +125,7 @@ addLoadEvent(updateActiveFields);
          <option value="4">Behaviour 4</option>
 		 -->
          </select>
-     <br />
-     <a href="#" onclick="changeAssignments({$oField->getId()}); return
-false;">{i18n}Change Assignments for this field.{/i18n}</a>
+
      </div>
   </td>
 {/foreach}

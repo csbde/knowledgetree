@@ -163,7 +163,7 @@ class DocumentFieldLink extends KTEntity {
         $iMetadataVersionId = $oDocument->getMetadataVersionId();
         return KTEntityUtil::getByDict('DocumentFieldLink', array(
             'metadata_version_id' => $iMetadataVersionId,
-            'document_field_id' => KTUtil::getId($oDocument),
+            'document_field_id' => KTUtil::getId($oField),
         ));
     }
 }

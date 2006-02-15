@@ -20,6 +20,10 @@ while the workflow has no documents or document-versions assigned to the workflo
 
 </fieldset>
 
+{if (empty($workflow_info.transitions))}
+<div class="ktInfo"><p>This workflow does not define any transitions.  Use the "Create a new transition" link above
+to add new transitions.</p></div>
+{else}
 <h3>{i18n}Transition Availability{/i18n}</h3>
 
 <p class="descriptiveText">Click on any transition below to edit it directly,
@@ -66,3 +70,4 @@ or use the checkboxes to assign which states the transition is available from.</
 </div>
 
 </form>
+{/if}
