@@ -15,7 +15,9 @@
     <div class="form_actions">
         <input type="submit" value="{i18n}Update your details{/i18n}" />
         <!-- FIXME add CSS for secondary actions. -->
+{if $show_password}
         <p><a href="{addQS}action=setPassword{/addQS}">{i18n}Change your password.{/i18n}</a></p>
+{/if}
     </div>
 </fieldset>
 
