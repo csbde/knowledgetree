@@ -35,7 +35,7 @@ that things are still set up correctly.</p>
 
 <table width="50%">
   <tbody>
-  <?php echo writablePath('Log directory', KT_DIR . '/var/log')?>
+  <?php echo writablePath('Log directory', $default->logDirectory)?>
   <?php echo writablePath('Document directory', $default->documentRoot)?>
   <?php echo writablePath('Document Root', $default->documentRoot . '/Root Folder')?>
   </tbody>
