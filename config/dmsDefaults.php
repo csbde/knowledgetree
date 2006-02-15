@@ -265,8 +265,10 @@ class KTInit {
         if ($checkup === true) {
             return;
         }
-        // XXX: Make it look pretty
-        die($oError->toString());
+        require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+        $oDispatcher =& new KTErrorDispatcher($oError);
+        $oDispatcher->dispatch();
+        exit(0);
     }
     // }}}
 

@@ -276,5 +276,23 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     }
 }
 
+class KTErrorDispatcher extends KTStandardDispatcher {
+    var $bLogonRequired = true;
+
+    function KTErrorDispatcher($oError) {
+        parent::KTStandardDispatcher();
+        $this->oError =& $oError;
+    }
+
+    function dispatch() {
+        require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
+        $oRegistry =& KTErrorViewerRegistry::getSingleton();
+        $oViewer =& $oRegistry->getViewer($this->oError);
+        $this->oPage->setTitle($oViewer->view());
+        $this->oPage->hideSection();
+        $this->handleOutput($oViewer->page());
+    }
+}
+
 
 ?>
