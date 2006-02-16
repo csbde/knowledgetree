@@ -125,9 +125,9 @@ class KTDocumentUtil {
         
         // FIXME at the moment errors this _does not_ rollback.
         
-        $this->oDocument->setIsCheckedOut(true);
-        $this->oDocument->setCheckedOutUserID($oUser->getId());
-        if (!$this->oDocument->update()) { return PEAR::raiseError(_("There was a problem checking out the document.")); }
+        $oDocument->setIsCheckedOut(true);
+        $oDocument->setCheckedOutUserID($oUser->getId());
+        if (!$oDocument->update()) { return PEAR::raiseError(_("There was a problem checking out the document.")); }
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('checkout', 'postValidate');
@@ -646,7 +646,8 @@ class KTDocumentUtil {
     function copy($oDocument, $oDestinationFolder) {
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
-        
+		//print '--------------------------------- BEFORE';
+        //print_r($oDocument);
         
         // grab the "source "data
         $sTable = KTUtil::getTableName('documents');
@@ -689,6 +690,11 @@ class KTDocumentUtil {
         
         // now, we have a semi-sane document object. get it.
         $oNewDocument = Document::get($oCore->getId());
+        
+        //print '--------------------------------- AFTER';
+        //print_r($oDocument);
+		//print '======';
+        //print_r($oNewDocument);
         
         // copy the metadata from old to new.
         $res = KTDocumentUtil::copyMetadata($oNewDocument, $oDocument->getMetadataVersionId());

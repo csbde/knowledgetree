@@ -260,7 +260,10 @@ class KTFolderUtil {
         return true;
     }
     
-    function copy($oFolder, $oDestFolder, $oUser, $sReason) {
+    function copy($oSrcFolder, $oDestFolder, $oUser, $sReason) {
+        if (KTFolderUtil::exists($oDestFolder, $oSrcFolder->getName())) {
+            return PEAR::raiseError("Folder with the same name already exists in the new parent folder");
+        }
         //
         // FIXME the failure cleanup code here needs some serious work.
         //
@@ -276,7 +279,7 @@ class KTFolderUtil {
         $aFailedDocuments = array(); // of String
         $aFailedFolders = array(); // of String
         
-        $aRemainingFolders = array($oFolder->getId());
+        $aRemainingFolders = array($oSrcFolder->getId());
         
         DBUtil::startTransaction();
         
@@ -332,7 +335,7 @@ class KTFolderUtil {
         
         $sTable = KTUtil::getTableName('folders');
         $sGetQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ? ';
-        $aParams = array($oFolder->getId());
+        $aParams = array($oSrcFolder->getId());
         $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
         unset($aRow['id']);
         $aRow['parent_id'] = $oDestFolder->getId();
@@ -341,7 +344,7 @@ class KTFolderUtil {
             DBUtil::rollback();
             return $id;
         }
-        $aFolderMap[$oFolder->getId()] = $id;
+        $aFolderMap[$oSrcFolder->getId()] = $id;
         $oNewBaseFolder = Folder::get($id);
         $res = $oStorage->createFolder($oNewBaseFolder);
         if (PEAR::isError($res)) {
@@ -349,7 +352,7 @@ class KTFolderUtil {
             DBUtil::rollback();
             return $res;
         }
-        $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oFolder->getId())), array('ids' => true));
+        $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oSrcFolder->getId())), array('ids' => true));
         
         
         while (!empty($aRemainingFolders)) {
@@ -364,10 +367,12 @@ class KTFolderUtil {
             
             $id = DBUtil::autoInsert($sTable, $aRow);
             if (PEAR::isError($id)) {
+                $oStorage->removeFolder($oNewBaseFolder);
                 DBUtil::rollback();
                 return $id;
             }
             $aFolderMap[$iFolderId] = $id;
+            
             $oNewFolder = Folder::get($id);
             $res = $oStorage->createFolder($oNewFolder);
             if (PEAR::isError($res)) {
@@ -382,12 +387,15 @@ class KTFolderUtil {
         }
         
         
+        var_dump($aFolderMap);
         
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]);
+            var_dump($oDocument->getFolderID());
             $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
             if (PEAR::isError($res) || ($res === false)) {
+                $oStorage->removeFolder($oNewBaseFolder);
                 DBUtil::rollback();
                 return PEAR::raiseError(_('Delete Aborted. Unexpected failure to copydocument: ') . $oDocument->getName() . $res->getMessage());
             }
