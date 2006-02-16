@@ -37,25 +37,43 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_addUnit() {
-        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
-        $_REQUEST['fFolderId'] = $iFolderId;
-        $oFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
-
         $this->oPage->setBreadcrumbDetails(_('Add a new unit'));
-
         $this->oPage->setTitle(_("Add a new unit"));
 
         $add_fields = array();
         $add_fields[] =  new KTStringWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
 
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
+        $aTemplateData = array(
+            "context" => $this,
+            "add_fields" => $add_fields,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_addUnit2() {
+        $this->oPage->setBreadcrumbDetails(_('Add a new unit'));
+        $this->oPage->setTitle(_("Add a new unit"));
+
+        $aOptions = array(
+            'redirect_to' => array('addUnit'),
+            'message' => 'No name given',
+        );
+        $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
+
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+        $_REQUEST['fFolderId'] = $iFolderId;
+        $oFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+
         $collection = new DocumentCollection();
-        $collection->addColumn(new KTUnitTitleColumn("Test 1 (title)","title"));
+        $collection->addColumn(new KTUnitTitleColumn($sName));
         $qObj = new FolderBrowseQuery($oFolder->getId());
         $collection->setQueryObject($qObj);
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit&fFolderId=%d", $oFolder->getId()));
+        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit2&unit_name=%s&fFolderId=%d", $sName, $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
@@ -78,25 +96,37 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit&fFolderId=%d", $id));
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit2&unit_name=%s&fFolderId=%d", $sName, $id));
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
 
+        $add_fields = array();
+        $add_fields[] =  new KTStaticTextWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
+
         $oTemplating = new KTTemplating;
-        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit2");
         $aTemplateData = array(
             "context" => $this,
             "add_fields" => $add_fields,
             "collection" => $collection,
             "collection_breadcrumbs" => $aBreadcrumbs,
             "folder" => $oFolder,
+            "name" => $sName,
         );
         return $oTemplate->render($aTemplateData);
     }
 
     function do_createUnit() {
-        $sName = $this->oValidator->validateString($_REQUEST['unit_name']);
-        $oParentFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+        $aOptions = array(
+            'redirect_to' => array('main'),
+            'message' => 'Invalid folder chosen',
+        );
+        $oParentFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId'], $aOptions);
+        $aOptions = array(
+            'redirect_to' => array('addUnit', sprintf('fFolderId=%d', $oParentFolder->getId())),
+            'message' => 'No name given',
+        );
+        $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
 
         $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
         $oUnit = Unit::createFromArray(array(
@@ -172,8 +202,13 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 }
 
 class KTUnitTitleColumn extends TitleColumn {
+    function KTUnitTitleColumn($sName) {
+        $this->sName = $sName;
+        parent::TitleColumn("Unit", "title");
+    }
     function buildFolderLink($aDataRow) {
-        return KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=addUnit&fFolderId=' . $aDataRow['folder']->getId());
+        return KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+            sprintf('action=addUnit2&unit_name=%s&fFolderId=%d', $this->sName, $aDataRow['folder']->getId()));
     }
 }
 
