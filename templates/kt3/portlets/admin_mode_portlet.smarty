@@ -8,6 +8,7 @@ Administrator mode is currently enabled.
 <form action="{$browseurl}" method="POST">
 <input type="hidden" name="action" value="disableAdminMode" />
 <input type="hidden" name="fFolderId" value="{$folder_id}" />
+<input type="hidden" name="fDocumentId" value="{$document_id}" />
 <input type="submit" name="submit" value="Disable administrator mode" />
 </form>
 {else}
@@ -15,6 +16,7 @@ Administrator mode is not currently enabled.
 <form action="{$browseurl}" method="POST">
 <input type="hidden" name="action" value="enableAdminMode" />
 <input type="hidden" name="fFolderId" value="{$folder_id}" />
+<input type="hidden" name="fDocumentId" value="{$document_id}" />
 <input type="submit" name="submit" value="Enable administrator mode" />
 </form>
 {/if}

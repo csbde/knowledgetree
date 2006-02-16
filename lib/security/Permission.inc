@@ -103,10 +103,11 @@ class Permission {
     *
     */
     function userIsSystemAdministrator($iUserID = "") {
-        global $default, $lang_err_database;
+        global $default;
         if ($iUserID == "") {
             $iUserID = $_SESSION["userID"];
         }
+        $iUserID = KTUtil::getId($iUserID);
         $sql = $default->db;
         $sql->query(array("SELECT UGL.group_id " . /*ok*/
                     "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON UGL.group_id = GL.id " .
@@ -157,6 +158,8 @@ class Permission {
     }
 
     function isUnitAdministratorForFolder($oUser, $oFolder) {
+        $oFolder =& KTUtil::getObject('Folder', $oFolder);
+        $oUser =& KTUtil::getObject('User', $oUser);
         $sUnitTable = KTUtil::getTableName('units');
         $sFolderIds = $oFolder->getParentFolderIds();
         $aFolderIds = split(",", $sFolderIds);

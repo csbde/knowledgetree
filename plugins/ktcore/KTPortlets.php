@@ -69,8 +69,21 @@ class KTAdminModePortlet extends KTPortlet {
         parent::KTPortlet(_("Administrator mode"));
     }
     function render() {
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (!$iFolderId && !$iDocumentId) {
+            return null;
+        }
+        if ($iDocumentId) {
+            $oDocument = Document::get($iDocumentId);
+            if (PEAR::isError($oDocument) || ($oDocument === false)) {
+                return null;
+            }
+            $iFolderId = $oDocument->getFolderId();
+        }
         require_once(KT_LIB_DIR . '/security/Permission.inc');
-        if (!Permission::userIsSystemAdministrator()) {
+        $oUser =& User::get($_SESSION['userID']);
+        if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
             return null;
         }
         require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
@@ -78,12 +91,11 @@ class KTAdminModePortlet extends KTPortlet {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
 
-        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
-        
         $aTemplateData = array(
             "context" => $this,
             'browseurl' => KTBrowseUtil::getBrowseBaseUrl(),
             'folder_id' => $iFolderId,
+            'document_id' => $iDocumentId,
             'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
         );
         return $oTemplate->render($aTemplateData);
