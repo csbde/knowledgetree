@@ -89,6 +89,9 @@ class KTActionPortlet extends KTPortlet {
     }
     
     function render() {
+        if (empty($this->actions)) {
+            return null;
+        }
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
         $aTemplateData = array(
