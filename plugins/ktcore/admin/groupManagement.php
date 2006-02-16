@@ -230,9 +230,17 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $usersAdded = array();
         $usersRemoved = array();
         
+		$addWarnings = array();
+		$removeWarnings = array();    
+        
         foreach ($aUserToAddIDs as $iUserId ) {
             if ($iUserId > 0) {
                 $oUser= User::Get($iUserId);
+				$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+				//var_dump($memberReason);
+				if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+					$addWarnings[] = $memberReason;
+				}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()));
@@ -247,9 +255,28 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()));
-                } else { $usersRemoved[] = $oUser->getName(); }
+                } else { 
+				    $usersRemoved[] = $oUser->getName(); 
+					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+					//var_dump($memberReason);
+					if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+						$removeWarnings[] = $memberReason;
+					}
+				}
             }
         }        
+        
+		if (!empty($addWarnings)) {
+		    $sWarnStr = _('Warning:  some users were already members of some subgroups') . ' &mdash; ';
+			$sWarnStr .= implode(', ', $addWarnings);
+			$_SESSION['KTInfoMessage'][] = $sWarnStr;
+		}
+		
+		if (!empty($removeWarnings)) {
+		    $sWarnStr = _('Warning:  some users are still members of some subgroups') . ' &mdash; ';
+			$sWarnStr .= implode(', ', $removeWarnings);
+			$_SESSION['KTInfoMessage'][] = $sWarnStr;
+		}        
         
         $msg = '';
         if (!empty($usersAdded)) { $msg .= ' ' . _('Added') . ': ' . join(', ', $usersAdded) . ', <br />'; }
