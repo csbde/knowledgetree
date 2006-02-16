@@ -54,11 +54,20 @@ class BrowseQuery extends PartialQuery{
     var $folder_id = -1;
     var $sPermissionName = "ktcore.permissions.read";
 
-    function BrowseQuery($iFolderId) { $this->folder_id = $iFolderId; }
+    function BrowseQuery($iFolderId, $oUser = null, $aOptions = null) {
+        $this->folder_id = $iFolderId;
+        if (is_null($oUser)) {
+            $oUser = User::get($_SESSION['userID']);
+        }
+        $this->oUser =& $oUser;
+        $this->aOptions = $aOptions;
+        if (KTUtil::arrayGet($aOptions, 'ignorepermissions')) {
+            $this->oUser = null;
+        }
+    }
     
     function _getDocumentQuery($aOptions = null) {
-        $oUser = User::get($_SESSION['userID']);
-        $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
+        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName);
         if (PEAR::isError($res)) {
             return $res;
         }
@@ -96,8 +105,7 @@ class BrowseQuery extends PartialQuery{
     }
 
     function _getFolderQuery($aOptions = null) {
-        $oUser = User::get($_SESSION['userID']);
-        $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName, "F");
         if (PEAR::isError($res)) {
            return $res;
         }

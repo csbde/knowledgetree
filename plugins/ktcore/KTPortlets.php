@@ -3,14 +3,14 @@
 require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
-require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
-
 class KTSearchPortlet extends KTPortlet {
 
     function KTSearchPortlet() {
         parent::KTPortlet(_("Search"));
     }
     function render() {
+        require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
+
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
         
@@ -63,3 +63,29 @@ class KTBrowseModePortlet extends KTPortlet {
 }
 
 
+class KTAdminModePortlet extends KTPortlet {
+
+    function KTAdminModePortlet() {
+        parent::KTPortlet(_("Administrator mode"));
+    }
+    function render() {
+        require_once(KT_LIB_DIR . '/security/Permission.inc');
+        if (!Permission::userIsSystemAdministrator()) {
+            return null;
+        }
+        require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
+
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        
+        $aTemplateData = array(
+            "context" => $this,
+            'browseurl' => KTBrowseUtil::getBrowseBaseUrl(),
+            'folder_id' => $iFolderId,
+            'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+}

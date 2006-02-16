@@ -1,0 +1,20 @@
+<p class="descriptiveText">{i18n}Administrator mode allows for users who have system administrator
+rights, or unit administrators within their unit, to see folders and
+documents in the browse mode that they otherwise would not see due to
+permissions.{/i18n}</p>
+
+{if $enabled}
+Administrator mode is currently enabled.
+<form action="{$browseurl}" method="POST">
+<input type="hidden" name="action" value="disableAdminMode" />
+<input type="hidden" name="fFolderId" value="{$folder_id}" />
+<input type="submit" name="submit" value="Disable administrator mode" />
+</form>
+{else}
+Administrator mode is not currently enabled.
+<form action="{$browseurl}" method="POST">
+<input type="hidden" name="action" value="enableAdminMode" />
+<input type="hidden" name="fFolderId" value="{$folder_id}" />
+<input type="submit" name="submit" value="Enable administrator mode" />
+</form>
+{/if}
