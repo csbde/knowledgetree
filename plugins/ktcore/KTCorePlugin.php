@@ -39,6 +39,9 @@ class KTCorePlugin extends KTPlugin {
 
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
 
+        $this->registerPortlet(array('browse'),
+                'KTAdminModePortlet', 'ktcore.portlets.admin_mode',
+                'KTPortlets.php');
         $this->registerPortlet(array('browse', 'dashboard'),
                 'KTSearchPortlet', 'ktcore.portlets.search',
                 'KTPortlets.php');

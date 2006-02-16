@@ -137,8 +137,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $oFolder =& Folder::get($folder_id);
             }
             
+            $aOptions = array(
+                'ignorepermissions' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
+            );
             // we now have a folder, and need to create the query.
-            $this->oQuery =  new BrowseQuery($oFolder->getId());
+            $this->oQuery =  new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
             
             $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($oFolder));
@@ -766,6 +769,30 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         $this->successRedirectToMain('Folders and Documents Deleted.',sprintf('fFolderId=%d', $fFolderId));
+    }
+
+    function do_enableAdminMode() {
+        if (!Permission::userIsSystemAdministrator()) {
+            $this->errorRedirectToMain('You are not an administrator');
+        }
+
+        $_SESSION['adminmode'] = true;
+        if ($_REQUEST['fFolderId']) {
+            $this->successRedirectToMain('Administrator mode enabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+        }
+        $this->successRedirectToMain('Administrator mode enabled');
+    }
+
+    function do_disableAdminMode() {
+        if (!Permission::userIsSystemAdministrator()) {
+            $this->errorRedirectToMain('You are not an administrator');
+        }
+
+        $_SESSION['adminmode'] = false;
+        if ($_REQUEST['fFolderId']) {
+            $this->successRedirectToMain('Administrator mode disabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+        }
+        $this->successRedirectToMain('Administrator mode disabled');
     }
 }
 
