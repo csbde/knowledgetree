@@ -463,14 +463,25 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->startTransaction();
         $groupsAdded = array();
         $groupsRemoved = array();
+		
+		$addWarnings = array();
+		$removeWarnings = array();
         
         foreach ($aGroupToAddIDs as $iGroupID ) {
             if ($iGroupID > 0) {
                 $oGroup = Group::get($iGroupID);
+				$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+				//var_dump($memberReason);
+				if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+					$addWarnings[] = $memberReason;
+				}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_('Unable to add user to group "%s"'), $oGroup->getName()));
-                } else { $groupsAdded[] = $oGroup->getName(); }
+                } else { 
+				    $groupsAdded[] = $oGroup->getName(); 
+
+				}
             }
         }
     
@@ -481,13 +492,32 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_('Unable to remove user from group "%s"'), $oGroup->getName()));
-                } else { $groupsRemoved[] = $oGroup->getName(); }
+                } else { 
+				   $groupsRemoved[] = $oGroup->getName(); 
+					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+					//var_dump($memberReason);
+					if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+						$removeWarnings[] = $memberReason;
+					}
+				}
             }
-        }        
+        }
+		
+		if (!empty($addWarnings)) {
+		    $sWarnStr = _('Warning:  the user was already a member of some subgroups') . ' &mdash; ';
+			$sWarnStr .= implode(', ', $addWarnings);
+			$_SESSION['KTInfoMessage'][] = $sWarnStr;
+		}
+		
+		if (!empty($removeWarnings)) {
+		    $sWarnStr = _('Warning:  the user is still a member of some subgroups') . ' &mdash; ';
+			$sWarnStr .= implode(', ', $removeWarnings);
+			$_SESSION['KTInfoMessage'][] = $sWarnStr;
+		}
         
         $msg = '';
-        if (!empty($groupsAdded)) { $msg .= ' ' . _('Added to groups') . ': ' . join(', ', $groupsAdded) . ', <br />'; }
-        if (!empty($groupsRemoved)) { $msg .= ' ' . _('Removed from groups') . ': ' . join(', ',$groupsRemoved) . '.'; }
+        if (!empty($groupsAdded)) { $msg .= ' ' . _('Added to groups') . ': ' . implode(', ', $groupsAdded) . ' <br />'; }
+        if (!empty($groupsRemoved)) { $msg .= ' ' . _('Removed from groups') . ': ' . implode(', ',$groupsRemoved) . '.'; }
         
         $this->commitTransaction();
         $this->successRedirectToMain($msg);

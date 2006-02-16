@@ -563,6 +563,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $move_code = KTUtil::arrayGet($_REQUEST, 'fMoveCode');
         $target_folder = KTUtil::arrayGet($_REQUEST, 'fFolderId');
         $reason = KTUtil::arrayGet($_REQUEST, 'sReason');
+        if (empty($reason)) {
+            $_SESSION['KTErrorMessage'][] = _('You must supply a reason.');
+            return $this->do_finaliseMove();
+        }
+        
+        
         
         // FIXME check perms?  or will that happen "lower" in the stack.
         
@@ -725,10 +731,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         
-        $aErrorOptions = array('message' => _('You must supply a reason'));
+        
         
         $res = KTUtil::arrayGet($_REQUEST,'sReason');
-        $sReason = $this->oValidator->notEmpty($res, $aErrorOptions);
+        $sReason = $res;
+        if (empty($res)) {
+            $_SESSION['KTErrorMessage'][] = _('You must supply a reason.');
+            return $this->do_startDelete();
+        }
         
         
         

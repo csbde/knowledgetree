@@ -4,7 +4,7 @@
 <fieldset>
 <legend>{i18n}Specify Reason for Delete{/i18n}</legend>
 <p class="descriptiveText">{i18n}Please give a reason for deleting these files.  This 
-will be recorded in the documents' "Transaction History"{/i18n}</p>
+will be recorded in the documents' "Transaction History"{/i18n}.</p>
 <input type="hidden" name="action" value="doDelete" />
 <input type="hidden" name="fFolderId" value="{$folder_id}" />
 
@@ -35,6 +35,7 @@ will be recorded in the documents' "Transaction History"{/i18n}</p>
 
 <div class="form_actions">
     <input type="submit" value="Delete" />
+    <a href="{addQS}fFolderId={$folder_id}{/addQS}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
 </div>
 
 </fieldset>

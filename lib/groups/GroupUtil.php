@@ -325,6 +325,41 @@ class GroupUtil {
         return $aExpandedGroups;
     }
     // }}}
+    
+    // {{{ getMembershipReason
+    function getMembershipReason($oUser, $oGroup) {
+        $aGroupArray = GroupUtil::buildGroupArray();
+        
+        // short circuit
+        
+        if ($oGroup->hasMember($oUser)) { return sprintf(_('%s is a direct member.'), $oUser->getName()); }
+        
+        
+        $aSubgroups = (array) $aGroupArray[$oGroup->getId()];
+        if (empty($aSubgroups)) { 
+            return null; // not a member, no subgroups. 
+        }
+        
+        $sTable = KTUtil::getTableName('users_groups');
+        $sQuery = 'SELECT group_id FROM ' . $sTable . ' WHERE user_id = ? AND group_id IN (' . DBUtil::paramArray($aSubgroups) . ')';
+        $aParams = array($oUser->getId());
+        $aParams = array_merge($aParams, $aSubgroups);
+
+        $res = DBUtil::getOneResult(array($sQuery, $aParams));
+        if (PEAR::isError($res)) {
+            return $res;
+        } else if (is_null($res)) {
+            return null; // not a member
+        } // else {
+        
+        $oSubgroup = Group::get($res['group_id']);
+        if (PEAR::isError($oSubgroup)) { return $oSubgroup; }
+        
+        return sprintf(_('%s is a member of %s'), $oUser->getName(), $oSubgroup->getName()); // could be error, but errors are caught.
+        
+        // }
+    }
+    // }}}
 }
 // }}}
 
