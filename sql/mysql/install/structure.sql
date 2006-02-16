@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2-Debian-1
+-- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 06, 2006 at 12:24 PM
--- Server version: 5.0.18
--- PHP Version: 4.4.2-1
+-- Generation Time: Feb 16, 2006 at 03:48 PM
+-- Server version: 4.0.24
+-- PHP Version: 4.4.0-3
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `dms`
 -- 
 
 -- --------------------------------------------------------
@@ -414,7 +414,7 @@ CREATE TABLE `document_type_fieldsets_link` (
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
-  `disabled` tinyint(4) NOT NULL,
+  `disabled` tinyint(4) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `disabled` (`disabled`)
@@ -748,6 +748,7 @@ CREATE TABLE `mime_types` (
   `filetypes` char(100) NOT NULL default '',
   `mimetypes` char(100) NOT NULL default '',
   `icon_path` char(255) default NULL,
+  `friendly_name` char(255) default '',
   UNIQUE KEY `id` (`id`)
 ) TYPE=InnoDB;
 
@@ -1127,7 +1128,7 @@ CREATE TABLE `type_workflow_map` (
 CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) NOT NULL default '',
-  `folder_id` int(11) NOT NULL,
+  `folder_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `folder_id` (`folder_id`)
@@ -1256,10 +1257,10 @@ CREATE TABLE `workflow_state_actions` (
 -- 
 
 CREATE TABLE `workflow_state_permission_assignments` (
-  `id` int(11) NOT NULL,
-  `workflow_state_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
-  `permission_descriptor_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL default '0',
+  `workflow_state_id` int(11) NOT NULL default '0',
+  `permission_id` int(11) NOT NULL default '0',
+  `permission_descriptor_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
@@ -1787,7 +1788,7 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=142 ;
+) TYPE=MyISAM AUTO_INCREMENT=145 ;
 
 -- --------------------------------------------------------
 
@@ -2018,7 +2019,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=65 ;
+) TYPE=MyISAM AUTO_INCREMENT=67 ;
 
 -- --------------------------------------------------------
 
