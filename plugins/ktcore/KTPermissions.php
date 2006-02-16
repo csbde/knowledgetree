@@ -20,6 +20,7 @@ require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sDisplayName = 'Permissions';
     var $sName = 'ktcore.actions.document.permissions';
+    var $_bAdminAlwaysAvailable = true;
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails("permissions");

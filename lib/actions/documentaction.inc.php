@@ -39,6 +39,14 @@ class KTDocumentAction extends KTStandardDispatcher {
         if (is_null($this->_sShowPermission)) {
             return true;
         }
+        if ($this->_bAdminAlwaysAvailable) {
+            if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
+                return true;
+            }
+            if (Permission::isUnitAdministratorForFolder($this->oUser, $this->oDocument->getFolderId())) {
+                return true;
+            }
+        }
         $oPermission =& KTPermission::getByName($this->_sShowPermission);
         if (PEAR::isError($oPermission)) {
             return true;
