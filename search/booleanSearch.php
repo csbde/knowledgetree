@@ -90,8 +90,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $collection->addColumn($t);
         $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
         $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
         $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
+        $collection->addColumn(new WorkflowColumn(_('Workflow State'),'workflow_state'));
 
         $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
 
