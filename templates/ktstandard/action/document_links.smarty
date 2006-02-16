@@ -28,7 +28,14 @@
 {assign var="target" value=$link->getChildDocument()}
 
         <tr>
-            <td><a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a></td>
+            <td>
+            {if $write_permission}
+                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a>
+            {else}
+                &nbsp;
+            {/if}
+            </td>
+
             <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
             <td>{$type->getName()}</td>
             <td>Linked <b>from</b> this document</td>
@@ -43,12 +50,14 @@
 
         <tr>
             <td>
-{if $write_permission}
-            <a class="ktAction ktDelete">Delete</a></td>
-{else}
-&nbsp;
-{/if}
-            <td><a href="{$target->getId()}">{$target->getName()}</a></td> 
+            {if $write_permission}
+                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a>
+            {else}
+                &nbsp;
+            {/if}
+            </td>
+            
+            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
             <td>{$type->getName()}</td>
             <td>Links <b>to</b> this document</td>
         </tr>

@@ -124,8 +124,10 @@ class Group extends KTEntity {
 	*
 	* @return Array array of Group objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function getList($sWhereClause = null) {
-            return KTEntityUtil::getList(Group::_table(), 'Group', $sWhereClause);
+	function getList($sWhereClause = null, $aOptions = null) {
+	    if(!is_array($aOptions)) $aOptions = array($aOptions);
+		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
+        return KTEntityUtil::getList2('Group', $sWhereClause, $aOptions);
 	}
 	
 	/**
