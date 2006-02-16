@@ -138,7 +138,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
             
             $aOptions = array(
-                'ignorepermissions' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
+                'ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder),
             );
             // we now have a folder, and need to create the query.
             $this->oQuery =  new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
@@ -782,11 +782,26 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
 
     function do_enableAdminMode() {
-        if (!Permission::userIsSystemAdministrator()) {
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        if ($iDocumentId) {
+            $oDocument = Document::get($iDocumentId);
+            if (PEAR::isError($oDocument) || ($oDocument === false)) {
+                return null;
+            }
+            $iFolderId = $oDocument->getFolderId();
+        }
+
+        if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
             $this->errorRedirectToMain('You are not an administrator');
         }
 
         $_SESSION['adminmode'] = true;
+        if ($_REQUEST['fDocumentId']) {
+            $_SESSION['KTInfoMessage'][] = 'Administrator mode enabled';
+            redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
+            exit(0);
+        }
         if ($_REQUEST['fFolderId']) {
             $this->successRedirectToMain('Administrator mode enabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }
@@ -794,11 +809,26 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
 
     function do_disableAdminMode() {
-        if (!Permission::userIsSystemAdministrator()) {
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        if ($iDocumentId) {
+            $oDocument = Document::get($iDocumentId);
+            if (PEAR::isError($oDocument) || ($oDocument === false)) {
+                return null;
+            }
+            $iFolderId = $oDocument->getFolderId();
+        }
+
+        if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
             $this->errorRedirectToMain('You are not an administrator');
         }
 
         $_SESSION['adminmode'] = false;
+        if ($_REQUEST['fDocumentId']) {
+            $_SESSION['KTInfoMessage'][] = 'Administrator mode disabled';
+            redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
+            exit(0);
+        }
         if ($_REQUEST['fFolderId']) {
             $this->successRedirectToMain('Administrator mode disabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }

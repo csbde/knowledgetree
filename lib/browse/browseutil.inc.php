@@ -265,4 +265,23 @@ class KTBrowseUtil {
         return sprintf("%s/view%s", $GLOBALS['KTRootUrl'], $sExt);
     }
     // }}}
+
+    // {{{ inAdminMode
+    /**
+     * Determines whether the user is in administrator mode, including
+     * whether the user is in the unit for which it is unit
+     * administrator.
+     */
+    function inAdminMode($oUser, $oFolder) {
+        if (KTUtil::arrayGet($_SESSION, 'adminmode', false) !== true) {
+            return false;
+        }
+        
+        if (Permission::userIsSystemAdministrator($oUser)) {
+            return true;
+        }
+
+        return Permission::isUnitAdministratorForFolder($oUser, $oFolder);
+    }
+    // }}}
 }
