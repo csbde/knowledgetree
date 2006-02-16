@@ -66,10 +66,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
-		if (!Permission::userHasDocumentReadPermission($oDocument)) {
-		    $this->oPage->addError(_('You are not allowed to view this document'));
-		    return $this->do_error();
-		}
+
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
+            if (!Permission::userHasDocumentReadPermission($oDocument)) {
+                $this->oPage->addError(_('You are not allowed to view this document'));
+                return $this->do_error();
+            }
+        }
 
 		$this->oPage->setSecondaryTitle($oDocument->getName());
 
