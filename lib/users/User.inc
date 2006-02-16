@@ -176,8 +176,11 @@ class User extends KTEntity {
     *
     * @return Array array of User objects, false otherwise and set $_SESSION["errorMessage"]
     */
-    function getList($sWhereClause = null) {
-        return KTEntityUtil::getList(User::_table(), 'User', $sWhereClause);
+    function getList($sWhereClause = null, $aOptions = null) {
+	    if(!is_array($aOptions)) $aOptions = array($aOptions);
+		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
+		
+        return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
     function getEmailUsers() {

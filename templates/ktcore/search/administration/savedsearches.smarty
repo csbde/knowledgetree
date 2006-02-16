@@ -8,7 +8,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new saved search{/i18n}</legend>
-<div class="form_actions">
+<div>
 <input type="hidden" name="action" value="new" />
 <input type="submit" name="submit" value="{i18n}New{/i18n}" />
 </div>

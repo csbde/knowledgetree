@@ -6,21 +6,38 @@
 unexpectedly change permission assignments.{/i18n}</p>
 
 
-<h3>{i18n}Create a new condition{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Create a new condition{/i18n}</legend>
+<div>
 <input type="hidden" name="action" value="new" />
 <input type="submit" name="submit" value="{i18n}New{/i18n}" />
+</div>
+</fieldset>
 </form>
+
 
 {if $conditions}
-<h3>{i18n}Edit existing conditions{/i18n}</h3>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="edit" />
-{entity_radios entities=$conditions name="fSavedSearchId" assign=aRadios}
-{foreach from=$aRadios item=sRadio}
-{$sRadio}<br />
-{/foreach}
-<input type="submit" name="submit" value="{i18n}Edit{/i18n}" />
-</form>
-{/if}
+<h2>{i18n}Existing Conditions{/i18n}</h2>
 
+<table class="listing">
+<thead>
+    <tr>
+        <th>{i18n}Condition Name{/i18n}</th>
+        <th>{i18n}Edit{/i18n}</th>
+        <th>{i18n}View Results{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+{foreach item=oCondition from=$conditions}
+    <tr>
+        <td>{$oCondition->getName()}</td>
+        <td><a href="{addQS}action=edit&fSavedSearchId={$oCondition->getId()}{/addQS}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oCondition->getId()}">Run Condition</a></td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+{else}
+<div class="ktInfo"><p>{i18n}No Conditions have been defined.{/i18n}</p></div>
+{/if}
