@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2-Debian-1
+-- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 06, 2006 at 12:26 PM
--- Server version: 5.0.18
--- PHP Version: 4.4.2-1
+-- Generation Time: Feb 16, 2006 at 03:57 PM
+-- Server version: 4.0.24
+-- PHP Version: 4.4.0-3
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `dms`
 -- 
 
 -- 
@@ -369,147 +369,150 @@ INSERT INTO `help` VALUES (98, 'listWebsites', 'listWebsitesHelp.html');
 -- Dumping data for table `mime_types`
 -- 
 
-INSERT INTO `mime_types` VALUES (1, 'ai', 'application/postscript', 'pdf');
-INSERT INTO `mime_types` VALUES (2, 'aif', 'audio/x-aiff', NULL);
-INSERT INTO `mime_types` VALUES (3, 'aifc', 'audio/x-aiff', NULL);
-INSERT INTO `mime_types` VALUES (4, 'aiff', 'audio/x-aiff', NULL);
-INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'text');
-INSERT INTO `mime_types` VALUES (6, 'au', 'audio/basic', NULL);
-INSERT INTO `mime_types` VALUES (7, 'avi', 'video/x-msvideo', NULL);
-INSERT INTO `mime_types` VALUES (8, 'bcpio', 'application/x-bcpio', NULL);
-INSERT INTO `mime_types` VALUES (9, 'bin', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (10, 'bmp', 'image/bmp', 'image');
-INSERT INTO `mime_types` VALUES (11, 'cdf', 'application/x-netcdf', NULL);
-INSERT INTO `mime_types` VALUES (12, 'class', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (13, 'cpio', 'application/x-cpio', NULL);
-INSERT INTO `mime_types` VALUES (14, 'cpt', 'application/mac-compactpro', NULL);
-INSERT INTO `mime_types` VALUES (15, 'csh', 'application/x-csh', NULL);
-INSERT INTO `mime_types` VALUES (16, 'css', 'text/css', NULL);
-INSERT INTO `mime_types` VALUES (17, 'dcr', 'application/x-director', NULL);
-INSERT INTO `mime_types` VALUES (18, 'dir', 'application/x-director', NULL);
-INSERT INTO `mime_types` VALUES (19, 'dms', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (20, 'doc', 'application/msword', 'word');
-INSERT INTO `mime_types` VALUES (21, 'dvi', 'application/x-dvi', NULL);
-INSERT INTO `mime_types` VALUES (22, 'dxr', 'application/x-director', NULL);
-INSERT INTO `mime_types` VALUES (23, 'eps', 'application/postscript', 'pdf');
-INSERT INTO `mime_types` VALUES (24, 'etx', 'text/x-setext', NULL);
-INSERT INTO `mime_types` VALUES (25, 'exe', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (26, 'ez', 'application/andrew-inset', NULL);
-INSERT INTO `mime_types` VALUES (27, 'gif', 'image/gif', 'image');
-INSERT INTO `mime_types` VALUES (28, 'gtar', 'application/x-gtar', 'compressed');
-INSERT INTO `mime_types` VALUES (29, 'hdf', 'application/x-hdf', NULL);
-INSERT INTO `mime_types` VALUES (30, 'hqx', 'application/mac-binhex40', NULL);
-INSERT INTO `mime_types` VALUES (31, 'htm', 'text/html', 'html');
-INSERT INTO `mime_types` VALUES (32, 'html', 'text/html', 'html');
-INSERT INTO `mime_types` VALUES (33, 'ice', 'x-conference/x-cooltalk', NULL);
-INSERT INTO `mime_types` VALUES (34, 'ief', 'image/ief', 'image');
-INSERT INTO `mime_types` VALUES (35, 'iges', 'model/iges', NULL);
-INSERT INTO `mime_types` VALUES (36, 'igs', 'model/iges', NULL);
-INSERT INTO `mime_types` VALUES (37, 'jpe', 'image/jpeg', 'image');
-INSERT INTO `mime_types` VALUES (38, 'jpeg', 'image/jpeg', 'image');
-INSERT INTO `mime_types` VALUES (39, 'jpg', 'image/jpeg', 'image');
-INSERT INTO `mime_types` VALUES (40, 'js', 'application/x-javascript', 'html');
-INSERT INTO `mime_types` VALUES (41, 'kar', 'audio/midi', NULL);
-INSERT INTO `mime_types` VALUES (42, 'latex', 'application/x-latex', NULL);
-INSERT INTO `mime_types` VALUES (43, 'lha', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (44, 'lzh', 'application/octet-stream', NULL);
-INSERT INTO `mime_types` VALUES (45, 'man', 'application/x-troff-man', NULL);
-INSERT INTO `mime_types` VALUES (46, 'mdb', 'application/access', 'database');
-INSERT INTO `mime_types` VALUES (47, 'mdf', 'application/access', 'database');
-INSERT INTO `mime_types` VALUES (48, 'me', 'application/x-troff-me', NULL);
-INSERT INTO `mime_types` VALUES (49, 'mesh', 'model/mesh', NULL);
-INSERT INTO `mime_types` VALUES (50, 'mid', 'audio/midi', NULL);
-INSERT INTO `mime_types` VALUES (51, 'midi', 'audio/midi', NULL);
-INSERT INTO `mime_types` VALUES (52, 'mif', 'application/vnd.mif', NULL);
-INSERT INTO `mime_types` VALUES (53, 'mov', 'video/quicktime', NULL);
-INSERT INTO `mime_types` VALUES (54, 'movie', 'video/x-sgi-movie', NULL);
-INSERT INTO `mime_types` VALUES (55, 'mp2', 'audio/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (56, 'mp3', 'audio/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (57, 'mpe', 'video/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (58, 'mpeg', 'video/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (59, 'mpg', 'video/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (60, 'mpga', 'audio/mpeg', NULL);
-INSERT INTO `mime_types` VALUES (61, 'mpp', 'application/vnd.ms-project', 'office');
-INSERT INTO `mime_types` VALUES (62, 'ms', 'application/x-troff-ms', NULL);
-INSERT INTO `mime_types` VALUES (63, 'msh', 'model/mesh', NULL);
-INSERT INTO `mime_types` VALUES (64, 'nc', 'application/x-netcdf', NULL);
-INSERT INTO `mime_types` VALUES (65, 'oda', 'application/oda', NULL);
-INSERT INTO `mime_types` VALUES (66, 'pbm', 'image/x-portable-bitmap', 'image');
-INSERT INTO `mime_types` VALUES (67, 'pdb', 'chemical/x-pdb', NULL);
-INSERT INTO `mime_types` VALUES (68, 'pdf', 'application/pdf', 'pdf');
-INSERT INTO `mime_types` VALUES (69, 'pgm', 'image/x-portable-graymap', 'image');
-INSERT INTO `mime_types` VALUES (70, 'pgn', 'application/x-chess-pgn', NULL);
-INSERT INTO `mime_types` VALUES (71, 'png', 'image/png', 'image');
-INSERT INTO `mime_types` VALUES (72, 'pnm', 'image/x-portable-anymap', 'image');
-INSERT INTO `mime_types` VALUES (73, 'ppm', 'image/x-portable-pixmap', 'image');
-INSERT INTO `mime_types` VALUES (74, 'ppt', 'application/vnd.ms-powerpoint', 'office');
-INSERT INTO `mime_types` VALUES (75, 'ps', 'application/postscript', 'pdf');
-INSERT INTO `mime_types` VALUES (76, 'qt', 'video/quicktime', NULL);
-INSERT INTO `mime_types` VALUES (77, 'ra', 'audio/x-realaudio', NULL);
-INSERT INTO `mime_types` VALUES (78, 'ram', 'audio/x-pn-realaudio', NULL);
-INSERT INTO `mime_types` VALUES (79, 'ras', 'image/x-cmu-raster', 'image');
-INSERT INTO `mime_types` VALUES (80, 'rgb', 'image/x-rgb', 'image');
-INSERT INTO `mime_types` VALUES (81, 'rm', 'audio/x-pn-realaudio', NULL);
-INSERT INTO `mime_types` VALUES (82, 'roff', 'application/x-troff', NULL);
-INSERT INTO `mime_types` VALUES (83, 'rpm', 'audio/x-pn-realaudio-plugin', NULL);
-INSERT INTO `mime_types` VALUES (84, 'rtf', 'text/rtf', NULL);
-INSERT INTO `mime_types` VALUES (85, 'rtx', 'text/richtext', NULL);
-INSERT INTO `mime_types` VALUES (86, 'sgm', 'text/sgml', NULL);
-INSERT INTO `mime_types` VALUES (87, 'sgml', 'text/sgml', NULL);
-INSERT INTO `mime_types` VALUES (88, 'sh', 'application/x-sh', NULL);
-INSERT INTO `mime_types` VALUES (89, 'shar', 'application/x-shar', NULL);
-INSERT INTO `mime_types` VALUES (90, 'silo', 'model/mesh', NULL);
-INSERT INTO `mime_types` VALUES (91, 'sit', 'application/x-stuffit', NULL);
-INSERT INTO `mime_types` VALUES (92, 'skd', 'application/x-koan', NULL);
-INSERT INTO `mime_types` VALUES (93, 'skm', 'application/x-koan', NULL);
-INSERT INTO `mime_types` VALUES (94, 'skp', 'application/x-koan', NULL);
-INSERT INTO `mime_types` VALUES (95, 'skt', 'application/x-koan', NULL);
-INSERT INTO `mime_types` VALUES (96, 'smi', 'application/smil', NULL);
-INSERT INTO `mime_types` VALUES (97, 'smil', 'application/smil', NULL);
-INSERT INTO `mime_types` VALUES (98, 'snd', 'audio/basic', NULL);
-INSERT INTO `mime_types` VALUES (99, 'spl', 'application/x-futuresplash', NULL);
-INSERT INTO `mime_types` VALUES (100, 'src', 'application/x-wais-source', NULL);
-INSERT INTO `mime_types` VALUES (101, 'sv4cpio', 'application/x-sv4cpio', NULL);
-INSERT INTO `mime_types` VALUES (102, 'sv4crc', 'application/x-sv4crc', NULL);
-INSERT INTO `mime_types` VALUES (103, 'swf', 'application/x-shockwave-flash', NULL);
-INSERT INTO `mime_types` VALUES (104, 't', 'application/x-troff', NULL);
-INSERT INTO `mime_types` VALUES (105, 'tar', 'application/x-tar', 'compressed');
-INSERT INTO `mime_types` VALUES (106, 'tcl', 'application/x-tcl', NULL);
-INSERT INTO `mime_types` VALUES (107, 'tex', 'application/x-tex', NULL);
-INSERT INTO `mime_types` VALUES (108, 'texi', 'application/x-texinfo', NULL);
-INSERT INTO `mime_types` VALUES (109, 'texinfo', 'application/x-texinfo', NULL);
-INSERT INTO `mime_types` VALUES (110, 'tif', 'image/tiff', 'image');
-INSERT INTO `mime_types` VALUES (111, 'tiff', 'image/tiff', 'image');
-INSERT INTO `mime_types` VALUES (112, 'tr', 'application/x-troff', NULL);
-INSERT INTO `mime_types` VALUES (113, 'tsv', 'text/tab-separated-values', NULL);
-INSERT INTO `mime_types` VALUES (114, 'txt', 'text/plain', 'text');
-INSERT INTO `mime_types` VALUES (115, 'ustar', 'application/x-ustar', NULL);
-INSERT INTO `mime_types` VALUES (116, 'vcd', 'application/x-cdlink', NULL);
-INSERT INTO `mime_types` VALUES (117, 'vrml', 'model/vrml', NULL);
-INSERT INTO `mime_types` VALUES (118, 'vsd', 'application/vnd.visio', 'office');
-INSERT INTO `mime_types` VALUES (119, 'wav', 'audio/x-wav', NULL);
-INSERT INTO `mime_types` VALUES (120, 'wrl', 'model/vrml', NULL);
-INSERT INTO `mime_types` VALUES (121, 'xbm', 'image/x-xbitmap', 'image');
-INSERT INTO `mime_types` VALUES (122, 'xls', 'application/vnd.ms-excel', 'excel');
-INSERT INTO `mime_types` VALUES (123, 'xml', 'text/xml', NULL);
-INSERT INTO `mime_types` VALUES (124, 'xpm', 'image/x-xpixmap', 'image');
-INSERT INTO `mime_types` VALUES (125, 'xwd', 'image/x-xwindowdump', 'image');
-INSERT INTO `mime_types` VALUES (126, 'xyz', 'chemical/x-pdb', NULL);
-INSERT INTO `mime_types` VALUES (127, 'zip', 'application/zip', 'compressed');
-INSERT INTO `mime_types` VALUES (128, 'gz', 'application/x-gzip', 'compressed');
-INSERT INTO `mime_types` VALUES (129, 'tgz', 'application/x-gzip', 'compressed');
-INSERT INTO `mime_types` VALUES (130, 'sxw', 'application/vnd.sun.xml.writer', 'openoffice');
-INSERT INTO `mime_types` VALUES (131, 'stw', 'application/vnd.sun.xml.writer.template', 'openoffice');
-INSERT INTO `mime_types` VALUES (132, 'sxc', 'application/vnd.sun.xml.calc', 'openoffice');
-INSERT INTO `mime_types` VALUES (133, 'stc', 'application/vnd.sun.xml.calc.template', 'openoffice');
-INSERT INTO `mime_types` VALUES (134, 'sxd', 'application/vnd.sun.xml.draw', 'openoffice');
-INSERT INTO `mime_types` VALUES (135, 'std', 'application/vnd.sun.xml.draw.template', 'openoffice');
-INSERT INTO `mime_types` VALUES (136, 'sxi', 'application/vnd.sun.xml.impress', 'openoffice');
-INSERT INTO `mime_types` VALUES (137, 'sti', 'application/vnd.sun.xml.impress.template', 'openoffice');
-INSERT INTO `mime_types` VALUES (138, 'sxg', 'application/vnd.sun.xml.writer.global', 'openoffice');
-INSERT INTO `mime_types` VALUES (139, 'sxm', 'application/vnd.sun.xml.math', 'openoffice');
-INSERT INTO `mime_types` VALUES (140, 'xlt', 'application/vnd.ms-excel', 'excel');
-INSERT INTO `mime_types` VALUES (141, 'dot', 'application/msword', 'word');
+INSERT INTO `mime_types` VALUES (1, 'ai', 'application/postscript', 'pdf', '');
+INSERT INTO `mime_types` VALUES (2, 'aif', 'audio/x-aiff', NULL, '');
+INSERT INTO `mime_types` VALUES (3, 'aifc', 'audio/x-aiff', NULL, '');
+INSERT INTO `mime_types` VALUES (4, 'aiff', 'audio/x-aiff', NULL, '');
+INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'text', '');
+INSERT INTO `mime_types` VALUES (6, 'au', 'audio/basic', NULL, '');
+INSERT INTO `mime_types` VALUES (7, 'avi', 'video/x-msvideo', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (8, 'bcpio', 'application/x-bcpio', NULL, '');
+INSERT INTO `mime_types` VALUES (9, 'bin', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (10, 'bmp', 'image/bmp', 'image', 'BMP Image');
+INSERT INTO `mime_types` VALUES (11, 'cdf', 'application/x-netcdf', NULL, '');
+INSERT INTO `mime_types` VALUES (12, 'class', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (13, 'cpio', 'application/x-cpio', NULL, '');
+INSERT INTO `mime_types` VALUES (14, 'cpt', 'application/mac-compactpro', NULL, '');
+INSERT INTO `mime_types` VALUES (15, 'csh', 'application/x-csh', NULL, '');
+INSERT INTO `mime_types` VALUES (16, 'css', 'text/css', NULL, '');
+INSERT INTO `mime_types` VALUES (17, 'dcr', 'application/x-director', NULL, '');
+INSERT INTO `mime_types` VALUES (18, 'dir', 'application/x-director', NULL, '');
+INSERT INTO `mime_types` VALUES (19, 'dms', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (20, 'doc', 'application/msword', 'word', 'Word Document');
+INSERT INTO `mime_types` VALUES (21, 'dvi', 'application/x-dvi', NULL, '');
+INSERT INTO `mime_types` VALUES (22, 'dxr', 'application/x-director', NULL, '');
+INSERT INTO `mime_types` VALUES (23, 'eps', 'application/postscript', 'pdf', 'Encapsulated Postscript');
+INSERT INTO `mime_types` VALUES (24, 'etx', 'text/x-setext', NULL, '');
+INSERT INTO `mime_types` VALUES (25, 'exe', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (26, 'ez', 'application/andrew-inset', NULL, '');
+INSERT INTO `mime_types` VALUES (27, 'gif', 'image/gif', 'image', 'GIF Image');
+INSERT INTO `mime_types` VALUES (28, 'gtar', 'application/x-gtar', 'compressed', '');
+INSERT INTO `mime_types` VALUES (29, 'hdf', 'application/x-hdf', NULL, '');
+INSERT INTO `mime_types` VALUES (30, 'hqx', 'application/mac-binhex40', NULL, '');
+INSERT INTO `mime_types` VALUES (31, 'htm', 'text/html', 'html', 'HTML Webpage');
+INSERT INTO `mime_types` VALUES (32, 'html', 'text/html', 'html', 'HTML Webpage');
+INSERT INTO `mime_types` VALUES (33, 'ice', 'x-conference/x-cooltalk', NULL, '');
+INSERT INTO `mime_types` VALUES (34, 'ief', 'image/ief', 'image', '');
+INSERT INTO `mime_types` VALUES (35, 'iges', 'model/iges', NULL, '');
+INSERT INTO `mime_types` VALUES (36, 'igs', 'model/iges', NULL, '');
+INSERT INTO `mime_types` VALUES (37, 'jpe', 'image/jpeg', 'image', 'JPEG Image');
+INSERT INTO `mime_types` VALUES (38, 'jpeg', 'image/jpeg', 'image', 'JPEG Image');
+INSERT INTO `mime_types` VALUES (39, 'jpg', 'image/jpeg', 'image', 'JPEG Image');
+INSERT INTO `mime_types` VALUES (40, 'js', 'application/x-javascript', 'html', '');
+INSERT INTO `mime_types` VALUES (41, 'kar', 'audio/midi', NULL, '');
+INSERT INTO `mime_types` VALUES (42, 'latex', 'application/x-latex', NULL, '');
+INSERT INTO `mime_types` VALUES (43, 'lha', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (44, 'lzh', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (45, 'man', 'application/x-troff-man', NULL, '');
+INSERT INTO `mime_types` VALUES (46, 'mdb', 'application/access', 'database', 'Access Database');
+INSERT INTO `mime_types` VALUES (47, 'mdf', 'application/access', 'database', 'Access Database');
+INSERT INTO `mime_types` VALUES (48, 'me', 'application/x-troff-me', NULL, '');
+INSERT INTO `mime_types` VALUES (49, 'mesh', 'model/mesh', NULL, '');
+INSERT INTO `mime_types` VALUES (50, 'mid', 'audio/midi', NULL, '');
+INSERT INTO `mime_types` VALUES (51, 'midi', 'audio/midi', NULL, '');
+INSERT INTO `mime_types` VALUES (52, 'mif', 'application/vnd.mif', NULL, '');
+INSERT INTO `mime_types` VALUES (53, 'mov', 'video/quicktime', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (54, 'movie', 'video/x-sgi-movie', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (55, 'mp2', 'audio/mpeg', NULL, '');
+INSERT INTO `mime_types` VALUES (56, 'mp3', 'audio/mpeg', NULL, '');
+INSERT INTO `mime_types` VALUES (57, 'mpe', 'video/mpeg', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (58, 'mpeg', 'video/mpeg', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (59, 'mpg', 'video/mpeg', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (60, 'mpga', 'audio/mpeg', NULL, '');
+INSERT INTO `mime_types` VALUES (61, 'mpp', 'application/vnd.ms-project', 'office', '');
+INSERT INTO `mime_types` VALUES (62, 'ms', 'application/x-troff-ms', NULL, '');
+INSERT INTO `mime_types` VALUES (63, 'msh', 'model/mesh', NULL, '');
+INSERT INTO `mime_types` VALUES (64, 'nc', 'application/x-netcdf', NULL, '');
+INSERT INTO `mime_types` VALUES (65, 'oda', 'application/oda', NULL, '');
+INSERT INTO `mime_types` VALUES (66, 'pbm', 'image/x-portable-bitmap', 'image', '');
+INSERT INTO `mime_types` VALUES (67, 'pdb', 'chemical/x-pdb', NULL, '');
+INSERT INTO `mime_types` VALUES (68, 'pdf', 'application/pdf', 'pdf', 'Acrobar PDF or Postscript Document');
+INSERT INTO `mime_types` VALUES (69, 'pgm', 'image/x-portable-graymap', 'image', '');
+INSERT INTO `mime_types` VALUES (70, 'pgn', 'application/x-chess-pgn', NULL, '');
+INSERT INTO `mime_types` VALUES (71, 'png', 'image/png', 'image', 'JPEG Image');
+INSERT INTO `mime_types` VALUES (72, 'pnm', 'image/x-portable-anymap', 'image', '');
+INSERT INTO `mime_types` VALUES (73, 'ppm', 'image/x-portable-pixmap', 'image', '');
+INSERT INTO `mime_types` VALUES (74, 'ppt', 'application/vnd.ms-powerpoint', 'office', 'Powerpoint Presentation');
+INSERT INTO `mime_types` VALUES (75, 'ps', 'application/postscript', 'pdf', 'Acrobar PDF or Postscript Document');
+INSERT INTO `mime_types` VALUES (76, 'qt', 'video/quicktime', NULL, 'Video File');
+INSERT INTO `mime_types` VALUES (77, 'ra', 'audio/x-realaudio', NULL, '');
+INSERT INTO `mime_types` VALUES (78, 'ram', 'audio/x-pn-realaudio', NULL, '');
+INSERT INTO `mime_types` VALUES (79, 'ras', 'image/x-cmu-raster', 'image', '');
+INSERT INTO `mime_types` VALUES (80, 'rgb', 'image/x-rgb', 'image', '');
+INSERT INTO `mime_types` VALUES (81, 'rm', 'audio/x-pn-realaudio', NULL, '');
+INSERT INTO `mime_types` VALUES (82, 'roff', 'application/x-troff', NULL, '');
+INSERT INTO `mime_types` VALUES (83, 'rpm', 'audio/x-pn-realaudio-plugin', NULL, '');
+INSERT INTO `mime_types` VALUES (84, 'rtf', 'text/rtf', NULL, '');
+INSERT INTO `mime_types` VALUES (85, 'rtx', 'text/richtext', NULL, '');
+INSERT INTO `mime_types` VALUES (86, 'sgm', 'text/sgml', NULL, '');
+INSERT INTO `mime_types` VALUES (87, 'sgml', 'text/sgml', NULL, '');
+INSERT INTO `mime_types` VALUES (88, 'sh', 'application/x-sh', NULL, '');
+INSERT INTO `mime_types` VALUES (89, 'shar', 'application/x-shar', NULL, '');
+INSERT INTO `mime_types` VALUES (90, 'silo', 'model/mesh', NULL, '');
+INSERT INTO `mime_types` VALUES (91, 'sit', 'application/x-stuffit', NULL, '');
+INSERT INTO `mime_types` VALUES (92, 'skd', 'application/x-koan', NULL, '');
+INSERT INTO `mime_types` VALUES (93, 'skm', 'application/x-koan', NULL, '');
+INSERT INTO `mime_types` VALUES (94, 'skp', 'application/x-koan', NULL, '');
+INSERT INTO `mime_types` VALUES (95, 'skt', 'application/x-koan', NULL, '');
+INSERT INTO `mime_types` VALUES (96, 'smi', 'application/smil', NULL, '');
+INSERT INTO `mime_types` VALUES (97, 'smil', 'application/smil', NULL, '');
+INSERT INTO `mime_types` VALUES (98, 'snd', 'audio/basic', NULL, '');
+INSERT INTO `mime_types` VALUES (99, 'spl', 'application/x-futuresplash', NULL, '');
+INSERT INTO `mime_types` VALUES (100, 'src', 'application/x-wais-source', NULL, '');
+INSERT INTO `mime_types` VALUES (101, 'sv4cpio', 'application/x-sv4cpio', NULL, '');
+INSERT INTO `mime_types` VALUES (102, 'sv4crc', 'application/x-sv4crc', NULL, '');
+INSERT INTO `mime_types` VALUES (103, 'swf', 'application/x-shockwave-flash', NULL, '');
+INSERT INTO `mime_types` VALUES (104, 't', 'application/x-troff', NULL, '');
+INSERT INTO `mime_types` VALUES (105, 'tar', 'application/x-tar', 'compressed', 'Tar or Compressed Tar File');
+INSERT INTO `mime_types` VALUES (106, 'tcl', 'application/x-tcl', NULL, '');
+INSERT INTO `mime_types` VALUES (107, 'tex', 'application/x-tex', NULL, '');
+INSERT INTO `mime_types` VALUES (108, 'texi', 'application/x-texinfo', NULL, '');
+INSERT INTO `mime_types` VALUES (109, 'texinfo', 'application/x-texinfo', NULL, '');
+INSERT INTO `mime_types` VALUES (110, 'tif', 'image/tiff', 'image', 'TIFF Image');
+INSERT INTO `mime_types` VALUES (111, 'tiff', 'image/tiff', 'image', 'TIFF Image');
+INSERT INTO `mime_types` VALUES (112, 'tr', 'application/x-troff', NULL, '');
+INSERT INTO `mime_types` VALUES (113, 'tsv', 'text/tab-separated-values', NULL, '');
+INSERT INTO `mime_types` VALUES (114, 'txt', 'text/plain', 'text', 'Plain Text');
+INSERT INTO `mime_types` VALUES (115, 'ustar', 'application/x-ustar', NULL, '');
+INSERT INTO `mime_types` VALUES (116, 'vcd', 'application/x-cdlink', NULL, '');
+INSERT INTO `mime_types` VALUES (117, 'vrml', 'model/vrml', NULL, '');
+INSERT INTO `mime_types` VALUES (118, 'vsd', 'application/vnd.visio', 'office', '');
+INSERT INTO `mime_types` VALUES (119, 'wav', 'audio/x-wav', NULL, '');
+INSERT INTO `mime_types` VALUES (120, 'wrl', 'model/vrml', NULL, '');
+INSERT INTO `mime_types` VALUES (121, 'xbm', 'image/x-xbitmap', 'image', '');
+INSERT INTO `mime_types` VALUES (122, 'xls', 'application/vnd.ms-excel', 'excel', 'Excel Spreadsheet');
+INSERT INTO `mime_types` VALUES (123, 'xml', 'text/xml', NULL, '');
+INSERT INTO `mime_types` VALUES (124, 'xpm', 'image/x-xpixmap', 'image', '');
+INSERT INTO `mime_types` VALUES (125, 'xwd', 'image/x-xwindowdump', 'image', '');
+INSERT INTO `mime_types` VALUES (126, 'xyz', 'chemical/x-pdb', NULL, '');
+INSERT INTO `mime_types` VALUES (127, 'zip', 'application/zip', 'compressed', 'ZIP Compressed File');
+INSERT INTO `mime_types` VALUES (128, 'gz', 'application/x-gzip', 'compressed', 'GZIP Compressed File');
+INSERT INTO `mime_types` VALUES (129, 'tgz', 'application/x-gzip', 'compressed', 'Tar or Compressed Tar File');
+INSERT INTO `mime_types` VALUES (130, 'sxw', 'application/vnd.sun.xml.writer', 'openoffice', 'OpenOffice.org Writer Document');
+INSERT INTO `mime_types` VALUES (131, 'stw', 'application/vnd.sun.xml.writer.template', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (132, 'sxc', 'application/vnd.sun.xml.calc', 'openoffice', 'OpenOffice.org Spreadsheet');
+INSERT INTO `mime_types` VALUES (133, 'stc', 'application/vnd.sun.xml.calc.template', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (134, 'sxd', 'application/vnd.sun.xml.draw', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (135, 'std', 'application/vnd.sun.xml.draw.template', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (136, 'sxi', 'application/vnd.sun.xml.impress', 'openoffice', 'OpenOffice.org Presentation');
+INSERT INTO `mime_types` VALUES (137, 'sti', 'application/vnd.sun.xml.impress.template', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (138, 'sxg', 'application/vnd.sun.xml.writer.global', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (139, 'sxm', 'application/vnd.sun.xml.math', 'openoffice', 'OpenOffice.org File');
+INSERT INTO `mime_types` VALUES (140, 'xlt', 'application/vnd.ms-excel', 'excel', 'Excel Template');
+INSERT INTO `mime_types` VALUES (141, 'dot', 'application/msword', 'word', 'Word Template');
+INSERT INTO `mime_types` VALUES (142, 'bz2', 'application/x-bzip2', 'compressed', 'BZIP2 Compressed File');
+INSERT INTO `mime_types` VALUES (143, 'diff', 'text/plain', 'text', 'Source Diff File');
+INSERT INTO `mime_types` VALUES (144, 'patch', 'text/plain', 'text', 'Patch File');
 
 -- 
 -- Dumping data for table `news`
@@ -640,7 +643,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.8');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.9');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -745,6 +748,8 @@ INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Databa
 INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
+INSERT INTO `upgrades` VALUES (65, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (66, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
 
 -- 
 -- Dumping data for table `users`
@@ -1046,7 +1051,7 @@ INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
 -- Dumping data for table `zseq_mime_types`
 -- 
 
-INSERT INTO `zseq_mime_types` VALUES (141);
+INSERT INTO `zseq_mime_types` VALUES (144);
 
 -- 
 -- Dumping data for table `zseq_news`
@@ -1172,7 +1177,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (64);
+INSERT INTO `zseq_upgrades` VALUES (66);
 
 -- 
 -- Dumping data for table `zseq_users`

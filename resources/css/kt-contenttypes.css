@@ -21,7 +21,7 @@
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.png); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.png); }
 .contenttype.image { background-image: url(../../resources/mimetypes/image.png); }
-.contenttype.compressed { background-image: url(../../resources/mimetypes/compressed.png); }
+.contenttype.compressed { background-image: url(../../resources/mimetypes/zip.png); }
 .contenttype.html { background-image: url(../../resources/mimetypes/html.png); }
 
 .contenttype.txt,
