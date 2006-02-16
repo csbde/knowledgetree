@@ -1,6 +1,7 @@
 {capture assign=sCSS}
 {literal}
 /* inactivity */
+
 .active .inactivity_message { display: none; }
 
 select { width: 100%; }
@@ -14,11 +15,11 @@ select { width: 100%; }
 
 .active.editing .edit_button { display: none; }
 
-.active { position: relative; }
+
 td { vertical-align: top; }
 .buttonset.inactive { background: transparent; }
 
-.inactive { background: #ccc; position: relative; }
+.inactive { background: #ccc; }
 .inactive .fixed_message, 
 .inactive .unassigned_items,
 .inactive .available_behaviours,
@@ -79,11 +80,14 @@ refresh the page.</p>
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
 <table id="simple_conditional_edit">
+<thead>
 <tr>
 {foreach from=$aFields item=oField}
   <th id="header_{$oField->getId()}">{$oField->getName()}</th>
 {/foreach}
 </tr>
+</thead>
+<tbody>
 <tr valign="top">
 
 {foreach from=$aFields item=oField}
@@ -101,6 +105,8 @@ refresh the page.</p>
 {/foreach}
   
 </tr>
+</tbody>
+<tfoot>
 <tr>
 {foreach from=$aFields item=oField}
    <td class="buttonset" id="buttons_{$oField->getId()}">
@@ -112,7 +118,11 @@ refresh the page.</p>
    </td>
 {/foreach}		 
 </tr>
+</tfoot>
 </table>
+
+
+</form>
 <!--
 <table id="brad-log">
 <tr>

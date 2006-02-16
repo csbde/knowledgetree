@@ -283,9 +283,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		$oConfig =& KTConfig::getSingleton();
 		$sDocumentRoot = $oConfig->get('urls/documentRoot');
 		
-		$sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oSrcDocument->getFolderID()), $oSrcDocument->_oDocumentContentVersion->getId(), $oSrcDocument->_oDocumentContentVersion->getFileName());
-		$sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oNewDocument->getFolderID()), $oNewDocument->_oDocumentContentVersion->getId(), $oNewDocument->_oDocumentContentVersion->getFileName());
-		$sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+		$sNewPath = $this->generateStoragePath($oNewDocument);
+		$sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $this->generateStoragePath($oSrcDocument));
 		$sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
 		
 		$res = KTUtil::copyFile($sFullOldPath, $sFullNewPath);
