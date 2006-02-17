@@ -575,10 +575,15 @@ a.main_nav_item {
     padding: 0.25em 0.5em;
     white-space: nowrap !important;
     overflow: hidden;
+    vertical-align: top;
+}
+
+.kt_collection td.title {
+    white-space: normal !important;
 }
 
 .centered, .kt_collection thead th.centered { text-align: center; }
-.centered .ktAction { margin-left: auto; margin-right: auto; width: 100%; }
+.centered .ktAction { margin-left: auto; margin-right: auto; width: 100%;  background-position: top center;}
 
 .kt_collection td.sort_on {
     border-left: 1px solid #ccc;
