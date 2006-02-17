@@ -793,19 +793,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
-            $this->errorRedirectToMain('You are not an administrator');
+            $this->errorRedirectToMain(_('You are not an administrator'));
         }
 
         $_SESSION['adminmode'] = true;
         if ($_REQUEST['fDocumentId']) {
-            $_SESSION['KTInfoMessage'][] = 'Administrator mode enabled';
+            $_SESSION['KTInfoMessage'][] = _('Administrator mode enabled');
             redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
             exit(0);
         }
         if ($_REQUEST['fFolderId']) {
-            $this->successRedirectToMain('Administrator mode enabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+            $this->successRedirectToMain(_('Administrator mode enabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }
-        $this->successRedirectToMain('Administrator mode enabled');
+        $this->successRedirectToMain(_('Administrator mode enabled'));
     }
 
     function do_disableAdminMode() {
@@ -820,19 +820,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
-            $this->errorRedirectToMain('You are not an administrator');
+            $this->errorRedirectToMain(_('You are not an administrator'));
         }
 
         $_SESSION['adminmode'] = false;
         if ($_REQUEST['fDocumentId']) {
-            $_SESSION['KTInfoMessage'][] = 'Administrator mode disabled';
+            $_SESSION['KTInfoMessage'][] = _('Administrator mode disabled');
             redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
             exit(0);
         }
         if ($_REQUEST['fFolderId']) {
-            $this->successRedirectToMain('Administrator mode disabled', sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+            $this->successRedirectToMain(_('Administrator mode disabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }
-        $this->successRedirectToMain('Administrator mode disabled');
+        $this->successRedirectToMain(_('Administrator mode disabled'));
     }
 }
 

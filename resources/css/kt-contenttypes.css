@@ -5,7 +5,7 @@
     <span class="contenttype presentation">My Filename</span>
 */
 .contenttype {
-    background-position: center left;
+    background-position: 0% 0.5em;
     background-repeat: no-repeat;
     padding-left: 25px;
     padding-top: 5px;

@@ -91,11 +91,17 @@ class KTAdminModePortlet extends KTPortlet {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
 
+        $toggleMode = 'action=disableAdminMode';
+        if (KTUtil::arrayGet($_SESSION, 'adminmode', false) == false) {
+            $toggleMode = 'action=enableAdminMode';
+        }
+        $QS = sprintf('fDocumentId=%s&fFolderId=%s&%s',$iDocumentId, $iFolderId, $toggleMode);
+
+        $toggleUrl = KTUtil::addQueryString(KTBrowseUtil::getBrowseBaseUrl(), $QS);
+
         $aTemplateData = array(
             "context" => $this,
-            'browseurl' => KTBrowseUtil::getBrowseBaseUrl(),
-            'folder_id' => $iFolderId,
-            'document_id' => $iDocumentId,
+            'toggleurl' => $toggleUrl,
             'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
         );
         return $oTemplate->render($aTemplateData);
