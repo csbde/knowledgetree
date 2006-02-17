@@ -11,6 +11,7 @@ class KTFolderAction extends KTStandardDispatcher {
 
     var $_sShowPermission;
     var $_sDisablePermission;
+    var $sHelpPage = 'ktcore/browse.html';    
     
     var $_bAdminAlwaysAvailable = false;
 

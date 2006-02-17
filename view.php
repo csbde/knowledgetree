@@ -28,6 +28,7 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     var $sSection = "view_details";
+    var $sHelpPage = 'ktcore/browse.html';	
 
     function ViewDocumentDispatcher() {
         $this->aBreadcrumbs = array(

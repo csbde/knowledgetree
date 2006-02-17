@@ -40,6 +40,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     var $oDocument = null;
     var $oFolder = null;
     var $sSection = "view_details";
+    var $sHelpPage = 'ktcore/browse.html';	
 
 	function check() {
 		if (!parent::check()) { return false; }

@@ -12,6 +12,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
+    var $sHelpPage = 'ktcore/browse.html';	
 
     var $sSection = "view_details";
     var $aBreadcrumbs = array(
