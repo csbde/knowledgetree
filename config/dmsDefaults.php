@@ -217,25 +217,31 @@ class KTInit {
 
     // {{{ setupServerVariables
     function setupServerVariables() {
-        // KTS-21: Some environments (FastCGI only?) don't set PATH_INFO
-        // correctly, but do set ORIG_PATH_INFO.
-        $path_info = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-        $orig_path_info = KTUtil::arrayGet($_SERVER, 'ORIG_PATH_INFO');
-        if (empty($path_info) && !empty($orig_path_info)) {
-            $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
-            $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
-        }
-        $env_path_info = KTUtil::arrayGet($_SERVER, 'REDIRECT_kt_path_info');
-        if (empty($path_info) && !empty($env_path_info)) {
-            $_SERVER['PATH_INFO'] = $env_path_info;
-            $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
-        }
+        $oKTConfig =& KTConfig::getSingleton();
+        $bPathInfoSupport = $oKTConfig->get("KnowledgeTree/pathInfoSupport");
+        if ($bPathInfoSupport) {
+            // KTS-21: Some environments (FastCGI only?) don't set PATH_INFO
+            // correctly, but do set ORIG_PATH_INFO.
+            $path_info = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+            $orig_path_info = KTUtil::arrayGet($_SERVER, 'ORIG_PATH_INFO');
+            if (empty($path_info) && !empty($orig_path_info)) {
+                $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+                $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+            }
+            $env_path_info = KTUtil::arrayGet($_SERVER, 'REDIRECT_kt_path_info');
+            if (empty($path_info) && !empty($env_path_info)) {
+                $_SERVER['PATH_INFO'] = $env_path_info;
+                $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+            }
 
-        // KTS-50: IIS (and probably most non-Apache web servers) don't
-        // set REQUEST_URI.  Fake it.
-        $request_uri = KTUtil::arrayGet($_SERVER, 'REQUEST_URI');
-        if (empty($request_uri)) {
-            $_SERVER['REQUEST_URI'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
+            // KTS-50: IIS (and probably most non-Apache web servers) don't
+            // set REQUEST_URI.  Fake it.
+            $request_uri = KTUtil::arrayGet($_SERVER, 'REQUEST_URI');
+            if (empty($request_uri)) {
+                $_SERVER['REQUEST_URI'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
+            }
+        } else {
+            unset($_SERVER['PATH_INFO']);
         }
 
         $script_name = KTUtil::arrayGet($_SERVER, 'SCRIPT_NAME');
