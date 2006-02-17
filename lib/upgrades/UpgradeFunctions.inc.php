@@ -7,7 +7,8 @@ class UpgradeFunctions {
         "2.0.8" => array("setPermissionObject"),
         "2.99.1" => array("createFieldSets"),
         "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
-        "2.99.8" => array("fixUnits"), #, "createLdapAuthenticationProvider"),
+        "2.99.8" => array("fixUnits"),
+        "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
     );
 
     var $descriptions = array(
@@ -17,6 +18,8 @@ class UpgradeFunctions {
         "setPermissionObject" => "Set the permission object in charge of a document or folder",
         "createFieldSets" => "Create a fieldset for each field without one",
         "normaliseDocuments" => "Normalise the documents table",
+        "createLdapAuthenticationProvider" => "Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)",
+        'createSecurityDeletePermissions' => 'Create the Core: Manage Security and Core: Delete permissions',
     );
     var $phases = array(
         "setPermissionObject" => 1,
@@ -430,6 +433,102 @@ class UpgradeFunctions {
             }
         }
         return true;
+    }
+    // }}}
+
+    // {{{ createLdapAuthenticationProvider
+    function createLdapAuthenticationProvider() {
+        global $default;
+        $new_default = $default;
+        $default = null;
+        if (!file_exists(KT_DIR . '/config/environment.php')) {
+            return;
+        }
+        require_once(KT_DIR . '/config/environment.php');
+        $old_default = $default;
+        $default = $new_default;
+        if ($old_default->authenticationClass !== "LDAPAuthenticator") {
+            return;
+        }
+        $sName = "Autocreated by upgrade";
+        $sNamespace = KTUtil::nameToLocalNamespace("authenticationsources", $sName);
+        $aConfig = array(
+            'searchattributes' => split(',', 'cn,mail,sAMAccountName'),
+            'objectclasses' => split(',', 'user,inetOrgPerson,posixAccount'),
+            'servername' => $old_default->ldapServer,
+            'basedn' => $old_default->ldapRootDn,
+            'searchuser' => $old_default->ldapSearchUser,
+            'searchpassword' => $old_default->ldapSearchPassword,
+        );
+        if ($old_default->ldapServerType == "ActiveDirectory") {
+            $sProvider = "ktstandard.authentication.adprovider" ;
+        } else {
+            $sProvider = "ktstandard.authentication.ldapprovider" ;
+        }
+
+        require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
+        $oSource = KTAuthenticationSource::createFromArray(array(
+            'name' => $sName,
+            'namespace' => $sNamespace,
+            'config' => serialize($aConfig),
+            'authenticationprovider' => $sProvider,
+        ));
+
+        if (PEAR::isError($oSource)) {
+            return $oSource;
+        }
+
+        $sUsersTable = KTUtil::getTableName('users');
+        $sQuery = "UPDATE $sUsersTable SET authentication_source_id = ? WHERE authentication_source_id IS NULL AND LENGTH(authentication_details_s1)";
+        $aParams = array($oSource->getId());
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+        return $res;
+    }
+    // }}}
+
+    // {{{ createSecurityDeletePermissions
+    function createSecurityDeletePermissions() {
+        $sPermissionsTable = KTUtil::getTableName('permissions');
+        $aPermissionInfo = array(
+            'human_name' => 'Core: Manage security',
+            'name' => 'ktcore.permissions.security',
+            'built_in' => true,
+        );
+        $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $iSecurityPermissionId = $res;
+
+        $aPermissionInfo = array(
+            'human_name' => 'Core: Delete',
+            'name' => 'ktcore.permissions.delete',
+            'built_in' => true,
+        );
+        $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $iDeletePermissionId = $res;
+
+        $sQuery = "SELECT id FROM $sPermissionsTable WHERE name = ?";
+        $aParams = array("ktcore.permissions.write");
+        $iWritePermissionId = DBUtil::getOneResultKey(array($sQuery, $aParams), "id");
+
+        $sPermissionAssignmentsTable = KTUtil::getTableName('permission_assignments');
+        $sQuery = "SELECT permission_object_id, permission_descriptor_id FROM $sPermissionAssignmentsTable WHERE permission_id = ?";
+        $aParams = array($iWritePermissionId);
+        $aRows = DBUtil::getResultArray(array($sQuery, $aParams));
+        foreach ($aRows as $aRow) {
+            $aRow['permission_id'] = $iSecurityPermissionId;
+            DBUtil::autoInsert($sPermissionAssignmentsTable, $aRow);
+            $aRow['permission_id'] = $iDeletePermissionId;
+            DBUtil::autoInsert($sPermissionAssignmentsTable, $aRow);
+        }
+        $sDocumentTable = KTUtil::getTableName('documents');
+        $sFolderTable = KTUtil::getTableName('folders');
+        DBUtil::runQuery("UPDATE $sDocumentTable SET permission_lookup_id = NULL");
+        DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
     }
     // }}}
 }
