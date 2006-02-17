@@ -317,6 +317,22 @@ class FunctionUpgradeItem extends UpgradeItem {
     }
 }
 
+class KTRebuildPermissionObserver {
+    function start() {
+        $this->lastBeat = time();
+        print "<!-- ";
+    }
+    function receiveMessage() {
+        $now = time();
+        if ($this->lastBeat + 15 < $now) {
+            print " ";
+        }
+    }
+    function end() {
+        print " -->";
+    }
+}
+
 class RecordUpgradeItem extends UpgradeItem {
     function RecordUpgradeItem ($version, $oldversion = null) {
         $this->type = "upgrade";
@@ -331,7 +347,15 @@ class RecordUpgradeItem extends UpgradeItem {
     }
     function _performUpgrade() {
         require_once(KT_LIB_DIR .  '/permissions/permissionutil.inc.php');
+
+        $po =& new KTRebuildPermissionObserver($this);
+        $po->start();
+        $oChannel =& KTPermissionChannel::getSingleton();
+        $oChannel->addObserver($po);
+
         KTPermissionUtil::rebuildPermissionLookups(true);
+        $po->end();
+
         $query = "UPDATE system_settings SET value = ? WHERE name = ?";
         $aParams = array($this->version, "knowledgeTreeVersion");
         return DBUtil::runQuery(array($query, $aParams));
