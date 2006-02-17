@@ -69,7 +69,7 @@ class KTAdminModePortlet extends KTPortlet {
         parent::KTPortlet(_("Administrator mode"));
     }
     function render() {
-        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (!$iFolderId && !$iDocumentId) {
             return null;
@@ -83,7 +83,7 @@ class KTAdminModePortlet extends KTPortlet {
         }
         require_once(KT_LIB_DIR . '/security/Permission.inc');
         $oUser =& User::get($_SESSION['userID']);
-        if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
+        if (!Permission::userIsSystemAdministrator($oUser) && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
             return null;
         }
         require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
