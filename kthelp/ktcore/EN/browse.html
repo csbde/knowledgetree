@@ -1,0 +1,143 @@
+<html>
+<head>
+   <title>Browse Documents</title>
+</head>
+<body>
+
+<h2>Browse Documents</h2>
+<p>You use the Browse Documents section to navigate the 
+repository  either by folder, by document type, or by lookup value  the 
+default is browse by folder.</p>
+<h3>Folder Actions</h3>
+<p>You use the Folder Actions buttons to:</p>
+<ul>
+	<li>Add new folders.</li>
+	<li>Add multiple documents to the repository at once  
+	either by uploading a zip file (bulk import), or by specifying a server path 
+	(bulk upload) to a location to upload all the documents and files at that 
+	location to the repository.</li>
+</ul>
+<h4>Subscriptions</h4>
+<p>Subscribing to a folder allows you to receive notifications 
+that tell you when that folder is modified. An email notification is sent to you 
+if you have provided your email address when subscribing. Your alerts and 
+notifications are also displayed on the Dashboard. </p>
+<h4>Search</h4>
+<p>KnowledgeTree provides three versatile search options  
+simple (quick) search, advanced search, and saved searches. Search is 
+permissions-based, so the system only returns items that the logged in user is 
+allowed to access. </p>
+<p> </p>
+<h5>Simple (quick) search</h5>
+<p>Specify a search term to search all text  including 
+document metadata and the contents of the following file types (if your 
+administrator has configured these options): MS Word, MS Excel, MS PowerPoint, 
+Adobe PDF, and Plain Text files.</p>
+<h5>Advanced Search</h5>
+<p>Define criteria to launch a detailed Boolean search of the 
+repository. This search allows more detailed search requests (using document 
+metadata). For example, you can search for all MS Excel documents containing the 
+word 'Invoice'.</p>
+<h5>Saved search</h5>
+<p>The saved search function allows KnowledgeTree 
+administrators to pre-save useful advanced searches. For example, you may want 
+to save a search that shows all documents in a completed state of a workflow. 
+Saved searches save time on commonly used searches. </p>
+<h3>Document Actions</h3>
+<p>The Document Detail screen summarizes key information about 
+the currently selected document. The Document Actions pane on the left of the 
+screen provides a set of buttons for working with the document. </p>
+<h4>Download</h4>
+<p>You can download a file to open it, or to save it, without 
+checking it out of the repository. </p>
+<h4>Check-in / Check-out</h4>
+<p>Check out a document to temporarily remove it from the 
+repository while you update it. While its checked out, other users cant check 
+it out to make changes. The version is incremented when the document is checked 
+in  a metadata version snapshot is created.</p>
+<p>An administrator can override the checked out status of a 
+document if the user has failed to check-in a document. In this case, the user 
+needs to check-out the document again and redo their changes.</p>
+<h4>Metadata</h4>
+<p>Metadata is the information about a document that describes 
+how, and when, and by whom, a particular set of data was collected, and how the 
+data is formatted.</p>
+<p>KnowledgeTree groups metadata fields into fieldsets. A 
+fieldset is a set of related information, which can be attached to a 
+document.  For example, lets say we specify a Project fieldset as follows:</p>
+<p><b>Project</b></p>
+<ul>
+	<li>Project Name</li>
+	<li>Division</li>
+	<li>Cost Estimate</li>
+	<li>Implementation Status</li>
+</ul>
+<p>This project fieldset can be attached to any document type 
+that relates to a project; and all members of that fieldset (i.e. project name, 
+division, cost estimate, implementation status) would apply. A plug-in could be 
+written, which uses the information in the Project fieldset, to provide 
+reporting information on a project level, or on a project-based hierarchy of 
+documents.</p>
+<h4>Delete</h4>
+<p>Deleted documents remain in the repository (in DMS 
+Administration) until the KnowledgeTree administrator either expunges them or 
+restores them. </p>
+<p>See Administration  Document Storage  Restore or Expunge 
+Deleted Documents</p>
+<h4>Move</h4>
+<p>Only users with the required permissions for a folder are 
+allowed to move an item to another location in the repository. </p>
+<h4>Transaction History</h4>
+<p>This feature provides a record of all transactions 
+performed on the document: create date, uploads, downloads, check-out, check-in 
+and the previous deletion of the document if it has been restored.</p>
+<h4>Version History</h4>
+<p>This feature provides a record of all past and current 
+versions of a document. A new document version is created whenever a document is 
+checked-out then subsequently checked-in again. The version history feature 
+allows you to download older documents and compare them with more recent 
+versions.</p>
+<h4>Links</h4>
+<p >Document links allow you to establish 
+associations between documents in the repository. Your KnowledgeTree 
+administrator needs to create the Document Link Types that you use to link 
+documents. When creating a document link, the administrator specifies the type 
+of relationship that the link implies between the 
+linked documents  i.e. associated with, or duplicated by. </p>
+<h4>Version Control</h4>
+<p>KnowledgeTree has powerful document version control 
+features, which ensure that the editing and versioning of documents is done in a 
+controlled and auditable manner. Newly created documents are assigned as version 
+0.1. The first time you check it out for editing and then check it back in 
+again, the version number increments to version 1. Each subsequent check out / 
+check in causes the version number to increment by 1. </p>
+<p>A document may only be checked out for editing by a single 
+user at a time. When a document is checked back in, you need to specify the 
+changes you made.</p>
+<p>Users and groups who have read or write access to a 
+document are allowed to download it for viewing only  you can choose to open 
+the document in your Web browser or save it to your local computer.  You can 
+view a version history of all changes to the document, and you can download 
+previous versions for comparison. </p>
+<p>Any changes you make to the document you downloaded won't 
+display in the version in the repository unless you check out the document, and 
+then check it back into the repository with your changes.</p>
+<p>Any user that logs in to KnowledgeTree can view the list of 
+documents they have checked out (if any) in the Checked-out documents section of 
+the Dashboard. </p>
+<h4>Permissions</h4>
+<p >Permissions in KnowledgeTree are 
+folder-based  permissions that have been allocated for a specific folder apply 
+to all the documents in that folder.</p>
+<p >There are four default types of 
+permissions: Read, Write, Add Folder, and Manage Permissions. </p>
+<p >Users that have only Read permission on 
+a document can view the document and its metadata, but are not allowed to change 
+it. Users that have Read and Write permissions are allowed to change the 
+contents of a document, as well as its metadata. </p>
+<p >Users with the Add Folder permission are 
+allowed to create and edit sub-folders within their group folder. </p>
+<p >Users with the Manage Permissions 
+permission are able to edit permissions within their group folder.</p>
+</body>
+</html>

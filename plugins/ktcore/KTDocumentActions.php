@@ -822,6 +822,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sDisplayName = 'Workflow';
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = "ktcore.permissions.write";
+    
+    var $sHelpPage = 'ktcore/workflow.html';    
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("workflow"));

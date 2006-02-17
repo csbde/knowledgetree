@@ -84,7 +84,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     var $browse_mode = null;
     var $query = null;
     var $resultURL;
-    var $sHelpPage = 'ktcore/browse/browse.html';
+    var $sHelpPage = 'ktcore/browse.html';
     var $editable;
 
     function BrowseDispatcher() {
