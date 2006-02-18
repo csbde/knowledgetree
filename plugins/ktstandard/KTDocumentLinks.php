@@ -115,7 +115,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
 
-        $resultURL = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d", $oParentDocument->getId()));
+        $resultURL = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d&fFolderId=%d", $oParentDocument->getId(), $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
         // ordering. (direction and column)
