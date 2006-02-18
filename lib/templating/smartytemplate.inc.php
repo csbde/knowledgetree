@@ -83,6 +83,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_modifier('addQueryStringSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         $smarty->register_modifier('addQSSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         $smarty->register_block('addQS', array('KTSmartyTemplate', 'addQueryStringBlock'), false);
+        $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -265,6 +266,9 @@ class KTSmartyTemplate extends KTTemplate {
         return KTUtil::addQueryStringSelf($qs);
     }
 
+    function getUrlForFolder($params, &$smarty) {
+        return KTBrowseUtil::getUrlForFolder($params['folder']);
+    }
 }
 
 ?>
