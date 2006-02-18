@@ -18,6 +18,7 @@ membership of groups that belong to the unit.{/i18n}</p>
       <th>{i18n}Unit Name{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Delete{/i18n}</th>
+      <th>{i18n}Folder{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -26,6 +27,8 @@ membership of groups that belong to the unit.{/i18n}</p>
         <td>{$oUnit->getName()}</td>
         <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><span class="contenttype folder"><a href="{getUrlForFolder
+folder=$oUnit->getFolderId()}">{$oUnit->getName()}</a></span></td>
      </tr>   
      {/foreach}
 </tbody>
