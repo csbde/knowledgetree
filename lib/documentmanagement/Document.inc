@@ -177,6 +177,7 @@ class Document {
     }
     // }}}
 
+    // {{{ load
     function load($iId, $iMetadataVersionId = null) {
         $this->iId = $iId;
         $this->_oDocumentCore = KTDocumentCore::get($iId);
@@ -195,10 +196,13 @@ class Document {
         $this->_oDocumentContentVersion = KTDocumentContentVersion::get($this->_oDocumentMetadataVersion->getContentVersionId());
         if (PEAR::isError($this->_oDocumentContentVersion)) { return $this->_oDocumentContentVersion; }
     }
+    // }}}
 
+    // {{{ getCurrentMetadataVersionId
     function getCurrentMetadataVersionId() {
         return $this->iCurrentMetadataVersionId;
     }
+    // }}}
 
     // {{{ getList
     /**
@@ -235,32 +239,57 @@ class Document {
     }
     // }}}
 
-    // {{{ documentExists
+    // {{{ fileExists
     /**
      * Static function.
-     * Check if a document already exists
+     * Check if a document with a given filename currently exists
      *
      * @param String  File name of document
      * @param int  Primary key of folder to which document is assigned
      *
      * @return boolean true if document exists, false otherwise.
      */
-    function documentExists($sFileName, $iFolderID) {
-        return false;
-    
-    
-        global $default;
-        $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->documents_table " ./*ok*/
-              "WHERE filename = ? " .
-              " AND folder_id = ?" .
-              " AND status_id = ?";
-        $aParams = array($sFileName, $iFolderID, LIVE);
-        $sql->query(array($sQuery, $aParams));
-        if ($sql->next_record()) {
-            return true;
+    function fileExists($sFileName, $iFolderID) {
+        $sD = KTUtil::getTableName('documents');
+        $sDM = KTUtil::getTableName('document_metadata_version');
+        $sDC = KTUtil::getTableName('document_content_version');
+        $sQuery = "SELECT D.id AS id FROM $sD AS D
+            LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
+            LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
+            WHERE DC.filename = ? AND D.folder_id = ?";
+        $aParams = array($sFileName, $iFolderID);
+        $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        if (empty($id)) {
+            return false;
         }
-        return false;
+        return true;
+    }
+    // }}}
+
+    // {{{ nameExists
+    /**
+     * Static function.
+     * Check if a document with a given filename currently exists
+     *
+     * @param String  File name of document
+     * @param int  Primary key of folder to which document is assigned
+     *
+     * @return boolean true if document exists, false otherwise.
+     */
+    function nameExists($sName, $iFolderID) {
+        $sD = KTUtil::getTableName('documents');
+        $sDM = KTUtil::getTableName('document_metadata_version');
+        $sDC = KTUtil::getTableName('document_content_version');
+        $sQuery = "SELECT D.id AS id FROM $sD AS D
+            LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
+            LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
+            WHERE DM.name = ? AND D.folder_id = ?";
+        $aParams = array($sName, $iFolderID);
+        $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        if (empty($id)) {
+            return false;
+        }
+        return true;
     }
     // }}}
 
@@ -325,7 +354,7 @@ class Document {
     }
     // }}}
 
-    // STATIC
+    // {{{
     function &createFromArray($aOptions) {
         if (KTUtil::arrayGet($aOptions, "size") === null) {
             $aOptions['size'] = 0;
@@ -418,7 +447,9 @@ class Document {
         $oDocument->iId = $iId;
         return $oDocument;
     }
+    // }}}
 
+    // {{{ startNewMetadataVersion
     function startNewMetadataVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentMetadataVersion->iId = -1;
@@ -429,7 +460,9 @@ class Document {
         $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
         $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
     }
+    // }}}
 
+    // {{{ startNewContentVersion
     function startNewContentVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentContentVersion->iId = -1;
@@ -451,7 +484,9 @@ class Document {
         $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
         $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
     }
+    // }}}
 
+    // {{{ delete
     function delete() {
         $this->_oDocumentCore->iMetadataVersionId = null;
         $this->_oDocumentCore->update();
@@ -466,5 +501,6 @@ class Document {
         $this->_oDocumentCore->delete();
         return true;
     }
+    // }}}
 }
 ?>
