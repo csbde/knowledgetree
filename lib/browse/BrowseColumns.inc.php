@@ -331,6 +331,13 @@ class WorkflowColumn extends BrowseColumn {
             return $oState->getName() . ' <span class="descriptiveText">(' . $oWorkflow->getName() . ')</span>';
         }
     }
+    function addToDocumentQuery() {
+        $sWorkflowStateTable = KTUtil::getTableName('workflow_states');
+        $sWorkflowDocumentsTable = KTUtil::getTableName('workflow_documents');
+        $sJoinSQL = "LEFT JOIN $sWorkflowDocumentsTable AS WDOJ ON D.id = WDOJ.document_id LEFT JOIN $sWorkflowStateTable AS state_order_join ON WDOJ.state_id = state_order_join.id";
+        return array($sJoinSQL, null, "COALESCE(state_order_join.name, 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')");
+        // XXX: There must be a better way?
+    }
 }
 
 class DownloadColumn extends BrowseColumn {
