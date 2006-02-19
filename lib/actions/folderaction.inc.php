@@ -7,7 +7,6 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 class KTFolderAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
-    var $sDisplayName;
 
     var $_sShowPermission;
     var $_sDisablePermission;
@@ -77,7 +76,7 @@ class KTFolderAction extends KTStandardDispatcher {
 
         $aInfo = array(
             'description' => $this->sDescription,
-            'name' => $this->sDisplayName,
+            'name' => $this->getDisplayName(),
             'url' => $this->getURL(),
         );
         return $this->customiseInfo($aInfo);
@@ -88,6 +87,8 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function getDisplayName() {
+        // This should be overridden by the i18nised display name
+        // This implementation is only here for backwards compatibility
         return $this->sDisplayName;
     }
 

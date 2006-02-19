@@ -8,7 +8,6 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
-    var $sDisplayName;
 
     var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
@@ -23,8 +22,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
-              
-        
+
         parent::KTStandardDispatcher();
     }
 
@@ -80,7 +78,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
         $aInfo = array(
             'description' => $this->sDescription,
-            'name' => $this->sDisplayName,
+            'name' => $this->getDisplayName(),
             'url' => $url,
         );
         return $this->customiseInfo($aInfo);
@@ -91,6 +89,8 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function getDisplayName() {
+        // Should be overridden by the i18nised display name
+        // This is here solely for backwards compatibility
         return $this->sDisplayName;
     }
 
