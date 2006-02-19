@@ -81,7 +81,7 @@ function do_file($file)
         $content = $matches[3][$i];
 		if (!preg_match('/formatmatters\s*=\s*["\']?\s*(.[^\"\']*)\s*["\']?/', $matches[2][$i], $match)) {
             $replace = array(
-                '@[\n\r]+@' => ' ',
+                '@ *[\n\r]+@' => ' ',
             );
             $content = preg_replace(array_keys($replace), array_values($replace), $content);
         }
