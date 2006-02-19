@@ -4,6 +4,6 @@
     The document "{$info.object_name}" has been moved to the folder "{$info.location_name}".
     <div class="actionoptions">    
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View New Location{/i18n}</a>
-        <a href={ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
+        <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
     </div>
 </dd>
