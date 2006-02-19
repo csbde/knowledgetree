@@ -269,8 +269,11 @@ class SimpleSearchQuery extends PartialQuery {
     //
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+        $this->sDocumentJoinClause = $sJoinClause;
+        $this->aDocumentJoinParams = $aJoinParams;
         $aOptions = array(
             'select' => 'DISTINCT D.id AS id',
+            'join' => array($sJoinClause, $aJoinParams),
         );
         $res = $this->getQuery($aOptions);
         if (PEAR::isError($res)) { return array(); }
@@ -374,8 +377,11 @@ class BooleanSearchQuery extends PartialQuery {
     //
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+        $this->sDocumentJoinClause = $sJoinClause;
+        $this->aDocumentJoinParams = $aJoinParams;
         $aOptions = array(
             'select' => 'DISTINCT D.id AS id',
+            'join' => array($sJoinClause, $aJoinParams),
         );
         $res = $this->getQuery($aOptions);
         if (PEAR::isError($res)) { return array(); }
