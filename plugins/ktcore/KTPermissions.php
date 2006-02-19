@@ -18,9 +18,12 @@ require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
 class KTDocumentPermissionsAction extends KTDocumentAction {
-    var $sDisplayName = 'Permissions';
     var $sName = 'ktcore.actions.document.permissions';
     var $_bAdminAlwaysAvailable = true;
+
+    function getDisplayName() {
+        return _('Permissions');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails("permissions");
@@ -77,11 +80,14 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
 }
 
 class KTRoleAllocationPlugin extends KTFolderAction {
-    var $sDisplayName = 'Allocate Roles';
     var $sName = 'ktcore.actions.folder.roles';
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = true;
+
+    function getDisplayName() {
+        return _('Allocate Roles');
+    }
 
     function do_main() {
         $this->oPage->setTitle(_("Allocate Roles"));

@@ -14,9 +14,12 @@ class KTBulkExportPlugin extends KTPlugin {
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTBulkExportAction extends KTFolderAction {
-    var $sDisplayName = 'Bulk Export';
     var $sName = 'ktstandard.bulkexport.action';
     var $sPermissionName = "ktcore.permissions.read";
+
+    function getDisplayName() {
+        return _('Bulk Export');
+    }
 
     function do_main() {
         $this->oPage->template = "kt3/minimal_page";

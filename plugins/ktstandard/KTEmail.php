@@ -201,8 +201,11 @@ function validateEmailAddress($sEmailAddress) {
 }
 
 class KTDocumentEmailAction extends KTDocumentAction {
-    var $sDisplayName = 'Email';
     var $sName = 'ktcore.actions.document.email';
+
+    function getDisplayName() {
+        return _('Email');
+    }
 
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');

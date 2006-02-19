@@ -46,8 +46,11 @@ class KTDocumentLinks extends KTPlugin {
 }
 
 class KTDocumentLinkAction extends KTDocumentAction {
-    var $sDisplayName = 'Links';
     var $sName = 'ktcore.actions.document.link';
+
+    function getDisplayName() {
+        return _('Links');
+    }
 
     // display existing links
     function do_main() {
