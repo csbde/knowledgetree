@@ -37,6 +37,89 @@ require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
+class SimpleSearchTitleColumn extends TitleColumn {
+    function setSearch($sSearch) {
+        $this->sSearch = $sSearch;
+    }
+    function renderData($aDataRow) {
+        $iDocumentId =& $aDataRow['document']->getId();
+        
+        $aLocs = array();
+        $bFound = true;
+        $iLastFound = 0;
+        $iNumFound = 0;
+        while ($bFound && $iNumFound < 5) {
+            $sQuery = "SELECT LOCATE(?, document_text, ?) AS posi FROM document_searchable_text WHERE document_id = ?";
+            $aParams = array($this->sSearch, $iLastFound + 1, $iDocumentId);
+            $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'posi');
+            if (PEAR::isError($res)) {
+                var_dump($res);
+                exit(0);
+            }
+            if (empty($res)) {
+                break;
+            }
+            $iNumFound++;
+            $iLastFound = $res;
+            $bFound = $res;
+            if ($iLastFound) {
+                $aLocs[] = $iLastFound;
+            }
+        }
+
+        $iBack = 20;
+        $iForward = 50;
+
+        $aTexts = array();
+        foreach ($aLocs as $iLoc) {
+            $iThisForward = $iForward;
+            $iThisBack = $iBack;
+            if ($iLoc - $iBack < 0) {
+                $iThisForward = $iForward + $iLoc;
+                $iThisBack = 0;
+                $iLoc = 1;
+            }
+            $sQuery = "SELECT SUBSTRING(document_text FROM ? FOR ?) AS text FROM document_searchable_text WHERE document_id = ?";
+            $aParams = array($iLoc - $iThisBack, $iThisForward + $iThisBack, $iDocumentId);
+            $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'text');
+            if (PEAR::isError($res)) {
+                var_dump($res);
+                exit(0);
+            }
+            $res = htmlentities($res);
+            $aSearch = array(sprintf('#(%s)#i', $this->sSearch));
+            $aReplace = array('&nbsp; <span class="searchresult" style="color: red">\1</span> &nbsp;');
+            $sText = preg_replace($aSearch, $aReplace, $res);
+            $aFirstSpace = array(strpos($sText, " "), strpos($sText, "\n"));
+            $iFirstSpace = false;
+            foreach ($aFirstSpace as $iPos) {
+                if ($iFirstSpace === false) {
+                    $iFirstSpace = $iPos;
+                    continue;
+                }
+                if ($iPos === false) {
+                    continue;
+                }
+                if ($iPos < $iFirstSpace) {
+                    $iFirstSpace = $iPos;
+                }
+            }
+            if ($iFirstSpace === false) {
+                $iFirstSpace = -1;
+            }
+            $iLastSpace = strrpos($sText, " ");
+            $sText = substr($sText, $iFirstSpace + 1, $iLastSpace - $iFirstSpace - 1);
+            $sText = str_replace("&nbsp; ", "", $sText);
+            $sText = str_replace(" &nbsp;", "", $sText);
+            $aTexts[] = $sText;
+        }
+
+        $sFullTexts = join(" &hellip; ", $aTexts);
+
+        return sprintf('<div>%s</div><div class="searchresults" style="margin-top: 0.5em; color: grey">%s</div>', parent::renderData($aDataRow), $sFullTexts);
+    }
+}
+
 class SimpleSearchDispatcher extends KTStandardDispatcher {
 	var $sSection = "search";
 	var $browseType;
@@ -61,8 +144,9 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		$this->browseType = "Folder"; 
 		
 		$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-		$t = new TitleColumn("Test 1 (title)","title");
+		$t = new SimpleSearchTitleColumn("Test 1 (title)","title");
         $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
+        $t->setSearch($searchable_text);
 		$collection->addColumn($t);
 		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
 		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
