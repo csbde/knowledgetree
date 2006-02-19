@@ -621,6 +621,13 @@ a.main_nav_item {
     border-top: 1px solid #ccc;
 }
 
+.kt_collection .batchCurrent {
+    font-weight: bold;
+}
+
+.kt_collection .collectionNavigation {
+}
+
 .ktInlineError {
     color: #db9d09;
 }
