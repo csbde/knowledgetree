@@ -48,9 +48,13 @@ class KTPortletRegistry {
             $aDone[] = $aPortlet;
 
             $sPortletClass = $aPortlet[0];
+            $sPortletFile = $aPortlet[1];
             $sPluginName = $aPortlet[3];
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPluginName);
+            if (file_exists($sPortletFile)) {
+                require_once($sPortletFile);
+            }
             $oPortlet =&  new $sPortletClass;
             $oPortlet->setPlugin($oPlugin);
             array_push($aReturn, $oPortlet);
