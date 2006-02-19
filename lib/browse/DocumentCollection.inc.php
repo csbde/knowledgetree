@@ -133,11 +133,11 @@ class DocumentCollection {
 	  
 	  if ($no_folders) {
           $this->batchStart -= $this->folderCount;
-		 $documentSet = $this->_queryObj->getDocuments($documents_to_get, $this->batchStart, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinQuery, $this->_aDocumentJoinParams);
+		 $documentSet = $this->_queryObj->getDocuments($documents_to_get, $this->batchStart, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
 	  } else {
 	     $folderSet = $this->_queryObj->getFolders($folders_to_get, $this->batchStart, $this->_sFolderSortField, $this->sort_order, $this->_sFolderJoinQuery, $this->_aFolderJoinParams);
 		 if ($documents_to_get > 0) {
-	        $documentSet = $this->_queryObj->getDocuments($documents_to_get, 0, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinQuery, $this->_aDocumentJoinParams);
+	        $documentSet = $this->_queryObj->getDocuments($documents_to_get, 0, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
 		 }
 		 
 	  }
