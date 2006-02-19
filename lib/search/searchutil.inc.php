@@ -218,6 +218,10 @@ class KTSearchUtil {
         global $default;
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id AS document_id');
         $sInitialJoin = KTUtil::arrayGet($aOptions, 'join', '');
+        if (is_array($sInitialJoin)) {
+            $aInitialJoinParams = $sInitialJoin[1];
+            $sInitialJoin = $sInitialJoin[0];
+        }
 
         list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
 
@@ -274,6 +278,7 @@ class KTSearchUtil {
     // GROUP BY D.id
 
         $aParams = array();
+        $aParams = array_merge($aParams, $aInitialJoinParams);
         $aParams = array_merge($aParams, $aPermissionParams);
         $aParams[] = $sToSearch;
         $aParams = array_merge($aParams, $aCritParams);
