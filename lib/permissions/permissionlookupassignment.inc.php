@@ -79,7 +79,13 @@ class KTPermissionLookupAssignment extends KTEntity {
             }
             $aOptions[] = $aThisOptions;
         }
-        $aPLIDs = call_user_func_array('array_intersect', $aOptions);
+        if (count($aOptions) > 1) {
+            $aPLIDs = call_user_func_array('array_intersect', $aOptions);
+        } elseif (count($aOptions) == 1) {
+            $aPLIDs = $aOptions[0];
+        } else {
+            $aPLIDs = array();
+        }
         if (empty($aPLIDs)) {
             $oPL = KTPermissionLookup::createFromArray(array());
             $iPLID = $oPL->getID();
