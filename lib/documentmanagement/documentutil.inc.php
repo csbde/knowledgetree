@@ -374,8 +374,12 @@ class KTDocumentUtil {
 
     // {{{ add
     function &add($oFolder, $sFilename, $oUser, $aOptions) {
-        if (KTDocumentUtil::exists($oFolder, $sFilename)) {
-            return PEAR::raiseError("File already exists");
+        if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
+            return PEAR::raiseError("Document with that filename already exists in this folder");
+        }
+        $sName = KTUtil::arrayGet($aOptions, 'description', $sFilename);
+        if (KTDocumentUtil::nameExists($oFolder, $sName)) {
+            return PEAR::raiseError("Document with that name already exists in this folder");
         }
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
@@ -451,9 +455,15 @@ class KTDocumentUtil {
     }
     // }}}
 
-    // {{{ exists
-    function exists($oFolder, $sFilename) {
-        return Document::documentExists($sFilename, $oFolder->getID());
+    // {{{ fileExists
+    function fileExists($oFolder, $sFilename) {
+        return Document::fileExists($sFilename, $oFolder->getID());
+    }
+    // }}}
+
+    // {{{ nameExists
+    function nameExists($oFolder, $sName) {
+        return Document::nameExists($sName, $oFolder->getID());
     }
     // }}}
 
