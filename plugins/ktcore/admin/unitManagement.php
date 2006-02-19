@@ -12,6 +12,7 @@ require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
+require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
@@ -129,6 +130,14 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
 
         $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
+        $aOptions = array(
+            'redirect_to' => array('addUnit', sprintf('fFolderId=%d', $oParentFolder->getId())),
+            'defaultmessage' => 'Error creating folder',
+        );
+        $this->oValidator->notError($oFolder, $aOptions);
+
+        KTPermissionUtil::copyPermissionObject($oFolder);
+        
         $oUnit = Unit::createFromArray(array(
             'name' => $sName,
             'folderid' => $oFolder->getId(),
