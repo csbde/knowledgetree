@@ -42,6 +42,7 @@
             <tr>
                 <td colspan="{$columncount}"><span class="descriptiveText">
 {i18n arg_itemCount=$context->itemCount arg_batchSize=$context->batchSize}#itemCount# items, #batchSize# per page{/i18n}</span>
+                <span class="collectionNavigation">
                 {if ($pagecount > 1)}
                   {if ($currentpage == 0)}
                     <span class="notactive">&laquo; prev</a> 
@@ -54,15 +55,48 @@
                   {else}
                     <a href="{$context->pageLink($currentpage+1)}">next &raquo;</a> 
                   {/if}
-                  {foreach item=showPage from=1|range:$pagecount}
-                    &middot; 
-                    {if ($showPage-1 != $currentpage)}
-                    <a href="{$context->pageLink($showPage-1)}">{$showPage}</a>
+                  {assign var=shownEllipsis value=false}
+                  {foreach item=showPage from=1|range:$pagecount name=pagecrumbs}
+                    {assign var=showCrumb value=false}
+                    {capture assign=relative}{$showPage-1-$currentpage}{/capture}
+                    {if $smarty.foreach.pagecrumbs.total <= 27}
+                    {assign var=showCrumb value=true}
+                    {elseif $showPage <= 5}
+                    {assign var=showCrumb value=true}
+                    {elseif abs($relative) <= 5}
+                    {assign var=showCrumb value=true}
+                    {elseif $relative > 0 and $relative <= 10}
+                    {assign var=showCrumb value=true}
+                    {elseif abs($smarty.foreach.pagecrumbs.total - ($showPage - 1)) <= 3 }
+                    {assign var=showCrumb value=true}
+                    {elseif $currentpage < 13 && $showPage <= 23}
+{*ie, show up to 23 always, 13 = 23 - 10 (forward)*}
+                    {assign var=showCrumb value=true}
+                    {elseif ($smarty.foreach.pagecrumbs.total - $currentpage) < 16 && ($smarty.foreach.pagecrumbs.total - $showPage) < 20}
+{*ie, always show back 20 if we're in the last 20,
+(not 23, since we show 5 from the front if not in the front 23 or so,
+and only 3 from the back if we're not in the back 20 or so.  20 - 16 = 5
+(according to my math)*}
+                    {assign var=showCrumb value=true}
+                    {/if}
+
+                    {if $showCrumb}
+                      &middot; 
+                      {if ($showPage-1 != $currentpage)}
+                        <a href="{$context->pageLink($showPage-1)}">{$showPage}</a>
+                      {else}
+                        <span class="batchCurrent">{$showPage}</span>
+                      {/if}
+                      {assign var=shownEllipsis value=false}
                     {else}
-                    <span class="batchCurrent">{$showPage}</span>
+                      {if not $shownEllipsis}
+                        &middot; &hellip;
+                        {assign var=shownEllipsis value=true}
+                      {/if}
                     {/if}
                   {/foreach}
                 {/if} 
+                </span>
                 </td>
             </tr>
         </tfoot>
