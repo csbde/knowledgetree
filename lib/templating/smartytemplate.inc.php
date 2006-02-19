@@ -117,6 +117,11 @@ class KTSmartyTemplate extends KTTemplate {
         $oRegistry =& KTi18nRegistry::getSingleton();
         $oi18n = $oRegistry->geti18n($sDomain);
         $content = trim($content);
+        $replace = array(
+            '@[\n\r]+@' => ' ',
+        );
+        $content = preg_replace(array_keys($replace), array_values($replace), $content);
+
         $content = $oi18n->gettext($content);
         return str_replace(array_keys($replacements), array_values($replacements), $content);
     }
