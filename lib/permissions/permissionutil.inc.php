@@ -533,6 +533,14 @@ class KTPermissionUtil {
 
     }
     // }}}
+
+    // {{{ getPermissionDescriptorsForUser
+    function getPermissionDescriptorsForUser($oUser) {
+        $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
+        $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
+        return $aPermissionDescriptors;
+    }
+    // }}}
 }
 
 class KTPermissionChannel {
