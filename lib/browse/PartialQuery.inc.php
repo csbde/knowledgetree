@@ -93,13 +93,15 @@ class BrowseQuery extends PartialQuery{
         $sQuery = sprintf("SELECT %s FROM %s AS D
                 LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
                 LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
+                %s
                 %s %s",
                 $sSelect, KTUtil::getTableName("documents"),
                 KTUtil::getTableName("document_metadata_version"),
                 KTUtil::getTableName("document_content_version"),
-                $sPermissionJoin, $sWhere);
+                $this->sDocumentJoinClause, $sPermissionJoin, $sWhere);
         $aParams = array();
-        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams = array_merge($aParams, $this->aDocumentJoinParams);
+        $aParams = array_merge($aParams, $aPermissionParams);
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
@@ -174,11 +176,13 @@ class BrowseQuery extends PartialQuery{
     }
     
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+        $this->sDocumentJoinClause = $sJoinClause;
+        $this->aDocumentJoinParams = $aJoinParams;
         $res = $this->_getDocumentQuery();
         if (PEAR::isError($res)) { return array(); } // no permissions 
         list($sQuery, $aParams) = $res;
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
-        
+
         $sQuery .= " LIMIT ?, ?";
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
