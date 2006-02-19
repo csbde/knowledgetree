@@ -59,7 +59,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 class KTFolderPermissionsAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.permissions';
 
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.security";
     var $_bAdminAlwaysAvailable = true;
     var $bAutomaticTransaction = true;
 

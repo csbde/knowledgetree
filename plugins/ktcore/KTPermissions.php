@@ -82,8 +82,9 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
 class KTRoleAllocationPlugin extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.roles';
 
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.security";
     var $bAutomaticTransaction = true;
+    var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
         return _('Allocate Roles');
