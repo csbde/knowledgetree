@@ -74,7 +74,7 @@ gettext("Test conditions");
 gettext("Fieldset cannot be made conditional. One of the fields must not be a lookup.");
 
 /* ./templates/ktcore/manage_help.smarty */
-gettext("To customise a help file, please visit that file   via the help system and click on <strong>customise this help file</strong>.");
+gettext("To customise a help file, please visit that file via the help system and click on <strong>customise this help file</strong>.");
 
 /* ./templates/ktcore/dashlets/notifications.smarty */
 gettext("Items that require your attention");
@@ -83,7 +83,7 @@ gettext("Items that require your attention");
 gettext("No items require your attention.");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
-gettext("If this is your first KnowledgeTree installation,  or if you've just upgraded from KnowledgeTree 2.x, we've put together some information  which might help you get to grips with the new system.");
+gettext("If this is your first KnowledgeTree installation, or if you've just upgraded from KnowledgeTree 2.x, we've put together some information which might help you get to grips with the new system.");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
 gettext("Read the admin introduction.");
@@ -98,10 +98,7 @@ gettext("Don't show me this again.");
 gettext("Welcome to the KnowledgeTree 3 Release Candidate");
 
 /* ./templates/ktcore/dashlets/beta1info.smarty */
-gettext("If this is your first KnowledgeTree installation,  or if you've just upgraded from KnowledgeTree 2.x, we've put together some information  to help you familiarise yourself with the new system.");
-
-/* ./templates/ktcore/dashlets/beta1info.smarty */
-gettext("What is a Beta?");
+gettext("We believe that KnowledgeTree 3.0 Release Candidate is now stable enough for production evaluation. If you are intending on installing KnowledgeTree over the next few months we strongly urge you to evaluate the 3.0 Release Candidate and consider it for production use. There will be an upgrade path for 3.0 Release Candidate to 3.0 Final.");
 
 /* ./templates/ktcore/dashlets/beta1info.smarty */
 gettext("Help! Something went wrong!");
@@ -122,16 +119,16 @@ gettext("You have no documents which are currently checked out.");
 gettext("Crash Course in KnowledgeTree");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
-gettext("New to Document Management, or to   KnowledgeTree&trade; 3?  We've written some quick documentation to help you along");
+gettext("New to Document Management, or to KnowledgeTree&trade; 3?  We've written some quick documentation to help you along");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
 gettext("Don't show me this again.");
 
 /* ./templates/ktcore/action/checkin.smarty */
-gettext("Checking in a document updates the document and allows others to check out the document.");
+gettext("Checking in a document updates the document and allows others to make changes to the document and its metadata.");
 
 /* ./templates/ktcore/action/checkin.smarty */
-gettext("If you do not intend to edit the document, and you do not wish to prevent others from changing the document, you should <a href=\"#link#\">cancel this checkout</a>.");
+gettext("If you do not intend to change the document, or you do not wish to prevent others from changing the document, you should rather use the action menu to <strong>cancel this checkout</strong>.");
 
 /* ./templates/ktcore/action/checkin.smarty */
 gettext("Checkin");
@@ -215,6 +212,9 @@ gettext("Archive");
 gettext("Cancel");
 
 /* ./templates/ktcore/action/addFolder.smarty */
+gettext("Add a folder");
+
+/* ./templates/ktcore/action/addFolder.smarty */
 gettext("Folders are one way of organising documents in the document management system.  Folders provide meaning in the traditional file storage way - through a file path.");
 
 /* ./templates/ktcore/action/addFolder.smarty */
@@ -233,6 +233,9 @@ gettext("Move Files and Folders");
 gettext("Move");
 
 /* ./templates/ktcore/action/finalise_mass_move.smarty */
+gettext("The items that you selected to move.");
+
+/* ./templates/ktcore/action/finalise_mass_move.smarty */
 gettext("Please give these final details.");
 
 /* ./templates/ktcore/action/finalise_mass_move.smarty */
@@ -246,6 +249,9 @@ gettext("Move Files and Folders");
 
 /* ./templates/ktcore/action/mass_move.smarty */
 gettext("Move");
+
+/* ./templates/ktcore/action/mass_move.smarty */
+gettext("The items that you selected to move.");
 
 /* ./templates/ktcore/action/mass_move.smarty */
 gettext("Target folder");
@@ -267,6 +273,36 @@ gettext("Checkin");
 
 /* ./templates/ktcore/action/cancel_checkout.smarty */
 gettext("Cancel Checkout");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("Copy document");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("Move");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("Target folder");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("The folder given below is where the document is going to be moved to.  Use the folder collection and path below to browse to the folder you wish to move the documents into.");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("Move");
+
+/* ./templates/ktcore/action/copy.smarty */
+gettext("Cancel");
+
+/* ./templates/ktcore/action/copy_final.smarty */
+gettext("Copy document");
+
+/* ./templates/ktcore/action/copy_final.smarty */
+gettext("Copy");
+
+/* ./templates/ktcore/action/copy_final.smarty */
+gettext("Move");
+
+/* ./templates/ktcore/action/copy_final.smarty */
+gettext("Cancel");
 
 /* ./templates/ktcore/edit_conditional.smarty */
 gettext("Edit Fieldset");
@@ -320,31 +356,31 @@ gettext("Fieldset cannot be made conditional. One of the fields must not be a lo
 gettext("Edit Lookup Tree");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("Many \"lookup\" fields make sense in a hierachy: countries are part of continents and sub-continents, school classes are part of grades and programs, Powerbooks are Apple Macs, while Thinkpads are made by Lenovo.  This  page will allow you to arrange the lookups in the field in a hierachy.  All changes are immediately stored, so when you are done simply navigate back to the field menu.");
+gettext("Many \"lookup\" fields make sense in a hierachy: countries are part of continents and sub-continents, school classes are part of grades and programs, Powerbooks are Apple Macs, while Thinkpads are made by Lenovo.  This page will allow you to arrange the lookups in the field in a hierachy.  All changes are immediately stored, so when you are done simply navigate back to the field menu.");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
 gettext("Add New Subcategory to <strong>#category#</strong>");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("In order to organise the options into a \"tree\", you    need to add subcategories at each level.  The \"top\" level is called the root, and    holds all the toplevel items.  \"Root\" will not be shown to the final user, but    provides a single \"parent\" to the toplevel items.");
+gettext("In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the toplevel items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the toplevel items.");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("As an example, if you are creating a tree of the   countries in the world, the actual countries would be <strong>keywords</strong>    (e.g. South Africa, England, Pakistan, India).  The highest group of categories    would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by    subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-saharan Africa,    Austalasia.");
+gettext("As an example, if you are creating a tree of the   countries in the world, the actual countries would be <strong>keywords</strong>   (e.g. South Africa, England, Pakistan, India).  The highest group of categories   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by   subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-saharan Africa,   Austalasia.");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
 gettext("add new subcategory");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("Keywords which are directly below the    <strong>Root</strong> are considered \"free\" &mdash; they are not attached to    a subcategory.  Only free keywords can be associated with a subcategory.  To   free a keyword, click on the \"unlink\" command next to it in the preview tree below.     Deleting a subcategory will automatically unlink all keywords below it (including   those in subcategories of the subcategory).");
+gettext("Keywords which are directly below the   <strong>Root</strong> are considered \"free\" &mdash; they are not attached to   a subcategory.  Only free keywords can be associated with a subcategory.  To   free a keyword, click on the \"unlink\" command next to it in the preview tree below.   Deleting a subcategory will automatically unlink all keywords below it (including   those in subcategories of the subcategory).");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("No free keywords.  Use the \"unlink\" action on a keyword to  make it available.");
+gettext("No free keywords.  Use the \"unlink\" action on a keyword to make it available.");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
 gettext("Attach keywords to <strong>#category#</strong>");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
-gettext("Keywords which are directly below the    <strong>Root</strong> are considered \"free\" &mdash; they are not attached to    a subcategory.  Only free keywords can be associated with a subcategory.  To   free a keyword, click on the \"unlink\" command next to it in the preview tree below.");
+gettext("Keywords which are directly below the   <strong>Root</strong> are considered \"free\" &mdash; they are not attached to   a subcategory.  Only free keywords can be associated with a subcategory.  To   free a keyword, click on the \"unlink\" command next to it in the preview tree below.");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
 gettext("Add to category");
@@ -455,37 +491,67 @@ gettext("Dynamic Conditions");
 gettext("Dynamic Conditions give the administrator the cability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Note that you cannot delete conditions, since that may unexpectedly change permission assignments.");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
 gettext("Create a new condition");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
 gettext("New");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Edit existing conditions");
+gettext("Existing Conditions");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Condition Name");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
 gettext("Edit");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("View Results");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("No Conditions have been defined.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Folder permissions");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("View");
+gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Edit");
+gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Update");
+gettext("Override Permissions");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Inherited from:");
+gettext("This folder defines its own permissions.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Copy");
+gettext("Inherit permissions");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Use parent's permissions");
+gettext("Role:");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Group:");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Update Permission Assignments");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Group");
@@ -497,10 +563,10 @@ gettext("Condition");
 gettext("Delete");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("True");
+gettext("Allowed");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("False");
+gettext("Denied");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Add a new dynamic permission");
@@ -650,7 +716,13 @@ gettext("Delete Files and Folders");
 gettext("Specify Reason for Delete");
 
 /* ./templates/ktcore/folder/mass_delete.smarty */
-gettext("Please give a reason for deleting these files.  This  will be recorded in the documents' \"Transaction History\"");
+gettext("Please give a reason for deleting these files.  This will be recorded in the documents' \"Transaction History\"");
+
+/* ./templates/ktcore/folder/mass_delete.smarty */
+gettext("The items that you selected to delete.");
+
+/* ./templates/ktcore/folder/mass_delete.smarty */
+gettext("Cancel");
 
 /* ./templates/ktcore/principals/useradmin.smarty */
 gettext("To allow users access to the DMS, you need to provide them with credentials through this section.  Even if you are using an external source of login information like <strong>LDAP</strong>, you will need to use this section to retrieve their information from the external source.");
@@ -818,7 +890,7 @@ gettext("Cancel");
 gettext("Group Administration");
 
 /* ./templates/ktcore/principals/groupadmin.smarty */
-gettext("Groups allow you to assign permissions and roles to a  number of different users at once.");
+gettext("Groups allow you to assign permissions and roles to a number of different users at once.");
 
 /* ./templates/ktcore/principals/groupadmin.smarty */
 gettext("Search for groups");
@@ -944,6 +1016,9 @@ gettext("Edit");
 gettext("Delete");
 
 /* ./templates/ktcore/principals/unitadmin.smarty */
+gettext("Folder");
+
+/* ./templates/ktcore/principals/unitadmin.smarty */
 gettext("Edit");
 
 /* ./templates/ktcore/principals/unitadmin.smarty */
@@ -1019,19 +1094,7 @@ gettext("Specify unit details");
 gettext("Please enter the Unit's details below and then click <strong>create unit</strong>. Fields marked with a red square are required.");
 
 /* ./templates/ktcore/principals/addunit.smarty */
-gettext("Target folder");
-
-/* ./templates/ktcore/principals/addunit.smarty */
-gettext("The folder given below is where the unit folder will be created.  Use the folder collection and path below to browse to the folder you wish to create the unit folder into.");
-
-/* ./templates/ktcore/principals/addunit.smarty */
-gettext("The unit administrators have additional");
-
-/* ./templates/ktcore/principals/addunit.smarty */
-gettext("create unit");
-
-/* ./templates/ktcore/principals/addunit.smarty */
-gettext("Cancel");
+gettext("Next");
 
 /* ./templates/ktcore/principals/addunit.smarty */
 gettext("Cancel");
@@ -1073,7 +1136,7 @@ gettext("change password");
 gettext("Cancel");
 
 /* ./templates/ktcore/principals/editunit.smarty */
-gettext("Change the system's information about unit <strong>#name</strong>");
+gettext("Change the system's information about unit <strong>#name#</strong>");
 
 /* ./templates/ktcore/principals/editunit.smarty */
 gettext("Change Unit Details");
@@ -1102,32 +1165,107 @@ gettext("This group is synchronised from 	an authentication source, and direct c
 /* ./templates/ktcore/principals/groups_sourceusers.smarty */
 gettext("synchronise");
 
+/* ./templates/ktcore/principals/deleteunit.smarty */
+gettext("Delete unit <strong>#name#</strong> from the system");
+
+/* ./templates/ktcore/principals/deleteunit.smarty */
+gettext("Delete Unit");
+
+/* ./templates/ktcore/principals/deleteunit.smarty */
+gettext("Delete unit");
+
+/* ./templates/ktcore/principals/deleteunit.smarty */
+gettext("Cancel");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("Add a new unit");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("Choose unit folder location");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("Please choose a location to place your unit folder.");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("Target folder");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("The folder given below is where the unit folder will be created.  Use the folder collection and path below to browse to the folder you wish to create the unit folder into.");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("The unit administrators have additional");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("create unit");
+
+/* ./templates/ktcore/principals/addunit2.smarty */
+gettext("Cancel");
+
 /* ./templates/ktcore/document/document_permissions.smarty */
 gettext("Document permissions");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("View");
+gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Edit");
+gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("True");
+gettext("Override Permissions");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("False");
+gettext("This folder defines its own permissions.");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Inherited from");
+gettext("Inherit permissions");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Copy");
+gettext("Role:");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Use parent's permissions");
+gettext("Allowed");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Update");
+gettext("Denied");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Group:");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Update Permission Assignments");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Group");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Condition");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Add a new dynamic permission");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Group");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Condition");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Add");
 
 /* ./templates/ktcore/document/cleanup.smarty */
 gettext("Would remove these folders (and all their contents)");
@@ -1157,7 +1295,7 @@ gettext("Add");
 gettext("Checked Out Documents");
 
 /* ./templates/ktcore/document/admin/checkoutlisting.smarty */
-gettext("It may be necessary to override the <strong>checked-out</strong> status of a document if:  <ul>  <li>the local copy of the checked-out document has been lost;</li>  <li>the user who did the check-out is not currently available to check it back in.</li>  </ul>  Use the <strong>force checkin</strong> action in the listing below to  override the checked-out status.");
+gettext("It may be necessary to override the <strong>checked-out</strong> status of a document if: <ul> <li>the local copy of the checked-out document has been lost;</li> <li>the user who did the check-out is not currently available to check it back in.</li> </ul> Use the <strong>force checkin</strong> action in the listing below to override the checked-out status.");
 
 /* ./templates/ktcore/document/admin/checkoutlisting.smarty */
 gettext("Document");
@@ -1250,9 +1388,6 @@ gettext("edit link type");
 gettext("edit link type");
 
 /* ./templates/ktcore/document/admin/linktypesadmin.smarty */
-gettext("Remove Link Type(s)");
-
-/* ./templates/ktcore/document/admin/linktypesadmin.smarty */
 gettext("No link administrator changeable link types available.");
 
 /* ./templates/ktcore/document/admin/dearchiveconfirmlist.smarty */
@@ -1280,7 +1415,7 @@ gettext("No documents were selected.");
 gettext("Deleted Documents");
 
 /* ./templates/ktcore/document/admin/deletedlist.smarty */
-gettext("Documents which are deleted by users are hidden from view   but still available for restoration.  Since \"soft deletes\" consume system resources, it  is possible to <strong>expunge</strong> these documents.  Alternatively, you  can <strong>restore</strong> them as necessary.");
+gettext("Documents which are deleted by users are hidden from view but still available for restoration.  Since \"soft deletes\" consume system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary.");
 
 /* ./templates/ktcore/document/admin/deletedlist.smarty */
 gettext("Document Name");
@@ -1430,7 +1565,7 @@ gettext("Associate Fieldsets");
 gettext("Associate Fieldsets");
 
 /* ./templates/ktcore/documenttypes/edit.smarty */
-gettext("No fieldsets are available to be added.  To add a fieldset, please go to  DMS Administration");
+gettext("No fieldsets are available to be added.  To add a fieldset, please go to DMS Administration");
 
 /* ./templates/ktcore/documenttypes/edit.smarty */
 gettext("Document Metadata and Workflow Configuration");
@@ -1539,6 +1674,12 @@ gettext("Edit this help page.");
 
 /* ./templates/ktcore/help_with_edit.smarty */
 gettext("Edit this help page.");
+
+/* ./templates/ktcore/help_with_edit.smarty */
+gettext("Return to where you came from.");
+
+/* ./templates/ktcore/help_with_edit.smarty */
+gettext("Return to where you came from.");
 
 /* ./templates/ktcore/metadata/edit.smarty */
 gettext("Fieldset");
@@ -1784,7 +1925,7 @@ gettext("Check completeness");
 gettext("Conditional type");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Complex");
+gettext("The fieldset is currently designated as <strong>Complex</strong>");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Manage complex conditional");
@@ -1793,7 +1934,7 @@ gettext("Manage complex conditional");
 gettext("Change to simple");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Simple");
+gettext("The fieldset is currently designated as <strong>Simple</strong>");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Manage simple conditional");
@@ -1811,10 +1952,10 @@ gettext("No master field is set, please select the master field");
 gettext("Set master field");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Change master field");
+gettext("Changing the master field set will remove all existing field ordering!");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Changing the master field set will remove all existing field ordering!");
+gettext("Change master field");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Field ordering");
@@ -1823,7 +1964,7 @@ gettext("Field ordering");
 gettext("Existing ordering");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Order fields");
+gettext("Order Fields");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Order");
@@ -1836,6 +1977,12 @@ gettext("This column is not active.");
 
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
 gettext("Editing behaviour <strong>Jack</strong>");
+
+/* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
+gettext("Assigned Items");
+
+/* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
+gettext("remove behaviour");
 
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
 gettext("Unassigned/Unavailable");
@@ -1855,9 +2002,6 @@ gettext("Edit Behaviour");
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
 gettext("Select a behaviour from this list to change the         items which are available.");
 
-/* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
-gettext("Change Assignments for this field.");
-
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
 gettext("Editing Fieldset Rules (Simple)");
 
@@ -1865,13 +2009,13 @@ gettext("Editing Fieldset Rules (Simple)");
 gettext("This field is not controlled by the currently active group.");
 
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
-gettext("edit");
+gettext("edit field");
 
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
-gettext("save");
+gettext("save this dependency");
 
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
-gettext("done");
+gettext("finished with this field");
 
 /* ./templates/ktcore/fields/edit.smarty */
 gettext("Fieldset");
@@ -2153,13 +2297,13 @@ gettext("Create transition");
 gettext("Manage Actions");
 
 /* ./templates/ktcore/workflow/manageActions.smarty */
-gettext("An important part of workflow is controlling which actions are available to users at various stages.  For example, it may be  necessary to prevent the \"Edit Metadata\" action from being used when a document is \"published\". Doing this is a two step process:  first, you need to specify that \"Edit Metadata\" is an action you wish to control within this workflow; second, you need to specify that the action is <strong>not</strong> to be made available when documents are in the \"published\" state.");
+gettext("An important part of workflow is controlling which actions are available to users at various stages.  For example, it may be necessary to prevent the \"Edit Metadata\" action from being used when a document is \"published\". Doing this is a two step process:  first, you need to specify that \"Edit Metadata\" is an action you wish to control within this workflow; second, you need to specify that the action is <strong>not</strong> to be made available when documents are in the \"published\" state.");
 
 /* ./templates/ktcore/workflow/manageActions.smarty */
 gettext("Specify Controlled Actions");
 
 /* ./templates/ktcore/workflow/manageActions.smarty */
-gettext("Select the actions you want this workflow to control from the list below.  Actions you do not specify will be available no  matter what the state of the document.");
+gettext("Select the actions you want this workflow to control from the list below.  Actions you do not specify will be available no matter what the state of the document.");
 
 /* ./templates/ktcore/workflow/manageActions.smarty */
 gettext("Set controlled actions");
@@ -2177,7 +2321,7 @@ gettext("Manage States");
 gettext("As documents move through their lifecycle, they are placed in certain <strong>states</strong>.  For example, an invoice which has been mailed might be in the \"Pending\" <strong>state</strong> after the \"sent\" <strong>transition</strong> has been performed by a user.");
 
 /* ./templates/ktcore/workflow/manageStates.smarty */
-gettext("<strong>Please Note:</strong> you can only delete states or transitions  while the workflow has no documents or document-versions assigned to the workflow.");
+gettext("<strong>Please Note:</strong> you can only delete states or transitions while the workflow has no documents or document-versions assigned to the workflow.");
 
 /* ./templates/ktcore/workflow/manageStates.smarty */
 gettext("Create a new state");
@@ -2207,7 +2351,7 @@ gettext("Manage Transitions");
 gettext("Transitions are what drive the workflow of documents. Each step that needs to be followed in the document's lifecycle could map to a transition, and can be allowed or denied by a combination of roles, permissions and groups.");
 
 /* ./templates/ktcore/workflow/manageTransitions.smarty */
-gettext("<strong>Please Note:</strong> you can only delete states or transitions  while the workflow has no documents or document-versions assigned to the workflow.");
+gettext("<strong>Please Note:</strong> you can only delete states or transitions while the workflow has no documents or document-versions assigned to the workflow.");
 
 /* ./templates/ktcore/workflow/manageTransitions.smarty */
 gettext("Create a new transition");
@@ -2228,7 +2372,7 @@ gettext("Delete");
 gettext("Assign Transition Availability");
 
 /* ./templates/ktcore/workflow/workflow_notification.smarty */
-gettext("The document <strong>#name#</strong> has changed to      state <strong>#state#</strong>, and you are specified as one of the users to inform     about documents in this state.");
+gettext("The document <strong>#name#</strong> has changed to     state <strong>#state#</strong>, and you are specified as one of the users to inform     about documents in this state.");
 
 /* ./templates/ktcore/workflow/workflow_notification.smarty */
 gettext("View Document");
@@ -2240,22 +2384,34 @@ gettext("Clear Alert");
 gettext("Authentication Sources");
 
 /* ./templates/ktcore/authentication/manage.smarty */
-gettext("By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.");
+gettext("By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data.");
 
 /* ./templates/ktcore/authentication/manage.smarty */
-gettext("Add an authentication source");
-
-/* ./templates/ktcore/authentication/manage.smarty */
-gettext("Add a new source");
-
-/* ./templates/ktcore/authentication/manage.smarty */
-gettext("Only the standard database authentication is currently available. If you need to use a different authentication type (e.g. LDAP) you will need to  ensure that the Plugin is enabled.");
-
-/* ./templates/ktcore/authentication/manage.smarty */
-gettext("Existing sources");
+gettext("Only the standard database authentication is currently available. If you need to use a different authentication type (e.g. LDAP) you will need to ensure that the Plugin is enabled.");
 
 /* ./templates/ktcore/authentication/manage.smarty */
 gettext("No additional authentication sources have been defined.");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Authentication source");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Edit Provider Information");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/authentication/manage.smarty */
+gettext("Delete");
 
 /* ./templates/ktcore/authentication/viewsource.smarty */
 gettext("Standard configuration");
@@ -2274,6 +2430,21 @@ gettext("Provider configuration");
 
 /* ./templates/ktcore/authentication/viewsource.smarty */
 gettext("Edit provider configuration");
+
+/* ./templates/ktcore/authentication/editsource.smarty */
+gettext("Authentication Sources");
+
+/* ./templates/ktcore/authentication/editsource.smarty */
+gettext("Edit an authentication source");
+
+/* ./templates/ktcore/authentication/editsource.smarty */
+gettext("Save");
+
+/* ./templates/ktcore/authentication/addsource.smarty */
+gettext("Add an authentication source");
+
+/* ./templates/ktcore/authentication/addsource.smarty */
+gettext("Add a new source");
 
 /* ./templates/kt3/document/edit.smarty */
 gettext("Editing");
@@ -2336,16 +2507,16 @@ gettext("Version Comparison");
 gettext("showing comparison between versions #from# and #to#");
 
 /* ./templates/kt3/compare_document.smarty */
-gettext("Please  note");
+gettext("Please note");
 
 /* ./templates/kt3/compare_document.smarty */
-gettext("the information for version  #version# comes from an older version of KnowledgeTree and may be  incorrect.");
+gettext("the information for version #version# comes from an older version of KnowledgeTree and may be incorrect.");
 
 /* ./templates/kt3/compare_document.smarty */
-gettext("Please  note");
+gettext("Please note");
 
 /* ./templates/kt3/compare_document.smarty */
-gettext("the information for version  #version# comes from an older version of KnowledgeTree and may be  incorrect.");
+gettext("the information for version #version# comes from an older version of KnowledgeTree and may be incorrect.");
 
 /* ./templates/kt3/minimal_page.smarty */
 gettext("You are here");
@@ -2354,16 +2525,19 @@ gettext("You are here");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved.");
+gettext("&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+
+/* ./templates/kt3/standard_page.smarty */
+gettext("KnowledgeTree Version: #version#");
 
 /* ./templates/kt3/view_document.smarty */
 gettext("showing information for <strong>version #version#</strong>");
 
 /* ./templates/kt3/view_document.smarty */
-gettext("This document is currently checked out by <strong>you</strong>.  If  this is incorrect, or you no longer need to make changes to it, please cancel the checkout.");
+gettext("This document is currently checked out by <strong>you</strong>.  If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.");
 
 /* ./templates/kt3/view_document.smarty */
-gettext("This document is currently checked out by #checkoutuser#.  You cannot make  changes until that user checks it in.  If you have urgent modifications to make, please contact your KnowledgeTree Administrator.");
+gettext("This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your KnowledgeTree Administrator.");
 
 /* ./templates/kt3/view_document_history.smarty */
 gettext("Transaction History");
@@ -2417,7 +2591,7 @@ gettext("Required");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
-gettext("The information in this section is stored by KnowledgeTree&trade; for every          document.");
+gettext("The information in this section is stored by KnowledgeTree&trade; for every         document.");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Document Filename");
@@ -2447,7 +2621,7 @@ gettext("manage workflow");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
-gettext("The information in this section is stored by KnowledgeTree&trade; for every          document.");
+gettext("The information in this section is stored by KnowledgeTree&trade; for every         document.");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("Document Filename");
@@ -2485,6 +2659,9 @@ gettext("This is the data assigned to the <strong>#name#</strong> aspect of this
 /* ./templates/kt3/fieldsets/conditional_editable.smarty */
 gettext("conditional data.");
 
+/* ./templates/kt3/notifications/subscriptions.ArchiveDocument.smarty */
+gettext("Clear Alert");
+
 /* ./templates/kt3/notifications/subscriptions.AddDocument.smarty */
 gettext("Read Document");
 
@@ -2497,7 +2674,7 @@ gettext("View New Folder");
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.ArchiveDocument.smarty */
+/* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
@@ -2530,22 +2707,19 @@ gettext("Clear Alert");
 /* ./templates/kt3/notifications/subscriptions.RemoveSubscribedFolder.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
+/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
+gettext("View Document");
+
+/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
+gettext("Clear Alert");
+
+/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
+gettext("View Document");
+
+/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.generic.smarty */
-gettext("Clear Alert");
-
-/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
-gettext("View Document");
-
-/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
-gettext("Clear Alert");
-
-/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
-gettext("View Document");
-
-/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/portlets/search_portlet.smarty */
@@ -2554,6 +2728,30 @@ gettext("search");
 /* ./templates/kt3/portlets/search_portlet.smarty */
 gettext("Advanced Search");
 
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("What is admin mode?");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Administrator mode is not currently enabled.");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Disable Admin Mode");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Disable Admin Mode");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("What is admin mode?");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Administrator mode is not currently enabled.");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Enable Admin Mode");
+
+/* ./templates/kt3/portlets/admin_mode_portlet.smarty */
+gettext("Enable Admin Mode");
+
 /* ./templates/kt3/document_collection.smarty */
 gettext("No documents or folders available in this location.");
 
@@ -2561,16 +2759,16 @@ gettext("No documents or folders available in this location.");
 gettext("#itemCount# items, #batchSize# per page");
 
 /* ./templates/kt3/browse_types.smarty */
-gettext("In some circumstances it is useful to view all  documents of a given <strong>document type</strong>. Select a <strong>document type</strong> from the list below  to view all relevant documents.");
+gettext("In some circumstances it is useful to view all documents of a given <strong>document type</strong>. Select a <strong>document type</strong> from the list below to view all relevant documents.");
 
 /* ./templates/kt3/browse_lookup_selection.smarty */
-gettext("In some circumstances it is useful to view all  documents with a given value for a lookup field.  Select the lookup field from the list below  to view all relevant documents.");
+gettext("In some circumstances it is useful to view all documents with a given value for a lookup field.  Select the lookup field from the list below to view all relevant documents.");
 
 /* ./templates/kt3/browse_lookup_value.smarty */
 gettext("Select a Value");
 
 /* ./templates/kt3/browse_lookup_value.smarty */
-gettext("In some circumstances it is useful to view all  documents with a given value for a lookup field.  Select the <strong>value</strong> from the list below  to view all relevant documents.");
+gettext("In some circumstances it is useful to view all documents with a given value for a lookup field.  Select the <strong>value</strong> from the list below to view all relevant documents.");
 
 /* ./templates/ktstandard/action/email.smarty */
 gettext("Email document");
@@ -2619,15 +2817,6 @@ gettext("Close this thread");
 
 /* ./templates/ktstandard/action/discussion_thread.smarty */
 gettext("Close this thread");
-
-/* ./templates/ktstandard/action/discussion_comment_list_item.smarty */
-gettext("Posted");
-
-/* ./templates/ktstandard/action/discussion_comment_list_item.smarty */
-gettext("by #name# at #date#");
-
-/* ./templates/ktstandard/action/discussion_comment_list_item.smarty */
-gettext("Post a reply");
 
 /* ./templates/ktstandard/action/document_links.smarty */
 gettext("Document Links");
@@ -2756,7 +2945,7 @@ gettext("Update");
 gettext("Workflow Allocation by Document Type");
 
 /* ./templates/ktstandard/workflow/type_allocation.smarty */
-gettext("Workflow types are allocated by Document Type in this KnowledgeTree installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old  workflow.");
+gettext("Workflow types are allocated by Document Type in this KnowledgeTree installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old workflow.");
 
 /* ./templates/ktstandard/workflow/type_allocation.smarty */
 gettext("Document Types with no pre-allocated workflow will either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed).");
@@ -2780,7 +2969,7 @@ gettext("Apply");
 gettext("Configure Workflows for this Folder");
 
 /* ./templates/ktstandard/workflow/folderconfigure.smarty */
-gettext("This installation of KnowledgeTree allocates workflows to documents by their location.  To specify the workflow to be used by all documents  <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached.");
+gettext("This installation of KnowledgeTree allocates workflows to documents by their location.  To specify the workflow to be used by all documents <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached.");
 
 /* ./templates/ktstandard/workflow/folderconfigure.smarty */
 gettext("Note that documents which are moved into this folder will change to use this workflow, and if their previous workflow was different they will lose any progress they have made in that workflow.");
