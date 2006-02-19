@@ -13,20 +13,26 @@ require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 // {{{ KTDocumentDetailsAction 
 class KTDocumentDetailsAction extends KTDocumentAction {
-    var $sDisplayName = 'Display Details';
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
         redirect(generateControllerLink('viewDocument',sprintf(_('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
     }
+
+    function getDisplayName() {
+        return _('Display Details');
+    }
 }
 // }}}
 
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
-    var $sDisplayName = 'Download';
     var $sName = 'ktcore.actions.document.view';
+
+    function getDisplayName() {
+        return _('Download');
+    }
 
     function customiseInfo($aInfo) {
         $aInfo['alert'] =  _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
@@ -53,10 +59,13 @@ class KTDocumentViewAction extends KTDocumentAction {
 
 // {{{ KTDocumentCheckOutAction
 class KTDocumentCheckOutAction extends KTDocumentAction {
-    var $sDisplayName = 'Checkout';
     var $sName = 'ktcore.actions.document.checkout';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Checkout');
+    }
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -134,10 +143,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
 // {{{ KTDocumentCheckInAction
 class KTDocumentCheckInAction extends KTDocumentAction {
-    var $sDisplayName = 'Checkin';
     var $sName = 'ktcore.actions.document.checkin';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Checkin');
+    }
 
     function getInfo() {
         if (!$this->oDocument->getIsCheckedOut()) {
@@ -212,10 +224,13 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 // {{{ KTDocumentCheckInAction
 class KTDocumentCancelCheckOutAction extends KTDocumentAction {
-    var $sDisplayName = 'Cancel Checkout';
     var $sName = 'ktcore.actions.document.cancelcheckout';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Cancel Checkout');
+    }
 
     function getInfo() {
         if (!$this->oDocument->getIsCheckedOut()) {
@@ -293,10 +308,13 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
 // {{{ KTDocumentEditAction
 class KTDocumentEditAction extends KTDocumentAction {
-    var $sDisplayName = 'Edit metadata';
     var $sName = 'ktcore.actions.document.edit';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Edit metadata');
+    }
 
     function getURL() {
         return generateControllerLink("editDocument", sprintf("fDocumentId=%d", $this->oDocument->getID()));
@@ -306,10 +324,13 @@ class KTDocumentEditAction extends KTDocumentAction {
 
 // {{{ KTDocumentDeleteAction
 class KTDocumentDeleteAction extends KTDocumentAction {
-    var $sDisplayName = 'Delete';
     var $sName = 'ktcore.actions.document.delete';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Delete');
+    }
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -379,10 +400,13 @@ class KTDocumentMoveColumn extends TitleColumn {
 
 // {{{ KTDocumentMoveAction
 class KTDocumentMoveAction extends KTDocumentAction {
-    var $sDisplayName = 'Move';
     var $sName = 'ktcore.actions.document.move';
 
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Move');
+    }
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -568,10 +592,13 @@ class KTDocumentCopyColumn extends TitleColumn {
 
 // {{{ KTDocumentMoveAction
 class KTDocumentCopyAction extends KTDocumentAction {
-    var $sDisplayName = 'Copy';
     var $sName = 'ktcore.actions.document.copy';
 
     var $_sShowPermission = "ktcore.permissions.read";
+
+    function getDisplayName() {
+        return _('Copy');
+    }
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -726,8 +753,11 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
 // {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
-    var $sDisplayName = 'Transaction History';
     var $sName = 'ktcore.actions.document.transactionhistory';
+
+    function getDisplayName() {
+        return _('Transaction History');
+    }
 
     function getURL() {
         return generateControllerLink("viewDocument", sprintf("action=history&fDocumentId=%d", $this->oDocument->getID()));
@@ -737,8 +767,11 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
 
 // {{{ KTDocumentHistoryAction
 class KTDocumentVersionHistoryAction extends KTDocumentAction {
-    var $sDisplayName = 'Version History';
     var $sName = 'ktcore.actions.document.versionhistory';
+
+    function getDisplayName() {
+        return _('Version History');
+    }
 
     function getURL() {
         return generateControllerLink("viewDocument", sprintf("action=versionhistory&fDocumentId=%d", $this->oDocument->getID()));
@@ -748,9 +781,12 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
 // {{{ KTDocumentArchiveAction
 class KTDocumentArchiveAction extends KTDocumentAction {
-    var $sDisplayName = 'Archive';
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = "ktcore.permissions.write";
+
+    function getDisplayName() {
+        return _('Archive');
+    }
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -819,11 +855,14 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
 // {{{ KTDocumentWorkflowAction
 class KTDocumentWorkflowAction extends KTDocumentAction {
-    var $sDisplayName = 'Workflow';
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = "ktcore.permissions.write";
     
     var $sHelpPage = 'ktcore/workflow.html';    
+
+    function getDisplayName() {
+        return _('Workflow');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("workflow"));

@@ -94,7 +94,11 @@ class KTSubscriptionPortlet extends KTPortlet {
 // {{{ KTDocumentSubscriptionAction
 class KTDocumentSubscriptionAction extends KTDocumentAction {
     var $sName = 'ktstandard.subscription.documentsubscription';
-    var $sDisplayName = 'Subscribe to document';
+
+    function getDisplayName() {
+        return _('Subscribe to document');
+    }
+
     function getInfo() {
         if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             return null;
@@ -124,7 +128,11 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
 // {{{ KTDocumentUnsubscriptionAction
 class KTDocumentUnsubscriptionAction extends KTDocumentAction {
     var $sName = 'ktstandard.subscription.documentunsubscription';
-    var $sDisplayName = 'Unsubscribe from document';
+
+    function getDisplayName() {
+        return _('Unsubscribe from document');
+    }
+
     function getInfo() {
         if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             return parent::getInfo();
@@ -236,7 +244,11 @@ class KTArchiveSubscriptionTrigger {
 // {{{ KTFolderSubscriptionAction
 class KTFolderSubscriptionAction extends KTFolderAction {
     var $sName = 'ktstandard.subscription.foldersubscription';
-    var $sDisplayName = 'Subscribe to folder';
+
+    function getDisplayName() {
+        return _('Subscribe to folder');
+    }
+
     function getInfo() {
         if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionEvent::subTypes('Folder'))) {
             // KTFolderUnsubscriptionAction will display instead.
@@ -267,7 +279,10 @@ class KTFolderSubscriptionAction extends KTFolderAction {
 // {{{ KTFolderUnsubscriptionAction
 class KTFolderUnsubscriptionAction extends KTFolderAction {
     var $sName = 'ktstandard.subscription.folderunsubscription';
-    var $sDisplayName = 'Unsubscribe from folder';
+
+    function getDisplayName() {
+        return _('Unsubscribe from folder');
+    }
 
     function getInfo() {
         if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionEvent::subTypes('Folder'))) {

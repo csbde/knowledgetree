@@ -61,8 +61,11 @@ class KTCommentListRenderer {
 }
 
 class KTDocumentDiscussionAction extends KTDocumentAction {
-    var $sDisplayName = 'Discussion';
     var $sName = 'ktcore.actions.document.discussion';
+
+    function getDisplayName() {
+        return _('Discussion');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("discussion"));

@@ -11,11 +11,14 @@ require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
 class KTBulkUploadFolderAction extends KTFolderAction {
-    var $sDisplayName = 'Bulk upload';
     var $sName = 'ktcore.actions.folder.bulkUpload';
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = true;
+
+    function getDisplayName() {
+        return _('Bulk upload');
+    }
 
     function check() {
         $res = parent::check();

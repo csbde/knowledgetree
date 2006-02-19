@@ -15,10 +15,13 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 
 class KTFolderAddFolderAction extends KTFolderAction {
-    var $sDisplayName = 'Add a Folder';
     var $sName = 'ktcore.actions.folder.addFolder';
 
     var $_sShowPermission = "ktcore.permissions.addFolder";
+
+    function getDisplayName() {
+        return _('Add a Folder');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("add folder"));
@@ -54,12 +57,15 @@ class KTFolderAddFolderAction extends KTFolderAction {
 }
 
 class KTFolderPermissionsAction extends KTFolderAction {
-    var $sDisplayName = 'Permissions';
     var $sName = 'ktcore.actions.folder.permissions';
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $_bAdminAlwaysAvailable = true;
     var $bAutomaticTransaction = true;
+
+    function getDisplayName() {
+        return _('Permissions');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("viewing permissions"));

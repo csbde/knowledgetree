@@ -10,13 +10,13 @@ require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 
 class KTFolderAddDocumentAction extends KTFolderAction {
-    var $sDisplayName = 'Add Document';
     var $sName = 'ktcore.actions.folder.addDocument';
-
     var $_sShowPermission = "ktcore.permissions.write";
-    
-    
     var $oDocumentType = null;
+
+    function getDisplayName() {
+        return _('Add Document');
+    }
 
     function check() {
         $res = parent::check();

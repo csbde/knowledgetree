@@ -13,11 +13,14 @@ require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
 class KTBulkImportFolderAction extends KTFolderAction {
-    var $sDisplayName = 'Bulk import';
     var $sName = 'ktcore.actions.folder.bulkImport';
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = true;
+
+    function getDisplayName() {
+        return _('Bulk import');
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("bulk import"));
