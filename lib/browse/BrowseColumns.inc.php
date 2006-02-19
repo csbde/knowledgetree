@@ -33,7 +33,11 @@ class BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = _("Abstract") . ": " . $this->label; 
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        if ($this->sort_on) {
+            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        } else {
+            $href .= $this->sort_direction = "asc";
+        }
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -63,7 +67,11 @@ class TitleColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = _("Title");
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        if ($this->sort_on) {
+            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        } else {
+            $href .= $this->sort_direction = "asc";
+        }
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -144,7 +152,11 @@ class DateColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = $this->label;
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        if ($this->sort_on) {
+            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        } else {
+            $href .= $this->sort_direction = "asc";
+        }
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -176,6 +188,13 @@ class DateColumn extends BrowseColumn {
            return 'unspecified_type';
         }
     }
+
+    function addToFolderQuery() {
+        return array(null, null, null);
+    }
+    function addToDocumentQuery() {
+        return array(null, null, $this->name);
+    }
 }
 
 
@@ -192,7 +211,11 @@ class UserColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = $this->label;
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        if ($this->sort_on) {
+            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        } else {
+            $href .= $this->sort_direction = "asc";
+        }
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -219,6 +242,15 @@ class UserColumn extends BrowseColumn {
             $outStr = $oUser->getName();
         }
         return $outStr;
+    }
+
+    function addToFolderQuery() {
+        return array(null, null, null);
+    }
+    function addToDocumentQuery() {
+        $sUsersTable = KTUtil::getTableName('users');
+        $sJoinSQL = "LEFT JOIN $sUsersTable AS users_order_join ON D.{$this->name} = users_order_join.id";
+        return array($sJoinSQL, null, "users_order_join.name");
     }
 }
 
@@ -272,7 +304,11 @@ class WorkflowColumn extends BrowseColumn {
     function renderHeader($sReturnURL) {         
         $text = $this->label; 
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        if ($this->sort_on) {
+            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        } else {
+            $href .= $this->sort_direction = "asc";
+        }
         
         return '<a href="' . $href . '">'.$text.'</a>';
     }
