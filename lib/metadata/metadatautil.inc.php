@@ -131,10 +131,16 @@ class KTMetadataUtil {
 
         if (empty($aCurrentSelections)) {
             $oField =& DocumentField::get($oFieldset->getMasterFieldId());
+            if (PEAR::isError($oField)) {
+                return array();
+            }
             return array($oField->getId() => array('field' => $oField, 'values' => $oField->getValues()));
         }
 
         $oMasterField =& DocumentField::get($oFieldset->getMasterFieldId());
+        if (PEAR::isError($oMasterField)) {
+            return array();
+        }
         $aSelectedFields = array_keys($aCurrentSelections);
         
         $field = $oMasterField->getId();
