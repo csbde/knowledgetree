@@ -91,6 +91,11 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
         $sTitle = $this->oValidator->validateString($_REQUEST['title'], $aErrorOptions);
 
+        if (KTDocumentUtil::exists( $this->oFolder, basename($aFile['name']))) {
+            $this->errorRedirectToMain(_('There is already a document with that filename in this folder.'),'fFolderId=' . $this->oFolder->getId());
+            exit(0);
+        }
+
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {

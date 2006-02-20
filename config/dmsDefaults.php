@@ -401,6 +401,7 @@ $oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
 
 $oKTConfig->setdefaultns("ui", "ieGIF", true);
 $oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
+$oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
 
 $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
 $oKTConfig->setdefaultns("import", "unzip", 'unzip');

@@ -32,7 +32,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $createFields[] = new KTTextWidget('Description', _('A brief description of the information stored in this fieldset.'), 'description', null, $this->oPage, true);
         $createFields[] = new KTCheckboxWidget('Generic', _('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
         $createFields[] = new KTCheckboxWidget('System',
-            _('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'generic', false, $this->oPage, false);
+            _('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'system', false, $this->oPage, false);
         
     
         $oTemplating =& KTTemplating::getSingleton();
@@ -120,7 +120,11 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         if (KTUtil::arrayGet($_REQUEST, 'system')) {
             $bIsSystem = true;
             // Can't be a system fieldset and a generic fieldset...
-            $bIsGeneric = false;
+			if ($bIsGeneric) {
+                $bIsGeneric = false;
+			    $this->addInfoMessage(_('System fieldsets cannot be generic.  Generic flag removed.'));
+			}
+			
         }
 		
 		// basic validation

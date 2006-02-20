@@ -488,11 +488,13 @@ class KTUtil {
         $root = $KTConfig->get("KnowledgeTree/rootUrl");
         $url = generateLink($base);
         
-        $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
-        if ($hasPathInfo) {
-            $url .= $subpath;
-        } else {
-            $url = KTUtil::addQueryString($url, "kt_path_info=" . $subpath);
+        if (!empty($subpath)) {
+            $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
+            if ($hasPathInfo) {
+                $url .= $subpath;
+            } else {
+                $url = KTUtil::addQueryString($url, "kt_path_info=" . $subpath);
+            }
         }
         
         return KTUtil::addQueryString($url, $qs);

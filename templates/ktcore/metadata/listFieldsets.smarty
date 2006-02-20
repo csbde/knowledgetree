@@ -5,11 +5,12 @@
 { if $fieldsets}
 <h3>{i18n}Existing document fieldsets{/i18n}</h3>
 
-<table class="listing" cellpadding="1.5em" cellspacing="0">
+<table class="kt_collection narrow" cellpadding="1.5em" cellspacing="0">
   <thead>
     <tr>
       <th>{i18n}Name{/i18n}</th>
-      <th>{i18n}Is Generic{/i18n}</th>
+      <th class="centered">{i18n}Is Generic{/i18n}</th>
+	  <th class="centered">{i18n}Is System{/i18n}</th>
       <th>{i18n}Fields{/i18n}</th>
 	  <th>{i18n}Edit{/i18n}</th>
 	  <th>{i18n}Delete{/i18n}</th>
@@ -22,13 +23,20 @@
          { $oFieldset->getName() }
         </a>
       </td>
-      <td>
+      <td class="centered">
 {if ($oFieldset->getIsGeneric())}
-	{i18n}Yes{/i18n} 
+	<span class="ktAction ktInline ktAllowed">{i18n}Yes{/i18n}</span>
 {else}
-	{i18n}No{/i18n} 
+	<span class="ktAction ktInline ktDenied">{i18n}No{/i18n}</span>
 {/if}
       </td>
+      <td class="centered">
+{if ($oFieldset->getIsSystem())}
+	<span class="ktAction ktInline ktAllowed">{i18n}Yes{/i18n}</span>
+{else}
+	<span class="ktAction ktInline ktDenied">{i18n}No{/i18n}</span>
+{/if}
+      </td>	  
       <td>
 {assign var="aFields" value=$oFieldset->getFields()}
 {if $aFields}

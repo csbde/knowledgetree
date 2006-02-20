@@ -41,7 +41,7 @@ class KTBrowseModePortlet extends KTPortlet {
         parent::KTPortlet($sTitle);
     }
 
-    function render() {    
+    function render() { 
         // this is unfortunate, but such is life.
         $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(
@@ -105,5 +105,31 @@ class KTAdminModePortlet extends KTPortlet {
             'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
         );
         return $oTemplate->render($aTemplateData);
+    }
+}
+
+
+
+class KTAdminSectionNavigation extends KTPortlet {
+
+    function KTAdminSectionNavigation() {
+        parent::KTPortlet(_("Administration"));
+    }
+    
+    function render() {
+        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
+    
+        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
+        $categories = $oRegistry->getCategories();		
+        
+        // we need to investigate sub_url solutions.
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_categories");
+        $aTemplateData = array(
+              "context" => $this,
+              "categories" => $categories,
+        );
+        return $oTemplate->render($aTemplateData);			
     }
 }

@@ -216,6 +216,10 @@ class KTStandardDispatcher extends KTDispatcher {
         return true;
     }
 
+	function addInfoMessage($sMessage) { $_SESSION['KTInfoMessage'][] = $sMessage; }
+	
+	function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }	
+	
     function handleOutput($data) {
 	    global $default;
 		global $sectionName;
