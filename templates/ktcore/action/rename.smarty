@@ -1,0 +1,22 @@
+<p class="descriptiveText">{i18n}This page allows you to rename the file
+name (not the document title) for a document.{/i18n}</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+{capture assign=link}{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}If you do not intend to
+rename this document, you should <a href="#link#">cancel the
+deletion</a>.{/i18n}</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>{i18n}Rename{/i18n}</legend>
+<input type="hidden" name="action" value="rename" />
+<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
+{foreach from=$fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Rename{/i18n}" />
+<input type="submit" name="kt_cancel[{$link}]" value="Cancel" />
+</div>
+</fieldset>
+</form>
