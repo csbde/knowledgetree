@@ -21,11 +21,16 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
     var $notification;
 
     function check() {
+        $clear_all = KTUtil::arrayGet($_REQUEST, 'clearAll');
+        if ($clear_all) {
+            return true;
+        }
+    
         $notification_id = KTUtil::arrayGet($_REQUEST, 'id', null);
         $oKTNotification =& KTNotification::get($notification_id);
         
         if (PEAR::isError($oKTNotification)) {
-            $_SESSION['KTErrorMessage'][] = 'Invalid notification.';
+            $this->addErrorMessage(_('Invalid notification.'));
             exit(redirect(generateControllerLink('dashboard')));
         }
         
@@ -34,8 +39,31 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
         return true;
     }
     function do_main() {
+        $clear_all = KTUtil::arrayGet($_REQUEST, 'clearAll');
+        if ($clear_all) {
+            return $this->clearAll();
+        }
+    
+    
         // get the notification-handler, instantiate it, call resolveNotification.
         return $this->notification->resolve();
+    }
+    
+    function clearAll() {
+        $this->startTransaction();
+        $aNotifications = KTNotification::getList('user_id = ' . $this->oUser->getId());
+        
+        foreach ($aNotifications as $oNotification) {
+            $res = $oNotification->delete();
+            if (PEAR::isError($res)) {
+                $this->rollbackTransaction();
+                $this->addErrorMessage(_('Failed to clear notifications.'));
+                exit(redirect(generateControllerLink('dashboard')));                
+            }
+        }
+        $this->commitTransaction();
+        $this->addInfoMessage(_('Notifications cleared.'));
+        exit(redirect(generateControllerLink('dashboard')));
     }
 }
 
