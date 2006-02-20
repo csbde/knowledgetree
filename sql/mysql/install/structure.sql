@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.7.0-pl2-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 20, 2006 at 01:36 PM
--- Server version: 4.0.24
--- PHP Version: 4.4.0-3
+-- Generation Time: Feb 20, 2006 at 02:22 PM
+-- Server version: 5.0.18
+-- PHP Version: 4.4.2-1
+
+SET FOREIGN_KEY_CHECKS=0;
 -- 
 -- Database: `dms`
 -- 
-
-SET FOREIGN_KEY_CHECKS=0;
 
 -- --------------------------------------------------------
 
@@ -414,7 +414,7 @@ CREATE TABLE `document_type_fieldsets_link` (
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
-  `disabled` tinyint(4) NOT NULL default '0',
+  `disabled` tinyint(4) NOT NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `disabled` (`disabled`)
@@ -648,7 +648,7 @@ CREATE TABLE `groups_groups_link` (
 
 CREATE TABLE `groups_lookup` (
   `id` int(11) NOT NULL default '0',
-  `name` varchar(100) NOT NULL default '',
+  `name` char(100) NOT NULL default '',
   `is_sys_admin` tinyint(1) NOT NULL default '0',
   `is_unit_admin` tinyint(1) NOT NULL default '0',
   `unit_id` int(11) default NULL,
@@ -1128,7 +1128,7 @@ CREATE TABLE `type_workflow_map` (
 CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) NOT NULL default '',
-  `folder_id` int(11) NOT NULL default '0',
+  `folder_id` int(11) NOT NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `folder_id` (`folder_id`)
@@ -1257,10 +1257,10 @@ CREATE TABLE `workflow_state_actions` (
 -- 
 
 CREATE TABLE `workflow_state_permission_assignments` (
-  `id` int(11) NOT NULL default '0',
-  `workflow_state_id` int(11) NOT NULL default '0',
-  `permission_id` int(11) NOT NULL default '0',
-  `permission_descriptor_id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
+  `workflow_state_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `permission_descriptor_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
@@ -1865,7 +1865,7 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=7 ;
+) TYPE=MyISAM AUTO_INCREMENT=12 ;
 
 -- --------------------------------------------------------
 
@@ -1876,7 +1876,7 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) TYPE=MyISAM AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
