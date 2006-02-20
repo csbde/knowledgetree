@@ -16,6 +16,8 @@ class KTIndexerPlugin extends KTPlugin {
                 'ktstandard.indexer.triggers.pdf', 'contents/PdfIndexer.php');
         $this->registerTrigger('content', 'transform', 'KTPostscriptIndexerTrigger',
                 'ktstandard.indexer.triggers.ps', 'contents/PsIndexer.php');
+        $this->registerTrigger('content', 'transform', 'KTOpenDocumentIndexerTrigger',
+                'ktstandard.indexer.triggers.opendocument', 'contents/OpenDocumentIndexer.php');
     }
 }
 
