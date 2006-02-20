@@ -438,12 +438,12 @@ class UpgradeFunctions {
 
     // {{{ createLdapAuthenticationProvider
     function createLdapAuthenticationProvider() {
-        global $default;
-        $new_default = $default;
-        $default = null;
         if (!file_exists(KT_DIR . '/config/environment.php')) {
             return;
         }
+        global $default;
+        $new_default = $default;
+        $default = null;
         require_once(KT_DIR . '/config/environment.php');
         $old_default = $default;
         $default = $new_default;
