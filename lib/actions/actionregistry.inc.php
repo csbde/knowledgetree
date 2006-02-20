@@ -18,7 +18,7 @@ class KTActionRegistry {
     }
 
     function getActions($slot) {
-        return $this->actions[$slot];
+        return KTUtil::arrayGet($this->actions, $slot, array());
     }
 
     function getActionByNsname($nsname) {
