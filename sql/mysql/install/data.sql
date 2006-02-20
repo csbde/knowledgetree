@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 20, 2006 at 02:23 PM
+-- Generation Time: Feb 20, 2006 at 02:55 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -513,6 +513,20 @@ INSERT INTO `mime_types` VALUES (141, 'dot', 'application/msword', 'word', 'Word
 INSERT INTO `mime_types` VALUES (142, 'bz2', 'application/x-bzip2', 'compressed', 'BZIP2 Compressed File');
 INSERT INTO `mime_types` VALUES (143, 'diff', 'text/plain', 'text', 'Source Diff File');
 INSERT INTO `mime_types` VALUES (144, 'patch', 'text/plain', 'text', 'Patch File');
+INSERT INTO `mime_types` VALUES (145, 'odt', 'application/vnd.oasis.opendocument.text', 'opendocument', 'OpenDocument Text');
+INSERT INTO `mime_types` VALUES (146, 'ott', 'application/vnd.oasis.opendocument.text-template', 'opendocument', 'OpenDocument Text Template');
+INSERT INTO `mime_types` VALUES (147, 'oth', 'application/vnd.oasis.opendocument.text-web', 'opendocument', 'HTML Document Template');
+INSERT INTO `mime_types` VALUES (148, 'odm', 'application/vnd.oasis.opendocument.text-master', 'opendocument', 'OpenDocument Master Document');
+INSERT INTO `mime_types` VALUES (149, 'odg', 'application/vnd.oasis.opendocument.graphics', 'opendocument', 'OpenDocument Drawing');
+INSERT INTO `mime_types` VALUES (150, 'otg', 'application/vnd.oasis.opendocument.graphics-template', 'opendocument', 'OpenDocument Drawing Template');
+INSERT INTO `mime_types` VALUES (151, 'odp', 'application/vnd.oasis.opendocument.presentation', 'opendocument', 'OpenDocument Presentation');
+INSERT INTO `mime_types` VALUES (152, 'otp', 'application/vnd.oasis.opendocument.presentation-template', 'opendocument', 'OpenDocument Presentation Template');
+INSERT INTO `mime_types` VALUES (153, 'ods', 'application/vnd.oasis.opendocument.spreadsheet', 'opendocument', 'OpenDocument Spreadsheet');
+INSERT INTO `mime_types` VALUES (154, 'ots', 'application/vnd.oasis.opendocument.spreadsheet-template', 'opendocument', 'OpenDocument Spreadsheet Template');
+INSERT INTO `mime_types` VALUES (155, 'odc', 'application/vnd.oasis.opendocument.chart', 'opendocument', 'OpenDocument Chart');
+INSERT INTO `mime_types` VALUES (156, 'odf', 'application/vnd.oasis.opendocument.formula', 'opendocument', 'OpenDocument Formula');
+INSERT INTO `mime_types` VALUES (157, 'odb', 'application/vnd.oasis.opendocument.database', 'opendocument', 'OpenDocument Database');
+INSERT INTO `mime_types` VALUES (158, 'odi', 'application/vnd.oasis.opendocument.image', 'opendocument', 'OpenDocument Image');
 
 -- 
 -- Dumping data for table `news`
@@ -758,10 +772,11 @@ INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Databa
 INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (68, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (69, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-20 14:54:02', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
 
 -- 
 -- Dumping data for table `users`
@@ -1063,7 +1078,7 @@ INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
 -- Dumping data for table `zseq_mime_types`
 -- 
 
-INSERT INTO `zseq_mime_types` VALUES (144);
+INSERT INTO `zseq_mime_types` VALUES (158);
 
 -- 
 -- Dumping data for table `zseq_news`
@@ -1189,7 +1204,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (68);
+INSERT INTO `zseq_upgrades` VALUES (69);
 
 -- 
 -- Dumping data for table `zseq_users`
