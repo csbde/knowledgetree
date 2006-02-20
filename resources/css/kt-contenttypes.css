@@ -19,6 +19,7 @@
 .contenttype.database { background-image: url(../../resources/mimetypes/database.png); }
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.png); }
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.png); }
+.contenttype.opendocument { background-image: url(../../resources/mimetypes/openoffice.png); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.png); }
 .contenttype.image { background-image: url(../../resources/mimetypes/image.png); }
 .contenttype.compressed { background-image: url(../../resources/mimetypes/zip.png); }
