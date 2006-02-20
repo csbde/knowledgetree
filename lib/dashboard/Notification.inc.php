@@ -89,7 +89,12 @@ class KTNotification extends KTEntity {
 
     // Static function
     function &get($iId) { return KTEntityUtil::get('KTNotification', $iId); }
-    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTNotification', $sWhereClause);	}	
+    function &getList($sWhereClause = null, $aOptions = null ) { 
+	    if(!is_array($aOptions)) $aOptions = array($aOptions);
+		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'creation_date DESC');
+	    return KTEntityUtil::getList2('KTNotification', $sWhereClause, $aOptions);	
+    }	
+	
     function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTNotification', $aOptions); }
 
 }

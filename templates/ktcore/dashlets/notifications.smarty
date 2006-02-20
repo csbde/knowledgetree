@@ -5,6 +5,15 @@
 {$oNotification->render()}
 {/foreach}
 </dl>
+{if ($notification_count > $visible_count)}
+{* pagination standin *}
+<p class="descriptiveText">{i18n arg_count=$notification_count arg_visible=$visible_count}These are the most recent #visible# notifications.  You have a total of #count# notifications waiting.{/i18n}</p>
+{/if}
+{* clear all link *}
+<a href="{ktLink base="notify.php" query="clearAll=1"}"
+   class="ktAction ktInline ktDelete">{i18n}Clear all notifications{/i18n}</a>
+<a href="{ktLink base="notify.php" query="clearAll=1"}"
+   class="ktDelete">{i18n}Clear all notifications{/i18n}</a>   
 {else}
 <div class="ktInfo"><p>{i18n}No items require your attention.{/i18n}</p></div>
 {/if}

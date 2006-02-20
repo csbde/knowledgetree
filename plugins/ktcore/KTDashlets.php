@@ -34,11 +34,21 @@ class KTNotificationDashlet extends KTBaseDashlet {
     function render() {
 	    
         $notifications = KTNotification::getList(array("user_id = ?", $this->oUser->getId()));
+        $num_notifications = count($notifications);
+		
+		$_MAX_NOTIFICATIONS = 5;
+		
+		// FIXME in lieu of pagination, we slice.
+		if ($num_notifications > $_MAX_NOTIFICATIONS) {
+		    $notifications = array_slice($notifications, 0, $_MAX_NOTIFICATIONS);
+		}
         
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/notifications");
 		$aTemplateData = array(
 		    "notifications" => $notifications,
+			"notification_count" => $num_notifications,
+			"visible_count" => count($notifications),
 		);
 		return $oTemplate->render($aTemplateData);
     }
