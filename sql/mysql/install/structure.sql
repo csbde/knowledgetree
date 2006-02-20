@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 16, 2006 at 03:48 PM
+-- Generation Time: Feb 20, 2006 at 01:36 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
-
-SET FOREIGN_KEY_CHECKS=0;
 -- 
 -- Database: `dms`
 -- 
+
+SET FOREIGN_KEY_CHECKS=0;
 
 -- --------------------------------------------------------
 
@@ -648,7 +648,7 @@ CREATE TABLE `groups_groups_link` (
 
 CREATE TABLE `groups_lookup` (
   `id` int(11) NOT NULL default '0',
-  `name` char(100) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
   `is_sys_admin` tinyint(1) NOT NULL default '0',
   `is_unit_admin` tinyint(1) NOT NULL default '0',
   `unit_id` int(11) default NULL,
@@ -1832,7 +1832,7 @@ CREATE TABLE `zseq_organisations_lookup` (
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1898,7 +1898,7 @@ CREATE TABLE `zseq_permission_objects` (
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -2019,7 +2019,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=67 ;
+) TYPE=MyISAM AUTO_INCREMENT=69 ;
 
 -- --------------------------------------------------------
 

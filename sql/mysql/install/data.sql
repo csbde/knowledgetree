@@ -3,11 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 16, 2006 at 03:57 PM
+-- Generation Time: Feb 20, 2006 at 01:39 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
-
-SET FOREIGN_KEY_CHECKS=0;
 -- 
 -- Database: `dms`
 -- 
@@ -221,8 +219,8 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, 2, 0);
-INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 2, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, NULL, 0);
+INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, NULL, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -537,6 +535,8 @@ INSERT INTO `organisations_lookup` VALUES (1, 'Default Organisation');
 INSERT INTO `permission_assignments` VALUES (1, 1, 1, 2);
 INSERT INTO `permission_assignments` VALUES (2, 2, 1, 2);
 INSERT INTO `permission_assignments` VALUES (3, 3, 1, 2);
+INSERT INTO `permission_assignments` VALUES (4, 4, 1, 2);
+INSERT INTO `permission_assignments` VALUES (5, 5, 1, 2);
 
 -- 
 -- Dumping data for table `permission_descriptor_groups`
@@ -602,6 +602,8 @@ INSERT INTO `permission_objects` VALUES (1);
 INSERT INTO `permissions` VALUES (1, 'ktcore.permissions.read', 'Core: Read', 1);
 INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Core: Write', 1);
 INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
+INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Core: Manage security', 1);
+INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Core: Delete', 1);
 
 -- 
 -- Dumping data for table `plugins`
@@ -750,6 +752,8 @@ INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_detai
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (65, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
 INSERT INTO `upgrades` VALUES (66, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (67, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 13:23:18', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (68, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 13:35:38', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
 
 -- 
 -- Dumping data for table `users`
@@ -1075,7 +1079,7 @@ INSERT INTO `zseq_organisations_lookup` VALUES (1);
 -- Dumping data for table `zseq_permission_assignments`
 -- 
 
-INSERT INTO `zseq_permission_assignments` VALUES (3);
+INSERT INTO `zseq_permission_assignments` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_permission_descriptors`
@@ -1111,7 +1115,7 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- Dumping data for table `zseq_permissions`
 -- 
 
-INSERT INTO `zseq_permissions` VALUES (3);
+INSERT INTO `zseq_permissions` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_plugins`
@@ -1177,7 +1181,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (66);
+INSERT INTO `zseq_upgrades` VALUES (68);
 
 -- 
 -- Dumping data for table `zseq_users`
@@ -1213,5 +1217,3 @@ INSERT INTO `zseq_workflow_transitions` VALUES (1);
 -- 
 
 INSERT INTO `zseq_workflows` VALUES (1);
-
-SET FOREIGN_KEY_CHECKS=1;
