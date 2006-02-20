@@ -24,6 +24,8 @@ class KTSubscriptionPlugin extends KTPlugin {
             'ktstandard.subscription.documentunsubscription');
         $this->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger',
             'ktstandard.triggers.subscription.checkout');
+        $this->registerTrigger('edit', 'postValidate', 'KTEditSubscriptionTrigger',
+            'ktstandard.triggers.subscription.checkout');            
         $this->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger',
             'ktstandard.triggers.subscription.delete');
         $this->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger',
@@ -175,6 +177,28 @@ class KTCheckoutSubscriptionTrigger {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckoutDocument($oDocument, $oFolder);
+
+    }
+}
+// }}}
+
+
+// {{{ KTCheckoutSubscriptionTrigger
+class KTEditSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        global $default;
+        $oDocument =& $this->aInfo["document"];
+        // fire subscription alerts for the checked out document
+
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->ModifyDocument($oDocument, $oFolder);
 
     }
 }

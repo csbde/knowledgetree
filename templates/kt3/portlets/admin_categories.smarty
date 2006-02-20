@@ -1,0 +1,5 @@
+<ul class="actionlist">
+   {foreach item=aCategory from=$categories}
+      <li><a href="{ktLink base="admin.php" query="action=viewCategory&fCategory=`$aCategory.name`"}">{$aCategory.title}</a></li>
+   {/foreach}
+</ul>

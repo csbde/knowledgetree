@@ -51,6 +51,10 @@ class KTCorePlugin extends KTPlugin {
                 'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
                 'KTPortlets.php');
 
+        $this->registerPortlet(array('administration'),
+                'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
+                'KTPortlets.php');
+
         $this->setupAdmin();
     }
 
