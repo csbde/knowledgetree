@@ -1,11 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.7.0-pl2-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 20, 2006 at 01:39 PM
--- Server version: 4.0.24
--- PHP Version: 4.4.0-3
+-- Generation Time: Feb 20, 2006 at 02:23 PM
+-- Server version: 5.0.18
+-- PHP Version: 4.4.2-1
+
+SET FOREIGN_KEY_CHECKS=0;
 -- 
 -- Database: `dms`
 -- 
@@ -219,8 +221,8 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, NULL, 0);
-INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, NULL, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, 3, 0);
+INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 3, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -581,6 +583,11 @@ INSERT INTO `permission_lookup_assignments` VALUES (3, 3, 1, 1);
 INSERT INTO `permission_lookup_assignments` VALUES (4, 1, 2, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (5, 2, 2, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (6, 3, 2, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (7, 1, 3, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (8, 2, 3, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (9, 3, 3, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (10, 4, 3, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (11, 5, 3, 2);
 
 -- 
 -- Dumping data for table `permission_lookups`
@@ -588,6 +595,7 @@ INSERT INTO `permission_lookup_assignments` VALUES (6, 3, 2, 2);
 
 INSERT INTO `permission_lookups` VALUES (1);
 INSERT INTO `permission_lookups` VALUES (2);
+INSERT INTO `permission_lookups` VALUES (3);
 
 -- 
 -- Dumping data for table `permission_objects`
@@ -750,10 +758,10 @@ INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Databa
 INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (65, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (66, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-16 15:46:56', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (67, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 13:23:18', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (68, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 13:35:38', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (68, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-20 14:22:42', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
 
 -- 
 -- Dumping data for table `users`
@@ -1097,13 +1105,13 @@ INSERT INTO `zseq_permission_dynamic_conditions` VALUES (1);
 -- Dumping data for table `zseq_permission_lookup_assignments`
 -- 
 
-INSERT INTO `zseq_permission_lookup_assignments` VALUES (6);
+INSERT INTO `zseq_permission_lookup_assignments` VALUES (11);
 
 -- 
 -- Dumping data for table `zseq_permission_lookups`
 -- 
 
-INSERT INTO `zseq_permission_lookups` VALUES (2);
+INSERT INTO `zseq_permission_lookups` VALUES (3);
 
 -- 
 -- Dumping data for table `zseq_permission_objects`
@@ -1217,3 +1225,5 @@ INSERT INTO `zseq_workflow_transitions` VALUES (1);
 -- 
 
 INSERT INTO `zseq_workflows` VALUES (1);
+
+SET FOREIGN_KEY_CHECKS=1;
