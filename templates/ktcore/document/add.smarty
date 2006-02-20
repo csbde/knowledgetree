@@ -14,29 +14,31 @@
 {capture assign=sJavascript}
 {literal}
 function swapInItem(elementId, req) {
-    
     var cp = getElement(elementId);
-    
     cp.innerHTML = req.responseText;
     initialiseConditionalFieldsets();
 }
 
 function xmlFailure(err) {
-    alert('failed');
+    ; // bad me - fail silently.
+}
+
+function handleErrorsInResponse(req) { 
+    ; // bad me - fail silently.
 }
 
 function swapElementFromRequest(elementId, url) {
     var deff = doSimpleXMLHttpRequest(url);
-    deff.addCallback(partial(swapInItem, elementId));
+    
     var cp = getElement(elementId);
     cp.innerHTML="loading...";
     
+    deff.addCallback(partial(swapInItem, elementId));
+    deff.addErrback(handleErrorsInResponse);
 }
 
 function getMetadataForType(id) {
-    swapElementFromRequest('type_metadata_fields',
-        '{/literal}{$rootUrl}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
-        + id);
+    swapElementFromRequest('type_metadata_fields', '{/literal}{$rootUrl}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID=' + id);
 }
 
 function document_type_changed() {
