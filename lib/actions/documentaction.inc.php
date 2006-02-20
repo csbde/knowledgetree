@@ -131,13 +131,14 @@ class KTDocumentAction extends KTStandardDispatcher {
 }
 
 class KTDocumentActionUtil {
-    function getDocumentActionInfo() {
+    function getDocumentActionInfo($slot = "documentaction") {
         $oRegistry =& KTActionRegistry::getSingleton();
-        return $oRegistry->getActions('documentaction');
+        return $oRegistry->getActions($slot);
     }
-    function &getDocumentActionsForDocument($oDocument, $oUser) {
+
+    function &getDocumentActionsForDocument($oDocument, $oUser, $slot = "documentaction") {
         $aObjects = array();
-        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
+        foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
@@ -149,11 +150,11 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getAllDocumentActions() {
+    function getAllDocumentActions($slot = "documentaction") {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
-        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
+        foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
@@ -165,11 +166,11 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getDocumentActionsByNames($aNames) {
+    function getDocumentActionsByNames($aNames, $slot = "documentaction") {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
-        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
+        foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
