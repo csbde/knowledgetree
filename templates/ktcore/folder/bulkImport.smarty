@@ -25,9 +25,10 @@ function xmlFailure(err) {
 
 function swapElementFromRequest(elementId, url) {
     var deff = doSimpleXMLHttpRequest(url);
-    deff.addCallback(partial(swapInItem, elementId));
     var cp = getElement(elementId);
     cp.innerHTML="loading...";
+    deff.addCallback(partial(swapInItem, elementId));
+    
     
 }
 
