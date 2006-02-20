@@ -284,4 +284,44 @@ class KTBrowseUtil {
         return Permission::isUnitAdministratorForFolder($oUser, $oFolder);
     }
     // }}}
+
+    // {{{ getBrowseableFolders
+    /**
+     * Finds folders that aren't reachable by the user but to which the
+     * user has read permissions.
+     *
+     * Returns an array of Folder objects.
+     */
+    function getBrowseableFolders($oUser) {
+        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+        if (empty($aPermissionDescriptors)) {
+            return array();
+        }
+        $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
+
+        $sFoldersTable = KTUtil::getTableName('folders');
+        $sPLTable = KTUtil::getTableName('permission_lookups');
+        $sPLATable = KTUtil::getTableName('permission_lookup_assignments');
+        $oPermission = KTPermission::getByName('ktcore.permissions.read');
+        $sQuery = "SELECT DISTINCT F.id AS id FROM
+            $sFoldersTable AS F
+                LEFT JOIN $sPLTable AS PL ON F.permission_lookup_id = PL.id LEFT JOIN $sPLATable AS PLA ON PLA.permission_lookup_id = PL.id AND PLA.permission_id = ?
+            LEFT JOIN $sFoldersTable AS F2 ON F.parent_id = F2.id
+                LEFT JOIN $sPLTable AS PL2 ON F2.permission_lookup_id = PL2.id LEFT JOIN $sPLATable AS PLA2 ON PLA2.permission_lookup_id = PL2.id AND PLA2.permission_id = ?
+            WHERE
+                PLA.permission_descriptor_id IN ($sPermissionDescriptors)
+                AND NOT PLA2.permission_descriptor_id IN ($sPermissionDescriptors)";
+        $aParams = array_merge(array($oPermission->getId(), $oPermission->getId()), $aPermissionDescriptors, $aPermissionDescriptors);
+        $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $aFolders = array();
+        foreach ($res as $iFolderId) {
+            $aFolders[] = Folder::get($iFolderId);
+        }
+        return $aFolders;
+    }
+    // }}}
+
 }
