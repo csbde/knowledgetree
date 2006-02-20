@@ -84,10 +84,11 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $collection = new DocumentCollection;
         $this->browseType = "Folder";
 
-        $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
+        //$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
         $t =& new TitleColumn("Test 1 (title)","title");
         $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
         $collection->addColumn($t);
+        $collection->addColumn(new DownloadColumn('','download'));
         $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
         $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
         $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
