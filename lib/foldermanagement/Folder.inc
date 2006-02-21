@@ -134,30 +134,34 @@ class Folder extends KTEntity {
 	 * Recursively generates forward slash deliminated string giving full path of document
 	 * from file system root url
 	 */
-	function generateFullFolderPath($iFolderID) {
-		global $default;
+	function generateFullFolderPath($iFolderId) {
 		//if the folder is not the root folder 
-		if ($iFolderID != 0) {
-			$sql = $default->db;
-			$sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
-			$sql->next_record();
-			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
-		}
-		return;
+		if ($iFolderId == 0) {
+            return;
+        }
+		if ($iFolderId == 1) {
+            $oFolder =& Folder::get(1);
+            return $oFolder->getName();
+        }
+
+        $oFolder =& Folder::get($iFolderId);
+        $iParentId = $oFolder->getParentId();
+        if (empty($iParentId)) {
+            return $oFolder->getName();
+        }
+        return Folder::generateFullFolderPath($iParentId) . "/" . $oFolder->getName();
 	}
 	
 	/**
 	 * Returns a forward slash deliminated string giving full path of document, strips leading /
 	 */	
 	function generateFolderPath($iFolderID) {
-		global $default;
-		$sPath = $this->generateFullFolderPath($iFolderID);
-		$sPath = substr($sPath, 1, strlen($sPath));
+		$sPath = Folder::generateFullFolderPath($iFolderID);
 		return $sPath;			
 	}
 
     function _fieldValues () {
-        $this->sFullPath = $this->generateFolderPath($this->iParentID);
+        $this->sFullPath = Folder::generateFolderPath($this->iParentID);
         $this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
         return parent::_fieldValues();
         return array(

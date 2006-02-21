@@ -74,11 +74,24 @@ class KTFolderUtil {
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
         
+        if ($oNewParentFolder->getId() == 1) {
+            $sNewParentFolderPath = $oNewParentFolder->getName();
+            $sNewParentFolderIds = "";
+        } else {
+            $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
+            $sNewParentFolderIds = sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID());
+        }
+
+        if ($oNewParentFolder->getId() == 1) {
+        } else {
+            $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
+        }
+
         // Update the moved folder first...
         $sQuery = "UPDATE $table SET full_path = ?, parent_folder_ids = ?, parent_id = ? WHERE id = ?";
         $aParams = array(
-            sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName()),
-            sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID()),
+            sprintf("%s", $sNewParentFolderPath),
+            $sNewParentFolderIds,
             $oNewParentFolder->getID(),
             $oFolder->getID(),
         );
@@ -86,14 +99,20 @@ class KTFolderUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
+
+        if ($oFolder->getId() == 1) {
+            $sOldFolderPath = $oFolder->getName();
+        } else {
+            $sOldFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
+        }
         
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)), parent_folder_ids = CONCAT(?, SUBSTRING(parent_folder_ids FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
-            sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName()),
+            sprintf("%s", $sNewParentFolderPath),
             strlen($oFolder->getFullPath()) + 1,
-            sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID()),
+            $sNewParentFolderIds,
             strlen($oFolder->getParentFolderIDs()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            sprintf("%s%%", $sOldFolderPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -103,9 +122,9 @@ class KTFolderUtil {
         $table = "documents";
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
-            sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName()),
+            sprintf("%s", $sNewParentFolderPath),
             strlen($oFolder->getFullPath()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            sprintf("%s%%", $sOldFolderPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -126,10 +145,19 @@ class KTFolderUtil {
         $table = "folders";
         
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
+
+        if ($oFolder->getId() == 1) {
+            $sOldPath = $oFolder->getName();
+            $sNewPath = $sNewName;
+        } else {
+            $sOldPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
+            $sNewPath = sprintf("%s/%s", $oFolder->getFullPath(), $sNewName);
+
+        }
         $aParams = array(
-            sprintf("%s/%s", $oFolder->getFullPath(), $sNewName),
-            strlen($oFolder->getFullPath() . '/' . $oFolder->getName()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            sprintf("%s", $sNewPath),
+            strlen($sOldPath) + 1,
+            sprintf("%s%%", $sOldPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -139,9 +167,9 @@ class KTFolderUtil {
         $table = "documents";
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
-            sprintf("%s/%s", $oFolder->getFullPath(), $sNewName),
-            strlen($oFolder->getFullPath() . '/' . $oFolder->getName()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            sprintf("%s", $sNewPath),
+            strlen($sOldPath) + 1,
+            sprintf("%s%%", $sOldPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
