@@ -214,10 +214,23 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     function moveFolder($oFolder, $oDestFolder) {
         $table = "document_content_version";
         $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
+
+        if ($oDestFolder->getId() == 1) {
+            $sDestFolderPath = $oDestFolder->getName();
+        } else {
+            $sDestFolderPath = sprintf("%s/%s", $oDestFolder->getFullPath(), $oDestFolder->getName());
+        }
+
+        if ($oFolder->getId() == 1) {
+            $sSrcFolderPath = $oFolder->getName();
+        } else {
+            $sSrcFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
+        }
+
         $aParams = array(
-            sprintf("%s/%s", $oDestFolder->getFullPath(), $oDestFolder->getName()),
+            $sDestFolderPath,
             strlen($oFolder->getFullPath()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            sprintf("%s%%", $sSrcFolderPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -225,15 +238,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }
         
         $oConfig =& KTConfig::getSingleton();
-        $sSrc = sprintf("%s/%s/%s",
+        $sSrc = sprintf("%s/%s",
             $oConfig->get('urls/documentRoot'),
-            $oFolder->getFullPath(),
-            $oFolder->getName()
+            $sSrcFolderPath
         );
-        $sDst = sprintf("%s/%s/%s/%s",
+        $sDst = sprintf("%s/%s/%s",
             $oConfig->get('urls/documentRoot'),
-            $oDestFolder->getFullPath(),
-            $oDestFolder->getName(),
+            $sDestFolderPath,
             $oFolder->getName()
         );
         return KTUtil::moveDirectory($sSrc, $sDst);
@@ -242,10 +253,19 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     function renameFolder($oFolder, $sNewName) {
         $table = "document_content_version";
         $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
+
+        if ($oFolder->getId() == 1) {
+            $sSrcFolderPath = $oFolder->getName();
+            $sDestFolderPath = $sNewName;
+        } else {
+            $sSrcFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
+            $sDestFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $sNewName);
+        }
+
         $aParams = array(
-            sprintf("%s/%s", $oFolder->getFullPath(), $sNewName),
-            strlen($oFolder->getFullPath() . '/' . $oFolder->getName()) + 1,
-            sprintf("%s/%s%%", $oFolder->getFullPath(), $oFolder->getName()),
+            $sDestFolderPath,
+            strlen($sSrcFolderPath) + 1,
+            sprintf("%s%%", $sSrcFolderPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -253,15 +273,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }
         
         $oConfig =& KTConfig::getSingleton();
-        $sSrc = sprintf("%s/%s/%s",
+        $sSrc = sprintf("%s/%s",
             $oConfig->get('urls/documentRoot'),
-            $oFolder->getFullPath(),
-            $oFolder->getName()
+            $sSrcFolderPath
         );
-        $sDst = sprintf("%s/%s/%s",
+        $sDst = sprintf("%s/%s",
             $oConfig->get('urls/documentRoot'),
-            $oFolder->getFullPath(),
-			$sNewName
+            $sDestFolderPath
         );
         $res = @rename($sSrc, $sDst);
 		if (PEAR::isError($res) || ($res == false)) { 
