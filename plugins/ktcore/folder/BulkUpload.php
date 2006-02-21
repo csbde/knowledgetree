@@ -96,9 +96,10 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
-        $aErrorOptions['message'] = _("Bulk import failed");
+        $aErrorOptions['message'] = _("Bulk upload failed");
         $this->oValidator->notError($res, $aErrorOptions);
 
+        $this->addInfoMessage("Bulk upload successful");
         $this->commitTransaction();
         controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
         exit(0);

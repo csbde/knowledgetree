@@ -128,6 +128,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
+        $this->addInfoMessage("Document added");
 
         $mpo->redirectToDocument($oDocument->getId());
         $this->commitTransaction();
