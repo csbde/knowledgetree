@@ -1,6 +1,7 @@
 <?php
 
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
+require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
 class KTFieldsetDisplayRegistry {
     
@@ -31,7 +32,7 @@ class KTFieldsetDisplayRegistry {
             // 
             // FIXME this is slightly wasteful from a performance POV, though DB caching should make it OK.
             $oFieldset =& KTFieldset::getByNamespace ($nsname);
-            if ($oFieldset->getIsConditional()) {
+            if ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset)) {
                 return 'ConditionalFieldsetDisplay';
             } else {
                 return 'SimpleFieldsetDisplay';

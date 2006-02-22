@@ -243,7 +243,7 @@ class KTDocumentUtil {
                     $aFieldValues[$oField->getId()] = $v;
                 }
             }
-            if ($oFieldset->getIsConditional()) {
+            if ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset)) {
                 $res = KTMetadataUtil::getNext($oFieldset, $aFieldValues);
                 if ($res) {
                     $aFailed["fieldset"][$oFieldset->getId()] = 1;

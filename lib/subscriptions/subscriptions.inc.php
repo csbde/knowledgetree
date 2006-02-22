@@ -677,9 +677,16 @@ class SubscriptionContent {
 		    $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
 		}
 		// FIXME we need to specify the i18n by user.
+		
+		$isBroken = false;
+		if (PEAR::isError($info['object']) || ($info['object'] === false) || is_null($info['object'])) {
+			$isBroken = true;
+		}
+		
 		$aTemplateData = array(
               "context" => $oKTNotification,
 			  "info" => $info,
+			  "is_broken" => $isBroken,
 		);
 		return $oTemplate->render($aTemplateData);
 	} 

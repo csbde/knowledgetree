@@ -459,6 +459,20 @@ class KTMetadataUtil {
     }
     // }}}
 
+    // {{{
+    function validateCompleteness($oFieldset) {
+        $res = KTMetadataUtil::checkConditionalFieldsetCompleteness($oFieldset);
+        // errors, false, or null are all false.        
+        if ($res === true) {
+            return true;
+        } 
+        
+        return false;
+    }
+    
+    
+    // }}}
+
     // {{{ checkConditionalFieldsetCompleteness
     /**
      * Checks whether a conditional fieldset has the necessary

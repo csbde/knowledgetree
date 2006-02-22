@@ -13,7 +13,7 @@
 <a href="{ktLink base="notify.php" query="clearAll=1"}"
    class="ktAction ktInline ktDelete">{i18n}Clear all notifications{/i18n}</a>
 <a href="{ktLink base="notify.php" query="clearAll=1"}"
-   class="ktDelete">{i18n}Clear all notifications{/i18n}</a>   
+   class="ktLinkDelete">{i18n}Clear all notifications{/i18n}</a>   
 {else}
 <div class="ktInfo"><p>{i18n}No items require your attention.{/i18n}</p></div>
 {/if}

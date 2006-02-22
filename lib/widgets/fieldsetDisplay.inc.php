@@ -57,6 +57,7 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
             if ($vocab === null) { // allow override
                 $lookups = MetaData::getEnabledByDocumentField($field);
                 $fieldOptions["vocab"] = array(); // FIXME handle lookups
+                $fieldOptions['vocab'][''] = _('No value');				
                 foreach ($lookups as $md) {
                     $fieldOptions["vocab"][$md->getName()] = $md->getName();
                 }

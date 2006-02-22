@@ -363,6 +363,10 @@ class KTWorkflowNotification extends KTNotificationHandler {
 	function handleNotification($oKTNotification) { 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/workflow_notification');
+		
+		$oDoc = Document::get($oKTNotification->getIntData1());
+		$isBroken = (PEAR::isError($oDoc) || ($oDoc->getStatusID() != LIVE));
+		
         $oTemplate->setData(array(
             'context' => $this,
 			'document_id' => $oKTNotification->getIntData1(),
@@ -370,6 +374,8 @@ class KTWorkflowNotification extends KTNotificationHandler {
 			'actor' => User::get($oKTNotification->getIntData2()),
 			'document_name' => $oKTNotification->getLabel(),
 			'notify_id' => $oKTNotification->getId(),
+			'document' => $oDoc,
+			'is_broken' => $isBroken,
         ));
         return $oTemplate->render();
 	}
