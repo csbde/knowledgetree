@@ -560,6 +560,8 @@ class KTDocumentUtil {
         }
         if (PEAR::isError($oDocument) || ($oDocument == false)) { return PEAR::raiseError('Invalid document object.'); }
         
+        if ($oDocument->getIsCheckedOut() == true) { return PEAR::raiseError(sprintf(_('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); }
+        
         // IF we're deleted ...
         if ($oDocument->getStatusID() == DELETED) { return true; }
         

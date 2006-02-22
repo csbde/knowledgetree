@@ -343,7 +343,7 @@ class WorkflowColumn extends BrowseColumn {
 class DownloadColumn extends BrowseColumn {
     
     function renderHeader($sReturnURL) {         
-        $text = $this->label; 
+        $text = '&nbsp;'; 
         
         return $text;
     }
