@@ -312,6 +312,13 @@ class KTDocumentEditAction extends KTDocumentAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
 
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+        return parent::getInfo();
+    }
+
     function getDisplayName() {
         return _('Edit metadata');
     }

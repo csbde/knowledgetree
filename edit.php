@@ -59,7 +59,9 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		
 		if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $this->oDocument)) { return false; }
 		
-		
+		if ($this->oDocument->getIsCheckedOut()) { 
+			return false;
+		}
 		
 		
 		return true;

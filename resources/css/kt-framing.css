@@ -617,6 +617,12 @@ a.main_nav_item {
     background-color: #fafafa;
 }
 
+/* cheap and nasty hack for gmail-style highlighting. */
+.kt_collection tr.activated td.sort_on,
+.kt_collection tr.activated td {
+    background-color: #fff2b8;
+}
+
 .kt_collection .odd td.sort_on {
     background-color: #f0f0f0;
 }
@@ -717,6 +723,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktAction.ktInline {
     float: left; 
     padding-right: 0.5em;
+    background-position: top left;
 }
 
 .ktHelp { 
@@ -745,6 +752,11 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.png); }
 .ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.png); }
 .ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
+
+/* this is sometimes used separately to get the auto-delete help. */
+.ktDelete { }
+
+
 
 /* =========== standard listings. */
 

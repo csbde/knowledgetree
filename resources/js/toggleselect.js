@@ -1,3 +1,12 @@
+function activateRow(checkbox) {
+    var row = breadcrumbFind(checkbox, 'TR');
+    if (checkbox.checked) {
+        addElementClass(row, 'activated');
+    } else {
+        removeElementClass(row, 'activated');
+    }
+}
+
 function toggleSelectFor(source, nameprefix) {
     var content = getElement('content');
     

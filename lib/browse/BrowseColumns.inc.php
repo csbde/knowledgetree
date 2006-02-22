@@ -293,7 +293,7 @@ class SelectionColumn extends BrowseColumn {
             return '&nbsp;'; 
         }
         
-        return '<input type="checkbox" name="' . $localname . '" onactivate="activateRow(this)" value="' . $v . '"/>';
+        return '<input type="checkbox" name="' . $localname . '" onclick="activateRow(this)" value="' . $v . '"/>';
     }
     
 }

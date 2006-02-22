@@ -41,8 +41,24 @@ function initDeleteProtection(m) {
     
     forEach(elements, partial(setClickFunction, fn));
     
-    //elements = getElementsByTagAndClassName('SPAN', 'ktDelete');
-    
-    //forEach(elements, partial(setClickFunction, fn));
-    
+    elements = getElementsByTagAndClassName('A','ktLinkDelete');
+    forEach(elements, partial(setClickFunction, fn));
+}
+
+// quick and dirty helper - find the nearest parent item matching tagName. 
+// FIXME steal the klass or tagName logic from MochiK.
+// FIXME add to a core js-lib, and add some unit-tests.
+function breadcrumbFind(elem, tagName) {
+    var stopTag = 'BODY';
+    var currentTag = elem.tagName;
+    var currentElem = elem;
+    while ((currentTag != stopTag) && (currentTag != tagName)) {
+        currentElem = currentElem.parentNode;
+        currentTag = currentElem.tagName;
+    }
+    if (currentTag == tagName) { 
+        return currentElem; 
+    } else {
+        return null;
+    }
 }
