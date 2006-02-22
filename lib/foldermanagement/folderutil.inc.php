@@ -233,7 +233,7 @@ class KTFolderUtil {
             // child documents
             $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
             foreach ($aChildDocs as $oDoc) {
-                if ($bIgnorePermissions || KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                if ($bIgnorePermissions || (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDoc) && ($oDoc->getIsCheckedOut() == false)) ) {
                     $aDocuments[] = $oDoc;
                 } else {
                     $aFailedDocuments[] = $oDoc->getName();
