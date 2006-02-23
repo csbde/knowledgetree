@@ -458,6 +458,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	
 	function getUserForId($iUserId) {
 	    $u = User::get($iUserId);
+		if (PEAR::isError($u) || ($u == false)) { return _('User no longer exists'); }
 		return $u->getName();
 	} 
 }

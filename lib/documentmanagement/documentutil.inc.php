@@ -135,7 +135,7 @@ class KTDocumentUtil {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                "document" => $this->oDocument,
+                "document" => $oDocument,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
@@ -375,11 +375,30 @@ class KTDocumentUtil {
     // {{{ add
     function &add($oFolder, $sFilename, $oUser, $aOptions) {
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
-            return PEAR::raiseError("Document with that filename already exists in this folder");
+		    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
+			if (PEAR::isError($oDoc)) {
+                return PEAR::raiseError(_("Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
+			} else {
+			    if ($oDoc->getStatusID != LIVE) {
+                    return PEAR::raiseError(_("Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
+				} else {
+				    return PEAR::raiseError(_("Document with that filename already exists in this folder."));
+				}
+			}
         }
         $sName = KTUtil::arrayGet($aOptions, 'description', $sFilename);
         if (KTDocumentUtil::nameExists($oFolder, $sName)) {
-            return PEAR::raiseError("Document with that name already exists in this folder");
+   		    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
+			if (PEAR::isError($oDoc)) {
+                return PEAR::raiseError(_("Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
+			} else {
+			    if ($oDoc->getStatusID != LIVE) {
+                    return PEAR::raiseError(_("Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
+				} else {
+				    return PEAR::raiseError(_("Document with that title already exists in this folder."));
+				}
+			}
+
         }
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));

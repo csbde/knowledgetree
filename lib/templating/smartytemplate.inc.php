@@ -207,7 +207,7 @@ class KTSmartyTemplate extends KTTemplate {
         foreach ($entities as $oEntity) {
             $params['values'][] = call_user_func(array(&$oEntity, $idmethod));
             if ($method != "none") {
-                $params['output'][] = call_user_func(array(&$oEntity, $method));
+                $params['output'][] = ' ' . call_user_func(array(&$oEntity, $method));
             } else {
                 $params['output'][] = null;
             }

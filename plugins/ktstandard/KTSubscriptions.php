@@ -284,14 +284,14 @@ class KTFolderSubscriptionAction extends KTFolderAction {
     function do_main() {
         $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
         if (Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
-            $_SESSION['KTErrorMessage'][] = _("You are already subscribed to that document");
+            $_SESSION['KTErrorMessage'][] = _("You are already subscribed to that folder");
         } else {
             $oSubscription = new Subscription($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
             $res = $oSubscription->create();
             if ($res) {
-                $_SESSION['KTInfoMessage'][] = _("You have been subscribed to this document");
+                $_SESSION['KTInfoMessage'][] = _("You have been subscribed to this folder");
             } else {
-                $_SESSION['KTErrorMessage'][] = _("There was a problem subscribing you to this document");
+                $_SESSION['KTErrorMessage'][] = _("There was a problem subscribing you to this folder");
             }
         }
         controllerRedirect('browse', 'fFolderId=' . $this->oFolder->getId());

@@ -265,6 +265,19 @@ class Document {
         return true;
     }
     // }}}
+    
+    function &getByFilenameAndFolder($sFileName, $iFolderID) {
+        $sD = KTUtil::getTableName('documents');
+        $sDM = KTUtil::getTableName('document_metadata_version');
+        $sDC = KTUtil::getTableName('document_content_version');
+        $sQuery = "SELECT D.id AS id FROM $sD AS D
+            LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
+            LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
+            WHERE DC.filename = ? AND D.folder_id = ?";
+        $aParams = array($sFileName, $iFolderID);
+        $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        return Document::get($id);   
+    }
 
     // {{{ nameExists
     /**
@@ -292,6 +305,19 @@ class Document {
         return true;
     }
     // }}}
+
+    function &getByNameAndFolder($sName, $iFolderID) {
+        $sD = KTUtil::getTableName('documents');
+        $sDM = KTUtil::getTableName('document_metadata_version');
+        $sDC = KTUtil::getTableName('document_content_version');
+        $sQuery = "SELECT D.id AS id FROM $sD AS D
+            LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
+            LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
+            WHERE DM.name = ? AND D.folder_id = ?";
+        $aParams = array($sName, $iFolderID);
+        $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        return Document::get($id);   
+    }
 
     // {{{ getDocumentDisplayPath
     /**
