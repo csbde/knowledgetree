@@ -102,7 +102,7 @@ class HelpDispatcher extends KTStandardDispatcher {
         $this->oPage->setTitle($aHelpInfo['title']);
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => $aHelpInfo['title']);
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/help_with_edit");
         $aTemplateData = array(
               "context" => $this,

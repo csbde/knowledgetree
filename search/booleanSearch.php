@@ -27,7 +27,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
    function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Advanced Search"));
         $this->oPage->setBreadcrumbDetails(_('defining search'));
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
         $aCriteria = Criteria::getAllCriteria();
@@ -117,7 +117,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $collection->setQueryObject($qObj);
 
         $collection->getResults();
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
         $aTemplateData = array(
               "context" => $this,

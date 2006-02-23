@@ -28,7 +28,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
     function do_main() {
 
         $aFieldsets = KTFieldset::getList("is_conditional = 1");
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
 
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/select_fieldset");
         $aTemplateData = array(
@@ -41,7 +41,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
     // FIXME refactor this into do_editSimple(fieldset_id);
     function do_editFieldset() {
         $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/editsimple");
         /* alright:  to "do" this we need at least:
          *   1. the list of all the columns (id, name) and their available values.
@@ -78,7 +78,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         // FIXME refactor this into do_editSimple(fieldset_id);
     function do_editComplexFieldset() {
         $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/editcomplex");
         /* alright:  to "do" this we need at least:
          *   1. the list of all the columns (id, name) and their available values.

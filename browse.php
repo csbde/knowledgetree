@@ -234,7 +234,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         // FIXME handle breadcrumbs
         $collection->getResults();
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
         $aTemplateData = array(
               "context" => $this,
@@ -255,7 +255,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $_REQUEST['fBrowseMode'] = 'lookup_value';
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_selection");
         $aTemplateData = array(
               "context" => $this,
@@ -276,7 +276,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $aValues = MetaData::getByDocumentField($oField);
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_value");
         $aTemplateData = array(
               "context" => $this,
@@ -297,7 +297,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             exit(0);
         } 
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse_types");
         $aTemplateData = array(
               "context" => $this,
@@ -480,7 +480,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $documentStr .= implode(', ', $moveItems['documents']);
         }
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/mass_move");
         $aTemplateData = array(
               "context" => $this,
@@ -546,7 +546,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $documentStr .= implode(', ', $moveItems['documents']);
         }
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/finalise_mass_move");
         $aTemplateData = array(
               "context" => $this,
@@ -711,7 +711,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFields = array();
         $aFields[] = new KTStringWidget(_('Reason'), _('The reason for the deletion of these documents and folders for historical purposes.'), 'sReason', "", $this->oPage, true);
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/mass_delete");
         $aTemplateData = array(
               "context" => $this,

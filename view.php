@@ -135,8 +135,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			}
 		}
 		
-		
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document");
 		$aTemplateData = array(
               "context" => $this,
@@ -200,7 +199,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		// render pass.
 		$this->oPage->title = _("Document History");
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document_history");
 		$aTemplateData = array(
               "context" => $this,
@@ -247,7 +246,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		// render pass.
 		$this->oPage->title = _("Document History");
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
 
         $aActions = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view'));
@@ -382,7 +381,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			
 		// FIXME handle ad-hoc fieldsets.
 		$this->addPortlets();
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/compare_document");
 		$aTemplateData = array(
               "context" => $this,
@@ -444,7 +443,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $aVersions[] = Document::get($oDocument->getId(), $oVersion->getId());
         }
 		
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/document/comparison_version_select");
 		$aTemplateData = array(
               "context" => $this,

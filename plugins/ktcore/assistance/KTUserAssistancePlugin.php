@@ -40,7 +40,7 @@ class KTUserTutorialDashlet extends KTBaseDashlet {
 	}
 	
     function render() {
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/usertutorial");
 		$aTemplateData = array(
 		);
@@ -68,7 +68,7 @@ class KTAdminTutorialDashlet extends KTBaseDashlet {
 	}
 	
     function render() {
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/admintutorial");
 		$aTemplateData = array(
 		);

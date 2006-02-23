@@ -11,7 +11,7 @@ class KTSearchPortlet extends KTPortlet {
     function render() {
         require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
 
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
         
         $aSearches = KTSavedSearch::getSearches();
@@ -50,7 +50,7 @@ class KTBrowseModePortlet extends KTPortlet {
             'lookup_value' => array('name' => _('Lookup Value'), 'target' => 'selectField'),
         );        
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/browsemodes_portlet");
         $aTemplateData = array(
             "context" => $this,
@@ -88,7 +88,7 @@ class KTAdminModePortlet extends KTPortlet {
         }
         require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
 
         $toggleMode = 'action=disableAdminMode';
@@ -124,7 +124,7 @@ class KTAdminSectionNavigation extends KTPortlet {
         
         // we need to investigate sub_url solutions.
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_categories");
         $aTemplateData = array(
               "context" => $this,

@@ -281,7 +281,7 @@ class KTPage {
 		
 		header('Content-type: text/html; charset=UTF-8');
 		
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
             "page" => $this,

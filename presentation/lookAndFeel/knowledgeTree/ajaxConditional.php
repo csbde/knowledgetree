@@ -25,7 +25,7 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
 
     function do_verifyAndUpdate() {
          header('Content-Type: text/xml');
-         $oTemplating = new KTTemplating;
+         $oTemplating =& KTTemplating::getSingleton();
 
         $oTemplate = $oTemplating->loadTemplate("ktcore/conditional_ajax_verifyAndUpdate");
         $aTemplateData = array(

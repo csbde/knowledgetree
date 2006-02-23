@@ -27,7 +27,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
     }
 
     function do_new() {
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
         $aCriteria = Criteria::getAllCriteria();
@@ -73,7 +73,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $aSearch = $oSearch->getSearch();
         
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");
         
         $aCriteria = Criteria::getAllCriteria();

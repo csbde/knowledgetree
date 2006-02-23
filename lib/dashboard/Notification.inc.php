@@ -110,7 +110,7 @@ class KTNotificationHandler {
     // FIXME rename this to renderNotification
 	// called to _render_ the notification.
     function handleNotification($oKTNotification) {
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/generic");
 		$aTemplateData = array(
               "context" => $oKTNotification,

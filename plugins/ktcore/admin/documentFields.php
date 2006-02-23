@@ -636,7 +636,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $free_metadata = MetaData::getList('document_field_id = '.$oField->getId().' AND (treeorg_parent = 0 OR treeorg_parent IS NULL)');
 
         // render edit template.
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/edit_lookuptrees");
         $renderedTree = $this->_evilTreeRenderer($fieldTree);
 

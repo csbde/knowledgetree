@@ -58,7 +58,7 @@ class LoginPageDispatcher extends KTDispatcher {
 		$errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
 		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 		
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/login");
 		$aTemplateData = array(
               "context" => $this,

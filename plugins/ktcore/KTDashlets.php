@@ -12,7 +12,7 @@ class KTBeta1InfoDashlet extends KTBaseDashlet {
 	}
 	
     function render() {
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/beta1info");
 		$aTemplateData = array(
 		);
@@ -43,7 +43,7 @@ class KTNotificationDashlet extends KTBaseDashlet {
 		    $notifications = array_slice($notifications, 0, $_MAX_NOTIFICATIONS);
 		}
         
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/notifications");
 		$aTemplateData = array(
 		    "notifications" => $notifications,
@@ -74,7 +74,7 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 	    
         $checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
         
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/checkedout");
 		$aTemplateData = array(
 		    "context" => $this,
