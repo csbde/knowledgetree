@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2-Debian-1
+-- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 20, 2006 at 02:55 PM
--- Server version: 5.0.18
--- PHP Version: 4.4.2-1
+-- Generation Time: Feb 23, 2006 at 05:21 PM
+-- Server version: 4.0.24
+-- PHP Version: 4.4.0-3
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
@@ -221,7 +221,7 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', '0', 1, 3, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', NULL, 1, 3, 0);
 INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 3, 0);
 
 -- 
@@ -667,7 +667,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.9');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.9-20060223-3');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -772,11 +772,11 @@ INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Databa
 INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-20 14:54:01', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
-INSERT INTO `upgrades` VALUES (69, 'upgrade*2.99.9*99*upgrade2.99.9', 'Upgrade from version 2.99.8 to 2.99.9', '2006-02-20 14:54:02', 1, 'upgrade*2.99.9*99*upgrade2.99.9');
+INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
+INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
+INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
+INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
+INSERT INTO `upgrades` VALUES (69, 'upgrade*2.99.9-20060223-3*99*upgrade2.99.9-20060223-3', 'Upgrade from version 2.99.8 to 2.99.9-20060223-3', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
 
 -- 
 -- Dumping data for table `users`
