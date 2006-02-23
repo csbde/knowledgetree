@@ -22,6 +22,14 @@ class KTBulkImportFolderAction extends KTFolderAction {
         return _('Bulk import');
     }
 
+    function getInfo() {
+        if (!Permission::userIsSystemAdministrator($this->oUser->getId())) {
+            return null;
+            
+        }
+        return parent::getInfo();
+    }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("bulk import"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkImport');

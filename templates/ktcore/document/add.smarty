@@ -29,10 +29,8 @@ function handleErrorsInResponse(req) {
 
 function swapElementFromRequest(elementId, url) {
     var deff = doSimpleXMLHttpRequest(url);
-    
     var cp = getElement(elementId);
     cp.innerHTML="loading...";
-    
     deff.addCallback(partial(swapInItem, elementId));
     deff.addErrback(handleErrorsInResponse);
 }

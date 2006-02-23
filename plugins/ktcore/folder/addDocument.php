@@ -92,6 +92,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $sTitle = $this->oValidator->validateString($_REQUEST['title'], $aErrorOptions);
         
         $iFolderId = $this->oFolder->getId();
+        /*
+        // this is now done in ::add
         if (Document::fileExists(basename($aFile['name']), $iFolderId)) {
             $this->errorRedirectToMain(_('There is already a file with that filename in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             exit(0);
@@ -101,6 +103,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             $this->errorRedirectToMain(_('There is already a file with that title in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             exit(0);
         }
+        */
         
         $matches = array();
         $aFields = array();
