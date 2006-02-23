@@ -42,7 +42,7 @@ class WorkflowNavigationPortlet extends KTPortlet {
         $aAdminPages[] = array('name' => _('Transitions'), 'query' => 'action=manageTransitions&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _('Actions'), 'query' => 'action=manageActions&fWorkflowId=' . $this->oWorkflow->getId());
     
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/workflow/admin_portlet");
         $aTemplateData = array(
             "context" => $this,

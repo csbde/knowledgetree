@@ -69,7 +69,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("viewing permissions"));
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aPermissions = KTPermission::getList();

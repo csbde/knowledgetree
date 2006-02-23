@@ -82,7 +82,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/document/admin/archivebrowse");
         $aTemplateData = array(
               "context" => $this,

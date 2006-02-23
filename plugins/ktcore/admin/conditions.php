@@ -25,7 +25,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_('Create a new condition'));
         $this->oPage->setTitle(_('Create a new condition'));
     
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
         $aCriteria = Criteria::getAllCriteria();
@@ -55,7 +55,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $aSearch = $oSearch->getSearch();
         
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");
         
         $aCriteria = Criteria::getAllCriteria();

@@ -182,7 +182,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         $oState = KTWorkflowUtil::getWorkflowStateForDocument($document);
         
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/generic");
         $aTemplateData = array(
             "context" => $this,
@@ -250,7 +250,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         $oComparisonState = KTWorkflowUtil::getWorkflowStateForDocument($comparison_document);
         
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/generic_versioned");
         $aTemplateData = array(
             "context" => $this,
@@ -290,7 +290,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "generic_title", $document_data["document"]->getName(), $main, true, null, array());
         $aFields = array($oField); // its the only one editable from the basic set (currently).
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_editable");
         $aTemplateData = array(
             "context" => $this,
@@ -325,7 +325,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         
         
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple");
         $aTemplateData = array(
             "context" => $this,
@@ -357,7 +357,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         }
         
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_versioned");
         $aTemplateData = array(
             "context" => $this,
@@ -391,7 +391,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         }
         $fieldset_name = $this->fieldset->getName();
         $fieldset_description = $this->fieldset->getDescription();
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_editable");
         $aTemplateData = array(
             "context" => $this,
@@ -451,7 +451,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         
         // 
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/conditional_editable");
         $aTemplateData = array(
             "context" => $this,

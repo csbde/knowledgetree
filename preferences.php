@@ -35,7 +35,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $edit_fields[] =  new KTCheckboxWidget(_('Email Notifications'),_('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        
         $edit_fields[] =  new KTStringWidget(_('Mobile Number'), _('Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
 		
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
         $iSourceId = $oUser->getAuthenticationSourceId();
         $bChangePassword = true;
@@ -64,7 +64,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $edit_fields[] =  new KTPasswordWidget(_('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
 		
 	
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/password");
 		$aTemplateData = array(
               "context" => $this,

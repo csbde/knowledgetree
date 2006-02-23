@@ -93,7 +93,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
     function do_main() {
         $this->oPage->setTitle(_("Allocate Roles"));
         $this->oPage->setBreadcrumbDetails(_("Allocate Roles"));
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles");
         
         // we need to have:
@@ -286,7 +286,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_manageusers");
         $aTemplateData = array(
             "context" => $this,
@@ -332,7 +332,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_managegroups");
         $aTemplateData = array(
             "context" => $this,

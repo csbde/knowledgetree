@@ -180,7 +180,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		// FIXME handle breadcrumbs
 		$collection->getResults();
 		
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/browse");
 		$aTemplateData = array(
               "context" => $this,

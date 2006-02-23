@@ -83,7 +83,7 @@ class KTSubscriptionPortlet extends KTPortlet {
 
         $this->actions[] = array("name" => _("Manage subscriptions"), "url" => $this->oPlugin->getPagePath('manage'));
 
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
         $aTemplateData = array(
             "context" => $this,

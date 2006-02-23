@@ -41,7 +41,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         }
         
         $this->oPage->title = _("DMS Administration") . ": ";
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         
         if ($condensed_admin) {
             $oTemplate = $oTemplating->loadTemplate("kt3/admin_fulllist");
@@ -71,7 +71,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         
         $this->oPage->title = _("DMS Administration") . ": " . $aCategory["title"];
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/admin_items");
         $aTemplateData = array(
               "context" => $this,

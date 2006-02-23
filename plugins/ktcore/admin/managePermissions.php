@@ -15,7 +15,7 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         $add_fields[] = new KTStringWidget(_('System Name'),_('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true);
         $add_fields[] = new KTStringWidget(_('Display Name'),_('A short name that is shown to users whenever permissions must be assigned.'), 'human_name', null, $this->oPage, true);
     
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $aPermissions =& KTPermission::getList();
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_permissions");
         $aTemplateData = array(

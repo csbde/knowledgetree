@@ -44,7 +44,7 @@ class KTBaseWidget {
         $bHasErrors = false;       
         if (count($this->aErrors) != 0) { $bHasErrors = true; }
         //var_dump($this->aErrors);
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
         
         

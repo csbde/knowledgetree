@@ -65,7 +65,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->setBreadcrumbDetails(_("Home"));
         $this->oPage->title = _("Dashboard");
     
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
         $aTemplateData = array(
               "context" => $this,

@@ -45,7 +45,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		}
 
 			
-		$oTemplating = new KTTemplating;        
+		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/groupadmin");
 		$aTemplateData = array(
 			"context" => $this,
@@ -87,7 +87,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 		$edit_fields[] =  new KTLookupWidget(_('Unit'),_('Which Unit is this group part of?'), 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
 			
-		$oTemplating = new KTTemplating;        
+		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/editgroup");
 		$aTemplateData = array(
 			"context" => $this,
@@ -199,7 +199,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             }
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/groups_manageusers");
         $aTemplateData = array(
             "context" => $this,
@@ -329,7 +329,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		}
 		
 		
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/groups_managesubgroups");
         $aTemplateData = array(
             "context" => $this,
@@ -439,7 +439,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             }
         }
 			
-		$oTemplating = new KTTemplating;        
+		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/addgroup");
 		$aTemplateData = array(
 			"context" => $this,

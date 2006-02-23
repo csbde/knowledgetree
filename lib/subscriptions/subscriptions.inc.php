@@ -669,7 +669,7 @@ class SubscriptionContent {
 	
 	function getNotificationAlertContent($oKTNotification) {
 	    $info = $this->_getSubscriptionData($oKTNotification);
-		$oTemplating = new KTTemplating;
+		$oTemplating =& KTTemplating::getSingleton();
 		
 		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions." . $info['event_type']);
 		// if, for some reason, this doesn't actually work, use the "generic" title.

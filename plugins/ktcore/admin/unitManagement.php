@@ -28,7 +28,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
 		$unit_list =& Unit::getList();
 		
-		$oTemplating = new KTTemplating;        
+		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/unitadmin");
 		$aTemplateData = array(
 			"context" => $this,
@@ -44,7 +44,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $add_fields = array();
         $add_fields[] =  new KTStringWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
 
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
         $aTemplateData = array(
             "context" => $this,
@@ -104,7 +104,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $add_fields = array();
         $add_fields[] =  new KTStaticTextWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
 
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit2");
         $aTemplateData = array(
             "context" => $this,

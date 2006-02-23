@@ -60,7 +60,7 @@ class KTNavPortlet extends KTPortlet {
     }
     
     function render() {
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/nav_portlet");
         $aTemplateData = array(
             "context" => $this,
@@ -92,7 +92,7 @@ class KTActionPortlet extends KTPortlet {
         if (empty($this->actions)) {
             return null;
         }
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
         $aTemplateData = array(
             "context" => $this,

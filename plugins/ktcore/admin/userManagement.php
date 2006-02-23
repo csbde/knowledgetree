@@ -48,7 +48,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $no_search = false;
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/useradmin");
         $aTemplateData = array(
             "context" => $this,
@@ -96,7 +96,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $aAuthenticationSources =& KTAuthenticationSource::getList();
         
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/adduser");
         $aTemplateData = array(
             "context" => &$this,
@@ -154,7 +154,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/edituser");
         $aTemplateData = array(
             "context" => $this,
@@ -186,7 +186,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $edit_fields[] =  new KTPasswordWidget(_('Password'),_('Specify an initial password for the user.'), 'password', null, $this->oPage, true);        
         $edit_fields[] =  new KTPasswordWidget(_('Confirm Password'),_('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);        
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/updatepassword");
         $aTemplateData = array(
             "context" => $this,
@@ -302,7 +302,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             }
         }
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/usergroups");
         $aTemplateData = array(
             "context" => $this,

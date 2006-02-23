@@ -199,7 +199,7 @@ class DocumentCollection {
       }
 	  // FIXME expose the current set of rows to the document.
 	  
-      $oTemplating = new KTTemplating;
+      $oTemplating =& KTTemplating::getSingleton();
 	  $oTemplate = $oTemplating->loadTemplate("kt3/document_collection");
 	  $aTemplateData = array(
          "context" => $this,
