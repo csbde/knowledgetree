@@ -294,11 +294,14 @@ class KTBrowseUtil {
      */
     function getBrowseableFolders($oUser) {
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+        
+        
+        
         if (empty($aPermissionDescriptors)) {
             return array();
         }
         $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
-
+        
         $sFoldersTable = KTUtil::getTableName('folders');
         $sPLTable = KTUtil::getTableName('permission_lookups');
         $sPLATable = KTUtil::getTableName('permission_lookup_assignments');
@@ -310,9 +313,10 @@ class KTBrowseUtil {
                 LEFT JOIN $sPLTable AS PL2 ON F2.permission_lookup_id = PL2.id LEFT JOIN $sPLATable AS PLA2 ON PLA2.permission_lookup_id = PL2.id AND PLA2.permission_id = ?
             WHERE
                 PLA.permission_descriptor_id IN ($sPermissionDescriptors)
-                AND NOT PLA2.permission_descriptor_id IN ($sPermissionDescriptors)";
+                AND NOT (PLA2.permission_descriptor_id IN ($sPermissionDescriptors))";
         $aParams = array_merge(array($oPermission->getId(), $oPermission->getId()), $aPermissionDescriptors, $aPermissionDescriptors);
         $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+        
         if (PEAR::isError($res)) {
             return $res;
         }
