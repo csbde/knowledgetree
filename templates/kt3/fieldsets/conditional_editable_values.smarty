@@ -1,0 +1,26 @@
+<fieldset class="cm">
+    <legend>{$title}</legend>
+    <input type="hidden" class="fixed" name="fieldset" value="{$fieldset_id}" />
+    <p class="descriptiveText">
+        {$description}
+    </p>
+    {* non-fixed *}
+    <div class="conditional_target">
+    {foreach from=$fields item=oField}
+    <div class="field">
+        <label for="md_{$oField->getId()}">{$oField->getName()}</label>{capture assign=fid}{$oField->getId()}{/capture}
+        <p class="descriptiveText">{$oField->getDescription()}</p>
+        {if ($values.$fid !== null)}{$values.$fid}
+            {else}<span class="descriptiveText">{i18n}no value{/i18n}</span>{/if} 
+    </div>
+    {/foreach}
+    <input type="button" onclick="reviseConditional(this)" value="Change"/>
+    </div>
+    
+    
+    
+</fieldset>
+<!--
+<table id="brad-log"><tbody></tbody>
+</table>
+-->
