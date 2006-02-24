@@ -680,6 +680,15 @@ a.main_nav_item {
     padding-left: 17px;
 }
 
+#dashlet-search-text {
+    border: 1px solid black;
+    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
+    margin: 0.5em 0.5em 0.5em 0;
+    padding: 3px;
+    padding-left: 17px;
+    width: 80%;
+}
+
 .searchbutton {
     border: 1px solid black;
     margin: 0.5em;
