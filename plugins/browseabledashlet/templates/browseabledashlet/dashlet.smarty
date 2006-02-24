@@ -1,0 +1,27 @@
+<h2>{i18n}Orphaned Folders{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Since KnowledgeTree only shows you the folders and
+documents you are allowed to see, there are some placed that you can view
+but can't get to &mdash; for example, if they are in a folder you are not 
+allowed to see.  These are called "orphaned folders" since you can't access their parents 
+and they are are listed below.{/i18n}</p>
+
+{if empty($folders)}
+<div class="ktInfo"><p>You have no orphaned folders.</p></div>
+{else}
+<table class="kt_collection">
+<thead>
+   <tr>
+      <th>Title</th>
+   </tr>
+</thead>
+<tbody>
+{foreach from=$folders item=oFolder}
+    <tr class="browse_column {cycle values=odd,even}"><td><span 
+       class="contenttype folder"><a 
+       href="{ktLink base="browse.php" query="fFolderId=`$oFolder->getId()`"}">{$oFolder->getName()}</a> </span>
+    </td></tr>
+{/foreach}
+</tbody>
+</table>
+{/if}
