@@ -114,7 +114,6 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain($msg);
     }
     
-
     function do_confirm_restore() {
         $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
         

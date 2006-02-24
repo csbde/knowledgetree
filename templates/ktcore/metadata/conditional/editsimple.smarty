@@ -113,7 +113,9 @@ refresh the page.</p>
          <div class="form_actions">
              <input type="button" value="{i18n}edit field{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
              <input type="button" value="{i18n}save this dependency{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
+			 {if ($iMasterFieldId != $oField->getId())} {* Only for non-initial fields. *}
              <input type="button" value="{i18n}finished with this field{/i18n}" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
+			 {/if}
          </div>
    </td>
 {/foreach}		 

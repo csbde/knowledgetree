@@ -281,9 +281,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
             array_push($fieldsets, $oFieldset);
         }
         
-        if ($newType == null) {
-            $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
-		} else {
+        if ($newType !== null) {
 		    $activesets = KTFieldset::getForDocumentType($newType); 
 		}
         
@@ -417,8 +415,6 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
 		
 		if (PEAR::isError($res)) {
-            var_dump($res);
-            exit(0);
 		   $this->rollbackTransaction();		
 		   
 		   // right.  we're rolled out.  now we want to regenerate the page, + errors.
@@ -439,7 +435,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   array_push($new_fieldsets, new GenericFieldsetDisplay());
 		   foreach ($fieldsets as $oFieldset) {
               $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-              array_push($new_fieldsets, new $displayClass($oFieldset));		
+              $new_fieldsets[$oFieldset->getId()] = new $displayClass($oFieldset);		
 		   }
 			  
            $document_data['document'] = $oDocument;
@@ -448,6 +444,8 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   //print '<pre>' . print_r($document_data['field_values'], true) . '</pre>';
 		   
 		   $document_data['errors'] = $res->aFailed['field'];
+		   
+		   $this->addErrorMessage(_('Validation failed.'));
 		   
 		   $oTemplating =& KTTemplating::getSingleton();
 		   $oTemplate =& $oTemplating->loadTemplate("kt3/document/edit");       

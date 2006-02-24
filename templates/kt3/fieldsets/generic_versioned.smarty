@@ -58,7 +58,10 @@
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
             <div class="previous">{$oldval}</div>
         </dd>
-            
+        <dt>{i18n}Document ID{/i18n}</dt>
+        <dd>
+            {$document->getId()} <span class="descriptiveText">({i18n}this cannot not change between versions{/i18n})</span>
+        </dd>            
     </dl>
     <div class="floatClear"><!-- --> </div>
 </div>

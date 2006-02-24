@@ -317,6 +317,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
+			if (PEAR::isError($oMetaData)) {
+			    $this->errorRedirectTo('editField', _('Invalid lookup selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+			}
             $oMetaData->setDisabled(true);
             $oMetaData->update();
         }
@@ -335,6 +338,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
+			if (PEAR::isError($oMetadata)) {
+				$this->errorRedirectTo('editField', _('Invalid lookup selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+			}
             $oMetaData->setDisabled(false);
             $oMetaData->update();
         }
@@ -353,6 +359,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
+			if (PEAR::isError($oMetaData)) {
+				$this->errorRedirectTo('editField', _('Invalid lookups selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+			}
             $bStuck = (boolean)$oMetaData->getIsStuck();
             $oMetaData->setIsStuck(!$bStuck);
             $oMetaData->update();
@@ -382,12 +391,43 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oFieldset->setIsConditional(false);
         $oFieldset->setIsComplete(true);
+		$oFieldset->setIsComplex(false);
+		
+		// also, clear the conditional types, etc.
+		$iFieldsetId = KTUtil::getId($oFieldset);
+		KTMetadataUtil::removeFieldOrdering($oFieldset);
+		
+		// need to do some per-field cleanup.
+		$aFields = DocumentField::getByFieldset($oFieldset);
+		if (!empty($aFields)) {
+		    $aFieldIds = array();
+			foreach ($aFields as $oField) { $aFieldIds[] = $oField->getId(); }
+			
+			// value instances
+		    $sTable = KTUtil::getTableName('field_value_instances');
+			$aQuery = array(
+			    "DELETE FROM $sTable WHERE field_id IN (" . DBUtil::paramArray($aFieldIds) . ")",
+				$aFieldIds,
+			);
+			$res = DBUtil::runQuery($aQuery);		
+			//$this->addInfoMessage('value instances: ' . print_r($res, true));
+			
+			// behaviours
+		    $sTable = KTUtil::getTableName('field_behaviours');
+			$aQuery = array(
+			    "DELETE FROM $sTable WHERE field_id IN (" . DBUtil::paramArray($aFieldIds) . ")",
+				$aFieldIds,
+			);
+			$res = DBUtil::runQuery($aQuery);	
+			//$this->addInfoMessage('behaviours: ' . print_r($res, true));
+		}
+		
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _('Could not stop being conditional'), 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', _('Became no longer conditional'), 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('edit', _('No longer conditional'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}

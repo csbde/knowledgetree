@@ -274,8 +274,8 @@ class MDTree {
 
         // $treeStr .= print_r($this->activenodes,true);
         // the inner section is generised.
-        $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
-        $treeStr .= '<ul>';
+        //$treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
+        $treeStr .= '<ul class="kt_treenodes">';
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
         {
@@ -303,8 +303,8 @@ class MDTree {
                 }
             }
         }
-        $treeStr .= '</ul></li>';
         $treeStr .= '</ul>';
+        //$treeStr .= '</li></ul>';
 
         return $treeStr;
     

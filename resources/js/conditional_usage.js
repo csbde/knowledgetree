@@ -325,7 +325,20 @@ function do_updateFieldset(fieldset, req) {
  *
  */ 
 
-
+function reviseConditional(buttonsource) {
+    var fieldset = breadcrumbFind(buttonsource, 'FIELDSET');
+	setElementClass(fieldset, 'conditional_metadata');
+        if (!checkStackForFieldset(fieldset)) {
+        var undo_button = INPUT({'type':'button','value':'undo'},null);
+        attachToElementEvent(undo_button,'click',partial(popStack, fieldset));
+        fieldset.appendChild(undo_button);
+        // initialise the stack.
+        getStackForFieldset(fieldset);
+        updateFieldset(fieldset);
+		buttonsource.parentNode.removeChild(buttonsource);
+	}	
+	
+}
 
 /* Fieldset creation and update.
  *
@@ -348,5 +361,7 @@ function initialiseConditionalFieldsets() {
 	}
     }
 }
+
+
 
 addLoadEvent(initialiseConditionalFieldsets);

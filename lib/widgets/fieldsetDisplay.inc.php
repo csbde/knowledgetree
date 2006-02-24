@@ -435,12 +435,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
             
             $values[$oField->getId()] =  $val;
         }   
-        // FIXME handle the editable case _with_ values.
-        
-        if ($have_values) {
 
-            return '<div class="ktError"><p>Do not yet know how to edit conditional fieldsets with values.</p></div>';
-        } // else {
         
         // now, we need to do some extra work on conditional widgets.
         // how?
@@ -449,7 +444,24 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
 		$fieldset_description = _($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
         $fieldset_description .= _("Note that the options which are available depends on previous choices within this fieldset.");
         
-        // 
+        // FIXME handle the editable case _with_ values.
+        
+        if ($have_values) {
+
+            
+			$oTemplating =& KTTemplating::getSingleton();        
+			$oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/conditional_editable_values");
+			$aTemplateData = array(
+				"context" => $this,
+				"fields" => $fields =& $this->fieldset->getFields(),
+				'fieldset_id' => $this->fieldset->getId(),
+				"title" => $fieldset_name,
+				"description" => $fieldset_description,
+				'values' => $values,
+			);
+			
+		    return $oTemplate->render($aTemplateData);
+        } // else {
         
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/conditional_editable");

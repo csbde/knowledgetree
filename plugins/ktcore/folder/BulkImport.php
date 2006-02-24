@@ -19,7 +19,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _('Bulk import');
+        return _('Import from Server Location');
     }
 
     function getInfo() {

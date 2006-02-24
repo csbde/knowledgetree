@@ -62,7 +62,12 @@ class DocumentTransaction {
 		$this->sTransactionNS = $sTransactionNS;
 		$this->sVersion = KTUtil::arrayGet($aOptions, 'version', $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber());
 		$oFolder = Folder::get($oDocument->getFolderId());
-		$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
+		// handle the case where oFolder is broken.
+		if (PEAR::isError($oFolder) || ($oFolder == false)) {
+		    $this->sFileName = '.../' . $oDocument->getName();
+		} else {
+		    $this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
+		}
 		
 		$this->iUserID = $_SESSION["userID"];
         $oUser = KTUtil::arrayGet($aOptions, 'user');
