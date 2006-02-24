@@ -123,7 +123,7 @@ class MDTree {
             //$default->log->debug("MDTree::buildForField bound to subtree " . print_r($this->contents, true));
         }
 
-        $md_list =& MetaData::getList('document_field_id = ' .$organisedField->getId());
+        $md_list =& MetaData::getList('document_field_id = ' .$organisedField->getId() . ' AND disabled = 0 ');
         $this->lookups = array();
         foreach ($md_list as $lookup_value) {
 
