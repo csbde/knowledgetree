@@ -16,6 +16,11 @@ class KTFolderRenameAction extends KTFolderAction {
     function getDisplayName() {
         return _('Rename');
     }
+    
+    function getInfo() {
+        if ($this->oFolder->getId() == 1) { return null; }
+        return parent::getInfo();
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("rename"));
