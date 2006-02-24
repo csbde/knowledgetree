@@ -11,8 +11,9 @@
 {/if}
 
 <hr />
-<p><a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="?action=customise&name=`$target_name`"}" class="ktAction ktEdit" style="float:
-left; padding-right: 0.5em;">{i18n}Edit this help page.{/i18n}</a><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}">{i18n}Edit this help page.{/i18n}</a><br/>
+<p><a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=customise&name=`$target_name`"}" class="ktAction ktEdit" style="float:
+left; padding-right: 0.5em;">{i18n}Edit this help page.{/i18n}</a><a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=customise&name=`$target_name`"}">{i18n}Edit this help page.{/i18n}</a><br/>
 
-<a href="{$rootUrl}/help.php?action=go_back&back_key={$back_key}" class="ktAction ktBack" style="float:
-left; padding-right: 0.5em;">{i18n}Return to where you came from.{/i18n}</a><a href="{$rootUrl}/help.php?action=go_back&back_key={$back_key}">{i18n}Return to where you came from.{/i18n}</a></p>
+<a href="{ktLink base="help.php" query="action=go_back&back_key=`$back_key`"}" class="ktAction ktBack" style="float:
+left; padding-right: 0.5em;">{i18n}Return to where you came from.{/i18n}</a><a href="{ktLink base="help.php" query="action=go_back&back_key=`$back_key`"}">{i18n}Return to where you came from.{/i18n}</a></p>
+ 
