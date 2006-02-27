@@ -300,6 +300,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
+			if (PEAR::isError($oMetaData)) {
+			    $this->errorRedirectTo('editField', _('Invalid lookup selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+			}
             $oMetaData->delete();
         }
         $this->successRedirectTo('editField', _('Lookups removed'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
@@ -723,6 +726,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     function subact_unlinkKeyword(&$constructedTree, $keyword) {
         $oKW = MetaData::get($keyword);
+		if (PEAR::isError($oKW)) {
+		    return true;
+		}
         $constructedTree->reparentKeyword($oKW->getId(), 0);
         return true;
     }

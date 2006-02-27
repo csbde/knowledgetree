@@ -37,6 +37,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         parent::KTStandardDispatcher();
     }
+	
+	function check() {
+	    if (!parent::check()) { return false; }
+	
+		
+	
+	    return true;
+	}
     
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
@@ -69,10 +77,22 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
-            if (!Permission::userHasDocumentReadPermission($oDocument)) {
+		    if ($oDocument->getStatusID() == ARCHIVED) {
+			    $this->oPage->addError(_('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
+				return $this->do_error();
+			} else if ($oDocument->getStatusID() == DELETED) {
+			    $this->oPage->addError(_('This document has been deleted.  Please contact the system administrator to have it restored if it is still needed.'));
+				return $this->do_error();
+            } else if (!Permission::userHasDocumentReadPermission($oDocument)) {
                 $this->oPage->addError(_('You are not allowed to view this document'));
                 return $this->do_error();
             }
+        } 
+		
+		if ($oDocument->getStatusID() == ARCHIVED) {
+		    $this->oPage->addError(_('This document has been archived.'));
+        } else if ($oDocument->getStatusID() == DELETED) {
+			$this->oPage->addError(_('This document has been deleted.'));
         }
 
 		$this->oPage->setSecondaryTitle($oDocument->getName());
