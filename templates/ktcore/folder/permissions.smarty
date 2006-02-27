@@ -95,7 +95,7 @@ value="{$iGroupId}"></td>
 <div class="form_actions">
 {if $edit}
   <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
-  <a href="{addQS}fFolderId={$iFolderId}{/addQS}" class="ktCancelLink">Cancel</a>
+  <input type="submit" name="kt_cancel[{addQS}fFolderId={$iFolderId}{/addQS}]" value="Cancel" />
 {else}
 {* non-inherited view mode. *}
 {if ((!$inherited) && (!$edit)) }

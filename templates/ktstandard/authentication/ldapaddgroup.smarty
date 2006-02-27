@@ -10,7 +10,7 @@
       <input type="hidden" name="dn" value="{$dn}" />
       <div class="form_actions">
          <input type="submit" name="submit[create]" value="{i18n}create group{/i18n}" />
-         <a href="{$smarty.server.PHP_SELF}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>
