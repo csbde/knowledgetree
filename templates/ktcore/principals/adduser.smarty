@@ -36,7 +36,7 @@ within KnowledgeTree below.{/i18n}</p>
       {/foreach}
       <div class="form_actions">
          <input type="submit" value="{i18n}create user{/i18n}" />
-         <a href="{addQS}action=main{/addQS}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>

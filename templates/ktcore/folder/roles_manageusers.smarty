@@ -62,7 +62,8 @@
 
       <div class="form_actions">
          <input type="submit" value="{i18n}save changes{/i18n}" />
-         <a href="{$smarty.server.PHP_SELF}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+         {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
+         <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>

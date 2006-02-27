@@ -35,7 +35,7 @@ will be recorded in the documents' "Transaction History"{/i18n}.</p>
 
 <div class="form_actions">
     <input type="submit" value="Delete" />
-    <a href="{addQS}fFolderId={$folder_id}{/addQS}" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
+    <input type="submit" name="kt_cancel[{addQS}fFolderId={$folder_id}{/addQS}]" value="Cancel" />
 </div>
 
 </fieldset>
