@@ -59,9 +59,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
         $aOptions = array(
             'redirect_to' => array('addUnit'),
-            'message' => 'No name given',
+            'message' => _('No name given'),
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
+		$aOptions['message'] = _('A unit with that name already exists.');
+		$sName = $this->oValidator->validateDuplicateName('Unit', _('Unit'), $sName, $aOptions);
 
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $_REQUEST['fFolderId'] = $iFolderId;
@@ -104,6 +106,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $add_fields = array();
         $add_fields[] =  new KTStaticTextWidget(_('Unit Name'),_('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
 
+		$isValid = true;
+		if (KTFolderUtil::exists($oFolder, $sName)) {
+			$isValid = false; // can't add a unit folder with the same name.
+		}
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit2");
         $aTemplateData = array(
@@ -113,6 +120,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             "collection_breadcrumbs" => $aBreadcrumbs,
             "folder" => $oFolder,
             "name" => $sName,
+			"is_valid" => $isValid,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -120,18 +128,20 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
     function do_createUnit() {
         $aOptions = array(
             'redirect_to' => array('main'),
-            'message' => 'Invalid folder chosen',
+            'message' => _('Invalid folder chosen'),
         );
         $oParentFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId'], $aOptions);
         $aOptions = array(
             'redirect_to' => array('addUnit', sprintf('fFolderId=%d', $oParentFolder->getId())),
-            'message' => 'No name given',
+            'message' => _('No name given'),
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
+		$aOptions['message'] = _('A unit with that name already exists.');
+		$sName = $this->oValidator->validateDuplicateName('Unit', _('Unit'), $sName, $aOptions);
 
         $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
         $aOptions = array(
-            'redirect_to' => array('addUnit', sprintf('fFolderId=%d', $oParentFolder->getId())),
+            'redirect_to' => array('addUnit2', sprintf('fFolderId=%d&unit_name=%s', $oParentFolder->getId(), $sName)),
             'defaultmessage' => 'Error creating folder',
         );
         $this->oValidator->notError($oFolder, $aOptions);
