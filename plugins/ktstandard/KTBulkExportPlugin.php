@@ -2,6 +2,7 @@
 
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class KTBulkExportPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.bulkexport.plugin";
@@ -22,13 +23,20 @@ class KTBulkExportAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->template = "kt3/minimal_page";
-        $this->handleOutput("");
-
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $aQuery = $this->buildQuery();
         $this->oValidator->notError($aQuery);
         $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
+
+        if (empty($aDocumentIds)) {
+            $this->addErrorMessage(_("No documents found to export"));
+            redirect(KTBrowseUtil::getUrlForFolder($oFolder));
+            exit(0);
+        }
+
+        $this->oPage->template = "kt3/minimal_page";
+        $this->handleOutput("");
+
         $sTmpPath = tempnam('/tmp', 'kt_export');
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
@@ -110,7 +118,7 @@ class KTBulkExportAction extends KTFolderAction {
             if ($sWhere == "()") {
                 continue;
             }
-            $aWhere[] = $sWhere;
+            $aWhere[] = sprintf("(%s)", $sWhere);
         }
         $sWhere = "";
         if ($aWhere) {
