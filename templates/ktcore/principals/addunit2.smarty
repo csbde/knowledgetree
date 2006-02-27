@@ -32,7 +32,12 @@ to browse to the folder you wish to create the unit folder into.{/i18n}</p>
 </div>
 
       <div class="form_actions">
+         {if $is_valid}
          <input type="submit" value="{i18n}create unit{/i18n}" />
+         {else}
+         <p class="descriptiveText">{i18n}A folder with this name already exists in this location.  Please select
+         another folder before creating the unit.{/i18n}</p>
+         {/if}
          <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
