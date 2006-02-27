@@ -1,7 +1,7 @@
 <ul class="actionlist"><li>
 {if $enabled}
 <p><a href="{ktLink base="help.php" subpath="ktcore/admin/admin-mode.html"}" class="ktInline ktHelp" style="float: left; margin: 0 0.5em 0.5em 5px;" >{i18n}What is admin mode?{/i18n}</a>
-{i18n}Administrator mode is not currently enabled.  {/i18n}</p>
+{i18n}Administrator mode is enabled.  {/i18n}</p>
 <a class="ktInline ktAction ktDenied" href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a>
 <a href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a>
 {else}

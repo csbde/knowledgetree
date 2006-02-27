@@ -1,0 +1,11 @@
+<h2>{$title}</h2>
+
+{$body}
+
+{if $can_edit}
+<p><a class="ktAction ktEdit ktInline" 
+      href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=customise&name=`$target_name`"}" >{i18n}Edit this introduction.{/i18n}</a>
+<a href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=customise&name=`$target_name`"}">{i18n}Edit this introduction.{/i18n}</a>
+{if $help_id}| <a class="ktActionLink ktDelete" href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=deleteReplacement&id=`$help_id`"}">{i18n}Use the standard introduction.{/i18n}</a></p>
+{/if}
+{/if}
