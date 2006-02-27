@@ -37,6 +37,10 @@ class KTBaseIndexerTrigger {
      */
     var $use_pipes = true;
 
+    function getFriendlyCommand() {
+        return null; // _('Built-in')
+    }
+
     function setDocument($oDocument) {
         $this->oDocument = $oDocument;
     }

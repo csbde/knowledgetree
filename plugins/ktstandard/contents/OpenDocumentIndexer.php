@@ -33,6 +33,14 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         parent::transform();
     }
 
+    function getFriendlyCommand() {
+        $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
+        if (empty($sUnzipCommand)) {
+            return false;
+        }
+        return _('Built-in');
+    }
+
     function extract_contents($sFilename, $sTmpFilename) {
         $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
         if (empty($sUnzipCommand)) {

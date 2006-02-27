@@ -122,7 +122,7 @@ class KTFieldsetDisplay {
         if (!empty($res['friendly_name'])) {
             return _($res['friendly_name']);
         } else {
-		    return sprintf('%s File', mb_strtoupper($res['filetypes']));
+		    return sprintf(_('%s File'), mb_strtoupper($res['filetypes']));
 		}
 
     }

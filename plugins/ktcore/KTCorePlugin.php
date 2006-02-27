@@ -36,6 +36,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTBeta1InfoDashlet', 'ktcore.dashlet.beta1info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
         $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
+        $this->registerDashlet('KTIndexerStatusDashlet', 'ktcore.dashlet.indexer_status', 'KTDashlets.php');
 
         $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _('Authentication'), _('By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), 'authentication/authenticationadminpage.inc.php');
 
@@ -135,7 +136,9 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'misc',
             _('Manage plugins'), _('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
-        
+        $this->registerAdminPage("techsupport", 'KTSupportDispatcher', 'misc',
+            _('Support and System information'), _('Information about this system and how to get support.'),
+            'admin/techsupport.php', null);
         // plugins
 
     }
