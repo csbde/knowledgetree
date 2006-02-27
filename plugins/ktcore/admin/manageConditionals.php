@@ -55,13 +55,11 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $aFields =& $oFieldset->getFields();
         
         $this->aBreadcrumbs[] = array(
-            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
-            'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
+            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
-            'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
+            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
             'name' => _('Manage conditional fieldset'),
         );
         $this->oPage->setBreadcrumbDetails(_('Manage simple conditional'));
@@ -91,13 +89,11 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
         $this->aBreadcrumbs[] = array(
-            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
-            'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
+            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
-            'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
+            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
             'name' => _('Manage conditional fieldset'),
         );
         $this->oPage->setBreadcrumbDetails(_('Manage complex conditional'));

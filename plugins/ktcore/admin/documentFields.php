@@ -76,7 +76,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
-            'name' => 'Fieldset ' . $oFieldset->getName()
+            'name' => $oFieldset->getName()
         );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
