@@ -1,5 +1,4 @@
-<fieldset>
-<legend>{i18n}Search{/i18n}</legend>
+<h2>{i18n}Search{/i18n}</h2>
 
 <form action="{ktLink base="search/simpleSearch.php"}" method="GET">
 <input type="text" name="fSearchableText" id="dashlet-search-text"
@@ -11,6 +10,7 @@ class="searchbutton frontpage" />
 Search{/i18n}</a>
 
 {if (!empty($saved_searches))}
+<hr />
 <h3>Saved Searches</h3>
 
 {foreach item=oSearch from=$saved_searches}
@@ -18,8 +18,6 @@ Search{/i18n}</a>
 href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()}</a><br />
 {/foreach}
 
-<hr />
+
 {/if}
 
-
-</fieldset>

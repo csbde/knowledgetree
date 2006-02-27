@@ -1,0 +1,33 @@
+<h2>{i18n}Indexer Status{/i18n}</h2>
+
+{if $no_transforms}
+<div class="ktError"><p><strong>{i18n}Warning:{/i18n}</strong>  {i18n}There are currently
+no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
+{else}
+{if empty($transforms)} 
+<div class="ktInfo"><p>All indexers should be working correctly.</p></div>
+{else}
+<table class="kt_collection">
+<thead>
+    <tr>
+        <th>Mime Types</th>
+        <th>Command</th>
+    </tr>
+</thead>
+<tbody>
+    {foreach item=aRow from=$transforms}
+    <tr class="browse_column {cycle values=odd,even}">
+        <td>
+            {foreach key=mimetype item=v from=$aRow.types name=mimetype}
+            {$mimetype} {if (!$smarty.foreach.mimetype.last)}<br />{/if}
+            {/foreach}
+        </td>
+        <td>{if empty($aRow.command)}
+        <p class="important descriptiveText">{i18n}No indexer.{/i18n}</p>
+        {else}{$aRow.command}{/if}</td>
+    </tr>
+    {/foreach}
+</tbody>
+</table>
+{/if}
+{/if}

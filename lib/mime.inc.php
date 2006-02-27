@@ -67,6 +67,23 @@ class KTMime {
         }
         return "application/octet-stream";
     }
+    
+    function getFriendlyNameForString($sMimeType) {
+        global $default;
+        $sql = $default->db;
+        $sql->query(array("SELECT friendly_name, filetypes FROM " . $default->mimetypes_table . " WHERE mimetypes = ?", $sMimeType));/*ok*/
+        if ($sql->next_record()) {
+		    $friendly_name = $sql->f("friendly_name");
+            if (!empty($friendly_name)) { 
+                return _($sql->f("friendly_name"));
+            } else {
+		        return sprintf(_('%s File'), mb_strtoupper($sql->f('filetypes')));            
+            }
+		}
+        
+        
+        return _('Unknown Type');
+    }
 
     /**
     * Try well-defined methods for getting the MIME type for a file on disk.

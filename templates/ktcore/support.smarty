@@ -1,0 +1,21 @@
+<h2>{i18n}Support and System Information{/i18n}</h2>
+
+{capture assign=kt_tracker_location}<a href="http://support.ktdms.com/">{i18n}KnowledgeTree Issue Tracker{/i18n}</a>{/capture}
+<p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker#{/i18n}</a> 
+{i18n}first if you believe you have found a bug.  Always check for known issues relating
+to the version you are using &mdash; we may already have found the problem you're referring to,
+and may have fixed it in a newer version.  If we ask for your PHP_INFO data, we're
+looking for the information described below.{/i18n}</p>
+
+<p class="descriptiveText">{i18n}If you feel that the information presents to much
+specific information about your system (e.g. you feel that it would be a security
+risk to reveal aspects of it),  please do sanitise the information, or ask us
+if you can mail it directly to the developer who is dealing with your issue.{/i18n}</p>
+
+<p><a href="{addQS}action=actualInfo&fDownload=1{/addQS}"
+   class="ktInline ktAction ktDownload">{i18n}Download PHP information{/i18n}</a>
+<a href="{addQS}action=actualInfo&fDownload=1{/addQS}">{i18n}Download PHP information{/i18n}</a>   </p>
+
+<iframe src="{addQS}action=actualInfo{/addQS}" id="support-block">
+
+</iframe>
