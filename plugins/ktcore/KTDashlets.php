@@ -5,16 +5,73 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
 require_once(KT_LIB_DIR . "/security/Permission.inc");
 
+require_once(KT_LIB_DIR . '/help/help.inc.php');
+require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
+
 // ultra simple skeleton for the admin tutorial
-class KTBeta1InfoDashlet extends KTBaseDashlet {
+class KTInfoDashlet extends KTBaseDashlet {
+    var $aHelpInfo;
+    var $canEdit = false;
+    var $helpLocation = 'ktcore/welcome.html';
+    var $help_id;
+
     function is_active($oUser) {
+        // FIXME help is a little too mixed.
+        $aHelpInfo = array();
+        $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
+               
+        $help_path = KTHelp::getHelpSubPath($this->helpLocation);
+        if ($help_path == false) {
+            return false;
+        }
+        
+        // We now check for substitute help files.  try to generate an error.
+        $oReplacementHelp = KTHelpReplacement::getByName($help_path);
+        
+        $aHelpInfo = KTHelp::getHelpFromFile($this->helpLocation);      
+        
+        // NORMAL users never see edit-option.
+        if (!$can_edit) {
+            if (!PEAR::isError($oReplacementHelp)) {
+                ;
+            } elseif ($aHelpInfo != false) {
+                ;
+            } else {
+                return false;
+            }
+        } 
+        
+        
+        
+        if (!PEAR::isError($oReplacementHelp)) {
+            $aHelpInfo['title'] = $oReplacementHelp->getTitle();
+            $aHelpInfo['body'] = $oReplacementHelp->getDescription();
+            $this->help_id = $oReplacementHelp->getId();
+            
+        } else {
+            $this->help_id = null;
+        }
+        
+        if (empty($aHelpInfo)) { return false; }
+        
+        $this->aHelpInfo = $aHelpInfo;
+        $this->canEdit = $can_edit;
+        
         return true;
     }
     
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/beta1info");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/kt3release");
+        
+        
+        
         $aTemplateData = array(
+            'title' => $this->aHelpInfo['title'],
+            'body' => $this->aHelpInfo['body'],
+            'can_edit' => $this->canEdit,
+            'target_name' => $this->helpLocation,
+            'help_id' => $this->help_id,
         );
         return $oTemplate->render($aTemplateData);
     }
