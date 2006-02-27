@@ -53,6 +53,9 @@ class KTDocumentAction extends KTStandardDispatcher {
         if (!KTWorkflowUtil::actionEnabledForDocument($this->oDocument, $this->sName)) {
             return false;
         }
+		// be nasty in archive/delete status.
+		$status = $this->oDocument->getStatusID();
+		if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
     }
 
