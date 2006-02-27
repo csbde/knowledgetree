@@ -20,6 +20,10 @@ class BrowseableFolderDashlet extends KTBaseDashlet {
             // just hide it.
             $aFolders = array();
         }
+
+        if (empty($aFolders)) {
+            return;
+        }
         
         $aTemplateData = array(
             'folders' => $aFolders,
