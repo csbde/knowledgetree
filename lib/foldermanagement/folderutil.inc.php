@@ -201,6 +201,8 @@ class KTFolderUtil {
      */
     
     function delete($oStartFolder, $oUser, $sReason, $aOptions = null) {
+        require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
+
         // FIXME: we need to work out if "write" is the right perm.
         $oPerm = KTPermission::getByName('ktcore.permissions.write');
 
@@ -222,12 +224,19 @@ class KTFolderUtil {
                 DBUtil::rollback();
                 return PEAR::raiseError(sprintf('Failure resolving child folder with id = %d.', $iFolderId));
             }
-            
+
+            $oUnit = Unit::getByFolder($oFolder);
+            if (!empty($oUnit)) {
+                DBUtil::rollback();
+                return PEAR::raiseError(sprintf('Cannot remove unit
+                            folder: %s.', $oFolder->getName()));
+            }
+
             // don't just stop ... plough on.
-            if ($bIgnorePermissions || KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
-                $aFolderIds[] = $iFolderId;
-            } else {
+            if (!$bIgnorePermissions && !KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
                 $aFailedFolders[] = $oFolder->getName();
+            } else {
+                $aFolderIds[] = $iFolderId;
             }
             
             // child documents

@@ -52,6 +52,15 @@ class Unit extends KTEntity {
     function &createFromArray($aArray) {
         return KTEntityUtil::createFromArray('Unit', $aArray);
     }
+
+    function &getByFolder($oFolder) {
+        $iFolderId = KTUtil::getId($oFolder);
+        return KTEntityUtil::getByDict('Unit', array(
+            'folder_id' => $iFolderId,
+        ), array(
+            'noneok' => true,
+        ));
+    }
 }
 
 ?>
