@@ -18,8 +18,8 @@ and they are are listed below.{/i18n}</p>
 <tbody>
 {foreach from=$folders item=oFolder}
     <tr class="browse_column {cycle values=odd,even}"><td><span 
-       class="contenttype folder"><a 
-       href="{ktLink base="browse.php" query="fFolderId=`$oFolder->getId()`"}">{$oFolder->getName()}</a> </span>
+       class="contenttype folder"><a {capture assign=fid}{$oFolder->getId()}{/capture}
+       href="{ktLink base="browse.php" query="fFolderId=`$fid`"}">{$oFolder->getName()}</a> </span>
     </td></tr>
 {/foreach}
 </tbody>
