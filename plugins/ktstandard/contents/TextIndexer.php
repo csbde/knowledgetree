@@ -8,9 +8,7 @@ class KTTextIndexerTrigger extends KTBaseIndexerTrigger {
        'text/csv' => true,
     );
     
-    function getFriendlyCommand() {
-        return _('Built-in');
-    }
+    // no need for diagnostic - this is always available.
     
     function extract_contents($sFilename, $sTempFilename) {
         $contents = file_get_contents($sFilename);

@@ -171,17 +171,11 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                 }
                 $oTrigger = new $sTrigger;
                 
-                $sCommand = KTUtil::findCommand($oTrigger->commandconfig, $oTrigger->command);
-                $sFriendly = $oTrigger->getFriendlyCommand();
-                
-                // check that we do not specify inactivity.
-                if ($sFriendly === false) { $sCommand = null; }
-                // otherwise check for friendly name.
-                else if (!is_null($sFriendly)) { $sCommand = $sFriendly; }
-                else if ($sCommand) { $sCommand = sprintf(_('<strong>command:</strong> %s'), $sCommand); }
-                
-                // only worry about _broken_ triggers.
-                if (!empty($sCommand)) { continue; }
+                $sDiagnostic = $oTrigger->getDiagnostic();
+                // empty is OK.
+                if (is_null($sDiagnostic) || ($sDiagnostic == false)) {
+                    continue;
+                }
                 
                 $aTypes = (array) $oTrigger->mimetypes;
                 $aTypesStr = array();
@@ -191,7 +185,7 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                     //}
                 }
                 
-                $aTriggerSet[] = array('types' => $aTypesStr, 'command' => $sCommand);
+                $aTriggerSet[] = array('types' => $aTypesStr, 'diagnostic' => $sDiagnostic);
             }
         }
         

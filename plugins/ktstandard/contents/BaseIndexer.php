@@ -35,10 +35,11 @@ class KTBaseIndexerTrigger {
      * If it is false, the temporary file will be sent as the last
      * parameter.
      */
-    var $use_pipes = true;
-
-    function getFriendlyCommand() {
-        return null; // _('Built-in')
+    var $use_pipes = true; 
+    
+    /* return a diagnostic string _if_ there is something wrong.  NULL otherwise. */
+    function getDiagnostic() {
+        return null;
     }
 
     function setDocument($oDocument) {

@@ -1,6 +1,8 @@
 <form action="{$rootUrl}/search/simpleSearch.php" method="GET">
 <input type="text" name="fSearchableText" id="portlet-search-text" size="15" /><input type="submit" value="{i18n}search{/i18n}" class="searchbutton" />
 </form>
+<p><a href="{ktLink base="help.php" subpath="ktcore/search.html"}" class="ktInline ktHelp" style="float: left; margin: 0 0.5em 0.5em 5px;" >{i18n}How do I search?{/i18n}</a>
+{i18n}How do I search?{/i18n}</p>
 
 {if (!empty($saved_searches))}
 <h4>Saved Searches</h4>
