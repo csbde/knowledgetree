@@ -224,6 +224,7 @@ class KTPermissionUtil {
                 }
             }
         }
+        
         $oChannel =& KTPermissionChannel::getSingleton();
         if (is_a($oFolderOrDocument, 'Folder')) {
             $msg = sprintf("Updating folder %s", join("/", $oFolderOrDocument->getPathArray()));
@@ -235,7 +236,7 @@ class KTPermissionUtil {
             }
         }
         $oChannel->sendMessage(new KTPermissionGenericMessage($msg));
-                    
+        //var_dump($msg);            
         $iPermissionObjectId = $oFolderOrDocument->getPermissionObjectID();
         if (empty($iPermissionObjectId)) {
             return;
