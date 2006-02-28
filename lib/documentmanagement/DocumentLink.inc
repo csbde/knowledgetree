@@ -5,12 +5,12 @@
  * Links a child document to a parent document.  Direction of relationship
  * is defined through document collaboration.
  *
- * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2006 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation; using version 2 of the License.
+ *
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
