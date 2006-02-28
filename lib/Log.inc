@@ -59,12 +59,30 @@ class KTLegacyLog {
         $this->sLogFilePrefix = $sLogFilePrefix;
     }
 
+    function running_user() {
+        if (substr(PHP_OS, 0, 3) == "WIN") {
+            return null;
+        }
+        if (extension_loaded("posix")) {
+            $uid = posix_getuid();
+            $userdetails = posix_getpwuid($uid);
+            return $userdetails['name'];
+        }
+        if (file_exists('/usr/bin/whoami')) {
+            return exec('/usr/bin/whoami');
+        }
+        if (file_exists('/usr/bin/id')) {
+            return exec('/usr/bin/id -nu');
+        }
+        return null;
+    }
 
     /**
      * Creates the log file from the current datetime
      */
     function initialiseLogFile() {
         global $default;
+        $user = $this->running_user();
         if (!file_exists($this->logDirectory)) {
             $res = @mkdir($this->logDirectory, 0755);
             if ($res === false) {
@@ -72,7 +90,11 @@ class KTLegacyLog {
             }
         }
             
-        $this->logFile = $this->logDirectory . "/" . $this->sLogFilePrefix . "-" . date("Y-m-d") . ".txt";
+        if ($user) {
+            $this->logFile = sprintf("%s/%s-%s.%s.txt", $this->logDirectory, $this->sLogFilePrefix, date("Y-m-d"), $user);
+        } else {
+            $this->logFile = sprintf("%s/%s-%s.txt", $this->logDirectory, $this->sLogFilePrefix, date("Y-m-d"));
+        }
         if (!file_exists($this->logFile)) {
             $res = @touch($this->logFile);
             if ($res === false) {
