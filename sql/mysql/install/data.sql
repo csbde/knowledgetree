@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 23, 2006 at 05:21 PM
+-- Generation Time: Feb 28, 2006 at 09:23 AM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 
@@ -369,15 +369,15 @@ INSERT INTO `help` VALUES (98, 'listWebsites', 'listWebsitesHelp.html');
 -- Dumping data for table `mime_types`
 -- 
 
-INSERT INTO `mime_types` VALUES (1, 'ai', 'application/postscript', 'pdf', '');
+INSERT INTO `mime_types` VALUES (1, 'ai', 'application/postscript', 'pdf', 'Postscript Document');
 INSERT INTO `mime_types` VALUES (2, 'aif', 'audio/x-aiff', NULL, '');
 INSERT INTO `mime_types` VALUES (3, 'aifc', 'audio/x-aiff', NULL, '');
 INSERT INTO `mime_types` VALUES (4, 'aiff', 'audio/x-aiff', NULL, '');
-INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'text', '');
+INSERT INTO `mime_types` VALUES (5, 'asc', 'text/plain', 'text', 'Plain Text');
 INSERT INTO `mime_types` VALUES (6, 'au', 'audio/basic', NULL, '');
 INSERT INTO `mime_types` VALUES (7, 'avi', 'video/x-msvideo', NULL, 'Video File');
 INSERT INTO `mime_types` VALUES (8, 'bcpio', 'application/x-bcpio', NULL, '');
-INSERT INTO `mime_types` VALUES (9, 'bin', 'application/octet-stream', NULL, '');
+INSERT INTO `mime_types` VALUES (9, 'bin', 'application/octet-stream', NULL, 'Binary File');
 INSERT INTO `mime_types` VALUES (10, 'bmp', 'image/bmp', 'image', 'BMP Image');
 INSERT INTO `mime_types` VALUES (11, 'cdf', 'application/x-netcdf', NULL, '');
 INSERT INTO `mime_types` VALUES (12, 'class', 'application/octet-stream', NULL, '');
@@ -436,14 +436,14 @@ INSERT INTO `mime_types` VALUES (64, 'nc', 'application/x-netcdf', NULL, '');
 INSERT INTO `mime_types` VALUES (65, 'oda', 'application/oda', NULL, '');
 INSERT INTO `mime_types` VALUES (66, 'pbm', 'image/x-portable-bitmap', 'image', '');
 INSERT INTO `mime_types` VALUES (67, 'pdb', 'chemical/x-pdb', NULL, '');
-INSERT INTO `mime_types` VALUES (68, 'pdf', 'application/pdf', 'pdf', 'Acrobat PDF or Postscript Document');
+INSERT INTO `mime_types` VALUES (68, 'pdf', 'application/pdf', 'pdf', 'Acrobat PDF');
 INSERT INTO `mime_types` VALUES (69, 'pgm', 'image/x-portable-graymap', 'image', '');
 INSERT INTO `mime_types` VALUES (70, 'pgn', 'application/x-chess-pgn', NULL, '');
 INSERT INTO `mime_types` VALUES (71, 'png', 'image/png', 'image', 'JPEG Image');
 INSERT INTO `mime_types` VALUES (72, 'pnm', 'image/x-portable-anymap', 'image', '');
 INSERT INTO `mime_types` VALUES (73, 'ppm', 'image/x-portable-pixmap', 'image', '');
 INSERT INTO `mime_types` VALUES (74, 'ppt', 'application/vnd.ms-powerpoint', 'office', 'Powerpoint Presentation');
-INSERT INTO `mime_types` VALUES (75, 'ps', 'application/postscript', 'pdf', 'Acrobat PDF or Postscript Document');
+INSERT INTO `mime_types` VALUES (75, 'ps', 'application/postscript', 'pdf', 'Postscript Document');
 INSERT INTO `mime_types` VALUES (76, 'qt', 'video/quicktime', NULL, 'Video File');
 INSERT INTO `mime_types` VALUES (77, 'ra', 'audio/x-realaudio', NULL, '');
 INSERT INTO `mime_types` VALUES (78, 'ram', 'audio/x-pn-realaudio', NULL, '');
@@ -527,6 +527,8 @@ INSERT INTO `mime_types` VALUES (155, 'odc', 'application/vnd.oasis.opendocument
 INSERT INTO `mime_types` VALUES (156, 'odf', 'application/vnd.oasis.opendocument.formula', 'opendocument', 'OpenDocument Formula');
 INSERT INTO `mime_types` VALUES (157, 'odb', 'application/vnd.oasis.opendocument.database', 'opendocument', 'OpenDocument Database');
 INSERT INTO `mime_types` VALUES (158, 'odi', 'application/vnd.oasis.opendocument.image', 'opendocument', 'OpenDocument Image');
+INSERT INTO `mime_types` VALUES (159, 'zip', 'application/x-zip', 'compressed', 'ZIP Compressed File');
+INSERT INTO `mime_types` VALUES (160, 'csv', 'text/csv', 'spreadsheet', 'Comma delimited spreadsheet');
 
 -- 
 -- Dumping data for table `news`
@@ -631,6 +633,20 @@ INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Core: Delete'
 -- Dumping data for table `plugins`
 -- 
 
+INSERT INTO `plugins` VALUES (2, 'ktcore.userassistance', 'plugins/ktcore/assistance/KTUserAssistancePlugin.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (3, 'ktcore.plugin', 'plugins/ktcore/KTCorePlugin.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (4, 'ktstandard.ldapauthentication.plugin', 'plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (5, 'ktstandard.subscriptions.plugin', 'plugins/ktstandard/KTSubscriptions.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (6, 'ktstandard.discussion.plugin', 'plugins/ktstandard/KTDiscussion.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (7, 'ktstandard.email.plugin', 'plugins/ktstandard/KTEmail.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (8, 'ktstandard.indexer.plugin', 'plugins/ktstandard/KTIndexer.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (9, 'ktstandard.documentlinks.plugin', 'plugins/ktstandard/KTDocumentLinks.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (10, 'ktstandard.workflowassociation.plugin', 'plugins/ktstandard/KTWorkflowAssociation.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (11, 'ktstandard.workflowassociation.documenttype.plugin', 'plugins/ktstandard/workflow/TypeAssociator.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (12, 'ktstandard.workflowassociation.folder.plugin', 'plugins/ktstandard/workflow/FolderAssociator.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (13, 'ktstandard.bulkexport.plugin', 'plugins/ktstandard/KTBulkExportPlugin.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (14, 'ktstandard.searchdashlet.plugin', 'plugins/ktstandard/SearchDashletPlugin.php', 0, 0, NULL);
+INSERT INTO `plugins` VALUES (15, 'nbm.browseable.plugin', 'plugins/browseabledashlet/BrowseableDashletPlugin.php', 0, 0, NULL);
 
 -- 
 -- Dumping data for table `role_allocations`
@@ -667,7 +683,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.9-20060223-3');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -772,11 +788,12 @@ INSERT INTO `upgrades` VALUES (61, 'sql*2.99.8*15*2.99.8/15-status.sql', 'Databa
 INSERT INTO `upgrades` VALUES (62, 'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql', 'Database upgrade to version 2.99.8: State permission assignments', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (63, 'sql*2.99.8*25*2.99.8/25-authentication_details.sql', 'Database upgrade to version 2.99.8: Authentication details', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
 INSERT INTO `upgrades` VALUES (64, 'upgrade*2.99.8*99*upgrade2.99.8', 'Upgrade from version 2.99.7 to 2.99.8', '2006-02-06 12:23:42', 1, 'upgrade*2.99.8*99*upgrade2.99.8');
-INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
-INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
-INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
-INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
-INSERT INTO `upgrades` VALUES (69, 'upgrade*2.99.9-20060223-3*99*upgrade2.99.9-20060223-3', 'Upgrade from version 2.99.8 to 2.99.9-20060223-3', '2006-02-23 17:19:44', 1, 'upgrade*2.99.9-20060223-3*99*upgrade2.99');
+INSERT INTO `upgrades` VALUES (65, 'func*2.99.9*0*createSecurityDeletePermissions', 'Create the Core: Manage Security and Core: Delete permissions', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (66, 'func*2.99.9*0*createLdapAuthenticationProvider', 'Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 'Database upgrade to version 2.99.9: Mimetype-friendly', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (69, 'sql*3.0*0*3.0/zipfile-mimetype.sql', 'Database upgrade to version 3.0: Zipfile-mimetype', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (70, 'upgrade*3.0*99*upgrade3.0', 'Upgrade from version 2.99.8 to 3.0', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
 
 -- 
 -- Dumping data for table `users`
@@ -1078,7 +1095,7 @@ INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
 -- Dumping data for table `zseq_mime_types`
 -- 
 
-INSERT INTO `zseq_mime_types` VALUES (158);
+INSERT INTO `zseq_mime_types` VALUES (160);
 
 -- 
 -- Dumping data for table `zseq_news`
@@ -1144,7 +1161,7 @@ INSERT INTO `zseq_permissions` VALUES (5);
 -- Dumping data for table `zseq_plugins`
 -- 
 
-INSERT INTO `zseq_plugins` VALUES (1);
+INSERT INTO `zseq_plugins` VALUES (15);
 
 -- 
 -- Dumping data for table `zseq_role_allocations`
@@ -1204,7 +1221,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (69);
+INSERT INTO `zseq_upgrades` VALUES (70);
 
 -- 
 -- Dumping data for table `zseq_users`

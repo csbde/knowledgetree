@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 23, 2006 at 05:20 PM
+-- Generation Time: Feb 28, 2006 at 09:23 AM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 
@@ -1788,7 +1788,7 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=159 ;
+) TYPE=MyISAM AUTO_INCREMENT=161 ;
 
 -- --------------------------------------------------------
 
@@ -1909,7 +1909,7 @@ CREATE TABLE `zseq_permissions` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) TYPE=MyISAM AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -2019,7 +2019,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=70 ;
+) TYPE=MyISAM AUTO_INCREMENT=71 ;
 
 -- --------------------------------------------------------
 
