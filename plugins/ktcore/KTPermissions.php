@@ -455,7 +455,6 @@ class KTRoleAllocationPlugin extends KTFolderAction {
    	
 	function renegeratePermissionsForRole($iRoleId) {
 	    $iStartFolderId = $this->oFolder->getId();
-		$oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($iStartFolderId, $iRoleId);		
 		/* 
 		 * 1. find all folders & documents "below" this one which use the role 
 		 *    definition _active_ (not necessarily present) at this point.
@@ -474,31 +473,22 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		 *            update their permissions.
 		 */
 		
-		$sQuery = 'SELECT f.id as `id` FROM ' . Folder::_table() . ' AS f LEFT JOIN ' . RoleAllocation::_table() . ' AS ra ON (f.id = ra.folder_id) WHERE f.parent_id = ? AND ra.role_id ';
-		if ($oRoleAllocation == null) { // no alloc.
-		    $sQuery .= ' IS NULL ';
-			$hasId = false;
-		} else {
-		    $sQuery .= ' = ? ';
-			$aId = $oRoleAllocation->getId();
-			$hasId = true;
-		}
+		$sRoleAllocTable = KTUtil::getTableName('role_allocations');
+		$sFolderTable = KTUtil::getTableName('folders');
+		$sQuery = sprintf('SELECT f.id as id FROM %s AS f LEFT JOIN %s AS ra ON (f.id = ra.folder_id) WHERE ra.id IS NULL AND f.parent_id = ?', $sFolderTable, $sRoleAllocTable);
 		
 		
 		$folder_queue = array($iStartFolderId);
 		while (!empty($folder_queue)) {
 			$active_folder = array_pop($folder_queue);
 			
-			
-			$aParams = array($active_folder);
-			if ($hasId) { $aParams[] = $aId; }
-			
+			$aParams = array($active_folder);			
 			
 			$aNewFolders = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 			if (PEAR::isError($aNewFolders)) {
 				$this->errorRedirectToMain(_('Failure to generate folderlisting.'));
 			}
-			$folder_queue = array_merge ($folder_queue, $aNewFolders); // push.
+			$folder_queue = array_merge ($folder_queue, (array) $aNewFolders); // push.
 
 			
 			// update the folder.
