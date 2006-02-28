@@ -161,6 +161,9 @@ class Permission {
         $oFolder =& KTUtil::getObject('Folder', $oFolder);
         $oUser =& KTUtil::getObject('User', $oUser);
         $sUnitTable = KTUtil::getTableName('units');
+        if (PEAR::isError($oFolder)) {  // can't be admin for a non-existant folder.
+            return false;
+        }
         $sFolderIds = $oFolder->getParentFolderIds();
         $aFolderIds = split(",", $sFolderIds);
         $aFolderIds[] = $oFolder->getId();

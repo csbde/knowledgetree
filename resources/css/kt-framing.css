@@ -711,13 +711,13 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-decoration: none;
     overflow: hidden;
     border: 0 !important;
-    margin: 0;
+    margin: 1px;
     padding: 0;
     padding-top: 16px;
     height: 0px !important;
     height /**/: 16px;
     width: 16px;
-    background-position: center center;
+    background-position: top left;
     background-repeat: no-repeat;
     background-color: transparent;    
 }

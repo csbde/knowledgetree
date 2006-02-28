@@ -576,7 +576,8 @@ class KTWorkflowUtil {
         // now, merge this (again) into the user-set.
         foreach ($aGroups as $oGroup) {
             $aNewUsers = $oGroup->getUsers();
-            foreach ($aNewUsers as $id => $oU) {
+            foreach ($aNewUsers as $oU) {
+			    $id = $oU->getId();
                 if (!array_key_exists($id, $aUsers)) {
                     $aUsers[$id] = $oU;
                 }
