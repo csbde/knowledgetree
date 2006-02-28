@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * tsmarty2c.php - rips gettext strings from smarty template
  *
