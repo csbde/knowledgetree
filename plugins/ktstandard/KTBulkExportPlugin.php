@@ -34,6 +34,8 @@ class KTBulkExportAction extends KTFolderAction {
             exit(0);
         }
 
+        $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js');
+        $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js');
         $this->oPage->template = "kt3/minimal_page";
         $this->handleOutput("");
 
@@ -97,8 +99,14 @@ class KTBulkExportAction extends KTFolderAction {
 
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
         printf('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there', $url);
-        printf('<script language="JavaScript">document.location.href = "%s";</script>', $url);
-        printf("</div></div>\n");
+        printf("</div></div></body></html>\n");
+        printf('<script language="JavaScript">
+                function kt_bulkexport_redirect() {
+                    document.location.href = "%s";
+                }
+                callLater(1, kt_bulkexport_redirect);
+
+                </script>', $url);
         exit(0);
     }
 
