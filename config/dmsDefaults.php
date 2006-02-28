@@ -63,21 +63,28 @@ class KTInit {
         global $default;
         require_once(KT_LIB_DIR . '/Log.inc');
         $oKTConfig =& KTConfig::getSingleton();
-        $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel);
+        $logLevel = $default->logLevel;
+        if (!is_numeric($logLevel)) {
+            $logLevel = @constant($logLevel);
+            if (is_null($logLevel)) {
+                $logLevel = @constant("ERROR");
+            }
+        }
+        $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel);
         $res = $default->log->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
-        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel, "query");
+        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
-        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel, "timer");
+        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
@@ -271,9 +278,13 @@ class KTInit {
         if ($checkup === true) {
             return;
         }
-        require_once(KT_LIB_DIR . '/dispatcher.inc.php');
-        $oDispatcher =& new KTErrorDispatcher($oError);
-        $oDispatcher->dispatch();
+        if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
+            require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+            $oDispatcher =& new KTErrorDispatcher($oError);
+            $oDispatcher->dispatch();
+        } else {
+            print $oError->toString() . "\n";
+        }
         exit(0);
     }
     // }}}
