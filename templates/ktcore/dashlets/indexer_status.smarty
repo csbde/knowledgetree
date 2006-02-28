@@ -5,26 +5,27 @@
 no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
 {else}
 {if empty($transforms)} 
-<div class="ktInfo"><p>All indexers should be working correctly.</p></div>
+<div class="ktInfo"><p>{i18n}All indexers claim to be working correctly.{/i18n}</p></div>
 {else}
 <table class="kt_collection">
 <thead>
     <tr>
         <th>Mime Types</th>
-        <th>Command</th>
+        <th>Diagnostic</th>
     </tr>
 </thead>
 <tbody>
     {foreach item=aRow from=$transforms}
     <tr class="browse_column {cycle values=odd,even}">
-        <td>
+        <td><p>
             {foreach key=mimetype item=v from=$aRow.types name=mimetype}
             {$mimetype} {if (!$smarty.foreach.mimetype.last)}<br />{/if}
             {/foreach}
+            </p>
         </td>
-        <td>{if empty($aRow.command)}
-        <p class="important descriptiveText">{i18n}No indexer.{/i18n}</p>
-        {else}{$aRow.command}{/if}</td>
+        <td class="title">
+        <p class="descriptiveText">{if empty($aRow.diagnostic)}{i18n}No indicated problem.{/i18n} {else}{$aRow.diagnostic}{/if}</p>
+       </td>
     </tr>
     {/foreach}
 </tbody>
