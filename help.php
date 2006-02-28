@@ -82,10 +82,10 @@ class HelpDispatcher extends KTStandardDispatcher {
         if (!$can_edit) {
             if (!PEAR::isError($oReplacementHelp)) {
                 $this->oPage->setTitle($oReplacementHelp->getTitle());
-                return $oReplacementHelp->getDescription();
+                //return $oReplacementHelp->getDescription();
             } elseif ($aHelpInfo != false) {
                 $this->oPage->setTitle($aHelpInfo['title']);
-                return $aHelpInfo['body'];
+                //return $aHelpInfo['body'];
             } else {
                 $this->oPage->setTitle(_('Invalid help location specified.'));
                 $this->oPage->addError(_('Invalid help location specified.'));
@@ -109,6 +109,7 @@ class HelpDispatcher extends KTStandardDispatcher {
               "help_body" => $aHelpInfo['body'],
               "target_name" => $_SERVER['PATH_INFO'],
               "back_key" => $sBackKey,
+              'can_edit' => $can_edit,
         );
         return $oTemplate->render($aTemplateData);
     }
