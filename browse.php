@@ -119,7 +119,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
             
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
-            
+            if (PEAR::isError($oFolder)) {
+                return false; // just fail.
+            }
             $oPerm = KTPermission::getByName('ktcore.permissions.write');
             if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
                 $this->editable = true;
