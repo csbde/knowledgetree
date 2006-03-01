@@ -28,7 +28,6 @@
 
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
-require_once(KT_LIB_DIR . '/authentication/class.AuthLdap.php');
 require_once("Net/LDAP.php");
 require_once("ldapbaseauthenticationprovider.inc.php");
 
