@@ -2,10 +2,11 @@ Windows Specific Installation Instructions
 ==========================================
 
 Installation on Windows XP and 2003 requires a slightly different approach to
-the *NIX one.  
+the generic instructions.
 
-The easiest installation approach is to use our Windows installer.  You can
-find this for download on SourceForge, alongside our usual install bundles:
+The easiest installation approach for the Windows plaform is to use our
+Windows installer.  You can find this for download on SourceForge,
+alongside our usual install bundles:
 
   http://sourceforge.net/projects/kt-dms
 
@@ -111,15 +112,19 @@ General procedure:
    activated from this menu or the full-text search WILL NOT work.
    
 
-File Indexing
--------------
+External applications
+---------------------
 
-The file indexing facilities of KnowledgeTree make use of external
-programs to perform their jobs.
+The file indexing and other facilities of KnowledgeTree make use of
+external applications to perform their jobs.
 
-At the moment, the "antiword" (http://www.informatik.uni-frankfurt.de/~markus/antiword/)
-and "xpdf" packages contains all the external programs you need.
-Installing this package is beyond the scope of this document - please
+For the Windows platform, these are:
+
+. antiword - http://www.informatik.uni-frankfurt.de/~markus/antiword/
+. xpdf - http://www.foolabs.com/xpdf/
+. InfoZip unzip and zip - http://www.info-zip.org/
+
+Installing these packages is beyond the scope of this document - please
 consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
 to see how others have approached this on your platform. 
 

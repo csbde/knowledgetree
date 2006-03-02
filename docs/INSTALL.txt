@@ -109,17 +109,24 @@ KnowledgeTree Installation Notes
    Fulltext indexing of files (e.g. checking their contents) needs to be
    activated from this menu or the full-text search WILL NOT work.
 
-File Indexing
--------------
+External applications
+---------------------
 
-The file indexing facilities of KnowledgeTree make use of external
-programs to perform their jobs.
+The file indexing and other facilities of KnowledgeTree make use of
+external applications to perform their jobs.
 
-At the moment, the "catdoc" (http://www.45.free.net/~vitus/ice/catdoc/)
-and "xpdf" packages contains all the external programs you need.
-Installing this package is beyond the scope of this document - please
+For the Windows platform, these are:
+
+. catdoc - http://www.45.free.net/~vitus/ice/catdoc/
+. xpdf - http://www.foolabs.com/xpdf/
+. InfoZip unzip and zip - http://www.info-zip.org/
+
+Installing these packages is beyond the scope of this document - please
 consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
-to see how others have approached this on your platform. 
+to see how others have approached this on your platform.  We recommend
+that you use the appropriate package management procedures for
+installing these packages on your system to ensure ease of maintenance
+and upgrade.
 
 NOTE:  if you install the packages outside of the path normally searched
 by your operating system (e.g. in c:\antiword or /usr/local/bin) you will

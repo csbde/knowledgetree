@@ -13,6 +13,5 @@ KnowledgeTree DMS Development TODO List
   - Make logging robust
   - Revisit application logging and tidy up logging levels.
 - Allow thumbnails for image types (API for any other filetype)
-- Multi-document select in a folder (for delete, move etc.)
 
 $Id$

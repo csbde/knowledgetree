@@ -1,40 +1,43 @@
-KnowledgeTree DMS- Frequently Asked Questions
+KnowledgeTree(tm) DMS - Frequently Asked Questions
 
 Q: I can't seem to search inside my files?  
 
 A: There are two things which may cause full-text search not to work: 
 
-     1. Make sure that the Indexing plugin is enabled (in Admin > Misc > Manage Plugins)
-     2. Ensure that the appropriate programs are installed, and (if on Windows)
-        that the config.ini section "indexer" contains the correct paths to the
-        files.
+     1. Make sure that the Indexing plugin is enabled
+        (in Admin > Misc > Manage Plugins)
+     2. Ensure that the appropriate programs are installed, and
+        (especially on Windows) that the config.ini section "indexer"
+        contains the correct paths to the files.
 
 Q: Where do I post questions about installing, configuring or using KnowledgeTree?
 
-A: Our community forums are a good place to ask questions about installing,
-   configuring or using KnowledgeTree. Our developers, along with other members of
-   the open source community and our partner network, will endeavour to answer
-   your questions.
+A: Our community forums are a good place to ask questions about
+   installing, configuring or using KnowledgeTree. Our developers, along
+   with other members of the open source community and our partner
+   network, will endeavour to answer your questions.
 
    Click on the link below to access the forums:
        http://forum.ktdms.com/
 
-Q: Where can I discuss document management best practices, change management and training issues?
+Q: Where can I discuss document management best practices, change
+   management and training issues?
 
-A: Our community forums are a good place to discuss best practices for document
-   management, software implementation and training with our developers, other
-   members of the open source community and our partner network.
+A: Our community forums are a good place to discuss best practices for
+   document management, software implementation and training with our
+   developers, other members of the open source community and our
+   partner network.
 
    Click on the link below to access the forums:
 
       http://forum.ktdms.com/
 
-Q: Where can I report bugs in the open source KnowledgeTree server?
+Q: Where can I report bugs in KnowledgeTree?
 
-A: You can report bugs in the open source KnowledgeTree server software by
-   accessing our online ticketing system. The ticketing system will also provide
-   feedback on the status of the issue. You may view issues reported by other
-   people and search the system to determine if your issue has already been
+A: You can report bugs in KnowledgeTree by accessing our online
+   ticketing system. The ticketing system will also provide feedback on
+   the status of the issue. You may view issues reported by other people
+   and search the system to determine if your issue has already been
    reported.
 
    Click on the link below to access the ticketing system:
@@ -44,10 +47,10 @@ A: You can report bugs in the open source KnowledgeTree server software by
 Q: I want to modify KnowledgeTree or develop new functionality for it.
    Where do I find more information on how to go about doing this?
 
-A: You can find out more information about modifying the KnowledgeTree
-   server, developing new functionality or translating the software at
-   the development Wiki. The Wiki is constantly under development and
-   even you may add content to it!
+A: You can find out more information about modifying KnowledgeTree,
+   developing new functionality or translating the software at the
+   development Wiki. The Wiki is constantly under development and even
+   you may add content to it!
 
    Click on the link below to access the Wiki:
 
