@@ -94,7 +94,7 @@ class KTBulkExportAction extends KTFolderAction {
             'file' => $sZipFile,
             'dir' => $this->sTmpPath,
         );
-        $sZipCommand = KTUtil::findCommand("import/zip", "zip");
+        $sZipCommand = KTUtil::findCommand("export/zip", "zip");
         $aCmd = array(
             $sZipCommand,
             "-r",
