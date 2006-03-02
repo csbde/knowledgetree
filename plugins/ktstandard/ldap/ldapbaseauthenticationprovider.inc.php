@@ -72,7 +72,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
 
     // {{{ showUserSource
     function showUserSource($oUser, $oSource) {
-        return '<a href="?action=editUserSource&user_id=' . $oUser->getId() .'">' . _('Edit LDAP info') . '</a>';
+        return '<a href="' . KTUtil::addQueryStringSelf('action=editUserSource&user_id=' . $oUser->getId()) . '">' . _('Edit LDAP info') . '</a>';
     }
     // }}}
 
