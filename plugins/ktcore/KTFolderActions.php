@@ -193,7 +193,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
         );
         $oGroup =& $this->oValidator->validateGroup($_REQUEST['fGroupId'], $aOptions);
         $oCondition =& $this->oValidator->validateCondition($_REQUEST['fConditionId'], $aOptions);
-        $aPermissionIds = $_REQUEST['fPermissionIds'];
+        $aPermissionIds = (array) $_REQUEST['fPermissionIds'];
+        if (empty($aPermissionIds)) { $this->errorRedirectTo('main',_('Please select one or more permissions.'), sprintf('fFolderId=%d', $this->oFolder->getId())); }
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
         $oDynamicCondition = KTPermissionDynamicCondition::createFromArray(array(
