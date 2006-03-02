@@ -51,7 +51,7 @@ class LoginPageDispatcher extends KTDispatcher {
 	    global $default;
 	
 	    $this->check(); // bounce here, potentially.
-	
+	    header('Content-type: text/html; charset=UTF-8');
 		$cookietest = KTUtil::randomString();
 		setcookie("CookieTestCookie", $cookietest, false);
 		
