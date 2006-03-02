@@ -103,7 +103,7 @@ class KTMime {
             if (!empty($friendly_name)) { 
                 return _($sql->f("friendly_name"));
             } else {
-		        return sprintf(_('%s File'), mb_strtoupper($sql->f('filetypes')));            
+		        return sprintf(_('%s File'), strtoupper($sql->f('filetypes')));            
             }
 		}
         
