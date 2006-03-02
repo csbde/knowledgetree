@@ -11,6 +11,13 @@ and a backup will allow you to return to the original version of
 KnowledgeTree.  Please report failed upgrades to the KnowledgeTree
 developers.
 
+Ensure that the web user may write to all the folders within the 'var'
+folder, so that logging and other changes are possible.
+
+Make sure to read the "Additional steps" section towards the end of the
+document to ensure that any specific steps for your upgrade are
+performed before you continue.
+
 Automated upgrade
 -----------------
 
@@ -23,7 +30,7 @@ forced to do so.  Using the automated upgrade will create an upgrade
 history that can be reviewed via the KnowledgeTree administrators
 interface.
 
-If you are upgrading KnowledgeTree from versions prior to 2.0.6, see the
+If you are upgrading KnowledgeTree from versions prior to 3.0.0, see the
 section at the bottom of this document to set up automated upgrades.
 
 Web page:
@@ -66,6 +73,17 @@ $default->dbAdminUser      = "dmsadmin";
 $default->dbAdminPass      = "js9281djw";
 
 You should now be able to use the automated upgrade.
+
+KnowledgeTree 3.0.0
+-------------------
+
+KnowledgeTree 3.0 includes the move of the default document storage
+location from "Documents" in the root of the KnowledgeTree install to
+"var/Documents".  The "log" directory has also moved to "var/log".
+
+If you are using the default document storage location (ie, you have not
+specifically set another document location), move the Documents
+directory to "var/Documents before upgrading.
 
 
 ---------------------------------------------------------------------------

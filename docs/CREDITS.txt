@@ -1,16 +1,23 @@
-KnowledgeTree(tm) depends on the following components:
+KnowledgeTree(tm) makes use of the following components:
+--------------------------------------------------------
 
 Email:
 phpmailer - http://phpmailer.sourceforge.net (LGPL)
 
-Mark Round's AuthLDAP class (class.AuthLDAP.php):
-http://phpclasses.dknss.com/browse/package/893.html (GPL)
-
-Javascript
+Javascript:
 MochiKit - http://www.mochikit.com/   (MIT License)
 JS Calendar - http://dynarch.com/mishoo/calendar.epl (LGPL)
 TinyMCE - http://sourceforge.net/projects/tinymce/ (LGPL)
 Option Transfer Widget - http://www.mattkruse.com/ (Custom License)
 
-Icons
+Icons:
 "Silk" - http://www.famfamfam.com/lab/icons/silk/ (CC Attribution License)
+
+Alumni:
+-------
+
+KnowlegeTree has previously utilised code from the following sources:
+
+Mark Round's AuthLDAP class (class.AuthLDAP.php):
+http://phpclasses.dknss.com/browse/package/893.html (GPL)
+
