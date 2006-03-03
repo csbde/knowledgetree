@@ -1,31 +1,5 @@
 <?php
 
-/**
- * $Id$
- *
- * Copyright (c) 2006 Jam Warehouse http://www.jamwarehouse.com
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; using version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * -------------------------------------------------------------------------
- *
- * You can contact the copyright owner regarding licensing via the contact
- * details that can be found on the KnowledgeTree web site:
- *
- *         http://www.ktdms.com/
- */
-
 require_once(KT_LIB_DIR . "/ktentity.inc"); 
 require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
 require_once(KT_LIB_DIR . "/database/dbutil.inc"); 
@@ -34,13 +8,17 @@ require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/groups/Group.inc");
-require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/documentcore.inc.php");
+
+require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
+
  
-class RoleAllocation extends KTEntity {
+class DocumentRoleAllocation extends KTEntity {
 	
 	/** role object primary key */
 	var $iId=-1;
-	var $iFolderId;
+	var $iDocumentId;
 	var $iRoleId;
 	var $iPermissionDescriptorId;
 	
@@ -49,14 +27,14 @@ class RoleAllocation extends KTEntity {
 	var $_aFieldToSelect = array(
 	    'iId' => 'id',
 		'iRoleId' => 'role_id',
-		'iFolderId' => 'folder_id',
+		'iDocumentId' => 'document_id',
 		'iPermissionDescriptorId' => 'permission_descriptor_id',
 	);
 
-	function setFolderId($iFolderId) { $this->iFolderId = $iFolderId; }
+	function setDocumentId($iDocumentId) { $this->iDocumentId = $iDocumentId; }
 	function setRoleId($iRoleId) { $this->iRoleId = $iRoleId; }
 	function setPermissionDescriptorId($iPermissionDescriptorId) { $this->iPermissionDescriptorId = $iPermissionDescriptorId; }
-	function getFolderId() {  return $this->iFolderId; }
+	function getDocumentId() {  return $this->iDocumentId; }
 	function getRoleId() { return $this->iRoleId; }
 	function getPermissionDescriptorId() { return $this->iPermissionDescriptorId; }
 
@@ -73,69 +51,115 @@ class RoleAllocation extends KTEntity {
 		} else {
 		    $aAllowed = array();
 		}
+		// special case "document owner".
+		if ($this->iRoleId == -1) {
+		    
+		    $oDoc = KTDocumentCore::get($this->iDocumentId);
+			
+			/* ! NBM Please Review
+			 *
+			 * This should never be an error - we were called by PermissionUtil 
+             * to get the details for a document, but it _is_ be a DocumentCore
+			 * object during _add.
+			 *
+			 * When we try to grab the Document, it blows up on the MetadataVersion,
+			 * so we have to use a DocumentCore to avoid a fail-out on the initial 
+             * on-add permission check.
+			 *
+			 * Is this bad/evil/not appropriate in some way?  I can't see a major
+			 * issue with it...
+ 			 *
+			 */
+			
+		
+			if (PEAR::isError($oDoc)) { 
+			    return $aAllowed; 
+		    }
+			
+		    // ! NBM Please review
+		    // we cascade "owner" from the folder (if, for some _bizarre_ reason the
+		    // owner role is allocated to users/groups/etc.  this can be disabled
+		    // with the CRACK_IS_BAD flag, or removed entirely.  I am undecided.
+			//
+			// There is some argument to be made for the consistency, but it may not be 
+			// that big.  I think it _may_ lead to easily misconfigured setups, but I 
+			// really don't know.
+			$CRACK_IS_BAD = false;
+			if ((!$CRACK_IS_BAD) && is_null($this->iPermissionDescriptorId)) {
+				$oDerivedAlloc = RoleAllocation::getAllocationsForFolderAndRole($oDoc->getFolderID(), $this->iRoleId);
+				if (!(PEAR::isError($oDerivedAlloc) || is_null($oDerivedAlloc))) { 
+				    $aAllowed = $oDerivedAlloc->getAllowed();
+				}
+			}							
+			
+			$owner_id = $oDoc->getOwnerId();
+		    if (is_null($aAllowed['user'])) {
+				$aAllowed['user'] = array($owner_id);
+			} else 	if (array_search($owner_id, $aAllowed['user']) === false) {
+			    $aAllowed['user'][] = $owner_id;
+			}
+		}
 		return $aAllowed;
 	}
-		
-	
 	
     function _fieldValues () { return array(
             'role_id' => $this->iRoleId,
-            'folder_id' => $this->iFolderId,
+            'document_id' => $this->iDocumentId,
 			'permission_descriptor_id' => $this->iPermissionDescriptorId,
         );
     }
 
-	/* getAllocationForFolderAndRole($iFolderId, $iRoleId)
+	/* getAllocationForDocumentAndRole($iFolderId, $iRoleId)
 	 *
-	 *   this is the key function:  for a given folder and role,
+	 *   this is the key function:  for a given document and role,
 	 *   returns either a RoleAllocation object, or null 
-	 *   (if there is none).  It scans _up_ the hierachy of folders,
-	 *   trying to find the nearest such object with a folder_id
-	 *   in the mapping.
+	 *   (if there is none).  IT DOES NOT SCAN UP THE HIERACHY (Use RoleAllocation)
 	 */
-	function & getAllocationsForFolderAndRole($iFolderId, $iRoleId) {
-		// FIXME the query we use here is ... not very pleasant.  
-		// NBM: is this the "right" way to do this?
-		$raTable = KTUtil::getTableName('role_allocations');
+	function & getAllocationsForDocumentAndRole($iDocumentId, $iRoleId) {
+		$raTable = KTUtil::getTableName('document_role_allocations');
 		
-		$fTable = Folder::_table();
-		
-		$oFolder =& Folder::get($iFolderId);
-		$parents = $oFolder->getParentFolderIDs() . ',' . $iFolderId; // this is formatted as 1,2,3,4,5,6 - perfect for "WHERE".
-		
-		// FIXME what (if anything) do we need to do to check that this can't be used as an attack?
-		$folders = '(' . $parents . ')';
+		$dTable = KTUtil::getTableName('documents');
 		
 		$sQuery = "SELECT ra.id as `id` FROM " . $raTable . " AS ra " .
-		' LEFT JOIN ' . $fTable . ' AS f ON (f.id = ra.folder_id) ' .
-		' WHERE f.id IN ' . $folders .
-		' AND ra.role_id = ?' .
-		' ORDER BY CHAR_LENGTH(f.parent_folder_ids) desc, f.parent_folder_ids DESC; ';
-		$aParams = array($iRoleId);
+		' LEFT JOIN ' . $dTable . ' AS d ON (d.id = ra.document_id) ' .
+		' WHERE d.id = ?' .
+		' AND ra.role_id = ?';
+		$aParams = array($iDocumentId, $iRoleId);
 		
-		$aRoleAllocIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
-		
+		$iAllocId = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+		if (PEAR::isError($iAllocId)) { 
+		    return null; 
+		}
 		if (false) {
 		    print '<pre>';
-			var_dump($aRoleAllocIds);
+			var_dump($iAllocId);
 			print '';
 			print $sQuery;
 			print '</pre>';		
 		}
 		
-		if (empty($aRoleAllocIds)) { 
+		// magic for the Owner role here.
+		if (empty($iAllocId) && ($iRoleId == -1)) {
+		    $permDescriptor = null;
+			// THIS OBJECT MUST NEVER BE MODIFIED, without first calling CREATE.
+		    $oFakeAlloc = new DocumentRoleAllocation();
+			$oFakeAlloc->setDocumentId($iDocumentId);
+			$oFakeAlloc->setRoleId($iRoleId);		
+			$oFakeAlloc->setPermissionDescriptorId($permDescriptor);		
+			//var_dump($oFakeAlloc);
+			return $oFakeAlloc;
+		} else if (empty($iAllocId)) { 
 		    return null;
 		}
 		
-		$iAllocId = $aRoleAllocIds[0]; // array pop?
-		return RoleAllocation::get($iAllocId);
+		return DocumentRoleAllocation::get($iAllocId);
 	}
 	
 	// static, boilerplate.
-    function _table () { return KTUtil::getTableName('role_allocations'); }
-    function & get($iRoleId) { return KTEntityUtil::get('RoleAllocation', $iRoleId); }
-	function & getList($sWhereClause = null) { return KTEntityUtil::getList2('RoleAllocation', $sWhereClause); }
-	function & createFromArray($aOptions) { return KTEntityUtil::createFromArray('RoleAllocation', $aOptions); }
+    function _table () { return KTUtil::getTableName('document_role_allocations'); }
+    function & get($iRoleId) { return KTEntityUtil::get('DocumentRoleAllocation', $iRoleId); }
+	function & getList($sWhereClause = null) { return KTEntityUtil::getList2('DocumentRoleAllocation', $sWhereClause); }
+	function & createFromArray($aOptions) { return KTEntityUtil::createFromArray('DocumentRoleAllocation', $aOptions); }
 
 	function getPermissionDescriptor() {
 	    // could be an error - return as-is.
@@ -145,12 +169,7 @@ class RoleAllocation extends KTEntity {
 
 	// setting users and groups needs to use permissionutil::getOrCreateDescriptor
 	function getUsers() {
-	    $oDescriptor = $this->getPermissionDescriptor();
-		$aUsers = array();
-		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
-		     return $aUsers;
-		}
-		$aAllowed = $oDescriptor->getAllowed();
+		$aAllowed = $this->getAllowed();
 		if ($aAllowed['user'] !== null) {
 		    $aUsers = $aAllowed['user'];
 		} 
@@ -168,12 +187,7 @@ class RoleAllocation extends KTEntity {
 	}
 	
 	function getGroups() {
-	    $oDescriptor = $this->getPermissionDescriptor();
-		$aGroups = array();
-		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
-		     return $aGroups;
-		}
-		$aAllowed = $oDescriptor->getAllowed();
+		$aAllowed = $this->getAllowed();
 		if ($aAllowed['group'] !== null) {
 		    $aGroups = $aAllowed['group'];
 		} 
@@ -191,12 +205,7 @@ class RoleAllocation extends KTEntity {
 	}
 	
 	function getUserIds() {
-	    $oDescriptor = $this->getPermissionDescriptor();
-		$aUsers = array();
-		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
-		     return $aUsers;
-		}
-		$aAllowed = $oDescriptor->getAllowed();
+		$aAllowed = $this->getAllowed();
 		if ($aAllowed['user'] !== null) {
 		    $aUsers = $aAllowed['user'];
 		} 
@@ -205,12 +214,7 @@ class RoleAllocation extends KTEntity {
 	}
 	
 	function getGroupIds() {
-	    $oDescriptor = $this->getPermissionDescriptor();
-		$aGroups = array();
-		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
-		     return $aGroups;
-		}
-		$aAllowed = $oDescriptor->getAllowed();
+		$aAllowed = $this->getAllowed();
 		if ($aAllowed['group'] !== null) {
 		    $aGroups = $aAllowed['group'];
 		} 
@@ -221,11 +225,7 @@ class RoleAllocation extends KTEntity {
 	// utility function to establish user membership in this allocation.
 	// FIXME nbm:  is there are more coherent way to do this ITO your PD infrastructure?
 	function hasMember($oUser) {
-	    $oPD = $this->getPermissionDescriptor();
-		if (PEAR::isError($oPD) || ($oPD == false)) {
-		    return false;
-		}
-		$aAllowed = $oPD->getAllowed();
+		$aAllowed = $this->getAllowed();
 		$iUserId = $oUser->getId();
 		
 		if ($aAllowed['user'] != null) {
@@ -249,6 +249,7 @@ class RoleAllocation extends KTEntity {
 	    
 	    return false;
 	}
+	
 	
 }
 

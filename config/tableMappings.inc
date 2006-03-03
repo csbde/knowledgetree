@@ -143,6 +143,7 @@ $default->notifications_table = "notifications";
 $default->authentication_sources_table = "authentication_sources";
 $default->dashlet_disable_table = "dashlet_disables";
 $default->role_allocations_table = "role_allocations";
+$default->document_role_allocations_table = "document_role_allocations";
 $default->plugins_table = "plugins";
 $default->document_metadata_version_table = "document_metadata_version";
 $default->document_content_version_table = "document_content_version";

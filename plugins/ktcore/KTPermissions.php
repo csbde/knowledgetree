@@ -35,10 +35,12 @@ require_once(KT_LIB_DIR . "/groups/Group.inc");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/roles/Role.inc");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
+require_once(KT_LIB_DIR . "/roles/documentroleallocation.inc.php");
 
 
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
+require_once(KT_LIB_DIR . "/permissions/permissionlookup.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
@@ -52,52 +54,87 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("permissions");
-
+        $this->oPage->setBreadcrumbDetails("Document Permissions");
         $oTemplate = $this->oValidator->validateTemplate("ktcore/document/document_permissions");
-        $oPO = KTPermissionObject::get($this->oDocument->getPermissionObjectID());
+		
+        $oPL = KTPermissionLookup::get($this->oDocument->getPermissionLookupID());
         $aPermissions = KTPermission::getList();
         $aMapPermissionGroup = array();
-        $aMapPermissionRole = array();		
+        $aMapPermissionRole = array();	
+		$aMapPermissionUser = array();	
+		
+		$aAllGroups = Group::getList();   // probably small enough
+		$aAllRoles = Role::getList();     // probably small enough.
+		// users are _not_ fetched this way.
+		
+		$aActiveGroups = array();
+		$aActiveUsers = array();
+		$aActiveRoles = array();
+		
         foreach ($aPermissions as $oPermission) {
-            $oPA = KTPermissionAssignment::getByPermissionAndObject($oPermission, $oPO);
-            if (PEAR::isError($oPA)) {
+            $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
+            if (PEAR::isError($oPLA)) {
                 continue;
             }
-            $oDescriptor = KTPermissionDescriptor::get($oPA->getPermissionDescriptorID());
+            $oDescriptor = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
             $iPermissionID = $oPermission->getID();
             $aIDs = $oDescriptor->getGroups();
             $aMapPermissionGroup[$iPermissionID] = array();
             foreach ($aIDs as $iID) {
                 $aMapPermissionGroup[$iPermissionID][$iID] = true;
+				$aActiveGroups[$iID] = true;
             }
             $aIds = $oDescriptor->getRoles();
             $aMapPermissionRole[$iPermissionID] = array();
             foreach ($aIds as $iId) {
                 $aMapPermissionRole[$iPermissionID][$iId] = true;
+				$aActiveRoles[$iId] = true;
+            }		
+			$aIds = $oDescriptor->getUsers();
+            $aMapPermissionUser[$iPermissionID] = array();
+            foreach ($aIds as $iId) {
+                $aMapPermissionUser[$iPermissionID][$iId] = true;
+				$aActiveUsers[$iId] = true;
             }		
         }
+		
+		// now we constitute the actual sets.
+		$users = array();
+		$groups = array();
+		$roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
 
-        $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
-        if ($oInherited === $this->oDocument) {
-            $bEdit = true;
-        } else {
-            $iInheritedFolderID = $oInherited->getID();
-            /* $sInherited = displayFolderPathLink(Folder::getFolderPathAsArray($iInheritedFolderID),
-                        Folder::getFolderPathNamesAsArray($iInheritedFolderID),
-                        "$default->rootUrl/control.php?action=editFolderPermissions");*/
-            $sInherited = join(" &raquo; ", $oInherited->getPathArray());
-            $bEdit = false;
-        }
+		// this should be quite limited - direct role -> user assignment is typically rare.
+		foreach ($aActiveUsers as $id => $marker) {
+		    $oUser = User::get($id);
+			$users[$oUser->getName()] = $oUser;
+		}
+		asort($users); // ascending, per convention.
+		
+		foreach ($aActiveGroups as $id => $marker) {
+		    $oGroup = Group::get($id);
+			$groups[$oGroup->getName()] = $oGroup;
+		}
+		asort($groups);
+		
+		foreach ($aActiveRoles as $id => $marker) {
+		    $oRole = Role::get($id);
+			$roles[$oRole->getName()] = $oRole;
+		}
+		asort($roles);
+		
+        $bEdit = false;
+		$sInherited = '';
 
         $aTemplateData = array(
             "context" => $this,
             "permissions" => $aPermissions,
-            "groups" => Group::getList(),
-            "roles" => Role::getList(),			
+            "groups" => $groups,
+			"users" => $users,
+            "roles" => $roles,			
             "iDocumentID" => $_REQUEST['fDocumentID'],
             "aMapPermissionGroup" => $aMapPermissionGroup,
             "aMapPermissionRole" => $aMapPermissionRole,			
+			"aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
         );
@@ -508,4 +545,94 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			}
 		}
 	}
+}
+
+class KTDocumentRolesAction extends KTDocumentAction {
+    var $sDisplayName = 'View Roles';
+    var $sName = 'ktcore.actions.document.roles';
+
+    var $_sShowPermission = "ktcore.permissions.write";
+    var $bAutomaticTransaction = true;
+
+    function do_main() {
+        $this->oPage->setTitle(_("View Roles"));
+        $this->oPage->setBreadcrumbDetails(_("View Roles"));
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/action/view_roles");
+        
+        // we need to have:
+        //   - a list of roles
+        //   - with their users / groups
+        //   - and that allocation id
+        $aRoles = array(); // stores data for display.
+        
+        $aRoleList = Role::getList();
+        foreach ($aRoleList as $oRole) {
+            $iRoleId = $oRole->getId();
+            $aRoles[$iRoleId] = array("name" => $oRole->getName());
+            $oRoleAllocation = DocumentRoleAllocation::getAllocationsForDocumentAndRole($this->oDocument->getId(), $iRoleId);
+			if (is_null($oRoleAllocation)) {
+				$oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($this->oDocument->getFolderID(), $iRoleId);
+			}
+            
+            $u = array();
+            $g = array();
+            $aid = null;
+            $raid = null;
+            if (is_null($oRoleAllocation)) {
+                ; // nothing.
+            } else {
+			    //var_dump($oRoleAllocation);
+                $raid = $oRoleAllocation->getId(); // real_alloc_id
+                $aAllowed = $oRoleAllocation->getAllowed();
+
+                if (!empty($aAllowed['user'])) {
+                    $u = $aAllowed['user'];
+                }
+                if (!empty($aAllowed['group'])) {
+                    $g = $aAllowed['group'];
+				}
+			}
+            $aRoles[$iRoleId]['users'] = $u;
+            $aRoles[$iRoleId]['groups'] = $g;
+            $aRoles[$iRoleId]['real_allocation_id'] = $raid;
+        }     
+        
+        // final step.
+        
+        // map to users, groups.
+        foreach ($aRoles as $key => $role) {          
+            $_users = array();
+            foreach ($aRoles[$key]['users'] as $iUserId) {
+                $oUser = User::get($iUserId);
+                if (!(PEAR::isError($oUser) || ($oUser == false))) {
+                    $_users[] = $oUser->getName();
+                }
+            }
+			if (empty($_users)) {
+			    $aRoles[$key]['users'] = '<span class="descriptiveText"> ' . _('no users') . '</span>'; 	
+			} else {
+			    $aRoles[$key]['users'] = implode(', ',$_users);
+			}		
+		
+            $_groups = array();
+            foreach ($aRoles[$key]['groups'] as $iGroupId) {
+                $oGroup = Group::get($iGroupId);
+                if (!(PEAR::isError($oGroup) || ($oGroup == false))) {
+                    $_groups[] = $oGroup->getName();
+                }
+            }
+			if (empty($_groups)) {
+			    $aRoles[$key]['groups'] = '<span class="descriptiveText"> ' . _('no groups') . '</span>'; 	
+			} else {
+			    $aRoles[$key]['groups'] = implode(', ',$_groups);
+			}
+        }
+        
+        $aTemplateData = array(
+            'context' => &$this,
+            'roles' => $aRoles,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
 }
