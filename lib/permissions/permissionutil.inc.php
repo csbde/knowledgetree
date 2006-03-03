@@ -37,6 +37,7 @@ require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
+require_once(KT_LIB_DIR . "/roles/documentroleallocation.inc.php");
 
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowstatepermissionsassignment.inc.php");
@@ -310,13 +311,22 @@ class KTPermissionUtil {
                 foreach ($aAllowed['role'] as $iRoleId) {
                     // store the PD <-> RoleId map
                     if (!array_key_exists($iRoleId, $_roleCache)) {
-                        $oRoleAllocation =& RoleAllocation::getAllocationsForFolderAndRole($iRoleSourceFolder, $iRoleId);
+                        $oRoleAllocation = null;
+                        if (is_a($oFolderOrDocument, 'KTDocumentCore') || is_a($oFolderOrDocument, 'Document')) {
+                            $oRoleAllocation =& DocumentRoleAllocation::getAllocationsForDocumentAndRole($oFolderOrDocument->getId(), $iRoleId);
+                            if (PEAR::isError($oRoleAllocation)) { $oRoleAllocation = null; }
+                        }
+                        // if that's null - not set _on_ the document, then
+                        if (is_null($oRoleAllocation)) {
+                            $oRoleAllocation =& RoleAllocation::getAllocationsForFolderAndRole($iRoleSourceFolder, $iRoleId);
+                        }
                         $_roleCache[$iRoleId] = $oRoleAllocation;
                     }
                     // roles are _not_ always assigned (can be null at root)
-                    if ($_roleCache[$iRoleId] != null) {
+                    if (!is_null($_roleCache[$iRoleId])) {
                         $aMapPermAllowed[$iPermissionId]['user'] = array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUserIds());
                         $aMapPermAllowed[$iPermissionId]['group'] = array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroupIds());
+                        // naturally, roles cannot be assigned roles, or madness follows.
                     }
                 }
                 
@@ -361,7 +371,8 @@ class KTPermissionUtil {
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
-        return $oPD->hasGroups($aGroups);
+        if ($oPD->hasUsers(array($oUser))) { return true; }
+        else { return $oPD->hasGroups($aGroups); }
     }
     // }}}
 

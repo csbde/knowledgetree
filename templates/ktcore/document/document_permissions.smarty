@@ -1,30 +1,14 @@
 <h2>{i18n}Document permissions{/i18n}</h2>
 
+<p class="descriptiveText">{i18n}This page shows the permissions that apply to
+this specific document.  Where the folder view shows you information by role and group,
+this page shows the actual groups (and, if they are assigned directly to a role, the users)
+who have the different permissions. As a result, groups, users and roles with <strong>no</strong>
+permissions are not shown.{/i18n}</p>
 
-
-{if ((empty($roles) && empty($groups)))}
-<div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only
-be allocated to roles and groups.{/i18n}</p></div>
+{if ((empty($roles) && empty($groups) && empty($users)))}
+<div class="ktInfo"><p>{i18n}No roles or groups have been defined or have permissions.{/i18n}</p></div>
 {else}
-
-{*
-
-{if $iFolderId != 1}
-<div class="ktInfo">
-{ if $inherited }
-<p>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n} 
-<a class="ktActionLink ktEdit"
-   href="{addQS}action=copyPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Override Permissions{/i18n}</a> </p>
-{ else }
-<p>{i18n}This folder defines its own permissions.{/i18n} 
-<a class="ktActionLink ktDelete"
-   href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
-{ /if }
-</span>
-</div>
-{ /if }
-
-*}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update">
@@ -94,6 +78,36 @@ value="{$iGroupId}"></td>
   { /foreach }
 </tr>
 { /foreach }
+
+
+{ foreach item=oUser from=$users }
+<td><span class="descriptiveText">{i18n}User: {/i18n}</span> {$oUser->getName()}</td>
+  { assign var=iUserId value=$oUser->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }
+
+{ if $edit}
+{ if $bHasPerm }
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}" checked="true"></td>
+{ else }
+<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}"></td>
+{ /if }
+{else}
+{ if $bHasPerm }
+<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+{ else }
+<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
+{ /if }
+{/if}
+
+
+  { /foreach }
+</tr>
+{ /foreach }
+
 </tbody>
 </table>
 {if $edit}
