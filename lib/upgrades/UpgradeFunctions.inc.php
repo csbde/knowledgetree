@@ -229,7 +229,7 @@ class UpgradeFunctions {
         $aIDs = DBUtil::getResultArrayKey($query, 'id');
         foreach ($aIDs as $iID) {
             $sTableName = KTUtil::getTableName('folders');
-            $query = sprintf("SELECT F2.permission_object_id AS poi FROM %s AS F LEFT JOIN %s AS F2 WHERE F2.id = F.permission_folder_id WHERE id = ?", $sTableName, $sTableName);
+            $query = sprintf("SELECT F2.permission_object_id AS poi FROM %s AS F LEFT JOIN %s AS F2 ON F2.id = F.permission_folder_id WHERE id = ?", $sTableName, $sTableName);
             $aParams = array($iID);
             $iPermissionObjectId = DBUtil::getOneResultKey(array($query, $aParams), 'poi');
 
