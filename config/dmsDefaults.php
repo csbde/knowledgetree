@@ -35,6 +35,7 @@ $microtime_simple = explode(' ', microtime());
 
 $_KT_starttime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
 unset($microtime_simple);
+
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
     define('KT_DIR', realpath(dirname(__FILE__) . '/..'));
@@ -420,6 +421,8 @@ $oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
 
 $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
 $oKTConfig->setdefaultns("import", "unzip", 'unzip');
+$oKTConfig->setdefaultns("cache", "cacheDirectory", '${varDirectory}/cache');
+$oKTConfig->setdefaultns("cache", "cacheEnabled", 'false');
 
 $KTInit->readConfig();
 
