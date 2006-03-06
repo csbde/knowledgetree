@@ -270,7 +270,7 @@ class KTFolderUtil {
         
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
-            $res = KTDocumentUtil::delete($oDocument, $sReason);
+            $res = KTDocumentUtil::delete($oDocument, $sReason, 1); // id of destination folder = ROOT
             if (PEAR::isError($res)) {
                 DBUtil::rollback();
                 return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());

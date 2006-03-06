@@ -118,6 +118,10 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         foreach ($aDocuments as $oDoc) {
+            // first evaluate the folder for inconsistencies.
+            $oFolder = Folder::get($oDoc->getFolderID());
+            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); }
+        
             if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
                 $oDocumentTransaction = & new DocumentTransaction($oDoc, "Document expunged", 'ktcore.transactions.expunge');
@@ -191,15 +195,23 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         foreach ($aDocuments as $oDoc) {
-            $oDoc->setFolderID(1);
+            $oFolder = Folder::get($oDoc->getFolderID());
+            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); } // move to root if parent no longer exists.
             if ($oStorage->restore($oDoc)) {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
-                    $oStorage->delete($oDoc);
                     $aErrorDocuments[] = $oDoc->getName;
                     continue; // skip transactions, etc.
                 }
+                
+                $res = KTPermissionUtil::updatePermissionLookup($oDoc);
+                
+                if (PEAR::isError($res)) {
+                    $aErrorDocuments[] = $oDoc->getName;
+                    continue; // skip transactions, etc.
+                }
+                
                 // create a doc-transaction.
                 // FIXME does this warrant a transaction-type?
                 $oTransaction = new DocumentTransaction($oDoc, 'Restored from deleted state by ' . $this->oUser->getName(), 'ktcore.transactions.update');
