@@ -86,6 +86,8 @@ class BrowseColumn {
 
 class TitleColumn extends BrowseColumn {
     var $aOptions = array();
+    var $aIconPaths = array();
+
     function setOptions($aOptions) {
         $this->aOptions = $aOptions;
     }
@@ -149,17 +151,9 @@ class TitleColumn extends BrowseColumn {
         if ($finalSize > 1000) { $label='Mb'; $finalSize = floor($finalSize/1000); }
         return $finalSize . $label;
     }
-    
+
     function _mimeHelper($iMimeTypeId) {
-        // FIXME lazy cache this.
-        $sQuery = 'SELECT icon_path FROM mime_types WHERE id = ?';
-        $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
-        
-        if ($res['icon_path'] !== null) {
-           return $res['icon_path'];
-        } else {
-           return 'unspecified_type';
-        }
+        return KTMime::getIconPath($iMimeTypeId);
     }
 }
 
