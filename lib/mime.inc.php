@@ -143,6 +143,26 @@ class KTMime {
         return null;
     }
 
+    function getIconPath($iMimeTypeId) {
+        $cached = KTUtil::arrayGet($GLOBALS['_KT_icon_path_cache'], $iMimeTypeId);
+        if (!empty($cached)) {
+            return $cached;
+        }
+        $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId] = KTMime::_getIconPath($iMimeTypeId);
+        return $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId];
+    }
+
+    function _getIconPath($iMimeTypeId) {
+        $sQuery = 'SELECT icon_path FROM mime_types WHERE id = ?';
+        $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
+
+        if ($res['icon_path'] !== null) {
+           return $res['icon_path'];
+        } else {
+           return 'unspecified_type';
+        }
+    }
+
     /**
     * Strip all but the extension from a file. For instance, input of
     * 'foo.tif' would return 'tif'.
@@ -154,3 +174,5 @@ class KTMime {
         return strtolower(substr($sFileName, strrpos($sFileName, ".")+1, strlen($sFileName) - strrpos($sFileName, ".")));
     }
 }
+
+$_KT_icon_path_cache = array();
