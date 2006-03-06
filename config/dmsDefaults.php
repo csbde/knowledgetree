@@ -31,6 +31,10 @@ ini_set('display_startup_errors', '1');
 ini_set('magic_quotes_runtime', '0');
 ini_set('arg_separator.output', '&');
 
+$microtime_simple = explode(' ', microtime());
+
+$_KT_starttime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
+unset($microtime_simple);
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
     define('KT_DIR', realpath(dirname(__FILE__) . '/..'));

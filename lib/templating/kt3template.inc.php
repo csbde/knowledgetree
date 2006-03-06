@@ -359,6 +359,14 @@ class KTPage {
 		
 		return KTUtil::ktLink('help.php',$this->helpPage); 
 	}
+	
+	function getReqTime() {
+
+        $microtime_simple = explode(' ', microtime());
+        $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
+
+	    return ($finaltime - $GLOBALS['_KT_starttime']);
+	}
 }
 
 /* set $main - this is used by the rest of the system. */
