@@ -26,6 +26,8 @@
  * @package lib
  */
 
+require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+
 class KTEntity {
     var $_bUsePearError = false;
     /** object primary key */
@@ -33,6 +35,21 @@ class KTEntity {
 
     function getId() {
         return $this->iId;
+    }
+
+    function _cachedGroups() {
+        return array('getlist');
+    }
+
+    function clearCachedGroups() {
+        $groups = $this->_cachedGroups();
+        foreach ($groups as $group) {
+            global $default;
+            $group = sprintf("%s/%s", get_class($this), $group);
+            $default->log->debug("Clearing cached group: $group");
+            $oCache =& KTCache::getSingleton();
+            $oCache->clear($group);
+        }
     }
     
     /**
@@ -52,6 +69,7 @@ class KTEntity {
                     return $id;
                 }
             }
+            $this->clearCachedGroups();
             $this->iId = $id;
             return true;
         }
@@ -66,6 +84,10 @@ class KTEntity {
      *
      */
     function update() {
+        $group = sprintf("%s/%s", get_class($this), 'id');
+        $oCache =& KTCache::getSingleton();
+        $mCached = $oCache->remove($group, $this->iId);
+
         if ($this->iId > 0) {
             $res = DBUtil::autoUpdate($this->_table(), $this->_fieldValues(), $this->iId);
             if (PEAR::isError($res)) {
@@ -88,6 +110,9 @@ class KTEntity {
     *
     */
     function delete() {
+        $group = sprintf("%s/%s", get_class($this), 'id');
+        $oCache =& KTCache::getSingleton();
+        $mCached = $oCache->remove($group, $this->iId);
         if ($this->iId >= 0) {
             $res = DBUtil::autoDelete($this->_table(), $this->iId);
             if (PEAR::isError($res)) {
@@ -241,12 +266,36 @@ class KTEntityUtil {
             $aOptions = array();
         }
         $bIDs = false;
+        $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
         $sIDField = 'id';
-        if (is_array($aOptions)) {
-            $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
-            $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
+        $cache = KTUtil::arrayGet($aOptions, 'cache', false);
+        $fullselect = KTUtil::arrayGet($aOptions, 'fullselect', false);
+        if ($cache) {
+            global $default;
+            if (is_array($sWhereClause)) {
+                $vals = serialize($sWhereClause[1]);
+            } else {
+                $vals = serialize($sWhereClause);
+            }
+            $default->log->debug(sprintf("Trying object cache for class %s, %s: %s", $sClassName, $cache, $vals));
+
+            $oCache =& KTCache::getSingleton();
+            $group = sprintf("%s/%s", $sClassName, $cache);
+            $mCached = $oCache->get($group, $vals);
+            if ($mCached) {
+                $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
+                return $mCached;
+                /* */
+            }
         }
-        $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
+        if (!empty($fullselect)) {
+            $oObject = new $sClassName;
+            $select = $oObject->_getSqlSelection();
+            $sQuery = "SELECT $select FROM " . $sTable;/*ok*/
+        } else {
+            $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
+            $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
+        }
         $aParams = array();
         if (!is_null($sWhereClause)) {
             if (is_string($sWhereClause)) {
@@ -272,7 +321,13 @@ class KTEntityUtil {
         if (!empty($sOrderBy)) {
             $sQuery .= " ORDER BY " . $sOrderBy;
         }
-        $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+
+        if (!empty($fullselect)) {
+            $aIDs = DBUtil::getResultArray(array($sQuery, $aParams));
+        } else {
+            $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+        }
+
         if (PEAR::isError($aIDs)) {
             return $aIDs;
         }
@@ -281,9 +336,20 @@ class KTEntityUtil {
             return $aIDs;
         }
 
+        if (!empty($fullselect)) {
+            $aRet =& KTEntityUtil::loadFromArrayMulti($sClassName, $aIDs);
+            if ($cache) {
+                $oCache->set($group, $vals, $aRet);
+            }
+            return $aRet;
+        }
         $aRet = array();
         foreach ($aIDs as $iId) {
             $aRet[] =& call_user_func(array($sClassName, 'get'), $iId);
+        }
+        if ($cache) {
+            $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
+            $oCache->set($group, $vals, $aRet);
         }
         return $aRet;
     }
@@ -318,12 +384,50 @@ class KTEntityUtil {
         return true;
     }
 
+    function &loadFromArray ($sClassName, $aArray, $aOptions = null) {
+        $oObject =& new $ClassName;
+        $ret = $oObject->loadFromArray($aArray);
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $oCache =& KTCache::getSingleton();
+        $group = sprintf("%s/%s", $sClassName, 'id');
+        $oCache->set($group, $oObject->getId(), $oObject);
+        return $oObject;
+    }
+
+    function &loadFromArrayMulti($sClassName, $aMultiArray, $aOptions = null) {
+        $aRet = array();
+        foreach ($aMultiArray as $aArray) {
+            $oObject =& new $sClassName;
+            $ret = $oObject->loadFromArray($aArray);
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+            $aRet[] = $oObject;
+            $oCache =& KTCache::getSingleton();
+            $group = sprintf("%s/%s", $sClassName, 'id');
+            $oCache->set($group, $oObject->getId(), $oObject);
+        }
+        return $aRet;
+    }
+
     function &get($sClassName, $iId) {
+        $oCache =& KTCache::getSingleton();
+        $group = sprintf("%s/%s", $sClassName, 'id');
+        $mCached = $oCache->get($group, $iId);
+        if ($mCached) {
+            global $default;
+            $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
+            return $mCached;
+            /* */
+        }
         $oObject =& new $sClassName;
         $res = $oObject->load($iId);
         if (PEAR::isError($res)) {
             return $res;
         }
+        $oCache->set($group, $iId, $oObject);
         return $oObject;
     }
 
