@@ -73,7 +73,6 @@ class KTDocumentCore extends KTEntity {
 
         // transaction-related
         "iCreatorId" => 'creator_id',
-        
         "dCreated" => 'created',
         "iModifiedUserId" => 'modified_user_id',
         "dModified" => 'modified',
@@ -93,7 +92,6 @@ class KTDocumentCore extends KTEntity {
         // permission-related
         "iPermissionObjectId" => 'permission_object_id',
         "iPermissionLookupId" => 'permission_lookup_id',
-        "iOwnerId" => 'owner_id',
     );
 
     function KTDocument() {
@@ -102,8 +100,6 @@ class KTDocumentCore extends KTEntity {
     // {{{ getters/setters
     function getCreatorId() { return $this->iCreatorId; }
     function setCreatorId($iNewValue) { $this->iCreatorId = $iNewValue; }
-    function getOwnerId() { return $this->iOwnerId; }
-    function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }    
     function getCreatedDateTime() { return $this->dCreated; }
     function getModifiedUserId() { return $this->iModifiedUserId; }
     function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
@@ -216,9 +212,6 @@ class KTDocumentCore extends KTEntity {
         if (empty($this->iModifiedUserId)) {
             $this->iModifiedUserId = $this->iCreatorId;
         }
-        if (empty($this->iOwnerId)) {
-            $this->iOwnerId = $this->iCreatorId;
-        }
         if (empty($this->iMetadataVersion)) {
             $this->iMetadataVersion = 0;
         }
@@ -228,7 +221,7 @@ class KTDocumentCore extends KTEntity {
         $oFolder = Folder::get($this->getFolderId());
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();
         $res = parent::create();
-        
+
         if ($res === true) {
             KTPermissionUtil::updatePermissionLookup($this);
         }

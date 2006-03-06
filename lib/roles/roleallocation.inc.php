@@ -66,18 +66,6 @@ class RoleAllocation extends KTEntity {
 		$this->iPermissionDescriptorId = $oDescriptor->getId();
 	}
 	
-	function getAllowed() {
-	    if (!is_null($this->iPermissionDescriptorId)) {
-	        $oDescriptor = KTPermissionDescriptor::get($this->iPermissionDescriptorId); // fully done, etc.	
-		    $aAllowed = $oDescriptor->getAllowed();
-		} else {
-		    $aAllowed = array();
-		}
-		return $aAllowed;
-	}
-		
-	
-	
     function _fieldValues () { return array(
             'role_id' => $this->iRoleId,
             'folder_id' => $this->iFolderId,
