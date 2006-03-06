@@ -567,9 +567,9 @@ class KTDocumentUtil {
     // }}}
     
     // {{{ delete
-    function delete($oDocument, $sReason) {
+    function delete($oDocument, $sReason, $iDestFolderId = null) {
         $oDocument =& KTUtil::getObject('Document', $oDocument);
-        
+        if (is_null($iDestFolderId)) { $iDestFolderId = $oDocument->getFolderID(); }
         $oStorageManager =& KTStorageManagerUtil::getSingleton();
         
         global $default;
@@ -588,7 +588,7 @@ class KTDocumentUtil {
         
                 // flip the status id
         $oDocument->setStatusID(DELETED);
-        
+        $oDocument->setFolderID($iDestFolderId); // try to keep it in _this_ folder, otherwise move to root.
         
         $res = $oDocument->update();
         if (PEAR::isError($res) || ($res == false)) {
