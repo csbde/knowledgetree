@@ -133,19 +133,9 @@ class Group extends KTEntity {
 	/**
 	 * Returns an array of Users in this group.
 	 */
-	function getUsers() {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT user_id FROM $default->users_groups_table WHERE group_id = ?", $this->iId));/*ok*/
-		$aUsers = array();		
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oUser = & User::get($sql->f("user_id"));
-				$aUsers[$iCount++] = $oUser;
-			}
-		}
-		return $aUsers;		
+	function &getUsers() {
+	    // legacy api.
+		return $this->getMembers();		
 	}
 	
     function &getMembers() {
