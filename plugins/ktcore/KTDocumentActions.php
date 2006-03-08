@@ -359,7 +359,7 @@ class KTDocumentEditAction extends KTDocumentAction {
 class KTDocumentDeleteAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.delete';
 
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.delete";
 
     function getDisplayName() {
         return _('Delete');

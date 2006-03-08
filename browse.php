@@ -43,6 +43,8 @@ require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/KTFolderActions.php');
 
+require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
+require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 
 /******* NBM's FAMOUS MOVECOLUMN HACK
  *
@@ -683,6 +685,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
         
+        $oPerm = KTPermission::getByName('ktcore.permissions.delete');
 
         // now show the items...
         $delItems = array();
@@ -696,6 +699,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $folderStr = '<strong>' . _('Folders: ') . '</strong>';
             foreach ($aFolderSelection as $iFolderId) {
                 $oF = Folder::get($iFolderId);
+                if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oF)) {
+                    $this->errorRedirectToMain(_('You do not have permission to delete the folder: ') . $oF->getName());
+                }
                 $delItems['folders'][] = $oF->getName();
             }
             $folderStr .= implode(', ', $delItems['folders']);
@@ -705,7 +711,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $documentStr = '<strong>' . _('Documents: ') . '</strong>';
             foreach ($aDocumentSelection as $iDocId) {
                 $oD = Document::get($iDocId);
-                $delItems['documents'][] = $oD->getName();
+                if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oD)) {
+                    $this->errorRedirectToMain(_('You do not have permission to delete the document: ') . $oD->getName());
+                }
+                if (!PEAR::isError($oD)) {
+                    $delItems['documents'][] = $oD->getName();
+                }
             }
             $documentStr .= implode(', ', $delItems['documents']);
         }
@@ -734,7 +745,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         
         
-        
+        $oPerm = KTPermission::getByName('ktcore.permissions.delete');
         $res = KTUtil::arrayGet($_REQUEST,'sReason');
         $sReason = $res;
         if (empty($res)) {
@@ -751,17 +762,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $oF = Folder::get($id);
             if (PEAR::isError($oF) || ($oF == false)) {
                 return $this->errorRedirectToMain(_('Invalid Folder selected.'));
-            } else {
+            } else if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oF)) {
+                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the folder: %s'), $oF->getName()));             
+            } else{
                 $aFolders[] = $oF;
             }
         }
         foreach ($aDocumentSelection as $id) {
             $oD = Document::get($id);
-            if (!Permission::userHasDocumentWritePermission($oD)) {
-                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the documen: %s'), $oD->getName()));             
-            }
+            
             if (PEAR::isError($oD) || ($oD == false)) {
                 return $this->errorRedirectToMain(_('Invalid Document selected.'));
+            } else if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oD)) {
+                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the document: %s'), $oD->getName()));             
             } else {
                 $aDocuments[] = $oD;
             }
