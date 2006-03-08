@@ -203,8 +203,7 @@ class KTFolderUtil {
     function delete($oStartFolder, $oUser, $sReason, $aOptions = null) {
         require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 
-        // FIXME: we need to work out if "write" is the right perm.
-        $oPerm = KTPermission::getByName('ktcore.permissions.write');
+        $oPerm = KTPermission::getByName('ktcore.permissions.delete');
 
         $bIgnorePermissions = KTUtil::arrayGet($aOptions, 'ignore_permissions');
         
@@ -270,7 +269,7 @@ class KTFolderUtil {
         
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
-            $res = KTDocumentUtil::delete($oDocument, $sReason, 1); // id of destination folder = ROOT
+            $res = KTDocumentUtil::delete($oDocument, $sReason);
             if (PEAR::isError($res)) {
                 DBUtil::rollback();
                 return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());
