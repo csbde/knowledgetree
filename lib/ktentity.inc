@@ -43,11 +43,11 @@ class KTEntity {
 
     function clearCachedGroups() {
         $groups = $this->_cachedGroups();
+        $oCache =& KTCache::getSingleton();
         foreach ($groups as $group) {
             global $default;
             $group = sprintf("%s/%s", get_class($this), $group);
             $default->log->debug("Clearing cached group: $group");
-            $oCache =& KTCache::getSingleton();
             $oCache->clear($group);
         }
     }
@@ -86,7 +86,8 @@ class KTEntity {
     function update() {
         $group = sprintf("%s/%s", get_class($this), 'id');
         $oCache =& KTCache::getSingleton();
-        $mCached = $oCache->remove($group, $this->iId);
+        $oCache->remove($group, $this->iId);
+        $this->clearCachedGroups();
 
         if ($this->iId > 0) {
             $res = DBUtil::autoUpdate($this->_table(), $this->_fieldValues(), $this->iId);
@@ -112,7 +113,8 @@ class KTEntity {
     function delete() {
         $group = sprintf("%s/%s", get_class($this), 'id');
         $oCache =& KTCache::getSingleton();
-        $mCached = $oCache->remove($group, $this->iId);
+        $oCache->remove($group, $this->iId);
+        $this->clearCachedGroups();
         if ($this->iId >= 0) {
             $res = DBUtil::autoDelete($this->_table(), $this->iId);
             if (PEAR::isError($res)) {
@@ -281,8 +283,8 @@ class KTEntityUtil {
 
             $oCache =& KTCache::getSingleton();
             $group = sprintf("%s/%s", $sClassName, $cache);
-            $mCached = $oCache->get($group, $vals);
-            if ($mCached) {
+            list($bCached, $mCached) = $oCache->get($group, $vals);
+            if ($bCached) {
                 $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
                 return $mCached;
                 /* */
@@ -398,6 +400,7 @@ class KTEntityUtil {
 
     function &loadFromArrayMulti($sClassName, $aMultiArray, $aOptions = null) {
         $aRet = array();
+        $oCache =& KTCache::getSingleton();
         foreach ($aMultiArray as $aArray) {
             $oObject =& new $sClassName;
             $ret = $oObject->loadFromArray($aArray);
@@ -405,7 +408,6 @@ class KTEntityUtil {
                 return $ret;
             }
             $aRet[] = $oObject;
-            $oCache =& KTCache::getSingleton();
             $group = sprintf("%s/%s", $sClassName, 'id');
             $oCache->set($group, $oObject->getId(), $oObject);
         }
@@ -415,8 +417,8 @@ class KTEntityUtil {
     function &get($sClassName, $iId) {
         $oCache =& KTCache::getSingleton();
         $group = sprintf("%s/%s", $sClassName, 'id');
-        $mCached = $oCache->get($group, $iId);
-        if ($mCached) {
+        list($bCached, $mCached) = $oCache->get($group, $iId);
+        if ($bCached) {
             global $default;
             $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
             return $mCached;
@@ -431,6 +433,24 @@ class KTEntityUtil {
         return $oObject;
     }
 
+    function _getBy_equals($sField, $aValue) {
+        $aParam = $aValue['value'];
+        if (!is_array($aParam)) {
+            return array("$sField = ?", array($aParam));
+        }
+        $sParam = DBUtil::paramArray($aParam);
+        return array("$sField IN ($sParam)", array($aParam));
+    }
+
+    function _getBy_nequals($sField, $aValue) {
+        $aParam = $aValue['value'];
+        if (!is_array($aParam)) {
+            return array("$sField \!= ?", array($aParam));
+        }
+        $sParam = DBUtil::paramArray($aParam);
+        return array("$sField NOT IN ($sParam)", array($aParam));
+    }
+
     function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
         $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
         if ($bMulti) {
@@ -440,19 +460,31 @@ class KTEntityUtil {
         }
         $bNoneOk = KTUtil::arrayGet($aOptions, 'noneok', $bNoneOk);
         if (is_string($aField)) {
-            $sWhereClause = array("$aField = ?", array($mValue));
-        } else {
-            $aWhere = array();
-            foreach ($aField as $k => $sField) {
-                if (is_array($mValue[$k])) {
-                    $sParam = DBUtil::paramArray($mValue[$k]);
-                    $aWhere[] = array("$sField IN ($sParam)", array($mValue[$k]));
-                } else {
-                    $aWhere[] = array("$sField = ?", array($mValue[$k]));
-                }
-            }
-            $sWhereClause = KTUtil::whereToString($aWhere);
+            $aField = array($aField);
+            $mValue = array($mValue);
         }
+
+        $aWhere = array();
+        foreach ($aField as $k => $sField) {
+            $mThisValue = $mValue[$k];
+            if (!is_array($mThisValue)) {
+                $mThisValue = array('type' => 'equals', 'value' => $mThisValue);
+            }
+
+            $sType = KTUtil::arrayGet($mThisValue, 'type');
+            if (empty($sType)) {
+                $mThisValue = array('type' => 'equals', 'value' => $mThisValue);
+                $sType = 'equals';
+            }
+
+            $sFunc = array('KTEntityUtil', sprintf('_getby_%s', $sType));
+            if (!is_callable($sFunc)) {
+                return PEAR::raiseError('Unknown comparison type given: ' . $sType);
+            }
+            $aWhere[] = call_user_func($sFunc, $sField, $mThisValue);
+        }
+        $sWhereClause = KTUtil::whereToString($aWhere);
+
         $aObjects =& KTEntityUtil::getList2($sClassName, $sWhereClause, $aOptions);
         if (PEAR::isError($aObjects)) {
             return $aObjects;

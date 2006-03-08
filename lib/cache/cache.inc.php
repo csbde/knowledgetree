@@ -37,16 +37,20 @@ class KTCache {
 
     function get($group, $id) {
         if (empty($this->bEnabled)) {
-            return false;
+            return array(false, false);
         }
-        return $this->oLite->get($id, strtolower($group));
+        $stuff = $this->oLite->get($id, strtolower($group));
+        if (is_array($stuff)) {
+            return array(true, $stuff[0]);
+        }
+        return array(false, false);
     }
 
     function set($group, $id, $val) {
         if (empty($this->bEnabled)) {
             return false;
         }
-        return $this->oLite->save($val, $id, strtolower($group));
+        return $this->oLite->save(array($val), $id, strtolower($group));
     }
 
     function remove($group, $id) {
