@@ -60,7 +60,7 @@ KnowledgeTree Installation Notes
    - However, you should change this once you've performed your initial
      evalution of KnowledgeTree for the security of your documents.
 
-   - The following settings in config/environment.php control the
+   - The following settings in config/config.ini control the
      database connectivity, and can be set as shown:
         [db]
         dbHost           = localhost
