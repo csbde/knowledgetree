@@ -50,6 +50,10 @@ class KTPluginEntity extends KTEntity {
     function _table() {
         return KTUtil::getTableName('plugins');
     }
+
+    function _cachedGroups() {
+        return array('getList', 'getByNamespace');
+    }
     // }}}
 
     // {{{ getters/setters
@@ -76,12 +80,14 @@ class KTPluginEntity extends KTEntity {
     // STATIC
     function &getList($sWhereClause = null) {
         global $default;
-        return KTEntityUtil::getList2('KTPluginEntity', $sWhereClause);
+        $aOptions = array('fullselect' => true, 'cache' => 'getList');
+        return KTEntityUtil::getList2('KTPluginEntity', $sWhereClause, $aOptions);
     }
 
     // STATIC
     function &getByNamespace($sName) {
-        return KTEntityUtil::getBy('KTPluginEntity', 'namespace', $sName);
+        $aOptions = array('fullselect' => true, 'cache' => 'getByNamespace');
+        return KTEntityUtil::getBy('KTPluginEntity', 'namespace', $sName, $aOptions);
     }
 
     function &getEnabledPlugins() {
