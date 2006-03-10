@@ -99,8 +99,13 @@ class KTSavedSearch extends KTEntity {
         return $res;
     }
 
+    function _cachedGroups() {
+        return array('getList', 'getSearches', 'getConditions', 'getSystemSearches');
+    }
+
     // }}}
 
+    // {{{ getters/setters
     function getId() { return $this->iId; }
     function getName() { return $this->sName; }
     function getNamespace() { return $this->sNamespace; }
@@ -115,6 +120,7 @@ class KTSavedSearch extends KTEntity {
     function setIsComplete($bIsComplete) { $this->bIsComplete = $bIsComplete; }
     function setUserId($iUserId) { $this->iUserId = $iUserId; }
     function setSearch($aSearch) { $this->aSearch = $aSearch; }
+    // }}}
 
     function &createFromArray($aValues) {
         return KTEntityUtil::createFromArray('KTSavedSearch', $aValues);
@@ -137,6 +143,7 @@ class KTSavedSearch extends KTEntity {
             'is_condition' => false,
         ), array(
             'multi' => true,
+            'cache' => 'getSearches',
         ));
     }
 
@@ -145,6 +152,7 @@ class KTSavedSearch extends KTEntity {
             'is_condition' => true,
         ), array(
             'multi' => true,
+            'cache' => 'getCondition',
         ));
     }
 
@@ -155,6 +163,7 @@ class KTSavedSearch extends KTEntity {
         ), array(
             'multi' => true,
             'noneok' => true,
+            'cache' => 'getSystemSearches',
         ));
     }
 }
