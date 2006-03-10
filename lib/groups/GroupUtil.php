@@ -232,9 +232,16 @@ class GroupUtil {
     }
 
     // {{{ _listGroupsIDsForUserExpand
-    function _listGroupIDsForUserExpand ($oUser, $aOptions = null) {
-        global $default;
+    function _listGroupIDsForUserExpand ($oUser) {
         $iUserId = KTUtil::getId($oUser);
+        global $default;
+        $oCache = KTCache::getSingleton();
+        $group = "groupidsforuser";
+        list($bCached, $mCached) = $oCache->get($group, $oUser->getId());
+        if ($bCached) {
+            $default->log->debug(sprintf("Using group cache for _listGroupIDsForUserExpand %d", $iUserId));
+            return $mCached;
+        }
         $aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::buildGroupArray());
         $aDirectGroups = GroupUtil::listGroupsForUser($oUser);
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
@@ -248,6 +255,7 @@ class GroupUtil {
         }
         $aGroupIDs = array_unique($aGroupIDs);
         sort($aGroupIDs);
+        $oCache->set($group, $oUser->getId(), $aGroupIDs);
         return $aGroupIDs;
     }
     // }}}
