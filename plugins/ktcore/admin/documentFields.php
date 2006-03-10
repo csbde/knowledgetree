@@ -202,8 +202,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     // {{{ do_newfield
     function do_newfield() {
         $aErrorOptions = array(
-			'redirect_to' => array('edit','fFieldsetId=' . $_REQUEST['fFieldsetId']),
+			'redirect_to' => array('main'),
 		);	
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $aErrorOptions = array(
+			'redirect_to' => array('edit', sprintf('fFieldsetId=%d', $oFieldset->getId())),
+		);
 	
         $is_lookup = false;
         $is_tree = false;
@@ -215,7 +219,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $is_tree = true;
         }
 		
-		$sName = $this->oValidator->validateEntityName("DocumentField", "field", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
+        $aErrorOptions['condition'] = array('parent_fieldset' => $oFieldset->getId());
+		$sName = $this->oValidator->validateEntityName("DocumentField", $_REQUEST['name'], $aErrorOptions);
+        unset($aErrorOptions['condition']);
 		
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
 			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
@@ -283,10 +289,13 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		
 		$sName = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'), 
 			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a name")));
-		if ($sName != $oField->getName()) { 
-		    $sName = $this->oValidator->validateEntityName("DocumentField", "field", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
-		}		
-			
+
+        $aErrorOptions['condition'] = array('parent_fieldset' => $oFieldset->getId());
+        $aErrorOptions['rename'] = $oField->getId();
+		$sName = $this->oValidator->validateEntityName("DocumentField", $_REQUEST['name'], $aErrorOptions);
+        unset($aErrorOptions['condition']);
+        unset($aErrorOptions['rename']);
+
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
 			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
 
