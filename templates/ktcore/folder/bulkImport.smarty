@@ -55,7 +55,7 @@ addLoadEvent(startupMetadata);
 {$context->oPage->requireJSStandalone($sJavascript)}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>{i18n}Bulk import{/i18n}</legend>
+<fieldset><legend>{i18n}Import from Server Location{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk import facility allows for a number
 of documents to be added to the document management system easily.
 Provide a path on the <strong>server</strong>, and all documents and
@@ -68,6 +68,15 @@ system.{/i18n}</p>
 {foreach from=$add_fields item=oWidget }
   {$oWidget->render()}
 {/foreach}
+
+
+<p class="descriptiveText">{i18n}If you do not need to modify any the metadata
+for this document (see below), then you can simply click "Add" here to finish the
+process and add the document.{/i18n}</p>
+<input type="submit" name="submit" value="{i18n}Add{/i18n}" />
+
+<hr />
+
 
 <div id="generic_metadata_fields">
 {foreach item=oFieldset from=$generic_fieldsets}
