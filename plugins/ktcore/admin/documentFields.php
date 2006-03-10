@@ -115,11 +115,25 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     // {{{ edit_object
     function do_editobject() {
-        
-        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
-        $oFieldset->setName($_REQUEST['name']);
-        $oFieldset->setNamespace($_REQUEST['namespace']);
-        $oFieldset->setDescription($_REQUEST['description']);        
+		$aErrorOptions = array(
+			'redirect_to' => array('main'),
+		);
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId'], $aErrorOptions);
+		$aErrorOptions = array(
+			'redirect_to' => array('edit', sprintf('fFieldsetId=%d', $oFieldset->getId())),
+		);
+        $aErrorOptions['empty_message'] = _("No name was given for the fieldset");
+        $aErrorOptions['duplicate_message'] = _("A fieldset with that name already exists");
+        $aErrorOptions['rename'] = $oFieldset->getId();
+        $sName = $this->oValidator->validateEntityName("KTFieldset", $_REQUEST['name'], $aErrorOptions);
+        $aErrorOptions['message'] = sprintf(_("The field '%s' is a required field"), _("Namespace"));
+        $sNamespace = $this->oValidator->validateString($_REQUEST['namespace'], $aErrorOptions);
+        $aErrorOptions['message'] = sprintf(_("The field '%s' is a required field"), _("Description"));
+        $sDescription = $this->oValidator->validateString($_REQUEST['description'], $aErrorOptions);
+
+        $oFieldset->setName($sName);
+        $oFieldset->setNamespace($sNamespace);
+        $oFieldset->setDescription($sDescription);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
@@ -154,7 +168,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
 		
 		// basic validation
-        $sName = $this->oValidator->validateEntityName("KTFieldset", "fieldset", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
+        $aErrorOptions['empty_message'] = _("No name was given for the fieldset");
+        $aErrorOptions['duplicate_message'] = _("A fieldset with that name already exists");
+        $sName = $this->oValidator->validateEntityName("KTFieldset", $_REQUEST['name'], $aErrorOptions);
 			
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
 			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
