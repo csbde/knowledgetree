@@ -79,7 +79,8 @@ class KTPermission extends KTEntity {
 
     // STATIC
     function &getByName($sName) {
-        return KTEntityUtil::getBy('KTPermission', 'name', $sName);
+        $aOptions = array("cache" => "getByName");
+        return KTEntityUtil::getBy('KTPermission', 'name', $sName, $aOptions);
     }
 }
 
