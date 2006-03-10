@@ -153,7 +153,7 @@ class Document {
     // {{{ getVersion
     /** returns the complete version number as a string */
     function getVersion() {
-        return $this->getMajorVersion() . "." . $this->getMinorVersion();
+        return $this->getMajorVersionNumber() . "." . $this->getMinorVersionNumber();
     }
     // }}}
 
