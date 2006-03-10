@@ -251,6 +251,29 @@ class DBUtil {
         DBUtil::runQuery("COMMIT");
     }
 
+    function setupAdminDatabase() {
+        global $default;
+        $dsn = array(
+            'phptype'  => $default->dbType,
+            'username' => $default->dbAdminUser,
+            'password' => $default->dbAdminPass,
+            'hostspec' => $default->dbHost,
+            'database' => $default->dbName,
+        );
+
+        $options = array(
+            'debug'       => 2,
+            'portability' => DB_PORTABILITY_ERRORS,
+            'seqname_format' => 'zseq_%s',
+        );
+
+        $default->_admindb = &DB::connect($dsn, $options);
+        if (PEAR::isError($default->_admindb)) {
+            die($default->_admindb->toString());
+        }
+        $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
+        return;
+    }
 }
 
 ?>
