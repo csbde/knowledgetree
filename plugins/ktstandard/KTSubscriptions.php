@@ -40,6 +40,7 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
+    var $autoRegister = true;
 
     function setup() {
         $this->registerPortlet('browse', 'KTSubscriptionPortlet',

@@ -28,6 +28,7 @@
 
 class KTIndexerPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.indexer.plugin";
+    var $autoRegister = true;
 
     function setup() {
         $this->registerTrigger('content', 'transform', 'KTWordIndexerTrigger',
