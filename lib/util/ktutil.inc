@@ -533,6 +533,13 @@ class KTUtil {
     }
     // }}}
 
+    // getBenchmarkTime
+    function getBenchmarkTime () {
+        $microtime_simple = explode(' ', microtime());
+
+        return ((float) $microtime_simple[1] + (float) $microtime_simple[0]);
+    }
+
 }
 
 ?>
