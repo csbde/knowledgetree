@@ -44,11 +44,14 @@ class KTEntity {
     function clearCachedGroups() {
         $groups = $this->_cachedGroups();
         $oCache =& KTCache::getSingleton();
-        foreach ($groups as $group) {
+        $aSuffixes = array('', '_count', '_fullselect');
+        foreach ($groups as $group_base) {
             global $default;
-            $group = sprintf("%s/%s", get_class($this), $group);
-            $default->log->debug("Clearing cached group: $group");
-            $oCache->clear($group);
+            foreach ($aSuffixes as $sSuffix) {
+                $group = sprintf("%s/%s%s", get_class($this), $group_base, $sSuffix);
+                $default->log->debug("Clearing cached group: $group");
+                $oCache->clear($group);
+            }
         }
     }
     
@@ -264,6 +267,7 @@ class KTEntityUtil {
     }
 
     function &getList($sTable, $sClassName, $sWhereClause = null, $aOptions = null) {
+        global $default;
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -273,7 +277,6 @@ class KTEntityUtil {
         $cache = KTUtil::arrayGet($aOptions, 'cache', false);
         $fullselect = KTUtil::arrayGet($aOptions, 'fullselect', false);
         if ($cache) {
-            global $default;
             if (is_array($sWhereClause)) {
                 $vals = serialize($sWhereClause[1]);
             } else {
@@ -282,56 +285,69 @@ class KTEntityUtil {
             $default->log->debug(sprintf("Trying object cache for class %s, %s: %s", $sClassName, $cache, $vals));
 
             $oCache =& KTCache::getSingleton();
-            $group = sprintf("%s/%s", $sClassName, $cache);
+            $suffix = '';
+            if ($fullselect) {
+                $suffix = '_fullselect';
+            }
+            $group = sprintf("%s/%s%s", $sClassName, $cache, $suffix);
             list($bCached, $mCached) = $oCache->get($group, $vals);
-            if ($bCached) {
-                $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
-                return $mCached;
-                /* */
-            }
-        }
-        if (!empty($fullselect)) {
-            $oObject = new $sClassName;
-            $select = $oObject->_getSqlSelection();
-            $sQuery = "SELECT $select FROM " . $sTable;/*ok*/
         } else {
-            $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
-            $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
-        }
-        $aParams = array();
-        if (!is_null($sWhereClause)) {
-            if (is_string($sWhereClause)) {
-                if (substr($sWhereClause, 0, 5) != 'WHERE') {
-                    if (substr($sWhereClause, 0, 5) != 'ORDER') {
-                        $sQuery .= ' WHERE';
-                    }
-                }
-                $sQuery .= ' ' . $sWhereClause;
-            } else if (is_array($sWhereClause)) {
-                if (substr($sWhereClause[0], 0, 5) != 'WHERE') {
-                    if (substr($sWhereClause[0], 0, 5) != 'ORDER') {
-                        $sQuery .= ' WHERE';
-                    }
-                }
-                $sQuery .= ' ' . $sWhereClause[0];
-                $aParams = $sWhereClause[1];
-            } else {
-                return new PEAR_Error('Weird WhereClause passed');
-            }
-        }
-        $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
-        if (!empty($sOrderBy)) {
-            $sQuery .= " ORDER BY " . $sOrderBy;
+            $bCached = false;
         }
 
-        if (!empty($fullselect)) {
-            $aIDs = DBUtil::getResultArray(array($sQuery, $aParams));
+        if ($bCached) {
+            $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
+            $aIDs = $mCached;
+        /* */
         } else {
-            $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+            if (!empty($fullselect)) {
+                $oObject = new $sClassName;
+                $select = $oObject->_getSqlSelection();
+                $sQuery = "SELECT $select FROM " . $sTable;/*ok*/
+            } else {
+                $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
+                $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
+            }
+            $aParams = array();
+            if (!is_null($sWhereClause)) {
+                if (is_string($sWhereClause)) {
+                    if (substr($sWhereClause, 0, 5) != 'WHERE') {
+                        if (substr($sWhereClause, 0, 5) != 'ORDER') {
+                            $sQuery .= ' WHERE';
+                        }
+                    }
+                    $sQuery .= ' ' . $sWhereClause;
+                } else if (is_array($sWhereClause)) {
+                    if (substr($sWhereClause[0], 0, 5) != 'WHERE') {
+                        if (substr($sWhereClause[0], 0, 5) != 'ORDER') {
+                            $sQuery .= ' WHERE';
+                        }
+                    }
+                    $sQuery .= ' ' . $sWhereClause[0];
+                    $aParams = $sWhereClause[1];
+                } else {
+                    return new PEAR_Error('Weird WhereClause passed');
+                }
+            }
+            $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
+            if (!empty($sOrderBy)) {
+                $sQuery .= " ORDER BY " . $sOrderBy;
+            }
+
+            if (!empty($fullselect)) {
+                $aIDs = DBUtil::getResultArray(array($sQuery, $aParams));
+            } else {
+                $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+            }
         }
 
         if (PEAR::isError($aIDs)) {
             return $aIDs;
+        }
+
+        if ($cache && !$bCached) {
+            $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
+            $oCache->set($group, $vals, $aIDs);
         }
 
         if ($bIDs === true) {
@@ -340,18 +356,11 @@ class KTEntityUtil {
 
         if (!empty($fullselect)) {
             $aRet =& KTEntityUtil::loadFromArrayMulti($sClassName, $aIDs);
-            if ($cache) {
-                $oCache->set($group, $vals, $aRet);
-            }
             return $aRet;
         }
         $aRet = array();
         foreach ($aIDs as $iId) {
             $aRet[] =& call_user_func(array($sClassName, 'get'), $iId);
-        }
-        if ($cache) {
-            $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
-            $oCache->set($group, $vals, $aRet);
         }
         return $aRet;
     }
