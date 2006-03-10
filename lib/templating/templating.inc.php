@@ -94,7 +94,8 @@ class KTTemplating {
             return PEAR::raiseError("Could not find template language");
         }
         
-        return new $sClass($sTemplatePath);
+        $oTemplate =& new $sClass($sTemplatePath);
+        return $oTemplate;
     }
     // }}}
 
