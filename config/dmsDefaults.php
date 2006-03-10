@@ -380,6 +380,11 @@ class KTInit {
 
 $KTInit = new KTInit();
 
+// handle unexpected errors in smarty somewhat more gracefully, even if no gettext is installed.
+if (!function_exists('_')) { 
+    function _($s) { return $s; }
+}
+
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 require_once('PEAR.php');
