@@ -32,6 +32,8 @@ class KTPlugin {
     var $bAlwaysInclude = false;
     var $iVersion = 0;
     
+    var $autoRegister = false;
+    
     var $_aPortlets = array();
     var $_aTriggers = array();
     var $_aActions = array();
@@ -227,12 +229,13 @@ class KTPlugin {
             ));
             return $oEntity;
         }
-
+        $disabled = 1;
+        if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
         $oEntity = KTPluginEntity::createFromArray(array(
             'namespace' => $this->sNamespace,
             'path' => $this->stripKtDir($this->sFilename),
             'version' => $this->iVersion,
-            'disabled' => 0,
+            'disabled' => $disabled,
         ));
         if (PEAR::isError($oEntity)) {
             return $oEntity;

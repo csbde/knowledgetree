@@ -31,6 +31,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class SearchDashletPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.searchdashlet.plugin";
+    var $autoRegister = true;
 
     function setup() {
         $this->registerDashlet('SearchDashlet', 'ktstandard.searchdashlet.dashlet', 'SearchDashlet.php');

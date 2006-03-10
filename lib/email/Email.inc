@@ -43,6 +43,8 @@ class Email {
         // create a new phpmailer object.
         require_once(KT_DIR .  '/thirdparty/phpmailer/class.phpmailer.php');
         $this->oMailer = new phpmailer();
+		$this->oMailer->Encoding = 'base64';
+		$this->oMailer->CharSet = 'utf-8';
         $this->oMailer->isSMTP();
         $this->oMailer->Host = $default->emailServer;
         $this->oMailer->From = (strlen($sFromEmail) == 0) ? $default->emailFrom : $sFromEmail;

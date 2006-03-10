@@ -91,7 +91,7 @@ make it available.{/i18n}</p></div>
 <h2>{i18n}Preview{/i18n}</h2>
 <div><p class="descriptiveText">
     {i18n}Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.
-    To edit a category (including adding or removing keywords) click on the "edit" link.{/i18n}
+    To edit a category (including adding or removing keywords) click on the "attach keywords" link next to it.{/i18n}
     </p>
 </div>
 
