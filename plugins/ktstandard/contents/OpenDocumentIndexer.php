@@ -42,15 +42,36 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
     );
 
     function transform() {
+        global $default;
         $iMimeTypeId = $this->oDocument->getMimeTypeId();
         $sMimeType = KTMime::getMimeTypeName($iMimeTypeId);
         $sFileName = $this->oDocument->getFileName();
-        if (in_array($sMimeType, array('application/octet-stream', 'application/zip', 'application/x-zip'))) {
+        $aTestTypes = array('application/octet-stream', 'application/zip', 'application/x-zip');
+        if (in_array($sMimeType, $aTestTypes)) {
             $sExtension = KTMime::stripAllButExtension($sFileName);
             $sTable = KTUtil::getTableName('mimetypes');
-            $sQuery = "SELECT id FROM $sTable WHERE LOWER(filetypes) = ?";
+            $sQuery = "SELECT id, mimetypes FROM $sTable WHERE LOWER(filetypes) = ?";
             $aParams = array($sExtension);
-            $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+            $aRow = DBUtil::getOneResult(array($sQuery, $aParams));
+
+            if (PEAR::isError($aRow)) {
+                $default->log->debug("ODI: error in query: " . print_r($aRow, true));
+                return;
+            }
+            if (empty($aRow)) {
+                $default->log->debug("ODI: query returned entry");
+                return;
+            }
+
+            $id = $aRow['id'];
+            $mimetype = $aRow['mimetypes'];
+            $default->log->debug("ODI: query returned: " . print_r($aRow, true));
+
+            if (in_array($mimetype, $aTestTypes)) {
+                // Haven't changed, really not an OpenDocument file...
+                return;
+            }
+            
             if ($id) {
                 $this->oDocument->setMimeTypeId($id);
                 $this->oDocument->update();
