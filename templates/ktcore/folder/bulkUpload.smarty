@@ -69,6 +69,15 @@ management system.{/i18n}</p>
   {$oWidget->render()}
 {/foreach}
 
+
+<p class="descriptiveText">{i18n}If you do not need to modify any the metadata
+for this document (see below), then you can simply click "Add" here to finish the
+process and add the document.{/i18n}</p>
+<input type="submit" name="submit" value="{i18n}Add{/i18n}" />
+
+<hr />
+
+
 <div id="generic_metadata_fields">
 {foreach item=oFieldset from=$generic_fieldsets}
     {$oFieldset->renderEdit($document_data)}
