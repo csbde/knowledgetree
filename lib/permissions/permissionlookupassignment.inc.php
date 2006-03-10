@@ -82,11 +82,16 @@ class KTPermissionLookupAssignment extends KTEntity {
         ), array('multi' => true));
     }
 
+    function _cachedGroups() {
+        return array('getList', 'getByPermissionAndLookup');
+    }
+
     function &getByPermissionAndLookup($oPermission, $oLookup) {
+        $aOptions = array('cache' => 'getByPermissionAndLookup');
         return KTEntityUtil::getByDict('KTPermissionLookupAssignment', array(
             'permission_id' => $oPermission->getId(),
             'permission_lookup_id' => $oLookup->getId(),
-        ));
+        ), $aOptions);
     }
 
     function &_getLookupIDsByPermissionIDAndDescriptorID($iPermissionID, $iDescriptorID) {
