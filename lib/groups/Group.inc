@@ -127,6 +127,9 @@ class Group extends KTEntity {
 	function getList($sWhereClause = null, $aOptions = null) {
 	    if(!is_array($aOptions)) $aOptions = array($aOptions);
 		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
+        if (is_null($sWhereClause)) {
+            $aOptions['cache'] = 'getList';
+        }
         return KTEntityUtil::getList2('Group', $sWhereClause, $aOptions);
 	}
 	
