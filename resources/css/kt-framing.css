@@ -786,22 +786,26 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /* dashboard blocks. */
 
 #dashboard-container-left { 
+    clear: left;
     width: 45%;
-    padding-right: 2em;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 2em;
     float: left;
-    padding-bottom: 2em;
+    margin-bottom: 2em;
+    
 }
 
 #dashboard-container-right { 
     width: 45%;
-    padding-right: 2em;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 2em;
     float: left;
-    padding-bottom: 2em;
+    margin-bottom: 2em;
 }
 
 .dashboard_block {
-    float: left;
-    position: relative;
     width: 100%;
     padding-top: 2em;
 }
