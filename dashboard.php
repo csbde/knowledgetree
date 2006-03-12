@@ -65,11 +65,27 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->setBreadcrumbDetails(_("Home"));
         $this->oPage->title = _("Dashboard");
     
+        // simplistic improvement over the standard rendering:  float half left
+        // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
+
+        $aDashletsLeft = array();
+        $aDashletsRight = array(); 
+
+        $i = 0;
+        foreach ($aDashlets as $oDashlet) {
+            if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
+            else {$aDashletsRight[] = $oDashlet; }
+            $i += 1;
+            $i %= 2;
+        }
+
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
         $aTemplateData = array(
               "context" => $this,
-              "dashlets" => $aDashlets,
+              "dashlets_left" => $aDashletsLeft,
+              "dashlets_right" => $aDashletsRight,
         );
         return $oTemplate->render($aTemplateData);
     }
