@@ -1,9 +1,18 @@
-{foreach item=oDashlet from=$dashlets}
+<div id="dashboard-container-left">
+{foreach item=oDashlet from=$dashlets_left}
 <div class="dashboard_block">
 {$oDashlet->render()}
 </div>
 {/foreach}
+</div>
 
+<div id="dashboard-container-right">
+{foreach item=oDashlet from=$dashlets_right}
+<div class="dashboard_block">
+{$oDashlet->render()}
+</div>
+{/foreach}
+</div>
 
 
 
