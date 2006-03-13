@@ -29,6 +29,10 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
+ 
+require_once(KT_LIB_DIR . '/users/User.inc'); 
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransactionType.inc.php'); 
+ 
 class DocumentTransaction {
 	
 	/** primary key of document transaction */
@@ -38,7 +42,7 @@ class DocumentTransaction {
 	var $iUserID;
 	var $dDateTime;
 	var $sIP;
-	var $sFilename;
+	var $sFileName;
 	var $sComment;
 	var $sTransactionNS;
 	
@@ -82,6 +86,19 @@ class DocumentTransaction {
 	function getVersion() {	return $this->sVersion;	}
 	function getComment() {	return $this->sComment;	}
     function _table() { return KTUtil::getTableName('document_transactions'); }
+	
+	// some of these can throw a PEAR::error
+	function & getUser() { return User::get($this->iUserID); }
+	function getFilename() { return $this->sFileName; }
+	function getDate() { return $this->dDateTime; }
+	function & getTransactionType() { return KTDocumentTransactionType::getByNamespace($this->sTransactionNS); }
+	function getAction() {
+		$oType = $this->getTransactionType();
+		$action = _('Unknown Action');
+		if (!PEAR::isError($oType)) { $action = $oType->getName(); }
+		
+		return $action;
+	}
 	
 	/**
 	* Create the document transaction in the database
