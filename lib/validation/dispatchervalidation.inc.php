@@ -351,32 +351,32 @@ class KTDispatcherValidation {
     }
     
     
-    /* assuming something has a 'getList' static method, this may work */
-    function validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions) {
-        $aMethod = array($sEntityTypeName,  'getList');
-        $sExtraCondition = KTUtil::arrayGet($aOptions, 'extra_condition', false);
+    /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
+    function validateEntityName($sEntityTypeName, $sName, $aOptions = null) {
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'empty_message', _("No name was given for this item"));
         
-        $sCondition = "name = '$sName'";
-        if($sExtraCondition) {
-            $sCondition .= " and $sExtraCondition";
-        }
+        // FIXME BD:  don't you mean $sName = $this->validateString ...
+        $this->validateString($sName, $aOptions);
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'duplicate_message', _("An item with this name already exists"));
+        return $this->validateDuplicateName($sEntityTypeName, $sName, $aOptions);
+    }
 
-        $aList =& call_user_func($aMethod, $sCondition);
+    function validateDuplicateName($sClass, $sName, $aOptions = null) {
+        $aMethod = array('KTEntityUtil', 'getByDict');
+        $aConditions = KTUtil::arrayGet($aOptions, 'condition', array());
+        $aConditions['name'] = $sName;
+        $iRename = KTUtil::arrayGet($aOptions, 'rename');
+        if ($iRename) {
+            $aConditions['id'] = array('type' => 'nequals', 'value' => $iRename);
+        }
+        $aOptions['ids'] = true;
+        $aOptions['multi'] = true;
+        $aList = call_user_func($aMethod, $sClass, $aConditions, $aOptions);
         if(count($aList)) {
-            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("A $sHumanEntityTypeName with that name already exists"));
+            $aOptions['defaultmessage'] = sprintf(_("An entity with that name already exists: class %s, name %s"), $sClass, $sName);
             $this->handleError($aOptions);
         }
         return $sName;
-    }
-    
-    /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
-    function validateEntityName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions) {
-        $aNewOptions = $aOptions;
-        $aNewOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("No name was given for the $sHumanEntityTypeName"));
-        
-        // FIXME BD:  don't you mean $sName = $this->validateString ...
-        $this->validateString($sName, $aNewOptions);
-        return $this->validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions);
     }
             
 

@@ -58,7 +58,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
     }
 
     function do_new() {
-        $sName = $this->oValidator->validateEntityName('DocumentType', 'document type', $_REQUEST['name'], array("redirect_to" => array("main")));
+        $sName = $this->oValidator->validateEntityName('DocumentType', $_REQUEST['name'], array("redirect_to" => array("main")));
         
         $oDocumentType =& DocumentType::createFromArray(array(
             'name' => $sName,
@@ -167,7 +167,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('edit', sprintf('fDocumentTypeId=%d', $iDocumentTypeId)),
         );
 
-        $sName = $this->oValidator->validateEntityName('DocumentType', 'document type', $_REQUEST['name'], $aErrorOptions);
+        $sName = $this->oValidator->validateEntityName('DocumentType', $_REQUEST['name'], $aErrorOptions);
 
         $oDocumentType->setName($sName);
         $res = $oDocumentType->update();

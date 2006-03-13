@@ -517,7 +517,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         );
         
         $sName = KTUtil::arrayGet($_REQUEST, 'fName');
-        $sName = $this->oValidator->validateEntityName('KTWorkflow', 'workflow', $sName, $aErrorOptions);
+        $sName = $this->oValidator->validateEntityName('KTWorkflow', $sName, $aErrorOptions);
             
 
 /*        if(!PEAR::isError(KTWorkflow::getByName($sName))) {
