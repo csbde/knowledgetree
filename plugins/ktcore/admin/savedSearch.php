@@ -178,7 +178,6 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         
         $sName = $this->oValidator->validateEntityName(
             'KTSavedSearch', 
-            'saved search', 
             KTUtil::arrayGet($_REQUEST, 'name'), 
             array('extra_condition' => 'not is_condition', 'redirect_to' => array('new'))
         );

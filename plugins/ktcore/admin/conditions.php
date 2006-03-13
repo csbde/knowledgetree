@@ -162,7 +162,6 @@ class KTConditionDispatcher extends KTAdminDispatcher {
 
         $sName = $this->oValidator->validateEntityName(
             'KTSavedSearch', 
-            'dynamic condition', 
             KTUtil::arrayGet($_REQUEST, 'name'), 
             array('extra_condition' => 'is_condition', 'redirect_to' => array('new'))
         );

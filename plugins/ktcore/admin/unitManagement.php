@@ -89,7 +89,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
 		$aOptions['message'] = _('A unit with that name already exists.');
-		$sName = $this->oValidator->validateDuplicateName2('Unit', $sName, $aOptions);
+		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
 
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $_REQUEST['fFolderId'] = $iFolderId;
@@ -163,7 +163,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
 		$aOptions['message'] = _('A unit with that name already exists.');
-		$sName = $this->oValidator->validateDuplicateName2('Unit', $sName, $aOptions);
+		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
 
         $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
         $aOptions = array(
@@ -205,7 +205,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
 		$aOptions['message'] = _('A unit with that name already exists.');
 		$aOptions['rename'] = $oUnit->getId();
-		$sName = $this->oValidator->validateDuplicateName2('Unit', $sName, $aOptions);
+		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
         $oUnit->setName($sName);
         $res = $oUnit->update();
         if (($res == false) || (PEAR::isError($res))) {

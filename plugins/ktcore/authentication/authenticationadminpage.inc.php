@@ -164,6 +164,8 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $aErrorOptions['message'] = _("No name provided");
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        $aErrorOptions['message'] = _("An authentication source with that name already exists");
+        $this->oValidator->validateDuplicateName('KTAuthenticationSource', $sName, $aErrorOptions);
 
         $aErrorOptions['message'] = _("No authentication provider chosen");
         $sProvider = KTUtil::arrayGet($_REQUEST, 'authentication_provider');
