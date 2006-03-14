@@ -172,6 +172,14 @@ class KTBrowseUtil {
         $parents = count($folder_path_ids);
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
+        // we have made the "default" folder non-root, so we need to be able
+        // to reach "Root" (Folder::get(1)).
+        $url = KTUtil::addQueryStringSelf("fFolderId=1");
+        if (!empty($sAction)) {
+            $url = generateControllerUrl($sAction, "fFolderId=1");
+        }
+        $aBreadcrumbs[] = array("url" => $url, "name" => _('Folders'));
+        
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
