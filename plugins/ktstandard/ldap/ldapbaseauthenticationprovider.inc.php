@@ -164,7 +164,16 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         foreach ($this->aConfigMap as $k => $v) {
             $sValue = KTUtil::arrayGet($_REQUEST, $k . '_nls');
             if ($sValue) {
-                $aConfig[$k] = split("\n", $sValue);
+                $nls_array = split("\n", $sValue);
+                $final_array = array();
+                foreach ($nls_array as $nls_item) {
+                    $nls_item = trim($nls_item);
+                    if (empty($nls_item)) {
+                        continue;
+                    }
+                    $final_array[] = $nls_item;
+                }
+                $aConfig[$k] = $final_array;
                 continue;
             }
             $sValue = KTUtil::arrayGet($_REQUEST, $k);
