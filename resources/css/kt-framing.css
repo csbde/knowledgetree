@@ -678,6 +678,7 @@ a.main_nav_item {
     margin: 0.5em;
     padding: 3px;
     padding-left: 17px;
+    width: 11em;
 }
 
 #dashlet-search-text {
@@ -800,14 +801,13 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     width: 45%;
     margin-top: 0;
     margin-left: 0;
-    margin-right: 2em;
     float: left;
     margin-bottom: 2em;
 }
 
 .dashboard_block {
     width: 100%;
-    padding-top: 2em;
+    padding-top: 1em;
 }
 
 
