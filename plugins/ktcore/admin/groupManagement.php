@@ -537,6 +537,25 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     }
     // }}}
 
+	function getGroupStringForGroup($oGroup) {
+		$aGroupNames = array();
+		$aGroups = $oGroup->getMemberGroups();
+		$MAX_GROUPS = 6;
+		$add_elipsis = false;
+		if (count($aGroups) == 0) { return _('Group currently has no subgroups.'); }
+		if (count($aGroups) > $MAX_GROUPS) { 
+		    $aGroups = array_slice($aGroups, 0, $MAX_GROUPS); 
+			$add_elipsis = true;
+		}
+		foreach ($aGroups as $oGroup) { 
+		    $aGroupNames[] = $oGroup->getName();
+		}
+		if ($add_elipsis) {
+		    $aGroupNames[] = '&hellip;';
+		}
+		
+		return implode(', ', $aGroupNames);
+	}
     // }}}
 }
 

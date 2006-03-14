@@ -29,15 +29,16 @@ action may take some time if you have many groups).{/i18n}</p>
 
 {else}
 {if (!empty($search_results))}
-<table class="listing">
+<table class="kt_collection" cellspacing="0">
 <thead>
    <tr>
       <th>{i18n}Group Name{/i18n}</th>
       <th>{i18n}Unit Name{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>	  
       <th>{i18n}Manage Users{/i18n}</th>
       <th>{i18n}Manage sub-groups{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
+      <th>{i18n}Subgroups{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -56,12 +57,13 @@ action may take some time if you have many groups).{/i18n}</p>
 	</td>
         <td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}{/addQS}"
 class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}{/addQS}"
+class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a
 href="{addQS}action=manageUsers&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
         <td><a
 href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}{/addQS}"
-class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
      </tr>   
      {/foreach}
    
