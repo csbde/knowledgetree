@@ -533,6 +533,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
      * @return array containing the users found
      */
     function searchUsers($sSearch) {
+        global $default;
         if (PEAR::isError($this->oLdap)) {
             return $this->oLdap;
         }
@@ -554,6 +555,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             $sSearchAttributes .= sprintf('(%s=*%s*)', trim($sSearchAttribute), $sSearch);
         }
         $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
+        $default->log->debug("Search filter is: " . $sFilter);
         $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
         if (PEAR::isError($oResult)) {
             return $oResult;
