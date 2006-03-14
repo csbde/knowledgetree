@@ -110,28 +110,6 @@ class User extends KTEntity {
     function getAuthenticationDetails2() { return $this->sAuthenticationDetails2; }
     function setAuthenticationDetails2($sNewValue) { $this->sAuthenticationDetails2 = $sNewValue; }
 
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function deleteFromSystem() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->users_groups_table WHERE user_id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
     }
@@ -195,49 +173,19 @@ class User extends KTEntity {
 
     /**
      * Static function
-     * Return the unitIDs of the specified user
-     *
-     * @param int the id the user to lookup the unit for
-     * @return array the unitIDs, false otherwise
-     */
-    function getUnitIDs($userID) {
-        global $default, $lang_err_database;
-
-        $sql = $default->db;
-        /*ok*/$result = $sql->query(array("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
-                              "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
-                              "WHERE ugl.user_id = ?", $userID));
-        if ($result) {
-            $aUnitIDs = array();
-            while ($sql->next_record()) {
-                $aUnitIDs[] = $sql->f("unit_id");
-            }
-            return $aUnitIDs;
-        }
-        return false;
-    }
-    
-    /**
-     * Static function
      * Return the useID for the specified user
      *
      * @param int the id the user to lookup the unit for
      * @return int the unitID, false otherwise and $_SESSION["errorMessage"] set
      */
-    function getUnitID($userID) {
-        global $default, $lang_err_database;
-
-        $sql = $default->db;
-        /*ok*/$result = $sql->query(array("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
-                              "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
-                              "WHERE ugl.user_id = ?", $userID));
-        if ($result) {
-            if ($sql->next_record()) {
-                return $sql->f("unit_id");
-            }
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+    function getUnitId() {
+        $ugl = KTUtil::getTableName("users_groups");
+        $g = KTUtil::getTableName("groups");
+        $aQuery = array(
+            "SELECT DISTINCT g.unit_id AS unit_id FROM $ugl AS ugl INNER JOIN $g AS g ON ugl.group_id = g.id WHERE ugl.user_id = ?",
+            array($this->iId),
+        );
+        return DBUtil::getOneResultKey($aQuery, 'unit_id');
     }
 
     /**
@@ -258,71 +206,16 @@ class User extends KTEntity {
     /** Static function
     * Gets the user's default top level folder for the current user
     */
-    function getUserRootFolderID() {
-    	global $default;
-    	
-    	$unitID = User::getUnitID($_SESSION["userID"]);
-    	$iFolderID; 
-            
-        if ($unitID) {
-            // if the user is in a unit, start at the unit's root folder
-            
-            // lookup the unit name
-            $unitName = lookupField($default->units_table, "name", "id", $unitID);             
+    function getHomeFolderID() {
+    	$iUnitId = $this->getUnitId();
 
-            // the unit root folder has the same name as the unit
-            // FIXME: dodgy i know, but its easy
-            $unitRootFolderName = $unitName;
-           
-            // now lookup the folderID
-            $aFolders = Folder::getList(array("name = ? and parent_id = 1", $unitRootFolderName));/*ok*/
-            
-            if (!$aFolders) {
-                // no folder exists with this name, so start at the root
-                $iFolderID = lookupID($default->folders_table, "parent_id", 0);
-            } else {
-            	$iFolderID = $aFolders[0]->getID();
-            }
-        } else {
-        	$iFolderID = lookupID($default->folders_table, "parent_id", 0);
+        if (empty($iUnitId)) {
+            return false;
         }
-         return $iFolderID;
-    }
-    
 
-    /**
-     * Returns a unit administrator for the current user
-     */
-	function getUnitAdminUser() {
-	    global $default;
-	    // find out what unit we're in
-	    $iUnitID = User::getUnitID($_SESSION["userID"]);
-	    if ($iUnitID) {
-	        // then find the group that is unit_admin
-	        $sql = $default->db;
-	        $sEmail = "";
-	        if ($sql->query(array("SELECT group_id FROM $default->groups_units_table GUL " . /*ok*/
-	                        "INNER JOIN $default->groups_table GL on GUL.group_id=GL.id " .
-	                        "WHERE GL.is_unit_admin=1 " .
-	                        "AND unit_id = ?", $iUnitID))) {
-	            // get the first record
-	            if ($sql->next_record()) {
-	                $iGroupID = $sql->f("group_id");
-	                // then find the first user in this group that has an email address
-	                if ($sql->query(array("SELECT U.id, U.email FROM $default->users_table U " . /*ok*/
-	                                "INNER JOIN $default->users_groups_table UGL on UGL.user_id=U.id " .
-	                                "WHERE group_id = ?", $iGroupID))) {
-	                    while ($sql->next_record()) {
-	                        if (strlen($sql->f("email")) > 0) {
-	                            return User::get($sql->f("id"));
-	                        }
-	                    }
-	                }
-	            }
-	        }
-	    }
-	    return false;
-	}    
+        $oUnit =& Unit::get($iUnitId);
+        return $oUnit->getFolderId();
+    }
 	
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
 	function &getByUserName($sUserName, $aOptions = null) {

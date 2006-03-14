@@ -109,9 +109,17 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         // if we're going to main ...
         if ($this->browse_mode == 'folder') {
-            
-            
-            $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
+            $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId");
+            if (empty($in_folder_id)) {
+                $oConfig = KTConfig::getSingleton();
+                if ($oConfig->get('tweaks/browseToUnitFolder')) {
+                    $iHomeFolderId = $this->oUser->getHomeFolderId();
+                    if ($iHomeFolderId) {
+                        $in_folder_id = $iHomeFolderId;
+                    }
+                }
+            }
+
             $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
             if ($folder_id == 0) {
                 $folder_id = 1;
