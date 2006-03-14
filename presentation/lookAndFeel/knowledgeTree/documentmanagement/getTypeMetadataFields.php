@@ -42,6 +42,7 @@ class KTSimplePage {
 class GetTypeMetadataFieldsDispatcher extends KTDispatcher {
     function do_main() {
         $this->oPage = new KTSimplePage;
+		header('Content-type: text/html; charset=UTF-8');        
         return $this->getTypeMetadataFieldsets ($_REQUEST['fDocumentTypeID']);
     }
 

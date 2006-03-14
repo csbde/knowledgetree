@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . "/browse/Criteria.inc");
 class AjaxBooleanSearchDispatcher extends KTDispatcher {
 
     function handle_output($data) {
+		header('Content-type: text/html; charset=UTF-8');
         return $data;
     }
     
