@@ -61,6 +61,11 @@ class Unit extends KTEntity {
             'noneok' => true,
         ));
     }
+
+    function getFolder() {
+        require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+        return Folder::get($this->iFolderId);
+    }
 }
 
 ?>
