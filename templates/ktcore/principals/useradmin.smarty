@@ -36,7 +36,7 @@ very slow if you have many users).{/i18n}</p>
 {if ($no_search === true)}
 {else}
    {if (!empty($search_results))}
-<table class="listing">
+<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 <thead>
    <tr>
       <th>{i18n}Name{/i18n}</th>
@@ -44,17 +44,19 @@ very slow if you have many users).{/i18n}</p>
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Delete{/i18n}</th>
       <th>{i18n}Group Memberships{/i18n}</th>
+      <th>{i18n}Current Groups{/i18n}</th>
    </tr>
 </thead>
 <tbody>
    <!-- do we want to batch here? -->
      {foreach item=oUser from=$search_results}
-     <tr>
+     <tr class="{cycle values=odd,even}">
         <td>{$oUser->getName()}</td>
         <td>{$oUser->getUsername()}</td>
         <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=deleteuser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}{/addQS}">{i18n}Groups{/i18n}</a></td>  
+        <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
      </tr>   
      {/foreach}
 

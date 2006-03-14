@@ -549,6 +549,26 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain($msg);
     }
 
+	function getGroupStringForUser($oUser) {
+		$aGroupNames = array();
+		$aGroups = GroupUtil::listGroupsForUser($oUser);
+		$MAX_GROUPS = 6;
+		$add_elipsis = false;
+		if (count($aGroups) == 0) { return _('User is currently not a member of any groups.'); }
+		if (count($aGroups) > $MAX_GROUPS) { 
+		    $aGroups = array_slice($aGroups, 0, $MAX_GROUPS); 
+			$add_elipsis = true;
+		}
+		foreach ($aGroups as $oGroup) { 
+		    $aGroupNames[] = $oGroup->getName();
+		}
+		if ($add_elipsis) {
+		    $aGroupNames[] = '&hellip;';
+		}
+		
+		return implode(', ', $aGroupNames);
+	}
+
 }
 
 ?>
