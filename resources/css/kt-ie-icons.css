@@ -27,4 +27,7 @@
 .contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
 
-.ktAction
+/* IE is woefully unable to */
+#portletbar { width: 200px; }
+#portlet-search-text { width: 150px; }
+#content { padding-left: 220px; }
