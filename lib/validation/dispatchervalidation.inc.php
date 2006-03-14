@@ -75,9 +75,11 @@ class KTDispatcherValidation {
     function notError(&$res, $aOptions = null) {
         $aOptions = (array)$aOptions;
         if (PEAR::isError($res)) {
-            $aOptions = KTUTil::meldOptions($aOptions, array(
-                'exception' => $res,
-            ));
+            if (!KTUtil::arrayGet($aOptions, 'no_exception')) {
+                $aOptions = KTUTil::meldOptions($aOptions, array(
+                    'exception' => $res,
+                ));
+            }
             $this->handleError($aOptions);
         }
     }

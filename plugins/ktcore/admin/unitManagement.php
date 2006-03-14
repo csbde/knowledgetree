@@ -238,6 +238,13 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
     function do_removeUnit() {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
         $bDeleteFolder = KTUtil::arrayGet($_REQUEST, 'delete_folder', false);
+        $res = $oUnit->delete();
+        $aOptions = array(
+            'redirect_to' => array('main'),
+            'message' => _("Could not delete this unit because it has groups assigned to it"),
+            'no_exception' => true,
+        );
+        $this->oValidator->notError($res, $aOptions);
         if ($bDeleteFolder) {
             $iFolderId = $oUnit->getFolderId();
             $oFolder = Folder::get($iFolderId);
@@ -248,7 +255,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
                 KTFolderUtil::delete($oFolder, $this->oUser, "Unit deleted", $aOptions);
             }
         }
-        $oUnit->delete();
         $this->successRedirectToMain("Unit removed");
     }
 }
