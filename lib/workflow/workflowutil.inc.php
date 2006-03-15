@@ -442,7 +442,8 @@ class KTWorkflowUtil {
             $iGroupId = $oTransition->getGuardGroupId();
             if ($iGroupId) {
                 $oGroup =& Group::get($iGroupId);
-                if (!$oGroup->hasMember($oUser)) {
+                $res = GroupUtil::getMembershipReason($oUser, $oGroup);
+                if (!is_string($res)) {
                     continue;
                 }
             }
