@@ -119,44 +119,6 @@ class Permission {
         return false;
     }
     
-    /**
-    * Checks if the current user is a unit administrator
-    *
-    * @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
-    */
-    function userIsUnitAdministrator($iUserID = "") {
-        global $default;
-        if ($iUserID == "") {
-            $iUserID = $_SESSION["userID"];
-        }        
-        $sql = $default->db;
-        $sql->query(array("SELECT UGL.group_id " ./*ok*/
-            "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
-            "INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
-            "WHERE UGL.user_id = ? " .
-            "AND GL.is_unit_admin = ?", array($iUserID, true)));
-        return $sql->next_record();
-    }
-    
-    /**
-     * Checks if the current user is a guest user
-     *
-     * @return boolean true if the user is in the Anonymous group, else false
-     */
-    function userIsGuest($iUserID = "") {
-        global $default;
-        if ($iUserID == "") {
-            $iUserID = $_SESSION["userID"];
-        }        
-        $sql = $default->db;
-        // you're a guest user if you're in the Anonymous group
-        $sql->query(array("SELECT UGL.group_id " ./*ok*/
-             "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
-             "WHERE GL.name = 'Anonymous' " .
-             "AND UGL.user_id = ?", $iUserID));
-        return $sql->next_record();        
-    }
-
     function isUnitAdministratorForFolder($oUser, $oFolder) {
         $oFolder =& KTUtil::getObject('Folder', $oFolder);
         $oUser =& KTUtil::getObject('User', $oUser);
