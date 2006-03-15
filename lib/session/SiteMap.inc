@@ -140,56 +140,7 @@ class SiteMap {
      * @return boolean true if the user has the access, else false.
      */
     function hasPermission($requiredAccess) {
-        global $default;
-
-        // if no access control is required
-        if ($requiredAccess == None) {
-            return true;
-        } else {
-            // if you're a system administrator, you've got access to everything
-           
-           // check whether global var intialised
-            if ($this->isSysAdmin) {
-            	$default->log->debug("-- SiteMap - checking whether a sys admin - GLOBAL VAR SET ");
-            	return true; 
-            } else if ($this->isSysAdmin = Permission::userIsSystemAdministrator()) {
-            	$default->log->debug("-- SiteMap - checking whether a sys admin ..."); 
-                return true;
-            } else {
-                if ($this->isUnitAdmin || $this->isUnitAdmin = Permission::userIsUnitAdministrator()) {
-                    // if you're a unit administrator, then you have access to everything
-                    // including and less than UA
-                    return ($requiredAccess <= UnitAdmin) ?  true : false;
-                } else if (Permission::userIsGuest()) {
-                    return ($requiredAccess == Guest) ? true : false;
-                } else {
-                    // you're a "normal" unit user
-                    return ($requiredAccess <= User) ? true : false;
-                }
-            }
-           
-           // check whether global var intialised
-            if ($isSysAdmin || $isSysAdmin = Permission::userIsSystemAdministrator()) {
-            	$default->log->debug("-- SiteMap - checking whether a sys admin ..."); 
-                return true;
-            } else {
-                if ($isUnitAdmin || $isUnitAdmin = Permission::userIsUnitAdministrator()) {
-                    // if you're a unit administrator, then you have access to everything
-                    // including and less than UA
-                    return ($requiredAccess <= UnitAdmin) ?  true : false;
-                } else if (Permission::userIsGuest()) {
-                    return ($requiredAccess == Guest) ? true : false;
-                } else {
-                    // you're a "normal" unit user
-                    return ($requiredAccess <= User) ? true : false;
-                }
-            }
-        }
-        // shouldn't ever get here
-        $default->log->error("SiteMap::hasPermission THERE IS A HOLE IN THE PAGE LEVEL ACCESS SECURITY MODEL!!!");
-        $default->log->error("SiteMap::hasPermission requiredAccess=$requiredAccess; userID=" . $_SESSION["userID"]);
-        // return false anyway
-        return false;
+        return true;
     }
 
     /**
