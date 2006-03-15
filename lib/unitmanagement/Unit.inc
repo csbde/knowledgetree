@@ -22,6 +22,8 @@
  * @author Neil Blakey-Milner, Jam Warehouse (Pty) Ltd, South Africa
  */
 class Unit extends KTEntity {
+    var $_bUsePearError = true;
+
     var $iId;
     var $sName;
 	var $iFolderID;
