@@ -55,7 +55,7 @@ very slow if you have many users).{/i18n}</p>
         <td>{$oUser->getUsername()}</td>
         <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=deleteuser&user_id={$oUser->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
-        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}{/addQS}">{i18n}Groups{/i18n}</a></td>  
+        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>  
         <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
      </tr>   
      {/foreach}
