@@ -120,7 +120,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($aDocuments as $oDoc) {
             // first evaluate the folder for inconsistencies.
             $oFolder = Folder::get($oDoc->getFolderID());
-            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); }
+            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); }
         
             if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
@@ -196,7 +196,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
 
         foreach ($aDocuments as $oDoc) {
             $oFolder = Folder::get($oDoc->getFolderID());
-            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); } // move to root if parent no longer exists.
+            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); } // move to root if parent no longer exists.
             if ($oStorage->restore($oDoc)) {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
