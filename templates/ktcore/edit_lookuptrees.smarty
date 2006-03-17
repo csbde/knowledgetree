@@ -74,8 +74,8 @@ make it available.{/i18n}</p></div>
 
 
 <select multiple="1" name="keywordsToAdd[]">
-    {foreach item=oKeyword from=$freechildren}
-       <option value="{$oKeyword->getId()}">{$oKeyword->getName()}</option>
+    {foreach item=oKeyword from=$freechildren name=kc}
+       <option value="{$oKeyword->getId()}" {if $smarty.foreach.kc.total == 1} SELECTED="true"{/if}>{$oKeyword->getName()}</option>
     {/foreach}
 </select>
 
