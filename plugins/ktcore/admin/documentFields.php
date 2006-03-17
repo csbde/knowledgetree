@@ -686,6 +686,10 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oField =& DocumentField::get($field_id);
         if (PEAR::isError($oField)) { return $this->errorRedirectToMain(_("Invalid field.")); }
 
+        $aErrorOptions = array(
+            'redirect_to' => array('editTree', sprintf('field_id=%d', $field_id)),
+        );
+
         // under here we do the subaction rendering.
         // we do this so we don't have to do _very_ strange things with multiple actions.
         //$default->log->debug("Subaction: " . $subaction);
@@ -708,6 +712,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             }
             if ($subaction === "linkKeywords") {
                 $keywords = KTUtil::arrayGet($_REQUEST, 'keywordsToAdd');
+                $aErrorOptions['message'] = _("No keywords selected");
+                $this->oValidator->notEmpty($keywords, $aErrorOptions);
                 $this->subact_linkKeywords($fieldTree, $current_node, $keywords);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.
                 $msg = _('Keywords added to category.');
