@@ -460,7 +460,12 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   array_push($new_fieldsets, new GenericFieldsetDisplay());
 		   foreach ($fieldsets as $oFieldset) {
               $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-              $new_fieldsets[$oFieldset->getId()] = new $displayClass($oFieldset);		
+              $oDisplayFieldset = new $displayClass($oFieldset);
+               if (isset($res->aFailed['fieldset'][$oFieldset->getId()])) {
+                   $oDisplayFieldset->setError($res->aFailed['fieldset'][$oFieldset->getId()]);
+               }
+              $new_fieldsets[$oFieldset->getId()] = $oDisplayFieldset;
+
 		   }
 			  
            $document_data['document'] = $oDocument;
@@ -469,7 +474,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   //print '<pre>' . print_r($document_data['field_values'], true) . '</pre>';
 		   
 		   $document_data['errors'] = $res->aFailed['field'];
-		   
+
 		   $this->addErrorMessage(_('Validation failed.'));
 		   
 		   $oTemplating =& KTTemplating::getSingleton();
