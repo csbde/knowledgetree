@@ -475,7 +475,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   
 		   $document_data['errors'] = $res->aFailed['field'];
 
-		   $this->addErrorMessage(_('Validation failed.'));
+		   $this->addErrorMessage(_('Validation failed.  The values below correspond to your attempt to change the metadata on this item, and are not necessarily the values saved for the document.  The validation errors are shown next to the metadata that failed validation.  Select Cancel to return to the saved values.'));
 		   
 		   $oTemplating =& KTTemplating::getSingleton();
 		   $oTemplate =& $oTemplating->loadTemplate("kt3/document/edit");       
