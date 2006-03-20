@@ -399,14 +399,18 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		// check if the deleted folder exists and create it if not
         $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
+	$oNewFolder = Folder::get($oDocument->getFolderID());
 
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
-            $sNewPath = $oVersion->getStoragePath();
+            $sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oNewFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
+	    $oVersion->setStoragePath($sNewPath);
             $sOldPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
             $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
             $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
             KTUtil::moveFile($sFullOldPath, $sFullNewPath);
+	    $oVersion->update();
+         
         }
         return true;
 	}

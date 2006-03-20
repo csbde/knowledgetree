@@ -198,6 +198,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             $oFolder = Folder::get($oDoc->getFolderID());
             if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); } // move to root if parent no longer exists.
             if ($oStorage->restore($oDoc)) {
+		$oDoc = Document::get($oDoc->getId()); // storage path has changed for most recent object...
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
