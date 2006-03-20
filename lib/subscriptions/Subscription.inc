@@ -160,9 +160,9 @@ class Subscription extends KTEntity {
     function getContentLink() {
         // TODO: add subscription icon
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewDocument", "fDocumentID=$this->iExternalID", Document::getDocumentDisplayPath($this->iExternalID));
+            return generateControllerLink("viewDocument", "fDocumentId=$this->iExternalID", Document::getDocumentDisplayPath($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("browse", "fBrowseType=folder&fFolderID=$this->iExternalID", Folder::getFolderDisplayPath($this->iExternalID));
+            return generateControllerLink("browse", "fBrowseType=folder&fFolderId=$this->iExternalID", Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
 
@@ -171,9 +171,9 @@ class Subscription extends KTEntity {
      */
     function getContentUrl() {
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerUrl("viewDocument", "fDocumentID=$this->iExternalID");
+            return generateControllerUrl("viewDocument", "fDocumentId=$this->iExternalID");
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerUrl("browse", "fBrowseType=folder&fFolderID=$this->iExternalID");
+            return generateControllerUrl("browse", "fBrowseType=folder&fFolderId=$this->iExternalID");
         }
     }
 
