@@ -97,6 +97,8 @@ class KTPage {
 		$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
 		$aJS[] = 'thirdpartyjs/MochiKit/Logging.js';
 		$aJS[] = 'resources/js/kt-utility.js';
+		//$aJS[] = 'resources/js/translate.js';
+		$aJS[] = 'presentation/i18nJavascript.php';
         $this->requireJSResources($aJS);
         
         // this is horrid, but necessary.
