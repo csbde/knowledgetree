@@ -451,10 +451,7 @@ include("tableMappings.inc");
 
 $i18nLoaded = $KTInit->setupI18n();
 if ($i18nLoaded === false) {
-    // define a dummy _ function so gettext is not -required-
-    function _($sString) {
-        return $sString;
-    }
+    // gettext dummy already loaded.
 }
 
 $default->systemVersion = trim(file_get_contents(KT_DIR . '/docs/VERSION.txt'));
