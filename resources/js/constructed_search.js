@@ -86,7 +86,7 @@ function addNewCriteria(add_button) {
     var newCriteriaText = scrapeText(select.options[select.selectedIndex])+' '; // FIXME insert the "input" here.
     replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search[subgroup]['+tableId+'][values]['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
     createAdditionalCriteriaOption(parent_table);
-    var removeButton = INPUT({'type':'button', 'value':'Remove'});
+    var removeButton = INPUT({'type':'button', 'value':_('Remove')});
     attachToElementEvent(removeButton, 'click', partial(removeCriteria, removeButton));
     add_button.parentNode.replaceChild(removeButton, add_button);
 
@@ -159,8 +159,8 @@ function createAdditionalCriteriaOption(parent_table) {
     // clone, and append.
     var clonedObject = master_div.getElementsByTagName('select')[0].cloneNode(true);
     var select_entry = TD(null, clonedObject);
-    var notification_entry = TD(null, createDOM('P',{'class':'helpText'},'first select a type of query'));
-    var add_button = INPUT({'type':'button', 'value':'Add'});
+    var notification_entry = TD(null, createDOM('P',{'class':'helpText'},_('first select a type of query')));
+    var add_button = INPUT({'type':'button', 'value':_('Add')});
     attachToElementEvent(add_button, 'click', partial(addNewCriteria, add_button));
     var add_entry = TD(null, add_button);
     tbody.appendChild(TR(null, select_entry, notification_entry, add_entry));
@@ -191,7 +191,7 @@ function addBooleanGroup(addbutton) {
     simpleLog('DEBUG','adding boolean group to '+bodyObj);
 
     // i hate me.  i also want sane multiline
-    sourceString = ' <fieldset> <legend>Criteria Group</legend> <table class="advanced-search-form"> <tbody> <tr> <th>Criteria</th> <th>Values</th> </tr></tbody></table> </fieldset>';
+    sourceString = ' <fieldset> <legend>' + _('Criteria Group') + '</legend> <table class="advanced-search-form"> <tbody> <tr> <th>'+_('Criteria')+'</th> <th>'+_('Values')+'</th> </tr></tbody></table> </fieldset>';
 
     
     // add the fieldset
@@ -203,7 +203,7 @@ function addBooleanGroup(addbutton) {
     // get an id for the table.
     var table_id = getBooleanGroupId(tableObj);
     // add the grouping string
-    groupingString = '<p class="helpText">Return items which match &nbsp;<select name="boolean_search['+table_id+'][join]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>';    
+    groupingString = '<p class="helpText">' + _('Return items which match')+' &nbsp;<select name="boolean_search['+table_id+'][join]"><option value="AND">'+_('all')+'</option><option value="OR">'+_('any')+'</option></select>'+_('of the criteria specified.')+'</p>';    
     t = DIV(null);
     t.innerHTML = groupingString;
     var paraObj = t.getElementsByTagName('P')[0];

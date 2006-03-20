@@ -329,7 +329,7 @@ function reviseConditional(buttonsource) {
     var fieldset = breadcrumbFind(buttonsource, 'FIELDSET');
 	setElementClass(fieldset, 'conditional_metadata');
         if (!checkStackForFieldset(fieldset)) {
-        var undo_button = INPUT({'type':'button','value':'undo'},null);
+        var undo_button = INPUT({'type':'button','value':_('Undo')},null);
         attachToElementEvent(undo_button,'click',partial(popStack, fieldset));
         fieldset.appendChild(undo_button);
         // initialise the stack.
@@ -352,7 +352,7 @@ function initialiseConditionalFieldsets() {
     // and insert the initial (master) field. 
     for (var i=0; i<fieldsets.length; i++) {
         if (!checkStackForFieldset(fieldsets[i])) {
-        var undo_button = INPUT({'type':'button','value':'undo'},null);
+        var undo_button = INPUT({'type':'button','value':_('Undo')},null);
         attachToElementEvent(undo_button,'click',partial(popStack, fieldsets[i]));
         fieldsets[i].appendChild(undo_button);
         // initialise the stack.
