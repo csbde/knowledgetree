@@ -29,4 +29,5 @@
 
 <div class="form_actions">
     <input class="save" type="submit" value="{i18n}Save Changes{/i18n}" />
+    <input type="submit" name="kt_cancel[{addQS}fDocumentId={$context->oDocument->getId()}{/addQS}]" value="{i18n}Cancel{/i18n}" />
 </div>
