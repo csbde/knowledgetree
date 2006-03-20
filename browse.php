@@ -261,7 +261,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFields = DocumentField::getList('has_lookup = 1');
         
         if (empty($aFields)) {
-            $this->errorRedirectToMain('No lookup fields available.');
+            $this->errorRedirectToMain(_('No lookup fields available.'));
             exit(0);
         } 
         

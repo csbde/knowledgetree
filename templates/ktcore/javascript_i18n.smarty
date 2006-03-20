@@ -1,0 +1,61 @@
+
+/*
+ *  Javascript (actual translations);
+ */
+ 
+{literal}
+var i18n = {};
+
+function _(trans_string) {
+    var newstr = i18n[trans_string];
+    if (!isUndefinedOrNull(newstr)) { return newstr; } 
+    else {
+       return trans_string;
+    }
+}
+{/literal}
+
+
+
+// strings for file: resources/js/kt3calendar.js
+
+// strings for file: resources/js/conditional_complex_edit.js
+i18n['Finish with this column\'s behaviours.'] = '{i18n}Finish with this column\'s behaviours.{/i18n}';
+i18n['Assuming this field has behaviour "'] = '{i18n}Assuming this field has behaviour "{/i18n}';
+
+// strings for file: resources/js/conditional_simple_edit.js
+i18n['Dependencies saved. (at '] = '{i18n}Dependencies saved. (at {/i18n}';
+i18n['Dependencies for value "'] = '{i18n}Dependencies for value "{/i18n}';
+i18n['Now editing field "'] = '{i18n}Now editing field "{/i18n}';
+i18n['Loading Dependencies for value "'] = '{i18n}Loading Dependencies for value "{/i18n}';
+
+// strings for file: resources/js/translate.js
+
+// strings for file: resources/js/constructed_search.js
+i18n['Remove'] = '{i18n}Remove{/i18n}';
+i18n['first select a type of query'] = '{i18n}first select a type of query{/i18n}';
+i18n['Add'] = '{i18n}Add{/i18n}';
+i18n['Criteria Group'] = '{i18n}Criteria Group{/i18n}';
+i18n['Criteria'] = '{i18n}Criteria{/i18n}';
+i18n['Values'] = '{i18n}Values{/i18n}';
+i18n['Return items which match'] = '{i18n}Return items which match{/i18n}';
+i18n['all'] = '{i18n}all{/i18n}';
+i18n['any'] = '{i18n}any{/i18n}';
+i18n['of the criteria specified.'] = '{i18n}of the criteria specified.{/i18n}';
+
+// strings for file: resources/js/taillog.js
+
+// strings for file: resources/js/add_document.js
+
+// strings for file: resources/js/constructed_search_postprocess.js
+
+// strings for file: resources/js/toggleselect.js
+
+// strings for file: resources/js/kt-utility.js
+
+// strings for file: resources/js/help.js
+
+// strings for file: resources/js/conditional_usage.js
+i18n['Undo'] = '{i18n}Undo{/i18n}';
+i18n['Undo'] = '{i18n}Undo{/i18n}';
+

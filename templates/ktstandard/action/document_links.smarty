@@ -30,7 +30,7 @@
         <tr>
             <td>
             {if $write_permission}
-                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a>
+                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
             {else}
                 &nbsp;
             {/if}
@@ -66,7 +66,7 @@
 
 
 {else}
-<tr><td colspan="4" align="center">There are no links to or from this document.</td></tr>
+<tr><td colspan="4" align="center">{i18n}There are no links to or from this document.{/i18n}</td></tr>
 {/if}
 
 
@@ -77,8 +77,8 @@
 
 
 {if $write_permission}
-<a class="ktAction ktAdd ktInline" href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}{/addQS}">Add a new link</a>
+<a class="ktAction ktAdd ktInline" href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}{/addQS}">{i18n}Add a new link{/i18n}</a>
 <a
-href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">Add a new link</a>.
+href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">{i18n}Add a new link{/i18n}</a>.
 {/if}
 

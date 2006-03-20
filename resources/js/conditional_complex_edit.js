@@ -80,7 +80,7 @@ function placeFinishButton() {
     }
     var column = getColumnForField(active_field);
 
-    var finish_button = INPUT({'type':'button', 'value':'Finish with this column\'s behaviours.','id':'global-stack-popper-button'});
+    var finish_button = INPUT({'type':'button', 'value':_('Finish with this column\'s behaviours.'),'id':'global-stack-popper-button'});
     simpleLog('DEBUG','placing stack-popper with function popFixedStack in field '+active_field);
     addEvent(finish_button, 'click', popFixedStack);
     simpleLog('DEBUG','added listener.');
@@ -155,7 +155,7 @@ function setFixedValueForField(field_id, value, label) {
     var column = getColumnForField(field_id);
     simpleLog('DEBUG','fixing value for field '+field_id+' to '+label+' ('+value+')');
     addElementClass(column, 'fixed');
-    setMessageForField(field_id,'fixed_message', 'Assuming this field has behaviour "'+label+'".');
+    setMessageForField(field_id,'fixed_message', _('Assuming this field has behaviour "')+label+'".');
 
     // now we need to check if this field _is_ fixed.
     var fixed_source = getElementsByTagAndClassName('input','fixed_value',column);
