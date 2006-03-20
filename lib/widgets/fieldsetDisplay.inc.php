@@ -169,6 +169,10 @@ class KTFieldsetDisplay {
     function renderEdit($document_data) {
         return '<div class="ktError">Not Implemented: fieldset editing.</div>';
     }
+
+    function setError($aError) {
+        $this->aError = $aError;
+    }
 }
 
 // The generic object
@@ -450,6 +454,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         $aFields = array();        
         $fields =& $this->fieldset->getFields();
         $values = array();
+        $errors = $document_data['errors'];
 
         $have_values = false;
         foreach ($fields as $oField) {
@@ -473,8 +478,6 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // FIXME handle the editable case _with_ values.
         
         if ($have_values) {
-
-            
 			$oTemplating =& KTTemplating::getSingleton();        
 			$oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/conditional_editable_values");
 			$aTemplateData = array(
@@ -484,6 +487,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
 				"title" => $fieldset_name,
 				"description" => $fieldset_description,
 				'values' => $values,
+                'errors' => $errors,
 			);
 			
 		    return $oTemplate->render($aTemplateData);
