@@ -375,6 +375,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             return null;
         }
 		$u = Unit::get($iUnitId);
+		if (PEAR::isError($u)) { 
+		    return null;   // XXX: prevent failure if the $u is a PEAR::error
+		}
 		
 		return $u->getName();
 	}  
