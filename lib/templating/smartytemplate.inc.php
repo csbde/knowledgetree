@@ -115,7 +115,7 @@ class KTSmartyTemplate extends KTTemplate {
             $sDomain = 'knowledgeTree';
         }
         $oRegistry =& KTi18nRegistry::getSingleton();
-        $oi18n = $oRegistry->geti18n($sDomain);
+        $oi18n =& $oRegistry->geti18n($sDomain);
         $content = trim($content);
         $replace = array(
             '@ *[\n\r]+@' => ' ',
