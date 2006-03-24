@@ -73,6 +73,7 @@ class KTDocumentCore extends KTEntity {
 
         // transaction-related
         "iCreatorId" => 'creator_id',
+        
         "dCreated" => 'created',
         "iModifiedUserId" => 'modified_user_id',
         "dModified" => 'modified',
@@ -92,6 +93,7 @@ class KTDocumentCore extends KTEntity {
         // permission-related
         "iPermissionObjectId" => 'permission_object_id',
         "iPermissionLookupId" => 'permission_lookup_id',
+        "iOwnerId" => 'owner_id',
     );
 
     function KTDocument() {
@@ -100,6 +102,8 @@ class KTDocumentCore extends KTEntity {
     // {{{ getters/setters
     function getCreatorId() { return $this->iCreatorId; }
     function setCreatorId($iNewValue) { $this->iCreatorId = $iNewValue; }
+    function getOwnerId() { return $this->iOwnerId; }
+    function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }    
     function getCreatedDateTime() { return $this->dCreated; }
     function getModifiedUserId() { return $this->iModifiedUserId; }
     function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
@@ -142,28 +146,11 @@ class KTDocumentCore extends KTEntity {
 
     // {{{ ktentity requirements
     function _fieldValues () {
-        $this->sFullPath = KTDocumentCore::_generateFolderPath($this->iFolderId);
-        $this->sParentFolderIds = KTDocumentCore::_generateFolderIds($this->iFolderId);
+        $this->sFullPath = Folder::generateFolderPath($this->iFolderId);
+        $this->sParentFolderIds = Folder::generateFolderIds($this->iFolderId);
         return parent::_fieldValues();
     }
 
-    /**
-     * Recursive function to generate a comma delimited string containing
-     * the parent folder ids
-     *
-     * @return String   comma delimited string containing the parent folder ids
-     */
-    function _generateParentFolderIds($iFolderId) {
-        $sTable = KTUtil::getTableName('folders');
-        if (empty($iFolderId)) {
-            return;
-        }
-
-        $sQuery = sprintf('SELECT parent_id FROM %s WHERE id = ?', $sTable);
-        $aParams = array($iFolderId);
-        $iParentId = DBUtil::getOneResultKey(array($sQuery, $aParams), 'parent_id');
-        return KTDocumentCore::_generateParentFolderIds($iParentId) . ",$iFolderId";
-    }
 
     /**
      * Returns a comma delimited string containing the parent folder ids, strips leading /
@@ -195,9 +182,12 @@ class KTDocumentCore extends KTEntity {
      * Returns a forward slash deliminated string giving full path of document, strips leading /
      */
     function _generateFolderPath($iFolderId) {
+        return Folder::generateFolderPath($iFolderId);
+/*
         $sPath = KTDocumentCore::_generateFullFolderPath($iFolderId);
         $sPath = substr($sPath, 1, strlen($sPath));
         return $sPath;
+*/
     }
     // }}}
 
@@ -212,6 +202,9 @@ class KTDocumentCore extends KTEntity {
         if (empty($this->iModifiedUserId)) {
             $this->iModifiedUserId = $this->iCreatorId;
         }
+        if (empty($this->iOwnerId)) {
+            $this->iOwnerId = $this->iCreatorId;
+        }
         if (empty($this->iMetadataVersion)) {
             $this->iMetadataVersion = 0;
         }
@@ -221,7 +214,7 @@ class KTDocumentCore extends KTEntity {
         $oFolder = Folder::get($this->getFolderId());
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();
         $res = parent::create();
-
+        
         if ($res === true) {
             KTPermissionUtil::updatePermissionLookup($this);
         }

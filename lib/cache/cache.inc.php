@@ -10,6 +10,15 @@ class KTCache {
     }
     // }}}
 
+    // takes an Entity type-name, and an array of the failed attrs.
+    function alertFailure($sEntityType, $aFail) {
+        //var_dump($aFail); 
+        $sMessage = sprintf('Failure in cache-comparison on type "%s":  %s', $sEntityType, implode(', ', $aFail));
+        global $default;
+        $default->log->error($sMessage);
+        $_SESSION['KTErrorMessage'][] = $sMessage;
+    }
+
     function KTCache() {
         require_once("Cache/Lite.php");
         require_once(KT_LIB_DIR . '/config/config.inc.php');

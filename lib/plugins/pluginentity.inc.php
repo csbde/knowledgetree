@@ -52,7 +52,7 @@ class KTPluginEntity extends KTEntity {
     }
 
     function _cachedGroups() {
-        return array('getList', 'getByNamespace');
+        return array('getlist', 'getList', 'getByNamespace');
     }
     // }}}
 
@@ -80,13 +80,13 @@ class KTPluginEntity extends KTEntity {
     // STATIC
     function &getList($sWhereClause = null) {
         global $default;
-        $aOptions = array('fullselect' => true, 'cache' => 'getList');
+        $aOptions = array('fullselect' => false, 'cache' => 'getList');
         return KTEntityUtil::getList2('KTPluginEntity', $sWhereClause, $aOptions);
     }
 
     // STATIC
     function &getByNamespace($sName) {
-        $aOptions = array('fullselect' => true, 'cache' => 'getByNamespace');
+        $aOptions = array('fullselect' => false, 'cache' => 'getByNamespace');
         return KTEntityUtil::getBy('KTPluginEntity', 'namespace', $sName, $aOptions);
     }
 
@@ -97,5 +97,15 @@ class KTPluginEntity extends KTEntity {
         );
         return KTEntityUtil::getBy('KTPluginEntity', 'disabled', false,
                 $aOptions);
+    }
+    
+    function setEnabled($aIds) {
+        $sTable = KTPluginEntity::_table();
+        $sIds = DBUtil::paramArray($aIds);
+        $sQuery = sprintf('UPDATE %s SET disabled = 1 WHERE id NOT IN (%s)', $sTable, $sIds);
+        DBUtil::runQuery(array($sQuery, $aIds));
+        $sQuery = sprintf('UPDATE %s SET disabled = 0 WHERE id IN (%s)', $sTable, $sIds);
+        DBUtil::runQuery(array($sQuery, $aIds));
+        KTPluginEntity::_innerClearCachedGroups('KTPluginEntity');
     }
 }

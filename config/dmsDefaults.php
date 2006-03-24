@@ -23,6 +23,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// DEBUG DEBUG DEBUG APD
+//if (extension_loaded('APD')) { apd_set_pprof_trace(); }
+
 // Default settings differ, we need some of these, so force the matter.
 // Can be overridden here if actually necessary.
 error_reporting(E_ALL & ~E_NOTICE);
@@ -53,6 +56,8 @@ if (!defined('PATH_SEPARATOR')) {
         define('PATH_SEPARATOR', ':');
     }
 }
+
+require_once(KT_LIB_DIR . '/Log.inc');
 
 // {{{ KTInit
 class KTInit {
@@ -350,6 +355,84 @@ class KTInit {
         return "";
     }
     // }}}
+    
+    // {{{ initConfig
+    function initConfig() {   
+        global $default;
+        $use_cache = false;
+        $store_cache = false;
+        if (file_exists(KT_DIR .  "/config/cache-path")) {
+            $store_cache = true;
+            $user = KTLegacyLog::running_user();
+            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user;
+            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }
+            $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));    
+            if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf("%s/%s", KT_DIR, $config_file); }
+        
+            $exists = file_exists($cache_file);
+            if ($exists) {
+                $cachestat = stat($cache_file);
+                $configstat = stat($config_file);
+                $tval = 9;
+                // print sprintf("is %d > %d\n", $cachestat[$tval], $configstat[$tval]);        
+                if ($cachestat[$tval] > $configstat[$tval]) {
+                    $use_cache = true;
+                }
+            } 
+            
+            
+        }
+        
+        if ($use_cache) {
+            $oKTConfig =& KTConfig::getSingleton();
+            $oKTConfig->loadCache($cache_file);
+            
+            foreach ($oKTConfig->flat as $k => $v) {
+                $default->$k = $v;
+            }
+        } else {
+            $oKTConfig =& KTConfig::getSingleton();
+            
+            $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
+            $oKTConfig->setdefaultns("KnowledgeTree", "serverName", KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
+            $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
+            if (array_key_exists('HTTPS', $_SERVER)) {
+                if (strtolower($_SERVER['HTTPS']) === 'on') {
+                    $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
+                }
+            }
+            $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $this->guessRootUrl());
+            $oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
+            $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
+            $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskPathStorageManager');
+            $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+            $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
+            $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
+            $oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
+            $oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
+            
+            $oKTConfig->setdefaultns("user_prefs", "passwordLength", 6);
+            $oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
+            
+            $oKTConfig->setdefaultns("ui", "ieGIF", true);
+            $oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
+            $oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
+            
+            $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
+            $oKTConfig->setdefaultns("import", "unzip", 'unzip');
+            $oKTConfig->setdefaultns("cache", "cacheDirectory", '${varDirectory}/cache');
+            $oKTConfig->setdefaultns("cache", "cacheEnabled", 'false');
+            
+            $this->readConfig();
+            
+            $oKTConfig =& KTConfig::getSingleton();
+            if ($store_cache) { $oKTConfig->createCache($cache_file);}
+            
+            
+        }
+    }
+    // }}}
+    
     // {{{ readConfig
     function readConfig () {
         global $default;
@@ -367,6 +450,7 @@ class KTInit {
             }
             if ($v === "false") {
                 $v = false;
+                
             }
             if ($v === "true") {
                 $v = true;
@@ -397,40 +481,8 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
+$KTInit->initConfig(); 
 $oKTConfig =& KTConfig::getSingleton();
-
-$oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
-$oKTConfig->setdefaultns("KnowledgeTree", "serverName", KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
-$oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
-if (array_key_exists('HTTPS', $_SERVER)) {
-    if (strtolower($_SERVER['HTTPS']) === 'on') {
-        $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
-    }
-}
-$oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
-$oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
-$oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
-$oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskPathStorageManager');
-$oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
-$oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
-$oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
-$oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
-$oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
-
-$oKTConfig->setdefaultns("user_prefs", "passwordLength", 6);
-$oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
-
-$oKTConfig->setdefaultns("ui", "ieGIF", true);
-$oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
-$oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
-
-$oKTConfig->setdefaultns(null, "logLevel", 'INFO');
-$oKTConfig->setdefaultns("import", "unzip", 'unzip');
-$oKTConfig->setdefaultns("cache", "cacheDirectory", '${varDirectory}/cache');
-$oKTConfig->setdefaultns("cache", "cacheEnabled", 'false');
-
-$KTInit->readConfig();
-
 $KTInit->setupServerVariables();
 
 // instantiate log

@@ -185,7 +185,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
-            $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Storing contents")));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Storing contents")));
             $res = KTDocumentUtil::storeContents($oDocument, $oContents, $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -200,7 +200,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
-            $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Saving metadata")));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Saving metadata")));
             $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -374,6 +374,16 @@ class KTDocumentUtil {
 
     // {{{ add
     function &add($oFolder, $sFilename, $oUser, $aOptions) {
+        $GLOBALS['_IN_ADD'] = true;
+        $ret = KTDocumentUtil::_in_add($oFolder, $sFilename, $oUser, $aOptions);
+        unset($GLOBALS['_IN_ADD']);
+        return $ret;
+    }
+    // }}}
+
+
+    // {{{ _in_add
+    function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
 		    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
 			if (PEAR::isError($oDoc)) {
@@ -403,12 +413,12 @@ class KTDocumentUtil {
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Document created")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Document created")));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
         }
 
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Scanning file")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Scanning file")));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
         $iTrigger = 0;
@@ -416,7 +426,7 @@ class KTDocumentUtil {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
-            $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
             $ret = $oTrigger->scan();
             if (PEAR::isError($ret)) {
                 $oDocument->delete();
@@ -434,11 +444,11 @@ class KTDocumentUtil {
             }
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
-            $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
             $oTrigger->transform();
         }
 
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating transaction")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating transaction")));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document created", 'ktcore.transactions.create', $aOptions);
@@ -448,7 +458,7 @@ class KTDocumentUtil {
             return $res;
         }
 
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Sending subscriptions")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Sending subscriptions")));
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
@@ -467,6 +477,7 @@ class KTDocumentUtil {
             $ret = $oTrigger->postValidate();
             
         }
+        KTDocumentUtil::updateSearchableText($oDocument, true);
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("All done...")));
 
@@ -533,7 +544,10 @@ class KTDocumentUtil {
     // }}}
 
     // {{{ updateSearchableText
-    function updateSearchableText($oDocument) {
+    function updateSearchableText($oDocument, $bOverride = false) {
+        if (isset($GLOBALS['_IN_ADD']) && empty($bOverride)) {
+            return;
+        }
         $oDocument = KTUtil::getObject('Document', $oDocument);
         $iDocumentId = $oDocument->getId();
         $sTable = KTUtil::getTableName('document_transaction_text');
