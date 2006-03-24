@@ -23,8 +23,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// DEBUG DEBUG DEBUG APD
-//if (extension_loaded('APD')) { apd_set_pprof_trace(); }
+if (function_exists('apd_set_pprof_trace')) {
+    apd_set_pprof_trace();
+}
 
 // Default settings differ, we need some of these, so force the matter.
 // Can be overridden here if actually necessary.
@@ -368,7 +369,7 @@ class KTInit {
             if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }
             $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));    
             if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf("%s/%s", KT_DIR, $config_file); }
-        
+
             $exists = file_exists($cache_file);
             if ($exists) {
                 $cachestat = stat($cache_file);
@@ -426,13 +427,15 @@ class KTInit {
             $this->readConfig();
             
             $oKTConfig =& KTConfig::getSingleton();
-            if ($store_cache) { $oKTConfig->createCache($cache_file);}
+            if ($store_cache && is_writable($cache_file)) {
+                $oKTConfig->createCache($cache_file);
+            }
             
             
         }
     }
     // }}}
-    
+
     // {{{ readConfig
     function readConfig () {
         global $default;
