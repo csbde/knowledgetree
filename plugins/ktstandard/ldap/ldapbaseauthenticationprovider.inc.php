@@ -203,6 +203,10 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $aResults = $oAuthenticator->getUser($id);
+        $aErrorOptions = array(
+            'message' => _('Could not find user in LDAP server'),
+        );
+        $this->oValidator->notError($aResults);
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_('LDAP DN'), _('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
@@ -525,6 +529,9 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         }
 
         $oEntry = $this->oLdap->getEntry($dn, $this->aAttributes);
+        if (PEAR::isError($oEntry)) {
+            return $oEntry;
+        }
         $aAttr = $oEntry->attributes();
         $aAttr['dn'] = $oEntry->dn();
 
