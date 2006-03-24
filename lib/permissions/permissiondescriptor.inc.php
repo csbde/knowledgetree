@@ -28,6 +28,10 @@
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
 
+$_PDGC = array();
+$_PDRC = array();
+$_PDUC = array();
+
 class KTPermissionDescriptor extends KTEntity {
     /** primary key */
     var $iId = -1;
@@ -142,6 +146,7 @@ class KTPermissionDescriptor extends KTEntity {
     // {{{ GROUPS
     // {{{ _clearGroups
     function _clearGroups() {
+        unset($GLOBALS['_PDGC'][$this->getId()]);
         $sTable = KTUtil::getTableName('permission_descriptor_groups');
         $sQuery = "DELETE FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
@@ -188,10 +193,15 @@ class KTPermissionDescriptor extends KTEntity {
 
     // {{{ getGroups
     function getGroups() {
+        if (isset($GLOBALS['_PDGC'][$this->getId()])) {
+            return $GLOBALS['_PDGC'][$this->getId()];
+        }
         $sTable = KTUtil::getTableName('permission_descriptor_groups');
         $sQuery = "SELECT group_id FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
-        return DBUtil::getResultArrayKey(array($sQuery, $aParams), 'group_id');
+        $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'group_id');
+        $GLOBALS['_PDGC'][$this->getId()] = $res;
+        return $res;
     }
     // }}}
 
@@ -245,6 +255,7 @@ class KTPermissionDescriptor extends KTEntity {
     // {{{ ROLES
     // {{{ _clearRoles
     function _clearRoles() {
+        unset($GLOBALS['_PDRC'][$this->getId()]);
         $sTable = KTUtil::getTableName('permission_descriptor_roles');
         $sQuery = "DELETE FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
@@ -291,10 +302,15 @@ class KTPermissionDescriptor extends KTEntity {
 
     // {{{ getRoles
     function getRoles() {
+        if (isset($GLOBALS['_PDRC'][$this->getId()])) {
+            return $GLOBALS['_PDRC'][$this->getId()];
+        }
         $sTable = KTUtil::getTableName('permission_descriptor_roles');
         $sQuery = "SELECT role_id FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
-        return DBUtil::getResultArrayKey(array($sQuery, $aParams), 'role_id');
+        $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'role_id');
+        $GLOBALS['_PDRC'][$this->getId()] = $res;
+        return $res;
     }
     // }}}
 
@@ -348,6 +364,7 @@ class KTPermissionDescriptor extends KTEntity {
     // {{{ USERS
     // {{{ _clearUsers
     function _clearUsers() {
+        unset($GLOBALS['_PDUC'][$this->getId()]);
         $sTable = KTUtil::getTableName('permission_descriptor_users');
         $sQuery = "DELETE FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
@@ -394,10 +411,15 @@ class KTPermissionDescriptor extends KTEntity {
 
     // {{{ getUsers
     function getUsers() {
+        if (isset($GLOBALS['_PDUC'][$this->getId()])) {
+            return $GLOBALS['_PDUC'][$this->getId()];
+        }
         $sTable = KTUtil::getTableName('permission_descriptor_users');
         $sQuery = "SELECT user_id FROM $sTable WHERE descriptor_id = ?";
         $aParams = array($this->getID());
-        return DBUtil::getResultArrayKey(array($sQuery, $aParams), 'user_id');
+        $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'user_id');
+        $GLOBALS['_PDUC'][$this->getId()] = $res;
+        return $res;
     }
     // }}}
 

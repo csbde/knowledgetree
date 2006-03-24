@@ -46,6 +46,8 @@ class KTPortlet {
     }
 
     function setPlugin(&$oPlugin) {
+        global $default;
+        $default->log->debug('portlet regging plugin: ' . $oPlugin->sNamespace);
         $this->oPlugin =& $oPlugin;
     }
     

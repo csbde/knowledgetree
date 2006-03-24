@@ -367,7 +367,7 @@ class KTPage {
         $microtime_simple = explode(' ', microtime());
         $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
 
-	    return ($finaltime - $GLOBALS['_KT_starttime']);
+	    return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
 	}
 }
 

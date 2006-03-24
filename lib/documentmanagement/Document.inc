@@ -69,6 +69,9 @@ class Document {
     function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
     function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
     
+    function getOwnerID() { return $this->_oDocumentCore->getOwnerId(); }
+    function setOwnerID($iNewValue) { $this->_oDocumentCore->setOwnerId($iNewValue); }
+    
     function getLastModifiedDate() { return $this->_oDocumentCore->getLastModifiedDate(); }
     function setLastModifiedDate($dNewValue) { $this->_oDocumentCore->setLastModifiedDate($dNewValue); }
     
@@ -417,6 +420,7 @@ class Document {
         */
         $oDocument = new Document();
         $aOptions = array_change_key_case($aOptions);
+        
         
         $aCoreKeys = array(
             "CreatorId",

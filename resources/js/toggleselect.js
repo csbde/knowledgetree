@@ -20,6 +20,7 @@ function toggleSelectFor(source, nameprefix) {
         if (c.type == 'checkbox') {
             if ((n.length >= nameprefix.length) && (nameprefix == n.substring(0,nameprefix.length))) {
                 c.checked = state;
+                activateRow(c);
             }
         }
     }

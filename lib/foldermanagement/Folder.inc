@@ -101,33 +101,31 @@ class Folder extends KTEntity {
         return $res;
     }
     // }}}
-	/**
-	 * Recursive function to generate a comma delimited string containing
-	 * the parent folder ids
-	 * 
-	 * @return String	comma delimited string containing the parent folder ids
-	 */
-	function generateParentFolderIDS($iFolderID) {
-		global $default;
-		//if the folder is not the root folder
-		if ($iFolderID != 0) {
-			$sql = $default->db;
-			$sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
-			$sql->next_record();
-			return Folder::generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
-		}
-		return;
-		
-	}
-	
+
 	/**
 	 * Returns a comma delimited string containing the parent folder ids, strips leading /
 	 * 
 	 * @return String	comma delimited string containing the parent folder ids
 	 */	
-	function generateFolderIDs($iFolderID) {
-		$sFolderIDs = Folder::generateParentFolderIDS($iFolderID);
-		return substr($sFolderIDs, 1, strlen($sFolderIDs));
+	function generateFolderIDs($iFolderId) {
+	    if (empty($iFolderId)) {
+		    return;
+		}
+	    $oFolder =& Folder::get($iFolderId);
+		if (PEAR::isError($oFolder)) {
+		    return $oFolder;
+		}
+		
+		$iParentId = $oFolder->getParentId();
+		if (empty($iParentId)) {
+		    return $oFolder->getId();
+		}
+		$oParentFolder =& Folder::get($iParentId);
+		$sParentFolderParentFolderIds = $oParentFolder->getParentFolderIDs();
+		if (empty($sParentFolderParentFolderIds)) {
+		    return sprintf('%s,%s', $iParentId, $oFolder->getId());;
+		}
+		return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
 	}
 	
 	/**
@@ -212,12 +210,9 @@ class Folder extends KTEntity {
 		global $default;
 		//get the direct children
         $sql = $default->db;
-		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iId));/*ok*/
-		while ($sql->next_record()) {
-			//force an update, this will cause this child's children to be updated			
-			$oFolder = Folder::get($sql->f("id"));			
+		$aFolders =& Folder::getByParentId($iId);
+		foreach ($aFolders as $oFolder) {
 			$oFolder->update(true);		
-						
 		}
 		return;
 	}
@@ -260,6 +255,13 @@ class Folder extends KTEntity {
 			Folder::getChildren($sql->f("id"), $aChildren);
 		}		
 		return $aChildren;
+		/* 
+			    $oFolder = Folder::get($iFolderID);
+		$path = $oFolder->getParentFolderIds() . ',' . $oFolder->getId();
+		return Folder::getList(array(
+		    sprintf('(parent_folder_ids = "%s" OR parent_folder_ids LIKE "%s,%%")', $path, $path),
+		));
+		*/
 	}
 	
     /**
@@ -412,11 +414,8 @@ class Folder extends KTEntity {
 	*/
 	function getParentFolderID($iFolderID) {		
 		if ($iFolderID != 0) {
-			global $default;		
-			$sql = $default->db;
-			$sql->query(array("SELECT parent_id FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
-			$sql->next_record();		
-			return $sql->f("parent_id");
+		    $oFolder = Folder::get($iFolderID);
+			return $oFolder->getParentFolderID();
 		}
 		return 0;
 	}
@@ -503,6 +502,12 @@ class Folder extends KTEntity {
             'permission_lookup_id' => $iLookupID,
         ), array('multi' => true));
     }
+	
+	function getByParentId($iParentID) {
+	    return KTEntityUtil::getByDict('Folder', array(
+            'parent_id' => $iParentID,
+        ), array('multi' => true));
+	}
 
     // STATIC
     function &createFromArray($aOptions) {

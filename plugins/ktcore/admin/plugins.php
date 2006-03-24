@@ -63,12 +63,8 @@ class KTPluginDispatcher extends KTAdminDispatcher {
 
     function do_update() {
         $sTable = KTUtil::getTableName('plugins');
-        $aIds = KTUtil::arrayGet($_REQUEST, 'pluginids');
-        $sIds = DBUtil::paramArray($aIds);
-        $sQuery = sprintf('UPDATE %s SET disabled = 1 WHERE id NOT IN (%s)', $sTable, $sIds);
-        DBUtil::runQuery(array($sQuery, $aIds));
-        $sQuery = sprintf('UPDATE %s SET disabled = 0 WHERE id IN (%s)', $sTable, $sIds);
-        DBUtil::runQuery(array($sQuery, $aIds));
+        $aIds = (array) KTUtil::arrayGet($_REQUEST, 'pluginids');
+        KTPluginEntity::setEnabled($aIds);
         $this->successRedirectToMain('Plugins updated');
     }
 

@@ -58,6 +58,7 @@ class KTCorePlugin extends KTPlugin {
         // Permissions
         $this->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions', 'KTPermissions.php');
         $this->registerAction('folderaction', 'KTRoleAllocationPlugin', 'ktcore.actions.folder.roles', 'KTPermissions.php');
+        $this->registerAction('documentaction', 'KTDocumentRolesAction', 'ktcore.actions.document.roles', 'KTPermissions.php');
 
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');

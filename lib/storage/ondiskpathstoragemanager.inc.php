@@ -73,7 +73,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     }
 
     function generateStoragePath(&$oDocument) {
-        $sStoragePath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oDocument->getContentVersionId(), $oDocument->getFileName());
+        $sStoragePath = sprintf("%s/%s-%s", Folder::generateFolderPath($oDocument->getFolderID()), $oDocument->getContentVersionId(), $oDocument->getFileName());
         return $sStoragePath;
     }
 
@@ -178,8 +178,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
 
         foreach ($aContentVersions as $oVersion) {
-            $sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oSourceFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
-            $sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
+            $sOldPath = sprintf("%s/%s-%s", Folder::generateFolderPath($oSourceFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
+            $sNewPath = sprintf("%s/%s-%s", Folder::generateFolderPath($oDestinationFolder->getID()), $oVersion->getId(), $oVersion->getFileName());
             $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
             $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
             $res = KTUtil::moveFile($sFullOldPath, $sFullNewPath);
@@ -322,8 +322,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		$oConfig =& KTConfig::getSingleton();
 		$sDocumentRoot = $oConfig->get('urls/documentRoot');
 		
-		$sOldPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oOldContentVersion->getId(), $oOldContentVersion->getFileName());
-		$sNewPath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oDocument->_oDocumentContentVersion->getId(), $sNewFilename);
+		$sOldPath = sprintf("%s/%s-%s", Folder::generateFolderPath($oDocument->getFolderID()), $oOldContentVersion->getId(), $oOldContentVersion->getFileName());
+		$sNewPath = sprintf("%s/%s-%s", Folder::generateFolderPath($oDocument->getFolderID()), $oDocument->_oDocumentContentVersion->getId(), $sNewFilename);
 		$sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
 		$sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
 		

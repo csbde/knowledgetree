@@ -37,6 +37,38 @@ class KTConfig {
     var $flat = array();
     var $flatns = array();
 
+    // FIXME nbm:  how do we cache errors here?
+    function loadCache($filename) {
+        $config_str = file_get_contents($filename);
+        $config_cache = unserialize($config_str);
+        $this->flat = $config_cache['flat'];
+        $this->flatns = $config_cache['flatns'];
+        $this->expanded = $config_cache['expanded'];
+        $this->expanding = $config_cache['expanding'];
+        /*
+        print "----- Me\n";
+        unset($this->aFileRoot);
+        unset($this->aSectionFile);
+        var_dump($this);
+        print "----- Cache\n";
+        var_dump($config_cache);
+        */
+        
+        return true;
+    }
+    
+    function createCache($filename) {
+        $config_cache = array();
+        $config_cache['flat'] = $this->flat;
+        $config_cache['flatns'] = $this->flatns;
+        $config_cache['expanded'] = $this->expanded;
+        $config_cache['expanding'] = $this->expanding;
+        
+        file_put_contents($filename, serialize($config_cache));
+        
+        
+    }
+
     function loadFile($filename, $bDefault = false) {
         $c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
