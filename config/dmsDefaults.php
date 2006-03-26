@@ -469,7 +469,9 @@ $KTInit = new KTInit();
 
 // handle unexpected errors in smarty somewhat more gracefully, even if no gettext is installed.
 if (!function_exists('_')) { 
-    function _($s) { return $s; }
+    function _kt($s) { return $s; }
+} else {
+    function _kt($s) { return _($s); }
 }
 
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
