@@ -51,7 +51,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $oDocument->setFileSize(filesize($sTmpFilePath));
         $sDocumentFileSystemPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
         //copy the file accross
+        $start_time = KTUtil::getBenchmarkTime();
+        $file_size = $oDocument->getFileSize();
         if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {
+            $end_time = KTUtil::getBenchmarkTime();
+            global $default;
+            $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
+
             //remove the temporary file
             unlink($sTmpFilePath);
             if (file_exists($sDocumentFileSystemPath)) {
