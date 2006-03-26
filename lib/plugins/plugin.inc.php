@@ -43,6 +43,7 @@ class KTPlugin {
     var $_aAdminPages = array();
     var $_aDashlets = array();
     var $_ai18n = array();
+    var $_ai18nLang = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -112,6 +113,11 @@ class KTPlugin {
         $this->_ai18n[$sDomain] = array($sDomain, $sPath);
     }
 
+    function registeri18nLang($sDomain, $sLang, $sPath) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_ai18nLang[$sDomain] = array($sDomain, $sLang, $sPath);
+    }
+
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
@@ -141,6 +147,11 @@ class KTPlugin {
                 return false;
             }
             return false;
+        }
+        if (!is_a($oEntity, 'KTPluginEntity')) {
+            print "isRegistered\n";
+            var_dump($oEntity);
+            exit(0);
         }
         if ($oEntity->getDisabled()) {
             return false;
@@ -206,6 +217,10 @@ class KTPlugin {
 
         foreach ($this->_ai18n as $k => $v) {
             call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $v);
+        }
+
+        foreach ($this->_ai18nLang as $k => $v) {
+            call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $v);
         }
     }
 
