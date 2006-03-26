@@ -145,7 +145,7 @@ class KTDocumentAction extends KTStandardDispatcher {
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
 	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-		$oPortlet = new KTActionPortlet(_("Document Actions"));
+		$oPortlet = new KTActionPortlet(_kt("Document Actions"));
 		$oPortlet->setActions($actions, $this->sName);
 		$this->oPage->addPortlet($oPortlet);              
 		
@@ -155,7 +155,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function do_main() {
-        return _("Dispatcher component of action not implemented.");
+        return _kt("Dispatcher component of action not implemented.");
     }
 }
 

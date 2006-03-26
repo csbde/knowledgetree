@@ -36,7 +36,7 @@ class KTBaseDashlet {
     
     // precondition check.
     function is_active($oUser) { return true; }
-    function render() { return '<div class="ktError"><p>' . _("This Dashlet is incomplete.") . '</p></div>'; }
+    function render() { return '<div class="ktError"><p>' . _kt("This Dashlet is incomplete.") . '</p></div>'; }
 }
 
 //$oDashletRegistry =& KTDashletRegistry::getSingleton();

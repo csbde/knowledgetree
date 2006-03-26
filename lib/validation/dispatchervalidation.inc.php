@@ -57,7 +57,7 @@ class KTDispatcherValidation {
         if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oItem)) {
             return;
         }
-        $this->oDispatcher->errorPage(_("Insufficient permissions to perform action"));
+        $this->oDispatcher->errorPage(_kt("Insufficient permissions to perform action"));
     }
 
     function &validateEntity($entity_name, $iId, $aOptions = null) {
@@ -66,7 +66,7 @@ class KTDispatcherValidation {
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', sprintf(_("Invalid identifier provided for: %s"), $entity_name));
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', sprintf(_kt("Invalid identifier provided for: %s"), $entity_name));
             $this->handleError($aOptions);
         }
         return $oEntity;
@@ -116,7 +116,7 @@ class KTDispatcherValidation {
             } elseif ($sDefaultMessage) {
                 $sMessage = $sDefaultMessage;
             } else {
-                $sMessage = _("An error occurred, and no error message was given");
+                $sMessage = _kt("An error occurred, and no error message was given");
             }
         } else {
             if ($oException) {
@@ -135,7 +135,7 @@ class KTDispatcherValidation {
     function &validateTemplate($sTemplateName, $aOptions = null) {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate($sTemplateName);
-        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _('Failed to locate template'));
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt('Failed to locate template'));
         $this->notError($oTemplate, $aOptions);
         return $oTemplate;
     }
@@ -198,7 +198,7 @@ class KTDispatcherValidation {
             return $oSearch;
         }
         $aOptions = KTUTil::meldOptions($aOptions, array(
-            'message' => _("Condition is a saved search, but not a condition"),
+            'message' => _kt("Condition is a saved search, but not a condition"),
         ));
         $this->handleError($aOptions);
     }
@@ -207,7 +207,7 @@ class KTDispatcherValidation {
         $sString = trim($sString);
         if (empty($sString)) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions,
-                    'message', _("An empty string was given"));
+                    'message', _kt("An empty string was given"));
             $this->handleError($aOptions);
         }
         return $sString;
@@ -223,19 +223,19 @@ class KTDispatcherValidation {
         }
         
         if ($bError) {
-            $message = _("You did not select a valid document to upload");
+            $message = _kt("You did not select a valid document to upload");
 
             $errors = array(
-               1 => _("The uploaded file is larger than the PHP upload_max_filesize setting"),
-               2 => _("The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"),
-               3 => _("The uploaded file was not fully uploaded to the document management system"),
-               4 => _("No file was selected to be uploaded to the document management system"),
-               6 => _("An internal error occurred receiving the uploaded document"),
+               1 => _kt("The uploaded file is larger than the PHP upload_max_filesize setting"),
+               2 => _kt("The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"),
+               3 => _kt("The uploaded file was not fully uploaded to the document management system"),
+               4 => _kt("No file was selected to be uploaded to the document management system"),
+               6 => _kt("An internal error occurred receiving the uploaded document"),
             );
             $message = KTUtil::arrayGet($errors, $aFile['error'], $message);
 
             if (@ini_get("file_uploads") == false) {
-                $message = _("File uploads are disabled in your PHP configuration");
+                $message = _kt("File uploads are disabled in your PHP configuration");
             }
             $aOptions['message'] = $message;
             $this->handleError($aOptions);
@@ -268,7 +268,7 @@ class KTDispatcherValidation {
             }
         }
         $aOptions = $aOptions;
-        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("Invalid authentication source"));
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt("Invalid authentication source"));
         $this->handleError($aOptions);
         return $sNamespace;
     }
@@ -285,12 +285,12 @@ class KTDispatcherValidation {
                     $aValidatedDict[$k] = '';
                 }
                 */
-                $aErrors[$k] = PEAR::raiseError(sprintf(_("Required value %s not set"), $k));
+                $aErrors[$k] = PEAR::raiseError(sprintf(_kt("Required value %s not set"), $k));
                 continue;
             }
             $sValidationFunction = $this->_generateValidationFunction($aValidatorInfo['type']);
             if (!method_exists($this, $sValidationFunction)) {
-                $aErrors[$k] = PEAR::raiseError(sprintf(_("Unknown validation function for required value %s"), $k));
+                $aErrors[$k] = PEAR::raiseError(sprintf(_kt("Unknown validation function for required value %s"), $k));
                 continue;
             }
             $aKeyInfo = array('var' => $k);
@@ -330,7 +330,7 @@ class KTDispatcherValidation {
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            return PEAR::raiseError(sprintf(_("Provided variable %s is not a valid %s"), $aKeyInfo['var'], $entity_name));
+            return PEAR::raiseError(sprintf(_kt("Provided variable %s is not a valid %s"), $aKeyInfo['var'], $entity_name));
         }
         return $oEntity;
     }
@@ -346,7 +346,7 @@ class KTDispatcherValidation {
         if (!ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress )) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions,
                                                     'message', 
-                                                    _("An invalid email address was given"));
+                                                    _kt("An invalid email address was given"));
             $this->handleError($aOptions);
         }
         return $sEmailAddress;
@@ -355,11 +355,11 @@ class KTDispatcherValidation {
     
     /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
     function validateEntityName($sEntityTypeName, $sName, $aOptions = null) {
-        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'empty_message', _("No name was given for this item"));
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No name was given for this item"));
         
         // FIXME BD:  don't you mean $sName = $this->validateString ...
         $this->validateString($sName, $aOptions);
-        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'duplicate_message', _("An item with this name already exists"));
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'duplicate_message', _kt("An item with this name already exists"));
         return $this->validateDuplicateName($sEntityTypeName, $sName, $aOptions);
     }
 
@@ -375,7 +375,7 @@ class KTDispatcherValidation {
         $aOptions['multi'] = true;
         $aList = call_user_func($aMethod, $sClass, $aConditions, $aOptions);
         if(count($aList)) {
-            $aOptions['defaultmessage'] = sprintf(_("An entity with that name already exists: class %s, name %s"), $sClass, $sName);
+            $aOptions['defaultmessage'] = sprintf(_kt("An entity with that name already exists: class %s, name %s"), $sClass, $sName);
             $this->handleError($aOptions);
         }
         return $sName;

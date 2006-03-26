@@ -183,8 +183,8 @@ class KTStandardDispatcher extends KTDispatcher {
     function permissionDenied () {
 	    global $default;
 		
-		$msg = '<h2>' . _('Permission Denied') . '</h2>';
-		$msg .= '<p>' . _('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
+		$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
+		$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
 		
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
@@ -304,7 +304,7 @@ class KTAdminDispatcher extends KTStandardDispatcher {
 
     function KTAdminDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'administration', 'name' => _('Administration')),
+            array('action' => 'administration', 'name' => _kt('Administration')),
         );
         return parent::KTStandardDispatcher();
     }

@@ -139,7 +139,7 @@ class KTFolderAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
 
-        $portlet = new KTActionPortlet(_("Folder Actions"));
+        $portlet = new KTActionPortlet(_kt("Folder Actions"));
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);        
         $portlet->setActions($aActions,null);
         $this->oPage->addPortlet($portlet);            
@@ -150,7 +150,7 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function do_main() {
-        return _("Dispatcher component of action not implemented.");
+        return _kt("Dispatcher component of action not implemented.");
     }
 
 }

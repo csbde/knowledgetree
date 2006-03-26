@@ -94,7 +94,7 @@ class DocumentTransaction {
 	function & getTransactionType() { return KTDocumentTransactionType::getByNamespace($this->sTransactionNS); }
 	function getAction() {
 		$oType = $this->getTransactionType();
-		$action = _('Unknown Action');
+		$action = _kt('Unknown Action');
 		if (!PEAR::isError($oType)) { $action = $oType->getName(); }
 		
 		return $action;

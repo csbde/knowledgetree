@@ -178,7 +178,7 @@ class KTBrowseUtil {
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, "fFolderId=1");
         }
-        $aBreadcrumbs[] = array("url" => $url, "name" => _('Folders'));
+        $aBreadcrumbs[] = array("url" => $url, "name" => _kt('Folders'));
         
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
