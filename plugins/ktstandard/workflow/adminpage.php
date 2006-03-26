@@ -40,7 +40,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
         $res = parent::check();
         if (!$res) { return false; }
         
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _('Automatic Workflow Assignments'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _kt('Automatic Workflow Assignments'));
         
         return true;
     }
@@ -55,7 +55,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
         foreach ($aTriggers as $aTrigger) {
             $aVocab[$aTrigger[2]] = $aTrigger[0];
         }
-        $aFields[] = new KTLookupWidget(_('Workflow Plugins'), _('Plugins providing workflow allocators.'),'selection_ns', $this->getHandler(), $this->oPage, true, null, null, array('vocab' => $aVocab));
+        $aFields[] = new KTLookupWidget(_kt('Workflow Plugins'), _('Plugins providing workflow allocators.'),'selection_ns', $this->getHandler(), $this->oPage, true, null, null, array('vocab' => $aVocab));
         
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/workflow/allocator_selection');
         $oTemplate->setData(array(
@@ -84,10 +84,10 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $sQuery .= ' WHERE event_ns = ?';
             $aParams = array('ktstandard.workflowassociation.handler');
             DBUtil::runQuery(array($sQuery, $aParams));
-            $this->successRedirectToMain(_('Handler removed.'));
+            $this->successRedirectToMain(_kt('Handler removed.'));
         } else {
             if (!array_key_exists($selection_ns, $aTriggers)) {
-                $this->errorRedirectToMain(_('Invalid assignment'));
+                $this->errorRedirectToMain(_kt('Invalid assignment'));
             }
         
         
@@ -103,7 +103,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $sQuery .= ' VALUES ("ktstandard.workflowassociation.handler",?)';
             $aParams = array($selection_ns);
             DBUtil::runQuery(array($sQuery, $aParams));
-            $this->successRedirectToMain(_('Handler set.'));
+            $this->successRedirectToMain(_kt('Handler set.'));
         }
     }
 }

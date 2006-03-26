@@ -45,7 +45,7 @@ class KTBulkExportAction extends KTFolderAction {
     var $sPermissionName = "ktcore.permissions.read";
 
     function getDisplayName() {
-        return _('Bulk Export');
+        return _kt('Bulk Export');
     }
 
     function do_main() {
@@ -55,7 +55,7 @@ class KTBulkExportAction extends KTFolderAction {
         $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
 
         if (empty($aDocumentIds)) {
-            $this->addErrorMessage(_("No documents found to export"));
+            $this->addErrorMessage(_kt("No documents found to export"));
             redirect(KTBrowseUtil::getUrlForFolder($oFolder));
             exit(0);
         }

@@ -38,15 +38,15 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('name' => _('Document Links'));
-        $this->oPage->setBreadcrumbDetails(_("view"));
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
+        $this->oPage->setBreadcrumbDetails(_kt("view"));
         
         $aLinkTypes =& LinkType::getList('id > 0');
         
         $addLinkForm = array();
         // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
-        $addLinkForm[] = new KTStringWidget('Name',_('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
-        $addLinkForm[] = new KTStringWidget('Description',_('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
+        $addLinkForm[] = new KTStringWidget('Name', _kt('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
+        $addLinkForm[] = new KTStringWidget('Description', _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
         
         
         $oTemplating =& KTTemplating::getSingleton();
@@ -62,20 +62,20 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
     function do_edit() {
         $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
         if ($link_id === null) {
-           $this->errorRedirectToMain(_("Please specify a link type to edit."));
+           $this->errorRedirectToMain(_kt("Please specify a link type to edit."));
         }
         
         $oLinkType =& LinkType::get($link_id);
         
-        $this->aBreadcrumbs[] = array('name' => _('Document Links'));
-        $this->oPage->setBreadcrumbDetails(_("view"));
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
+        $this->oPage->setBreadcrumbDetails(_kt("view"));
         
         $aLinkTypes =& LinkType::getList('id > 0');
         
         $editLinkForm = array();
         // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
-        $editLinkForm[] = new KTStringWidget('Name',_('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
-        $editLinkForm[] = new KTStringWidget('Description',_('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
+        $editLinkForm[] = new KTStringWidget('Name', _kt('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
+        $editLinkForm[] = new KTStringWidget('Description', _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
         
         
         $oTemplating =& KTTemplating::getSingleton();
@@ -93,14 +93,14 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
     function do_update() {
         $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
         if ($link_id === null) {
-            $this->errorRedirectToMain(_("Please specify a link type to update."));
+            $this->errorRedirectToMain(_kt("Please specify a link type to update."));
         }
         
         $name = KTUtil::arrayGet($_REQUEST, 'fName');        
         $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
 
         if (empty($name) || empty($description)) { // for bonus points, make this go to edit, and edit catch it.
-            $this->errorRedirectToMain(_('Please enter information for all fields.'));
+            $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
         }
         
         $oLinkType =& LinkType::get($link_id);
@@ -109,7 +109,7 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         $oLinkType->setDescription($description);
         $oLinkType->update();
         
-        $this->successRedirectToMain(_("Link Type updated."));
+        $this->successRedirectToMain(_kt("Link Type updated."));
     }
     
     function do_add() {
@@ -117,7 +117,7 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
 
         if (empty($name) || empty($description)) {
-            $this->errorRedirectToMain(_('Please enter information for all fields.'));
+            $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
         }
         
         $oLinkType = new LinkType($name, $description);
@@ -125,14 +125,14 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
              
         //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
         
-        $this->successRedirectToMain(_("Link Type created."));
+        $this->successRedirectToMain(_kt("Link Type created."));
     }
     
     function do_delete() {
         $types_to_delete = KTUtil::arrayGet($_REQUEST, 'fLinksToDelete');         // is an array.
 
         if (empty($types_to_delete)) {
-            $this->errorRedirectToMain(_('Please select one or more link types to delete.'));
+            $this->errorRedirectToMain(_kt('Please select one or more link types to delete.'));
         }
         
         $count = 0;
@@ -149,7 +149,7 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         
         //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
         
-        $this->successRedirectToMain($count . " " . _("Link types deleted."));
+        $this->successRedirectToMain($count . " " . _kt("Link types deleted."));
     }
 
 

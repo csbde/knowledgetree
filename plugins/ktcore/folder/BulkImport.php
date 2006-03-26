@@ -45,7 +45,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _('Import from Server Location');
+        return _kt('Import from Server Location');
     }
 
     function getInfo() {
@@ -57,12 +57,12 @@ class KTBulkImportFolderAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("bulk import"));
+        $this->oPage->setBreadcrumbDetails(_kt("bulk import"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkImport');
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_('Path'), _('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Path'), _('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
 
-        $aVocab = array('' => _('&lt;Please select a document type&gt;'));
+        $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
@@ -70,7 +70,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
         }
 
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
@@ -93,10 +93,10 @@ class KTBulkImportFolderAction extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
 
-        $aErrorOptions['message'] = _('Invalid document type provided');
+        $aErrorOptions['message'] = _kt('Invalid document type provided');
         $oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
 
-        $aErrorOptions['message'] = _('Invalid path provided');
+        $aErrorOptions['message'] = _kt('Invalid path provided');
         $sPath = $this->oValidator->validateString($_REQUEST['path'], $aErrorOptions);
 
         $matches = array();
@@ -123,7 +123,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
         $res = $bm->import();
         if (PEAR::isError($res)) {
             DBUtil::rollback();
-            $_SESSION["KTErrorMessage"][] = _("Bulk import failed") . ": " . $res->getMessage();
+            $_SESSION["KTErrorMessage"][] = _kt("Bulk import failed") . ": " . $res->getMessage();
         } else {
             DBUtil::commit();
             $this->addInfoMessage("Bulk import succeeded");

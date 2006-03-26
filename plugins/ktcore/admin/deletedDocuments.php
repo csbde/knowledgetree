@@ -37,9 +37,9 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     function do_main () {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         
-        $this->oPage->setBreadcrumbDetails(_('view'));
+        $this->oPage->setBreadcrumbDetails(_kt('view'));
     
         $aDocuments =& Document::getList("status_id=" . DELETED);
         
@@ -62,25 +62,25 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         if (array_key_exists('restore', $submit)) {
             return $this->do_confirm_restore();
         }
-        $this->errorRedirectToMain(_('No action specified.'));
+        $this->errorRedirectToMain(_kt('No action specified.'));
     }
     
     function do_confirm_expunge() {
-        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
-        $this->oPage->setTitle(sprintf(_('Confirm Expunge of %d documents'), count($selected_docs)));
+        $this->oPage->setTitle(sprintf(_kt('Confirm Expunge of %d documents'), count($selected_docs)));
         
-        $this->oPage->setBreadcrumbDetails(sprintf(_('confirm expunge of %d documents'), count($selected_docs)));
+        $this->oPage->setBreadcrumbDetails(sprintf(_kt('confirm expunge of %d documents'), count($selected_docs)));
     
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -104,9 +104,9 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -139,27 +139,27 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             }
         }
         $this->commitTransaction();
-        $msg = sprintf(_('%d documents expunged.'), count($aSuccessDocuments));
-        if (count($aErrorDocuments) != 0) { $msg .= _('Failed to expunge') . ': ' . join(', ', $aErrorDocuments); }
+        $msg = sprintf(_kt('%d documents expunged.'), count($aSuccessDocuments));
+        if (count($aErrorDocuments) != 0) { $msg .= _kt('Failed to expunge') . ': ' . join(', ', $aErrorDocuments); }
         $this->successRedirectToMain($msg);
     }
     
     function do_confirm_restore() {
-        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
-        $this->oPage->setTitle(sprintf(_('Confirm Restore of %d documents'), count($selected_docs)));
+        $this->oPage->setTitle(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
         
-        $this->oPage->setBreadcrumbDetails(sprintf(_('Confirm Restore of %d documents'), count($selected_docs)));
+        $this->oPage->setBreadcrumbDetails(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
     
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -181,9 +181,9 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting restore'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting restore'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting restore'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -225,8 +225,8 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             }
         }
         $this->commitTransaction();
-        $msg = sprintf(_('%d documents restored.'), count($aSuccessDocuments));
-        if (count($aErrorDocuments) != 0) { $msg .= _('Failed to restore') . ': ' . join(', ', $aErrorDocuments); }
+        $msg = sprintf(_kt('%d documents restored.'), count($aSuccessDocuments));
+        if (count($aErrorDocuments) != 0) { $msg .= _kt('Failed to restore') . ': ' . join(', ', $aErrorDocuments); }
         $this->successRedirectToMain($msg);
     }    
     

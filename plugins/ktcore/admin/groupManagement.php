@@ -43,9 +43,9 @@ require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
     // {{{ do_main
     function do_main() {
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
-		$this->oPage->setBreadcrumbDetails(_('select a group'));
-		$this->oPage->setTitle(_("Group Management"));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
+		$this->oPage->setBreadcrumbDetails(_kt('select a group'));
+		$this->oPage->setTitle(_kt("Group Management"));
 		
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
@@ -61,7 +61,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 		
 		$search_fields = array();
-		$search_fields[] =  new KTStringWidget(_('Group Name'),_("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
+		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
 		
 		if (!empty($name)) {
 			$search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
@@ -85,21 +85,21 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     // {{{ do_editGroup
     function do_editGroup() {
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
-		$this->oPage->setBreadcrumbDetails(_('edit group'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
+		$this->oPage->setBreadcrumbDetails(_kt('edit group'));
 		
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 		$oGroup = Group::get($group_id);
 		if (PEAR::isError($oGroup) || $oGroup == false) {
-		    $this->errorRedirectToMain(_('Please select a valid group.'));
+		    $this->errorRedirectToMain(_kt('Please select a valid group.'));
 		}
 	
-		$this->oPage->setTitle(sprintf(_("Edit Group (%s)"), $oGroup->getName()));
+		$this->oPage->setTitle(sprintf(_kt("Edit Group (%s)"), $oGroup->getName()));
 		
 		$edit_fields = array();
-		$edit_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $oGroup->getName(), $this->oPage, true);
-		$edit_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
-		$edit_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTStringWidget(_kt('Group Name'), _('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $oGroup->getName(), $this->oPage, true);
+		$edit_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
 		
 		// grab all units.
 		$unitId = $oGroup->getUnitId();
@@ -107,11 +107,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 		$oUnits = Unit::getList();
 		$vocab = array();
-		$vocab[0] = _('No Unit');
+		$vocab[0] = _kt('No Unit');
 		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
 		$aOptions = array('vocab' => $vocab);
 		
-		$edit_fields[] =  new KTLookupWidget(_('Unit'),_('Which Unit is this group part of?'), 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
+		$edit_fields[] =  new KTLookupWidget(_kt('Unit'), _('Which Unit is this group part of?'), 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
 			
 		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/editgroup");
@@ -129,10 +129,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 		$oGroup = Group::get($group_id);
 		if (PEAR::isError($oGroup) || $oGroup == false) {
-		    $this->errorRedirectToMain(_('Please select a valid group.'));
+		    $this->errorRedirectToMain(_kt('Please select a valid group.'));
 		}
 		$group_name = KTUtil::arrayGet($_REQUEST, 'group_name');
-		if (empty($group_name)) { $this->errorRedirectToMain(_('Please specify a name for the group.')); }
+		if (empty($group_name)) { $this->errorRedirectToMain(_kt('Please specify a name for the group.')); }
 		$is_unitadmin = KTUtil::arrayGet($_REQUEST, 'is_unitadmin', false);
 		if ($is_unitadmin !== false) { $is_unitadmin = true; }
 		$is_sysadmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
@@ -152,10 +152,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		}
 		
 		$res = $oGroup->update();
-		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain(_('Failed to set group details.')); }
+		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain(_kt('Failed to set group details.')); }
 		
 		$this->commitTransaction();
-		$this->successRedirectToMain(_('Group details updated.'));
+		$this->successRedirectToMain(_kt('Group details updated.'));
 	}
     // }}}
 
@@ -186,13 +186,13 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
-            $this->errorRedirectToMain(_('No such group.'));
+            $this->errorRedirectToMain(_kt('No such group.'));
         }
 
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
         $this->aBreadcrumbs[] = array('name' => $oGroup->getName());
-        $this->oPage->setBreadcrumbDetails(_('manage members'));
-        $this->oPage->setTitle(sprintf(_('Manage members of group %s'), $oGroup->getName()));
+        $this->oPage->setBreadcrumbDetails(_kt('manage members'));
+        $this->oPage->setTitle(sprintf(_kt('Manage members of group %s'), $oGroup->getName()));
 
         $iSourceId = $oGroup->getAuthenticationSourceId();
         if (!empty($iSourceId)) {
@@ -243,7 +243,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
-            $this->errorRedirectToMain(_('No such group.'));
+            $this->errorRedirectToMain(_kt('No such group.'));
         }
         
         $userAdded = KTUtil::arrayGet($_REQUEST, 'userAdded','');
@@ -270,7 +270,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 				}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()));
                 } else { $usersAdded[] = $oUser->getName(); }
             }
         }
@@ -281,7 +281,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oUser = User::get($iUserId);
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()));
                 } else { 
 				    $usersRemoved[] = $oUser->getName(); 
 					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
@@ -294,20 +294,20 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }        
         
 		if (!empty($addWarnings)) {
-		    $sWarnStr = _('Warning:  some users were already members of some subgroups') . ' &mdash; ';
+		    $sWarnStr = _kt('Warning:  some users were already members of some subgroups') . ' &mdash; ';
 			$sWarnStr .= implode(', ', $addWarnings);
 			$_SESSION['KTInfoMessage'][] = $sWarnStr;
 		}
 		
 		if (!empty($removeWarnings)) {
-		    $sWarnStr = _('Warning:  some users are still members of some subgroups') . ' &mdash; ';
+		    $sWarnStr = _kt('Warning:  some users are still members of some subgroups') . ' &mdash; ';
 			$sWarnStr .= implode(', ', $removeWarnings);
 			$_SESSION['KTInfoMessage'][] = $sWarnStr;
 		}        
         
         $msg = '';
-        if (!empty($usersAdded)) { $msg .= ' ' . _('Added') . ': ' . join(', ', $usersAdded) . ', <br />'; }
-        if (!empty($usersRemoved)) { $msg .= ' ' . _('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
+        if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . ', <br />'; }
+        if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
         
         $this->commitTransaction();
         $this->successRedirectToMain($msg);
@@ -320,12 +320,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
-            $this->errorRedirectToMain(_('No such group.'));
+            $this->errorRedirectToMain(_kt('No such group.'));
         }
         
         $this->aBreadcrumbs[] = array('name' => $oGroup->getName());
-        $this->oPage->setBreadcrumbDetails(_('manage members'));
-        $this->oPage->setTitle(sprintf(_('Manage members of %s'), $oGroup->getName()));
+        $this->oPage->setBreadcrumbDetails(_kt('manage members'));
+        $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $oGroup->getName()));
         
         
         // FIXME replace OptionTransfer.js.  me no-likey.
@@ -409,7 +409,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oMemberGroup = Group::get($iMemberGroupID);
                 $res = $oGroup->addMemberGroup($oMemberGroup);
                 if (PEAR::isError($res)) {
-                    $this->errorRedirectToMain(sprintf(_("Failed to add %s to %s"), $oMemberGroup->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt("Failed to add %s to %s"), $oMemberGroup->getName(), $oGroup->getName()));
 					exit(0);
                 } else { $groupsAdded[] = $oMemberGroup->getName(); }
             }
@@ -420,15 +420,15 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oMemberGroup = Group::get($iMemberGroupID);
                 $res = $oGroup->removeMemberGroup($oMemberGroup);
                 if (PEAR::isError($res)) {
-                    $this->errorRedirectToMain(sprintf(_("Failed to remove %s from %s"), $oMemberGroup->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt("Failed to remove %s from %s"), $oMemberGroup->getName(), $oGroup->getName()));
 					exit(0);
                 } else { $groupsRemoved[] = $oMemberGroup->getName(); }
             }
         }
         
         $msg = '';
-        if (!empty($groupsAdded)) { $msg .= ' ' . _('Added') . ': ' . join(', ', $groupsAdded) . ', <br />'; }
-        if (!empty($groupsRemoved)) { $msg .= ' '. _('Removed'). ': ' . join(', ',$groupsRemoved) . '.'; }
+        if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $groupsAdded) . ', <br />'; }
+        if (!empty($groupsRemoved)) { $msg .= ' '. _kt('Removed'). ': ' . join(', ',$groupsRemoved) . '.'; }
         
         $this->commitTransaction();
 		
@@ -438,25 +438,25 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	
     // {{{ do_addGroup
     function do_addGroup() {
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
-		$this->oPage->setBreadcrumbDetails(_('Add a new group'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
+		$this->oPage->setBreadcrumbDetails(_kt('Add a new group'));
 		
 	
-		$this->oPage->setTitle(_("Add a new group"));
+		$this->oPage->setTitle(_kt("Add a new group"));
 		
 		$edit_fields = array();
-		$add_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
-		$add_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
-		$add_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTStringWidget(_kt('Group Name'), _('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
+		$add_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 		// grab all units.
 		
 		$oUnits = Unit::getList();
 		$vocab = array();
-		$vocab[0] = _('No Unit');
+		$vocab[0] = _kt('No Unit');
 		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
 		$aOptions = array('vocab' => $vocab);
 		
-		$add_fields[] =  new KTLookupWidget(_('Unit'),_('Which Unit is this group part of?'), 'unit_id', 0, $this->oPage, false, null, null, $aOptions);
+		$add_fields[] =  new KTLookupWidget(_kt('Unit'), _('Which Unit is this group part of?'), 'unit_id', 0, $this->oPage, false, null, null, $aOptions);
 
         $aAuthenticationSources = array();
         $aAllAuthenticationSources =& KTAuthenticationSource::getList();
@@ -484,7 +484,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	function do_createGroup() {
 
 		$group_name = KTUtil::arrayGet($_REQUEST, 'group_name');
-		if (empty($group_name)) { $this->errorRedirectToMain(_('Please specify a name for the group.')); }
+		if (empty($group_name)) { $this->errorRedirectToMain(_kt('Please specify a name for the group.')); }
 		$is_unitadmin = KTUtil::arrayGet($_REQUEST, 'is_unitadmin', false);
 		if ($is_unitadmin !== false) { $is_unitadmin = true; }
 		$is_sysadmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
@@ -503,7 +503,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		//if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain('Failed to create group "' . $group_name . '"'); }
 		// do i need to "create"
 		$this->commitTransaction();
-		$this->successRedirectToMain(sprintf(_('Group "%s" created.'), $group_name));
+		$this->successRedirectToMain(sprintf(_kt('Group "%s" created.'), $group_name));
 	}
     // }}}
 
@@ -516,7 +516,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $sGroupName = $oGroup->getName();
         $res = $oGroup->delete();
         $this->oValidator->notError($res, $aErrorOptions);
-        $this->successRedirectToMain(sprintf(_('Group "%s" deleted.'), $sGroupName));
+        $this->successRedirectToMain(sprintf(_kt('Group "%s" deleted.'), $sGroupName));
     }
     // }}}
 
@@ -529,11 +529,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
-        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addGroup'), 'name' => _('add a new group'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addGroup'), 'name' => _kt('add a new group'));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
         $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
-        $oProvider->oPage->setTitle(_("Modify Group Details"));
+        $oProvider->oPage->setTitle(_kt("Modify Group Details"));
 
         $oProvider->dispatch();
         exit(0);
@@ -545,7 +545,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$aGroups = $oGroup->getMemberGroups();
 		$MAX_GROUPS = 6;
 		$add_elipsis = false;
-		if (count($aGroups) == 0) { return _('Group currently has no subgroups.'); }
+		if (count($aGroups) == 0) { return _kt('Group currently has no subgroups.'); }
 		if (count($aGroups) > $MAX_GROUPS) { 
 		    $aGroups = array_slice($aGroups, 0, $MAX_GROUPS); 
 			$add_elipsis = true;

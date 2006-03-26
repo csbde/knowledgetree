@@ -38,7 +38,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
     function check() {
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
-            'name' => _('Saved Searches'),
+            'name' => _kt('Saved Searches'),
         );
         return true;
     }
@@ -59,11 +59,11 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         $aTemplateData = array(
-            "title" => _("Create a new condition"),
+            "title" => _kt("Create a new condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => _("Save"),
+            "searchButton" => _kt("Save"),
             'context' => $this,
-            "sNameTitle" => _('New Saved Search'),
+            "sNameTitle" => _kt('New Saved Search'),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -73,15 +73,15 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $oSearch = KTSavedSearch::get($id);
         
         if (PEAR::isError($oSearch) || ($oSearch == false)) {
-            $this->errorRedirectToMain(_('No Such search'));
+            $this->errorRedirectToMain(_kt('No Such search'));
         }
         
         $res = $oSearch->delete();
         if (PEAR::isError($res) || ($res == false)) {
-            return $this->errorRedirectToMain(_('Failed to delete search'));
+            return $this->errorRedirectToMain(_kt('Failed to delete search'));
         }
         
-        $this->successRedirectToMain(_('Search Deleted'));
+        $this->successRedirectToMain(_kt('Search Deleted'));
     }
 
     function do_view() {
@@ -123,14 +123,14 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         //print $s;        
         
         $aTemplateData = array(
-            "title" => _("Edit an existing condition"),
+            "title" => _kt("Edit an existing condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => _("Update Saved Search"),
+            "searchButton" => _kt("Update Saved Search"),
             'aSearch' => $aSearch,
             'context' => $this,
             'iSearchId' => $oSearch->getId(),
             'old_name' => $oSearch->getName(),
-            'sNameTitle' => _('Edit Search'),
+            'sNameTitle' => _kt('Edit Search'),
         );
         return $oTemplate->render($aTemplateData);        
         
@@ -154,7 +154,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
 
         //$sName = "Neil's saved search";
@@ -167,9 +167,9 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         
         $this->oValidator->notError($res, array(
             'redirect_to' => 'main',
-            'message' => _('Search not saved'),
+            'message' => _kt('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Search saved'));
+        $this->successRedirectToMain(_kt('Search saved'));
     }
 
     // XXX: Rename to do_save
@@ -187,7 +187,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
 
         $sNamespace = KTUtil::nameToLocalNamespace('Saved searches', $sName);
@@ -203,9 +203,9 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
 
         $this->oValidator->notError($oSearch, array(
             'redirect_to' => 'main',
-            'message' => _('Search not saved'),
+            'message' => _kt('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Search saved'));
+        $this->successRedirectToMain(_kt('Search saved'));
     }
 }
 

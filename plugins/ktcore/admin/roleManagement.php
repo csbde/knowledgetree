@@ -36,8 +36,8 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Role Management'));
-        $this->oPage->setTitle(_('Role Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Role Management'));
+        $this->oPage->setTitle(_kt('Role Management'));
         
         $edit_fields = array();
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
@@ -46,13 +46,13 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oRole) || ($oRole == false)) { $for_edit = false; }
         else {
             $for_edit = true;
-            $edit_fields[] = new KTStringWidget(_('Name'),_('A short, human-readable name for the role.'), 'name', $oRole->getName(), $this->oPage, true);        
+            $edit_fields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the role.'), 'name', $oRole->getName(), $this->oPage, true);        
         }
         
         $aRoles =& Role::getList('id > 0');
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_('Name'),_('A short, human-readable name for the role.'), 'name', null, $this->oPage, true);        
+        $add_fields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the role.'), 'name', null, $this->oPage, true);        
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/principals/roleadmin');       
@@ -70,56 +70,56 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
     function do_createRole() {
         $name = KTUtil::arrayGet($_REQUEST, 'name', null);
         if ($name === null) {
-            $this->errorRedirectToMain(_('Please give the role a name.'));
+            $this->errorRedirectToMain(_kt('Please give the role a name.'));
         }
         
         $this->startTransaction();
         $oRole = Role::createFromArray(array('name' => $name));        
         
         if (PEAR::isError($oRole) || ($oRole == false)) {
-            $this->errorRedirectToMain(_('Unable to create role.'));
+            $this->errorRedirectToMain(_kt('Unable to create role.'));
         }
         
-        $this->successRedirectToMain(sprintf(_('Role "%s" created.'), $name));
+        $this->successRedirectToMain(sprintf(_kt('Role "%s" created.'), $name));
     }
 
     function do_updateRole() {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id');
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole) || ($oRole == false)) {
-            $this->errorRedirectToMain(_('Please select a valid role first.'));
+            $this->errorRedirectToMain(_kt('Please select a valid role first.'));
         }
         
         $name = KTUtil::arrayGet($_REQUEST, 'name', null);
         if ($name === null) {
-            $this->errorRedirectToMain(_('Please give the role a name.'));
+            $this->errorRedirectToMain(_kt('Please give the role a name.'));
         }
         
         $this->startTransaction();
         $oRole->setName($name);
         $res = $oRole->update();
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectToMain(_('Unable to update role.'));
+            $this->errorRedirectToMain(_kt('Unable to update role.'));
         }
         
-        $this->successRedirectToMain(sprintf(_('Role "%s" updated.'), $name));
+        $this->successRedirectToMain(sprintf(_kt('Role "%s" updated.'), $name));
     }
 
     function do_deleteRole() {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id');
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole) || ($oRole == false)) {
-            $this->errorRedirectToMain(_('Please select a valid role first.'));
+            $this->errorRedirectToMain(_kt('Please select a valid role first.'));
         }
         $name = $oRole->getName();
         
         $this->startTransaction();  
         $res = $oRole->delete();
         if (PEAR::isError($res) || ($res == false)) { 
-            $this->errorRedirectToMain(_('Unable to delete the role.') . '  ' . _('Possible cause') . ': ' . $_SESSION['errorMessage']); 
+            $this->errorRedirectToMain(_kt('Unable to delete the role.') . '  ' . _('Possible cause') . ': ' . $_SESSION['errorMessage']); 
         }
             
-        $this->successRedirectToMain(sprintf(_('Role "%s" deleted. '), $name));
+        $this->successRedirectToMain(sprintf(_kt('Role "%s" deleted. '), $name));
     }
 
 }

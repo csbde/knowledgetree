@@ -41,12 +41,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
    // Breadcrumbs base - added to in methods
     function do_main () {
 
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Type Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
         
         $this->oPage->setBreadcrumbDetails('view types');
     
         $addFields = array();
-        $addFields[] = new KTStringWidget(_('Name'),_('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
+        $addFields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
@@ -65,26 +65,26 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         ));
 
         if (PEAR::isError($oDocumentType)) {
-            $this->errorRedirectToMain(_('Could not create document type'));
+            $this->errorRedirectToMain(_kt('Could not create document type'));
             exit(0);
         }
-        $this->successRedirectTo('edit', _('Document type created'), 'fDocumentTypeId=' . $oDocumentType->getId());
+        $this->successRedirectTo('edit', _kt('Document type created'), 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
     }
 
     function do_delete() {
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
         if ($oDocumentType->isUsed()) {
-            $this->errorRedirectToMain(_('Document type still in use, could not be deleted'));
+            $this->errorRedirectToMain(_kt('Document type still in use, could not be deleted'));
             exit(0);
         }
         $res = $oDocumentType->delete();
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectToMain(_('Document type could not be deleted'));
+            $this->errorRedirectToMain(_kt('Document type could not be deleted'));
             exit(0);
         }
         
-        $this->successRedirectToMain(_('Document type deleted'));
+        $this->successRedirectToMain(_kt('Document type deleted'));
         exit(0);
     }
 
@@ -95,11 +95,11 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $res = $oDocumentType->update();
         
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('main', _('Could not disable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('main', _kt('Could not disable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
         
-        $this->successRedirectToMain(_('Document type disabled'));
+        $this->successRedirectToMain(_kt('Document type disabled'));
         exit(0);
     }
 
@@ -110,17 +110,17 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $res = $oDocumentType->update();
         
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('main', _('Could not enable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('main', _kt('Could not enable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
         
-        $this->successRedirectToMain(_('Document type enabled'));
+        $this->successRedirectToMain(_kt('Document type enabled'));
         exit(0);
     }
 
     function do_edit() {
         
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Type Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/edit');
@@ -142,13 +142,13 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aOptions['vocab'] = $vocab;
         $aOptions['multi'] = true;
         $aOptions['size'] = 5;
-        $availableTypesWidget =& new KTLookupWidget(_('Available Fieldsets'),_('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
+        $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
         
         $this->aBreadcrumbs[] = array(
             'name' => $oDocumentType->getName(),
         );        
-        $this->oPage->setBreadcrumbDetails(_('edit'));
+        $this->oPage->setBreadcrumbDetails(_kt('edit'));
         
         $oTemplate->setData(array(
             'oDocumentType' => $oDocumentType,
@@ -173,10 +173,10 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $res = $oDocumentType->update();
         
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', _('Could not save document type changes'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('edit', _kt('Could not save document type changes'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', _('Name changed.'), 'fDocumentTypeId=' . $oDocumentType->getId());
+        $this->successRedirectTo('edit', _kt('Name changed.'), 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
     }
 
@@ -185,10 +185,10 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $res = KTMetadataUtil::removeSetsFromDocumentType($oDocumentType, $_REQUEST['fieldsetid']);
         if (PEAR::isError($res)) {
             var_dump($res);
-            $this->errorRedirectTo('edit', _('Changes not saved'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('edit', _kt('Changes not saved'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', _('Fieldsets removed.'), 'fDocumentTypeId=' . $oDocumentType->getId());
+        $this->successRedirectTo('edit', _kt('Fieldsets removed.'), 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
     }
 
@@ -197,17 +197,17 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aFieldsetId = $_REQUEST['fieldsetid'];
         
         if(!count($aFieldsetId)) {
-            $this->errorRedirectTo('edit', _('You must select at least one fieldset'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('edit', _kt('You must select at least one fieldset'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
         
         $res = KTMetadataUtil::addSetsToDocumentType($oDocumentType, $aFieldsetId);
         if (PEAR::isError($res)) {
             var_dump($res);
-            $this->errorRedirectTo('edit', _('Changes not saved'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            $this->errorRedirectTo('edit', _kt('Changes not saved'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', _('Fieldsets associated.'), 'fDocumentTypeId=' . $oDocumentType->getId());
+        $this->successRedirectTo('edit', _kt('Fieldsets associated.'), 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
     }
 }

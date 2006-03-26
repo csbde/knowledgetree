@@ -44,8 +44,8 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
         
         if ($res == 'ktstandard.triggers.workflowassociation.documenttype.handler') {
             $this->registerAdminPage('workflow_type_allocation', 'WorkflowTypeAllocationDispatcher', 
-                'documents', _('Workflow Allocation by Document Types'), 
-                _('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);        
+                'documents', _kt('Workflow Allocation by Document Types'), 
+                _kt('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);        
             $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
         }
         
@@ -83,7 +83,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         $res = parent::check();
         if (!$res) { return false; }
         
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _('Workflow Allocation by Document Types'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _kt('Workflow Allocation by Document Types'));
         
         return true;
     }
@@ -97,7 +97,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         
         $aTypeMapping = array();
         if (PEAR::isError($res)) {
-            $this->oPage->addError(_('Failed to get type mapping: ') . $res->getMessage());
+            $this->oPage->addError(_kt('Failed to get type mapping: ') . $res->getMessage());
         } else {
             foreach ($res as $aRow) {
                 $aTypeMapping[$aRow['document_type_id']] = $aRow['workflow_id'];
@@ -142,7 +142,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
             ), $aOptions);
         }
         
-        $this->successRedirectToMain(_('Type mapping updated.'));
+        $this->successRedirectToMain(_kt('Type mapping updated.'));
     }
 }
 

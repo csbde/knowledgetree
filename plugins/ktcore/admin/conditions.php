@@ -35,7 +35,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 
     function check() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Conditions Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Conditions Management'));
         return true;
     }
 
@@ -48,8 +48,8 @@ class KTConditionDispatcher extends KTAdminDispatcher {
     }
 
     function do_new() {
-        $this->oPage->setBreadcrumbDetails(_('Create a new condition'));
-        $this->oPage->setTitle(_('Create a new condition'));
+        $this->oPage->setBreadcrumbDetails(_kt('Create a new condition'));
+        $this->oPage->setTitle(_kt('Create a new condition'));
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
@@ -57,10 +57,10 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         $aTemplateData = array(
-            "title" => _("Create a new condition"),
-            "sNameTitle" => _("Name of condition"),
+            "title" => _kt("Create a new condition"),
+            "sNameTitle" => _kt("Name of condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => _("Save"),
+            "searchButton" => _kt("Save"),
             "context" => &$this,
         );
         return $oTemplate->render($aTemplateData);
@@ -101,14 +101,14 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         
         
         $aTemplateData = array(
-            "title" => _("Edit an existing condition"),
+            "title" => _kt("Edit an existing condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => _("Update Dynamic Condition"),
+            "searchButton" => _kt("Update Dynamic Condition"),
             'aSearch' => $aSearch,
             'context' => $this,
             'iSearchId' => $oSearch->getId(),
             'old_name' => $oSearch->getName(),
-            'sNameTitle' => _('Edit Dynamic Condition'),
+            'sNameTitle' => _kt('Edit Dynamic Condition'),
         );
         return $oTemplate->render($aTemplateData);        
     }
@@ -131,7 +131,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
 
         //$sName = "Neil's saved search";
@@ -144,9 +144,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         
         $this->oValidator->notError($res, array(
             'redirect_to' => 'main',
-            'message' => _('Search not saved'),
+            'message' => _kt('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Dynamic condition saved'));
+        $this->successRedirectToMain(_kt('Dynamic condition saved'));
     }    
 
     // XXX: Rename to do_save
@@ -157,7 +157,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
 
         $sName = $this->oValidator->validateEntityName(
@@ -179,9 +179,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
 
         $this->oValidator->notError($oSearch, array(
             'redirect_to' => 'main',
-            'message' => _('Search not saved'),
+            'message' => _kt('Search not saved'),
         ));
-        $this->successRedirectToMain(_('Dynamic condition saved'));
+        $this->successRedirectToMain(_kt('Dynamic condition saved'));
     }
 }
 

@@ -65,7 +65,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
         $this->registerDashlet('KTIndexerStatusDashlet', 'ktcore.dashlet.indexer_status', 'KTDashlets.php');
 
-        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _('Authentication'), _('By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), 'authentication/authenticationadminpage.inc.php');
+        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), _('By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), 'authentication/authenticationadminpage.inc.php');
 
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
 
@@ -88,83 +88,83 @@ class KTCorePlugin extends KTPlugin {
 
     function setupAdmin() {
         // set up the categories.
-        $this->registerAdminCategory("principals", _("Users and Groups"),
-            _("Control which users can log in, and are part of which groups and organisational units, from these management panels."));
-        $this->registerAdminCategory("security", _("Security Management"),
-            _("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
-        //$this->registerAdminCategory("plugins", _("Plugin Management"),
-        //    _("Control which plugins are loaded, register new plugins and configure individual plugins."));
-        $this->registerAdminCategory("storage", _("Document Storage"),
-            _("Manage checked-out, archived and deleted documents."));
-        $this->registerAdminCategory("documents", _("Document Metadata and Workflow Configuration"),
-            _("Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows."));
-        $this->registerAdminCategory("misc", _("Miscellaneous"),
-            _("Various settings which do not fit into the other categories, including managing help and saved searches."));
+        $this->registerAdminCategory("principals", _kt("Users and Groups"),
+            _kt("Control which users can log in, and are part of which groups and organisational units, from these management panels."));
+        $this->registerAdminCategory("security", _kt("Security Management"),
+            _kt("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
+        //$this->registerAdminCategory("plugins", _kt("Plugin Management"),
+        //    _kt("Control which plugins are loaded, register new plugins and configure individual plugins."));
+        $this->registerAdminCategory("storage", _kt("Document Storage"),
+            _kt("Manage checked-out, archived and deleted documents."));
+        $this->registerAdminCategory("documents", _kt("Document Metadata and Workflow Configuration"),
+            _kt("Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows."));
+        $this->registerAdminCategory("misc", _kt("Miscellaneous"),
+            _kt("Various settings which do not fit into the other categories, including managing help and saved searches."));
 
         // users and groups
         $this->registerAdminPage("users", 'KTUserAdminDispatcher', "principals",
-            _("Manage Users"), _("Add or remove users from the system."),
+            _kt("Manage Users"), _("Add or remove users from the system."),
             'admin/userManagement.php', null);
         $this->registerAdminPage("groups", 'KTGroupAdminDispatcher', "principals",
-            _("Manage Groups"), _("Add or remove groups from the system."),
+            _kt("Manage Groups"), _("Add or remove groups from the system."),
             'admin/groupManagement.php', null);
         $this->registerAdminPage("units", 'KTUnitAdminDispatcher', "principals",
-            _("Control Units"), _("Specify which organisational units are available within the repository."),
+            _kt("Control Units"), _("Specify which organisational units are available within the repository."),
             'admin/unitManagement.php', null);
 
         // security
         $this->registerAdminPage("permissions", 'ManagePermissionsDispatcher', "security",
-            _("Permissions"), _("Create or delete permissions."), 'admin/managePermissions.php', null);
+            _kt("Permissions"), _("Create or delete permissions."), 'admin/managePermissions.php', null);
         $this->registerAdminPage("roles", 'RoleAdminDispatcher', "security",
-            _("Roles"), _("Create or delete roles"),
+            _kt("Roles"), _("Create or delete roles"),
             'admin/roleManagement.php', null);
         $this->registerAdminPage("conditions", 'KTConditionDispatcher', "security",
-            _("Dynamic Conditions"),
-            _("Manage criteria which determine whether a user is permitted to perform a system action."),
+            _kt("Dynamic Conditions"),
+            _kt("Manage criteria which determine whether a user is permitted to perform a system action."),
             'admin/conditions.php', null);
 
         // documents
         $this->registerAdminPage("typemanagement", 'KTDocumentTypeDispatcher', 'documents',
-            _('Document Types'),
-            _('Manage the different classes of document which can be added to the system.'),
+            _kt('Document Types'),
+            _kt('Manage the different classes of document which can be added to the system.'),
             'admin/documentTypes.php', null);
         $this->registerAdminPage("fieldmanagement", 'KTDocumentFieldDispatcher', 'documents',
-             _('Document Fieldsets'),
-            _('Manage the different types of information that can be associated with classes of documents.'),
+             _kt('Document Fieldsets'),
+            _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFields.php', null);
         $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
-            _('Link Type Management'),
-            _('Manage the different ways documents can be associated with one another.'),
+            _kt('Link Type Management'),
+            _kt('Manage the different ways documents can be associated with one another.'),
             'admin/documentLinks.php', null);
         $this->registerAdminPage("workflows", 'KTWorkflowDispatcher', 'documents',
-            _('Workflows'), _('Configure the process documents go through.'),
+            _kt('Workflows'), _('Configure the process documents go through.'),
             'admin/workflows.php', null);
 
         // storage
         $this->registerAdminPage("checkout", 'KTCheckoutAdminDispatcher', 'storage',
-            _('Checked Out Document Control'),
-            _('Override the checked-out status of documents if a user has failed to do so.'),
+            _kt('Checked Out Document Control'),
+            _kt('Override the checked-out status of documents if a user has failed to do so.'),
             'admin/documentCheckout.php', null);
         $this->registerAdminPage("archived", 'ArchivedDocumentsDispatcher', 'storage',
-            _('Archived Document Restoration'), _("Restore old (archived) documents, usually at a user's request."),
+            _kt('Archived Document Restoration'), _("Restore old (archived) documents, usually at a user's request."),
             'admin/archivedDocuments.php', null);
         $this->registerAdminPage("expunge", 'DeletedDocumentsDispatcher', 'storage',
-            _('Restore or Expunge Deleted Documents'), _('Restore previously deleted documents, or permanently expunge them.'),
+            _kt('Restore or Expunge Deleted Documents'), _('Restore previously deleted documents, or permanently expunge them.'),
             'admin/deletedDocuments.php', null);
 
         // misc
         $this->registerAdminPage("helpmanagement", 'ManageHelpDispatcher', 'misc',
-            _('Edit Help files'), _('Change the help files that are displayed to users.'),
+            _kt('Edit Help files'), _('Change the help files that are displayed to users.'),
             'admin/manageHelp.php', null);
         $this->registerAdminPage("savedsearch", 'KTSavedSearchDispatcher', 'misc',
-            _('Saved searches'),
-            _('Manage saved searches - searches available by default to all users.'),
+            _kt('Saved searches'),
+            _kt('Manage saved searches - searches available by default to all users.'),
             'admin/savedSearch.php', null);
         $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'misc',
-            _('Manage plugins'), _('Register new plugins, disable plugins, and so forth'),
+            _kt('Manage plugins'), _('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
         $this->registerAdminPage("techsupport", 'KTSupportDispatcher', 'misc',
-            _('Support and System information'), _('Information about this system and how to get support.'),
+            _kt('Support and System information'), _('Information about this system and how to get support.'),
             'admin/techsupport.php', null);
         // plugins
 

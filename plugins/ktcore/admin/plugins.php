@@ -42,7 +42,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
     function check() {
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
-            'name' => _('Plugins'),
+            'name' => _kt('Plugins'),
         );
         return parent::check();
     }

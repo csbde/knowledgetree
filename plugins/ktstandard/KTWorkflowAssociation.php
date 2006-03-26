@@ -43,8 +43,8 @@ class KTWorkflowAssociationPlugin extends KTPlugin {
         $this->registerTrigger('edit', 'postValidate', 'KTWADEditTrigger',
             'ktstandard.triggers.workflowassociation.editDocument');
         $this->registerAdminPage('workflow_allocation', 'WorkflowAllocationSelection', 
-            'documents', _('Automatic Workflow Assignments'), 
-            _('Configure how documents are allocated to workflows.'), 'workflow/adminpage.php');        
+            'documents', _kt('Automatic Workflow Assignments'), 
+            _kt('Configure how documents are allocated to workflows.'), 'workflow/adminpage.php');        
             $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
     }
 }

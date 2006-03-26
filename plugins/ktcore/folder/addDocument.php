@@ -41,7 +41,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $oDocumentType = null;
 
     function getDisplayName() {
-        return _('Add Document');
+        return _kt('Add Document');
     }
 
     function check() {
@@ -62,15 +62,15 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("add document"));
-        $this->oPage->setTitle(_('Add a document'));
+        $this->oPage->setBreadcrumbDetails(_kt("add document"));
+        $this->oPage->setTitle(_kt('Add a document'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget(_('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
-        $add_fields[] = new KTStringWidget(_('Title'), _('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_kt('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Title'), _('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
 
         
-        $aVocab = array('' => _('&lt;Please select a document type&gt;'));
+        $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
@@ -78,7 +78,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         }
         
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
@@ -97,8 +97,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     }
 
     function do_upload() {
-        $this->oPage->setBreadcrumbDetails(_("add document"));
-        $this->oPage->setTitle(_('Add a document'));
+        $this->oPage->setBreadcrumbDetails(_kt("add document"));
+        $this->oPage->setTitle(_kt('Add a document'));
         $mpo =& new JavascriptObserver($this);
         // $mpo =& new KTSinglePageObserver(&$this);
         $oUploadChannel =& KTUploadChannel::getSingleton();
@@ -121,12 +121,12 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         /*
         // this is now done in ::add
         if (Document::fileExists(basename($aFile['name']), $iFolderId)) {
-            $this->errorRedirectToMain(_('There is already a file with that filename in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('There is already a file with that filename in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             exit(0);
         }
         
         if (Document::nameExists($sTitle, $iFolderId)) {
-            $this->errorRedirectToMain(_('There is already a file with that title in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('There is already a file with that title in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             exit(0);
         }
         */
@@ -139,7 +139,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             }
         }
 
-        $aErrorOptions['message'] = _("Please select a valid document type");
+        $aErrorOptions['message'] = _kt("Please select a valid document type");
         $this->oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
 
         $aOptions = array(

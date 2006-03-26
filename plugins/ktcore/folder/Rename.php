@@ -40,7 +40,7 @@ class KTFolderRenameAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Rename');
+        return _kt('Rename');
     }
     
     function getInfo() {
@@ -49,12 +49,12 @@ class KTFolderRenameAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("rename"));
-        $this->oPage->setTitle(_('Rename folder'));
+        $this->oPage->setBreadcrumbDetails(_kt("rename"));
+        $this->oPage->setTitle(_kt('Rename folder'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/rename');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_('New folder name'), _('The name to which the current folder should be renamed.'), 'foldername', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New folder name'), _('The name to which the current folder should be renamed.'), 'foldername', "", $this->oPage, true);
         
         $oTemplate->setData(array(
             'context' => &$this,
@@ -77,7 +77,7 @@ class KTFolderRenameAction extends KTFolderAction {
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_('Folder "%s" renamed to "%s".'), $this->oFolder->getName(), $sName);
+            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Folder "%s" renamed to "%s".'), $this->oFolder->getName(), $sName);
         }
 
         $this->commitTransaction();

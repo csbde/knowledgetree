@@ -85,7 +85,7 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         if (empty($sUnzipCommand)) {
             return false;
         }
-        return _('Built-in');
+        return _kt('Built-in');
     }
     
     function findLocalCommand() {
@@ -98,7 +98,7 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         
         // can't find the local command.
         if (empty($sCommand)) {
-            return sprintf(_('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the KnowledgeTree Path.  For more information on indexers and helper applications, please <a href="%s">visit the KTDMS site</a>.'), $this->command, $this->support_url);
+            return sprintf(_kt('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the KnowledgeTree Path.  For more information on indexers and helper applications, please <a href="%s">visit the KTDMS site</a>.'), $this->command, $this->support_url);
         }
         
         return null;
