@@ -156,6 +156,9 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     function render() {
         
         $checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
+        if (empty($checked_out_documents)) {
+            return null;
+        }
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/checkedout");
