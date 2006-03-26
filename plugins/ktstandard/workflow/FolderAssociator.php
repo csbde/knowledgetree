@@ -82,18 +82,18 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.addFolder";
 
     function getDisplayName() {
-        return _('Configure Workflows');
+        return _kt('Configure Workflows');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("Configure Workflows for Folder"));
-        $this->oPage->setTitle(_("Configure Workflows for Folder"));
+        $this->oPage->setBreadcrumbDetails(_kt("Configure Workflows for Folder"));
+        $this->oPage->setTitle(_kt("Configure Workflows for Folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/workflow/folderconfigure');
         $fields = array();
         
         $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
         $aVocab = array();
-        $aVocab[] = _('No automatic workflow.');
+        $aVocab[] = _kt('No automatic workflow.');
         foreach ($aWorkflows as $oWorkflow) {
             $aVocab[$oWorkflow->getId()] = $oWorkflow->getName();   
         }
@@ -107,7 +107,7 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
         if (PEAR::isError($res)) {
             $res = null;
         }
-        $fields[] = new KTLookupWidget(_('Automatic Workflow'), _('If you specify an automatic workflow, new documents will automatically enter that workflow\'s starting state.  Setting this to "No Automatic Workflow" will mean that users can choose the appropriate workflow.'), 'fWorkflowId', $res, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Automatic Workflow'), _('If you specify an automatic workflow, new documents will automatically enter that workflow\'s starting state.  Setting this to "No Automatic Workflow" will mean that users can choose the appropriate workflow.'), 'fWorkflowId', $res, $this->oPage, true, null, $fieldErrors, $fieldOptions);
         
         
         $oTemplate->setData(array(
@@ -128,7 +128,7 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
         DBUtil::runQuery(array($sQuery, $aParams));
         
         if (is_null($fWorkflowId)) {
-            $this->successRedirectToMain(_('Workflow assignment removed.'), 'fFolderId='.$this->oFolder->getId());
+            $this->successRedirectToMain(_kt('Workflow assignment removed.'), 'fFolderId='.$this->oFolder->getId());
         }
         
         $aOptions = array('noid' => true);
@@ -140,10 +140,10 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
             ), $aOptions);
             
         if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(_('Error assigning workflow.'), 'fFolderId='.$this->oFolder->getId());
+            $this->errorRedirectToMain(_kt('Error assigning workflow.'), 'fFolderId='.$this->oFolder->getId());
         }
         
-        $this->successRedirectToMain(_('Workflow assignment updated.'), 'fFolderId='.$this->oFolder->getId());
+        $this->successRedirectToMain(_kt('Workflow assignment updated.'), 'fFolderId='.$this->oFolder->getId());
     }
 
 }

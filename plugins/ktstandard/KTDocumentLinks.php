@@ -46,7 +46,7 @@ class KTDocumentLinkTitle extends TitleColumn {
             $outStr .= $aDataRow["document"]->getName();
             $outStr .= '</a>';
         } else { 
-            $outStr = $aDataRow["document"]->getName() . ' <span class="descriptiveText">(' . _('you cannot link to the source document') . ')';
+            $outStr = $aDataRow["document"]->getName() . ' <span class="descriptiveText">(' . _kt('you cannot link to the source document') . ')';
         }
         return $outStr;
     }
@@ -75,14 +75,14 @@ class KTDocumentLinkAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.link';
 
     function getDisplayName() {
-        return _('Links');
+        return _kt('Links');
     }
 
     // display existing links
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/document_links');
-        $this->oPage->setBreadcrumbDetails(_("Links"));
-        $this->oPage->setTitle(_("Links"));
+        $this->oPage->setBreadcrumbDetails(_kt("Links"));
+        $this->oPage->setTitle(_kt("Links"));
 
         $oDocument = Document::get(
                 KTUtil::arrayGet($_REQUEST, 'fDocumentId', 0)
@@ -109,26 +109,26 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
     // select a target for the link
     function do_new() {
-        $this->oPage->setBreadcrumbDetails(_("New Link"));
-        $this->oPage->setTitle(_("New Link"));
+        $this->oPage->setBreadcrumbDetails(_kt("New Link"));
+        $this->oPage->setTitle(_kt("New Link"));
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
         if (PEAR::isError($oPermission) || 
             !KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
-            $this->errorRedirectToMain(_('You do not have sufficient permissions to add a document link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
+            $this->errorRedirectToMain(_kt('You do not have sufficient permissions to add a document link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
             exit(0);
         }
 
         $oParentDocument =& $this->oDocument;
         
         if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_('Invalid parent document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
             exit(0);
         }
 
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', $oParentDocument->getFolderID()));
         if (PEAR::isError($oFolder) || ($oFolder == false)) { 
-            $this->errorRedirectToMain(_('Invalid folder selected.'));
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
             exit(0);
         }
         $iFolderId = $oFolder->getId();
@@ -187,17 +187,17 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
     // select a type for the link
     function do_type_select() {
-        $this->oPage->setBreadcrumbDetails(_("link"));
+        $this->oPage->setBreadcrumbDetails(_kt("link"));
 
         $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_('Invalid parent document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
             exit(0);
         }
 
         $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fTargetDocumentId'));
         if (PEAR::isError($oTargetDocument)) { 
-            $this->errorRedirectToMain(_('Invalid target document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid target document selected.'));
             exit(0);
         }
 
@@ -212,8 +212,8 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $aOptions = array('vocab' => $aVocab);
         $aFields[] = new KTLookupWidget(
-                _('Link Type'), 
-                _('The type of link you wish to use'), 
+                _kt('Link Type'), 
+                _kt('The type of link you wish to use'), 
                 'fLinkTypeId', 
                 null,
                 $this->oPage,
@@ -239,24 +239,24 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
     // make the link
     function do_make_link() {
-        $this->oPage->setBreadcrumbDetails(_("link"));
+        $this->oPage->setBreadcrumbDetails(_kt("link"));
 
         // check validity of things
         $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_('Invalid parent document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
             exit(0);
         }
 
         $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fTargetDocumentId'));
         if (PEAR::isError($oTargetDocument)) { 
-            $this->errorRedirectToMain(_('Invalid target document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid target document selected.'));
             exit(0);
         }
 
         $oLinkType = LinkType::get(KTUtil::arrayGet($_REQUEST, 'fLinkTypeId'));
         if (PEAR::isError($oLinkType)) { 
-            $this->errorRedirectToMain(_('Invalid link type selected.'));
+            $this->errorRedirectToMain(_kt('Invalid link type selected.'));
             exit(0);
         }
 
@@ -271,26 +271,26 @@ class KTDocumentLinkAction extends KTDocumentAction {
         ));
 
         if (PEAR::isError($oDocumentLink)) {
-            $this->errorRedirectToMain(_('Could not create document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+            $this->errorRedirectToMain(_kt('Could not create document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
             exit(0);
         }
 
         $this->commitTransaction();
 
-        $this->successRedirectToMain(_('Document link created'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+        $this->successRedirectToMain(_kt('Document link created'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
     }
 
 
     // delete a link
     function do_delete() {
-        $this->oPage->setBreadcrumbDetails(_("link"));
+        $this->oPage->setBreadcrumbDetails(_kt("link"));
 
         // check security
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
         if (PEAR::isError($oPermission) || 
             !KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
-            $this->errorRedirectToMain(_('You do not have sufficient permissions to delete a link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
+            $this->errorRedirectToMain(_kt('You do not have sufficient permissions to delete a link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
             exit(0);
         }
 
@@ -298,12 +298,12 @@ class KTDocumentLinkAction extends KTDocumentAction {
         // check validity of things
         $oDocumentLink = DocumentLink::get(KTUtil::arrayGet($_REQUEST, 'fDocumentLinkId'));
         if (PEAR::isError($oDocumentLink)) { 
-            $this->errorRedirectToMain(_('Invalid document link selected.'));
+            $this->errorRedirectToMain(_kt('Invalid document link selected.'));
             exit(0);
         }
         $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_('Invalid document selected.'));
+            $this->errorRedirectToMain(_kt('Invalid document selected.'));
             exit(0);
         }
         
@@ -313,13 +313,13 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $res = $oDocumentLink->delete();
         
         if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(_('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+            $this->errorRedirectToMain(_kt('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
             exit(0);
         }
 
         $this->commitTransaction();
 
-        $this->successRedirectToMain(_('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+        $this->successRedirectToMain(_kt('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
     }
 

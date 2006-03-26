@@ -37,7 +37,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
 
     function check() {
         $res = parent::check();
-        $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
+        $this->aBreadcrumbs[] = array('name' => _kt('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         return $res;
     }
 
@@ -45,7 +45,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/manage');
         $fields = array();
 
-        $fields[] = new KTStringWidget(_('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -54,7 +54,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
@@ -71,7 +71,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/addsource');
         $fields = array();
 
-        $fields[] = new KTStringWidget(_('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -80,7 +80,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
@@ -97,7 +97,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/viewsource');
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $this->aBreadcrumbs[] = array('name' => $oSource->getName());
-        $this->oPage->setTitle(sprintf(_("Authentication source: %s"), $oSource->getName()));
+        $this->oPage->setTitle(sprintf(_kt("Authentication source: %s"), $oSource->getName()));
         $this->oPage->setBreadcrumbDetails('viewing');
         $sProvider = $oSource->getAuthenticationProvider();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -119,12 +119,12 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
                 'name' => $oSource->getName(),
                 'query' => sprintf('action=viewsource&source_id=%d', $oSource->getId()),
         );
-        $this->oPage->setTitle(sprintf(_("Editing authentication source: %s"), $oSource->getName()));
+        $this->oPage->setTitle(sprintf(_kt("Editing authentication source: %s"), $oSource->getName()));
         $this->oPage->setBreadcrumbDetails('editing');
 
         $fields = array();
 
-        $fields[] = new KTStringWidget(_('Name'), _('A short name which helps identify this source of authentication data.'), 'authentication_name', $oSource->getName(), $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'authentication_name', $oSource->getName(), $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -133,7 +133,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', $oSource->getAuthenticationProvider(), $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', $oSource->getAuthenticationProvider(), $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -161,13 +161,13 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
-        $aErrorOptions['message'] = _("No name provided");
+        $aErrorOptions['message'] = _kt("No name provided");
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->validateString($sName, $aErrorOptions);
-        $aErrorOptions['message'] = _("An authentication source with that name already exists");
+        $aErrorOptions['message'] = _kt("An authentication source with that name already exists");
         $this->oValidator->validateDuplicateName('KTAuthenticationSource', $sName, $aErrorOptions);
 
-        $aErrorOptions['message'] = _("No authentication provider chosen");
+        $aErrorOptions['message'] = _kt("No authentication provider chosen");
         $sProvider = KTUtil::arrayGet($_REQUEST, 'authentication_provider');
         $sProvider = $this->oValidator->validateString($sProvider, $aErrorOptions);
 
@@ -185,11 +185,11 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
-        $aErrorOptions['message'] = _("No name provided");
+        $aErrorOptions['message'] = _kt("No name provided");
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->validateString($sName, $aErrorOptions);
 
-        $aErrorOptions['message'] = _("No authentication provider chosen");
+        $aErrorOptions['message'] = _kt("No authentication provider chosen");
         $sProvider = KTUtil::arrayGet($_REQUEST, 'authentication_provider');
         $sProvider = $this->oValidator->validateString($sProvider, $aErrorOptions);
 
@@ -202,7 +202,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'authenticationprovider' => $sProvider,
         ));
         $this->oValidator->notError($oSource);
-        $this->successRedirectTo('editSourceProvider', _("Source created"), sprintf('source_id=%d', $oSource->getId()));
+        $this->successRedirectTo('editSourceProvider', _kt("Source created"), sprintf('source_id=%d', $oSource->getId()));
     }
 
     function do_deleteSource() {
@@ -213,10 +213,10 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
 
         if (empty($aUsers) && empty($aGroups)) {
             $oSource->delete();
-            $this->successRedirectToMain(_("Authentication source deleted"));
+            $this->successRedirectToMain(_kt("Authentication source deleted"));
         }
 
-        $this->errorRedirectToMain(_("Authentication source is still in use, not deleted"));
+        $this->errorRedirectToMain(_kt("Authentication source is still in use, not deleted"));
     }
 
     function do_editSourceProvider() {

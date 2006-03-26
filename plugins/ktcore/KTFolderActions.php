@@ -46,14 +46,14 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.addFolder";
 
     function getDisplayName() {
-        return _('Add a Folder');
+        return _kt('Add a Folder');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("add folder"));
+        $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
         $fields = array();
-        $fields[] = new KTStringWidget(_('Folder name'), _('The name for the new folder.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Folder name'), _('The name for the new folder.'), 'name', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -67,13 +67,13 @@ class KTFolderAddFolderAction extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
-        $aErrorOptions['defaultmessage'] = _("No name given");
+        $aErrorOptions['defaultmessage'] = _kt("No name given");
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
 
         $this->startTransaction();
 
         $res = KTFolderUtil::add($this->oFolder, $sFolderName, $this->oUser);
-        $aErrorOptions['defaultmessage'] = _("Could not create folder in the document management system");
+        $aErrorOptions['defaultmessage'] = _kt("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
@@ -90,11 +90,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _('Permissions');
+        return _kt('Permissions');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("viewing permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt("viewing permissions"));
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
@@ -177,13 +177,13 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
     function do_copyPermissions() {
         KTPermissionUtil::copyPermissionObject($this->oFolder);
-        return $this->successRedirectToMain(_('Permissions updated'),
+        return $this->successRedirectToMain(_kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
     function do_inheritPermissions() {
         KTPermissionUtil::inheritPermissionObject($this->oFolder);
-        return $this->successRedirectToMain(_('Permissions updated'),
+        return $this->successRedirectToMain(_kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
@@ -194,7 +194,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oGroup =& $this->oValidator->validateGroup($_REQUEST['fGroupId'], $aOptions);
         $oCondition =& $this->oValidator->validateCondition($_REQUEST['fConditionId'], $aOptions);
         $aPermissionIds = (array) $_REQUEST['fPermissionIds'];
-        if (empty($aPermissionIds)) { $this->errorRedirectTo('main',_('Please select one or more permissions.'), sprintf('fFolderId=%d', $this->oFolder->getId())); }
+        if (empty($aPermissionIds)) { $this->errorRedirectTo('main', _kt('Please select one or more permissions.'), sprintf('fFolderId=%d', $this->oFolder->getId())); }
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
         $oDynamicCondition = KTPermissionDynamicCondition::createFromArray(array(
@@ -206,7 +206,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        $this->successRedirectToMain(_("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
+        $this->successRedirectToMain(_kt("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
     }
 
     function do_removeDynamicCondition() {
@@ -218,7 +218,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notError($res, $aOptions);
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        $this->successRedirectToMain(_("Dynamic permission removed"), "fFolderId=" . $this->oFolder->getId());
+        $this->successRedirectToMain(_kt("Dynamic permission removed"), "fFolderId=" . $this->oFolder->getId());
     }
 }
 

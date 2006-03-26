@@ -50,7 +50,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
-        return _('Permissions');
+        return _kt('Permissions');
     }
 
     function do_main() {
@@ -150,12 +150,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
-        return _('Allocate Roles');
+        return _kt('Allocate Roles');
     }
 
     function do_main() {
-        $this->oPage->setTitle(_("Allocate Roles"));
-        $this->oPage->setBreadcrumbDetails(_("Allocate Roles"));
+        $this->oPage->setTitle(_kt("Allocate Roles"));
+        $this->oPage->setBreadcrumbDetails(_kt("Allocate Roles"));
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles");
         
@@ -230,7 +230,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
                 }
             }
 			if (empty($_users)) {
-			    $aRoles[$key]['users'] = '<span class="descriptiveText"> ' . _('no users') . '</span>'; 	
+			    $aRoles[$key]['users'] = '<span class="descriptiveText"> ' . _kt('no users') . '</span>'; 	
 			} else {
                 $aRoles[$key]['users'] = join(', ',$_users);
 			}
@@ -244,7 +244,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
                 }
             }
 			if (empty($_groups)) {
-			    $aRoles[$key]['groups'] = '<span class="descriptiveText"> ' . _('no groups') . '</span>'; 	
+			    $aRoles[$key]['groups'] = '<span class="descriptiveText"> ' . _kt('no groups') . '</span>'; 	
 			} else {
 			    $aRoles[$key]['groups'] = join(', ',$_groups);
 			}
@@ -263,7 +263,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole)) {
-            $this->errorRedirectToMain(_('Invalid Role.'));
+            $this->errorRedirectToMain(_kt('Invalid Role.'));
         }
         // FIXME do we need to check that this role _isn't_ allocated?
         $oRoleAllocation = new RoleAllocation();
@@ -280,38 +280,38 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $res = $oRoleAllocation->create();
 		
 		if (PEAR::isError($res) || ($res == false)) {
-			$this->errorRedirectToMain(_('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
+			$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
         
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
         
-        $this->successRedirectToMain(_('Role allocation created.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
+        $this->successRedirectToMain(_kt('Role allocation created.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
     }
     
     function do_useParent() { 
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole)) {
-            $this->errorRedirectToMain(_('Invalid Role.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
+            $this->errorRedirectToMain(_kt('Invalid Role.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
         }
         $role_id = $oRole->getId(); // numeric, for various testing purposes.
         
         $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($this->oFolder->getId(), $role_id);
         
         if ($oRoleAllocation->getFolderId() != $this->oFolder->getId()) {
-            $this->errorRedirectToMain(_('Already using a different descriptor.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
+            $this->errorRedirectToMain(_kt('Already using a different descriptor.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
         } 
         $this->startTransaction();
 		
         $res = $oRoleAllocation->delete();
 		
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectToMain(_('Unable to change role allocation.') . print_r($res, true), sprintf('fFolderId=%d',$this->oFolder->getId())); 
+            $this->errorRedirectToMain(_kt('Unable to change role allocation.') . print_r($res, true), sprintf('fFolderId=%d',$this->oFolder->getId())); 
             exit(0);
         }
 		
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
-        $this->successRedirectToMain(_('Role now uses parent.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
+        $this->successRedirectToMain(_kt('Role now uses parent.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
     }
     
     function do_editRoleUsers() {
@@ -319,12 +319,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
         $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
         
         
-        $this->oPage->setBreadcrumbDetails(_('Manage Users for Role'));
-        $this->oPage->setTitle(sprintf(_('Manage Users for Role')));
+        $this->oPage->setBreadcrumbDetails(_kt('Manage Users for Role'));
+        $this->oPage->setTitle(sprintf(_kt('Manage Users for Role')));
         
         $initJS = 'var optGroup = new OptionTransfer("userSelect","chosenUsers"); ' .
         'function startTrans() { var f = getElement("userroleform"); ' .
@@ -365,12 +365,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
         $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
         
         
-        $this->oPage->setBreadcrumbDetails(_('Manage Groups for Role'));
-        $this->oPage->setTitle(sprintf(_('Manage Groups for Role')));
+        $this->oPage->setBreadcrumbDetails(_kt('Manage Groups for Role'));
+        $this->oPage->setTitle(sprintf(_kt('Manage Groups for Role')));
         
         $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
         'function startTrans() { var f = getElement("grouproleform"); ' .
@@ -411,7 +411,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'allocation_id');
         $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
         $users = KTUtil::arrayGet($_REQUEST, 'userFinal', '');
 		$aUserIds = explode(',', $users);
@@ -440,12 +440,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		$res = $oRoleAllocation->update();
 		
 		if (PEAR::isError($res) || ($res == false)) {
-			$this->errorRedirectToMain(_('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
+			$this->errorRedirectToMain(_kt('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
 		
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
 		
-        $this->successRedirectToMain(_('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
+        $this->successRedirectToMain(_kt('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
     }
     
     function do_setRoleGroups() {
@@ -453,7 +453,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'allocation_id');
         $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
         $groups = KTUtil::arrayGet($_REQUEST, 'groupFinal', '');
 		$aGroupIds = explode(',', $groups);
@@ -482,12 +482,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		$res = $oRoleAllocation->update();
 		
 		if (PEAR::isError($res) || ($res == false)) {
-			$this->errorRedirectToMain(_('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
+			$this->errorRedirectToMain(_kt('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
 		
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
 		
-        $this->successRedirectToMain(_('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId()));     
+        $this->successRedirectToMain(_kt('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId()));     
     }
    	
 	function renegeratePermissionsForRole($iRoleId) {
@@ -523,7 +523,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			
 			$aNewFolders = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 			if (PEAR::isError($aNewFolders)) {
-				$this->errorRedirectToMain(_('Failure to generate folderlisting.'));
+				$this->errorRedirectToMain(_kt('Failure to generate folderlisting.'));
 			}
 			$folder_queue = array_merge ($folder_queue, (array) $aNewFolders); // push.
 
@@ -531,13 +531,13 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			// update the folder.
 			$oFolder =& Folder::get($active_folder);
 			if (PEAR::isError($oFolder) || ($oFolder == false)) {
-			    $this->errorRedirectToMain(_('Unable to locate folder: ') . $active_folder);
+			    $this->errorRedirectToMain(_kt('Unable to locate folder: ') . $active_folder);
 			}
 			
 			KTPermissionUtil::updatePermissionLookup($oFolder);
 			$aDocList =& Document::getList(array('folder_id = ?', $active_folder));
 			if (PEAR::isError($aDocList) || ($aDocList === false)) {
-			    $this->errorRedirectToMain(sprintf(_('Unable to get documents in folder %s: %s'), $active_folder, $aDocList->getMessage()));
+			    $this->errorRedirectToMain(sprintf(_kt('Unable to get documents in folder %s: %s'), $active_folder, $aDocList->getMessage()));
 			}
 			
 			foreach ($aDocList as $oDoc) { 
@@ -555,8 +555,8 @@ class KTDocumentRolesAction extends KTDocumentAction {
     var $bAutomaticTransaction = true;
 
     function do_main() {
-        $this->oPage->setTitle(_("View Roles"));
-        $this->oPage->setBreadcrumbDetails(_("View Roles"));
+        $this->oPage->setTitle(_kt("View Roles"));
+        $this->oPage->setBreadcrumbDetails(_kt("View Roles"));
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/view_roles");
         
@@ -610,7 +610,7 @@ class KTDocumentRolesAction extends KTDocumentAction {
                 }
             }
 			if (empty($_users)) {
-			    $aRoles[$key]['users'] = '<span class="descriptiveText"> ' . _('no users') . '</span>'; 	
+			    $aRoles[$key]['users'] = '<span class="descriptiveText"> ' . _kt('no users') . '</span>'; 	
 			} else {
 			    $aRoles[$key]['users'] = implode(', ',$_users);
 			}		
@@ -623,7 +623,7 @@ class KTDocumentRolesAction extends KTDocumentAction {
                 }
             }
 			if (empty($_groups)) {
-			    $aRoles[$key]['groups'] = '<span class="descriptiveText"> ' . _('no groups') . '</span>'; 	
+			    $aRoles[$key]['groups'] = '<span class="descriptiveText"> ' . _kt('no groups') . '</span>'; 	
 			} else {
 			    $aRoles[$key]['groups'] = implode(', ',$_groups);
 			}

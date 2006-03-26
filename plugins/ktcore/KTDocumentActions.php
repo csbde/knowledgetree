@@ -42,12 +42,12 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
-        redirect(generateControllerLink('viewDocument',sprintf(_('fDocumentId=%d'),$this->oDocument->getId())));
+        redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
     }
 
     function getDisplayName() {
-        return _('Display Details');
+        return _kt('Display Details');
     }
 }
 // }}}
@@ -57,11 +57,11 @@ class KTDocumentViewAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.view';
 
     function getDisplayName() {
-        return _('Download');
+        return _kt('Download');
     }
 
     function customiseInfo($aInfo) {
-        $aInfo['alert'] =  _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
+        $aInfo['alert'] =  _kt("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
         return $aInfo;
     }
 
@@ -90,7 +90,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Checkout');
+        return _kt('Checkout');
     }
 
     function getInfo() {
@@ -112,7 +112,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         
         // "normal".
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION['KTErrorMessage'][] = _("This document is already checked out");
+            $_SESSION['KTErrorMessage'][] = _kt("This document is already checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -123,7 +123,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("checkout");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout');
         $checkout_fields = array();
-        $checkout_fields[] = new KTStringWidget(_('Reason'), _('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
+        $checkout_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -144,7 +144,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $this->startTransaction();
         $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
         if (PEAR::isError($res)) {
-            return $this->errorRedirectToMain(sprintf(_('Failed to check out the document: %s'), $res->getMessage()));
+            return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
         
         $this->commitTransaction();
@@ -174,7 +174,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Checkin');
+        return _kt('Checkin');
     }
 
     function getInfo() {
@@ -194,12 +194,12 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return $res;
         }
         if (!$this->oDocument->getIsCheckedOut()) {
-            $_SESSION['KTErrorMessage'][] = _("This document is not checked out");
+            $_SESSION['KTErrorMessage'][] = _kt("This document is not checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
-            $_SESSION['KTErrorMessage'][] = _("This document is checked out, but not by you");
+            $_SESSION['KTErrorMessage'][] = _kt("This document is checked out, but not by you");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -212,8 +212,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
         $checkin_fields = array();
-        $checkin_fields[] = new KTFileUploadWidget(_('File'), _('The updated document.'), 'file', "", $this->oPage, true);
-        $checkin_fields[] = new KTStringWidget(_('Description'), _('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _('The updated document.'), 'file', "", $this->oPage, true);
+        $checkin_fields[] = new KTStringWidget(_kt('Description'), _('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -228,19 +228,19 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         // make sure the user actually selected a file first
         if (strlen($_FILES['file']['name']) == 0) {
-            $this->errorRedirectToMain(_("No file was uploaded"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
+            $this->errorRedirectToMain(_kt("No file was uploaded"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
 
         // and that the filename matches
         global $default;
         $default->log->info("checkInDocumentBL.php uploaded filename=" . $_FILES['file']['name'] . "; current filename=" . $this->oDocument->getFileName());
         if ($this->oDocument->getFileName() != $_FILES['file']['name']) {
-            $this->errorRedirectToMain(_("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
+            $this->errorRedirectToMain(_kt("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
 
         $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['file']['tmp_name'], $sReason, $this->oUser);
         if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(_("An error occurred while trying to check in the document"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
+            $this->errorRedirectToMain(_kt("An error occurred while trying to check in the document"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
     }
@@ -255,7 +255,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Cancel Checkout');
+        return _kt('Cancel Checkout');
     }
 
     function getInfo() {
@@ -275,12 +275,12 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             return $res;
         }
         if (!$this->oDocument->getIsCheckedOut()) {
-            $_SESSION['KTErrorMessage'][] = _("This document is not checked out");
+            $_SESSION['KTErrorMessage'][] = _kt("This document is not checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
-            $_SESSION['KTErrorMessage'][] = _("This document is checked out, but not by you");
+            $_SESSION['KTErrorMessage'][] = _kt("This document is checked out, but not by you");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -293,7 +293,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
         $checkin_fields = array();
-        $checkin_fields[] = new KTStringWidget(_('Reason'), _('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -315,7 +315,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         $this->oDocument->setCheckedOutUserID(-1);
         if (!$this->oDocument->update()) {
             $this->rollbackTransaction();
-            return $this->errorRedirectToMain(_("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
+            return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
         
         // checkout cancelled transaction
@@ -323,7 +323,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res == false)) {
             $this->rollbackTransaction();
-            return $this->errorRedirectToMain(_("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
+            return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
         $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
@@ -346,7 +346,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     }
 
     function getDisplayName() {
-        return _('Edit metadata');
+        return _kt('Edit metadata');
     }
 
     function getURL() {
@@ -362,7 +362,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.delete";
 
     function getDisplayName() {
-        return _('Delete');
+        return _kt('Delete');
     }
 
     function getInfo() {
@@ -378,7 +378,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             return $res;
         }
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION["KTErrorMessage"][]= _("This document can't be deleted because it is checked out");
+            $_SESSION["KTErrorMessage"][]= _kt("This document can't be deleted because it is checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -389,7 +389,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("delete");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
         $delete_fields = array();
-        $delete_fields[] = new KTStringWidget(_('Reason'), _('The reason for this document to be removed.'), 'reason', "", $this->oPage, true);
+        $delete_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be removed.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -410,7 +410,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             controllerRedirect('viewDocument',sprintf('fDocumentId=%d', $this->oDocument->getId()));
         } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_('Document "%s" Deleted.'),$this->oDocument->getName());
+            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Document "%s" Deleted.'),$this->oDocument->getName());
         }
         
         
@@ -438,7 +438,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Move');
+        return _kt('Move');
     }
 
     function getInfo() {
@@ -454,7 +454,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             return $res;
         }
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION["KTErrorMessage"][]= _("This document can't be deleted because it is checked out");
+            $_SESSION["KTErrorMessage"][]= _kt("This document can't be deleted because it is checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -465,13 +465,13 @@ class KTDocumentMoveAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("move"));
+        $this->oPage->setBreadcrumbDetails(_kt("move"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move');
         $move_fields = array();
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
-        $move_fields[] = new KTStaticTextWidget(_('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
 
         $collection = new DocumentCollection();
         $collection->addColumn(new KTDocumentMoveColumn("Test 1 (title)","title", $this->oDocument));
@@ -518,16 +518,16 @@ class KTDocumentMoveAction extends KTDocumentAction {
     }
 
     function do_move() {
-        $this->oPage->setBreadcrumbDetails(_("move"));
+        $this->oPage->setBreadcrumbDetails(_kt("move"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move_final');
         $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
         $move_fields = array();
-        $move_fields[] = new KTStaticTextWidget(_('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        $move_fields[] = new KTStaticTextWidget(_('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
+        $move_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -539,13 +539,13 @@ class KTDocumentMoveAction extends KTDocumentAction {
     function do_move_final() {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $aOptions = array(
-            'message' => _("No reason given"),
+            'message' => _kt("No reason given"),
             'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
         );
         $this->oValidator->notEmpty($sReason, $aOptions);
 
         if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectTo("main", _("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
 
@@ -562,7 +562,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         //put the document in the new folder
         $this->oDocument->setFolderID($this->oFolder->getId());
         if (!$this->oDocument->update(true)) {
-            $this->errorRedirectTo("main", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         }
 
 
@@ -571,7 +571,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if (!$oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder)) {
             $this->oDocument->setFolderID($this->oDocumentFolder->getId());
             $this->oDocument->update(true);
-            $this->errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("move", _kt("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         }
 
         $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
@@ -630,7 +630,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.read";
 
     function getDisplayName() {
-        return _('Copy');
+        return _kt('Copy');
     }
 
     function getInfo() {
@@ -649,7 +649,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             return $res;
         }
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION["KTErrorMessage"][]= _("This document can't be copied because it is checked out");
+            $_SESSION["KTErrorMessage"][]= _kt("This document can't be copied because it is checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -660,13 +660,13 @@ class KTDocumentCopyAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("Copy"));
+        $this->oPage->setBreadcrumbDetails(_kt("Copy"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy');
         $move_fields = array();
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
-        $move_fields[] = new KTStaticTextWidget(_('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         
         $collection = new DocumentCollection();
         $collection->addColumn(new KTDocumentMoveColumn("Test 1 (title)","title", $this->oDocument));
@@ -713,16 +713,16 @@ class KTDocumentCopyAction extends KTDocumentAction {
     }
 
     function do_copy() {
-        $this->oPage->setBreadcrumbDetails(_("Copy"));
+        $this->oPage->setBreadcrumbDetails(_kt("Copy"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy_final');
         $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
         $move_fields = array();
-        $move_fields[] = new KTStaticTextWidget(_('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        $move_fields[] = new KTStaticTextWidget(_('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
+        $move_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -734,13 +734,13 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function do_copy_final() {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $aOptions = array(
-            'message' => _("No reason given"),
+            'message' => _kt("No reason given"),
             'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
         );
         $this->oValidator->notEmpty($sReason, $aOptions);
 
         if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectTo("main", _("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
         
@@ -750,7 +750,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder);
         if (PEAR::isError($oNewDoc)) {
-            $this->errorRedirectTo("main", _("Failed to move document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("Failed to move document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
 
@@ -776,7 +776,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $oDocumentTransaction = & new DocumentTransaction($oNewDoc, "Document copied from old version.", 'ktcore.transactions.create', $aOptions);
         $res = $oDocumentTransaction->create();
         
-        $_SESSION['KTInfoMessage'][] = _('Document copied.');
+        $_SESSION['KTInfoMessage'][] = _kt('Document copied.');
         
         controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
         exit(0);
@@ -789,7 +789,7 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.transactionhistory';
 
     function getDisplayName() {
-        return _('Transaction History');
+        return _kt('Transaction History');
     }
 
     function getURL() {
@@ -803,7 +803,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.versionhistory';
 
     function getDisplayName() {
-        return _('Version History');
+        return _kt('Version History');
     }
 
     function getURL() {
@@ -818,7 +818,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Archive');
+        return _kt('Archive');
     }
 
     function getInfo() {
@@ -829,10 +829,10 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("archiving"));
+        $this->oPage->setBreadcrumbDetails(_kt("archiving"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
         $fields = array();
-        $fields[] = new KTStringWidget(_('Reason'), _('The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.'), 'reason', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Reason'), _('The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -854,11 +854,11 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         $this->startTransaction();
         $this->oDocument->setStatusID(ARCHIVED);
         if (!$this->oDocument->update()) {
-            $_SESSION['KTErrorMessage'][] = _("There was a database error while trying to archive this file");
+            $_SESSION['KTErrorMessage'][] = _kt("There was a database error while trying to archive this file");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, sprintf(_("Document archived: %s"), $sReason), 'ktcore.transactions.update');
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, sprintf(_kt("Document archived: %s"), $sReason), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
         
         $this->commitTransaction();
@@ -879,7 +879,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             }
         }
 
-        $_SESSION['KTInfoMessage'][] = _("Document archived.");
+        $_SESSION['KTInfoMessage'][] = _kt("Document archived.");
         controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderID());
         exit(0);
     }
@@ -894,11 +894,11 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sHelpPage = 'ktcore/workflow.html';    
 
     function getDisplayName() {
-        return _('Workflow');
+        return _kt('Workflow');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("workflow"));
+        $this->oPage->setBreadcrumbDetails(_kt("workflow"));
         $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/documentWorkflow");
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
@@ -918,9 +918,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 $aVocab[$oTransition->getId()] = $oTransition->showDescription();
             }
             $fieldOptions = array("vocab" => $aVocab);
-            $transition_fields[] = new KTLookupWidget(_('Transition to perform'), 'The transition listed will cause the document to change from its current state to the listed destination state.', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+            $transition_fields[] = new KTLookupWidget(_kt('Transition to perform'), 'The transition listed will cause the document to change from its current state to the listed destination state.', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
             $transition_fields[] = new KTTextWidget(
-                _('Reason for transition'), _('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'), 
+                _kt('Reason for transition'), _('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'), 
                 'fComments', "", 
                 $this->oPage, true, null, null,
                 array('cols' => 80, 'rows' => 4));
@@ -943,7 +943,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
         }
-        $this->successRedirectToMain(_('Workflow started'),
+        $this->successRedirectToMain(_kt('Workflow started'),
                 array('fDocumentId' => $oDocument->getId()));
         exit(0);
     }
@@ -961,7 +961,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
-        $this->successRedirectToMain(_('Transition performed'),
+        $this->successRedirectToMain(_kt('Transition performed'),
                 array('fDocumentId' => $oDocument->getId()));
     }
 }

@@ -230,7 +230,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.email';
 
     function getDisplayName() {
-        return _('Email');
+        return _kt('Email');
     }
 
     function do_main() {
@@ -240,12 +240,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bAttachment = $oConfig->get('email/allowAttachment', false);
         $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
         if ($bAttachment) {
-            $fields[] = new KTCheckboxWidget(_("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
+            $fields[] = new KTCheckboxWidget(_kt("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
         }
         if ($bEmailAddresses) {
-            $fields[] = new KTTextWidget(_("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
+            $fields[] = new KTTextWidget(_kt("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
         }
-        $fields[] = new KTTextWidget(_("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
+        $fields[] = new KTTextWidget(_kt("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
         $aGroups = Group::getList();
         $aUsers = User::getEmailUsers();
         $aTemplateData = array(
@@ -294,7 +294,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         //if we're going to send a mail, first make there is someone to send it to
         if ((count($aGroupIDs) == 0) && (count($aUserIDs) == 0) && (count($aEmailAddresses) == 0)) {
-            $this->errorRedirectToMain(_('No recipients set'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
+            $this->errorRedirectToMain(_kt('No recipients set'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
             exit(0);
         }
 
@@ -311,7 +311,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][] = join("<br />\n", $aEmailErrors);
         }
 
-        $_SESSION['KTInfoMessage'][] = _("Email sent");
+        $_SESSION['KTInfoMessage'][] = _kt("Email sent");
         //go back to the document view page
         controllerRedirect("viewDocument", sprintf("fDocumentId=%d", $this->oDocument->getId()));
     }

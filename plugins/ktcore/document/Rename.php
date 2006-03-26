@@ -44,7 +44,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function getDisplayName() {
-        return _('Rename');
+        return _kt('Rename');
     }
 
     function getInfo() {
@@ -60,7 +60,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
             return $res;
         }
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION["KTErrorMessage"][]= _("This document can't be renamed because it is checked out");
+            $_SESSION["KTErrorMessage"][]= _kt("This document can't be renamed because it is checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -71,7 +71,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("rename");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/rename');
         $fields = array();
-        $fields[] = new KTStringWidget(_('New file name'), _('The name to which the current file should be renamed.'), 'filename', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New file name'), _('The name to which the current file should be renamed.'), 'filename', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -94,7 +94,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             controllerRedirect('viewDocument',sprintf('fDocumentId=%d', $this->oDocument->getId()));
         } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_('Document "%s" renamed.'),$this->oDocument->getName());
+            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Document "%s" renamed.'),$this->oDocument->getName());
         }
         
         controllerRedirect('viewDocument', sprintf('fDocumentId=%d', $this->oDocument->getId()));

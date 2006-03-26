@@ -39,8 +39,8 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('name' => _('Document Checkout'));
-        $this->oPage->setBreadcrumbDetails(_("list checked out documents"));
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
+        $this->oPage->setBreadcrumbDetails(_kt("list checked out documents"));
         
         $aDocuments = Document::getList("is_checked_out = 1");
     
@@ -55,17 +55,17 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
     
 
     function do_confirm() {
-        $this->aBreadcrumbs[] = array('name' => _('Document Checkout'));
-        $this->oPage->setBreadcrumbDetails(_("confirm forced check-in"));
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
+        $this->oPage->setBreadcrumbDetails(_kt("confirm forced check-in"));
         
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            return $this->errorRedirectToMain(_('You must select a document to check in first.'));
+            return $this->errorRedirectToMain(_kt('You must select a document to check in first.'));
         }
     
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            return $this->errorRedirectToMain(_('The document you specified appears to be invalid.'));
+            return $this->errorRedirectToMain(_kt('The document you specified appears to be invalid.'));
         }
         
         $oUser = User::get($oDocument->getCheckedOutUserID());
@@ -91,12 +91,12 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            return $this->errorRedirectToMain(_('You must select a document to check in first.'));
+            return $this->errorRedirectToMain(_kt('You must select a document to check in first.'));
         }
     
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            return $this->errorRedirectToMain(_('The document you specified appears to be invalid.'));
+            return $this->errorRedirectToMain(_kt('The document you specified appears to be invalid.'));
         }
         
         $this->startTransaction();
@@ -105,7 +105,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         $oDocument->setCheckedOutUserID(-1);
         if (!$oDocument->update()) {
             $this->rollbackTransaction();
-            return $this->errorRedirectToMain(_("Failed to force the document's checkin."));
+            return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."));
         }
         
         // checkout cancelled transaction
@@ -113,10 +113,10 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res == false)) {
             $this->rollbackTransaction();
-            return $this->errorRedirectToMain(_("Failed to force the document's checkin."));
+            return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."));
         }
         $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
-        return $this->successRedirectToMain(sprintf(_('Successfully forced "%s" to be checked in.'), $oDocument->getName()));
+        return $this->successRedirectToMain(sprintf(_kt('Successfully forced "%s" to be checked in.'), $oDocument->getName()));
     }
 
 

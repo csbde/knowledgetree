@@ -58,13 +58,13 @@ class KTArchiveTitle extends TitleColumn {
 class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
     function do_main () {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Archived Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
         
-        $this->oPage->setBreadcrumbDetails(_('browse'));
+        $this->oPage->setBreadcrumbDetails(_kt('browse'));
             
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) { 
-            $this->errorRedirectToMain(_('Invalid folder selected.'));
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
             exit(0);
         }
         
@@ -129,21 +129,21 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
     }
     
     function do_confirm_restore() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Archived Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
-        $this->oPage->setTitle(sprintf(_('Confirm Restore of %d documents'), count($selected_docs)));
+        $this->oPage->setTitle(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
         
-        $this->oPage->setBreadcrumbDetails(sprintf(_('confirm restore of %d documents'), count($selected_docs)));
+        $this->oPage->setBreadcrumbDetails(sprintf(_kt('confirm restore of %d documents'), count($selected_docs)));
     
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting restore.'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not an archived document. Aborting restore.'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not an archived document. Aborting restore.'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -167,9 +167,9 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain(_('Invalid document id specified. Aborting restore.'));
+                $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
-                $this->errorRedirectToMain(sprintf(_('%s is not an archived document. Aborting restore.'), $oDoc->getName()));
+                $this->errorRedirectToMain(sprintf(_kt('%s is not an archived document. Aborting restore.'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -183,11 +183,11 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
             $oDoc->setStatusId(LIVE);
             $res = $oDoc->update();
             if (PEAR::isError($res) || ($res == false)) {
-                $this->errorRedirectToMain(sprintf(_('%s could not be made "live".'), $oDoc->getName));
+                $this->errorRedirectToMain(sprintf(_kt('%s could not be made "live".'), $oDoc->getName));
             }
         }
         $this->commitTransaction();
-        $msg = sprintf(_('%d documents made active.'), count($aDocuments));
+        $msg = sprintf(_kt('%d documents made active.'), count($aDocuments));
         $this->successRedirectToMain($msg);
     }
 }

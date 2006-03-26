@@ -45,8 +45,8 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         global $default;
         $this->ru = $default->rootUrl;
         // this is not useful:  we _still_ don't chain through the right dispatcher (!)
-        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents'), 'name' => _('Document Metadata and Workflow Configuration'));
-        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents/fieldmanagement'), 'name' => _('Document Field Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents'), 'name' => _kt('Document Metadata and Workflow Configuration'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents/fieldmanagement'), 'name' => _kt('Document Field Management'));
 
 
     }
@@ -86,9 +86,9 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         );
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
-            'name' => _('Manage conditional fieldset'),
+            'name' => _kt('Manage conditional fieldset'),
         );
-        $this->oPage->setBreadcrumbDetails(_('Manage simple conditional'));
+        $this->oPage->setBreadcrumbDetails(_kt('Manage simple conditional'));
 
         $aTemplateData = array(
             "context" => &$this,
@@ -120,9 +120,9 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         );
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
-            'name' => _('Manage conditional fieldset'),
+            'name' => _kt('Manage conditional fieldset'),
         );
-        $this->oPage->setBreadcrumbDetails(_('Manage complex conditional'));
+        $this->oPage->setBreadcrumbDetails(_kt('Manage complex conditional'));
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,

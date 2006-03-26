@@ -35,7 +35,7 @@ class KTSupportDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 
     function check() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Support and System information'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Support and System information'));
         return true;
     }
 

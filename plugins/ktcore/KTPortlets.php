@@ -32,7 +32,7 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 class KTSearchPortlet extends KTPortlet {
 
     function KTSearchPortlet() {
-        parent::KTPortlet(_("Search"));
+        parent::KTPortlet(_kt("Search"));
     }
     function render() {
         require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
@@ -62,7 +62,7 @@ class KTBrowseModePortlet extends KTPortlet {
     function KTBrowseModePortlet($sTitle = null) {
         // match empty, false.
         if ($sTitle == null) {
-            $sTitle = _('Browse Documents By');
+            $sTitle = _kt('Browse Documents By');
         }
         parent::KTPortlet($sTitle);
     }
@@ -71,9 +71,9 @@ class KTBrowseModePortlet extends KTPortlet {
         // this is unfortunate, but such is life.
         $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(
-            'folder' => array('name' => _('Folder'), 'target' => "main"),            
-            'document_type' => array('name' => _('Document Type'), 'target' => 'selectType'),
-            'lookup_value' => array('name' => _('Lookup Value'), 'target' => 'selectField'),
+            'folder' => array('name' => _kt('Folder'), 'target' => "main"),            
+            'document_type' => array('name' => _kt('Document Type'), 'target' => 'selectType'),
+            'lookup_value' => array('name' => _kt('Lookup Value'), 'target' => 'selectField'),
         );        
         
         $oTemplating =& KTTemplating::getSingleton();        
@@ -92,7 +92,7 @@ class KTBrowseModePortlet extends KTPortlet {
 class KTAdminModePortlet extends KTPortlet {
 
     function KTAdminModePortlet() {
-        parent::KTPortlet(_("Administrator mode"));
+        parent::KTPortlet(_kt("Administrator mode"));
     }
     function render() {
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
@@ -139,7 +139,7 @@ class KTAdminModePortlet extends KTPortlet {
 class KTAdminSectionNavigation extends KTPortlet {
 
     function KTAdminSectionNavigation() {
-        parent::KTPortlet(_("Administration"));
+        parent::KTPortlet(_kt("Administration"));
     }
     
     function render() {
