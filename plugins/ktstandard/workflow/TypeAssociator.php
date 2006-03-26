@@ -83,7 +83,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         $res = parent::check();
         if (!$res) { return false; }
         
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=>_('Workflow Allocation by Document Types'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _('Workflow Allocation by Document Types'));
         
         return true;
     }
