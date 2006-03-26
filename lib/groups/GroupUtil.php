@@ -340,7 +340,7 @@ class GroupUtil {
         
         // short circuit
         
-        if ($oGroup->hasMember($oUser)) { return sprintf(_('%s is a direct member.'), $oUser->getName()); }
+        if ($oGroup->hasMember($oUser)) { return sprintf(_kt('%s is a direct member.'), $oUser->getName()); }
         
         
         $aSubgroups = (array) $aGroupArray[$oGroup->getId()];
@@ -363,7 +363,7 @@ class GroupUtil {
         $oSubgroup = Group::get($res['group_id']);
         if (PEAR::isError($oSubgroup)) { return $oSubgroup; }
         
-        return sprintf(_('%s is a member of %s'), $oUser->getName(), $oSubgroup->getName()); // could be error, but errors are caught.
+        return sprintf(_kt('%s is a member of %s'), $oUser->getName(), $oSubgroup->getName()); // could be error, but errors are caught.
         
         // }
     }

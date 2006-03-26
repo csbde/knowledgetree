@@ -89,7 +89,7 @@ class KTErrorViewerRegistry {
         }
 
         // Give up.
-        return new KTStringErrorViewer(_("Unknown error"));
+        return new KTStringErrorViewer(_kt("Unknown error"));
     }
 }
 
@@ -129,7 +129,7 @@ $oEVRegistry->register("KTErrorViewer", "PEAR_Error");
 
 class KTDBErrorViewer extends KTErrorViewer {
     function view() {
-        return _("Database error:") . " " . $this->oError->getMessage();
+        return _kt("Database error:") . " " . $this->oError->getMessage();
     }
 
     function page() {

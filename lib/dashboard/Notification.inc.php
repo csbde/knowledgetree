@@ -146,7 +146,7 @@ class KTNotificationHandler {
 	
 	// called to resolve the notification (typically from /notify.php?id=xxxxx
 	function resolveNotification($oKTNotification) {
-	    $_SESSION['KTErrorMessage'][] = _("This notification handler does not support publication.");
+	    $_SESSION['KTErrorMessage'][] = _kt("This notification handler does not support publication.");
 	    exit(redirect(generateControllerLink('dashboard')));
 	}
 }
@@ -189,18 +189,18 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 
     function KTSubscriptionNotification() {
         $this->_eventTypeNames = array(
-            "AddFolder" => _('Folder added'),
-            "RemoveSubscribedFolder" => _('Folder removed'), // nothing. your subscription is now gone.
-            "RemoveChildFolder" => _('Folder removed'),
-            "AddDocument" => _('Document added'),
-            "RemoveSubscribedDocument" => _('Document removed'), // nothing. your subscription is now gone.
-            "RemoveChildDocument" => _('Document removed'),
-            "ModifyDocument" => _('Document modified'),
-            "CheckInDocument" => _('Document checked in'),
-            "CheckOutDocument" => _('Document checked out'),
-            "MovedDocument" => _('Document moved'),
-            "ArchivedDocument" => _('Document archived'), // can go through and request un-archival (?)
-            "RestoredArchivedDocument" => _('Document restored')
+            "AddFolder" => _kt('Folder added'),
+            "RemoveSubscribedFolder" => _kt('Folder removed'), // nothing. your subscription is now gone.
+            "RemoveChildFolder" => _kt('Folder removed'),
+            "AddDocument" => _kt('Document added'),
+            "RemoveSubscribedDocument" => _kt('Document removed'), // nothing. your subscription is now gone.
+            "RemoveChildDocument" => _kt('Document removed'),
+            "ModifyDocument" => _kt('Document modified'),
+            "CheckInDocument" => _kt('Document checked in'),
+            "CheckOutDocument" => _kt('Document checked out'),
+            "MovedDocument" => _kt('Document moved'),
+            "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
+            "RestoredArchivedDocument" => _kt('Document restored')
         );
         //parent::KTNotificationHandler();
     }
@@ -378,7 +378,7 @@ class KTWorkflowNotification extends KTNotificationHandler {
 		
 		if ($oUser->getEmailNotification() && (strlen($oUser->getEmail()) > 0)) {
 			$emailContent = $handler->handleNotification($oNotification);
-			$emailSubject = sprintf(_('Workflow Notification: %s'), $oDocument->getName());
+			$emailSubject = sprintf(_kt('Workflow Notification: %s'), $oDocument->getName());
 			$oEmail = new EmailAlert($oUser->getEmail(), $emailSubject, $emailContent);
 			$oEmail->send();
 		}
@@ -409,7 +409,7 @@ class KTWorkflowNotification extends KTNotificationHandler {
 	function resolveNotification($oKTNotification) {
 	    $notify_action = KTUtil::arrayGet($_REQUEST, 'notify_action', null);
 		if ($notify_action == 'clear') {
-		    $_SESSION['KTInfoMessage'][] = _('Workflow Notification cleared.');
+		    $_SESSION['KTInfoMessage'][] = _kt('Workflow Notification cleared.');
 			$oKTNotification->delete();
 			exit(redirect(generateControllerLink('dashboard')));
 		}

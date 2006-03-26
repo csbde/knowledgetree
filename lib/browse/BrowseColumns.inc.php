@@ -57,7 +57,7 @@ class BrowseColumn {
     }
     // FIXME is it _really_ worth using a template here?
     function renderHeader($sReturnURL) { 
-        $text = _("Abstract") . ": " . $this->label; 
+        $text = _kt("Abstract") . ": " . $this->label; 
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
         if ($this->sort_on) {
             $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
@@ -93,7 +93,7 @@ class TitleColumn extends BrowseColumn {
     }
     // unlike others, this DOESN'T give its name.
     function renderHeader($sReturnURL) { 
-        $text = _("Title");
+        $text = _kt("Title");
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
         if ($this->sort_on) {
             $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
@@ -380,7 +380,7 @@ class DownloadColumn extends BrowseColumn {
     
         // FIXME at some point we may want to hide this if the user doens't have the download action, but its OK for now.
         $link = KTUtil::ktLink('action.php','ktcore.actions.document.view', 'fDocumentId=' . $aDataRow['document']->getId());
-        $outStr = sprintf('<a href="%s" class="ktAction ktDownload" title="%s">%s</a>', $link, _('Download Document'), _('Download Document'));
+        $outStr = sprintf('<a href="%s" class="ktAction ktDownload" title="%s">%s</a>', $link, _kt('Download Document'), _kt('Download Document'));
         return $outStr;
     }
 }

@@ -81,10 +81,10 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     }
 
     function do_editSourceProvider() {
-        return $this->errorRedirectTo('viewsource', _("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
+        return $this->errorRedirectTo('viewsource', _kt("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
     }
 
     function do_performEditSourceProvider() {
-        return $this->errorRedirectTo('viewsource', _("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
+        return $this->errorRedirectTo('viewsource', _kt("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
     }
 }

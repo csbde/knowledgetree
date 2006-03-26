@@ -83,7 +83,7 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
             if ($vocab === null) { // allow override
                 $lookups = MetaData::getEnabledByDocumentField($field);
                 $fieldOptions["vocab"] = array(); // FIXME handle lookups
-                $fieldOptions['vocab'][''] = _('No value');				
+                $fieldOptions['vocab'][''] = _kt('No value');				
                 foreach ($lookups as $md) {
                     $fieldOptions["vocab"][$md->getName()] = $md->getName();
                 }
@@ -142,13 +142,13 @@ class KTFieldsetDisplay {
         $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
         
         if (PEAR::isError($res)) {
-            return _('unknown type');
+            return _kt('unknown type');
         }
 		
         if (!empty($res['friendly_name'])) {
-            return _($res['friendly_name']);
+            return _kt($res['friendly_name']);
         } else {
-		    return sprintf(_('%s File'), strtoupper($res['filetypes']));
+		    return sprintf(_kt('%s File'), strtoupper($res['filetypes']));
 		}
 
     }
@@ -190,13 +190,13 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         // creation
         $creator =& User::get($document->getCreatorId());
         if (PEAR::isError($creator)) {
-           $creator = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
+           $creator = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
            $creator = $creator->getName();
         }
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
+           $modified_user = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
            $modified_user = $modified_user->getName();
         }
@@ -244,7 +244,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         // creation
         $creator =& User::get($document->getCreatorId());
         if (PEAR::isError($creator)) {
-           $creator = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
+           $creator = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
            $creator = $creator->getName();
         }
@@ -260,7 +260,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>" . _("Unable to find the document's modifier") . "</span>";
+           $modified_user = "<span class='ktError'>" . _kt("Unable to find the document's modifier") . "</span>";
         } else {
            $modified_user = $modified_user->getName();
         }
@@ -269,7 +269,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 
         $comparison_modified_user =& User::get($comparison_document->getModifiedUserId());
         if (PEAR::isError($comparison_modified_user)) {
-           $comparison_modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
+           $comparison_modified_user = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
            $comparison_modified_user = $comparison_modified_user->getName();
         }
@@ -316,7 +316,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
     function renderEdit($document_data) {
         global $main; // FIXME remove direct access to $main
         $oField = new KTBaseWidget("Document Title",
-            _("The document title is used as the main name of a document throughout KnowledgeTree&trade;."),
+            _kt("The document title is used as the main name of a document throughout KnowledgeTree&trade;."),
             "generic_title", $document_data["document"]->getName(), $main, true, null, array());
         $aFields = array($oField); // its the only one editable from the basic set (currently).
         
@@ -326,7 +326,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "context" => $this,
             "fields" => $aFields,
             "title" => "Generic Document Information",
-            "description" => _("The information in this section is stored by KnowledgeTree&trade; for every document."),
+            "description" => _kt("The information in this section is stored by KnowledgeTree&trade; for every document."),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -412,7 +412,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             $has_errors = KTUtil::arrayGet($document_data['errors'], $oField->getId(),false);
             if ($has_errors !== false) {
                 // FIXME when the actual errors (meaningful) are passed out, fix this.
-                $errors = array(_('The system rejected your value for this field.'));
+                $errors = array(_kt('The system rejected your value for this field.'));
             } else { 
                 $errors = null;
             }
@@ -472,8 +472,8 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // how?
         
         $fieldset_name = $this->fieldset->getName();
-		$fieldset_description = _($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
-        $fieldset_description .= _("Note that the options which are available depends on previous choices within this fieldset.");
+		$fieldset_description = _kt($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
+        $fieldset_description .= _kt("Note that the options which are available depends on previous choices within this fieldset.");
         
         // FIXME handle the editable case _with_ values.
         

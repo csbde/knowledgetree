@@ -668,18 +668,18 @@ class SubscriptionContent {
     // have to be instantiated, or the i18n can't work.
 	function SubscriptionContent() {
 	    $this->_eventTypeNames = array(
-            "AddFolder" => _('Folder added'),
-            "RemoveSubscribedFolder" => _('Folder removed'), // nothing. your subscription is now gone.
-            "RemoveChildFolder" => _('Folder removed'),
-            "AddDocument" => _('Document added'),
-            "RemoveSubscribedDocument" => _('Document removed'), // nothing. your subscription is now gone.
-            "RemoveChildDocument" => _('Document removed'),
-            "ModifyDocument" => _('Document modified'),
-            "CheckInDocument" => _('Document checked in'),
-            "CheckOutDocument" => _('Document checked out'),
-            "MovedDocument" => _('Document moved'),
-            "ArchivedDocument" => _('Document archived'), // can go through and request un-archival (?)
-            "RestoredArchivedDocument" => _('Document restored')
+            "AddFolder" => _kt('Folder added'),
+            "RemoveSubscribedFolder" => _kt('Folder removed'), // nothing. your subscription is now gone.
+            "RemoveChildFolder" => _kt('Folder removed'),
+            "AddDocument" => _kt('Document added'),
+            "RemoveSubscribedDocument" => _kt('Document removed'), // nothing. your subscription is now gone.
+            "RemoveChildDocument" => _kt('Document removed'),
+            "ModifyDocument" => _kt('Document modified'),
+            "CheckInDocument" => _kt('Document checked in'),
+            "CheckOutDocument" => _kt('Document checked out'),
+            "MovedDocument" => _kt('Document moved'),
+            "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
+            "RestoredArchivedDocument" => _kt('Document restored')
         );
 	}
 

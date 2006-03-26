@@ -62,7 +62,7 @@ class KTDocumentUtil {
             copy($sBackupPath, $oDocument->getPath());
             // remove the backup
             unlink($sBackupPath);
-            return PEAR::raiseError(_("An error occurred while storing the new file"));
+            return PEAR::raiseError(_kt("An error occurred while storing the new file"));
         }
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
@@ -77,7 +77,7 @@ class KTDocumentUtil {
             if (PEAR::isError($bSuccess)) {
                 return $bSuccess;
             }
-            return PEAR::raiseError(_("An error occurred while storing this document in the database"));
+            return PEAR::raiseError(_kt("An error occurred while storing this document in the database"));
         }
 
         // create the document transaction record
@@ -127,7 +127,7 @@ class KTDocumentUtil {
         
         $oDocument->setIsCheckedOut(true);
         $oDocument->setCheckedOutUserID($oUser->getId());
-        if (!$oDocument->update()) { return PEAR::raiseError(_("There was a problem checking out the document.")); }
+        if (!$oDocument->update()) { return PEAR::raiseError(_kt("There was a problem checking out the document.")); }
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('checkout', 'postValidate');
@@ -165,7 +165,7 @@ class KTDocumentUtil {
         } else {
             $iDocumentTypeId = 1;
         }
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating database entry")));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Creating database entry")));
         $oDocument =& Document::createFromArray(array(
             'name' => $sDescription,
             'description' => $sDescription,
@@ -185,7 +185,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Storing contents")));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Storing contents")));
             $res = KTDocumentUtil::storeContents($oDocument, $oContents, $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -200,7 +200,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Saving metadata")));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Saving metadata")));
             $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -387,12 +387,12 @@ class KTDocumentUtil {
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
 		    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
 			if (PEAR::isError($oDoc)) {
-                return PEAR::raiseError(_("Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
+                return PEAR::raiseError(_kt("Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
 			} else {
 			    if ($oDoc->getStatusID != LIVE) {
-                    return PEAR::raiseError(_("Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
+                    return PEAR::raiseError(_kt("Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
 				} else {
-				    return PEAR::raiseError(_("Document with that filename already exists in this folder."));
+				    return PEAR::raiseError(_kt("Document with that filename already exists in this folder."));
 				}
 			}
         }
@@ -400,12 +400,12 @@ class KTDocumentUtil {
         if (KTDocumentUtil::nameExists($oFolder, $sName)) {
    		    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
 			if (PEAR::isError($oDoc)) {
-                return PEAR::raiseError(_("Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
+                return PEAR::raiseError(_kt("Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
 			} else {
 			    if ($oDoc->getStatusID != LIVE) {
-                    return PEAR::raiseError(_("Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
+                    return PEAR::raiseError(_kt("Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
 				} else {
-				    return PEAR::raiseError(_("Document with that title already exists in this folder."));
+				    return PEAR::raiseError(_kt("Document with that title already exists in this folder."));
 				}
 			}
 
@@ -413,12 +413,12 @@ class KTDocumentUtil {
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Document created")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Document created")));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
         }
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Scanning file")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Scanning file")));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
         $iTrigger = 0;
@@ -426,7 +426,7 @@ class KTDocumentUtil {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $sTrigger)));
             $ret = $oTrigger->scan();
             if (PEAR::isError($ret)) {
                 $oDocument->delete();
@@ -434,7 +434,7 @@ class KTDocumentUtil {
             }
         }
 
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Transforming file")));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Transforming file")));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
@@ -444,11 +444,11 @@ class KTDocumentUtil {
             }
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
+            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $sTrigger)));
             $oTrigger->transform();
         }
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating transaction")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Creating transaction")));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document created", 'ktcore.transactions.create', $aOptions);
@@ -458,7 +458,7 @@ class KTDocumentUtil {
             return $res;
         }
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Sending subscriptions")));
+        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Sending subscriptions")));
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
@@ -479,7 +479,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::updateSearchableText($oDocument, true);
 
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("All done...")));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("All done...")));
 
         return $oDocument;
     }
@@ -593,7 +593,7 @@ class KTDocumentUtil {
         }
         if (PEAR::isError($oDocument) || ($oDocument == false)) { return PEAR::raiseError('Invalid document object.'); }
         
-        if ($oDocument->getIsCheckedOut() == true) { return PEAR::raiseError(sprintf(_('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); }
+        if ($oDocument->getIsCheckedOut() == true) { return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); }
         
         // IF we're deleted ...
         if ($oDocument->getStatusID() == DELETED) { return true; }
@@ -607,7 +607,7 @@ class KTDocumentUtil {
         $res = $oDocument->update();
         if (PEAR::isError($res) || ($res == false)) {
             DBUtil::rollback();
-            return PEAR::raiseError(_("There was a problem deleting the document from the database."));
+            return PEAR::raiseError(_kt("There was a problem deleting the document from the database."));
         }
 
         // now move the document to the delete folder
@@ -629,7 +629,7 @@ class KTDocumentUtil {
             $oDocument->update();
             */
             
-            return PEAR::raiseError(_("There was a problem deleting the document from storage."));
+            return PEAR::raiseError(_kt("There was a problem deleting the document from storage."));
         }
         
         $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document deleted: " . $sReason, 'ktcore.transactions.delete');
@@ -774,7 +774,7 @@ class KTDocumentUtil {
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
 
         if (!$res) {
-            return PEAR::raiseError(_("An error occurred while storing the new file"));
+            return PEAR::raiseError(_kt("An error occurred while storing the new file"));
         }
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
@@ -786,7 +786,7 @@ class KTDocumentUtil {
             if (PEAR::isError($bSuccess)) {
                 return $bSuccess;
             }
-            return PEAR::raiseError(_("An error occurred while storing this document in the database"));
+            return PEAR::raiseError(_kt("An error occurred while storing this document in the database"));
         }
 
         // create the document transaction record
@@ -806,7 +806,7 @@ class KTDocumentUtil {
 class KTMetadataValidationError extends PEAR_Error {
     function KTMetadataValidationError ($aFailed) {
         $this->aFailed = $aFailed;
-        $message = _('Validation Failed');
+        $message = _kt('Validation Failed');
         parent::PEAR_Error($message);
     }
 }

@@ -101,14 +101,14 @@ class KTMime {
         if ($sql->next_record()) {
 		    $friendly_name = $sql->f("friendly_name");
             if (!empty($friendly_name)) { 
-                return _($sql->f("friendly_name"));
+                return _kt($sql->f("friendly_name"));
             } else {
-		        return sprintf(_('%s File'), strtoupper($sql->f('filetypes')));            
+		        return sprintf(_kt('%s File'), strtoupper($sql->f('filetypes')));            
             }
 		}
         
         
-        return _('Unknown Type');
+        return _kt('Unknown Type');
     }
 
     /**

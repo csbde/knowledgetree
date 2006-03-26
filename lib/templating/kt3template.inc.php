@@ -102,7 +102,7 @@ class KTPage {
         $this->requireJSResources($aJS);
         
         // this is horrid, but necessary.
-		$this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _('Are you sure you wish to delete this item?') . '"));');
+		$this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
         
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?
@@ -118,14 +118,14 @@ class KTPage {
 		// FIXME:  we lost the getDefaultAction stuff - do we care?
 		// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
 		$this->menu = array(
-		    "dashboard" => $this->_actionHelper(array("name" => _("Dashboard"), "action" => "dashboard", "active" => 0)),
-			"browse" => $this->_actionHelper(array("name" => _("Browse Documents"), "action" => "browse", "active" => 0)),
-			"administration" => $this->_actionHelper(array("name" => _("DMS Administration"), "action" => "administration", "active" => 0)),
+		    "dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
+			"browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
+			"administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),
 		);
 		
 		$this->userMenu = array(
-		    "preferences" => $this->_actionHelper(array("name" => _("Preferences"), "action" => "preferences", "active" => 0)),
-			"logout" => $this->_actionHelper(array("name" => _("Logout"), "action" => "logout", "active" => 0)),
+		    "preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
+			"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),
 		);
 	}
 	
@@ -219,26 +219,26 @@ class KTPage {
     // assume this is admin for now.
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
-			$this->componentLabel = _('DMS Administration');
+			$this->componentLabel = _kt('DMS Administration');
 			$this->componentClass = 'administration';
 			$this->menu['administration']['active'] = 1;
 		} else if ($sSection == 'dashboard') {
-		    $this->componentLabel = _('Dashboard');
+		    $this->componentLabel = _kt('Dashboard');
             $this->componentClass = 'dashboard';	    
 		} else if ($sSection == 'browse') {
-		    $this->componentLabel = _('Browse Documents');
+		    $this->componentLabel = _kt('Browse Documents');
             $this->componentClass = 'browse_collections';	  						
 		} else if ($sSection == 'view_details') {
-		    $this->componentLabel = _('Document Details');
+		    $this->componentLabel = _kt('Document Details');
             $this->componentClass = 'document_details';	    
 		} else if ($sSection == 'search') {
-		    $this->componentLabel = _('Search');
+		    $this->componentLabel = _kt('Search');
             $this->componentClass = 'search';				
 		} else if ($sSection == 'preferences') {
-		    $this->componentLabel = _('Preferences');
+		    $this->componentLabel = _kt('Preferences');
             $this->componentClass = 'preferences';				
 	    } else {
-			$this->componentLabel = _('Dashboard');
+			$this->componentLabel = _kt('Dashboard');
 			$this->componentClass = 'dashboard';	    
 		}
 
@@ -277,7 +277,7 @@ class KTPage {
         }
 
         if (is_string($this->contents) && (trim($this->contents) === "")) {
-            $this->addError(_("This page did not produce any content"));
+            $this->addError(_kt("This page did not produce any content"));
             $this->contents = "";
         }
 		

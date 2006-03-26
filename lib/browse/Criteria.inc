@@ -624,40 +624,40 @@ class Criteria {
         global $default;
         switch ($iID) {
             case -1:
-                $oCriterion =& new NameCriterion(_("Name"), 'filename', 'filename', -1);
+                $oCriterion =& new NameCriterion(_kt("Name"), 'filename', 'filename', -1);
                 break;
             case -2:
-                $oCriterion =& new TitleCriterion(_("Title"), 'name', 'name', -2);
+                $oCriterion =& new TitleCriterion(_kt("Title"), 'name', 'name', -2);
                 break;
             case -3:
-                $oCriterion =& new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', -3);
+                $oCriterion =& new CreatorCriterion(_kt("Creator"), 'creator_id', 'creator_id', -3);
                 break;
             case -4:
-                $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'created', 'created', -4);
+                $oCriterion =& new DateCreatedCriterion(_kt("Date Created"), 'created', 'created', -4);
                 break;
             case -5:
-                $oCriterion =& new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', -5);
+                $oCriterion =& new DocumentTypeCriterion(_kt("Document Type"), 'document_type_id', 'document_type_id', -5);
                 break;
             case -6:
-                $oCriterion =& new IDCriterion(_("ID"), 'id', 'id', -6);
+                $oCriterion =& new IDCriterion(_kt("ID"), 'id', 'id', -6);
                 break;
             case -7:
-                $oCriterion =& new DateModifiedCriterion(_("Date Modified"), 'modified', 'modified', -7);
+                $oCriterion =& new DateModifiedCriterion(_kt("Date Modified"), 'modified', 'modified', -7);
                 break;
             case -8:
-                $oCriterion =& new SizeCriterion(_("File Size"), 'size', 'size', -8);
+                $oCriterion =& new SizeCriterion(_kt("File Size"), 'size', 'size', -8);
                 break;
             case -9:
-                $oCriterion =& new ContentCriterion(_("Document Contents"), 'content', 'content', -9);
+                $oCriterion =& new ContentCriterion(_kt("Document Contents"), 'content', 'content', -9);
                 break;
             case -10:
-                $oCriterion =& new WorkflowStateCriterion(_("Workflow state"), 'state', 'state', -10);
+                $oCriterion =& new WorkflowStateCriterion(_kt("Workflow state"), 'state', 'state', -10);
                 break;
             case -11:
-                $oCriterion =& new TransactionTextCriterion(_("Transaction Text"), 'transactiontext', 'transactiontext', -11);
+                $oCriterion =& new TransactionTextCriterion(_kt("Transaction Text"), 'transactiontext', 'transactiontext', -11);
                 break;
             case -12:
-                $oCriterion =& new SearchableTextCriterion(_("Searchable Text"), 'searchabletext', 'searchabletext', -12);
+                $oCriterion =& new SearchableTextCriterion(_kt("Searchable Text"), 'searchabletext', 'searchabletext', -12);
                 break;
         }
         return $oCriterion;
