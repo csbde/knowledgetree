@@ -644,7 +644,7 @@ class KTMetadataUtil {
 
         $aRet = array();
         foreach ($aFieldsetIds as $iID) {
-            $aRet[] =& call_user_func(array('KTFieldset', 'get'), $iID);
+            $aRet[] = call_user_func(array('KTFieldset', 'get'), $iID);
         }
         return $aRet;
     }
