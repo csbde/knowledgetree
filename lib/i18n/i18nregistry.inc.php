@@ -30,6 +30,7 @@ require_once(KT_LIB_DIR . '/i18n/i18n.inc.php');
 
 class KTi18nRegistry {
     var $_ai18nDetails = array();
+    var $_ai18nLangs = array();
     var $_ai18ns = array();
 
     function &getSingleton() {
@@ -39,14 +40,21 @@ class KTi18nRegistry {
         return $GLOBALS['oKTi18nRegistry'];
     }
 
-    function registeri18n($sDomain, $sDirectory = "") {
-        if (empty($sDirectory)) {
-            $sDirectory = KT_DIR . '/i18n';
+    function registeri18n($sDomain, $sDirectory) {
+        $this->_ai18nDetails[$sDomain] = array($sDomain, $sDirectory);
+    }
+
+    function registeri18nLang($sDomain, $sLang, $sDirectory) {
+        if (empty($this->_ai18nLangs[$sDomain])) {
+            $this->_ai18nLangs[$sDomain] = array();
         }
-        if (in_array("gettext", get_loaded_extensions())) {
-            $this->_ai18nDetails[$sDomain] = array($sDomain, $sDirectory);
-            bindtextdomain($sDomain, $sDirectory);
-            bind_textdomain_codeset($sDomain, 'UTF-8');
+        if (is_string($sLang)) {
+            $aLang = array($sLang);
+        } else {
+            $aLang = $sLang;
+        }
+        foreach ($aLang as $sLang) {
+            $this->_ai18nLangs[$sDomain][$sLang] = $sDirectory;
         }
     }
 
@@ -59,8 +67,9 @@ class KTi18nRegistry {
         if (empty($aDetails)) {
             return new KTi18nGeneric;
         }
-        $oi18n =& new KTi18n($sDomain, $sDirectory);
-        $this->ai18ns[$sDomain] =& $oi18n;
+        $aDirectories = KTUtil::arrayGet($this->_ai18nLangs, $sDomain);
+        $oi18n =& new KTi18n($sDomain, $sDirectory, $aDirectories);
+        $this->_ai18ns[$sDomain] =& $oi18n;
         return $oi18n;
     }
 }
