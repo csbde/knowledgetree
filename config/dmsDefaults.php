@@ -120,30 +120,16 @@ class KTInit {
 
     // {{{ setupI18n()
     /**
-     * setupI
+     * setupI18n
      *
      */
     function setupI18n () {
         require_once(KT_LIB_DIR . '/i18n/i18nutil.inc.php');
         require_once("HTTP.php");
         global $default;
-        if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') && function_exists('_')) {
-            if ($default->useAcceptLanguageHeader) {
-                $aInstalledLocales = KTi18nUtil::getInstalledLocales();
-                $sLocale = $aInstalledLocales[HTTP::negotiateLanguage($aInstalledLocales)];
-                $default->defaultLanguage = $sLocale;
-            }
-            putenv('LANG=' . $default->defaultLanguage);
-            putenv('LANGUAGE=' . $default->defaultLanguage);
-            setlocale(LC_ALL, $default->defaultLanguage);
-            // Set the text domain
-            $sDomain = 'knowledgeTree';
-            bindtextdomain($sDomain, $default->fileSystemRoot . "/i18n");
-            textdomain($sDomain);
-            return true;
-        } else {
-            return false;
-            $default->log->info("Gettext not installed, i18n disabled.");
+        $language = KTUtil::arrayGet($_COOKIE, 'kt_language');
+        if ($language) {
+            $default->defaultLanguage = $language;
         }
     }
     // }}}
@@ -467,13 +453,6 @@ class KTInit {
 
 $KTInit = new KTInit();
 
-// handle unexpected errors in smarty somewhat more gracefully, even if no gettext is installed.
-if (!function_exists('_')) { 
-    function _kt($s) { return $s; }
-} else {
-    function _kt($s) { return _($s); }
-}
-
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 require_once('PEAR.php');
@@ -487,6 +466,9 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
 $KTInit->initConfig(); 
+
+$KTInit->setupI18n();
+
 $oKTConfig =& KTConfig::getSingleton();
 $KTInit->setupServerVariables();
 
@@ -506,13 +488,7 @@ require_once(KT_LIB_DIR . '/database/lookup.inc');
 // table mapping entries
 include("tableMappings.inc");
 
-$i18nLoaded = $KTInit->setupI18n();
-if ($i18nLoaded === false) {
-    // gettext dummy already loaded.
-}
-
 $default->systemVersion = trim(file_get_contents(KT_DIR . '/docs/VERSION.txt'));
-$default->lastDatebaseVersion = '2.0.2';
 
 $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
@@ -528,5 +504,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 if ($checkup !== true) {
     KTPluginUtil::loadPlugins();
 }
+
+$GLOBALS['main'] =& new KTPage();
 
 ?>

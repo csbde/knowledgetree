@@ -58,3 +58,9 @@ class KTi18nUtil {
         return $aLocales;
     }
 }
+
+function _kt($sContents) {
+    $oReg =& KTi18nRegistry::getSingleton();
+    $oi18n =& $oReg->geti18n('knowledgeTree');
+    return $oi18n->gettext($sContents);
+}
