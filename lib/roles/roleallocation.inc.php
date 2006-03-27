@@ -101,7 +101,7 @@ class RoleAllocation extends KTEntity {
 		$fTable = Folder::_table();
 		
 		$oFolder =& Folder::get($iFolderId);
-		$parents = $oFolder->getParentFolderIDs() . ',' . $iFolderId; // this is formatted as 1,2,3,4,5,6 - perfect for "WHERE".
+		$parents = Folder::generateFolderIds($iFolderId);
 		
 		// FIXME what (if anything) do we need to do to check that this can't be used as an attack?
 		$folders = '(' . $parents . ')';
