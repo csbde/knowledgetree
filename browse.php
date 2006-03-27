@@ -66,7 +66,7 @@ class KTMassMoveColumn extends TitleColumn {
             $outStr .= $aDataRow["folder"]->getName();
             $outStr .= '</a>';
         } else { 
-            $outStr = $aDataRow["folder"]->getName() . ' <span class="descriptiveText">(' . _('you cannot move folders to themselves') . ')';
+            $outStr = $aDataRow["folder"]->getName() . ' <span class="descriptiveText">(' . _kt('you cannot move folders to themselves') . ')';
         }
         return $outStr;    
     
@@ -91,7 +91,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
     function BrowseDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _('Browse')),
+            array('action' => 'browse', 'name' => _kt('Browse')),
         );
         return parent::KTStandardDispatcher();
     }
@@ -139,12 +139,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $this->editable = false;
             }
             
-            $this->oPage->setTitle(_('Browse'));
+            $this->oPage->setTitle(_kt('Browse'));
             $this->oPage->setSecondaryTitle($oFolder->getName());
             
             $this->oFolder =& $oFolder;
             if (PEAR::isError($oFolder)) {
-                $this->oPage->addError(_("invalid folder"));
+                $this->oPage->addError(_kt("invalid folder"));
                 $folder_id = 1;
                 $oFolder =& Folder::get($folder_id);
             }
@@ -158,7 +158,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($oFolder));
                 
-            $portlet = new KTActionPortlet(_("Folder Actions"));
+            $portlet = new KTActionPortlet(_kt("Folder Actions"));
             $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);        
             $portlet->setActions($aActions,null);
             $this->oPage->addPortlet($portlet);
@@ -179,7 +179,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
             $this->oQuery = new ValueBrowseQuery($oField, $oValue);
             $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value));
-            $this->aBreadcrumbs[] = array('name' => _('Lookup Values'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectField')); 
+            $this->aBreadcrumbs[] = array('name' => _kt('Lookup Values'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectField')); 
             $this->aBreadcrumbs[] = array('name' => $oField->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId()));             
             $this->aBreadcrumbs[] = array('name' => $oValue->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value)));             
         } else if ($this->browse_mode == 'document_type') {
@@ -195,7 +195,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->oQuery =  new TypeBrowseQuery($oDocType);
             
             // FIXME probably want to redirect to self + action=selectType
-            $this->aBreadcrumbs[] = array('name' => _('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType')); 
+            $this->aBreadcrumbs[] = array('name' => _kt('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType')); 
             $this->aBreadcrumbs[] = array('name' => $oDocType->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'fBrowseMode=document_type&fType=' . $oDocType->getId())); 
             
             $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fType=%s&fBrowseMode=document_type", $doctype));;
@@ -214,10 +214,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
         $collection->addColumn(new TitleColumn("Test 1 (title)","title"));
         $collection->addColumn(new DownloadColumn('','download'));
-        $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
-        $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
-        $collection->addColumn(new WorkflowColumn(_('Workflow State'),'workflow_state'));
+        $collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));
+        $collection->addColumn(new DateColumn(_kt("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn(_kt('Creator'),'creator_id','getCreatorID'));
+        $collection->addColumn(new WorkflowColumn(_kt('Workflow State'),'workflow_state'));
         
         
         // setup the folderside add actions
@@ -261,7 +261,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aFields = DocumentField::getList('has_lookup = 1');
         
         if (empty($aFields)) {
-            $this->errorRedirectToMain(_('No lookup fields available.'));
+            $this->errorRedirectToMain(_kt('No lookup fields available.'));
             exit(0);
         } 
         
@@ -326,14 +326,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
         if (!empty($targets)) {
             $target = $targets[0];
         } else {
-            $this->errorRedirectToMain(_('No action selected.'));
+            $this->errorRedirectToMain(_kt('No action selected.'));
             exit(0);
         }
 
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());        
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
-            $this->errorRedirectToMain(_('Please select documents or folders first.'));
+            $this->errorRedirectToMain(_kt('Please select documents or folders first.'));
             exit(0);
         }        
         
@@ -342,7 +342,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         } else if ($target == 'move') {
             return $this->do_startMove();
         } else {
-            $this->errorRedirectToMain(_('No such action.'));
+            $this->errorRedirectToMain(_kt('No such action.'));
             exit(0);
         }
         
@@ -388,7 +388,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $documentStr = '';
             
             if (!empty($aCantMove['folders'])) {
-                $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+                $folderStr = '<strong>' . _kt('Folders: ') . '</strong>';
                 foreach ($aCantMove['folders'] as $iFolderId) {
                     $oF = Folder::get($iFolderId);
                     $cantMoveItems['folders'][] = $oF->getName();
@@ -397,7 +397,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
             
             if (!empty($aCantMove['documents'])) {
-                $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+                $documentStr = '<strong>' . _kt('Documents: ') . '</strong>';
                 foreach ($aCantMove['documents'] as $iDocId) {
                     $oD = Document::get($iDocId);
                     $cantMoveItems['documents'][] = $oD->getName();
@@ -406,10 +406,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
 
             if (!empty($folderStr)) {
-                $_SESSION["KTErrorMessage"][] = _("The following folders can not be moved") . ": " . $folderStr;
+                $_SESSION["KTErrorMessage"][] = _kt("The following folders can not be moved") . ": " . $folderStr;
             }
             if (!empty($documentStr)) {
-                $_SESSION["KTErrorMessage"][] = _("The following documents can not be moved") . ": " . $documentStr;
+                $_SESSION["KTErrorMessage"][] = _kt("The following documents can not be moved") . ": " . $documentStr;
             }
         }
 
@@ -417,14 +417,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) { 
-            $this->errorRedirectToMain(_('Invalid folder selected.'));
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
             exit(0);
         }
 
         $moveSet = $_SESSION['moves'][$sMoveCode];
 
         if (empty($moveSet['folders']) && empty($moveSet['documents'])) {
-            $this->errorRedirectToMain(_('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
+            $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }        
         
@@ -475,7 +475,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $documentStr = '';
         
         if (!empty($moveSet['folders'])) {
-            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            $folderStr = '<strong>' . _kt('Folders: ') . '</strong>';
             foreach ($moveSet['folders'] as $iFolderId) {
                 $oF = Folder::get($iFolderId);
                 $moveItems['folders'][] = $oF->getName();
@@ -484,7 +484,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         if (!empty($moveSet['documents'])) {
-            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            $documentStr = '<strong>' . _kt('Documents: ') . '</strong>';
             foreach ($moveSet['documents'] as $iDocId) {
                 $oD = Document::get($iDocId);
                 $moveItems['documents'][] = $oD->getName();
@@ -513,22 +513,22 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $action_a = (array) KTUtil::arrayGet($_REQUEST, 'submit', null);
         $actions = array_keys($action_a);
         if (empty($actions)) { 
-            $this->errorRedirectToMain(_('No action selected.'));
+            $this->errorRedirectToMain(_kt('No action selected.'));
         } else {
             $action = $actions[0];
         }
         if ($action != 'move') {
-            $this->successRedirectToMain(_('Move cancelled.'));
+            $this->successRedirectToMain(_kt('Move cancelled.'));
         }
         
         $target_folder = KTUtil::arrayGet($_REQUEST, 'fFolderId');
-        if ($target_folder == null ) { $this->errorRedirectToMain(_('No folder selected.')); }
+        if ($target_folder == null ) { $this->errorRedirectToMain(_kt('No folder selected.')); }
         
         $move_code = KTUtil::arrayGet($_REQUEST, 'fMoveCode');
         
         $aFields = array();
-        $aFields[] = new KTStaticTextWidget(_('Destination folder'), _('The folder which will contain the previously selected files and folders.'), 'fDocumentId', Folder::getFolderDisplayPath($target_folder), $this->oPage, false);
-        $aFields[] = new KTStringWidget(_('Reason'), _('The reason for moving these documents and folders, for historical purposes.'), 'sReason', "", $this->oPage, true); 
+        $aFields[] = new KTStaticTextWidget(_kt('Destination folder'), _kt('The folder which will contain the previously selected files and folders.'), 'fDocumentId', Folder::getFolderDisplayPath($target_folder), $this->oPage, false);
+        $aFields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for moving these documents and folders, for historical purposes.'), 'sReason', "", $this->oPage, true); 
         
         
         // now show the items...
@@ -541,7 +541,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $documentStr = '';
         
         if (!empty($moveSet['folders'])) {
-            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            $folderStr = '<strong>' . _kt('Folders: ') . '</strong>';
             foreach ($moveSet['folders'] as $iFolderId) {
                 $oF = Folder::get($iFolderId);
                 $moveItems['folders'][] = $oF->getName();
@@ -550,7 +550,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         if (!empty($moveSet['documents'])) {
-            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            $documentStr = '<strong>' . _kt('Documents: ') . '</strong>';
             foreach ($moveSet['documents'] as $iDocId) {
                 $oD = Document::get($iDocId);
                 $moveItems['documents'][] = $oD->getName();
@@ -576,7 +576,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $target_folder = KTUtil::arrayGet($_REQUEST, 'fFolderId');
         $reason = KTUtil::arrayGet($_REQUEST, 'sReason');
         if (empty($reason)) {
-            $_SESSION['KTErrorMessage'][] = _('You must supply a reason.');
+            $_SESSION['KTErrorMessage'][] = _kt('You must supply a reason.');
             return $this->do_finaliseMove();
         }
         
@@ -594,7 +594,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         if (!Permission::userHasFolderWritePermission($oTargetFolder)) {
-            $this->errorRedirectTo("main", _("You do not have permission to move items to this location"), sprintf("fFolderId=%d", $oTargetFolder->getId()));
+            $this->errorRedirectTo("main", _kt("You do not have permission to move items to this location"), sprintf("fFolderId=%d", $oTargetFolder->getId()));
             exit(0);
         }
         
@@ -607,7 +607,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             
             $oDoc = Document::get($iDocId);
             if (PEAR::isError($oDoc)) { 
-                $this->errorRedirectToMain(_('Invalid document.'));
+                $this->errorRedirectToMain(_kt('Invalid document.'));
             }
                 
             $oOriginalFolder = Folder::get($oDoc->getFolderId());
@@ -622,7 +622,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $oDoc->setFolderID($oTargetFolder->getId());
             $res = $oDoc->update(true);
             if (!$res) {
-                $this->errorRedirectTo("move", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
+                $this->errorRedirectTo("move", _kt("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
             }    
             
             //move the document on the file system
@@ -630,7 +630,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             if (!$oStorage->moveDocument($oDoc, $oOriginalFolder, $oTargetFolder)) {
                 $oDoc->setFolderID($oOriginalFolder->getId());
                 $oDoc->update(true);
-                $this->errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
+                $this->errorRedirectTo("move", _kt("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $oDoc->getId(), $oTargetFolder->getId()));
             }
     
             $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
@@ -672,17 +672,17 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         foreach ($aMoveStack['folders'] as $iFolderId) {
             $oFolder = Folder::get($iFolderId);
-            if (PEAR::isError($oFolder)) { $this->errorRedirectToMain(_('Invalid folder.')); }
+            if (PEAR::isError($oFolder)) { $this->errorRedirectToMain(_kt('Invalid folder.')); }
             
             $res = KTFolderUtil::move($oFolder, $oTargetFolder, $this->oUser);
             if (PEAR::isError($res)) {
-                $this->errorRedirectToMain(_('Failed to move the folder: ') . $res->getMessage());
+                $this->errorRedirectToMain(_kt('Failed to move the folder: ') . $res->getMessage());
             }
         }
         $this->commitTransaction();
         
         
-        $this->successRedirectToMain(_('Move completed.'), sprintf('fFolderId=%d', $target_folder));
+        $this->successRedirectToMain(_kt('Move completed.'), sprintf('fFolderId=%d', $target_folder));
     }
     
     function do_startDelete() {
@@ -704,11 +704,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $documentStr = '';
         
         if (!empty($aFolderSelection)) {
-            $folderStr = '<strong>' . _('Folders: ') . '</strong>';
+            $folderStr = '<strong>' . _kt('Folders: ') . '</strong>';
             foreach ($aFolderSelection as $iFolderId) {
                 $oF = Folder::get($iFolderId);
                 if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oF)) {
-                    $this->errorRedirectToMain(_('You do not have permission to delete the folder: ') . $oF->getName());
+                    $this->errorRedirectToMain(_kt('You do not have permission to delete the folder: ') . $oF->getName());
                 }
                 $delItems['folders'][] = $oF->getName();
             }
@@ -716,11 +716,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         if (!empty($aDocumentSelection)) {
-            $documentStr = '<strong>' . _('Documents: ') . '</strong>';
+            $documentStr = '<strong>' . _kt('Documents: ') . '</strong>';
             foreach ($aDocumentSelection as $iDocId) {
                 $oD = Document::get($iDocId);
                 if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oD)) {
-                    $this->errorRedirectToMain(_('You do not have permission to delete the document: ') . $oD->getName());
+                    $this->errorRedirectToMain(_kt('You do not have permission to delete the document: ') . $oD->getName());
                 }
                 if (!PEAR::isError($oD)) {
                     $delItems['documents'][] = $oD->getName();
@@ -730,7 +730,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
         
         $aFields = array();
-        $aFields[] = new KTStringWidget(_('Reason'), _('The reason for the deletion of these documents and folders for historical purposes.'), 'sReason', "", $this->oPage, true);
+        $aFields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the deletion of these documents and folders for historical purposes.'), 'sReason', "", $this->oPage, true);
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/mass_delete");
@@ -757,7 +757,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $res = KTUtil::arrayGet($_REQUEST,'sReason');
         $sReason = $res;
         if (empty($res)) {
-            $_SESSION['KTErrorMessage'][] = _('You must supply a reason.');
+            $_SESSION['KTErrorMessage'][] = _kt('You must supply a reason.');
             return $this->do_startDelete();
         }
         
@@ -769,9 +769,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
         foreach ($aFolderSelection as $id) {
             $oF = Folder::get($id);
             if (PEAR::isError($oF) || ($oF == false)) {
-                return $this->errorRedirectToMain(_('Invalid Folder selected.'));
+                return $this->errorRedirectToMain(_kt('Invalid Folder selected.'));
             } else if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oF)) {
-                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the folder: %s'), $oF->getName()));             
+                return $this->errorRedirectToMain(sprintf(_kt('You do not have permissions to delete the folder: %s'), $oF->getName()));             
             } else{
                 $aFolders[] = $oF;
             }
@@ -780,9 +780,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $oD = Document::get($id);
             
             if (PEAR::isError($oD) || ($oD == false)) {
-                return $this->errorRedirectToMain(_('Invalid Document selected.'));
+                return $this->errorRedirectToMain(_kt('Invalid Document selected.'));
             } else if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oD)) {
-                return $this->errorRedirectToMain(sprintf(_('You do not have permissions to delete the document: %s'), $oD->getName()));             
+                return $this->errorRedirectToMain(sprintf(_kt('You do not have permissions to delete the document: %s'), $oD->getName()));             
             } else {
                 $aDocuments[] = $oD;
             }
@@ -816,19 +816,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
-            $this->errorRedirectToMain(_('You are not an administrator'));
+            $this->errorRedirectToMain(_kt('You are not an administrator'));
         }
 
         $_SESSION['adminmode'] = true;
         if ($_REQUEST['fDocumentId']) {
-            $_SESSION['KTInfoMessage'][] = _('Administrator mode enabled');
+            $_SESSION['KTInfoMessage'][] = _kt('Administrator mode enabled');
             redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
             exit(0);
         }
         if ($_REQUEST['fFolderId']) {
-            $this->successRedirectToMain(_('Administrator mode enabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+            $this->successRedirectToMain(_kt('Administrator mode enabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }
-        $this->successRedirectToMain(_('Administrator mode enabled'));
+        $this->successRedirectToMain(_kt('Administrator mode enabled'));
     }
 
     function do_disableAdminMode() {
@@ -843,19 +843,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
-            $this->errorRedirectToMain(_('You are not an administrator'));
+            $this->errorRedirectToMain(_kt('You are not an administrator'));
         }
 
         $_SESSION['adminmode'] = false;
         if ($_REQUEST['fDocumentId']) {
-            $_SESSION['KTInfoMessage'][] = _('Administrator mode disabled');
+            $_SESSION['KTInfoMessage'][] = _kt('Administrator mode disabled');
             redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
             exit(0);
         }
         if ($_REQUEST['fFolderId']) {
-            $this->successRedirectToMain(_('Administrator mode disabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
+            $this->successRedirectToMain(_kt('Administrator mode disabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
         }
-        $this->successRedirectToMain(_('Administrator mode disabled'));
+        $this->successRedirectToMain(_kt('Administrator mode disabled'));
     }
 }
 

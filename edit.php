@@ -72,11 +72,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage(_("No document specified for editing."));
+            $this->errorPage(_kt("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage(_("Invalid Document."));
+            $this->errorPage(_kt("Invalid Document."));
         }
         
         $this->oDocument = $oDocument;
@@ -94,7 +94,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 
     function KTEditDocumentDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _('Browse')),
+            array('action' => 'browse', 'name' => _kt('Browse')),
         );
         return parent::KTStandardDispatcher();
     }
@@ -102,7 +102,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
         $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(_("Document Actions"));
+        $oPortlet = new KTActionPortlet(_kt("Document Actions"));
         $oPortlet->setActions($actions, $currentaction);
 		
         $this->oPage->addPortlet($oPortlet);
@@ -132,17 +132,17 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		
 	    $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage(_("No document specified for editing."));
+            $this->errorPage(_kt("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage(_("Invalid Document."));
+            $this->errorPage(_kt("Invalid Document."));
         }
 		
 		$this->oDocument = $oDocument;
 		$this->addPortlets("Edit");
 		$this->addBreadcrumbs();
-		$this->oPage->setBreadcrumbDetails(_('Change Document Type'));
+		$this->oPage->setBreadcrumbDetails(_kt('Change Document Type'));
 		
 		$aDocTypes = DocumentType::getList();
 
@@ -181,10 +181,10 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$newType = KTUtil::arrayGet($_REQUEST, 'fDocType');
 		$oType = DocumentType::get($newType);
 		if (PEAR::isError($oType) || ($oType == false)) {
-		    $this->errorRedirectToMain(_("Invalid type selected."));
+		    $this->errorRedirectToMain(_kt("Invalid type selected."));
 		}
 		
-		$_SESSION['KTInfoMessage'][] = _('Document Type Changed.  Please review the information below, and update as appropriate.');
+		$_SESSION['KTInfoMessage'][] = _kt('Document Type Changed.  Please review the information below, and update as appropriate.');
 		
 		$_REQUEST['setType'] = $newType;
 		
@@ -197,11 +197,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage(_("No document specified for editing."));
+            $this->errorPage(_kt("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage(_("Invalid Document."));
+            $this->errorPage(_kt("Invalid Document."));
         }
         
         $this->oDocument = $oDocument;
@@ -266,16 +266,16 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 	function do_update() {
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage(_("No document specified for editing."));
+            $this->errorPage(_kt("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage(_("Invalid Document."));
+            $this->errorPage(_kt("Invalid Document."));
         }
 
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $oDocument->getId())),
-            'message' => _('No name given'),
+            'message' => _kt('No name given'),
         );
         $title = KTUtil::arrayGet($_REQUEST, 'generic_title');
         $title = $this->oValidator->validateString($title,
@@ -285,7 +285,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		if ($newType !== null) {
 		    $oDT = DocumentType::get($newType);
 			if (PEAR::isError($oDT) || ($oDT == false)) {
-				$this->errorRedirectToMain(_('Invalid document type specified for change.'));
+				$this->errorRedirectToMain(_kt('Invalid document type specified for change.'));
 			}
 		} else {
 		    $oDT = null;
@@ -475,7 +475,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   
 		   $document_data['errors'] = $res->aFailed['field'];
 
-		   $this->addErrorMessage(_('Validation failed.  The values below correspond to your attempt to change the metadata on this item, and are not necessarily the values saved for the document.  The validation errors are shown next to the metadata that failed validation.  Select Cancel to return to the saved values.'));
+		   $this->addErrorMessage(_kt('Validation failed.  The values below correspond to your attempt to change the metadata on this item, and are not necessarily the values saved for the document.  The validation errors are shown next to the metadata that failed validation.  Select Cancel to return to the saved values.'));
 		   
 		   $oTemplating =& KTTemplating::getSingleton();
 		   $oTemplate =& $oTemplating->loadTemplate("kt3/document/edit");       

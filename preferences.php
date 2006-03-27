@@ -41,14 +41,14 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 
     function PreferencesDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'preferences', 'name' => _('Preferences')),
+            array('action' => 'preferences', 'name' => _kt('Preferences')),
         );
         return parent::KTStandardDispatcher();
     }
 
     function do_main() {
-		$this->oPage->setBreadcrumbDetails(_("Your Preferences"));
-		$this->oPage->title = _("Dashboard");
+		$this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
+		$this->oPage->title = _kt("Dashboard");
 		
 		
 		$oUser =& $this->oUser;
@@ -56,10 +56,10 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 		$aOptions = array('autocomplete' => false);
 		
 		$edit_fields = array();
-        $edit_fields[] =  new KTStringWidget(_('Name'),_('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true, null, null, $aOptions);        
-        $edit_fields[] =  new KTStringWidget(_('Email Address'),_('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false, null, null, $aOptions);        
-        $edit_fields[] =  new KTCheckboxWidget(_('Email Notifications'),_('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        
-        $edit_fields[] =  new KTStringWidget(_('Mobile Number'), _('Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
+        $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true, null, null, $aOptions);        
+        $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false, null, null, $aOptions);        
+        $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        
+        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
 		
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
@@ -77,8 +77,8 @@ class PreferencesDispatcher extends KTStandardDispatcher {
     }
 
     function do_setPassword() {
-		$this->oPage->setBreadcrumbDetails(_("Your Password"));
-		$this->oPage->title = _("Dashboard");
+		$this->oPage->setBreadcrumbDetails(_kt("Your Password"));
+		$this->oPage->title = _kt("Dashboard");
 		
 		
 		$oUser =& $this->oUser;
@@ -86,8 +86,8 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 		$aOptions = array('autocomplete' => false);
 		
 		$edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget(_('Password'), _('Specify your new password.'), 'password', null, $this->oPage, true, null, null, $aOptions);        
-        $edit_fields[] =  new KTPasswordWidget(_('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
+        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify your new password.'), 'password', null, $this->oPage, true, null, null, $aOptions);        
+        $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
 		
 	
 		$oTemplating =& KTTemplating::getSingleton();
@@ -107,16 +107,16 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         if (empty($password)) { 
-            $this->errorRedirectTo("setPassword", _("You must specify a password."));
+            $this->errorRedirectTo("setPassword", _kt("You must specify a password."));
         } else if ($password !== $confirm_password) {
-            $this->errorRedirectTo("setPassword", _("The passwords you specified do not match."));
+            $this->errorRedirectTo("setPassword", _kt("The passwords you specified do not match."));
         }
 		
 		$KTConfig =& KTConfig::getSingleton();
 		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 		
 		if (strlen($password) < $minLength) {
-            $this->errorRedirectTo("setPassword", sprintf(_("Your password is too short - passwords must be at least %d characters long."), $minLength));		
+            $this->errorRedirectTo("setPassword", sprintf(_kt("Your password is too short - passwords must be at least %d characters long."), $minLength));		
 		}
 		
         // FIXME more validation would be useful.
@@ -134,11 +134,11 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         
         
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectoToMain(_('Failed to update user.'));
+            $this->errorRedirectoToMain(_kt('Failed to update user.'));
         }
         
         $this->commitTransaction();
-        $this->successRedirectToMain(_('Your password has been changed.'));
+        $this->successRedirectToMain(_kt('Your password has been changed.'));
         
     }
 
@@ -151,7 +151,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oUser =& $this->oUser;
         
         $name = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'),
-												  KTUtil::meldOptions($aErrorOptions, array('message' => _('You must specify your name.'))));
+												  KTUtil::meldOptions($aErrorOptions, array('message' => _kt('You must specify your name.'))));
         
         $email_address = $this->oValidator->validateEmailAddress(KTUtil::arrayGet($_REQUEST, 'email_address'),
 																 $aErrorOptions);
@@ -176,11 +176,11 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
         
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectoToMain(_('Failed to update your details.'));
+            $this->errorRedirectoToMain(_kt('Failed to update your details.'));
         }
         
         $this->commitTransaction();
-        $this->successRedirectToMain(_('Your details have been updated.'));
+        $this->successRedirectToMain(_kt('Your details have been updated.'));
         
     }
 

@@ -106,7 +106,7 @@ class LoginPageDispatcher extends KTDispatcher {
 		$cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
 		
 		if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
-		    $this->simpleRedirectToMain(_('You must have cookies enabled to use the document management system.'), $url, $params);
+		    $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $params);
 		    exit(0);
 		}
 		
@@ -114,27 +114,27 @@ class LoginPageDispatcher extends KTDispatcher {
 		$password = KTUtil::arrayGet($_REQUEST,'password');
 		
 		if (empty($username)) {
-		    $this->simpleRedirectToMain(_('Please enter your username.'), $url, $params);
+		    $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $params);
 		}
 		
 		if (empty($password)) {
-		    $this->simpleRedirectToMain(_('Please enter your password.'), $url, $params);
+		    $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $params);
 		}
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
-            $this->simpleRedirectToMain(_('Login failed.  Please check your username and password, and try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $params);
             exit(0);
         }
         $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
         if (PEAR::isError($authenticated)) {
-            $this->simpleRedirectToMain(_('Authentication failure.  Please try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Authentication failure.  Please try again.'), $url, $params);
             exit(0);
         }
 
         if ($authenticated !== true) {
-            $this->simpleRedirectToMain(_('Login failed.  Please check your username and password, and try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $params);
             exit(0);
         }
 

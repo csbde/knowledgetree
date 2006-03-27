@@ -58,7 +58,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     function ViewDocumentDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _('Browse')),
+            array('action' => 'browse', 'name' => _kt('Browse')),
         );
 
         parent::KTStandardDispatcher();
@@ -75,7 +75,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
 	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-		$oPortlet = new KTActionPortlet(_("Document Actions"));
+		$oPortlet = new KTActionPortlet(_kt("Document Actions"));
 		$oPortlet->setActions($actions, $currentaction);
 		$this->oPage->addPortlet($oPortlet);
 	}
@@ -104,21 +104,21 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
 		    if ($oDocument->getStatusID() == ARCHIVED) {
-			    $this->oPage->addError(_('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
+			    $this->oPage->addError(_kt('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
 				return $this->do_error();
 			} else if ($oDocument->getStatusID() == DELETED) {
-			    $this->oPage->addError(_('This document has been deleted.  Please contact the system administrator to have it restored if it is still needed.'));
+			    $this->oPage->addError(_kt('This document has been deleted.  Please contact the system administrator to have it restored if it is still needed.'));
 				return $this->do_error();
             } else if (!Permission::userHasDocumentReadPermission($oDocument)) {
-                $this->oPage->addError(_('You are not allowed to view this document'));
+                $this->oPage->addError(_kt('You are not allowed to view this document'));
                 return $this->do_error();
             }
         } 
 		
 		if ($oDocument->getStatusID() == ARCHIVED) {
-		    $this->oPage->addError(_('This document has been archived.'));
+		    $this->oPage->addError(_kt('This document has been archived.'));
         } else if ($oDocument->getStatusID() == DELETED) {
-			$this->oPage->addError(_('This document has been deleted.'));
+			$this->oPage->addError(_kt('This document has been deleted.'));
         }
 
 		$this->oPage->setSecondaryTitle($oDocument->getName());
@@ -130,7 +130,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_("document details"));
+		$this->oPage->setBreadcrumbDetails(_kt("document details"));
 		$this->addPortlets("Document Details");
 		
 		$document_data["document"] = $oDocument;
@@ -222,7 +222,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             "folderaction" => "browse",
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_("history"));
+		$this->oPage->setBreadcrumbDetails(_kt("history"));
 		$this->addPortlets("History");
 		
 		$aTransactions = array();
@@ -244,7 +244,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		
 		// render pass.
-		$this->oPage->title = _("Document History");
+		$this->oPage->title = _kt("Document History");
         $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document_history");
 		$aTemplateData = array(
@@ -281,7 +281,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             "folderaction" => "browse",
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_("history"));
+		$this->oPage->setBreadcrumbDetails(_kt("history"));
 		$this->addPortlets("History");
 		
 		$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($oDocument);
@@ -291,7 +291,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 		
 		// render pass.
-		$this->oPage->title = _("Document History");
+		$this->oPage->title = _kt("Document History");
         $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
 
@@ -334,7 +334,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
 		    // FIXME inconsistent.
-		    $this->oPage->addError(_('You are not allowed to view this document'));
+		    $this->oPage->addError(_kt('You are not allowed to view this document'));
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
@@ -344,7 +344,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             "folderaction" => "browse",
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_("compare versions"));
+		$this->oPage->setBreadcrumbDetails(_kt("compare versions"));
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
 		if ($comparison_version=== null) { 
@@ -354,7 +354,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$oComparison =& Document::get($oDocument->getId(), $comparison_version);
 		if (PEAR::isError($oComparison)) {
-		    $this->errorRedirectToMain(_('Invalid document to compare against.'));
+		    $this->errorRedirectToMain(_kt('Invalid document to compare against.'));
 		}
 		$comparison_data = array();
 		$comparison_data['document_id'] = $oComparison->getId();
@@ -471,7 +471,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
 		    // FIXME inconsistent.
-		    $this->oPage->addError(_('You are not allowed to view this document'));
+		    $this->oPage->addError(_kt('You are not allowed to view this document'));
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
@@ -481,7 +481,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             "folderaction" => "browse",
         );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_("Select Document Version to compare against"));
+		$this->oPage->setBreadcrumbDetails(_kt("Select Document Version to compare against"));
 					
 		$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($oDocument);
         $aVersions = array();
@@ -503,7 +503,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	
 	function getUserForId($iUserId) {
 	    $u = User::get($iUserId);
-		if (PEAR::isError($u) || ($u == false)) { return _('User no longer exists'); }
+		if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
 		return $u->getName();
 	} 
 }

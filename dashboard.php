@@ -48,7 +48,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'dashboard', 'name' => _('Dashboard')),
+            array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
         return parent::KTStandardDispatcher();
     }
@@ -62,8 +62,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
         
         $this->sSection = "dashboard";
-        $this->oPage->setBreadcrumbDetails(_("Home"));
-        $this->oPage->title = _("Dashboard");
+        $this->oPage->setBreadcrumbDetails(_kt("Home"));
+        $this->oPage->title = _kt("Dashboard");
     
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.

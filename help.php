@@ -61,8 +61,8 @@ class HelpDispatcher extends KTStandardDispatcher {
     var $bIsReplacement = false;
 
     function HelpDispatcher() {
-        $this->aBreadcrumbs[] = array('action' => 'dashboard', 'name' => _('Dashboard'));
-        $this->aBreadcrumbs[] = array('name' => _('Help'));
+        $this->aBreadcrumbs[] = array('action' => 'dashboard', 'name' => _kt('Dashboard'));
+        $this->aBreadcrumbs[] = array('name' => _kt('Help'));
         parent::KTStandardDispatcher();
     }
 
@@ -79,8 +79,8 @@ class HelpDispatcher extends KTStandardDispatcher {
         
         $pathinfo = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
         if (empty($pathinfo)) {
-            $this->oPage->setTitle(_('No help page specified.'));
-            $this->oPage->addError(_('No help page specified.'));
+            $this->oPage->setTitle(_kt('No help page specified.'));
+            $this->oPage->addError(_kt('No help page specified.'));
             return '&nbsp;';
         }
         
@@ -88,8 +88,8 @@ class HelpDispatcher extends KTStandardDispatcher {
                
         $help_path = KTHelp::getHelpSubPath($pathinfo);
         if ($help_path == false) {
-            $this->oPage->setTitle(_('Invalid help location specified.'));
-            $this->oPage->addError(_('Invalid help location specified.'));
+            $this->oPage->setTitle(_kt('Invalid help location specified.'));
+            $this->oPage->addError(_kt('Invalid help location specified.'));
             return '&nbsp';
         }
         
@@ -113,8 +113,8 @@ class HelpDispatcher extends KTStandardDispatcher {
                 $this->oPage->setTitle($aHelpInfo['title']);
                 //return $aHelpInfo['body'];
             } else {
-                $this->oPage->setTitle(_('Invalid help location specified.'));
-                $this->oPage->addError(_('Invalid help location specified.'));
+                $this->oPage->setTitle(_kt('Invalid help location specified.'));
+                $this->oPage->addError(_kt('Invalid help location specified.'));
                 return '&nbsp';
             }
         } 
@@ -148,7 +148,7 @@ class HelpDispatcher extends KTStandardDispatcher {
             redirect($sReferer);
             exit(0);
         } else {
-            $this->errorRedirectToMain(_("Invalid return key from help system."));
+            $this->errorRedirectToMain(_kt("Invalid return key from help system."));
         }        
     }
 }
