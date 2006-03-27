@@ -175,8 +175,7 @@ class KTStandardDispatcher extends KTDispatcher {
 	var $sHelpPage = null;
     
     function KTStandardDispatcher() {
-        global $main;
-        $this->oPage =& $main;
+        $this->oPage =& $GLOBALS['main'];
 		parent::KTDispatcher();
     }
 
