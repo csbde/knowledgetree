@@ -54,10 +54,10 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // function KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
         // use widgets for the create form.
         $createFields = array();
-        $createFields[] = new KTStringWidget('Name', _kt('A human-readable name, used in add and edit forms.'), 'name', null, $this->oPage, true);
-        $createFields[] = new KTTextWidget('Description', _kt('A brief description of the information stored in this fieldset.'), 'description', null, $this->oPage, true);
-        $createFields[] = new KTCheckboxWidget('Generic', _kt('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
-        $createFields[] = new KTCheckboxWidget('System',
+        $createFields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name', null, $this->oPage, true);
+        $createFields[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this fieldset.'), 'description', null, $this->oPage, true);
+        $createFields[] = new KTCheckboxWidget(_kt('Generic'), _kt('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
+        $createFields[] = new KTCheckboxWidget(_kt('System'),
             _kt('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'system', false, $this->oPage, false);
         
     
@@ -79,12 +79,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         
         $editFieldset = array();
-        $editFieldset[] = new KTStringWidget('Name', _kt('A human-readable name, used in add and edit forms.'), 'name',$oFieldset->getName(), $this->oPage, true);
-        $editFieldset[] = new KTStringWidget('Namespace', _kt('Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works.'), 'namespace', $oFieldset->getNamespace(), $this->oPage, true);
-        $editFieldset[] = new KTTextWidget('Description', _kt('A brief description of the information stored in this fieldset.'), 'description', $oFieldset->getDescription(), $this->oPage, true);                
+        $editFieldset[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name',$oFieldset->getName(), $this->oPage, true);
+        $editFieldset[] = new KTStringWidget(_kt('Namespace'), _kt('Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works.'), 'namespace', $oFieldset->getNamespace(), $this->oPage, true);
+        $editFieldset[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this fieldset.'), 'description', $oFieldset->getDescription(), $this->oPage, true);                
         $createFields = array();
-        $createFields[] = new KTStringWidget('Name', _kt('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
-        $createFields[] = new KTTextWidget('Description', _kt('A brief description of the information stored in this field.'), 'description', null, $this->oPage, true);                
+        $createFields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
+        $createFields[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this field.'), 'description', null, $this->oPage, true);                
  
         
         // type is a little more complex.
@@ -95,7 +95,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $vocab['lookup'] = 'Lookup';
         $vocab['tree'] = 'Tree';
         $typeOptions = array("vocab" => $vocab);
-        $createFields[] =& new KTLookupWidget('Type', _kt('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.'), 
+        $createFields[] =& new KTLookupWidget(_kt('Type'), _kt('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.'), 
         'type', null, $this->oPage, true, null,  null, $typeOptions);
         
         

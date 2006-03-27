@@ -46,7 +46,7 @@ system.{/i18n}</p>
 </td>
 
 <td>
-    <a href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">Edit</a>
+    <a href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
 </td>
 
 <td>

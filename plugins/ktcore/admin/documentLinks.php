@@ -45,8 +45,8 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         
         $addLinkForm = array();
         // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
-        $addLinkForm[] = new KTStringWidget('Name', _kt('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
-        $addLinkForm[] = new KTStringWidget('Description', _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
+        $addLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
+        $addLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
         
         
         $oTemplating =& KTTemplating::getSingleton();
@@ -74,8 +74,8 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         
         $editLinkForm = array();
         // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
-        $editLinkForm[] = new KTStringWidget('Name', _kt('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
-        $editLinkForm[] = new KTStringWidget('Description', _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
+        $editLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
+        $editLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
         
         
         $oTemplating =& KTTemplating::getSingleton();

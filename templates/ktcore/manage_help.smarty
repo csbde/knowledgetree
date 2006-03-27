@@ -1,4 +1,4 @@
-<h2>Current help assignments</h2>
+<h2>{i18n}Current help assignments{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}To customise a help file, please visit that file 
 via the help system and click on <strong>customise this help file</strong>.{/i18n}</p>
@@ -19,14 +19,14 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 <a href="{addQS}action=editReplacement&id={$oHelpReplacement->iId}{/addQS}">{ $oHelpReplacement->sName }</a>
 </td>
 <td>
-<a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->iId}{/addQS}">Delete</a>
+<a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->iId}{/addQS}">{i18n}Delete{/i18n}</a>
 </td>
 </tr>
 { /foreach }
 </table>
 
 {else}
-<div class="ktInfo"><p>No Help files have to customised.</p></div>
+<div class="ktInfo"><p>{i18n}No Help files have to customised.{/i18n}</p></div>
 
 { /if }
 

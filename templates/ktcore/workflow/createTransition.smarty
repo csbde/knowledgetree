@@ -22,7 +22,7 @@ assign or edit existing transitions using the table below.{/i18n}</p>
 {/foreach}
 
 <div class="field">
-<label>Source States</label>
+<label>{i18n}Source States{/i18n}</label>
 <p class="descriptiveText">{i18n}Please select which states this transition should be available from.  <strong>Note</strong>
 that transitions are never available from their target state, even if you specify it below.{/i18n}</p>
 

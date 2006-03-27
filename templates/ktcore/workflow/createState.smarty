@@ -1,18 +1,18 @@
 <h2>{i18n}New State{/i18n}</h2>
 
-<p class="descriptiveText">As documents move through their lifecycle, they
+<p class="descriptiveText">{i18n}As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
 which has been mailed might be in the "Pending" <strong>state</strong> after
-the "sent" <strong>transition</strong> has been performed by a user.</p>
+the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new state{/i18n}</legend>
 
-<p class="descriptiveText">Please note that additional configuration is
+<p class="descriptiveText">{i18n}Please note that additional configuration is
 possible on states beyond what is specified here (e.g. which users to notify
 about the document, etc).  Please edit the state
-to access and modify these other properties.</p>
+to access and modify these other properties.{/i18n}</p>
 
 <input type="hidden" name="action" value="newState" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -49,11 +49,11 @@ informed when this state is reached.{/i18n}</p>
 *}
 
 <div class="field">
-<label>Actions Allowed</label>
-<p class="descriptiveText">Workflows can control which actions (edit metadata,
+<label>{i18n}Actions Allowed{/i18n}</label>
+<p class="descriptiveText">{i18n}Workflows can control which actions (edit metadata,
 download, etc.) are available on a given document.  Please specify which of
 the actions controlled by this workflow are available when the document is in
-this state.</p>
+this state.{/i18n}</p>
 {if (!empty($aActions))}
 
 {entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}

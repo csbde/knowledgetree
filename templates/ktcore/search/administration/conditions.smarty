@@ -32,8 +32,8 @@ unexpectedly change permission assignments.{/i18n}</p>
 {foreach item=oCondition from=$conditions}
     <tr>
         <td>{$oCondition->getName()}</td>
-        <td><a href="{addQS}action=edit&fSavedSearchId={$oCondition->getId()}{/addQS}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oCondition->getId()}">Run Condition</a></td>
+        <td><a href="{addQS}action=edit&fSavedSearchId={$oCondition->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oCondition->getId()}">{i18n}Run Condition{/i18n}</a></td>
     </tr>
 {/foreach}
 </tbody>

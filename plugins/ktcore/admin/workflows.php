@@ -441,7 +441,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $edit_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the workflow.'), 'fName', $oWorkflow->getName(), $this->oPage, true);
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None - documents cannot use this workflow.';
+        $vocab[0] = _kt('None - documents cannot use this workflow.');
         foreach($aStates as $state) {
             $vocab[$state->getId()] = $state->getName();
         } 
