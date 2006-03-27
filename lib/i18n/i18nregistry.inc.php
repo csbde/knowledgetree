@@ -32,10 +32,11 @@ class KTi18nRegistry {
     var $_ai18nDetails = array();
     var $_ai18nLangs = array();
     var $_ai18ns = array();
+    var $_aLanguages = array();
 
     function &getSingleton() {
         if (!KTUtil::arrayGet($GLOBALS, 'oKTi18nRegistry')) {
-            $GLOBALS['oKTi18nRegistry'] = new KTi18nRegistry;
+            $GLOBALS['oKTi18nRegistry'] =& new KTi18nRegistry;
         }
         return $GLOBALS['oKTi18nRegistry'];
     }
@@ -53,9 +54,21 @@ class KTi18nRegistry {
         } else {
             $aLang = $sLang;
         }
+        $oi18n =& KTUtil::arrayGet($this->_ai18ns, $sDomain);
+
         foreach ($aLang as $sLang) {
             $this->_ai18nLangs[$sDomain][$sLang] = $sDirectory;
+            if (!empty($oi18n)) {
+                $oi18n->addLanguage($sLang, $sDirectory);
+            }
         }
+        if (!empty($oi18n)) {
+            $this->_ai18ns[$sDomain] =& $oi18n;
+        }
+    }
+
+    function registerLanguage($sLanguage, $sLanguageName) {
+        $this->_aLanguages[$sLanguage] = $sLanguageName;
     }
 
     function &geti18n($sDomain) {
@@ -71,6 +84,14 @@ class KTi18nRegistry {
         $oi18n =& new KTi18n($sDomain, $sDirectory, $aDirectories);
         $this->_ai18ns[$sDomain] =& $oi18n;
         return $oi18n;
+    }
+
+    function &geti18nLanguages($sDomain) {
+        return $this->_ai18nLangs[$sDomain];
+    }
+
+    function &getLanguages() {
+        return $this->_aLanguages;
     }
 }
 

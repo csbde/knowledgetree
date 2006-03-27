@@ -57,6 +57,15 @@ class LoginPageDispatcher extends KTDispatcher {
 		
 		$errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
 		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+
+        $oReg =& KTi18nregistry::getSingleton();
+        $aRegisteredLangs = $oReg->geti18nLanguages('knowledgeTree');
+        $aLanguageNames = $oReg->getLanguages('knowledgeTree');
+        $aRegisteredLanguageNames = array();
+        foreach (array_keys($aRegisteredLangs) as $sLang) {
+            $aRegisteredLanguageNames[$sLang] = $aLanguageNames[$sLang];
+        }
+        $sLanguageSelect = $default->defaultLanguage;
 		
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/login");
@@ -66,6 +75,8 @@ class LoginPageDispatcher extends KTDispatcher {
 			  'errorMessage' => $errorMessage,
 			  'redirect' => $redirect,
 			  'systemVersion' => $default->systemVersion,
+              'languages' => $aRegisteredLanguageNames,
+              'selected_language' => $sLanguageSelect,
 		);
 		return $oTemplate->render($aTemplateData);		
 	}
@@ -132,6 +143,11 @@ class LoginPageDispatcher extends KTDispatcher {
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL; 
+        $language = KTUtil::arrayGet($_REQUEST, 'language');
+        if (empty($language)) {
+            $language = $default->defaultLanguage;
+        }
+		setcookie("kt_language", $language, 2147483647, '/');
 
         // check for a location to forward to
         if ($redirect !== null) {

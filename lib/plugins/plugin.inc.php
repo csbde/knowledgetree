@@ -31,6 +31,7 @@ class KTPlugin {
     var $sFilename = null;
     var $bAlwaysInclude = false;
     var $iVersion = 0;
+    var $iOrder = 0;
     
     var $autoRegister = false;
     
@@ -44,6 +45,7 @@ class KTPlugin {
     var $_aDashlets = array();
     var $_ai18n = array();
     var $_ai18nLang = array();
+    var $_aLanguage = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -114,8 +116,14 @@ class KTPlugin {
     }
 
     function registeri18nLang($sDomain, $sLang, $sPath) {
-        $sPath = $this->_fixFilename($sPath);
-        $this->_ai18nLang[$sDomain] = array($sDomain, $sLang, $sPath);
+        if ($sPath !== "default") {
+            $sPath = $this->_fixFilename($sPath);
+        }
+        $this->_ai18nLang["$sDomain/$sLang"] = array($sDomain, $sLang, $sPath);
+    }
+
+    function registerLanguage($sLanguage, $sLanguageName) {
+        $this->_aLanguage[$sLanguage] = array($sLanguage, $sLanguageName);
     }
 
     function _fixFilename($sFilename) {
@@ -221,6 +229,10 @@ class KTPlugin {
 
         foreach ($this->_ai18nLang as $k => $v) {
             call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $v);
+        }
+
+        foreach ($this->_aLanguage as $k => $v) {
+            call_user_func_array(array(&$oi18nRegistry, 'registerLanguage'), $v);
         }
     }
 
