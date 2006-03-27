@@ -94,7 +94,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $dn = $oUser->getAuthenticationDetails();
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('Distinguished name'), _('The location of this user in the LDAP tree'), 'dn', $dn, $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Distinguished name'), _kt('The location of this user in the LDAP tree'), 'dn', $dn, $this->oPage, true);
 
         $aTemplateData = array(
             'context' => &$this,
@@ -209,13 +209,13 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $this->oValidator->notError($aResults);
 
         $fields = array();
-        $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
-        $fields[] =  new KTStringWidget(_kt('Username'), _('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Name'), _('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $aResults[$this->aAttributes[0]], $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Email Address'), _('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $aResults[$this->aAttributes[4]], $this->oPage, false);
-        $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', true, $this->oPage, false);
-        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _('The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will have an SMS delivered to it with notifications.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $aResults[$this->aAttributes[5]], $this->oPage, false);
-        $fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true);
+        $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
+        $fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $aResults[$this->aAttributes[0]], $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $aResults[$this->aAttributes[4]], $this->oPage, false);
+        $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', true, $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will have an SMS delivered to it with notifications.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $aResults[$this->aAttributes[5]], $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true);
 
         $aTemplateData = array(
             'context' => &$this,
@@ -328,8 +328,8 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapsearchuser');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt("User's name"), _("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt("Mass import"), _("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)"), 'massimport', false, $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt("User's name"), _kt("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt("Mass import"), _kt("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)"), 'massimport', false, $this->oPage, true);
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
@@ -376,7 +376,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapsearchgroup');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt("Group's name"), _("The group's name, or part thereof, to find the group that you wish to add"), 'name', '', $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt("Group's name"), _kt("The group's name, or part thereof, to find the group that you wish to add"), 'name', '', $this->oPage, true);
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $name = KTUtil::arrayGet($_REQUEST, 'name');
@@ -408,10 +408,10 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $aAttributes = $oAuthenticator->getGroup($id);
         
         $fields = array();
-        $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _('The location of the group within the LDAP directory.'), 'dn', $aAttributes['dn'], $this->oPage);
-        $fields[] = new KTStringWidget(_kt('Group Name'), _('The name the group will enter to gain access to KnowledgeTree.  e.g. <strong>accountants</strong>'), 'ldap_groupname', $aAttributes['cn'], $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
-        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+        $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $aAttributes['dn'], $this->oPage);
+        $fields[] = new KTStringWidget(_kt('Group Name'), _kt('The name the group will enter to gain access to KnowledgeTree.  e.g. <strong>accountants</strong>'), 'ldap_groupname', $aAttributes['cn'], $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 
         $aTemplateData = array(
             'context' => &$this,

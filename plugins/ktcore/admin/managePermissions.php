@@ -38,8 +38,8 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Manage Permissions'));
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('System Name'), _('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true);
-        $add_fields[] = new KTStringWidget(_kt('Display Name'), _('A short name that is shown to users whenever permissions must be assigned.'), 'human_name', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('System Name'), _kt('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Display Name'), _kt('A short name that is shown to users whenever permissions must be assigned.'), 'human_name', null, $this->oPage, true);
     
         $oTemplating =& KTTemplating::getSingleton();
         $aPermissions =& KTPermission::getList();

@@ -45,7 +45,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/manage');
         $fields = array();
 
-        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _kt('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -54,7 +54,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _kt('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
@@ -71,7 +71,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/addsource');
         $fields = array();
 
-        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _kt('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -80,7 +80,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _kt('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
@@ -124,7 +124,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
 
         $fields = array();
 
-        $fields[] = new KTStringWidget(_kt('Name'), _('A short name which helps identify this source of authentication data.'), 'authentication_name', $oSource->getName(), $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Name'), _kt('A short name which helps identify this source of authentication data.'), 'authentication_name', $oSource->getName(), $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -133,7 +133,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', $oSource->getAuthenticationProvider(), $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Authentication provider'), _kt('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', $oSource->getAuthenticationProvider(), $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $oTemplate->setData(array(
             'context' => &$this,

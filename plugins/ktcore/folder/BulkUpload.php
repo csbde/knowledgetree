@@ -67,7 +67,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkUpload');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget(_kt('Archive file'), _('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_kt('Archive file'), _kt('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true);
 
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
@@ -76,7 +76,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             }
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();

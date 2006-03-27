@@ -240,12 +240,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bAttachment = $oConfig->get('email/allowAttachment', false);
         $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
         if ($bAttachment) {
-            $fields[] = new KTCheckboxWidget(_kt("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
+            $fields[] = new KTCheckboxWidget(_kt("Attach document"), _kt("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
         }
         if ($bEmailAddresses) {
-            $fields[] = new KTTextWidget(_kt("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
+            $fields[] = new KTTextWidget(_kt("Email addresses"), _kt("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
         }
-        $fields[] = new KTTextWidget(_kt("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
+        $fields[] = new KTTextWidget(_kt("Comment"), _kt("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
         $aGroups = Group::getList();
         $aUsers = User::getEmailUsers();
         $aTemplateData = array(

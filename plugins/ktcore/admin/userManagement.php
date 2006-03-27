@@ -63,7 +63,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         
         
         $search_fields = array();
-        $search_fields[] =  new KTStringWidget(_kt('Username'), _("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'name', $name, $this->oPage, true);
+        $search_fields[] =  new KTStringWidget(_kt('Username'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'name', $name, $this->oPage, true);
         
         // FIXME handle group search stuff.
         $search_results = null;
@@ -110,15 +110,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 		}
         
         $add_fields = array();
-        $add_fields[] =  new KTStringWidget(_kt('Username'), _('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', null, $this->oPage, true, null, null, $aOptions);
-        $add_fields[] =  new KTStringWidget(_kt('Name'), _('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', null, $this->oPage, true, null, null, $aOptions);        
-        $add_fields[] =  new KTStringWidget(_kt('Email Address'), _('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', null, $this->oPage, false, null, null, $aOptions);        
-        $add_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', true, $this->oPage, false, null, null, $aOptions);        
-        $add_fields[] =  new KTPasswordWidget(_kt('Password'), _('Specify an initial password for the user.') . $passwordAddRequirement, 'password', null, $this->oPage, true, null, null, $aOptions);        
-        $add_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', null, $this->oPage, true, null, null, $aOptions);
+        $add_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', null, $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', null, $this->oPage, false, null, null, $aOptions);        
+        $add_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', true, $this->oPage, false, null, null, $aOptions);        
+        $add_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'password', null, $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
         // nice, easy bits.
-        $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
-        $add_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
+        $add_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true, null, null, $aOptions);        
 
         $aAuthenticationSources =& KTAuthenticationSource::getList();
         
@@ -164,12 +164,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
         
         $edit_fields = array();
-        $edit_fields[] =  new KTStringWidget(_kt('Username'), _('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', $oUser->getUsername(), $this->oPage, true);
-        $edit_fields[] =  new KTStringWidget(_kt('Name'), _('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true);        
-        $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false);        
-        $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
-        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
-        $edit_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $oUser->getMaxSessions(), $this->oPage, true);        
+        $edit_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', $oUser->getUsername(), $this->oPage, true);
+        $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true);        
+        $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false);        
+        $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $oUser->getMaxSessions(), $this->oPage, true);        
         
         $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
         if (is_null($oAuthenticationSource)) {
@@ -209,8 +209,8 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
         
         $edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _('Specify an initial password for the user.'), 'password', null, $this->oPage, true);        
-        $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);        
         
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/updatepassword");

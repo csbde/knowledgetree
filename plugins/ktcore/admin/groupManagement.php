@@ -61,7 +61,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 		
 		$search_fields = array();
-		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
+		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
 		
 		if (!empty($name)) {
 			$search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
@@ -97,9 +97,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->oPage->setTitle(sprintf(_kt("Edit Group (%s)"), $oGroup->getName()));
 		
 		$edit_fields = array();
-		$edit_fields[] =  new KTStringWidget(_kt('Group Name'), _('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $oGroup->getName(), $this->oPage, true);
-		$edit_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
-		$edit_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $oGroup->getName(), $this->oPage, true);
+		$edit_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
 		
 		// grab all units.
 		$unitId = $oGroup->getUnitId();
@@ -111,7 +111,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
 		$aOptions = array('vocab' => $vocab);
 		
-		$edit_fields[] =  new KTLookupWidget(_kt('Unit'), _('Which Unit is this group part of?'), 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
+		$edit_fields[] =  new KTLookupWidget(_kt('Unit'), _kt('Which Unit is this group part of?'), 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
 			
 		$oTemplating =& KTTemplating::getSingleton();        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/editgroup");
@@ -445,9 +445,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->oPage->setTitle(_kt("Add a new group"));
 		
 		$edit_fields = array();
-		$add_fields[] =  new KTStringWidget(_kt('Group Name'), _('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
-		$add_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
-		$add_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
+		$add_fields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 		// grab all units.
 		
 		$oUnits = Unit::getList();
@@ -456,7 +456,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
 		$aOptions = array('vocab' => $vocab);
 		
-		$add_fields[] =  new KTLookupWidget(_kt('Unit'), _('Which Unit is this group part of?'), 'unit_id', 0, $this->oPage, false, null, null, $aOptions);
+		$add_fields[] =  new KTLookupWidget(_kt('Unit'), _kt('Which Unit is this group part of?'), 'unit_id', 0, $this->oPage, false, null, null, $aOptions);
 
         $aAuthenticationSources = array();
         $aAllAuthenticationSources =& KTAuthenticationSource::getList();

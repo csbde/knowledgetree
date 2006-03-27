@@ -60,7 +60,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt("bulk import"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkImport');
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('Path'), _('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Path'), _kt('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
 
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
         foreach (DocumentType::getList() as $oDocumentType) {
@@ -70,7 +70,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
         }
 
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();

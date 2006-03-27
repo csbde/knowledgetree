@@ -54,7 +54,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/rename');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('New folder name'), _('The name to which the current folder should be renamed.'), 'foldername', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New folder name'), _kt('The name to which the current folder should be renamed.'), 'foldername', "", $this->oPage, true);
         
         $oTemplate->setData(array(
             'context' => &$this,
