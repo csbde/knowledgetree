@@ -1,0 +1,26 @@
+
+
+
+<table class="kt_collection">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Up</th>
+            <th>Down</th>
+        </tr>
+    </thead>
+
+    <tbody id="reorder-container">
+{foreach from=$items key=iPosition item=aItem}
+        <tr class="reorder-item {cycle values=odd,even}">
+            <td>
+                <input type="hidden" class="reorder-field" name="position[]" value="{$iPosition}" />
+                <input type="hidden" name="id[]" value="{$aItem.id}" />
+                {$aItem.title}
+            </td>
+            <td><a href="#" class="reorder-up ktAction ktMoveUp">&nbsp;</a></td>
+            <td><a href="#" class="reorder-down ktAction ktMoveDown">&nbsp;</a></td>
+        </tr>
+{/foreach}
+    </tbody>
+</table>

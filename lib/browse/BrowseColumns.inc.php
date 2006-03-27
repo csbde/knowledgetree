@@ -319,6 +319,44 @@ class SelectionColumn extends BrowseColumn {
 }
 
 
+class SingleSelectionColumn extends SelectionColumn {
+    var $show_documents;
+    var $show_folders;
+
+    function SelectionColumn ($sLabel, $sName, $bShowFolders = true, $bShowDocs = true) {
+        $this->show_documents = $bShowDocs;
+        $this->show_folders = $bShowFolders;
+        parent::BrowseColumn($sLabel, $sName);
+    }
+
+    function renderHeader($sReturnURL) { 
+        global $main;
+    }
+    
+    // only include the _f or _d IF WE HAVE THE OTHER TYPE.
+    function renderData($aDataRow) { 
+        $localname = $this->name;
+        
+        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+            if ($this->show_documents) {
+                $localname .= "_f"; 
+            }
+            $v = $aDataRow["folderid"]; 
+        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            if ($this->show_folders) {
+                $localname .= "_d"; 
+            }
+            $v = $aDataRow["docid"]; 
+        } else { 
+            return '&nbsp;'; 
+        }
+        
+        return '<input type="radio" name="' . $localname . '" value="' . $v . '"/>';
+    }
+    
+}
+
+
 class WorkflowColumn extends BrowseColumn {
 
     function renderHeader($sReturnURL) {         
