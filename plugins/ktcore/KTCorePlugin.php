@@ -32,6 +32,7 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 class KTCorePlugin extends KTPlugin {
     var $bAlwaysInclude = true;
     var $sNamespace = "ktcore.plugin";
+    var $iOrder = -25;
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
@@ -66,8 +67,6 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTIndexerStatusDashlet', 'ktcore.dashlet.indexer_status', 'KTDashlets.php');
 
         $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), _('By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), 'authentication/authenticationadminpage.inc.php');
-
-        $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
 
         $this->registerPortlet(array('browse'),
                 'KTAdminModePortlet', 'ktcore.portlets.admin_mode',
