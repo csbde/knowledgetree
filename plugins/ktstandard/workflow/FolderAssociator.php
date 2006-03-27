@@ -107,7 +107,7 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
         if (PEAR::isError($res)) {
             $res = null;
         }
-        $fields[] = new KTLookupWidget(_kt('Automatic Workflow'), _('If you specify an automatic workflow, new documents will automatically enter that workflow\'s starting state.  Setting this to "No Automatic Workflow" will mean that users can choose the appropriate workflow.'), 'fWorkflowId', $res, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_kt('Automatic Workflow'), _kt('If you specify an automatic workflow, new documents will automatically enter that workflow\'s starting state.  Setting this to "No Automatic Workflow" will mean that users can choose the appropriate workflow.'), 'fWorkflowId', $res, $this->oPage, true, null, $fieldErrors, $fieldOptions);
         
         
         $oTemplate->setData(array(

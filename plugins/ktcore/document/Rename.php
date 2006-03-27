@@ -71,7 +71,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("rename");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/rename');
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('New file name'), _('The name to which the current file should be renamed.'), 'filename', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New file name'), _kt('The name to which the current file should be renamed.'), 'filename', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,

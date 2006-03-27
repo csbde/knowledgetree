@@ -66,8 +66,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $this->oPage->setTitle(_kt('Add a document'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget(_kt('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
-        $add_fields[] = new KTStringWidget(_kt('Title'), _('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Title'), _kt('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
 
         
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
@@ -78,7 +78,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         }
         
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();

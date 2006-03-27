@@ -46,13 +46,13 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oRole) || ($oRole == false)) { $for_edit = false; }
         else {
             $for_edit = true;
-            $edit_fields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the role.'), 'name', $oRole->getName(), $this->oPage, true);        
+            $edit_fields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the role.'), 'name', $oRole->getName(), $this->oPage, true);        
         }
         
         $aRoles =& Role::getList('id > 0');
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the role.'), 'name', null, $this->oPage, true);        
+        $add_fields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the role.'), 'name', null, $this->oPage, true);        
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/principals/roleadmin');       
@@ -116,7 +116,7 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         $this->startTransaction();  
         $res = $oRole->delete();
         if (PEAR::isError($res) || ($res == false)) { 
-            $this->errorRedirectToMain(_kt('Unable to delete the role.') . '  ' . _('Possible cause') . ': ' . $_SESSION['errorMessage']); 
+            $this->errorRedirectToMain(_kt('Unable to delete the role.') . '  ' . _kt('Possible cause') . ': ' . $_SESSION['errorMessage']); 
         }
             
         $this->successRedirectToMain(sprintf(_kt('Role "%s" deleted. '), $name));

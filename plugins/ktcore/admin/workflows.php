@@ -411,7 +411,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     function do_main () {
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the workflow.'), 'fName', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the workflow.'), 'fName', null, $this->oPage, true);
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/listWorkflows');
@@ -438,7 +438,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aStates = $aInfo['states'];
         
         $edit_fields = array();
-        $edit_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the workflow.'), 'fName', $oWorkflow->getName(), $this->oPage, true);
+        $edit_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the workflow.'), 'fName', $oWorkflow->getName(), $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None - documents cannot use this workflow.';
@@ -446,14 +446,14 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;        
-        $edit_fields[] = new KTLookupWidget(_kt('Starting State'), _('When a document has this workflow applied to it, to which state should it initially be set.  <strong>Note that workflows without a starting state cannot be applied to documents.</strong>'), 'fStartStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_kt('Starting State'), _kt('When a document has this workflow applied to it, to which state should it initially be set.  <strong>Note that workflows without a starting state cannot be applied to documents.</strong>'), 'fStartStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
         if (is_null($oWorkflow->getStartStateId())) {
             $this->oPage->addInfo(_kt('This workflow is currently disabled.  To enable it, please assign a starting state in the "Edit workflow properties" box.'));
         }
         
         /*
         $add_state_fields = array();
-        $add_state_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
+        $add_state_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
 
         
         */
@@ -610,7 +610,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aInfo = $this->buildWorkflowInfo($oWorkflow);
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
         
         
         
@@ -663,21 +663,21 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aConditions = KTSavedSearch::getConditions();
         
         $add_transition_fields = array();
-        $add_transition_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the transition.'), 'fName', null, $this->oPage, true);
+        $add_transition_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the transition.'), 'fName', null, $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         foreach($aInfo['states'] as $state) {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget(_kt('Destination State'), _('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_kt('Destination State'), _kt('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         foreach($aInfo['permissions'] as $permission) {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _('Which permission must the user have in order to follow this transition?'), 'fPermissionId', NULL, $this->oPage, true, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _kt('Which permission must the user have in order to follow this transition?'), 'fPermissionId', NULL, $this->oPage, true, null, null, $aOptions);
         
         $aOptions = array();
         $vocab = array();
@@ -686,7 +686,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$group->getId()] = $group->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Group.'), _('Which group must the user belong to in order to follow this transition?'), 'fGroupId', NULL, $this->oPage, false, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Group.'), _kt('Which group must the user belong to in order to follow this transition?'), 'fGroupId', NULL, $this->oPage, false, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -694,7 +694,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$role->getId()] = $role->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Role.'), _('Which role must the user have in order to follow this transition?'), 'fRoleId', NULL, $this->oPage, false, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_kt('Guard Role.'), _kt('Which role must the user have in order to follow this transition?'), 'fRoleId', NULL, $this->oPage, false, null, null, $aOptions);
         
         if (!empty($aConditions)) {
             $aOptions = array();
@@ -704,7 +704,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
                 $vocab[$condition->getId()] = $condition->getName();
             } 
             $aOptions['vocab'] = $vocab;
-            $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', NULL, $this->oPage, false, null, null, $aOptions);
+            $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _kt('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', NULL, $this->oPage, false, null, null, $aOptions);
         }
         
         
@@ -858,7 +858,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aInformed = KTWorkflowUtil::getInformedForState($oState);
         
         $editForm = array();
-        $editForm[] = new KTStringWidget(_kt('Name'), _('A human-readable name for this state.  This is shown on the "Browse" page, as well as on the user\'s workflow page.'), 'fName', $oState->getName(), $this->oPage, true);
+        $editForm[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for this state.  This is shown on the "Browse" page, as well as on the user\'s workflow page.'), 'fName', $oState->getName(), $this->oPage, true);
         
         
         $this->getPermissionAssignmentsForState($oState);
@@ -1224,14 +1224,14 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $aConditions = KTSavedSearch::getConditions();
         
         $edit_fields = array();
-        $edit_fields[] = new KTStringWidget(_kt('Name'), _('A human-readable name for the state.'), 'fName', $oTransition->getName(), $this->oPage, true);
+        $edit_fields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name for the state.'), 'fName', $oTransition->getName(), $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         foreach($aStates as $state) {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Destination State'), _('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_kt('Destination State'), _kt('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -1239,7 +1239,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _kt('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -1247,7 +1247,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$group->getId()] = $group->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Group.'), _('Which group must the user belong to in order to follow this transition?'), 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_kt('Guard Group.'), _kt('Which group must the user belong to in order to follow this transition?'), 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -1255,7 +1255,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $vocab[$role->getId()] = $role->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Role.'), _('Which role must the user have in order to follow this transition?'), 'fRoleId', $oTransition->getGuardRoleId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_kt('Guard Role.'), _kt('Which role must the user have in order to follow this transition?'), 'fRoleId', $oTransition->getGuardRoleId(), $this->oPage, false, null, null, $aOptions);
         
         if (!empty($aConditions)) {
             $aOptions = array();
@@ -1265,7 +1265,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
                 $vocab[$condition->getId()] = $condition->getName();
             } 
             $aOptions['vocab'] = $vocab;
-            $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', $oTransition->getGuardConditionId(), $this->oPage, false, null, null, $aOptions);
+            $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _kt('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', $oTransition->getGuardConditionId(), $this->oPage, false, null, null, $aOptions);
         }
         
         $this->aBreadcrumbs[] = array(

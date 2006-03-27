@@ -126,9 +126,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $aErrorOptions['duplicate_message'] = _kt("A fieldset with that name already exists");
         $aErrorOptions['rename'] = $oFieldset->getId();
         $sName = $this->oValidator->validateEntityName("KTFieldset", $_REQUEST['name'], $aErrorOptions);
-        $aErrorOptions['message'] = sprintf(_kt("The field '%s' is a required field"), _("Namespace"));
+        $aErrorOptions['message'] = sprintf(_kt("The field '%s' is a required field"), _kt("Namespace"));
         $sNamespace = $this->oValidator->validateString($_REQUEST['namespace'], $aErrorOptions);
-        $aErrorOptions['message'] = sprintf(_kt("The field '%s' is a required field"), _("Description"));
+        $aErrorOptions['message'] = sprintf(_kt("The field '%s' is a required field"), _kt("Description"));
         $sDescription = $this->oValidator->validateString($_REQUEST['description'], $aErrorOptions);
 
         $oFieldset->setName($sName);

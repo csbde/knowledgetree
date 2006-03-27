@@ -68,7 +68,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(_kt("Add a new unit"));
 
         $add_fields = array();
-        $add_fields[] =  new KTStringWidget(_kt('Unit Name'), _('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
+        $add_fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
@@ -130,7 +130,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         }
 
         $add_fields = array();
-        $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
+        $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
 
 		$isValid = true;
 		if (KTFolderUtil::exists($oFolder, $sName)) {
@@ -185,7 +185,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
 
         $fields = array();
-        $fields[] =  new KTStringWidget(_kt('Unit Name'), _('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/editunit');
         $aTemplateData = array(
@@ -224,7 +224,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']); 
 
         $fields = array();
-        $fields[] = new KTCheckboxWidget(_kt('Delete folder'), _('Each unit has an associated folder.  While the unit is being deleted, there may be some documents within the associated folder.  By unselecting this option, they will not be removed.'), 'delete_folder', true, $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt('Delete folder'), _kt('Each unit has an associated folder.  While the unit is being deleted, there may be some documents within the associated folder.  By unselecting this option, they will not be removed.'), 'delete_folder', true, $this->oPage, true);
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/deleteunit');
         $aTemplateData = array(

@@ -55,7 +55,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
         foreach ($aTriggers as $aTrigger) {
             $aVocab[$aTrigger[2]] = $aTrigger[0];
         }
-        $aFields[] = new KTLookupWidget(_kt('Workflow Plugins'), _('Plugins providing workflow allocators.'),'selection_ns', $this->getHandler(), $this->oPage, true, null, null, array('vocab' => $aVocab));
+        $aFields[] = new KTLookupWidget(_kt('Workflow Plugins'), _kt('Plugins providing workflow allocators.'),'selection_ns', $this->getHandler(), $this->oPage, true, null, null, array('vocab' => $aVocab));
         
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/workflow/allocator_selection');
         $oTemplate->setData(array(

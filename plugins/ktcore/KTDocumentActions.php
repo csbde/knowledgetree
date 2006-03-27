@@ -123,7 +123,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("checkout");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout');
         $checkout_fields = array();
-        $checkout_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
+        $checkout_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -212,8 +212,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
         $checkin_fields = array();
-        $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _('The updated document.'), 'file', "", $this->oPage, true);
-        $checkin_fields[] = new KTStringWidget(_kt('Description'), _('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The updated document.'), 'file', "", $this->oPage, true);
+        $checkin_fields[] = new KTStringWidget(_kt('Description'), _kt('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -293,7 +293,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
         $checkin_fields = array();
-        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _kt('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -389,7 +389,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails("delete");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
         $delete_fields = array();
-        $delete_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be removed.'), 'reason', "", $this->oPage, true);
+        $delete_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be removed.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -527,7 +527,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $move_fields = array();
         $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        $move_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -722,7 +722,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $move_fields = array();
         $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_kt('Reason'), _('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        $move_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -832,7 +832,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails(_kt("archiving"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('Reason'), _('The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.'), 'reason', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -920,7 +920,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             $fieldOptions = array("vocab" => $aVocab);
             $transition_fields[] = new KTLookupWidget(_kt('Transition to perform'), 'The transition listed will cause the document to change from its current state to the listed destination state.', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
             $transition_fields[] = new KTTextWidget(
-                _kt('Reason for transition'), _('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'), 
+                _kt('Reason for transition'), _kt('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'), 
                 'fComments', "", 
                 $this->oPage, true, null, null,
                 array('cols' => 80, 'rows' => 4));

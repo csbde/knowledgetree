@@ -46,7 +46,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails('view types');
     
         $addFields = array();
-        $addFields[] = new KTStringWidget(_kt('Name'), _('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
+        $addFields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
@@ -142,7 +142,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aOptions['vocab'] = $vocab;
         $aOptions['multi'] = true;
         $aOptions['size'] = 5;
-        $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
+        $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _kt('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
         
         $this->aBreadcrumbs[] = array(

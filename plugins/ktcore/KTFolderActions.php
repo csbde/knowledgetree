@@ -53,7 +53,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('Folder name'), _('The name for the new folder.'), 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Folder name'), _kt('The name for the new folder.'), 'name', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,

@@ -100,8 +100,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
         // Fields for new thread creation
         $fields = array();
-        $fields[] = new KTStringWidget(_kt("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
-        $fields[] = new KTTextWidget(_kt("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+        $fields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
+        $fields[] = new KTTextWidget(_kt("Body"), _kt("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
         $threads = DiscussionThread::getList(array('document_id=?', array($this->oDocument->getId())));
 
@@ -180,8 +180,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         
         // Fields for new thread creation
         $replyFields = array();
-        $replyFields[] = new KTStringWidget(_kt("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
-        $replyFields[] = new KTTextWidget(_kt("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+        $replyFields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
+        $replyFields[] = new KTTextWidget(_kt("Body"), _kt("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
         // Fields for closing thread (if user has write permission)
         $closeFields = array();
@@ -189,7 +189,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
         if (PEAR::isError($oPermission) || 
             KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
-            $closeFields[] = new KTTextWidget(_kt("Reason"), _("Describe the reason for closing this thread"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
+            $closeFields[] = new KTTextWidget(_kt("Reason"), _kt("Describe the reason for closing this thread"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
         }
         
         // increment views
