@@ -51,7 +51,7 @@
         <tr>
             <td>
             {if $write_permission}
-                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">Delete</a>
+                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
             {else}
                 &nbsp;
             {/if}

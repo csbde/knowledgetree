@@ -44,7 +44,7 @@ addLoadEvent(kt_email_onload);
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 
 <table>
-<tr><td valign="top" colspan="3"><strong>Groups</strong></td></tr><tr><td valign="top" width=1%>
+<tr><td valign="top" colspan="3"><strong>{i18n}Groups{/i18n}</strong></td></tr><tr><td valign="top" width=1%>
 
 <select name="groupSelect" size="4" multiple>
 {foreach from=$groups item=oGroup}
@@ -52,7 +52,7 @@ addLoadEvent(kt_email_onload);
 {/foreach}
 </select></td><td width=1%><input TYPE="button" NAME="right" VALUE="&gt;&gt;" ONCLICK="optGroup.transferRight()"><input TYPE="button" NAME="left" VALUE="&lt;&lt;" ONCLICK="optGroup.transferLeft()"></td><td><select name="chosenGroups" size="5" multiple><option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option></select></td></tr>
 
-<tr><td colspan="3"><strong>Users</strong></td><tr>
+<tr><td colspan="3"><strong>{i18n}Users{/i18n}</strong></td><tr>
 <tr><td><select name="userSelect" size="4" multiple>
 {foreach from=$users item=oUser}
 <OPTION value="{$oUser->getId()}" onDblClick="optUser.transferRight()">

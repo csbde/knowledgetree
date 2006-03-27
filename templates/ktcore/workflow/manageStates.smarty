@@ -10,9 +10,9 @@ the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
 while the workflow has no documents or document-versions assigned to the workflow.{/i18n}</p>
 
 <fieldset>
-<legend>Create a new state</legend>
-<p class="descriptiveText">A critical part of workflow is the creation of
-various different states for documents.</p>
+<legend>{i18n}Create a new state{/i18n}</legend>
+<p class="descriptiveText">{i18n}A critical part of workflow is the creation of
+various different states for documents.{/i18n}</p>
 <span class="ktActionLink ktAdd"><a href="{addQS}action=createState&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    >{i18n}Create a new state{/i18n}</a></span>
 
@@ -20,11 +20,11 @@ various different states for documents.</p>
 
 
 {if (empty($workflow_info.states))}
-<div class="ktInfo"><p>This workflow does not define any states.</p></div>
+<div class="ktInfo"><p>{i18n}This workflow does not define any states.{/i18n}</p></div>
 {else}
 <ul id="workflow-states-list">
 {foreach item=oState from=$workflow_info.states}
-    <li><span class="workflow_element">State:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
+    <li><span class="workflow_element">{i18n}State{/i18n}:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
         {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
         <li>{i18n}Notified groups & roles:{/i18n}
