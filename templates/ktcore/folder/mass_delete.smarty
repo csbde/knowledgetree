@@ -21,7 +21,7 @@ will be recorded in the documents' "Transaction History"{/i18n}.</p>
 
 
 <div class="field">
-<label>Items to delete</label>
+<label>{i18n}Items to delete{/i18n}</label>
 <p class="descriptiveText">{i18n}The items that you selected to delete.{/i18n}</p>
 {if ($folder_string)}{$folder_string}<br />{/if}
 {if ($document_string)}{$document_string}{/if}
@@ -34,8 +34,8 @@ will be recorded in the documents' "Transaction History"{/i18n}.</p>
 {/foreach}
 
 <div class="form_actions">
-    <input type="submit" value="Delete" />
-    <input type="submit" name="kt_cancel[{addQS}fFolderId={$folder_id}{/addQS}]" value="Cancel" />
+    <input type="submit" value="{i18n}Delete{/i18n}" />
+    <input type="submit" name="kt_cancel[{addQS}fFolderId={$folder_id}{/addQS}]" value="{i18n}Cancel{/i18n}" />
 </div>
 
 </fieldset>

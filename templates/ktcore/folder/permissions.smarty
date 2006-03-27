@@ -28,7 +28,7 @@ be allocated to roles and groups.{/i18n}</p></div>
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th width="40%">Role or Group</th>
+<th width="40%">{i18n}Role or Group{/i18n}</th>
 { foreach item=oPerm from=$permissions }
 <th title="{$oPerm->sName}" class="centered">{$oPerm->sHumanName}</th>
 { /foreach }
@@ -100,9 +100,9 @@ value="{$iGroupId}"></td>
 {* non-inherited view mode. *}
 {if ((!$inherited) && (!$edit)) }
 <a class="ktAction ktInline ktEdit"
-   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">Edit Permission Assignments</a>
+   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">{i18n}Edit Permission Assignments{/i18n}</a>
 <a
-   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">Edit Permission Assignments</a>
+   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">{i18n}Edit Permission Assignments{/i18n}</a>
    
 {/if}
 {/if}

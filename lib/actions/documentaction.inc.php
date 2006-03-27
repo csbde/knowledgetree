@@ -40,14 +40,14 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';	
 
     var $sSection = "view_details";
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-    );
 
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _kt('Browse')),
+        );
 
         parent::KTStandardDispatcher();
     }

@@ -801,7 +801,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
         }
         
-        $this->successRedirectToMain('Folders and Documents Deleted.',sprintf('fFolderId=%d', $fFolderId));
+        $this->successRedirectToMain(_kt('Folders and Documents Deleted.'),sprintf('fFolderId=%d', $fFolderId));
     }
 
     function do_enableAdminMode() {

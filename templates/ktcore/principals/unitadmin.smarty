@@ -9,7 +9,7 @@ of the DMS repository to a particular part of your
 organisation.  Unit administrators have additional rights within that
 portion of the document management system, and they can also adjust the
 membership of groups that belong to the unit.{/i18n}</p>
-<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Unit</a><a href="{addQS}action=addUnit{/addQS}">Add a new unit</a>.</p>
+<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Unit{/i18n}</a><a href="{addQS}action=addUnit{/addQS}">{i18n}Add a new unit{/i18n}</a>.</p>
 </fieldset>
 
 <table class="listing">

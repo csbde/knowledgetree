@@ -135,16 +135,16 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
         $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('Server name'), 'The host name or IP address of the LDAP server', 'servername', $aConfig['servername'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_kt('Base DN'), 'The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)', 'basedn', $aConfig['basedn'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_kt('Search User'), 'The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)', 'searchuser', $aConfig['searchuser'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_kt('Search Password'), 'The password for the user account in the LDAP directory that performs searches', 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Server name'), _kt('The host name or IP address of the LDAP server'), 'servername', $aConfig['servername'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Base DN'), _kt('The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)'), 'basedn', $aConfig['basedn'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $aConfig['searchuser'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
         $aOptions = array(
             'rows' => 7,
             'cols' => 25,
         );
-        $fields[] = new KTTextWidget(_kt('Search Attributes'), 'The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)', 'searchattributes_nls', join("\n", $aConfig['searchattributes']), $this->oPage, true, null, null, $aOptions);
-        $fields[] = new KTTextWidget(_kt('Object Classes'), 'The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)', 'objectclasses_nls', join("\n", $aConfig['objectclasses']), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $aConfig['searchattributes']), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $aConfig['objectclasses']), $this->oPage, true, null, null, $aOptions);
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,

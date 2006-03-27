@@ -10,8 +10,8 @@ no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
 <table class="kt_collection">
 <thead>
     <tr>
-        <th>Mime Types</th>
-        <th>Diagnostic</th>
+        <th>{i18n}Mime Types{/i18n}</th>
+        <th>{i18n}Diagnostic{/i18n}</th>
     </tr>
 </thead>
 <tbody>
