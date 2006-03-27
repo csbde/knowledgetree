@@ -9,8 +9,8 @@ specify additional sources of authentication data.{/i18n}</p>
 
 {if $providers}
 <p><a href="{addQS}action=addSource{/addQS}" class="ktAction ktAddGroup
-ktInline">Add authentication source</a><a href="{addQS}action=addSource{/addQS}">Add a new
-authentication source</a>.</p>
+ktInline">{i18n}Add authentication source</a><a href="{addQS}action=addSource{/addQS}">Add a new
+authentication source{/i18n}</a>.</p>
 {else}
 <div class="ktInfo"><p>{i18n}Only the standard database authentication is currently available.
 If you need to use a different authentication type (e.g. LDAP) you will need to 

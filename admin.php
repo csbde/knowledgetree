@@ -38,7 +38,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     
     function AdminSplashDispatcher() {
         $this->aBreadcrumbs = array(
-            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => 'Administration'),
+            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Administration')),
         );
     
         parent::KTAdminDispatcher();
@@ -126,7 +126,7 @@ if (empty($sub_url)) {
        $aCategory = $oRegistry->getCategory($aParts[0]);			   
        
        $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('action' => "administration", 'name' => 'Administration');
+       $oDispatcher->aBreadcrumbs[] = array('action' => "administration", 'name' => _kt('Administration'));
        $oDispatcher->aBreadcrumbs[] = array("name" => $aCategory['title'], "url" => KTUtil::ktLink('admin.php',$aParts[0]));
        
     } else {

@@ -1,19 +1,20 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
 <fieldset>
-<legend>Add New Group</legend>
+<legend>{i18n}Add New Group{/i18n}</legend>
 <p class="descriptiveText">{i18n}Groups allow you to assign permissions and roles to a 
 number of different users at once.{/i18n}</p>
-<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Group</a><a href="{addQS}action=addGroup{/addQS}">Add a new group</a>.</p>
+<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Group</a><a href="{addQS}action=addGroup{/addQS}">{i18n}Add a new group{/i18n}</a>.</p>
 </fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="do_search" value="1" />
 <fieldset>
 <legend>{i18n}Search for groups{/i18n}</legend>
-<p class="descriptiveText">{i18n}Since there may be many groups in the
+{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}Since there may be many groups in the
 system, please type a few letters from the group's name to begin.
-Alternatively, <a href="{addQS}show_all=1{/addQS}">view all groups</a> (note that this
+Alternatively, <a href="#link#">view all groups</a> (note that this
 action may take some time if you have many groups).{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}

@@ -1,9 +1,9 @@
-<h2>User Management</h2>
+<h2>{i18n}User Management{/i18n}</h2>
 
 
 <!-- FIXME inline CSS is _very_ bad. -->
 <fieldset>
-<legend>Add New Users</legend>
+<legend>{i18n}Add New Users{/i18n}</legend>
 <p class="descriptiveText">{i18n}To allow users access to the DMS, you need to provide them with
 credentials through this section.  Even if you are using an external source
 of login information like <strong>LDAP</strong>, you will need to use this section
@@ -17,10 +17,11 @@ href="{addQS}action=addUser{/addQS}">{i18n}Add a new user{/i18n}</a></p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="do_search" value="1" />
 <fieldset>
-<legend>Search for users</legend>
-<p class="descriptiveText">{i18n}Since there may be many users in the system, please
+<legend>{i18n}Search for users{/i18n}</legend>
+{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}Since there may be many users in the system, please
 select a group from the list below, or type a few letters from the person's username
-to begin. Alternatively, <a href="{addQS}show_all=1{/addQS}">view all users</a> (note that this may be
+to begin. Alternatively, <a href="#link#">view all users</a> (note that this may be
 very slow if you have many users).{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
