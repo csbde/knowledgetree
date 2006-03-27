@@ -61,7 +61,9 @@ class KTPluginUtil {
         if (count($aPlugins) === 0) {
             KTPluginUtil::registerPlugins();
         }
-        $aPaths = array(KT_DIR . '/plugins/ktcore/KTCorePlugin.php');
+        $aPaths = array();
+        $aPaths[] = KT_DIR . '/plugins/ktcore/KTCorePlugin.php';
+        $aPaths[] = KT_DIR . '/plugins/ktcore/KTCoreLanguagePlugin.php';
         foreach ($aPlugins as $oPlugin) {
             if (!is_a($oPlugin, 'KTPluginEntity')) {
                 print "<pre>";
@@ -81,9 +83,20 @@ class KTPluginUtil {
                 require_once($sPath);
             }
         }
+
         $oRegistry =& KTPluginRegistry::getSingleton();
-        foreach ($oRegistry->getPlugins() as $oPlugin) {
-            $oPlugin->load();
+        $aPlugins =& $oRegistry->getPlugins();
+        foreach ($aPlugins as $oPlugin) {
+            if (!isset($aOrder[$oPlugin->iOrder])) {
+                $aOrder[$oPlugin->iOrder] = array();
+            }
+            $aOrder[$oPlugin->iOrder][] = $oPlugin;
+        }
+        ksort($aOrder, SORT_NUMERIC);
+        foreach ($aOrder as $iOrder => $aOrderPlugins) {
+            foreach ($aOrderPlugins as $oPlugin) {
+                $oPlugin->load();
+            }
         }
     }
 
