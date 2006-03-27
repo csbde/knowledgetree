@@ -11,7 +11,7 @@ Testing
 
   $ php bin/smarty_to_gettext.php . > i18n/templates.c
 - run xgettext to generate .po files eg.
-  $ find . -type f -name "*.php" -o -name "*.inc" | xgettext --no-wrap -d knowledgeTree -L PHP -s -f - -o i18n/knowledgeTree.po
+  $ find . -type f -name "*.php" -o -name "*.inc" | xgettext --no-wrap -d knowledgeTree -L PHP -s -f - --keyword=_kt -o i18n/knowledgeTree.po
   $ echo i18n/templates.c | xgettext --no-wrap -d knowledgeTree -j -s -f - -o i18n/knowledgeTree.po
 
 $Id$
