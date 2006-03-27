@@ -65,7 +65,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
         
-        $this->oPage->title = _("DMS Administration") . ": ";
+        $this->oPage->title = _kt("DMS Administration") . ": ";
         $oTemplating =& KTTemplating::getSingleton();
         
         if ($condensed_admin) {
@@ -95,7 +95,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array("name" => $aCategory["title"], "url" => KTUtil::ktLink('admin.php',$category));
 
         
-        $this->oPage->title = _("DMS Administration") . ": " . $aCategory["title"];
+        $this->oPage->title = _kt("DMS Administration") . ": " . $aCategory["title"];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/admin_items");
         $aTemplateData = array(

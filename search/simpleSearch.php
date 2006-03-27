@@ -126,8 +126,8 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 	
     function SimpleSearchDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _('Browse')),
-            array('name' => _('Simple Search'))
+            array('action' => 'browse', 'name' => _kt('Browse')),
+            array('name' => _kt('Simple Search'))
         );
         return parent::KTStandardDispatcher();
     }
@@ -135,7 +135,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 
     function do_main() {
         $aErrorOptions = array(
-            "message" => _("Please provide a search term"),
+            "message" => _kt("Please provide a search term"),
         );
 		$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
@@ -153,10 +153,10 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
 		$collection->addColumn($t);
 		$collection->addColumn(new DownloadColumn('','download'));
-		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
-		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
-		$collection->addColumn(new WorkflowColumn(_('Workflow State'),'workflow_state'));
+		$collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));
+		$collection->addColumn(new DateColumn(_kt("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn(_kt('Creator'),'creator_id','getCreatorID'));
+		$collection->addColumn(new WorkflowColumn(_kt('Workflow State'),'workflow_state'));
 		
 		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
 		$batchSize = 20;

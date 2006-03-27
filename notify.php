@@ -56,7 +56,7 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
         $oKTNotification =& KTNotification::get($notification_id);
         
         if (PEAR::isError($oKTNotification)) {
-            $this->addErrorMessage(_('Invalid notification.'));
+            $this->addErrorMessage(_kt('Invalid notification.'));
             exit(redirect(generateControllerLink('dashboard')));
         }
         
@@ -83,12 +83,12 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
             $res = $oNotification->delete();
             if (PEAR::isError($res)) {
                 $this->rollbackTransaction();
-                $this->addErrorMessage(_('Failed to clear notifications.'));
+                $this->addErrorMessage(_kt('Failed to clear notifications.'));
                 exit(redirect(generateControllerLink('dashboard')));                
             }
         }
         $this->commitTransaction();
-        $this->addInfoMessage(_('Notifications cleared.'));
+        $this->addInfoMessage(_kt('Notifications cleared.'));
         exit(redirect(generateControllerLink('dashboard')));
     }
 }
