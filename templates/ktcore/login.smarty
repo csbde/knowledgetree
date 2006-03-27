@@ -10,7 +10,7 @@
 <body>
 
     <div id="loginbox">
-        <form action="{$smarty.server.PHP_SELF}" method="POST">
+        <form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
         <input type="hidden" name="action" value="login" />
         <input type="hidden" name="cookieverify" value="{$cookietest}" />
         <input type="hidden" name="redirect" value="{$redirect|escape}" />
@@ -26,6 +26,13 @@
             
             <label for="password">{i18n}Password{/i18n}</label>
             <input type="password" id="password" name="password"/>
+
+            <label for="language">{i18n}Language{/i18n}</label>
+            <select id="language" name="language">
+            {foreach from=$languages key=sLang item=sLanguageName}
+            <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
+            {/foreach}
+            </select>
             
             <div class="form_actions">
                 <input type="submit" value="{i18n}login{/i18n}" />
