@@ -36,6 +36,11 @@ class KTi18n {
         $this->aLangDirectories = $aLangDirectories;
     }
 
+    function addLanguage($sLang, $sLocation) {
+        $this->aLangDirectories[$sLang] = $sLocation;
+        $this->sFilename = null;
+    }
+
     function _generateLanguage() {
         if (!empty($this->sLang)) {
             return;
@@ -44,8 +49,10 @@ class KTi18n {
         if ($this->sLang === false) {
             return;
         }
+
         global $default;
         $this->sLang = $default->defaultLanguage;
+        return;
     }
 
     function _generateFilePath() {
@@ -60,6 +67,11 @@ class KTi18n {
         $sLocation = KTUtil::arrayGet($this->aLangDirectories, $this->sLang);
         if (empty($sLocation)) {
             $sLocation = $this->sPath;
+        }
+
+        if ($sLocation === "default") {
+            $this->sFilename = false;
+            return;
         }
 
         $aTry = array(
@@ -110,6 +122,7 @@ class KTi18n {
         if (empty($this->sFilename)) {
             return $sContents;
         }
+
         return KTUtil::arrayGet($this->aStrings, $sContents, $sContents);
         return dcgettext($this->sDomain, $sContents, LC_MESSAGES);
     }
