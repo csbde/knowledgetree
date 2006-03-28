@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.7.0-pl2-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 28, 2006 at 09:23 AM
--- Server version: 4.0.24
--- PHP Version: 4.4.0-3
+-- Generation Time: Mar 28, 2006 at 11:25 AM
+-- Server version: 5.0.18
+-- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- 
@@ -104,6 +104,11 @@ INSERT INTO `document_link_types` VALUES (0, 'Default', 'Default (reverse)', 'De
 
 -- 
 -- Dumping data for table `document_metadata_version`
+-- 
+
+
+-- 
+-- Dumping data for table `document_role_allocations`
 -- 
 
 
@@ -221,7 +226,7 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, '0', NULL, 1, 3, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 3, 0);
 INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 3, 0);
 
 -- 
@@ -657,6 +662,7 @@ INSERT INTO `plugins` VALUES (15, 'nbm.browseable.plugin', 'plugins/browseableda
 -- Dumping data for table `roles`
 -- 
 
+INSERT INTO `roles` VALUES (-1, 'Owner');
 
 -- 
 -- Dumping data for table `saved_searches`
@@ -683,7 +689,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.1');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -794,6 +800,8 @@ INSERT INTO `upgrades` VALUES (67, 'sql*2.99.9*0*2.99.9/mimetype-friendly.sql', 
 INSERT INTO `upgrades` VALUES (68, 'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql', 'Database upgrade to version 2.99.9: Opendocument-mime-types', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
 INSERT INTO `upgrades` VALUES (69, 'sql*3.0*0*3.0/zipfile-mimetype.sql', 'Database upgrade to version 3.0: Zipfile-mimetype', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
 INSERT INTO `upgrades` VALUES (70, 'upgrade*3.0*99*upgrade3.0', 'Upgrade from version 2.99.8 to 3.0', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
+INSERT INTO `upgrades` VALUES (71, 'sql*3.0.1.1*0*3.0.1.1/document_role_allocations.sql', 'Database upgrade to version 3.0.1.1: Document role allocations', '2006-03-28 11:22:19', 1, 'upgrade*3.0.1.1*99*upgrade3.0.1.1');
+INSERT INTO `upgrades` VALUES (72, 'upgrade*3.0.1.1*99*upgrade3.0.1.1', 'Upgrade from version 3.0 to 3.0.1.1', '2006-03-28 11:22:19', 1, 'upgrade*3.0.1.1*99*upgrade3.0.1.1');
 
 -- 
 -- Dumping data for table `users`
@@ -964,6 +972,11 @@ INSERT INTO `zseq_document_link_types` VALUES (2);
 -- 
 
 INSERT INTO `zseq_document_metadata_version` VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_document_role_allocations`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_document_subscriptions`
@@ -1221,7 +1234,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (70);
+INSERT INTO `zseq_upgrades` VALUES (72);
 
 -- 
 -- Dumping data for table `zseq_users`

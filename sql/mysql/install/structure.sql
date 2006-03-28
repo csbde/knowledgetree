@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.7.0-pl2-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Feb 28, 2006 at 09:23 AM
--- Server version: 4.0.24
--- PHP Version: 4.4.0-3
+-- Generation Time: Mar 28, 2006 at 11:24 AM
+-- Server version: 5.0.18
+-- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- --------------------------------------------------------
@@ -291,6 +291,21 @@ CREATE TABLE `document_metadata_version` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `document_role_allocations`
+-- 
+
+CREATE TABLE `document_role_allocations` (
+  `id` int(11) NOT NULL default '0',
+  `document_id` int(11) NOT NULL default '0',
+  `role_id` int(11) NOT NULL default '0',
+  `permission_descriptor_id` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`id`),
+  KEY `document_id` (`document_id`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `document_searchable_text`
 -- 
 
@@ -442,6 +457,7 @@ CREATE TABLE `documents` (
   `metadata_version` int(11) NOT NULL default '0',
   `modified_user_id` int(11) NOT NULL default '0',
   `metadata_version_id` int(11) default NULL,
+  `owner_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `fk_creator_id` (`creator_id`),
   KEY `fk_folder_id` (`folder_id`),
@@ -1551,6 +1567,17 @@ CREATE TABLE `zseq_document_metadata_version` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_document_role_allocations`
+-- 
+
+CREATE TABLE `zseq_document_role_allocations` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_document_subscriptions`
 -- 
 
@@ -2019,7 +2046,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=71 ;
+) TYPE=MyISAM AUTO_INCREMENT=73 ;
 
 -- --------------------------------------------------------
 
