@@ -505,6 +505,7 @@ if ($checkup !== true) {
     KTPluginUtil::loadPlugins();
 }
 
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] =& new KTPage();
 
 ?>
