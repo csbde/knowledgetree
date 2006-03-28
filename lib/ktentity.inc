@@ -33,7 +33,7 @@ $_STOPCACHING = array();
 
 require_once(KT_LIB_DIR . '/cache/cache.inc.php');
 
-DEFINE("EVIL_CACHE_GRIND", false);
+DEFINE("EVIL_CACHE_GRIND", true);
 
 class KTEntity {
     var $_bUsePearError = false;
@@ -77,7 +77,7 @@ class KTEntity {
         $sClass = get_class($this);
         $this->_innerClearCachedGroups($sClass);
     }
-    
+
     /**
      * Create the current object in the database
      *
@@ -660,6 +660,13 @@ class KTEntityUtil {
     function &getByDict($sClassName, $aDict, $aOptions = null) {
         return KTEntityUtil::getBy($sClassName, array_keys($aDict), array_values($aDict), $aOptions);
     }
+
+    function clearAllCaches($sClassName) {
+        KTEntity::_innerClearCachedGroups($sClassName);
+        $oCache =& KTCache::getSingleton();
+        $oCache->clear(sprintf("%s/id", $sClassName));
+    }
+    
 }
 
 class KTEntityNoObjects extends PEAR_Error {

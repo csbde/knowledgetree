@@ -79,8 +79,6 @@ class KTPluginEntity extends KTEntity {
 
     // STATIC
     function &getList($sWhereClause = null) {
-        global $default;
-        $aOptions = array('fullselect' => false, 'cache' => 'getList');
         return KTEntityUtil::getList2('KTPluginEntity', $sWhereClause, $aOptions);
     }
 
@@ -106,6 +104,10 @@ class KTPluginEntity extends KTEntity {
         DBUtil::runQuery(array($sQuery, $aIds));
         $sQuery = sprintf('UPDATE %s SET disabled = 0 WHERE id IN (%s)', $sTable, $sIds);
         DBUtil::runQuery(array($sQuery, $aIds));
-        KTPluginEntity::_innerClearCachedGroups('KTPluginEntity');
+        KTPluginEntity::clearAllCaches();
+    }
+
+    function clearAllCaches() {
+        return KTEntityUtil::clearAllCaches('KTPluginEntity');
     }
 }
