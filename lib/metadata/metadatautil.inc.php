@@ -105,6 +105,14 @@ class KTMetadataUtil {
         }
 
         $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, final values are ' . print_r($aValues, true));
+        
+        // now we need to clean this up: remove no-value entries.
+        $temp = $aValues;
+        foreach ($temp as $k => $v) {
+            if (empty($v)) {
+                unset($aValues[$k]);
+            }
+        }
         return $aValues;
     }
     // }}}
@@ -560,12 +568,12 @@ class KTMetadataUtil {
             $aFields = DBUtil::getResultArrayKey($aQuery, 'field_id');
             $GLOBALS['default']->log->debug("   actual fields are " . print_r($aNextFields, true));
             foreach ($aNextFields as $iFieldId) {
-                if (!in_array($iFieldId, $aFields)) {
+                /*if (!in_array($iFieldId, $aFields)) {
                     $GLOBALS['default']->log->debug("   field $iFieldId is not included, failing");
                     $oChildField =& DocumentField::get($iFieldId);
                     $sChildFieldName = $oChildField->getName();
                     return PEAR::raiseError("Child field $sChildFieldName of parent field $sParentFieldName has no selectable values in behaviour $sBehaviourHumanName ($sBehaviourName)");
-                }
+                }*/
             }
         }
         $GLOBALS['default']->log->debug("Got through: passed!");

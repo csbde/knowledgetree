@@ -54,7 +54,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 
 /* it may be useful to move this to a factory, eventually? */
-function getWidgetForMetadataField($field, $current_value, $page, $errors = null, $vocab = null) {
+function getWidgetForMetadataField($field, $current_value, $page, $errors = null, $vocab = null, $aOptions = null) {
     // all fields have these elements.
     $fieldLabel = $field->getName();
     $fieldDescription = $field->getDescription();
@@ -62,7 +62,7 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
     $fieldErrors = $errors; // array of strings
     $fieldName = 'metadata_' . $field->getID();
     $fieldOptions = array();
-    $fieldRequired = $field->getIsMandatory();
+    $fieldRequired = $field->getIsMandatory() || KTUtil::arrayGet($aOptions, 'required', false);
     if ($fieldRequired == 1) {
         $fieldRequired = true;
     }
