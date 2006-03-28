@@ -5,7 +5,7 @@
 {i18n}How do I search?{/i18n}</p>
 
 {if (!empty($saved_searches))}
-<h4>Saved Searches</h4>
+<h4>{i18n}Saved Searches{/i18n}</h4>
 <ul class="actionlist">
 {foreach item=oSearch from=$saved_searches}
 <li><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()}</a></li>

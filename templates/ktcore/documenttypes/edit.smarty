@@ -4,7 +4,7 @@
 <input type="hidden" name="action" value="editobject">
 <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
 <input type="textbox" name="name" value="{$oDocumentType->getName()|escape}">
-<input type="submit" name="submit" value="Change">
+<input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </form>
 
 <h2>{i18n}Type-specific field sets{/i18n}</h2>

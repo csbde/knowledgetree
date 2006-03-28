@@ -27,7 +27,7 @@ either have no workflow set (for new documents) or keep their old workflow (for 
         <td>{$oType->getName()}</td>
         <td>
           <select name="fDocumentTypeAssignment[{$oType->getId()}]">
-              <option value="" >No automatic workflow</option>
+              <option value="" >{i18n}No automatic workflow{/i18n}</option>
               {foreach item=oWorkflow from=$workflows}
               <option value="{$oWorkflow->getId()}" {if ($context->isActiveWorkflow($oType, $oWorkflow, $types_mapping))}selected="true"{/if}>{$oWorkflow->getName()}</option>
               {/foreach}

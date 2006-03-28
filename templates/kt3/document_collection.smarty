@@ -47,13 +47,13 @@
                   {if ($currentpage == 0)}
                     <span class="notactive">&laquo; prev</a> 
                   {else}
-                    <a href="{$context->pageLink($currentpage-1)}">&laquo; prev</a> 
+                    <a href="{$context->pageLink($currentpage-1)}">&laquo; {i18n}prev{/i18n}</a> 
                   {/if}
                     &middot; 
                   {if ($currentpage == $pagecount-1)}
-                    <span class="notactive">next &raquo;</a> 
+                    <span class="notactive">{i18n}next{/i18n} &raquo;</a> 
                   {else}
-                    <a href="{$context->pageLink($currentpage+1)}">next &raquo;</a> 
+                    <a href="{$context->pageLink($currentpage+1)}">{i18n}next{/i18n} &raquo;</a> 
                   {/if}
                   {assign var=shownEllipsis value=false}
                   {foreach item=showPage from=1|range:$pagecount name=pagecrumbs}

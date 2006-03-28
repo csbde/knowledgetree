@@ -26,7 +26,7 @@ to access and modify these other properties.{/i18n}</p>
 {*
 
 <div class="field">
-<label>Informed Users</label>
+<label>{i18n}Informed Users{/i18n}</label>
 <p class="descriptiveText">{i18n}Please select which roles or groups should be
 informed when this state is reached.{/i18n}</p>
 

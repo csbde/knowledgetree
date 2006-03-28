@@ -72,7 +72,7 @@ legend { border: 1px dotted #999;}
         <legend>{i18n}Criteria Group{/i18n}</legend>
 
 	{capture assign=options}
-	<select name="boolean_search[subgroup][0][join]"><option value="AND">all</option><option value="OR">any</option></select>
+	<select name="boolean_search[subgroup][0][join]"><option value="AND">{i18n}all{/i18n}</option><option value="OR">{i18n}any{/i18n}</option></select>
 	{/capture}
         <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified below.{/i18n}</p>
 

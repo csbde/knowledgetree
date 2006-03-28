@@ -38,7 +38,7 @@
                 <input type="submit" value="{i18n}login{/i18n}" />
             </div>
         </form>
-        <p class="descriptiveText">KnowledgeTree Version: {$systemVersion}</p>
+        <p class="descriptiveText">{i18n}KnowledgeTree Version{/i18n}: {$systemVersion}</p>
     </div>
 
 </body>

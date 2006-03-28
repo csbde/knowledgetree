@@ -1,16 +1,16 @@
 <h2>{i18n}Manage conditional fieldset{/i18n}</h2>
 
-<p class="descriptiveText">Conditional fieldsets allow you to restrict the options
+<p class="descriptiveText">{i18n}Conditional fieldsets allow you to restrict the options
 a user has for values in some fields based on the values in other fields.  There
 are two kinds of conditional fieldsets:  <strong>Simple</strong> and <strong>Complex</strong>
 .  Simple fieldsets should be sufficient for most things:  they allow you to say that 
 the values of one field are restricted to a certain subset of values if another field
 has a specific value.  For example, you could say that if the field "Street" is "Jeffrey", 
-then the field "Residents" must be one of "Jones","Smith" or "Friedman".</p>
+then the field "Residents" must be one of "Jones","Smith" or "Friedman".{/i18n}</p>
 
-<p class="descriptiveText">Complex fieldsets allow you to give far more detailed structure to
+<p class="descriptiveText">{i18n}Complex fieldsets allow you to give far more detailed structure to
 your information:  The value of "Residents" can depend not only on "Street", but on
-how the user was allowed to select the specific street (given another field).</p>
+how the user was allowed to select the specific street (given another field).{/i18n}</p>
 
 {* don't show warnings until the basics are done. *}
 
@@ -99,8 +99,8 @@ ordering!{/i18n}</p>
 <input type="hidden" name="action" value="setMasterField" />
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 
-<p class="descriptiveText">In order to have a chain of conditions, one initial field
-must be shown to the user.  This is called the <strong>master field</strong>.</p>
+<p class="descriptiveText">{i18n}In order to have a chain of conditions, one initial field
+must be shown to the user.  This is called the <strong>master field</strong>.{/i18n}</p>
 
 <div class="form">
 <p class="descriptiveText important">{i18n}Changing the master field set will remove all existing field
@@ -128,7 +128,7 @@ $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_
 {/php}
   <li>
     {$oParentField->getName()|escape}
-<span class="descriptiveText">controls the values available in</span> 
+<span class="descriptiveText">{i18n}controls the values available in{/i18n}</span> 
     {$oChildField->getName()|escape}
 </li>
 {/foreach}
@@ -146,12 +146,12 @@ $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_
 <legend>{i18n}Order Fields{/i18n}</legend>
 
 <div class="field">
-<p class="descriptiveText">The value of the field</p>
+<p class="descriptiveText">{i18n}The value of the field{/i18n}</p>
 {entity_select entities=$parent_fields name="fParentFieldId"}
 </div>
 
 <div class="field">
-<p class="descriptiveText">controls the values of the following fields</p>
+<p class="descriptiveText">{i18n}controls the values of the following fields{/i18n}</p>
 {entity_select entities=$free_fields name="fFreeFieldIds[]" multiple="yes"}
 </div>
 

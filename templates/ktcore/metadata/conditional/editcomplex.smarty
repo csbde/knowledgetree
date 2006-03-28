@@ -43,15 +43,15 @@ addLoadEvent(updateActiveFields);
 
 <h2>{i18n}Edit Complex Conditional Metadata{/i18n}</h2>
 
-<p class="descriptiveText">Complex Conditional Metadata depends on what are 
+<p class="descriptiveText">{i18n}Complex Conditional Metadata depends on what are 
 called "behaviours".  Essentially, behaviours are assigned to a <strong>single</strong>
 field, and can contain any number of values that are available in that field.  Each field
-can have multiple behaviours assigned to it.</p>
+can have multiple behaviours assigned to it.{/i18n}</p>
 
-<p class="descriptiveText important">Each behaviour can cause a number of other behaviours &mdash; in
+<p class="descriptiveText important">{i18n}Each behaviour can cause a number of other behaviours &mdash; in
 the field's <strong>child</strong> fields &mdash; to become available.  By assigning values
 to behaviours, and creating relationships between behaviours, you can create extremely complex 
-relationships between available lookup values.</p>
+relationships between available lookup values.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
@@ -82,8 +82,8 @@ relationships between available lookup values.</p>
 		  -->
          </select>	 
 		 <br /><input class="assigned_item_list" type="button" value="{i18n}remove behaviour{/i18n}" onclick="removeFromBehaviour({$oField->getId()});" />
-		 <p class="assigned_items_message">No items have been assigned with the current
-		 parent behaviour.</p>
+		 <p class="assigned_items_message">{i18n}No items have been assigned with the current
+		 parent behaviour.{/i18n}</p>
 	 </div>
 	 
      <div class="unassigned_items">
@@ -98,7 +98,7 @@ relationships between available lookup values.</p>
          </select>
      <p><strong>{i18n}Assign to behaviour{/i18n}</strong></p>
      <select class="available_behaviours" onchange="assignToBehaviour(this, {$oField->getId()});">
-         <option>Select a behaviour</option>
+         <option>{i18n}Select a behaviour{/i18n}</option>
 	     <!-- ditto 
 		 <option value="1">Behaviour 1</option>
          <option value="2">Behaviour 2</option>
@@ -117,7 +117,7 @@ relationships between available lookup values.</p>
         items which are available.{/i18n}
      </p>
          <select class="edit_behaviours" onchange="editBehaviour(this, {$oField->getId()});">
-         <option>Select a behaviour</option>
+         <option>{i18n}Select a behaviour{/i18n}</option>
 		 <!--
          <option value="1">Behaviour 1</option>
          <option value="2">Behaviour 2</option>

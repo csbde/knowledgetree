@@ -27,7 +27,7 @@
 
 <!-- FIXME it appears we need non-editable edit widgets.  yay. -->
 <div class="field">
-<label>Conditional</label>
+<label>{i18n}Conditional{/i18n}</label>
 <p class="descriptiveText">
 {i18n}A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
 field can depend on the user's selections for the others.{/i18n}

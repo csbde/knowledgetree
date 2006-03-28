@@ -11,10 +11,10 @@ Search{/i18n}</a>
 
 {if (!empty($saved_searches))}
 <hr />
-<h3>Saved Searches</h3>
+<h3>{i18n}Saved Searches{/i18n}</h3>
 
 {foreach item=oSearch from=$saved_searches}
-<span class="descriptiveText">Saved Search: </span><a
+<span class="descriptiveText">{i18n}Saved Search{/i18n}: </span><a
 href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()}</a><br />
 {/foreach}
 

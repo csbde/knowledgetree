@@ -2,7 +2,7 @@
 <p class="descriptiveText">{i18n}Please confirm that this is the document that you wish to check-in.{/i18n}</p>
 
 <div class="document_details">
-<h3>Document Details</h3>
+<h3>{i18n}Document Details{/i18n}</h3>
 <dl class="metadata">
    <dt>{i18n}Document Name{/i18n}</dt>
    <dd>{$document->getName()}</dd>

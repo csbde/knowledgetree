@@ -16,7 +16,7 @@ permissions are not shown.{/i18n}</p>
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th width="40%">Role or Group</th>
+<th width="40%">{i18n}Role or Group{/i18n}</th>
 { foreach item=oPerm from=$permissions }
 <th title="{$oPerm->sName}" class="centered">{$oPerm->sHumanName}</th>
 { /foreach }
@@ -128,7 +128,7 @@ value="{$iGroupId}"></td>
   <thead>
     <tr>
 { if $edit }
-      <th width="1%">Remove</th>
+      <th width="1%">{i18n}Remove{/i18n}</th>
 { /if }
       <th>{i18n}Group{/i18n}</th>
       <th>{i18n}Condition{/i18n}</th>

@@ -121,7 +121,7 @@ value="{$iGroupId}"></td>
   <thead>
     <tr>
 { if $edit }
-      <th width="1%">Remove</th>
+      <th width="1%">{i18n}Remove{/i18n}</th>
 { /if }
       <th>{i18n}Group{/i18n}</th>
       <th>{i18n}Condition{/i18n}</th>

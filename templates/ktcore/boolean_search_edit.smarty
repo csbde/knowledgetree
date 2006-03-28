@@ -66,7 +66,7 @@ legend { border: 1px dotted #999;}
 {/if}
 
 {capture assign=options}
-<select name="boolean_search[join]"><option value="AND" {if ($aSearch.join == 'AND')} selected="true"{/if}>all</option><option value="OR" {if ($aSearch.join == 'OR')} selected="true"{/if}>any</option></select>
+<select name="boolean_search[join]"><option value="AND" {if ($aSearch.join == 'AND')} selected="true"{/if}>{i18n}all{/i18n}</option><option value="OR" {if ($aSearch.join == 'OR')} selected="true"{/if}>{i18n}any{/i18n}</option></select>
 {/capture}
 
    <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the <strong>criteria groups</strong> specified.{/i18n}</p>    
@@ -77,7 +77,7 @@ legend { border: 1px dotted #999;}
         <legend>{i18n}Criteria Group{/i18n}</legend>
 
 	{capture assign=options}
-	<select name="boolean_search[subgroup][0][join]"><option value="AND"{if ($aSubgroup.join == 'AND')} selected="true"{/if}>all</option><option value="OR"{if ($aSubgroup.join == 'OR')} selected="true"{/if}>any</option></select>
+	<select name="boolean_search[subgroup][0][join]"><option value="AND"{if ($aSubgroup.join == 'AND')} selected="true"{/if}>{i18n}all{/i18n}</option><option value="OR"{if ($aSubgroup.join == 'OR')} selected="true"{/if}>{i18n}any{/i18n}</option></select>
 	{/capture}
 
         <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified.{/i18n}</p>
