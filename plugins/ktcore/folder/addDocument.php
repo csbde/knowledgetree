@@ -54,7 +54,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         if (!empty($postExpected)) {
             $aErrorOptions = array(
                 'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
-                'message' => 'Upload larger than maximum POST size (max_post_size variable in .htaccess or php.ini)',
+                'message' => _kt('Upload larger than maximum POST size (max_post_size variable in .htaccess or php.ini)'),
             );
             $this->oValidator->notEmpty($postReceived, $aErrorOptions);
         }

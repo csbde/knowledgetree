@@ -1,4 +1,4 @@
-<h2>Delete Unit</h2>
+<h2>{i18n}Delete Unit{/i18n}</h2>
 
 <p class="descriptiveText">{i18n arg_name=$unit->getName()}Delete
 unit <strong>#name#</strong> from the system{/i18n}</p>

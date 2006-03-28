@@ -1,4 +1,4 @@
-<h2>Select a Field</h2>
+<h2>{i18n}Select a Field{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}In some circumstances it is useful to view all
 documents with a given value for a lookup field.  Select the lookup field from the list below

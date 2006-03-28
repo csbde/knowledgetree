@@ -67,7 +67,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $sName = KTUtil::arrayGet($_REQUEST, 'foldername');
         $aOptions = array(
             'redirect_to' => array('', sprintf('fFolderId=%d', $this->oFolder->getId())),
-            'message' => "No folder name given",
+            'message' => _kt("No folder name given"),
         );
         $this->oValidator->validateString($sName, $aOptions);
 

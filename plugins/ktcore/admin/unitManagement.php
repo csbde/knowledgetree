@@ -178,7 +178,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'name' => $sName,
             'folderid' => $oFolder->getId(),
         ));
-        return $this->successRedirectToMain('Unit created');
+        return $this->successRedirectToMain(_kt('Unit created'));
     }
 
     function do_editUnit() {
@@ -255,7 +255,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
                 KTFolderUtil::delete($oFolder, $this->oUser, "Unit deleted", $aOptions);
             }
         }
-        $this->successRedirectToMain("Unit removed");
+        $this->successRedirectToMain(_kt("Unit removed"));
     }
 }
 

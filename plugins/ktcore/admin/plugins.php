@@ -65,12 +65,12 @@ class KTPluginDispatcher extends KTAdminDispatcher {
         $sTable = KTUtil::getTableName('plugins');
         $aIds = (array) KTUtil::arrayGet($_REQUEST, 'pluginids');
         KTPluginEntity::setEnabled($aIds);
-        $this->successRedirectToMain('Plugins updated');
+        $this->successRedirectToMain(_kt('Plugins updated'));
     }
 
     function do_reread() {
         KTPluginUtil::registerPlugins();
-        $this->successRedirectToMain('Plugins read from the filesystem');
+        $this->successRedirectToMain(_kt('Plugins read from the filesystem'));
     }
 }
 

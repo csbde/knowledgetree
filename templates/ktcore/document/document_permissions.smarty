@@ -121,7 +121,7 @@ value="{$iGroupId}"></td>
 
 {if (!empty($conditions))}
 {if ($edit || $dynamic_conditions)}
-<h2>Dynamic permissions</h2>
+<h2>{i18n}Dynamic permissions{/i18n}</h2>
 {/if}
 { if $dynamic_conditions }
 <table class="kt_collection" cellpadding="0" cellspacing="0">

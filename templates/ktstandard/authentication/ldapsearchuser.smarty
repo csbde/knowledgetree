@@ -11,7 +11,7 @@ begin.{/i18n}</p>
 
 <input type="hidden" name="action" value="addUserFromSource" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
-<fieldset><legend>Search for user</legend>
+<fieldset><legend>{i18n}Search for user{/i18n}</legend>
 {foreach from=$fields item=oWidget}
   {$oWidget->render()}
 {/foreach}
