@@ -116,6 +116,7 @@ class KTPluginUtil {
                 var_dump($res);
             }
         }
+        KTPluginEntity::clearAllCaches();
     }
 
     function _walk ($path, &$files) {
