@@ -13,7 +13,7 @@ please enter a name for the type below.{/i18n}</p>
 {/foreach}
 
 <div class="form_actions">
-<input type="hidden" name="action" value="{i18n}new{/i18n}">
+<input type="hidden" name="action" value="new">
 <input type="submit" name="submit" value="{i18n}Create{/i18n}">
 </div>
 </fieldset>
