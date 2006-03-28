@@ -11,5 +11,5 @@
       <p class="errorMessage"></p>
       {/if}
 
-      <input type="checkbox" name="{$name}" {if $has_id}id="{$id}"{/if} {if ($has_value && ($value == true))}checked="checked"{/if}/><input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
+      <input type="checkbox" name="{$name}" {if $has_id}id="{$id}"{/if} {if ($has_value && ($value == true))}checked="checked"{/if} class="noborder"/><input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
      </div>
