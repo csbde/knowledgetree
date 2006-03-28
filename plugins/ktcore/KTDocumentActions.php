@@ -135,7 +135,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     function do_checkout() {
         $aErrorOptions = array(
             'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
-            'message' => "You must provide a reason"
+            'message' => _kt("You must provide a reason"),
         );
         
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
@@ -845,7 +845,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     
         $aErrorOptions = array(
             'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
-            'message' => "You must provide a reason"
+            'message' => _kt("You must provide a reason"),
         );
         
         $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
@@ -954,7 +954,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $_REQUEST['fDocumentId'])),
-            'message' => 'You must provide a reason for the transition'
+            'message' => _kt('You must provide a reason for the transition'),
         );
 
         $sComments =& $this->oValidator->validateString($_REQUEST['fComments'], $aErrorOptions);

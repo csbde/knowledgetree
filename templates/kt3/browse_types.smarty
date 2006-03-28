@@ -1,4 +1,4 @@
-<h2>Select a document type</h2>
+<h2>{i18n}Select a document type{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}In some circumstances it is useful to view all
 documents of a given <strong>document type</strong>. Select a <strong>document type</strong> from the list below

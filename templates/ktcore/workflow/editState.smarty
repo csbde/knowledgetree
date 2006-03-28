@@ -223,7 +223,7 @@ documents are in this state.{/i18n}</p></div>
 {/if}
 
 {else}
-<div class="ktInfo"><p>No permissions have been created within KnowledgeTree.</p></div>
+<div class="ktInfo"><p>{i18n}No permissions have been created within KnowledgeTree.{/i18n}</p></div>
 {/if}
 
 

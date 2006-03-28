@@ -80,7 +80,7 @@ ordering!{/i18n}</p>
 
 
 {if !$oMasterField}
-<h2>Master field</h2>
+<h2>{i18n}Master field{/i18n}</h2>
 {i18n}No master field is set, please select the master field{/i18n}:
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -95,7 +95,7 @@ ordering!{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Master field</legend>
+<legend>{i18n}Master field{/i18n}</legend>
 <input type="hidden" name="action" value="setMasterField" />
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 

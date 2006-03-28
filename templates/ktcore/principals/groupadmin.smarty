@@ -4,7 +4,7 @@
 <legend>{i18n}Add New Group{/i18n}</legend>
 <p class="descriptiveText">{i18n}Groups allow you to assign permissions and roles to a 
 number of different users at once.{/i18n}</p>
-<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">Add Group</a><a href="{addQS}action=addGroup{/addQS}">{i18n}Add a new group{/i18n}</a>.</p>
+<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Group{/i18n}</a><a href="{addQS}action=addGroup{/addQS}">{i18n}Add a new group{/i18n}</a>.</p>
 </fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">

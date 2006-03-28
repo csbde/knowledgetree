@@ -150,11 +150,11 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oSource->setAuthenticationProvider($authentication_provider);
         $res = $oSource->update();
         $aOptions = array(
-            'message' => 'Update failed',
+            'message' => _kt('Update failed'),
             'redirect_to' => array('editsource', sprintf('source_id=%d', $oSource->getId())),
         );
         $this->oValidator->notErrorFalse($res, $aOptions);
-        $this->successRedirectTo('viewsource', 'Details updated', sprintf('source_id=%d', $oSource->getId()));
+        $this->successRedirectTo('viewsource', _kt('Details updated'), sprintf('source_id=%d', $oSource->getId()));
     }
 
     function do_newsource() {

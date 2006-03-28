@@ -173,7 +173,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $sName = $this->oValidator->validateEntityName("KTFieldset", $_REQUEST['name'], $aErrorOptions);
 			
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
-			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+			KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a description"))));
 				
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'namespace');
 		
@@ -224,7 +224,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         unset($aErrorOptions['condition']);
 		
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
-			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+			KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a description"))));
 		
 		
         $oFieldset = KTFieldset::get($_REQUEST['fFieldsetId']);
@@ -288,7 +288,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		);	
 		
 		$sName = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'), 
-			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a name")));
+			KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a name"))));
 
         $aErrorOptions['condition'] = array('parent_fieldset' => $oFieldset->getId());
         $aErrorOptions['rename'] = $oField->getId();
@@ -297,7 +297,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         unset($aErrorOptions['rename']);
 
 		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
-			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+			KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a description"))));
 
         $oField->setName($_REQUEST['name']);
         $oField->setDescription($sDescription);

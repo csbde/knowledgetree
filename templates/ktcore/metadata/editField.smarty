@@ -60,7 +60,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Existing values</legend>
+<legend>{i18n}Existing values{/i18n}</legend>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="fFieldId" value="{$oField->getId()}" />
 <input type="hidden" name="action" value="metadataMultiAction" />
@@ -87,7 +87,7 @@ from another source{/i18n})</span>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Disabled values</legend>
+<legend>{i18n}Disabled values{/i18n}</legend>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="fFieldId" value="{$oField->getId()}" />
 <input type="hidden" name="action" value="metadataMultiAction" />

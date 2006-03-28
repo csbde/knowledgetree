@@ -4,13 +4,13 @@
 via the help system and click on <strong>customise this help file</strong>.{/i18n}</p>
 
 { if $helpreplacements }
-<h2>Existing customised help pages</h2>
+<h2>{i18n}Existing customised help pages{/i18n}</h2>
 
 <table class="listing" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th>Name</th>
-<th>Actions</th>
+<th>{i18n}Name{/i18n}</th>
+<th>{i18n}Actions{/i18n}</th>
 </tr>
 </thead>
 { foreach item=oHelpReplacement from=$helpreplacements }

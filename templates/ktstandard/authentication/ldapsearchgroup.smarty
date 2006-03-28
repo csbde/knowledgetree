@@ -5,7 +5,7 @@ begin.{/i18n}</p>
 
 <input type="hidden" name="action" value="addGroupFromSource" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
-<fieldset><legend>Search for group</legend>
+<fieldset><legend>{i18n}Search for group{/i18n}</legend>
 {foreach from=$fields item=oWidget}
   {$oWidget->render()}
 {/foreach}

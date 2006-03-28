@@ -1,5 +1,5 @@
 {if (!$help_body)}
-<div class="ktError"><p>No content specified for this help file yet. <strong>Edit it first.</strong></p></div>
+<div class="ktError"><p>{i18n}No content specified for this help file yet. <strong>Edit it first.</strong>{/i18n}</p></div>
 {else}
 
 {$context->oPage->requireJSResource("resources/js/help.js")}
