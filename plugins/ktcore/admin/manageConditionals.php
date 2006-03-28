@@ -89,10 +89,22 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             'name' => _kt('Manage conditional fieldset'),
         );
         $this->oPage->setBreadcrumbDetails(_kt('Manage simple conditional'));
-
+        $sTable = KTUtil::getTableName('field_orders');
+        $aQuery = array(
+            "SELECT parent_field_id, child_field_id FROM $sTable WHERE fieldset_id = ?",
+            array($oFieldset->getId())
+        );
+        $aFieldOrders = DBUtil::getResultArray($aQuery);        
+        $aOrders = array();
+        foreach ($aFieldOrders as $row) {
+            $aChildren = KTUtil::arrayGet($aOrders, $row['parent_field_id'], array());
+            $aChildren[] = $row['child_field_id'];
+            $aOrders[$row['parent_field_id']] = $aChildren;
+        } 
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
+            "ordering" => $aOrders,
             "aFields" => $aFields,
             "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
@@ -122,10 +134,25 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
             'name' => _kt('Manage conditional fieldset'),
         );
+        
+        $sTable = KTUtil::getTableName('field_orders');
+        $aQuery = array(
+            "SELECT parent_field_id, child_field_id FROM $sTable WHERE fieldset_id = ?",
+            array($oFieldset->getId())
+        );
+        $aFieldOrders = DBUtil::getResultArray($aQuery);        
+        $aOrders = array();
+        foreach ($aFieldOrders as $row) {
+            $aChildren = KTUtil::arrayGet($aOrders, $row['parent_field_id'], array());
+            $aChildren[] = $row['child_field_id'];
+            $aOrders[$row['parent_field_id']] = $aChildren;
+        } 
+        
         $this->oPage->setBreadcrumbDetails(_kt('Manage complex conditional'));
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
+            "ordering" => $aOrders,
             "aFields" => $aFields,
             "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
