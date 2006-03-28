@@ -26,7 +26,7 @@
 </form>
 
 {if $group_users}
-<h3>Current users</h3>
+<h3>{i18n}Current users{/i18n}</h3>
 
 <ul>
 {foreach from=$group_users item=user}

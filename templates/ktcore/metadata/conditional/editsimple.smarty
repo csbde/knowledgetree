@@ -66,15 +66,15 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 <h2>{i18n}Editing Fieldset Rules (Simple){/i18n}</h2>
 
-<p class="descriptiveText">To make a value in a <strong>child field</strong> available to the user when another value is 
+<p class="descriptiveText">{i18n}To make a value in a <strong>child field</strong> available to the user when another value is 
 selected in a <strong>parent field</strong>, first ensure that the parent field is being edited (it will have "save" and "done" 
 as the buttons at the bottom of the column) and then select the value for the parent field.  Now select the value(s) in 
 the child column(s) you wish to be available to the user when the parent field's value is selected,
 and click "save".  Note you that you can use Ctrl-&lt;click&gt; to select multiple child values
-at the same time.</p>
+at the same time.{/i18n}</p>
 
-<p class="descriptiveText important">Changes made here are stored immediately, without you needing to
-refresh the page.</p>
+<p class="descriptiveText important">{i18n}Changes made here are stored immediately, without you needing to
+refresh the page.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />

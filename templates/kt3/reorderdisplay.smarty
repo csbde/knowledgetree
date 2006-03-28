@@ -4,9 +4,9 @@
 <table class="kt_collection">
     <thead>
         <tr>
-            <th>Item</th>
-            <th>Up</th>
-            <th>Down</th>
+            <th>{i18n}Item{/i18n}</th>
+            <th>{i18n}Up{/i18n}</th>
+            <th>{i18n}Down{/i18n}</th>
         </tr>
     </thead>
 

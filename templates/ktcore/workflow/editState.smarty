@@ -189,7 +189,7 @@ documents are in this state.{/i18n}</p></div>
 <table cellspacing="0" class="kt_collection">
 <thead>
   <tr>
-    <th>Role or Group</th>
+    <th>{i18n}Role or Group{/i18n}</th>
     {foreach from=$state_permissions item=sPermName}
     <th>{$permissions.$sPermName->getHumanName()}</th>
     {/foreach}
