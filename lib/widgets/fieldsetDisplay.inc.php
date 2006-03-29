@@ -190,15 +190,15 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         // creation
         $creator =& User::get($document->getCreatorId());
         if (PEAR::isError($creator)) {
-           $creator = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
+           $creator_name = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
-           $creator = $creator->getName();
+           $creator_name = $creator->getName();
         }
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
+           $modified_user_name = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
         } else {
-           $modified_user = $modified_user->getName();
+           $modified_user_name = $modified_user->getName();
         }
         $creation_date = $this->_dateHelper($document->getCreatedDateTime());
 
@@ -221,10 +221,10 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 
 			"filename" => $document->getFileName(),
 			
-            "creator" => $creator,
+            "creator" => $creator_name,
             "creation_date" => $creation_date,
             
-            "last_modified_by" => $modified_user,
+            "last_modified_by" => $modified_user_name,
             "last_modified_date" => $last_modified_date,
             
             "document_type" => $document_type,
