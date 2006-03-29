@@ -156,6 +156,7 @@ class KTInit {
             'password' => $default->dbPass,
             'hostspec' => $default->dbHost,
             'database' => $default->dbName,
+            'port' => $default->dbPort,
         );
 
         $options = array(
