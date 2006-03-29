@@ -323,9 +323,6 @@ class KTErrorDispatcher extends KTStandardDispatcher {
     function dispatch() {
         require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
         $oRegistry =& KTErrorViewerRegistry::getSingleton();
-        print "<pre>";
-        var_dump($this->oError);
-        exit(0);
         $oViewer =& $oRegistry->getViewer($this->oError);
         $this->oPage->setTitle($oViewer->view());
         $this->oPage->hideSection();
