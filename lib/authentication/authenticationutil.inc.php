@@ -42,16 +42,26 @@ class KTAuthenticationUtil {
         return KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
     }
 
+    function &getAuthenticationProviderForUser($oUser) {
+        $iSourceId = $oUser->getAuthenticationSourceId();
+        return KTAuthenticationUtil::getAuthenticationProviderForSource($iSourceId);
+    }
+
     function &getAuthenticatorForSource($oSource) {
+        $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
+        return $oProvider->getAuthenticator($oSource);
+    }
+
+    function &getAuthenticationProviderForSource($oSource) {
         if ($oSource) {
             $oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
             $sProvider = $oSource->getAuthenticationProvider();
             $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
             $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
         } else {
-            $oProvider = new KTBuiltinAuthenticationProvider;
+            $oProvider =& new KTBuiltinAuthenticationProvider;
         }
-        return $oProvider->getAuthenticator($oSource);
+        return $oProvider;
     }
 
     function synchroniseGroupToSource($oGroup) {

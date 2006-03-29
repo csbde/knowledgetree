@@ -10,7 +10,6 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; using version 2 of the License.
  *
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,9 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.session
  */ 
+
 class Session {
 
     /**
@@ -32,13 +30,14 @@ class Session {
      * @param int the id of the user to create a session for
      * @return string the generated sessionID
      */
-    function create($iUserID) {
+    function create($oUser) {
+        $iUserId = $oUser->getId();
         global $default;
         
         session_start();
         
         // bind user id to session
-        $_SESSION["userID"] = $iUserID;
+        $_SESSION["userID"] = $iUserId;
         $_SESSION["KTErrorMessage"] = array();
         
         // use the PHP generated session id
@@ -47,13 +46,12 @@ class Session {
         // retrieve client ip
         $ip = $this->getClientIP();
 
-        $default->log->debug("Session::create() new session for $iUserID, from $ip, sessionID=$sessionID");
+        $default->log->debug("Session::create() new session for $iUserId, from $ip, sessionID=$sessionID");
         
         // insert session information into db
-        $sql = $default->db;
         $aParams = array(
             'session_id' => $sessionID,
-            'user_id' => $iUserID,
+            'user_id' => $iUserId,
             'lastused' => date("Y-m-d H:i:s", time()),
             'ip' => $ip,
         );
@@ -62,6 +60,10 @@ class Session {
         if (PEAR::isError($result)) {
             die("Error creating session: " . $result->toString());
         }
+
+        $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($oUser);
+        $oProvider->login($oUser);
+        
         return $sessionID;
     }
     
@@ -106,85 +108,75 @@ class Session {
 	 * @param boolean optional parameter set if we're downloading a file     
      * @return int session verification status
      */
-    function verify($bDownload = false) {
-        global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
+    function verify() {
+        global $default;
+
         // this is a workaround for an SSL download bug with IE.
         session_cache_limiter('none');
         session_start();
         header("Cache-Control: must-revalidate");
         header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600) . " GMT");
         $sessionID = session_id();
-        if (strlen($sessionID) > 0) {
-            // initialise return status
-            $sessionStatus = 0;
-            
-            // this should be an existing session, so check the db
-            $sql = $default->db; 
-            $sql->query(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));/*ok*/
-            $numrows = $sql->num_rows($sql);
 
-            // FIXME: if there aren't more rows that the max sessions for this user
-            if ($numrows >= 1) {
-                $default->log->debug("Session::verify found session in db");
-                while($sql->next_record()) {
-                    $iUserID = $sql->f("user_id");
-                    $ip = $this->getClientIP();
-                    // check that ip matches
-                    if ($ip == trim($sql->f("ip"))) {
-                        // now check if the timeout has been exceeded
-                        $lastused = $sql->f("lastused");
-                        $diff = time() - strtotime($lastused);
-                        if($diff <= $default->sessionTimeout) {
-                            // session has been verified, update status
-                            $sessionStatus = 1;
-                            // use userID to refresh user details and set on session
-                            
-                            // ??: will this change during a user session?
-                            // only set the userID if its not in the array already 
-                            if (!$_SESSION["userID"]) {
-                                $_SESSION["userID"] = $iUserID;
-                            }
-                            
-                            // update last used timestamp
-                            $aFV = array(
-                                'lastused' => getCurrentDateTime(),
-                            );
-                            $aWFV = array(
-                                'user_id' => $iUserID,
-                                'session_id' => $sessionID,
-                            );
-                            $res = DBUtil::whereUpdate($default->sessions_table, $aFV, $aWFV);
-                            // add the array to the session
-                            $_SESSION["sessionStatus"] = $sessionStatus;
-                        } else {
-                            // session timed out status
-                            $sessionStatus = 2;
-                            // destroy this session
-                            $this->destroy();
-                            $_SESSION["errorMessage"] = $lang_sesstimeout;
-                        }
-                    } else {
-                        // session in use status
-                        $sessionStatus = 3;
-                        $_SESSION["errorMessage"] = $lang_sessinuse;
-                    }
-                }
-            } else {
-                // the session doesn't exist in the db
-                $default->log->info("Session::verify sessionID=$sessionID, not in db");
-                $sessionStatus = false;
-            }
-        } else {
+        if (empty($sessionID)) {
             $default->log->info("Session::verify session not in db");
-            // there is no session
-            $sessionStatus = false;
+            return PEAR::raiseError('You need to login to access this page');
         }
-        
-        // remove old sessions
-        Session::removeStaleSessions();
 
-        // return the status
-        return $sessionStatus;
+        // this should be an existing session, so check the db
+        $aRows = DBUtil::getResultArray(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));
+        $numrows = count($aRows);
+
+        // FIXME: if there aren't more rows that the max sessions for this user
+        if ($numrows < 1) {
+            // the session doesn't exist in the db
+            $default->log->info("Session::verify sessionID=$sessionID, not in db");
+            return PEAR::raiseError('You need to login to access this page');
+            return false;
+        }
+
+        $default->log->debug("Session::verify found session in db");
+        $aRow = $aRows[0];
+        // foreach ($aRows as $aRow) {
+
+        $iUserID = $aRow["user_id"];
+
+        // check that ip matches
+        $ip = $this->getClientIP();
+        if ($ip != trim($aRow["ip"])) {
+            return PEAR::raiseError("You are coming from a different IP address than the session requires");
+            return false;
+        }
+
+
+        // now check if the timeout has been exceeded
+        $lastused = $aRow["lastused"];
+        $diff = time() - strtotime($lastused);
+        if($diff <= $default->sessionTimeout) {
+            // update last used timestamp
+            $aFV = array(
+                'lastused' => getCurrentDateTime(),
+            );
+            $aWFV = array(
+                'user_id' => $iUserID,
+                'session_id' => $sessionID,
+            );
+            $res = DBUtil::whereUpdate($default->sessions_table, $aFV, $aWFV);
+            // add the array to the session
+            $_SESSION["sessionStatus"] = $sessionStatus;
+
+            Session::removeStaleSessions();
+
+            return true;
+        } else {
+            return PEAR::raiseError('Session timed out');
+        }
+
+        // }
+
+        Session::removeStaleSessions();
+        
+        return false;
     }
     
     /**

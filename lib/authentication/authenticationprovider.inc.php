@@ -87,4 +87,20 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     function do_performEditSourceProvider() {
         return $this->errorRedirectTo('viewsource', _kt("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
     }
+
+    /**
+     * Perform provider-specific on-logout activities
+     *
+     * @param   User    The user who has just logged in
+     */
+    function login($oUser) {
+    }
+
+    /**
+     * Perform provider-specific on-logout activities
+     *
+     * @param   User    The user who is about to be logged out
+     */
+    function logout($oUser) {
+    }
 }
