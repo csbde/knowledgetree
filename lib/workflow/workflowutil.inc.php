@@ -591,7 +591,7 @@ class KTWorkflowUtil {
         $aGroupMembershipSet = GroupUtil::buildGroupArray();
         $aAllIds = array_keys($aGroups);
         foreach ($aGroups as $id => $oGroup) {
-            $aAllIds = array_merge($aGroupMembershipSet[$id], $aAllIds);
+            $aAllIds = kt_array_merge($aGroupMembershipSet[$id], $aAllIds);
         }
         
         foreach ($aAllIds as $id) {

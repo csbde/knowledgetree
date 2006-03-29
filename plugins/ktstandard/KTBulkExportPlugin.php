@@ -170,7 +170,7 @@ class KTBulkExportAction extends KTFolderAction {
                 KTUtil::getTableName("document_content_version"),
                 $sPermissionJoin, $sWhere);
         $aParams = array();
-        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams = kt_array_merge($aParams,  $aPermissionParams);
         $aParentFolderIds = split(',', $this->oFolder->getParentFolderIds());
         $aParentFolderIds[] = $this->oFolder->getId();
         if ($aParentFolderIds[0] == 0) {

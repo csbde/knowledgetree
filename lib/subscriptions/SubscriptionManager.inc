@@ -139,7 +139,7 @@ class SubscriptionManager {
     * @return array of subscription objects
     */
     function listSubscriptions($iUserID) {
-        return $aSubscriptions = array_merge(SubscriptionManager::retrieveUserSubscriptions($iUserID, SubscriptionEvent::subTypes('Folder')),
+        return $aSubscriptions = kt_array_merge(SubscriptionManager::retrieveUserSubscriptions($iUserID, SubscriptionEvent::subTypes('Folder')),
                                              SubscriptionManager::retrieveUserSubscriptions($iUserID, SubscriptionEvent::subTypes('Document')));
     }
     
@@ -173,7 +173,7 @@ class SubscriptionManager {
     * @return array of subscription objects
     */    
     function listSubscriptionAlerts($iUserID) {
-        return $aSubscriptions = array_merge(SubscriptionManager::retrieveSubscriptionAlerts($iUserID, SubscriptionEvent::subTypes("Folder")),
+        return $aSubscriptions = kt_array_merge(SubscriptionManager::retrieveSubscriptionAlerts($iUserID, SubscriptionEvent::subTypes("Folder")),
                                              SubscriptionManager::retrieveSubscriptionAlerts($iUserID, SubscriptionEvent::subTypes("Document")));        
     }
 

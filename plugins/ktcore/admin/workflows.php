@@ -256,7 +256,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $aNamedActions[] = $aInfo['actions_by_name'][$sName];
         }
         
-        $aThese = array_merge($aAlways, $aNamedActions);
+        $aThese = kt_array_merge($aAlways, $aNamedActions);
         // some controlled.  we need to be careful here:  list actions that _are always_ available
         if (empty($aThese)) { return _kt('No actions available.'); }
     

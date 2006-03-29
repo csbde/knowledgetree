@@ -94,7 +94,7 @@ class KTSearchUtil {
         foreach ($aSQL as $sSQL) {
             if (is_array($sSQL)) {
                 $aCritQueries[] = '('.$sSQL[0].')';
-                $aCritParams = array_merge($aCritParams , $sSQL[1]);
+                $aCritParams = kt_array_merge($aCritParams , $sSQL[1]);
             } else {
                 $aCritQueries[] = '('.$sSQL.')';
             }
@@ -141,8 +141,8 @@ class KTSearchUtil {
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
                 list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
-                $aJoinSQL = array_merge($aJoinSQL, $aThisJoinSQL);
-                $aParams = array_merge($aParams, $aThisParams);
+                $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
+                $aParams = kt_array_merge($aParams, $aThisParams);
                 $tabs = str_repeat("\t", ($iRecurseLevel + 2));
                 $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
             } else if (!empty($aSubgroup)) {
@@ -154,7 +154,7 @@ class KTSearchUtil {
                 list($sThisSearchString, $aThisParams, $sThisJoinSQL) =
                     KTSearchUtil::criteriaSetToSQL($aOneCriteriaSet, $iRecurseLevel + 1);
                 $aJoinSQL[] = $sThisJoinSQL;
-                $aParams = array_merge($aParams, $aThisParams);
+                $aParams = kt_array_merge($aParams, $aThisParams);
                 $aSearchStrings[] = $sThisSearchString;
             }
         }
@@ -198,7 +198,7 @@ class KTSearchUtil {
         $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
         $sSQLString = "PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
         $aParams = array($oPermission->getId());
-        $aParams = array_merge($aParams, $aPermissionDescriptors);
+        $aParams = kt_array_merge($aParams, $aPermissionDescriptors);
         return array($sSQLString, $aParams, $sJoinSQL);
     }
     // }}}
@@ -304,10 +304,10 @@ class KTSearchUtil {
     // GROUP BY D.id
 
         $aParams = array();
-        $aParams = array_merge($aParams, $aInitialJoinParams);
-        $aParams = array_merge($aParams, $aPermissionParams);
+        $aParams = kt_array_merge($aParams, $aInitialJoinParams);
+        $aParams = kt_array_merge($aParams, $aPermissionParams);
         $aParams[] = $sToSearch;
-        $aParams = array_merge($aParams, $aCritParams);
+        $aParams = kt_array_merge($aParams, $aCritParams);
 
         return array($sQuery, $aParams);
     }

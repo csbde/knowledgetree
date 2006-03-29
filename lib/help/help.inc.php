@@ -51,7 +51,7 @@ class KTHelp {
         
         $final_path = array(null,'kthelp', $path_segments[0]);
         $final_path[] = $lang_code;
-        $final_path = array_merge($final_path, array_slice($path_segments, 1));
+        $final_path = kt_array_merge($final_path, array_slice($path_segments, 1));
         
         $help_path = implode('/',$final_path);
         

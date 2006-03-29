@@ -322,7 +322,7 @@ class KTBrowseUtil {
             WHERE
                 PLA.permission_descriptor_id IN ($sPermissionDescriptors)
                 AND NOT (PLA2.permission_descriptor_id IN ($sPermissionDescriptors))";
-        $aParams = array_merge(array($oPermission->getId(), $oPermission->getId()), $aPermissionDescriptors, $aPermissionDescriptors);
+        $aParams = kt_array_merge(array($oPermission->getId(), $oPermission->getId()), $aPermissionDescriptors, $aPermissionDescriptors);
         $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
         
         if (PEAR::isError($res)) {

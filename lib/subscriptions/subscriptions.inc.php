@@ -619,7 +619,7 @@ class SubscriptionEvent {
     // after this has been called.
     function _pruneAlertedUsers($aUserIds) {
         $returnArray = array_diff($aUserIds, $this->alertedUsers);
-        $this->alertedUsers = array_merge($returnArray, $this->alertedUsers); // now contains all users who will have been alerted.
+        $this->alertedUsers = kt_array_merge($returnArray, $this->alertedUsers); // now contains all users who will have been alerted.
         return $returnArray;
     }
     

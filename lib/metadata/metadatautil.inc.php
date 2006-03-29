@@ -646,7 +646,7 @@ class KTMetadataUtil {
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => true));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($iDocumentTypeId, array('ids' => true));
 
-        $aFieldsetIds = array_merge($aDocumentFieldsetIds, $aGenericFieldsetIds, $aSpecificFieldsetIds);
+        $aFieldsetIds = kt_array_merge($aDocumentFieldsetIds, $aGenericFieldsetIds, $aSpecificFieldsetIds);
         $aFieldsetIds = array_unique($aFieldsetIds);
         sort($aFieldsetIds);
 

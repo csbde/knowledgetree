@@ -143,7 +143,7 @@ class GroupUtil {
             "is_unit_admin" => false,
             "is_system_admin" => false,
         );
-        $aDetails = array_merge($aDefaultDetails, $aGroupDetails);
+        $aDetails = kt_array_merge($aDefaultDetails, $aGroupDetails);
         if (is_null(KTUtil::arrayGet($aDetails, "name"))) {
             return PEAR::raiseError("Needed key name is not provided");
         }
@@ -172,7 +172,7 @@ class GroupUtil {
         $aDefaultOptions = array(
             //"active" => true,
         );
-        $aOptions = array_merge($aDefaultOptions, $aGivenOptions);
+        $aOptions = kt_array_merge($aDefaultOptions, $aGivenOptions);
 
         $aWhere = array();
         /* if ($aOptions["active"] === true) {
@@ -250,7 +250,7 @@ class GroupUtil {
         foreach ($aGroupIDs as $iGroupID) {
             $aExtraIDs = KTUtil::arrayGet($aGroupArray, $iGroupID);
             if (is_array($aExtraIDs)) {
-                $aGroupIDs = array_merge($aGroupIDs, $aExtraIDs);
+                $aGroupIDs = kt_array_merge($aGroupIDs, $aExtraIDs);
             }
         }
         $aGroupIDs = array_unique($aGroupIDs);
@@ -319,7 +319,7 @@ class GroupUtil {
                     if (is_null($aStuff)) {
                         continue;
                     }
-                    $v = array_unique(array_merge($v, $aStuff));
+                    $v = array_unique(kt_array_merge($v, $aStuff));
                     sort($v);
                 }
                 $aExpandedGroups[$k] = $v;
@@ -351,7 +351,7 @@ class GroupUtil {
         $sTable = KTUtil::getTableName('users_groups');
         $sQuery = 'SELECT group_id FROM ' . $sTable . ' WHERE user_id = ? AND group_id IN (' . DBUtil::paramArray($aSubgroups) . ')';
         $aParams = array($oUser->getId());
-        $aParams = array_merge($aParams, $aSubgroups);
+        $aParams = kt_array_merge($aParams, $aSubgroups);
 
         $res = DBUtil::getOneResult(array($sQuery, $aParams));
         if (PEAR::isError($res)) {

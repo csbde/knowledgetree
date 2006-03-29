@@ -136,7 +136,7 @@ class KTFolderAction extends KTStandardDispatcher {
             "documentaction" => "viewDocument",
             "folderaction" => "browse",
         );
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
 
         $portlet = new KTActionPortlet(_kt("Folder Actions"));

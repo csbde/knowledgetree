@@ -250,7 +250,7 @@ class KTFolderUtil {
             
             // child folders.
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
-            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+            $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
         
         // FIXME we could subdivide this to provide a per-item display (viz. bulk upload, etc.)
@@ -346,7 +346,7 @@ class KTFolderUtil {
             
             // child folders.
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
-            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+            $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
               
         if ((!empty($aFailedDocuments) || (!empty($aFailedFolders)))) {
@@ -419,7 +419,7 @@ class KTFolderUtil {
             }
             
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
-            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+            $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
         
         

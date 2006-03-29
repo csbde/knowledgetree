@@ -126,8 +126,8 @@ class BrowseQuery extends PartialQuery{
                 KTUtil::getTableName("document_content_version"),
                 $this->sDocumentJoinClause, $sPermissionJoin, $sWhere);
         $aParams = array();
-        $aParams = array_merge($aParams, $this->aDocumentJoinParams);
-        $aParams = array_merge($aParams, $aPermissionParams);
+        $aParams = kt_array_merge($aParams, $this->aDocumentJoinParams);
+        $aParams = kt_array_merge($aParams, $aPermissionParams);
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
@@ -159,7 +159,7 @@ class BrowseQuery extends PartialQuery{
 
         $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("folders") . " AS F $sPermissionJoin $sWhere ";
         $aParams = array();
-        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams = kt_array_merge($aParams,  $aPermissionParams);
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
@@ -470,7 +470,7 @@ class ArchivedBrowseQuery extends BrowseQuery {
                 KTUtil::getTableName("document_content_version"),
                 $sPermissionJoin, $sWhere);
         $aParams = array();
-        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams = kt_array_merge($aParams,  $aPermissionParams);
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
