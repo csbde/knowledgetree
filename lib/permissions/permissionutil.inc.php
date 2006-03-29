@@ -324,8 +324,8 @@ class KTPermissionUtil {
                     }
                     // roles are _not_ always assigned (can be null at root)
                     if (!is_null($_roleCache[$iRoleId])) {
-                        $aMapPermAllowed[$iPermissionId]['user'] = array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUserIds());
-                        $aMapPermAllowed[$iPermissionId]['group'] = array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroupIds());
+                        $aMapPermAllowed[$iPermissionId]['user'] = kt_array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUserIds());
+                        $aMapPermAllowed[$iPermissionId]['group'] = kt_array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroupIds());
                         // naturally, roles cannot be assigned roles, or madness follows.
                     }
                 }

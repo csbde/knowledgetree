@@ -525,7 +525,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			if (PEAR::isError($aNewFolders)) {
 				$this->errorRedirectToMain(_kt('Failure to generate folderlisting.'));
 			}
-			$folder_queue = array_merge ($folder_queue, (array) $aNewFolders); // push.
+			$folder_queue = kt_array_merge ($folder_queue, (array) $aNewFolders); // push.
 
 			
 			// update the folder.

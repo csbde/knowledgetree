@@ -116,7 +116,7 @@ class KTBaseIndexerTrigger {
         }
 
         $cmdline = array($sCommand);
-        $cmdline = array_merge($cmdline, $this->args);
+        $cmdline = kt_array_merge($cmdline, $this->args);
         $cmdline[] = $sFilename;
         
         $aOptions = array();

@@ -84,7 +84,7 @@ class KTConfig {
                 $this->setns(null, $seck, $secv);
             }
         }
-        $this->conf = array_merge($this->conf, $conf["root"]);
+        $this->conf = kt_array_merge($this->conf, $conf["root"]);
     }
 
     function setns($seck, $k, $v, $bDefault = false) {

@@ -179,7 +179,7 @@ class KTPermissionDescriptor extends KTEntity {
         $sQuery = "SELECT COUNT(group_id) AS num FROM $sTable
             WHERE descriptor_id = ? AND group_id IN ($sGroupIDs)";
         $aParams = array($this->getID());
-        $aParams = array_merge($aParams, $aGroupIDs);
+        $aParams = kt_array_merge($aParams, $aGroupIDs);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
         if (PEAR::isError($res)) {
             return $res;
@@ -288,7 +288,7 @@ class KTPermissionDescriptor extends KTEntity {
         $sQuery = "SELECT COUNT(role_id) AS num FROM $sTable
             WHERE descriptor_id = ? AND role_id IN ($sRoleIDs)";
         $aParams = array($this->getID());
-        $aParams = array_merge($aParams, $aRoleIDs);
+        $aParams = kt_array_merge($aParams, $aRoleIDs);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
         if (PEAR::isError($res)) {
             return $res;
@@ -397,7 +397,7 @@ class KTPermissionDescriptor extends KTEntity {
         $sQuery = "SELECT COUNT(user_id) AS num FROM $sTable
             WHERE descriptor_id = ? AND user_id IN ($sUserIDs)";
         $aParams = array($this->getID());
-        $aParams = array_merge($aParams, $aUserIDs);
+        $aParams = kt_array_merge($aParams, $aUserIDs);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
         if (PEAR::isError($res)) {
             return $res;

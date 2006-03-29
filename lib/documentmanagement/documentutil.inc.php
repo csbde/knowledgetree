@@ -217,7 +217,7 @@ class KTDocumentUtil {
     // {{{ validateMetadata
     function validateMetadata(&$oDocument, $aMetadata) {
         $aFieldsets =& KTFieldset::getGenericFieldsets();
-        $aFieldsets =& array_merge($aFieldsets,
+        $aFieldsets =& kt_array_merge($aFieldsets,
                 KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
         $aSimpleMetadata = array();
         foreach ($aMetadata as $aSingleMetadatum) {

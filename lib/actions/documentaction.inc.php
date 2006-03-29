@@ -141,7 +141,7 @@ class KTDocumentAction extends KTStandardDispatcher {
             "documentaction" => "viewDocument",
             "folderaction" => "browse",
         );
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
 	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
