@@ -540,6 +540,34 @@ class KTUtil {
         return ((float) $microtime_simple[1] + (float) $microtime_simple[0]);
     }
 
+    function phraseSplit($sSearchString) {
+        $a = preg_split('#"#', $sSearchString);
+        $i = 0;
+        $phrases = array();
+        $word_parts = array();
+        foreach ($a as $part) {
+            if ($i%2 == 0) {
+                $word_parts[] = $part;
+            } else {
+                $phrases[] = $part;
+            }
+            $i += 1;
+        }
+        
+        $words = array();
+        foreach ($word_parts as $part) {
+            $w = (array) explode(' ', $part);
+            foreach ($w as $potential) { if (!empty($potential)) { $words[] = $potential; }}
+        }
+        
+        
+        return array(
+            'words' => $words,
+            'phrases' => $phrases,
+        );
+
+    }
+
 }
 
 ?>
