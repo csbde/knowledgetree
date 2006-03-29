@@ -175,6 +175,9 @@ class KTStandardDispatcher extends KTDispatcher {
 	var $sHelpPage = null;
     
     function KTStandardDispatcher() {
+        if (empty($GLOBALS['main'])) {
+            $GLOBALS['main'] =& new KTPage;
+        }
         $this->oPage =& $GLOBALS['main'];
 		parent::KTDispatcher();
     }
@@ -320,6 +323,9 @@ class KTErrorDispatcher extends KTStandardDispatcher {
     function dispatch() {
         require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
         $oRegistry =& KTErrorViewerRegistry::getSingleton();
+        print "<pre>";
+        var_dump($this->oError);
+        exit(0);
         $oViewer =& $oRegistry->getViewer($this->oError);
         $this->oPage->setTitle($oViewer->view());
         $this->oPage->hideSection();
