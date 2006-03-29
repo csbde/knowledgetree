@@ -609,7 +609,20 @@ class SearchableTextCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
-        $p[1] = $aRequest[$this->getWidgetBase()];
+        
+        $RESTRICTING_SEARCH = true;
+        
+        if ($RESTRICTING_SEARCH) {
+            // FIXME use a more reasonable approach for splitting this...
+            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
+            $temp = $q_set;
+            foreach ($temp as $k => $v) { 
+                $q_set[$k] = sprintf('+"%s"', $v);
+            }
+            $p[1] = implode(' ',$q_set);
+        } else {
+            $p[1] = $aRequest[$this->getWidgetBase()]; 
+        }
         return $p;
     }
 
