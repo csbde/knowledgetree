@@ -126,37 +126,42 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
     global $default;
 
     $session = new Session();
-    $sessionStatus = $session->verify($bDownload);
+    $sessionStatus = $session->verify();
 
-    if ($sessionStatus != 1) {
-        // verification failed
-        $default->log->debug("checkSession:: session check failed");
-        if ($bRedirect) {
-            // redirect to login with error message
-            if ($sessionStatus == 2) {
-            	// session timed out
-            	$url = generateControllerUrl("login", "errorMessage=" . urlencode("Session timed out"));
-            } else {
-            	$url = generateControllerUrl("login");
-            }
-            $redirect = urlencode(KTUtil::addQueryStringSelf($_SERVER["QUERY_STRING"]));
-            if ((strlen($redirect) > 1)) {
-                $default->log->debug("checkSession:: redirect url=$redirect");
-                // this session verification failure represents either the first visit to
-                // the site OR a session timeout etc. (in which case we still want to bounce
-                // the user to the login page, and then back to whatever page they're on now)
-                $url = $url . "&redirect=" . $redirect;
-            }
-            $default->log->debug("checkSession:: about to redirect to $url");
-            redirect($url);
-            exit;
-        } else {
-            return false;
-        }
-    } else {
+    if ($sessionStatus === true) {
         $default->log->debug("checkSession:: returning true");
         return true;
     }
+
+    // verification failed
+    $default->log->debug("checkSession:: session check failed");
+    if (empty($bRedirect)) {
+        return false;
+    }
+
+    $sErrorMessage = "";
+    if (PEAR::isError($sessionStatus)) {
+        $sErrorMessage = $sessionStatus->getMessage();
+    }
+    // redirect to login with error message
+    if ($sErrorMessage) {
+        // session timed out
+        $url = generateControllerUrl("login", "errorMessage=" . urlencode($sErrorMessage));
+    } else {
+        $url = generateControllerUrl("login");
+    }
+
+    $redirect = urlencode(KTUtil::addQueryStringSelf($_SERVER["QUERY_STRING"]));
+    if ((strlen($redirect) > 1)) {
+        $default->log->debug("checkSession:: redirect url=$redirect");
+        // this session verification failure represents either the first visit to
+        // the site OR a session timeout etc. (in which case we still want to bounce
+        // the user to the login page, and then back to whatever page they're on now)
+        $url = $url . "&redirect=" . $redirect;
+    }
+    $default->log->debug("checkSession:: about to redirect to $url");
+    redirect($url);
+    exit;
 }
 
 /**

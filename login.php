@@ -38,11 +38,11 @@ class LoginPageDispatcher extends KTDispatcher {
 
     function check() {
         // bounce out immediately.
-		$session = new Session();
-		if ($session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
+		$this->session = new Session();
+		if ($this->session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
 			exit(redirect(generateControllerLink('dashboard')));
 		} else {
-		    $session->destroy(); // toast it - its probably a hostile session.
+		    $this->session->destroy(); // toast it - its probably a hostile session.
 		}
 		return true;
 	}
@@ -139,7 +139,7 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         $session = new Session();
-        $sessionID = $session->create($oUser->getId());
+        $sessionID = $session->create($oUser);
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL; 
@@ -156,6 +156,9 @@ class LoginPageDispatcher extends KTDispatcher {
         } else {
             $url = generateControllerUrl("dashboard");
         }
+        $oAuthenticator =& KTAuthenticationUtil::getAuthenticatorForUser($oUser);
+        $oAuthenticator->login($oUser);
+
         exit(redirect($url));
 	}
 }

@@ -197,19 +197,13 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function loginRequired() {
-        $url = generateControllerUrl("login");
-        $redirect = urlencode($_SERVER['REQUEST_URI']);
-        if ((strlen($redirect) > 1)) {
-            $url = $url . "&redirect=" . $redirect;
-        }
-        redirect($url);
-        exit(0);
+        checkSessionAndRedirect(true);
     }
 
     function dispatch () {
-        $session = new Session();
-        $sessionStatus = $session->verify($bDownload);
-        if ($sessionStatus === false) {
+        $this->session = new Session();
+        $sessionStatus = $this->session->verify();
+        if ($sessionStatus !== true) {
             $this->loginRequired();
         }
 
