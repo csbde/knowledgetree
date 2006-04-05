@@ -540,7 +540,7 @@ class KTUtil {
         return ((float) $microtime_simple[1] + (float) $microtime_simple[0]);
     }
 
-    function phraseSplit($sSearchString) {
+    function phraseSplit($sSearchString) {    
         $a = preg_split('#"#', $sSearchString);
         $i = 0;
         $phrases = array();
@@ -560,6 +560,8 @@ class KTUtil {
             foreach ($w as $potential) { if (!empty($potential)) { $words[] = $potential; }}
         }
         
+        // XXX: filter each subword (including in phrases) to remove whitespace-broken items and sub-4 character words.
+        
         
         return array(
             'words' => $words,
@@ -568,31 +570,6 @@ class KTUtil {
 
     }
 
-}
-
-/**
- *
- * Merges two arrays using array_merge
- *
- * array_merge in PHP5 got more strict about its parameter handling,
- * forcing arrays.
- *
- */
-if (version_compare(phpversion(), '5.0') === -1) {
-    function kt_array_merge() {
-        $args = func_get_args();
-        return call_user_func_array("array_merge",$args);
-    }
-} else {
-    eval('
-    function kt_array_merge() {
-        $args = func_get_args();
-        foreach ($args as &$arg)  {
-            $arg = (array)$arg;
-        }
-        return call_user_func_array("array_merge",$args);
-    }
-    ');
 }
 
 ?>

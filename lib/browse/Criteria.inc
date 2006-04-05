@@ -448,7 +448,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
     function searchSQL ($aRequest) {
         $p = parent::searchSQL($aRequest);
         $p[0] = join(' AND ', array($p[0], "$this->sSearchTable.document_field_id = ?"));
-        $p[1] = kt_array_merge($p[1], array($this->iID));
+        $p[1] = array_merge($p[1], array($this->iID));
         return $p;
     }
 
@@ -613,7 +613,6 @@ class SearchableTextCriterion extends BrowseCriterion {
         $RESTRICTING_SEARCH = true;
         
         if ($RESTRICTING_SEARCH) {
-            // FIXME use a more reasonable approach for splitting this...
             $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
             $temp = $q_set;
             foreach ($temp as $k => $v) { 
@@ -717,7 +716,7 @@ class Criteria {
         }
         $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
         $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
-        $aAllCriteriaIDs = kt_array_merge(array_keys($aBaseCriteria), $aIDs);
+        $aAllCriteriaIDs = array_merge(array_keys($aBaseCriteria), $aIDs);
         foreach ($aAllCriteriaIDs as $iID) {
             $oCriterion =& Criteria::getCriterionByNumber($iID);
             $aAllCriteria[$iID] =& $oCriterion;
