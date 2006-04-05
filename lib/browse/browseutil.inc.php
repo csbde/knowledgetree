@@ -304,7 +304,6 @@ class KTBrowseUtil {
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
         
         
-        
         if (empty($aPermissionDescriptors)) {
             return array();
         }
@@ -321,6 +320,7 @@ class KTBrowseUtil {
                 LEFT JOIN $sPLTable AS PL2 ON F2.permission_lookup_id = PL2.id LEFT JOIN $sPLATable AS PLA2 ON PLA2.permission_lookup_id = PL2.id AND PLA2.permission_id = ?
             WHERE
                 PLA.permission_descriptor_id IN ($sPermissionDescriptors)
+                AND F2.id != 1
                 AND NOT (PLA2.permission_descriptor_id IN ($sPermissionDescriptors))";
         $aParams = kt_array_merge(array($oPermission->getId(), $oPermission->getId()), $aPermissionDescriptors, $aPermissionDescriptors);
         $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
