@@ -19,7 +19,8 @@ your unit folder.{/i18n}</p>
 unit folder will be created.  Use the folder collection and path below
 to browse to the folder you wish to create the unit folder into.{/i18n}</p>
 
-<p class="descriptiveText">{i18n}The unit administrators have additional {/i18n}</p>
+<p class="descriptiveText">{i18n}The unit administrators have additional
+rights within that portion of the document management system.{/i18n}</p>
 
 <input type="hidden" name="fFolderId" value="{$folder->getId()}" />
 {foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
