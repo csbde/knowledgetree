@@ -85,6 +85,7 @@ class LoginPageDispatcher extends KTDispatcher {
 			  'errorMessage' => $errorMessage,
 			  'redirect' => $redirect,
 			  'systemVersion' => $default->systemVersion,
+			  'versionName' => $default->versionName,
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
 		);
