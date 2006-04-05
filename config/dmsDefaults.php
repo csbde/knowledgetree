@@ -490,6 +490,7 @@ require_once(KT_LIB_DIR . '/database/lookup.inc');
 include("tableMappings.inc");
 
 $default->systemVersion = trim(file_get_contents(KT_DIR . '/docs/VERSION.txt'));
+$default->versionName = trim(file_get_contents(KT_DIR . '/docs/VERSION-NAME.txt'));
 
 $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
