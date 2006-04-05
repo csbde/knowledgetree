@@ -14,7 +14,7 @@
         <input type="hidden" name="action" value="login" />
         <input type="hidden" name="cookieverify" value="{$cookietest}" />
         <input type="hidden" name="redirect" value="{$redirect|escape}" />
-            <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" width="252" height="50"/><br />
+            <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
             {if ($errorMessage == null)}
             <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
             {else}
@@ -38,7 +38,9 @@
                 <input type="submit" value="{i18n}login{/i18n}" />
             </div>
         </form>
-        <p class="descriptiveText">{i18n}KnowledgeTree Version{/i18n}: {$systemVersion}</p>
+        <br />
+        <p class="descriptiveText version">KnowledgeTree {i18n} Version{/i18n}<br />{$versionName}</p>
+        
     </div>
 
 </body>
