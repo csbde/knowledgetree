@@ -57,6 +57,12 @@ class User extends KTEntity {
     /** authentication details so that the source knows who this user is */
     var $sAuthenticationDetails = null;
     var $sAuthenticationDetails2 = null;
+    var $iAuthenticationDetailsInt1 = null;
+    var $iAuthenticationDetailsInt2 = null;
+    var $dAuthenticationDetailsDate1 = null;
+    var $dAuthenticationDetailsDate2 = null;
+    var $bAuthenticationDetailsBool1 = null;
+    var $bAuthenticationDetailsBool2 = null;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -74,6 +80,12 @@ class User extends KTEntity {
         'iAuthenticationSourceId' => 'authentication_source_id',
         'sAuthenticationDetails' => 'authentication_details_s1',
         'sAuthenticationDetails2' => 'authentication_details_s2',
+        'iAuthenticationDetailsInt1' => 'authentication_details_i1',
+        'iAuthenticationDetailsInt2' => 'authentication_details_i2',
+        'dAuthenticationDetailsDate1' => 'authentication_details_d1',
+        'dAuthenticationDetailsDate2' => 'authentication_details_d2',
+        'bAuthenticationDetailsBool1' => 'authentication_details_b1',
+        'bAuthenticationDetailsBool2' => 'authentication_details_b2',
     );
 
     var $_bUsePearError = true;
@@ -85,6 +97,7 @@ class User extends KTEntity {
 
     function getUserName() { return $this->sUserName; }
     function setUserName($sNewValue) { $this->sUserName = $sNewValue; }
+    function getPassword() { return $this->sPassword; }
     function setPassword($sNewValue) { $this->sPassword = $sNewValue; $this->bPasswordChanged = true; }
     function getQuotaMax() { return $this->iQuotaMax; }
     function setQuotaMax($iNewValue) { $this->iQuotaMax = $iNewValue; }
@@ -109,6 +122,21 @@ class User extends KTEntity {
     function setAuthenticationDetails($sNewValue) { $this->sAuthenticationDetails = $sNewValue; }
     function getAuthenticationDetails2() { return $this->sAuthenticationDetails2; }
     function setAuthenticationDetails2($sNewValue) { $this->sAuthenticationDetails2 = $sNewValue; }
+
+    function getAuthenticationDetailsInt1() { return $this->iAuthenticationDetailsInt1; }
+    function setAuthenticationDetailsInt1($mValue) { $this->iAuthenticationDetailsInt1 = $mValue; }
+    function getAuthenticationDetailsInt2() { return $this->iAuthenticationDetailsInt2; }
+    function setAuthenticationDetailsInt2($mValue) { $this->iAuthenticationDetailsInt2 = $mValue; }
+
+    function getAuthenticationDetailsDate1() { return $this->dAuthenticationDetailsDate1; }
+    function setAuthenticationDetailsDate1($mValue) { $this->dAuthenticationDetailsDate1 = $mValue; }
+    function getAuthenticationDetailsDate2() { return $this->dAuthenticationDetailsDate2; }
+    function setAuthenticationDetailsDate2($mValue) { $this->dAuthenticationDetailsDate2 = $mValue; }
+
+    function getAuthenticationDetailsBool1() { return $this->bAuthenticationDetailsBool1; }
+    function setAuthenticationDetailsBool1($mValue) { $this->bAuthenticationDetailsBool1 = $mValue; }
+    function getAuthenticationDetailsBool2() { return $this->bAuthenticationDetailsBool2; }
+    function setAuthenticationDetailsBool2($mValue) { $this->bAuthenticationDetailsBool2 = $mValue; }
 
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);

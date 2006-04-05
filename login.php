@@ -37,7 +37,6 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 class LoginPageDispatcher extends KTDispatcher {
 
     function check() {
-        // bounce out immediately.
 		$this->session = new Session();
 		if ($this->session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
 			exit(redirect(generateControllerLink('dashboard')));
@@ -46,6 +45,17 @@ class LoginPageDispatcher extends KTDispatcher {
 		}
 		return true;
 	}
+
+    function do_providerVerify() {
+		$this->session = new Session();
+		if ($this->session->verify() != 1) {
+			$this->redirectToMain();
+        }
+        $this->oUser =& User::get($_SESSION['userID']);
+        $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
+        $oProvider->subDispatch($this);
+        exit(0);
+    }
 
 	function do_main() {
 	    global $default;
@@ -156,8 +166,6 @@ class LoginPageDispatcher extends KTDispatcher {
         } else {
             $url = generateControllerUrl("dashboard");
         }
-        $oAuthenticator =& KTAuthenticationUtil::getAuthenticatorForUser($oUser);
-        $oAuthenticator->login($oUser);
 
         exit(redirect($url));
 	}

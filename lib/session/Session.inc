@@ -23,6 +23,7 @@
  */ 
 
 class Session {
+    var $_bNotEmpty = true;
 
     /**
      * Creates a session.

@@ -103,4 +103,12 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
      */
     function logout($oUser) {
     }
+
+    /**
+     * Perform any provider-specific per-request activities
+     *
+     * @param   User    The user who is about to be logged out
+     */
+    function verify($oUser) {
+    }
 }
