@@ -20,7 +20,7 @@ browse to the folder you wish to move the documents into.{/i18n}</p>
 {/if}
 {/foreach}
 {$collection->render()}
-</div>
+
 
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Restore{/i18n}" />
