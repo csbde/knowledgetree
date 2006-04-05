@@ -103,7 +103,7 @@ class KTSmartyTemplate extends KTTemplate {
         }
         if (!empty($params)) {
             $flattened = array_map(null, array_keys($params), array_values($params));
-            $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'));
+            $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'), "");
         } else {
             $replacements = array();
         }
