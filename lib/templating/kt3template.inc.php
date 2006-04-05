@@ -317,6 +317,7 @@ class KTPage {
         $aTemplateData = array(
             "page" => $this,
 			"systemversion" => $default->systemVersion,
+			"versionname" => $default->versionName,
         );
         $oConfig = KTConfig::getSingleton();
         if ($oConfig->get("ui/automaticRefresh", false)) {
