@@ -28,26 +28,38 @@
 
 require_once('../../config/dmsDefaults.php');
 
-require_once('Net/LDAP.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
+require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 
-$oKTConfig =& KTConfig::getSingleton();
+$sSourceName = "ActiveDirectory";
+$sFieldsetNamespace = "http://ktcvs.local/local/fieldsets/synctestfieldset";
+$sFieldName = "synctest";
 
-$config = array(
-    'dn' => $oKTConfig->get("ldap/ldapSearchUser"),
-    'password' => $oKTConfig->get("ldap/ldapSearchPassword"),
-    'host' => $oKTConfig->get("ldap/ldapServer"),
-    'base' => $oKTConfig->get("ldap/ldapRootDn"),
-);
-
-$oFieldset =& KTFieldset::getByNamespace('http://ktcvs.local/local/fieldsets/synctest');
-$oField = DocumentField::getByFieldsetAndName($oFieldset, 'synctest');
-
-$oLdap =& Net_LDAP::connect($config);
-if (PEAR::isError($oLdap)) {
-    var_dump($oLdap);
-    exit(0);
+$aAuthenticationSources =& KTAuthenticationSource::getList();
+$oSource = null;
+foreach($aAuthenticationSources as $oPotentialSource) {
+    if ($oPotentialSource->getName() == $sSourceName) {
+        $oSource =& $oPotentialSource;
+    }
 }
+if (empty($oSource)) {
+    printf("No authentication source named %s found\n", $sSourceName);
+    exit(1);
+}
+
+$oFieldset =& KTFieldset::getByNamespace($sFieldsetNamespace);
+if (PEAR::isError($oFieldset)) {
+    printf("No fieldset named %s found\n", $sFieldsetNamespace);
+    exit(1);
+}
+$oField = DocumentField::getByFieldsetAndName($oFieldset, $sFieldName);
+if (PEAR::isError($oField)) {
+    printf("No field named %s found in fieldset %s\n", $sFieldName, $sFieldsetNamespace);
+    exit(1);
+}
+
+$oAuthenticator =& KTAuthenticationUtil::getAuthenticatorForSource($oSource);
+$oLdap =& $oAuthenticator->oLdap;
 
 $aParams = array(
     'scope' => 'sub',
