@@ -31,8 +31,12 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once('DBAuthenticator.inc');
 
 class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
-    var $sName = "Built-in authentication provider";
     var $sNamespace = "ktcore.authentication.builtin";
+
+    function KTBuiltinAuthenticationProvider() {
+        $this->sName = _kt("Built-in authentication provider");
+        parent::KTAuthenticationProvider();
+    }
 
     function &getAuthenticator($oSource) {
         // $oSource is null, since the built-in authentication provider
