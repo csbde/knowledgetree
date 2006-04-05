@@ -543,7 +543,7 @@ class KTPermissionUtil {
 
     // {{{ rebuildPermissionLookups
     function rebuildPermissionLookups($bEmptyOnly = false) {
-        if (empty($bEmptyOnly)) {
+        if ($bEmptyOnly) {
             $sTable = KTUtil::getTableName('folders');
             $sQuery = sprintf("SELECT id FROM %s WHERE permission_lookup_id IS NULL AND permission_object_id IS NOT NULL", $sTable);
         } else {
