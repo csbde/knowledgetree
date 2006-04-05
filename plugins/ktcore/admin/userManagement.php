@@ -231,7 +231,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
    		$KTConfig =& KTConfig::getSingleton();
 		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 		$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));   
-
         
         if ($restrictAdmin && (strlen($password) < $minLength)) {
 		    $this->errorRedirectToMain(sprintf(_kt("The password must be at least %d characters long."), $minLength));
@@ -256,7 +255,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $res = $oUser->update(); 
         //$res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
         
-        
         if (PEAR::isError($res) || ($res == false)) {
             $this->errorRedirectoToMain(_kt('Failed to update user.'));
         }
@@ -269,6 +267,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     function do_editUserSource() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& $this->oValidator->validateUser($user_id);
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
 
         $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
@@ -280,7 +279,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
         }
 
-        $oProvider->dispatch();
+        $oProvider->subDispatch($this);
         exit();
     }
     

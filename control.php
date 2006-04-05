@@ -50,29 +50,32 @@ require_once("./config/dmsDefaults.php");
 
 $action = $_REQUEST['action'];
 
-// check the session, but don't redirect if the check fails
-if (checkSessionAndRedirect(false)) {
-    //get around the problem with search
-    if (strcmp($_REQUEST['fForStandardSearch'], "yes") == 0) {
-        $action = "standardSearch";
-    } else if (!isset($action)) {
-    // session check succeeds, so default action should be the dashboard if no action was specified
-        $action = "dashboard";
-    }
-} else {
-    // session check fails, so default action should be the login form if no action was specified
-    if (!isset($action)) {
-        $action = "login";
-    } elseif ($action <> "login") {
-        // we have a controller link and auth has failed, so redirect to the login page
-        // with the controller link as the redirect
-        $url = generateControllerUrl("login");
-        $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
-        if ((strlen($redirect) > 1)) {
-            $url = $url . "&redirect=" . $redirect;
+if ($action != "login") {
+
+    // check the session, but don't redirect if the check fails
+    if (checkSessionAndRedirect(false)) {
+        //get around the problem with search
+        if (strcmp($_REQUEST['fForStandardSearch'], "yes") == 0) {
+            $action = "standardSearch";
+        } else if (!isset($action)) {
+        // session check succeeds, so default action should be the dashboard if no action was specified
+            $action = "dashboard";
         }
-        redirect($url);
-        exit(0);
+    } else {
+        // session check fails, so default action should be the login form if no action was specified
+        if (!isset($action)) {
+            $action = "login";
+        } elseif ($action <> "login") {
+            // we have a controller link and auth has failed, so redirect to the login page
+            // with the controller link as the redirect
+            $url = generateControllerUrl("login");
+            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
+            if ((strlen($redirect) > 1)) {
+                $url = $url . "&redirect=" . $redirect;
+            }
+            redirect($url);
+            exit(0);
+        }
     }
 }
 

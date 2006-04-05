@@ -41,9 +41,192 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     }
     
     function showUserSource($oUser, $oSource) {
-        $sQuery = sprintf('action=setPassword&user_id=%d', $oUser->getId());
+        $sQuery = sprintf('action=editUserSource&user_id=%d', $oUser->getId());
         $sUrl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         return '<p class="descriptiveText"><a href="' . $sUrl . '">' . sprintf(_kt("Change %s's password"), $oUser->getName()) . '</a></p>';
+    }
+
+    function do_editUserSource() {
+        $this->redispatch('subaction', 'editUserSource');
+        exit(0);
+    }
+
+    function editUserSource_main() {
+        $this->oPage->setBreadcrumbDetails(_kt('change user password'));
+        $this->oPage->setTitle(_kt("Change User Password"));
+
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        $oUser =& User::get($user_id);
+
+        if (PEAR::isError($oUser) || $oUser == false) {
+            $this->errorRedirectToMain(_kt('Please select a user first.'));
+            exit(0);
+        }
+
+        $edit_fields = array();
+        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);         $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true); 
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/updatepassword");
+        $aTemplateData = array(
+            "context" => $this,
+            "edit_fields" => $edit_fields,
+            "edit_user" => $oUser,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function editUserSource_forcePasswordChange() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main'),
+        );
+        $oUser =& $this->oValidator->validateUser($_REQUEST['user_id'], $aErrorOptions);
+
+        $oUser->setAuthenticationDetailsBool1(true);
+        $res = $oUser->update();
+
+        $aErrorOptions = array(
+            'redirect_to' => array('editUserSource', sprintf('user_id=%d', $oUser->getId())),
+            'message' => _kt('Failed to update user'),
+        );
+        $this->oValidator->notErrorFalse($res, $aErrorOptions);
+
+        $this->commitTransaction();
+        $this->successRedirectTo('editUser', _kt('User will need to change password on next login.'), sprintf('user_id=%d', $oUser->getId()));
+    }
+
+    function editUserSource_updatePassword() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main'),
+        );
+        $oUser =& $this->oValidator->validateUser($_REQUEST['user_id'], $aErrorOptions);
+
+        $aErrorOptions = array(
+            'redirect_to' => array('editUserSource', sprintf('user_id=%d', $oUser->getId())),
+        );
+        $sPassword = $this->oValidator->validatePasswordMatch($_REQUEST['password'], $_REQUEST['confirm_password'], $aErrorOptions);
+
+        $KTConfig =& KTConfig::getSingleton();
+        $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+        $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
+
+        if ($restrictAdmin && (strlen($sPassword) < $minLength)) {
+            $this->errorRedirectToMain(sprintf(_kt("The password must be at least %d characters long."), $minLength));
+        }
+
+        $this->startTransaction();
+
+        // FIXME this almost certainly has side-effects.  do we _really_ want
+        $oUser->setPassword(md5($sPassword)); //
+
+        $res = $oUser->update();
+        if (PEAR::isError($res) || ($res == false)) {
+            $this->errorRedirectTo('editUser', _kt('Failed to update user.'),  sprintf('user_id=%d', $oUser->getId()));
+        }
+
+        $this->commitTransaction();
+        $this->successRedirectTo('editUser', _kt('User information updated.'), sprintf('user_id=%d', $oUser->getId()));
+
+    }
+
+    function login($oUser) {
+        $oConfig =& KTConfig::getSingleton();
+
+        $iDays = $oConfig->get('builtinauth/password_change_interval');
+        if ($iDays) {
+            $dLastPasswordChange = $oUser->getAuthenticationDetailsDate1();
+            if (empty($dLastPasswordChange)) {
+                $oUser->setAuthenticationDetailsDate1(formatDateTime(time()));
+                $oUser->update();
+            }
+            $sTable = KTUtil::getTableName('users');
+            $dNoLaterThan = formatDateTime(time() - ($iDays * 24 * 60 * 60));
+            $aSql = array("SELECT id FROM $sTable WHERE id = ? and authentication_details_d1 < ?",
+                array($oUser->getId(), $dNoLaterThan),
+            );
+
+            $iRes = DBUtil::getOneResultKey($aSql, 'id');
+        
+            if (!empty($iRes)) {
+                $_SESSION['mustChangePassword'] = true;
+            }
+        }
+
+        if ($oUser->getAuthenticationDetailsBool1()) {
+            $_SESSION['mustChangePassword'] = true;
+        }
+    }
+
+    function verify($oUser) {
+        if (isset($_SESSION['mustChangePassword'])) {
+            $url = generateControllerUrl("login", "action=providerVerify&type=1");
+            $this->addErrorMessage("Your password has expired");
+            redirect($url);
+            exit(0);
+        }
+    }
+
+    function do_providerVerify() {
+        $this->redispatch('subaction', 'providerVerify');
+        exit(0);
+    }
+
+    function providerVerify_main() {
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/force_change_password');
+        $edit_fields = array();
+        $edit_fields[] = new KTPasswordWidget(_kt('Password'), _kt('Enter a new password for the account.'), 'password', null, $this->oPage, true);
+        $edit_fields[] = new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);
+
+        $aTemplateData = array(
+            'user' => $this->oUser,
+            'edit_fields' => $edit_fields,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function providerVerify_return() {
+        $url = KTUtil::arrayGet($_SESSION, 'providerVerifyReturnUrl');
+        if (empty($url)) {
+            $url = generateControllerUrl("login");
+        }
+        redirect($url);
+        exit(0);
+    }
+
+    function providerVerify_updatePassword() {
+        $aErrorOptions = array(
+            'redirect_to' => array('providerVerify'),
+        );
+        $sPassword = $this->oValidator->validatePasswordMatch($_REQUEST['password'], $_REQUEST['confirm_password'], $aErrorOptions);
+
+        $KTConfig =& KTConfig::getSingleton();
+        $minLength = (int) $KTConfig->get('user_prefs/passwordLength', 6);
+
+        if (strlen($sPassword) < $minLength) {
+            $this->errorRedirectTo('providerVerify', sprintf(_kt("The password must be at least %d characters long."), $minLength));
+        }
+
+        $sNewMD5 = md5($sPassword);
+        $sOldMD5 = $this->oUser->getPassword();
+        if ($sNewMD5 == $sOldMD5) {
+            $this->errorRedirectTo('providerVerify', _kt("Can not use the same password as before."));
+        }
+
+        // FIXME more validation would be useful.
+        // validated and ready..
+        $this->startTransaction();
+        $this->oUser->setPassword($sNewMD5);
+        $this->oUser->setAuthenticationDetailsDate1(formatDateTime(time()));
+        $this->oUser->setAuthenticationDetailsBool1(false);
+
+        $res = $this->oUser->update();
+        $aErrorOptions = array(
+            'redirect_to' => array('providerVerify'),
+        );
+        $this->oValidator->notErrorFalse($res, $aErrorOptions);
+
+        $this->commitTransaction();
+        unset($_SESSION['mustChangePassword']);
+        $this->successRedirectTo('providerVerify', _kt('Password changed'), 'subaction=return');
     }
 }
 

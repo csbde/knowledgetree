@@ -27,41 +27,14 @@ require_once(KT_LIB_DIR . '/users/User.inc');
  */
 class Authenticator {
     /**
-     * Logs the user out of the application
-     *
-     * @param int the ID of user logging out
-     * @param string the user's sessionID
-     */
-    function logout() {
-        // remove session from db
-        Session::destroy();
-    }
-
-    /**
-     * [Abstract] Checks the user's password
+     * Checks the user's password
      *
      * @param string the name of the user to check
      * @param string the password to check
      * @return boolean true if the password is correct, else false
      */
-    function checkPassword($sUserName, $sPassword) {}
-
-    /**
-     * [Abstract] Searches the directory for a specific user
-     *
-     * @param string the username to search for
-     * @param array the attributes to return from the search
-     * @return array containing the users found
-     */ 
-    function getUser($sUserName, $aAttributes) {}
-        
-    /**
-     * [Abstract] Searches the user store for users matching the supplied search string.
-     * 
-     * @param string the username to search for
-     * @param array the attributes to return from the search     
-     * @return array containing the users found
-     */
-    function searchUsers($sUserNameSearch, $aAttributes) {}
+    function checkPassword($sUserName, $sPassword) {
+        return false;
+    }
 }
 ?>

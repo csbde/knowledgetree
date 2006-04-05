@@ -380,6 +380,19 @@ class KTDispatcherValidation {
         }
         return $sName;
     }
+
+    function validatePasswordMatch($sPassword, $sConfirmPassword, $aOptions = null) {
+        $aOptions = (array)$aOptions;
+        $aOptions['message'] = _kt('No password was provided');
+        $sPassword = $this->validateString($sPassword, $aOptions);
+        $aOptions['message'] = _kt('No password confirmation was provided');
+        $sConfirmPassword = $this->validateString($sConfirmPassword, $aOptions);
+        if ($sPassword === $sConfirmPassword) {
+            return $sPassword;
+        }
+        $aOptions['message'] = _kt('Password and confirmation password do not match');
+        $this->handleError($aOptions);
+    }
             
 
 }

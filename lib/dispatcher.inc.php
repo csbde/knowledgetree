@@ -30,6 +30,7 @@ require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 
 class KTDispatchStandardRedirector {
     function redirect($url) {
@@ -39,6 +40,7 @@ class KTDispatchStandardRedirector {
 
 class KTDispatcher {
     var $event_var = "action";
+    var $action_prefix = "do";
     var $cancel_var = "kt_cancel";
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
@@ -47,6 +49,14 @@ class KTDispatcher {
     function KTDispatcher() {
         $this->oValidator =& new KTDispatcherValidation($this);
         $this->oRedirector =& new KTDispatchStandardRedirector($this);
+    }
+
+    function redispatch($event_var, $action_prefix = null) {
+        $this->event_var = $event_var;
+        if ($action_prefix) {
+            $this->action_prefix = $action_prefix;
+        }
+        return KTDispatcher::dispatch();
     }
 
     function dispatch () {
@@ -66,11 +76,12 @@ class KTDispatcher {
                 exit(0);
             }
         }
-        $method = 'do_main';
+        $method = sprintf('%s_main', $this->action_prefix);
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = $_REQUEST[$this->event_var];
-            if (method_exists($this, 'do_' . $event)) {
-                $method = 'do_' . $event;
+            $proposed_method = sprintf('%s_%s', $this->action_prefix, $event);
+            if (method_exists($this, $proposed_method)) {
+                $method = $proposed_method;
             }
         }
 
@@ -87,8 +98,18 @@ class KTDispatcher {
     }
 
     function subDispatch(&$oOrigDispatcher) {
-        $this->aBreadcrumbs = $oOrigDispatcher->aBreadcrumbs;
-        $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
+        if (isset($oOrigDispatcher->aBreadcrumbs)) {
+            $this->aBreadcrumbs = $oOrigDispatcher->aBreadcrumbs;
+        }
+        if (isset($oOrigDispatcher->aBreadcrumbs)) {
+            $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
+        }
+        if (isset($oOrigDispatcher->oUser)) {
+            $this->oUser = $oOrigDispatcher->oUser;
+        }
+        if (isset($oOrigDispatcher->session)) {
+            $this->session = $oOrigDispatcher->session;
+        }
         return $this->dispatch();
     }
 
@@ -197,26 +218,43 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function loginRequired() {
-        checkSessionAndRedirect(true);
+        $sErrorMessage = "";
+        if (PEAR::isError($this->sessionStatus)) {
+            $sErrorMessage = $this->sessionStatus->getMessage();
+        }
+        // redirect to login with error message
+        if ($sErrorMessage) {
+            // session timed out
+            $url = generateControllerUrl("login", "errorMessage=" . urlencode($sErrorMessage));
+        } else {
+            $url = generateControllerUrl("login");
+        }
+
+        $redirect = urlencode(KTUtil::addQueryStringSelf($_SERVER["QUERY_STRING"]));
+        if ((strlen($redirect) > 1)) {
+            global $default;
+            $default->log->debug("checkSession:: redirect url=$redirect");
+            // this session verification failure represents either the first visit to
+            // the site OR a session timeout etc. (in which case we still want to bounce
+            // the user to the login page, and then back to whatever page they're on now)
+            $url = $url . urlencode("&redirect=" . urlencode($redirect));
+        }
+        $default->log->debug("checkSession:: about to redirect to $url");
+        redirect($url);
+        exit(0);
     }
 
     function dispatch () {
-        $this->session = new Session();
-        $sessionStatus = $this->session->verify();
-        if ($sessionStatus !== true) {
-            $this->loginRequired();
-        }
+        if (empty($this->session)) {
+            $this->session = new Session();
+            $this->sessionStatus = $this->session->verify();
+            if ($this->sessionStatus !== true) {
+                $this->loginRequired();
+            }
 
-        if ($this->bLogonRequired !== false) {
-            if (empty($_SESSION['userID'])) {
-                $this->loginRequired();
-                exit(0);
-            }
             $this->oUser =& User::get($_SESSION['userID']);
-            if (PEAR::isError($this->oUser) || ($this->oUser === false)) {
-                $this->loginRequired();
-                exit(0);
-            }
+            $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
+            $oProvider->verify($this->oUser);
         }
 
         if ($this->bAdminRequired !== false) {
