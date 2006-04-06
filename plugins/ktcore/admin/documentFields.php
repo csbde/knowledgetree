@@ -57,9 +57,6 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $createFields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name', null, $this->oPage, true);
         $createFields[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this fieldset.'), 'description', null, $this->oPage, true);
         $createFields[] = new KTCheckboxWidget(_kt('Generic'), _kt('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
-        $createFields[] = new KTCheckboxWidget(_kt('System'),
-            _kt('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'system', false, $this->oPage, false);
-        
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/listFieldsets');
@@ -157,16 +154,6 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $bIsGeneric = true;
         }
 
-        if (KTUtil::arrayGet($_REQUEST, 'system')) {
-            $bIsSystem = true;
-            // Can't be a system fieldset and a generic fieldset...
-			if ($bIsGeneric) {
-                $bIsGeneric = false;
-			    $this->addInfoMessage(_kt('System fieldsets cannot be generic.  Generic flag removed.'));
-			}
-			
-        }
-		
 		// basic validation
         $aErrorOptions['empty_message'] = _kt("No name was given for the fieldset");
         $aErrorOptions['duplicate_message'] = _kt("A fieldset with that name already exists");
@@ -188,7 +175,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'mandatory' => false,
             'isconditional' => false,
             'isgeneric' => $bIsGeneric,
-            'issystem' => $bIsSystem,
+            'issystem' => false,
         ));
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectToMain('Could not create fieldset');
