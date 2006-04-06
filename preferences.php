@@ -59,7 +59,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true, null, null, $aOptions);        
         $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false, null, null, $aOptions);        
         $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        
-        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
+        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('Your mobile phone number.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
 		
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
