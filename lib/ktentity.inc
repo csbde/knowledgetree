@@ -33,7 +33,7 @@ $_STOPCACHING = array();
 
 require_once(KT_LIB_DIR . '/cache/cache.inc.php');
 
-DEFINE("EVIL_CACHE_GRIND", true);
+DEFINE("EVIL_CACHE_GRIND", false);
 
 class KTEntity {
     var $_bUsePearError = false;
@@ -57,7 +57,11 @@ class KTEntity {
             $GLOBALS['_STOPCACHING'][$sClassName] = 0;
         }
         $group_func = array($sClassName, '_cachedGroups');
-        $groups = call_user_func($group_func);
+        if (is_callable($group_func)) {
+            $groups = call_user_func($group_func);
+        } else {
+            $groups = array('getlist');
+        }
         $groups[] = 'auto';
         $oCache =& KTCache::getSingleton();
         $aSuffixes = array(''); // , '_count', '_fullselect');
@@ -665,6 +669,7 @@ class KTEntityUtil {
         KTEntity::_innerClearCachedGroups($sClassName);
         $oCache =& KTCache::getSingleton();
         $oCache->clear(sprintf("%s/id", $sClassName));
+        unset($GLOBALS['_OBJECTCACHE'][$sClassName]);
     }
     
 }
