@@ -36,7 +36,10 @@ class KTSmartyTemplate extends KTTemplate {
     function render($aDict = null) {
         $smarty = new Smarty;
         $smarty->compile_dir = "/tmp";
-        foreach (array(KT_DIR . '/var/tmp', '/tmp') as $sPath) {
+        $oConfig =& KTConfig::getSingleton();
+        $sVarDirectory = $oConfig->get('urls/varDirectory');
+
+        foreach (array($sVarDirectory . '/tmp', '/tmp') as $sPath) {
             if (is_writeable($sPath)) {
                 $smarty->compile_dir = $sPath;
                 break;
