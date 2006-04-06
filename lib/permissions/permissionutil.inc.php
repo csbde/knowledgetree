@@ -454,10 +454,14 @@ class KTPermissionUtil {
         $aParams = array($oNewPO->getID(), $oOrigPO->getID(), $sFolderIDs);
         DBUtil::runQuery(array($sQuery, $aParams));
 
+        Folder::clearAllCaches();
+
         $sQuery = "UPDATE $default->documents_table SET
             permission_object_id = ? WHERE permission_object_id = ? AND
             parent_folder_ids LIKE ?";
         DBUtil::runQuery(array($sQuery, $aParams));
+
+        Document::clearAllCaches();
 
         // All objects using this PO must be new and must need their
         // lookups updated...
