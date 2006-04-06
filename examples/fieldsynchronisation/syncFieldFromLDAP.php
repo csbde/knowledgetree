@@ -34,6 +34,9 @@ require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 $sSourceName = "ActiveDirectory";
 $sFieldsetNamespace = "http://ktcvs.local/local/fieldsets/synctestfieldset";
 $sFieldName = "synctest";
+$sSearch = "(objectClass=organizationalPerson)";
+$sAttribute = "cn";
+$sRootDN = null;
 
 $aAuthenticationSources =& KTAuthenticationSource::getList();
 $oSource = null;
@@ -63,19 +66,17 @@ $oLdap =& $oAuthenticator->oLdap;
 
 $aParams = array(
     'scope' => 'sub',
-    'attributes' => array('cn'),
+    'attributes' => array($sAttribute),
 );
-$rootDn = $oKTConfig->get("ldap/ldapRootDn");
-if (is_array($rootDn)) {
-    $rootDn = join(",", $rootDn);
-}
-$aResults = $oLdap->search($rootDn, '(objectClass=organizationalPerson)', $aParams);
+
+$aResults = $oLdap->search($sRootDn, $sSearch, $aParams);
 
 $aValues = array();
 foreach ($aResults->entries() as $oEntry) {
     // print $oEntry->dn() . "\n";
-    $sValue = $oEntry->get_value('cn', 'single');
+    $sValue = $oEntry->get_value($sAttribute, 'single');
     // print $sValue . "\n";
     $aValues[] = $sValue;
 }
+
 KTMetadataUtil::synchroniseMetadata($oField, $aValues);
