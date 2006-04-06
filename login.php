@@ -62,8 +62,6 @@ class LoginPageDispatcher extends KTDispatcher {
     
         $this->check(); // bounce here, potentially.
         header('Content-type: text/html; charset=UTF-8');
-        $cookietest = KTUtil::randomString();
-        setcookie("CookieTestCookie", $cookietest, false);
         
         $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
@@ -81,7 +79,6 @@ class LoginPageDispatcher extends KTDispatcher {
         $oTemplate = $oTemplating->loadTemplate("ktcore/login");
         $aTemplateData = array(
               "context" => $this,
-              'cookietest' => $cookietest,
               'errorMessage' => $errorMessage,
               'redirect' => $redirect,
               'systemVersion' => $default->systemVersion,
@@ -115,43 +112,34 @@ class LoginPageDispatcher extends KTDispatcher {
         $queryParams = array();
         
         if ($redirect !== null) {
-            $queryParams[] = 'redirect='. urlencode($redirect);
-        }
-        
-        
-        $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
-        $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
-        
-        if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
-            $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $params);
-            exit(0);
+            $queryParams[] = 'redirect=' . urlencode($redirect);
         }
         
         $username = KTUtil::arrayGet($_REQUEST,'username');
         $password = KTUtil::arrayGet($_REQUEST,'password');
         
         if (empty($username)) {
-            $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $queryParams);
         }
         
         if (empty($password)) {
-            $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $queryParams);
         }
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
             exit(0);
         }
         $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
         if (PEAR::isError($authenticated)) {
-            $this->simpleRedirectToMain(_kt('Authentication failure.  Please try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Authentication failure.  Please try again.'), $url, $queryParams);
             exit(0);
         }
 
         if ($authenticated !== true) {
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $params);
+            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
             exit(0);
         }
 
@@ -161,6 +149,34 @@ class LoginPageDispatcher extends KTDispatcher {
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL; 
 
+        $cookietest = KTUtil::randomString();
+        setcookie("CookieTestCookie", $cookietest, false);
+
+        $this->redirectTo('checkCookie', array(
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
+        ));
+        exit(0);
+    }
+
+    function do_checkCookie() {
+        $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+        $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieVerify', null);
+
+        $url = $_SERVER["PHP_SELF"];
+        $queryParams = array();
+        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+
+        if ($redirect !== null) {
+            $queryParams[] = 'redirect='. urlencode($redirect);
+        }
+        
+        if ($cookieTest !== $cookieVerify) {
+            Session::destroy();
+            $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $queryParams);
+            exit(0);
+        }
+        
         // check for a location to forward to
         if ($redirect !== null) {
             $url = $redirect;
