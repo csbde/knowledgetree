@@ -476,7 +476,7 @@ class KTUtil {
         
         $aQs = $oUrl->_parseRawQuerystring($qs);
         foreach ($aQs as $k => $v) {
-            $oUrl->addQueryString($k, $v);
+            $oUrl->addQueryString($k, $v, true);
         }
         return $oUrl->getUrl();
     }
