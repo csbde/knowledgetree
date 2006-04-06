@@ -131,7 +131,15 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
 		$sMessage .= "<br><br>Comments:<br>$sComment";
 	}
     $sTitle = "Document: " . $sDocumentName . " from " .  $oSendingUser->getName();
-    $oEmail = new Email();
+
+    $sEmail = null;
+    $sEmailFrom = null;
+    $oConfig =& KTConfig::getSingleton();
+    if (!$oConfig->get('email/sendAsSystem')) {
+        $sEmail = $oSendingUser->getEmail();
+        $sEmailFrom = $oSendingUser->getName();
+    }
+    $oEmail = new Email($sEmail, $sEmailFrom);
     $oDocument = Document::get($iDocumentID);
 
     // Request a standard file path so that it can be attached to the
@@ -185,7 +193,16 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	$sMessage .= "</font>";
 	$sTitle = "Link: " . $sDocumentName . " from " . $oSendingUser->getName();
 	//email the hyperlink
-	$oEmail = new Email();
+    //
+    $sEmail = null;
+    $sEmailFrom = null;
+    $oConfig =& KTConfig::getSingleton();
+    if (!$oConfig->get('email/sendAsSystem')) {
+        $sEmail = $oSendingUser->getEmail();
+        $sEmailFrom = $oSendingUser->getName();
+    }
+    $oEmail = new Email($sEmail, $sEmailFrom);
+
     $res = $oEmail->send($sDestEmailAddress, $sTitle, $sMessage);
     if (PEAR::isError($res)) {
         $default->log->error($res->getMessage());
