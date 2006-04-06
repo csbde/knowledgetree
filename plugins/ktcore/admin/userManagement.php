@@ -117,7 +117,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $add_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'password', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
         // nice, easy bits.
-        $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
+        $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
         $add_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true, null, null, $aOptions);        
 
         $aAuthenticationSources =& KTAuthenticationSource::getList();
@@ -168,7 +168,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true);        
         $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false);        
         $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
-        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS'd with notifications.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
         $edit_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $oUser->getMaxSessions(), $this->oPage, true);        
         
         $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
@@ -386,8 +386,8 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // old system used the very evil store.php.
         // here we need to _force_ a limited update of the object, via a db statement.
         //
-        // $res = $oUser->update(); 
-        $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
+        $res = $oUser->update(); 
+        // $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
         
         
         
