@@ -371,7 +371,13 @@ class RecordUpgradeItem extends UpgradeItem {
         $this->version = $version;
         $this->name = 'upgrade' . $version;
     }
+
     function _performUpgrade() {
+        $this->_deleteSmartyFiles();
+        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+        $oCache =& KTCache::getSingleton();
+        $oCache->deleteAllCaches();
+
         require_once(KT_LIB_DIR .  '/permissions/permissionutil.inc.php');
 
         $po =& new KTRebuildPermissionObserver($this);
@@ -385,6 +391,28 @@ class RecordUpgradeItem extends UpgradeItem {
         $query = "UPDATE system_settings SET value = ? WHERE name = ?";
         $aParams = array($this->version, "knowledgeTreeVersion");
         return DBUtil::runQuery(array($query, $aParams));
+    }
+
+    function _deleteSmartyFiles() {
+        $oConfig =& KTConfig::getSingleton();
+        $dir = sprintf('%s/%s', $oConfig->get('urls/varDirectory'), 'tmp');
+
+        $dh = @opendir($dir);
+        if (empty($dh)) {
+            return;
+        }
+        $aFiles = array();
+        while (false !== ($sFilename = readdir($dh))) {
+            if (substr($sFilename, -10) == "smarty.inc") {
+               $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
+            }
+            if (substr($sFilename, -10) == "smarty.php") {
+               $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
+            }
+        }
+        foreach ($aFiles as $sFile) {
+            @unlink($sFile);
+        }
     }
 }
 
