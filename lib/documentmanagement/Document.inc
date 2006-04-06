@@ -554,5 +554,9 @@ class Document {
         return true;
     }
     // }}}
+
+    function clearAllCaches() {
+        return KTEntityUtil::clearAllCaches('Document');
+    }
 }
 ?>
