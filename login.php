@@ -37,19 +37,19 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 class LoginPageDispatcher extends KTDispatcher {
 
     function check() {
-		$this->session = new Session();
-		if ($this->session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
-			exit(redirect(generateControllerLink('dashboard')));
-		} else {
-		    $this->session->destroy(); // toast it - its probably a hostile session.
-		}
-		return true;
-	}
+        $this->session = new Session();
+        if ($this->session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
+            exit(redirect(generateControllerLink('dashboard')));
+        } else {
+            $this->session->destroy(); // toast it - its probably a hostile session.
+        }
+        return true;
+    }
 
     function do_providerVerify() {
-		$this->session = new Session();
-		if ($this->session->verify() != 1) {
-			$this->redirectToMain();
+        $this->session = new Session();
+        if ($this->session->verify() != 1) {
+            $this->redirectToMain();
         }
         $this->oUser =& User::get($_SESSION['userID']);
         $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
@@ -57,16 +57,16 @@ class LoginPageDispatcher extends KTDispatcher {
         exit(0);
     }
 
-	function do_main() {
-	    global $default;
-	
-	    $this->check(); // bounce here, potentially.
-	    header('Content-type: text/html; charset=UTF-8');
-		$cookietest = KTUtil::randomString();
-		setcookie("CookieTestCookie", $cookietest, false);
-		
-		$errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
-		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+    function do_main() {
+        global $default;
+    
+        $this->check(); // bounce here, potentially.
+        header('Content-type: text/html; charset=UTF-8');
+        $cookietest = KTUtil::randomString();
+        setcookie("CookieTestCookie", $cookietest, false);
+        
+        $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
+        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
         $oReg =& KTi18nregistry::getSingleton();
         $aRegisteredLangs = $oReg->geti18nLanguages('knowledgeTree');
@@ -76,61 +76,67 @@ class LoginPageDispatcher extends KTDispatcher {
             $aRegisteredLanguageNames[$sLang] = $aLanguageNames[$sLang];
         }
         $sLanguageSelect = $default->defaultLanguage;
-		
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/login");
-		$aTemplateData = array(
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/login");
+        $aTemplateData = array(
               "context" => $this,
-			  'cookietest' => $cookietest,
-			  'errorMessage' => $errorMessage,
-			  'redirect' => $redirect,
-			  'systemVersion' => $default->systemVersion,
-			  'versionName' => $default->versionName,
+              'cookietest' => $cookietest,
+              'errorMessage' => $errorMessage,
+              'redirect' => $redirect,
+              'systemVersion' => $default->systemVersion,
+              'versionName' => $default->versionName,
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
-		);
-		return $oTemplate->render($aTemplateData);		
-	}
-	
-	function simpleRedirectToMain($errorMessage, $url, $params) {
-		$params[] = 'errorMessage='. urlencode($errorMessage);
-		$url .= '?' . join('&', $params);
-		redirect($url);
-		exit(0);
-	}
-	
-	function do_login() {
-	    $this->check();
-		global $default;
-		
-		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
-		
-		$url = $_SERVER["PHP_SELF"];
-		$queryParams = array();
-		
-		if ($redirect !== null) {
-		    $queryParams[] = 'redirect='. urlencode($redirect);
-		}
-		
-		
-	    $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
-		$cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
-		
-		if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
-		    $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $params);
-		    exit(0);
-		}
-		
-		$username = KTUtil::arrayGet($_REQUEST,'username');
-		$password = KTUtil::arrayGet($_REQUEST,'password');
-		
-		if (empty($username)) {
-		    $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $params);
-		}
-		
-		if (empty($password)) {
-		    $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $params);
-		}
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+    
+    function simpleRedirectToMain($errorMessage, $url, $params) {
+        $params[] = 'errorMessage='. urlencode($errorMessage);
+        $url .= '?' . join('&', $params);
+        redirect($url);
+        exit(0);
+    }
+    
+    function do_login() {
+        $this->check();
+        global $default;
+
+        $language = KTUtil::arrayGet($_REQUEST, 'language');
+        if (empty($language)) {
+            $language = $default->defaultLanguage;
+        }
+        setcookie("kt_language", $language, 2147483647, '/');
+        
+        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+        
+        $url = $_SERVER["PHP_SELF"];
+        $queryParams = array();
+        
+        if ($redirect !== null) {
+            $queryParams[] = 'redirect='. urlencode($redirect);
+        }
+        
+        
+        $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+        $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
+        
+        if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
+            $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $params);
+            exit(0);
+        }
+        
+        $username = KTUtil::arrayGet($_REQUEST,'username');
+        $password = KTUtil::arrayGet($_REQUEST,'password');
+        
+        if (empty($username)) {
+            $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $params);
+        }
+        
+        if (empty($password)) {
+            $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $params);
+        }
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
@@ -154,11 +160,6 @@ class LoginPageDispatcher extends KTDispatcher {
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL; 
-        $language = KTUtil::arrayGet($_REQUEST, 'language');
-        if (empty($language)) {
-            $language = $default->defaultLanguage;
-        }
-		setcookie("kt_language", $language, 2147483647, '/');
 
         // check for a location to forward to
         if ($redirect !== null) {
@@ -169,7 +170,7 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         exit(redirect($url));
-	}
+    }
 }
 
 
