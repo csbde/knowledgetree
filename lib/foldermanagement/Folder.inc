@@ -514,6 +514,10 @@ class Folder extends KTEntity {
         return KTEntityUtil::createFromArray('Folder', $aOptions);
     }
 
+    function clearAllCaches() {
+        return KTEntityUtil::clearAllCaches('Folder');
+    }
+
 }
 
 ?>
