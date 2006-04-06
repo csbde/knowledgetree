@@ -41,6 +41,9 @@ class KTCache {
         $aOptions['lifeTime'] = 60;
         $aOptions['memoryCaching'] = true;
         $aOptions['automaticSerialization'] = true;
+
+        $this->cacheDir = $aOptions['cacheDir'];
+
         $this->oLite =& new Cache_Lite($aOptions);
     }
 
@@ -74,6 +77,29 @@ class KTCache {
             return false;
         }
         return $this->oLite->clean(strtolower($group));
+    }
+
+    function deleteAllCaches() {
+        $this->oLite->clean();
+
+        return;
+        $dir = $this->cacheDir;
+
+        $dh = @opendir($dir);
+        if (empty($dh)) {
+            return;
+        }
+
+        $aFiles = array();
+        while (false !== ($sFilename = readdir($dh))) {
+            if (substr($sFilename, 0, 6) == "cache_") {
+               $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
+            }
+        }
+        foreach ($aFiles as $sFile) {
+            @unlink($sFile);
+        }
+
     }
 }
 
