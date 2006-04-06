@@ -334,9 +334,9 @@ PHP you are running, and which modules are available.</p>
     </tr>
   </thead>
   <tbody>
-<?=bigEnough('Maximum POST size', 'post_max_size', 8 * 1024 * 1024, true)?>
-<?=bigEnough('Maximum upload size', 'upload_max_filesize', 8 * 1024 * 1024, true)?>
-<?=bigEnough('Memory limit', 'memory_limit', 8 * 1024 * 1024, true)?>
+<?=bigEnough('Maximum POST size', 'post_max_size', 32 * 1024 * 1024, true)?>
+<?=bigEnough('Maximum upload size', 'upload_max_filesize', 32 * 1024 * 1024, true)?>
+<?=bigEnough('Memory limit', 'memory_limit', 32 * 1024 * 1024, true)?>
 <?=""; # bigEnough('Maximum execution time', 'max_execution_time', 30)?>
 <?=""; # bigEnough('Maximum input time', 'max_input_time', 60)?>
   <tbody>
