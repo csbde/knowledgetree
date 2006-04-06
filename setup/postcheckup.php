@@ -120,6 +120,20 @@ if (PEAR::isError($selectPriv)) {
     print '<p>Basic database query successful.</p>';
 }
 
+$sTable = KTUtil::getTableName('system_settings');
+DBUtil::startTransaction();
+$res = DBUtil::autoInsert($sTable, array(
+    'name' => 'transactionTest',
+    'value' => 1,
+));
+DBUtil::rollback();
+$res = DBUtil::getOneResultKey("SELECT id FROM $sTable WHERE name = 'transactionTest'", 'id');
+if (!empty($res)) {
+    print '<p><font color="red">Transaction support not available in database</font></p>';
+} else {
+    print '<p>Database has transaction support.</p>';
+}
+DBUtil::whereDelete($sTable, array('name' => 'transactionTest'));
 ?>
 
 <?
