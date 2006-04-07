@@ -1,0 +1,75 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DateTime.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+{$context->oPage->requireJSResource('resources/js/taillog.js')}
+{$context->oPage->requireJSResource('resources/js/conditional_usage.js')}
+
+<h2>{i18n}Conditional Metadata Overview{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Conditional Metadata is made up of fields, values
+and behaviours.  For a given behaviour, various values in other fields can be
+selected.  Depending on both the behaviour and the newly selected value, additional
+fields and values may be selected, which cause a new behaviour to be "active".{/i18n}</p>
+
+<fieldset class="conditional_metadata"><legend>{i18n}Test Instance{/i18n}</legend>
+<p class="descriptiveText">{i18n}For the majority of conditional cases, simply walking 
+through a test is sufficient.  You can do that below for the fieldset you have selected.{/i18n}</p>
+
+    <input type="hidden" class="fixed" name="fieldset" value="{$fieldset_id}" />
+    <p class="descriptiveText">
+        {$description}
+    </p>
+    
+    <div class="conditional_target">
+    {i18n}conditional data.{/i18n}
+    </div>
+
+
+</fieldset>
+
+<p class="descriptiveText">{i18n}These behaviours and the fields and values they allow
+are shown below for the active field.{/i18n}</p>
+
+<h3>Behaviours</h3>
+<p class="descriptiveText">{i18n}Clicking on a given behaviour below will show you
+which fields and values can be selected when the clicked behaviour is active.{/i18n}</p>
+<ul>
+<li><a href="#behaviour-null">No Active Behaviour (initial values)</a></li>
+{foreach from=$behaviours item=oBehaviour}
+<li><a href="#behaviour-{$oBehaviour->getId()}">{$oBehaviour->getName()}</a></li>
+{/foreach}
+</ul>
+
+<h4><a name="behaviour-null"></a>No Active Behaviour (initial values)</h4>
+
+{* this is a list of field rows ... see db. *}
+
+{foreach from=$context->getSetsForBehaviour(null, $fieldset_id) item=row}
+<span class="descriptiveText">Field:</span> {$row.field_name} &raquo; <span class="descriptiveText">Option:</span> {$row.lookup_name} &raquo;
+{if empty($row.behaviour_id)}
+   <span class="descriptiveText">no additional behaviours</span>
+{else}
+   <a href="#behaviour-{$row.behaviour_id}">{$row.behaviour_name}</a>
+{/if}
+<br />
+{/foreach}
+
+{foreach from=$behaviours item=oBehaviour}
+
+<h4><a name="behaviour-{$oBehaviour->getId()}"></a>{$oBehaviour->getName()}</h4>
+
+{* this is a list of field rows ... see db. *}
+
+{foreach from=$context->getSetsForBehaviour($oBehaviour, $fieldset_id) item=row}
+<span class="descriptiveText">Field:</span> {$row.field_name} &raquo; <span class="descriptiveText">Option:</span> {$row.lookup_name} &raquo;
+{if empty($row.behaviour_id)}
+   <span class="descriptiveText">no additional behaviours</span>
+{else}
+   <a href="#behaviour-{$row.behaviour_id}">{$row.behaviour_name}</a>
+{/if}
+<br />
+{/foreach}
+
+{/foreach}

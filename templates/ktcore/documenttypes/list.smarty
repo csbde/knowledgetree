@@ -27,11 +27,12 @@ please enter a name for the type below.{/i18n}</p>
 its details, or click on the delete button to remove it from the
 system.{/i18n}</p>
 
-<table class="listing" cellspacing="0" cellpadding="0">
+<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 
   <thead>
     <tr>
       <th colspan="3">{i18n}Document Type{/i18n}</th>
+      <th>{i18n}Fieldsets{/i18n}</th>
     </tr>
   </thead>
   
@@ -46,17 +47,20 @@ system.{/i18n}</p>
 </td>
 
 <td>
-    <a href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
+    <a class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
 </td>
 
 <td>
 {if $oDocumentType->getDisabled()}
-    <a href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
+    <a class="ktAction ktEnable" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
-    <a href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
+    <a class="ktAction ktDelete" href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
 
+<td>
+   <span class="descriptiveText">{$context->getFieldsetsForType($oDocumentType)}</span>
+</td>
 
 </tr>
   </tbody>

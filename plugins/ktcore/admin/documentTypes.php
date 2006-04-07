@@ -51,6 +51,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
         $oTemplate->setData(array(
+             'context' => $this,
             'document_types' => DocumentType::getList(),
             'add_fields' => $addFields,
         ));
@@ -151,6 +152,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('edit'));
         
         $oTemplate->setData(array(
+            'context' => $this,
             'oDocumentType' => $oDocumentType,
             'aCurrentFieldsets' => $aCurrentFieldsets,
             'aAvailableFieldsets' => $aAvailableFieldsets,
@@ -209,6 +211,22 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         }
         $this->successRedirectTo('edit', _kt('Fieldsets associated.'), 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
+    }
+
+    function getFieldsetsForType($oType) {
+        $aCurrentFieldsets = KTFieldset::getForDocumentType($oType);
+        if (empty($aCurrentFieldsets)) { 
+            return _kt('No fieldsets');
+        } 
+        
+        $aNames = array();
+        foreach ($aCurrentFieldsets as $oFieldset) {
+            if (!PEAR::isError($oFieldset)) { 
+                $aNames[] = $oFieldset->getName();
+            }
+        }
+        
+        return implode(', ', $aNames);
     }
 }
 

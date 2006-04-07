@@ -61,12 +61,32 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/listFieldsets');
         $oTemplate->setData(array(
+		    'context' => $this,
             'fieldsets' => KTFieldset::getList(),
             'creation_fields' => $createFields,
         ));
         return $oTemplate;
     }
     // }}}
+
+	function getTypesForFieldset($oFieldset) {
+	    if ($oFieldset->getIsGeneric()) {
+		    return _kt('All types use this generic fieldset.');
+		}
+		
+	    $types = $oFieldset->getAssociatedTypes();
+		if (PEAR::isError($types)) {
+		    return _kt('Error retrieving list of types.');
+		}
+		if (empty($types)) { 
+		    return _kt('None');
+		}
+		$aNames = array();
+		foreach ($types as $oType) { 
+		    $aNames[] = $oType->getName();
+		}
+		return implode(', ', $aNames);
+	}
 
     // {{{ do_edit
     function do_edit() {
@@ -872,6 +892,122 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $actionStr .= ")";
         return $actionStr;
     }
+	
+	
+    function do_viewOverview() {
+        $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/conditional_overview");
+
+        
+        $oFieldset =& KTFieldset::get($fieldset_id);
+        $aFields =& $oFieldset->getFields();
+        
+        $aBehaviours = array();
+		foreach ($aFields as $oField) {
+		    $aOpts = KTFieldBehaviour::getByField($oField);
+		    $aBehaviours = kt_array_merge($aBehaviours, $aOpts);
+		}
+        
+        $aTemplateData = array(
+            "context" => &$this,
+            "fieldset_id" => $fieldset_id,
+            "aFields" => $aFields,
+			"behaviours" => $aBehaviours,
+            "iMasterFieldId" => $oFieldset->getMasterFieldId(),
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+	
+	function getSetsForBehaviour($oBehaviour, $fieldset_id) {
+	    $oFieldset = KTFieldset::get($fieldset_id);
+		if (is_null($oBehaviour)) {
+		    $fid = $oFieldset->getMasterFieldId();
+			$aQuery = array(
+			    sprintf('SELECT df.name as field_name, ml.name as lookup_name, fb.id as behaviour_id, fb.name as behaviour_name FROM 
+				    %s as fvi
+					LEFT JOIN %s as fb ON (fvi.behaviour_id = fb.id) 
+					LEFT JOIN %s AS df ON (fvi.field_id = df.id) 
+					LEFT JOIN metadata_lookup AS ml ON (fvi.field_value_id = ml.id) 
+					WHERE fvi.field_id = ?
+					ORDER BY df.name ASC, ml.name ASC', 
+					KTUtil::getTableName('field_value_instances'),
+					KTUtil::getTableName('field_behaviours'),
+					KTUtil::getTableName('document_fields'),
+					KTUtil::getTableName('metadata')),
+				array($fid),
+			);
+			$res = DBUtil::getResultArray($aQuery);
+			return $res;
+		} else {
+		    $bid = $oBehaviour->getId();
+			$aQuery = array(
+			    sprintf('SELECT df.name as field_name, ml.name as lookup_name, fb.id as behaviour_id, fb.name as behaviour_name FROM 
+			        %s AS fbo 
+					LEFT JOIN %s as fvi ON (fbo.instance_id = fvi.id) 
+					LEFT JOIN %s as fb ON (fvi.behaviour_id = fb.id) 
+					LEFT JOIN %s AS df ON (fvi.field_id = df.id) 
+					LEFT JOIN metadata_lookup AS ml ON (fvi.field_value_id = ml.id) 
+					WHERE fbo.behaviour_id = ?
+					ORDER BY df.name ASC, ml.name ASC', 
+					KTUtil::getTableName('field_behaviour_options'),
+					KTUtil::getTableName('field_value_instances'),
+					KTUtil::getTableName('field_behaviours'),
+					KTUtil::getTableName('document_fields'),
+					KTUtil::getTableName('metadata')),
+				array($bid),
+			);
+			
+			$res = DBUtil::getResultArray($aQuery);
+			return $res;
+		}
+
+		return $aNextFieldValues;
+	}
+	
+	function do_renameBehaviours() {
+        $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/conditional_rename_behaviours");
+
+        
+        $oFieldset =& KTFieldset::get($fieldset_id);
+        $aFields =& $oFieldset->getFields();
+        
+        $aBehaviours = array();
+		foreach ($aFields as $oField) {
+		    $aOpts = KTFieldBehaviour::getByField($oField);
+		    $aBehaviours = kt_array_merge($aBehaviours, $aOpts);
+		}
+        
+        $aTemplateData = array(
+            "context" => &$this,
+            "fieldset_id" => $fieldset_id,
+			"behaviours" => $aBehaviours,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+	
+	function do_finalRename() {
+        $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
+	    $aRenamed = (array) KTUtil::arrayGet($_REQUEST, "renamed");
+				
+		$this->startTransaction(); 
+		
+		foreach ($aRenamed as $bid => $new_name) {
+			$oBehaviour = KTFieldBehaviour::get($bid);
+			if (PEAR::isError($oBehaviour)) { continue; } // skip it...
+			$oBehaviour->setName(trim($new_name));
+			$res = $oBehaviour->update();
+			if (PEAR::isError($res)) { 
+			    $this->errorRedirectToMain(_kt('Failed to change name of behaviour.'), sprintf('action=edit&fFieldsetId=%s',$fieldset_id)); 
+			}
+		}
+		
+		$this->successRedirectToMain(_kt('Names changed.'), sprintf('action=edit&fFieldsetId=%s', $fieldset_id));
+	}
+	
+
 // }}}
 }
 

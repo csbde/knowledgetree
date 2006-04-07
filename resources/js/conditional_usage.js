@@ -138,6 +138,7 @@ function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
         return false;
     }
     var header = widget.getElementsByTagName('LABEL')[0];  // FIXME _could_ fail if pathalogical.
+	header.removeChild(header.getElementsByTagName('SPAN')[0]);
     var i_friendly_name = scrapeText(header);
 
     var newWidget = DIV({'class':'field fixed'},
@@ -345,7 +346,7 @@ function reviseConditional(buttonsource) {
  */
 
 function initialiseConditionalFieldsets() {
-    simpleLog('ERROR','incomplete function called: initialiseFieldsets.');
+    
     var fieldsets = getElementsByTagAndClassName('FIELDSET','conditional_metadata');
     simpleLog('DEBUG','found fieldsets: '+fieldsets.length);
     // triggers initial update - since this contains no "fixed" vars, it'll remove "unfixed" widgets 

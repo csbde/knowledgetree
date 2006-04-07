@@ -14,6 +14,7 @@
       <th>{i18n}Fields{/i18n}</th>
 	  <th>{i18n}Edit{/i18n}</th>
 	  <th>{i18n}Delete{/i18n}</th>
+	  <th>{i18n}Document Types using this Fieldset{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -54,6 +55,10 @@
 	  </td>
 	  <td>
 	     <a href="{addQS}action=delete&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+	  </td>
+	  
+	  <td>
+	     <span class="descriptiveText">{$context->getTypesForFieldset($oFieldset)}</span>
 	  </td>
 	  
     </tr>
