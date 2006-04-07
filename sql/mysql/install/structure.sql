@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 28, 2006 at 11:24 AM
+-- Generation Time: Apr 07, 2006 at 04:51 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -1205,9 +1205,17 @@ CREATE TABLE `users` (
   `language_id` int(11) default NULL,
   `authentication_details_s2` varchar(255) default NULL,
   `authentication_source_id` int(11) default NULL,
+  `authentication_details_b1` tinyint(1) default NULL,
+  `authentication_details_i2` int(11) default NULL,
+  `authentication_details_d1` datetime default NULL,
+  `authentication_details_i1` int(11) default NULL,
+  `authentication_details_d2` datetime default NULL,
+  `authentication_details_b2` tinyint(1) default NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `username` (`username`),
-  KEY `authentication_source` (`authentication_source_id`)
+  KEY `authentication_source` (`authentication_source_id`),
+  KEY `authentication_details_b1` (`authentication_details_b1`),
+  KEY `authentication_details_b2` (`authentication_details_b2`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -2046,7 +2054,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=73 ;
+) TYPE=MyISAM AUTO_INCREMENT=75 ;
 
 -- --------------------------------------------------------
 

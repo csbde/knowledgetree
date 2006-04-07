@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 28, 2006 at 11:25 AM
+-- Generation Time: Apr 07, 2006 at 04:53 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -689,7 +689,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.1');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.2');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -802,14 +802,16 @@ INSERT INTO `upgrades` VALUES (69, 'sql*3.0*0*3.0/zipfile-mimetype.sql', 'Databa
 INSERT INTO `upgrades` VALUES (70, 'upgrade*3.0*99*upgrade3.0', 'Upgrade from version 2.99.8 to 3.0', '2006-02-28 09:23:21', 1, 'upgrade*3.0*99*upgrade3.0');
 INSERT INTO `upgrades` VALUES (71, 'sql*3.0.1.1*0*3.0.1.1/document_role_allocations.sql', 'Database upgrade to version 3.0.1.1: Document role allocations', '2006-03-28 11:22:19', 1, 'upgrade*3.0.1.1*99*upgrade3.0.1.1');
 INSERT INTO `upgrades` VALUES (72, 'upgrade*3.0.1.1*99*upgrade3.0.1.1', 'Upgrade from version 3.0 to 3.0.1.1', '2006-03-28 11:22:19', 1, 'upgrade*3.0.1.1*99*upgrade3.0.1.1');
+INSERT INTO `upgrades` VALUES (73, 'sql*3.0.1.2*0*3.0.1.2/user_more_authentication_details.sql', 'Database upgrade to version 3.0.1.2: User more authentication details', '2006-04-07 16:50:28', 1, 'upgrade*3.0.1.2*99*upgrade3.0.1.2');
+INSERT INTO `upgrades` VALUES (74, 'upgrade*3.0.1.2*99*upgrade3.0.1.2', 'Upgrade from version 3.0.1.1 to 3.0.1.2', '2006-04-07 16:50:28', 1, 'upgrade*3.0.1.2*99*upgrade3.0.1.2');
 
 -- 
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL);
-INSERT INTO `users` VALUES (2, 'unitAdmin', 'Unit Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL);
-INSERT INTO `users` VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c705c8bb4', 0, 0, '', '', 0, 0, '', 19, 1, NULL, NULL);
+INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (2, 'unitAdmin', 'Unit Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c705c8bb4', 0, 0, '', '', 0, 0, '', 19, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `users_groups_link`
@@ -1234,7 +1236,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (72);
+INSERT INTO `zseq_upgrades` VALUES (74);
 
 -- 
 -- Dumping data for table `zseq_users`
