@@ -27,8 +27,6 @@
 {else}
 {i18n}No workflow{/i18n}
 {/if}
-{assign var=iDocumentId value=$document->getId()}
- (<a href="{ktLink base="action.php" subpath="/ktcore.actions.document.workflow" query="fDocumentId=`$iDocumentId`"}">{i18n}manage workflow{/i18n}</a>)
 </dd>
         <dt>{i18n}Document ID{/i18n}</dt>
         <dd>
