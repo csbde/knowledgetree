@@ -159,8 +159,6 @@ class Spreadsheet_Excel_Reader {
 
 
     function read($sFileName) {
-    	$errlevel = error_reporting();
-    	error_reporting($errlevel ^ E_NOTICE);
         $res = $this->_ole->read($sFileName);
         
         // oops, something goes wrong (Darko Miljanovic)
@@ -207,8 +205,6 @@ class Spreadsheet_Excel_Reader {
         $this->pos = 0;
         //$this->readRecords();
         $this->_parse();
-    	error_reporting($errlevel);
-
     }
 
     function _parse(){
