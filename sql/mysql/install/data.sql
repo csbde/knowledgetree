@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 07, 2006 at 04:53 PM
+-- Generation Time: Apr 07, 2006 at 05:12 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -78,7 +78,6 @@ INSERT INTO `data_types` VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO `document_fields` VALUES (1, 'Category', 'STRING', 1, 0, 0, 1, 0, 'The category to which the document belongs.');
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -203,7 +202,6 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default', 0);
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO `fieldsets` VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0, 'Categorisation information for the document. ');
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
@@ -227,7 +225,6 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- 
 
 INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 3, 0);
-INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 0, '1', 'Root Folder', 1, 3, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -244,8 +241,6 @@ INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 
 -- 
 
 INSERT INTO `groups_lookup` VALUES (1, 'System Administrators', 1, 0, NULL, NULL, NULL, NULL);
-INSERT INTO `groups_lookup` VALUES (2, 'Unit Administrators', 0, 1, 1, NULL, NULL, NULL);
-INSERT INTO `groups_lookup` VALUES (3, 'Anonymous', 0, 0, NULL, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `help`
@@ -719,7 +714,6 @@ INSERT INTO `time_unit_lookup` VALUES (3, 'Days');
 -- Dumping data for table `units_lookup`
 -- 
 
-INSERT INTO `units_lookup` VALUES (1, 'Default Unit', 2);
 
 -- 
 -- Dumping data for table `units_organisations_link`
@@ -810,16 +804,12 @@ INSERT INTO `upgrades` VALUES (74, 'upgrade*3.0.1.2*99*upgrade3.0.1.2', 'Upgrade
 -- 
 
 INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `users` VALUES (2, 'unitAdmin', 'Unit Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `users` VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c705c8bb4', 0, 0, '', '', 0, 0, '', 19, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `users_groups_link`
 -- 
 
 INSERT INTO `users_groups_link` VALUES (1, 1, 1);
-INSERT INTO `users_groups_link` VALUES (2, 2, 2);
-INSERT INTO `users_groups_link` VALUES (3, 3, 3);
 
 -- 
 -- Dumping data for table `workflow_actions`
