@@ -161,6 +161,27 @@ class KTFieldset extends KTEntity {
         }
         return $aRet;
     }
+	
+	function &getAssociatedTypes() {
+	    // NOTE:  this returns null if we are generic (all is the wrong answer)
+		if ($this->getIsGeneric()) { return null; }
+		
+		$sTable = KTUtil::getTableName('document_type_fieldsets');
+        $aQuery = array(
+            "SELECT document_type_id FROM $sTable WHERE fieldset_id = ?",
+            array($this->getId()),
+        );
+        $aIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
+		
+		$aRet = array();
+		foreach ($aIds as $iID) {
+		    $oType = DocumentType::get($iID);
+			if (!PEAR::isError($oType)) { 
+			    $aRet[] = $oType;
+			}
+		}
+		return $aRet;
+	}
 
     function &getFields() {
         return DocumentField::getByFieldset($this);

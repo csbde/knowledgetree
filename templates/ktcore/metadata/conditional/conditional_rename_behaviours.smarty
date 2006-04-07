@@ -1,0 +1,29 @@
+<h2>{i18n}Rename Behaviours{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}If you have converted a simple conditional fieldset to a complex one,
+it may be useful to rename some of the system-generated names.  You can do that here.{/i18n}</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
+<thead>
+    <tr>
+        <th>{i18n}Current Name{/i18n}</th>
+        <th>{i18n}New Name{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+    {foreach from=$behaviours item=oBehaviour}
+    <tr>
+        <td><strong>{$oBehaviour->getName()}</strong></td>
+        <td><input type="text" name="renamed[{$oBehaviour->getId()}]" value="{$oBehaviour->getName()}" size="40" /></td>
+    </tr>
+    {/foreach}
+</tbody>
+</table>
+
+<div class="form_actions">
+    <input type="hidden" name="action" value="finalRename" />
+    <input type="hidden" name="fieldset_id" value="{$fieldset_id}" />
+    <input type="submit" value="{i18n}Rename Behaviours{/i18n}" />
+</div>
+</form>
