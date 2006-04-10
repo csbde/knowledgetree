@@ -15,7 +15,7 @@ how the user was allowed to select the specific street (given another field).{/i
 {* don't show warnings until the basics are done. *}
 
 {if ($oMasterField && empty($free_fields))}
-{if $sIncomplete || !$oFieldset->getIsComplete()}
+{if $sIncomplete}
 <div class="ktInfo">
 <p>{i18n}This conditional fieldset is marked such that it
 cannot be used.  This happens when the fieldset has been edited and has
@@ -29,16 +29,16 @@ check to see if the fieldset is usable by the user.{/i18n}</p>
 <p>{i18n}This error prevents this fieldset from being set
 to complete{/i18n}: {$sIncomplete|escape}</p>
 </div>
-{else}
+{/if}
+{/if}
 
-{i18n}Try to set to complete{/i18n}:
+<h2>{i18n}View Overview{/i18n}</h2>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="checkComplete" />
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
-<input type="submit" name="submit" value="{i18n}Check completeness{/i18n}" />
+<input type="hidden" name="action" value="viewOverview" />
+<input type="hidden" name="fieldset_id" value="{$oFieldset->getId()}" />
+<input type="submit" name="submit" value="{i18n}View Overview{/i18n}" />
 </form>
-{/if}
-{/if}
+
 
 <h2>{i18n}Conditional type{/i18n}</h2>
 
@@ -163,3 +163,12 @@ $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_
 {/if}
 
 {/if}
+
+
+
+<h2>{i18n}Rename Behaviours{/i18n}</h2>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="renameBehaviours" />
+<input type="hidden" name="fieldset_id" value="{$oFieldset->getId()}" />
+<input type="submit" name="submit" value="{i18n}Rename Behaviours{/i18n}" />
+</form>
