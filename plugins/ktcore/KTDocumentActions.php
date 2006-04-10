@@ -637,10 +637,8 @@ class KTDocumentCopyAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
-        // new code:  hide until 3.0.1 and appropriate testing.
-        return null;
         
-        //return parent::getInfo();
+        return parent::getInfo();
     }
 
     function check() {
