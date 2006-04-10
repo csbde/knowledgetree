@@ -36,6 +36,7 @@ class KTPluginEntity extends KTEntity {
     var $iVersion;
     var $bDisabled;
     var $sData;
+    var $bUnavailable;
 
     // {{{ KTEntity-related
     var $_aFieldToSelect = array(
@@ -45,6 +46,7 @@ class KTPluginEntity extends KTEntity {
         'iVersion' => 'version',
         'bDisabled' => 'disabled',
         'sData' => 'data',
+        'bUnavailable' => 'unavailable',
     );
 
     function _table() {
@@ -62,11 +64,13 @@ class KTPluginEntity extends KTEntity {
     function getVersion() { return $this->iVersion; }
     function getDisabled() { return $this->bDisabled; }
     function getData() { return $this->sData; }
+    function getUnavailable() { return $this->bUnavailable; }
     function setNamespace($sValue) { $this->sNamespace = $sValue; }
     function setPath($sValue) { $this->sPath = $sValue; }
     function setVersion($iValue) { $this->iVersion = $iValue; }
     function setDisabled($bValue) { $this->bDisabled = $bValue; }
     function setData($sValue) { $this->sData = $sValue; }
+    function setUnavailable($mValue) { $this->bUnavailable = $mValue; }
     // }}}
 
     function get($iId) {
@@ -86,6 +90,12 @@ class KTPluginEntity extends KTEntity {
     function &getByNamespace($sName) {
         $aOptions = array('fullselect' => false, 'cache' => 'getByNamespace');
         return KTEntityUtil::getBy('KTPluginEntity', 'namespace', $sName, $aOptions);
+    }
+
+    // STATIC
+    function &getAvailable() {
+        $aOptions = array('multi' => true);
+        return KTEntityUtil::getBy('KTPluginEntity', 'unavailable', false, $aOptions);
     }
 
     function &getEnabledPlugins() {

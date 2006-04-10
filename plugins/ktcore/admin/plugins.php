@@ -48,7 +48,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $aPlugins = KTPluginEntity::getList();
+        $aPlugins = KTPluginEntity::getAvailable();
         $aEnabledPluginIds = KTPluginEntity::getEnabledPlugins();
 
         $oTemplating =& KTTemplating::getSingleton();
