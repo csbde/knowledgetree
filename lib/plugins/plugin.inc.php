@@ -253,6 +253,7 @@ class KTPlugin {
             $oEntity->updateFromArray(array(
                 'path' => $this->stripKtDir($this->sFilename),
                 'version' => $this->iVersion,
+                'unavailable' => false,
             ));
             return $oEntity;
         }
@@ -263,6 +264,7 @@ class KTPlugin {
             'path' => $this->stripKtDir($this->sFilename),
             'version' => $this->iVersion,
             'disabled' => $disabled,
+            'unavailable' => false,
         ));
         if (PEAR::isError($oEntity)) {
             return $oEntity;

@@ -116,6 +116,18 @@ class KTPluginUtil {
                 var_dump($res);
             }
         }
+
+        foreach (KTPluginEntity::getList() as $oPluginEntity) {
+            $sPath = $oPluginEntity->getPath();
+            if (!KTUtil::isAbsolutePath($sPath)) {
+                $sPath = sprintf("%s/%s", KT_DIR, $sPath);
+            }
+            if (!file_exists($sPath)) {
+                $oPluginEntity->setUnavailable(true);
+                $oPluginEntity->setDisabled(true);
+                $res = $oPluginEntity->update();
+            }
+        }
         KTPluginEntity::clearAllCaches();
     }
 
