@@ -385,6 +385,9 @@ class RecordUpgradeItem extends UpgradeItem {
         $oChannel =& KTPermissionChannel::getSingleton();
         $oChannel->addObserver($po);
 
+        set_time_limit(0);
+        ignore_user_abort(true);
+
         KTPermissionUtil::rebuildPermissionLookups(true);
         $po->end();
 
