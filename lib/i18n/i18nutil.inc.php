@@ -59,8 +59,8 @@ class KTi18nUtil {
     }
 }
 
-function _kt($sContents) {
+function _kt($sContents, $sDomain = 'knowledgeTree') {
     $oReg =& KTi18nRegistry::getSingleton();
-    $oi18n =& $oReg->geti18n('knowledgeTree');
+    $oi18n =& $oReg->geti18n($sDomain);
     return $oi18n->gettext($sContents);
 }
