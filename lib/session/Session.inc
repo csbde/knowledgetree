@@ -31,7 +31,7 @@ class Session {
      * @param int the id of the user to create a session for
      * @return string the generated sessionID
      */
-    function create($oUser) {
+    function create(&$oUser) {
         $iUserId = $oUser->getId();
         global $default;
         
@@ -61,6 +61,19 @@ class Session {
         if (PEAR::isError($result)) {
             die("Error creating session: " . $result->toString());
         }
+
+        $aParams = array(
+            'userid' => $iUserId,
+            'datetime' => date("Y-m-d H:i:s", time()),
+            'actionnamespace' => 'ktcore.user_history.login',
+            'comments' => sprintf('Logged in from %s', $ip),
+        );
+        require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+        $res = KTUserHistory::createFromArray($aParams);
+        $default->log->info("saving user history - " . print_r($res, true));
+
+        $oUser->setLastLogin(getCurrentDateTime());
+        $oUser->update();
 
         $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($oUser);
         $oProvider->login($oUser);
