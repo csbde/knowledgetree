@@ -570,6 +570,23 @@ class KTUtil {
 
     }
 
+    function running_user() {
+        if (substr(PHP_OS, 0, 3) == "WIN") {
+            return null;
+        }
+        if (extension_loaded("posix")) {
+            $uid = posix_getuid();
+            $userdetails = posix_getpwuid($uid);
+            return $userdetails['name'];
+        }
+        if (file_exists('/usr/bin/whoami')) {
+            return exec('/usr/bin/whoami');
+        }
+        if (file_exists('/usr/bin/id')) {
+            return exec('/usr/bin/id -nu');
+        }
+        return null;
+    }
 }
 
 /**
