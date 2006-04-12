@@ -601,6 +601,15 @@ class KTEntityUtil {
     }
 
     function &get($sClassName, $iId) {
+        /*
+        $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
+        $oObject =& new $sProxyClass($iId);
+        $res = $oObject->getId();
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return $oObject;
+        /* */
         $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
         if ($oObject) { return $oObject; }
         $oObject =& new $sClassName;
@@ -610,6 +619,81 @@ class KTEntityUtil {
         }
         $GLOBALS['_OBJECTCACHE'][$sClassName][$iId] =& $oObject;
         return $oObject;
+        /* */
+    }
+
+    function _getProxyClass($sClassName) {
+        $sProxyClassName = sprintf("%sProxy", $sClassName);
+        if (!class_exists($sProxyClassName)) {
+            KTEntityUtil::_proxyCreate($sClassName, $sProxyClassName);
+        }
+        return $sProxyClassName;
+    }
+
+    function _proxyCreate($sClassName, $sProxyClassName) {
+        $oCache =& KTCache::getSingleton();
+        list($bCached, $mCached) = $oCache->get('ktentity/proxycreate', $sClassName);
+        if ($bCached) {
+            $code = $mCached;
+        } else {
+            $code = KTEntityUtil::_proxyBuild($sClassName, $sProxyClassName);
+            $oCache->set('ktentity/proxycreate', $sClassName, $code);
+        }
+        eval($code);
+    }
+    function _proxyBuild($sClassName, $sProxyClassName) {
+        // var_dump("Building proxy for $sClassName");
+        $methods = get_class_methods($sClassName);
+        $allcode = array();
+        foreach ($methods as $sMethod) {
+            $code = sprintf('function %s() { $aArgs = func_get_args(); return $this->_callOnObject("%s", $aArgs); }%s', $sMethod, $sMethod, "\n");
+            $allcode[] = $code;
+        }
+
+        $allcode[] = sprintf('function &_fetch() {
+        $oObject =& KTUtil::arrayGet($GLOBALS["_OBJECTCACHE"][%s], $this->iId);
+        if ($oObject) { return $oObject; }
+        $oObject =& new %s;
+        $res = $oObject->load($this->iId);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $GLOBALS["_OBJECTCACHE"][%s][$this->iId] =& $oObject;
+        return $oObject;
+    }
+        ', $sClassName, $sClassName, $sClassName);
+
+        $allcode[] = sprintf('function &_save(&$oObject) {
+        $GLOBALS["_OBJECTCACHE"][%s][$this->iId] =& $oObject;
+    }
+        ', $sClassName);
+
+        $allcode[] = 'function &_callOnObject($sName, $aArgs) {
+        $oObject =& $this->_fetch();
+        if (PEAR::isError($oObject)) {
+            return $oObject;
+        }
+        // $res = call_user_func_array(array(&$oObject, $sName), $aArgs);
+        $aExecArgs = array();
+        $exec = \'$res =& $oObject->$sName(\';
+        foreach (array_keys($aArgs) as $iKey) {
+            $aExecArgs[] = \'$aArgs[\' . $iKey . \']\';
+        }
+        $exec .= join(", ", $aExecArgs);
+        $exec .= \');\';
+        eval($exec);
+        $this->_save($oObject);
+        return $res;
+    }
+        ';
+
+        $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; }' . "\n", $sProxyClassName);
+
+        $gen = sprintf("class %s extends %s {\n", $sProxyClassName, $sClassName);
+        $gen .= "    " . join("\n    ", $allcode) . "\n";
+        $gen .= "}";
+
+        return $gen;
     }
 
     function _getBy_equals($sField, $aValue) {
@@ -628,6 +712,16 @@ class KTEntityUtil {
         }
         $sParam = DBUtil::paramArray($aParam);
         return array("$sField NOT IN ($sParam)", array($aParam));
+    }
+
+    function _getBy_after($sField, $aValue) {
+        $aParam = $aValue['value'];
+        return array("$sField > ?", array($aParam));
+    }
+
+    function _getBy_before($sField, $aValue) {
+        $aParam = $aValue['value'];
+        return array("$sField < ?", array($aParam));
     }
 
     function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
