@@ -356,11 +356,11 @@ class KTUtil {
      * respecting the administrator's choice of table naming.
      */
     function getTableName($sTable) {
-        $sTable = $sTable . "_table";
-        if (isset($GLOBALS['default']->$sTable)) {
-            return $GLOBALS['default']->$sTable;
+        $sDefaultsTable = $sTable . "_table";
+        if (isset($GLOBALS['default']->$sDefaultsTable)) {
+            return $GLOBALS['default']->$sDefaultsTable;
         }
-        return PEAR::raiseError('Could not find table: ' . $sTable);
+        return $sTable;
     }
     // }}}
 
