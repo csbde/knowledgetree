@@ -35,6 +35,7 @@ class UpgradeFunctions {
         "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
         "2.99.8" => array("fixUnits"),
         "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
+        "3.0.1.3" => array('addTransactionTypes3013'),
     );
 
     var $descriptions = array(
@@ -46,6 +47,7 @@ class UpgradeFunctions {
         "normaliseDocuments" => "Normalise the documents table",
         "createLdapAuthenticationProvider" => "Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)",
         'createSecurityDeletePermissions' => 'Create the Core: Manage Security and Core: Delete permissions',
+        'addTransactionTypes3013' => 'Add new folder transaction types',
     );
     var $phases = array(
         "setPermissionObject" => 1,
@@ -555,6 +557,22 @@ class UpgradeFunctions {
         $sFolderTable = KTUtil::getTableName('folders');
         DBUtil::runQuery("UPDATE $sDocumentTable SET permission_lookup_id = NULL");
         DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
+    }
+    // }}}
+
+    // {{{ addTransactionTypes3013
+    function addTransactionTypes3013() {
+        $sTable = KTUtil::getTableName('document_transaction_types');
+        $aTypes = array(
+            'ktcore.transactions.permissions_change' => 'Permissions changed',
+            'ktcore.transactions.role_allocations_change' => 'Role allocations changed',
+        );
+        foreach ($aTypes as $sNamespace => $sName) {
+            DBUtil::autoInsert($sTable, array(
+                'namespace' => $sNamespace,
+                'name' => $sName,
+            ));
+        }
     }
     // }}}
 }
