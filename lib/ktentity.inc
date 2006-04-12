@@ -351,12 +351,12 @@ class KTEntity {
 }
 
 class KTEntityUtil {
-    function &getList2($sClassName, $sWhereClause = null, $aOptions = null) {
+    function &getList2($sClassName, $aWhereClause = null, $aOptions = null) {
         $sTable = call_user_func(array($sClassName, "_table"));
-        return KTEntityUtil::getList($sTable, $sClassName, $sWhereClause, $aOptions);
+        return KTEntityUtil::getList($sTable, $sClassName, $aWhereClause, $aOptions);
     }
 
-    function &getList($sTable, $sClassName, $sWhereClause = null, $aOptions = null) {
+    function &getList($sTable, $sClassName, $aWhereClause = null, $aOptions = null) {
         global $default;
         if (is_null($aOptions)) {
             $aOptions = array();
@@ -365,6 +365,11 @@ class KTEntityUtil {
         $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
         $sIDField = 'id';
         $cache = KTUtil::arrayGet($aOptions, 'cache', false);
+
+        if (!is_array($aWhereClause)) {
+            $aWhereClause = array($aWhereClause, array());
+        }
+
         
         if (!$cache) { // && EVIL_CACHE_GRIND) {
             $cache = 'auto';
@@ -376,16 +381,42 @@ class KTEntityUtil {
             }
         }
 
+        if (isset($aOptions['orderby'])) {
+            $sOrderBy = $aOptions['orderby'];
+            if (!empty($aWhereClause[0])) {
+                $aWhereClause[0] .= " ORDER BY " . $sOrderBy;
+            } else {
+                $aWhereClause[0] = "ORDER BY " . $sOrderBy;
+            }
+        }
+
+        if (isset($aOptions['limit'])) {
+            if (isset($aOptions['offset'])) {
+                $iOffset = $aOptions['offset'];
+            } else {
+                $iOffset = 0;
+            }
+            $iLimit = $aOptions['limit'];
+
+            if ($iOffset) {
+                $aWhereClause[0] .= " LIMIT ?, ?";
+                $aWhereClause[1][] = $iOffset; 
+                $aWhereClause[1][] = $iLimit; 
+            } else {
+                $aWhereClause[0] .= " LIMIT ?";
+                $aWhereClause[1][] = $iLimit; 
+            }
+        }
         
         $fullselect = KTUtil::arrayGet($aOptions, 'fullselect', false);
         
         if ($cache) {
             if ($cache === 'auto') {
-                $vals = serialize($sWhereClause);
-            } else if (is_array($sWhereClause)) {
-                $vals = serialize($sWhereClause[1]);
+                $vals = serialize($aWhereClause);
+            } else if (is_array($aWhereClause)) {
+                $vals = serialize($aWhereClause[1]);
             } else {
-                $vals = serialize($sWhereClause);
+                $vals = serialize($aWhereClause);
             }
             $default->log->debug(sprintf("Trying list cache for class %s, %s: %s", $sClassName, $cache, $vals));
 
@@ -414,29 +445,25 @@ class KTEntityUtil {
                 $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
             }
             $aParams = array();
-            if (!is_null($sWhereClause)) {
-                if (is_string($sWhereClause)) {
-                    if (substr($sWhereClause, 0, 5) != 'WHERE') {
-                        if (substr($sWhereClause, 0, 5) != 'ORDER') {
+            if (!empty($aWhereClause[0])) {
+                if (is_string($aWhereClause)) {
+                    if (substr($aWhereClause, 0, 5) != 'WHERE') {
+                        if (substr($aWhereClause, 0, 5) != 'ORDER') {
                             $sQuery .= ' WHERE';
                         }
                     }
-                    $sQuery .= ' ' . $sWhereClause;
-                } else if (is_array($sWhereClause)) {
-                    if (substr($sWhereClause[0], 0, 5) != 'WHERE') {
-                        if (substr($sWhereClause[0], 0, 5) != 'ORDER') {
+                    $sQuery .= ' ' . $aWhereClause;
+                } else if (is_array($aWhereClause)) {
+                    if (substr($aWhereClause[0], 0, 5) != 'WHERE') {
+                        if (substr($aWhereClause[0], 0, 5) != 'ORDER') {
                             $sQuery .= ' WHERE';
                         }
                     }
-                    $sQuery .= ' ' . $sWhereClause[0];
-                    $aParams = $sWhereClause[1];
+                    $sQuery .= ' ' . $aWhereClause[0];
+                    $aParams = $aWhereClause[1];
                 } else {
                     return new PEAR_Error('Weird WhereClause passed');
                 }
-            }
-            $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
-            if (!empty($sOrderBy)) {
-                $sQuery .= " ORDER BY " . $sOrderBy;
             }
 
             if (!empty($fullselect)) {
@@ -469,29 +496,25 @@ class KTEntityUtil {
                 $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
             }
             $aParams = array();
-            if (!is_null($sWhereClause)) {
-                if (is_string($sWhereClause)) {
-                    if (substr($sWhereClause, 0, 5) != 'WHERE') {
-                        if (substr($sWhereClause, 0, 5) != 'ORDER') {
+            if (!is_null($aWhereClause[0])) {
+                if (is_string($aWhereClause)) {
+                    if (substr($aWhereClause, 0, 5) != 'WHERE') {
+                        if (substr($aWhereClause, 0, 5) != 'ORDER') {
                             $sQuery .= ' WHERE';
                         }
                     }
-                    $sQuery .= ' ' . $sWhereClause;
-                } else if (is_array($sWhereClause)) {
-                    if (substr($sWhereClause[0], 0, 5) != 'WHERE') {
-                        if (substr($sWhereClause[0], 0, 5) != 'ORDER') {
+                    $sQuery .= ' ' . $aWhereClause;
+                } else if (is_array($aWhereClause)) {
+                    if (substr($aWhereClause[0], 0, 5) != 'WHERE') {
+                        if (substr($aWhereClause[0], 0, 5) != 'ORDER') {
                             $sQuery .= ' WHERE';
                         }
                     }
-                    $sQuery .= ' ' . $sWhereClause[0];
-                    $aParams = $sWhereClause[1];
+                    $sQuery .= ' ' . $aWhereClause[0];
+                    $aParams = $aWhereClause[1];
                 } else {
                     return new PEAR_Error('Weird WhereClause passed');
                 }
-            }
-            $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
-            if (!empty($sOrderBy)) {
-                $sQuery .= " ORDER BY " . $sOrderBy;
             }
 
             if (!empty($fullselect)) {
