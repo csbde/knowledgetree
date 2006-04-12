@@ -631,12 +631,40 @@ class KTEntityUtil {
     }
 
     function _proxyCreate($sClassName, $sProxyClassName) {
+        /*
+        $code = KTEntityUtil::_proxyBuild($sClassName, $sProxyClassName);
+        return eval($code);
+        /* */
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $sDirectory = $oKTConfig->get('cache/proxyCacheDirectory');
+        if (!file_exists($sDirectory)) {
+            $res = @mkdir($sDirectory);
+        }
+        $sRunningUser = KTUtil::running_user();
+        if ($sRunningUser) {
+            $sDirectory = sprintf("%s/%s", $sDirectory, $sRunningUser);
+        }
+        if (!file_exists($sDirectory)) {
+            $res = @mkdir($sDirectory);
+        }
+        $sFilename = sprintf("%s/%s.inc.php", $sDirectory, $sProxyClassName);
+        if (file_exists($sFilename)) {
+            require_once($sFilename);
+            return;
+        }
+
         $oCache =& KTCache::getSingleton();
         list($bCached, $mCached) = $oCache->get('ktentity/proxycreate', $sClassName);
         if ($bCached) {
             $code = $mCached;
         } else {
             $code = KTEntityUtil::_proxyBuild($sClassName, $sProxyClassName);
+            $res = @file_put_contents($sFilename, "<?php\n$code");
+            if ($res) {
+                require_once($sFilename);
+                return;
+            }
             $oCache->set('ktentity/proxycreate', $sClassName, $code);
         }
         eval($code);
@@ -673,7 +701,13 @@ class KTEntityUtil {
         if (PEAR::isError($oObject)) {
             return $oObject;
         }
-        // $res = call_user_func_array(array(&$oObject, $sName), $aArgs);
+        /* */
+        $res = call_user_func_array(array(&$oObject, $sName), $aArgs);
+        $this->_save($oObject);
+        return $res;
+        /* */
+
+        /* */
         $aExecArgs = array();
         $exec = \'$res =& $oObject->$sName(\';
         foreach (array_keys($aArgs) as $iKey) {
@@ -684,6 +718,7 @@ class KTEntityUtil {
         eval($exec);
         $this->_save($oObject);
         return $res;
+        /* */
     }
         ';
 
