@@ -410,6 +410,8 @@ class KTInit {
             $oKTConfig->setdefaultns("import", "unzip", 'unzip');
             $oKTConfig->setdefaultns("cache", "cacheDirectory", '${varDirectory}/cache');
             $oKTConfig->setdefaultns("cache", "cacheEnabled", 'false');
+            $oKTConfig->setdefaultns("cache", "proxyCacheDirectory", '${varDirectory}/proxies');
+            $oKTConfig->setdefaultns("cache", "proxyCacheEnabled", 'true');
             
             $this->readConfig();
             
