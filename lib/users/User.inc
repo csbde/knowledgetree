@@ -63,6 +63,7 @@ class User extends KTEntity {
     var $dAuthenticationDetailsDate2 = null;
     var $bAuthenticationDetailsBool1 = null;
     var $bAuthenticationDetailsBool2 = null;
+    var $dLastLogin = null;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -86,6 +87,7 @@ class User extends KTEntity {
         'dAuthenticationDetailsDate2' => 'authentication_details_d2',
         'bAuthenticationDetailsBool1' => 'authentication_details_b1',
         'bAuthenticationDetailsBool2' => 'authentication_details_b2',
+        'dLastLogin' => 'last_login',
     );
 
     var $_bUsePearError = true;
@@ -137,6 +139,9 @@ class User extends KTEntity {
     function setAuthenticationDetailsBool1($mValue) { $this->bAuthenticationDetailsBool1 = $mValue; }
     function getAuthenticationDetailsBool2() { return $this->bAuthenticationDetailsBool2; }
     function setAuthenticationDetailsBool2($mValue) { $this->bAuthenticationDetailsBool2 = $mValue; }
+
+    function getLastLogin() { return $this->dLastLogin; }
+    function setLastLogin($mValue) { $this->dLastLogin = $mValue; }
 
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
@@ -267,5 +272,17 @@ class User extends KTEntity {
             'authentication_source_id' => $iSourceId,
             'authentication_details_s1' => $sDetails,
         ), $aOptions);
+    }
+
+    function getByLastLoginBefore($dDateTime) {
+        return KTEntityUtil::getByDict('User', array(
+            'last_login' => array('type' => 'before', 'value' => $dDateTime),
+        ), array('multi' => true));
+    }
+
+    function getByLastLoginAfter($dDateTime) {
+        return KTEntityUtil::getByDict('User', array(
+            'last_login' => array('type' => 'after', 'value' => $dDateTime),
+        ), array('multi' => true));
     }
 }
