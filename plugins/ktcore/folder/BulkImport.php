@@ -63,7 +63,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
         $add_fields[] = new KTStringWidget(_kt('Path'), _kt('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
 
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
-        foreach (DocumentType::getList() as $oDocumentType) {
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
             }

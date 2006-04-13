@@ -657,7 +657,7 @@ INSERT INTO `plugins` VALUES (15, 'nbm.browseable.plugin', 'plugins/browseableda
 -- Dumping data for table `roles`
 -- 
 
-INSERT INTO `roles` VALUES (-1, 'Owner');
+INSERT INTO `roles` VALUES (-2, 'Owner');
 
 -- 
 -- Dumping data for table `saved_searches`

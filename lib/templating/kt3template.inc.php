@@ -123,10 +123,7 @@ class KTPage {
 			"administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),
 		);
 		
-		$this->userMenu = array(
-		    "preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
-			"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),
-		);
+
 	}
 	
 	
@@ -302,6 +299,18 @@ class KTPage {
 			    $this->title = $this->componentLabel;
 			}
 		}
+		
+		$this->userMenu = array();
+		if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
+			$this->userMenu = array(
+				"preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
+				"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),
+			);
+		} else {
+			$this->userMenu = array(
+			    "login" => $this->_actionHelper(array("name" => _kt("Login"), "action" => "login")),
+			);
+		}		
 		
 		// FIXME we need a more complete solution to navigation restriction
 		if (!is_null($this->menu['administration']) && !is_null($this->user)) {

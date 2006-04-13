@@ -1330,6 +1330,22 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('editTransition', 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' . $oTransition->getId()),
             'message' => _kt('Error saving transition'),
         ));
+        
+        // also grab the list of transitions for the dest state, and remove this one if application
+        $aDestTransitions = KTWorkflowUtil::getTransitionsFrom($oState, array('ids' => true));
+        $bClean = true;
+        $aNewTransitions = array();
+        foreach ($aDestTransitions as $iOldTransitionId) {
+            if ($oTransition->getId() == $iOldTransitionId) {
+                $bClean = false;
+            } else {
+                $aNewTransitions[] = $iOldTransitionId;
+            }
+        }
+        if (!$bClean) {
+            KTWorkflowUtil::saveTransitionsFrom($oState, $aNewTransitions);
+        }
+        
         $this->successRedirectTo('editTransition', _kt('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
         exit(0);
     }

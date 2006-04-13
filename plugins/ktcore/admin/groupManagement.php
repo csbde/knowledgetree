@@ -64,9 +64,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
 		
 		if (!empty($name)) {
-			$search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
+			$search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
 		} else if ($show_all !== false) {
-			$search_results =& Group::getList();
+			$search_results =& Group::getList('id > 0');
 			$no_search = false;
 		}
 
@@ -211,7 +211,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->requireJSStandalone($initJS);
         
         $aInitialUsers = $oGroup->getMembers();
-        $aAllUsers = User::getList();
+        $aAllUsers = User::getList('id > 0');
         
         
         // FIXME this is massively non-performant for large userbases..

@@ -587,6 +587,52 @@ class KTUtil {
         }
         return null;
     }
+    
+    function getSystemSetting($name, $default = null) {
+        // XXX make this use a cache layer?
+        $sTable = KTUtil::getTableName('system_settings');
+        $aQuery = array(
+            sprintf('SELECT value FROM %s WHERE name = ?', $sTable),
+            array($name),
+        );
+        $res = DBUtil::getOneResultKey($aQuery, 'value');
+        if (PEAR::isError($res)) { 
+            return PEAR::raiseError(sprintf(_kt('Unable to retrieve system setting %s: %s'), $name, $res->getMessage()));
+        }
+        
+        if (empty($res)) { return $default; }
+        
+        return $res;
+    }
+    
+    function setSystemSetting($name, $value) {
+        // we either need to insert or update:
+        $sTable = KTUtil::getTableName('system_settings');
+        $current_value = KTUtil::getSystemSetting($name);
+        if (is_null($current_value)) {
+            // insert
+            $res = DBUtil::autoInsert(
+                $sTable,
+                array(
+                    'name' => $name,
+                    'value' => $value,
+                ),
+                null // opts
+            );
+            if (PEAR::isError($res)) { return $res; }
+            else { return true; }
+        } else {
+            // update
+            $aQuery = array(
+                sprintf('UPDATE %s SET value = ? WHERE name = ?', $sTable),
+                array($value, $name),
+            );
+            $res = DBUtil::runQuery($aQuery);
+            if (PEAR::isError($res)) { return $res; }
+            return true;
+        }
+    }
+
 }
 
 /**

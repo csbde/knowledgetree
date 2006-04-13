@@ -165,7 +165,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         //   - and that allocation id
         $aRoles = array(); // stores data for display.
         
-        $aRoleList = Role::getList();
+        $aRoleList = Role::getList('id > 0');
         foreach ($aRoleList as $oRole) {
             $iRoleId = $oRole->getId();
             $aRoles[$iRoleId] = array("name" => $oRole->getName());
@@ -541,7 +541,9 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			}
 			
 			foreach ($aDocList as $oDoc) { 
-			    KTPermissionUtil::updatePermissionLookup($oDoc);
+			    if (!PEAR::isError($oDoc)) {
+			        KTPermissionUtil::updatePermissionLookup($oDoc);
+				}
 			}
 		}
 	}

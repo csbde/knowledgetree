@@ -70,8 +70,9 @@
       <li class="pref">{if ($page->user)}
         <span class="ktLoggedInUser">{$page->user->getName()}</span>
         {/if}
+        {if !empty($page->userMenu)}
         &middot;
-        
+        {/if}
 
         {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
          {if ($aMenuItem.active == 1)}

@@ -37,9 +37,15 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 class LoginPageDispatcher extends KTDispatcher {
 
     function check() {
+        $oKTConfig = KTConfig::getSingleton();
         $this->session = new Session();
-        if ($this->session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
-            exit(redirect(generateControllerLink('dashboard')));
+        if ($this->session->verify() == 1) { // the session is valid
+            if ($_SESSION['userID'] == -2 && $oKTConfig->get('allowAnonymousLogin', false)) {
+                ; // that's ok - we want to login.
+            }
+            else {
+                exit(redirect(generateControllerLink('dashboard')));
+            }
         } else {
             $this->session->destroy(); // toast it - its probably a hostile session.
         }

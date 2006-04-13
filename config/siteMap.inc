@@ -34,27 +34,27 @@ $default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "das
 // dashboard news
 
 //pages for manage documents section
-$default->siteMap->addPage("browse", "/browse.php", "Manage Documents", Guest, _("browse documents"));
-$default->siteMap->addPage("viewDocument", "/view.php", "Manage Documents", Guest, _("View Document"), false);
-$default->siteMap->addPage("editDocument", "/edit.php", "Manage Documents", Guest, _("Edit Document"), false);
+$default->siteMap->addPage("browse", "/browse.php", "Manage Documents", Guest, _kt("browse documents"));
+$default->siteMap->addPage("viewDocument", "/view.php", "Manage Documents", Guest, _kt("View Document"), false);
+$default->siteMap->addPage("editDocument", "/edit.php", "Manage Documents", Guest, _kt("Edit Document"), false);
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, _("Administration"));
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, _kt("Administration"));
 
 // pages for advanced search section
-$default->siteMap->addDefaultPage("advancedSearch", "/search/advancedSearchBL.php", "Advanced Search", Guest, _("Advanced Search"), true);
-$default->siteMap->addPage("booleanSearch", "/search/booleanSearch.php", "Boolean Search", Guest, _("Boolean Search"), false);
+$default->siteMap->addDefaultPage("advancedSearch", "/search/advancedSearchBL.php", "Advanced Search", Guest, _kt("Advanced Search"), true);
+$default->siteMap->addPage("booleanSearch", "/search/booleanSearch.php", "Boolean Search", Guest, _kt("Boolean Search"), false);
 
 $default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
 $default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, _("Preferences"));
+$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, _kt("Preferences"));
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, _("Help"));
+$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, _kt("Help"));
 
 // pages for logout section section
-$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, _("Logout"));
+$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, _kt("Logout"));
 
 ?>

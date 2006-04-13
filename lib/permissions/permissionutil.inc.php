@@ -83,10 +83,19 @@ class KTPermissionUtil {
         $sDescriptor = KTPermissionUtil::generateDescriptor($aAllowed);
         $oDescriptor =& KTPermissionDescriptor::getByDescriptor(md5($sDescriptor));
         if (PEAR::isError($oDescriptor)) {
+            
             $oDescriptor =& KTPermissionDescriptor::createFromArray(array(
                 "descriptortext" => $sDescriptor,
             ));
+            if (PEAR::isError($oDescriptor)) {
+                print '<pre>';
+                print_r($aAllowed);
+                print "-----------\n";
+                print_r($oDescriptor);
+                print '</pre>';
+            }
             $oDescriptor->saveAllowed($aAllowed);
+            
         }
         return $oDescriptor;
     }
@@ -137,8 +146,8 @@ class KTPermissionUtil {
      * previous assignment.
      */
     function setPermissionForID($sPermission, $iObjectID, $aAllowed) {
-        $oPermissionAssignment = KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
-        $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+        $oPermissionAssignment =& KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
+        $oDescriptor =& KTPermissionUtil::getOrCreateDescriptor($aAllowed);
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
         $res = $oPermissionAssignment->update();
         return $res;
@@ -167,12 +176,16 @@ class KTPermissionUtil {
         $sWhere = 'permission_object_id = ?';
         $aParams = array($oPO->getID());
         $aFolders =& Folder::getList(array($sWhere, $aParams));
-        foreach ($aFolders as $oFolder) {
-            KTPermissionUtil::updatePermissionLookup($oFolder);
+        if (!PEAR::isError($aFolders)) { 
+            foreach ($aFolders as $oFolder) {
+                KTPermissionUtil::updatePermissionLookup($oFolder);
+            }
         }
         $aDocuments =& Document::getList(array($sWhere, $aParams));
-        foreach ($aDocuments as $oDocument) {
-            KTPermissionUtil::updatePermissionLookup($oDocument);
+        if (!PEAR::isError($aDocuments)) {
+            foreach ($aDocuments as $oDocument) {
+                KTPermissionUtil::updatePermissionLookup($oDocument);
+            }
         }
     }
     // }}}
@@ -219,9 +232,7 @@ class KTPermissionUtil {
         if (!is_a($oFolderOrDocument, 'Folder')) {
             if (!is_a($oFolderOrDocument, 'Document')) {
                 if (!is_a($oFolderOrDocument, 'KTDocumentCore')) {
-                    echo "<pre>";
-                    var_dump($oFolderOrDocument);
-                    echo "</pre>";
+                    return ; // we occasionally get handed a PEAR::raiseError.  Just ignore it.
                 }
             }
         }
@@ -307,9 +318,16 @@ class KTPermissionUtil {
         $_roleCache = array(); 
             
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            $aAfterRoles = array();
             if (array_key_exists('role', $aAllowed)) {
-                foreach ($aAllowed['role'] as $iRoleId) {
+                foreach ($aAllowed['role'] as $k => $iRoleId) {
                     // store the PD <-> RoleId map
+                    
+                    // special-case "all" or "authenticated".
+                    if (($iRoleId == -3) || ($iRoleId == -4)) {
+                        $aAfterRoles[] = $iRoleId;
+                        continue;
+                    }
                     if (!array_key_exists($iRoleId, $_roleCache)) {
                         $oRoleAllocation = null;
                         if (is_a($oFolderOrDocument, 'KTDocumentCore') || is_a($oFolderOrDocument, 'Document')) {
@@ -328,10 +346,16 @@ class KTPermissionUtil {
                         $aMapPermAllowed[$iPermissionId]['group'] = kt_array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroupIds());
                         // naturally, roles cannot be assigned roles, or madness follows.
                     }
+                    
+                    unset($aAllowed['role'][$k]);
                 }
                 
             }
+            
             unset($aMapPermAllowed[$iPermissionId]['role']);            
+            if (!empty($aAfterRoles)) { 
+                $aMapPermAllowed[$iPermissionId]['role'] = $aAfterRoles;
+            }
         }
         
         /*
@@ -370,9 +394,15 @@ class KTPermissionUtil {
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
+        
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
-        if ($oPD->hasUsers(array($oUser))) { return true; }
-        else { return $oPD->hasGroups($aGroups); }
+        if ($oPD->hasRoles(array(-3))) { return true; } // everyone has access.
+        else if ($oPD->hasUsers(array($oUser))) { return true; }
+        else if ($oPD->hasGroups($aGroups)) { return true; }
+        // here we specialcase roles -3 [everyone] 
+        else if ($oPD->hasRoles(-4) && !$oUser->isAnonymous()) { return true; }
+            
+        return false;
     }
     // }}}
 

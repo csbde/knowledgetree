@@ -74,7 +74,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
-        foreach (DocumentType::getList() as $oDocumentType) {
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
             }

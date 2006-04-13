@@ -41,7 +41,11 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         
         $edit_fields = array();
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
-        $oRole = Role::get($role_id);
+        if (is_null($role_id)) {
+            $oRole = null; // handle broken case of role == -1
+        } else {
+            $oRole = Role::get($role_id);
+        }
         
         if (PEAR::isError($oRole) || ($oRole == false)) { $for_edit = false; }
         else {

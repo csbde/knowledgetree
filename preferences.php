@@ -39,6 +39,11 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
 
+	function check() {
+	    if ($this->oUser->getId() == -2) { return false; }
+		return parent::check();
+	}
+
     function PreferencesDispatcher() {
         $this->aBreadcrumbs = array(
             array('action' => 'preferences', 'name' => _kt('Preferences')),

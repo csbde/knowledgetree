@@ -68,9 +68,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // FIXME handle group search stuff.
         $search_results = null;
         if (!empty($name)) {
-            $search_results =& User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
+            $search_results =& User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
         } else if ($show_all !== false) {
-            $search_results =& User::getList();
+            $search_results =& User::getList('id > 0');
             $no_search = false;
         }
         
