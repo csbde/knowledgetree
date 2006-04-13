@@ -31,12 +31,13 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/foldermanagement/foldertransaction.inc.php");
+
 require_once(KT_LIB_DIR . "/groups/Group.inc");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/roles/Role.inc");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 require_once(KT_LIB_DIR . "/roles/documentroleallocation.inc.php");
-
 
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
@@ -283,8 +284,21 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
         
-		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Override parent allocation",
+            'transactionNS' => 'ktcore.transactions.role_allocations_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error creating allocation'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
         
+		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
+
         $this->successRedirectToMain(_kt('Role allocation created.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
     }
     
@@ -310,7 +324,21 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             exit(0);
         }
 		
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Use parent allocation",
+            'transactionNS' => 'ktcore.transactions.role_allocations_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Problem assigning role to parent allocation'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
+
         $this->successRedirectToMain(_kt('Role now uses parent.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
     }
     
@@ -443,6 +471,19 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			$this->errorRedirectToMain(_kt('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
 		
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Set role users",
+            'transactionNS' => 'ktcore.transactions.role_allocations_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Problem assigning role users'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
 		
         $this->successRedirectToMain(_kt('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
@@ -485,6 +526,19 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			$this->errorRedirectToMain(_kt('Failed to change the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
 		}
 		
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Set role groups",
+            'transactionNS' => 'ktcore.transactions.role_allocations_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Problem assigning role groups'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
 		
         $this->successRedirectToMain(_kt('Allocation changed.'), sprintf('fFolderId=%d',$this->oFolder->getId()));     
