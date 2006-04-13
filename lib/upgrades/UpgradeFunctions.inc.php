@@ -562,13 +562,13 @@ class UpgradeFunctions {
 
     // {{{ addTransactionTypes3013
     function addTransactionTypes3013() {
-        $sTable = KTUtil::getTableName('document_transaction_types');
+        $sTable = KTUtil::getTableName('transaction_types');
         $aTypes = array(
             'ktcore.transactions.permissions_change' => 'Permissions changed',
             'ktcore.transactions.role_allocations_change' => 'Role allocations changed',
         );
         foreach ($aTypes as $sNamespace => $sName) {
-            DBUtil::autoInsert($sTable, array(
+            $res = DBUtil::autoInsert($sTable, array(
                 'namespace' => $sNamespace,
                 'name' => $sName,
             ));
