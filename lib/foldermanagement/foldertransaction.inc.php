@@ -45,6 +45,13 @@ class KTFolderTransaction extends KTEntity {
         return KTUtil::getTableName('folder_transactions');
     }
 
+    function _fieldValues() {
+        if (empty($this->dDateTime)) {
+            $this->dDateTime = getCurrentDateTime();
+        }
+        return parent::_fieldValues();
+    }
+
     // STATIC
     function &get($iId) {
         return KTEntityUtil::get('KTFolderTransaction', $iId);
