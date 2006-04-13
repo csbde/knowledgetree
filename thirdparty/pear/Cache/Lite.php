@@ -574,7 +574,8 @@ class Cache_Lite
     */
     function _unlink($file)
     {
-        if (!@unlink($file)) {
+        if (!unlink($file)) {
+		    
             return $this->raiseError('Cache_Lite : Unable to remove cache !', -3);
         }
         return true;        
@@ -599,11 +600,12 @@ class Cache_Lite
         }
         if ($this->_memoryCaching) {
             while (list($key, ) = each($this->_memoryCachingArray)) {
-                if (strpos($key, $motif, 0)) {
+                if (strstr($key, $motif) !== false) {
                     unset($this->_memoryCachingArray[$key]);
                     $this->_memoryCachingCounter = $this->_memoryCachingCounter - 1;
                 }
             }
+			reset($this->_memoryCachingArray);
             if ($this->_onlyMemoryCaching) {
                 return true;
             }
@@ -640,7 +642,8 @@ class Cache_Lite
                             case 'ingroup':
                             default:
                                 if (strpos($file2, $motif, 0)) {
-                                    $result = ($result and ($this->_unlink($file2)));
+                                    //$result = ($result and ($this->_unlink($file2)));
+									$this->_unlink($file2);
                                 }
                                 break;
                         }
@@ -680,7 +683,6 @@ class Cache_Lite
     */
     function _setFileName($id, $group)
     {
-        
         if ($this->_fileNameProtection) {
             $suffix = 'cache_'.md5($group).'_'.md5($id);
         } else {
