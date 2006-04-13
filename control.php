@@ -63,9 +63,13 @@ if ($action != "login") {
         }
     } else {
         // session check fails, so default action should be the login form if no action was specified
+        $oKTConfig = KTConfig::getSingleton();
+        $dest = 'login';
+        if ($oKTConfig->get('allowAnonymousLogin', false)) { $dest = 'dashboard'; }
+            
         if (!isset($action)) {
-            $action = "login";
-        } elseif ($action <> "login") {
+            $action = $dest;
+        } elseif ($action <> $dest) {
             // we have a controller link and auth has failed, so redirect to the login page
             // with the controller link as the redirect
             $url = generateControllerUrl("login");

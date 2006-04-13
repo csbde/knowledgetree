@@ -610,14 +610,16 @@ class KTEntityUtil {
         }
         return $oObject;
         /* */
-        $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
-        if ($oObject) { return $oObject; }
+        // XXX Object cache currently causes hard-to-trace inconsistencies in data. 
+        // $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
+        // if ($oObject) { return $oObject; }
         $oObject =& new $sClassName;
         $res = $oObject->load($iId);
         if (PEAR::isError($res)) {
             return $res;
         }
-        $GLOBALS['_OBJECTCACHE'][$sClassName][$iId] =& $oObject;
+        // XXX Object cache currently causes hard-to-trace inconsistencies in data. 
+        //$GLOBALS['_OBJECTCACHE'][$sClassName][$iId] =& $oObject;
         return $oObject;
         /* */
     }

@@ -285,4 +285,6 @@ class User extends KTEntity {
             'last_login' => array('type' => 'after', 'value' => $dDateTime),
         ), array('multi' => true));
     }
+	
+    function isAnonymous() { return $this->iId == -2; }
 }

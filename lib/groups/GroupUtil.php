@@ -368,6 +368,14 @@ class GroupUtil {
         // }
     }
     // }}}
+    
+    function clearGroupCacheForUser($oUser) {
+        $oCache =& KTCache::getSingleton();
+        if (PEAR::isError($oUser)) { return $oUser; }
+        $group = "groupidsforuser";
+        $iUserId = KTUtil::getId($oUser);
+        $oCache->remove($group, $iUserId);
+    }
 }
 // }}}
 

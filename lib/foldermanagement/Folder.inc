@@ -143,6 +143,7 @@ class Folder extends KTEntity {
         }
 
         $oFolder =& Folder::get($iFolderId);
+		if (PEAR::isError($oFolder)) { sprintf("The invalid folder id is: %s", print_r($iFolderId, true)); }
         $iParentId = $oFolder->getParentId();
         if (empty($iParentId)) {
             return $oFolder->getName();

@@ -143,12 +143,17 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
     if (PEAR::isError($sessionStatus)) {
         $sErrorMessage = $sessionStatus->getMessage();
     }
+    
+    $oKTConfig = KTConfig::getSingleton();
+    $dest = 'login';
+    if ($oKTConfig->get('allowAnonymousLogin', false)) { $dest = 'dashboard'; }
+    
     // redirect to login with error message
     if ($sErrorMessage) {
         // session timed out
-        $url = generateControllerUrl("login", "errorMessage=" . urlencode($sErrorMessage));
+        $url = generateControllerUrl($dest, "errorMessage=" . urlencode($sErrorMessage));
     } else {
-        $url = generateControllerUrl("login");
+        $url = generateControllerUrl($dest);
     }
 
     $redirect = urlencode(KTUtil::addQueryStringSelf($_SERVER["QUERY_STRING"]));

@@ -92,14 +92,17 @@ class Session {
         $iUserID = $_SESSION["userID"];
         
         // remove the session information from the database
-        $sql = $default->db;
-        $query = "DELETE FROM $default->sessions_table WHERE session_id = '$sSessionID'" . ($iUserID ? " AND user_id=$iUserID" : "");
-        $default->log->info("Session::destroy $query");
-        $sql->query($query);
+
+		$sTable = KTUtil::getTableName('sessions');
+		$res = DBUtil::whereDelete($sTable, array('session_id' => $sSessionID));
+
+
 
         // remove the php4 session
+		unset($_SESSION['userID']);
+		unset($_SESSION['sessionStatus']);
         session_unset();
-        session_destroy();
+        session_destroy();	
     }
     
     /**
@@ -139,6 +142,7 @@ class Session {
 
         // this should be an existing session, so check the db
         $aRows = DBUtil::getResultArray(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));
+				
         $numrows = count($aRows);
 
         // FIXME: if there aren't more rows that the max sessions for this user
@@ -151,10 +155,14 @@ class Session {
 
         $default->log->debug("Session::verify found session in db");
         $aRow = $aRows[0];
-        // foreach ($aRows as $aRow) {
 
         $iUserID = $aRow["user_id"];
-
+		
+        $oKTConfig = KTConfig::getSingleton();	
+		$allowAnon = $oKTConfig->get('allowAnonymousLogin', false);
+		$ANON = -2;
+        if ((!allowAnon) && ($iUserId == $ANON)) { return false; }
+            
         // check that ip matches
         $ip = $this->getClientIP();
         if ($ip != trim($aRow["ip"])) {

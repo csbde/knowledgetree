@@ -101,6 +101,10 @@ class RoleAllocation extends KTEntity {
 		$fTable = Folder::_table();
 		
 		$oFolder =& Folder::get($iFolderId);
+		// if its an invalid folder, we simply return null, since this is undefined anyway.
+		if (PEAR::isError($oFolder)) { 
+			return null;
+		}
 		$parents = Folder::generateFolderIds($iFolderId);
 		
 		// FIXME what (if anything) do we need to do to check that this can't be used as an attack?

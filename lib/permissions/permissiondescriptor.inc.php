@@ -276,13 +276,14 @@ class KTPermissionDescriptor extends KTEntity {
 
     // {{{ hasRoles
     function hasRoles($aRoles) {
+        if (!is_array($aRoles)) { return false; }
         $sTable = KTUtil::getTableName('permission_descriptor_roles');
         if (count($aRoles) === 0) {
             return false;
         }
         $aRoleIDs = array();
         foreach ($aRoles as $oRole) {
-            $aRoleIDs[] = $oRole->getID();
+            $aRoleIDs[] = KTUtil::getId($oRole);
         }
         $sRoleIDs = DBUtil::paramArray($aRoleIDs);
         $sQuery = "SELECT COUNT(role_id) AS num FROM $sTable

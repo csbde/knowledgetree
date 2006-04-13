@@ -235,6 +235,9 @@ class Group extends KTEntity {
         if (PEAR::isError($res)) {
             return $res;
         }
+		
+		GroupUtil::clearGroupCacheForUser($oUser);
+		
         return true;
     }
     // }}}

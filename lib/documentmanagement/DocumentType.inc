@@ -185,10 +185,18 @@ class DocumentType extends KTEntity {
 	function &getList($sWhereClause = null) {
         return KTEntityUtil::getList2('DocumentType', $sWhereClause);
 	}
+	
+	/* alternative for use in creation:  delegate for user and location */
+	function &getListForUserAndFolder($oUser, $oFolder) {
+	    $src =& KTDocumentTypeManager::getSingleton();
+		return $src->getListForUserAndFolder($oUser, $oFolder);
+	}
 
     function &createFromArray($aArray) {
         return KTEntityUtil::createFromArray('DocumentType', $aArray);
     }
+	
+	
 
 }
 
@@ -206,5 +214,72 @@ function & documenttypeCreateFromArray($aParameters) {
 	$oDocType = & new DocumentType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oDocType;
 }
+
+
+class DemoDelegation {
+    var $handler_ns = 'brad.oddhandler';
+	var $handler_name = null;
+	
+	function DemoDelegation() {
+	    $this->handler_name = _kt('Demo Delegator');
+	}
+	
+    function &getListForUserAndFolder($oUser, $oFolder) {
+	    $list =&  DocumentType::getList();
+		$finallist = array();
+		foreach ($list as $oType) {
+		    if ($oType->getId() % 2 == 0) {
+			    $finallist[] = $oType;
+			}
+		}
+		return $finallist;
+	}
+}
+
+/* simple singleton util class */
+class KTDocumentTypeManager {
+    var $_handlers = array();
+	var $_active_handler = null;
+	var $_checked = false;
+
+    function &getSingleton() {
+        if (!KTUtil::arrayGet($GLOBALS, 'oKTDocumentTypeManager')) {
+            $GLOBALS['oKTDocumentTypeManager'] = new KTDocumentTypeManager;
+        }
+        return $GLOBALS['oKTDocumentTypeManager'];
+    }
+		
+	function &getListForUserAndFolder($oUser, $oFolder) {
+	    $this->checkActiveHandler();
+	    if (is_null($this->_active_handler)) {
+		    // as totally normal if nothing is registered.
+		    return DocumentType::getList();
+		} else {
+		    return $this->_active_handler->getListForUserAndFolder($oUser, $oFolder);
+		}
+	}
+	
+	function checkActiveHandler() {
+	    if ($this->_checked) { return ; }
+	    // not perfect - see workflow-delegator for explanation.
+		$res = KTUtil::getSystemSetting('documenttypehandler');
+		
+		if (empty($res) || PEAR::isError($res)) { // just fail silently - don't degrade the system
+		    $this->_active_handler = null;
+		} else {
+		    $ns = $res;
+			$this->_active_handler = KTUtil::arrayGet($this->handlers, $ns);
+		}
+		
+		$this->_checked = true;
+		
+		return ;
+	}
+	
+	function registerHandler($oHandler) {
+	    $this->_handlers[$oHandler->handler_ns] = $oHandler;
+	}
+}
+
 
 ?>

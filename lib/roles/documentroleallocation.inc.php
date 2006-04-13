@@ -52,7 +52,7 @@ class DocumentRoleAllocation extends KTEntity {
 		    $aAllowed = array();
 		}
 		// special case "document owner".
-		if ($this->iRoleId == -1) {
+		if ($this->iRoleId == -2) {
 		    
 		    $oDoc = KTDocumentCore::get($this->iDocumentId);
 			
@@ -139,7 +139,7 @@ class DocumentRoleAllocation extends KTEntity {
 		}
 		
 		// magic for the Owner role here.
-		if (empty($iAllocId) && ($iRoleId == -1)) {
+		if (empty($iAllocId) && ($iRoleId == -2)) {
 		    $permDescriptor = null;
 			// THIS OBJECT MUST NEVER BE MODIFIED, without first calling CREATE.
 		    $oFakeAlloc = new DocumentRoleAllocation();
