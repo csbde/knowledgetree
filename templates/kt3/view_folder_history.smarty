@@ -1,0 +1,27 @@
+<h2>{i18n}Transaction History{/i18n}: {$folder->getName()}</h2>
+
+<p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the folder.{/i18n}</p>
+
+
+    <table class="document_history" summary="{i18n}Folder History{/i18n}" cellspacing="0">
+
+        <thead>
+            <tr>
+                <th class="username">{i18n}User{/i18n}</th>
+                <th class="action">{i18n}Action{/i18n}</th>
+                <th class="date">{i18n}Date{/i18n}</th>
+                <th class="comment">{i18n}Comment{/i18n}</th>
+            </tr>
+        </thead>
+        <tbody>
+          {foreach item=aTransactionRow from=$transactions}
+            <tr class="{cycle options=even,odd}">
+                <td class="username">{$aTransactionRow.user_name}</td>
+                <td class="action">{$aTransactionRow.transaction_name}</td>
+                <td class="date">{$aTransactionRow.datetime}</td>
+                <td class="comment">{$aTransactionRow.comment}</td>
+            </tr>
+            {/foreach}
+        </tbody>
+        
+    </table>
