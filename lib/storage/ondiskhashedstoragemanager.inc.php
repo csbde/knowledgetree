@@ -34,6 +34,9 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     function upload(&$oDocument, $sTmpFilePath) {
         $oConfig =& KTConfig::getSingleton();
         $sStoragePath = $this->generateStoragePath($oDocument);
+        if (PEAR::isError($sStoragePath)) {
+            return $sStoragePath;
+        }
         $this->setPath($oDocument, $sStoragePath);
         $oDocument->setFileSize(filesize($sTmpFilePath));
         $sDocumentFileSystemPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
@@ -96,9 +99,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $path = "";
         foreach(split('/', $dir) as $sDirPart) {
             $path = sprintf('%s/%s', $path, $sDirPart);
-            $res = @mkdir(sprintf('%s%s', $sDocumentRoot, $path));
-            if ($res === false) {
-                return PEAR::raiseError("Could not create directory for storage");
+            $createPath = sprintf('%s%s', $sDocumentRoot, $path);
+            if (!file_exists($createPath)) {
+                $res = @mkdir(sprintf('%s%s', $sDocumentRoot, $path));
+                if ($res === false) {
+                    return PEAR::raiseError("Could not create directory for storage");
+                }
             }
         }
         return sprintf("%s/%d", $dir, $iId);
