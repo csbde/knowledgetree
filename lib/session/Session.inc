@@ -159,17 +159,16 @@ class Session {
         $iUserID = $aRow["user_id"];
 		
         $oKTConfig = KTConfig::getSingleton();	
-		$allowAnon = $oKTConfig->get('allowAnonymousLogin', false);
+		$allowAnon = $oKTConfig->get('session/allowAnonymousLogin', false);
 		$ANON = -2;
-        if ((!allowAnon) && ($iUserId == $ANON)) { return false; }
-            
+        if ((!$allowAnon) && ($iUserId == $ANON)) { return false; }
+
+        $ipTracking = $oKTConfig->get('session/ipTracking', false);
         // check that ip matches
         $ip = $this->getClientIP();
-        if ($ip != trim($aRow["ip"])) {
+        if ($ipTracking && ($ip != trim($aRow["ip"]))) {
             return PEAR::raiseError("You are coming from a different IP address than the session requires");
-            return false;
         }
-
 
         // now check if the timeout has been exceeded
         $lastused = $aRow["lastused"];
