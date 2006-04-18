@@ -3,13 +3,14 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 18, 2006 at 11:07 AM
+-- Generation Time: Apr 18, 2006 at 12:39 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
+
 -- 
--- Database: `ktcvs`
+-- Database: `dms`
 -- 
 
 -- --------------------------------------------------------
@@ -2105,7 +2106,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=82 ;
+) TYPE=MyISAM AUTO_INCREMENT=84 ;
 
 -- --------------------------------------------------------
 

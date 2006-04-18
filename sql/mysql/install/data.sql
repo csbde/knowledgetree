@@ -3,13 +3,14 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 18, 2006 at 11:08 AM
+-- Generation Time: Apr 18, 2006 at 12:39 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
+
 -- 
--- Database: `ktcvs`
+-- Database: `dms`
 -- 
 
 -- 
@@ -659,6 +660,8 @@ INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Core: Manag
 -- Dumping data for table `roles`
 -- 
 
+INSERT INTO `roles` VALUES (-4, 'Authenticated Users');
+INSERT INTO `roles` VALUES (-3, 'Everyone');
 INSERT INTO `roles` VALUES (-2, 'Owner');
 
 -- 
@@ -686,7 +689,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.4');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.5');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -807,6 +810,8 @@ INSERT INTO `upgrades` VALUES (78, 'sql*3.0.1.3*0*3.0.1.3/folder_transactions.sq
 INSERT INTO `upgrades` VALUES (79, 'sql*3.0.1.3*0*3.0.1.3/plugin-unavailable.sql', 'Database upgrade to version 3.0.1.3: Plugin-unavailable', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
 INSERT INTO `upgrades` VALUES (80, 'func*3.0.1.4*0*createWorkflowPermission', 'Create the Core: Manage Workflow', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
 INSERT INTO `upgrades` VALUES (81, 'upgrade*3.0.1.4*99*upgrade3.0.1.4', 'Upgrade from version 3.0.1.2 to 3.0.1.4', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (82, 'sql*3.0.1.5*0*3.0.1.5/anonymous-user.sql', 'Database upgrade to version 3.0.1.5: Anonymous-user', '2006-04-18 12:38:41', 1, 'upgrade*3.0.1.5*99*upgrade3.0.1.5');
+INSERT INTO `upgrades` VALUES (83, 'upgrade*3.0.1.5*99*upgrade3.0.1.5', 'Upgrade from version 3.0.1.4 to 3.0.1.5', '2006-04-18 12:38:41', 1, 'upgrade*3.0.1.5*99*upgrade3.0.1.5');
 
 -- 
 -- Dumping data for table `user_history`
@@ -817,6 +822,7 @@ INSERT INTO `upgrades` VALUES (81, 'upgrade*3.0.1.4*99*upgrade3.0.1.4', 'Upgrade
 -- Dumping data for table `users`
 -- 
 
+INSERT INTO `users` VALUES (-2, 'anonymous', 'Anonymous', '---------------', 0, 0, NULL, NULL, 0, 0, NULL, 30000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- 
@@ -1245,7 +1251,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (81);
+INSERT INTO `zseq_upgrades` VALUES (83);
 
 -- 
 -- Dumping data for table `zseq_user_history`
