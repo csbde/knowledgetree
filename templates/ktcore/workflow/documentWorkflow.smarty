@@ -12,27 +12,6 @@ lifecycle of the document.{/i18n}
 
 <p>{i18n}Document has no assigned workflow.{/i18n}</p>
 
-{if $aWorkflows}
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset><legend>{i18n}Start workflow on document{/i18n}</legend>
-<input type="hidden" name="action" value="startWorkflow" />
-<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-{entity_select entities=$aWorkflows name=fWorkflowId}
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
-</div>
-</fieldset>
-</form>
-{else}
-<h3>{i18n}No defined workflows{/i18n}</h3>
-<div class="ktInfo">
-<p>{i18n}There are no defined workflows which can be started on this
-document.  An administrator can create workflows to map the lifecycle of
-a document.  Contact your administrator to discuss
-workflows.{/i18n}</p>
-</div>
-{/if}
-
 {else}
 
 <h3>{i18n}Current workflow settings{/i18n}</h3>
@@ -56,5 +35,42 @@ workflows.{/i18n}</p>
 </fieldset>
 </form>
 {/if}
-
 {/if}
+
+<fieldset>
+{if !$oWorkflow}
+  <legend>{i18n}Start workflow on document{/i18n}</legend>
+  {assign var=none value=""}
+{else}
+  <legend>{i18n}Change workflow on document{/i18n}</legend>
+  {assign var=none value=true}
+{/if}
+{if $aWorkflows}
+{if $bHasPerm}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="startWorkflow" />
+<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+<div class="form_actions">
+{if !$oWorkflow}
+<input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
+{else}
+<input type="submit" name="submit" value="{i18n}Change Workflow{/i18n}" />
+{/if}
+</div>
+</form>
+{else}
+<div class="ktInfo">
+<p>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</p>
+</div>
+{/if}
+{else}
+<h3>{i18n}No defined workflows{/i18n}</h3>
+<div class="ktInfo">
+<p>{i18n}There are no defined workflows which can be started on this
+document.  An administrator can create workflows to map the lifecycle of
+a document.  Contact your administrator to discuss
+workflows.{/i18n}</p>
+</div>
+{/if}
+</fieldset>
