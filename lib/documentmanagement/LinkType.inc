@@ -68,6 +68,7 @@ class LinkType extends KTEntity {
             return KTEntityUtil::getList(LinkType::_table(), 'LinkType', $sWhereClause);
     }
 
+    /*
     function &get($id) {
         $sQuery = "SELECT id, name, description FROM " . LinkType::_table() . " WHERE id = ?";
         $aParams = array($id);
@@ -82,6 +83,12 @@ class LinkType extends KTEntity {
         $oLinkType =& new LinkType($res['name'], $res['description']);
         $oLinkType->iId = $res['id'];
         return $oLinkType;
+    }
+    */
+
+    function &get($iId) {
+        $oObject =& KTEntityUtil::get('LinkType', $iId);
+        return $oObject;
     }
 
 }
