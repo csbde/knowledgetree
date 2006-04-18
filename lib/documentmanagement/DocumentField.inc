@@ -177,12 +177,12 @@ class DocumentField extends KTEntity {
 
     function getType() {
         if (empty($this->bHasLookup)) {
-            return "Normal";
+            return _kt("Normal");
         }
         if (empty($this->bHasLookupTree)) {
-            return "Lookup";
+            return _kt("Lookup");
         }
-        return "Tree";
+        return _kt("Tree");
     }
 
     function getValues() {
