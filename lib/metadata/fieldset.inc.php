@@ -99,23 +99,59 @@ class KTFieldset extends KTEntity {
         "bIsSystem" => "is_system",
     );
 	
-	// returns TRUE if all children are lookup enabled, false otherwise.
-	function canBeMadeConditional() {
-	   if ($this->getIsConditional()) {
-	      return false;
-	   }
-	   
-	   // DEBUG
-	   return false;
+    // returns TRUE if all children are lookup enabled, false otherwise.
+    function canBeMadeConditional() {
+	if ($this->getIsConditional()) {
+	    return false;
 	}
+	   
+	// DEBUG
+	return false;
+    }
 	
     function _table () {
         return KTUtil::getTableName('fieldsets');
     }
 
+
+
+
+
+    /* 
+     * get document types using this field
+     * for listing displays                 
+     */
+    function &getDocumentTypesUsing($aOptions = null) {
+        $bIds = KTUtil::arrayGet($aOptions, 'ids');
+        
+        $sTable = KTUtil::getTableName('document_type_fieldsets');
+
+        $aQuery = array(
+            "SELECT document_type_id FROM $sTable WHERE fieldset_id = ?",
+            array($this->getId()),
+        );
+        $aIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
+
+        if ($bIds) {
+            return $aIds;
+        }
+
+        $aRet = array();
+        foreach ($aIds as $iID) {
+            $aRet[] =& call_user_func(array('DocumentType', 'get'), $iID);
+        }
+        return $aRet;
+    }
+
+
+
+
+
+
+
     // Static function
     function &get($iId) { return KTEntityUtil::get('KTFieldset', $iId); }
-	function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTFieldset', $sWhereClause);	}	
+    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTFieldset', $sWhereClause); }	
     function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTFieldset', $aOptions); }
 
 	function &getNonGenericFieldsets($aOptions = null) {
@@ -127,10 +163,11 @@ class KTFieldset extends KTEntity {
         ), $aOptions);
     }	
 
-	function &getGenericFieldsets($aOptions = null) {
-        $aOptions = KTUtil::meldOptions($aOptions, array(
-            'multi' => true,
-        ));
+    function &getGenericFieldsets($aOptions = null) {
+	$aOptions = KTUtil::meldOptions(
+	    $aOptions, 
+	    array('multi' => true,)
+	);
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => true,
         ), $aOptions);

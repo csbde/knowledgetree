@@ -9,12 +9,12 @@
   <thead>
     <tr>
       <th>{i18n}Name{/i18n}</th>
-      <th class="centered">{i18n}Is Generic{/i18n}</th>
-	  <th class="centered">{i18n}Is System{/i18n}</th>
+      <th class="centered">{i18n}Generic{/i18n}</th>
+      <th class="centered">{i18n}System{/i18n}</th>
       <th>{i18n}Fields{/i18n}</th>
-	  <th>{i18n}Edit{/i18n}</th>
-	  <th>{i18n}Delete{/i18n}</th>
-	  <th>{i18n}Document Types using this Fieldset{/i18n}</th>
+      <th>{i18n}Document Types{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -50,6 +50,23 @@
 &mdash;
 {/if}
       </td>
+
+      <td>
+{assign var="aDocumentTypes" value=$oFieldset->getDocumentTypesUsing()}
+{if $aDocumentTypes}
+
+{foreach from=$aDocumentTypes item=oDocumentType name=doctypes}
+
+    {capture assign=docid}{$oDocumentType->getId()}{/capture}
+<a href="{ktLink base="admin.php" subpath="/documents/typemanagement" query="action=edit&fDocumentTypeId=`$docid`"}">{$oDocumentType->getName()}</a>{if (!$smarty.foreach.doctypes.last)}, {/if} 
+
+{/foreach}
+
+{else}
+&mdash;
+{/if}
+      </td>
+
 	  <td>
 	     <a href="{addQS}action=edit&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>
 	  </td>

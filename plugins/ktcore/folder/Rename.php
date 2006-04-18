@@ -64,20 +64,32 @@ class KTFolderRenameAction extends KTFolderAction {
     }
 
     function do_rename() {
-        $sName = KTUtil::arrayGet($_REQUEST, 'foldername');
-        $aOptions = array(
+        $aErrorOptions = array(
             'redirect_to' => array('', sprintf('fFolderId=%d', $this->oFolder->getId())),
-            'message' => _kt("No folder name given"),
         );
-        $this->oValidator->validateString($sName, $aOptions);
+        $sFolderName = KTUtil::arrayGet($_REQUEST, 'foldername');
+        $aErrorOptions['defaultmessage'] = _kt("No folder name given");
+        $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
 
-        $res = KTFolderUtil::rename($this->oFolder, $sName, $this->oUser);
+        $oParentFolder =& Folder::get($this->oFolder->iParentID);
+	if(PEAR::isError($oParentFolder)) {
+	    $this->errorRedirectToMain(_kt('Unable to retrieve parent folder.'), $aErrorOptions['redirect_to'][1]);
+	    exit(0);
+	}
+
+	if(KTFolderUtil::exists($oParentFolder, $sFolderName)) {
+	    $this->errorRedirectToMain(_kt('A folder with that name already exists.'), $aErrorOptions['redirect_to'][1]);
+	    exit(0);
+	}
+
+        $res = KTFolderUtil::rename($this->oFolder, $sFolderName, $this->oUser);
+
         if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Folder "%s" renamed to "%s".'), $this->oFolder->getName(), $sName);
+            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Folder "%s" renamed to "%s".'), $this->oFolder->getName(), $sFolderName);
         }
 
         $this->commitTransaction();

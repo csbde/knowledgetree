@@ -31,8 +31,9 @@ system.{/i18n}</p>
 
   <thead>
     <tr>
-      <th colspan="3">{i18n}Document Type{/i18n}</th>
-      <th>{i18n}Fieldsets{/i18n}</th>
+      <th>{i18n}Document Type{/i18n}</th>
+      <th>{i18n}Associated Fieldsets{/i18n}</th>
+      <th colspan="2">&nbsp;</th>
     </tr>
   </thead>
   
@@ -43,8 +44,24 @@ system.{/i18n}</p>
 
 <td>
     { $oDocumentType->getName() }
-    </a>
 </td>
+
+      <td>
+{assign var="aFieldsets" value=$oDocumentType->getFieldsets()}
+{if $aFieldsets}
+
+{foreach from=$aFieldsets item=oFieldset name=fieldsets}
+
+    {capture assign=fsid}{$oFieldset->getId()}{/capture}
+<a href="{ktLink base="admin.php" subpath="/documents/fieldmanagement" query="action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
+
+{/foreach}
+
+{else}
+&mdash;
+{/if}
+      </td>
+
 
 <td>
     <a class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
