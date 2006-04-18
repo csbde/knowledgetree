@@ -117,92 +117,47 @@ class KTWorkflowUtil {
      * starting workflow state for the given workflow.
      */
     function startWorkflowOnDocument ($oWorkflow, $oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
-        $iWorkflowId = KTUtil::getId($oWorkflow);
-        $oWorkflow =& KTWorkflow::get($iWorkflowId);
-        // null workflow == remove workflow.
-        if (is_null($oWorkflow) || PEAR::isError($oWorkflow) || ($oWorkflow == false)) {
-            return true; // delete and no-act.
-        }
-        $iStartStateId = $oWorkflow->getStartStateId();
-        if (empty($iStartStateId)) {
-            return PEAR::raiseError('Cannot assign workflow with no starting state set');
-        }
-        $aOptions = array('noid' => true);
-        $aValues = array(
-            'document_id' => $iDocumentId,
-            'workflow_id' => $iWorkflowId,
-            'state_id' => $iStartStateId,
-        );
-        $sTable = KTUtil::getTableName('workflow_documents');
-        $res = DBUtil::autoInsert($sTable, $aValues, $aOptions);
-		
-        if (PEAR::isError($res)) { return $res; }
-		
-        // FIXME does this function as expected?
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $iDocumentId = $oDocument->getId();
+
         $oUser = User::get($_SESSION['userID']);
+
+        $oDocument->startNewMetadataVersion($oUser);
+
+        if (!empty($oWorkflow)) {
+            $oWorkflow =& KTUtil::getObject('KTWorkflow', $oWorkflow);
+            $iWorkflowId = $oWorkflow->getId();
+            // null workflow == remove workflow.
+            if (is_null($oWorkflow) || PEAR::isError($oWorkflow) || ($oWorkflow == false)) {
+                return true; // delete and no-act.
+            }
+            $iStartStateId = $oWorkflow->getStartStateId();
+            if (empty($iStartStateId)) {
+                return PEAR::raiseError('Cannot assign workflow with no starting state set');
+            }
+
+            $oDocument->setWorkflowId($iWorkflowId);
+            $oDocument->setWorkflowStateId($iStartStateId);
+        } else {
+            $oDocument->setWorkflowId(null);
+            $oDocument->setWorkflowStateId(null);
+        }
+        $res = $oDocument->update();
+        if (PEAR::isError($res)) { return $res; }
+
+        // FIXME does this function as expected?
 		
         KTPermissionUtil::updatePermissionLookup($oDocument);
-        $oTargetState = KTWorkflowState::get($iStartStateId);
-        KTWorkflowUtil::informUsersForState($oTargetState, 
-            KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
+        
+        if (isset($iStartStateId)) {
+            $oTargetState = KTWorkflowState::get($iStartStateId);
+            KTWorkflowUtil::informUsersForState($oTargetState, 
+                KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
+        }
         
         return $res;
     }
     // }}}
-    
-
-    // {{{ changeWorkflowOnDocument
-    /**
-     * Starts the workflow process on a document, placing it into the
-     * starting workflow state for the given workflow.
-     */
-    function changeWorkflowOnDocument ($oWorkflow, $oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
-        $iWorkflowId = KTUtil::getId($oWorkflow);
-        $oWorkflow =& KTWorkflow::get($iWorkflowId);
-        
-        if (empty($iStartStateId)) {
-            return PEAR::raiseError('Cannot assign workflow with no starting state set');
-        }
-        $oOldWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
-        if ((!(PEAR::isError($oOldWorkflow) || ($oOldWorkflow == false))) && ($oOldWorkflow->getId() == $oWorkflow->getId())) {
-            return true;         // all fine - no change required.
-        }
-        
-        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('workflow_documents');
-        $sQuery .= ' WHERE document_id = ?';
-        $aParams = array($iDocumentId);
-        DBUtil::runQuery(array($sQuery, $aParams));
-        
-        if (is_null($oWorkflow) || PEAR::isError($oWorkflow) || ($oWorkflow == false)) {
-            return true; // delete and no-act.
-        }
-        
-        $iStartStateId = $oWorkflow->getStartStateId();
-        $aOptions = array('noid' => true);
-        $aValues = array(
-            'document_id' => $iDocumentId,
-            'workflow_id' => $iWorkflowId,
-            'state_id' => $iStartStateId,
-        );
-        $sTable = KTUtil::getTableName('workflow_documents');
-        
-        $oUser = User::get($_SESSION['userID']);
-        $oTargetState = KTWorkflowState::get($iStartStateId);
-        
-        $res = DBUtil::autoInsert($sTable, $aValues, $aOptions);
-        
-        if (PEAR::isError($res)) { return $res; }
-        
-        KTPermissionUtil::updatePermissionLookup($oDocument);
-        KTWorkflowUtil::informUsersForState($oTargetState, 
-            KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
-        
-        
-        return $res;
-    }
-    // }}}    
 
     // {{{ getControlledActionsForWorkflow
     /**
@@ -368,22 +323,22 @@ class KTWorkflowUtil {
      */
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
-        $iDocumentId = KTUtil::getId($oDocument);
-        $sTable = KTUtil::getTableName('workflow_documents');
-        $aQuery = array(
-            "SELECT workflow_id FROM $sTable WHERE document_id = ?",
-            array($iDocumentId),
-        );
-        $iWorkflowId = DBUtil::getOneResultKey($aQuery, 'workflow_id');
-        if (is_null($iWorkflowId)) {
-            return $iWorkflowId;
-        }
+
+        $oDocument = KTUtil::getObject('Document', $oDocument);
+        $iWorkflowId = $oDocument->getWorkflowId();
+
         if (PEAR::isError($iWorkflowId)) {
             return $iWorkflowId;
         }
+
+        if (is_null($iWorkflowId)) {
+            return $iWorkflowId;
+        }
+
         if ($ids) {
             return $iWorkflowId;
         }
+
         return KTWorkflow::get($iWorkflowId);
     }
     // }}}
@@ -394,23 +349,24 @@ class KTWorkflowUtil {
      * returning null if there is no workflow assigned.
      */
     function getWorkflowStateForDocument ($oDocument, $aOptions = null) {
+     
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
-        $iDocumentId = KTUtil::getId($oDocument);
-        $sTable = KTUtil::getTableName('workflow_documents');
-        $aQuery = array(
-            "SELECT state_id FROM $sTable WHERE document_id = ?",
-            array($iDocumentId),
-        );
-        $iWorkflowStateId = DBUtil::getOneResultKey($aQuery, 'state_id');
-        if (is_null($iWorkflowStateId)) {
-            return $iWorkflowStateId;
-        }
+
+        $oDocument = KTUtil::getObject('Document', $oDocument);
+        $iWorkflowStateId = $oDocument->getWorkflowStateId();
+
         if (PEAR::isError($iWorkflowStateId)) {
             return $iWorkflowStateId;
         }
+
+        if (is_null($iWorkflowStateId)) {
+            return $iWorkflowStateId;
+        }
+
         if ($ids) {
             return $iWorkflowStateId;
         }
+
         return KTWorkflowState::get($iWorkflowStateId);
     }
     // }}}
@@ -492,14 +448,12 @@ class KTWorkflowUtil {
         }
         $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
 
-        $sTable = KTUtil::getTableName('workflow_documents');
+        $oDocument->startNewMetadataVersion($oUser);
+
         $iStateId = $oTransition->getTargetStateId();
-        $iDocumentId = $oDocument->getId();
-        $aQuery = array(
-            "UPDATE $sTable SET state_id = ? WHERE document_id = ?",
-            array($iStateId, $iDocumentId),
-        );
-        $res = DBUtil::runQuery($aQuery);
+
+        $oDocument->setWorkflowStateId($iStateId);
+        $res = $oDocument->update();
         if (PEAR::isError($res)) {
             return $res;
         }
