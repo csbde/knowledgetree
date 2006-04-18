@@ -44,6 +44,10 @@ class KTEntity {
         return $this->iId;
     }
 
+    function setId($mValue) {
+        $this->iId = $mValue;
+    }
+
     function _cachedGroups() {
         return array('getlist');
     }
