@@ -163,6 +163,19 @@ class KTFolderPermissionsAction extends KTFolderAction {
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
 
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Updated permissions",
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error updating permissions'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
         $po =& new JavascriptObserver($this);
         $po->start();
         $oChannel =& KTPermissionChannel::getSingleton();
@@ -176,12 +189,38 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_copyPermissions() {
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Override permissions from parent",
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error updating permissions'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
         KTPermissionUtil::copyPermissionObject($this->oFolder);
         return $this->successRedirectToMain(_kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
     function do_inheritPermissions() {
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Inherit permissions from parent",
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error updating permissions'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
         KTPermissionUtil::inheritPermissionObject($this->oFolder);
         return $this->successRedirectToMain(_kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
@@ -196,6 +235,19 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aPermissionIds = (array) $_REQUEST['fPermissionIds'];
         if (empty($aPermissionIds)) { $this->errorRedirectTo('main', _kt('Please select one or more permissions.'), sprintf('fFolderId=%d', $this->oFolder->getId())); }
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
+
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Added dynamic permissions",
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error updating permissions'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
         $oDynamicCondition = KTPermissionDynamicCondition::createFromArray(array(
             'groupid' => $oGroup->getId(),
@@ -216,6 +268,20 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oDynamicCondition =& $this->oValidator->validateDynamicCondition($_REQUEST['fDynamicConditionId'], $aOptions);
         $res = $oDynamicCondition->delete();
         $this->oValidator->notError($res, $aOptions);
+
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Removed dynamic permissions",
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        $aOptions = array(
+            'defaultmessage' => _kt('Error updating permissions'),
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
         $this->successRedirectToMain(_kt("Dynamic permission removed"), "fFolderId=" . $this->oFolder->getId());
