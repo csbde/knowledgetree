@@ -132,6 +132,10 @@ class KTDocumentMetadataVersion extends KTEntity {
             'orderby' => 'version_created DESC',
         ));
     }
+
+    function bumpMetadataVersion() {
+        $this->iMetadataVersion++;
+    }
 }
 
 ?>
