@@ -128,9 +128,9 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         exit(0);
     }
 
-	function do_selectType() {
+    function do_selectType() {
 		
-	    $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+	$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_kt("No document specified for editing."));
         }
@@ -139,14 +139,14 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
             $this->errorPage(_kt("Invalid Document."));
         }
 		
-		$this->oDocument = $oDocument;
-		$this->addPortlets("Edit");
-		$this->addBreadcrumbs();
-		$this->oPage->setBreadcrumbDetails(_kt('Change Document Type'));
-		
-		$aDocTypes = DocumentType::getList();
-
-
+	$this->oDocument = $oDocument;
+	$this->addPortlets("Edit");
+	$this->addBreadcrumbs();
+	$this->oPage->setBreadcrumbDetails(_kt('Change Document Type'));
+	
+	$aDocTypes = DocumentType::getList();
+	
+	
         $aDocTypes = array();
         foreach (DocumentType::getList() as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
@@ -154,47 +154,47 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-	    $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
-		
-	    $oTemplating =& KTTemplating::getSingleton();
+	$oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
+	
+	$oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate("ktcore/document/change_type");       
         $aTemplateData = array(
             'context' => $this,
             'document' => $oDocument,
-			'document_type' => $oDocumentType,
-			'doctypes' => $aDocTypes,
-        );
+	    'document_type' => $oDocumentType,
+	    'doctypes' => $aDocTypes,
+	    );
         $oTemplate->setData($aTemplateData);
         return $oTemplate->render();
+    }
+
+    function do_changeType() {
+	// FIXME this could do with more postTriggers, etc.
+	
+	/* The basic procedure is:
+	 *
+	 *   1. find out what fieldsets we _have_
+	 *   2. find out what fieldsets we _should_ have.
+	 *   3. actively delete fieldsets we need to lose.
+	 *   4. run the edit script.
+	 */
+	$newType = KTUtil::arrayGet($_REQUEST, 'fDocType');
+	$oType = DocumentType::get($newType);
+	if (PEAR::isError($oType) || ($oType == false)) {
+	    $this->errorRedirectToMain(_kt("Invalid type selected."));
+	}
+	
+	$_SESSION['KTInfoMessage'][] = _kt('Document Type Changed.  Please review the information below, and update as appropriate.');
+	$_REQUEST['setType'] = $newType;
+	
+	return $this->do_main($newType);
 	}
 
-	function do_changeType() {
-		// FIXME this could do with more postTriggers, etc.
-		
-		/* The basic procedure is:
-		 *
-		 *   1. find out what fieldsets we _have_
-		 *   2. find out what fieldsets we _should_ have.
-		 *   3. actively delete fieldsets we need to lose.
-		 *   4. run the edit script.
-		 */
-		$newType = KTUtil::arrayGet($_REQUEST, 'fDocType');
-		$oType = DocumentType::get($newType);
-		if (PEAR::isError($oType) || ($oType == false)) {
-		    $this->errorRedirectToMain(_kt("Invalid type selected."));
-		}
-		
-		$_SESSION['KTInfoMessage'][] = _kt('Document Type Changed.  Please review the information below, and update as appropriate.');
-		
-		$_REQUEST['setType'] = $newType;
-		
-		return $this->do_main($newType);
-	}
 
-	// "standard document editing"
+    // "standard document editing"
     function do_main($newType=false) {
-	    $this->oPage->setBreadcrumbDetails("edit");
-
+	$this->oPage->setBreadcrumbDetails("edit");
+	
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_kt("No document specified for editing."));
@@ -263,12 +263,13 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         return $oTemplate->render();
     }
 
-	function do_update() {
+    function do_update() {
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_kt("No document specified for editing."));
         }
-        $oDocument = Document::get($document_id);
+    
+	$oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
             $this->errorPage(_kt("Invalid Document."));
         }
@@ -276,20 +277,21 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $oDocument->getId())),
             'message' => _kt('No name given'),
+	    'max_str_len' => 200,
         );
+
         $title = KTUtil::arrayGet($_REQUEST, 'generic_title');
-        $title = $this->oValidator->validateString($title,
-                $aErrorOptions);
+        $title = $this->oValidator->validateString($title, $aErrorOptions);
         
-		$newType = KTUtil::arrayGet($_REQUEST, 'newType');
-		if ($newType !== null) {
-		    $oDT = DocumentType::get($newType);
-			if (PEAR::isError($oDT) || ($oDT == false)) {
-				$this->errorRedirectToMain(_kt('Invalid document type specified for change.'));
-			}
-		} else {
-		    $oDT = null;
-		}
+	$newType = KTUtil::arrayGet($_REQUEST, 'newType');
+	if ($newType !== null) {
+	    $oDT = DocumentType::get($newType);
+	    if (PEAR::isError($oDT) || ($oDT == false)) {
+		$this->errorRedirectToMain(_kt('Invalid document type specified for change.'));
+	    }
+	} else {
+	    $oDT = null;
+	}
         
         $this->oDocument = $oDocument;
         $this->oFolder = Folder::get($oDocument->getFolderId()); // FIXME do we need to check that this is valid?
@@ -317,115 +319,116 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         }
         
         // erk.  we need all the items that the document _does_ need, _and_ what they have,
-		// _and_ what they don't ...
+	// _and_ what they don't ...
         // we want to grab all the md for this doc, since its faster that way.
-		$current_md =& DocumentFieldLink::getByDocument($document_id);
+	$current_md =& DocumentFieldLink::getByDocument($document_id);
 		
-		// to get all fields, we merge repeatedly from KTFieldset::get
+	// to get all fields, we merge repeatedly from KTFieldset::get
 		
-		$field_values = array();
-		foreach ($fieldsets as $oFieldSet) {
-			$fields =& $oFieldSet->getFields();
-			
-			// FIXME this doesn't handle multi-fieldset fields - are they possible/meaningful?
-			foreach ($fields as $oField) {
-				$field_values[$oField->getID()] = array($oField, null);
-			}
-		}
+	$field_values = array();
+	foreach ($fieldsets as $oFieldSet) {
+	    $fields =& $oFieldSet->getFields();
+	    
+	    // FIXME this doesn't handle multi-fieldset fields - are they possible/meaningful?
+	    foreach ($fields as $oField) {
+		$field_values[$oField->getID()] = array($oField, null);
+	    }
+	}
 		
 		
-		foreach ($current_md as $oFieldLink) {
+	foreach ($current_md as $oFieldLink) {
             $field_values[$oFieldLink->getDocumentFieldID()][1] = $oFieldLink->getValue();
-		}
+	}
+	
+	
+	// now, we need the full set of items that this document could contain.
 		
-		// now, we need the full set of items that this document could contain.
+	// FIXME this DOES NOT WORK for date items.
+	// FIXME that's fine - we don't use range items here...
+	$expect_vals = KTUtil::arrayGet($_REQUEST,'kt_core_fieldsets_expect');
+	
+	foreach ($field_values as $key => $val) {
+	    $newVal = KTUtil::arrayGet($_REQUEST, 'metadata_' . $key, null);			
+	    $wantVal = KTUtil::arrayGet($expect_vals, 'metadata_' . $key, false);
+	    
+	    // FIXME this leaves no way to check if someone has actually removed the item.
+	    // FIXME we probably want to _not_ set anything that could be set ... but then how do you
+	    // FIXME know about managed values ...
+	    
+	    if ($newVal !== null) {
+		$field_values[$key][1] = $newVal; // need the items themselves.
+	    } else if ($wantVal !== false) {
+		// we sent it out, delete it.
 		
-		// FIXME this DOES NOT WORK for date items.
-		// FIXME that's fine - we don't use range items here...
-		$expect_vals = KTUtil::arrayGet($_REQUEST,'kt_core_fieldsets_expect');
+		unset($field_values[$key]);
+	    }
+	}
 		
-		foreach ($field_values as $key => $val) {
-		    $newVal = KTUtil::arrayGet($_REQUEST, 'metadata_' . $key, null);			
-			$wantVal = KTUtil::arrayGet($expect_vals, 'metadata_' . $key, false);
-			
-			// FIXME this leaves no way to check if someone has actually removed the item.
-			// FIXME we probably want to _not_ set anything that could be set ... but then how do you
-			// FIXME know about managed values ...
-			
-			if ($newVal !== null) {
-			   $field_values[$key][1] = $newVal; // need the items themselves.
-			} else if ($wantVal !== false) {
-			   // we sent it out, delete it.
-			   
-			   unset($field_values[$key]);
-			}
-		}
-		
-		
-		// finally, we need to pass through and remove null entries (sigh)
-		// FIXME alternatively we could build a new set, but that might break stuff?
-		
-		$final_values = array();
-		foreach ($field_values as $aMDPack) {
-		    if ($aMDPack[1] !== null) {
-			    $final_values[] = $aMDPack;
-			}
-		}
-		$field_values = $final_values;
-		
-		// FIXME handle md versions.
-		//return '<pre>' . print_r($field_values, true) . '</pre>';
-		$this->startTransaction();
-		$iPreviousMetadataVersionId = $oDocument->getMetadataVersionId();
-		$oDocument->startNewMetadataVersion($this->oUser);
-		if (PEAR::isError($res)) {
-		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
-		}
-		
-		$oDocument->setName($title);
-		$oDocument->setLastModifiedDate(getCurrentDateTime());
-		$oDocument->setModifiedUserId($this->oUser->getId());
+	
+	// finally, we need to pass through and remove null entries (sigh)
+	// FIXME alternatively we could build a new set, but that might break stuff?
+	
+	$final_values = array();
+	foreach ($field_values as $aMDPack) {
+	    if ($aMDPack[1] !== null) {
+		$final_values[] = $aMDPack;
+	    }
+	}
+	$field_values = $final_values;
+	
+	// FIXME handle md versions.
+	//return '<pre>' . print_r($field_values, true) . '</pre>';
+	$this->startTransaction();
+	$iPreviousMetadataVersionId = $oDocument->getMetadataVersionId();
+	$oDocument->startNewMetadataVersion($this->oUser);
+	if (PEAR::isError($res)) {
+	    $this->errorRedirectToMain('Unable to create a metadata version of the document.');
+	}
+	
+	$oDocument->setName($title);
+	$oDocument->setLastModifiedDate(getCurrentDateTime());
+	$oDocument->setModifiedUserId($this->oUser->getId());
 
-		// FIXME refactor this into documentutil.
-		// document type changing semantics
-		if ($newType != null) {
-		    $oldType = DocumentType::get($oDocument->getDocumentTypeID());
-		    $oDocument->setDocumentTypeID($newType);
-			
-			// we need to find fieldsets that _were_ in the old one, and _delete_ those.
-			$for_delete = array();
-			
-			$oldFieldsets = KTFieldset::getForDocumentType($oldType);
-			$newFieldsets = KTFieldset::getForDocumentType($newType);
-			
-			// prune from MDPack.
-			foreach ($oldFieldsets as $oFieldset) {
-				$old_fields = $oFieldset->getFields();
-				foreach ($old_fields as $oField) {
-					$for_delete[$oField->getId()] = 1;
-				}
-			}
-			
-			foreach ($newFieldsets as $oFieldset) {
-			    $new_fields = $oFieldset->getFields();
-				foreach ($new_fields as $oField) {
-				    unset($for_delete[$oField->getId()]);
-				}
-			}
-			
-			$newPack = array();
-			foreach ($field_values as $MDPack) {
-				if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
-					$newPack[] = $MDPack;
-				}
-			}
-			$field_values = $newPack;
-			
-			
-			//var_dump($field_values);
-			//exit(0);
+	// FIXME refactor this into documentutil.
+	// document type changing semantics
+	if ($newType != null) {
+	    $oldType = DocumentType::get($oDocument->getDocumentTypeID());
+	    $oDocument->setDocumentTypeID($newType);
+	    
+	    // we need to find fieldsets that _were_ in the old one, and _delete_ those.
+	    $for_delete = array();
+	    
+	    $oldFieldsets = KTFieldset::getForDocumentType($oldType);
+	    $newFieldsets = KTFieldset::getForDocumentType($newType);
+	    
+	    // prune from MDPack.
+	    foreach ($oldFieldsets as $oFieldset) {
+		$old_fields = $oFieldset->getFields();
+		foreach ($old_fields as $oField) {
+		    $for_delete[$oField->getId()] = 1;
 		}
-		
+	    }
+	    
+	    foreach ($newFieldsets as $oFieldset) {
+		$new_fields = $oFieldset->getFields();
+		foreach ($new_fields as $oField) {
+		    unset($for_delete[$oField->getId()]);
+		}
+	    }
+	    
+	    $newPack = array();
+	    foreach ($field_values as $MDPack) {
+		if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
+		    $newPack[] = $MDPack;
+		}
+	    }
+	    $field_values = $newPack;
+	    
+	    
+	    //var_dump($field_values);
+	    //exit(0);
+	}
+	
         $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
 		
         $res = $oDocumentTransaction->create();

@@ -115,6 +115,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+	    'max_str_len' => 200,
         );
         
         $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);

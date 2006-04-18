@@ -210,6 +210,15 @@ class KTDispatcherValidation {
                     'message', _kt("An empty string was given"));
             $this->handleError($aOptions);
         }
+
+	$iMaxlen = (int)KTUtil::arrayGet($aOptions, 'max_str_len', false);
+	if($iMaxlen !== false && $iMaxlen !== 0 && strlen($sString) > $iMaxlen) {
+	    $aOptions['message'] = KTUtil::arrayGet($aOptions, 
+						    'max_str_len_message', 
+						    _kt("The string is too long: the maximum length in characters is ") . $iMaxlen);
+	    $this->handleError($aOptions);						    
+	}
+
         return $sString;
     }
 
@@ -357,8 +366,7 @@ class KTDispatcherValidation {
     function validateEntityName($sEntityTypeName, $sName, $aOptions = null) {
         $aOptions['message'] = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No name was given for this item"));
         
-        // FIXME BD:  don't you mean $sName = $this->validateString ...
-        $this->validateString($sName, $aOptions);
+        $sName = $this->validateString($sName, $aOptions);
         $aOptions['message'] = KTUtil::arrayGet($aOptions, 'duplicate_message', _kt("An item with this name already exists"));
         return $this->validateDuplicateName($sEntityTypeName, $sName, $aOptions);
     }

@@ -112,7 +112,7 @@ class DocumentType extends KTEntity {
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-			'disabled' => $this->bDisabled,
+	    'disabled' => $this->bDisabled,
         );
     }
 
@@ -148,6 +148,16 @@ class DocumentType extends KTEntity {
         }
         return false;
     }
+
+    /* 
+    Get the fieldsets associated with this document type.
+    Simplifies listing associated fieldsets in doctypes displays.
+    */
+
+    function &getFieldsets() {
+	return KTFieldset::getForDocumentType($this);
+    }
+
 	
 	/**
 	* Static function.

@@ -89,7 +89,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     function do_addUser() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails(_kt('add a new user'));
-        $this->oPage->setTitle(_kt("Modify User Details"));
+        $this->oPage->setTitle(_kt("Add New User"));
         
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
@@ -110,7 +110,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 		}
         
         $add_fields = array();
-        $add_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', null, $this->oPage, true, null, null, $aOptions);
+        $add_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'newusername', null, $this->oPage, true, null, null, $aOptions);
         $add_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', null, $this->oPage, false, null, null, $aOptions);        
         $add_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', true, $this->oPage, false, null, null, $aOptions);        
@@ -142,7 +142,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
         $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
-        $oProvider->oPage->setTitle(_kt("Modify User Details"));
+        $oProvider->oPage->setTitle(_kt("Add New User"));
 
         $oProvider->dispatch();
         exit(0);
@@ -164,7 +164,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
         
         $edit_fields = array();
-        $edit_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'username', $oUser->getUsername(), $this->oPage, true);
+        $edit_fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>'), 'newusername', $oUser->getUsername(), $this->oPage, true);
         $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true);        
         $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false);        
         $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
@@ -351,7 +351,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         );
         
         $username = $this->oValidator->validateString(
-                KTUtil::arrayGet($_REQUEST, 'username'),
+                KTUtil::arrayGet($_REQUEST, 'newusername'),
                 KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a username")))
         );
         
@@ -404,7 +404,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (empty($name)) { $this->errorRedirectTo('addUser', _kt('You must specify a name for the user.')); }
-        $username = KTUtil::arrayGet($_REQUEST, 'username');
+        $username = KTUtil::arrayGet($_REQUEST, 'newusername');
         if (empty($name)) { $this->errorRedirectTo('addUser', _kt('You must specify a new username.')); }
         // FIXME check for non-clashing usernames.
         

@@ -69,6 +69,11 @@ class KTFolderAddFolderAction extends KTFolderAction {
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
         $aErrorOptions['defaultmessage'] = _kt("No name given");
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
+	
+	if(KTFolderUtil::exists($this->oFolder, $sFolderName)) {
+	    $this->errorRedirectToMain(_kt('A folder with that name already exists.'), $aErrorOptions['redirect_to'][1]);
+	    exit(0);
+	}
 
         $this->startTransaction();
 
