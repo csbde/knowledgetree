@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 07, 2006 at 04:51 PM
+-- Generation Time: Apr 18, 2006 at 11:07 AM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `ktcvs`
 -- 
 
 -- --------------------------------------------------------
@@ -590,6 +590,25 @@ CREATE TABLE `folder_subscriptions` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `folder_transactions`
+-- 
+
+CREATE TABLE `folder_transactions` (
+  `id` int(11) NOT NULL default '0',
+  `folder_id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '0',
+  `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `ip` char(30) default NULL,
+  `comment` char(255) NOT NULL default '',
+  `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
+  UNIQUE KEY `id` (`id`),
+  KEY `folder_id` (`folder_id`),
+  KEY `user_id` (`user_id`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `folder_workflow_map`
 -- 
 
@@ -993,6 +1012,7 @@ CREATE TABLE `plugins` (
   `version` int(11) NOT NULL default '0',
   `disabled` tinyint(1) NOT NULL default '0',
   `data` text,
+  `unavailable` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`namespace`)
 ) TYPE=InnoDB;
@@ -1186,6 +1206,24 @@ CREATE TABLE `upgrades` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `user_history`
+-- 
+
+CREATE TABLE `user_history` (
+  `id` int(11) NOT NULL,
+  `datetime` datetime NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `action_namespace` varchar(255) NOT NULL,
+  `comments` text,
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `action_namespace` (`action_namespace`),
+  KEY `datetime` (`datetime`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `users`
 -- 
 
@@ -1211,11 +1249,13 @@ CREATE TABLE `users` (
   `authentication_details_i1` int(11) default NULL,
   `authentication_details_d2` datetime default NULL,
   `authentication_details_b2` tinyint(1) default NULL,
+  `last_login` datetime default NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `authentication_source` (`authentication_source_id`),
   KEY `authentication_details_b1` (`authentication_details_b1`),
-  KEY `authentication_details_b2` (`authentication_details_b2`)
+  KEY `authentication_details_b2` (`authentication_details_b2`),
+  KEY `last_login` (`last_login`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1603,7 +1643,7 @@ CREATE TABLE `zseq_document_subscriptions` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=17 ;
+) TYPE=MyISAM AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -1714,6 +1754,17 @@ CREATE TABLE `zseq_folder_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_folder_transactions`
+-- 
+
+CREATE TABLE `zseq_folder_transactions` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1867,7 +1918,7 @@ CREATE TABLE `zseq_organisations_lookup` (
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -1900,7 +1951,7 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=12 ;
+) TYPE=MyISAM AUTO_INCREMENT=18 ;
 
 -- --------------------------------------------------------
 
@@ -1911,7 +1962,7 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -1933,7 +1984,7 @@ CREATE TABLE `zseq_permission_objects` (
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -2054,7 +2105,18 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=75 ;
+) TYPE=MyISAM AUTO_INCREMENT=82 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_user_history`
+-- 
+
+CREATE TABLE `zseq_user_history` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2191,6 +2253,13 @@ ALTER TABLE `fieldsets`
   ADD CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE SET NULL;
 
 -- 
+-- Constraints for table `folder_transactions`
+-- 
+ALTER TABLE `folder_transactions`
+  ADD CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE;
+
+-- 
 -- Constraints for table `groups_lookup`
 -- 
 ALTER TABLE `groups_lookup`
@@ -2253,6 +2322,12 @@ ALTER TABLE `permission_lookup_assignments`
 -- 
 ALTER TABLE `saved_searches`
   ADD CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- 
+-- Constraints for table `user_history`
+-- 
+ALTER TABLE `user_history`
+  ADD CONSTRAINT `user_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `users`

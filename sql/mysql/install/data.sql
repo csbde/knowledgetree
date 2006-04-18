@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 07, 2006 at 05:12 PM
+-- Generation Time: Apr 18, 2006 at 11:08 AM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `ktcvs`
 -- 
 
 -- 
@@ -151,6 +151,8 @@ INSERT INTO `document_transaction_types_lookup` VALUES (13, 'Email Link', 'ktcor
 INSERT INTO `document_transaction_types_lookup` VALUES (14, 'Collaboration Step Approve', 'ktcore.transactions.collaboration_step_approve');
 INSERT INTO `document_transaction_types_lookup` VALUES (15, 'Email Attachment', 'ktcore.transactions.email_attachment');
 INSERT INTO `document_transaction_types_lookup` VALUES (16, 'Workflow state transition', 'ktcore.transactions.workflow_state_transition');
+INSERT INTO `document_transaction_types_lookup` VALUES (17, 'Permissions changed', 'ktcore.transactions.permissions_change');
+INSERT INTO `document_transaction_types_lookup` VALUES (18, 'Role allocations changed', 'ktcore.transactions.role_allocations_change');
 
 -- 
 -- Dumping data for table `document_transactions`
@@ -216,6 +218,11 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 
 
 -- 
+-- Dumping data for table `folder_transactions`
+-- 
+
+
+-- 
 -- Dumping data for table `folder_workflow_map`
 -- 
 
@@ -224,7 +231,7 @@ INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 3, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 4, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -555,6 +562,7 @@ INSERT INTO `permission_assignments` VALUES (2, 2, 1, 2);
 INSERT INTO `permission_assignments` VALUES (3, 3, 1, 2);
 INSERT INTO `permission_assignments` VALUES (4, 4, 1, 2);
 INSERT INTO `permission_assignments` VALUES (5, 5, 1, 2);
+INSERT INTO `permission_assignments` VALUES (6, 6, 1, 2);
 
 -- 
 -- Dumping data for table `permission_descriptor_groups`
@@ -604,6 +612,12 @@ INSERT INTO `permission_lookup_assignments` VALUES (8, 2, 3, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (9, 3, 3, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (10, 4, 3, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (11, 5, 3, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (12, 1, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (13, 2, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (14, 3, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (15, 4, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (16, 5, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (17, 6, 4, 2);
 
 -- 
 -- Dumping data for table `permission_lookups`
@@ -612,6 +626,7 @@ INSERT INTO `permission_lookup_assignments` VALUES (11, 5, 3, 2);
 INSERT INTO `permission_lookups` VALUES (1);
 INSERT INTO `permission_lookups` VALUES (2);
 INSERT INTO `permission_lookups` VALUES (3);
+INSERT INTO `permission_lookups` VALUES (4);
 
 -- 
 -- Dumping data for table `permission_objects`
@@ -628,25 +643,12 @@ INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Core: Write', 
 INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
 INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Core: Manage security', 1);
 INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Core: Delete', 1);
+INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Core: Manage workflow', 1);
 
 -- 
 -- Dumping data for table `plugins`
 -- 
 
-INSERT INTO `plugins` VALUES (2, 'ktcore.userassistance', 'plugins/ktcore/assistance/KTUserAssistancePlugin.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (3, 'ktcore.plugin', 'plugins/ktcore/KTCorePlugin.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (4, 'ktstandard.ldapauthentication.plugin', 'plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (5, 'ktstandard.subscriptions.plugin', 'plugins/ktstandard/KTSubscriptions.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (6, 'ktstandard.discussion.plugin', 'plugins/ktstandard/KTDiscussion.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (7, 'ktstandard.email.plugin', 'plugins/ktstandard/KTEmail.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (8, 'ktstandard.indexer.plugin', 'plugins/ktstandard/KTIndexer.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (9, 'ktstandard.documentlinks.plugin', 'plugins/ktstandard/KTDocumentLinks.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (10, 'ktstandard.workflowassociation.plugin', 'plugins/ktstandard/KTWorkflowAssociation.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (11, 'ktstandard.workflowassociation.documenttype.plugin', 'plugins/ktstandard/workflow/TypeAssociator.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (12, 'ktstandard.workflowassociation.folder.plugin', 'plugins/ktstandard/workflow/FolderAssociator.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (13, 'ktstandard.bulkexport.plugin', 'plugins/ktstandard/KTBulkExportPlugin.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (14, 'ktstandard.searchdashlet.plugin', 'plugins/ktstandard/SearchDashletPlugin.php', 0, 0, NULL);
-INSERT INTO `plugins` VALUES (15, 'nbm.browseable.plugin', 'plugins/browseabledashlet/BrowseableDashletPlugin.php', 0, 0, NULL);
 
 -- 
 -- Dumping data for table `role_allocations`
@@ -684,7 +686,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.4');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -798,12 +800,24 @@ INSERT INTO `upgrades` VALUES (71, 'sql*3.0.1.1*0*3.0.1.1/document_role_allocati
 INSERT INTO `upgrades` VALUES (72, 'upgrade*3.0.1.1*99*upgrade3.0.1.1', 'Upgrade from version 3.0 to 3.0.1.1', '2006-03-28 11:22:19', 1, 'upgrade*3.0.1.1*99*upgrade3.0.1.1');
 INSERT INTO `upgrades` VALUES (73, 'sql*3.0.1.2*0*3.0.1.2/user_more_authentication_details.sql', 'Database upgrade to version 3.0.1.2: User more authentication details', '2006-04-07 16:50:28', 1, 'upgrade*3.0.1.2*99*upgrade3.0.1.2');
 INSERT INTO `upgrades` VALUES (74, 'upgrade*3.0.1.2*99*upgrade3.0.1.2', 'Upgrade from version 3.0.1.1 to 3.0.1.2', '2006-04-07 16:50:28', 1, 'upgrade*3.0.1.2*99*upgrade3.0.1.2');
+INSERT INTO `upgrades` VALUES (75, 'sql*3.0.1.2*0*3.0.1.2/owner_role_move.sql', 'Database upgrade to version 3.0.1.2: Owner role move', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (76, 'func*3.0.1.3*0*addTransactionTypes3013', 'Add new folder transaction types', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (77, 'sql*3.0.1.3*0*3.0.1.3/user_history.sql', 'Database upgrade to version 3.0.1.3: User history', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (78, 'sql*3.0.1.3*0*3.0.1.3/folder_transactions.sql', 'Database upgrade to version 3.0.1.3: Folder transactions', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (79, 'sql*3.0.1.3*0*3.0.1.3/plugin-unavailable.sql', 'Database upgrade to version 3.0.1.3: Plugin-unavailable', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (80, 'func*3.0.1.4*0*createWorkflowPermission', 'Create the Core: Manage Workflow', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+INSERT INTO `upgrades` VALUES (81, 'upgrade*3.0.1.4*99*upgrade3.0.1.4', 'Upgrade from version 3.0.1.2 to 3.0.1.4', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
+
+-- 
+-- Dumping data for table `user_history`
+-- 
+
 
 -- 
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `users_groups_link`
@@ -980,7 +994,7 @@ INSERT INTO `zseq_document_subscriptions` VALUES (1);
 -- Dumping data for table `zseq_document_transaction_types_lookup`
 -- 
 
-INSERT INTO `zseq_document_transaction_types_lookup` VALUES (16);
+INSERT INTO `zseq_document_transaction_types_lookup` VALUES (18);
 
 -- 
 -- Dumping data for table `zseq_document_transactions`
@@ -1041,6 +1055,11 @@ INSERT INTO `zseq_folder_doctypes_link` VALUES (2);
 -- 
 
 INSERT INTO `zseq_folder_subscriptions` VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_folder_transactions`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_folders`
@@ -1124,7 +1143,7 @@ INSERT INTO `zseq_organisations_lookup` VALUES (1);
 -- Dumping data for table `zseq_permission_assignments`
 -- 
 
-INSERT INTO `zseq_permission_assignments` VALUES (5);
+INSERT INTO `zseq_permission_assignments` VALUES (6);
 
 -- 
 -- Dumping data for table `zseq_permission_descriptors`
@@ -1142,13 +1161,13 @@ INSERT INTO `zseq_permission_dynamic_conditions` VALUES (1);
 -- Dumping data for table `zseq_permission_lookup_assignments`
 -- 
 
-INSERT INTO `zseq_permission_lookup_assignments` VALUES (11);
+INSERT INTO `zseq_permission_lookup_assignments` VALUES (17);
 
 -- 
 -- Dumping data for table `zseq_permission_lookups`
 -- 
 
-INSERT INTO `zseq_permission_lookups` VALUES (3);
+INSERT INTO `zseq_permission_lookups` VALUES (4);
 
 -- 
 -- Dumping data for table `zseq_permission_objects`
@@ -1160,7 +1179,7 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- Dumping data for table `zseq_permissions`
 -- 
 
-INSERT INTO `zseq_permissions` VALUES (5);
+INSERT INTO `zseq_permissions` VALUES (6);
 
 -- 
 -- Dumping data for table `zseq_plugins`
@@ -1226,7 +1245,12 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (74);
+INSERT INTO `zseq_upgrades` VALUES (81);
+
+-- 
+-- Dumping data for table `zseq_user_history`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_users`
