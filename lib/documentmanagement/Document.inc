@@ -508,11 +508,11 @@ class Document {
     // {{{ startNewMetadataVersion
     function startNewMetadataVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
-        $this->_oDocumentMetadataVersion->setId(-1);
+        $this->_oDocumentMetadataVersion =& $this->_oDocumentMetadataVersion->newCopy();
         $this->_oDocumentMetadataVersion->bumpMetadataVersion();
         $this->_oDocumentMetadataVersion->setVersionCreated(getCurrentDateTime());
         $this->_oDocumentMetadataVersion->setVersionCreatorId($iUserId);
-        $this->_oDocumentMetadataVersion->create();
+        $this->_oDocumentMetadataVersion->update();
         $this->_oDocumentCore->setMetadataVersion($this->_oDocumentMetadataVersion->getMetadataVersion());
         $this->_oDocumentCore->setMetadataVersionId($this->_oDocumentMetadataVersion->iId);
     }
@@ -521,18 +521,13 @@ class Document {
     // {{{ startNewContentVersion
     function startNewContentVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
-        $this->_oDocumentContentVersion->setId(-1);
-        $res = $this->_oDocumentContentVersion->create();
-        if (PEAR::isError($res)) {
-            var_dump($res);
-            return $res;
-        }
-        $this->_oDocumentMetadataVersion->setId(-1);
+        $this->_oDocumentContentVersion =& $this->_oDocumentContentVersion->newCopy();
+        $this->_oDocumentMetadataVersion =& $this->_oDocumentMetadataVersion->newCopy();
         $this->_oDocumentMetadataVersion->bumpMetadataVersion();
         $this->_oDocumentMetadataVersion->setVersionCreated(getCurrentDateTime());
         $this->_oDocumentMetadataVersion->setVersionCreatorId($iUserId);
         $this->_oDocumentMetadataVersion->setContentVersionId($this->_oDocumentContentVersion->getId());
-        $res = $this->_oDocumentMetadataVersion->create();
+        $res = $this->_oDocumentMetadataVersion->update();
         if (PEAR::isError($res)) {
             var_dump($res);
             return $res;
