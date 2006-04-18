@@ -102,7 +102,7 @@ legend { border: 1px dotted #999;}
 					    {$oSearchCriteria.widgetval}
 					</td>
 					<td>
-					    <input type="button" value="Remove" onclick="removeCriteria(this)"/>
+					    <input type="button" value="{i18n}Remove{/i18n}" onclick="removeCriteria(this)"/>
 					</td>
 				</tr>
 				{/foreach}
