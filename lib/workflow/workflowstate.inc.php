@@ -88,13 +88,8 @@ class KTWorkflowState extends KTEntity {
 
     // STATIC
     function &getByDocument($oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
-        $sTable = KTUtil::getTableName('workflow_documents');
-        $iStateId = DBUtil::getOneResultKey(array(
-                "SELECT state_id FROM $sTable WHERE document_id = ?",
-                array($iDocumentId),
-            ), 'state_id'
-        );
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $iStateId = $oDocument->getWorkflowStateId();
 
         if (PEAR::isError($iStateId)) {
             return $iStateId;

@@ -528,14 +528,9 @@ class WorkflowStateCriterion extends BrowseCriterion {
 
     function searchSQL ($aRequest) {
         $p = array();
-        $p[0] = "WD.state_id = ?";
+        $p[0] = "D.workflow_state_id = ?";
         $p[1] = $aRequest[$this->getWidgetBase()];
         return $p;
-    }
-
-    function searchJoinSQL () {
-        global $default;
-        return "INNER JOIN $default->workflow_documents_table AS WD ON D.id = WD.document_id";
     }
 
     function searchWidget ($aRequest, $aPreValue = null) {

@@ -118,6 +118,11 @@ class Document {
     function getVersionCreated() { return $this->_oDocumentMetadataVersion->getVersionCreated(); }
     function getVersionCreatorId() { return $this->_oDocumentMetadataVersion->getVersionCreatorId(); }
 
+    function getWorkflowId() { return $this->_oDocumentMetadataVersion->getWorkflowId(); }
+    function setWorkflowId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowId($mValue); }
+    function getWorkflowStateId() { return $this->_oDocumentMetadataVersion->getWorkflowStateId(); }
+    function setWorkflowStateId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowStateId($mValue); }
+
     // Document Content Version   
     
     function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
@@ -368,8 +373,7 @@ class Document {
                
         $result = $sql->query("DELETE FROM $default->document_text_table WHERE document_id = $iDocumentID") &&
                   $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $iDocumentID") &&
-                  $sql->query("DELETE FROM $default->document_fields_link_table WHERE document_id = $iDocumentID") &&
-                  $sql->query("DELETE FROM " . KTUtil::getTableName('workflow_documents') . " WHERE document_id = $iDocumentID");
+                  $sql->query("DELETE FROM $default->document_fields_link_table WHERE document_id = $iDocumentID");
         return $result;
     }
     // }}}
@@ -392,8 +396,8 @@ class Document {
     // {{{ getByState
     function &getByState($oState) {
         $iStateId = KTUtil::getId($oState);
-        $sTable = KTUtil::getTableName('workflow_documents');
-        $sQuery = sprintf('SELECT document_id FROM %s WHERE state_id = ?', $sTable);
+        $sTable = KTUtil::getTableName('documents');
+        $sQuery = sprintf('SELECT id FROM %s WHERE workflow_state_id = ?', $sTable);
         $aParams = array($iStateId);
         $aIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'document_id');
         

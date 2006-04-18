@@ -58,6 +58,9 @@ class KTDocumentMetadataVersion extends KTEntity {
     /** Who created this version */
     var $iVersionCreatorId;
 
+    var $iWorkflowId;
+    var $iWorkflowStateId;
+
     var $_aFieldToSelect = array(
         "iId" => "id",
 
@@ -74,10 +77,10 @@ class KTDocumentMetadataVersion extends KTEntity {
 
         "dVersionCreated" => 'version_created',
         "iVersionCreatorId" => 'version_creator_id',
-    );
 
-    function KTDocumentMetadataVersion() {
-    }
+        "iWorkflowId" => 'workflow_id',
+        "iWorkflowStateId" => 'workflow_state_id',
+    );
 
     // {{{ getters/setters
     function getDocumentId() { return $this->iDocumentId; }
@@ -99,6 +102,10 @@ class KTDocumentMetadataVersion extends KTEntity {
     function setVersionCreated($dNewValue) { $this->dVersionCreated = $dNewValue; }
     function getVersionCreatorId() { return $this->iVersionCreatorId; }
     function setVersionCreatorId($iNewValue) { $this->iVersionCreatorId = $iNewValue; }
+    function getWorkflowId() { return $this->iWorkflowId; }
+    function setWorkflowId($mValue) { $this->iWorkflowId = $mValue; }
+    function getWorkflowStateId() { return $this->iWorkflowStateId; }
+    function setWorkflowStateId($mValue) { $this->iWorkflowStateId = $mValue; }
     // }}}
 
     function &createFromArray($aOptions) {
