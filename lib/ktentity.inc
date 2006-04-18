@@ -111,6 +111,19 @@ class KTEntity {
         return false;
     }
 
+    function newCopy() {
+        $sClass = get_class($this);
+        $oObject =& new $sClass;
+        foreach (array_keys($this->_aFieldToSelect) as $k) {
+            $oObject->$k = $this->$k;
+        }
+        $oObject->iId = -1;
+        $oObject->create();
+
+        $iId = $oObject->iId;
+        return KTEntityUtil::get($sClass, $iId);
+    }
+
     /**
      * Update the values in the database table with the object's current values
      *
