@@ -905,7 +905,13 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $oUser =& User::get($_SESSION['userID']);
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+
         $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
+
+        $bHasPerm = false;
+        if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
+            $bHasPerm = true;
+        }
 
         $fieldErrors = null;
         
@@ -930,13 +936,18 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             'aTransitions' => $aTransitions,
             'aWorkflows' => $aWorkflows,
             'transition_fields' => $transition_fields,
+            'bHasPerm' => $bHasPerm,
         );
         return $oTemplate->render($aTemplateData);
     }
 
     function do_startWorkflow() {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
-        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        if (!empty($_REQUEST['fWorkflowId'])) {
+            $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        } else {
+            $oWorkflow = null;
+        }
         $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
