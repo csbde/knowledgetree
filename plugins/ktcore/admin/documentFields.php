@@ -90,7 +90,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     // {{{ do_edit
     function do_edit() {
-        $this->oPage->setBreadcrumbDetails("edit");    
+        $this->oPage->setBreadcrumbDetails(_kt("edit"));
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editFieldset');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
@@ -107,10 +107,10 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // type is a little more complex.
         $vocab = array();
         if (!$oFieldset->getIsConditional()) {
-           $vocab["normal"] = 'Normal';
+           $vocab["normal"] = _kt('Normal');
         }
-        $vocab['lookup'] = 'Lookup';
-        $vocab['tree'] = 'Tree';
+        $vocab['lookup'] = _kt('Lookup');
+        $vocab['tree'] = _kt('Tree');
         $typeOptions = array("vocab" => $vocab);
         $createFields[] =& new KTLookupWidget(_kt('Type'), _kt('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.'), 
         'type', null, $this->oPage, true, null,  null, $typeOptions);
