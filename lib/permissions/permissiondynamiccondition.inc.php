@@ -121,6 +121,38 @@ class KTPermissionDynamicCondition extends KTEntity {
         );
         return DBUtil::getResultArrayKey($aQuery, 'permission_id');
     }
+
+    // static
+    function deleteByCondition($oCondition) {
+        $iConditionId = KTUtil::getId($oCondition);
+
+        $sTable = KTUtil::getTableName('permission_dynamic_conditions');
+        $sAssignmentsTable = KTUtil::getTableName('permission_dynamic_assignments');
+        $aQuery = array(
+            sprintf('SELECT id FROM %s WHERE condition_id = ?', $sTable),
+            array($iConditionId),
+        );
+        $aIds = DBUtil::getResultArrayKey($aQuery, 'id');
+        
+
+        $sParam = DBUtil::paramArray($aIds);
+
+        $aAssignmentQuery = array(
+            sprintf('DELETE FROM %s WHERE dynamic_condition_id IN (%s)', $sAssignmentsTable, $sParam),
+            $aIds,
+        );
+
+        DBUtil::runQuery($aAssignmentQuery);
+
+        $aConditionQuery = array(
+            sprintf('DELETE FROM %s WHERE id IN (%s)', $sTable, $sParam),
+            $aIds,
+        );
+
+        DBUtil::runQuery($aAssignmentQuery);
+
+        return;
+    }
 }
 
 ?>

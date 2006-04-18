@@ -47,6 +47,32 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
+    function do_delete() {
+        $this->oPage->setBreadcrumbDetails(_kt('Confirm deletion'));
+        $this->oPage->setTitle(_kt('Confirm deletion'));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/search/administration/condition_delete_confirmation');
+
+        $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
+        $oSearch = KTSavedSearch::get($id);
+
+        $oTemplate->setData(array(
+            'condition_id' => $oSearch->getId(),
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_delete_confirmed() {
+        $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
+        $oSearch = KTSavedSearch::get($id);
+        KTPermissionDynamicCondition::deleteByCondition($oSearch);
+        $res = $oSearch->delete();
+        $this->oValidator->notError($res, array(
+            'redirect_to' => 'main',
+            'message' => _kt('Search not deleted'),
+        ));
+        $this->successRedirectToMain(_kt('Dynamic condition deleted'));
+    }
+
     function do_new() {
         $this->oPage->setBreadcrumbDetails(_kt('Create a new condition'));
         $this->oPage->setTitle(_kt('Create a new condition'));

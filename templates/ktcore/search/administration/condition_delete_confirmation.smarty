@@ -1,0 +1,22 @@
+<h2>{i18n}Delete Dynamic Condition{/i18n}</h2>
+
+<p class="descriptiveText important">{i18n}Deleting a dynamic condition will
+potentially change the permissions on a number of items in the document
+management system.  Users may experience a lack of access to documents
+that they usually have access to if you continue with this action.{/i18n}</p>
+
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Delete a condition{/i18n}</legend>
+<div>
+<p class="descriptiveText">{i18n}Do you still wish to continue
+with deleting this item?{/i18n}</p>
+
+<input type="hidden" name="action" value="delete_confirmed" />
+<input type="hidden" name="fSavedSearchId" value="{$condition_id}" />
+<input type="submit" name="submit" value="{i18n}Delete{/i18n}" />
+<input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+</div>
+</fieldset>
+</form>
