@@ -30,7 +30,7 @@ be allocated to roles and groups.{/i18n}</p></div>
 <tr>
 <th width="40%">{i18n}Role or Group{/i18n}</th>
 { foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}" class="centered">{$oPerm->sHumanName}</th>
+<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
 { /foreach }
 </tr>
 </thead>
@@ -126,7 +126,7 @@ value="{$iGroupId}"></td>
       <th>{i18n}Group{/i18n}</th>
       <th>{i18n}Condition{/i18n}</th>
 {foreach from=$permissions item=oPerm}
-      <th title="{$oPerm->sName}"  class="centered">{$oPerm->sHumanName}</th>
+      <th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
 {/foreach}
     </tr>
   </thead>
@@ -171,7 +171,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
   <th>{i18n}Group{/i18n}</th>
   <th>{i18n}Condition{/i18n}</th>
 {foreach from=$permissions item=oPerm}
-  <th title="{$oPerm->sName}"  class="centered">{$oPerm->sHumanName}</th>
+  <th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
 {/foreach}
 </tr>
 </thead>

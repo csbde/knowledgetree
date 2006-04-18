@@ -29,7 +29,7 @@ below.{/i18n}</p>
 <fieldset>
 <legend>{i18n}Edit a link type{/i18n}</legend>
 <p class="descriptiveText">{i18n}Specify the details for the link type below.{/i18n}</p>
-<input type="hidden" name="fLinkTypeId" value="{$old_link->iId}" />
+<input type="hidden" name="fLinkTypeId" value="{$old_link->getId()}" />
 {foreach item=oWidget from=$edit_form}
   {$oWidget->render()}
 {/foreach}
@@ -72,8 +72,8 @@ links of that type within the system.{/i18n}</p>
   <tr class="{cycle values=even,odd}">
     <td>{$oLinkType->getName()}</td>
     <td class="descriptiveText">{$oLinkType->getDescription()}</td>
-    <td><a href="{addQS}action=edit&fLinkTypeId={$oLinkType->iId}{/addQS}" class="ktAction ktEdit">{i18n}edit link type{/i18n}</a></td>
-    <td><a href="{addQS}action=delete&fLinksToDelete[]={$oLinkType->iId}{/addQS}" class="ktAction ktDelete">{i18n}edit link type{/i18n}</a></td>
+    <td><a href="{addQS}action=edit&fLinkTypeId={$oLinkType->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit link type{/i18n}</a></td>
+    <td><a href="{addQS}action=delete&fLinksToDelete[]={$oLinkType->getId()}{/addQS}" class="ktAction ktDelete">{i18n}edit link type{/i18n}</a></td>
   </tr>
   {/foreach}
 </tbody>

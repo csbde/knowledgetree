@@ -32,12 +32,12 @@
     { foreach item=oPerm from=$permissions }
         <tr class="{cycle values="odd,even"}">
             <td>
-            { $oPerm->sName }
+            { $oPerm->getName() }
             </td>
             <td>
-            { $oPerm->sHumanName }
+            { $oPerm->getHumanName() }
             </td>
-          { if $oPerm->bBuiltIn == true }
+          { if $oPerm->getBuiltIn() == true }
             <td>
             {i18n}Built-in{/i18n}
             </td>

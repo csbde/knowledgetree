@@ -10,9 +10,9 @@ tinyMCE.init({
 {$context->oPage->requireJSStandalone($sJS)}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<input type="hidden" name="id" value="{$help->iId}">
+<input type="hidden" name="id" value="{$help->getId()}">
 <input type="hidden" name="action" value="updateReplacement">
-<input type="text" name="title" value="{$help->sTitle|escape}" /><br /><br />
-<textarea cols="60" rows="20" name="description">{$help->sDescription|escape}</textarea>
+<input type="text" name="title" value="{$help->getTitle()|escape}" /><br /><br />
+<textarea cols="60" rows="20" name="description">{$help->getDescription()|escape}</textarea>
 <input type="submit" name="submit" value="{i18n}Update{/i18n}" />
 </form>
