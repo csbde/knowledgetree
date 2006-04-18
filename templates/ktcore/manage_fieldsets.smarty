@@ -10,17 +10,17 @@
    { foreach item=oFieldSet from=$fieldsets }
    <tr class="{cycle values="odd,even"}">
      <td>
-     { $oFieldSet->sName }
+     { $oFieldSet->getName() }
      </td>
      <td>
-     { $oFieldSet->sNamespace}
+     { $oFieldSet->getNamespace() }
      </td>
      
      <td>
        <a href="{addQS}action=editFieldset&id={$oFieldSet->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
      </td>
      <td>
-       {if $oFieldSet->bMandatory == false}
+       {if $oFieldSet->getMandatory() == false}
        <a href="{addQS}action=deleteFieldset&id={$oFieldSet->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
        {else}
        {i18n}Built-in set.{/i18n}

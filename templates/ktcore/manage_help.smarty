@@ -16,10 +16,10 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 { foreach item=oHelpReplacement from=$helpreplacements }
 <tr class="{cycle values="odd,even"}">
 <td>
-<a href="{addQS}action=editReplacement&id={$oHelpReplacement->iId}{/addQS}">{ $oHelpReplacement->sName }</a>
+<a href="{addQS}action=editReplacement&id={$oHelpReplacement->getId()}{/addQS}">{ $oHelpReplacement->sName }</a>
 </td>
 <td>
-<a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->iId}{/addQS}">{i18n}Delete{/i18n}</a>
+<a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
 </td>
 </tr>
 { /foreach }
