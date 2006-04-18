@@ -387,6 +387,12 @@ class KTPermissionUtil {
      * and so forth.
      */
     function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument) {
+        if (is_string($oPermission)) {
+             $oPermission =& KTPermission::getByName($oPermission);
+        }
+        if (PEAR::isError($oPermission)) {
+            return false;
+        }
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
         $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
         if (PEAR::isError($oPLA)) {
