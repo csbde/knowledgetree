@@ -202,14 +202,14 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
-                    $aErrorDocuments[] = $oDoc->getName;
+                    $aErrorDocuments[] = $oDoc->getName();
                     continue; // skip transactions, etc.
                 }
                 
                 $res = KTPermissionUtil::updatePermissionLookup($oDoc);
                 
                 if (PEAR::isError($res)) {
-                    $aErrorDocuments[] = $oDoc->getName;
+                    $aErrorDocuments[] = $oDoc->getName();
                     continue; // skip transactions, etc.
                 }
                 
