@@ -30,6 +30,7 @@ require_once('../../config/dmsDefaults.php');
 
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
+require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 
 $sSourceName = "ActiveDirectory";
 $sFieldsetNamespace = "http://ktcvs.local/local/fieldsets/synctestfieldset";
