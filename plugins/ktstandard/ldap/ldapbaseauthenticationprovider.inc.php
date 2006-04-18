@@ -535,7 +535,12 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         $aAttr = $oEntry->attributes();
         $aAttr['dn'] = $oEntry->dn();
 
+        global $default;
         foreach ($aAttr as $k => $v) {
+            $default->log->info(sprintf("LDAP: For DN %s, attribute %s value is %s", $dn, $k, print_r($v, true)));
+            if (is_array($v)) {
+                $v = array_shift($v);
+            }
             $aRet[strtolower($k)] = $v;
         }
         return $aRet;
