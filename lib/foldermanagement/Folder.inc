@@ -321,7 +321,7 @@ class Folder extends KTEntity {
 	function getFolderPath($iFolderID) {
 		global $default;		
 		$oFolder = Folder::get($iFolderID);
-		$sPath = $default->documentRoot . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
+		$sPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName() . "/";
 		return $sPath;
 	}
 
@@ -338,11 +338,11 @@ class Folder extends KTEntity {
 		$oFolder = Folder::get($iFolderID);
 		$aPathArray = array();		
 		if ($oFolder) {
-			if (strlen($oFolder->sFullPath) > 0) {
-				if (strlen($oFolder->sFullPath) > 1) {				
-					$aPathArray = explode("/",$oFolder->sFullPath);				
+			if (strlen($oFolder->getFullPath()) > 0) {
+				if (strlen($oFolder->getFullPath()) > 1) {				
+					$aPathArray = explode("/",$oFolder->getFullPath());
 				} else {
-					$aPathArray = array($oFolder->sFullPath);
+					$aPathArray = array($oFolder->getFullPath());
 				}
 				$aPathArray[count($aPathArray)] = $oFolder->getName();
 			} else {
@@ -372,13 +372,13 @@ class Folder extends KTEntity {
         if ($oFolder === false) {
             return false;
         }
-		if (strlen($oFolder->sParentFolderIDs) > 0) {
+		if (strlen($oFolder->getParentFolderIDs()) > 0) {
             if ($oFolder->iParentID == 0) {
                 $aPathArray = array();
-            } else if (strlen($oFolder->sParentFolderIDs) > 1) {				
-				$aPathArray = explode(",",$oFolder->sParentFolderIDs);				
+            } else if (strlen($oFolder->getParentFolderIDs()) > 1) {				
+				$aPathArray = explode(",",$oFolder->getParentFolderIDs());
 			} else {
-				$aPathArray = array($oFolder->sParentFolderIDs);
+				$aPathArray = array($oFolder->getParentFolderIDs());
 			}
 			$aPathArray[count($aPathArray)] = $oFolder->getID();
 		} else {			
