@@ -61,12 +61,14 @@ class Session {
         if (PEAR::isError($result)) {
             die("Error creating session: " . $result->toString());
         }
+        $_SESSION['sessionID'] = $result;
 
         $aParams = array(
             'userid' => $iUserId,
             'datetime' => date("Y-m-d H:i:s", time()),
             'actionnamespace' => 'ktcore.user_history.login',
             'comments' => sprintf('Logged in from %s', $ip),
+            'sessionid' => $_SESSION['sessionID'],
         );
         require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
         $res = KTUserHistory::createFromArray($aParams);
@@ -89,14 +91,22 @@ class Session {
 
         session_start();
         $sSessionID = session_id();
-        $iUserID = $_SESSION["userID"];
+        $iUserId = $_SESSION["userID"];
         
         // remove the session information from the database
 
 		$sTable = KTUtil::getTableName('sessions');
 		$res = DBUtil::whereDelete($sTable, array('session_id' => $sSessionID));
 
-
+        $aParams = array(
+            'userid' => $iUserId,
+            'datetime' => date("Y-m-d H:i:s", time()),
+            'actionnamespace' => 'ktcore.user_history.logout',
+            'sessionid' => $_SESSION['sessonID'],
+        );
+        require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+        $res = KTUserHistory::createFromArray($aParams);
+        $default->log->info("saving user history - " . print_r($res, true));
 
         // remove the php4 session
 		unset($_SESSION['userID']);
@@ -110,13 +120,37 @@ class Session {
      *
      * @param int the userID to remove stale sessions for
      */
-    function removeStaleSessions($userID = -1) {
+    function removeStaleSessions() {
         global $default;
-        // deletes any sessions for this userID where the default timeout has elapsed.
-        $time = time() -  $default->sessionTimeout;
-        $sql = $default->db;
-        $sQuery = "DELETE FROM $default->sessions_table WHERE " . (($userID != -1) ? "user_id=$userID AND " : "") . "lastused <= '" . formatDateTime($time) . "'";
-        $sql->query($sQuery);
+        $time = time() - $default->sessionTimeout;
+
+        $sTable = KTUtil::getTableName('sessions');
+        $aQuery = array(
+            sprintf('SELECT id, lastused, user_id FROM %s WHERE lastused <= ?', $sTable),
+            array(formatDateTime($time)),
+        );
+
+        $aSessions = DBUtil::getResultArray($aQuery);
+
+        foreach ($aSessions as $aSessionData) {
+            $iId = $aSessionData['id'];
+            $dLastUsed = $aSessionData['lastused'];
+            $iUserId = $aSessionData['user_id'];
+            $iTime = strtotime($dLastUsed);
+            $iTime = $iTime + $default->sessionTimeout;
+            $aParams = array(
+                'userid' => $iUserId,
+                'datetime' => formatDateTime($iTime),
+                'actionnamespace' => 'ktcore.user_history.timeout',
+                'comments' => 'Session timed out',
+                'sessionid' => $_SESSION['sessionID'],
+            );
+            require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+            $res = KTUserHistory::createFromArray($aParams);
+            $default->log->info("saving user history - " . print_r($res, true));
+
+            DBUtil::whereDelete($sTable, array('id' => $iId));
+        }
     }
 
     /**
@@ -190,10 +224,11 @@ class Session {
 
             return true;
         } else {
+
+            Session::removeStaleSessions();
+
             return PEAR::raiseError('Session timed out');
         }
-
-        // }
 
         Session::removeStaleSessions();
         

@@ -74,6 +74,7 @@ class DocumentTransaction {
 		}
 		
 		$this->iUserID = $_SESSION["userID"];
+		$this->iSessionId = $_SESSION["sessionID"];
         $oUser = KTUtil::arrayGet($aOptions, 'user');
 		
         if (!(PEAR::isError($oUser) || ($oUser == false))) {
@@ -119,6 +120,7 @@ class DocumentTransaction {
                 'filename' => $this->sFileName,
                 'comment' => $this->sComment,
                 'transaction_namespace' => $this->sTransactionNS,
+                'session_id' => $this->iSessionId,
             );
             $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
 
