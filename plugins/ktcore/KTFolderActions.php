@@ -130,7 +130,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
         if ($edit_mode == false) { $bEdit = false; }
         
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
-        if ($oInherited === $this->oFolder) {
+        // This is fine, since a folder can only inherit permissions
+        // from a folder.
+        if ($oInherited->getId() === $this->oFolder->getId()) {
             ; // leave edit mode as per request.
         } else {
             $iInheritedFolderId = $oInherited->getId();
