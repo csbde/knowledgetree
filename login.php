@@ -46,8 +46,6 @@ class LoginPageDispatcher extends KTDispatcher {
             else {
                 exit(redirect(generateControllerLink('dashboard')));
             }
-        } else {
-            $this->session->destroy(); // toast it - its probably a hostile session.
         }
         return true;
     }
