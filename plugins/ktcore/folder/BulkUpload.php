@@ -95,6 +95,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
     }
 
     function do_upload() {
+        set_time_limit(0);
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
