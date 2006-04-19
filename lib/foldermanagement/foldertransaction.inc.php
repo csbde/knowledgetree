@@ -37,6 +37,7 @@ class KTFolderTransaction extends KTEntity {
         'sIp' => 'ip',
         'sComment' => 'comment',
         'sTransactionNS' => 'transaction_namespace',
+        'iSessionId' => 'session_id',
     );
 
     var $_bUsePearError = true;
@@ -48,6 +49,9 @@ class KTFolderTransaction extends KTEntity {
     function _fieldValues() {
         if (empty($this->dDateTime)) {
             $this->dDateTime = getCurrentDateTime();
+        }
+        if (empty($this->iSessionId)) {
+            $this->iSessionId = $_SESSION['sessionID'];
         }
         return parent::_fieldValues();
     }

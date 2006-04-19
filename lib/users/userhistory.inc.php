@@ -35,6 +35,7 @@ class KTUserHistory extends KTEntity {
         'iUserId' => 'user_id',
         'sActionNamespace' => 'action_namespace',
         'sComments' => 'comments',
+        'iSessionId' => 'session_id',
     );
 
     var $_bUsePearError = true;
@@ -47,6 +48,8 @@ class KTUserHistory extends KTEntity {
     function setComments($mValue) { $this->sComments = $sComments; }
     function getActionNamespace() { return $this->sActionNamespace; }
     function setActionNamespace($mValue) { $this->sActionNamespace = $mValue; }
+    function getSessionId() { return $this->iSessionId; }
+    function setSessionId($mValue) { $this->iSessionId = $mValue; }
 
     function _table () {
         return KTUtil::getTableName('user_history');
