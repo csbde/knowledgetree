@@ -31,6 +31,8 @@ require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/users/User.inc');
 
+require_once(KT_LIB_DIR . '/foldermanagement/foldertransaction.inc.php');
+
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 class KTFolderUtil {
@@ -59,6 +61,14 @@ class KTFolderUtil {
             return $oFolder;
         }
 
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $oFolder->getId(),
+            'comment' => "Folder created",
+            'transactionNS' => 'ktcore.transactions.create',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
+        ));
+
         // fire subscription alerts for the new folder
         $oSubscriptionEvent = new SubscriptionEvent();
         $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
@@ -81,6 +91,8 @@ class KTFolderUtil {
             $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
             $sNewParentFolderIds = sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID());
         }
+
+        $sOldPath = $oFolder->getFullPath();
 
         if ($oNewParentFolder->getId() == 1) {
         } else {
@@ -135,6 +147,18 @@ class KTFolderUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
+
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $oFolder->getId(),
+            'comment' => sprintf("Folder moved from %s to %s", $sOldPath, $sNewParentFolderPath),
+            'transactionNS' => 'ktcore.transactions.move',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
+        ));
+
+        Document::clearAllCaches();
+        Folder::clearAllCaches();
+
         return;
     }
     
