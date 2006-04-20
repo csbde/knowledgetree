@@ -215,10 +215,6 @@ class KTDocumentCore extends KTEntity {
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();
         $res = parent::create();
         
-        if ($res === true) {
-            KTPermissionUtil::updatePermissionLookup($this);
-        }
-
         return $res;
     }
     // }}}
