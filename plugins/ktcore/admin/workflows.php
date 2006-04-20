@@ -681,7 +681,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None';
+        $vocab[0] = _kt('None');
         foreach($aGroups as $group) {
             $vocab[$group->getId()] = $group->getName();
         } 
@@ -689,7 +689,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $add_transition_fields[] = new KTLookupWidget(_kt('Guard Group.'), _kt('Which group must the user belong to in order to follow this transition?'), 'fGroupId', NULL, $this->oPage, false, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None';
+        $vocab[0] = _kt('None');
         foreach($aRoles as $role) {
             $vocab[$role->getId()] = $role->getName();
         } 
@@ -699,7 +699,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         if (!empty($aConditions)) {
             $aOptions = array();
             $vocab = array();
-            $vocab[0] = 'None';
+            $vocab[0] = _kt('None');
             foreach($aConditions as $condition) {
                 $vocab[$condition->getId()] = $condition->getName();
             } 
@@ -1234,7 +1234,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $edit_fields[] = new KTLookupWidget(_kt('Destination State'), _kt('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None';
+        $vocab[0] = _kt('None');
         foreach($aPermissions as $permission) {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
@@ -1242,7 +1242,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $edit_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _kt('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None';
+        $vocab[0] = _kt('None');
         foreach($aGroups as $group) {
             $vocab[$group->getId()] = $group->getName();
         } 
@@ -1250,7 +1250,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $edit_fields[] = new KTLookupWidget(_kt('Guard Group.'), _kt('Which group must the user belong to in order to follow this transition?'), 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
-        $vocab[0] = 'None';
+        $vocab[0] = _kt('None');
         foreach($aRoles as $role) {
             $vocab[$role->getId()] = $role->getName();
         } 
@@ -1260,7 +1260,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         if (!empty($aConditions)) {
             $aOptions = array();
             $vocab = array();
-            $vocab[0] = 'None';
+            $vocab[0] = _kt('None');
             foreach($aConditions as $condition) {
                 $vocab[$condition->getId()] = $condition->getName();
             } 
