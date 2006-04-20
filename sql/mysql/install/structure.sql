@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 20, 2006 at 02:23 PM
+-- Generation Time: Apr 20, 2006 at 05:04 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
@@ -390,9 +390,11 @@ CREATE TABLE `document_transactions` (
   `filename` char(255) NOT NULL default '',
   `comment` char(255) NOT NULL default '',
   `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
+  `session_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   KEY `fk_document_id` (`document_id`),
-  KEY `fk_user_id` (`user_id`)
+  KEY `fk_user_id` (`user_id`),
+  KEY `session_id` (`session_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -605,9 +607,11 @@ CREATE TABLE `folder_transactions` (
   `ip` char(30) default NULL,
   `comment` char(255) NOT NULL default '',
   `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
+  `session_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   KEY `folder_id` (`folder_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `session_id` (`session_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1219,10 +1223,12 @@ CREATE TABLE `user_history` (
   `user_id` int(11) NOT NULL,
   `action_namespace` varchar(255) NOT NULL,
   `comments` text,
+  `session_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `action_namespace` (`action_namespace`),
-  KEY `datetime` (`datetime`)
+  KEY `datetime` (`datetime`),
+  KEY `session_id` (`session_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -2109,7 +2115,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=86 ;
+) TYPE=MyISAM AUTO_INCREMENT=88 ;
 
 -- --------------------------------------------------------
 
@@ -2262,8 +2268,8 @@ ALTER TABLE `fieldsets`
 -- Constraints for table `folder_transactions`
 -- 
 ALTER TABLE `folder_transactions`
-  ADD CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `groups_lookup`
