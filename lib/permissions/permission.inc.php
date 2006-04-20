@@ -49,7 +49,7 @@ class KTPermission extends KTEntity {
 
     function getID() { return $this->iId; }
     function getName() { return $this->sName; }
-    function getHumanName() { return $this->sHumanName; }
+    function getHumanName() { return _kt($this->sHumanName); }
     function getBuiltIn() { return $this->bBuiltIn; }
     function setID($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
