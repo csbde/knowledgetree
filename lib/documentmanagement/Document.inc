@@ -501,6 +501,9 @@ class Document {
             return $res;
         }
         $oDocument->iId = $iId;
+
+        KTPermissionUtil::updatePermissionLookup($oDocument);
+
         return $oDocument;
     }
     // }}}
