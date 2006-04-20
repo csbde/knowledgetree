@@ -38,7 +38,7 @@
 
             <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
             <td>{$type->getName()}</td>
-            <td>{ii18n}Linked <b>from</b> this document{/i18n}</td>
+            <td>{i18n}Linked <b>from</b> this document{/i18n}</td>
         </tr>
         
 {/foreach}      
