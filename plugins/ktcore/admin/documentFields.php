@@ -684,6 +684,22 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     function do_editTree() {
         global $default;
         // extract.
+
+        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['field_id']);
+
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'name' => $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'query' => 'action=editField&fFieldsetId=' . $_REQUEST['fFieldsetId'] . '&fFieldId=' . $oField->getId(),
+            'name' => $oField->getName()
+        );
+        $this->oPage->setBreadcrumbDetails(_kt('edit lookup tree'));
+
         $field_id = KTUtil::arrayGet($_REQUEST, 'field_id');
         $current_node = KTUtil::arrayGet($_REQUEST, 'current_node', 0);
         $subaction = KTUtil::arrayGet($_REQUEST, 'subaction');
@@ -759,6 +775,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		
         $aTemplateData = array(
             "field" => $oField,
+            "oFieldset" => $oFieldset,
             "tree" => $fieldTree,
             "renderedTree" => $renderedTree,
             "currentNode" => $current_node,

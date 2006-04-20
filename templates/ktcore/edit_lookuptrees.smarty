@@ -31,6 +31,7 @@ are immediately stored, so when you are done simply navigate back to the field m
   
   
   <input type="hidden" name="field_id" value="{$field->getId()}" />
+  <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
   <input type="hidden" name="action" value="editTree" /> 
   <input type="hidden" name="subaction" value="addCategory" />
   <input type="hidden" name="current_node" value="{$currentNode}" />
@@ -67,6 +68,7 @@ make it available.{/i18n}</p></div>
   {/i18n}</p>
   
   <input type="hidden" name="field_id" value="{$field->getId()}" />
+  <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
   <input type="hidden" name="action" value="editTree" /> 
   <input type="hidden" name="subaction" value="linkKeywords" />
   <input type="hidden" name="current_node" value="{$currentNode}" />
