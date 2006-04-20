@@ -3,14 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 18, 2006 at 12:39 PM
+-- Generation Time: Apr 20, 2006 at 02:24 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
-
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- 
@@ -689,7 +688,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.5');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.6');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -812,6 +811,8 @@ INSERT INTO `upgrades` VALUES (80, 'func*3.0.1.4*0*createWorkflowPermission', 'C
 INSERT INTO `upgrades` VALUES (81, 'upgrade*3.0.1.4*99*upgrade3.0.1.4', 'Upgrade from version 3.0.1.2 to 3.0.1.4', '2006-04-18 11:06:34', 1, 'upgrade*3.0.1.4*99*upgrade3.0.1.4');
 INSERT INTO `upgrades` VALUES (82, 'sql*3.0.1.5*0*3.0.1.5/anonymous-user.sql', 'Database upgrade to version 3.0.1.5: Anonymous-user', '2006-04-18 12:38:41', 1, 'upgrade*3.0.1.5*99*upgrade3.0.1.5');
 INSERT INTO `upgrades` VALUES (83, 'upgrade*3.0.1.5*99*upgrade3.0.1.5', 'Upgrade from version 3.0.1.4 to 3.0.1.5', '2006-04-18 12:38:41', 1, 'upgrade*3.0.1.5*99*upgrade3.0.1.5');
+INSERT INTO `upgrades` VALUES (84, 'sql*3.0.1.6*0*3.0.1.6/workflow-into-metadata.sql', 'Database upgrade to version 3.0.1.6: Workflow-into-metadata', '2006-04-20 14:22:24', 1, 'upgrade*3.0.1.6*99*upgrade3.0.1.6');
+INSERT INTO `upgrades` VALUES (85, 'upgrade*3.0.1.6*99*upgrade3.0.1.6', 'Upgrade from version 3.0.1.5 to 3.0.1.6', '2006-04-20 14:22:24', 1, 'upgrade*3.0.1.6*99*upgrade3.0.1.6');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1251,7 +1252,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (83);
+INSERT INTO `zseq_upgrades` VALUES (85);
 
 -- 
 -- Dumping data for table `zseq_user_history`

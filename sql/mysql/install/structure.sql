@@ -3,14 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 18, 2006 at 12:39 PM
+-- Generation Time: Apr 20, 2006 at 02:23 PM
 -- Server version: 5.0.18
 -- PHP Version: 4.4.2-1
 
 SET FOREIGN_KEY_CHECKS=0;
-
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- --------------------------------------------------------
@@ -280,13 +279,17 @@ CREATE TABLE `document_metadata_version` (
   `metadata_version` int(11) NOT NULL default '0',
   `version_created` datetime NOT NULL default '0000-00-00 00:00:00',
   `version_creator_id` int(11) NOT NULL default '0',
+  `workflow_id` int(11) default NULL,
+  `workflow_state_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   KEY `fk_document_type_id` (`document_type_id`),
   KEY `fk_status_id` (`status_id`),
   KEY `document_id` (`document_id`),
   KEY `version_created` (`version_created`),
   KEY `version_creator_id` (`version_creator_id`),
-  KEY `content_version_id` (`content_version_id`)
+  KEY `content_version_id` (`content_version_id`),
+  KEY `workflow_id` (`workflow_id`),
+  KEY `workflow_state_id` (`workflow_state_id`)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -2106,7 +2109,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=84 ;
+) TYPE=MyISAM AUTO_INCREMENT=86 ;
 
 -- --------------------------------------------------------
 
@@ -2205,10 +2208,12 @@ ALTER TABLE `document_fields_link`
 -- Constraints for table `document_metadata_version`
 -- 
 ALTER TABLE `document_metadata_version`
+  ADD CONSTRAINT `document_metadata_version_ibfk_9` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_4` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_6` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`),
-  ADD CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `document_metadata_version_ibfk_8` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`);
 
 -- 
 -- Constraints for table `document_type_fieldsets_link`
