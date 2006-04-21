@@ -36,6 +36,8 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
  * @package lib.browse
  */
 
+$RESTRICTING_SEARCH = true;
+
 class BrowseCriterion {
     var $sDisplay;
     var $sDocumentField;
@@ -47,6 +49,7 @@ class BrowseCriterion {
     var $bString = false;
     var $sSearchTable = "D";
     var $bVisible = true;
+    var $bContains = false;
 
     function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->sDisplay =& $sDisplay;
@@ -160,14 +163,28 @@ class BrowseCriterion {
 
     function searchWidget ($aRequest, $aPreValue = null) {
         if ($aPreValue != null) {
-            // !#@&)*( (*&!@# *(&@!(*&!@#
+            // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $k[0];
             $preval = $aPreValue[$k];
-            return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
+            return $this->getNotWidget() . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
         } else {
-            return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+            return $this->getNotWidget() . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
         }
+    }
+    
+    function getNotWidget() {
+        // not perfect, but acceptable.
+        $form_name = $this->getWidgetBase() . '_not';
+        if (!$this->bContains) {
+            $not_string = _kt('is not');
+            $is_string = _kt('is');
+        } else {
+            $not_string = _kt('does not contain');
+            $is_string = _kt('contains');        
+        }
+        $widget = sprintf('<select name="%s"><option value="0">%s</option><option value="1">%s</option></select>&nbsp;', $form_name, $is_string, $not_string);
+        return $widget;
     }
 
     function getWidgetBase () {
@@ -178,12 +195,26 @@ class BrowseCriterion {
         return $this->sSearchTable;
     }
 
-    function searchSQL ($aRequest) {
+    function searchSQL ($aRequest, $handle_not = true) {
+        $val = null;
         if ($this->bString) {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]) . "%'", array());
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]) . "%'", array());
         } else {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest[$this->getWidgetBase()]));
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest[$this->getWidgetBase()]));
         }
+
+        // handle the boolean "not" stuff UNLESS our caller is doing so already.
+        if ($handle_not) {
+            $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+            
+            if (is_null($want_invert)) {
+                return $val;
+            } else {
+                $val[0] = '(NOT (' . $val[0] . '))';
+            }
+        }
+        
+        return $val;
     }
 
     function searchJoinSQL () {
@@ -195,6 +226,8 @@ class NameCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
     var $bString = true;
     var $sSearchTable = "DC";
+    var $bContains = true;
+    
     function documentDisplay ($oDocument) {
         $aOptions = $this->aOptions;
         if (array_key_exists('displayFullPath', $aOptions)) {
@@ -238,6 +271,8 @@ class TitleCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
     var $bString = true;
     var $sSearchTable = "DM";
+    var $bContains = true;
+    
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
     }
@@ -257,6 +292,7 @@ class CreatorCriterion extends BrowseCriterion {
         "table" => "users",
         "field" => "name",
     );
+    
     function documentDisplay ($oDocument) {
         $oCreator = User::get($oDocument->getCreatorID());
         if ($oCreator) {
@@ -270,12 +306,12 @@ class CreatorCriterion extends BrowseCriterion {
     function searchWidget ($aRequest, $aPreValue = null) {
         $preval = null;
         if ($aPreValue != null) {
-            // !#@&)*( (*&!@# *(&@!(*&!@#
+            // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $k[0];
             $preval = $aPreValue[$k];
         }
-        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $sRet = $this->getNotWidget() . "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = User::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -309,7 +345,8 @@ class DateCreatedCriterion extends BrowseCriterion {
         $sToRender .= " &nbsp; Before date: <input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         */
-        $sToRender = 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> &mdash; ';
+        $sToRender = $this->getNotWidget();
+        $sToRender .= 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and ';
         $sToRender .= 'Before Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
@@ -328,16 +365,30 @@ class DateCreatedCriterion extends BrowseCriterion {
         } else {
             $sEnd = $aRequest[$this->getWidgetBase() . "_end"];
         }
+        
+        
+        $val = null;
         if ($sStart && $sEnd) {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " BETWEEN ? AND ?", array($sStart, $sEnd));
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " BETWEEN ? AND ?", array($sStart, $sEnd));
+        } else if ($sStart) {
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " > ?", array($sStart));
+        } else if ($sEnd) {
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " < ?", array($sEnd));
+        } else {
+           return null;
+        }  
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        
+        if (is_null($want_invert)) {
+            return $val;
+        } else {
+            $val[0] = '(NOT (' . $val[0] . '))';
         }
-        if ($sStart) {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " > ?", array($sStart));
-        }
-        if ($sEnd) {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " < ?", array($sEnd));
-        }
-        return null;
+        
+        // finally
+        return $val;
     }
 
 }
@@ -359,12 +410,13 @@ class DocumentTypeCriterion extends BrowseCriterion {
     function searchWidget ($aRequest, $aPreValue = null) {
         $preval = null;
         if ($aPreValue != null) {
-            // !#@&)*( (*&!@# *(&@!(*&!@#
+            // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $k[0];
             $preval = $aPreValue[$k];
         }
-        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $sRet = $this->getNotWidget();
+        $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = DocumentType::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -422,17 +474,19 @@ class GenericMetadataCriterion extends BrowseCriterion {
     function searchWidget ($aRequest, $aPreValue = null) {
         $preval = null;
         if ($aPreValue != null) {
-            // !#@&)*( (*&!@# *(&@!(*&!@#
+            // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $k[0];
             $preval = $aPreValue[$k];
         }
         // If there's no lookup, just use the standard text input
         if ($this->oField->getHasLookup() == false) {
+            $this->bContains = true; // contains
             return parent::searchWidget($aRequest, $aPreValue);
         }
-
-        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $this->bContains = false; // is
+        $sRet = $this->getNotWidget();
+        $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aSearch = array('document_field_id = ?', $this->getID());
         $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
@@ -446,9 +500,18 @@ class GenericMetadataCriterion extends BrowseCriterion {
     }
 
     function searchSQL ($aRequest) {
-        $p = parent::searchSQL($aRequest);
+        $p = parent::searchSQL($aRequest, false); // handle not ourselves.
         $p[0] = join(' AND ', array($p[0], "$this->sSearchTable.document_field_id = ?"));
         $p[1] = array_merge($p[1], array($this->iID));
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert)) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }        
+        
         return $p;
     }
 
@@ -483,6 +546,7 @@ class SizeCriterion extends BrowseCriterion {
 }
 
 class ContentCriterion extends BrowseCriterion {
+    var $bContains = true;
     function documentDisplay ($oDocument) {
         return "Content";
     }
@@ -501,7 +565,32 @@ class ContentCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DT.document_text) AGAINST (? $boolean_mode)";
-        $p[1] = $aRequest[$this->getWidgetBase()];
+        
+
+        
+        if ($RESTRICTING_SEARCH) {
+            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
+            $temp = $q_set;
+            foreach ($temp as $k => $v) { 
+                $t = array();
+                foreach ($v as $part) {
+                    $t[] = sprintf('+"%s"', $part);
+                }
+                $q_set[$k] = join(' ', $t);
+            }
+            $p[1] = implode(' ',$q_set);
+        } else {
+            $p[1] = $aRequest[$this->getWidgetBase()]; 
+        }
+
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert)) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }        
+        
         return $p;
     }
 
@@ -530,19 +619,27 @@ class WorkflowStateCriterion extends BrowseCriterion {
         $p = array();
         $p[0] = "D.workflow_state_id = ?";
         $p[1] = $aRequest[$this->getWidgetBase()];
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert)) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }        
         return $p;
     }
 
     function searchWidget ($aRequest, $aPreValue = null) {
         $preval = null;
         if ($aPreValue != null) {
-            // !#@&)*( (*&!@# *(&@!(*&!@#
+            // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $k[0];
             $preval = $aPreValue[$k];
         }
-        
-        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $sRet = $this->getNotWidget();
+        $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aStates = KTWorkflowState::getList("ORDER BY workflow_id");
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aStates as $oState) {
@@ -557,6 +654,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
 }
 
 class TransactionTextCriterion extends BrowseCriterion {
+    var $bContains = true;
     function documentDisplay ($oDocument) {
         return "Transaction text";
     }
@@ -575,7 +673,32 @@ class TransactionTextCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
-        $p[1] = $aRequest[$this->getWidgetBase()];
+        
+
+        
+        if ($RESTRICTING_SEARCH) {
+            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
+            $temp = $q_set;
+            foreach ($temp as $k => $v) { 
+                $t = array();
+                foreach ($v as $part) {
+                    $t[] = sprintf('+"%s"', $part);
+                }
+                $q_set[$k] = join(' ', $t);
+            }
+            $p[1] = implode(' ',$q_set);
+        } else {
+            $p[1] = $aRequest[$this->getWidgetBase()]; 
+        }
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert)) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }       
+        
         return $p;
     }
 
@@ -586,6 +709,7 @@ class TransactionTextCriterion extends BrowseCriterion {
 }
 
 class SearchableTextCriterion extends BrowseCriterion {
+    var $bContains = true;
     function documentDisplay ($oDocument) {
         return "Searchable text";
     }
@@ -605,7 +729,7 @@ class SearchableTextCriterion extends BrowseCriterion {
         $p = array();
         $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
         
-        $RESTRICTING_SEARCH = true;
+
         
         if ($RESTRICTING_SEARCH) {
             $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
@@ -621,6 +745,15 @@ class SearchableTextCriterion extends BrowseCriterion {
         } else {
             $p[1] = $aRequest[$this->getWidgetBase()]; 
         }
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert)) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }                
+        
         return $p;
     }
 
@@ -631,6 +764,7 @@ class SearchableTextCriterion extends BrowseCriterion {
 }
 
 class Criteria {
+    
     function &_getBaseCriterionByNumber($iID) {
         global $default;
         switch ($iID) {
