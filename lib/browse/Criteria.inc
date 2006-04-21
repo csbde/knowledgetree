@@ -611,7 +611,11 @@ class SearchableTextCriterion extends BrowseCriterion {
             $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
             $temp = $q_set;
             foreach ($temp as $k => $v) { 
-                $q_set[$k] = sprintf('+"%s"', $v);
+                $t = array();
+                foreach ($v as $part) {
+                    $t[] = sprintf('+"%s"', $part);
+                }
+                $q_set[$k] = join(' ', $t);
             }
             $p[1] = implode(' ',$q_set);
         } else {
