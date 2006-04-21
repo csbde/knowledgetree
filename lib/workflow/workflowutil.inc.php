@@ -111,6 +111,10 @@ class KTWorkflowUtil {
     }
     // }}}
 
+
+    function changeWorkflowOnDocument($oWorkflow, $oDocument) {
+        return KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+    }
     // {{{ startWorkflowOnDocument
     /**
      * Starts the workflow process on a document, placing it into the
