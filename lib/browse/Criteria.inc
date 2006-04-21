@@ -165,17 +165,27 @@ class BrowseCriterion {
         if ($aPreValue != null) {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
-            $k = $k[0];
+            $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
-            return $this->getNotWidget() . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
+            return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
         } else {
-            return $this->getNotWidget() . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+            return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
         }
     }
     
-    function getNotWidget() {
+    function getNotWidget($aPreValue=null) {
+        if (is_null($aPreValue)) {
+            $is_positive = true;
+        }
         // not perfect, but acceptable.
         $form_name = $this->getWidgetBase() . '_not';
+        $pos_select = '';
+        $neg_select = '';
+        if ($is_positive) {
+            $pos_select = ' selected="true"';
+        } else {
+            $neg_select = ' selected="true"';
+        }
         if (!$this->bContains) {
             $not_string = _kt('is not');
             $is_string = _kt('is');
@@ -183,7 +193,7 @@ class BrowseCriterion {
             $not_string = _kt('does not contain');
             $is_string = _kt('contains');        
         }
-        $widget = sprintf('<select name="%s"><option value="0">%s</option><option value="1">%s</option></select>&nbsp;', $form_name, $is_string, $not_string);
+        $widget = sprintf('<select name="%s"><option value="0"%s>%s</option><option value="1"%s>%s</option></select>&nbsp;', $form_name, $pos_select, $is_string, $neg_select, $not_string);
         return $widget;
     }
 
@@ -308,10 +318,10 @@ class CreatorCriterion extends BrowseCriterion {
         if ($aPreValue != null) {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
-            $k = $k[0];
+            $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
         }
-        $sRet = $this->getNotWidget() . "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $sRet = $this->getNotWidget($aPreValue) . "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = User::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -345,9 +355,9 @@ class DateCreatedCriterion extends BrowseCriterion {
         $sToRender .= " &nbsp; Before date: <input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         */
-        $sToRender = $this->getNotWidget();
-        $sToRender .= 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and ';
-        $sToRender .= 'Before Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
+        $sToRender = $this->getNotWidget($aPreValue);
+        $sToRender .= 'after: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and ';
+        $sToRender .= 'before: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
     function searchSQL ($aRequest) {
@@ -412,10 +422,10 @@ class DocumentTypeCriterion extends BrowseCriterion {
         if ($aPreValue != null) {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
-            $k = $k[0];
+            $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
         }
-        $sRet = $this->getNotWidget();
+        $sRet = $this->getNotWidget($aPreValue);
         $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = DocumentType::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
@@ -476,7 +486,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
         if ($aPreValue != null) {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
-            $k = $k[0];
+            $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
         }
         // If there's no lookup, just use the standard text input
@@ -485,7 +495,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
             return parent::searchWidget($aRequest, $aPreValue);
         }
         $this->bContains = false; // is
-        $sRet = $this->getNotWidget();
+        $sRet = $this->getNotWidget($aPreValue);
         $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aSearch = array('document_field_id = ?', $this->getID());
         $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/
@@ -635,10 +645,10 @@ class WorkflowStateCriterion extends BrowseCriterion {
         if ($aPreValue != null) {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
-            $k = $k[0];
+            $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
         }
-        $sRet = $this->getNotWidget();
+        $sRet = $this->getNotWidget($aPreValue);
         $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aStates = KTWorkflowState::getList("ORDER BY workflow_id");
         $sRet .= "<option value=\"-1\">None</option>\n";
