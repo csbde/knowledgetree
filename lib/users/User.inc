@@ -175,6 +175,12 @@ class User extends KTEntity {
 		$aParams[] = $this->getId();
 		
 		$res = DBUtil::runQuery(array($sQuery, $aParams));
+
+        $group = sprintf("%s/%s", get_class($this), 'id');
+        $oCache =& KTCache::getSingleton();
+        $oCache->remove($group, $this->iId);
+        $this->clearCachedGroups();
+
 		return $res;
 	}
 	
