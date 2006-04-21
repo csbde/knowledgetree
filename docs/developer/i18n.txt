@@ -1,17 +1,10 @@
 KnowledgeTree Internationalisation (i18n)
 -----------------------------------------
 
-Testing
--------
-- install gettext command line utilities
-- Run the following to extract translatable text from the templates:
-  $ rm -f i18n/templates.c
-- run custom python to generate i18n for js
-  $ find resources -name "*.js" | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
+Generating the PO template file
+-------------------------------
 
-  $ php bin/smarty_to_gettext.php . > i18n/templates.c
-- run xgettext to generate .po files eg.
-  $ find . -type f -name "*.php" -o -name "*.inc" | xgettext --no-wrap -d knowledgeTree -L PHP -s -f - --keyword=_kt -o i18n/knowledgeTree.po
-  $ echo i18n/templates.c | xgettext --no-wrap -d knowledgeTree -j -s -f - -o i18n/knowledgeTree.po
+- install gettext command line utilities
+- use bin/genpo.sh
 
 $Id$
