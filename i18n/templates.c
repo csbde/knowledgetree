@@ -79,6 +79,75 @@ gettext("Orphaned Folders");
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Since KnowledgeTree only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below.");
 
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("User Reporting");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Full login history for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Since there may be many users in the system, please select a user from the list below, or type a few letters from the person's username to begin. Alternatively, <a href=\"#link#\">view all users</a> (note that this may be very slow if you have many users).");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("search for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Comments");
+
 /* ./templates/ktcore/manage_permissions.smarty */
 gettext("Existing permissions");
 
@@ -676,6 +745,45 @@ gettext("Add another set of criteria");
 /* ./templates/ktcore/boolean_search.smarty */
 gettext("Search");
 
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Dynamic Conditions");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Dynamic Conditions give the administrator the cability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Create a new condition");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("New");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Existing Conditions");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Condition Name");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("View Results");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("Run Condition");
+
+/* ./templates/ktcore/search/administration/conditions.smarty */
+gettext("No Conditions have been defined.");
+
 /* ./templates/ktcore/search/administration/savedsearches.smarty */
 gettext("Saved searches");
 
@@ -712,41 +820,23 @@ gettext("Delete");
 /* ./templates/ktcore/search/administration/savedsearches.smarty */
 gettext("No Saved Searches have been defined.");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Dynamic Conditions");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Delete Dynamic Condition");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Dynamic Conditions give the administrator the cability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Deleting a dynamic condition will potentially change the permissions on a number of items in the document management system.  Users may experience a lack of access to documents that they usually have access to if you continue with this action.");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Note that you cannot delete conditions since that may unexpectedly change permission assignments.");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Delete a condition");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Create a new condition");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Do you still wish to continue with deleting this item?");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("New");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Delete");
 
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Existing Conditions");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Condition Name");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Edit");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("View Results");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Edit");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Run Condition");
-
-/* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("No Conditions have been defined.");
+/* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
+gettext("Cancel");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Folder permissions");
@@ -1454,6 +1544,18 @@ gettext("Update your details");
 gettext("Change your password.");
 
 /* ./templates/ktcore/principals/updatepassword.smarty */
+gettext("Force user to change password");
+
+/* ./templates/ktcore/principals/updatepassword.smarty */
+gettext("Force user to change password");
+
+/* ./templates/ktcore/principals/updatepassword.smarty */
+gettext("Force the user to change their password on their next login.");
+
+/* ./templates/ktcore/principals/updatepassword.smarty */
+gettext("change password");
+
+/* ./templates/ktcore/principals/updatepassword.smarty */
 gettext("Change User's Password");
 
 /* ./templates/ktcore/principals/updatepassword.smarty */
@@ -1464,9 +1566,6 @@ gettext("Change the user's password. Password rules may have been defined that t
 
 /* ./templates/ktcore/principals/updatepassword.smarty */
 gettext("change password");
-
-/* ./templates/ktcore/principals/updatepassword.smarty */
-gettext("Cancel");
 
 /* ./templates/ktcore/principals/editunit.smarty */
 gettext("Edit Unit Details");
@@ -1535,7 +1634,7 @@ gettext("Target folder");
 gettext("The folder given below is where the unit folder will be created.  Use the folder collection and path below to browse to the folder you wish to create the unit folder into.");
 
 /* ./templates/ktcore/principals/addunit2.smarty */
-gettext("The unit administrators have additional");
+gettext("The unit administrators have additional rights within that portion of the document management system.");
 
 /* ./templates/ktcore/principals/addunit2.smarty */
 gettext("create unit");
@@ -1916,6 +2015,9 @@ gettext("Select a document type from the list below to change its details, or cl
 gettext("Document Type");
 
 /* ./templates/ktcore/documenttypes/list.smarty */
+gettext("Associated Fieldsets");
+
+/* ./templates/ktcore/documenttypes/list.smarty */
 gettext("Edit");
 
 /* ./templates/ktcore/documenttypes/list.smarty */
@@ -2018,7 +2120,7 @@ gettext("Language");
 gettext("login");
 
 /* ./templates/ktcore/login.smarty */
-gettext("KnowledgeTree Version");
+gettext("Version");
 
 /* ./templates/ktcore/widget_fieldset_conditional.smarty */
 gettext("Undo change");
@@ -2061,6 +2163,9 @@ gettext("Criteria");
 
 /* ./templates/ktcore/boolean_search_edit.smarty */
 gettext("Values");
+
+/* ./templates/ktcore/boolean_search_edit.smarty */
+gettext("Remove");
 
 /* ./templates/ktcore/boolean_search_edit.smarty */
 gettext("first select a type of query");
@@ -2219,13 +2324,16 @@ gettext("Existing document fieldsets");
 gettext("Name");
 
 /* ./templates/ktcore/metadata/listFieldsets.smarty */
-gettext("Is Generic");
+gettext("Generic");
 
 /* ./templates/ktcore/metadata/listFieldsets.smarty */
-gettext("Is System");
+gettext("System");
 
 /* ./templates/ktcore/metadata/listFieldsets.smarty */
 gettext("Fields");
+
+/* ./templates/ktcore/metadata/listFieldsets.smarty */
+gettext("Document Types");
 
 /* ./templates/ktcore/metadata/listFieldsets.smarty */
 gettext("Edit");
@@ -2348,10 +2456,10 @@ gettext("This conditional fieldset is marked such that it cannot be used.  This 
 gettext("This error prevents this fieldset from being set to complete");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Try to set to complete");
+gettext("View Overview");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("Check completeness");
+gettext("View Overview");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Conditional type");
@@ -2418,6 +2526,12 @@ gettext("controls the values of the following fields");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("Order");
+
+/* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
+gettext("Rename Behaviours");
+
+/* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
+gettext("Rename Behaviours");
 
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
 gettext("Edit Complex Conditional Metadata");
@@ -2487,6 +2601,42 @@ gettext("save this dependency");
 
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
 gettext("finished with this field");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("Conditional Metadata Overview");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("Conditional Metadata is made up of fields, values and behaviours.  For a given behaviour, various values in other fields can be selected.  Depending on both the behaviour and the newly selected value, additional fields and values may be selected, which cause a new behaviour to be \"active\".");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("Test Instance");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("For the majority of conditional cases, simply walking through a test is sufficient.  You can do that below for the fieldset you have selected.");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("conditional data.");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("These behaviours and the fields and values they allow are shown below for the active field.");
+
+/* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
+gettext("Clicking on a given behaviour below will show you which fields and values can be selected when the clicked behaviour is active.");
+
+/* ./templates/ktcore/metadata/conditional/conditional_rename_behaviours.smarty */
+gettext("Rename Behaviours");
+
+/* ./templates/ktcore/metadata/conditional/conditional_rename_behaviours.smarty */
+gettext("If you have converted a simple conditional fieldset to a complex one, it may be useful to rename some of the system-generated names.  You can do that here.");
+
+/* ./templates/ktcore/metadata/conditional/conditional_rename_behaviours.smarty */
+gettext("Current Name");
+
+/* ./templates/ktcore/metadata/conditional/conditional_rename_behaviours.smarty */
+gettext("New Name");
+
+/* ./templates/ktcore/metadata/conditional/conditional_rename_behaviours.smarty */
+gettext("Rename Behaviours");
 
 /* ./templates/ktcore/fields/edit.smarty */
 gettext("Fieldset");
@@ -2825,18 +2975,6 @@ gettext("No workflow");
 gettext("Document has no assigned workflow.");
 
 /* ./templates/ktcore/workflow/documentWorkflow.smarty */
-gettext("Start workflow on document");
-
-/* ./templates/ktcore/workflow/documentWorkflow.smarty */
-gettext("Start Workflow");
-
-/* ./templates/ktcore/workflow/documentWorkflow.smarty */
-gettext("No defined workflows");
-
-/* ./templates/ktcore/workflow/documentWorkflow.smarty */
-gettext("There are no defined workflows which can be started on this document.  An administrator can create workflows to map the lifecycle of a document.  Contact your administrator to discuss workflows.");
-
-/* ./templates/ktcore/workflow/documentWorkflow.smarty */
 gettext("Current workflow settings");
 
 /* ./templates/ktcore/workflow/documentWorkflow.smarty */
@@ -2850,6 +2988,27 @@ gettext("Transition to another workflow state");
 
 /* ./templates/ktcore/workflow/documentWorkflow.smarty */
 gettext("Perform Transition");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("Start workflow on document");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("Change workflow on document");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("Start Workflow");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("Change Workflow");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("You do not have permission to change the workflow that is assigned to this document.");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("No defined workflows");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("There are no defined workflows which can be started on this document.  An administrator can create workflows to map the lifecycle of a document.  Contact your administrator to discuss workflows.");
 
 /* ./templates/ktcore/workflow/createState.smarty */
 gettext("New State");
@@ -3094,6 +3253,18 @@ gettext("Add an authentication source");
 /* ./templates/ktcore/authentication/addsource.smarty */
 gettext("Add a new source");
 
+/* ./templates/ktcore/authentication/force_change_password.smarty */
+gettext("Change your password");
+
+/* ./templates/ktcore/authentication/force_change_password.smarty */
+gettext("Change your password");
+
+/* ./templates/ktcore/authentication/force_change_password.smarty */
+gettext("You are required to change your password as it has expired.");
+
+/* ./templates/ktcore/authentication/force_change_password.smarty */
+gettext("change password");
+
 /* ./templates/kt3/document/edit.smarty */
 gettext("Editing");
 
@@ -3270,9 +3441,6 @@ gettext("Workflow status");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("No workflow");
-
-/* ./templates/kt3/fieldsets/generic.smarty */
-gettext("manage workflow");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Document ID");
@@ -3505,6 +3673,27 @@ gettext("Up");
 /* ./templates/kt3/reorderdisplay.smarty */
 gettext("Down");
 
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("Transaction History");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("This page provides details of all activities that have been carried out on the folder.");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("Folder History");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("User");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("Action");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("Date");
+
+/* ./templates/kt3/view_folder_history.smarty */
+gettext("Comment");
+
 /* ./templates/ktstandard/action/email.smarty */
 gettext("Email document");
 
@@ -3576,6 +3765,9 @@ gettext("Relationship");
 
 /* ./templates/ktstandard/action/document_links.smarty */
 gettext("Delete");
+
+/* ./templates/ktstandard/action/document_links.smarty */
+gettext("Linked <b>from</b> this document");
 
 /* ./templates/ktstandard/action/document_links.smarty */
 gettext("Delete");
