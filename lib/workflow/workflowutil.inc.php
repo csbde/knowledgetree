@@ -122,7 +122,9 @@ class KTWorkflowUtil {
 
         $oUser = User::get($_SESSION['userID']);
 
+        $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oDocument->startNewMetadataVersion($oUser);
+        KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
         if (!empty($oWorkflow)) {
             $oWorkflow =& KTUtil::getObject('KTWorkflow', $oWorkflow);
@@ -323,6 +325,10 @@ class KTWorkflowUtil {
      */
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
+        
+        if (is_a($oDocument, 'KTDocumentCore')) {
+            $oDocument = $oDocument->getId();
+        }
 
         $oDocument = KTUtil::getObject('Document', $oDocument);
         $iWorkflowId = $oDocument->getWorkflowId();
@@ -351,6 +357,10 @@ class KTWorkflowUtil {
     function getWorkflowStateForDocument ($oDocument, $aOptions = null) {
      
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
+
+        if (is_a($oDocument, 'KTDocumentCore')) {
+            $oDocument = $oDocument->getId();
+        }
 
         $oDocument = KTUtil::getObject('Document', $oDocument);
         $iWorkflowStateId = $oDocument->getWorkflowStateId();
@@ -448,7 +458,9 @@ class KTWorkflowUtil {
         }
         $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
 
+        $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oDocument->startNewMetadataVersion($oUser);
+        KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
         $iStateId = $oTransition->getTargetStateId();
 
