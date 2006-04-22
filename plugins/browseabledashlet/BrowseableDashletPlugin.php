@@ -32,6 +32,12 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 class BrowseableDashletPlugin extends KTPlugin {
     var $sNamespace = "nbm.browseable.plugin";
 
+    function BrowseableDashletPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Orphaned Folders Plugin');
+        return $res;
+    }        
+
     function setup() {
         $this->registerDashlet('BrowseableFolderDashlet', 'nbm.browseable.dashlet', 'BrowseableDashlet.php');
 

@@ -5,7 +5,7 @@
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update" />
 {entity_checkboxes entities=$plugins selected=$enabled_plugins
-method=getNamespace assign=boxes name="pluginids"}
+method=getUserFriendlyName assign=boxes name="pluginids"}
 {foreach from=$boxes item=box}
 {$box} <br />
 {/foreach}

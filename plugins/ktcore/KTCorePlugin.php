@@ -33,7 +33,14 @@ class KTCorePlugin extends KTPlugin {
     var $bAlwaysInclude = true;
     var $sNamespace = "ktcore.plugin";
     var $iOrder = -25;
+    var $sFriendlyName = null;
 
+    function KTCorePlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Core Application Functionality');
+        return $res;
+    }
+    
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');

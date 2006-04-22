@@ -33,6 +33,12 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 class KTBulkExportPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.bulkexport.plugin";
 
+    function KTBulkExportPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Bulk Export Plugin');
+        return $res;
+    }        
+
     function setup() {
         $this->registerAction('folderaction', 'KTBulkExportAction', 'ktstandard.bulkexport.action');
     }

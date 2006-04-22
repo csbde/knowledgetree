@@ -35,6 +35,12 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTFolderWorkflowAssociationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.workflowassociation.folder.plugin";
+    
+    function KTFolderWorkflowAssociationPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Workflow allocation by location');
+        return $res;
+    }              
 
     function setup() {
         $this->registerTrigger('workflow', 'objectModification', 'FolderWorkflowAssociator',

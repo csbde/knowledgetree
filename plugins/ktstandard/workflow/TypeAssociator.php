@@ -32,6 +32,11 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.workflowassociation.documenttype.plugin";
+    function KTDocTypeWorkflowAssociationPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Workflow allocation by document type');
+        return $res;
+    }            
 
     function setup() {
         $this->registerTrigger('workflow', 'objectModification', 'DocumentTypeWorkflowAssociator',

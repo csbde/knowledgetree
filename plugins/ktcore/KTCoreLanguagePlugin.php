@@ -33,6 +33,13 @@ class KTCoreLanguagePlugin extends KTPlugin {
     var $bAlwaysInclude = true;
     var $sNamespace = "ktcore.language.plugin";
     var $iOrder = -75;
+    var $sFriendlyName = null;
+
+    function KTCoreLanguagePlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Core Language Support');
+        return $res;
+    }    
 
     function setup() {
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
