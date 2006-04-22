@@ -25,7 +25,7 @@
   {$oWidget->render()}
 {/foreach}
 
-<!-- FIXME it appears we need non-editable edit widgets.  yay. -->
+{if ($oFieldset->getIsConditional() || $context->haveConditional())}
 <div class="field">
 <label>{i18n}Conditional{/i18n}</label>
 <p class="descriptiveText">
@@ -38,7 +38,7 @@ field can depend on the user's selections for the others.{/i18n}
     {i18n}No{/i18n} 
 {/if}
 </div>
-
+{/if}
 
 <div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Change{/i18n}" />
@@ -56,7 +56,7 @@ field can depend on the user's selections for the others.{/i18n}
   {/if}
 {/foreach}
 
-{if ($oFieldset->getIsConditional() || $showForm)}
+{if ($oFieldset->getIsConditional() || ($showForm && $context->haveConditional()))}
 <fieldset>
 <legend>{i18n}Conditionality{/i18n}</legend>
 
@@ -90,7 +90,7 @@ field can depend on the user's selections for the others.{/i18n}
   {/if}
 {/foreach}
 
-{if $showForm}
+{if ($showForm && $context->haveConditional())}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="action" value="becomeConditional" />
@@ -104,7 +104,11 @@ field can depend on the user's selections for the others.{/i18n}
 
 </fieldset>
 {else}
+
+{if $context->haveConditional()}
 <div class="ktInfo"><p>{i18n}This fieldset cannot be made conditional, since it contains fields which are not lookup types.{/i18n}</p></div>
+{/if}
+
 {/if}
 
 <h3>{i18n}Fieldset members{/i18n}</h3>
