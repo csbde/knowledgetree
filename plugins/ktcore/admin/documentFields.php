@@ -38,9 +38,12 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/documentmanagement/MDTree.inc');
 
 
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+
 // FIXME shouldn't this inherit from AdminDispatcher?
 class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
+	var $bHaveConditional = null;
 
     function check() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
@@ -122,6 +125,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'name' => $oFieldset->getName()
         );
         $oTemplate->setData(array(
+		    'context' => $this,
             'oFieldset' => $oFieldset,
             'edit_fieldset_fields' => $editFieldset,
             'create_field_fields' => $createFields,
@@ -1024,6 +1028,14 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		$this->successRedirectToMain(_kt('Names changed.'), sprintf('action=edit&fFieldsetId=%s', $fieldset_id));
 	}
 	
+
+	function haveConditional() {
+		if (is_null($this->bHaveConditional)) {
+			$this->bHaveConditional = KTPluginUtil::pluginIsActive('newtec.conditionalmetadata.plugin');
+		}
+		
+		return $this->bHaveConditional; 
+	}
 
 // }}}
 }

@@ -182,6 +182,27 @@ class KTPluginUtil {
             readfile($sFullPath);
         }
     }
+
+    // utility function to detect if the plugin is loaded and active.
+    function pluginIsActive($sNamespace) {
+		
+	    
+		
+		$oReg =& KTPluginRegistry::getSingleton();
+		$plugin = $oReg->getPlugin($sNamespace);
+		
+		
+		
+		if (is_null($plugin) || PEAR::isError($plugin)) { return false; }  // no such plugin
+		else { // check if its active
+			$ent = KTPluginEntity::getByNamespace($sNamespace);
+
+			if (PEAR::isError($ent)) { return false; }
+			
+			// we now can ask
+			return (!$ent->getDisabled());
+		}
+    }
 }
 
 ?>
