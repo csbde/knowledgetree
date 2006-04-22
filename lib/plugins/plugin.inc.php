@@ -32,6 +32,7 @@ class KTPlugin {
     var $bAlwaysInclude = false;
     var $iVersion = 0;
     var $iOrder = 0;
+    var $sFriendlyName = null;
     
     var $autoRegister = false;
     
@@ -249,29 +250,32 @@ class KTPlugin {
 
     function register() {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
+        $friendly_name = '';
+        if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
             $oEntity->updateFromArray(array(
                 'path' => $this->stripKtDir($this->sFilename),
                 'version' => $this->iVersion,
                 'unavailable' => false,
+                'friendlyname' => $friendly_name,
             ));
             return $oEntity;
         }
         $disabled = 1;
         if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
+        
         $oEntity = KTPluginEntity::createFromArray(array(
             'namespace' => $this->sNamespace,
             'path' => $this->stripKtDir($this->sFilename),
             'version' => $this->iVersion,
             'disabled' => $disabled,
             'unavailable' => false,
+            'friendlyname' => $friendly_name,
         ));
         if (PEAR::isError($oEntity)) {
             return $oEntity;
         }
         return true;
     }
-
-
 }
 

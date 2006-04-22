@@ -34,6 +34,13 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTWorkflowAssociationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.workflowassociation.plugin";
+    var $sFriendlyName = null;
+
+    function KTWorkflowAssociationPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Workflow Association Plugin');
+        return $res;
+    }    
 
     function setup() {
         $this->registerTrigger('add', 'postValidate', 'KTWADAddTrigger',

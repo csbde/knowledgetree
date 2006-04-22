@@ -65,6 +65,12 @@ class KTDocumentLinkTitle extends TitleColumn {
 
 class KTDocumentLinks extends KTPlugin {
     var $sNamespace = "ktstandard.documentlinks.plugin";
+    
+    function KTDocumentLinks($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Inter-document linking');
+        return $res;
+    }          
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentLinkAction', 'ktcore.actions.document.link');

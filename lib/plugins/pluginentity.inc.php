@@ -47,6 +47,7 @@ class KTPluginEntity extends KTEntity {
         'bDisabled' => 'disabled',
         'sData' => 'data',
         'bUnavailable' => 'unavailable',
+        'sFriendlyName' => 'friendly_name',
     );
 
     function _table() {
@@ -65,12 +66,14 @@ class KTPluginEntity extends KTEntity {
     function getDisabled() { return $this->bDisabled; }
     function getData() { return $this->sData; }
     function getUnavailable() { return $this->bUnavailable; }
+    function getFriendlyName($sValue) { return $this->sFriendlyName; }
     function setNamespace($sValue) { $this->sNamespace = $sValue; }
     function setPath($sValue) { $this->sPath = $sValue; }
     function setVersion($iValue) { $this->iVersion = $iValue; }
     function setDisabled($bValue) { $this->bDisabled = $bValue; }
     function setData($sValue) { $this->sData = $sValue; }
     function setUnavailable($mValue) { $this->bUnavailable = $mValue; }
+    function setFriendlyName($sValue) { $this->sFriendlyName = $sValue; }
     // }}}
 
     function get($iId) {
@@ -119,5 +122,12 @@ class KTPluginEntity extends KTEntity {
 
     function clearAllCaches() {
         return KTEntityUtil::clearAllCaches('KTPluginEntity');
+    }
+    
+        // either return the friendly name, or the namespace (for failback).
+    function getUserFriendlyName() {
+        $n = trim($this->sFriendlyName);
+        if (!empty($n)) { return $this->sFriendlyName; }
+        return $this->sNamespace;
     }
 }

@@ -337,6 +337,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
 class KTEmailPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.email.plugin";
 
+	function KTEmailPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Email Plugin');
+        return $res;
+    }        
+
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
     }

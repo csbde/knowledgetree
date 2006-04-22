@@ -32,6 +32,12 @@ require_once("ldapbaseauthenticationprovider.inc.php");
 
 class KTActiveDirectoryAuthenticationProvider extends KTLDAPBaseAuthenticationProvider {
     var $sNamespace = "ktstandard.authentication.adprovider";
+    
+    function KTActiveDirectoryAuthenticationProvider($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Microsoft Active Directory Authentication Provider');
+        return $res;
+    }            
 
     var $bGroupSource = true;
 

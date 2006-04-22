@@ -29,6 +29,13 @@
 class KTIndexerPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.indexer.plugin";
     var $autoRegister = true;
+    var $sFriendlyName = null;
+    
+    function KTIndexerPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Full-text Content Indexing');
+        return $res;
+    }      
 
     function setup() {
         $this->registerTrigger('content', 'transform', 'KTWordIndexerTrigger',

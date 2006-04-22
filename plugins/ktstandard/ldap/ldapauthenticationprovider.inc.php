@@ -34,6 +34,12 @@ require_once("ldapbaseauthenticationprovider.inc.php");
 class KTLDAPAuthenticationProvider extends KTLDAPBaseAuthenticationProvider {
     var $sNamespace = "ktstandard.authentication.ldapprovider";
 
+    function KTLDAPAuthenticationProvider($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Generic LDAP Authentication Provider');
+        return $res;
+    }            
+
     var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
     var $sAuthenticatorClass = "KTLDAPAuthenticator";
 

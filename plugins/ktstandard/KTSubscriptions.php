@@ -41,6 +41,12 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
     var $autoRegister = true;
+    
+    function KTSubscriptionPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Workflow Association Plugin');
+        return $res;
+    }        
 
     function setup() {
         $this->registerPortlet('browse', 'KTSubscriptionPortlet',

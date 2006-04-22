@@ -33,6 +33,12 @@ class SearchDashletPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.searchdashlet.plugin";
     var $autoRegister = true;
 
+    function SearchDashletPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Search Dashlet Plugin');
+        return $res;
+    }        
+
     function setup() {
         $this->registerDashlet('SearchDashlet', 'ktstandard.searchdashlet.dashlet', 'SearchDashlet.php');
 

@@ -33,6 +33,12 @@ require_once(KT_LIB_DIR . '/discussions/DiscussionComment.inc');
 class KTDiscussionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.discussion.plugin";
     var $autoRegister = true;
+    
+    function KTDiscussionPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Document Discussions Plugin');
+        return $res;
+    }            
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
