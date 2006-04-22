@@ -33,6 +33,9 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . '/users/User.inc'); 
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransactionType.inc.php'); 
  
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc'); 
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php'); 
+ 
 class DocumentTransaction {
 	
 	/** primary key of document transaction */
@@ -45,6 +48,7 @@ class DocumentTransaction {
 	var $sFileName;
 	var $sComment;
 	var $sTransactionNS;
+	var $bAdminMode = 0;
 	
 	/**
 	* Constructor
@@ -82,6 +86,18 @@ class DocumentTransaction {
         }
 		$this->dDateTime = getCurrentDateTime();		
 		$this->sIP = KTUtil::arrayGet($_SERVER, "REMOTE_ADDR", '0.0.0.0');
+		
+		$oFolder = Folder::get($oDocument->getFolderID());
+		// head off the certain breakage down the line.
+		if (PEAR::isError($oFolder) || ($oFolder === false)) {
+			$this->bAdminMode = 0;
+		} else {
+		    if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
+				$this->bAdminMode = 1;
+			} else {
+			    $this->bAdminMode = 0;
+			}		
+		}
 	}
 	
 	function getVersion() {	return $this->sVersion;	}
@@ -121,6 +137,7 @@ class DocumentTransaction {
                 'comment' => $this->sComment,
                 'transaction_namespace' => $this->sTransactionNS,
                 'session_id' => $this->iSessionId,
+				'admin_mode' => $this->bAdminMode,
             );
             $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
 
@@ -177,6 +194,7 @@ class DocumentTransaction {
 				$oDocumentTransaction->dDateTime = $sql->f("datetime");		
 				$oDocumentTransaction->sIP = $sql->f("ip");
 				$oDocumentTransaction->sFileName = $sql->f("filename");
+				$oDocumentTransaction->bAdminMode = $sql->f("admin_mode");
 	            return $oDocumentTransaction;
 	        }
 	        $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentTransactionID . " table = document_transactions";
