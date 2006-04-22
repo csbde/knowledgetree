@@ -48,6 +48,7 @@ require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.permissions';
+    var $_sEditShowPermission = "ktcore.permissions.security";
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
@@ -123,7 +124,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
 		}
 		asort($roles);
 		
-        $bEdit = false;
+        $bEdit = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oDocument);
 		$sInherited = '';
 
         $aTemplateData = array(
@@ -136,6 +137,64 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
             "aMapPermissionGroup" => $aMapPermissionGroup,
             "aMapPermissionRole" => $aMapPermissionRole,			
 			"aMapPermissionUser" => $aMapPermissionUser,
+            "edit" => $bEdit,
+            "inherited" => $sInherited,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_resolved_users() {
+        $this->oPage->setBreadcrumbDetails(_("Permissions"));
+        $oTemplate = $this->oValidator->validateTemplate("ktcore/document/resolved_permissions_user");
+
+        $oPL = KTPermissionLookup::get($this->oDocument->getPermissionLookupID());
+        $aPermissions = KTPermission::getList();
+        $aMapPermissionGroup = array();
+        $aMapPermissionRole = array();
+        $aMapPermissionUser = array();
+
+        $aUsers = User::getList();
+
+        foreach ($aPermissions as $oPermission) {
+            $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
+            if (PEAR::isError($oPLA)) {
+                continue;
+            }
+            $oDescriptor = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
+            $iPermissionID = $oPermission->getID();
+            $aMapPermissionGroup[$iPermissionID] = array();
+            foreach ($aUsers as $oUser) {
+                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oDocument)) {
+                    $aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
+                    $aActiveUsers[$oUser->getId()] = true;
+                }
+            }
+        }
+
+        // now we constitute the actual sets.
+        $users = array();
+        $groups = array();
+        $roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
+        // this should be quite limited - direct role -> user assignment is typically rare.
+        foreach ($aActiveUsers as $id => $marker) {
+            $oUser = User::get($id);
+            $users[$oUser->getName()] = $oUser;
+        }
+        asort($users); // ascending, per convention.
+
+        $bEdit = false;
+        $sInherited = '';
+
+        $aTemplateData = array(
+            "context" => $this,
+            "permissions" => $aPermissions,
+            "groups" => $groups,
+            "users" => $users,
+            "roles" => $roles,
+            "oDocument" => $this->oDocument,
+            "aMapPermissionGroup" => $aMapPermissionGroup,
+            "aMapPermissionRole" => $aMapPermissionRole,
+            "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
         );
