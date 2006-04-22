@@ -181,6 +181,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+
         $aPermissions = KTPermission::getList();
         $aMapPermissionGroup = array();
         $aMapPermissionRole = array();
@@ -204,8 +207,6 @@ class KTFolderPermissionsAction extends KTFolderAction {
         }
 
         $bEdit = true;
-        $edit_mode = KTUtil::arrayGet($_REQUEST, 'edit_mode', false);
-        if ($edit_mode == false) { $bEdit = false; }
 
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
         // This is fine, since a folder can only inherit permissions
