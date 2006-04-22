@@ -38,6 +38,7 @@ class KTFolderTransaction extends KTEntity {
         'sComment' => 'comment',
         'sTransactionNS' => 'transaction_namespace',
         'iSessionId' => 'session_id',
+        'bAdminMode' => 'admin_mode',
     );
 
     var $_bUsePearError = true;
@@ -53,6 +54,17 @@ class KTFolderTransaction extends KTEntity {
         if (empty($this->iSessionId)) {
             $this->iSessionId = $_SESSION['sessionID'];
         }
+        $oFolder = Folder::get($this->iFolderId);
+		// head off the certain breakage down the line.
+		if (PEAR::isError($oFolder) || ($oFolder === false)) {
+			$this->bAdminMode = 0;
+		} else {
+		    if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
+				$this->bAdminMode = 1;
+			} else {
+			    $this->bAdminMode = 0;
+			}		
+		}
         return parent::_fieldValues();
     }
 
