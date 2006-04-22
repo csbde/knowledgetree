@@ -6,13 +6,14 @@ this page shows the actual groups (and, if they are assigned directly to a role,
 who have the different permissions. As a result, groups, users and roles with <strong>no</strong>
 permissions are not shown.{/i18n}</p>
 
+{if $edit}
+{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fDocumentId={$context->oDocument->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
+{/if}
+
 {if ((empty($roles) && empty($groups) && empty($users)))}
 <div class="ktInfo"><p>{i18n}No roles or groups have been defined or have permissions.{/i18n}</p></div>
 {else}
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="fFolderId" value="{$iFolderId}">
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
@@ -31,21 +32,11 @@ permissions are not shown.{/i18n}</p>
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}"></td>
-{ /if }
-{else}
 { if $bHasPerm }
 <td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
 { else }
 <td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
 { /if }
-{/if}
   { /foreach }
 </tr>
 { /foreach }
@@ -58,21 +49,11 @@ value="{$iRoleId}"></td>
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}"></td>
-{ /if }
-{else}
 { if $bHasPerm }
 <td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
 { else }
 <td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
 { /if }
-{/if}
 
 
   { /foreach }
@@ -87,21 +68,11 @@ value="{$iGroupId}"></td>
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}"></td>
-{ /if }
-{else}
 { if $bHasPerm }
 <td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
 { else }
 <td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
 { /if }
-{/if}
 
 
   { /foreach }
@@ -110,90 +81,5 @@ value="{$iGroupId}"></td>
 
 </tbody>
 </table>
-{if $edit}
-<div class="form_actions">
-  <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
-</div>
-</form>
-{/if}
 { /if }
 
-
-{if (!empty($conditions))}
-{if ($edit || $dynamic_conditions)}
-<h2>{i18n}Dynamic permissions{/i18n}</h2>
-{/if}
-{ if $dynamic_conditions }
-<table class="kt_collection" cellpadding="0" cellspacing="0">
-  <thead>
-    <tr>
-{ if $edit }
-      <th width="1%">{i18n}Remove{/i18n}</th>
-{ /if }
-      <th>{i18n}Group{/i18n}</th>
-      <th>{i18n}Condition{/i18n}</th>
-{foreach from=$permissions item=oPerm}
-      <th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
-{/foreach}
-    </tr>
-  </thead>
-  <tbody>
-{ foreach from=$dynamic_conditions item=oDynamicCondition }
-    <tr>
-{php}
-$this->assign("oGroup", Group::get($this->_tpl_vars['oDynamicCondition']->getGroupId()));
-$this->assign("oCondition", KTSavedSearch::get($this->_tpl_vars['oDynamicCondition']->getConditionId()));
-$this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignment());
-{/php}
-{ if $edit }
-  <td>
-{capture assign=sQS}action=removeDynamicCondition&fFolderId={$iFolderId}&fDynamicConditionId={$oDynamicCondition->getId()}{/capture}
-     <a href="{$smarty.server.PHP_SELF|addQueryString:"$sQS"}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
-  </td>
-{/if}
-    <td>{$oGroup->getName()}</td>
-    <td>{$oCondition->getName()}</td>
-{foreach from=$permissions item=oPerm}
-  {assign var=bHasPerm value=$oPerm->getId()|in_array:$aPermissions}
-  { if $bHasPerm }
-<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
-{ else }
-<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
-  { /if }
-{/foreach}
-    </tr>
-{ /foreach }
-  </tbody>
-</table>
-{ /if }
-
-{ if $edit }
-<h3>{i18n}Add a new dynamic permission{/i18n}</h3>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<table class="kt_collection" cellpadding="0" cellspacing="0">
-<input type="hidden" name="action" value="newDynamicPermission" />
-<input type="hidden" name="fFolderId" value="{$iFolderId}" />
-<thead>
-<tr>
-  <th>{i18n}Group{/i18n}</th>
-  <th>{i18n}Condition{/i18n}</th>
-{foreach from=$permissions item=oPerm}
-  <th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
-{/foreach}
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td>{entity_select entities=$groups name=fGroupId none=true}</td>
-  <td>{entity_select entities=$conditions name=fConditionId none=true}</td>
-{entity_checkboxes entities=$permissions name=fPermissionIds assign=aPermissionCheckboxes method="none"}
-{foreach from=$aPermissionCheckboxes item=sCheckbox}
-  <td class="centered">{$sCheckbox}</td>
-{/foreach}
-</tr>
-</tbody>
-</table>
-<input type="submit" name="submit" value="{i18n}Add{/i18n}" />
-</form>
-{ /if }
-{/if}
