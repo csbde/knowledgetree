@@ -32,6 +32,12 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 class KTLDAPAuthenticationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.ldapauthentication.plugin";
     var $autoRegister = true;
+    
+    function KTLDAPAuthenticationPlugin($sFilename = null) {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('LDAP Authentication Plugin');
+        return $res;
+    }            
 
     function setup() {
         $this->registerAuthenticationProvider(_kt('LDAP Authentication'),
