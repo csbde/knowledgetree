@@ -1,0 +1,46 @@
+<h2>{i18n}Resolved permissions per user{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}This page shows the permissions that
+individual users have on this folder.  Only the users which have permissions
+assigned are shown.{/i18n}</p> 
+
+<p class="descriptiveText">{i18n}Users may have permissions on this
+folder due to membership of a group, or fulfilling a specific role on
+this folder.{/i18n}</p> 
+
+{if (empty($users)) }
+<div class="ktInfo"><p>{i18n}No users have permissions on this item.{/i18n}</p></div>
+{else}
+
+<table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
+<thead>
+<tr>
+<th width="40%">{i18n}User{/i18n}</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+
+{ foreach item=oUser from=$users }
+<td><span class="descriptiveText">{i18n}User: {/i18n}</span> {$oUser->getName()}</td>
+  { assign var=iUserId value=$oUser->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }
+
+{ if $bHasPerm }
+<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+{ else }
+<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
+{ /if }
+
+  { /foreach }
+</tr>
+{ /foreach }
+
+</tbody>
+</table>
+{ /if }
+
