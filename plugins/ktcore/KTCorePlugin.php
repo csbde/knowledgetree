@@ -166,6 +166,9 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("techsupport", 'KTSupportDispatcher', 'misc',
             _kt('Support and System information'), _kt('Information about this system and how to get support.'),
             'admin/techsupport.php', null);
+        $this->registerAdminPage("cleanup", 'ManageCleanupDispatcher', 'misc',
+            _kt('Verify document storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
+            'admin/manageCleanup.php', null);
         // plugins
 
     }

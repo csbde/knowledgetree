@@ -1,12 +1,5 @@
-{if $aFoldersToRemove}
-<p>{i18n}Would remove these folders (and all their contents){/i18n}:</p>
-<ul>
-{foreach from=$aFoldersToRemove item=sFolder}
-<li>{$sFolder|escape}</li>
-{/foreach}
-</ul>
-{/if}
-
+{if $aFilesToRemove or $aRepoDocumentProblems}
+<h2>{i18n}Problems found{/i18n}</h2>
 {if $aFilesToRemove}
 <p>{i18n}Would remove these files{/i18n}:</p>
 <ul>
@@ -16,29 +9,16 @@
 </ul>
 {/if}
 
-{if $aRepoFolderProblems}
-<p>{i18n}These folders are not on the filesystem{/i18n}</p>
-<ul>
-{foreach from=$aRepoFolderProblems item=sFolder}
-<li>{$sFolder|escape}</li>
-{/foreach}
-</ul>
-{/if}
-
 {if $aRepoDocumentProblems}
-<p>{i18n}These documents are not on the filesystem{/i18n}</p>
+<p>{i18n}These documents have versions that are not on the filesystem{/i18n}</p>
 <ul>
-{foreach from=$aRepoDocumentProblems item=sDocument}
-<li>{$sDocument|escape}</li>
+{foreach from=$aRepoDocumentProblems item=aInfo}
+{assign var=oDocument value=$aInfo.document}
+{assign var=oContent value=$aInfo.content}
+<li>{$oDocument->getId()}, {$oDocument->getName()}, {$oContent->getMajorVersionNumber()}.{$oContent->getMinorVersionNumber()}</li>
 {/foreach}
 </ul>
 {/if}
-
-{if $aRepoVersionProblems}
-<p>{i18n}These documents have versions not on the filesystem{/i18n}</p>
-<ul>
-{foreach from=$aRepoVersionProblems item=aSomething}
-<li>{$aSomething[0]|escape} - version {$aSomething[1]|escape}</li>
-{/foreach}
-</ul>
+{else}
+<h2>{i18n}No problems found{/i18n}</h2>
 {/if}
