@@ -29,6 +29,7 @@ require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
+require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
     function upload(&$oDocument, $sTmpFilePath) {
@@ -134,7 +135,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
 
-            readfile($sPath);
+            $oFile = new KTFSFileLike($sPath);
+            KTFileLikeUtil::send_contents($oFile);
         } else {
             return false;
         }
@@ -171,7 +173,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
-            readfile($sPath);
+            $oFile = new KTFSFileLike($sPath);
+            KTFileLikeUtil::send_contents($oFile);
         } else {
             return false;
         }
