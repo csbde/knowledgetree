@@ -184,7 +184,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 	    $this->errorRedirectToMain(_kt("Invalid type selected."));
 	}
 	
-	$_SESSION['KTInfoMessage'][] = _kt('Document Type Changed.  Please review the information below, and update as appropriate.');
+	$this->addInfoMessage(sprintf(_kt('You have selected a different document type (%s). Please review the information below, and save changes to the metadata once you are satisfied.'), $oType->getName()));
 	$_REQUEST['setType'] = $newType;
 	
 	return $this->do_main($newType);
