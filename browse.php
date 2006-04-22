@@ -46,6 +46,8 @@ require_once(KT_DIR . '/plugins/ktcore/KTFolderActions.php');
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 
+require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+
 /******* NBM's FAMOUS MOVECOLUMN HACK
  *
  * Also in /plugins/ktcore/KTDocumentActions.php
@@ -818,8 +820,25 @@ class BrowseDispatcher extends KTStandardDispatcher {
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
             $this->errorRedirectToMain(_kt('You are not an administrator'));
         }
-
+        
+        // log this entry
+        $oLogEntry =& KTUserHistory::createFromArray(array(
+            'userid' => $this->oUser->getId(),
+            'datetime' => date("Y-m-d H:i:s", time()),
+            'actionnamespace' => 'ktcore.user_history.enable_admin_mode',
+            'comments' => 'Admin Mode enabled',
+            'sessionid' => $_SESSION['sessionID'],
+        ));        
+        $aOpts = array(
+            'redirect_to' => 'main',
+            'message' => _kt('Unable to log admin mode entry.  Not activating admin mode.'),
+        );
+        $this->oValidator->notError($oLogEntry, $aOpts);
+        
         $_SESSION['adminmode'] = true;
+        
+        
+        
         if ($_REQUEST['fDocumentId']) {
             $_SESSION['KTInfoMessage'][] = _kt('Administrator mode enabled');
             redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
@@ -845,6 +864,20 @@ class BrowseDispatcher extends KTStandardDispatcher {
         if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
             $this->errorRedirectToMain(_kt('You are not an administrator'));
         }
+
+        // log this entry
+        $oLogEntry =& KTUserHistory::createFromArray(array(
+            'userid' => $this->oUser->getId(),
+            'datetime' => date("Y-m-d H:i:s", time()),
+            'actionnamespace' => 'ktcore.user_history.disable_admin_mode',
+            'comments' => 'Admin Mode disabled',
+            'sessionid' => $_SESSION['sessionID'],
+        ));        
+        $aOpts = array(
+            'redirect_to' => 'main',
+            'message' => _kt('Unable to log admin mode exit.  Not de-activating admin mode.'),
+        );
+        $this->oValidator->notError($oLogEntry, $aOpts);        
 
         $_SESSION['adminmode'] = false;
         if ($_REQUEST['fDocumentId']) {
