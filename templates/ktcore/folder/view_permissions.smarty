@@ -108,11 +108,5 @@ value="{$iGroupId}"></td>
 
 </tbody>
 </table>
-{if $edit}
-<div class="form_actions">
-  <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
-</div>
-</form>
-{/if}
 { /if }
 
