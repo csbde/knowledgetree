@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 20, 2006 at 05:09 PM
--- Server version: 5.0.18
--- PHP Version: 4.4.2-1
+-- Generation Time: Apr 23, 2006 at 12:56 PM
+-- Server version: 5.0.19
+-- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `dms`
 -- 
 
 -- 
@@ -688,7 +688,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.7');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.8');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -815,6 +815,10 @@ INSERT INTO `upgrades` VALUES (84, 'sql*3.0.1.6*0*3.0.1.6/workflow-into-metadata
 INSERT INTO `upgrades` VALUES (85, 'upgrade*3.0.1.6*99*upgrade3.0.1.6', 'Upgrade from version 3.0.1.5 to 3.0.1.6', '2006-04-20 14:22:24', 1, 'upgrade*3.0.1.6*99*upgrade3.0.1.6');
 INSERT INTO `upgrades` VALUES (86, 'sql*3.0.1.7*0*3.0.1.7/session_id.sql', 'Database upgrade to version 3.0.1.7: Session id', '2006-04-20 17:03:55', 1, 'upgrade*3.0.1.7*99*upgrade3.0.1.7');
 INSERT INTO `upgrades` VALUES (87, 'upgrade*3.0.1.7*99*upgrade3.0.1.7', 'Upgrade from version 3.0.1.6 to 3.0.1.7', '2006-04-20 17:03:56', 1, 'upgrade*3.0.1.7*99*upgrade3.0.1.7');
+INSERT INTO `upgrades` VALUES (88, 'sql*3.0.1.8*0*3.0.1.8/friendly-plugins.sql', 'Database upgrade to version 3.0.1.8: Friendly-plugins', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
+INSERT INTO `upgrades` VALUES (89, 'sql*3.0.1.8*0*3.0.1.8/longer-text.sql', 'Database upgrade to version 3.0.1.8: Longer-text', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
+INSERT INTO `upgrades` VALUES (90, 'sql*3.0.1.8*0*3.0.1.8/admin-mode-logging.sql', 'Database upgrade to version 3.0.1.8: Admin-mode-logging', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
+INSERT INTO `upgrades` VALUES (91, 'upgrade*3.0.1.8*99*upgrade3.0.1.8', 'Upgrade from version 3.0.1.7 to 3.0.1.8', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1194,7 +1198,7 @@ INSERT INTO `zseq_permissions` VALUES (6);
 -- Dumping data for table `zseq_plugins`
 -- 
 
-INSERT INTO `zseq_plugins` VALUES (15);
+INSERT INTO `zseq_plugins` VALUES (31);
 
 -- 
 -- Dumping data for table `zseq_role_allocations`
@@ -1254,7 +1258,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (87);
+INSERT INTO `zseq_upgrades` VALUES (91);
 
 -- 
 -- Dumping data for table `zseq_user_history`
