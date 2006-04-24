@@ -268,8 +268,11 @@ class MDTree {
                 $extraclass = '';
                 if (array_key_exists($subnode_val, $this->activenodes)) {
                     $extraclass = ' active';
-                }
-                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . 'Root</a>';
+                } else {
+		    $extraclass = ' inactive';
+		}
+
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . 'Root</a>';
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }
@@ -300,7 +303,7 @@ class MDTree {
 
         // $treeStr .= print_r($this->activenodes,true);
         // the inner section is generised.
-        //$treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
+
         $treeStr .= '<ul class="kt_treenodes">';
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
@@ -309,10 +312,14 @@ class MDTree {
             // leaves are handled differently.
             if ($node_id !== "leaves") {
                 $extraclass = '';
+
                 if (array_key_exists($subtree_nodes, $this->activenodes)) {
                     $extraclass = ' active';
-                }
-                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName().'</a>';
+                } else {
+		    $extraclass = ' inactive';
+		}
+
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName().'</a>';
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }

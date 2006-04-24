@@ -487,8 +487,19 @@ a.main_nav_item {
     border-width: 1px;
 }
 .metadata.versioned dd .current.different {
+    background-color: #fff2b8;
+/*    
     padding-left: 25px;
     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+*/
+}
+
+.metadata.versioned dd .previous.different {
+    background-color: #e9dda8;
+/*    
+    padding-left: 25px;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+*/
 }
 
 .document_details .document_history thead th {

@@ -1,7 +1,8 @@
 <dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    The document "{$info.object_name}" was added{if ($info.location_name !== null)} to "{$info.location_name}"{/if}.
+    The document "{$info.object_name}" was added{if ($info.location_name !== null)} to "{$info.location_name}"{/if}{if ($info.has_actor)} 
+	by {$info.actor_name}{/if}.
     <div class="actionoptions">
         {if !$is_broken}
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Document{/i18n}</a>

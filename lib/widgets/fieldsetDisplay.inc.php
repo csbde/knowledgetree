@@ -287,8 +287,11 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "document_data" => $aDocumentData,
             "document" => $aDocumentData["document"],
 
-			"filename" => $document->getFileName(),
-			"comparison_filename" => $comparison_document->getFileName(),
+	    "title" => $document->getName(),
+	    "comparison_title" => $comparison_document->getName(),
+
+	    "filename" => $document->getFileName(),
+	    "comparison_filename" => $comparison_document->getFileName(),
 			
             "creator" => $creator,
             "creation_date" => $creation_date,

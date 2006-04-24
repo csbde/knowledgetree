@@ -1,7 +1,8 @@
 <dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    The document "{$info.object_name}" has been removed from the folder "{$info.location_name}", to which you are subscribed.
+    The document "{$info.object_name}" has been removed from the folder "{$info.location_name}" (to which you are subscribed){if ($info.has_actor)} 
+	by {$info.actor_name}{/if}.
     <div class="actionoptions">    
         
         {if !$is_broken}
