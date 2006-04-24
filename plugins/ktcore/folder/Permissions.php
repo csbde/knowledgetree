@@ -22,7 +22,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_("Permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt("Permissions"));
         $oTemplate = $this->oValidator->validateTemplate("ktcore/folder/view_permissions");
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectID());
@@ -118,7 +118,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_resolved_users() {
-        $this->oPage->setBreadcrumbDetails(_("Permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt("Permissions"));
         $oTemplate = $this->oValidator->validateTemplate("ktcore/folder/resolved_permissions_user");
 
         $oPL = KTPermissionLookup::get($this->oFolder->getPermissionLookupID());
