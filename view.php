@@ -232,7 +232,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			"FROM " . KTUtil::getTableName("document_transactions") . " AS DT INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
 			"INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " . 
 			"WHERE DT.document_id = ? ORDER BY DT.datetime DESC";
-        $aParams = array($document_id);
+		$aParams = array($document_id);
+
 		$res = DBUtil::getResultArray(array($sQuery, $aParams));
 		if (PEAR::isError($res)) {
 		   var_dump($res); // FIXME be graceful on failure.
@@ -313,133 +314,136 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	// this gets in:
 	//   fDocumentId (document to compare against)
 	//   fComparisonVersion (the metadata_version of the appropriate document)
-	function do_viewComparison() {	 
+    function do_viewComparison() {	 
 	    
-		$document_data = array();
-		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
-			return $this->do_error();
-		}
-		$document_data["document_id"] = $document_id;
+	$document_data = array();
+	$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+	if ($document_id === null) { 
+	    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+	    return $this->do_error();
+	}
+	
+	$document_data["document_id"] = $document_id;	
 		
+	$base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
 		
-		$base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
-		
-		// try get the document.
-		$oDocument =& Document::get($document_id, $base_version);
-		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The base document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
-			return $this->do_error();		
-		}
-		if (!Permission::userHasDocumentReadPermission($oDocument)) {
-		    // FIXME inconsistent.
-		    $this->oPage->addError(_kt('You are not allowed to view this document'));
-		    return $this->do_error();
-		}
-		$this->oDocument =& $oDocument;
-		$this->oPage->setSecondaryTitle($oDocument->getName());
-		$aOptions = array(
+	// try get the document.
+	$oDocument =& Document::get($document_id, $base_version);
+	if (PEAR::isError($oDocument)) {
+	    $this->oPage->addError('The base document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+	    return $this->do_error();		
+	}
+	
+	if (!Permission::userHasDocumentReadPermission($oDocument)) {
+	    // FIXME inconsistent.
+	    $this->oPage->addError(_kt('You are not allowed to view this document'));
+	    return $this->do_error();
+	}
+
+	$this->oDocument =& $oDocument;
+	$this->oPage->setSecondaryTitle($oDocument->getName());
+	$aOptions = array(
             "documentaction" => "viewDocument",
             "folderaction" => "browse",
         );
+
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails(_kt("compare versions"));
+	$this->oPage->setBreadcrumbDetails(_kt("compare versions"));
 		
-		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
-		if ($comparison_version=== null) { 
-		    $this->oPage->addError('No comparison version was requested.  Please <a href="' . KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id) . '">select a version</a>.');
-			return $this->do_error();
-		}
+	$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
+	if ($comparison_version=== null) { 
+	    $this->oPage->addError('No comparison version was requested.  Please <a href="' . KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id) . '">select a version</a>.');
+	    return $this->do_error();
+	}
 		
-		$oComparison =& Document::get($oDocument->getId(), $comparison_version);
-		if (PEAR::isError($oComparison)) {
-		    $this->errorRedirectToMain(_kt('Invalid document to compare against.'));
-		}
-		$comparison_data = array();
-		$comparison_data['document_id'] = $oComparison->getId();
+	$oComparison =& Document::get($oDocument->getId(), $comparison_version);
+	if (PEAR::isError($oComparison)) {
+	    $this->errorRedirectToMain(_kt('Invalid document to compare against.'));
+	}
+	$comparison_data = array();
+	$comparison_data['document_id'] = $oComparison->getId();
+	
+	$document_data["document"] = $oDocument;
+	$comparison_data['document'] = $oComparison;
+		
+	$document_data["document_type"] =& DocumentType::get($oDocument->getDocumentTypeID());
+	$comparison_data["document_type"] =& DocumentType::get($oComparison->getDocumentTypeID());
+		
+	// follow twice:  once for normal, once for comparison.
+	$is_valid_doctype = true;
+		
+	if (PEAR::isError($document_data["document_type"])) {
+	    $this->oPage->addError('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.');
+	    $is_valid_doctype = false;
+	}
 
-		$document_data["document"] = $oDocument;
-		$comparison_data['document'] = $oComparison;
-		
-		$document_data["document_type"] =& DocumentType::get($oDocument->getDocumentTypeID());
-		$comparison_data["document_type"] =& DocumentType::get($oComparison->getDocumentTypeID());
-		
-		// follow twice:  once for normal, once for comparison.
-		$is_valid_doctype = true;
-		
-		if (PEAR::isError($document_data["document_type"])) {
-			$this->oPage->addError('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.');
-			$is_valid_doctype = false;
-		}
+	// we want to grab all the md for this doc, since its faster that way.
+	$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($oDocument->getMetadataVersionId())));
 
-		// we want to grab all the md for this doc, since its faster that way.
-		$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($oDocument->getMetadataVersionId())));
-
-		$field_values = array();
-		foreach ($mdlist as $oFieldLink) {
+	$field_values = array();
+	foreach ($mdlist as $oFieldLink) {
             $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
-		}
-		
-		$document_data["field_values"] = $field_values;
-		
-		$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
+	}
+	
+	$document_data["field_values"] = $field_values;	
+	$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
 
-		$field_values = array();
-		foreach ($mdlist as $oFieldLink) {
+	$field_values = array();
+	foreach ($mdlist as $oFieldLink) {
             $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
-		}
+	}
 		
-		$comparison_data["field_values"] = $field_values;
+	$comparison_data["field_values"] = $field_values;
 
 		
 		
-		// Fieldset generation.
-		// 
-		//   we need to create a set of FieldsetDisplay objects
-		//   that adapt the Fieldsets associated with this lot
-		//   to the view (i.e. ZX3).   Unfortunately, we don't have
-		//   any of the plumbing to do it, so we handle this here.
-		$fieldsets = array();
+	// Fieldset generation.
+	// 
+	//   we need to create a set of FieldsetDisplay objects
+	//   that adapt the Fieldsets associated with this lot
+	//   to the view (i.e. ZX3).   Unfortunately, we don't have
+	//   any of the plumbing to do it, so we handle this here.
+	$fieldsets = array();
 		
-		// we always have a generic.
-		array_push($fieldsets, new GenericFieldsetDisplay());
-		
-		// FIXME can we key this on fieldset namespace?  or can we have duplicates?
-		// now we get the other fieldsets, IF there is a valid doctype.
-		if ($is_valid_doctype) {
-		    // these are the _actual_ fieldsets.
-			$fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
+	// we always have a generic.
+	array_push($fieldsets, new GenericFieldsetDisplay());
+
+	// FIXME can we key this on fieldset namespace?  or can we have duplicates?
+	// now we get the other fieldsets, IF there is a valid doctype.
+
+	if ($is_valid_doctype) {
+	    // these are the _actual_ fieldsets.
+	    $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
+	    
+	    // and the generics			
+	    $activesets = KTFieldset::getGenericFieldsets();
+	    foreach ($activesets as $oFieldset) {
+		$displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+		array_push($fieldsets, new $displayClass($oFieldset));
+	    }			
 			
-			// and the generics			
-			$activesets = KTFieldset::getGenericFieldsets();
-			foreach ($activesets as $oFieldset) {
-			    $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-				array_push($fieldsets, new $displayClass($oFieldset));
-			}			
+	    $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
+	    foreach ($activesets as $oFieldset) {
+		$displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());		
+		array_push($fieldsets, new $displayClass($oFieldset));
+	    }
+	}
 			
-		    $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
-		    foreach ($activesets as $oFieldset) {
-			    $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-				array_push($fieldsets, new $displayClass($oFieldset));
-			}
-		}
-			
-		// FIXME handle ad-hoc fieldsets.
-		$this->addPortlets();
+	// FIXME handle ad-hoc fieldsets.
+	$this->addPortlets();
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("kt3/compare_document");
-		$aTemplateData = array(
-              "context" => $this,
-			  "document_id" => $document_id,
-			  "document" => $oDocument,
-			  "document_data" => $document_data,
-			  "comparison_data" => $comparison_data,
-			  "comparison_document" => $oComparison,
-			  "fieldsets" => $fieldsets,
-		);
-		//var_dump($aTemplateData["comparison_data"]);
-		return $oTemplate->render($aTemplateData);
+	$oTemplate = $oTemplating->loadTemplate("kt3/compare_document");
+	$aTemplateData = array(
+			       "context" => $this,
+			       "document_id" => $document_id,
+			       "document" => $oDocument,
+			       "document_data" => $document_data,
+			       "comparison_data" => $comparison_data,
+			       "comparison_document" => $oComparison,
+			       "fieldsets" => $fieldsets,
+			       );
+	//var_dump($aTemplateData["comparison_data"]);
+	return $oTemplate->render($aTemplateData);
     }
 	
 	/* we have a lot of error handling.  this one is the absolute final failure. */
