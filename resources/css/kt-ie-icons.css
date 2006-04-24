@@ -33,3 +33,30 @@
 #portletbar { width: 200px; }
 #portlet-search-text { width: 150px; }
 #content { padding-left: 220px; }
+
+
+
+/* NO CHILD SELECTORS IN IE! */
+
+.kt_treenodes li.treenode a.pathnode
+{ 
+  padding-left: 15px;
+}
+
+.kt_treenodes li.treenode.active a.pathnode {
+   background: transparent url(../graphics/minus.png) center left no-repeat;
+                                              
+}
+
+.kt_treenodes li.treenode.inactive a.pathnode {
+   background: transparent url(../graphics/plus.png) center left no-repeat;
+}
+
+
+.kt_treenodes li.active ul {
+    display: block;
+}
+
+.kt_treenodes li.inactive ul {
+    display: none;
+}

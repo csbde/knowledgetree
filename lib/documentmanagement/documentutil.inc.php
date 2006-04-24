@@ -47,7 +47,7 @@ require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
-    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser) {
+    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $iFileSize = filesize($sFilename);
 
@@ -71,6 +71,15 @@ class KTDocumentUtil {
         $oDocument->setCheckedOutUserID(-1);
         $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         $oDocument->setFileSize($iFileSize);
+
+	if(is_array($aOptions)) {
+	    $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
+	    if(strlen($sFilename)) {
+		$oDocument->setFileName($sFilename);
+		$default->log->info("renamed document " . $oDocument->getId() . " to " . $sFilename);
+
+	    }
+	}
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
@@ -385,31 +394,35 @@ class KTDocumentUtil {
     // {{{ _in_add
     function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
-		    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
-			if (PEAR::isError($oDoc)) {
+	    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
+	    if (PEAR::isError($oDoc)) {
                 return PEAR::raiseError(_kt("Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
-			} else {
-			    if ($oDoc->getStatusID != LIVE) {
-                    return PEAR::raiseError(_kt("Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
-				} else {
-				    return PEAR::raiseError(_kt("Document with that filename already exists in this folder."));
-				}
-			}
+	    } else {
+		if ($oDoc->getStatusID() != LIVE) {
+		    $sError = _kt("Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename.");
+		} else {
+		    $sError = _kt("Document with that filename already exists in this folder.");
+		}
+
+		$sError .= _kt(' Document') . ': ' . $oDoc->getName() . ' (ID:' . $oDoc->getId() . ')';
+		return PEAR::raiseError($sError);
+	    }
         }
         $sName = KTUtil::arrayGet($aOptions, 'description', $sFilename);
         if (KTDocumentUtil::nameExists($oFolder, $sName)) {
-   		    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
-			if (PEAR::isError($oDoc)) {
+	    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
+	    if (PEAR::isError($oDoc)) {
                 return PEAR::raiseError(_kt("Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator."));			
-			} else {
-			    if ($oDoc->getStatusID != LIVE) {
+	    } else {
+		if ($oDoc->getStatusID != LIVE) {
                     return PEAR::raiseError(_kt("Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename."));
-				} else {
-				    return PEAR::raiseError(_kt("Document with that title already exists in this folder."));
-				}
-			}
-
+		} else {
+		    return PEAR::raiseError(_kt("Document with that title already exists in this folder."));
+		}
+	    }
+	    
         }
+
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);

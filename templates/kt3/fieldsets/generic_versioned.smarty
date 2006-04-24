@@ -5,12 +5,20 @@
         document.{/i18n}
     </p>
     <dl class="metadata versioned">
+        <dt>{i18n}Document Title{/i18n}</dt>
+        <dd>
+            {capture assign="oldval"}{$comparison_title}{/capture}
+            {capture assign="newval"}{$title}{/capture}
+            <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
+            <div class="previous  {if ($oldval != $newval)}different{/if}">{$oldval}</div>
+        </dd>
+    
         <dt>{i18n}Document Filename{/i18n}</dt>
         <dd>
             {capture assign="oldval"}{$comparison_filename} ({$context->_sizeHelper($comparison_document->getSize())}){/capture}
             {capture assign="newval"}{$filename} ({$context->_sizeHelper($document->getSize())}){/capture}
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
-            <div class="previous">{$oldval}</div>
+            <div class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</div>
         </dd>
     
         <dt>{i18n}File is a{/i18n} </dt>
@@ -18,7 +26,7 @@
             {capture assign="oldval"}{$context->_mimeHelper($comparison_document->getMimeTypeID())}{/capture}
             {capture assign="newval"}{$context->_mimeHelper($document->getMimeTypeID())}{/capture}
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
-            <div class="previous">{$oldval}</div>
+            <div class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</div>
         </dd>
 
         <dt>{i18n}Created by{/i18n}</dt>
@@ -31,7 +39,7 @@
             {capture assign="oldval"}{$comparison_last_modified_by} ({$comparison_last_modified_date}){/capture}
             {capture assign="newval"}{$last_modified_by} ({$last_modified_date}){/capture}
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
-            <div class="previous">{$oldval}</div>        
+            <div class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</div>        
         </dd>
 
 
@@ -40,7 +48,7 @@
             {capture assign="oldval"}{$comparison_document_type}{/capture}
             {capture assign="newval"}{$document_type}{/capture}
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
-            <div class="previous">{$oldval}</div>             
+            <div class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</div>             
         </dd>
 
         <dt>{i18n}Workflow status{/i18n}</dt>
@@ -56,7 +64,7 @@
 {i18n}No workflow{/i18n}
 {/if}{/capture}
             <div class="current {if ($oldval != $newval)}different{/if}">{$newval}</div>
-            <div class="previous">{$oldval}</div>
+            <div class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</div>
         </dd>
         <dt>{i18n}Document ID{/i18n}</dt>
         <dd>

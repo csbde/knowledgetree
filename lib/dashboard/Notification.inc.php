@@ -138,9 +138,7 @@ class KTNotificationHandler {
     function handleNotification($oKTNotification) {
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/generic");
-		$aTemplateData = array(
-              "context" => $oKTNotification,
-		);
+		$aTemplateData = array("context" => $oKTNotification,);
 		return $oTemplate->render($aTemplateData);
     }
 	

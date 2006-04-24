@@ -233,12 +233,33 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         // and that the filename matches
         global $default;
-        $default->log->info("checkInDocumentBL.php uploaded filename=" . $_FILES['file']['name'] . "; current filename=" . $this->oDocument->getFileName());
+
+	$sCurrentFilename = $this->oDocument->getFileName();
+	$sNewFilename = $_FILES['file']['name'];
+
+        $default->log->info("checkInDocumentBL.php uploaded filename=" . $sNewFilename . "; current filename=" . $sCurrentFilename);
+
+	
+	/* 
+         * now allowing this - document's filename is set in 'checkin'
+         */
         if ($this->oDocument->getFileName() != $_FILES['file']['name']) {
             $this->errorRedirectToMain(_kt("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
+	/**/
 
-        $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['file']['tmp_name'], $sReason, $this->oUser);
+	
+
+	$aOptions = array();
+
+	/*
+	if($sNewFilename != $sCurrentFilename) {
+	    $aOptions['newfilename'] = $sNewFilename;
+	}
+	*/
+	    
+
+        $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt("An error occurred while trying to check in the document"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
@@ -970,8 +991,18 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
-        $this->successRedirectToMain(_kt('Transition performed'),
+
+	if(!Permission::userHasDocumentReadPermission($oDocument)) {
+	    $this->successRedirectTo(
+	        'browse', 
+		_kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document'),
+		array('fFolderId' => $oDocument->getFolderId())
+	    );
+	    
+	} else {
+	    $this->successRedirectToMain(_kt('Transition performed'),
                 array('fDocumentId' => $oDocument->getId()));
+	}
     }
 }
 // }}}

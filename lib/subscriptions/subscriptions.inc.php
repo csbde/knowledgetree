@@ -94,11 +94,11 @@ class SubscriptionEvent {
 		foreach ($aUsers as $oSubscriber) {
 		
 		    // notification object first.		
-			$aNotificationOptions = array();
-			$aNotificationOptions['target_user'] = $oSubscriber->getID();
+		    $aNotificationOptions = array();
+		    $aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oAddedFolder->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oAddedFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "AddFolder";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -125,7 +125,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null - is this valid?
 		    $aNotificationOptions['target_name'] = $oAddedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oAddedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "AddDocument";		
 			
@@ -155,20 +155,20 @@ class SubscriptionEvent {
 		    // notification object first.		
 			$aNotificationOptions = array();
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
-		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oRemovedFolder->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
-		    $aNotificationOptions['object_id'] = $oParentFolder->getId();  // parent folder_id, since the removed one is removed.
-		    $aNotificationOptions['event_type'] = "RemoveSubscribedFolder";		
+			$aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+			$aNotificationOptions['target_name'] = $oRemovedFolder->getName();
+			$aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+			$aNotificationOptions['object_id'] = $oParentFolder->getId();  // parent folder_id, since the removed one is removed.
+			$aNotificationOptions['event_type'] = "RemoveSubscribedFolder";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
 			
 			// now the email content.			
 			// FIXME this needs to be handled entirely within notifications from now on.
 			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
 			    $emailContent = $content->getEmailAlertContent($oNotification);
-				$emailSubject = $content->getEmailAlertSubject($oNotification);
-				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
-				$oEmail->send();
+			    $emailSubject = $content->getEmailAlertSubject($oNotification);
+			    $oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+			    $oEmail->send();
 			}
 			
 			// now grab each oSubscribers oSubscription, and delete.
@@ -188,7 +188,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oRemovedFolder->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oParentFolder->getId();  // parent folder_id, since the removed one is removed.
 		    $aNotificationOptions['event_type'] = "RemoveChildFolder";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -220,7 +220,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oRemovedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oParentFolder->getId();  // parent folder_id, since the removed one is removed.
 		    $aNotificationOptions['event_type'] = "RemoveSubscribedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -251,7 +251,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oRemovedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oParentFolder->getId();  // parent folder_id, since the removed one is removed.
 		    $aNotificationOptions['event_type'] = "RemoveChildDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -279,7 +279,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "ModifyDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -304,7 +304,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "ModifyDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -331,7 +331,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "CheckInDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -356,7 +356,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "CheckInDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -384,7 +384,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "CheckOutDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -409,7 +409,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "CheckOutDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -436,7 +436,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oToFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -461,7 +461,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oToFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -485,7 +485,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oToFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -512,7 +512,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "ArchivedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -537,7 +537,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "ArchivedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -565,7 +565,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "RestoreArchivedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -590,7 +590,7 @@ class SubscriptionEvent {
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = $oParentFolder->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
 		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "RestoreArchivedDocument";		
 			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
@@ -692,31 +692,30 @@ class SubscriptionContent {
 	
 	function getEmailAlertSubject($oKTNotification) { 
 	    $info = $this->_getSubscriptionData($oKTNotification);
-		return $info["title"]; 
+	    return $info["title"]; 
 	}
 	
 	function getNotificationAlertContent($oKTNotification) {
 	    $info = $this->_getSubscriptionData($oKTNotification);
-		$oTemplating =& KTTemplating::getSingleton();
+	    $oTemplating =& KTTemplating::getSingleton();
 		
-		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions." . $info['event_type']);
-		// if, for some reason, this doesn't actually work, use the "generic" title.
-		if (PEAR::isError($oTemplate)) {
-		    $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
-		}
-		// FIXME we need to specify the i18n by user.
+	    $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions." . $info['event_type']);
+	    // if, for some reason, this doesn't actually work, use the "generic" title.
+	    if (PEAR::isError($oTemplate)) {
+		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
+	    }
+	    // FIXME we need to specify the i18n by user.
+	    
+	    $isBroken = false;
+	    if (PEAR::isError($info['object']) || ($info['object'] === false) || is_null($info['object'])) {
+		$isBroken = true;
+	    }
 		
-		$isBroken = false;
-		if (PEAR::isError($info['object']) || ($info['object'] === false) || is_null($info['object'])) {
-			$isBroken = true;
-		}
-		
-		$aTemplateData = array(
-              "context" => $oKTNotification,
-			  "info" => $info,
-			  "is_broken" => $isBroken,
-		);
-		return $oTemplate->render($aTemplateData);
+	    $aTemplateData = array("context" => $oKTNotification,
+				   "info" => $info,
+				   "is_broken" => $isBroken,
+				   );
+	    return $oTemplate->render($aTemplateData);
 	} 
 	// no separate subject function, its rolled into get...Content()
 
@@ -752,11 +751,12 @@ class SubscriptionContent {
 		if ($info['actor_id'] !== null) {
 			$oTempUser = User::get($info['actor_id']);
 			if (PEAR::isError($oTempUser) || ($oTempUser == false)) {
-				// no-act
-				$info['actor'] = null;
+			    // no-act
+			    $info['actor'] = null;
 			} else {
 			    $info['actor'] = $oTempUser;
-				$info['has_actor'] = true;
+			    $info['has_actor'] = true;
+			    $info['actor_name'] = $oTempUser->getName();
 			}
 		}
 		
