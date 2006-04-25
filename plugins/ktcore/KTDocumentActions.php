@@ -304,7 +304,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("cancel checkin");
+        $this->oPage->setBreadcrumbDetails(_kt("cancel checkout"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
         
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
