@@ -40,21 +40,11 @@ assigned are shown.{/i18n}</p>
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}"></td>
-{ /if }
-{else}
 { if $bHasPerm }
 <td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
 { else }
 <td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
 { /if }
-{/if}
   { /foreach }
 </tr>
 { /foreach }
