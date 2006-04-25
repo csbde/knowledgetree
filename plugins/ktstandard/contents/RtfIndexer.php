@@ -44,7 +44,7 @@ class KTRtfIndexerTrigger extends KTBaseIndexerTrigger {
     
     function getDiagnostic() {
         if (OS_WINDOWS) {
-            return _kt("The RTF indexer does not currently index RTF documents on Windows.");
+            return null; // _kt("The RTF indexer does not currently index RTF documents on Windows.");
         }
         $sCommand = $this->findLocalCommand();
         

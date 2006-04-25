@@ -45,6 +45,10 @@ class KTPostscriptIndexerTrigger extends KTBaseIndexerTrigger {
     function getDiagnostic() {
         $sCommand = $this->findLocalCommand();
         
+        if (OS_WINDOWS) {
+            return null; // _kt("The PS indexer does not currently index PS documents on Windows.");
+        }
+        
         // can't find the local command.
         if (empty($sCommand)) {
             return sprintf(_kt('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the KnowledgeTree Path.  For more information on indexers and helper applications, please <a href="%s">visit the KTDMS site</a>.'), $this->command, $this->support_url);
