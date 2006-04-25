@@ -123,6 +123,8 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
                 $this->aRepoDocumentProblems[] = array(
                     'document' => $oDocument,
                     'content' => $oDCV,
+                    'path' => $sDocumentPath,
+                    'doclink' => KTBrowseUtil::getUrlForDocument($oDocument),
                 );
             }
         }
