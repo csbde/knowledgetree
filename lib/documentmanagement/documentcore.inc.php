@@ -146,8 +146,14 @@ class KTDocumentCore extends KTEntity {
 
     // {{{ ktentity requirements
     function _fieldValues () {
-        $this->sFullPath = Folder::generateFolderPath($this->iFolderId);
-        $this->sParentFolderIds = Folder::generateFolderIds($this->iFolderId);
+        $sNewFullPath = Folder::generateFolderPath($this->iFolderId);
+        if (!PEAR::isError($sNewFullPath)) {
+            $this->sFullPath = $sNewFullPath;
+        }
+        $sNewParentFolderIds = Folder::generateFolderIds($this->iFolderId);
+        if (!PEAR::isError($sNewParentFolderIds)) {
+            $this->sParentFolderIds = $sNewParentFolderIds;
+        }
         return parent::_fieldValues();
     }
 
