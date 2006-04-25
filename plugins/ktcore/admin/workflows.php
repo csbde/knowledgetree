@@ -53,7 +53,7 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 
 class WorkflowNavigationPortlet extends KTPortlet {   
     var $oWorkflow;
-
+    var $sHelpPage = 'ktcore/admin/workflow.html';
     function WorkflowNavigationPortlet($sTitle, $oWorkflow = null) {
         $this->oWorkflow = $oWorkflow;
         parent::KTPortlet($sTitle);
@@ -81,7 +81,7 @@ class WorkflowNavigationPortlet extends KTPortlet {
 
 class KTWorkflowDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
-    var $sHelpPage = 'ktcore/admin/workflow/overview.html';
+    var $sHelpPage = 'ktcore/admin/workflow.html';
     var $aWorkflowInfo;
     var $oWorkflow;
 

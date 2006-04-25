@@ -38,6 +38,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class KTPluginDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
+    var $sHelpPage = 'ktcore/admin/manage plugins.html';
 
     function check() {
         $this->aBreadcrumbs[] = array(

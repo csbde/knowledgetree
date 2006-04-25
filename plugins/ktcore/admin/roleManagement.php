@@ -31,6 +31,8 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . "/roles/Role.inc");
 
 class RoleAdminDispatcher extends KTAdminDispatcher {
+
+    var $sHelpPage = 'ktcore/admin/role administration.html';
     function check() {
         return true;
     }

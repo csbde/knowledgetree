@@ -33,7 +33,7 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
 class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
-
+    var $sHelpPage = 'ktcore/admin/document checkout.html';
     function check() {
         return true;
     }

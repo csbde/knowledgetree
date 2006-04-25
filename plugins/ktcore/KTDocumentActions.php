@@ -914,7 +914,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = "ktcore.permissions.write";
     
-    var $sHelpPage = 'ktcore/workflow.html';    
+    var $sHelpPage = 'ktcore/user/workflow.html';    
 
     function getDisplayName() {
         return _kt('Workflow');

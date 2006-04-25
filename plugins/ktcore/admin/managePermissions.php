@@ -33,6 +33,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
+    var $sHelpPage = 'ktcore/admin/manage permissions.html'; 
     function do_main() {
         $this->oPage->setTitle(_kt('Manage Permissions'));
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Manage Permissions'));

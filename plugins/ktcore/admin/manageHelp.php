@@ -38,6 +38,9 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class ManageHelpDispatcher extends KTAdminDispatcher {
+
+    var $sHelpPage = 'ktcore/admin/help administration.html';
+
     function do_main() {
         return $this->getData();
     }

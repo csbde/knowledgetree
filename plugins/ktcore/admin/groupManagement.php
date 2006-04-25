@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php
 
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
     // {{{ do_main
+    var $sHelpPage = 'ktcore/admin/manage groups.html';
     function do_main() {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_kt('select a group'));

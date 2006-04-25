@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . "/authentication/authenticationproviderregistry.inc.ph
 require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php");
 
 class KTUserAdminDispatcher extends KTAdminDispatcher {
+var $sHelpPage = 'ktcore/admin/manage users.html';
     function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails(_kt('select a user'));

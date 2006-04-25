@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
+    var $sHelpPage = 'ktcore/admin/control units.html';
     var $bAutomaticTransaction = true;
 
     function check() {

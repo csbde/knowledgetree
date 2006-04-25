@@ -33,6 +33,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 
 class WorkflowAllocationSelection extends KTAdminDispatcher {
+    var $sHelpPage = 'ktcore/admin/automatic workflows.html';
     var $bAutomaticTransaction = true;
     var $sSection = 'administration';
 

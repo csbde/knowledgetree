@@ -36,6 +36,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
+var $sHelpPage = 'ktcore/admin/deleted documents.html';
     function do_main () {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         
