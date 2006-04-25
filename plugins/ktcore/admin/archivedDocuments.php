@@ -56,7 +56,7 @@ class KTArchiveTitle extends TitleColumn {
 }
 
 class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
-
+    var $sHelpPage = 'ktcore/admin/archived documents.html';
     function do_main () {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
         

@@ -38,6 +38,8 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
+    var $sHelpPage = 'ktcore/admin/document types.html'; 
+
    // Breadcrumbs base - added to in methods
     function do_main () {
 

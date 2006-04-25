@@ -33,6 +33,7 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 
 class KTSupportDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
+    var $sHelpPage = 'ktcore/admin/system information.html';
 
     function check() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Support and System information'));

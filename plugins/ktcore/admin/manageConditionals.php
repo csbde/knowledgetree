@@ -40,6 +40,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 class ManageConditionalDispatcher extends KTAdminDispatcher {
     var $ru;
 
+
     function ManageConditionalDispatcher() {
         parent::KTAdminDispatcher();
         global $default;

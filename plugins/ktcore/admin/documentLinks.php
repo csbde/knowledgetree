@@ -31,6 +31,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/documentmanagement/LinkType.inc');  // a horrible piece of work.
 
 class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
+    var $sHelpPage = 'ktcore/admin/link type management.html';
 
    // Breadcrumbs base - added to in methods
     function check() {

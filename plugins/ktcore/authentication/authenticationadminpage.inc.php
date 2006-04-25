@@ -34,7 +34,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 class KTAuthenticationAdminPage extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
-
+    var $sHelpPage = 'ktcore/admin/authentication sources.html';
     function check() {
         $res = parent::check();
         $this->aBreadcrumbs[] = array('name' => _kt('Authentication'), 'url' => $_SERVER['PHP_SELF']);

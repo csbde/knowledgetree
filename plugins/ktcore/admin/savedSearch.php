@@ -34,6 +34,7 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 
 class KTSavedSearchDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
+    var $sHelpPage = 'ktcore/admin/saved searches.html';
 
     function check() {
         $this->aBreadcrumbs[] = array(

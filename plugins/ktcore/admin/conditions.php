@@ -33,7 +33,7 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 
 class KTConditionDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
-
+    var $sHelpPage = 'ktcore/admin/dynamic conditions.html';
     function check() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Conditions Management'));
         return true;

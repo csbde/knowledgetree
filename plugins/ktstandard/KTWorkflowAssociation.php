@@ -35,6 +35,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 class KTWorkflowAssociationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.workflowassociation.plugin";
     var $sFriendlyName = null;
+    var $sHelpPage = 'ktcore/admin/automatic workflows';
 
     function KTWorkflowAssociationPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);

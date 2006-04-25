@@ -44,6 +44,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 	var $bHaveConditional = null;
+    var $sHelpPage = 'ktcore/admin/document fieldsets.html';
 
     function check() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
