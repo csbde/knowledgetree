@@ -143,12 +143,20 @@ class Folder extends KTEntity {
         }
 
         $oFolder =& Folder::get($iFolderId);
-		if (PEAR::isError($oFolder)) { sprintf("The invalid folder id is: %s", print_r($iFolderId, true)); }
+		if (PEAR::isError($oFolder)) {
+            global $default;
+            $default->log->error("Invalid folder passed to generateFullFolderPath: %s", print_r($oFolder, true));
+            return $oFolder;
+        }
         $iParentId = $oFolder->getParentId();
         if (empty($iParentId)) {
             return $oFolder->getName();
         }
-        return Folder::generateFullFolderPath($iParentId) . "/" . $oFolder->getName();
+        $res = Folder::generateFullFolderPath($iParentId);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return sprintf('%s/%s', $res, $oFolder->getName());
 	}
 	
 	/**
