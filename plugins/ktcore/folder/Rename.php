@@ -70,8 +70,9 @@ class KTFolderRenameAction extends KTFolderAction {
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'foldername');
         $aErrorOptions['defaultmessage'] = _kt("No folder name given");
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
+	$sOldFolderName = $this->oFolder->getName();
 
-        $oParentFolder =& Folder::get($this->oFolder->iParentID);
+        $oParentFolder =& Folder::get($this->oFolder->getParentID());
 	if(PEAR::isError($oParentFolder)) {
 	    $this->errorRedirectToMain(_kt('Unable to retrieve parent folder.'), $aErrorOptions['redirect_to'][1]);
 	    exit(0);
@@ -89,7 +90,7 @@ class KTFolderRenameAction extends KTFolderAction {
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Folder "%s" renamed to "%s".'), $this->oFolder->getName(), $sFolderName);
+            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Folder "%s" renamed to "%s".'), $sOldFolderName, $sFolderName);
         }
 
         $this->commitTransaction();

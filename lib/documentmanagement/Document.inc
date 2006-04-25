@@ -39,7 +39,6 @@ DEFINE("ARCHIVED", 4);
 DEFINE("STATUS_INCOMPLETE", 5);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
-
 require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentcore.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentmetadataversion.inc.php');
@@ -396,8 +395,14 @@ class Document {
     // {{{ getByState
     function &getByState($oState) {
         $iStateId = KTUtil::getId($oState);
-        $sTable = KTUtil::getTableName('documents');
-        $sQuery = sprintf('SELECT id FROM %s WHERE workflow_state_id = ?', $sTable);
+
+        $sDocumentTable = KTUtil::getTableName('documents');
+        $sDocumentMetadataTable = KTUtil::getTableName('document_metadata_version');
+
+        $sQuery = sprintf("SELECT D.id AS document_id FROM %s AS D
+                           LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
+                           WHERE workflow_state_id = ?", $sDocumentTable, $sDocumentMetadataTable);
+
         $aParams = array($iStateId);
         $aIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'document_id');
         
@@ -560,5 +565,16 @@ class Document {
     function clearAllCaches() {
         return KTEntityUtil::clearAllCaches('Document');
     }
+
+
+    function getBreadcrumbs() {
+	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($this);
+	if(PEAR::isError($aBreadcrumbs)) {
+	    return false;
+	}
+	return $aBreadcrumbs;
+    }
+
+	
 }
 ?>

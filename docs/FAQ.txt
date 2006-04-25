@@ -18,7 +18,7 @@ A: Our community forums are a good place to ask questions about
    network, will endeavour to answer your questions.
 
    Click on the link below to access the forums:
-       http://forum.ktdms.com/
+       http://forums.ktdms.com/
 
 Q: Where can I discuss document management best practices, change
    management and training issues?
@@ -30,7 +30,7 @@ A: Our community forums are a good place to discuss best practices for
 
    Click on the link below to access the forums:
 
-      http://forum.ktdms.com/
+      http://forums.ktdms.com/
 
 Q: Where can I report bugs in KnowledgeTree?
 
@@ -42,7 +42,7 @@ A: You can report bugs in KnowledgeTree by accessing our online
 
    Click on the link below to access the ticketing system:
 
-       http://support.ktdms.com/
+       http://issues.ktdms.com/
 
 Q: I want to modify KnowledgeTree or develop new functionality for it.
    Where do I find more information on how to go about doing this?
@@ -54,13 +54,13 @@ A: You can find out more information about modifying KnowledgeTree,
 
    Click on the link below to access the Wiki:
 
-       http://support.ktdms.com/confluence/
+       http://issues.ktdms.com/confluence/
 
 
 KnowledgeTree Document Management System
 Web page: http://www.ktdms.com/
-Wiki: http://support.ktdms.com/confluence/
-Forums: http://forum.ktdms.com/
-Bug reporting: http://support.ktdms.com/
+Wiki: http://issues.ktdms.com/confluence/
+Forums: http://forums.ktdms.com/
+Bug reporting: http://issues.ktdms.com/
 
 $Id$

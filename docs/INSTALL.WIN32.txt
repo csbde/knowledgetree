@@ -125,12 +125,12 @@ For the Windows platform, these are:
 . InfoZip unzip and zip - http://www.info-zip.org/
 
 Installing these packages is beyond the scope of this document - please
-consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
+consult the KnowledgeTree Wiki at http://issues.ktdms.com/confluence/
 to see how others have approached this on your platform. 
 
 You can find Windows specific installation instructions here:
 
-  http://support.ktdms.com/confluence/display/KTWiki/Windows+XP+installation+instructions
+  http://issues.ktdms.com/confluence/display/KTWiki/Windows+XP+installation+instructions
   
 
 Troubleshooting
@@ -140,12 +140,12 @@ Please make sure that your KnowledgeTree installation passes all the
 pre- and post-installation checkups first.
 
 Refer to the Frequently Asked Questions list on the KnowledgeTree Wiki
-at http://support.ktdms.com/confluence/
+at http://issues.ktdms.com/confluence/
 
-Ask on the KnowledgeTree forums on http://forum.ktdms.com/.
+Ask on the KnowledgeTree forums on http://forums.ktdms.com/.
 
 If you have found a bug, please report it to the KnowledgeTree bug
-reporting system at http://support.ktdms.com/.
+reporting system at http://issues.ktdms.com/.
 
 Upgrading
 ---------

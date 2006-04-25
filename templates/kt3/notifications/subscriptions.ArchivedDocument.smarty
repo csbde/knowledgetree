@@ -1,7 +1,9 @@
 <dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    The document "{$info.object_name}" has been archived by an administrator.
+    The document "{$info.object_name}" {if ($info.location_name !== null)} from "{$info.location_name}"{/if} was archived{if ($info.has_actor)} 
+	by {$info.actor_name}{/if}.
+
     <div class="actionoptions">    
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
     </div>

@@ -71,7 +71,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $add_fields = array();
         $add_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true, null, null, $aOptions);
         $add_fields[] = new KTStringWidget(_kt('Title'), _kt('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true, null, null, $aOptions);
+        
+
+
+	/* Allows filename change on upload
+
         $add_fields[] = new KTStringWidget(_kt('New Filename'), _kt('If you wish to upload this file under a different filename, enter it here.'), 'altfilename', "", $this->oPage, false, null, null, $aOptions);
+	 */
 
         
         $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));

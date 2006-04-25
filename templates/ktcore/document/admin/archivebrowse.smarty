@@ -10,7 +10,7 @@ notification to you.{/i18n}
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="confirm_restore" />
 <p class="descriptiveText">{i18n}Use the folder collection and path below to
-browse to the folder you wish to move the documents into.{/i18n}</p>
+browse to the folder containing the documents you wish to restore.{/i18n}</p>
 
 <input type="hidden" name="fFolderId" value="{$folder->getId()}" />
 {foreach from=$collection_breadcrumbs item=breadcrumb name=bc}

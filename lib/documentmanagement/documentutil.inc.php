@@ -75,9 +75,9 @@ class KTDocumentUtil {
 	if(is_array($aOptions)) {
 	    $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
 	    if(strlen($sFilename)) {
+		global $default;
 		$oDocument->setFileName($sFilename);
 		$default->log->info("renamed document " . $oDocument->getId() . " to " . $sFilename);
-
 	    }
 	}
 
@@ -610,6 +610,10 @@ class KTDocumentUtil {
         
         // IF we're deleted ...
         if ($oDocument->getStatusID() == DELETED) { return true; }
+
+
+	$oOrigFolder = Folder::get($oDocument->getFolderId());
+	
         
         DBUtil::startTransaction();
         
@@ -651,6 +655,12 @@ class KTDocumentUtil {
         $oDocument->setFolderID(1);
         
         DBUtil::commit();
+
+	
+	// we weren't doing notifications on this one
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oSubscriptionEvent->RemoveDocument($oDocument, $oOrigFolder);
+
         
         // document is now deleted:  triggers are best-effort.
         

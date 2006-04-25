@@ -73,6 +73,7 @@ class KTConfig {
         $c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
         $this->aFileRoot[$filename] =& $root;
+
         $conf =& $root->toArray();
         foreach ($conf["root"] as $seck => $secv) {
             $aSectionFile[$seck] = $filename;
