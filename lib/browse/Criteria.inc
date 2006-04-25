@@ -211,7 +211,7 @@ class BrowseCriterion {
     function searchSQL ($aRequest, $handle_not = true) {
         $val = null;
         if ($this->bString) {
-            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]) . "%'", array());
+            $val = array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%!%'", array($aRequest[$this->getWidgetBase()]));
         } else {
             $val = array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest[$this->getWidgetBase()]));
         }
