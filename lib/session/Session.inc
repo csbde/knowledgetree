@@ -171,7 +171,7 @@ class Session {
 
         if (empty($sessionID)) {
             $default->log->info("Session::verify session not in db");
-            return PEAR::raiseError('You need to login to access this page');
+            return PEAR::raiseError(_kt('You need to login to access this page'));
         }
 
         // this should be an existing session, so check the db
@@ -194,14 +194,18 @@ class Session {
 		
         $oKTConfig = KTConfig::getSingleton();	
 		$allowAnon = $oKTConfig->get('session/allowAnonymousLogin', false);
+		
 		$ANON = -2;
-        if ((!$allowAnon) && ($iUserId == $ANON)) { return false; }
+        if ((!$allowAnon) && ($iUserID == $ANON)) { 
+		    Session::destroy();   // delete the anonymous session - config.ini has changed under this session.
+		    return PEAR::raiseError(_kt("Anonymous logins are no longer allowed by the system administrator.  Please login."));
+		}
 
         $ipTracking = $oKTConfig->get('session/ipTracking', false);
         // check that ip matches
         $ip = $this->getClientIP();
         if ($ipTracking && ($ip != trim($aRow["ip"]))) {
-            return PEAR::raiseError("You are coming from a different IP address than the session requires");
+            return PEAR::raiseError(_("You are coming from a different IP address than the session requires"));
         }
 
         // now check if the timeout has been exceeded
@@ -227,7 +231,7 @@ class Session {
 
             Session::removeStaleSessions();
 
-            return PEAR::raiseError('Session timed out');
+            return PEAR::raiseError(_kt('Session timed out'));
         }
 
         Session::removeStaleSessions();

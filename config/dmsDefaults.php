@@ -402,6 +402,8 @@ class KTInit {
             $oKTConfig->setdefaultns("user_prefs", "passwordLength", 6);
             $oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
             
+            $oKTConfig->setdefaultns("session", "allowAnonymousLogin", false);
+            
             $oKTConfig->setdefaultns("ui", "ieGIF", true);
             $oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
             $oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
