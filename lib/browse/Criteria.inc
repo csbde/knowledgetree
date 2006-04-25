@@ -50,6 +50,7 @@ class BrowseCriterion {
     var $sSearchTable = "D";
     var $bVisible = true;
     var $bContains = false;
+    var $bHandleNot = true;
 
     function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->sDisplay =& $sDisplay;
@@ -177,6 +178,8 @@ class BrowseCriterion {
         if (is_null($aPreValue)) {
             $is_positive = true;
         }
+        if (!$this->bHandleNot) { return ''; }
+        
         // not perfect, but acceptable.
         $form_name = $this->getWidgetBase() . '_not';
         $pos_select = '';
@@ -557,6 +560,8 @@ class SizeCriterion extends BrowseCriterion {
 
 class ContentCriterion extends BrowseCriterion {
     var $bContains = true;
+    var $bHandleNot = false;
+    
     function documentDisplay ($oDocument) {
         return "Content";
     }
@@ -665,6 +670,8 @@ class WorkflowStateCriterion extends BrowseCriterion {
 
 class TransactionTextCriterion extends BrowseCriterion {
     var $bContains = true;
+    var $bHandleNot = false;
+    
     function documentDisplay ($oDocument) {
         return "Transaction text";
     }
@@ -720,6 +727,8 @@ class TransactionTextCriterion extends BrowseCriterion {
 
 class SearchableTextCriterion extends BrowseCriterion {
     var $bContains = true;
+    var $bHandleNot = false;
+    
     function documentDisplay ($oDocument) {
         return "Searchable text";
     }
