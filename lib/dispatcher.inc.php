@@ -44,7 +44,7 @@ class KTDispatcher {
     var $cancel_var = "kt_cancel";
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
-	var $oValidator = null;
+    var $oValidator = null;
 
     function KTDispatcher() {
         $this->oValidator =& new KTDispatcherValidation($this);
@@ -101,7 +101,7 @@ class KTDispatcher {
         if (isset($oOrigDispatcher->aBreadcrumbs)) {
             $this->aBreadcrumbs = $oOrigDispatcher->aBreadcrumbs;
         }
-        if (isset($oOrigDispatcher->aBreadcrumbs)) {
+        if (isset($oOrigDispatcher->bTransactionStarted)) {
             $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
         }
         if (isset($oOrigDispatcher->oUser)) {
@@ -193,14 +193,14 @@ class KTStandardDispatcher extends KTDispatcher {
     var $aBreadcrumbs = array();
     var $sSection = false;
     var $oPage = false;
-	var $sHelpPage = null;
+    var $sHelpPage = null;
     
     function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
             $GLOBALS['main'] =& new KTPage;
         }
         $this->oPage =& $GLOBALS['main'];
-		parent::KTDispatcher();
+	parent::KTDispatcher();
     }
 
     function permissionDenied () {

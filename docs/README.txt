@@ -42,8 +42,8 @@ For installation instructions please refer to docs/INSTALL.txt
 
 KnowledgeTree Document Management System
 Web page: http://www.ktdms.com/
-Wiki: http://support.ktdms.com/confluence/
-Forums: http://forum.ktdms.com/
-Bug reporting: http://support.ktdms.com/
+Wiki: http://issues.ktdms.com/confluence/
+Forums: http://forums.ktdms.com/
+Bug reporting: http://issues.ktdms.com/
 
 $Id$

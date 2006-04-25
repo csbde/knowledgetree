@@ -214,6 +214,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $checkin_fields = array();
         $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The updated document.'), 'file', "", $this->oPage, true);
         $checkin_fields[] = new KTStringWidget(_kt('Description'), _kt('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTCheckboxWidget(_kt('Force Original Filename'), _kt('If this is checked, the uploaded document must have the same filename as the original.'), 'forcefilename', '1', $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -225,6 +226,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     function do_checkin() {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $sReason = $this->oValidator->notEmpty($sReason);
+
+	$bForceFilename = KTUtil::arrayGet($_REQUEST, 'forcefilename');	
 
         // make sure the user actually selected a file first
         if (strlen($_FILES['file']['name']) == 0) {
@@ -240,23 +243,15 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $default->log->info("checkInDocumentBL.php uploaded filename=" . $sNewFilename . "; current filename=" . $sCurrentFilename);
 
 	
-	/* 
-         * now allowing this - document's filename is set in 'checkin'
-         */
-        if ($this->oDocument->getFileName() != $_FILES['file']['name']) {
-            $this->errorRedirectToMain(_kt("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
-        }
-	/**/
-
-	
-
 	$aOptions = array();
 
-	/*
-	if($sNewFilename != $sCurrentFilename) {
-	    $aOptions['newfilename'] = $sNewFilename;
+        if ($this->oDocument->getFileName() != $_FILES['file']['name']) {
+	    if($bForceFilename) {
+		$this->errorRedirectToMain(_kt("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
+	    } else {	    
+		$aOptions['newfilename'] = $sNewFilename;
+	    }
 	}
-	*/
 	    
 
         $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
@@ -541,10 +536,18 @@ class KTDocumentMoveAction extends KTDocumentAction {
     function do_move() {
         $this->oPage->setBreadcrumbDetails(_kt("move"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move_final');
+
+	if($this->oDocument->getFolderId() === $this->oFolder->getId()) {
+	    $this->errorRedirectTo('main', _kt("The document was already in this folder"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+	    exit(0);
+	}
+	
+
         $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
+
         $move_fields = array();
         $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
@@ -575,6 +578,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $oOriginalFolder = Folder::get($this->oDocument->getFolderId());
         $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
         $iDocumentPermissionObjectId = $this->oDocument->getPermissionObjectId();
+
 
         if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
             $this->oDocument->setPermissionObjectId($this->oFolder->getPermissionObjectId());

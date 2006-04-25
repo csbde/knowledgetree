@@ -211,10 +211,8 @@ class User extends KTEntity {
     }
 
     /**
-     * Static function
-     * Return the useID for the specified user
+     * Return the useID for the user
      *
-     * @param int the id the user to lookup the unit for
      * @return int the unitID, false otherwise and $_SESSION["errorMessage"] set
      */
     function getUnitId() {

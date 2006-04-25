@@ -756,7 +756,18 @@ class SubscriptionContent {
 			} else {
 			    $info['actor'] = $oTempUser;
 			    $info['has_actor'] = true;
-			    $info['actor_name'] = $oTempUser->getName();
+
+			    $sName = $oTempUser->getName();
+			    $iUnitId = $oTempUser->getUnitId();
+
+			    if($iUnitId !== false) {
+				$oUnit = Unit::get($iUnitId);
+				if(!PEAR::isError($oUnit)) {
+				    $sName .= sprintf(" (%s)", $oUnit->getName());
+				}
+			    }
+			    
+			    $info['actor_name'] = $sName;
 			}
 		}
 		

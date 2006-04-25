@@ -689,17 +689,33 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         global $default;
         // extract.
 
-        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
-        $oField =& DocumentField::get($_REQUEST['field_id']);
+	$iFieldsetId = KTUtil::arrayGet($_REQUEST, 'fFieldsetId', false);
+	$iFieldId = KTUtil::arrayGet($_REQUEST, 'field_id', false);
+
+        $oFieldset =& KTFieldset::get($iFieldsetId);
+	if(PEAR::isError($oFieldset)) {
+	    $this->errorRedirectTo('main', _kt('Unable to find fieldset'), sprintf('fFieldId=%d&fFieldsetId=%d', $iFieldsetId, $iFieldId));
+	    exit(0);
+	}
+
+        $oField =& DocumentField::get($iFieldId);
+	if(PEAR::isError($oField)) {
+	    $this->errorRedirectTo('main', _kt('Unable to find field'), sprintf('fFieldId=%d&fFieldsetId=%d', $iFieldsetId, $iFieldId));
+	    exit(0);
+	}
+
+
+
+	
 
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'query' => 'action=edit&fFieldsetId=' . $iFieldsetId,
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=editField&fFieldsetId=' . $_REQUEST['fFieldsetId'] . '&fFieldId=' . $oField->getId(),
+            'query' => 'action=editField&fFieldsetId=' . $iFieldsetId . '&fFieldId=' . $oField->getId(),
             'name' => $oField->getName()
         );
         $this->oPage->setBreadcrumbDetails(_kt('edit lookup tree'));
@@ -728,8 +744,11 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $msg = _kt('Changes saved.');
             if ($subaction === "addCategory") {
                 $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
-                if (empty($new_category)) { return $this->errorRedirectTo("editTree", _kt("Must enter a name for the new category."), array("field_id" => $field_id)); }
-                else { $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);}
+                if (empty($new_category)) { 
+		    return $this->errorRedirectTo("editTree", _kt("Must enter a name for the new category."), array("field_id" => $field_id, "fFieldsetId" => $iFieldsetId)); 
+		} else { 
+		    $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);
+		}
                 $msg = _kt('Category added'). ': ' . $new_category;
             }
             if ($subaction === "deleteCategory") {
@@ -751,10 +770,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 $msg = _kt('Keyword moved to base of tree.');
             }
             // now redirect
-            $query = 'field_id=' . $field_id;
+            $query = sprintf('field_id=%d&fFieldsetId=%d', $field_id, $iFieldsetId);
             return $this->successRedirectTo($target, $msg, $query);
         }
-
         if ($fieldTree->root === null) {
             return $this->errorRedirectToMain(_kt("Error building tree. Is this a valid tree-lookup field?"));
         }
@@ -835,12 +853,17 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     function _evilTreeRecursion($subnode, $treeToRender)
     {
+	// deliver us from evil....
+	$iFieldId = $treeToRender->field_id;
+	$oField = DocumentField::get($iFieldId);
+	$iFieldsetId = $oField->getParentFieldsetId();
+
         $treeStr = "<ul>";
         foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
         {
             if ($subnode_id !== "leaves") {
                 $treeStr .= '<li class="treenode active"><a class="pathnode inactive"  onclick="toggleElementClass(\'active\', this.parentNode); toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
-                $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subnode_val);
+                $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, false, $subnode_val);
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender);
                 $treeStr .= '</li>';
             }
@@ -849,7 +872,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 foreach ($subnode_val as $leaf)
                 {
                     $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
-                    $treeStr .= $this->_evilActionHelper($treeToRender->field_id, true, $leaf);
+                    $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, true, $leaf);
                     $treeStr .=  '</li>';            }
                 }
         }
@@ -862,15 +885,23 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     // Come up with a better way to do this (? NBM)
     function _evilTreeRenderer($treeToRender) {
         //global $default;
+
         $treeStr = "<!-- this is rendered with an unholy hack. sorry. -->";
         $stack = array();
         $exitstack = array();
 
+	// deliver us from evil....
+	$iFieldId = $treeToRender->field_id;
+	$oField = DocumentField::get($iFieldId);
+	$iFieldsetId = $oField->getParentFieldsetId();
+	$sBaseQS = sprintf('field_id=%d&fFieldsetId=%d&', $iFieldId, $iFieldsetId);
+
         // since the root is virtual, we need to fake it here.
         // the inner section is generised.
         $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">Root</a>';
-        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$treeToRender->field_id.'&current_node=0') . '">edit</a>)';
+        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=0') . '">edit</a>)';
         $treeStr .= '<ul>';
+
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
         {
@@ -879,7 +910,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             if ($node_id !== "leaves") {
                 // $default->log->debug("EVILRENDER: " . print_r($subtree_nodes, true));
                 $treeStr .= '<li class="treenode active"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName() . '</a>';
-                $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subtree_nodes);
+                $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, false, $subtree_nodes);
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender);
                 $treeStr .= '</li>';
             }
@@ -888,7 +919,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 foreach ($subtree_nodes as $leaf)
                 {
                     $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
-                    $treeStr .= $this->_evilActionHelper($treeToRender->field_id, true, $leaf);
+                    $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, true, $leaf);
                     $treeStr .=  '</li>';
                 }
             }
@@ -899,16 +930,20 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         return $treeStr;
     }
 
-    // don't hate me.
-    function _evilActionHelper($iFieldId, $bIsKeyword, $current_node) {
+    // BS: don't hate me.
+    // BD: sorry. I hate you.
+    
+    function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node) {
+	$sBaseQS = sprintf('fFieldsetId=%d&field_id=%d&', $iFieldsetId, $iFieldId);
+
         $actionStr = " (";
         if ($bIsKeyword === true) {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$iFieldId.'&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">unlink</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">unlink</a>';
         }
         else
         {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id=' . $iFieldId . '&current_node=' . $current_node) .'">attach keywords</a> ';
-           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf('action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory') . '">delete</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=' . $current_node) .'">attach keywords</a> ';
+           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node='.$current_node.'&subaction=deleteCategory') . '">delete</a>';
         }
         $actionStr .= ")";
         return $actionStr;
@@ -934,7 +969,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
-			"behaviours" => $aBehaviours,
+	    "behaviours" => $aBehaviours,
             "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
         return $oTemplate->render($aTemplateData);
