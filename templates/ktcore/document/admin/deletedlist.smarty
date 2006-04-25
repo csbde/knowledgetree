@@ -23,7 +23,9 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
     <tr>
       <th style="width:2em"><input type="checkbox" onclick="toggleSelectFor(this, 'selected_docs')" title="toggle all"/></th>
       <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Document Path{/i18n}</th>
       <th>{i18n}Last Modification{/i18n}</th>
+      <th>{i18n}Deletion Comment{/i18n}</th>
     </tr>
   </thead>  
   <tbody>
@@ -31,7 +33,9 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
     <tr>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()}</td>
+      <td>{getCrumbStringForDocument document=$oDoc}</td>
       <td>{$oDoc->getLastModifiedDate()}</td>
+      <td>{$oDoc->getLastDeletionComment()}</td>
     </tr>
     {/foreach}
   </tbody>

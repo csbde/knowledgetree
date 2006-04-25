@@ -16,6 +16,7 @@ be allocated to roles and groups.{/i18n}</p></div>
 { else }
 <p>{i18n}This folder defines its own permissions.{/i18n} 
 <a class="ktActionLink ktDelete"
+   kt:deleteMessage="Are you sure you wish to reinstate inherited permissions?"	
    href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
 { /if }
 </span>

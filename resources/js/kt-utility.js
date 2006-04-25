@@ -2,6 +2,11 @@
  * general utility functions for KT
  */
 
+var clientHas = { 
+    'Event' : window.Event ? true : false,
+    'addEventListener' : window.addEventListener ? true : false
+}
+
 var message;
 
 function addEvent(obj, event, func, capture) {
@@ -9,8 +14,27 @@ function addEvent(obj, event, func, capture) {
     else { obj.addEventListener(event, func, capture); }
 }
 
-function confirmDelete(e) { 
-    var v =  confirm(message); 
+function getTarget() {	
+    if(clientHas['Event']) 
+	return getTarget.caller.arguments[0].target;
+    else 
+	return event.srcElement;
+}
+
+    
+
+function confirmDelete(e) {
+    var 
+    target = getTarget(),
+    msg = target.getAttribute('kt:deleteMessage');
+
+
+    if(!isUndefinedOrNull(msg)) {
+	var v = confirm(msg);
+    } else {
+	var v = confirm(message);
+    }
+ 
     if (v == false) {
         if (e.stopPropagation) {
             e.stopPropagation();
@@ -23,10 +47,6 @@ function confirmDelete(e) {
 } 
  
 function initDeleteProtection(m) {
-    var fn = confirmDelete;
-    message = m;
-    var elements = getElementsByTagAndClassName('A','ktDelete');
-
     function setClickFunction(fn, node) {
         // addToCallStack(node,'onClick',fn);
         if (node.tagName == 'SPAN') {
@@ -35,10 +55,13 @@ function initDeleteProtection(m) {
             else { return null; }
         }
 
-        addEvent(node, 'click', fn, true);
-        
+        addEvent(node, 'click', fn, true);        
     }
     
+    var fn = confirmDelete;
+    message = m;
+
+    var elements = getElementsByTagAndClassName('A','ktDelete');
     forEach(elements, partial(setClickFunction, fn));
     
     elements = getElementsByTagAndClassName('A','ktLinkDelete');

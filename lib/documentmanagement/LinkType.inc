@@ -27,10 +27,16 @@
 require_once(KT_DIR . '/lib/ktentity.inc');
 
 class LinkType extends KTEntity {
-	var $sName;
-	var $sDescription;
+    var $sName;
+    var $sDescription;
 	
-	function LinkType($sName, $sDescription) {
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'sName' => 'name',
+        'sDescription' => 'description',
+    );
+
+	function LinkType($sName = null, $sDescription = null) {
 		$this->iId = -1;
 		$this->sName = $sName;
 		$this->sDescription = $sDescription;

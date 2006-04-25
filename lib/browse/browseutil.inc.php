@@ -160,6 +160,16 @@ class KTBrowseUtil {
     // {{{ breadcrumbsForFolder
     function breadcrumbsForFolder($oFolder, $aOptions = null) {
         $oFolder =& KTUtil::getObject('Folder', $oFolder);
+        $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
+	
+	if(PEAR::isError($oFolder)) {
+	    $url = KTUtil::addQueryStringSelf("fFolderId=1");
+	    if(!empty($sAction)) {
+		$url = generateControllerUrl($sAction, "fFolderId=1");
+	    }
+	    return array( array( 'url'=> $url, 'name' => '&hellip;'));
+	}
+
 
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
         $bFolderBrowseBase = KTUtil::arrayGet($aOptions, 'folderbase', "");
@@ -170,7 +180,6 @@ class KTBrowseUtil {
         $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
 
         $parents = count($folder_path_ids);
-        $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
         // we have made the "default" folder non-root, so we need to be able
         // to reach "Root" (Folder::get(1)).
@@ -215,8 +224,11 @@ class KTBrowseUtil {
         $aOptions = KTUtil::meldOptions($aOptions, array(
             "final" => false,
         ));
+
         $iFolderId = $oDocument->getFolderId();
         $aBreadcrumbs = KTBrowseUtil::breadcrumbsForFolder($iFolderId, $aOptions);
+
+
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
         $url = KTUtil::addQueryStringSelf("fDocumentId=" . $oDocument->getId());
         if (!empty($sAction)) {

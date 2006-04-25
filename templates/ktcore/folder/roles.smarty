@@ -40,7 +40,9 @@ role allocations may take a some time, depending on the number of folders below 
         {else}
 <!--        <td><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Users{/i18n}">{i18n}Edit Users{/i18n}</a></td> -->
         <td><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Groups{/i18n}">{i18n}Edit Groups{/i18n}</a></td>
-        <td><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete" title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
+        <td><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete" 
+	       kt:deleteMessage="Are you sure you wish to remove this role allocation?"	 
+	       title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
         {/if}
     </tr>
 {/foreach}
