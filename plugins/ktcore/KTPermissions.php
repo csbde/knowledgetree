@@ -663,11 +663,14 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 }
 
 class KTDocumentRolesAction extends KTDocumentAction {
-    var $sDisplayName = 'View Roles';
     var $sName = 'ktcore.actions.document.roles';
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = true;
+
+    function getDisplayName() {
+        return _kt('View Roles');
+    }
 
     function do_main() {
         $this->oPage->setTitle(_kt("View Roles"));
