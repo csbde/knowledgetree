@@ -77,7 +77,7 @@ if (substr($default->documentRoot, 0, strlen(KT_DIR)) == KT_DIR) {
     KnowledgeTree.</font></strong></p>';
 }
 
-$linkcheck = generateLink('/Documents/', '');
+$linkcheck = generateLink('/var/Documents/', '');
 $handle = @fopen($linkcheck, 'rb');
 if ($handle !== false) {
     print '<p><strong><font color="red">Your document directory seems to
