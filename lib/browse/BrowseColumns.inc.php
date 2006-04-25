@@ -192,7 +192,7 @@ class DateColumn extends BrowseColumn {
            $dColumnDate = strtotime($aDataRow["document"]->$fn());
            
            // now reformat this into something "pretty"
-           $outStr = date("d M, Y  H\\hi", $dColumnDate);
+           $outStr = date("Y-m-d H:i", $dColumnDate);
         }
         return $outStr;
     }

@@ -122,7 +122,7 @@ class KTFieldsetDisplay {
 
     function _dateHelper($dDate) {
         $dColumnDate = strtotime($dDate);
-        return date("d M, Y  H\\hi", $dColumnDate);
+        return date("Y-m-d H:i", $dColumnDate);
     }
     
     
