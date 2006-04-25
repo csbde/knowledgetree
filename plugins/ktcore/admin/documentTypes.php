@@ -45,7 +45,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
         
-        $this->oPage->setBreadcrumbDetails('view types');
+        $this->oPage->setBreadcrumbDetails(_kt('view types'));
     
         $addFields = array();
         $addFields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
