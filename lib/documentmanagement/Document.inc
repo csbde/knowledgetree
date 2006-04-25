@@ -567,13 +567,36 @@ class Document {
     }
 
 
-    function getBreadcrumbs() {
-	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($this);
-	if(PEAR::isError($aBreadcrumbs)) {
+    function getLastTransactionComment($sTransactionNamespace) {
+        $sDocumentTransactionTable = KTUtil::getTableName('document_transactions');
+
+        $sQuery = sprintf("SELECT comment FROM %s
+                           WHERE transaction_namespace = ? AND document_id = ?
+                           ORDER BY datetime DESC", 
+			  $sDocumentTransactionTable, $sDocumentMetadataTable);
+
+	$aParams = array($sTransactionNamespace, $this->getId());
+	$sComment = DBUtil::getOneResultKey(array($sQuery, $aParams), 'comment');
+
+	if(PEAR::isError($sComment)) {
 	    return false;
 	}
-	return $aBreadcrumbs;
+
+	return $sComment;
     }
+
+    function getLastDeletionComment() {
+	$sComment = $this->getLastTransactionComment('ktcore.transactions.delete');
+	if(!$sComment) {
+	    return $sComment;
+	}
+
+	$aComment = explode(':', $sComment);
+	return trim($aComment[1]);
+    }
+    
+
+
 
 	
 }

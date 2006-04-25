@@ -87,6 +87,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_modifier('addQSSelf', array('KTSmartyTemplate', 'addQueryStringSelf'));
         $smarty->register_block('addQS', array('KTSmartyTemplate', 'addQueryStringBlock'), false);
         $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
+        $smarty->register_function('getCrumbStringForDocument', array('KTSmartyTemplate', 'getCrumbStringForDocument'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -277,6 +278,24 @@ class KTSmartyTemplate extends KTTemplate {
     function getUrlForFolder($params, &$smarty) {
         return KTBrowseUtil::getUrlForFolder($params['folder']);
     }
+
+    function getCrumbStringForDocument($params, &$smarty) {
+	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
+	if(PEAR::isError($aBreadcrumbs)) {
+	    return _kt('No breadcrumbs available');
+	}
+
+	$aCrumbs = array();
+	foreach($aBreadcrumbs as $aBreadcrumb) {
+	    $aCrumbs[] = $aBreadcrumb['name'];
+	}
+
+	return implode('/', $aCrumbs);
+    }
+
+	    
+	
+	
 }
 
 ?>

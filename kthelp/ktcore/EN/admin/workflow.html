@@ -25,16 +25,16 @@ involved in a document workflow. </p>
 <h3><a name="assign"></a>Assigning workflows</h3>
 <p >A document in the repository can have 
 only one workflow attached to it at any given time. By default, workflows are 
-not automatically attached to new documents when theyre added to the 
+not automatically attached to new documents when they're added to the 
 repository. However, the administrator may configure the system to assign 
 workflows when new documents are created, or to assign workflows only to 
 specific documents. Users are also allowed to select and assign workflows to the 
-documents they are working with  provided they have the permissions to do so. 
+documents they are working with &mdash; provided they have the permissions to do so. 
 </p>
 <h3><a name="states"></a>States and Transitions</h3>
 <p >Workflows consist of states and 
-transitions. A state may be defined as a stage in a documents lifecycle, such 
-as billed or draft. Each workflow has a starting state, which is the initial 
+transitions. A state may be defined as a stage in a document's lifecycle, such 
+as 'billed' or 'draft'. Each workflow has a starting state, which is the initial 
 state for any document in a workflow.</p>
 <p >Transitions, which may be defined as the 
 way in which documents move between states, are an essential part of the 
@@ -45,15 +45,15 @@ the workflow, such as send to client or review, which effectively changes the
 state of the document. Transitions represent the actions that may be performed 
 on a document. For example, an invoice starts in the generated state; then it is 
 sent to client, before it is marked as billed.  Transitions are said to be 
-guarded  not all users are allowed to access them. In a publication workflow 
+guarded &mdash; not all users are allowed to access them. In a publication workflow 
 for example, only users with the role reviewer would be allowed to review a 
 document, and to move it from draft to published.</p>
 <h3><a name="effects"></a>Workflow effects (Actions)</h3>
 <p >Workflows are more than just states and 
 transitions. Users and administrators use workflows to restrict, deny or grant 
-access to documents in the repository, based on the documents position in the 
+access to documents in the repository, based on the document's position in the 
 workflow. For example, a state can restrict both actions and permissions on a 
-document  only reviewers may be allowed to discuss draft documents for 
+document &mdash; only reviewers may be allowed to discuss draft documents for 
 instance, while clients will be disallowed from viewing unbilled invoices, and 
 published documents will be prevented from being checked in or checked out of 
 the repository. Additionally, users in specified Roles or Groups can be notified 
