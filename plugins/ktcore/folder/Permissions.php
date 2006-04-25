@@ -91,6 +91,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
         asort($roles);
 
         $bEdit = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder);
+        if (KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $bEdit = true;
+        }
 
         $sInherited = '';
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
@@ -182,7 +185,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
-        $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
 
         $aPermissions = KTPermission::getList();
         $aMapPermissionGroup = array();
@@ -239,6 +244,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_update() {
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
         require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aFoo = $_REQUEST['foo'];
@@ -275,6 +284,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_copyPermissions() {
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
             'comment' => "Override permissions from parent",
@@ -294,6 +307,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_inheritPermissions() {
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
             'comment' => "Inherit permissions from parent",
@@ -313,6 +330,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_newDynamicPermission() {
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
         $aOptions = array(
             'redirect_to' => array('edit', 'fFolderId=' .  $this->oFolder->getId()),
         );
@@ -348,6 +369,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_removeDynamicCondition() {
+        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+        }
         $aOptions = array(
             'redirect_to' => array('edit', 'fFolderId=' .  $this->oFolder->getId()),
         );
