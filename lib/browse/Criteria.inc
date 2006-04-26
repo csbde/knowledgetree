@@ -632,7 +632,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
 
     function searchSQL ($aRequest) {
         $p = array();
-        $p[0] = "D.workflow_state_id = ?";
+        $p[0] = "DM.workflow_state_id = ?";
         $p[1] = $aRequest[$this->getWidgetBase()];
         
         // handle the boolean "not" stuff.
