@@ -392,7 +392,7 @@ class KTInit {
             $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $this->guessRootUrl());
             $oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
             $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
-            $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskPathStorageManager');
+            $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskHashedStorageManager');
             $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
             $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
             $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
