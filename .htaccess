@@ -34,6 +34,21 @@ php_flag register_globals OFF
 php_flag output_buffering OFF
 php_flag session.auto_start OFF
 </IfModule>
+
+<IfModule sapi_apache2.c>
+php_value default_mimetype text/html
+php_value auto_prepend_file none
+php_value auto_append_file none
+php_flag display_startup_errors ON
+php_flag display_errors ON
+php_flag file_uploads ON
+php_flag magic_quotes_gpc OFF
+php_flag magic_quotes_runtime OFF
+php_flag register_globals OFF
+php_flag output_buffering OFF
+php_flag session.auto_start OFF
+</IfModule>
+
 <IfModule mod_env.c>
 SetEnv kt_htaccess_worked yes
 </IfModule>
@@ -51,12 +66,20 @@ Options +SymLinksIfOwnerMatch
 # malicious users to use up resources.
 #
 <IfModule mod_php4.c>
-php_value upload_max_filesize 32M
-php_value post_max_size 32M
-php_value memory_limit 32M
+php_value upload_max_filesize -1
+php_value post_max_size 2000M
+php_value memory_limit -1
 php_value max_input_time -1
-php_value max_execution_time 90
+php_value max_execution_time 0
 </IfModule>
+<IfModule sapi_apache2.c>
+php_value upload_max_filesize -1
+php_value post_max_size 2000M
+php_value memory_limit -1
+php_value max_input_time -1
+php_value max_execution_time 0
+</IfModule>
+
 
 #<IfModule mod_rewrite.c>
 #RewriteEngine On
