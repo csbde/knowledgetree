@@ -88,9 +88,11 @@ class KTBaseIndexerTrigger {
             $tempstub = $this->command;
         }
         $myfilename = tempnam("/tmp", 'kt.' . $tempstub);
-        $intermediate = tempnam("/tmp", 'kt.' . $tempstub);
-        if (OS_WINDOWS && !@copy($sFile, $intermediate)) {
-            return ;
+        if (OS_WINDOWS) {
+            $intermediate = tempnam("/tmp", 'kt.' . $tempstub);
+            if (!@copy($sFile, $intermediate)) {
+                return ;
+            }
         } else {
             $intermediate = $sFile;
         }
