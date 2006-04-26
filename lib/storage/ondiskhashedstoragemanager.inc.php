@@ -45,6 +45,9 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         //copy the file accross
         $start_time = KTUtil::getBenchmarkTime();
         $file_size = $oDocument->getFileSize();
+        if (OS_WINDOWS) {
+            $sDocumentFileSystemPath = str_replace('\\','/',$sDocumentFileSystemPath);
+        }        
         if ($this->writeToFile($sTmpFilePath, $sDocumentFileSystemPath)) {
             $end_time = KTUtil::getBenchmarkTime();
             global $default;
@@ -64,6 +67,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 
     function writeToFile($sTmpFilePath, $sDocumentFileSystemPath) {
         // Make it easy to write compressed/encrypted storage
+
         return copy($sTmpFilePath, $sDocumentFileSystemPath);
     }
 
