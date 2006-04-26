@@ -120,7 +120,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("checkout");
+        $this->oPage->setBreadcrumbDetails(_kt("checkout"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout');
         $checkout_fields = array();
         $checkout_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
