@@ -42,7 +42,11 @@ unset($microtime_simple);
 
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
-    define('KT_DIR', realpath(dirname(__FILE__) . '/..'));
+    $rootLoc = realpath(dirname(__FILE__) . '/..');
+    if (OS_WINDOWS) {
+            $rootLoc = str_replace('\\','/',$rootLoc);    
+    }
+    define('KT_DIR', $rootLoc);
 }
 
 if (!defined('KT_LIB_DIR')) {
@@ -380,7 +384,7 @@ class KTInit {
             }
         } else {
             $oKTConfig =& KTConfig::getSingleton();
-            
+
             $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
             $oKTConfig->setdefaultns("KnowledgeTree", "serverName", KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
             $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
