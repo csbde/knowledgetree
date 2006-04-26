@@ -144,7 +144,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     }
 
     function do_resolved_users() {
-        $this->oPage->setBreadcrumbDetails(_("Permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt("Permissions"));
         $oTemplate = $this->oValidator->validateTemplate("ktcore/document/resolved_permissions_user");
 
         $oPL = KTPermissionLookup::get($this->oDocument->getPermissionLookupID());
