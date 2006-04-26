@@ -77,7 +77,11 @@ foreach ($aResults->entries() as $oEntry) {
     // print $oEntry->dn() . "\n";
     $sValue = $oEntry->get_value($sAttribute, 'single');
     // print $sValue . "\n";
-    $aValues[] = $sValue;
+    if (!empty($sValue)) {
+        $aValues[] = $sValue;
+    }
 }
+
+$aValues = array_unique($aValues);
 
 KTMetadataUtil::synchroniseMetadata($oField, $aValues);
