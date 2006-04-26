@@ -401,7 +401,7 @@ class Document {
 
         $sQuery = sprintf("SELECT D.id AS document_id FROM %s AS D
                            LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
-                           WHERE workflow_state_id = ?", $sDocumentTable, $sDocumentMetadataTable);
+                           WHERE DM.workflow_state_id = ?", $sDocumentTable, $sDocumentMetadataTable);
 
         $aParams = array($iStateId);
         $aIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'document_id');
