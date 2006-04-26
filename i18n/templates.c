@@ -79,6 +79,39 @@ gettext("Orphaned Folders");
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Since KnowledgeTree only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below.");
 
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("Indexing Support");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("While working with the Indexing system in KnowledgeTree is a relatively simple process, occassionally something doesn't work as expected.  The Indexing Support plugin provides additional information about the actual results of indexing operations to system administrators, so they can resolve any issues which arise.");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("The plugin adds a number of document-actions for administrators, which provide additional insight into the indexes used for that document.  However, there are occasions where you need to re-index all the documents in a section of the site.  In those situations, you can use the collection below to select an area of the site.");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("Note that this operation may fail to complete if it takes longer than the <strong>MAX_EXECUTION_TIME</strong> PHP variable.  It is recommended that you only re-index a portion of the site at a given time.");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("Reindex documents in a folder");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("Use the folder collection and path below to browse to the folder you wish to move the documents into.");
+
+/* ./plugins/indexersupport/templates/indexersupport/indexing_overview.smarty */
+gettext("Re-index this folder");
+
+/* ./plugins/indexersupport/templates/indexersupport/document_overview.smarty */
+gettext("Document Indexes");
+
+/* ./plugins/indexersupport/templates/indexersupport/document_overview.smarty */
+gettext("This tool allows you to view the indexing details for this document.");
+
+/* ./plugins/indexersupport/templates/indexersupport/document_overview.smarty */
+gettext("Re-index");
+
+/* ./plugins/indexersupport/templates/indexersupport/document_overview.smarty */
+gettext("Re-index");
+
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
 gettext("User Reporting");
 
@@ -838,90 +871,6 @@ gettext("Delete");
 /* ./templates/ktcore/search/administration/condition_delete_confirmation.smarty */
 gettext("Cancel");
 
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Folder permissions");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Override Permissions");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("This folder defines its own permissions.");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Inherit permissions");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Role or Group");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Role:");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Denied");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Group:");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Denied");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Update Permission Assignments");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Cancel");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Edit Permission Assignments");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Edit Permission Assignments");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Dynamic permissions");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Remove");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Group");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Condition");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Delete");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Denied");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Add a new dynamic permission");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Group");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Condition");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Add");
-
 /* ./templates/ktcore/folder/bulkImport.smarty */
 gettext("Import from Server Location");
 
@@ -1101,6 +1050,210 @@ gettext("Delete");
 
 /* ./templates/ktcore/folder/mass_delete.smarty */
 gettext("Cancel");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Permissions");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("This page shows the permissions that apply to this specific folder.  Only the roles or groups which have permissions assigned are shown.");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("No roles, groups, or users have been defined or have permissions.");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Role or Group");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Role:");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Group:");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("User:");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/resolved_permissions.smarty */
+gettext("Update Permission Assignments");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Resolved permissions per user");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("This page shows the permissions that individual users have on this folder.  Only the users which have permissions assigned are shown.");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Users may have permissions on this folder due to membership of a group, or fulfilling a specific role on this folder.");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("No users have permissions on this item.");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("User");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("User:");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Permissions");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("This page shows the permissions that apply to this specific folder.  Only the roles or groups which have permissions assigned are shown.");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Manage security");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Edit permissions");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("View resolved permissions for user");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("This folder defines its own permissions.");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("No roles, groups, or users have been defined or have permissions.");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Role or Group");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Role:");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Group:");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("User:");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Folder permissions");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Override Permissions");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("This folder defines its own permissions.");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Inherit permissions");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Role or Group");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Role:");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Group:");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Update Permission Assignments");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Cancel");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Edit Permission Assignments");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Edit Permission Assignments");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Dynamic permissions");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Remove");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Group");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Condition");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Add a new dynamic permission");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Group");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Condition");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("Add");
 
 /* ./templates/ktcore/principals/useradmin.smarty */
 gettext("User Management");
@@ -1652,6 +1805,12 @@ gettext("Document permissions");
 gettext("This page shows the permissions that apply to this specific document.  Where the folder view shows you information by role and group, this page shows the actual groups (and, if they are assigned directly to a role, the users) who have the different permissions. As a result, groups, users and roles with <strong>no</strong> permissions are not shown.");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
+gettext("Manage security");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
+gettext("View resolved permissions for user");
+
+/* ./templates/ktcore/document/document_permissions.smarty */
 gettext("No roles or groups have been defined or have permissions.");
 
 /* ./templates/ktcore/document/document_permissions.smarty */
@@ -1684,56 +1843,26 @@ gettext("Allowed");
 /* ./templates/ktcore/document/document_permissions.smarty */
 gettext("Denied");
 
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Update Permission Assignments");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Dynamic permissions");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Remove");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Group");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Condition");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Delete");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Denied");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Add a new dynamic permission");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Group");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Condition");
-
-/* ./templates/ktcore/document/document_permissions.smarty */
-gettext("Add");
+/* ./templates/ktcore/document/cleanup.smarty */
+gettext("Document Storage Verification");
 
 /* ./templates/ktcore/document/cleanup.smarty */
-gettext("Would remove these folders (and all their contents)");
+gettext("When restoring from backups or checking that everything is functioning correctly with your DMS, it is important to know that all files that've been added to the system are present, and that no extraneous files have been found in the repository.  This page shows you any such issues which you should investigate.");
 
 /* ./templates/ktcore/document/cleanup.smarty */
-gettext("Would remove these files");
+gettext("All paths are relative to your Documents directory.");
 
 /* ./templates/ktcore/document/cleanup.smarty */
-gettext("These folders are not on the filesystem");
+gettext("Warning:  Database is inconsistent with the contents of the repository.");
 
 /* ./templates/ktcore/document/cleanup.smarty */
-gettext("These documents are not on the filesystem");
+gettext("These documents have versions that are not present on the filesystem.  Consider restoring them from backups.");
 
 /* ./templates/ktcore/document/cleanup.smarty */
-gettext("These documents have versions not on the filesystem");
+gettext("The following files are present in the repository, but do not exist in the database.");
+
+/* ./templates/ktcore/document/cleanup.smarty */
+gettext("No problems found - database is consistent with the contents of the repository.");
 
 /* ./templates/ktcore/document/add.smarty */
 gettext("Add a document");
@@ -1955,7 +2084,7 @@ gettext("Archived Documents");
 gettext("In order to keep the documents which are visible useful to end users it is possible to <strong>archive</strong> old documents.  Users who want to see these old documents need to request their restoration. These requests will typically be done within the system and will generate a notification to you.");
 
 /* ./templates/ktcore/document/admin/archivebrowse.smarty */
-gettext("Use the folder collection and path below to browse to the folder you wish to move the documents into.");
+gettext("Use the folder collection and path below to browse to the folder containing the documents you wish to restore.");
 
 /* ./templates/ktcore/document/admin/archivebrowse.smarty */
 gettext("Restore");
@@ -1992,6 +2121,30 @@ gettext("comparing against this version");
 
 /* ./templates/ktcore/document/comparison_version_select.smarty */
 gettext("compare");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("Resolved permissions per user");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("This page shows the permissions that individual users have on this document.  Only the users which have permissions assigned are shown.");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("Users may have permissions on this document due to membership of a group, or fulfilling a specific role on this document.");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("No users have permissions on this item.");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("User");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("User:");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/document/resolved_permissions_user.smarty */
+gettext("Denied");
 
 /* ./templates/ktcore/documenttypes/list.smarty */
 gettext("Document Types");
@@ -2369,9 +2522,6 @@ gettext("Create");
 gettext("Edit Field");
 
 /* ./templates/ktcore/metadata/editField.smarty */
-gettext("Lookup fields may have be composed of an arbitrary number of values. These values may be added to the Lookup field by entering them in below. If these values are being generated by, or synchronised to, an external datasource, toggling the <strong>Sticky</strong> attribute of a value will ensure that it will not be modified by changes in the external datasource list.");
-
-/* ./templates/ktcore/metadata/editField.smarty */
 gettext("Field properties");
 
 /* ./templates/ktcore/metadata/editField.smarty */
@@ -2385,6 +2535,9 @@ gettext("Type");
 
 /* ./templates/ktcore/metadata/editField.smarty */
 gettext("Change");
+
+/* ./templates/ktcore/metadata/editField.smarty */
+gettext("Lookup fields may be composed of an arbitrary number of values. These values may be added to the Lookup field by entering them in below. If these values are being generated by, or synchronised to, an external datasource, toggling the <strong>Sticky</strong> attribute of a value will ensure that it will not be modified by changes in the external datasource list.");
 
 /* ./templates/ktcore/metadata/editField.smarty */
 gettext("Lookup Values");
@@ -3452,6 +3605,9 @@ gettext("Generic Information");
 gettext("The information in this section is stored by KnowledgeTree&trade; for every         document.");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
+gettext("Document Title");
+
+/* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("Document Filename");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
@@ -3505,9 +3661,6 @@ gettext("The data for this conditional metadata fieldset was not completely prov
 /* ./templates/kt3/fieldsets/conditional_editable_values.smarty */
 gettext("no value");
 
-/* ./templates/kt3/notifications/subscriptions.ArchiveDocument.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.AddDocument.smarty */
 gettext("View Document");
 
@@ -3521,7 +3674,7 @@ gettext("Clear Alert");
 gettext("View New Folder");
 
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
-gettext("Document is no longer available");
+gettext("Folder is no longer available");
 
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
 gettext("Clear Alert");
@@ -3545,6 +3698,9 @@ gettext("View New Location");
 gettext("Location is no longer available");
 
 /* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
+gettext("Clear Alert");
+
+/* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.RemoveChildDocument.smarty */
