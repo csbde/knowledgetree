@@ -60,29 +60,35 @@ class File_Gettext_PO extends File_Gettext
         if (!$contents = @file($file)) {
             return parent::raiseError($php_errormsg . ' ' . $file);
         }
-        $contents = implode('', $contents);
-        
-        // match all msgid/msgstr entries
-        $matched = preg_match_all(
-            '/(msgid\s+("([^"]|\\\\")*?"\s*)+)\s+' .
-            '(msgstr\s+("([^"]|\\\\")*?"\s*)+)/',
-            $contents, $matches
-        );
-        unset($contents);
-        
-        if (!$matched) {
-            return parent::raiseError('No msgid/msgstr entries found');
+
+        $msgid = null;
+        $aMatches = array();
+
+        foreach ($contents as $line) {
+            if (preg_match('#^msgid "(.*)"$#', $line, $aMatches)) {
+                if ($msgid) {
+                    $this->strings[parent::prepare($msgid)] = parent::prepare($msgstr);
+                }
+                $msgid = $aMatches[1];
+                $msgstr = "";
+                $msgstr_started = false;
+            }
+            if (preg_match('#^msgstr "(.*)"$#', $line, $aMatches)) {
+                $msgstr = $aMatches[1];
+                $msgstr_started = true;
+            }
+            if (preg_match('#^"(.*)"$#', $line, $aMatches)) {
+                if ($msgstr_started) {
+                    $msgstr .= $aMatches[1];
+                } else {
+                    $msgid .= $aMatches[1];
+                }
+            }
         }
-        
-        // get all msgids and msgtrs
-        for ($i = 0; $i < $matched; $i++) {
-            $msgid = preg_replace(
-                '/\s*msgid\s*"(.*)"\s*/s', '\\1', $matches[1][$i]);
-            $msgstr= preg_replace(
-                '/\s*msgstr\s*"(.*)"\s*/s', '\\1', $matches[4][$i]);
+        if ($msgid) {
             $this->strings[parent::prepare($msgid)] = parent::prepare($msgstr);
         }
-        
+
         // check for meta info
         if (isset($this->strings[''])) {
             $this->meta = parent::meta2array($this->strings['']);
