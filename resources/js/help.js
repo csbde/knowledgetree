@@ -3,8 +3,10 @@ var curloc = null,
     back_key = null;
 
 function correctLink(attr, elm) {
-    elm[attr] = curloc + '?' + queryString({'kt_path_info' : path_info + elm.getAttribute(attr), 
-                                            'back_key' : back_key });
+    if(elm.className.search('externalLink') == -1) {	
+	elm[attr] = curloc + '?' + queryString({'kt_path_info' : path_info + elm.getAttribute(attr), 
+						'back_key' : back_key });
+    }
 }
 
 
