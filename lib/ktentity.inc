@@ -33,7 +33,7 @@ $_STOPCACHING = array();
 
 require_once(KT_LIB_DIR . '/cache/cache.inc.php');
 
-DEFINE("EVIL_CACHE_GRIND", true);
+DEFINE("EVIL_CACHE_GRIND", false);
 
 class KTEntity {
     var $_bUsePearError = false;
@@ -218,9 +218,15 @@ class KTEntity {
             $aFailures = array();
             $sEntClass = get_class($this);
             
-            foreach (array_keys($res) as $sKey => $sVal) {
+            foreach ($res as $sKey => $aVal) {
                 if ($mCached[$sKey] != $res[$sKey]) {
-                    $aFailures[] = $sKey;
+                    $id = $aVal['id'];
+                    foreach ($aVal as $sField => $sStored) {
+                        if ($mCached[$sKey][$sField] != $sStored) {
+                            $aFailures[] = sprintf("For %d field %s, stored value is %s, but cached value is %s", $id, $sField, $sStored, $mCached[$sKey][$sField]);
+                        }
+                    }
+                    // $aFailures[] = $sKey;
                 }
             }
             
