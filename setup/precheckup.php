@@ -371,7 +371,6 @@ PHP you are running, and which modules are available.</p>
 
 <table width="50%">
   <tbody>
-<?=writablePath('Log directory', 'var/log')?>
 <?php
 $username = running_user();
 if (is_null($username)) {
