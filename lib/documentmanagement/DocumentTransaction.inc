@@ -36,7 +36,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransactionType.inc.php')
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc'); 
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php'); 
  
-class DocumentTransaction {
+class DocumentTransaction extends KTEntity {
 	
 	/** primary key of document transaction */
 	var $iId = -1;
@@ -146,6 +146,7 @@ class DocumentTransaction {
                 return false;
             }
             $this->iId = $id;
+            $this->clearCachedGroups();
             KTDocumentUtil::updateTransactionText($this->iDocumentID);
             KTDocumentUtil::updateSearchableText($this->iDocumentID);
             return true;
@@ -162,12 +163,11 @@ class DocumentTransaction {
             $sql = $default->db;
             $result = $sql->query("DELETE FROM  " . $default->document_transactions_table . "  WHERE id = " . $this->iId);
             if ($result) {
+                $this->clearCachedGroups();
                 $this->iId = -1;
                 return true;
             }
             $_SESSION["errorMessage"] = $lang_err_database;
-            KTDocumentUtil::updateTransactionText($this->iDocumentID);
-            KTDocumentUtil::updateSearchableText($this->iDocumentID);
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_object_key;
