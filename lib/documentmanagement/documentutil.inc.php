@@ -297,6 +297,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::setComplete($oDocument, "metadata");
         KTDocumentUtil::updateSearchableText($oDocument);
+        DocumentFieldLink::clearAllCaches();
         return true;
     }
     // }}}
