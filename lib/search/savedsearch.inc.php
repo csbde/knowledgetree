@@ -143,7 +143,6 @@ class KTSavedSearch extends KTEntity {
             'is_condition' => false,
         ), array(
             'multi' => true,
-            'cache' => 'getSearches',
         ));
     }
 
@@ -152,7 +151,6 @@ class KTSavedSearch extends KTEntity {
             'is_condition' => true,
         ), array(
             'multi' => true,
-            'cache' => 'getCondition',
         ));
     }
 
@@ -163,7 +161,6 @@ class KTSavedSearch extends KTEntity {
         ), array(
             'multi' => true,
             'noneok' => true,
-            'cache' => 'getSystemSearches',
         ));
     }
 }
