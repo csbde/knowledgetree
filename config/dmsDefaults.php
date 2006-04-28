@@ -472,6 +472,8 @@ require_once(KT_LIB_DIR . '/util/legacy.inc');
 // Give everyone access to KTUtil utility functions
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
+require_once(KT_LIB_DIR . '/ktentity.inc');
+
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
 $KTInit->initConfig(); 
