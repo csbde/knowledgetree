@@ -778,6 +778,11 @@ class KTEntityUtil {
         return array("$sField < ?", array($aParam));
     }
 
+    function _getBy_between($sField, $aValue) {
+        $aParam = $aValue['value'];
+        return array("$sField BETWEEN ? AND ?", $aParam);
+    }
+
     function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
         $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
         if ($bMulti) {
@@ -797,6 +802,7 @@ class KTEntityUtil {
             if (!is_array($mThisValue)) {
                 $mThisValue = array('type' => 'equals', 'value' => $mThisValue);
             }
+            $sField = KTUtil::arrayGet($mThisValue, 'field', $sField);
 
             $sType = KTUtil::arrayGet($mThisValue, 'type');
             if (empty($sType)) {
