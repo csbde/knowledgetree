@@ -2030,7 +2030,13 @@ gettext("Documents which are deleted by users are hidden from view but still ava
 gettext("Document Name");
 
 /* ./templates/ktcore/document/admin/deletedlist.smarty */
+gettext("Document Path");
+
+/* ./templates/ktcore/document/admin/deletedlist.smarty */
 gettext("Last Modification");
+
+/* ./templates/ktcore/document/admin/deletedlist.smarty */
+gettext("Deletion Comment");
 
 /* ./templates/ktcore/document/admin/deletedlist.smarty */
 gettext("Expunge");
