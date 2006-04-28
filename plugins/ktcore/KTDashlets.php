@@ -247,8 +247,10 @@ class KTMailServerDashlet extends KTBaseDashlet {
     function render() {	
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/mailserver");
+        $admin = Permission::userIsSystemAdministrator($_SESSION['userID']);
         $aTemplateData = array(
             "context" => $this,
+            'admin' => $admin,
         );
         return $oTemplate->render($aTemplateData);
     }
