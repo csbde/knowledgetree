@@ -208,6 +208,9 @@ class KTFolderUtil {
         $oFolder->setName($sNewName);
         $res = $oFolder->update();
 
+        Document::clearAllCaches();
+        Folder::clearAllCaches();
+
         return $res;
     }
 
