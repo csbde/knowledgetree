@@ -471,8 +471,8 @@ class KTLDAPBaseAuthenticator extends Authenticator {
     var $oLdap;
 
     function KTLDAPBaseAuthenticator($oSource) {
-        $this->oSource =& $oSource;
-        $aConfig = unserialize($oSource->getConfig());
+        $this->oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
+        $aConfig = unserialize($this->oSource->getConfig());
         $this->sLdapServer = $aConfig['servername'];
         $this->sBaseDN = $aConfig['basedn'];
         $this->sSearchUser = $aConfig['searchuser'];
