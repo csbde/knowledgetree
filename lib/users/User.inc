@@ -26,6 +26,7 @@
  */
  
 require_once(KT_LIB_DIR . '/database/dbutil.inc'); 
+require_once(KT_LIB_DIR . '/ktentity.inc'); 
  
 class User extends KTEntity {
     /** user's login name */
