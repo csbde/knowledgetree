@@ -72,7 +72,6 @@ class Session {
         );
         require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
         $res = KTUserHistory::createFromArray($aParams);
-        $default->log->info("saving user history - " . print_r($res, true));
 
         $oUser->setLastLogin(getCurrentDateTime());
         $oUser->update();
@@ -106,7 +105,6 @@ class Session {
         );
         require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
         $res = KTUserHistory::createFromArray($aParams);
-        $default->log->info("saving user history - " . print_r($res, true));
 
         // remove the php4 session
 		unset($_SESSION['userID']);
@@ -147,7 +145,6 @@ class Session {
             );
             require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
             $res = KTUserHistory::createFromArray($aParams);
-            $default->log->info("saving user history - " . print_r($res, true));
 
             DBUtil::whereDelete($sTable, array('id' => $iId));
         }
