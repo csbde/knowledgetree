@@ -1,0 +1,33 @@
+==========================
+What's new in this release
+==========================
+
+3.0.2
+-----
+
+- Improved support for translated versions of KnowledgeTree, including
+easier to use language selection for end users.
+- Easy to use installers for Windows and multiple distributions of
+Linux. The installers no longer require the installation of any
+3rd-party web server or database infrastructure components.
+- Significantly increased online documentation coverage.
+- Significantly increased size of per-document indexing capability.
+Documents of up to 4Gb of text can now be included in the repository
+index.
+- New StorageProvider that provides a more robust file storage mechanism
+across platforms
+- Anonymous user access is now available and configurable via a
+configuration change.
+- Significant improvements in performance with the addition of a caching
+layer.
+- New Owner, Authenticated, and Everyone roles to simplify the
+management of document access permissions.
+- Post-installation checkup will indicate if your database does not
+support transactions.
+- New storage verifier to ensure that documents are correctly stored in
+the repository.
+- Improvements for unit administrators in terms of managing their
+environment.
+- Better support for installations which have users accessing
+KnowledgeTree from clients with dynamic IP addresses.
+- Better support for SUSE Linux installations.
