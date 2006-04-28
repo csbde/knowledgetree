@@ -229,4 +229,29 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
     }
 }
 
+// replace the old checked-out docs.
+class KTMailServerDashlet extends KTBaseDashlet {
+
+    function is_active($oUser) {
+        $oConfig =& KTConfig::getSingleton();
+        $sEmailServer = $oConfig->get('email/emailServer');
+        if ($sEmailServer == 'none') {
+            return true;
+        }
+        if (empty($sEmailServer)) {
+            return true;
+        }
+        return false;
+    }
+    
+    function render() {	
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/mailserver");
+        $aTemplateData = array(
+            "context" => $this,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+}
+
 ?>

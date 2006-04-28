@@ -1,0 +1,12 @@
+<h2>{i18n}Mail server status{/i18n}</h2>
+
+<div class="ktError">
+
+<p>{i18n}Email has not been configured on this server.  Emailing of
+documents and sending of notifications are disabled.{/i18n}</p>
+
+{if $admin}
+<p>{i18n}Edit the [email] section of the config.ini file to set your email
+server and the sending address of the KnowledgeTree server.{/i18n}</p>
+{/if}
+</div>
