@@ -63,7 +63,6 @@ that things are still set up correctly.</p>
   <tbody>
   <?php echo writablePath('Log directory', $default->logDirectory)?>
   <?php echo writablePath('Document directory', $default->documentRoot)?>
-  <?php echo writablePath('Document Root', $default->documentRoot . '/Root Folder')?>
   </tbody>
 </table>
 
@@ -75,13 +74,6 @@ if (substr($default->documentRoot, 0, strlen(KT_DIR)) == KT_DIR) {
     a security problem if your documents can be accessed from the web,
     working around the permission system in
     KnowledgeTree.</font></strong></p>';
-}
-
-$linkcheck = generateLink('/var/Documents/', '');
-$handle = @fopen($linkcheck, 'rb');
-if ($handle !== false) {
-    print '<p><strong><font color="red">Your document directory seems to
-    be accessible via the web!</font></strong></p>';
 }
 
 ?>
