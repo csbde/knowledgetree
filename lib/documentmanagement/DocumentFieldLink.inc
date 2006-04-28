@@ -166,5 +166,9 @@ class DocumentFieldLink extends KTEntity {
             'document_field_id' => KTUtil::getId($oField),
         ));
     }
+
+    function clearAllCaches() {
+        return KTEntityUtil::clearAllCaches('DocumentFieldLink');
+    }
 }
 ?>
