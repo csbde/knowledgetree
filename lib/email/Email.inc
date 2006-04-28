@@ -52,6 +52,15 @@ class Email {
         $this->oMailer->WordWrap = 100;
         $this->oMailer->IsHTML(true);
         $this->oMailer->SetLanguage('en', KT_DIR .  '/phpmailer/language/');
+        $this->bEmailDisabled = false;
+        $oConfig =& KTConfig::getSingleton();
+        $sEmailServer = $oConfig->get('email/emailServer');
+        if ($sEmailServer == 'none') {
+            $this->bEmailDisabled = true;
+        }
+        if (empty($sEmailServer)) {
+            $this->bEmailDisabled = true;
+        }
     }
 	
     /**
@@ -65,6 +74,9 @@ class Email {
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
     function send($mToEmail, $sSubject, $sBody) {
+        if ($this->bEmailDisabled) {
+        	return PEAR::raiseError(_kt("Email is not configured."));
+        }
         global $default;
         
         if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
@@ -116,6 +128,9 @@ class Email {
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
     function sendAttachment($mToEmail, $sSubject, $sBody, $sDocumentPath, $sDocumentName) {
+        if ($this->bEmailDisabled) {
+        	return PEAR::raiseError(_kt("Email is not configured."));
+        }
         global $default;
         
         if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
@@ -173,6 +188,9 @@ class Email {
     * @todo need to test this on multiple mail clients, not just Outlook
     */
     function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
+        if ($this->bEmailDisabled) {
+        	return PEAR::raiseError(_kt("Email is not configured."));
+        }
         global $default;
 
         //get info from relevant fields.
@@ -205,6 +223,9 @@ class Email {
     * @todo need to test this on multiple mail clients, not just Outlook
     */
     function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
+        if ($this->bEmailDisabled) {
+        	return PEAR::raiseError(_kt("Email is not configured."));
+        }
         global $default;
 
         //get info from relevant fields.
@@ -223,6 +244,9 @@ class Email {
     }
 
     function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody) {
+        if ($this->bEmailDisabled) {
+        	return PEAR::raiseError(_kt("Email is not configured."));
+        }
         global $default;
 
         //get info from relevant fields.
