@@ -122,6 +122,12 @@ gettext("Last login information");
 gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
 
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login activity");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know who all has logged in the system over a period of time?  You can get an overview of all login activity for all users over a specified period of time.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
 gettext("Full login history for users");
 
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
@@ -173,12 +179,24 @@ gettext("View");
 gettext("No results for your search.");
 
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("User");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
 gettext("Date");
 
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
 gettext("Action");
 
 /* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Comments");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
 gettext("Comments");
 
 /* ./templates/ktcore/manage_permissions.smarty */
@@ -384,6 +402,15 @@ gettext("Edit this introduction.");
 
 /* ./templates/ktcore/dashlets/kt3release.smarty */
 gettext("Use the standard introduction.");
+
+/* ./templates/ktcore/dashlets/mailserver.smarty */
+gettext("Mail server status");
+
+/* ./templates/ktcore/dashlets/mailserver.smarty */
+gettext("Email has not been configured on this server.  Emailing of documents and sending of notifications are disabled.");
+
+/* ./templates/ktcore/dashlets/mailserver.smarty */
+gettext("Edit the [email] section of the config.ini file to set your email server and the sending address of the KnowledgeTree server.");
 
 /* ./templates/ktcore/action/checkin.smarty */
 gettext("Checking in a document updates the document and allows others to make changes to the document and its metadata.");
