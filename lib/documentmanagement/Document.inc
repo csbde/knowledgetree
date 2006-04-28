@@ -505,7 +505,9 @@ class Document {
         if (PEAR::isError($res)) {
             return $res;
         }
-        $oDocument->iId = $iId;
+
+        // Grab a copy that uses proxies...
+        $oDocument =& Document::get($iId);
 
         KTPermissionUtil::updatePermissionLookup($oDocument);
 
