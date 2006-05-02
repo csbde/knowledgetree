@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 23, 2006 at 01:01 PM
+-- Generation Time: May 02, 2006 at 10:09 AM
 -- Server version: 5.0.19
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- --------------------------------------------------------
@@ -1425,7 +1425,7 @@ CREATE TABLE `workflows` (
 CREATE TABLE `zseq_active_sessions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1436,7 +1436,7 @@ CREATE TABLE `zseq_active_sessions` (
 CREATE TABLE `zseq_archive_restoration_request` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1447,7 +1447,7 @@ CREATE TABLE `zseq_archive_restoration_request` (
 CREATE TABLE `zseq_archiving_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1458,7 +1458,7 @@ CREATE TABLE `zseq_archiving_settings` (
 CREATE TABLE `zseq_archiving_type_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1469,7 +1469,7 @@ CREATE TABLE `zseq_archiving_type_lookup` (
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1480,7 +1480,7 @@ CREATE TABLE `zseq_authentication_sources` (
 CREATE TABLE `zseq_browse_criteria` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1491,7 +1491,7 @@ CREATE TABLE `zseq_browse_criteria` (
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1502,7 +1502,7 @@ CREATE TABLE `zseq_dashlet_disables` (
 CREATE TABLE `zseq_data_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1513,7 +1513,7 @@ CREATE TABLE `zseq_data_types` (
 CREATE TABLE `zseq_dependant_document_instance` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1524,7 +1524,7 @@ CREATE TABLE `zseq_dependant_document_instance` (
 CREATE TABLE `zseq_dependant_document_template` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1535,7 +1535,7 @@ CREATE TABLE `zseq_dependant_document_template` (
 CREATE TABLE `zseq_discussion_comments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1546,7 +1546,7 @@ CREATE TABLE `zseq_discussion_comments` (
 CREATE TABLE `zseq_discussion_threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1557,7 +1557,7 @@ CREATE TABLE `zseq_discussion_threads` (
 CREATE TABLE `zseq_document_archiving_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1568,7 +1568,7 @@ CREATE TABLE `zseq_document_archiving_link` (
 CREATE TABLE `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1579,7 +1579,7 @@ CREATE TABLE `zseq_document_content_version` (
 CREATE TABLE `zseq_document_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1590,7 +1590,7 @@ CREATE TABLE `zseq_document_fields` (
 CREATE TABLE `zseq_document_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1601,7 +1601,7 @@ CREATE TABLE `zseq_document_fields_link` (
 CREATE TABLE `zseq_document_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1612,7 +1612,7 @@ CREATE TABLE `zseq_document_link` (
 CREATE TABLE `zseq_document_link_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1623,7 +1623,7 @@ CREATE TABLE `zseq_document_link_types` (
 CREATE TABLE `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1634,7 +1634,7 @@ CREATE TABLE `zseq_document_metadata_version` (
 CREATE TABLE `zseq_document_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1645,7 +1645,7 @@ CREATE TABLE `zseq_document_role_allocations` (
 CREATE TABLE `zseq_document_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1656,7 +1656,7 @@ CREATE TABLE `zseq_document_subscriptions` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=19;
+) TYPE=MyISAM AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -1667,7 +1667,7 @@ CREATE TABLE `zseq_document_transaction_types_lookup` (
 CREATE TABLE `zseq_document_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1678,7 +1678,7 @@ CREATE TABLE `zseq_document_transactions` (
 CREATE TABLE `zseq_document_type_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1689,7 +1689,7 @@ CREATE TABLE `zseq_document_type_fields_link` (
 CREATE TABLE `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1700,7 +1700,7 @@ CREATE TABLE `zseq_document_type_fieldsets_link` (
 CREATE TABLE `zseq_document_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1711,7 +1711,7 @@ CREATE TABLE `zseq_document_types_lookup` (
 CREATE TABLE `zseq_documents` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1722,7 +1722,7 @@ CREATE TABLE `zseq_documents` (
 CREATE TABLE `zseq_field_behaviours` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1733,7 +1733,7 @@ CREATE TABLE `zseq_field_behaviours` (
 CREATE TABLE `zseq_field_value_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1744,7 +1744,7 @@ CREATE TABLE `zseq_field_value_instances` (
 CREATE TABLE `zseq_fieldsets` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1755,7 +1755,7 @@ CREATE TABLE `zseq_fieldsets` (
 CREATE TABLE `zseq_folder_doctypes_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1766,7 +1766,7 @@ CREATE TABLE `zseq_folder_doctypes_link` (
 CREATE TABLE `zseq_folder_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1777,7 +1777,7 @@ CREATE TABLE `zseq_folder_subscriptions` (
 CREATE TABLE `zseq_folder_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1788,7 +1788,7 @@ CREATE TABLE `zseq_folder_transactions` (
 CREATE TABLE `zseq_folders` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1799,7 +1799,7 @@ CREATE TABLE `zseq_folders` (
 CREATE TABLE `zseq_folders_users_roles_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1810,7 +1810,7 @@ CREATE TABLE `zseq_folders_users_roles_link` (
 CREATE TABLE `zseq_groups_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1821,7 +1821,7 @@ CREATE TABLE `zseq_groups_groups_link` (
 CREATE TABLE `zseq_groups_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4;
+) TYPE=MyISAM AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -1832,7 +1832,7 @@ CREATE TABLE `zseq_groups_lookup` (
 CREATE TABLE `zseq_help` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=99;
+) TYPE=MyISAM AUTO_INCREMENT=99 ;
 
 -- --------------------------------------------------------
 
@@ -1843,7 +1843,7 @@ CREATE TABLE `zseq_help` (
 CREATE TABLE `zseq_help_replacement` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1854,7 +1854,7 @@ CREATE TABLE `zseq_help_replacement` (
 CREATE TABLE `zseq_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1865,7 +1865,7 @@ CREATE TABLE `zseq_links` (
 CREATE TABLE `zseq_metadata_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1876,7 +1876,7 @@ CREATE TABLE `zseq_metadata_lookup` (
 CREATE TABLE `zseq_metadata_lookup_tree` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1887,7 +1887,7 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=161;
+) TYPE=MyISAM AUTO_INCREMENT=161 ;
 
 -- --------------------------------------------------------
 
@@ -1898,7 +1898,7 @@ CREATE TABLE `zseq_mime_types` (
 CREATE TABLE `zseq_news` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1909,7 +1909,7 @@ CREATE TABLE `zseq_news` (
 CREATE TABLE `zseq_notifications` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1920,7 +1920,7 @@ CREATE TABLE `zseq_notifications` (
 CREATE TABLE `zseq_organisations_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1931,7 +1931,7 @@ CREATE TABLE `zseq_organisations_lookup` (
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=7;
+) TYPE=MyISAM AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -1942,7 +1942,7 @@ CREATE TABLE `zseq_permission_assignments` (
 CREATE TABLE `zseq_permission_descriptors` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1953,7 +1953,7 @@ CREATE TABLE `zseq_permission_descriptors` (
 CREATE TABLE `zseq_permission_dynamic_conditions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1964,7 +1964,7 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=18;
+) TYPE=MyISAM AUTO_INCREMENT=18 ;
 
 -- --------------------------------------------------------
 
@@ -1975,7 +1975,7 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=5;
+) TYPE=MyISAM AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -1986,7 +1986,7 @@ CREATE TABLE `zseq_permission_lookups` (
 CREATE TABLE `zseq_permission_objects` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1997,7 +1997,7 @@ CREATE TABLE `zseq_permission_objects` (
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=7;
+) TYPE=MyISAM AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -2008,7 +2008,7 @@ CREATE TABLE `zseq_permissions` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=48;
+) TYPE=MyISAM AUTO_INCREMENT=48 ;
 
 -- --------------------------------------------------------
 
@@ -2019,7 +2019,7 @@ CREATE TABLE `zseq_plugins` (
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2030,7 +2030,7 @@ CREATE TABLE `zseq_role_allocations` (
 CREATE TABLE `zseq_roles` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2041,7 +2041,7 @@ CREATE TABLE `zseq_roles` (
 CREATE TABLE `zseq_saved_searches` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2052,7 +2052,7 @@ CREATE TABLE `zseq_saved_searches` (
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6;
+) TYPE=MyISAM AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -2063,7 +2063,7 @@ CREATE TABLE `zseq_status_lookup` (
 CREATE TABLE `zseq_system_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=5;
+) TYPE=MyISAM AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -2074,7 +2074,7 @@ CREATE TABLE `zseq_system_settings` (
 CREATE TABLE `zseq_time_period` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2085,7 +2085,7 @@ CREATE TABLE `zseq_time_period` (
 CREATE TABLE `zseq_time_unit_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4;
+) TYPE=MyISAM AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2096,7 +2096,7 @@ CREATE TABLE `zseq_time_unit_lookup` (
 CREATE TABLE `zseq_units_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2107,7 +2107,7 @@ CREATE TABLE `zseq_units_lookup` (
 CREATE TABLE `zseq_units_organisations_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2118,7 +2118,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=92;
+) TYPE=MyISAM AUTO_INCREMENT=93 ;
 
 -- --------------------------------------------------------
 
@@ -2129,7 +2129,7 @@ CREATE TABLE `zseq_upgrades` (
 CREATE TABLE `zseq_user_history` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2140,7 +2140,7 @@ CREATE TABLE `zseq_user_history` (
 CREATE TABLE `zseq_users` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4;
+) TYPE=MyISAM AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2151,7 +2151,7 @@ CREATE TABLE `zseq_users` (
 CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4;
+) TYPE=MyISAM AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2162,7 +2162,7 @@ CREATE TABLE `zseq_users_groups_link` (
 CREATE TABLE `zseq_workflow_state_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2173,7 +2173,7 @@ CREATE TABLE `zseq_workflow_state_permission_assignments` (
 CREATE TABLE `zseq_workflow_states` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2184,7 +2184,7 @@ CREATE TABLE `zseq_workflow_states` (
 CREATE TABLE `zseq_workflow_transitions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2195,7 +2195,7 @@ CREATE TABLE `zseq_workflow_transitions` (
 CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 -- 
 -- Constraints for dumped tables

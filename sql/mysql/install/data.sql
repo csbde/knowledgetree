@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 23, 2006 at 12:56 PM
+-- Generation Time: May 02, 2006 at 10:11 AM
 -- Server version: 5.0.19
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `dms`
+-- Database: `ktpristine`
 -- 
 
 -- 
@@ -688,7 +688,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.1.8');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.2');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -819,6 +819,7 @@ INSERT INTO `upgrades` VALUES (88, 'sql*3.0.1.8*0*3.0.1.8/friendly-plugins.sql',
 INSERT INTO `upgrades` VALUES (89, 'sql*3.0.1.8*0*3.0.1.8/longer-text.sql', 'Database upgrade to version 3.0.1.8: Longer-text', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
 INSERT INTO `upgrades` VALUES (90, 'sql*3.0.1.8*0*3.0.1.8/admin-mode-logging.sql', 'Database upgrade to version 3.0.1.8: Admin-mode-logging', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
 INSERT INTO `upgrades` VALUES (91, 'upgrade*3.0.1.8*99*upgrade3.0.1.8', 'Upgrade from version 3.0.1.7 to 3.0.1.8', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
+INSERT INTO `upgrades` VALUES (92, 'upgrade*3.0.2*99*upgrade3.0.2', 'Upgrade from version 3.0.1.8 to 3.0.2', '2006-05-02 10:08:13', 1, 'upgrade*3.0.2*99*upgrade3.0.2');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1258,7 +1259,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (91);
+INSERT INTO `zseq_upgrades` VALUES (92);
 
 -- 
 -- Dumping data for table `zseq_user_history`
