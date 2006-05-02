@@ -232,7 +232,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
         
         $sNewPath = $this->generateStoragePath($oNewDocument);
-        $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $this->generateStoragePath($oSrcDocument));
+        $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $this->getPath($oSrcDocument));
         $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
         
         $res = KTUtil::copyFile($sFullOldPath, $sFullNewPath);
