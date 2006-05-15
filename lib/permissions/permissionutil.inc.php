@@ -83,6 +83,7 @@ class KTPermissionUtil {
         $sDescriptor = KTPermissionUtil::generateDescriptor($aAllowed);
         $oDescriptor =& KTPermissionDescriptor::getByDescriptor(md5($sDescriptor));
         if (PEAR::isError($oDescriptor)) {
+            $oOriginalDescriptor = $oDescriptor;
             
             $oDescriptor =& KTPermissionDescriptor::createFromArray(array(
                 "descriptortext" => $sDescriptor,
@@ -91,8 +92,15 @@ class KTPermissionUtil {
                 print '<pre>';
                 print_r($aAllowed);
                 print "-----------\n";
+                print "getOrCreateDescriptor get error (should be 'not found'):";
+                print "-----------\n";
+                print_r($oOriginalDescriptor);
+                print "-----------\n";
+                print "getOrCreateDescriptor create error (should not happen):";
+                print "-----------\n";
                 print_r($oDescriptor);
                 print '</pre>';
+                exit(0);
             }
             $oDescriptor->saveAllowed($aAllowed);
             
