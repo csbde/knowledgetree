@@ -96,7 +96,7 @@ class Folder extends KTEntity {
         $this->iPermissionObjectID = $oParentFolder->getPermissionObjectID();
         $res = parent::create();
         if ($res === true) {
-            KTPermissionUtil::updatePermissionLookup($this);
+            KTPermissionUtil::updatePermissionLookup(Folder::get($this->getId()));
         }
         return $res;
     }
