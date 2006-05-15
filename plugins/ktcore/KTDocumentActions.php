@@ -912,7 +912,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 // {{{ KTDocumentWorkflowAction
 class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.workflow';
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.read";
     
     var $sHelpPage = 'ktcore/user/workflow.html';    
 
