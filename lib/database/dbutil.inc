@@ -243,12 +243,18 @@ class DBUtil {
 
     function startTransaction() {
         DBUtil::runQuery("START TRANSACTION");
+        $oCache =& KTCache::getSingleton();
+        $oCache->startTransaction();
     }
     function rollback() {
         DBUtil::runQuery("ROLLBACK");
+        $oCache =& KTCache::getSingleton();
+        $oCache->rollback();
     }
     function commit() {
         DBUtil::runQuery("COMMIT");
+        $oCache =& KTCache::getSingleton();
+        $oCache->commit();
     }
 
     function setupAdminDatabase() {
