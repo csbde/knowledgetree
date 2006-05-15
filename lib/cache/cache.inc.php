@@ -1,6 +1,8 @@
 <?php
 
 class KTCache {
+    var $aRollbackList = array();
+
     // {{{ getSingleton
     function &getSingleton () {
         if (!KTUtil::arrayGet($GLOBALS, 'oKTCache')) {
@@ -12,7 +14,6 @@ class KTCache {
 
     // takes an Entity type-name, and an array of the failed attrs.
     function alertFailure($sEntityType, $aFail) {
-        //var_dump($aFail); 
         $sMessage = sprintf('Failure in cache-comparison on type "%s":  %s', $sEntityType, implode(', ', $aFail));
         global $default;
         $default->log->error($sMessage);
@@ -62,6 +63,7 @@ class KTCache {
         if (empty($this->bEnabled)) {
             return false;
         }
+        $this->aRollbackList[] = array($group, $id);
         return $this->oLite->save(array($val), $id, strtolower($group));
     }
 
@@ -79,7 +81,26 @@ class KTCache {
         return $this->oLite->clean(strtolower($group));
     }
 
+    function rollback() {
+        // $this->deleteAllCaches();
+        foreach ($this->aRollbackList as $aRollbackItem) {
+            list($group, $id) = $aRollbackItem;
+            $this->remove($group, $id);
+        }
+    }
+
+    function startTransaction() {
+        $this->aRollbackList = array();
+    }
+
+    function commit() {
+        $this->aRollbackList = array();
+    }
+
     function deleteAllCaches() {
+        if (empty($this->bEnabled)) {
+            return false;
+        }
         $this->oLite->clean();
 
         return;
