@@ -154,13 +154,15 @@ class KTInit {
         // KTEntity is the database-backed base class
         require_once(KT_LIB_DIR . '/ktentity.inc');
 
+        $oKTConfig =& KTConfig::getSingleton();
+
         $dsn = array(
-            'phptype'  => $default->dbType,
-            'username' => $default->dbUser,
-            'password' => $default->dbPass,
-            'hostspec' => $default->dbHost,
-            'database' => $default->dbName,
-            'port' => $default->dbPort,
+            'phptype'  => $oKTConfig->get('db/dbType'),
+            'username' => $oKTConfig->get('db/dbUser'),
+            'password' => $oKTConfig->get('db/dbPass'),
+            'hostspec' => $oKTConfig->get('db/dbHost'),
+            'database' => $oKTConfig->get('db/dbName'),
+            'port' => $oKTConfig->get('db/dbPort'),
         );
 
         $options = array(
@@ -457,6 +459,24 @@ class KTInit {
         }
     }
     // }}}
+
+    // {{{ initTesting
+    function initTesting() {
+        $oKTConfig =& KTConfig::getSingleton();
+        $sConfigFile = trim(@file_get_contents(KT_DIR .  "/config/test-config-path"));
+        if (empty($sConfigFile)) {
+            $sConfigFile = 'config/test.ini';
+        }
+        if (!KTUtil::isAbsolutePath($sConfigFile)) {
+            $sConfigFile = sprintf("%s/%s", KT_DIR, $sConfigFile);
+        }
+        if (!file_exists($sConfigFile)) {
+            $this->handleInitError(PEAR::raiseError('Test infrastructure not configured'));
+            exit(0);
+        }
+        $oKTConfig->loadFile($sConfigFile);
+    }
+    // }}}
 }
 // }}}
 
@@ -464,6 +484,7 @@ $KTInit = new KTInit();
 
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
+$KTInit->prependPath(KT_DIR . '/thirdparty/simpletest');
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions
@@ -479,6 +500,10 @@ require_once(KT_LIB_DIR . "/config/config.inc.php");
 $KTInit->initConfig(); 
 
 $KTInit->setupI18n();
+
+if ($GLOBALS['kt_test']) {
+    $KTInit->initTesting(); 
+}
 
 $oKTConfig =& KTConfig::getSingleton();
 $KTInit->setupServerVariables();
