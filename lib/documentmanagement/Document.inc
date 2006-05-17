@@ -565,6 +565,11 @@ class Document {
     // }}}
 
     function clearAllCaches() {
+        
+        KTEntityUtil::clearAllCaches('KTDocumentCore');
+        KTEntityUtil::clearAllCaches('KTDocumentContentVersion');
+        KTEntityUtil::clearAllCaches('KTDocumentMetadataVersion');
+        
         return KTEntityUtil::clearAllCaches('Document');
     }
 
