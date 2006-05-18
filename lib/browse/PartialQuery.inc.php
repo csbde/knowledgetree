@@ -97,6 +97,7 @@ class BrowseQuery extends PartialQuery{
         if (PEAR::isError($res)) {
             return $res;
         }
+        //var_dump($res);
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
         $aPotentialWhere = array($sPermissionString, 'D.folder_id = ?', 'D.status_id = 1');
         $aWhere = array();

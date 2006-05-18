@@ -425,14 +425,22 @@ class KTPermissionDescriptor extends KTEntity {
     // }}}
 
     // {{{ STATIC: getByUser
-    function &getByUser($oUser) {
+    function &getByUser($oUser, $aOptions = null) {
         $sTable = KTUtil::getTableName('permission_descriptor_users');
         $sQuery = "SELECT descriptor_id FROM $sTable WHERE user_id = ?";
         $aParams = array($oUser->getID());
         $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'descriptor_id');
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
+        $ids = KTUtil::arrayGet($aOptions, 'ids');
         $aRet = array();
         foreach ($aIDs as $iID) {
-            $aRet[] =& KTPermissionDescriptor::get($iID);
+            if ($ids === true) {
+                $aRet[] = $iID;
+            } else {
+                $aRet[] =& KTPermissionDescriptor::get($iID);
+            }
         }
         return $aRet;
     }
