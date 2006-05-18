@@ -623,8 +623,17 @@ class KTPermissionUtil {
     // {{{ getPermissionDescriptorsForUser
     function getPermissionDescriptorsForUser($oUser) {
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
+        $roles = array(-3); // everyone
+        $aEveryoneDescriptors = array();
+        $aAuthenticatedDescriptors = array();
+        if (!$oUser->isAnonymous()) {
+            // authenticated
+            $roles[] = -4;
+        }
+        $aRoleDescriptors = KTPermissionDescriptor::getByRoles($roles, array('ids' => true));
         $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
-        return $aPermissionDescriptors;
+        $aUserDescriptors = KTPermissionDescriptor::getByUser($oUser, array('ids' => true));
+        return kt_array_merge($aPermissionDescriptors, $aUserDescriptors, $aRoleDescriptors);
     }
     // }}}
 }

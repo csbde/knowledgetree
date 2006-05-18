@@ -190,8 +190,7 @@ class KTSearchUtil {
             INNER JOIN $sPermissionLookupsTable AS PL ON $sItemTableName.permission_lookup_id = PL.id
             INNER JOIN $sPermissionLookupAssignmentsTable AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = ?
             ";
-        $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
-        $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
+        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
         if (count($aPermissionDescriptors) === 0) {
             return PEAR::raiseError('You have no permissions');
         }
