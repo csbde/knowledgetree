@@ -85,7 +85,7 @@ class KTHelp {
         } 
         
         $info['name'] = $help_path; // set so we can save into db if needed.
-        
+
         return $info;
     }
 

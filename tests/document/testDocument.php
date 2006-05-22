@@ -16,23 +16,33 @@ class DocumentTestCase extends KTUnitTestCase {
         KTFolderUtil::delete($this->oFolder, $this->oUser, 'test case', $aOptions);
     }
 
+    function &_addFile($sFileName, $aOptions = null) {
+	if(!is_array($aOptions)) $aOptions = array();
+	$oDocument =& KTDocumentUtil::add($this->oFolder, $sFileName, $this->oUser, $aOptions);
+	return $oDocument;
+    }
+
     function testAddInOneGo() {
         $sLocalname = dirname(__FILE__) . '/dataset1/critique-of-pure-reason.txt';
         $sFilename = tempnam("/tmp", "kt_tests_document_add");
         copy($sLocalname, $sFilename);
 
-        $oDocument =& KTDocumentUtil::add($this->oFolder, "testaddinonego.txt", $this->oUser, array(
+        $oDocument =& $this->_addFile('testAddInOneGo.txt', array(
             'contents' => new KTFSFileLike($sFilename),
             'metadata' => array(),
-        ));
+        )); 
+
         $this->assertEntity($oDocument, 'Document');
         $this->assertEqual($oDocument->getStatusId(), 1);
+
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $sTmpFile = $oStorage->temporaryFile($oDocument);
         $sLocalContents = file_get_contents($sLocalname);
         $sStoredContents = file_get_contents($sTmpFile);
         $oStorage->freeTemporaryFile($sTmpFile);
+
         $this->assertEqual($sLocalContents, $sStoredContents);
+
         $oDocument =& KTDocumentUtil::add($this->oFolder, "testaddinonego.txt", $this->oUser, array(
             'contents' => new KTFSFileLike($sFilename),
         ));
@@ -40,7 +50,7 @@ class DocumentTestCase extends KTUnitTestCase {
     }
 
     function testAddSeparately() {
-        $oDocument =& KTDocumentUtil::add($this->oFolder, "testAddSeparately.txt", $this->oUser, array());
+        $oDocument =& $this->_addFile("testAddSeparately.txt");
         $this->assertEntity($oDocument, 'Document');
         $this->assertEqual($oDocument->getStatusId(), 5);
 
@@ -52,5 +62,13 @@ class DocumentTestCase extends KTUnitTestCase {
         $this->assertEqual($oDocument->getStatusId(), 5);
         $res = KTDocumentUtil::saveMetadata($oDocument, array());
         $this->assertEqual($oDocument->getStatusId(), 1);
+    }
+
+    // Ok, not a test yet.
+    function testCreateMetadataVersion() {
+	$oDocument =& $this->_addFile("testCreateMetadataVersion.txt");
+	$res = KTDocumentUtil::saveMetadata($oDocument, array());
+
+	$this->assertEqual($res, true);
     }
 }

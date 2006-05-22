@@ -403,29 +403,41 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
     function do_createUser() {
         // FIXME generate and pass the error stack to adduser.
         
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
-        if (empty($name)) { $this->errorRedirectTo('addUser', _kt('You must specify a name for the user.')); }
-        $username = KTUtil::arrayGet($_REQUEST, 'newusername');
-        if (empty($name)) { $this->errorRedirectTo('addUser', _kt('You must specify a new username.')); }
-        // FIXME check for non-clashing usernames.
+        $aErrorOptions = array(
+                'redirect_to' => array('addUser')
+        );
+        
+        $username = $this->oValidator->validateString(
+                KTUtil::arrayGet($_REQUEST, 'newusername'),
+                KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must specify a new username.")))
+        );
+
+        $name = $this->oValidator->validateString(
+                KTUtil::arrayGet($_REQUEST, 'name'),
+                KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must provide a name")))
+        );
+
         
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
         $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
-        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3', false);
-        // FIXME check for numeric max_sessions... db-error else?
+
+        $max_sessions = $this->oValidator->validateInteger(
+                KTUtil::arrayGet($_REQUEST, 'max_sessions'),
+                KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must specify a numeric value for maximum sessions.")))
+        );
+
         $password = KTUtil::arrayGet($_REQUEST, 'password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         $KTConfig =& KTConfig::getSingleton();
-		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
-		$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
-
+	$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+	$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
         
         if ($restrictAdmin && (strlen($password) < $minLength)) {
-		    $this->errorRedirectTo('addUser', sprintf(_kt("The password must be at least %d characters long."), $minLength));
-		} else if (empty($password)) { 
+	    $this->errorRedirectTo('addUser', sprintf(_kt("The password must be at least %d characters long."), $minLength));
+	} else if (empty($password)) { 
             $this->errorRedirectTo('addUser', _kt("You must specify a password for the user."));
         } else if ($password !== $confirm_password) {
             $this->errorRedirectTo('addUser', _kt("The passwords you specified do not match."));

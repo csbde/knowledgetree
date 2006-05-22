@@ -33,6 +33,7 @@ require_once('KTEmail.php');
 require_once('KTIndexer.php');
 require_once('KTDocumentLinks.php');
 require_once('KTWorkflowAssociation.php');
+require_once('KTDisclaimers.php');
 
 
 ?>

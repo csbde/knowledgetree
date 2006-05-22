@@ -28,6 +28,13 @@ class KTUnitTestCase extends UnitTestCase {
         return $this->fail(sprintf('Object is not a %s', $sClass));
     }
 
+    function assertNotError($oObject) {
+	if(PEAR::isError($oObject)) {
+	    return $this->fail(sprintf('Object is a PEAR Error'));
+	}
+	return $this->pass(sprintf('Object is not a PEAR Error'));
+    }
+
     function assertGroup($oGroup) {
         return $this->assertEntity($oGroup, 'Group');
     }

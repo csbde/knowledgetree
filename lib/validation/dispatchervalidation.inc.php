@@ -222,6 +222,22 @@ class KTDispatcherValidation {
         return $sString;
     }
 
+    // validate a STRING to an integer
+    function validateInteger($sInteger, $aOptions = null) {
+        $sInteger = trim($sInteger);
+        if (empty($sInteger)) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt("An empty value was given"));
+            $this->handleError($aOptions);
+        }
+
+	if(!is_numeric($sInteger)) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt("A non-numeric value was given"));
+            $this->handleError($aOptions);
+        }	    
+
+        return intval($sInteger);
+    }
+
     function validateFile($aFile, $aOptions = null) {
         $bError = false;
         

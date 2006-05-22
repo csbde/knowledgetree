@@ -139,17 +139,26 @@ class KTWorkflowUtil {
             }
             $iStartStateId = $oWorkflow->getStartStateId();
             if (empty($iStartStateId)) {
-                return PEAR::raiseError('Cannot assign workflow with no starting state set');
+                return PEAR::raiseError(_kt('Cannot assign workflow with no starting state set'));
             }
 
             $oDocument->setWorkflowId($iWorkflowId);
             $oDocument->setWorkflowStateId($iStartStateId);
+
+	    $sTransactionComments = "Workflow \"" . $oWorkflow->getHumanName() . "\" started.";
         } else {
             $oDocument->setWorkflowId(null);
             $oDocument->setWorkflowStateId(null);
+	    $sTransactionComments = "Workflow removed from document.";
         }
+
         $res = $oDocument->update();
         if (PEAR::isError($res)) { return $res; }
+
+        // create the document transaction record
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
+        $oDocumentTransaction->create();
+
 
         // FIXME does this function as expected?
 		

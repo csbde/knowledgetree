@@ -351,6 +351,8 @@ INSERT INTO `help` VALUES (95, 'addUnitToOrg', 'addUnitToOrgHelp.html');
 INSERT INTO `help` VALUES (96, 'listUsers', 'listUsersHelp.html');
 INSERT INTO `help` VALUES (97, 'editUserGroups', 'editUserGroupsHelp.html');
 INSERT INTO `help` VALUES (98, 'listWebsites', 'listWebsitesHelp.html');
+INSERT INTO `help` VALUES (99, 'loginDisclaimer', 'loginDisclaimer.html');
+INSERT INTO `help` VALUES (100, 'pageDisclaimer', 'pageDisclaimer.html');
 
 -- 
 -- Dumping data for table `help_replacement`

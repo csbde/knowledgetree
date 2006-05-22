@@ -1206,7 +1206,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         }
         
         
-        $this->successRedirectTo('editTransition', _kt('Workflow transition created'), sprintf('fWorkflowId=%d&fTransitionId=%d', $oWorkflow->getId(), $newTransition->getId()));
+        $this->successRedirectTo('manageTransitions', _kt('Workflow transition created'), sprintf('fWorkflowId=%d', $oWorkflow->getId()));
         exit(0);
     }
     // }}}

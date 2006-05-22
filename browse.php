@@ -334,8 +334,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
         $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());        
+
+        $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
+        if (PEAR::isError($oFolder)) { 
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
+            exit(0);
+        }
+
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
-            $this->errorRedirectToMain(_kt('Please select documents or folders first.'));
+	    $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }        
         

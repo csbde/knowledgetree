@@ -1,0 +1,20 @@
+{$context->oPage->requireJSResource("thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js")}
+{capture assign=sJS}
+{literal}
+tinyMCE.init({
+		mode : "textareas",
+		theme : "simple",
+});
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="id" value="{$help->getId()}">
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="title" value="{$help->getTitle()}">
+
+<h2>{$help->getTitle()|escape}</h2>
+<textarea cols="60" rows="20" name="description">{$help->getDescription()|escape}</textarea>
+<input type="submit" name="submit" value="{i18n}Update{/i18n}" />
+</form>

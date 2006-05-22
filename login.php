@@ -7,6 +7,8 @@ require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
+require_once(KT_LIB_DIR . '/help/help.inc.php');
+require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 
 /**
  * $Id$
@@ -78,7 +80,12 @@ class LoginPageDispatcher extends KTDispatcher {
             $aRegisteredLanguageNames[$sLang] = $aLanguageNames[$sLang];
         }
         $sLanguageSelect = $default->defaultLanguage;
-        
+
+	// extra disclaimer, if plugin is enabled
+	$oRegistry =& KTPluginRegistry::getSingleton();
+	$oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
+	$sDisclaimer = $oPlugin->getLoginDisclaimer();
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/login");
         $aTemplateData = array(
@@ -89,6 +96,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'versionName' => $default->versionName,
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
+	      'disclaimer' => $sDisclaimer,
         );
         return $oTemplate->render($aTemplateData);        
     }

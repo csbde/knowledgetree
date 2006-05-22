@@ -43,7 +43,7 @@ class KTBrowseUtil {
         list($iFolderID, $iDocumentID) = $aFolderInfo;
 
         if ($iDocumentID && $bAction) {
-            $aActions = array_keys(KTDocumentActionUtil::getDocumentActions());
+            $aActions = array_keys(KTDocumentActionUtil::getAllDocumentActions());
             if (in_array($sFileName, $aActions)) {
                 return array($iFolderID, $iDocumentID, $sFileName);
             }
