@@ -98,11 +98,11 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         }
         
         $aSearch = $oSearch->getSearch();
-
+        /*
 	print '<pre>';
 	print_r($aSearch);
 	exit(0);
-        
+        */
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");

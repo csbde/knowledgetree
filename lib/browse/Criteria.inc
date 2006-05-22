@@ -175,15 +175,18 @@ class BrowseCriterion {
     }
     
     function getNotWidget($aPreValue=null) {
-        if (is_null($aPreValue)) {
-            $is_positive = true;
-        }
         if (!$this->bHandleNot) { return ''; }
         
         // not perfect, but acceptable.
         $form_name = $this->getWidgetBase() . '_not';
         $pos_select = '';
         $neg_select = '';
+        if (is_null($aPreValue)) {
+            $is_positive = true;
+        } else {
+            $preval = KTUtil::arrayGet($aPreValue, $form_name, "0"); // by default, use "is" not "is not"
+            $is_positive = ($preval == "0"); // 0 or empty or similar.
+        }
         if ($is_positive) {
             $pos_select = ' selected="true"';
         } else {
@@ -220,7 +223,7 @@ class BrowseCriterion {
         if ($handle_not) {
             $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
             
-            if (is_null($want_invert)) {
+            if (is_null($want_invert) || ($want_invert == "0")) { // use explicit "0" check
                 return $val;
             } else {
                 $val[0] = '(NOT (' . $val[0] . '))';
@@ -394,7 +397,7 @@ class DateCreatedCriterion extends BrowseCriterion {
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $val;
         } else {
             $val[0] = '(NOT (' . $val[0] . '))';
@@ -519,7 +522,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
@@ -600,7 +603,7 @@ class ContentCriterion extends BrowseCriterion {
 
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
@@ -637,7 +640,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
@@ -710,7 +713,7 @@ class TransactionTextCriterion extends BrowseCriterion {
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
@@ -767,7 +770,7 @@ class SearchableTextCriterion extends BrowseCriterion {
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        if (is_null($want_invert)) {
+        if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
