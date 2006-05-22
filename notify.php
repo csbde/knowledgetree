@@ -56,7 +56,7 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
         $oKTNotification =& KTNotification::get($notification_id);
         
         if (PEAR::isError($oKTNotification)) {
-            $this->addErrorMessage(_kt('Invalid notification.'));
+            $this->addInfoMessage(_kt('Cannot find the notification you requested.  Notification may already have been cleared.'));
             exit(redirect(generateControllerLink('dashboard')));
         }
         
