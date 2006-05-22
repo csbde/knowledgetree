@@ -193,7 +193,9 @@ class DocumentType extends KTEntity {
 	 * @return Array array of DocumentType objects, false otherwise
 	*/
 	function &getList($sWhereClause = null) {
-        return KTEntityUtil::getList2('DocumentType', $sWhereClause);
+	    // default ordering to name
+	    $aOptions = array('orderby' => 'name');
+	    return KTEntityUtil::getList2('DocumentType', $sWhereClause, $aOptions);
 	}
 	
 	/* alternative for use in creation:  delegate for user and location */

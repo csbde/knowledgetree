@@ -155,6 +155,11 @@ class KTDocumentUtil {
 
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
+
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->CheckOutDocument($oDocument, $oFolder);
     
         return true;
     }
@@ -527,6 +532,7 @@ class KTDocumentUtil {
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
+
         if (!$oStorage->upload($oDocument, $sFilename)) {
             return PEAR::raiseError("Couldn't store contents");
         }

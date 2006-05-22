@@ -7,41 +7,57 @@
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
 </head>
-<body>
+<body onload="document.getElementById('username').focus()">
 
-    <div id="loginbox">
-        <form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
-        <input type="hidden" name="action" value="login" />
-        <input type="hidden" name="cookieverify" value="{$cookietest}" />
-        <input type="hidden" name="redirect" value="{$redirect|escape}" />
-            <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
-            {if ($errorMessage == null)}
-            <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
-            {else}
-            <div class="ktError"><p>{$errorMessage}</p></div>
-            {/if}
-            
-            <label for="username">{i18n}Username{/i18n}</label>
-            <input type="text" id="username" name="username"/>
-            
-            <label for="password">{i18n}Password{/i18n}</label>
-            <input type="password" id="password" name="password"/>
+    <div id="loginbox" {if ($disclaimer)} class="hasDisclaimer" {/if}>
 
-            <label for="language">{i18n}Language{/i18n}</label>
-            <select id="language" name="language">
-            {foreach from=$languages key=sLang item=sLanguageName}
-            <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
-            {/foreach}
-            </select>
+        <div id="formbox">
+
+	    <form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
+	        <input type="hidden" name="action" value="login" />
+		<input type="hidden" name="cookieverify" value="{$cookietest}" />
+		<input type="hidden" name="redirect" value="{$redirect|escape}" />
+		<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
             
-            <div class="form_actions">
-                <input type="submit" value="{i18n}login{/i18n}" />
-            </div>
-        </form>
-        <br />
-        <p class="descriptiveText version">KnowledgeTree {i18n} Version{/i18n}<br />{$versionName}</p>
+	        {if ($errorMessage == null)}
+		    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
+		{else}
+		    <div class="ktError"><p>{$errorMessage}</p></div>
+		{/if}
+            
+	        <label for="username">{i18n}Username{/i18n}</label>
+		<input type="text" id="username" name="username"/>
+		
+		<label for="password">{i18n}Password{/i18n}</label>
+		<input type="password" id="password" name="password"/>
+
+		<label for="language">{i18n}Language{/i18n}</label>
+		<select id="language" name="language">
+		{foreach from=$languages key=sLang item=sLanguageName}
+		    <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
+		{/foreach}
+		</select>
+            
+	        <div class="form_actions">
+                    <input type="submit" value="{i18n}login{/i18n}" />
+		</div>
+            </form>
+
+	</div>
+
+        {if ($disclaimer)}
+        <div id="disclaimerbox">
+	    {$disclaimer}
+	</div>
+	{/if}
+
+	<p class="descriptiveText version">KnowledgeTree {i18n} Version{/i18n}<br />{$versionName}</p>
         
+
     </div>
+
+
+
 
 </body>
 </html>

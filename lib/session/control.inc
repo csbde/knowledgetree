@@ -48,6 +48,7 @@ function controllerRedirect($sAction, $sQueryString = "") {
     // now redirect
     $default->log->debug("controllerRedirect: redirect to $url");
     redirect($url);
+    exit(0);
 }
 
 /**

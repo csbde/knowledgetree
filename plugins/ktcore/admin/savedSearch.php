@@ -98,6 +98,10 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         }
         
         $aSearch = $oSearch->getSearch();
+
+	print '<pre>';
+	print_r($aSearch);
+	exit(0);
         
         
         $oTemplating =& KTTemplating::getSingleton();

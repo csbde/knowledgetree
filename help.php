@@ -85,8 +85,8 @@ class HelpDispatcher extends KTStandardDispatcher {
         }
         
         $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
-               
         $help_path = KTHelp::getHelpSubPath($pathinfo);
+
         if ($help_path == false) {
             $this->oPage->setTitle(_kt('Invalid help location specified.'));
             $this->oPage->addError(_kt('Invalid help location specified.'));
@@ -95,7 +95,7 @@ class HelpDispatcher extends KTStandardDispatcher {
         
         // We now check for substitute help files.  try to generate an error.
         $oReplacementHelp = KTHelpReplacement::getByName($help_path);
-        
+
         if (KTHelp::isImageFile($help_path)) {
             KTHelp::outputHelpImage($help_path);
         } else {
@@ -124,6 +124,7 @@ class HelpDispatcher extends KTStandardDispatcher {
             $aHelpInfo['body'] = $oReplacementHelp->getDescription();
         }
         // we now _can_ edit.
+
         
         $this->oPage->setTitle($aHelpInfo['title']);
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => $aHelpInfo['title']);

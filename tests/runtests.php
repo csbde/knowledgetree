@@ -5,10 +5,13 @@ require_once('test.php');
 class UnitTests extends GroupTest {
     function UnitTests() {
         $this->GroupTest('Unit tests');
-        $this->addTestFile('SQLFile/test_sqlfile.php');
-        $this->addTestFile('cache/testCache.php');
-        $this->addTestFile('config/testConfig.php');
+	$this->addTestFile('SQLFile/test_sqlfile.php');
+	$this->addTestFile('cache/testCache.php');
+	$this->addTestFile('config/testConfig.php');
         $this->addTestFile('document/testDocument.php');
+        $this->addTestFile('document/testDocumentUtil.php');
+        $this->addTestFile('folder/testFolder.php');
+        $this->addTestFile('browseutil/testBrowseUtil.php');
     }
 
     function addTestFile($file) {

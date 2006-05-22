@@ -16,7 +16,7 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 { foreach item=oHelpReplacement from=$helpreplacements }
 <tr class="{cycle values="odd,even"}">
 <td>
-<a href="{addQS}action=editReplacement&id={$oHelpReplacement->getId()}{/addQS}">{ $oHelpReplacement->sName }</a>
+<a href="{addQS}action=editReplacement&id={$oHelpReplacement->getId()}{/addQS}">{ $oHelpReplacement->getName() }</a>
 </td>
 <td>
 <a href="{addQS}action=deleteReplacement&id={$oHelpReplacement->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
@@ -26,7 +26,7 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 </table>
 
 {else}
-<div class="ktInfo"><p>{i18n}No Help files have to customised.{/i18n}</p></div>
+<div class="ktInfo"><p>{i18n}No help files have been customised.{/i18n}</p></div>
 
 { /if }
 

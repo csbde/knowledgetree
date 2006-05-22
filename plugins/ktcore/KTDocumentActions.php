@@ -997,12 +997,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
 
 	if(!Permission::userHasDocumentReadPermission($oDocument)) {
-	    $this->successRedirectTo(
-	        'browse', 
-		_kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document'),
-		array('fFolderId' => $oDocument->getFolderId())
-	    );
-	    
+	    $this->commitTransaction();
+            $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
+	    controllerRedirect('browse', sprintf('fFolderId=%d', $oDocument->getFolderId()));
 	} else {
 	    $this->successRedirectToMain(_kt('Transition performed'),
                 array('fDocumentId' => $oDocument->getId()));

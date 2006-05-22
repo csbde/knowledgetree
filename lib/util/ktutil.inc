@@ -186,7 +186,13 @@ class KTUtil {
         if ($sPopen) {
             return popen($sCmd, $sPopen);
         }
-        return exec($sCmd);
+
+	// for exec, check return code...
+	$aOutput = array();
+	$iRet = '';
+
+        exec($sCmd, $aOutput, $iRet);
+	return $iRet;
     }
     // }}}
 

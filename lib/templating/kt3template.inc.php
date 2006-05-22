@@ -61,13 +61,13 @@ class KTPage {
     /** miscellaneous items */
     var $title = '';
     var $systemName = 'KnowledgeTree';
-	var $systemURL = 'http://ktdms.com/';
+    var $systemURL = 'http://ktdms.com/';
     var $breadcrumbs = false;
     var $breadcrumbDetails = false;
     var $breadcrumbSection = false;
-	var $menu = null;
-	var $userMenu = null;
-	var $helpPage = null;
+    var $menu = null;
+    var $userMenu = null;
+    var $helpPage = null;
     
     /** the "component".  Used to set the page header (see documentation for explanation). */
     var $componentLabel = 'Browse Documents';
@@ -77,6 +77,9 @@ class KTPage {
     var $contents = '';
 
     var $template = "kt3/standard_page";
+
+    var $contentType = 'text/html';
+    var $charset = 'UTF-8';
     
     /* further initialisation */
     function KTPage() {
@@ -115,25 +118,22 @@ class KTPage {
        
 	// initiliase the menu.
     function initMenu() {
-		// FIXME:  we lost the getDefaultAction stuff - do we care?
-		// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
-		$this->menu = array(
-		    "dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
-			"browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
-			"administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),
-		);
-		
-
-	}
+	// FIXME:  we lost the getDefaultAction stuff - do we care?
+	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
+	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
+			    "browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
+			    "administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),);
+    }
 	
 	
-	function setTitle($sTitle) { $this->title = $sTitle; }
+    function setTitle($sTitle) { 
+	$this->title = $sTitle; 
+    }
     
     /* javascript handling */    
     // require that the specified JS file is referenced.
     function requireJSResource($sResourceURL) {
-	    $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
-		
+	$this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.		
     }
     
     // require that the specified JS files are referenced.
@@ -191,7 +191,7 @@ class KTPage {
     }
     
     function setPageContents($contents) { $this->contents = $contents; }
-	function setShowPortlets($bShow) { $this->show_portlets = $bShow; }
+    function setShowPortlets($bShow) { $this->show_portlets = $bShow; }
     
     /* set the breadcrumbs.  the first item is the area name.
        the rest are breadcrumbs. */
@@ -199,10 +199,10 @@ class KTPage {
         $breadLength = count($aBreadcrumbs);
         if ($breadLength != 0) {
             $this->breadcrumbSection = $this->_actionhelper($aBreadcrumbs[0]);
-			// handle the menu
-			if (($aBreadcrumbs[0]["action"]) && ($this->menu[$aBreadcrumbs[0]["action"]])) {
-			    $this->menu[$aBreadcrumbs[0]["action"]]["active"] = 1;
-			}
+	    // handle the menu
+	    if (($aBreadcrumbs[0]["action"]) && ($this->menu[$aBreadcrumbs[0]["action"]])) {
+		$this->menu[$aBreadcrumbs[0]["action"]]["active"] = 1;
+	    }
         }
         if ($breadLength > 1) {
             $this->breadcrumbs = array_map(array(&$this, "_actionhelper"), array_slice($aBreadcrumbs, 1));
@@ -319,7 +319,13 @@ class KTPage {
 			}
 		}
 		
-		header('Content-type: text/html; charset=UTF-8');
+		$sContentType = 'Content-type: ' . $this->contentType;
+		if(!empty($this->charset)) {
+		    $sContentType .= '; charset=' . $this->charset;
+		};
+    
+
+		header($sContentType);
 		
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->template);
@@ -361,24 +367,29 @@ class KTPage {
     }
     
     function setHelp($sHelpPage) {
-		$this->helpPage = $sHelpPage;
+	$this->helpPage = $sHelpPage;
+    }
+	
+    function getHelpURL() {
+	if (empty($this->helpPage)) { 
+	    return null;
 	}
 	
-	function getHelpURL() {
-	    if (empty($this->helpPage)) { 
-		    return null;
-		}
-		
-		return KTUtil::ktLink('help.php',$this->helpPage); 
-	}
+	return KTUtil::ktLink('help.php',$this->helpPage); 
+    }
 	
-	function getReqTime() {
-
+    function getReqTime() {
         $microtime_simple = explode(' ', microtime());
         $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
+	return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
+    }
 
-	    return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
-	}
+    function getDisclaimer() {
+	$oRegistry =& KTPluginRegistry::getSingleton();
+	$oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
+	return $oPlugin->getPageDisclaimer();
+    }
+	
 }
 
 ?>

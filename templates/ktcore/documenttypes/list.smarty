@@ -24,8 +24,7 @@ please enter a name for the type below.{/i18n}</p>
 <legend>{i18n}Existing document types{/i18n}</legend>
 
 <p class="descriptiveText">{i18n}Select a document type from the list below to change
-its details, or click on the delete button to remove it from the
-system.{/i18n}</p>
+its details, or use the enable/disable buttons to change its availability state.{/i18n}</p>
 
 <table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 
@@ -69,9 +68,11 @@ system.{/i18n}</p>
 
 <td>
 {if $oDocumentType->getDisabled()}
-    <a class="ktAction ktEnable" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
+    <a class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
-    <a class="ktAction ktDelete" href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
+    <a class="ktAction ktDelete" 
+    kt:deleteMessage="Are you sure you wish to disable this document type?" 
+    href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
 

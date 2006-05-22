@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id$
+ * $Id
  *
  * Copyright (c) 2006 Jam Warehouse http://www.jamwarehouse.com
  *
@@ -26,80 +26,59 @@
  *         http://www.ktdms.com/
  */
 
-//require_once("../../../../../config/dmsDefaults.php");
-
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/help/helpreplacement.inc.php");
 require_once(KT_LIB_DIR . "/help/helpentity.inc.php");
 require_once(KT_LIB_DIR . "/help/help.inc.php");
-
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
-class ManageHelpDispatcher extends KTAdminDispatcher {
+class ManageDisclaimersDispatcher extends KTAdminDispatcher {
 
-    var $sHelpPage = 'ktcore/admin/help administration.html';
+    var $sHelpPage = 'ktcore/admin/helpDisclaimers.html';
 
     function do_main() {
-        return $this->getData();
-    }
-
-    function getData() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Help Administration'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Edit Disclaimers'));
         $this->oPage->setBreadcrumbDetails(_kt('select a section'));
-        $this->oPage->setTitle(_kt('Help Administration'));
+        $this->oPage->setTitle(_kt('Edit Disclaimers'));
         $oTemplating =& KTTemplating::getSingleton();
-        $aHelpReplacements =& KTHelpReplacement::getList();
-        //$aHelps =& KTHelpEntity::getList();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help");
+
+	$oRegistry =& KTPluginRegistry::getSingleton();
+	$oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
+
+	$aDisclaimers = $oPlugin->getDisclaimerList();
+
+        $oTemplate = $oTemplating->loadTemplate("ktstandard/disclaimers/manage_disclaimers");
         $aTemplateData = array(
             "context" => &$this,
-            //"helps" => $aHelps,
-            "helpreplacements" => $aHelpReplacements,
+            "disclaimers" => $aDisclaimers,
         );
 
         return $oTemplate->render($aTemplateData);
     }
 
-    function getReplacementItemData($oHelpReplacement) {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Help Administration'));
+    function do_edit() {
+        $id = KTUtil::arrayGet($_REQUEST, 'id');
+        $oHelpReplacement = KTHelpReplacement::get($id);
+
+        if (PEAR::isError($oHelpReplacement)) {
+            return $this->errorRedirectToMain(_kt("Could not find specified item"));
+        }
+
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Edit Disclaimers'));
+        $this->aBreadcrumbs[] = array('name' => $oHelpReplacement->getTitle());
         $this->oPage->setTitle(_kt('Editing: ') . $oHelpReplacement->getTitle());
+
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
+        $oTemplate = $oTemplating->loadTemplate("ktstandard/disclaimers/manage_disclaimers_item");
         $aTemplateData = array(
             "context" => &$this,
             "help" => $oHelpReplacement,
         );
-        $this->aBreadcrumbs[] = array(
-            'name' => _kt('Edit help item'),
-        );
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_editReplacement() {
-        $id = KTUtil::arrayGet($_REQUEST, 'id');
-        $oHelpReplacement = KTHelpReplacement::get($id);
-        if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain(_kt("Could not find specified item"));
-        }
-        return $this->getReplacementItemData($oHelpReplacement);
-    }
-
-    function do_deleteReplacement() {
-        $id = KTUtil::arrayGet($_REQUEST, 'id');
-        $oHelpReplacement = KTHelpReplacement::get($id);
-        if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain(_kt("Could not find specified item"));
-        }
-        $res = $oHelpReplacement->delete();
-        if (PEAR::isError($res)) {
-            return $this->errorRedirectToMain(_kt("Could not delete specified item"));
-        }
-        return $this->successRedirectToMain(_kt("Item deleted"));
-    }
-    
-    function do_updateReplacement() {
+    function do_update() {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         $oHelpReplacement = KTHelpReplacement::get($id);
         if (PEAR::isError($oHelpReplacement)) {
@@ -124,17 +103,14 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         return $this->successRedirectToMain(_kt("Item updated"));
     }
 
+
     function do_customise() {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         $subname = KTHelp::getHelpSubPath($name);
         $oHelpReplacement = KTHelpReplacement::getByName($subname);
-        // XXX: Check against "already exists"
-        
-        //var_dump($name);
-        
+
         if (!PEAR::isError($oHelpReplacement)) {
-            // Already exists...
-            return $this->errorRedirectTo('editReplacement', _kt('Replacement already exists.'),'id=' .  $oHelpReplacement->getId());
+            return $this->redirectTo('edit', 'id=' .  $oHelpReplacement->getId());
         }
 
 	$info = KTHelp::getHelpFromFile($name);
@@ -151,13 +127,28 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         ));
 
         if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain(_kt("Unable to create replacement"));
+            return $this->errorRedirectToMain(_kt("Unable to create disclaimer"));
         }
-        return $this->successRedirectTo('editReplacement', _kt('Created replacement.'), 'id=' .  $oHelpReplacement->getId());
+
+	return $this->redirectTo('edit', 'id=' .  $oHelpReplacement->getId());
     }
+
+    function do_clear() {
+        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        $subname = KTHelp::getHelpSubPath($name);
+        $oHelpReplacement = KTHelpReplacement::getByName($subname);
+
+        if (PEAR::isError($oHelpReplacement)) {
+            return $this->errorRedirectToMain(_kt("Could not find specified item"));
+        }
+        $res = $oHelpReplacement->delete();
+        if (PEAR::isError($res)) {
+            return $this->errorRedirectToMain(_kt("Could not delete specified item"));
+        }
+        return $this->successRedirectToMain(_kt("Item deleted"));
+    }
+    
 }
 
-//$oDispatcher = new ManageHelpDispatcher();
-//$oDispatcher->dispatch();
 
 ?>
