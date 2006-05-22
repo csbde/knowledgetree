@@ -2,6 +2,19 @@
 What's new in this release
 ==========================
 
+3.0.3
+
+Features:
+
+ 
+
+Fixes:
+
+ - KTS-972 Owner, Everyone and Authenticated weren't being respected by browse
+   and search
+ - KTS-959 Documents weren't properly purged from the cache on change.
+
+
 3.0.2
 -----
 
