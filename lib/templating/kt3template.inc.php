@@ -385,9 +385,13 @@ class KTPage {
     }
 
     function getDisclaimer() {
-	$oRegistry =& KTPluginRegistry::getSingleton();
-	$oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
-	return $oPlugin->getPageDisclaimer();
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
+        if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
+            return $oPlugin->getPageDisclaimer();
+        } else {
+            return;
+        }
     }
 	
 }
