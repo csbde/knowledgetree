@@ -107,14 +107,14 @@ class TitleColumn extends BrowseColumn {
 
     function renderFolderLink($aDataRow) {
         $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
-        $outStr .= $aDataRow["folder"]->getName();
+        $outStr .= htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
         $outStr .= '</a> ';
         return $outStr;
     }
 
     function renderDocumentLink($aDataRow) {
         $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
-        $outStr .= $aDataRow["document"]->getName();
+        $outStr .= htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
         $outStr .= '</a>';
         return $outStr;
     }
