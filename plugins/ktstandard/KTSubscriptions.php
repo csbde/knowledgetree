@@ -86,6 +86,9 @@ class KTSubscriptionPortlet extends KTPortlet {
         if (!$this->oDispatcher->oDocument && !$this->oDispatcher->oFolder) {
             return null;
         }
+        if ($this->oDispatcher->oUser->isAnonymous()) {
+            return null;
+        }
         if ($this->oDispatcher->oDocument) {
             $oKTActionRegistry =& KTActionRegistry::getSingleton();
             $actions = $oKTActionRegistry->getActions('documentsubscriptionaction');
