@@ -87,13 +87,13 @@ if (PEAR::isError($loggingSupport)) {
 } else {
 ?>
 <p>Logging support is operational.</p>
-<?
+<?php
 }
 ?>
 
 <h2>Database connectivity</h2>
 
-<?
+<?php
 if (PEAR::isError($dbSupport)) {
     print '<p><font color="red">Database support is not currently working.  Error is: ' .
         htmlentities($dbSupport->toString()) . '</font></p>';
@@ -102,7 +102,7 @@ if (PEAR::isError($dbSupport)) {
 <p>Database connectivity successful.</p>
 
 <h3>Privileges</h3>
-<?
+<?php
 $selectPriv = DBUtil::runQuery('SELECT COUNT(id) FROM ' .  $default->documents_table);
 if (PEAR::isError($selectPriv)) {
     print '<p><font color="red">Unable to do a basic database query.
@@ -128,7 +128,7 @@ if (!empty($res)) {
 DBUtil::whereDelete($sTable, array('name' => 'transactionTest'));
 ?>
 
-<?
+<?php
 }
 ?>
 

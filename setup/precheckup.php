@@ -252,7 +252,7 @@ configuring your web server to use the .htaccess files that come with
 KnowledgeTree.  This will ensure that the settings for KnowledgeTree
 (detailed below) are set up for optimal, reliable performance.</p>
 
-<?=htaccess()?>
+<?php echo htaccess()?>
 
 <h2>PHP version and extensions</h2>
 
@@ -263,31 +263,31 @@ PHP you are running, and which modules are available.</p>
   <tbody>
     <tr>
       <th>PHP version 4.0 or above</th>
-      <td><?=$phpversion4?></td>
+      <td><?php echo $phpversion4?></td>
     </tr>
     <tr>
       <th>PHP version 4.3 or above</th>
-      <td><?=$phpversion43?></td>
+      <td><?php echo $phpversion43?></td>
     </tr>
     <tr>
       <th>PHP version below 5</th>
-      <td><?=$phpversion5?></td>
+      <td><?php echo $phpversion5?></td>
     </tr>
     <tr>
       <th>Session support</th>
-      <td><?=must_extension_loaded('session');?></td>
+      <td><?php echo must_extension_loaded('session');?></td>
     </tr>
     <tr>
       <th>MySQL support</th>
-      <td><?=must_extension_loaded('mysql');?></td>
+      <td><?php echo must_extension_loaded('mysql');?></td>
     </tr>
     <tr>
       <th>Gettext support</th>
-      <td><?=can_extension_loaded('gettext', "Only needed for using non-English languages");?></td>
+      <td><?php echo can_extension_loaded('gettext', "Only needed for using non-English languages");?></td>
     </tr>
     <tr>
       <th>Fileinfo support</th>
-      <td><?=can_extension_loaded('fileinfo', "Provides better file identification support - not necessary if you use file extensions");?></td>
+      <td><?php echo can_extension_loaded('fileinfo', "Provides better file identification support - not necessary if you use file extensions");?></td>
     </tr>
   </tbody>
 </table>
@@ -307,19 +307,19 @@ PHP you are running, and which modules are available.</p>
     </tr>
   </thead>
   <tbody>
-<?=boolSetting('Safe Mode','safe_mode','OFF')?>
-<?=boolSetting('Display Errors','display_errors','ON', false, "Will be set correctly anyway.")?>
-<?=boolSetting('Display Startup Errors','display_startup_errors','ON', false, "Will be set correctly anyway.")?>
-<?=boolSetting('File Uploads','file_uploads','ON')?>
-<?=boolSetting('Magic Quotes GPC','magic_quotes_gpc','OFF', false, "Quotes will be removed; not optimal")?>
-<?=boolSetting('Magic Quotes Runtime','magic_quotes_runtime','OFF')?>
-<?=boolSetting('Register Globals','register_globals','OFF', false, "Globals will be removed; not optimal, may be a security risk")?>
-<?=boolSetting('Output Buffering','output_buffering','OFF')?>
-<?=boolSetting('Session auto start','session.auto_start','OFF')?>
-<?=emptySetting('Automatic prepend file','auto_prepend_file')?>
-<?=emptySetting('Automatic append file','auto_append_file')?>
-<?=emptySetting('Open base directory','open_basedir')?>
-<?=stringSetting('Default MIME type', 'default_mimetype', 'text/html')?>
+<?php echo boolSetting('Safe Mode','safe_mode','OFF')?>
+<?php echo boolSetting('Display Errors','display_errors','ON', false, "Will be set correctly anyway.")?>
+<?php echo boolSetting('Display Startup Errors','display_startup_errors','ON', false, "Will be set correctly anyway.")?>
+<?php echo boolSetting('File Uploads','file_uploads','ON')?>
+<?php echo boolSetting('Magic Quotes GPC','magic_quotes_gpc','OFF', false, "Quotes will be removed; not optimal")?>
+<?php echo boolSetting('Magic Quotes Runtime','magic_quotes_runtime','OFF')?>
+<?php echo boolSetting('Register Globals','register_globals','OFF', false, "Globals will be removed; not optimal, may be a security risk")?>
+<?php echo boolSetting('Output Buffering','output_buffering','OFF')?>
+<?php echo boolSetting('Session auto start','session.auto_start','OFF')?>
+<?php echo emptySetting('Automatic prepend file','auto_prepend_file')?>
+<?php echo emptySetting('Automatic append file','auto_append_file')?>
+<?php echo emptySetting('Open base directory','open_basedir')?>
+<?php echo stringSetting('Default MIME type', 'default_mimetype', 'text/html')?>
   </tbody>
 </table>
 
@@ -334,11 +334,11 @@ PHP you are running, and which modules are available.</p>
     </tr>
   </thead>
   <tbody>
-<?=bigEnough('Maximum POST size', 'post_max_size', 32 * 1024 * 1024, true)?>
-<?=bigEnough('Maximum upload size', 'upload_max_filesize', 32 * 1024 * 1024, true)?>
-<?=bigEnough('Memory limit', 'memory_limit', 32 * 1024 * 1024, true)?>
-<?=""; # bigEnough('Maximum execution time', 'max_execution_time', 30)?>
-<?=""; # bigEnough('Maximum input time', 'max_input_time', 60)?>
+<?php echo bigEnough('Maximum POST size', 'post_max_size', 32 * 1024 * 1024, true)?>
+<?php echo bigEnough('Maximum upload size', 'upload_max_filesize', 32 * 1024 * 1024, true)?>
+<?php echo bigEnough('Memory limit', 'memory_limit', 32 * 1024 * 1024, true)?>
+<?php echo ""; # bigEnough('Maximum execution time', 'max_execution_time', 30)?>
+<?php echo ""; # bigEnough('Maximum input time', 'max_input_time', 60)?>
   <tbody>
 </table>
 
@@ -381,7 +381,7 @@ if (is_null($username)) {
 ?>
 <tr>
 <td width="33%">General</td>
-<td><?=$message?></td>
+<td><?php echo $message?></td>
 </tr>
   </tbody>
 </table>
