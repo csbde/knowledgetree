@@ -39,6 +39,8 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/search/searchutil.inc.php");
  
+define('XXX_HARDCODE_SIMPLE_FOLDER_SEARCH', true); 
+ 
 // Abstract base class.
 class PartialQuery {
     // initialise here (pass whatever this needs)
@@ -254,14 +256,70 @@ class SimpleSearchQuery extends PartialQuery {
     var $searchable_text;
 
     function SimpleSearchQuery($sSearchableText) { $this->searchable_text = $sSearchableText; }
+
+    function _getFolderQuery($aOptions = null) {
+        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName, "F");
+        if (PEAR::isError($res)) {
+           return $res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
+
+        $aPotentialWhere = array('MATCH (FST.folder_text) AGAINST (? IN BOOLEAN MODE) <> 0',$sPermissionString);
+        $aWhere = array();
+        foreach ($aPotentialWhere as $sWhere) {
+            if (empty($sWhere)) {
+                continue;
+            }
+            if ($sWhere == "()") {
+                continue;
+            }
+            $aWhere[] = $sWhere;
+        }
+        $sWhere = "";
+        if ($aWhere) {
+            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+        }
+
+        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
+
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("folders") . " AS F 
+        LEFT JOIN " . KTUtil::getTableName("folder_searchable_text") . " AS FST ON (F.id = FST.folder_id) 
+        $sPermissionJoin $sWhere ";
+        $aParams = array($this->searchable_text);
+        $aParams = kt_array_merge($aParams,  $aPermissionParams);
+        return array($sQuery, $aParams);
+    }
     
     function getFolderCount() { 
-        // never any folders, given the current fulltext environ.
-        return 0;
+        // use hack to get folders, if included.
+        if (!XXX_HARDCODE_SIMPLE_FOLDER_SEARCH) { return 0; }
+        
+        $aOptions = array(
+            'select' => 'count(F.id) AS cnt',
+        );
+        $aQuery = $this->_getFolderQuery($aOptions);
+        if (PEAR::isError($aQuery)) { return 0; }
+        $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
+        return $iRet;
     }
 
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        return array();
+        if (!XXX_HARDCODE_SIMPLE_FOLDER_SEARCH) { return array(); }
+        
+        $res = $this->_getFolderQuery();
+        if (PEAR::isError($res)) { return array(); }
+        list($sQuery, $aParams) = $res;
+        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
+
+        $sQuery .= " LIMIT ?, ?";
+        $aParams[] = $iBatchStart;
+        $aParams[] = $iBatchSize;
+    
+        $q = array($sQuery, $aParams);
+        
+        $res = DBUtil::getResultArray($q); 
+        
+        return $res;
     }
 
     function getQuery($aOptions = null) {

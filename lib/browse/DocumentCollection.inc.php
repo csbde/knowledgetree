@@ -167,7 +167,7 @@ class DocumentCollection {
 		 }
 		 
 	  }
-
+	  //var_dump($folderSet);
 	  $this->activeset = array(
 		 "folders" => $folderSet,
 		 "documents" => $documentSet,
