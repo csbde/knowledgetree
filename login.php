@@ -81,10 +81,12 @@ class LoginPageDispatcher extends KTDispatcher {
         }
         $sLanguageSelect = $default->defaultLanguage;
 
-	// extra disclaimer, if plugin is enabled
-	$oRegistry =& KTPluginRegistry::getSingleton();
-	$oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
-	$sDisclaimer = $oPlugin->getLoginDisclaimer();
+        // extra disclaimer, if plugin is enabled
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
+        if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
+            $sDisclaimer = $oPlugin->getLoginDisclaimer();
+        }
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/login");
