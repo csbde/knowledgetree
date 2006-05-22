@@ -263,8 +263,29 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $fields[] = new KTTextWidget(_kt("Email addresses"), _kt("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
         }
         $fields[] = new KTTextWidget(_kt("Comment"), _kt("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
-        $aGroups = Group::getList();
-        $aUsers = User::getEmailUsers();
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $bOnlyOwnGroup = $oKTConfig->get('email/onlyOwnGroup', false);
+        if ($bOnlyOwnGroup != true) {
+            $aGroups = Group::getList();
+            $aUsers = User::getEmailUsers();
+        } else {
+            $aGroups = GroupUtil::listGroupsForUser($this->oUser);
+            $aMembers = array();
+            foreach ($aGroups as $oGroup) {
+                $aMembers = array_merge($aMembers, $oGroup->getMembers());
+            }
+            $aUsers = array();
+            $aUserIds = array();
+            foreach ($aMembers as $oUser) {
+                if (in_array($oUser->getId(), $aUserIds)) {
+                    continue;
+                }
+                $aUsers[] = $oUser;
+                $aUserIds[] = $oUser->getId();
+            }
+        }
+
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
