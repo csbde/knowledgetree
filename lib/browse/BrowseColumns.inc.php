@@ -124,7 +124,11 @@ class TitleColumn extends BrowseColumn {
     }
 
     function buildFolderLink($aDataRow) {
-        return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+        if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
+            return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+        } else {
+            return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
+        }
     }
     
     // use inline, since its just too heavy to even _think_ about using smarty.
