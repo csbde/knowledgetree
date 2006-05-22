@@ -150,7 +150,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $t->setSearch($searchable_text);
 		*/
 		$t =& new TitleColumn("Test 1 (title)","title");
-        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
+        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php', 'direct_folder' => true));
 		$collection->addColumn($t);
 		$collection->addColumn(new DownloadColumn('','download'));
 		$collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));

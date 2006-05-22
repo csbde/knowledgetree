@@ -72,6 +72,9 @@ class KTFolderUtil {
         // fire subscription alerts for the new folder
         $oSubscriptionEvent = new SubscriptionEvent();
         $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
+        
+        KTFolderUtil::updateSearchableText($oFolder);
+         
         return $oFolder;
     }
 
@@ -208,6 +211,8 @@ class KTFolderUtil {
         $oFolder->setName($sNewName);
         $res = $oFolder->update();
 
+        KTFolderUtil::updateSearchableText($oFolder);
+
         Document::clearAllCaches();
         Folder::clearAllCaches();
 
@@ -217,6 +222,8 @@ class KTFolderUtil {
     function exists($oParentFolder, $sName) {
         return Folder::folderExistsName($sName, $oParentFolder->getID());
     }
+    
+    
     
     /* folderUtil::delete
      *
@@ -468,6 +475,30 @@ class KTFolderUtil {
         DBUtil::commit();
         
         return true;    
+    }
+    
+    function updateSearchableText($oFolder) {
+        // very simple function to rebuild the searchable text for this 
+        // folder.
+        
+        // MyISAM table for fulltext index - no transactions.
+        
+        // get the folder text
+        // XXX replace this with a trigger / producer set.
+        $sSearchableText = $oFolder->getName();
+        
+        // do the update.
+        $iFolderId = KTUtil::getId($oFolder);
+        $sTable = KTUtil::getTableName('folder_searchable_text');
+        $aDelete = array(
+            "folder_id" => $iFolderId,
+        );
+        DBUtil::whereDelete($sTable, $aDelete);
+        $aInsert = array(
+            "folder_id" => $iFolderId,
+            "folder_text" => $sSearchableText,
+        );
+        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
 }
 
