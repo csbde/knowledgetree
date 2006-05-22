@@ -638,7 +638,6 @@ class SubscriptionEvent {
 		
 		// notionally less efficient than the old code.  if its a big issue, can easily
 		// be refactored.
-		$default->log->error("SubscriptionEvent:: " . print_r($iSubType, true));
 		foreach ($aNewUsers as $iUserId) {
 			$oUser = & User::get($iUserId);
 			
