@@ -151,12 +151,23 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		} else {
 		    $oGroup->setUnitId($unit_id);
 		}
-		
+
 		$res = $oGroup->update();
 		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain(_kt('Failed to set group details.')); }
+
+		if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+		    $this->rollbackTransaction();
+		    $this->errorRedirectTo('editGroup', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()));
+		    exit(0);
+		}
+
 		
 		$this->commitTransaction();
-		$this->successRedirectToMain(_kt('Group details updated.'));
+		if($unit_id == 0 && $is_unitadmin) {
+		    $this->successRedirectToMain(_kt('Group details updated.') . _kt(' Note: group is set as unit administrator, but is not assigned to a unit.'));
+		} else {
+		    $this->successRedirectToMain(_kt('Group details updated.'));
+		}   
 	}
     // }}}
 
@@ -309,6 +320,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $msg = '';
         if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . ', <br />'; }
         if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
+
+	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+	    $this->rollbackTransaction();
+	    $this->errorRedirectTo('manageUsers', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()));
+	    exit(0);
+	}
         
         $this->commitTransaction();
         $this->successRedirectToMain($msg);
@@ -504,7 +521,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		//if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain('Failed to create group "' . $group_name . '"'); }
 		// do i need to "create"
 		$this->commitTransaction();
-		$this->successRedirectToMain(sprintf(_kt('Group "%s" created.'), $group_name));
+
+		if($unit_id == 0 && $is_unitadmin) {
+		    $this->successRedirectToMain(sprintf(_kt('Group "%s" created.'), $group_name) . _kt(' Note: group is set as unit administrator, but is not assigned to a unit.'));
+		} else {
+		    $this->successRedirectToMain(sprintf(_kt('Group "%s" created.'), $group_name));
+		}   
 	}
     // }}}
 
