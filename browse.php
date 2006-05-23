@@ -418,7 +418,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $_SESSION["KTErrorMessage"][] = _kt("The following folders can not be moved") . ": " . $folderStr;
             }
             if (!empty($documentStr)) {
-                $_SESSION["KTErrorMessage"][] = _kt("The following documents can not be moved") . ": " . $documentStr;
+                $_SESSION["KTErrorMessage"][] = _kt("The following documents can not be moved as they are either checked out, or controlled by a workflow") . ": " . $documentStr;
             }
         }
 

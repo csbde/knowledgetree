@@ -556,6 +556,13 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $msg = '';
         if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added to groups') . ': ' . implode(', ', $groupsAdded) . ' <br />'; }
         if (!empty($groupsRemoved)) { $msg .= ' ' . _kt('Removed from groups') . ': ' . implode(', ',$groupsRemoved) . '.'; }
+
+	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+	    $this->rollbackTransaction();
+	    $this->errorRedirectTo('editgroups', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('user_id=%d', $oUser->getId()));
+	    exit(0);
+	}
+	
         
         $this->commitTransaction();
         $this->successRedirectToMain($msg);

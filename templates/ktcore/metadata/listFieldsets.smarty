@@ -43,7 +43,7 @@
 {if $aFields}
 
 {foreach from=$aFields item=oField name=fields}
-{$oField->getName()}{if (!$smarty.foreach.fields.last)}, {/if} 
+{$oField->getName()}{if (!$smarty.foreach.fields.last)}<br/> {/if} 
 {/foreach}
 
 {else}
@@ -58,7 +58,7 @@
 {foreach from=$aDocumentTypes item=oDocumentType name=doctypes}
 
     {capture assign=docid}{$oDocumentType->getId()}{/capture}
-<a href="{ktLink base="admin.php" subpath="/documents/typemanagement" query="action=edit&fDocumentTypeId=`$docid`"}">{$oDocumentType->getName()}</a>{if (!$smarty.foreach.doctypes.last)}, {/if} 
+<a href="{ktLink base="admin.php" subpath="/documents/typemanagement" query="action=edit&fDocumentTypeId=`$docid`"}">{$oDocumentType->getName()}</a>{if (!$smarty.foreach.doctypes.last)}<br/> {/if} 
 
 {/foreach}
 
