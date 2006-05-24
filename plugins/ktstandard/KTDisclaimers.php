@@ -61,12 +61,10 @@ class KTDisclaimersPlugin extends KTPlugin {
 	$sDisclaimer = false;
 
 	if($this->isRegistered()) {
-	    $help_path = KTHelp::getHelpSubPath($sLocation);
-	    $oReplacementHelp = KTHelpReplacement::getByName($help_path);
-
-
-	    if(!PEAR::isError($oReplacementHelp) && strlen(trim($oReplacementHelp->getDescription()))) {
-		$sDisclaimer = $oReplacementHelp->getDescription();
+	    $aHelp = KTHelp::getHelpInfo($sLocation);
+	    
+	    if(!PEAR::isError($aHelp) && strlen(trim($aHelp['body']))) {
+		$sDisclaimer = $aHelp['body'];
 	    }
 	}
 
