@@ -442,7 +442,7 @@ class Folder extends KTEntity {
         $sQuery = "SELECT id FROM " . KTUtil::getTableName('folders') . " WHERE name = ? AND parent_id = ?";/*ok*/
         $aParams = array($sName, $iParentID);
 		$res = DBUtil::getResultArray(array($sQuery, $aParams));
-		var_dump($res);
+		//var_dump($res);
 		if (count($res) != 0) {
 			return true;
 		}
