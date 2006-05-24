@@ -74,7 +74,20 @@ class KTBulkImportManager {
             return $aFolderPaths;
         }
         foreach ($aFolderPaths as $sFolderPath) {
-            $oThisFolder = KTFolderUtil::add($oFolder, basename($sFolderPath), $this->oUser);
+            if (Folder::folderExistsName($sFolderPath, KTUtil::getId($oFolder))) {
+                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), $sFolderPath, $oFolder->getName());
+                $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple($sFolderPath) . '"');
+                if (PEAR::isError($aOptions)) { 
+                    return $aOptions;
+                }
+                if (count($aOptions) != 1) {
+                    return PEAR::raiseError(sprintf(_kt("Two folders named %s present in %s. Unable to decide which to use..."), $sFolderName, $oFolder->getName()));
+                } else {
+                    $oThisFolder = $aOptions[0];
+                }
+            } else {
+                $oThisFolder = KTFolderUtil::add($oFolder, basename($sFolderPath), $this->oUser);
+            }
             if (PEAR::isError($oThisFolder)) {
                 return $oThisFolder;
             }
@@ -90,6 +103,17 @@ class KTBulkImportManager {
         if (PEAR::isError($aInfo)) {
             return $aInfo;
         }
+        // need to check both of these.
+        if (KTDocumentUtil::nameExists($oFolder, basename($sPath))) {
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), basename($sPath), $oFolder->getName());
+            $oDocument =& Document::getByNameAndFolder(basename($sPath), KTUtil::getId($oFolder));
+            return $oDocument;            
+        } else if (KTDocumentUtil::fileExists($oFolder, basename($sPath))) {
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), basename($sPath), $oFolder->getName());
+            $oDocument =& Document::getByFilenameAndFolder(basename($sPath), KTUtil::getId($oFolder));
+            return $oDocument;
+        }
+        // else
         $aOptions = array(
             // XXX: Multiversion Import
             'contents' => $aInfo->aVersions[0],
