@@ -544,7 +544,17 @@ class KTWorkflowUtil {
         // FIXME extract this into a util - I see us using this again and again.
         // start with roles ... roles _only_ ever contain groups.
         foreach ($aRoles as $oRole) {
-            $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $oRole->getId());
+            // do NOT alert anonymous or Everyone roles - that would be very scary.
+            $iRoleId = KTUtil::getId($oRole);
+            if (($iRoleId == -3) || ($iRoleId == -4)) {
+                continue;
+            }
+            // first try on the document, then the folder above it.
+            $oRoleAllocation = DocumentRoleAllocation::getAllocationsForDocumentAndRole($oDocument->getId(), $iRoleId);
+            if (is_null($oRoleAllocation)) {
+                // if we don't get a document role, try folder role.
+                $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $oRole->getId());
+            }
             if (is_null($oRoleAllocation) || PEAR::isError($oRoleAllocation)) {
 		continue; 
 	    }

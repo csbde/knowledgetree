@@ -537,8 +537,6 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     }
     // }}}
 
-
-
     // {{{ do_disableWorkflow
     function do_disableWorkflow() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
@@ -559,12 +557,6 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         exit(0);
     }
     // }}}
-
-
-
-
-
-
 
     function do_manageActions() {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/manageActions');
@@ -624,7 +616,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'aActions' => KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow)),
             'aActionsSelected' => KTWorkflowUtil::getEnabledActionsForState($oState),
             'aGroups' => Group::getList(),
-            'aRoles' => Role::getList(),
+            'aRoles' => Role::getList('id NOT IN (-3,-4)'),
             'aUsers' => User::getList(),            
             
             // subform
@@ -874,7 +866,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'aActions' => KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow)),
             'aActionsSelected' => KTWorkflowUtil::getEnabledActionsForState($oState),
             'aGroups' => Group::getList(),
-            'aRoles' => Role::getList(),
+            'aRoles' => Role::getList('id NOT IN (-3,-4)'),
             'aUsers' => User::getList(),
             'aInformed' => $aInformed,
             'editForm' => $editForm,
