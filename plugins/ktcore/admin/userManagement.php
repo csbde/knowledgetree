@@ -75,13 +75,17 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             $no_search = false;
         }
         
+
+        $aAuthenticationSources =& KTAuthenticationSource::getList();        
+
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/useradmin");
         $aTemplateData = array(
             "context" => $this,
             "search_fields" => $search_fields,
             "search_results" => $search_results,
-            'no_search' => $no_search,
+            "no_search" => $no_search,
+	    "authentication_sources" => $aAuthenticationSources,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -121,14 +125,11 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
         $add_fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true, null, null, $aOptions);        
 
-        $aAuthenticationSources =& KTAuthenticationSource::getList();
-        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/adduser");
         $aTemplateData = array(
             "context" => &$this,
             "add_fields" => $add_fields,
-            "authentication_sources" => $aAuthenticationSources,
         );
         return $oTemplate->render($aTemplateData);
     }    

@@ -39,10 +39,15 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
 
-	function check() {
-	    if ($this->oUser->getId() == -2) { return false; }
-		return parent::check();
-	}
+    function check() {
+	$oConfig =& KTConfig::getSingleton();
+	if ($this->oUser->getId() == -2 || 
+	    ($oConfig->get('user_prefs/restrictPreferences', false) && !Permission::userIsSystemAdministrator($this->oUser->getId()))) { 
+	    return false; 
+	}	
+	
+	return parent::check();
+    }
 
     function PreferencesDispatcher() {
         $this->aBreadcrumbs = array(
@@ -52,15 +57,15 @@ class PreferencesDispatcher extends KTStandardDispatcher {
     }
 
     function do_main() {
-		$this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
-		$this->oPage->title = _kt("Dashboard");
+	$this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
+	$this->oPage->title = _kt("Dashboard");
 		
 		
-		$oUser =& $this->oUser;
+	$oUser =& $this->oUser;
 		
-		$aOptions = array('autocomplete' => false);
+	$aOptions = array('autocomplete' => false);
 		
-		$edit_fields = array();
+	$edit_fields = array();
         $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true, null, null, $aOptions);        
         $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false, null, null, $aOptions);        
         $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        

@@ -1,17 +1,42 @@
 <h2>{i18n}User Management{/i18n}</h2>
 
 
-<!-- FIXME inline CSS is _very_ bad. -->
-<fieldset>
-<legend>{i18n}Add New Users{/i18n}</legend>
-<p class="descriptiveText">{i18n}To allow users access to the DMS, you need to provide them with
-credentials through this section.  Even if you are using an external source
-of login information like <strong>LDAP</strong>, you will need to use this section
-to retrieve their information from the external source.{/i18n}</p>
-<p><a href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser" style="float:
-left; padding-right: 0.5em;">{i18n}Add a new user{/i18n}</a><a
-href="{addQS}action=addUser{/addQS}">{i18n}Add a new user{/i18n}</a></p>
+
+<fieldset> <legend>{i18n}Add new users{/i18n}</legend> <p
+class="descriptiveText">{i18n}To add users to the DMS authentication
+provider, you need to provide them with credentials through this
+section.  If you are using an external source of login information
+like <strong>LDAP</strong>, ensure the appropriate plugin is loaded
+and use the section below.{/i18n}</p> <p><a
+href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
+style="float: left; padding-right: 0.5em;">{i18n}Add a new
+user{/i18n}</a><a href="{addQS}action=addUser{/addQS}">{i18n}Add a new
+user{/i18n}</a></p>
+
+
 </fieldset>
+{if $authentication_sources}
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="addUserFromSource" />
+   <fieldset><legend>{i18n}Add a user from an authentication source{/i18n}</legend>
+
+<p class="descriptiveText">{i18n}Instead of manually creating the user within
+the document management system, the user can be found within an
+authentication source (such as an LDAP directory) that has already been
+configured.  This ensures that the user is correctly set up with limited
+intervention from the administrator, and that the user will not need to
+remember an additional password for the document management
+system.{/i18n}</p>
+
+   {entity_select name="source_id" entities=$authentication_sources}
+   <div class="form_actions ">
+     <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+   </div>
+   </fieldset>
+   </form>
+</p>
+{/if}
+
 
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
