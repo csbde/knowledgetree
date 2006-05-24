@@ -106,19 +106,15 @@ class ManageDisclaimersDispatcher extends KTAdminDispatcher {
 
     function do_customise() {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $subname = KTHelp::getHelpSubPath($name);
-        $oHelpReplacement = KTHelpReplacement::getByName($subname);
+
+	$subname = KTHelp::_getLocationInfo($name);
+        $oHelpReplacement = KTHelpReplacement::getByName($subname['internal']);
 
         if (!PEAR::isError($oHelpReplacement)) {
             return $this->redirectTo('edit', 'id=' .  $oHelpReplacement->getId());
         }
 
-	$info = KTHelp::getHelpFromFile($name);
-        if ($info === false) { 
-            $info = array('name' => $name);
-            $info['title'] = _kt('New Help File');
-            $info['body'] = _kt('New Help File');
-        }
+	$info = KTHelp::getHelpInfo($name);
 
         $oHelpReplacement = KTHelpReplacement::createFromArray(array(
             'name' => $info['name'],
@@ -127,6 +123,9 @@ class ManageDisclaimersDispatcher extends KTAdminDispatcher {
         ));
 
         if (PEAR::isError($oHelpReplacement)) {
+	    print '<pre>';
+	    var_dump($info);
+	    exit(0);
             return $this->errorRedirectToMain(_kt("Unable to create disclaimer"));
         }
 
@@ -135,8 +134,8 @@ class ManageDisclaimersDispatcher extends KTAdminDispatcher {
 
     function do_clear() {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $subname = KTHelp::getHelpSubPath($name);
-        $oHelpReplacement = KTHelpReplacement::getByName($subname);
+	$subname = KTHelp::_getLocationInfo($name);
+        $oHelpReplacement = KTHelpReplacement::getByName($subname['internal']);
 
         if (PEAR::isError($oHelpReplacement)) {
             return $this->errorRedirectToMain(_kt("Could not find specified item"));
