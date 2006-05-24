@@ -268,7 +268,9 @@ class KTPage {
     
     /* final render call. */
     function render() {
-	    global $default; 
+	global $default; 
+        $oConfig = KTConfig::getSingleton();
+
         if (empty($this->contents)) {
             $this->contents = "";
         }
@@ -278,63 +280,60 @@ class KTPage {
             $this->contents = "";
         }
 		
-		if (!is_string($this->contents)) {
-			$this->contents = $this->contents->render();
-		}
+	if (!is_string($this->contents)) {
+	    $this->contents = $this->contents->render();
+	}
 		
-		// if we have no portlets, make the ui a tad nicer.
-		if (empty($this->portlets)) {
-		    $this->show_portlets = false;
-		}
+	// if we have no portlets, make the ui a tad nicer.
+	if (empty($this->portlets)) {
+	    $this->show_portlets = false;
+	}
 		
-		if (empty($this->title)) {
-		    if (!empty($this->breadcrumbDetails)) {
-				$this->title = $this->breadcrumbDetails;
-			} else if (!empty($this->breadcrumbs)) {
-				$this->title = array_slice($this->breadcrumbs, -1);
-				$this->title = $this->title[0]['label'];
-			} else if (!empty($this->breadcrumbSection)) {
-				$this->title = $this->breadcrumbSection['label'];
-			} else {
-			    $this->title = $this->componentLabel;
-			}
-		}
+	if (empty($this->title)) {
+	    if (!empty($this->breadcrumbDetails)) {
+		$this->title = $this->breadcrumbDetails;
+	    } else if (!empty($this->breadcrumbs)) {
+		$this->title = array_slice($this->breadcrumbs, -1);
+		$this->title = $this->title[0]['label'];
+	    } else if (!empty($this->breadcrumbSection)) {
+		$this->title = $this->breadcrumbSection['label'];
+	    } else {
+		$this->title = $this->componentLabel;
+	    }
+	}
 		
-		$this->userMenu = array();
-		if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
-			$this->userMenu = array(
-				"preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
-				"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),
-			);
-		} else {
-			$this->userMenu = array(
-			    "login" => $this->_actionHelper(array("name" => _kt("Login"), "action" => "login")),
-			);
-		}		
+	$this->userMenu = array();
+	if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {	    
+	    if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
+		$this->userMenu = array("logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
+	    } else {
+		$this->userMenu = array("preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
+					"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
+	    }
+	} else {
+	    $this->userMenu = array("login" => $this->_actionHelper(array("name" => _kt("Login"), "action" => "login")),);
+	}		
 		
-		// FIXME we need a more complete solution to navigation restriction
-		if (!is_null($this->menu['administration']) && !is_null($this->user)) {
-			if (!Permission::userIsSystemAdministrator($this->user->getId())) {
-			    unset($this->menu['administration']);
-			}
-		}
-		
-		$sContentType = 'Content-type: ' . $this->contentType;
-		if(!empty($this->charset)) {
-		    $sContentType .= '; charset=' . $this->charset;
-		};
+	// FIXME we need a more complete solution to navigation restriction
+	if (!is_null($this->menu['administration']) && !is_null($this->user)) {
+	    if (!Permission::userIsSystemAdministrator($this->user->getId())) {
+		unset($this->menu['administration']);
+	    }
+	}
+	
+	$sContentType = 'Content-type: ' . $this->contentType;
+	if(!empty($this->charset)) {
+	    $sContentType .= '; charset=' . $this->charset;
+	};
     
 
-		header($sContentType);
+	header($sContentType);
 		
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->template);
-        $aTemplateData = array(
-            "page" => $this,
-			"systemversion" => $default->systemVersion,
-			"versionname" => $default->versionName,
-        );
-        $oConfig = KTConfig::getSingleton();
+        $aTemplateData = array("page" => $this,
+			       "systemversion" => $default->systemVersion,
+			       "versionname" => $default->versionName,);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
@@ -342,7 +341,7 @@ class KTPage {
         // unlike the rest of KT, we use echo here.
         echo $oTemplate->render($aTemplateData);
     }
-
+    
 
 	/**   heler functions */
 	// returns an array ("url", "label")
