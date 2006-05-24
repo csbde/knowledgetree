@@ -318,7 +318,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		}        
         
         $msg = '';
-        if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . ', <br />'; }
+        if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . '. <br />'; }
         if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
 
 	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
