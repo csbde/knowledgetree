@@ -46,15 +46,13 @@ class KTInfoDashlet extends KTBaseDashlet {
         $aHelpInfo = array();
         $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
                
-        $help_path = KTHelp::getHelpSubPath($this->helpLocation);
-        if ($help_path == false) {
+        $help_path = KTHelp::_getLocationInfo($this->helpLocation);
+        if (PEAR::isError($help_path)) {
             return false;
         }
         
         // We now check for substitute help files.  try to generate an error.
-        $oReplacementHelp = KTHelpReplacement::getByName($help_path);
-        
-        $aHelpInfo = KTHelp::getHelpFromFile($this->helpLocation);      
+        $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
         
         // NORMAL users never see edit-option.
         if (!$can_edit) {
@@ -66,19 +64,6 @@ class KTInfoDashlet extends KTBaseDashlet {
                 return false;
             }
         } 
-        
-        
-        
-        if (!PEAR::isError($oReplacementHelp)) {
-            $aHelpInfo['title'] = $oReplacementHelp->getTitle();
-            $aHelpInfo['body'] = $oReplacementHelp->getDescription();
-            $this->help_id = $oReplacementHelp->getId();
-            
-        } else {
-            $this->help_id = null;
-        }
-        
-        if (empty($aHelpInfo)) { return false; }
         
         $this->aHelpInfo = $aHelpInfo;
         $this->canEdit = $can_edit;
@@ -97,7 +82,7 @@ class KTInfoDashlet extends KTBaseDashlet {
             'body' => $this->aHelpInfo['body'],
             'can_edit' => $this->canEdit,
             'target_name' => $this->helpLocation,
-            'help_id' => $this->help_id,
+            'help_id' => $this->aHelpInfo['help_id'],
         );
         return $oTemplate->render($aTemplateData);
     }
