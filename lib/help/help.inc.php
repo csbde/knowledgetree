@@ -104,6 +104,7 @@ class KTHelp {
             'title' => null,
             'body' => null,
             'help_id' => null,
+            'name' => null,
         );
         $aPathInfo = KTHelp::_getLocationInfo($sSubPath, $sLangCode);
         if (PEAR::isError($aPathInfo)) {
@@ -126,6 +127,7 @@ class KTHelp {
             $aInfo['title'] = $oReplacement->getTitle();
             $aInfo['body'] = $oReplacement->getDescription();
             $aInfo['help_id'] = $oReplacement->getID();
+            $aInfo['name'] = $oReplacement->getName();
             return $aInfo;
         }
         
@@ -144,7 +146,7 @@ class KTHelp {
             return PEAR::raiseError(_kt("The requested help language has no contents."));
         } 
         $aInfo['title'] = KTUtil::arrayGet($aData, 'title', _kt("Untitled Help File"));
-        
+        $aInfo['name'] = $aPathInfo['internal'];
         return $aInfo;
     }
     
