@@ -10,6 +10,7 @@ Features:
 
 Fixes:
 
+ - Made help able to work across multiple languages
  - KTS-972 Owner, Everyone and Authenticated weren't being respected by browse
    and search
  - KTS-959 Documents weren't properly purged from the cache on change.

@@ -71,20 +71,76 @@ class HelpDispatcher extends KTStandardDispatcher {
     function do_main() {        
         // store referer
         $sBackKey = KTUtil::arrayGet($_REQUEST, 'back_key', false);
+        $sSubPath = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+        
+        // we want to be able to say "i left the system at point x.  go back there"
         if(!$sBackKey) {
             $sReferer = KTUtil::arrayGet($_SERVER ,'HTTP_REFERER');
             $sBackKey = KTUtil::randomString();            
             $_SESSION[$sBackKey] = $sReferer;
         } 
         
-        $pathinfo = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-        if (empty($pathinfo)) {
+        // no path specified
+        if (empty($sSubPath)) {
             $this->oPage->setTitle(_kt('No help page specified.'));
             $this->oPage->addError(_kt('No help page specified.'));
             return '&nbsp;';
         }
         
-        $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
+        // simple test to see if this user is active.
+        $bCanEdit = Permission::userIsSystemAdministrator($_SESSION['userID']);
+        
+        global $default;
+        $sLangCode = $default->defaultLanguage; 
+        /* 
+          now we need to know a few things.  
+             1. can we find this help file?
+             2. if we can, display it
+                2.1 images directly
+                2.2 html wrapped.
+             3. if now, fail out.
+             
+          this is essentially handled by asking help.inc.php for the 
+          subpath we've been given, PLUS THE LANGUAGE, and checking for 
+          a PEAR::raiseError.
+          
+          The "Correct" response we care about is a dictionary:
+          
+             {
+                 'is_image': string
+                 'title': string
+                 'body': string
+             }
+        */
+
+        $aHelpData = KTHelp::getHelpInfo($sSubPath);
+
+        if (PEAR::isError($aHelpData)) {
+            $this->oPage->setTitle($aHelpData->getMessage());
+            $this->oPage->addError($aHelpData->getMessage());
+            return '&nbsp';            
+        }
+        
+        $aLocInfo = KTHelp::_getLocationInfo($sSubPath);
+        
+        if ($aHelpData['is_image']) {
+            KTHelp::outputHelpImage($sSubPath);
+            exit(0); // done.
+        } else {
+            $this->oPage->setTitle($aHelpData['title']);
+            $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => $aHelpData['title']);
+            $oTemplating =& KTTemplating::getSingleton();
+            $oTemplate = $oTemplating->loadTemplate("ktcore/help_with_edit");
+            $aTemplateData = array(
+                  "context" => $this,
+                  "help_body" => $aHelpData['body'],
+                  "target_name" => KTUtil::arrayGet($aLocInfo, 'internal'),
+                  "back_key" => $sBackKey,
+                  'can_edit' => $bCanEdit,
+            );
+            return $oTemplate->render($aTemplateData);
+        }
+        /*
         $help_path = KTHelp::getHelpSubPath($pathinfo);
 
         if ($help_path == false) {
@@ -100,7 +156,7 @@ class HelpDispatcher extends KTStandardDispatcher {
             KTHelp::outputHelpImage($help_path);
         } else {
             // not an image, so:
-            $aHelpInfo = KTHelp::getHelpFromFile($pathinfo);
+            $aHelpInfo = KTHelp::getHelpFromFile($pathinfo)
         }
         
         
@@ -129,16 +185,7 @@ class HelpDispatcher extends KTStandardDispatcher {
         $this->oPage->setTitle($aHelpInfo['title']);
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => $aHelpInfo['title']);
         
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/help_with_edit");
-        $aTemplateData = array(
-              "context" => $this,
-              "help_body" => $aHelpInfo['body'],
-              "target_name" => $_SERVER['PATH_INFO'],
-              "back_key" => $sBackKey,
-              'can_edit' => $can_edit,
-        );
-        return $oTemplate->render($aTemplateData);
+        */
     }
 
     function do_go_back() {        

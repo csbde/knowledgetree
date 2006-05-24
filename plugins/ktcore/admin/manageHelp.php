@@ -126,19 +126,19 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
 
     function do_customise() {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $subname = KTHelp::getHelpSubPath($name);
-        $oHelpReplacement = KTHelpReplacement::getByName($subname);
+        $aPathInfo = KTHelp::_getLocationInfo($name);
+        $oHelpReplacement = KTHelpReplacement::getByName($aPathInfo['internal']);
         // XXX: Check against "already exists"
         
         //var_dump($name);
         
         if (!PEAR::isError($oHelpReplacement)) {
             // Already exists...
-            return $this->errorRedirectTo('editReplacement', _kt('Replacement already exists.'),'id=' .  $oHelpReplacement->getId());
+            return $this->successRedirectTo('editReplacement', _kt('Replacement already exists. Editing the existing copy instead of replacing.'),'id=' .  $oHelpReplacement->getId());
         }
 
-	$info = KTHelp::getHelpFromFile($name);
-        if ($info === false) { 
+	    $info = KTHelp::getHelpInfo($name);
+        if (PEAR::isError($info)) { 
             $info = array('name' => $name);
             $info['title'] = _kt('New Help File');
             $info['body'] = _kt('New Help File');
