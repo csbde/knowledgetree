@@ -47,6 +47,7 @@ class KTPlugin {
     var $_ai18n = array();
     var $_ai18nLang = array();
     var $_aLanguage = array();
+    var $_aHelpLanguage = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -126,6 +127,10 @@ class KTPlugin {
     function registerLanguage($sLanguage, $sLanguageName) {
         $this->_aLanguage[$sLanguage] = array($sLanguage, $sLanguageName);
     }
+    
+    function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
+        $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
+    }
 
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
@@ -182,6 +187,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
         require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
         require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
+        require_once(KT_LIB_DIR . "/help/help.inc.php");
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -191,6 +197,7 @@ class KTPlugin {
         $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton(); 
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $oi18nRegistry =& KTi18nRegistry::getSingleton();
+        $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -234,6 +241,10 @@ class KTPlugin {
 
         foreach ($this->_aLanguage as $k => $v) {
             call_user_func_array(array(&$oi18nRegistry, 'registerLanguage'), $v);
+        }
+        
+        foreach ($this->_aHelpLanguage as $k => $v) {
+            call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $v);
         }
     }
 
