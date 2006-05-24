@@ -439,15 +439,13 @@ class Folder extends KTEntity {
 	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function folderExistsName($sName, $iParentID) {
-		global $default, $lang_err_folder_exist;
-		$sql = $default->db;
-        $sQuery = "SELECT * FROM " . $default->folders_table . " WHERE name = ? AND parent_id = ?";/*ok*/
+        $sQuery = "SELECT id FROM " . KTUtil::getTableName('folders') . " WHERE name = ? AND parent_id = ?";/*ok*/
         $aParams = array($sName, $iParentID);
-		$sql->query(array($sQuery, $aParams));
-		if ($sql->next_record()) {
+		$res = DBUtil::getResultArray(array($sQuery, $aParams));
+		var_dump($res);
+		if (count($res) != 0) {
 			return true;
 		}
-		$_SESSION["errorMessage"] = $lang_err_folder_exist . $sName . " parent_id " . $iParentID;
 		return false;
 	}
 	

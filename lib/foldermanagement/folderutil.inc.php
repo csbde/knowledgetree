@@ -60,6 +60,11 @@ class KTFolderUtil {
         if (PEAR::isError($oFolder)) {
             return $oFolder;
         }
+        
+        // check for conflicts first
+        if (Folder::folderExistsName(KTUtil::getId($oParentfolder), $sFolderName)) {
+            return PEAR::raiseError(sprintf(_kt('The folder %s already exists.'), $sFolderName));
+        }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
