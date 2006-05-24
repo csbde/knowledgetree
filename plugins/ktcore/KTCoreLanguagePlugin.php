@@ -45,6 +45,7 @@ class KTCoreLanguagePlugin extends KTPlugin {
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
         $this->registeri18nLang('knowledgeTree', "en", "default");
         $this->registerLanguage('en', 'English (United States)');
+        $this->registerHelpLanguage('ktcore', 'en', sprintf("%s/kthelp/ktcore/EN/", KT_DIR));
     }
 }
 
