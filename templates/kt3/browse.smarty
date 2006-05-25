@@ -8,7 +8,8 @@
 <h2>{$custom_title}</h2>
 {/if}
 
-<form action="{$smarty.server.PHP_SELF}" METHOD="POST">
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
 <input type="hidden" name="action" value="massaction" />
 {if ($isEditable)}
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
@@ -21,4 +22,36 @@
 </div>
 {/if}
 </form>
+
+
+
+{if ($save_fields)}
+<form action="{$smarty.server.PHP_SELF}" method="post">
+<fieldset>
+<legend>Edit search</legend>
+<p class="descriptiveText">{i18n}To modify this search, press the 'Edit' button.{/i18n}</p>
+<input type="hidden" name="action" value="editSearch" />
+<input type="hidden" name="boolean_search" value="{$boolean_search}" />
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Edit{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
+<fieldset>
+<legend>{i18n}Save this search{/i18n}</legend>
+<p class="descriptiveText">{i18n}To save this search permanently, so that you can run it again at any time, fill in a name below and click 'Save'.{/i18n}</p>
+<input type="hidden" name="action" value="saveSearch" />
+<input type="hidden" name="boolean_search" value="{$boolean_search}" />
+{foreach item=oWidget from=$save_fields}
+    {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
+</div>
+</fieldset>
+</form>
+{/if}
+
 {* we break encapsulation pretty badly here. *}

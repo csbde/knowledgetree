@@ -40,15 +40,26 @@ class KTSearchPortlet extends KTPortlet {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
         
-        $aSearches = KTSavedSearch::getSearches();
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (!$iFolderId && !$iDocumentId) {
+            return null;
+        }
+
+	$iUserId = $_SESSION['userID'];
+	$aSearches = KTSavedSearch::getUserSearches($iUserId);
+
         // empty on error.
         if (PEAR::isError($aSearches)) { 
             $aSearches = array(); 
         }
         
+	$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $aTemplateData = array(
             "context" => $this,
             "saved_searches" => $aSearches,
+	    "folder_id" => $iFolderId,
+	    "document_id" => $iDocumentId,
         );
 
         return $oTemplate->render($aTemplateData);
