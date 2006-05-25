@@ -60,7 +60,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         $aTemplateData = array(
-            "title" => _kt("Create a new condition"),
+            "title" => _kt("Create a new saved search"),
             "aCriteria" => $aCriteria,
             "searchButton" => _kt("Save"),
             'context' => $this,
