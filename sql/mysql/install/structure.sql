@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2-Debian-1
+-- version 2.8.0.3-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 02, 2006 at 10:09 AM
--- Server version: 5.0.19
+-- Generation Time: May 25, 2006 at 04:05 PM
+-- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -579,6 +579,20 @@ CREATE TABLE `folder_doctypes_link` (
   KEY `fk_folder_id` (`folder_id`),
   KEY `fk_document_type_id` (`document_type_id`)
 ) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `folder_searchable_text`
+-- 
+
+CREATE TABLE `folder_searchable_text` (
+  `folder_id` int(11) NOT NULL default '0',
+  `folder_text` text,
+  PRIMARY KEY  (`folder_id`),
+  KEY `folder_searchable_text_folder_indx` (`folder_id`),
+  FULLTEXT KEY `folder_text` (`folder_text`)
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -2118,7 +2132,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=93 ;
+) TYPE=MyISAM AUTO_INCREMENT=96 ;
 
 -- --------------------------------------------------------
 

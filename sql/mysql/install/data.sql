@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2-Debian-1
+-- version 2.8.0.3-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 02, 2006 at 10:11 AM
--- Server version: 5.0.19
+-- Generation Time: May 25, 2006 at 04:07 PM
+-- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -211,6 +211,12 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default', 0);
 
 INSERT INTO `folder_doctypes_link` VALUES (1, 1, 1);
 INSERT INTO `folder_doctypes_link` VALUES (2, 2, 1);
+
+-- 
+-- Dumping data for table `folder_searchable_text`
+-- 
+
+INSERT INTO `folder_searchable_text` VALUES (1, 'Root Folder');
 
 -- 
 -- Dumping data for table `folder_subscriptions`
@@ -690,7 +696,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.2.2');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -822,6 +828,9 @@ INSERT INTO `upgrades` VALUES (89, 'sql*3.0.1.8*0*3.0.1.8/longer-text.sql', 'Dat
 INSERT INTO `upgrades` VALUES (90, 'sql*3.0.1.8*0*3.0.1.8/admin-mode-logging.sql', 'Database upgrade to version 3.0.1.8: Admin-mode-logging', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
 INSERT INTO `upgrades` VALUES (91, 'upgrade*3.0.1.8*99*upgrade3.0.1.8', 'Upgrade from version 3.0.1.7 to 3.0.1.8', '2006-04-23 12:54:12', 1, 'upgrade*3.0.1.8*99*upgrade3.0.1.8');
 INSERT INTO `upgrades` VALUES (92, 'upgrade*3.0.2*99*upgrade3.0.2', 'Upgrade from version 3.0.1.8 to 3.0.2', '2006-05-02 10:08:13', 1, 'upgrade*3.0.2*99*upgrade3.0.2');
+INSERT INTO `upgrades` VALUES (93, 'sql*3.0.2.1*0*3.0.2.1/disclaimer-help-files.sql', 'Database upgrade to version 3.0.2.1: Disclaimer-help-files', '2006-05-25 16:04:23', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
+INSERT INTO `upgrades` VALUES (94, 'sql*3.0.2.2*0*3.0.2.2/folder_search.sql', 'Database upgrade to version 3.0.2.2: Folder search', '2006-05-25 16:04:23', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
+INSERT INTO `upgrades` VALUES (95, 'upgrade*3.0.2.2*99*upgrade3.0.2.2', 'Upgrade from version 3.0.2 to 3.0.2.2', '2006-05-25 16:04:24', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1261,7 +1270,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (92);
+INSERT INTO `zseq_upgrades` VALUES (95);
 
 -- 
 -- Dumping data for table `zseq_user_history`
