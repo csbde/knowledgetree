@@ -134,7 +134,11 @@ class UpgradeItem {
         if (PEAR::isError($res)) {
             return $res;
         }
+        $oCache =& KTCache::getSingleton();
+        $save = $oCache->bEnabled;
+        $oCache->bEnabled = false;
         $res = $this->_performUpgrade();
+        $oCache->bEnabled = $save;
         if (PEAR::isError($res)) {
             $this->_recordUpgrade(false);
             return $res;
