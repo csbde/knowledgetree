@@ -52,6 +52,7 @@ class UpgradeFunctions {
         'createWorkflowPermission' => 'Create the Core: Manage Workflow',
     );
     var $phases = array(
+        "setPermissionFolder" => 1,
         "setPermissionObject" => 1,
         "createFieldSets" => 1,
         "normaliseDocuments" => 1,
@@ -60,49 +61,61 @@ class UpgradeFunctions {
     );
 
     // {{{ _setPermissionFolder
-    function _setPermissionFolder($oFolder) {
+    function _setPermissionFolder($iFolderId) {
         global $default;
-        $oInheritedFolder = $oFolder;
+        $iInheritedFolderId = $iFolderId;
+        if ($iInheritedFolderId == 1) {
+            $sQuery = "UPDATE folders SET permission_folder_id = 1 WHERE id = 1";
+            DBUtil::runQuery($sQuery);
+            return;
+        }
         while ($bFoundPermissions !== true) {
-            /*ok*/$aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $oInheritedFolder->getID());
+            /*ok*/$aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iInheritedFolderId);
             if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
-                $default->log->debug('No direct permissions on folder ' . $oInheritedFolder->getID());
+                $default->log->debug('No direct permissions on folder ' . $iInheritedFolderId);
                 $bInherited = true;
-                $oInheritedFolder =& Folder::get($oInheritedFolder->getParentID());
-                if ($oInheritedFolder === false) {
-                    break;
+
+                $aParentQuery = array('SELECT parent_id FROM folders WHERE id = ? LIMIT 1', $iInheritedFolderId);
+                $iParentId = DBUtil::getOneResultKey($aParentQuery, 'parent_id');
+                $iInheritedFolderId = $iParentId;
+                
+                if ($iInheritedFolderId === false) {
+                    return;
+                }
+                if ($iInheritedFolderId === null) {
+                    return;
                 }
                 // if our parent knows the permission folder, use that.
 
-                $aQuery = array("SELECT permission_folder_id FROM folders WHERE id = ?", array($oInheritedFolder->getID()));
+                $aQuery = array("SELECT permission_folder_id FROM folders WHERE id = ?", array($iInheritedFolderId));
                 $iPermissionFolderID = DBUtil::getOneResultKey($aQuery, 'permission_folder_id');
                 if (!empty($iPermissionFolderID)) {
                     $aQuery = array(
                         "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-                        array($iPermissionFolderID, $oFolder->getID())
+                        array($iPermissionFolderID, $iFolderId)
                     );
                     DBUtil::runQuery($aQuery);
                     return;
                 }
-                $default->log->debug('... trying parent: ' . $oInheritedFolder->getID());
+                $default->log->debug('... trying parent: ' . $iInheritedFolderId);
             } else {
-                $default->log->debug('Found direct permissions on folder ' . $oInheritedFolder->getID());
-                $iPermissionFolderID = $oInheritedFolder->getID();
+                $default->log->debug('Found direct permissions on folder ' . $iInheritedFolderId);
+                $iPermissionFolderID = $iInheritedFolderId;
                 $aQuery = array(
                     "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-                    array($iPermissionFolderID, $oFolder->getID())
+                    array($iPermissionFolderID, $iFolderId)
                 );
                 DBUtil::runQuery($aQuery);
                 return;
             }
         }
 
-        $default->log->error('No permissions whatsoever for folder ' . $oFolder->getID());
+        $default->log->error('No permissions whatsoever for folder ' . $iFolderId);
         // 0, which can never exist, for non-existent.  null for not set yet (database upgrade).
         $iPermissionFolderID = 0;
         $aQuery = array(
             "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-            array($iPermissionFolderID, $oFolder->getID())
+            array($iPermissionFolderID, $iFolderId)
         );
         DBUtil::runQuery($aQuery);
     }
@@ -113,13 +126,15 @@ class UpgradeFunctions {
         global $default;
         require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
-        $sQuery = "SELECT id FROM $default->folders_table WHERE permission_folder_id IS NULL";
+        $sQuery = "SELECT id FROM $default->folders_table WHERE permission_folder_id IS NULL ORDER BY LENGTH(parent_folder_ids)";
 
         $aIDs = DBUtil::getResultArrayKey($sQuery, 'id');
 
-        foreach ($aIDs as $iID) {
-            $oFolder =& Folder::get($iID);
-            UpgradeFunctions::_setPermissionFolder($oFolder);
+        foreach ($aIDs as $iId) {
+            $res = UpgradeFunctions::_setPermissionFolder($iId);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
         }
     }
     // }}}
