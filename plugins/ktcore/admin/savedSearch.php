@@ -149,7 +149,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $oSearch = KTSavedSearch::get($id);
         
         if (PEAR::isError($oSearch) || ($oSearch == false)) {
-            $this->errorRedirectToMain('No Such search');
+            $this->errorRedirectToMain('No such search');
         }
         
         
@@ -212,6 +212,16 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         ));
         $this->successRedirectToMain(_kt('Search saved'));
     }
+
+    // helper for the template
+    function _getUserName($iUserId) {
+	$oUser = User::get($iUserId);
+	if(PEAR::isError($oUser)) {
+	    return _kt('Error retrieving username');
+	}
+	return $oUser->getUserName();
+    }
+
 }
 
 //$oDispatcher = new KTSavedSearchDispatcher();

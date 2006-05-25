@@ -84,7 +84,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         }
 
         if (is_null(KTUtil::arrayGet($datavars["subgroup"][0], "values"))) {
-            $this->errorRedirectToMain("No search parameters given");
+            $this->errorRedirectToMain(_kt("No search parameters given"));
         }
         
         if (empty($datavars)) {
@@ -96,6 +96,132 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         return $res;
     }
     
+    function do_saveSearch() {
+	$this->startTransaction();
+
+	$iSearchId = KTUtil::arrayGet($_REQUEST, 'fSearchId', false);
+	$sName = KTUtil::arrayGet($_REQUEST, 'name', false);
+        $sSearch = KTUtil::arrayGet($_REQUEST, 'boolean_search');
+	
+	if($iSearchId === false && $sName === false) {
+	    $this->errorRedirectTo('performSearch', _kt('Please either enter a name, or select a search to save over'), sprintf('boolean_search_id=%s', $sSearch));
+	    exit(0);
+	}
+
+	$datavars = $_SESSION['boolean_search'][$sSearch];
+        if (!is_array($datavars)) {
+            $datavars = unserialize($datavars);
+        }
+       
+        if (empty($datavars)) {
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
+        }
+
+	if($iSearchId) {
+	    $oSearch = KTSavedSearch::get($iSearchId);
+	    if(PEAR::isError($oSearch) || $oSearch == false) {
+		$this->errorRedirectToMain(_kt('No such search'));
+		exit(0);
+	    }
+	    $oSearch->setSearch($datavars);
+	    $oSearch = $oSearch->update();
+
+	} else {
+	    $sName = $this->oValidator->validateEntityName('KTSavedSearch', 
+							   KTUtil::arrayGet($_REQUEST, 'name'), 
+							   array('extra_condition' => 'not is_condition', 'redirect_to' => array('new')));
+            
+	    $sNamespace = KTUtil::nameToLocalNamespace('Saved searches', $sName);
+
+	    $oSearch = KTSavedSearch::createFromArray(array('name' => $sName,
+							    'namespace' => $sNamespace,
+							    'iscondition' => false,
+							    'iscomplete' => true,
+							    'userid' => $this->oUser->getId(),
+							    'search' => $datavars,));
+	}
+
+        $this->oValidator->notError($oSearch, array(
+            'redirect_to' => 'main',
+            'message' => _kt('Search not saved'),
+        ));
+
+	$this->commitTransaction();
+        $this->successRedirectTo('performSearch', _kt('Search saved'), sprintf('boolean_search_id=%s', $sSearch));
+    }
+
+
+    function do_deleteSearch() {
+	$this->startTransaction();
+
+	$iSearchId = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId', false);
+	$oSearch = KTSavedSearch::get($iSearchId);
+	if(PEAR::isError($oSearch) || $oSearch == false) {
+	    $this->errorRedirectToMain(_kt('No such search'));
+	    exit(0);
+	}
+
+	$res = $oSearch->delete();
+        $this->oValidator->notError($res, array(
+            'redirect_to' => 'main',
+            'message' => _kt('Error deleting search'),
+        ));
+	
+	$this->commitTransaction();
+
+	$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
+	$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
+
+	if($iFolderId) {
+	    controllerRedirect('browse', 'fFolderId=' . $iFolderId);
+	} else {
+	    controllerRedirect('viewDocument', 'fDocumentId=' . $iDocumentId);
+	}
+    }
+	
+    function do_editSearch() {
+        $sSearch = KTUtil::arrayGet($_REQUEST, 'boolean_search');
+	$aSearch = $_SESSION['boolean_search'][$sSearch];
+        if (!is_array($aSearch)) {
+            $aSearch = unserialize($aSearch);
+        }
+       
+        if (empty($aSearch)) {
+            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
+        }
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_change");
+        
+        $aCriteria = Criteria::getAllCriteria();
+        
+        // we need to help out here, since it gets unpleasant inside the template.
+        
+        foreach ($aSearch['subgroup'] as $isg => $as) {
+            $aSubgroup =& $aSearch['subgroup'][$isg];
+            if (is_array($aSubgroup['values'])) {
+                foreach ($aSubgroup['values'] as $iv => $t) {
+                    $datavars =& $aSubgroup['values'][$iv];
+                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
+                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+                }
+            }
+        }
+        
+        $aTemplateData = array(
+            "title" => _kt("Edit an existing condition"),
+            "aCriteria" => $aCriteria,
+            "searchButton" => _kt("Search"),
+            'aSearch' => $aSearch,
+            'context' => $this,
+	    //            'iSearchId' => $oSearch->getId(),
+	    //            'old_name' => $oSearch->getName(),
+            'sNameTitle' => _kt('Edit Search'),
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+
+
     function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null) {
         
         if ($sTitle == null) {
@@ -142,6 +268,22 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $qObj = new BooleanSearchQuery($aCriteriaSet);
         $collection->setQueryObject($qObj);
 
+
+	// form fields for saving the search
+        $save_fields = array();
+        $save_fields[] = new KTStringWidget(_kt('New search'), _kt('The name to save this search as'), 'name', null, $this->oPage, true);
+
+	$aUserSearches = KTSavedSearch::getUserSearches($this->oUser->getId(), true);
+	if(count($aUserSearches)) {
+	    $aVocab = array('' => ' ---- ');
+	    foreach($aUserSearches as $oSearch) {
+		$aVocab[$oSearch->getId()] = $oSearch->getName();
+	    }
+
+	    $aSelectOptions = array('vocab' => $aVocab);
+	    $save_fields[] = new KTLookupWidget(_kt('Existing search'), _kt('To save over one of your existing searches, select it here.'), 'fSearchId', null, $this->oPage, true, null, null, $aSelectOptions);
+	}
+
         $collection->getResults();
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
@@ -149,6 +291,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
               "context" => $this,
               "collection" => $collection,
               "custom_title" => $sTitle,
+	      "save_fields" => $save_fields,
+	      "boolean_search" => $sSearch,
         );
         return $oTemplate->render($aTemplateData);
     }

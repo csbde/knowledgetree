@@ -146,6 +146,15 @@ class KTSavedSearch extends KTEntity {
         ));
     }
 
+    function &getUserSearches($iUserId, $bNoSystem = false) {
+	$sQuery = sprintf('user_id = %d', $iUserId);
+	if(!$bNoSystem) {
+	    $sQuery .= ' OR user_id IS NULL';
+	}
+	    
+	return KTEntityUtil::getList2('KTSavedSearch', $sQuery, array('orderby' => 'user_id, name'));
+    }
+
     function &getConditions() {
         return KTEntityUtil::getByDict('KTSavedSearch', array(
             'is_condition' => true,

@@ -22,6 +22,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 <thead>
     <tr>
         <th>{i18n}Search Name{/i18n}</th>
+        <th>{i18n}User{/i18n}</th>
         <th>{i18n}Edit{/i18n}</th>
         <th>{i18n}Delete{/i18n}</th>
         <th>{i18n}View Results{/i18n}</th>
@@ -31,6 +32,8 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 {foreach item=oSearch from=$saved_searches}
     <tr>
         <td>{$oSearch->getName()}</td>
+	{capture assign=iUserId}{$oSearch->getUserId()}{/capture}
+	<td>{if ($iUserId === '')}Global{else}{$context->_getUserName($iUserId)}{/if}</td>
         <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=delete&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">Run Search</a></td>
