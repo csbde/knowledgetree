@@ -55,15 +55,15 @@ function generateUpgradeTable () {
 function showResult($res) {
     if (PEAR::isError($res)) {
         if (is_a($res, 'Upgrade_Already_Applied')) {
-            return "Already applied";
+            return '<span style="color: orange">Already applied</span>';
         }
-        return $res->toString();
+        return sprintf('<span style="color: red">%s</span>', htmlspecialchars($res->toString()));
     }
     if ($res === true) {
-        return "Success";
+        return '<span style="color: green">Success</span>';
     }
     if ($res === false) {
-        return "Failure";
+        return '<span style="color: red">Failure</span>';
     }
     return $res;
 }
@@ -76,15 +76,23 @@ function performAllUpgrades () {
 
     $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
-    print "<table width=\"100%\">\n";
-    print "<tr><th>Description</th><th>Result</th></tr>\n";
     foreach ($upgrades as $upgrade) {
+        printf('<div style="float: right">%s</div>', htmlspecialchars($upgrade->getDescription()));
         $res = $upgrade->performUpgrade();
-         printf("<tr><td>%s</td><td>%s</td></tr>\n",
-            htmlspecialchars($upgrade->getDescription()),
-            htmlspecialchars(showResult($res)));
+        printf('<div style="float: left">%s</div>', showResult($res));
+        print '<br style="clear: both">' . "\n";
+        ob_flush();
+        flush();
+        if (PEAR::isError($res)) {
+            if (!is_a($res, 'Upgrade_Already_Applied')) {
+                break;
+            }
+        }
+        if ($res === false) {
+            break;
+        }
+        
     }
-    print '</table>';
     return $ret;
 }
 
