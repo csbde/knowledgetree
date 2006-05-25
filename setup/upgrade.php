@@ -77,7 +77,9 @@ function performAllUpgrades () {
     $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
     foreach ($upgrades as $upgrade) {
-        printf('<div style="float: right">%s</div>', htmlspecialchars($upgrade->getDescription()));
+        printf('<div style="float: right">%s</div>' . "\n", htmlspecialchars($upgrade->getDescription()));
+        ob_flush();
+        flush();
         $res = $upgrade->performUpgrade();
         printf('<div style="float: left">%s</div>', showResult($res));
         print '<br style="clear: both">' . "\n";
