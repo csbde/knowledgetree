@@ -53,14 +53,29 @@ class Email {
         $this->oMailer->IsHTML(true);
         $this->oMailer->SetLanguage('en', KT_DIR .  '/phpmailer/language/');
         $this->bEmailDisabled = false;
-        $oConfig =& KTConfig::getSingleton();
-        $sEmailServer = $oConfig->get('email/emailServer');
-        if ($sEmailServer == 'none') {
+        
+	$oConfig =& KTConfig::getSingleton();        
+	$sEmailServer = $oConfig->get('email/emailServer');
+	if ($sEmailServer == 'none') {
             $this->bEmailDisabled = true;
         }
         if (empty($sEmailServer)) {
             $this->bEmailDisabled = true;
         }
+
+	$sEmailPort = $oConfig->get('email/emailPort');
+	if(!empty($sEmailPort)) {
+	    $this->oMailer->Port = (int) $sEmailPort;
+	}
+
+	$bEmailAuth = $oConfig->get('email/emailAuthentication');
+	if($bEmailAuth) {
+	    $sEmailUser = $oConfig->get('email/emailUsername');
+	    $sEmailPass = $oConfig->get('email/emailPassword');
+	    $this->oMailer->SMTPAuth = true;
+	    $this->oMailer->Username = $sEmailUser;
+	    $this->oMailer->Password = $sEmailPass;
+	}
     }
 	
     /**
