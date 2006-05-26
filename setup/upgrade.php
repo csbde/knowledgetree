@@ -68,6 +68,8 @@ function showResult($res) {
     return $res;
 }
 
+$GLOBALS['row'] = 1;
+
 function performAllUpgrades () {
     global $default;
     $query = sprintf('SELECT value FROM %s WHERE name = "knowledgeTreeVersion"', $default->system_settings_table);
@@ -77,14 +79,21 @@ function performAllUpgrades () {
     $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
     foreach ($upgrades as $upgrade) {
-        printf('<div style="float: right">%s</div>' . "\n", htmlspecialchars($upgrade->getDescription()));
+        if (($GLOBALS['row'] % 2) == 1) {
+            $class = "odd";
+        } else {
+            $class = "even";
+        }
+        printf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class, htmlspecialchars($upgrade->getDescription()));
+        $GLOBALS['row']++;
         ob_flush();
         flush();
         $res = $upgrade->performUpgrade();
-        printf('<div style="float: left">%s</div>', showResult($res));
+        printf('<div class="bar">%s</div>', showResult($res));
         print '<br style="clear: both">' . "\n";
         ob_flush();
         flush();
+        print "</div>\n";
         if (PEAR::isError($res)) {
             if (!is_a($res, 'Upgrade_Already_Applied')) {
                 break;
@@ -106,10 +115,15 @@ if ($_REQUEST["go"] === "Upgrade") {
 ?>
 <html>
   <head>
-    <title>KnowledgeTree Checkup</title>
+    <title>KnowledgeTree Upgrade</title>
     <style>
 th { text-align: left; }
 td { vertical-align: top; }
+.foo { float: left; }
+.bar { padding-left: 2em; float: right; }
+.odd { background-color: #eeeeee; }
+.even { background-color: #dddddd; }
+.row { padding: 0.5em 1em; }
     </style>
   </head>
 
