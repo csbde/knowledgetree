@@ -38,10 +38,14 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
     var $use_pipes = true;
     
     function extract_contents($sFilename, $sTempFilename) {
-        if (OS_WINDOWS) {
+        if (OS_WINDOWS) {	    
             $this->command = 'c:\antiword\antiword.exe';
             $this->commandconfig = 'indexer/antiword';
             $this->args = array();
+
+	    $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
+	    $sDir = dirname(dirname($sCommand));
+	    putenv('HOME=' . $sDir);
         }
         return parent::extract_contents($sFilename, $sTempFilename);
     }
@@ -51,8 +55,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
             $this->command = 'c:\antiword\antiword.exe';
             $this->commandconfig = 'indexer/antiword';
             $this->args = array();
-        }
-        
+        }        
         $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
         return $sCommand;
     }
