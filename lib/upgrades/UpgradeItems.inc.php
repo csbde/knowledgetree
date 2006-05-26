@@ -350,16 +350,16 @@ class FunctionUpgradeItem extends UpgradeItem {
 class KTRebuildPermissionObserver {
     function start() {
         $this->lastBeat = time();
-        print "<!-- ";
     }
     function receiveMessage() {
         $now = time();
         if ($this->lastBeat + 15 < $now) {
-            print " ";
+            print "<!--          -->";
+            ob_flush();
+            flush();
         }
     }
     function end() {
-        print " -->";
     }
 }
 
