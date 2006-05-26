@@ -41,7 +41,8 @@ class LoginPageDispatcher extends KTDispatcher {
     function check() {
         $oKTConfig = KTConfig::getSingleton();
         $this->session = new Session();
-        if ($this->session->verify() == 1) { // the session is valid
+        $sessionStatus = $this->session->verify();
+        if ($sessionStatus === true) { // the session is valid
             if ($_SESSION['userID'] == -2 && $oKTConfig->get('allowAnonymousLogin', false)) {
                 ; // that's ok - we want to login.
             }
@@ -54,7 +55,8 @@ class LoginPageDispatcher extends KTDispatcher {
 
     function do_providerVerify() {
         $this->session = new Session();
-        if ($this->session->verify() != 1) {
+        $sessionStatus = $this->session->verify();
+        if ($sessionStatus !== true) { // the session is not valid
             $this->redirectToMain();
         }
         $this->oUser =& User::get($_SESSION['userID']);
@@ -164,7 +166,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $_SESSION["pageAccess"] = NULL; 
 
         $cookietest = KTUtil::randomString();
-        setcookie("CookieTestCookie", $cookietest, false);
+        setcookie("CookieTestCookie", $cookietest, 0);
 
         $this->redirectTo('checkCookie', array(
             'cookieVerify' => $cookietest,
