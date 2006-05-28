@@ -37,6 +37,7 @@ class UpgradeFunctions {
         "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
         "3.0.1.3" => array('addTransactionTypes3013'),
         "3.0.1.4" => array('createWorkflowPermission'),
+        "3.0.2" => array("fixDocumentRoleAllocation"),
     );
 
     var $descriptions = array(
@@ -50,6 +51,7 @@ class UpgradeFunctions {
         'createSecurityDeletePermissions' => 'Create the Core: Manage Security and Core: Delete permissions',
         'addTransactionTypes3013' => 'Add new folder transaction types',
         'createWorkflowPermission' => 'Create the Core: Manage Workflow',
+        'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -58,6 +60,7 @@ class UpgradeFunctions {
         "normaliseDocuments" => 1,
         "fixUnits" => 1,
         'applyDiscussionUpgrade' => -1,
+        'fixDocumentRoleAllocation' => -1,
     );
 
     // {{{ _setPermissionFolder
@@ -623,6 +626,19 @@ class UpgradeFunctions {
         $sFolderTable = KTUtil::getTableName('folders');
         DBUtil::runQuery("UPDATE $sDocumentTable SET permission_lookup_id = NULL");
         DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
+    }
+    // }}}
+
+    // {{{ fixDocumentRoleAllocation
+    function fixDocumentRoleAllocation() {
+        $sUpgradesTable = KTUtil::getTableName('upgrades');
+
+        $f = array(
+            'descriptor' => 'sql*3.0.2*0*3.0.2/document_role_allocations.sql',
+            'result' => true,
+        );
+        $res = DBUtil::autoInsert($sUpgradesTable, $f);
+        return;
     }
     // }}}
 }
