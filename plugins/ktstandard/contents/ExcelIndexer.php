@@ -42,9 +42,11 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
     // see BaseIndexer for how the extraction works.
     //
     function extract_contents($sFilename, $sTempFilename) {
-        $res = parent::extract_contents($sFilename, $sTempFilename);
-        if (!empty($res)) {
-            return $res;
+        if (!OS_WINDOWS) {
+            $res = parent::extract_contents($sFilename, $sTempFilename);
+            if (!empty($res)) {
+                return $res;
+            }
         }
 
         return $this->_fallbackExcelReader($sFilename, $sTempFilename);
