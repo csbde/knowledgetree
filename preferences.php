@@ -163,8 +163,11 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $name = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'),
 												  KTUtil::meldOptions($aErrorOptions, array('message' => _kt('You must specify your name.'))));
         
-        $email_address = $this->oValidator->validateEmailAddress(KTUtil::arrayGet($_REQUEST, 'email_address'),
-																 $aErrorOptions);
+        $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
+        if(strlen(trim($email_address))) {
+            $email_address = $this->oValidator->validateEmailAddress($email_address, 
+                    KTUtil::meldOptions($aErrorOptions, array('message') => _kt('Invalid email address.')));
+        }                                          }
 		
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
