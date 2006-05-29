@@ -154,6 +154,18 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
         $oThread->setFirstCommentId($oComment->getId());
         $oThread->setLastCommentId($oComment->getId());
+        
+        // add to searchable_text.
+        $sTable = KTUtil::getTableName('comment_searchable_text');
+        $aSearch = array(
+            'comment_id' => $oComment->getId(),
+            'document_id' => $this->oDocument->getId(),
+            'body' => sprintf("%s %s", KTUtil::formatPlainText($sBody), $sSubject),
+        );
+        DBUtil::autoInsert($sTable,
+            $aSearch,
+            array('noid' => true));
+        
         $res = $oThread->update();
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
@@ -253,6 +265,17 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oThread->incrementNumberOfReplies();
 
         $res = $oThread->update();
+        
+        // add to searchable_text.
+        $sTable = KTUtil::getTableName('comment_searchable_text');
+        $aSearch = array(
+            'comment_id' => $oComment->getId(),
+            'document_id' => $this->oDocument->getId(),
+            'body' => sprintf("%s %s", KTUtil::formatPlainText($sBody), $sSubject),
+        );
+        DBUtil::autoInsert($sTable,
+            $aSearch,
+            array('noid' => true));
         
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);

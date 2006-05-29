@@ -671,15 +671,15 @@ class WorkflowStateCriterion extends BrowseCriterion {
     }
 }
 
-class TransactionTextCriterion extends BrowseCriterion {
+class DiscussionTextCriterion extends BrowseCriterion {
     var $bContains = true;
     var $bHandleNot = false;
     
     function documentDisplay ($oDocument) {
-        return "Transaction text";
+        return "Discussion Threads";
     }
     function getName() {
-        return "transactiontext";
+        return "discussiontext";
     }
 
     function searchSQL ($aRequest) {
@@ -692,7 +692,7 @@ class TransactionTextCriterion extends BrowseCriterion {
         }
 
         $p = array();
-        $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
+        $p[0] = "MATCH(DDCT.body) AGAINST (? $boolean_mode)";
         
 
         
@@ -723,8 +723,9 @@ class TransactionTextCriterion extends BrowseCriterion {
     }
 
     function searchJoinSQL () {
-        global $default;
-        return "INNER JOIN $default->document_transaction_text_table AS DTT ON D.id = DTT.document_id";
+        $comment_table = KTUtil::getTableName('comment_searchable_text');
+        return "
+            INNER JOIN $comment_table AS DDCT ON DDCT.document_id = D.id";
     }
 }
 
@@ -785,6 +786,64 @@ class SearchableTextCriterion extends BrowseCriterion {
     }
 }
 
+
+class TransactionTextCriterion extends BrowseCriterion {
+    var $bContains = true;
+    var $bHandleNot = false;
+    
+    function documentDisplay ($oDocument) {
+        return "Transaction text";
+    }
+    function getName() {
+        return "transactiontext";
+    }
+
+    function searchSQL ($aRequest) {
+        // XXX: Icky MySQL-specific stuff.
+        $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+        if ((int)substr($sVersion, 0, 1) >= 4) {
+            $boolean_mode = "IN BOOLEAN MODE";
+        } else {
+            $boolean_mode = "";
+        }
+
+        $p = array();
+        $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
+        
+
+        
+        if ($RESTRICTING_SEARCH) {
+            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
+            $temp = $q_set;
+            foreach ($temp as $k => $v) { 
+                $t = array();
+                foreach ($v as $part) {
+                    $t[] = sprintf('+"%s"', $part);
+                }
+                $q_set[$k] = join(' ', $t);
+            }
+            $p[1] = implode(' ',$q_set);
+        } else {
+            $p[1] = $aRequest[$this->getWidgetBase()]; 
+        }
+        
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert) || ($want_invert == "0")) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }       
+        
+        return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN $default->document_transaction_text_table AS DTT ON D.id = DTT.document_id";
+    }
+}
+
 class Criteria {
     
     function &_getBaseCriterionByNumber($iID) {
@@ -826,6 +885,9 @@ class Criteria {
             case -12:
                 $oCriterion =& new SearchableTextCriterion(_kt("Searchable Text"), 'searchabletext', 'searchabletext', -12);
                 break;
+            case -13:
+                $oCriterion =& new DiscussionTextCriterion(_kt("Discussion Threads"), 'discussiontext', 'discussiontext', -13);
+                break;
         }
         return $oCriterion;
     }
@@ -836,7 +898,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -12); 
+        $aIDs = range(-1, -13); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
