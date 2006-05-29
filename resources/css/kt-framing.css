@@ -95,7 +95,7 @@ body
 
 #navbar ul li.active {
     background: #6c8c2f url(../../resources/graphics/menubg-active.png) top left repeat-x;
-    height: 100px;
+    height: 1.4em;
 }
 
 #navbar ul li a 
