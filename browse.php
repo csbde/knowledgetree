@@ -414,11 +414,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $documentStr .= implode(', ', $cantMoveItems['documents']);
             }
 
+	    $bMoveError = false;
             if (!empty($folderStr)) {
                 $_SESSION["KTErrorMessage"][] = _kt("The following folders can not be moved") . ": " . $folderStr;
             }
             if (!empty($documentStr)) {
                 $_SESSION["KTErrorMessage"][] = _kt("The following documents can not be moved as they are either checked out, or controlled by a workflow") . ": " . $documentStr;
+		$bMoveError = true;
             }
         }
 
@@ -433,7 +435,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $moveSet = $_SESSION['moves'][$sMoveCode];
 
         if (empty($moveSet['folders']) && empty($moveSet['documents'])) {
-            $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
+	    if(!$bMoveError) {
+		$sMsg = _kt('Please select documents or folders first.');
+	    } else {
+		$sMsg = '';
+	    }
+	    $this->errorRedirectToMain($sMsg, sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }        
         
