@@ -1,5 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
+DROP TABLE IF EXISTS `document_role_allocations`;
 CREATE TABLE `document_role_allocations` (
   `id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
@@ -9,6 +10,7 @@ CREATE TABLE `document_role_allocations` (
   KEY `document_id` (`document_id`)
 ) TYPE=InnoDB ;
 
+DROP TABLE IF EXISTS `zseq_document_role_allocations`;
 CREATE TABLE `zseq_document_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
