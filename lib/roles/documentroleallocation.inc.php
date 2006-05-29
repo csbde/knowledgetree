@@ -188,7 +188,9 @@ class DocumentRoleAllocation extends KTEntity {
 	
 	function getGroups() {
 		$aAllowed = $this->getAllowed();
-		if ($aAllowed['group'] !== null) {
+		if (is_null($aAllowed['group'])) {
+		    return array(); // nothing here, move on.
+		} else {
 		    $aGroups = $aAllowed['group'];
 		} 
 		
