@@ -265,7 +265,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $fields[] = new KTTextWidget(_kt("Comment"), _kt("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
 
         $oKTConfig =& KTConfig::getSingleton();
-        $bOnlyOwnGroup = $oKTConfig->get('email/onlyOwnGroup', false);
+        $bOnlyOwnGroup = $oKTConfig->get('email/onlyOwnGroups', false);
         if ($bOnlyOwnGroup != true) {
             $aGroups = Group::getList();
             $aUsers = User::getEmailUsers();
