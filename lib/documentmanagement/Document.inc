@@ -370,9 +370,7 @@ class Document {
         global $default;
         $sql = $default->db;
                
-        $result = $sql->query("DELETE FROM $default->document_text_table WHERE document_id = $iDocumentID") &&
-                  $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $iDocumentID") &&
-                  $sql->query("DELETE FROM $default->document_fields_link_table WHERE document_id = $iDocumentID");
+        $result = $sql->query("DELETE FROM $default->document_text_table WHERE document_id = $iDocumentID");
         return $result;
     }
     // }}}
