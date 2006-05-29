@@ -32,7 +32,8 @@ its details, or use the enable/disable buttons to change its availability state.
     <tr>
       <th>{i18n}Document Type{/i18n}</th>
       <th>{i18n}Associated Fieldsets{/i18n}</th>
-      <th colspan="2">&nbsp;</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Disable/Enable{/i18n}</th>
     </tr>
   </thead>
   
@@ -62,11 +63,11 @@ its details, or use the enable/disable buttons to change its availability state.
       </td>
 
 
-<td>
+<td style="text-align:center">
     <a class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
 </td>
 
-<td>
+<td style="text-align:center">
 {if $oDocumentType->getDisabled()}
     <a class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
