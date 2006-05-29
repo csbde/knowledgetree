@@ -537,8 +537,17 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         );
         $oGroup = $this->oValidator->validateGroup($_REQUEST['group_id'], $aErrorOptions);
         $sGroupName = $oGroup->getName();
+
+	$this->startTransaction();
         $res = $oGroup->delete();
         $this->oValidator->notError($res, $aErrorOptions);
+
+	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+	    $this->rollbackTransaction();
+	    $this->errorRedirectTo('main', _kt('For security purposes, you cannot remove your own administration priviledges.'));
+	    exit(0);
+	}
+	$this->commitTransaction();
         $this->successRedirectToMain(sprintf(_kt('Group "%s" deleted.'), $sGroupName));
     }
     // }}}
