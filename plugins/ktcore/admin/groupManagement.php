@@ -539,6 +539,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $sGroupName = $oGroup->getName();
 
 	$this->startTransaction();
+
+	foreach($oGroup->getParentGroups() as $oParentGroup) {
+	    $res = $oParentGroup->removeMemberGroup($oGroup);	    
+	}
+
         $res = $oGroup->delete();
         $this->oValidator->notError($res, $aErrorOptions);
 

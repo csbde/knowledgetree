@@ -172,6 +172,21 @@ class Group extends KTEntity {
         return $aMembers;
     }
 
+    function &getParentGroups() {
+	global $default;
+        $sQuery = "SELECT parent_group_id FROM $default->groups_groups_table WHERE member_group_id = ?";
+        $aParams = array($this->getId());
+        $aGroupIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), "parent_group_id");
+        $aParents = array();
+        foreach ($aGroupIds as $iGroupId) {
+            $oGroup = Group::get($iGroupId);
+            if ((!PEAR::isError($oUser)) && ($oGroup !== false)) {
+                $aParents[] = $oGroup;
+            }
+        }
+        return $aParents;
+    }
+
 
     function delete() {
         global $default;
