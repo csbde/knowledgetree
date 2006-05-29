@@ -278,6 +278,7 @@ class KTUtil {
                 KTUtil::deleteDirectory($sFullFilename);
                 continue;
             }
+            chmod($sFullFilename, 0666);
             unlink($sFullFilename);
         }
         closedir($hPath);
