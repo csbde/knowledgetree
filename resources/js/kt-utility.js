@@ -61,10 +61,10 @@ function initDeleteProtection(m) {
     var fn = confirmDelete;
     message = m;
 
-    var elements = getElementsByTagAndClassName('A','ktDelete');
+    var elements = getElementsByTagAndClassName(null,'ktDelete');
     forEach(elements, partial(setClickFunction, fn));
     
-    elements = getElementsByTagAndClassName('A','ktLinkDelete');
+    elements = getElementsByTagAndClassName(null,'ktLinkDelete');
     forEach(elements, partial(setClickFunction, fn));
 }
 
