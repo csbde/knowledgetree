@@ -191,7 +191,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         // finally, check if any documents are associated with this workflow,
         // and set the "delete" toggle.
-        $sQuery = 'SELECT document_id FROM ' . KTUtil::getTableName('workflow_documents');
+        $sQuery = 'SELECT document_id FROM ' . KTUtil::getTableName('document_metadata_version');
         $sQuery .= ' WHERE workflow_id = ? ';
         $aParams = array($oWorkflow->getId());
         
