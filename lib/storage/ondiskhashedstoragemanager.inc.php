@@ -260,17 +260,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $oConfig =& KTConfig::getSingleton();
         $sCurrentPath = $this->getPath($oDocument);
         
-        // check if the deleted folder exists and create it if not
-        $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
 
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
-            $sPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
-            $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
-            if (file_exists($sFullPath)) {
-                unlink($sFullPath);
-            }
+            $sPath = sprintf('%s/%s', $sDocumentRoot, $oVersion->getStoragePath());
+            @unlink($sPath);
         }
         return true;
     }
