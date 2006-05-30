@@ -413,8 +413,7 @@ class KTPermissionUtil {
         if ($oPD->hasRoles(array(-3))) { return true; } // everyone has access.
         else if ($oPD->hasUsers(array($oUser))) { return true; }
         else if ($oPD->hasGroups($aGroups)) { return true; }
-        // here we specialcase roles -3 [everyone] 
-        else if ($oPD->hasRoles(-4) && !$oUser->isAnonymous()) { return true; }
+        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous()) { return true; }
             
         return false;
     }
