@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 25, 2006 at 04:07 PM
+-- Generation Time: May 30, 2006 at 10:57 AM
 -- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
@@ -36,6 +36,11 @@ INSERT INTO `archiving_type_lookup` VALUES (2, 'Utilisation');
 
 -- 
 -- Dumping data for table `authentication_sources`
+-- 
+
+
+-- 
+-- Dumping data for table `comment_searchable_text`
 -- 
 
 
@@ -544,6 +549,7 @@ INSERT INTO `mime_types` VALUES (157, 'odb', 'application/vnd.oasis.opendocument
 INSERT INTO `mime_types` VALUES (158, 'odi', 'application/vnd.oasis.opendocument.image', 'opendocument', 'OpenDocument Image');
 INSERT INTO `mime_types` VALUES (159, 'zip', 'application/x-zip', 'compressed', 'ZIP Compressed File');
 INSERT INTO `mime_types` VALUES (160, 'csv', 'text/csv', 'spreadsheet', 'Comma delimited spreadsheet');
+INSERT INTO `mime_types` VALUES (161, 'msi', 'application/msword', 'compressed', 'MSI Installer file');
 
 -- 
 -- Dumping data for table `news`
@@ -696,7 +702,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.2.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.2.4');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -831,6 +837,9 @@ INSERT INTO `upgrades` VALUES (92, 'upgrade*3.0.2*99*upgrade3.0.2', 'Upgrade fro
 INSERT INTO `upgrades` VALUES (93, 'sql*3.0.2.1*0*3.0.2.1/disclaimer-help-files.sql', 'Database upgrade to version 3.0.2.1: Disclaimer-help-files', '2006-05-25 16:04:23', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
 INSERT INTO `upgrades` VALUES (94, 'sql*3.0.2.2*0*3.0.2.2/folder_search.sql', 'Database upgrade to version 3.0.2.2: Folder search', '2006-05-25 16:04:23', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
 INSERT INTO `upgrades` VALUES (95, 'upgrade*3.0.2.2*99*upgrade3.0.2.2', 'Upgrade from version 3.0.2 to 3.0.2.2', '2006-05-25 16:04:24', 1, 'upgrade*3.0.2.2*99*upgrade3.0.2.2');
+INSERT INTO `upgrades` VALUES (96, 'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql', 'Database upgrade to version 3.0.2.3: Msi-filetype', '2006-05-30 10:55:58', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
+INSERT INTO `upgrades` VALUES (97, 'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql', 'Database upgrade to version 3.0.2.4: Discussion-fulltext', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
+INSERT INTO `upgrades` VALUES (98, 'upgrade*3.0.2.4*99*upgrade3.0.2.4', 'Upgrade from version 3.0.2.2 to 3.0.2.4', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1144,7 +1153,7 @@ INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
 -- Dumping data for table `zseq_mime_types`
 -- 
 
-INSERT INTO `zseq_mime_types` VALUES (160);
+INSERT INTO `zseq_mime_types` VALUES (161);
 
 -- 
 -- Dumping data for table `zseq_news`
@@ -1270,7 +1279,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (95);
+INSERT INTO `zseq_upgrades` VALUES (98);
 
 -- 
 -- Dumping data for table `zseq_user_history`

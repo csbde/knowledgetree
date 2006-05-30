@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 25, 2006 at 04:05 PM
+-- Generation Time: May 30, 2006 at 10:56 AM
 -- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
@@ -87,6 +87,20 @@ CREATE TABLE `authentication_sources` (
   PRIMARY KEY  (`id`),
   KEY `namespace` (`namespace`)
 ) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `comment_searchable_text`
+-- 
+
+CREATE TABLE `comment_searchable_text` (
+  `comment_id` int(11) NOT NULL default '0',
+  `body` text,
+  `document_id` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`comment_id`),
+  FULLTEXT KEY `comment_search_text` (`body`)
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1901,7 +1915,7 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=161 ;
+) TYPE=MyISAM AUTO_INCREMENT=162 ;
 
 -- --------------------------------------------------------
 
@@ -2132,7 +2146,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=96 ;
+) TYPE=MyISAM AUTO_INCREMENT=99 ;
 
 -- --------------------------------------------------------
 
