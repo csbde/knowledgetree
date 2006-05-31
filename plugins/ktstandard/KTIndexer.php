@@ -42,8 +42,10 @@ class KTIndexerPlugin extends KTPlugin {
                 'ktstandard.indexer.triggers.word', 'contents/WordIndexer.php');
         $this->registerTrigger('content', 'transform', 'KTRtfIndexerTrigger',
                 'ktstandard.indexer.triggers.rtf', 'contents/RtfIndexer.php');
-        $this->registerTrigger('content', 'transform', 'KTPowerpointIndexerTrigger',
+        if (!OS_WINDOWS) {
+            $this->registerTrigger('content', 'transform', 'KTPowerpointIndexerTrigger',
                 'ktstandard.indexer.triggers.powerpoint', 'contents/PowerpointIndexer.php');
+        }
         $this->registerTrigger('content', 'transform', 'KTExcelIndexerTrigger',
                 'ktstandard.indexer.triggers.excel', 'contents/ExcelIndexer.php');
         $this->registerTrigger('content', 'transform', 'KTTextIndexerTrigger',
