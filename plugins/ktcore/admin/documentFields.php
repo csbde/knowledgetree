@@ -1067,7 +1067,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
 	function haveConditional() {
 		if (is_null($this->bHaveConditional)) {
-			$this->bHaveConditional = KTPluginUtil::pluginIsActive('newtec.conditionalmetadata.plugin');
+			$this->bHaveConditional = KTPluginUtil::pluginIsActive('ktextra.conditionalmetadata.plugin');
 		}
 		
 		return $this->bHaveConditional; 
