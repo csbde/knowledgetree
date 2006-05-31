@@ -5,29 +5,35 @@ What's new in this release
 3.0.3
 -----
 
-Improvement
+Improvements
 
-    * KnowledgeTree can now be upgraded from the previous install, using the 
-      automated upgrade 
+    * KnowledgeTree can now be upgraded from the previous "packaged" install,
+      using the automated upgrade installer.  If you have already installed
+      KnowledgeTree using our Bitrock installer, please use the "upgrade"
+      installer.
     * Permission-related messages during workflow are now more user-friendly.
     * Help files can now be translated into different languages.
     * Workflow editing has been made more intuitive.
-    * Minor login improvements
+    * The Login page is now slightly more user-friendly.
     * Document Emailing now has better performance
     * Document renaming is more intuitive
-    * Discussions can now be searched via the advanced search box
+    * Discussions can now be searched via the advanced search
+    * Folders whose title matches a simple search query (e.g. from the
+      dashboard, or via the quick search box on the Browse pages) now
+      appear in the search results.  Note:  this does not include the results
+      of any Advanced search.
     * Adding users from difference sources is now easier to do.
 
-New Feature
+New Features
 
-    * Search queries saveable on user-basis
-    * The login page can now be simply customised through-the-web.
+    * Search queries saveable on per user-basis
+    * The login page can now be customised through-the-web.
     * Admin can now disable the "preferences" dialog for all users.
     * Ensuring that your system is "transaction safe" can now be done 
       through the web interface.
     * Email recipients can now be filtered by the user's group.
 
-Bug
+Bugs
 
     * [KTS-635] - UI problem when trying to move a checked-out document
     * [KTS-777] - user interface inconsistent - delete button suggested to 
