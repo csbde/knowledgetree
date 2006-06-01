@@ -51,7 +51,7 @@ class Email {
         $this->oMailer->FromName = (strlen($sFromName) == 0) ? $default->emailFromName : $sFromName;
         $this->oMailer->WordWrap = 100;
         $this->oMailer->IsHTML(true);
-        $this->oMailer->SetLanguage('en', KT_DIR .  '/phpmailer/language/');
+        $this->oMailer->SetLanguage('en', KT_DIR .  '/thirdparty/phpmailer/language/');
         $this->bEmailDisabled = false;
         
 	$oConfig =& KTConfig::getSingleton();        
