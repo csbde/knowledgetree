@@ -566,7 +566,7 @@ class ContentCriterion extends BrowseCriterion {
     var $bHandleNot = false;
     
     function documentDisplay ($oDocument) {
-        return "Content";
+        return "Document Text";
     }
     function getName() {
         return "content";
@@ -734,7 +734,7 @@ class SearchableTextCriterion extends BrowseCriterion {
     var $bHandleNot = false;
     
     function documentDisplay ($oDocument) {
-        return "Searchable text";
+        return "Simple text search";
     }
     function getName() {
         return "searchabletext";
@@ -874,7 +874,7 @@ class Criteria {
                 $oCriterion =& new SizeCriterion(_kt("File Size"), 'size', 'size', -8);
                 break;
             case -9:
-                $oCriterion =& new ContentCriterion(_kt("Document Contents"), 'content', 'content', -9);
+                $oCriterion =& new ContentCriterion(_kt("Document Text"), 'content', 'content', -9);
                 break;
             case -10:
                 $oCriterion =& new WorkflowStateCriterion(_kt("Workflow state"), 'state', 'state', -10);
@@ -883,7 +883,7 @@ class Criteria {
                 $oCriterion =& new TransactionTextCriterion(_kt("Transaction Text"), 'transactiontext', 'transactiontext', -11);
                 break;
             case -12:
-                $oCriterion =& new SearchableTextCriterion(_kt("Searchable Text"), 'searchabletext', 'searchabletext', -12);
+                $oCriterion =& new SearchableTextCriterion(_kt("Simple Text Search"), 'searchabletext', 'searchabletext', -12);
                 break;
             case -13:
                 $oCriterion =& new DiscussionTextCriterion(_kt("Discussion Threads"), 'discussiontext', 'discussiontext', -13);
