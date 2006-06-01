@@ -30,10 +30,18 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/discussions/DiscussionThread.inc');
 require_once(KT_LIB_DIR . '/discussions/DiscussionComment.inc');
 
+
+define('DISCUSSION_NEW', 0);
+define('DISCUSSION_OPEN', 1);
+define('DISCUSSION_FINALISED', 2);
+define('DISCUSSION_IMPLEMENTED', 3);
+define('DISCUSSION_CLOSED', 4);
+
+
 class KTDiscussionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.discussion.plugin";
     var $autoRegister = true;
-    
+
     function KTDiscussionPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Document Discussions Plugin');
@@ -95,6 +103,18 @@ class KTCommentListRenderer {
 
 class KTDocumentDiscussionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.discussion';
+    var $aTransitions = array(DISCUSSION_NEW => array(DISCUSSION_OPEN),
+			      DISCUSSION_OPEN => array(DISCUSSION_FINALISED),
+			      DISCUSSION_FINALISED => array(DISCUSSION_OPEN, DISCUSSION_IMPLEMENTED),
+			      DISCUSSION_IMPLEMENTED => array(DISCUSSION_CLOSED, DISCUSSION_OPEN),
+			      DISCUSSION_CLOSED => array());
+
+    var $aStateNames = array(DISCUSSION_NEW => 'New',
+			     DISCUSSION_OPEN => 'Under discussion',
+			     DISCUSSION_FINALISED => 'Finalised - To be implemented',
+			     DISCUSSION_IMPLEMENTED => 'Finalised - Implemented',
+			     DISCUSSION_CLOSED => 'Closed');
+    
 
     function getDisplayName() {
         return _kt('Discussion');
@@ -109,7 +129,14 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $fields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
         $fields[] = new KTTextWidget(_kt("Body"), _kt("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
-        $threads = DiscussionThread::getList(array('document_id=?', array($this->oDocument->getId())));
+	$bIncludeClosed = KTUtil::arrayGet($_REQUEST, 'fIncludeClosed', false);
+
+	$sQuery = sprintf('document_id = %d', $this->oDocument->getId());
+	if(!$bIncludeClosed) {
+	    $sQuery .= sprintf(' AND state != %d', DISCUSSION_CLOSED);
+	}
+
+        $threads = DiscussionThread::getList($sQuery);
 
         $aTemplateData = array(
             'context' => &$this,
@@ -205,9 +232,11 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $closeFields = array();
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
-        if (PEAR::isError($oPermission) || 
-            KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
-            $closeFields[] = new KTTextWidget(_kt("Reason"), _kt("Describe the reason for closing this thread"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
+
+        if (!PEAR::isError($oPermission) && KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument) && $oThread->getState() != DISCUSSION_CLOSED) {
+	    $aOptions = array('vocab' => $this->_buildStates($oThread));
+	    $closeFields[] = new KTLookupWidget(_kt("State"), _kt("Select the state to move this discussion into"), "state", "", $this->oPage, true, null, null, $aOptions);
+	    $closeFields[] = new KTTextWidget(_kt("Reason"), _kt("Describe the reason for the state change, or the conclusion reached through discussion"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
         }
         
         // increment views
@@ -289,14 +318,13 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         exit(0);
     }
 
-    function do_closethread() {
+    function do_changestate() {
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
         );
         
         $iThreadId = KTUtil::arrayGet($_REQUEST, 'fThreadId');
         $oThread = DiscussionThread::get($iThreadId);
-
         $this->oValidator->notError($oThread, $aErrorOptions);
 
         $aErrorOptions = array(
@@ -304,24 +332,45 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         );
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+	$sRedirectTo = implode('&', $aErrorOptions['redirect_to']);
         
         if (PEAR::isError($oPermission)) {
-            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _kt("Error getting permission"));
+            $this->errorRedirectTo($sRedirectTo, _kt("Error getting permission"));
+	    exit(0);
         }
         if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
-            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _kt("You do not have permission to close this thread"));
+            $this->errorRedirectTo($sRedirectTo, _kt("You do not have permission to close this thread"));
+	    exit(0);
         }
 
-        $aErrorOptions['message'] = _kt("No reason provided");
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $sReason = $this->oValidator->validateString($sReason, $aErrorOptions);
+	$iStateId = KTUtil::arrayGet($_REQUEST, 'state');
+	if(!in_array($iStateId, $this->aTransitions[$oThread->getState()])) {
+	    $this->errorRedirectTo($sRedirectTo, _kt("Invalid transition"));	
+	    exit(0);
+	}
+	
+	$aErrorOptions['message'] = _kt("No reason provided");
+	$sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
+	
+	if($iStateId > $oThread->getState()) {
+	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';
+	} else {
+	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_rollback';
+	}
 
         // Start the transaction comment creation
         $this->startTransaction();
 
-        $oThread->setState(1);
-        $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
-        $oThread->setCloseReason($sReason);
+        $oThread->setState($iStateId);
+	if($iStateId == DISCUSSION_CLOSED) {
+	    $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
+	} else if($iStateId == DISCUSSION_FINALISED) {	
+	    $oThread->setCloseReason($sReason);
+	}
+
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sReason, $sTransactionNamespace);
+        $oDocumentTransaction->create();
+
         $res = $oThread->update();
         
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
@@ -330,8 +379,28 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         // Thread closed correctly, so commit
         $this->commitTransaction();
 
-        $this->successRedirectTo('viewThread', _kt("Thread closed"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
+        $this->successRedirectTo('viewThread', _kt("Thread state changed"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
         exit(0);
     }
+
+
+
+
+    function &_buildStates(&$oThread) {
+	$iCurState = $oThread->getState();
+	$aTransitions = $this->aTransitions[$iCurState];
+
+	$aVocab = array();
+
+	foreach($aTransitions as $iTransition) {
+	    $aVocab[$iTransition] = $this->aStateNames[$iTransition];
+	}
+	return $aVocab;
+    }
+
+    function _getStateName($iStateId) {
+	return KTUtil::arrayGet($this->aStateNames, $iStateId, 'Unnamed state');
+    }
+
 
 }

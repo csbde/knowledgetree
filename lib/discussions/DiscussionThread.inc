@@ -68,7 +68,7 @@ class DiscussionThread extends KTEntity{
     function getDocumentId(){ return $this->iDocumentId; }
     function getCreatorId(){ return $this->iCreatorId; }
     function getFirstCommentId(){ return $this->iFirstCommentId; }
- 	function setFirstCommentId($NewFirstCommentId){ $this->iFirstCommentId = $NewFirstCommentId; }
+    function setFirstCommentId($NewFirstCommentId){ $this->iFirstCommentId = $NewFirstCommentId; }
     function getLastCommentId(){ return $this->iLastCommentId; }
     function setLastCommentId($iNewLastComment){ $this->iLastCommentId = $iNewLastComment; }
     function getNumberOfViews(){ return $this->iNumberOfViews; }
@@ -77,12 +77,12 @@ class DiscussionThread extends KTEntity{
     function getNumberOfReplies(){ return $this->iNumberOfReplies; }
     function incrementNumberOfReplies(){ $this->iNumberOfReplies += 1; }
     function setNumberOfReplies($iValue){ $this->iNumberOfReplies = $iValue; }    
-	function getState(){ return $this->iState; }
-	function setState($iValue){ $this->iState = $iValue; }
-	function getCloseMetadataVersion(){ return $this->iCloseMetadataVersion; }
-	function setCloseMetadataVersion($iValue){ $this->iCloseMetadataVersion = $iValue; }
-	function getCloseReason(){ return $this->sCloseReason; }
-	function setCloseReason($sValue){ $this->sCloseReason = $sValue; }
+    function getState(){ return $this->iState; }
+    function setState($iValue){ $this->iState = $iValue; }
+    function getCloseMetadataVersion(){ return $this->iCloseMetadataVersion; }
+    function setCloseMetadataVersion($iValue){ $this->iCloseMetadataVersion = $iValue; }
+    function getCloseReason(){ return $this->sCloseReason; }
+    function setCloseReason($sValue){ $this->sCloseReason = $sValue; }
 	
 	
     /**

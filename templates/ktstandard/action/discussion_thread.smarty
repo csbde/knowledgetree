@@ -2,7 +2,7 @@
     {$commentrenderer->render($context, $oComment, $thread)}
 {/foreach}
 
-{if not $thread->getState()}
+{if ($thread->getState()!=DISCUSSION_CLOSED)}
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="postreply" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
@@ -23,16 +23,16 @@
 {if $closefields}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<input type="hidden" name="action" value="closethread" />
+<input type="hidden" name="action" value="changestate" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 <input type="hidden" name="fThreadId" value="{$thread->getId()}" />
-<fieldset><legend>{i18n}Close this thread{/i18n}</legend>
+<fieldset><legend>{i18n}Change the state of this thread{/i18n}</legend>
 {foreach from=$closefields item=oWidget}
     {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="{i18n}Close this thread{/i18n}" />
+  <input type="submit" name="submit" value="{i18n}Change state{/i18n}" />
 </div>
 </fieldset>
 </form>
