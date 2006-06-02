@@ -228,10 +228,9 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $replyFields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
         $replyFields[] = new KTTextWidget(_kt("Body"), _kt("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
-        // Fields for closing thread (if user has write permission)
+        // Fields for closing thread (if user has workflow permission)
         $closeFields = array();
-
-        $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+        $oPermission =& KTPermission::getByName('ktcore.permissions.workflow');
 
         if (!PEAR::isError($oPermission) && KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument) && $oThread->getState() != DISCUSSION_CLOSED) {
 	    $aOptions = array('vocab' => $this->_buildStates($oThread));

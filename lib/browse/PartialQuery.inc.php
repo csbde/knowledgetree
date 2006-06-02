@@ -370,6 +370,7 @@ class SimpleSearchQuery extends PartialQuery {
         $aParams[] = $iBatchSize;
         
         $q = array($sQuery, $aParams);
+
         $res = DBUtil::getResultArray($q); 
         
         return $res;
