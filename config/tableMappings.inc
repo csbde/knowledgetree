@@ -55,8 +55,8 @@ $default->folders_table = "folders";
 $default->groups_table = "groups_lookup";
 // links groups to units
 $default->groups_units_table = "groups_units_link";
-// links
-$default->quicklinks_table = "links";
+// links -- DEPRECATED
+//$default->quicklinks_table = "links";
 // Table with metadata
 $default->metadata_table = "metadata_lookup";
 // Table with mime info
