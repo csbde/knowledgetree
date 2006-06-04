@@ -30,10 +30,10 @@ class KTPortletRegistry {
     var $actions = array();
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTPortletRegistry')) {
-            $GLOBALS['oKTPortletRegistry'] =& new KTPortletRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTPortletRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTPortletRegistry'] =& new KTPortletRegistry;
         }
-        return $GLOBALS['oKTPortletRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTPortletRegistry'];
     }
     // }}}
 
@@ -81,7 +81,7 @@ class KTPortletRegistry {
             if (file_exists($sPortletFile)) {
                 require_once($sPortletFile);
             }
-            $oPortlet =&  new $sPortletClass;
+            $oPortlet =& new $sPortletClass;
             $oPortlet->setPlugin($oPlugin);
             array_push($aReturn, $oPortlet);
         }

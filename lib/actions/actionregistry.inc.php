@@ -30,10 +30,10 @@ class KTActionRegistry {
     var $actions = array();
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTActionRegistry')) {
-            $GLOBALS['oKTActionRegistry'] = new KTActionRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTActionRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTActionRegistry'] = new KTActionRegistry;
         }
-        return $GLOBALS['oKTActionRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTActionRegistry'];
     }
     // }}}
 

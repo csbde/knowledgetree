@@ -53,10 +53,10 @@ class KTAuthenticationProviderRegistry {
 
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTAuthenticationProviderRegistry')) {
-            $GLOBALS['oKTAuthenticationProviderRegistry'] = new KTAuthenticationProviderRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAuthenticationProviderRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTAuthenticationProviderRegistry'] = new KTAuthenticationProviderRegistry;
         }
-        return $GLOBALS['oKTAuthenticationProviderRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTAuthenticationProviderRegistry'];
     }
     // }}}
 

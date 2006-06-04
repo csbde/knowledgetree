@@ -30,10 +30,10 @@ class KTPageRegistry {
     var $aResources = array();
 
     function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTPageRegistry')) {
-            $GLOBALS['oKTPageRegistry'] = new KTPageRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTPageRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTPageRegistry'] = new KTPageRegistry;
         }
-        return $GLOBALS['oKTPageRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTPageRegistry'];
     }
 
     function registerPage($sPath, $sClassName, $sFilename = null) {

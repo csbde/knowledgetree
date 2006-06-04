@@ -57,6 +57,22 @@ class KTPluginResourceRegistry {
 
 class KTPluginUtil {
     function loadPlugins () {
+        $sPluginCache = KT_DIR . '/var/plugin-cache';
+        if (file_exists($sPluginCache)) {
+            require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
+            require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
+            require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+            require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
+            require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
+            require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
+            require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
+            require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
+            require_once(KT_LIB_DIR . "/help/help.inc.php");
+            $GLOBALS['_KT_PLUGIN'] = unserialize(file_get_contents($sPluginCache));
+            $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPlugins = array();
+            return;
+        }
+        $GLOBALS['_KT_PLUGIN'] = array();
         $aPlugins = KTPluginEntity::getList();
         if (count($aPlugins) === 0) {
             KTPluginUtil::registerPlugins();
@@ -83,7 +99,6 @@ class KTPluginUtil {
                 require_once($sPath);
             }
         }
-
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aPlugins =& $oRegistry->getPlugins();
         foreach ($aPlugins as $oPlugin) {
@@ -98,6 +113,7 @@ class KTPluginUtil {
                 $oPlugin->load();
             }
         }
+        // file_put_contents($sPluginCache, serialize($GLOBALS['_KT_PLUGIN']));
     }
 
     function registerPlugins () {
