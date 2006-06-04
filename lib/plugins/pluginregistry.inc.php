@@ -31,10 +31,10 @@ class KTPluginRegistry {
     var $_aPlugins = array();
 
     function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTPluginRegistry')) {
-            $GLOBALS['oKTPluginRegistry'] = new KTPluginRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTPluginRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry'] = new KTPluginRegistry;
         }
-        return $GLOBALS['oKTPluginRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry'];
     }
 
     function registerPlugin($sClassName, $sNamespace, $sFilename = null) {

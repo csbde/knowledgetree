@@ -35,10 +35,10 @@ class KTi18nRegistry {
     var $_aLanguages = array();
 
     function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTi18nRegistry')) {
-            $GLOBALS['oKTi18nRegistry'] =& new KTi18nRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTi18nRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTi18nRegistry'] =& new KTi18nRegistry;
         }
-        return $GLOBALS['oKTi18nRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTi18nRegistry'];
     }
 
     function registeri18n($sDomain, $sDirectory) {

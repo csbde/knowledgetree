@@ -32,10 +32,10 @@ class KTDashletRegistry {
     var $nsnames = array();
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTDashboardRegistry')) {
-            $GLOBALS['oKTDashboardRegistry'] = new KTDashletRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTDashboardRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'] = new KTDashletRegistry;
         }
-        return $GLOBALS['oKTDashboardRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'];
     }
     // }}}
 

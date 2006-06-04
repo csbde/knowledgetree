@@ -201,11 +201,11 @@ class KTHelpRegistry {
     }
     
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTHelpRegistry')) {
-            $GLOBALS['oKTHelpRegistry'] = new KTHelpRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTHelpRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTHelpRegistry'] = new KTHelpRegistry;
         }
 
-        return $GLOBALS['oKTHelpRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTHelpRegistry'];
     }
     
     function registerHelp($sPluginName, $sLang, $sBaseDir) {
