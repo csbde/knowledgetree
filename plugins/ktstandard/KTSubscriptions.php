@@ -50,7 +50,7 @@ class KTSubscriptionPlugin extends KTPlugin {
 
     function setup() {
         $this->registerPortlet('browse', 'KTSubscriptionPortlet',
-            'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
+            'ktcore.portlets.subscription', __FILE__);
         $this->registerAction('documentsubscriptionaction', 'KTDocumentSubscriptionAction',
             'ktstandard.subscription.documentsubscription');
         $this->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction',
