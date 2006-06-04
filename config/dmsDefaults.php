@@ -424,6 +424,7 @@ class KTInit {
             $this->readConfig();
             
             $oKTConfig =& KTConfig::getSingleton();
+            @touch($cache_file);
             if ($store_cache && is_writable($cache_file)) {
                 $oKTConfig->createCache($cache_file);
             }
