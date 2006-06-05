@@ -39,8 +39,7 @@ class KTMime {
      * @return int mime type primary key if found, else default mime type primary key (text/plain)
      */
     function getMimeTypeID($sMimeType, $sFileName) {
-        global $default;
-        $sql = $default->db;
+        $sTable = KTUtil::getTableName('mimetypes');
         $bOfficeDocument = false;
 
         // application/msword seems to be set by all Office documents
@@ -51,17 +50,23 @@ class KTMime {
         if ($bOfficeDocument || (!$sMimeType)) {
           // check by file extension
           $sExtension = KTMime::stripAllButExtension($sFileName);
-          $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = ?", $sExtension));/*ok*/
-          if ($sql->next_record()) {
-              return $sql->f("id");
+          $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE LOWER(filetypes) = ?", array($sExtension)));
+          if (PEAR::isError($res)) {
+              ; // pass ?!
+          } 
+          if (count($res) != 0) {
+              return $res[0]['id'];
           }
         }
 
         // get the mime type id
         if (isset($sMimeType)) {
-            $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = ?", $sMimeType));/*ok*/
-            if ($sql->next_record()) {
-                return $sql->f("id");
+            $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE mimetypes = ?", array($sMimeType)));
+            if (PEAR::isError($res)) {
+                ; // pass ?!
+            } 
+            if (count($res) != 0) {
+                return $res[0]['id'];
             }
         }
 
@@ -76,36 +81,45 @@ class KTMime {
     *
     */
     function getDefaultMimeTypeID() {
-        global $default;
-        $sql = $default->db;
-        $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'application/octet-stream'");
-        $sql->next_record();
-        //get the mime type id
-        return $sql->f("id");
+        $sTable = KTUtil::getTableName('mimetypes');
+        $sQuery = "SELECT id FROM " . $sTable . " WHERE mimetypes = 'application/octet-stream'";
+        $aQuery = array($sQuery, array());
+        $res = DBUtil::getResultArray($aQuery);
+        if (PEAR::isError($res)) { 
+            return $res;
+        } else {
+            return $res[0]['id'];
+        }
     }
 
     function getMimeTypeName($iMimeTypeID) {
-        global $default;
-        $sql = $default->db;
-        $sql->query(array("SELECT mimetypes FROM " . $default->mimetypes_table . " WHERE id = ?", $iMimeTypeID));/*ok*/
-        if ($sql->next_record()) {
-            return $sql->f("mimetypes");
+        $sTable = KTUtil::getTableName('mimetypes');
+        $sQuery = "SELECT mimetypes FROM " . $sTable . " WHERE id = ?";
+        $aQuery = array($sQuery, array($iMimeTypeID));
+        $res = DBUtil::getResultArray($aQuery);
+        if (PEAR::isError($res)) { 
+            return $res;
+        } else if (count($res) != 0){
+            return $res[0]['mimetypes'];
         }
         return "application/octet-stream";
     }
     
     function getFriendlyNameForString($sMimeType) {
-        global $default;
-        $sql = $default->db;
-        $sql->query(array("SELECT friendly_name, filetypes FROM " . $default->mimetypes_table . " WHERE mimetypes = ?", $sMimeType));/*ok*/
-        if ($sql->next_record()) {
-		    $friendly_name = $sql->f("friendly_name");
+        $sTable = KTUtil::getTableName('mimetypes');
+        $sQuery = "SELECT friendly_name, filetypes FROM " . $sTable . " WHERE mimetypes = ?";
+        $aQuery = array($sQuery, array($sMimeType));
+        $res = DBUtil::getResultArray($aQuery);
+        if (PEAR::isError($res)) { 
+            return $res;
+        } else if (count($res) != 0){
+            $friendly_name = $res[0]['friendly_name'];
             if (!empty($friendly_name)) { 
-                return _kt($sql->f("friendly_name"));
+                return _kt($friendly_name);
             } else {
-		        return sprintf(_kt('%s File'), strtoupper($sql->f('filetypes')));            
+                return sprintf(_kt('%s File'), strtoupper($res[0]['filetypes']));             
             }
-		}
+        }
         
         
         return _kt('Unknown Type');
