@@ -224,6 +224,14 @@ class UpgradeFunctions {
         global $default;
         require_once(KT_LIB_DIR . '/permissions/permissionobject.inc.php');
 
+        DBUtil::runQuery("UPDATE folders SET permission_folder_id = 1 WHERE id = 1");
+        $aBrokenFolders = DBUtil::getResultArray('SELECT id, parent_id FROM folders WHERE permission_folder_id = 0 OR permission_folder_id IS NULL ORDER BY LENGTH(parent_folder_ids)');
+        foreach ($aBrokenFolders as $aFolderInfo) {
+            $iFolderId = $aFolderInfo['id'];
+            $iParentFolderId = $aFolderInfo['parent_id'];
+            $iParentFolderPermissionFolder = DBUtil::getOneResultKey(array("SELECT permission_folder_id FROM folders WHERE id = ?", array($iParentFolderId)), 'permission_folder_id');
+            $res = DBUtil::whereUpdate('folders', array('permission_folder_id' => $iParentFolderPermissionFolder), array('id' => $iFolderId));
+        }
 
         // First, set permission object on all folders that were
         // "permission folders".
@@ -259,7 +267,6 @@ class UpgradeFunctions {
             $query = sprintf("UPDATE %s SET permission_object_id = %d WHERE id = %d", $sTableName, $iPermissionObjectId, $iID);
             DBUtil::runQuery($query);
         }
-
 
         $sDocumentsTable = KTUtil::getTableName('documents');
         $sFoldersTable = KTUtil::getTableName('folders');
