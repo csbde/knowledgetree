@@ -38,16 +38,13 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->users_table WHERE username = ? AND password = ?";/*ok*/
+        $sTable = KTUtil::getTableName('users');
+        $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";
         $aParams = array($userName, md5($password));
-        if ($sql->query(array($sQuery, $aParams))) {
-            if ($sql->num_rows($sql) == "1") {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
+        if (PEAR::isError($res)) { return false; }
+        else {
+            return ($res == 1);
         }
     }
 
@@ -62,25 +59,26 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
+        $sTable = KTUtil::getTableName('users'); 
         $sQuery = "SELECT ";/*ok*/
         // build select
         for ($i=0; $i<count($aAttributes); $i++) {
             $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
         }
-        $sQuery .= " FROM $default->users_table WHERE username = ?";
+        $sQuery .= " FROM $sTable WHERE username = ?";
         $aParams = array($sUserName);
-
-        if ($sql->query(array($sQuery, $aParams))) {
-            $aUserResults = array();
-            while ($sql->next_record()) {
-                for ($i=0; $i<count($aAttributes); $i++) {
-                    $aUserResults["$sUserName"]["$aAttributes[$i]"] = $sql->f($aAttributes[$i]);
-                }
-            }
-            return $aUserResults;
-        } else {
-            return false;
+        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (PEAR::isError($res)) { 
+            return false; 
         }
+        
+        $aUserResults = array();        
+        foreach ($res as $aRow) {
+            foreach ($aAttributes as $sAttrName) {
+                $aUserResults[$sUserName][$sAttrName] = $aRow[$sAttrName];
+            }
+        } 
+        return $aUserResults;
     }
     
     /**
@@ -93,26 +91,25 @@ class DBAuthenticator extends Authenticator {
     function searchUsers($sUserNameSearch, $aAttributes) {
         global $default;
 
-        $sql = $default->db;
+        $sTable = KTUtil::getTableName('users')
         $sQuery = "SELECT ";/*ok*/
-        // build select
-        for ($i=0; $i<count($aAttributes); $i++) {
-            $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
-        }
-        $sQuery .= " FROM $default->users_table where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
+        $sQuery .= implode(', ', $aAttributes); 
+        $sQuery .= " FROM $sTable where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
 
-        if ($sql->query($sQuery)) {
-            $aUserResults = array();
-            while ($sql->next_record()) {
-                $sUserName = $sql->f("username");
-                for ($i=0; $i<count($aAttributes); $i++) {
-                    $aUserResults["$sUserName"]["$aAttributes[$i]"] = $sql->f($aAttributes[$i]);
-                }
-            }
-            return $aUserResults;
-        } else {
-            return false;
+        $res = DBUtil::getResultArray(array($sQuery, array()));
+        if (PEAR::isError($res)) {
+            return false; // return $res;
         }
+        
+        $aUserResults = array();
+        foreach ($res as $aRow) {    
+            $sUserName = $aRow['username'];
+            foreach ($aAttributes as $sAttrName) {
+                $aUserResults[$sUserName][$sAttrName] = $aRow[$sAttrName];
+            }
+        }
+        return $aUserResults;
+        
     }
 }
 ?>
