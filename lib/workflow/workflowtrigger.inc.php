@@ -69,30 +69,22 @@ class KTWorkflowTrigger {
         return true;  // abstract base class
     }
     
+    // perform more expensive checks -before- performTransition.
+    function precheckTrigger($oDocument, $oUser) {
+        return true;
+    }
+    
     /*
     Multiple triggers can occur on a given transition.  If this trigger fails,
     return a PEAR::error (the overall system -will- roll the db back - 
     no need to do it yourself) with a -useful- human error message.
     
-    IF YOU SUCCEED, return a $aRollbackInfo array.  This will be passed
-    to $this->rollbackTransition IF NEEDED (e.g. a later trigger failed.)
-    This is to do your best to roll back any external changes (e.g. emails
-    sent.)
+    Any other return is simply discarded.
      */
     function performTransition($oDocument, $oUser) {
-        $rollbackinfo = null;
-        return $rollbackinfo;
+        return true;
     }
     
-    // roll back the transition.  $aRollbackInfo was returned by you earlier
-    // after ->performTransition.
-    // 
-    // throw a PEAR::error to -inform- users of a critical problem, NOT to 
-    // cause the system to rollback (that's already happened.)
-    function rollbackTransition($oDocument, $oUser, $aRollbackInfo = null) {
-        return true;
-        // return PEAR::raiseError(_kt('A follow-up email has been sent, informing the previous recipient that the step was cancelled.'));
-    }
 }
 
 ?>
