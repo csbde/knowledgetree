@@ -29,6 +29,8 @@
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowtrigger.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowtriggerinstance.inc.php');
 
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
@@ -644,5 +646,63 @@ class KTWorkflowUtil {
         return KTPermissionUtil::getAllowedForDescriptor($iDescriptorId);
     }
     // }}}
+    
+    // retrieves the triggers for a given transition in their WorkflowTrigger form.
+    function getTriggersForTransition($oTransition) {
+        $oKTWorkflowTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
+        $aTriggers = array();
+        $aTriggerInstances = KTWorkflowTriggerInstance::getByTransition($oTransition);
+        foreach ($aTriggerInstances as $oTriggerInstance) {
+            $oTrigger = $oKTWorkflowTriggerRegistry->getWorkflowTrigger($oTriggerInstance->getNamespace());
+            if (PEAR::isError($oTrigger)) {
+                return $oTrigger;
+            }
+            $oTrigger->loadConfig($oTriggerInstance);
+            $aTriggers[] = $oTrigger;
+        }
+        return $aTriggers;
+    }
+}
+
+class KTWorkflowTriggerRegistry {
+    var $triggers;
+    
+    // {{{ getSingleton
+    function &getSingleton () {
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTWorkflowTriggerRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'] = new KTWorkflowTriggerRegistry;
+        }
+        return $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'];
+    }
+    // }}}
+    
+    function registerWorkflowTrigger($sNamespace, $sClassname, $sPath) {
+        $this->triggers[$sNamespace] = array('class' => $sClassname, 'path' => $sPath);
+    }
+    
+    function getWorkflowTrigger($sNamespace) {
+        $aInfo = KTUtil::arrayGet($this->triggers, $sNamespace, null);
+        if (is_null($aInfo)) {
+            return PEAR::raiseError(sprintf(_kt("Unable to find workflow trigger: %s"), $sNamespace));
+        }    
+        
+        if (file_exists($aInfo['path'])) {
+            require_once($aInfo['path']);
+        }
+        
+        return new $sClassname;
+    }
+    
+    // get a keyed list of workflow triggers
+
+    function listWorkflowTriggers() {
+        $triggerlist = array();
+        foreach ($this->triggers as $sNamespace => $aTrigInfo) {
+            $oTriggerObj = $this->getWorkflowTrigger($sNamespace);
+            $triggerlist[$sNamespace] = $oTriggerObj->getInfo();
+        }
+        // FIXME do we want to order this alphabetically?
+        return $triggerlist;
+    }
 }
 
