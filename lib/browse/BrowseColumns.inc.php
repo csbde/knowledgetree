@@ -157,6 +157,7 @@ class TitleColumn extends BrowseColumn {
     }
 
     function _mimeHelper($iMimeTypeId) {
+        require_once(KT_LIB_DIR . '/mime.inc.php');
         return KTMime::getIconPath($iMimeTypeId);
     }
 }
