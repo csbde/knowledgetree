@@ -55,7 +55,7 @@ class KTWorkflowTrigger {
     function isLoaded() { return (!is_null($this->oTriggerInstance)); }
     
     // simple function to inform the UI/registration what kind of event this is
-    function getCapabilities() {
+    function getInfo() {
         return array(
             'guard' => $this->bIsGuard,
             'action' => $this->bIsAction,
