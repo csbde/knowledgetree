@@ -490,6 +490,17 @@ class KTWorkflowUtil {
         }
         $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
         
+        // walk the action triggers.
+        $aActionTriggers = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
+        if (PEAR::isError($aActionTriggers)) {
+            return $aActionTriggers; // error out?
+        }
+        foreach ($aActionTriggers as $oTrigger) {
+            $res = $oTrigger->precheckTransition($oDocument, $oUser);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oDocument->startNewMetadataVersion($oUser);
@@ -516,10 +527,6 @@ class KTWorkflowUtil {
         $oDocumentTransaction->create();
 
         // walk the action triggers.
-        $aActionTriggers = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
-        if (PEAR::isError($aActionTriggers)) {
-            return $aActionTriggers; // error out?
-        }
         foreach ($aActionTriggers as $oTrigger) {
             $res = $oTrigger->performTransition($oDocument, $oUser);
             if (PEAR::isError($res)) {
