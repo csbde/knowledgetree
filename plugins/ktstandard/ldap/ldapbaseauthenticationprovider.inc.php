@@ -339,6 +339,14 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                 $this->oPage->addError($aSearchResults->getMessage());
                 $aSearchResults = null;
             }
+
+            if (is_array($aSearchResults)) {
+                foreach (array_keys($aSearchResults) as $k) {
+                    if (is_array($aSearchResults[$k]['cn'])) {
+                        $aSearchResults[$k]['cn'] = $aSearchResults[$k]['cn'][0];
+                    }
+                }
+            }
         }
 
         $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
