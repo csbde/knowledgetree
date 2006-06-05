@@ -215,7 +215,7 @@ class KTDocumentUtil {
             }
         } else {
             // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Saving metadata")));
-            $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata);
+            $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata, $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
                 return $res;
@@ -272,9 +272,12 @@ class KTDocumentUtil {
     // }}}
 
     // {{{ saveMetadata
-    function saveMetadata(&$oDocument, $aMetadata) {
+    function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
         $table = "document_fields_link";
-        $res = KTDocumentUtil::validateMetadata($oDocument, $aMetadata);
+        $bNoValidate = KTUtil::arrayGet($aOptions, 'novalidate', false);
+        if ($bNoValidate !== true) {
+            $res = KTDocumentUtil::validateMetadata($oDocument, $aMetadata);
+        }
         if (PEAR::isError($res)) {
             return $res;
         }
