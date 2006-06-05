@@ -19,6 +19,11 @@
     <th>{i18n}Type{/i18n}</th>
     <td>{$oField->getType()|escape}</td>
   </tr>
+  <tr>
+    <th>{i18n}Required{/i18n}</th>
+    <td><input type="checkbox" name="is_required" {if ($oField->getIsMandatory())}checked="true"{/if} /></td>
+  </tr>  
+  
 </table>
 
 <div class="form_actions">

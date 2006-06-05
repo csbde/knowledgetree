@@ -106,7 +106,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $createFields = array();
         $createFields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
         $createFields[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this field.'), 'description', null, $this->oPage, true);                
- 
+		$createFields[] = new KTCheckboxWidget(_kt('Required'), _kt('Are the values in this field required?'), 'is_required', false, $this->oPage, false);                
         
         // type is a little more complex.
         $vocab = array();
@@ -220,7 +220,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $aErrorOptions = array(
 			'redirect_to' => array('edit', sprintf('fFieldsetId=%d', $oFieldset->getId())),
 		);
-	
+		
+		$is_required = KTUtil::arrayGet($_REQUEST, 'is_required', false);
+		if (empty($is_required)) { $is_required = false; }
         $is_lookup = false;
         $is_tree = false;
         if ($_REQUEST['type'] === "lookup") {
@@ -247,6 +249,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'haslookup' => $is_lookup,
             'haslookuptree' => $is_tree,
             'parentfieldset' => $oFieldset->getId(),
+			'ismandatory' => $is_required,
         ));
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _kt('Could not create field') . ': '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
@@ -313,6 +316,13 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         $oField->setName($_REQUEST['name']);
         $oField->setDescription($sDescription);
+		$is_required = KTUtil::arrayGet($_REQUEST, 'is_required', false);
+		
+		if (!$is_required) { $is_required = false; }
+		else { $is_required = true; }
+		
+		$oField->setIsMandatory($is_required);
+		
         $res = $oField->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('editField', _kt('Could not save field changes'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
