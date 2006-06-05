@@ -248,42 +248,18 @@ class Folder extends KTEntity {
         return true;
     }
 	
-	/**
-	* Get a folder's sub-folders
-	* 
-	* @param int	primary key of folder to get children for
-	* 
-	* @return Array array of child ids
-	*/
-	function getChildren($iFolderID, & $aChildren) {		
-		global $default;
-		$sql = $default->db;
-		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iFolderID));/*ok*/
-		while ($sql->next_record()) {
-			$aChildren[count($aChildren)] = $sql->f("id");
-			Folder::getChildren($sql->f("id"), $aChildren);
-		}		
-		return $aChildren;
-		/* 
-			    $oFolder = Folder::get($iFolderID);
-		$path = $oFolder->getParentFolderIds() . ',' . $oFolder->getId();
-		return Folder::getList(array(
-		    sprintf('(parent_folder_ids = "%s" OR parent_folder_ids LIKE "%s,%%")', $path, $path),
-		));
-		*/
-	}
-	
     /**
      * Returns the documents in this folder
      */
     function getDocumentIDs($iFolderID) {
-		global $default;
-		$sql = $default->db;
-		$sql->query(array("SELECT id from $default->documents_table WHERE folder_id = ?", $iFolderID));/*ok*/
-		while ($sql->next_record()) {
-			$sChildString .= $sql->f("id") . ",";
+		// FIXME appears to be deprecated.
+		$sTable = KTUtil::getTableName('documents');
+		$aQuery = array('SELECT id FROM $sTable WHERE folder_id = ?', array($iFolderId));
+		$res = DBUtil::getResultArrayKey($aQuery,'id');
+		if (PEAR::isError($res)) {
+		    return ''; // return $res;
 		}
-		return substr($sChildString,0, strlen($sChildString)-1);
+		return implode(',', $res);
     }
 	
     function &get($iFolderID) {
@@ -294,16 +270,14 @@ class Folder extends KTEntity {
 	 * Checks if a folder with the same name and parent exists in the database already
 	 */
 	function exists() {
-		global $default;
-		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->folders_table WHERE name = ? AND parent_id = ?";/*ok*/
+        $sTable = KTUtil::getTableName('folders');
+        $sQuery = "SELECT count(*) as folder_count FROM $sTable WHERE name = ? AND parent_id = ?";/*ok*/
         $aParams = array($this->sName, $this->iParentID);
-		$sql->query(array($sQuery, $aParams));
-		if ($sql->next_record()) {
-			return true;
-		} else {
-			return false;
-		}
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'folder_count');
+        if (PEAR::isError($res)) {
+            return false; // return $res
+        }
+        return ($res != 0); // handle pre-existing duplicates gracefully.
 	}
 	
 	/**
@@ -457,14 +431,12 @@ class Folder extends KTEntity {
 	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function folderExistsID($iFolderID) {
-		global $default, $lang_err_folder_exist;
-		$sql = $default->db;
-		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
-		if ($sql->next_record()) {
-			return true;
+		$oFolder = Folder::get($iFolderID);
+		if (PEAR::isError($oFolder)) { 
+		    return false; // no such folder, or bad ID
+		} else {
+		    return true;
 		}
-		$_SESSION["errorMessage"] =$lang_err_folder_exist . "id " . $iFolderID;
-		return false;
 	}
 	
 	/**
@@ -475,33 +447,14 @@ class Folder extends KTEntity {
 	* @return String name on success, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getFolderName($iFolderID) {
-		global $default, $lang_err_database;
-		$sql = $default->db;
-		$sql->query(array("SELECT name FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
-		if ($sql->next_record()) {
-			return $sql->f("name");
+		$oFolder = Folder::get($iFolderID);
+		if (PEAR::isError($oFolder)) {
+		    return false; // return $oFolder;
+		} else {
+		    return $oFolder->getName();
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
 	}
 	
-	/**
-	* Get the folder id using the folder name
-	*
-	* @param string the name of the folder to get the ID for
-	*
-	* @return int name on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getFolderID($sFolderName) {
-		global $default, $lang_err_database;
-		$sql = $default->db;
-		$sql->query(array("SELECT id FROM " . $default->folders_table . " WHERE name = ?", $sFolderName));/*ok*/
-		if ($sql->next_record()) {
-			return $sql->f("id");
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}    
 	
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(
