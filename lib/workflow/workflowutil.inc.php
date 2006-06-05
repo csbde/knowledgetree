@@ -461,6 +461,7 @@ class KTWorkflowUtil {
             foreach ($aGuardTriggers as $oTrigger) {
                 if (!$oTrigger->allowTransition($oDocument, $oUser)) {
                     $bBreak = true;
+                    break;
                 }
             }
             if ($bBreak) { continue; }
