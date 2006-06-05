@@ -91,8 +91,8 @@ class DBAuthenticator extends Authenticator {
     function searchUsers($sUserNameSearch, $aAttributes) {
         global $default;
 
-        $sTable = KTUtil::getTableName('users')
-        $sQuery = "SELECT ";/*ok*/
+        $sTable = KTUtil::getTableName('users');
+        $sQuery = "SELECT "; /*ok*/
         $sQuery .= implode(', ', $aAttributes); 
         $sQuery .= " FROM $sTable where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
 
