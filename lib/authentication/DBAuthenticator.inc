@@ -37,7 +37,6 @@ class DBAuthenticator extends Authenticator {
     function checkPassword($userName, $password) {
         global $default;
 
-        $sql = $default->db;
         $sTable = KTUtil::getTableName('users');
         $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";
         $aParams = array($userName, md5($password));
@@ -58,13 +57,9 @@ class DBAuthenticator extends Authenticator {
     function getUser($sUserName, $aAttributes) {
         global $default;
 
-        $sql = $default->db;
         $sTable = KTUtil::getTableName('users'); 
         $sQuery = "SELECT ";/*ok*/
-        // build select
-        for ($i=0; $i<count($aAttributes); $i++) {
-            $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
-        }
+        $sQuery .= implode(', ', $aAttributes);
         $sQuery .= " FROM $sTable WHERE username = ?";
         $aParams = array($sUserName);
         $res = DBUtil::getResultArray(array($sQuery, $aParams));
@@ -89,8 +84,6 @@ class DBAuthenticator extends Authenticator {
      * @return array containing the users found
      */
     function searchUsers($sUserNameSearch, $aAttributes) {
-        global $default;
-
         $sTable = KTUtil::getTableName('users');
         $sQuery = "SELECT "; /*ok*/
         $sQuery .= implode(', ', $aAttributes); 
