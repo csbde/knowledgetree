@@ -413,6 +413,10 @@ class KTWorkflowUtil {
         $aTransitions = KTWorkflowUtil::getTransitionsFrom($oState);
         $aEnabledTransitions = array();
         foreach ($aTransitions as $oTransition) {
+            
+            // keeping this around to make coding the replacements easier.
+            
+            /*
             $iPermissionId = $oTransition->getGuardPermissionId();
             if ($iPermissionId) {
                 $oPermission =& KTPermission::get($iPermissionId);
@@ -447,6 +451,19 @@ class KTWorkflowUtil {
                     continue;
                 }
             }
+            */
+            
+            $aGuardTriggers = KTWorkflowUtil::getGuardTriggersForTransition($oTransition);
+            if (PEAR::isError($aGuardTriggers)) {
+                return $aGuardTriggers; // error out?
+            }
+            $bBreak = false;
+            foreach ($aGuardTriggers as $oTrigger) {
+                if (!$oTrigger->allowTransition($oDocument, $oUser)) {
+                    $bBreak = true;
+                }
+            }
+            if ($bBreak) { continue; }
             $aEnabledTransitions[] = $oTransition;
         }
         return $aEnabledTransitions;
@@ -472,6 +489,7 @@ class KTWorkflowUtil {
             return $oWorkflow;
         }
         $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+        
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oDocument->startNewMetadataVersion($oUser);
@@ -496,6 +514,18 @@ class KTWorkflowUtil {
         }
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
+
+        // walk the action triggers.
+        $aActionTriggers = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
+        if (PEAR::isError($aActionTriggers)) {
+            return $aActionTriggers; // error out?
+        }
+        foreach ($aActionTriggers as $oTrigger) {
+            $res = $oTrigger->performTransition($oDocument, $oUser);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
 
 		KTPermissionUtil::updatePermissionLookup($oDocument);
         KTWorkflowUtil::informUsersForState($oTargetState, KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, $sComments);
@@ -661,6 +691,36 @@ class KTWorkflowUtil {
             $aTriggers[] = $oTrigger;
         }
         return $aTriggers;
+    }
+    
+    function getGuardTriggersForTransition($oTransition) {
+        $aTriggers = KTWorkflowUtil::getTriggersForTransition($oTransition);
+        if (PEAR::isError($aTriggers)) { 
+            return $aTriggers; 
+        }
+        $aGuards = array();
+        foreach ($aTriggers as $oTrigger) {
+            $aInfo = $oTrigger->getInfo();
+            if ($aInfo['guard']) { 
+                $aGuards[] = $oTrigger;
+            }
+        }
+        return $aGuards;
+    }
+    
+    function getActionTriggersForTransition($oTransition) {
+        $aTriggers = KTWorkflowUtil::getTriggersForTransition($oTransition);
+        if (PEAR::isError($aTriggers)) { 
+            return $aTriggers; 
+        }
+        $aGuards = array();
+        foreach ($aTriggers as $oTrigger) {
+            $aInfo = $oTrigger->getInfo();
+            if ($aInfo['action']) { 
+                $aGuards[] = $oTrigger;
+            }
+        }
+        return $aGuards;
     }
 }
 
