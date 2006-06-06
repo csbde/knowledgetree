@@ -218,27 +218,26 @@ class Subscription extends KTEntity {
     * @param integer the type of subscription
     * @return object subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
     */
-    function get($iSubscriptionID, $iSubscriptionType) {
-        global $default, $lang_err_object_not_exist, $lang_err_database;
-        $sql = $default->db;
-
+    function & get($iSubscriptionID, $iSubscriptionType) {
+        // FIXME this is crack - need to start looking at multiple entities here.
         $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE id = ?";/*ok*/
         $aParams = array($iSubscriptionID);
-        if ($sql->query(array($sQuery, $aParams))) {/*ok*/
-            if ($sql->next_record()) {
-                $oSubscription = & new Subscription($sql->f("user_id"),
-                                                    $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
-                                                    $iSubscriptionType,
-                                                    $sql->f("is_alerted"));
-                $oSubscription->iId = $iSubscriptionID;
-                return $oSubscription;
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iSubscriptionID . " table = " . Subscription::getTableName($iSubscriptionType);
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
+        $res = DBUtil::getOneResult(array($sQuery, $aParams));
+        
+        if (PEAR::isError($res)) {
+            return false; // return $res;
         }
-        return false;
+        
+        if (empty($res)) {
+            return false; // return PEAR::raiseError(_kt('No such Subscription ID'))
+        }
+
+        $oSubscription = & new Subscription($res["user_id"],
+                                            $res[Subscription::getIdFieldName($iSubscriptionType)],
+                                            $iSubscriptionType,
+                                            $res["is_alerted"]);
+        $oSubscription->iId = $iSubscriptionID;
+        return $oSubscription;        
     }
 
     /**
@@ -252,25 +251,24 @@ class Subscription extends KTEntity {
     * @return object subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
     */
     function getByIDs($iUserID, $iExternalID, $iSubscriptionType) {
-        global $default, $lang_err_database, $lang_err_object_not_exist;
-        $sql = $default->db;
-        $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";/*ok*/
+        $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";
         $aParams = array($iExternalID, $iUserID);
-        if ($sql->query(array($sQuery, $aParams))) {
-            if ($sql->next_record()) {
-                $oSubscription = & new Subscription($sql->f("user_id"),
-                                                    $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
-                                                    $iSubscriptionType,
-                                                    $sql->f("is_alerted"));
-                $oSubscription->iId = $sql->f("id");
-                return $oSubscription;
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_object_not_exist . " extID=$iExternalID, uid=$iUserID; table = " . Subscription::getTableName($iSubscriptionType);
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
+        $res = DBUtil::getOneResult(array($sQuery, $aParams));
+
+        if (PEAR::isError($res)) {
+            return false; // return $res;
         }
-        return false;
+        
+        if (empty($res)) {
+            return false; // return PEAR::raiseError(_kt('No such Subscription ID'))
+        }
+
+        $oSubscription = & new Subscription($res["user_id"],
+                                            $res[Subscription::getIdFieldName($iSubscriptionType)],
+                                            $iSubscriptionType,
+                                            $res["is_alerted"]);
+        $oSubscription->iId = $iSubscriptionID;
+        return $oSubscription;
     }
 
     /**
@@ -282,18 +280,16 @@ class Subscription extends KTEntity {
     * @return true if the document subscription exists, false otherwise
     */
     function exists($iUserID, $iExternalID, $iSubscriptionType) {
-        global $default, $lang_err_database;
-        $sql = $default->db;
-        $sQuery = "SELECT id FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";/*ok*/
+        $sQuery = "SELECT count(*) AS `subcount` FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";
         $aParams = array($iExternalID, $iUserID);
-        if ($sql->query(array($sQuery, $aParams))) {
-            if ($sql->next_record()) {
-                return true;
-            }
+        
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'subcount');
+        
+        if (PEAR::isError($res)) {
+            return false;
         } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
+            return ($res == 1);
         }
-        return false;
     }
 
     /**
