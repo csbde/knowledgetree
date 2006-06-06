@@ -53,7 +53,10 @@ class KTDocumentUtil {
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
 
-        $oDocument->startNewContentVersion($oUser);
+        $bSuccess = $oDocument->startNewContentVersion($oUser);
+        if (PEAR::isError($bSuccess)) {
+            return $bSuccess;
+        }
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
@@ -802,7 +805,10 @@ class KTDocumentUtil {
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oOldContentVersion = $oDocument->_oDocumentContentVersion;
-        $oDocument->startNewContentVersion($oUser);
+        $bSuccess = $oDocument->startNewContentVersion($oUser);
+        if (PEAR::isError($bSuccess)) {
+            return $bSuccess;
+        }
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
 
