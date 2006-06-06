@@ -38,6 +38,7 @@ class UpgradeFunctions {
         "3.0.1.3" => array('addTransactionTypes3013'),
         "3.0.1.4" => array('createWorkflowPermission'),
         "3.0.2" => array("fixDocumentRoleAllocation"),
+        "3.0.3.2" => array("createFolderViewPermission"),
     );
 
     var $descriptions = array(
@@ -52,6 +53,7 @@ class UpgradeFunctions {
         'addTransactionTypes3013' => 'Add new folder transaction types',
         'createWorkflowPermission' => 'Create the Core: Manage Workflow',
         'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
+        'createFolderViewPermission' => 'Create the Core: Folder View permission',
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -646,6 +648,41 @@ class UpgradeFunctions {
         );
         $res = DBUtil::autoInsert($sUpgradesTable, $f);
         return;
+    }
+    // }}}
+
+    // {{{ createFolderViewPermission
+    function createFolderViewPermission() {
+        DBUtil::startTransaction();
+        $sPermissionsTable = KTUtil::getTableName('permissions');
+        $aPermissionInfo = array(
+            'human_name' => 'Core: Folder View',
+            'name' => 'ktcore.permissions.folder_view',
+            'built_in' => true,
+        );
+        $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $iFolderViewPermissionId = $res;
+
+        $sQuery = "SELECT id FROM $sPermissionsTable WHERE name = ?";
+        $aParams = array("ktcore.permissions.read");
+        $iReadPermissionId = DBUtil::getOneResultKey(array($sQuery, $aParams), "id");
+
+        $sPermissionAssignmentsTable = KTUtil::getTableName('permission_assignments');
+        $sQuery = "SELECT permission_object_id, permission_descriptor_id FROM $sPermissionAssignmentsTable WHERE permission_id = ?";
+        $aParams = array($iReadPermissionId);
+        $aRows = DBUtil::getResultArray(array($sQuery, $aParams));
+        foreach ($aRows as $aRow) {
+            $aRow['permission_id'] = $iFolderViewPermissionId;
+            DBUtil::autoInsert($sPermissionAssignmentsTable, $aRow);
+        }
+        $sDocumentTable = KTUtil::getTableName('documents');
+        $sFolderTable = KTUtil::getTableName('folders');
+        DBUtil::runQuery("UPDATE $sDocumentTable SET permission_lookup_id = NULL");
+        DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
+        DBUtil::commit();
     }
     // }}}
 }
