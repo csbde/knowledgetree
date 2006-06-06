@@ -53,80 +53,21 @@ class DocumentType extends KTEntity {
 		$this->bDisabled = false;
 	}
 	
-	/**
-	* Get the document type's primary key value
-	*
-	* @return int document type's primary key value
-	*
-	*/
-	function getID() {
-		return $this->iId;
-	}
-	
-	/**
-	* Get the document type's name
-	*
-	* @return String document type's name
-	*
-	*/
-	function getName() {
-		return $this->sName;
-	}
-	
-	/**
-	* Set the document type's name
-	*
-	* @param 	document type's new name
-	*
-	*/
-	function setName($sNewValue) {
-		$this->sName = $sNewValue;
-	}
-
-
-
-	/**
-	* Get the document type's disabled status
-	*
-	* @return Boolean document type's disabled status
-	*
-	*/
-	function getDisabled() {
-		return $this->bDisabled;
-	}
-	
-	/**
-	* Set the document type's disabled status
-	*
-	* @param 	document type's new disabled status
-	*
-	*/
-	function setDisabled($bNewValue) {
-		$this->bDisabled = ($bNewValue) ? true : false;
-	}
-
-
-
-
+	function getID() { return $this->iId; }
+	function getName() { return $this->sName; }
+	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getDisabled() { return $this->bDisabled; }
+    function setDisabled($bNewValue) { $this->bDisabled = ($bNewValue) ? true : false; }
 
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-	    'disabled' => $this->bDisabled,
+	        'disabled' => $this->bDisabled,
         );
     }
 
-    function _table () {
-        global $default;
-        return $default->document_types_table;
-    }
+    function _table () { return KTUtil::getTableName('document_types'); }
 	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
 	function delete() {
         if ($this->isUsed()) {
             return PEAR::raiseError('Document type still in use');
@@ -180,6 +121,8 @@ class DocumentType extends KTEntity {
     function &createFromArray($aArray) {
         return KTEntityUtil::createFromArray('DocumentType', $aArray);
     }
+    
+    function &get($iId) { return KTEntityUtil::get('DocumentType', $iId); }
 	
 	
 
