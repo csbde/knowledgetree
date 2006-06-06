@@ -46,21 +46,32 @@ class KTInfoDashlet extends KTBaseDashlet {
         $aHelpInfo = array();
         $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
                
-        $help_path = KTHelp::_getLocationInfo($this->helpLocation);
-        if (PEAR::isError($help_path)) {
-            return false;
-        }
+        $help_path = KTHelp::_getLocationInfo($this->helpLocation, null, true);
         
-        // We now check for substitute help files.  try to generate an error.
-        $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
+        //var_dump($help_path);
+        
+        if (PEAR::isError($help_path) || empty($help_path['external'])) {
+            if ($can_edit) {
+                // give it a go.
+                $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
+                if (PEAR::isError($aHelpInfo)) {
+                    // otherwise, fail out.
+                    $aHelpInfo = array(
+                        'title' => _kt('Welcome message'),
+                        'body' => _kt('Since you are a system administrator, you can see this message. Please click "edit" below here to create some welcome content, since there is no welcome content available in your language.'),
+                    );
+                }
+            } else {
+                return false;
+            }
+        } else {
+            // We now check for substitute help files.  try to generate an error.
+            $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
+        }
         
         // NORMAL users never see edit-option.
         if (!$can_edit) {
-            if (!PEAR::isError($oReplacementHelp)) {
-                ;
-            } elseif ($aHelpInfo != false) {
-                ;
-            } else {
+            if (empty($aHelpInfo)) {
                 return false;
             }
         } 
