@@ -188,10 +188,16 @@ class KTBrowseUtil {
             $url = generateControllerUrl($sAction, "fFolderId=1");
         }
         $aBreadcrumbs[] = array("url" => $url, "name" => _kt('Folders'));
+        $oUser = User::get($_SESSION['userID']);
         
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
+                $oThisFolder = Folder::get($id);
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.read', $oThisFolder)) {
+                    $aBreadcrumbs[] = array('name' => '...');
+                    continue;
+                }
                 $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, "fFolderId=" . $id);
@@ -202,7 +208,9 @@ class KTBrowseUtil {
 
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
-            if ($bFinal) {
+            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.read', $oFolder)) {
+                $aBreadcrumbs[] = array('name' => '...');
+            } else if ($bFinal) {
                 $aBreadcrumbs[] = array("name" => $oFolder->getName());
             } else {
                 $id = $oFolder->getId();
@@ -214,7 +222,21 @@ class KTBrowseUtil {
             }
         }
 
-        return $aBreadcrumbs;
+        $aCompactBreadcrumbs = array();
+        $lastdotdotdot = false;
+        foreach ($aBreadcrumbs as $aBreadcrumb) {
+            if ($aBreadcrumb['name'] == '...') {
+                if ($lastdotdotdot == true) {
+                    continue;
+                }
+                $lastdotdotdot = true;
+            } else {
+                $lastdotdotdot = false;
+            }
+            $aCompactBreadcrumbs[] = $aBreadcrumb;
+        }
+
+        return $aCompactBreadcrumbs;
     }
     // }}}
 
