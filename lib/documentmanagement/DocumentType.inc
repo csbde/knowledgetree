@@ -157,33 +157,6 @@ class DocumentType extends KTEntity {
     function &getFieldsets() {
 	return KTFieldset::getForDocumentType($this);
     }
-
-	
-	/**
-	* Static function.
-	* Given a document_fields primary key it will create a 
-	* DocumentTypes object and populate it with the 
-	* corresponding database values
-	*
-	* @return DocumentType populated DocumentType object on successful query, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function & get($iDocumentTypeID) {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT * FROM ". $default->document_types_table ." WHERE id = ?", $iDocumentTypeID));/*ok*/
-		if ($result) {
-			if ($sql->next_record()) {
-				$oDocumentType = & new DocumentType($sql->f("name"));
-				$oDocumentType->iId = $sql->f("id");
-				$oDocumentType->bDisabled = $sql->f("disabled");
-				return $oDocumentType;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = document_types";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
 	
 	/**
  	 * Static- Get a list document types;

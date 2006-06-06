@@ -367,11 +367,12 @@ class Document {
      * Deletes content from document data tables
      */
     function cleanupDocumentData($iDocumentID) {
-        global $default;
-        $sql = $default->db;
-               
-        $result = $sql->query("DELETE FROM $default->document_text_table WHERE document_id = $iDocumentID");
-        return $result;
+        // FIXME this appears to be deprecated, or at least should be
+        $sTable = KTUtil::getTableName('document_text')
+        $sQuery = "DELETE FROM $sTable WHERE document_id = ?";
+        $aParams = array($iDocumentID);        
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+        return $res;
     }
     // }}}
 

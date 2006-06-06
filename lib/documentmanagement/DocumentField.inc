@@ -142,37 +142,16 @@ class DocumentField extends KTEntity {
 	*
 	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function getAllDataTypes() {
-		global $default, $lang_err_database;
-		$aDataTypes;
-		settype($aDataTypes, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT id, name FROM " . $default->data_types_table );/*ok*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				
-				$aDataTypes[$iCount]["id"] = $sql->f("id");
-				$aDataTypes[$iCount]["name"] = $sql->f("name");
-				$iCount++;
-			}
-			return $aDataTypes;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-	
 	function getLookupCount($iDocumentFieldID){
-		global $default;
-			
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT COUNT(*) AS count FROM " . $default->metadata_table . " WHERE document_field_id = ?", $iDocumentFieldID));/*ok*/
-		if ($result) {			
-			if ($sql->next_record()) {		
-				return $sql->f("count");
-			}
-		}
-		return false;
+	    $sTable = 'metadata';
+		$sQuery = "SELECT COUNT(*) AS count FROM " . $sTable . " WHERE document_field_id = ?";
+		$aParams = array($iDocumentFieldID);
+
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'count');
+        if (PEAR::isError($res)) {
+            return false; // return $res;
+        }
+        return $res;
 	}
 
     function getType() {
