@@ -32,8 +32,14 @@ class DBUtil {
     function &getDB($db = null) {
         global $default;
         if (is_null($db)) {
-            return $default->_db;
+            $db = $default->_db;
         }
+
+	if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
+	    $db->query("SET NAMES 'utf8'");
+	    $db->_kt_initialized = true;
+	}
+
         return $db;
     }
 
