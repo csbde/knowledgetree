@@ -89,6 +89,7 @@ class KTDocumentCore extends KTEntity {
         "iStatusId" => 'status_id',
         "bIsCheckedOut" => 'is_checked_out',
         "iCheckedOutUserId" => 'checked_out_user_id',
+        "bImmutable" => 'immutable',
 
         // permission-related
         "iPermissionObjectId" => 'permission_object_id',
@@ -132,6 +133,9 @@ class KTDocumentCore extends KTEntity {
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
     
     function getFullPath() { return $this->sFullPath; }
+
+    function getImmutable() { return $this->bImmutable; }
+    function setImmutable($mValue) { $this->bImmutable = $mValue; }
     // }}}
 
     // {{{ getParentId
@@ -216,6 +220,9 @@ class KTDocumentCore extends KTEntity {
         }
         if (empty($this->bIsCheckedOut)) {
             $this->bIsCheckedOut = false;
+        }
+        if (empty($this->bImmutable)) {
+            $this->bImmutable = false;
         }
         $oFolder = Folder::get($this->getFolderId());
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();

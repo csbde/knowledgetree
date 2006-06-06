@@ -90,6 +90,9 @@ class Document {
         
     function getModifiedUserId() { return $this->_oDocumentCore->getModifiedUserId(); }
     function setModifiedUserId($iNewValue) { $this->_oDocumentCore->setModifiedUserId($iNewValue); }
+
+    function getImmutable() { return $this->_oDocumentCore->getImmutable(); }
+    function setImmutable($mValue) { $this->_oDocumentCore->setImmutable($mValue); }
     
     // Document Metadata Items
     
