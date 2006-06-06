@@ -180,6 +180,7 @@ class KTHelp {
         $sPluginName = $aParts[0];
         $sSubLocation = implode('/', array_slice($aParts, 1));
         
+        // always use the "correct" internal name
         $sInternalName = sprintf("%s/%s/%s", $sPluginName, $sLangCode, $sSubLocation);
         
         // this is a pseudo-name.  essentially, this maps to the canonical
@@ -187,11 +188,17 @@ class KTHelp {
 
         //$sBaseDir = sprintf("%s/kthelp/%s/%s", KT_DIR, $sPluginName, $sLangCode); 
         $sBaseDir = $oHelpReg->getBaseDir($sPluginName, $sLangCode);
-
         if (PEAR::isError($sBaseDir)) { 
             if (!$bFailOK) { return $sBaseDir; }
             else {
-                $sExternalName = '';
+                // try in english
+                $sAltBase = $oHelpReg->getBaseDir($sPluginName, 'en');
+                if (PEAR::isError($sAltBase)) {
+                    // nothing, even in anglais.
+                    $sExternalName = '';
+                } else {
+                    $sExternalName = sprintf("%s/%s", $sAltBase, $sSubLocation);                    
+                }
             }
         } else {
             $sExternalName = sprintf("%s/%s", $sBaseDir, $sSubLocation);
