@@ -626,6 +626,7 @@ class KTEntityUtil {
 
     function &get($sClassName, $iId) {
         /* */
+        $iId = (int)$iId;
         $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
         $oObject =& new $sProxyClass($iId);
         $res = $oObject->getId();
