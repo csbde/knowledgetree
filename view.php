@@ -93,14 +93,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();
 		}
-		$document_data["document_id"] = $document_id;
-		
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
 		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
+		$document_id = $oDocument->getId();
+		$document_data["document_id"] = $oDocument->getId();
+		
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
 		    if ($oDocument->getStatusID() == ARCHIVED) {
