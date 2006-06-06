@@ -139,13 +139,13 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
 
 	    $info = KTHelp::getHelpInfo($name);
         if (PEAR::isError($info)) { 
-            $info = array('name' => $name);
+            $info = array('name' => $aPathInfo['internal']);
             $info['title'] = _kt('New Help File');
             $info['body'] = _kt('New Help File');
         }
 
         $oHelpReplacement = KTHelpReplacement::createFromArray(array(
-            'name' => $info['name'],
+            'name' => $aPathInfo['internal'],
             'description' => $info['body'],
             'title' => $info['title'],
         ));

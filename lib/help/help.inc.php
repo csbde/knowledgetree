@@ -115,10 +115,11 @@ class KTHelp {
         // failing that, check the DB for an entry (+ return if found)
         // failing that, check the FS for the entry (+ return if found)
         // failing that, through an exception.
-        
-        if (KTHelp::isImageFile($aPathInfo['external'])) {
-            $aInfo['is_image'] = true;
-            return $aInfo;
+        if (!empty($aPathInfo['external'])) {
+            if (KTHelp::isImageFile($aPathInfo['external'])) {
+                $aInfo['is_image'] = true;
+                return $aInfo;
+            }
         }
         
         // check DB
@@ -129,6 +130,11 @@ class KTHelp {
             $aInfo['help_id'] = $oReplacement->getID();
             $aInfo['name'] = $oReplacement->getName();
             return $aInfo;
+        }
+        
+        // if we don't have an external address at this point, return an error.
+        if (empty($aPathInfo['external'])) {
+            return PEAR::raiseError(_kt("Unable to locate the requested help file for this language."));
         }
         
         // check FS
@@ -150,7 +156,7 @@ class KTHelp {
         return $aInfo;
     }
     
-    function _getLocationInfo($sSubPath, $sLangCode = null) {
+    function _getLocationInfo($sSubPath, $sLangCode = null, $bFailOK = true) {
         // FIXME use a cheap cache here?  is it even worth it?
         $aInfo = array(
             'subpath' => null,
@@ -182,8 +188,15 @@ class KTHelp {
         //$sBaseDir = sprintf("%s/kthelp/%s/%s", KT_DIR, $sPluginName, $sLangCode); 
         $sBaseDir = $oHelpReg->getBaseDir($sPluginName, $sLangCode);
 
-        if (PEAR::isError($sBaseDir)) { return $sBaseDir; }
-        $sExternalName = sprintf("%s/%s", $sBaseDir, $sSubLocation);
+        if (PEAR::isError($sBaseDir)) { 
+            if (!$bFailOK) { return $sBaseDir; }
+            else {
+                $sExternalName = '';
+            }
+        } else {
+            $sExternalName = sprintf("%s/%s", $sBaseDir, $sSubLocation);
+        }
+
         
         $aInfo['subpath'] = $sSubPath;
         $aInfo['internal'] = $sInternalName;
