@@ -129,7 +129,7 @@ class DocumentFieldLink extends KTEntity {
 	}
 
     function _table () {
-        KUtil::getTableName('document_fields_link');
+        return KTUtil::getTableName('document_fields_link');
     }
 	
 	/**
