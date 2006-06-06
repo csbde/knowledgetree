@@ -86,39 +86,24 @@ class MetaData extends KTEntity {
         return KTEntityUtil::get('MetaData', $iId);
 	}
 	
-/*
-     * static function
-     *
-     * sets the id of the groupunit using their groupid
-     *
-     * @param   String
-     *   The unit_ID
-     *   
-     */
-     
+    // FIXME this function makes no sense.
 	function setMetaDataID($iDocFieldId, $sMetaDataName)
 	 {
-	   	global $default;
-		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->metadata_table WHERE document_field_id = ? and name = ?";/*ok*/
-        $aParams = array($iDocFieldId, $sMetaDataName);
-		$result = $sql->query(array($sQuery, $aParams));
-		if ($result) {
-			if ($sql->next_record()) {
-				$id = $sql->f("id");
-				
-			}else{
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
-		
-		}else{	
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		
-		$this->iId = $id;
-		
+	    $sTable = KTUtil::getTableName('metadata');
+	    $sQuery = "SELECT id FROM $sTable WHERE document_field_id = ? and name = ?";
+        $aParams = array($iDocFieldId, $sMetaDataName); 
+	    $res = DBUtil::getResultArray(array($sQuery, $aParams));
+	    
+	    if (PEAR::isError($res)) {
+	        return false; // return $res;
+	    } 
+	    
+	    if (count($res) != 0) {
+	        $this->iId = $id;
+	        return $res[0]['id'];
+	    } else {
+	        return false; // return PEAR::raiseError(_kt('No such plugin pack'))
+	    }
 	}
 
     function getList($sWhereClause = null) {
