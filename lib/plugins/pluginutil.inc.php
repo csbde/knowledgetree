@@ -145,6 +145,8 @@ class KTPluginUtil {
             }
         }
         KTPluginEntity::clearAllCaches();
+        $sPluginCache = KT_DIR . '/var/plugin-cache';
+        @unlink($sPluginCache);
     }
 
     function _walk ($path, &$files) {
