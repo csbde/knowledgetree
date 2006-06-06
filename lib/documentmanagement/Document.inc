@@ -368,7 +368,7 @@ class Document {
      */
     function cleanupDocumentData($iDocumentID) {
         // FIXME this appears to be deprecated, or at least should be
-        $sTable = KTUtil::getTableName('document_text')
+        $sTable = KTUtil::getTableName('document_text');
         $sQuery = "DELETE FROM $sTable WHERE document_id = ?";
         $aParams = array($iDocumentID);        
         $res = DBUtil::runQuery(array($sQuery, $aParams));
