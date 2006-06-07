@@ -99,8 +99,8 @@ class KTBaseIndexerTrigger {
         
         $contents = $this->extract_contents($intermediate, $myfilename);
         
-        unlink($myfilename);
-        if (OS_WINDOWS) { unlink($intermediate); }
+        @unlink($myfilename);
+        if (OS_WINDOWS) { @unlink($intermediate); }
         if (empty($contents)) {
             return;
         }
@@ -136,7 +136,7 @@ class KTBaseIndexerTrigger {
         }
         KTUtil::pexec($cmdline, $aOptions);
         $contents = file_get_contents($sTempFilename);
-        
+
         return $contents;
     }
 }

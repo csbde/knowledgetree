@@ -34,7 +34,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
     );
     var $command = 'catdoc';          // could be any application.
     var $commandconfig = 'indexer/catdoc';          // could be any application.
-    var $args = array("-w");
+    var $args = array("-w", "-d", "UTF-8");
     var $use_pipes = true;
     
     function extract_contents($sFilename, $sTempFilename) {
@@ -47,6 +47,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
 	    $sDir = dirname(dirname($sCommand));
 	    putenv('HOME=' . $sDir);
         }
+	putenv('LANG=en_US.UTF-8');
         return parent::extract_contents($sFilename, $sTempFilename);
     }
     

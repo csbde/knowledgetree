@@ -36,13 +36,14 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
     );
     var $command = 'xls2csv';          // could be any application.
     var $commandconfig = 'indexer/xls2csv';          // could be any application.
-    var $args = array("-q", "0", "-c", " ");
+    var $args = array("-d", "UTF-8", "-q", "0", "-c", " ");
     var $use_pipes = true;
     
     // see BaseIndexer for how the extraction works.
     //
     function extract_contents($sFilename, $sTempFilename) {
         if (!OS_WINDOWS) {
+	    putenv('LANG=en_US.UTF-8');
             $res = parent::extract_contents($sFilename, $sTempFilename);
             if (!empty($res)) {
                 return $res;
