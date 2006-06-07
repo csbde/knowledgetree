@@ -34,11 +34,12 @@ class KTPdfIndexerTrigger extends KTBaseIndexerTrigger {
     );
     var $command = 'pdftotext';          // could be any application.
     var $commandconfig = 'indexer/pdftotext';          // could be any application.
-    var $args = array("-nopgbrk");
+    var $args = array("-nopgbrk", "-enc", "UTF-8");
     var $use_pipes = false;
     
     // see BaseIndexer for how the extraction works.
     function findLocalCommand() {   
+	putenv('LANG=en_US.UTF-8');
         $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
         return $sCommand;
     }    
