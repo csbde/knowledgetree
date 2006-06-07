@@ -194,8 +194,12 @@ class KTBrowseUtil {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
-                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.read', $oThisFolder)) {
-                    $aBreadcrumbs[] = array('name' => '...');
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
+                    if (KTBrowseUtil::inAdminMode($oUser, $oThisFolder)) {
+                        $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $folder_path_names[$index]));
+                    } else {
+                        $aBreadcrumbs[] = array('name' => '...');
+                    }
                     continue;
                 }
                 $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
@@ -208,8 +212,12 @@ class KTBrowseUtil {
 
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
-            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.read', $oFolder)) {
-                $aBreadcrumbs[] = array('name' => '...');
+            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+                if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
+                    $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $oFolder->getName()));
+                } else {
+                    $aBreadcrumbs[] = array('name' => '...');
+                }
             } else if ($bFinal) {
                 $aBreadcrumbs[] = array("name" => $oFolder->getName());
             } else {
