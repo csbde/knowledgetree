@@ -26,6 +26,8 @@
  *         http://www.ktdms.com/
  */
 
+require_once(KT_LIB_DIR . '/database/sqlfile.inc.php');
+
 class KTPlugin {
     var $sNamespace;
     var $sFilename = null;
@@ -33,6 +35,7 @@ class KTPlugin {
     var $iVersion = 0;
     var $iOrder = 0;
     var $sFriendlyName = null;
+    var $sSQLDir = null;
     
     var $autoRegister = false;
     
@@ -258,27 +261,67 @@ class KTPlugin {
         }
         return $sFilename;
     }
+    
+    function upgradePlugin($iStart, $iEnd) {
+        if (is_null($this->sSQLDir)) { 
+            return $iEnd; // no db changes, must reach the "end".
+        }
+        global $default;
+        DBUtil::setupAdminDatabase();
+        for ($i = $iStart; $i <= $iEnd; $i++) {
+            $sqlfile = sprintf("%s/upgradeto%d.sql", $this->sSQLDir, $i);
+            if (!file_exists($sqlfile)) {
+                continue; // skip it.
+            }
+            $queries = SQLFile::sqlFromFile($sqlfile);            
+            $res = DBUtil::runQueries($queries, $default->_admindb);
+            if (PEAR::isError($res)) {
+                return $i; // break out completely, indicating how far we got pre-error.
+            }
+        }
+        return $iEnd;
+    }
 
     function register() {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         $friendly_name = '';
         if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
-            $oEntity->updateFromArray(array(
-                'path' => $this->stripKtDir($this->sFilename),
-                'version' => $this->iVersion,
-                'unavailable' => false,
-                'friendlyname' => $friendly_name,
-            ));
-            return $oEntity;
+            // check for upgrade.
+            $iEndVersion = 0; // dest.
+            if ($this->iVersion != $oEntity->getVersion()) {
+                // capture the filname version.
+                // remember to -start- the upgrade from the "next" version
+                $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
+            }
+            if ($iEndVersion != $this->iVersion) {
+                // we obviously failed.
+                $oEntity->updateFromArray(array(
+                    'path' => $this->stripKtDir($this->sFilename),
+                    'version' => $iEndVersion,   // as far as we got.
+                    'disabled' => true,
+                    'unavailable' => false,
+                    'friendlyname' => $friendly_name,
+                ));
+                // FIXME we -really- need to raise an error here, somehow.
+                return $oEntity; 
+            } else {
+                $oEntity->updateFromArray(array(
+                    'path' => $this->stripKtDir($this->sFilename),
+                    'version' => $this->iVersion,
+                    'unavailable' => false,
+                    'friendlyname' => $friendly_name,
+                ));
+                return $oEntity;
+            }
         }
         $disabled = 1;
         if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
-        
+        $iEndVersion = $this->upgradePlugin(0, $this->iVersion);
         $oEntity = KTPluginEntity::createFromArray(array(
             'namespace' => $this->sNamespace,
             'path' => $this->stripKtDir($this->sFilename),
-            'version' => $this->iVersion,
+            'version' => $iEndVersion,
             'disabled' => $disabled,
             'unavailable' => false,
             'friendlyname' => $friendly_name,
