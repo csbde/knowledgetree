@@ -610,6 +610,13 @@ class KTMetadataUtil {
 
         foreach ($aToBeDisabledValues as $sValue) {
             $oMetadata =& Metadata::getByValueAndDocumentField($sValue, $iFieldId);
+            if (PEAR::isError($oMetadata)) {
+                var_dump($aToBeDisabledValues);
+                var_dump($sValue);
+                var_dump($iFieldId);
+                var_dump($oMetadata);
+                exit(0);
+            }
             if (!$oMetadata->getIsStuck()) {
                 $oMetadata->updateFromArray(array(
                     'disabled' => true,
