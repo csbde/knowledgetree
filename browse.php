@@ -142,7 +142,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
             }
             
             $this->oPage->setTitle(_kt('Browse'));
-            $this->oPage->setSecondaryTitle($oFolder->getName());
+            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+                $this->oPage->setSecondaryTitle($oFolder->getName());
+            } else {
+                if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+                    $this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+                } else {
+                    $this->oPage->setSecondaryTitle('...');
+                }
+            }
             
             $this->oFolder =& $oFolder;
             if (PEAR::isError($oFolder)) {

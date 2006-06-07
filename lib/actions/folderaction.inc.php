@@ -144,7 +144,15 @@ class KTFolderAction extends KTStandardDispatcher {
         $portlet->setActions($aActions,null);
         $this->oPage->addPortlet($portlet);            
             
-        $this->oPage->setSecondaryTitle($this->oFolder->getName());          
+        if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $this->oFolder)) {
+            $this->oPage->setSecondaryTitle($oFolder->getName());
+        } else {
+            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+                $this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+            } else {
+                $this->oPage->setSecondaryTitle('...');
+            }
+        }
         
         return true;
     }
