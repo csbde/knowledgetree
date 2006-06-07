@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 31, 2006 at 01:03 PM
+-- Generation Time: Jun 07, 2006 at 12:08 PM
 -- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `ktcvs`
 -- 
 
 -- 
@@ -242,7 +242,7 @@ INSERT INTO `folder_searchable_text` VALUES (1, 'Root Folder');
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 4, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 5, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -577,6 +577,7 @@ INSERT INTO `permission_assignments` VALUES (3, 3, 1, 2);
 INSERT INTO `permission_assignments` VALUES (4, 4, 1, 2);
 INSERT INTO `permission_assignments` VALUES (5, 5, 1, 2);
 INSERT INTO `permission_assignments` VALUES (6, 6, 1, 2);
+INSERT INTO `permission_assignments` VALUES (7, 7, 1, 2);
 
 -- 
 -- Dumping data for table `permission_descriptor_groups`
@@ -632,6 +633,13 @@ INSERT INTO `permission_lookup_assignments` VALUES (14, 3, 4, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (15, 4, 4, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (16, 5, 4, 2);
 INSERT INTO `permission_lookup_assignments` VALUES (17, 6, 4, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (18, 1, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (19, 2, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (20, 3, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (21, 4, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (22, 5, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (23, 6, 5, 2);
+INSERT INTO `permission_lookup_assignments` VALUES (24, 7, 5, 2);
 
 -- 
 -- Dumping data for table `permission_lookups`
@@ -641,6 +649,7 @@ INSERT INTO `permission_lookups` VALUES (1);
 INSERT INTO `permission_lookups` VALUES (2);
 INSERT INTO `permission_lookups` VALUES (3);
 INSERT INTO `permission_lookups` VALUES (4);
+INSERT INTO `permission_lookups` VALUES (5);
 
 -- 
 -- Dumping data for table `permission_objects`
@@ -658,6 +667,7 @@ INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add 
 INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Core: Manage security', 1);
 INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Core: Delete', 1);
 INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Core: Manage workflow', 1);
+INSERT INTO `permissions` VALUES (7, 'ktcore.permissions.folder_details', 'Core: Folder Details', 1);
 
 -- 
 -- Dumping data for table `plugins`
@@ -702,7 +712,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3.2');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -841,6 +851,11 @@ INSERT INTO `upgrades` VALUES (96, 'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql', 'Da
 INSERT INTO `upgrades` VALUES (97, 'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql', 'Database upgrade to version 3.0.2.4: Discussion-fulltext', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (98, 'upgrade*3.0.2.4*99*upgrade3.0.2.4', 'Upgrade from version 3.0.2.2 to 3.0.2.4', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (99, 'upgrade*3.0.3*99*upgrade3.0.3', 'Upgrade from version 3.0.2.4 to 3.0.3', '2006-05-31 13:02:04', 1, 'upgrade*3.0.3*99*upgrade3.0.3');
+INSERT INTO `upgrades` VALUES (100, 'sql*3.0.3.1*0*3.0.3.1/utf8.sql', 'Database upgrade to version 3.0.3.1: Utf8', '2006-06-07 11:45:28', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
+INSERT INTO `upgrades` VALUES (101, 'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql', 'Database upgrade to version 3.0.3.1: Document immutable', '2006-06-07 11:45:28', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
+INSERT INTO `upgrades` VALUES (102, 'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql', 'Database upgrade to version 3.0.3.1: Workflow-triggers', '2006-06-07 11:45:29', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
+INSERT INTO `upgrades` VALUES (103, 'func*3.0.3.2*0*createFolderDetailsPermission', 'Create the Core: Folder Details permission', '2006-06-07 11:45:29', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
+INSERT INTO `upgrades` VALUES (104, 'upgrade*3.0.3.2*99*upgrade3.0.3.2', 'Upgrade from version 3.0.3 to 3.0.3.2', '2006-06-07 11:45:30', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
 
 -- 
 -- Dumping data for table `user_history`
@@ -892,6 +907,11 @@ INSERT INTO `users_groups_link` VALUES (1, 1, 1);
 
 -- 
 -- Dumping data for table `workflow_transitions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_trigger_instances`
 -- 
 
 
@@ -1178,7 +1198,7 @@ INSERT INTO `zseq_organisations_lookup` VALUES (1);
 -- Dumping data for table `zseq_permission_assignments`
 -- 
 
-INSERT INTO `zseq_permission_assignments` VALUES (6);
+INSERT INTO `zseq_permission_assignments` VALUES (7);
 
 -- 
 -- Dumping data for table `zseq_permission_descriptors`
@@ -1196,13 +1216,13 @@ INSERT INTO `zseq_permission_dynamic_conditions` VALUES (1);
 -- Dumping data for table `zseq_permission_lookup_assignments`
 -- 
 
-INSERT INTO `zseq_permission_lookup_assignments` VALUES (17);
+INSERT INTO `zseq_permission_lookup_assignments` VALUES (24);
 
 -- 
 -- Dumping data for table `zseq_permission_lookups`
 -- 
 
-INSERT INTO `zseq_permission_lookups` VALUES (4);
+INSERT INTO `zseq_permission_lookups` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_permission_objects`
@@ -1214,7 +1234,7 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- Dumping data for table `zseq_permissions`
 -- 
 
-INSERT INTO `zseq_permissions` VALUES (6);
+INSERT INTO `zseq_permissions` VALUES (7);
 
 -- 
 -- Dumping data for table `zseq_plugins`
@@ -1280,7 +1300,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (99);
+INSERT INTO `zseq_upgrades` VALUES (104);
 
 -- 
 -- Dumping data for table `zseq_user_history`
@@ -1315,6 +1335,11 @@ INSERT INTO `zseq_workflow_states` VALUES (1);
 -- 
 
 INSERT INTO `zseq_workflow_transitions` VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_workflow_trigger_instances`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_workflows`
