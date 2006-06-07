@@ -71,10 +71,7 @@ class KTFolderAction extends KTStandardDispatcher {
         }
 
         if ($this->_bAdminAlwaysAvailable) {
-            if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
-                return true;
-            }
-            if (Permission::isUnitAdministratorForFolder($this->oUser, $this->oFolder)) {
+            if (KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
                 return true;
             }
         }
