@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 31, 2006 at 01:02 PM
+-- Generation Time: Jun 07, 2006 at 11:48 AM
 -- Server version: 5.0.21
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `ktcvs`
 -- 
 
 -- --------------------------------------------------------
@@ -26,7 +26,7 @@ CREATE TABLE `active_sessions` (
   `ip` char(30) default NULL,
   UNIQUE KEY `id` (`id`),
   KEY `session_id_idx` (`session_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -41,7 +41,7 @@ CREATE TABLE `archive_restoration_request` (
   `admin_user_id` int(11) NOT NULL default '0',
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -56,7 +56,7 @@ CREATE TABLE `archiving_settings` (
   `document_transaction_id` int(11) default NULL,
   `time_period_id` int(11) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -68,7 +68,7 @@ CREATE TABLE `archiving_type_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -81,12 +81,12 @@ CREATE TABLE `authentication_sources` (
   `name` varchar(50) NOT NULL default '',
   `namespace` varchar(255) NOT NULL default '',
   `authentication_provider` varchar(255) NOT NULL default '',
-  `config` text NOT NULL,
+  `config` mediumtext NOT NULL,
   `is_user_source` tinyint(1) NOT NULL default '0',
   `is_group_source` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `namespace` (`namespace`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -96,11 +96,11 @@ CREATE TABLE `authentication_sources` (
 
 CREATE TABLE `comment_searchable_text` (
   `comment_id` int(11) NOT NULL default '0',
-  `body` text,
+  `body` mediumtext,
   `document_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`comment_id`),
   FULLTEXT KEY `comment_search_text` (`body`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -115,7 +115,7 @@ CREATE TABLE `dashlet_disables` (
   UNIQUE KEY `id` (`id`),
   KEY `user_id` (`user_id`),
   KEY `dashlet_namespace` (`dashlet_namespace`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE `data_types` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -140,11 +140,11 @@ CREATE TABLE `discussion_comments` (
   `thread_id` int(11) NOT NULL default '0',
   `in_reply_to` int(11) default NULL,
   `user_id` int(11) NOT NULL default '0',
-  `subject` text,
-  `body` text,
+  `subject` mediumtext,
+  `body` mediumtext,
   `date` datetime default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -160,11 +160,11 @@ CREATE TABLE `discussion_threads` (
   `views` int(11) NOT NULL default '0',
   `replies` int(11) NOT NULL default '0',
   `creator_id` int(11) NOT NULL default '0',
-  `close_reason` text NOT NULL,
+  `close_reason` mediumtext NOT NULL,
   `close_metadata_version` int(11) NOT NULL default '0',
   `state` int(1) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -177,7 +177,7 @@ CREATE TABLE `document_archiving_link` (
   `document_id` int(11) NOT NULL default '0',
   `archiving_settings_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -188,7 +188,7 @@ CREATE TABLE `document_archiving_link` (
 CREATE TABLE `document_content_version` (
   `id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
-  `filename` text NOT NULL,
+  `filename` mediumtext NOT NULL,
   `size` bigint(20) NOT NULL default '0',
   `mime_id` int(11) NOT NULL default '0',
   `major_version` int(11) NOT NULL default '0',
@@ -197,7 +197,7 @@ CREATE TABLE `document_content_version` (
   UNIQUE KEY `id` (`id`),
   KEY `storage_path` (`storage_path`),
   KEY `document_id` (`document_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -214,10 +214,10 @@ CREATE TABLE `document_fields` (
   `has_lookuptree` tinyint(1) default NULL,
   `parent_fieldset` int(11) default NULL,
   `is_mandatory` tinyint(4) NOT NULL default '0',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   UNIQUE KEY `id` (`id`),
   KEY `parent_fieldset` (`parent_fieldset`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -233,7 +233,7 @@ CREATE TABLE `document_fields_link` (
   UNIQUE KEY `id` (`id`),
   KEY `document_field_id` (`document_field_id`),
   KEY `metadata_version_id` (`metadata_version_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -246,7 +246,7 @@ CREATE TABLE `document_incomplete` (
   `contents` tinyint(1) unsigned NOT NULL default '0',
   `metadata` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -260,7 +260,7 @@ CREATE TABLE `document_link` (
   `child_document_id` int(11) NOT NULL default '0',
   `link_type_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -274,7 +274,7 @@ CREATE TABLE `document_link_types` (
   `reverse_name` char(100) NOT NULL default '',
   `description` char(255) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -287,7 +287,7 @@ CREATE TABLE `document_metadata_version` (
   `document_id` int(11) NOT NULL default '0',
   `content_version_id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
-  `name` text NOT NULL,
+  `name` mediumtext NOT NULL,
   `description` varchar(200) NOT NULL default '',
   `status_id` int(11) default NULL,
   `metadata_version` int(11) NOT NULL default '0',
@@ -304,7 +304,7 @@ CREATE TABLE `document_metadata_version` (
   KEY `content_version_id` (`content_version_id`),
   KEY `workflow_id` (`workflow_id`),
   KEY `workflow_state_id` (`workflow_state_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -319,7 +319,7 @@ CREATE TABLE `document_role_allocations` (
   `permission_descriptor_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `document_id` (`document_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -332,7 +332,7 @@ CREATE TABLE `document_searchable_text` (
   `document_text` longtext,
   KEY `document_text_document_id_indx` (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -346,7 +346,7 @@ CREATE TABLE `document_subscriptions` (
   `document_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -359,7 +359,7 @@ CREATE TABLE `document_text` (
   `document_text` longtext,
   KEY `document_text_document_id_indx` (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -372,7 +372,7 @@ CREATE TABLE `document_transaction_text` (
   `document_text` mediumtext,
   KEY `document_text_document_id_indx` (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -386,7 +386,7 @@ CREATE TABLE `document_transaction_types_lookup` (
   `namespace` varchar(250) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   KEY `namespace` (`namespace`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -410,7 +410,7 @@ CREATE TABLE `document_transactions` (
   KEY `fk_document_id` (`document_id`),
   KEY `fk_user_id` (`user_id`),
   KEY `session_id` (`session_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -424,7 +424,7 @@ CREATE TABLE `document_type_fields_link` (
   `field_id` int(11) NOT NULL default '0',
   `is_mandatory` tinyint(1) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -439,7 +439,7 @@ CREATE TABLE `document_type_fieldsets_link` (
   UNIQUE KEY `id` (`id`),
   KEY `document_type_id` (`document_type_id`),
   KEY `fieldset_id` (`fieldset_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -454,7 +454,7 @@ CREATE TABLE `document_types_lookup` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `disabled` (`disabled`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -468,8 +468,8 @@ CREATE TABLE `documents` (
   `modified` datetime NOT NULL default '0000-00-00 00:00:00',
   `folder_id` int(11) NOT NULL default '0',
   `is_checked_out` tinyint(1) NOT NULL default '0',
-  `parent_folder_ids` text,
-  `full_path` text,
+  `parent_folder_ids` mediumtext,
+  `full_path` mediumtext,
   `checked_out_user_id` int(11) default NULL,
   `status_id` int(11) default NULL,
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -479,6 +479,7 @@ CREATE TABLE `documents` (
   `modified_user_id` int(11) NOT NULL default '0',
   `metadata_version_id` int(11) default NULL,
   `owner_id` int(11) NOT NULL default '0',
+  `immutable` tinyint(1) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `fk_creator_id` (`creator_id`),
   KEY `fk_folder_id` (`folder_id`),
@@ -489,7 +490,7 @@ CREATE TABLE `documents` (
   KEY `permission_lookup_id` (`permission_lookup_id`),
   KEY `modified_user_id` (`modified_user_id`),
   KEY `metadata_version_id` (`metadata_version_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -504,7 +505,7 @@ CREATE TABLE `field_behaviour_options` (
   KEY `behaviour_id` (`behaviour_id`),
   KEY `field_id` (`field_id`),
   KEY `instance_id` (`instance_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -520,7 +521,7 @@ CREATE TABLE `field_behaviours` (
   PRIMARY KEY  (`id`),
   KEY `field_id` (`field_id`),
   KEY `name` (`name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -535,7 +536,7 @@ CREATE TABLE `field_orders` (
   UNIQUE KEY `child_field` (`child_field_id`),
   KEY `parent_field` (`parent_field_id`),
   KEY `fieldset_id` (`fieldset_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -552,7 +553,7 @@ CREATE TABLE `field_value_instances` (
   KEY `field_id` (`field_id`),
   KEY `field_value_id` (`field_value_id`),
   KEY `behaviour_id` (`behaviour_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -571,13 +572,13 @@ CREATE TABLE `fieldsets` (
   `is_complex` tinyint(1) NOT NULL default '0',
   `is_complete` tinyint(1) NOT NULL default '1',
   `is_system` tinyint(1) unsigned NOT NULL default '0',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   UNIQUE KEY `id` (`id`),
   KEY `is_generic` (`is_generic`),
   KEY `is_complete` (`is_complete`),
   KEY `is_system` (`is_system`),
   KEY `master_field` (`master_field`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -592,7 +593,7 @@ CREATE TABLE `folder_doctypes_link` (
   UNIQUE KEY `id` (`id`),
   KEY `fk_folder_id` (`folder_id`),
   KEY `fk_document_type_id` (`document_type_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -602,11 +603,11 @@ CREATE TABLE `folder_doctypes_link` (
 
 CREATE TABLE `folder_searchable_text` (
   `folder_id` int(11) NOT NULL default '0',
-  `folder_text` text,
+  `folder_text` mediumtext,
   PRIMARY KEY  (`folder_id`),
   KEY `folder_searchable_text_folder_indx` (`folder_id`),
   FULLTEXT KEY `folder_text` (`folder_text`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -620,7 +621,7 @@ CREATE TABLE `folder_subscriptions` (
   `folder_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -642,7 +643,7 @@ CREATE TABLE `folder_transactions` (
   KEY `folder_id` (`folder_id`),
   KEY `user_id` (`user_id`),
   KEY `session_id` (`session_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -655,7 +656,7 @@ CREATE TABLE `folder_workflow_map` (
   `workflow_id` int(11) default NULL,
   PRIMARY KEY  (`folder_id`),
   UNIQUE KEY `folder_id` (`folder_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -670,8 +671,8 @@ CREATE TABLE `folders` (
   `parent_id` int(11) default NULL,
   `creator_id` int(11) default NULL,
   `is_public` tinyint(1) NOT NULL default '0',
-  `parent_folder_ids` text,
-  `full_path` text,
+  `parent_folder_ids` mediumtext,
+  `full_path` mediumtext,
   `permission_object_id` int(11) default NULL,
   `permission_lookup_id` int(11) default NULL,
   `restrict_document_types` tinyint(1) NOT NULL default '0',
@@ -680,7 +681,7 @@ CREATE TABLE `folders` (
   KEY `fk_creator_id` (`creator_id`),
   KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_lookup_id` (`permission_lookup_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -698,7 +699,7 @@ CREATE TABLE `folders_users_roles_link` (
   `active` tinyint(1) default NULL,
   `dependant_documents_created` tinyint(1) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -711,7 +712,7 @@ CREATE TABLE `groups_groups_link` (
   `parent_group_id` int(11) NOT NULL default '0',
   `member_group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -733,7 +734,7 @@ CREATE TABLE `groups_lookup` (
   KEY `unit_id` (`unit_id`),
   KEY `authentication_details_s1` (`authentication_details_s1`),
   KEY `authentication_source_id` (`authentication_source_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -744,9 +745,9 @@ CREATE TABLE `groups_lookup` (
 CREATE TABLE `help` (
   `id` int(11) NOT NULL default '0',
   `fSection` varchar(100) NOT NULL default '',
-  `help_info` text NOT NULL,
+  `help_info` mediumtext NOT NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -757,10 +758,10 @@ CREATE TABLE `help` (
 CREATE TABLE `help_replacement` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -774,7 +775,7 @@ CREATE TABLE `links` (
   `url` char(100) NOT NULL default '',
   `rank` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -792,7 +793,7 @@ CREATE TABLE `metadata_lookup` (
   UNIQUE KEY `id` (`id`),
   KEY `disabled` (`disabled`),
   KEY `is_stuck` (`is_stuck`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -808,7 +809,7 @@ CREATE TABLE `metadata_lookup_tree` (
   UNIQUE KEY `id` (`id`),
   KEY `metadata_lookup_tree_parent` (`metadata_lookup_tree_parent`),
   KEY `document_field_id` (`document_field_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -823,7 +824,7 @@ CREATE TABLE `mime_types` (
   `icon_path` char(255) default NULL,
   `friendly_name` char(255) default '',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -834,14 +835,14 @@ CREATE TABLE `mime_types` (
 CREATE TABLE `news` (
   `id` int(11) NOT NULL default '0',
   `synopsis` varchar(255) NOT NULL default '',
-  `body` text,
+  `body` mediumtext,
   `rank` int(11) default NULL,
-  `image` text,
+  `image` mediumtext,
   `image_size` int(11) default NULL,
   `image_mime_type_id` int(11) default NULL,
   `active` tinyint(1) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -862,7 +863,7 @@ CREATE TABLE `notifications` (
   UNIQUE KEY `id` (`id`),
   KEY `type` (`type`),
   KEY `user_id` (`user_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -875,7 +876,7 @@ CREATE TABLE `organisations_lookup` (
   `name` char(100) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -893,7 +894,7 @@ CREATE TABLE `permission_assignments` (
   KEY `permission_id` (`permission_id`),
   KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -907,7 +908,7 @@ CREATE TABLE `permission_descriptor_groups` (
   UNIQUE KEY `descriptor_id` (`descriptor_id`,`group_id`),
   KEY `descriptor_id_2` (`descriptor_id`),
   KEY `group_id` (`group_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -921,7 +922,7 @@ CREATE TABLE `permission_descriptor_roles` (
   UNIQUE KEY `descriptor_id` (`descriptor_id`,`role_id`),
   KEY `descriptor_id_2` (`descriptor_id`),
   KEY `role_id` (`role_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -935,7 +936,7 @@ CREATE TABLE `permission_descriptor_users` (
   UNIQUE KEY `descriptor_id` (`descriptor_id`,`user_id`),
   KEY `descriptor_id_2` (`descriptor_id`),
   KEY `user_id` (`user_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -946,11 +947,11 @@ CREATE TABLE `permission_descriptor_users` (
 CREATE TABLE `permission_descriptors` (
   `id` int(11) NOT NULL default '0',
   `descriptor` varchar(32) NOT NULL default '',
-  `descriptor_text` text NOT NULL,
+  `descriptor_text` mediumtext NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `descriptor_2` (`descriptor`),
   KEY `descriptor` (`descriptor`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -963,7 +964,7 @@ CREATE TABLE `permission_dynamic_assignments` (
   `permission_id` int(11) NOT NULL default '0',
   KEY `dynamic_conditiond_id` (`dynamic_condition_id`),
   KEY `permission_id` (`permission_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -980,7 +981,7 @@ CREATE TABLE `permission_dynamic_conditions` (
   KEY `permission_object_id` (`permission_object_id`),
   KEY `group_id` (`group_id`),
   KEY `condition_id` (`condition_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -998,7 +999,7 @@ CREATE TABLE `permission_lookup_assignments` (
   KEY `permission_id` (`permission_id`),
   KEY `permission_lookup_id` (`permission_lookup_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1009,7 +1010,7 @@ CREATE TABLE `permission_lookup_assignments` (
 CREATE TABLE `permission_lookups` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1020,7 +1021,7 @@ CREATE TABLE `permission_lookups` (
 CREATE TABLE `permission_objects` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1035,7 +1036,7 @@ CREATE TABLE `permissions` (
   `built_in` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1049,12 +1050,12 @@ CREATE TABLE `plugins` (
   `path` varchar(255) NOT NULL default '',
   `version` int(11) NOT NULL default '0',
   `disabled` tinyint(1) NOT NULL default '0',
-  `data` text,
+  `data` mediumtext,
   `unavailable` tinyint(1) NOT NULL default '0',
   `friendly_name` varchar(255) default '',
   PRIMARY KEY  (`id`),
   KEY `name` (`namespace`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1069,7 +1070,7 @@ CREATE TABLE `role_allocations` (
   `permission_descriptor_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `folder_id` (`folder_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1082,7 +1083,7 @@ CREATE TABLE `roles` (
   `name` char(255) NOT NULL default '',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1097,13 +1098,13 @@ CREATE TABLE `saved_searches` (
   `is_condition` tinyint(1) NOT NULL default '0',
   `is_complete` tinyint(1) NOT NULL default '0',
   `user_id` int(10) default NULL,
-  `search` text NOT NULL,
+  `search` mediumtext NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `namespace` (`namespace`),
   KEY `is_condition` (`is_condition`),
   KEY `is_complete` (`is_complete`),
   KEY `user_id` (`user_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1116,7 +1117,7 @@ CREATE TABLE `search_document_user_link` (
   `user_id` int(11) default NULL,
   KEY `fk_user_id` (`user_id`),
   KEY `fk_document_ids` (`document_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1128,7 +1129,7 @@ CREATE TABLE `status_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1141,7 +1142,7 @@ CREATE TABLE `system_settings` (
   `name` char(255) NOT NULL default '',
   `value` char(255) NOT NULL default '',
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1154,7 +1155,7 @@ CREATE TABLE `time_period` (
   `time_unit_id` int(11) default NULL,
   `units` int(11) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1166,7 +1167,7 @@ CREATE TABLE `time_unit_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
   UNIQUE KEY `id` (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1179,7 +1180,7 @@ CREATE TABLE `trigger_selection` (
   `selection_ns` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`event_ns`),
   UNIQUE KEY `event_ns` (`event_ns`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1192,7 +1193,7 @@ CREATE TABLE `type_workflow_map` (
   `workflow_id` int(10) unsigned default NULL,
   PRIMARY KEY  (`document_type_id`),
   UNIQUE KEY `document_type_id` (`document_type_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1207,7 +1208,7 @@ CREATE TABLE `units_lookup` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `folder_id` (`folder_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1222,7 +1223,7 @@ CREATE TABLE `units_organisations_link` (
   UNIQUE KEY `id` (`id`),
   KEY `fk_unit_id` (`unit_id`),
   KEY `fk_organisation_id` (`organisation_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1240,7 +1241,7 @@ CREATE TABLE `upgrades` (
   PRIMARY KEY  (`id`),
   KEY `descriptor` (`descriptor`),
   KEY `parent` (`parent`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1253,14 +1254,14 @@ CREATE TABLE `user_history` (
   `datetime` datetime NOT NULL,
   `user_id` int(11) NOT NULL,
   `action_namespace` varchar(255) NOT NULL,
-  `comments` text,
+  `comments` mediumtext,
   `session_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `action_namespace` (`action_namespace`),
   KEY `datetime` (`datetime`),
   KEY `session_id` (`session_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1297,7 +1298,7 @@ CREATE TABLE `users` (
   KEY `authentication_details_b1` (`authentication_details_b1`),
   KEY `authentication_details_b2` (`authentication_details_b2`),
   KEY `last_login` (`last_login`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1312,7 +1313,7 @@ CREATE TABLE `users_groups_link` (
   UNIQUE KEY `id` (`id`),
   KEY `fk_user_id` (`user_id`),
   KEY `fk_group_id` (`group_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1325,7 +1326,7 @@ CREATE TABLE `workflow_actions` (
   `action_name` char(255) NOT NULL default '',
   KEY `workflow_id` (`workflow_id`),
   KEY `action_name` (`action_name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1340,7 +1341,7 @@ CREATE TABLE `workflow_documents` (
   PRIMARY KEY  (`document_id`),
   KEY `workflow_id` (`workflow_id`),
   KEY `state_id` (`state_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1353,7 +1354,7 @@ CREATE TABLE `workflow_state_actions` (
   `action_name` char(255) NOT NULL default '0',
   KEY `state_id` (`state_id`),
   KEY `action_name` (`action_name`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1370,7 +1371,7 @@ CREATE TABLE `workflow_state_permission_assignments` (
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
   KEY `workflow_state_id` (`workflow_state_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1381,7 +1382,7 @@ CREATE TABLE `workflow_state_permission_assignments` (
 CREATE TABLE `workflow_state_transitions` (
   `state_id` int(11) NOT NULL default '0',
   `transition_id` int(11) NOT NULL default '0'
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1399,7 +1400,7 @@ CREATE TABLE `workflow_states` (
   KEY `workflow_id` (`workflow_id`),
   KEY `name` (`name`),
   KEY `inform_descriptor_id` (`inform_descriptor_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1426,7 +1427,23 @@ CREATE TABLE `workflow_transitions` (
   KEY `guard_condition` (`guard_condition_id`),
   KEY `guard_group_id` (`guard_group_id`),
   KEY `guard_role_id` (`guard_role_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_trigger_instances`
+-- 
+
+CREATE TABLE `workflow_trigger_instances` (
+  `id` int(10) unsigned NOT NULL default '0',
+  `workflow_transition_id` int(11) NOT NULL default '0',
+  `namespace` char(255) NOT NULL default '',
+  `config_array` text,
+  PRIMARY KEY  (`id`),
+  KEY `workflow_transition_id` (`workflow_transition_id`),
+  KEY `namespace` (`namespace`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1442,7 +1459,7 @@ CREATE TABLE `workflows` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `start_state_id` (`start_state_id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1453,7 +1470,7 @@ CREATE TABLE `workflows` (
 CREATE TABLE `zseq_active_sessions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1464,7 +1481,7 @@ CREATE TABLE `zseq_active_sessions` (
 CREATE TABLE `zseq_archive_restoration_request` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1475,7 +1492,7 @@ CREATE TABLE `zseq_archive_restoration_request` (
 CREATE TABLE `zseq_archiving_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1486,7 +1503,7 @@ CREATE TABLE `zseq_archiving_settings` (
 CREATE TABLE `zseq_archiving_type_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1497,7 +1514,7 @@ CREATE TABLE `zseq_archiving_type_lookup` (
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1508,7 +1525,7 @@ CREATE TABLE `zseq_authentication_sources` (
 CREATE TABLE `zseq_browse_criteria` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1519,7 +1536,7 @@ CREATE TABLE `zseq_browse_criteria` (
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1530,7 +1547,7 @@ CREATE TABLE `zseq_dashlet_disables` (
 CREATE TABLE `zseq_data_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -1541,7 +1558,7 @@ CREATE TABLE `zseq_data_types` (
 CREATE TABLE `zseq_dependant_document_instance` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1552,7 +1569,7 @@ CREATE TABLE `zseq_dependant_document_instance` (
 CREATE TABLE `zseq_dependant_document_template` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1563,7 +1580,7 @@ CREATE TABLE `zseq_dependant_document_template` (
 CREATE TABLE `zseq_discussion_comments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1574,7 +1591,7 @@ CREATE TABLE `zseq_discussion_comments` (
 CREATE TABLE `zseq_discussion_threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1585,7 +1602,7 @@ CREATE TABLE `zseq_discussion_threads` (
 CREATE TABLE `zseq_document_archiving_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1596,7 +1613,7 @@ CREATE TABLE `zseq_document_archiving_link` (
 CREATE TABLE `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1607,7 +1624,7 @@ CREATE TABLE `zseq_document_content_version` (
 CREATE TABLE `zseq_document_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1618,7 +1635,7 @@ CREATE TABLE `zseq_document_fields` (
 CREATE TABLE `zseq_document_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1629,7 +1646,7 @@ CREATE TABLE `zseq_document_fields_link` (
 CREATE TABLE `zseq_document_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1640,7 +1657,7 @@ CREATE TABLE `zseq_document_link` (
 CREATE TABLE `zseq_document_link_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1651,7 +1668,7 @@ CREATE TABLE `zseq_document_link_types` (
 CREATE TABLE `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1662,7 +1679,7 @@ CREATE TABLE `zseq_document_metadata_version` (
 CREATE TABLE `zseq_document_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1673,7 +1690,7 @@ CREATE TABLE `zseq_document_role_allocations` (
 CREATE TABLE `zseq_document_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1684,7 +1701,7 @@ CREATE TABLE `zseq_document_subscriptions` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -1695,7 +1712,7 @@ CREATE TABLE `zseq_document_transaction_types_lookup` (
 CREATE TABLE `zseq_document_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1706,7 +1723,7 @@ CREATE TABLE `zseq_document_transactions` (
 CREATE TABLE `zseq_document_type_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1717,7 +1734,7 @@ CREATE TABLE `zseq_document_type_fields_link` (
 CREATE TABLE `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1728,7 +1745,7 @@ CREATE TABLE `zseq_document_type_fieldsets_link` (
 CREATE TABLE `zseq_document_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1739,7 +1756,7 @@ CREATE TABLE `zseq_document_types_lookup` (
 CREATE TABLE `zseq_documents` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1750,7 +1767,7 @@ CREATE TABLE `zseq_documents` (
 CREATE TABLE `zseq_field_behaviours` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1761,7 +1778,7 @@ CREATE TABLE `zseq_field_behaviours` (
 CREATE TABLE `zseq_field_value_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1772,7 +1789,7 @@ CREATE TABLE `zseq_field_value_instances` (
 CREATE TABLE `zseq_fieldsets` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1783,7 +1800,7 @@ CREATE TABLE `zseq_fieldsets` (
 CREATE TABLE `zseq_folder_doctypes_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1794,7 +1811,7 @@ CREATE TABLE `zseq_folder_doctypes_link` (
 CREATE TABLE `zseq_folder_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1805,7 +1822,7 @@ CREATE TABLE `zseq_folder_subscriptions` (
 CREATE TABLE `zseq_folder_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1816,7 +1833,7 @@ CREATE TABLE `zseq_folder_transactions` (
 CREATE TABLE `zseq_folders` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1827,7 +1844,7 @@ CREATE TABLE `zseq_folders` (
 CREATE TABLE `zseq_folders_users_roles_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1838,7 +1855,7 @@ CREATE TABLE `zseq_folders_users_roles_link` (
 CREATE TABLE `zseq_groups_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1849,7 +1866,7 @@ CREATE TABLE `zseq_groups_groups_link` (
 CREATE TABLE `zseq_groups_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -1860,7 +1877,7 @@ CREATE TABLE `zseq_groups_lookup` (
 CREATE TABLE `zseq_help` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=99 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=99 ;
 
 -- --------------------------------------------------------
 
@@ -1871,7 +1888,7 @@ CREATE TABLE `zseq_help` (
 CREATE TABLE `zseq_help_replacement` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1882,7 +1899,7 @@ CREATE TABLE `zseq_help_replacement` (
 CREATE TABLE `zseq_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1893,7 +1910,7 @@ CREATE TABLE `zseq_links` (
 CREATE TABLE `zseq_metadata_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1904,7 +1921,7 @@ CREATE TABLE `zseq_metadata_lookup` (
 CREATE TABLE `zseq_metadata_lookup_tree` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1915,7 +1932,7 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=162 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=162 ;
 
 -- --------------------------------------------------------
 
@@ -1926,7 +1943,7 @@ CREATE TABLE `zseq_mime_types` (
 CREATE TABLE `zseq_news` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1937,7 +1954,7 @@ CREATE TABLE `zseq_news` (
 CREATE TABLE `zseq_notifications` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1948,7 +1965,7 @@ CREATE TABLE `zseq_notifications` (
 CREATE TABLE `zseq_organisations_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1959,7 +1976,7 @@ CREATE TABLE `zseq_organisations_lookup` (
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -1970,7 +1987,7 @@ CREATE TABLE `zseq_permission_assignments` (
 CREATE TABLE `zseq_permission_descriptors` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1981,7 +1998,7 @@ CREATE TABLE `zseq_permission_descriptors` (
 CREATE TABLE `zseq_permission_dynamic_conditions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1992,7 +2009,7 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=18 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
 
 -- --------------------------------------------------------
 
@@ -2003,7 +2020,7 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -2014,7 +2031,7 @@ CREATE TABLE `zseq_permission_lookups` (
 CREATE TABLE `zseq_permission_objects` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2025,7 +2042,7 @@ CREATE TABLE `zseq_permission_objects` (
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -2036,7 +2053,7 @@ CREATE TABLE `zseq_permissions` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=48 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=48 ;
 
 -- --------------------------------------------------------
 
@@ -2047,7 +2064,7 @@ CREATE TABLE `zseq_plugins` (
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2058,7 +2075,7 @@ CREATE TABLE `zseq_role_allocations` (
 CREATE TABLE `zseq_roles` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2069,7 +2086,7 @@ CREATE TABLE `zseq_roles` (
 CREATE TABLE `zseq_saved_searches` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2080,7 +2097,7 @@ CREATE TABLE `zseq_saved_searches` (
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -2091,7 +2108,7 @@ CREATE TABLE `zseq_status_lookup` (
 CREATE TABLE `zseq_system_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -2102,7 +2119,7 @@ CREATE TABLE `zseq_system_settings` (
 CREATE TABLE `zseq_time_period` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2113,7 +2130,7 @@ CREATE TABLE `zseq_time_period` (
 CREATE TABLE `zseq_time_unit_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2124,7 +2141,7 @@ CREATE TABLE `zseq_time_unit_lookup` (
 CREATE TABLE `zseq_units_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2135,7 +2152,7 @@ CREATE TABLE `zseq_units_lookup` (
 CREATE TABLE `zseq_units_organisations_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2146,7 +2163,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=100 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=105 ;
 
 -- --------------------------------------------------------
 
@@ -2157,7 +2174,7 @@ CREATE TABLE `zseq_upgrades` (
 CREATE TABLE `zseq_user_history` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2168,7 +2185,7 @@ CREATE TABLE `zseq_user_history` (
 CREATE TABLE `zseq_users` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2179,7 +2196,7 @@ CREATE TABLE `zseq_users` (
 CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -2190,7 +2207,7 @@ CREATE TABLE `zseq_users_groups_link` (
 CREATE TABLE `zseq_workflow_state_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2201,7 +2218,7 @@ CREATE TABLE `zseq_workflow_state_permission_assignments` (
 CREATE TABLE `zseq_workflow_states` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2212,7 +2229,18 @@ CREATE TABLE `zseq_workflow_states` (
 CREATE TABLE `zseq_workflow_transitions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflow_trigger_instances`
+-- 
+
+CREATE TABLE `zseq_workflow_trigger_instances` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2223,7 +2251,7 @@ CREATE TABLE `zseq_workflow_transitions` (
 CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- 
 -- Constraints for dumped tables
@@ -2245,19 +2273,19 @@ ALTER TABLE `document_fields_link`
 -- Constraints for table `document_metadata_version`
 -- 
 ALTER TABLE `document_metadata_version`
-  ADD CONSTRAINT `document_metadata_version_ibfk_9` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_4` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_6` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `document_metadata_version_ibfk_8` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`);
+  ADD CONSTRAINT `document_metadata_version_ibfk_8` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
+  ADD CONSTRAINT `document_metadata_version_ibfk_9` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`);
 
 -- 
 -- Constraints for table `document_type_fieldsets_link`
 -- 
 ALTER TABLE `document_type_fieldsets_link`
-  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `field_behaviour_options`
@@ -2277,9 +2305,9 @@ ALTER TABLE `field_behaviours`
 -- Constraints for table `field_orders`
 -- 
 ALTER TABLE `field_orders`
-  ADD CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_orders_ibfk_1` FOREIGN KEY (`parent_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `field_value_instances`
@@ -2312,16 +2340,16 @@ ALTER TABLE `groups_lookup`
 -- Constraints for table `permission_assignments`
 -- 
 ALTER TABLE `permission_assignments`
-  ADD CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `permission_descriptor_groups`
 -- 
 ALTER TABLE `permission_descriptor_groups`
-  ADD CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `permission_descriptor_roles`
@@ -2356,8 +2384,8 @@ ALTER TABLE `permission_dynamic_conditions`
 -- Constraints for table `permission_lookup_assignments`
 -- 
 ALTER TABLE `permission_lookup_assignments`
-  ADD CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
 -- 
@@ -2389,8 +2417,8 @@ ALTER TABLE `workflow_state_permission_assignments`
 -- Constraints for table `workflow_states`
 -- 
 ALTER TABLE `workflow_states`
-  ADD CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`);
+  ADD CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
+  ADD CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL;
 
 -- 
 -- Constraints for table `workflow_transitions`
