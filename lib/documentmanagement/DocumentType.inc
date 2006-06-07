@@ -196,9 +196,8 @@ class KTDocumentTypeManager {
 		    $this->_active_handler = null;
 		} else {
 		    $ns = $res;
-			$this->_active_handler = KTUtil::arrayGet($this->handlers, $ns);
+			$this->_active_handler = KTUtil::arrayGet($this->_handlers, $ns);
 		}
-		
 		$this->_checked = true;
 		
 		return ;
