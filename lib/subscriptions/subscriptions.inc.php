@@ -462,7 +462,7 @@ class SubscriptionEvent {
 	    $aNotificationOptions['target_user'] = $oSubscriber->getID();
 	    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
 	    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
-	    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+	    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oToFolder->getId());
 	    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 	    $aNotificationOptions['event_type'] = "MovedDocument";		
 	    $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
