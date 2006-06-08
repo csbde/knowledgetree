@@ -466,8 +466,6 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             exit(0);
         }
         
-        $oUser->create();
-        
         $this->successRedirectToMain(_kt('Created new user') . ': "' . $oUser->getUsername() . '"', 'name=' . $oUser->getUsername());
     }
     
@@ -477,7 +475,10 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
             $this->errorRedirectToMain(_kt('Please select a user first.'));
         }
-        $oUser->delete();
+        $res = $oUser->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain(sprintf(_kt('Unable to delete user - the user may still be referred by documents.'), $res->getMessage()));
+        }
         
         $this->successRedirectToMain(_kt('User deleted') . ': ' . $oUser->getName());
     }
