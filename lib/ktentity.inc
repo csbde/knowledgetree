@@ -413,6 +413,9 @@ class KTEntityUtil {
             }
         }
 
+        $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
+        $aWhereClause[2] = $sIDField;
+
         if (isset($aOptions['limit'])) {
             if (isset($aOptions['offset'])) {
                 $iOffset = $aOptions['offset'];
