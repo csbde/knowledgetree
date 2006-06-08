@@ -32,7 +32,7 @@ class DBUtil {
     function &getDB($db = null) {
         global $default;
         if (is_null($db)) {
-            $db = $default->_db;
+            $db =& $default->_db;
         }
 
 	if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
