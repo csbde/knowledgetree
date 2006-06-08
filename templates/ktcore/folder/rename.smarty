@@ -1,4 +1,6 @@
-<p class="descriptiveText">{i18n}This page allows you to rename a
+<h2>{i18n arg_name=$sFolderName}Renaming folder: #name#{/i18n}</h2>
+
+</h2><p class="descriptiveText">{i18n}This page allows you to rename a
 folder.{/i18n}</p>
 
 {assign var=iFolderId value=$context->oFolder->getId()}

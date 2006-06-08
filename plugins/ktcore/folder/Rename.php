@@ -59,6 +59,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $oTemplate->setData(array(
             'context' => &$this,
             'fields' => $fields,
+            'sFolderName' => $this->oFolder->getName(),
         ));
         return $oTemplate->render();
     }
