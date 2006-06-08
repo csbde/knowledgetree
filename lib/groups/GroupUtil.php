@@ -237,6 +237,9 @@ class GroupUtil {
         global $default;
         $oCache = KTCache::getSingleton();
         $group = "groupidsforuser";
+        if (PEAR::isError($oUser)) {
+            var_dump($oUser);
+        }
         list($bCached, $mCached) = $oCache->get($group, $oUser->getId());
         if ($bCached) {
             $default->log->debug(sprintf("Using group cache for _listGroupIDsForUserExpand %d", $iUserId));
