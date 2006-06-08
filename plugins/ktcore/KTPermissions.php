@@ -49,6 +49,7 @@ require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.permissions';
     var $_sEditShowPermission = "ktcore.permissions.security";
+    var $_sShowPermission = "ktcore.permissions.security";
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
