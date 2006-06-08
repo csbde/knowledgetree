@@ -50,6 +50,10 @@ lifecycle of the document.{/i18n}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="startWorkflow" />
 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+
+<p class="descriptiveText">{i18n}Please note that changing the workflow on a document will start the workflow
+at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
+
 {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
 <div class="form_actions">
 {if !$oWorkflow}
