@@ -50,6 +50,7 @@ class KTWorkflowTrigger {
     
     function loadConfig($oTriggerInstance) {
         $this->oTriggerInstance = $oTriggerInstance;
+        $this->aConfig = $oTriggerInstance->getConfig();
     }
     
     function isLoaded() { return (!is_null($this->oTriggerInstance)); }
@@ -63,6 +64,10 @@ class KTWorkflowTrigger {
             'description' => $this->sDescription,
         );
     }
+    
+    function getName() { return $this->sFriendlyName; }    
+    function getNamespace() { return $this->sNamespace; }    
+    function getConfigId() { return $this->oTriggerInstance->getId(); }    
     
     // return true for transition allowed on doc, false for transition not allowed on doc.
     function allowTransition($oDocument, $oUser) {
@@ -85,6 +90,22 @@ class KTWorkflowTrigger {
         return true;
     }
     
+    // display the configuration page for this plugin
+    // will be called -after- loadConfig, so it can prepopulate the options.
+    function displayConfiguration($args) {
+        return _kt('No configuration has been implemented for this plugin.');
+    }    
+    
+    // dispatched - again, after loadConfig, so it can set the config.
+    // throw an error to redispatch displayConfiguration, or return true to cause a db commit (probably).
+    function saveConfiguration() {
+        return true;
+    }
+    
+    // give a brief, friendly description of what we are and what we do.
+    function getConfigDescription() {
+        return '';    
+    }
 }
 
 ?>

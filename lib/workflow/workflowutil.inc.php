@@ -745,6 +745,10 @@ class KTWorkflowUtil {
 class KTWorkflowTriggerRegistry {
     var $triggers;
     
+    function KTWorkflowTriggerRegistry() {
+        $this->triggers = array();
+    }    
+    
     // {{{ getSingleton
     function &getSingleton () {
         if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTWorkflowTriggerRegistry')) {
@@ -764,11 +768,9 @@ class KTWorkflowTriggerRegistry {
             return PEAR::raiseError(sprintf(_kt("Unable to find workflow trigger: %s"), $sNamespace));
         }    
         
-        if (file_exists($aInfo['path'])) {
-            require_once($aInfo['path']);
-        }
-        
-        return new $sClassname;
+        require_once($aInfo['path']);
+
+        return new $aInfo['class'];
     }
     
     // get a keyed list of workflow triggers

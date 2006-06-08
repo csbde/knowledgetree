@@ -29,6 +29,7 @@
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 
+
 class KTCorePlugin extends KTPlugin {
     var $bAlwaysInclude = true;
     var $sNamespace = "ktcore.plugin";
@@ -179,6 +180,9 @@ class KTCorePlugin extends KTPlugin {
             'admin/manageCleanup.php', null);
         // plugins
 
+
+        // workflow triggers
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.permissionguard', 'PermissionGuardTrigger', 'KTWorkflowTriggers.inc.php');
     }
 }
 

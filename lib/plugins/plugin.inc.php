@@ -51,6 +51,7 @@ class KTPlugin {
     var $_ai18nLang = array();
     var $_aLanguage = array();
     var $_aHelpLanguage = array();
+    var $_aWFTriggers = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -79,6 +80,11 @@ class KTPlugin {
         $sFilename = $this->_fixFilename($sFilename);
         $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
         $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
+    }
+    
+    function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
+        $sFilename = $this->_fixFilename($sFilename);
+        $this->_aWFTriggers[$sNamespace] = array($sNamespace, $sTriggerClassName, $sFilename);
     }
 
     function getPagePath($sPath) {
@@ -191,6 +197,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
         require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
         require_once(KT_LIB_DIR . "/help/help.inc.php");
+        require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -201,6 +208,7 @@ class KTPlugin {
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $oi18nRegistry =& KTi18nRegistry::getSingleton();
         $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
+        $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -248,6 +256,10 @@ class KTPlugin {
         
         foreach ($this->_aHelpLanguage as $k => $v) {
             call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $v);
+        }
+        
+        foreach ($this->_aWFTriggers as $k => $v) {
+            call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $v);
         }
     }
 
