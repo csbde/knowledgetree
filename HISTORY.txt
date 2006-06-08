@@ -2,6 +2,21 @@
 What's new in this release
 ==========================
 
+3.1
+---
+
+Improvements
+
+  * Improved information hiding when a user has access to a folder or
+    document but not to at least some of its parent folders.
+
+New Features
+
+  * New "Core: Folder Details" permissions allows more granular
+    permission assignment
+
+Bugs fixed
+
 3.0.3
 -----
 
