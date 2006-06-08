@@ -110,6 +110,9 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         }
         // the actual permissions are stored in the array.
         $perms = array();  
+        if (empty($this->aConfig) || is_null($this->aConfig['perms'])) { 
+             return _kt('No permissions are required to perform this transition');
+        }
         foreach ($this->aConfig['perms'] as $sPermName) {
             $oPerm = KTPermission::getByName($sPermName);
             if (!PEAR::isError($oPerm)) {
