@@ -1,6 +1,6 @@
 <?php
 
-require_once('../config/dmsDefaults.php');
+require_once(dirname(__FILE__) . '/../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 $sectionName = "Administration";
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
