@@ -1224,41 +1224,35 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         } 
         $aOptions['vocab'] = $vocab;
         $edit_fields[] = new KTLookupWidget(_kt('Destination State'), _kt('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
-        $aOptions = array();
+
+        // triggers 
+        $add_trigger_fields = array();
         $vocab = array();
-        $vocab[0] = _kt('None');
-        foreach($aPermissions as $permission) {
-            $vocab[$permission->getId()] = $permission->getHumanName();
-        } 
-        $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Permission.'), _kt('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
-        $aOptions = array();
-        $vocab = array();
-        $vocab[0] = _kt('None');
-        foreach($aGroups as $group) {
-            $vocab[$group->getId()] = $group->getName();
-        } 
-        $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Group.'), _kt('Which group must the user belong to in order to follow this transition?'), 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
-        $aOptions = array();
-        $vocab = array();
-        $vocab[0] = _kt('None');
-        foreach($aRoles as $role) {
-            $vocab[$role->getId()] = $role->getName();
-        } 
-        $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget(_kt('Guard Role.'), _kt('Which role must the user have in order to follow this transition?'), 'fRoleId', $oTransition->getGuardRoleId(), $this->oPage, false, null, null, $aOptions);
+        $vocab[0] = _kt('-- Please select a trigger --');
+        $oTriggerSingleton =& KTWorkflowTriggerRegistry::getSingleton();
+        $aTriggerList = $oTriggerSingleton->listWorkflowTriggers(); // only want registered triggers - no other kind exists.
+        foreach ($aTriggerList as $ns => $aTriggerInfo) {
+            $aInfo = $aTriggerInfo; // i am lazy.
+            //var_dump($aInfo);
+            $actions = array();
+            if ($aInfo['guard']) {
+                $actions[] = _kt('Guard');
+            }
+            if ($aInfo['action']) {
+                $actions[] = _kt('Action');
+            }
+            $sActStr = implode(', ', $actions);
+            $vocab[$ns] = sprintf(_kt("%s (%s)"), $aInfo['name'], $sActStr);
+        }    
         
-        if (!empty($aConditions)) {
-            $aOptions = array();
-            $vocab = array();
-            $vocab[0] = _kt('None');
-            foreach($aConditions as $condition) {
-                $vocab[$condition->getId()] = $condition->getName();
-            } 
-            $aOptions['vocab'] = $vocab;
-            $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _kt('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', $oTransition->getGuardConditionId(), $this->oPage, false, null, null, $aOptions);
-        }
+        $aOptions['vocab'] = $vocab;
+        $add_trigger_fields[] = new KTLookupWidget(_kt('Trigger'), _kt('Select the trigger to add to this transition.  Each trigger indicates whether it controls who can see this transition, what occurs when the transition is performed, or both.'), 'fTriggerId', '0', $this->oPage, true, null, null, $aOptions);
+        $aOptions = array();
+        
+        
+        // attached triggers.
+        $aGuardTriggers = KTWorkflowUtil::getGuardTriggersForTransition($oTransition);
+        $aActionTriggers = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
         
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
@@ -1273,9 +1267,11 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'aGroups' => $aGroups,
             'aRoles' => $aRoles,
             'aConditions' => $aConditions,
+            'aGuardTriggers' => $aGuardTriggers,
+            'aActionTriggers' => $aActionTriggers,
             
             // fields 
-            
+            'add_trigger_fields' => $add_trigger_fields,
             'edit_fields' => $edit_fields,
         ));
         return $oTemplate;
@@ -1342,6 +1338,115 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         exit(0);
     }
     // }}}
+
+    function do_addTrigger() {
+        $aRequest = $this->oValidator->validateDict($_REQUEST, array(
+            'fWorkflowId' => array('type' => 'workflow'),
+            'fTransitionId' => array('type' => 'workflowtransition'),
+        ));
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger(KTUtil::arrayGet($_REQUEST, 'fTriggerId'));
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to add trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+
+        $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+            'transitionid' => KTUtil::getId($oTransition),
+            'namespace' =>  KTUtil::arrayGet($_REQUEST, 'fTriggerId'),
+            'config' => array(),
+        ));
+        
+        if (PEAR::isError($oTriggerConfig)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to add trigger.' . $oTriggerConfig->getMessage()), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+
+        $this->successRedirectTo('editTransition', _kt('Trigger added.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+        exit(0);
+    }
+
+    function do_editTrigger() {
+        $this->oPage->setBreadcrumbDetails(_kt('editing trigger'));
+        $aRequest = $this->oValidator->validateDict($_REQUEST, array(
+            'fWorkflowId' => array('type' => 'workflow'),
+            'fTransitionId' => array('type' => 'workflowtransition'),
+        ));
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to load trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);        
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to add trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+                
+    
+        // simplify our 'config' stuff.
+        $args = array();
+        $args['fWorkflowId'] = $_REQUEST['fWorkflowId'];
+        $args['fTriggerInstanceId'] = $_REQUEST['fTriggerInstanceId'];
+        $args['fTransitionId'] = $_REQUEST['fTransitionId'];                
+        $args['action'] = 'saveTrigger';                   
+
+        return $oTrigger->displayConfiguration($args);
+    }
+
+    // }}}
+
+    function do_saveTrigger() {
+        $this->oPage->setBreadcrumbDetails(_kt('editing trigger'));
+        $aRequest = $this->oValidator->validateDict($_REQUEST, array(
+            'fWorkflowId' => array('type' => 'workflow'),
+            'fTransitionId' => array('type' => 'workflowtransition'),
+        ));
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to load trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);        
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to load trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTrigger->saveConfiguration();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to save trigger: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('editTransition', _kt('Trigger saved.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+        exit(0);    
+    }
 
     // }}}
 

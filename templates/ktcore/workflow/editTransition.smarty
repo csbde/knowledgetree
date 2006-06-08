@@ -25,3 +25,65 @@ requirement.{/i18n}</p>
 </fieldset>
 </form>
 
+
+<fieldset>
+    <legend>{i18n}Transition Triggers{/i18n}</legend>
+
+    <p class="descriptiveText">{i18n}Transition triggers allow you to have special actions automatically
+    occur when a transition is performed, and to control who can perform the transition.  Some triggers
+    perform <strong>both</strong> of these functions, especially if performing the action requires that
+    certain conditions are in place before the action will occur.{/i18n}</p>
+    
+    <form method="POST" action="{$smarty.server.PHP_SELF}">
+
+    <input type="hidden" name="action" value="addTrigger" />
+    <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+    <input type="hidden" name="fTransitionId" value="{$oTransition->getId()}" />
+    
+    {foreach item=oWidget from=$add_trigger_fields}
+      {$oWidget->render()}
+    {/foreach}    
+    
+    <div class="form_actions">
+        <input type="submit" value="Add Trigger" />
+    </div>
+    </form>
+    
+    <h3>{i18n}Guards{/i18n}</h3>
+    
+    <p class="descriptiveText">{i18n}Items which control whether a given user can perform this transition
+    on a specific document. <strong>All of these must allow the user to perform the transition.</strong>{/i18n}</p>
+    {if empty($aGuardTriggers)}
+    <div class="ktInfo"><p>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</p></div>    
+    {else}
+    
+    <table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Trigger{/i18n}</th>        
+            <th>{i18n}Configuration{/i18n}</th>        
+            <th>{i18n}Edit{/i18n}</th>        
+            <th>{i18n}Delete{/i18n}</th>                                          
+        </tr>    
+    </thead>    
+    <tbody>
+        {foreach from=$aGuardTriggers item=oTrigger}
+         <tr>
+             <td>{$oTrigger->getName()}</td>
+             <td>{$oTrigger->getConfigDescription()}</td>
+             <td><a href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a></td>
+             <td>x</td>                                       
+         </tr>
+        {/foreach}    
+    </tbody>
+    </table>    
+    
+    {/if}
+    <h3>Actions</h3>
+
+    <p class="descriptiveText">{i18n}Actions which are performed when the document follows the transition.{/i18n}</p>    
+    {if empty($aActionTriggers)}
+    <div class="ktInfo"><p>{i18n}No actions are performed when this transition occurs.{/i18n}</p></div>    
+    {else}
+    {/if}    
+</fieldset>
