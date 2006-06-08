@@ -114,7 +114,17 @@ class KTWorkflowUtil {
     // }}}
 
 
+    /* WILL NOT RESET THE WORKFLOW if changing to the -same- workflow */
     function changeWorkflowOnDocument($oWorkflow, $oDocument) {
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+            
+        // fix for 1049: workflows reset on document move.
+        // this was the original purpose of "changeWorkflowOnDocument".
+        
+        if ($oDocument->getWorkflowId() == $oWorkflow->getId()) {
+            return true; // bail out, essentially.
+        }    
+    
         return KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
     }
     // {{{ startWorkflowOnDocument

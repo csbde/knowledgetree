@@ -110,7 +110,7 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
             return ;          
         }
         
-        $ret = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $this->_document);
+        $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
 
