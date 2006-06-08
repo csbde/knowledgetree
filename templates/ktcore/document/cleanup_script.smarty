@@ -1,0 +1,33 @@
+{i18n}Warning: Database is inconsistent with the contents of the repository.{/i18n}
+
+
+{i18n}All paths are relative to your Documents directory.{/i18n}
+
+
+{if $aRepoDocumentProblems}
+
+
+
+{i18n}These documents have versions that are not present on the filesystem.  Consider restoring them from backups.{/i18n}
+
+
+{foreach from=$aRepoDocumentProblems item=aInfo}
+{assign var=oDocument value=$aInfo.document}
+{assign var=oContent value=$aInfo.content}
+{assign var=docname value=$oDocument->getName()}
+     {i18n arg_filepath="`$aInfo.path`" arg_docname="$docname" arg_doclink="`$aInfo.doclink`"}#docname# (#doclink# version {$oContent->getMajorVersionNumber()}.{$oContent->getMinorVersionNumber()}) &mdash; Cannot find file:  #filepath#{/i18n}
+{/foreach}
+
+{/if}
+
+{if $aFilesToRemove}
+
+
+
+{i18n}The following files are present in the repository, but do not exist in the database.{/i18n}:
+
+{foreach from=$aFilesToRemove item=sFile}
+     {$sFile|escape}
+{/foreach}
+
+{/if}
