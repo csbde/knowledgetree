@@ -628,8 +628,11 @@ class KTEntityUtil {
     }
 
     function &get($sClassName, $iId) {
-        /* */
+        if (!is_numeric($iId)) {
+            return PEAR::raiseError(_('Non-numeric identifier'));
+        }
         $iId = (int)$iId;
+        /* */
         $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
         $oObject =& new $sProxyClass($iId);
         $res = $oObject->getId();
