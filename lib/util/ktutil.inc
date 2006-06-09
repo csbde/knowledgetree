@@ -640,6 +640,11 @@ class KTUtil {
         }
     }
 
+    function getKTVersions() {
+	return array('OSS' => '3.0.3',
+		     'Pro' => '1.0.0');
+    }
+
 }
 
 /**
