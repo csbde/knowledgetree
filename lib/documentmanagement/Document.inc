@@ -199,9 +199,11 @@ class Document {
 
     // {{{ get
     function &get($iId, $iMetadataVersion=null) {
+        if (!is_numeric($iId)) {
+            return PEAR::raiseError(_('Non-numeric identifier'));
+        }
         $iId = (int)$iId;
         $oDocument = new Document();
-        // if (!is_numeric($iId)) { print "<pre>Document.inc: 162: "; var_dump($iId); print "</pre>"; }
         $res = $oDocument->load($iId, $iMetadataVersion);
         if (PEAR::isError($res)) { 
             return $res;
