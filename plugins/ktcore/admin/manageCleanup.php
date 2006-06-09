@@ -45,6 +45,7 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
             '.empty',
             '.htaccess',
             '.cvsignore',
+            '.svn',
         );
 
         $oConfig =& KTConfig::getSingleton();
