@@ -138,6 +138,7 @@ class KTDBErrorViewer extends KTErrorViewer {
         $ret .= "\t<dt>Error type</dt>\n";
         $ret .= "\t<dd>" . $this->oError->getMessage() . "</dd>\n";
         $sInfo = $this->parseUserInfo();
+
         if ($sInfo) {
             $ret .= "\t<dt>Additional information</dt>\n";
             $ret .= "\t<dd>" . $sInfo . "</dd>\n";
@@ -149,6 +150,7 @@ class KTDBErrorViewer extends KTErrorViewer {
     function parseUserInfo() {
         $sUserInfo = $this->oError->getUserInfo();
         $aMatches = array();
+
         if (preg_match("#^ ?\[nativecode=(Can't connect to local.*) \(13\)#", $sUserInfo, $aMatches)) {
             return $aMatches[1];
         }
