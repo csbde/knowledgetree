@@ -200,7 +200,7 @@ class Document {
     // {{{ get
     function &get($iId, $iMetadataVersion=null) {
         if (!is_numeric($iId)) {
-            return PEAR::raiseError(_('Non-numeric identifier'));
+            return PEAR::raiseError(_kt('Non-numeric identifier'));
         }
         $iId = (int)$iId;
         $oDocument = new Document();
@@ -536,7 +536,7 @@ class Document {
     // {{{ startNewContentVersion
     function startNewContentVersion($oUser) {
         if ($this->getImmutable()) {
-            return PEAR::raiseError(_('Cannot create new version of document: Document is immutable'));
+            return PEAR::raiseError(_kt('Cannot create new version of document: Document is immutable'));
         }
         $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentContentVersion =& $this->_oDocumentContentVersion->newCopy();

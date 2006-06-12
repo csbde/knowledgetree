@@ -202,7 +202,7 @@ class Session {
         // check that ip matches
         $ip = $this->getClientIP();
         if ($ipTracking && ($ip != trim($aRow["ip"]))) {
-            return PEAR::raiseError(_("You are coming from a different IP address than the session requires"));
+            return PEAR::raiseError(_kt("You are coming from a different IP address than the session requires"));
         }
 
         // now check if the timeout has been exceeded

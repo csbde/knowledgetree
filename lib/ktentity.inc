@@ -629,7 +629,7 @@ class KTEntityUtil {
 
     function &get($sClassName, $iId) {
         if (!is_numeric($iId)) {
-            return PEAR::raiseError(_('Non-numeric identifier'));
+            return PEAR::raiseError(_kt('Non-numeric identifier'));
         }
         $iId = (int)$iId;
         /* */
