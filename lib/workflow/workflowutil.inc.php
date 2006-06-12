@@ -120,9 +120,10 @@ class KTWorkflowUtil {
             
         // fix for 1049: workflows reset on document move.
         // this was the original purpose of "changeWorkflowOnDocument".
-        
-        if ($oDocument->getWorkflowId() == $oWorkflow->getId()) {
-            return true; // bail out, essentially.
+        if (!is_null($oWorkflow)) { 
+            if ($oDocument->getWorkflowId() == $oWorkflow->getId()) {
+                return true; // bail out, essentially.
+            }
         }    
     
         return KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
@@ -156,12 +157,12 @@ class KTWorkflowUtil {
 
             $oDocument->setWorkflowId($iWorkflowId);
             $oDocument->setWorkflowStateId($iStartStateId);
-
-	    $sTransactionComments = "Workflow \"" . $oWorkflow->getHumanName() . "\" started.";
+	        $sTransactionComments = "Workflow \"" . $oWorkflow->getHumanName() . "\" started.";
+	        
         } else {
             $oDocument->setWorkflowId(null);
             $oDocument->setWorkflowStateId(null);
-	    $sTransactionComments = "Workflow removed from document.";
+	        $sTransactionComments = "Workflow removed from document.";
         }
 
         $res = $oDocument->update();
