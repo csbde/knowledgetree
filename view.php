@@ -55,6 +55,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     var $sSection = "view_details";
     var $sHelpPage = 'ktcore/browse.html';	
+    
+    var $actions;
 
     function ViewDocumentDispatcher() {
         $this->aBreadcrumbs = array(
@@ -74,9 +76,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
-	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
+	    $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
 		$oPortlet = new KTActionPortlet(_kt("Document Actions"));
-		$oPortlet->setActions($actions, $currentaction);
+		$oPortlet->setActions($this->actions, $currentaction);
 		$this->oPage->addPortlet($oPortlet);
 	}
     
@@ -182,12 +184,25 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			}
 		}
 		
+        // is the checkout action active?
+        $bCanCheckin = false;
+        foreach ($this->actions as $oDocAction) {
+            $sActName = $oDocAction->sName;      
+            if ($sActName == 'ktcore.actions.document.cancelcheckout') {
+                if ($oDocAction->_show()) {
+                    $bCanCheckin = true;
+                }
+            }
+        }
+        
+		
         $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document");
 		$aTemplateData = array(
               "context" => $this,
 			  "sCheckoutUser" => $checkout_user,
 			  "isCheckoutUser" => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
+			  "canCheckin" => $bCanCheckin,
 			  "document_id" => $document_id,
 			  "document" => $oDocument,
 			  "document_data" => $document_data,

@@ -269,6 +269,8 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.cancelcheckout';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    var $bAllowInAdminMode = true;
+    var $bInAdminMode = null;
 
     function getDisplayName() {
         return _kt('Cancel Checkout');
@@ -278,7 +280,15 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }
-
+        if (is_null($this->bInAdminMode)) {
+            $oFolder = Folder::get($this->oDocument->getFolderId());
+            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) { 
+                $this->bAdminMode = true;
+                return parent::getInfo(); 
+            }	               
+        } else if ($this->bInAdminMode == true) {
+            return parent::getInfo();
+        }
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             return null;
         }
@@ -287,6 +297,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
     function check() {
         $res = parent::check();
+       
         if ($res !== true) {
             return $res;
         }
@@ -294,6 +305,16 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][] = _kt("This document is not checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
+        }
+        // hard override if we're in admin mode for this doc.
+        if (is_null($this->bInAdminMode)) {
+            $oFolder = Folder::get($this->oDocument->getFolderId());
+            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) { 
+                $this->bAdminMode = true;
+                return true; 
+            }	               
+        } else if ($this->bInAdminMode == true) {
+            return true;
         }
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             $_SESSION['KTErrorMessage'][] = _kt("This document is checked out, but not by you");
