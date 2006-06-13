@@ -326,9 +326,13 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 	// to get all fields, we merge repeatedly from KTFieldset::get
 		
 	$field_values = array();
+	
+	// i hate conditionality
+	$condy_fs = array();
 	foreach ($fieldsets as $oFieldSet) {
 	    $fields =& $oFieldSet->getFields();
-	    
+	    $isRealConditional = ($oFieldSet->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldSet));
+	    $condy_fs[$oFieldSet->getId()] = $isRealConditional;
 	    // FIXME this doesn't handle multi-fieldset fields - are they possible/meaningful?
 	    foreach ($fields as $oField) {
 		$field_values[$oField->getID()] = array($oField, null);
@@ -337,7 +341,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		
 		
 	foreach ($current_md as $oFieldLink) {
+	    // we mustn't copy "old" values for conditional fieldsets.  it breaks unset-set fields.
+        if (!$condy_fs[$field_values[$oFieldLink->getDocumentFieldID()][0]->getParentFieldsetId()]) {
             $field_values[$oFieldLink->getDocumentFieldID()][1] = $oFieldLink->getValue();
+        } 
+        
 	}
 	
 	
