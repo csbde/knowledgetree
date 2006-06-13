@@ -182,7 +182,10 @@ class KTSearchUtil {
         if (is_null($oUser)) {
             return array("", array(), "");
         }
-        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+        if (is_null($sPermissionName)) {
+            $sPermissionName = 'ktcore.permissions.read';
+        }
+        $oPermission =& KTPermission::getByName($sPermissionName);
         $sPermissionLookupsTable = KTUtil::getTableName('permission_lookups');
         $sPermissionLookupAssignmentsTable = KTUtil::getTableName('permission_lookup_assignments');
         $sPermissionDescriptorsTable = KTUtil::getTableName('permission_descriptors');

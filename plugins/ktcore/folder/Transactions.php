@@ -37,7 +37,7 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 
 class KTFolderTransactionsAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.transactions';
-    var $_sShowPermission = "ktcore.permissions.read";
+    var $_sShowPermission = "ktcore.permissions.folder_details";
 
     function getDisplayName() {
         return _kt('Folder transactions');
