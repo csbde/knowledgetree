@@ -497,7 +497,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 			$res = DBUtil::runQuery($aQuery);	
 			//$this->addInfoMessage('behaviours: ' . print_r($res, true));
 		}
-		
+        KTEntityUtil::clearAllCaches('KTFieldBehaviour');        
+        KTEntityUtil::clearAllCaches('KTValueInstance');     		
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _kt('Could not stop being conditional'), 'fFieldsetId=' . $oFieldset->getId());
@@ -657,6 +658,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
     // {{{ do_changeToSimple
     function do_changeToSimple() {
+        $this->startTransaction();
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oFieldset->setIsComplex(false);
         $res = $oFieldset->update();
@@ -664,6 +666,36 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
             'message' => _kt('Error changing to simple'),
         ));
+        
+		$aFields = DocumentField::getByFieldset($oFieldset);
+		if (!empty($aFields)) {
+		    $aFieldIds = array();
+			foreach ($aFields as $oField) { $aFieldIds[] = $oField->getId(); }
+			
+			// value instances
+		    $sTable = KTUtil::getTableName('field_value_instances');
+			$aQuery = array(
+			    "DELETE FROM $sTable WHERE field_id IN (" . DBUtil::paramArray($aFieldIds) . ")",
+				$aFieldIds,
+			);
+			$res = DBUtil::runQuery($aQuery);		
+			//$this->addInfoMessage('value instances: ' . print_r($res, true));
+			
+			// behaviours
+		    $sTable = KTUtil::getTableName('field_behaviours');
+			$aQuery = array(
+			    "DELETE FROM $sTable WHERE field_id IN (" . DBUtil::paramArray($aFieldIds) . ")",
+				$aFieldIds,
+			);
+			$res = DBUtil::runQuery($aQuery);	
+			//$this->addInfoMessage('behaviours: ' . print_r($res, true));
+		}        
+        $this->oValidator->notError($res, array(
+            'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
+            'message' => _kt('Error changing to simple'),
+        ));
+        KTEntityUtil::clearAllCaches('KTFieldBehaviour');        
+        KTEntityUtil::clearAllCaches('KTValueInstance');                
         $this->successRedirectTo('manageConditional', _kt('Changed to simple'), 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}

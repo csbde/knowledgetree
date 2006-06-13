@@ -108,6 +108,9 @@ class KTValueInstance extends KTEntity {
             $GLOBALS['default']->log->error('KTValueInstance::getByLookupAndParentBehaviour: error from db is: ' . print_r($iId, true));
             return $iId;
         }
+        if (is_null($iId)) {
+            return null;
+        }    
         $GLOBALS['default']->log->debug('KTValueInstance::getByLookupAndParentBehaviour: id of instance is ' . $iId);
         if (KTUtil::arrayGet($aOptions, 'ids')) {
             return $iId;

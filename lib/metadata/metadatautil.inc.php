@@ -88,6 +88,10 @@ class KTMetadataUtil {
                 } else { $oL = $aCurrentSelections[$iThisFieldId]; }
                 
                 $oInstance = KTValueInstance::getByLookupAndParentBehaviour($oL, $oBehaviour);
+                if (is_null($oInstance)) {
+                    // somehow an invalid value hit us here.
+                    continue;
+                }
                 
                 $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, instance is ' . print_r($oInstance, true));
                 $nextBehaviour = $oInstance->getBehaviourId(); // may be NULL
@@ -169,7 +173,8 @@ class KTMetadataUtil {
         $field = $oMasterField->getId();
         $val = $aCurrentSelections[$field];
         $lookup = MetaData::getByValueAndDocumentField($val, $field);
-        
+
+        //var_dump($lookup); exit(0);
         $oValueInstance = KTValueInstance::getByLookupSingle($lookup);
         if (PEAR::isError($oValueInstance) || is_null($oValueInstance) || ($oValueInstance === false)) { return true; } // throw an error
         $aValues = KTMetadataUtil::_getNextForBehaviour($oValueInstance->getBehaviourId(), $aCurrentSelections);
@@ -528,9 +533,21 @@ class KTMetadataUtil {
         $GLOBALS['default']->log->debug("Number of value instances for master field: $iCount");
         if ($iCount == 0) {
             $GLOBALS['default']->log->debug("Number of value instances for master field is zero, failing");
-            return PEAR::raiseError("Master field has no selectable values");
+            return PEAR::raiseError(_kt("Master field has no values which are assigned to behaviours."));
         }
         $GLOBALS['default']->log->debug("Number of value instances for master field is positive, continuing");
+
+        // fix for KTS-1023
+        // check that each master-field value has a valueinstance assigned.
+        $sTable = KTUtil::getTableName('metadata_lookup');
+        $aQuery = array(
+            "SELECT COUNT(id) AS cnt FROM $sTable WHERE document_field_id = ?",
+            array($iMasterFieldId),
+        );
+        $iValCount = DBUtil::getOneResultKey($aQuery, 'cnt');
+        if ($iValCount != $iCount) {
+            return PEAR::raiseError(sprintf(_kt('%d values for the Master Field are not assigned to behaviours.'), ($iValCount - $iCount)));
+        }
 
         /*
          * Plan: For each behaviour that is assigned on the system,
@@ -567,14 +584,16 @@ class KTMetadataUtil {
             );
             $aFields = DBUtil::getResultArrayKey($aQuery, 'field_id');
             $GLOBALS['default']->log->debug("   actual fields are " . print_r($aNextFields, true));
+            /*
             foreach ($aNextFields as $iFieldId) {
-                /*if (!in_array($iFieldId, $aFields)) {
+                if (!in_array($iFieldId, $aFields)) {
                     $GLOBALS['default']->log->debug("   field $iFieldId is not included, failing");
                     $oChildField =& DocumentField::get($iFieldId);
                     $sChildFieldName = $oChildField->getName();
                     return PEAR::raiseError("Child field $sChildFieldName of parent field $sParentFieldName has no selectable values in behaviour $sBehaviourHumanName ($sBehaviourName)");
-                }*/
+
             }
+            */            
         }
         $GLOBALS['default']->log->debug("Got through: passed!");
         return true;

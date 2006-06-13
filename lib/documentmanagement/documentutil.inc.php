@@ -248,9 +248,10 @@ class KTDocumentUtil {
         foreach ($aFieldsets as $oFieldset) {
             $aFields =& $oFieldset->getFields();
             $aFieldValues = array();
+            $isRealConditional = ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset));
             foreach ($aFields as $oField) {
                 $v = KTUtil::arrayGet($aSimpleMetadata, $oField->getId());
-                if ($oField->getIsMandatory()) {
+                if ($oField->getIsMandatory() && !$isRealConditional) {
                     if (empty($v)) {
                         // XXX: What I'd do for a setdefault...
                         $aFailed["field"][$oField->getId()] = 1;
@@ -260,12 +261,13 @@ class KTDocumentUtil {
                     $aFieldValues[$oField->getId()] = $v;
                 }
             }
-            if ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset)) {
+            
+            if ($isRealConditional) {
                 $res = KTMetadataUtil::getNext($oFieldset, $aFieldValues);
                 if ($res) {
                     $aFailed["fieldset"][$oFieldset->getId()] = 1;
-                }
-            }
+                }             
+            }                        
         }
         if (!empty($aFailed)) {
             return new KTMetadataValidationError($aFailed);
