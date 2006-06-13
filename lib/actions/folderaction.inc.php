@@ -34,7 +34,7 @@ class KTFolderAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
 
-    var $_sShowPermission;
+    var $_sShowPermission = 'ktcore.permissions.folder_details';
     var $_sDisablePermission;
     var $sHelpPage = 'ktcore/browse.html';    
     

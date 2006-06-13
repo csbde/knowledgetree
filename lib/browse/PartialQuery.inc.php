@@ -136,7 +136,7 @@ class BrowseQuery extends PartialQuery{
     }
 
     function _getFolderQuery($aOptions = null) {
-        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($this->oUser, 'ktcore.permissions.folder_details', "F");
         if (PEAR::isError($res)) {
            return $res;
         }
@@ -258,7 +258,7 @@ class SimpleSearchQuery extends PartialQuery {
     function SimpleSearchQuery($sSearchableText) { $this->searchable_text = $sSearchableText; }
 
     function _getFolderQuery($aOptions = null) {
-        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($this->oUser, 'ktcore.permissions.folder_details', "F");
         if (PEAR::isError($res)) {
            return $res;
         }
