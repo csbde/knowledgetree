@@ -342,7 +342,8 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		
 	foreach ($current_md as $oFieldLink) {
 	    // we mustn't copy "old" values for conditional fieldsets.  it breaks unset-set fields.
-        if (!$condy_fs[$field_values[$oFieldLink->getDocumentFieldID()][0]->getParentFieldsetId()]) {
+	    $oField = $field_values[$oFieldLink->getDocumentFieldID()][0];
+        if (!$condy_fs[$oField->getParentFieldsetId()]) {
             $field_values[$oFieldLink->getDocumentFieldID()][1] = $oFieldLink->getValue();
         } 
         
