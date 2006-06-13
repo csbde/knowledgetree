@@ -37,6 +37,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
+    var $bAllowInAdminMode = false;
     var $sHelpPage = 'ktcore/browse.html';	
 
     var $sSection = "view_details";
@@ -63,7 +64,8 @@ class KTDocumentAction extends KTStandardDispatcher {
     function _show() {
         if (is_null($this->_sShowPermission)) {
             return true;
-        }
+        }        
+        
         if ($this->_bAdminAlwaysAvailable) {
             if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
                 return true;
@@ -82,6 +84,13 @@ class KTDocumentAction extends KTStandardDispatcher {
 		// be nasty in archive/delete status.
 		$status = $this->oDocument->getStatusID();
 		if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
+        if ($this->bAllowInAdminMode) {
+            // check if this user is in admin mode
+            $oFolder = Folder::get($this->oDocument->getFolderId());
+            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {             
+                return true; 
+            }		
+        }        
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
     }
 
@@ -149,7 +158,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$oPortlet->setActions($actions, $this->sName);
 		$this->oPage->addPortlet($oPortlet);              
 		
-		$this->oPage->setSecondaryTitle($this->oDocument->getName());
+		$this->oPage->setSecondaryTitle($this->oDocument->getName());            
             
         return true;
     }
