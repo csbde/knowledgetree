@@ -330,7 +330,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'redirect_to' => array('viewthread', sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId())),
         );
 
-        $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+        $oPermission =& KTPermission::getByName('ktcore.permissions.workflow');
 	$sRedirectTo = implode('&', $aErrorOptions['redirect_to']);
         
         if (PEAR::isError($oPermission)) {
