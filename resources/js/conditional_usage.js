@@ -137,8 +137,13 @@ function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
         simpleLog('ERROR','invalid widget in conditional.');
         return false;
     }
+    
     var header = widget.getElementsByTagName('LABEL')[0];  // FIXME _could_ fail if pathalogical.
-	header.removeChild(header.getElementsByTagName('SPAN')[0]);
+    // check for "requird" and edit.
+    var headlist = header.getElementsByTagName('SPAN');
+    if (headlist.length != 0) {
+    	header.removeChild([0]);
+	}
     var i_friendly_name = scrapeText(header);
 
     var newWidget = DIV({'class':'field fixed'},
@@ -165,8 +170,9 @@ function handleSelectChange(fieldset, widget, select_object) {
     var i_name = select_object.name;
     var i_value = select_object.value;
     var i_label = scrapeText(select_object.options[select_object.selectedIndex]);
-
+    simpleLog('DEBUG','handleSelectChange creating'); 
     createFixedWidget(fieldset, widget, i_name, i_value, i_label);     
+    simpleLog('DEBUG','handleSelectChange updating');     
     updateFieldset(fieldset);
 }
 

@@ -84,7 +84,8 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
             $vocab = array();
             $vocab[''] = 'Unset';
             foreach ($aFieldInfo['values'] as $md_v) { $vocab[$md_v->getName()] = $md_v->getName(); }
-            $oWidget = getWidgetForMetadataField($aFieldInfo['field'], null, $main, null, $vocab, array('required' => true)) ;
+            $req = $aFieldInfo['field']->getIsMandatory();
+            $oWidget = getWidgetForMetadataField($aFieldInfo['field'], null, $main, null, $vocab, array('required' => $req)) ;
             $sWidgets .= $oWidget->render();
         }
         

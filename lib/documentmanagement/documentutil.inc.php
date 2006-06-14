@@ -265,7 +265,11 @@ class KTDocumentUtil {
             if ($isRealConditional) {
                 $res = KTMetadataUtil::getNext($oFieldset, $aFieldValues);
                 if ($res) {
-                    $aFailed["fieldset"][$oFieldset->getId()] = 1;
+                    foreach ($res as $aMDSet) {
+                        if ($aMDSet['field']->getIsMandatory()) {
+                            $aFailed["fieldset"][$oFieldset->getId()] = 1;                        
+                        }
+                    }
                 }             
             }                        
         }
