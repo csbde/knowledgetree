@@ -137,11 +137,14 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	}
 
         $threads = DiscussionThread::getList($sQuery);
+        $sQuery2 = sprintf('document_id = %d AND state == %d', $this->oDocument->getId(), DISCUSSION_CLOSED);
+        $closed = DiscussionThread::getList($sQuery2);
 
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
             'threads' => $threads,
+            'closed_threads' => count($closed),
             'threadrenderer' => new KTDiscussionThreadListRenderer(),
         );
         return $oTemplate->render($aTemplateData);

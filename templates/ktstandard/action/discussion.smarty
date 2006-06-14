@@ -18,7 +18,12 @@
   </tbody>
 </table>
 {else}
-    <p class="descriptiveText">{i18n}There are no existing threads for this document{/i18n}</p>
+    <p class="descriptiveText">    {if ($closed_threads != 0)}    
+    {i18n arg_closed=$closed_threads}There are #closed# closed threads - use the "View All" option below to view them.{/i18n}
+     {else}
+{i18n}There are no open threads for this document.{/i18n}
+    {/if}
+    </p>
 {/if}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
