@@ -640,9 +640,27 @@ class KTUtil {
         }
     }
 
+    function getSystemIdentifier() {
+        $sIdentifier = KTUtil::getSystemSetting('kt_system_identifier');
+        if (empty($sIdentifier)) {
+            $sIdentifier = md5(uniqid(mt_rand(), true));
+            KTUtil::setSystemSetting('kt_system_identifier', $sIdentifier);
+        }
+        return $sIdentifier;
+    }
+
     function getKTVersions() {
-	return array('OSS' => '3.0.3',
-		     'Pro' => '1.0.0');
+        $aVersions = array();
+        $sProfessionalFile = KT_DIR . '/docs/VERSION-PRO.txt';
+        $sOssFile = KT_DIR . '/docs/VERSION-OSS.txt';
+        if (file_exists($sProfessionalFile)) {
+            $sVersion = trim(file_get_contents($sProfessionalFile));
+            $aVersions['Pro'] = $sVersion;
+        } else {
+            $sVersion = trim(file_get_contents($sOssFile));
+            $aVersions['OSS'] = $sVersion;
+        }
+        return $aVersions;
     }
 
 }
