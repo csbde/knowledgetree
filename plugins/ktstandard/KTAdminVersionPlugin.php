@@ -29,7 +29,7 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php'); 
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
  
-define('KT_VERSION_URL', 'http://kt-bryn.jamwarehouse.com/kt_version');
+define('KT_VERSION_URL', 'http://www.ktdms.com/kt_versions');
 
 class AdminVersionDashlet extends KTBaseDashlet {
     var $oUser;
@@ -41,6 +41,7 @@ class AdminVersionDashlet extends KTBaseDashlet {
     
     function render() {
 	global $default;
+        $oPlugin =& $this->oPlugin;
 	$oTemplating =& KTTemplating::getSingleton();
 	$oTemplate = $oTemplating->loadTemplate('ktstandard/adminversion/dashlet');
 
@@ -53,8 +54,12 @@ class AdminVersionDashlet extends KTBaseDashlet {
 
 	$sVersions = substr($sVersions, 0, -1) . '}';	    
 
+        $sUrl = $oPlugin->getPagePath('versions');
+
 	$aTemplateData = array('context' => $this, 
-			       'kt_versions' => $sVersions);
+			       'kt_versions' => $sVersions,
+			       'kt_versions_url' => $sUrl,
+                               );
 
 	return $oTemplate->render($aTemplateData);
     }
@@ -71,6 +76,31 @@ class AdminVersionPlugin extends KTPlugin {
     
     function setup() {
 	$this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
+	$this->registerPage('versions', 'AdminVersionPage');
+    }
+}
+
+class AdminVersionPage extends KTStandardDispatcher {
+    function do_main() {
+        $sUrl = KT_VERSION_URL;
+	$aVersions = KTUtil::getKTVersions();
+        foreach ($aVersions as $k => $v) {
+            $sUrl = KTUtil::addQueryString($sUrl, sprintf("%s=%s", $k, $v));
+        }
+        $sIdentifier = KTUtil::getSystemIdentifier();
+        $sUrl = KTUtil::addQueryString($sUrl, sprintf("system_identifier=%s", $sIdentifier));
+
+        global $default;
+        $default->log->info($sUrl);
+        $stuff = @file_get_contents($sUrl);
+        if ($stuff === false) {
+            return "";
+        }
+        return $stuff;
+    }
+
+    function handleOutput($sOutput) {
+        print $sOutput;
     }
 }
 
