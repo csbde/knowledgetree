@@ -10,7 +10,7 @@ AdminVersionDashlet.prototype = {
     },
 
     'check' : function() {
-	var res = loadJSONDoc('http://kt-bryn.jamwarehouse.com/kt_version?' + queryString(this.currentVersions));
+	var res = loadJSONDoc(_KT_VERSIONS_URL);
 	res.addCallback(bind(this.callbackCheck, this));
     },
 

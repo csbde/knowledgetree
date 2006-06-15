@@ -13,6 +13,7 @@
 
 <script type="text/javascript" src="resources/js/adminversiondashlet.js"> </script>
 <script type="text/javascript">var _KT_VERSIONS = {$kt_versions};</script>
+<script type="text/javascript">var _KT_VERSIONS_URL = "{$kt_versions_url}";</script>
 
 <div class="ktError" id="admin_version_dashlet" >
 
