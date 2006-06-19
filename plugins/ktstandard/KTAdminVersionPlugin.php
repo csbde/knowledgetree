@@ -81,7 +81,30 @@ class AdminVersionPlugin extends KTPlugin {
 }
 
 class AdminVersionPage extends KTStandardDispatcher {
+    function _checkCache() {
+        global $default;
+        $iLastCheck = KTUtil::getSystemSetting('ktadminversion_lastcheck');
+        if (empty($iLastCheck)) {
+            return;
+        }
+        $sLastValue = KTUtil::getSystemSetting('ktadminversion_lastvalue');
+        if (empty($sLastValue)) {
+            return;
+        }
+        $now = time();
+        $diff = $now - $iLastCheck;
+        if ($diff > (60 * 60 * 6)) {
+            return;
+        }
+        return $sLastValue;
+    }
+
     function do_main() {
+        $sCache = $this->_checkCache();
+        if (!empty($sCache)) {
+            return $sCache;
+        }
+
         $sUrl = KT_VERSION_URL;
 	$aVersions = KTUtil::getKTVersions();
         foreach ($aVersions as $k => $v) {
@@ -90,12 +113,12 @@ class AdminVersionPage extends KTStandardDispatcher {
         $sIdentifier = KTUtil::getSystemIdentifier();
         $sUrl = KTUtil::addQueryString($sUrl, sprintf("system_identifier=%s", $sIdentifier));
 
-        global $default;
-        $default->log->info($sUrl);
         $stuff = @file_get_contents($sUrl);
         if ($stuff === false) {
             return "";
         }
+        KTUtil::setSystemSetting('ktadminversion_lastcheck', time());
+        KTUtil::setSystemSetting('ktadminversion_lastvalue', $stuff);
         return $stuff;
     }
 
