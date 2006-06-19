@@ -5,7 +5,7 @@
 be allocated to roles and groups.{/i18n}</p></div>
 {else}
 
-
+<p>{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fFolderId={$iFolderId}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a></p>
 
 {if $iFolderId != 1}
 <div class="ktInfo">
