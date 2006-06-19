@@ -67,6 +67,7 @@ class AdminVersionDashlet extends KTBaseDashlet {
  
 class AdminVersionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.adminversion.plugin";
+    var $autoRegister = true;
     
     function AdminVersionPlugin($sFilename = null) {
 	$res = parent::KTPlugin($sFilename);
