@@ -66,6 +66,9 @@ class KTWorkflowUtil {
             return $res;
         }
         $aOptions = array('noid' => true);
+        if (empty($aTransitionIds)) {
+            return; // don't fail if there are no transitions.
+        }
         foreach ($aTransitionIds as $iTransitionId) {
             $res = DBUtil::autoInsert($sTable, array(
                 'state_id' => $oState->getId(),
