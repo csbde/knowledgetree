@@ -358,11 +358,13 @@ class KTInit {
         if (file_exists(KT_DIR .  "/config/cache-path")) {
             $store_cache = true;
             $user = KTLegacyLog::running_user();
-            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user;
-            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }
-            $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));    
+            // handle vhosts.
+            $truehost = KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'default');
+            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user . $truehost;
+            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }            
+            $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));                
             if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf("%s/%s", KT_DIR, $config_file); }
-
+            
             $exists = file_exists($cache_file);
             if ($exists) {
                 $cachestat = stat($cache_file);
