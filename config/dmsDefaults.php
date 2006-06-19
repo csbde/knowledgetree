@@ -360,7 +360,8 @@ class KTInit {
             $user = KTLegacyLog::running_user();
             // handle vhosts.
             $truehost = KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'default');
-            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user . $truehost;
+            $trueport = KTUtil::arrayGet($_SERVER, 'SERVER_PORT', '80'); 
+            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user . $truehost . $trueport;
             if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }            
             $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));                
             if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf("%s/%s", KT_DIR, $config_file); }
