@@ -31,11 +31,9 @@ require_once(KT_LIB_DIR . '/discussions/DiscussionThread.inc');
 require_once(KT_LIB_DIR . '/discussions/DiscussionComment.inc');
 
 
-define('DISCUSSION_NEW', 0);
-define('DISCUSSION_OPEN', 1);
-define('DISCUSSION_FINALISED', 2);
-define('DISCUSSION_IMPLEMENTED', 3);
-define('DISCUSSION_CLOSED', 4);
+define('DISCUSSION_OPEN', 0);
+define('DISCUSSION_CONCLUSION', 1);
+define('DISCUSSION_CLOSED', 2);
 
 
 class KTDiscussionPlugin extends KTPlugin {
@@ -103,16 +101,12 @@ class KTCommentListRenderer {
 
 class KTDocumentDiscussionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.discussion';
-    var $aTransitions = array(DISCUSSION_NEW => array(DISCUSSION_OPEN),
-			      DISCUSSION_OPEN => array(DISCUSSION_FINALISED),
-			      DISCUSSION_FINALISED => array(DISCUSSION_OPEN, DISCUSSION_IMPLEMENTED),
-			      DISCUSSION_IMPLEMENTED => array(DISCUSSION_CLOSED, DISCUSSION_OPEN),
+    var $aTransitions = array(DISCUSSION_OPEN => array(DISCUSSION_CONCLUSION),
+			      DISCUSSION_CONCLUSION => array(DISCUSSION_OPEN, DISCUSSION_CLOSED),
 			      DISCUSSION_CLOSED => array());
 
-    var $aStateNames = array(DISCUSSION_NEW => 'New',
-			     DISCUSSION_OPEN => 'Under discussion',
-			     DISCUSSION_FINALISED => 'Finalised - To be implemented',
-			     DISCUSSION_IMPLEMENTED => 'Finalised - Implemented',
+    var $aStateNames = array(DISCUSSION_OPEN => 'Under discussion',
+			     DISCUSSION_CONCLUSION => 'Conclusion',
 			     DISCUSSION_CLOSED => 'Closed');
     
 
@@ -366,7 +360,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oThread->setState($iStateId);
 	if($iStateId == DISCUSSION_CLOSED) {
 	    $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
-	} else if($iStateId == DISCUSSION_FINALISED) {	
+	} else if($iStateId == DISCUSSION_CONCLUSION) {	
 	    $oThread->setCloseReason($sReason);
 	}
 
