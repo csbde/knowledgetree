@@ -137,13 +137,16 @@ function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
         simpleLog('ERROR','invalid widget in conditional.');
         return false;
     }
-    
+    simpleLog('DEBUG','creating fixed widget');
     var header = widget.getElementsByTagName('LABEL')[0];  // FIXME _could_ fail if pathalogical.
+    simpleLog('DEBUG','got label');    
     // check for "requird" and edit.
     var headlist = header.getElementsByTagName('SPAN');
+    simpleLog('DEBUG','got headlist - ' + headlist.length);        
     if (headlist.length != 0) {
-    	header.removeChild([0]);
+    	header.removeChild(headlist[0]);
 	}
+    simpleLog('DEBUG','getting name');        	
     var i_friendly_name = scrapeText(header);
 
     var newWidget = DIV({'class':'field fixed'},
