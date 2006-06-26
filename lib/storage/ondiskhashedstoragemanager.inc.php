@@ -173,7 +173,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
                     KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
             header("Content-Length: ".  filesize($sPath));
             // prefix the filename presented to the browser to preserve the document extension
-            header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
+            header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oContentVersion->getFileName() . '"');
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
