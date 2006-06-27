@@ -81,6 +81,7 @@ class BrowseQuery extends PartialQuery{
     // FIXME cache permission lookups, etc.
     var $folder_id = -1;
     var $sPermissionName = "ktcore.permissions.read";
+    var $sFolderPermissionName = "ktcore.permissions.folder_details";
 
     function BrowseQuery($iFolderId, $oUser = null, $aOptions = null) {
         $this->folder_id = $iFolderId;
@@ -136,7 +137,7 @@ class BrowseQuery extends PartialQuery{
     }
 
     function _getFolderQuery($aOptions = null) {
-        $res = KTSearchUtil::permissionToSQL($this->oUser, 'ktcore.permissions.folder_details', "F");
+        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sFolderPermissionName, "F");
         if (PEAR::isError($res)) {
            return $res;
         }
@@ -258,13 +259,14 @@ class SimpleSearchQuery extends PartialQuery {
     function SimpleSearchQuery($sSearchableText) { $this->searchable_text = $sSearchableText; }
 
     function _getFolderQuery($aOptions = null) {
-        $res = KTSearchUtil::permissionToSQL($this->oUser, 'ktcore.permissions.folder_details', "F");
+        $oUser = User::get($_SESSION['userID']);
+        $res = KTSearchUtil::permissionToSQL($oUser, $this->sFolderPermissionName, "F");
         if (PEAR::isError($res)) {
            return $res;
         }
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
 
-        $aPotentialWhere = array('MATCH (FST.folder_text) AGAINST (? IN BOOLEAN MODE) <> 0',$sPermissionString);
+        $aPotentialWhere = array($sPermissionString, 'MATCH (FST.folder_text) AGAINST (? IN BOOLEAN MODE) <> 0');
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
@@ -286,7 +288,7 @@ class SimpleSearchQuery extends PartialQuery {
         LEFT JOIN " . KTUtil::getTableName("folder_searchable_text") . " AS FST ON (F.id = FST.folder_id) 
         $sPermissionJoin $sWhere ";
         $aParams = array($this->searchable_text);
-        $aParams = kt_array_merge($aParams,  $aPermissionParams);
+        $aParams = kt_array_merge($aPermissionParams, $aParams);   
         return array($sQuery, $aParams);
     }
     
@@ -368,11 +370,11 @@ class SimpleSearchQuery extends PartialQuery {
 
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
-        
+
         $q = array($sQuery, $aParams);
 
         $res = DBUtil::getResultArray($q); 
-        
+
         return $res;
     }
 }
