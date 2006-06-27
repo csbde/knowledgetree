@@ -564,6 +564,9 @@ class SizeCriterion extends BrowseCriterion {
 class ContentCriterion extends BrowseCriterion {
     var $bContains = true;
     var $bHandleNot = false;
+    var $bString = true;
+    var $sSearchTable = "DT";
+    var $sDocumentField = "document_text";
     
     function documentDisplay ($oDocument) {
         return "Document Text";
@@ -571,8 +574,16 @@ class ContentCriterion extends BrowseCriterion {
     function getName() {
         return "content";
     }
+    function getSearchField () {
+        return "document_text";
+    } 
 
     function searchSQL ($aRequest) {
+        $oKTConfig =& KTConfig::getSingleton();
+        $bUseLike = $oKTConfig->get('i18n/useLike', false);
+        if ($bUseLike) {
+            return parent::searchSQL($aRequest);
+        }
         // XXX: Icky MySQL-specific stuff.
         $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
         if ((int)substr($sVersion, 0, 1) >= 4) {
@@ -732,6 +743,9 @@ class DiscussionTextCriterion extends BrowseCriterion {
 class SearchableTextCriterion extends BrowseCriterion {
     var $bContains = true;
     var $bHandleNot = false;
+    var $bString = true;
+    var $sSearchTable = "DST";
+    var $sDocumentField = "document_text";
     
     function documentDisplay ($oDocument) {
         return "Simple text search";
@@ -740,7 +754,16 @@ class SearchableTextCriterion extends BrowseCriterion {
         return "searchabletext";
     }
 
+    function getSearchField () {
+        return "document_text";
+    } 
+
     function searchSQL ($aRequest) {
+        $oKTConfig =& KTConfig::getSingleton();
+        $bUseLike = $oKTConfig->get('i18n/useLike', false);
+        if ($bUseLike) {
+            return parent::searchSQL($aRequest);
+        }
         // XXX: Icky MySQL-specific stuff.
         $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
         if ((int)substr($sVersion, 0, 1) >= 4) {
