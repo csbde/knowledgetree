@@ -329,6 +329,9 @@ class KTFolderUtil {
             return PEAR::raiseError(_kt('Failure deleting folders.'));
         }
         
+        // purge caches
+        KTEntityUtil::clearAllCaches('Folder');   
+        
         // and store
         DBUtil::commit();
         
