@@ -43,6 +43,9 @@ define('XXX_HARDCODE_SIMPLE_FOLDER_SEARCH', true);
  
 // Abstract base class.
 class PartialQuery {
+    var $sPermissionName = "ktcore.permissions.read";
+    var $sFolderPermissionName = "ktcore.permissions.folder_details";
+
     // initialise here (pass whatever this needs)
     function PartialQuery() { ; }
 
@@ -80,8 +83,6 @@ class PartialQuery {
 class BrowseQuery extends PartialQuery{
     // FIXME cache permission lookups, etc.
     var $folder_id = -1;
-    var $sPermissionName = "ktcore.permissions.read";
-    var $sFolderPermissionName = "ktcore.permissions.folder_details";
 
     function BrowseQuery($iFolderId, $oUser = null, $aOptions = null) {
         $this->folder_id = $iFolderId;
