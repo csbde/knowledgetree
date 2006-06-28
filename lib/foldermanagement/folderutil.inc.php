@@ -266,8 +266,7 @@ class KTFolderUtil {
             $oUnit = Unit::getByFolder($oFolder);
             if (!empty($oUnit)) {
                 DBUtil::rollback();
-                return PEAR::raiseError(sprintf('Cannot remove unit
-                            folder: %s.', $oFolder->getName()));
+                return PEAR::raiseError(sprintf('Cannot remove unit folder: %s.', $oFolder->getName()));
             }
 
             // don't just stop ... plough on.
