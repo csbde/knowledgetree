@@ -402,6 +402,10 @@ class TypeBrowseQuery extends SimpleSearchQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
     }
+    
+    // don't do folder searching
+    function getFolderCount() { return 0; }
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }        
 }
 
 class ValueBrowseQuery extends SimpleSearchQuery {
@@ -428,6 +432,10 @@ class ValueBrowseQuery extends SimpleSearchQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
     }
+    
+    // don't do folder searching
+    function getFolderCount() { return 0; }
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }        
 }
 
 class BooleanSearchQuery extends PartialQuery {  
