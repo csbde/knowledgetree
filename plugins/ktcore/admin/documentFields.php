@@ -821,7 +821,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
 
         // FIXME extract this from MDTree (helper method?)
-        $free_metadata = MetaData::getList('document_field_id = '.$oField->getId().' AND (treeorg_parent = 0 OR treeorg_parent IS NULL)');
+        $free_metadata = MetaData::getList('document_field_id = '.$oField->getId().' AND (treeorg_parent = 0 OR treeorg_parent IS NULL) AND (disabled <> 0)');
 
         // render edit template.
         $oTemplating =& KTTemplating::getSingleton();

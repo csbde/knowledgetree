@@ -161,7 +161,7 @@ class KTMetadataUtil {
                 return array();
             }
             // FIXME we now need:  the VALUES of MasterField that are assigned to a behaviour. (ONLY)
-            return array($oField->getId() => array('field' => $oField, 'values' => $oField->getValues()));
+            return array($oField->getId() => array('field' => $oField, 'values' => MetaData::getEnabledByDocumentField($oField)));
         }
 
         $oMasterField =& DocumentField::get($oFieldset->getMasterFieldId());
@@ -464,7 +464,7 @@ class KTMetadataUtil {
     function getNextValuesForBehaviour($oBehaviour) {
         $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
         $aValues = array();
-        $sTable = KTUtil::getTableName('field_behaviour_options');
+        $sTable = KTUtil::getTableName('field_behaviour_options'); 
         $aChildFieldIds = KTMetadataUtil::getChildFieldIds($oBehaviour->getFieldId());
         foreach ($aChildFieldIds as $iFieldId) {
             $aValues[$iFieldId] = array();
@@ -479,6 +479,15 @@ class KTMetadataUtil {
         }
         foreach ($aRows as $aRow) {
             $oInstance =& KTValueInstance::get($aRow['instance_id']);
+            // need to wean out the disabled values.
+            // now get the metadata value.
+            $oMetadata = MetaData::get($oInstance->getFieldValueId());
+            if (PEAR::isError($oMetadata)) { 
+                continue; // invalid link.  bugger.
+            }
+            if ($oMetadata->getDisabled()) {
+                continue; // disabled.
+            }
             $aValues[$aRow['field_id']][] = $oInstance->getFieldValueId();
         }
         return $aValues;
@@ -522,8 +531,9 @@ class KTMetadataUtil {
 
         $iMasterFieldId = $oFieldset->getMasterFieldId();
         $sTable = KTUtil::getTableName('field_value_instances');
+        $sLookupTable = KTUtil::getTableName('metadata_lookup');
         $aQuery = array(
-            "SELECT COUNT(id) AS cnt FROM $sTable WHERE field_id = ?",
+            "SELECT COUNT(FVI.id) AS cnt FROM $sTable AS FVI LEFT JOIN $sLookupTable AS ML ON (FVI.field_value_id = ML.id) WHERE FVI.field_id = ?",
             array($iMasterFieldId),
         );
         $iCount = DBUtil::getOneResultKey($aQuery, 'cnt');
@@ -541,7 +551,7 @@ class KTMetadataUtil {
         // check that each master-field value has a valueinstance assigned.
         $sTable = KTUtil::getTableName('metadata_lookup');
         $aQuery = array(
-            "SELECT COUNT(id) AS cnt FROM $sTable WHERE document_field_id = ?",
+            "SELECT COUNT(id) AS cnt FROM $sTable WHERE document_field_id = ? AND disabled <> 0 ",
             array($iMasterFieldId),
         );
         $iValCount = DBUtil::getOneResultKey($aQuery, 'cnt');
