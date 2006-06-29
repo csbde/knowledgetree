@@ -8,6 +8,7 @@ require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/groups/Group.inc");
+require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/documentcore.inc.php");
 
@@ -243,9 +244,11 @@ class DocumentRoleAllocation extends KTEntity {
 		    return false;
 		} else {
 		    foreach ($aGroups as $oGroup) {
-				if ($oGroup->hasMember($oUser)) {
-				    return true;
-				}
+		        $reason = GroupUtil::getMembershipReason($oUser, $oGroup);
+		        if (PEAR::isError($reason) || is_null($reason)) {
+		            continue;
+		        }
+		        return true; // don't bother continuing - short-circuit for performance.
 			}
 		}
 	    
