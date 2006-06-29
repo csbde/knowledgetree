@@ -223,7 +223,6 @@ class RoleAllocation extends KTEntity {
 	}	
 	
 	// utility function to establish user membership in this allocation.
-	// FIXME nbm:  is there are more coherent way to do this ITO your PD infrastructure?
 	function hasMember($oUser) {
 	    $oPD = $this->getPermissionDescriptor();
 		if (PEAR::isError($oPD) || ($oPD == false)) {
@@ -245,9 +244,11 @@ class RoleAllocation extends KTEntity {
 		    return false;
 		} else {
 		    foreach ($aGroups as $oGroup) {
-				if ($oGroup->hasMember($oUser)) {
-				    return true;
-				}
+		        $reason = GroupUtil::getMembershipReason($oUser, $oGroup);
+		        if (PEAR::isError($reason) || is_null($reason)) {
+		            continue;
+		        }
+		        return true; // don't bother continuing - short-circuit for performance.
 			}
 		}
 	    
