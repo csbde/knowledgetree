@@ -39,6 +39,7 @@ class UpgradeFunctions {
         "3.0.1.4" => array('createWorkflowPermission'),
         "3.0.2" => array("fixDocumentRoleAllocation"),
         "3.0.3.2" => array("createFolderDetailsPermission"),
+        "3.0.3.3" => array("generateWorkflowTriggers"),
     );
 
     var $descriptions = array(
@@ -54,6 +55,7 @@ class UpgradeFunctions {
         'createWorkflowPermission' => 'Create the Core: Manage Workflow',
         'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
         'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
+        'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -690,6 +692,74 @@ class UpgradeFunctions {
         DBUtil::commit();
     }
     // }}}
+    
+    
+    function generateWorkflowTriggers() {
+    
+        require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');    
+    
+        // get all the transitions, and add a trigger to the util with the appropriate settings.    
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+        $aTransitions = KTWorkflowTransition::getList();
+        foreach ($aTransitions as $oTransition) {
+            
+            // guard perm
+            $iGuardPerm = $oTransition->getGuardPermissionId();
+            if (!is_null($iGuardPerm)) {
+            
+                $sNamespace = 'ktcore.workflowtriggers.permissionguard';            
+                $oPerm = KTPermission::get($iGuardPerm);
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+                    'transitionid' => KTUtil::getId($oTransition),
+                    'namespace' =>  $sNamespace,
+                    'config' => array('perms' => array($oPerm->getName())),
+                ));           
+                           
+            }
+            // guard group
+            $iGuardGroup = $oTransition->getGuardGroupId();
+            if (!is_null($iGuardGroup)) {
+            
+                $sNamespace = 'ktcore.workflowtriggers.groupguard';            
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+                    'transitionid' => KTUtil::getId($oTransition),
+                    'namespace' =>  $sNamespace,
+                    'config' => array('group_id' => $iGuardGroup),
+                ));          
+                              
+            }            
+            // guard role    
+            $iGuardRole = $oTransition->getGuardRoleId();
+            if (!is_null($iGuardRole)) {
+            
+                $sNamespace = 'ktcore.workflowtriggers.roleguard';            
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+                    'transitionid' => KTUtil::getId($oTransition),
+                    'namespace' =>  $sNamespace,
+                    'config' => array('role_id' => $iGuardRole),
+                ));                        
+                 
+            }
+            // guard condition
+            $iGuardCondition = $oTransition->getGuardConditionId();
+            if (!is_null($iGuardCondition)) {
+            
+                $sNamespace = 'ktcore.workflowtriggers.conditionguard';            
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+                    'transitionid' => KTUtil::getId($oTransition),
+                    'namespace' =>  $sNamespace,
+                    'config' => array('condition_id' => $iGuardCondition),
+                ));                     
+
+            }            
+        }
+    
+    }
+
 }
 
 ?>
