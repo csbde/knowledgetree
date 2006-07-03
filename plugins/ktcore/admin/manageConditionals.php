@@ -80,7 +80,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
-        
+
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
@@ -102,11 +102,37 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             $aChildren[] = $row['child_field_id'];
             $aOrders[$row['parent_field_id']] = $aChildren;
         } 
+        
+        // for useability, they can go in any order
+        // but master field should be first.  beyond that 
+        // it can get odd anyway. 
+        
+        $aKeyedFields = array();
+        $aOrderedFields = array();
+        $aStack = array($oFieldset->getMasterFieldId());
+        
+        // first, key
+        foreach ($aFields as $oField) {
+            $aKeyedFields[$oField->getId()] = $oField;
+        }
+        
+        while (!empty($aStack)) {
+            $iKey = array_shift($aStack);
+            // this shouldn't happen, but avoid it anyway.
+            if (!is_null($aKeyedFields[$iKey])) {
+                $aOrderedFields[] = $aKeyedFields[$iKey];
+                unset($aKeyedFields[$iKey]);
+            }
+            // add children to stack
+            $aStack = kt_array_merge($aStack, $aOrders[$iKey]);
+        }
+        
+        
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "ordering" => $aOrders,
-            "aFields" => $aFields,
+            "aFields" => $aOrderedFields,
             "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
         return $oTemplate->render($aTemplateData);
@@ -126,7 +152,8 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
          *  FIXME we fake it here with nested arrays...
          */
         $oFieldset =& KTFieldset::get($fieldset_id);
-        $aFields =& $oFieldset->getFields();
+        $aFields =& $oFieldset->getFields();        
+        
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
@@ -149,12 +176,33 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             $aOrders[$row['parent_field_id']] = $aChildren;
         } 
         
+
+        $aKeyedFields = array();
+        $aOrderedFields = array();
+        $aStack = array($oFieldset->getMasterFieldId());
+        
+        // first, key
+        foreach ($aFields as $oField) {
+            $aKeyedFields[$oField->getId()] = $oField;
+        }
+        
+        while (!empty($aStack)) {
+            $iKey = array_shift($aStack);
+            // this shouldn't happen, but avoid it anyway.
+            if (!is_null($aKeyedFields[$iKey])) {
+                $aOrderedFields[] = $aKeyedFields[$iKey];
+                unset($aKeyedFields[$iKey]);
+            }
+            // add children to stack
+            $aStack = kt_array_merge($aStack, $aOrders[$iKey]);
+        }        
+        
         $this->oPage->setBreadcrumbDetails(_kt('Manage complex conditional'));
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "ordering" => $aOrders,
-            "aFields" => $aFields,
+            "aFields" => $aOrderedFields,
             "iMasterFieldId" => $oFieldset->getMasterFieldId(),
         );
         return $oTemplate->render($aTemplateData);

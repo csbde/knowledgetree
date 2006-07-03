@@ -64,7 +64,7 @@ class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/conditional/ajax_complex_get_item_list');
 
         $aValues = array();
-        foreach ($oField->getValues() as $oValue) {
+        foreach ($oField->getEnabledValues() as $oValue) {
             if (empty($parent_behaviour)) {
                 $oInstance = KTValueInstance::getByLookupSingle($oValue);
                 if (empty($oInstance)) {
@@ -132,7 +132,7 @@ class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
 
         $aValues = array();
         $aBehaviours = array();
-        foreach ($oField->getValues() as $oValue) {
+        foreach ($oField->getEnabledValues() as $oValue) {
             if (empty($parent_behaviour)) {
                 $oInstance = KTValueInstance::getByLookupSingle($oValue);
                 if (!empty($oInstance)) {

@@ -95,7 +95,7 @@ refresh the page.{/i18n}</p>
      <p class="inactivity_message">{i18n}This field is not controlled by the currently active group.{/i18n}</p>
      <div class="lookup_items">
          <select class="item_list">
-  {foreach from=$oField->getValues() item=oMetaData}
+  {foreach from=$oField->getEnabledValues() item=oMetaData}
 				<option value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</option>
   {/foreach}
            </select>

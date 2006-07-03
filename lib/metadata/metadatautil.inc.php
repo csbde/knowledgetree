@@ -533,7 +533,7 @@ class KTMetadataUtil {
         $sTable = KTUtil::getTableName('field_value_instances');
         $sLookupTable = KTUtil::getTableName('metadata_lookup');
         $aQuery = array(
-            "SELECT COUNT(FVI.id) AS cnt FROM $sTable AS FVI LEFT JOIN $sLookupTable AS ML ON (FVI.field_value_id = ML.id) WHERE FVI.field_id = ?",
+            "SELECT COUNT(FVI.id) AS cnt FROM $sTable AS FVI LEFT JOIN $sLookupTable AS ML ON (FVI.field_value_id = ML.id) WHERE FVI.field_id = ? AND ML.disabled = 0",
             array($iMasterFieldId),
         );
         $iCount = DBUtil::getOneResultKey($aQuery, 'cnt');
@@ -551,10 +551,12 @@ class KTMetadataUtil {
         // check that each master-field value has a valueinstance assigned.
         $sTable = KTUtil::getTableName('metadata_lookup');
         $aQuery = array(
-            "SELECT COUNT(id) AS cnt FROM $sTable WHERE document_field_id = ? AND disabled <> 0 ",
+            "SELECT COUNT(id) AS cnt FROM $sTable WHERE document_field_id = ? AND disabled = 0 ",
             array($iMasterFieldId),
         );
         $iValCount = DBUtil::getOneResultKey($aQuery, 'cnt');
+        
+        // assumes that there cannot be more than 1 value instance for each master-field-value.
         if ($iValCount != $iCount) {
             return PEAR::raiseError(sprintf(_kt('%d values for the Master Field are not assigned to behaviours.'), ($iValCount - $iCount)));
         }
