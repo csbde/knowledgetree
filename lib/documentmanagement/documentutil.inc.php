@@ -75,14 +75,20 @@ class KTDocumentUtil {
         $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         $oDocument->setFileSize($iFileSize);
 
-	if(is_array($aOptions)) {
-	    $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
-	    if(strlen($sFilename)) {
-		global $default;
-		$oDocument->setFileName($sFilename);
-		$default->log->info("renamed document " . $oDocument->getId() . " to " . $sFilename);
-	    }
-	}
+        $sFilename = $oDocument->getFileName();
+
+        if(is_array($aOptions)) {
+            $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
+            if(strlen($sFilename)) {
+        	global $default;
+        	$oDocument->setFileName($sFilename);
+        	$default->log->info("renamed document " . $oDocument->getId() . " to " . $sFilename);
+            }
+        }
+	
+        $sType = KTMime::getMimeTypeFromFile($sFilename);
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
+        $oDocument->setMimeTypeId($iMimeTypeId);	
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
@@ -544,8 +550,8 @@ class KTDocumentUtil {
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
-
-        if (!$oStorage->upload($oDocument, $sFilename)) {
+        $res = $oStorage->upload($oDocument, $sFilename);
+        if (($res == false) || PEAR::isError($res)) {
             return PEAR::raiseError("Couldn't store contents");
         }
         KTDocumentUtil::setComplete($oDocument, "contents");
