@@ -72,10 +72,17 @@ class KTDocumentViewAction extends KTDocumentAction {
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
             $aOptions['version'] = sprintf("%d.%d", $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());;
-            $oStorage->downloadVersion($this->oDocument, $iVersion);
+            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
         } else {
-            $oStorage->download($this->oDocument);
+            $res = $oStorage->download($this->oDocument);
         }
+        
+        if ($res === false) {
+            $this->addErrorMessage(_kt('The file you requested is not available - please contact the system administrator if this is incorrect.'));
+            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            exit(0);  
+        }
+        
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document downloaded", 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
         exit(0);
