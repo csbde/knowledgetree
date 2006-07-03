@@ -25,21 +25,6 @@
   {$oWidget->render()}
 {/foreach}
 
-{if ($oFieldset->getIsConditional() || $context->haveConditional())}
-<div class="field">
-<label>{i18n}Conditional{/i18n}</label>
-<p class="descriptiveText">
-{i18n}A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
-field can depend on the user's selections for the others.{/i18n}
-</p>
-{if $oFieldset->getIsConditional() }
-    {i18n}Yes{/i18n} 
-{else}
-    {i18n}No{/i18n} 
-{/if}
-</div>
-{/if}
-
 <div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </div>
@@ -65,7 +50,16 @@ field can depend on the user's selections for the others.{/i18n}
 field can depend on the user's selections for the others.{/i18n}
 </p>
 
-
+<div class="field">
+<label>{i18n}Conditional{/i18n}</label>
+<p class="descriptiveText">
+</p>
+{if $oFieldset->getIsConditional() }
+    {i18n}Yes{/i18n} 
+{else}
+    {i18n}No{/i18n} 
+{/if}
+</div>
 
 {if $oFieldset->getIsConditional() }
 
@@ -74,6 +68,8 @@ field can depend on the user's selections for the others.{/i18n}
 <input type="hidden" name="action" value="manageConditional" />
 <input type="submit" name="submit" value="{i18n}Manage conditional{/i18n}" />
 </form>
+
+<br />
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
