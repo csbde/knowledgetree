@@ -71,8 +71,8 @@ requirement.{/i18n}</p>
          <tr>
              <td>{$oTrigger->getName()}</td>
              <td>{$oTrigger->getConfigDescription()}</td>
-             <td><a href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a></td>
-             <td>x</td>                                       
+             <td><a class="ktAction ktEdit" href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a></td>
+             <td><a class="ktAction ktDelete" href="{addQS}action=deleteTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>                                       
          </tr>
         {/foreach}    
     </tbody>
@@ -85,5 +85,27 @@ requirement.{/i18n}</p>
     {if empty($aActionTriggers)}
     <div class="ktInfo"><p>{i18n}No actions are performed when this transition occurs.{/i18n}</p></div>    
     {else}
+    
+    <table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Trigger{/i18n}</th>        
+            <th>{i18n}Configuration{/i18n}</th>        
+            <th>{i18n}Edit{/i18n}</th>        
+            <th>{i18n}Delete{/i18n}</th>                                          
+        </tr>    
+    </thead>    
+    <tbody>
+        {foreach from=$aActionTriggers item=oTrigger}
+         <tr>
+             <td>{$oTrigger->getName()}</td>
+             <td>{$oTrigger->getConfigDescription()}</td>
+             <td><a href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a></td>
+             <td>x</td>                                       
+         </tr>
+        {/foreach}    
+    </tbody>
+    </table>    
+        
     {/if}    
 </fieldset>
