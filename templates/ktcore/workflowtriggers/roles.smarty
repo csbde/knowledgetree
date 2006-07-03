@@ -1,0 +1,25 @@
+<h2>{i18n}Guard Roles for Transition{/i18n}</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+    <legend>{i18n}Guard Roles{/i18n}</legend>
+    
+{* misc, boring args *}
+{foreach from=$args item=val key=name}
+<input type="hidden" name="{$name}" value="{$val}" />
+{/foreach}
+
+<p class="descriptiveText">{i18n}Specify which role the user will require in order to perform this transition.{/i18n}</p>
+
+{* FIXME keep old selection *}
+
+{foreach from=$roles item=sRoleName key=iRoleId}
+   <input type="radio" name="role_id" value="{$iRoleId}" /> {i18n}{$sRoleName}{/i18n} <br />
+{/foreach}
+
+<div class="form_action">
+    <input type="submit" value="{i18n}Save Trigger{/i18n}" />
+    {* FIXME how do I cancel again? *}
+</div>
+</fieldset>
+</form>

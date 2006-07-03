@@ -1,0 +1,25 @@
+<h2>{i18n}Guard Condition for Transition{/i18n}</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+    <legend>{i18n}Guard Condition{/i18n}</legend>
+    
+{* misc, boring args *}
+{foreach from=$args item=val key=name}
+<input type="hidden" name="{$name}" value="{$val}" />
+{/foreach}
+
+<p class="descriptiveText">{i18n}Specify which condition the document must fulfill before this transition becomes available.{/i18n}</p>
+
+{* FIXME keep old selection *}
+
+{foreach from=$conditions item=sConditionName key=iConditionId}
+   <input type="radio" name="condition_id" value="{$iConditionId}" /> {i18n}{$sConditionName}{/i18n} <br />
+{/foreach}
+
+<div class="form_action">
+    <input type="submit" value="{i18n}Save Trigger{/i18n}" />
+    {* FIXME how do I cancel again? *}
+</div>
+</fieldset>
+</form>

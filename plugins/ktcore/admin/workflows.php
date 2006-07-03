@@ -663,8 +663,10 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         } 
         $aOptions['vocab'] = $vocab;
         $add_transition_fields[] = new KTLookupWidget(_kt('Destination State'), _kt('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
+        /*        
         $aOptions = array();
         $vocab = array();
+        $vocab[0] = _kt('None');
         foreach($aInfo['permissions'] as $permission) {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
@@ -687,7 +689,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         } 
         $aOptions['vocab'] = $vocab;
         $add_transition_fields[] = new KTLookupWidget(_kt('Guard Role.'), _kt('Which role must the user have in order to follow this transition?'), 'fRoleId', NULL, $this->oPage, false, null, null, $aOptions);
-        
+
         if (!empty($aConditions)) {
             $aOptions = array();
             $vocab = array();
@@ -698,7 +700,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             $aOptions['vocab'] = $vocab;
             $edit_fields[] = new KTLookupWidget(_kt('Guard Condition.'), _kt('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', NULL, $this->oPage, false, null, null, $aOptions);
         }
-        
+        */        
         
         
         $oTemplate->setData(array(
@@ -1447,6 +1449,42 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('editTransition', _kt('Trigger saved.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
         exit(0);    
     }
+
+    function do_deleteTrigger() {
+        $aRequest = $this->oValidator->validateDict($_REQUEST, array(
+            'fWorkflowId' => array('type' => 'workflow'),
+            'fTransitionId' => array('type' => 'workflowtransition'),
+        ));
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to load trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);        
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to load trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTriggerInstance->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to delete trigger: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('editTransition', _kt('Trigger deleted.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+        exit(0);    
+    }
+
 
     // }}}
 

@@ -92,6 +92,13 @@ class KTCorePlugin extends KTPlugin {
                 'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
                 'KTPortlets.php');
 
+        // workflow triggers
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.permissionguard', 'PermissionGuardTrigger', 'KTWorkflowTriggers.inc.php');
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.roleguard', 'RoleGuardTrigger', 'KTWorkflowTriggers.inc.php');
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.groupguard', 'GroupGuardTrigger', 'KTWorkflowTriggers.inc.php');        
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
+        
+
         $this->setupAdmin();
     }
 
@@ -180,9 +187,6 @@ class KTCorePlugin extends KTPlugin {
             'admin/manageCleanup.php', null);
         // plugins
 
-
-        // workflow triggers
-        $this->registerWorkflowTrigger('ktcore.workflowtriggers.permissionguard', 'PermissionGuardTrigger', 'KTWorkflowTriggers.inc.php');
     }
 }
 
