@@ -116,7 +116,13 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $vocab['lookup'] = _kt('Lookup');
         $vocab['tree'] = _kt('Tree');
         $typeOptions = array("vocab" => $vocab);
-        $createFields[] =& new KTLookupWidget(_kt('Type'), _kt('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.'), 
+        if (!$oFieldset->getIsConditional()) {
+            $overallDescription = _kt('Fields may be of type "Normal", "Lookup", or "Tree". Normal fields are simple text entry fields. Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.');
+        } else {
+            $overallDescription = _kt('Since this is a conditional fieldset, fields may be of type "Lookup", or "Tree". Lookups are drop-down controls populated with values by your chosen values. Tree fields provide a rich means of selecting values from tree-like information structures.');        
+        }
+        
+        $createFields[] =& new KTLookupWidget(_kt('Type'), $overallDescription, 
         'type', null, $this->oPage, true, null,  null, $typeOptions);
         
         
