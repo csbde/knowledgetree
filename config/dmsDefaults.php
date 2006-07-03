@@ -385,7 +385,7 @@ class KTInit {
             $oKTConfig->loadCache($cache_file);
             
             foreach ($oKTConfig->flat as $k => $v) {
-                $default->$k = $v;
+                $default->$k = $oKTConfig->get($k);
             }
         } else {
             $oKTConfig =& KTConfig::getSingleton();
