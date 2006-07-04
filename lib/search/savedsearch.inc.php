@@ -149,7 +149,7 @@ class KTSavedSearch extends KTEntity {
     function &getUserSearches($iUserId, $bNoSystem = false) {
 	$sQuery = sprintf('user_id = %d', $iUserId);
 	if(!$bNoSystem) {
-	    $sQuery .= ' OR user_id IS NULL';
+	    $sQuery .= ' OR user_id IS NULL AND is_condition = 0';
 	}
 	    
 	return KTEntityUtil::getList2('KTSavedSearch', $sQuery, array('orderby' => 'user_id, name'));
