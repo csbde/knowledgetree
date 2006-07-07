@@ -52,6 +52,8 @@ class KTPlugin {
     var $_aLanguage = array();
     var $_aHelpLanguage = array();
     var $_aWFTriggers = array();
+    var $_aColumns = array();    
+    var $_aViews = array();       
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -140,6 +142,15 @@ class KTPlugin {
     function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
         $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
     }
+    
+    function registerColumn($sName, $sNamespace, $sClassName, $sFile) {
+        $sFile = $this->_fixFilename($sFile);
+        $this->_aColumns[$sNamespace] = array($sName, $sNamespace, $sClassName, $sFile);
+    }    
+    
+    function registerView($sName, $sNamespace) {
+        $this->_aViews[$sNamespace] = array($sName, $sNamespace);
+    }        
 
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
@@ -198,6 +209,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
         require_once(KT_LIB_DIR . "/help/help.inc.php");
         require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");        
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -209,6 +221,7 @@ class KTPlugin {
         $oi18nRegistry =& KTi18nRegistry::getSingleton();
         $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
         $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
+        $oColumnRegistry =& KTColumnRegistry::getSingleton();        
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -261,6 +274,14 @@ class KTPlugin {
         foreach ($this->_aWFTriggers as $k => $v) {
             call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $v);
         }
+        
+        foreach ($this->_aColumns as $k => $v) {
+            call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $v);
+        }        
+        
+        foreach ($this->_aViews as $k => $v) {
+            call_user_func_array(array(&$oColumnRegistry, 'registerView'), $v);
+        }                
     }
 
     function setup() {

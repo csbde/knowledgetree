@@ -1,0 +1,10 @@
+<h2>{i18n}Select View{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Views are the selections of documents and folders you will find throughout KnowledgeTree.  Some of those
+can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.){/i18n}</p>
+
+<ul>
+{foreach from=$views key=viewNS item=viewName}
+    <li><a href="{addQS}action=editView&viewNS={$viewNS}{/addQS}">{$viewName}</a></li>
+{/foreach}
+</ul>

@@ -91,6 +91,18 @@ class KTCorePlugin extends KTPlugin {
         $this->registerPortlet(array('administration'),
                 'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
                 'KTPortlets.php');
+                
+        $this->registerColumn(_kt("Title"), 'ktcore.columns.title', 'AdvancedTitleColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt("Selection"), 'ktcore.columns.selection', 'AdvancedSelectionColumn', 'KTColumns.inc.php');        
+        $this->registerColumn(_kt("Single Selection"), 'ktcore.columns.singleselection', 'AdvancedSingleSelectionColumn', 'KTColumns.inc.php');        
+        $this->registerColumn(_kt("Workflow State"), 'ktcore.columns.workflow_state', 'AdvancedWorkflowColumn', 'KTColumns.inc.php');        
+        $this->registerColumn(_kt("Creation Date"), 'ktcore.columns.creationdate', 'CreationDateColumn', 'KTColumns.inc.php');        
+        $this->registerColumn(_kt("Modification Date"), 'ktcore.columns.modificationdate', 'ModificationDateColumn', 'KTColumns.inc.php');                                        
+        $this->registerColumn(_kt("Creator"), 'ktcore.columns.creator', 'CreatorColumn', 'KTColumns.inc.php');                                                
+        $this->registerColumn(_kt("Download File"), 'ktcore.columns.download', 'AdvancedDownloadColumn', 'KTColumns.inc.php');                                                        
+        
+        $this->registerView(_kt("Browse Documents"), 'ktcore.views.browse');
+        $this->registerView(_kt("Search"), 'ktcore.views.search');        
 
         // workflow triggers
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.permissionguard', 'PermissionGuardTrigger', 'KTWorkflowTriggers.inc.php');
@@ -185,6 +197,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("cleanup", 'ManageCleanupDispatcher', 'misc',
             _kt('Verify document storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
             'admin/manageCleanup.php', null);
+        $this->registerAdminPage("views", 'ManageViewDispatcher', 'misc',
+            _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
+            'admin/manageViews.php', null);            
+            
         // plugins
 
     }

@@ -48,6 +48,8 @@ require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 
 require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
 
+require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
+
 /******* NBM's FAMOUS MOVECOLUMN HACK
  *
  * Also in /plugins/ktcore/KTDocumentActions.php
@@ -218,43 +220,18 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
 
     function do_main() {
-        $collection = new DocumentCollection;
+        $collection = new AdvancedCollection;       
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
+        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.browse');
+        $collection->addColumns($aColumns);	
         
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
-        $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-        $collection->addColumn(new TitleColumn("Test 1 (title)","title"));
-        $collection->addColumn(new DownloadColumn('','download'));
-        $collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));
-        $collection->addColumn(new DateColumn(_kt("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn(_kt('Creator'),'creator_id','getCreatorID'));
-        $collection->addColumn(new WorkflowColumn(_kt('Workflow State'),'workflow_state'));
+        $aOptions['result_url'] = $this->resultURL;        
         
-        
-        // setup the folderside add actions
-        // FIXME do we want to use folder actions?
-        
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
-        
-        
-        $collection->setBatching($this->resultURL, $batchPage, $batchSize); 
-        
-        
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");		
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");		
-        
-        
-        $collection->setSorting($displayControl, $displayOrder);
-        
-        // add in the query object.
-        $qObj = $this->oQuery;
-        $collection->setQueryObject($qObj);
-        
-        // breadcrumbs
-        // FIXME handle breadcrumbs
-        $collection->getResults();
+        $collection->setOptions($aOptions);
+        $collection->setQueryObject(new BrowseQuery("1", $this->oUser, array('ignorepermissions' => false)));    
+    
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");

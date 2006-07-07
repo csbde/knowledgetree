@@ -97,91 +97,91 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
     
     function do_saveSearch() {
-	$this->startTransaction();
-
-	$iSearchId = KTUtil::arrayGet($_REQUEST, 'fSearchId', false);
-	$sName = KTUtil::arrayGet($_REQUEST, 'name', false);
-        $sSearch = KTUtil::arrayGet($_REQUEST, 'boolean_search');
-	
-	if($iSearchId === false && $sName === false) {
-	    $this->errorRedirectTo('performSearch', _kt('Please either enter a name, or select a search to save over'), sprintf('boolean_search_id=%s', $sSearch));
-	    exit(0);
-	}
-
-	$datavars = $_SESSION['boolean_search'][$sSearch];
-        if (!is_array($datavars)) {
-            $datavars = unserialize($datavars);
+        $this->startTransaction();
+        
+        $iSearchId = KTUtil::arrayGet($_REQUEST, 'fSearchId', false);
+        $sName = KTUtil::arrayGet($_REQUEST, 'name', false);
+            $sSearch = KTUtil::arrayGet($_REQUEST, 'boolean_search');
+        
+        if($iSearchId === false && $sName === false) {
+            $this->errorRedirectTo('performSearch', _kt('Please either enter a name, or select a search to save over'), sprintf('boolean_search_id=%s', $sSearch));
+            exit(0);
         }
-       
-        if (empty($datavars)) {
-            $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
+        
+        $datavars = $_SESSION['boolean_search'][$sSearch];
+            if (!is_array($datavars)) {
+                $datavars = unserialize($datavars);
+            }
+           
+            if (empty($datavars)) {
+                $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
+            }
+        
+        if($iSearchId) {
+            $oSearch = KTSavedSearch::get($iSearchId);
+            if(PEAR::isError($oSearch) || $oSearch == false) {
+        	$this->errorRedirectToMain(_kt('No such search'));
+        	exit(0);
+            }
+            $oSearch->setSearch($datavars);
+            $oSearch = $oSearch->update();
+        
+        } else {
+            $sName = $this->oValidator->validateEntityName('KTSavedSearch', 
+        						   KTUtil::arrayGet($_REQUEST, 'name'), 
+        						   array('extra_condition' => 'not is_condition', 'redirect_to' => array('new')));
+                
+            $sNamespace = KTUtil::nameToLocalNamespace('Saved searches', $sName);
+        
+            $oSearch = KTSavedSearch::createFromArray(array('name' => $sName,
+        						    'namespace' => $sNamespace,
+        						    'iscondition' => false,
+        						    'iscomplete' => true,
+        						    'userid' => $this->oUser->getId(),
+        						    'search' => $datavars,));
         }
-
-	if($iSearchId) {
-	    $oSearch = KTSavedSearch::get($iSearchId);
-	    if(PEAR::isError($oSearch) || $oSearch == false) {
-		$this->errorRedirectToMain(_kt('No such search'));
-		exit(0);
-	    }
-	    $oSearch->setSearch($datavars);
-	    $oSearch = $oSearch->update();
-
-	} else {
-	    $sName = $this->oValidator->validateEntityName('KTSavedSearch', 
-							   KTUtil::arrayGet($_REQUEST, 'name'), 
-							   array('extra_condition' => 'not is_condition', 'redirect_to' => array('new')));
-            
-	    $sNamespace = KTUtil::nameToLocalNamespace('Saved searches', $sName);
-
-	    $oSearch = KTSavedSearch::createFromArray(array('name' => $sName,
-							    'namespace' => $sNamespace,
-							    'iscondition' => false,
-							    'iscomplete' => true,
-							    'userid' => $this->oUser->getId(),
-							    'search' => $datavars,));
-	}
-
-        $this->oValidator->notError($oSearch, array(
-            'redirect_to' => 'main',
-            'message' => _kt('Search not saved'),
-        ));
-
-	$this->commitTransaction();
+        
+            $this->oValidator->notError($oSearch, array(
+                'redirect_to' => 'main',
+                'message' => _kt('Search not saved'),
+            ));
+        
+        $this->commitTransaction();
         $this->successRedirectTo('performSearch', _kt('Search saved'), sprintf('boolean_search_id=%s', $sSearch));
     }
 
 
     function do_deleteSearch() {
-	$this->startTransaction();
-
-	$iSearchId = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId', false);
-	$oSearch = KTSavedSearch::get($iSearchId);
-	if(PEAR::isError($oSearch) || $oSearch == false) {
-	    $this->errorRedirectToMain(_kt('No such search'));
-	    exit(0);
-	}
-
-	$res = $oSearch->delete();
-        $this->oValidator->notError($res, array(
-            'redirect_to' => 'main',
-            'message' => _kt('Error deleting search'),
-        ));
-	
-	$this->commitTransaction();
-
-	$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
-	$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
-
-	if($iFolderId) {
-	    controllerRedirect('browse', 'fFolderId=' . $iFolderId);
-	} else {
-	    controllerRedirect('viewDocument', 'fDocumentId=' . $iDocumentId);
-	}
+        $this->startTransaction();
+        
+        $iSearchId = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId', false);
+        $oSearch = KTSavedSearch::get($iSearchId);
+        if(PEAR::isError($oSearch) || $oSearch == false) {
+            $this->errorRedirectToMain(_kt('No such search'));
+            exit(0);
+        }
+        
+        $res = $oSearch->delete();
+            $this->oValidator->notError($res, array(
+                'redirect_to' => 'main',
+                'message' => _kt('Error deleting search'),
+            ));
+        
+        $this->commitTransaction();
+        
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fFolderId', false);
+        
+        if($iFolderId) {
+            controllerRedirect('browse', 'fFolderId=' . $iFolderId);
+        } else {
+            controllerRedirect('viewDocument', 'fDocumentId=' . $iDocumentId);
+        }
     }
 	
     function do_editSearch() {
         $sSearch = KTUtil::arrayGet($_REQUEST, 'boolean_search');
-	$aSearch = $_SESSION['boolean_search'][$sSearch];
+	    $aSearch = $_SESSION['boolean_search'][$sSearch];
         if (!is_array($aSearch)) {
             $aSearch = unserialize($aSearch);
         }
@@ -233,66 +233,58 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         }
         $this->oPage->setBreadcrumbDetails($sTitle);
         
-        $collection = new DocumentCollection;
+
         $this->browseType = "Folder";
-
-        //$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-        $t =& new TitleColumn("Test 1 (title)","title");
-        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
-        $collection->addColumn($t);
-        $collection->addColumn(new DownloadColumn('','download'));
-        $collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));
-        $collection->addColumn(new DateColumn(_kt("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn(_kt('Creator'),'creator_id','getCreatorID'));
-        $collection->addColumn(new WorkflowColumn(_kt('Workflow State'),'workflow_state'));
-
         $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
-
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
-
         $sSearch = md5(serialize($aCriteriaSet));
         $_SESSION['boolean_search'][$sSearch] = $aCriteriaSet;
-        $resultURL = KTUtil::addQueryStringSelf("action=performSearch&boolean_search_id=" . urlencode($sSearch));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
 
 
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+        $collection = new AdvancedCollection;       
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
+        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
+        $collection->addColumns($aColumns);	
+        
+        // set a view option
+        $aTitleOptions = array(
+            'documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',
+        );
+        $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
+        
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
+        
+        $aOptions['result_url'] = KTUtil::addQueryStringSelf("action=performSearch&boolean_search_id=" . urlencode($sSearch));
+        
+        $collection->setOptions($aOptions);
+        $collection->setQueryObject(new BooleanSearchQuery($aCriteriaSet));    
 
-        $collection->setSorting($displayControl, $displayOrder);
 
-        // add in the query object.
-        $qObj = new BooleanSearchQuery($aCriteriaSet);
-        $collection->setQueryObject($qObj);
+        //$a = new BooleanSearchQuery($aCriteriaSet); 
+        //var_dump($a->getDocumentCount()); exit(0);
 
-
-	// form fields for saving the search
+        // form fields for saving the search
         $save_fields = array();
         $save_fields[] = new KTStringWidget(_kt('New search'), _kt('The name to save this search as'), 'name', null, $this->oPage, true);
 
-	$aUserSearches = KTSavedSearch::getUserSearches($this->oUser->getId(), true);
-	if(count($aUserSearches)) {
-	    $aVocab = array('' => ' ---- ');
-	    foreach($aUserSearches as $oSearch) {
-		$aVocab[$oSearch->getId()] = $oSearch->getName();
-	    }
-
-	    $aSelectOptions = array('vocab' => $aVocab);
-	    $save_fields[] = new KTLookupWidget(_kt('Existing search'), _kt('To save over one of your existing searches, select it here.'), 'fSearchId', null, $this->oPage, true, null, null, $aSelectOptions);
-	}
-
-        $collection->getResults();
+        $aUserSearches = KTSavedSearch::getUserSearches($this->oUser->getId(), true);
+        if(count($aUserSearches)) {
+            $aVocab = array('' => ' ---- ');
+            foreach($aUserSearches as $oSearch) {
+            $aVocab[$oSearch->getId()] = $oSearch->getName();
+            }
+            
+            $aSelectOptions = array('vocab' => $aVocab);
+            $save_fields[] = new KTLookupWidget(_kt('Existing search'), _kt('To save over one of your existing searches, select it here.'), 'fSearchId', null, $this->oPage, true, null, null, $aSelectOptions);
+        }
+    
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
         $aTemplateData = array(
-              "context" => $this,
-              "collection" => $collection,
-              "custom_title" => $sTitle,
-	      "save_fields" => $save_fields,
-	      "boolean_search" => $sSearch,
+            "context" => $this,
+            "collection" => $collection,
+            "custom_title" => $sTitle,
+            "save_fields" => $save_fields,
+            "boolean_search" => $sSearch,
         );
         return $oTemplate->render($aTemplateData);
     }
