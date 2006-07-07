@@ -34,8 +34,9 @@ require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
 require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
-
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+
+require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
 class SimpleSearchTitleColumn extends TitleColumn {
     function setSearch($sSearch) {
@@ -137,58 +138,40 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $aErrorOptions = array(
             "message" => _kt("Please provide a search term"),
         );
-	$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
+        $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
 		
-	$collection = new DocumentCollection;
-	$this->browseType = "Folder"; 
-		
-	//$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-        /*		
-		$t = new SimpleSearchTitleColumn("Test 1 (title)","title");
-        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
-        $t->setSearch($searchable_text);
-	*/
-	
-	$t =& new TitleColumn("Test 1 (title)","title");
-	$t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php', 'direct_folder' => true));
-	$collection->addColumn($t);
-	$collection->addColumn(new DownloadColumn('','download'));
-	$collection->addColumn(new DateColumn(_kt("Created"),"created", "getCreatedDateTime"));
-	$collection->addColumn(new DateColumn(_kt("Last Modified"),"modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn(_kt('Creator'),'creator_id','getCreatorID'));
-	$collection->addColumn(new WorkflowColumn(_kt('Workflow State'),'workflow_state'));
-		
-	$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-	$batchSize = 20;
-		
-	$resultURL = KTUtil::addQueryStringSelf("fSearchableText=" . $searchable_text);
-	$collection->setBatching($resultURL, $batchPage, $batchSize); 
-		
-		
-	// ordering. (direction and column)
-	$displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");		
-	if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-	$displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");		
-		
-	$collection->setSorting($displayControl, $displayOrder);
-		
-	// add in the query object.
-	$qObj = new SimpleSearchQuery($searchable_text);
-	$collection->setQueryObject($qObj);
-		
-	// breadcrumbs
-	// FIXME handle breadcrumbs
-	$collection->getResults();
-	
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate("kt3/browse");
-	$aTemplateData = array(
-			       "context" => $this,
-			       "collection" => $collection,
-			       );
-	return $oTemplate->render($aTemplateData);
-	}   
+
+        $this->browseType = "Folder"; 
+
+
+        $collection = new AdvancedCollection;       
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
+        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
+        $collection->addColumns($aColumns);	
+        
+        // set a view option
+        $aTitleOptions = array(
+            'documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',
+            'direct_folder' => true,
+        );
+        $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
+        
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
+        
+        $aOptions['result_url'] = KTUtil::addQueryStringSelf("fSearchableText=" . $searchable_text);
+        
+        $collection->setOptions($aOptions);
+        $collection->setQueryObject(new SimpleSearchQuery($searchable_text));    
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse");
+        $aTemplateData = array(
+            "context" => $this,
+            "collection" => $collection, 
+        );
+        return $oTemplate->render($aTemplateData);
+        }   
 }
 
 $oDispatcher = new SimpleSearchDispatcher();

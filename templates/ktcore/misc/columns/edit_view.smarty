@@ -1,0 +1,46 @@
+<h2>{i18n}Edit View{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}The columns included in this view are displayed below.  To add additional columns into the 
+view, use the form below the list.  To remove items, click on the "delete" icon next to the column name.  Note that some columns may be required
+in a given view. Also, while you can 
+have multiple copies of a given column in a specific view this is not recommended.{/i18n}</p>
+
+{if (!empty($current_columns))}
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Column{/i18n}</th>        
+            <th>{i18n}Delete{/i18n}</th>                     
+        </tr>
+    </thead>
+    <tbody>
+    {foreach from=$current_columns item=oColumn}
+        <tr>
+            <td>{$oColumn->getName()}</td>
+
+            {if $oColumn->getRequiredInView()}
+            <td>&mdash;</td>
+            {else}            
+            <td><a href="{addQS}action=deleteEntry&entry_id={$oColumn->getEntryId()}&viewNS={$view}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>            
+            {/if}
+        </tr>    
+    {/foreach}
+    </tbody>
+</table>
+{else}
+<div class="ktInfo"><p>{i18n}No columns have been added to this view{/i18n}</p></div>
+{/if}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset>
+    <legend>{i18n}Add a Column{/i18n}</legend>
+
+    {$add_field->render()}
+
+    <div class="form_actions">
+        <input type="submit" value="{i18n}Add Column to View{/i18n}"/>    
+        <input type="hidden" name="action" value="addEntry" />
+        <input type="hidden" name="viewNS" value="{$view}" />        
+    </div>    
+</fieldset>
+</form>

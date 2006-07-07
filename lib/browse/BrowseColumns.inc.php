@@ -65,9 +65,9 @@ class BrowseColumn {
             $href .= $this->sort_direction = "asc";
         }
         
-        return '<a href="' . $href . '">'.$text.'</a>';
-        
+        return '<a href="' . $href . '">'.$text.'</a>';        
     }
+    
     function renderData($aDataRow) { 
        if ($aDataRow["type"] == "folder") {
            return $this->name . ": ". print_r($aDataRow["folder"]->getName(), true);            
