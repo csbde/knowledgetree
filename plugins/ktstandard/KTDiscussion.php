@@ -131,7 +131,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	}
 
         $threads = DiscussionThread::getList($sQuery);
-        $sQuery2 = sprintf('document_id = %d AND state == %d', $this->oDocument->getId(), DISCUSSION_CLOSED);
+        $sQuery2 = sprintf('document_id = %d AND state = %d', $this->oDocument->getId(), DISCUSSION_CLOSED);
         $closed = DiscussionThread::getList($sQuery2);
 
         $aTemplateData = array(
