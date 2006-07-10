@@ -28,13 +28,14 @@
 
 class KTNotificationRegistry {
     var $notification_types = array();
+    var $notification_types_path = array();
     var $notification_instances = array();
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTNotificationRegistry')) {
-            $GLOBALS['oKTNotificationRegistry'] = new KTNotificationRegistry;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTNotificationRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'] = new KTNotificationRegistry;
         }
-        return $GLOBALS['oKTNotificationRegistry'];
+        return $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'];
         
     }
     // }}}
@@ -42,8 +43,9 @@ class KTNotificationRegistry {
     // pass in:
     //   nsname (e.g. ktcore/subscription)
     //   classname (e.g. KTSubscriptionNotification)
-    function registerNotificationHandler($nsname, $className) {
+    function registerNotificationHandler($nsname, $className, $path = "") {
         $this->notification_types[$nsname] = $className;
+        $this->notification_types_path[$nsname] = $path;
     }
 
     // FIXME insert into notification instances {PERF}
@@ -52,6 +54,14 @@ class KTNotificationRegistry {
         if (!array_key_exists($nsname, $this->notification_types)) {
             return null;
         } else {
+            if (array_key_exists($nsname, $this->notification_types_path)) {
+                $path = $this->notification_types_path[$nsname];
+                if ($path) {
+                    if (file_exists($path)) {
+                        require_once($path);
+                    }
+                }
+            }
             return new $this->notification_types[$nsname];
         }
     }
