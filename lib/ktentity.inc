@@ -33,7 +33,7 @@ $_STOPCACHING = array();
 
 require_once(KT_LIB_DIR . '/cache/cache.inc.php');
 
-DEFINE("EVIL_CACHE_GRIND", false);
+DEFINE("EVIL_CACHE_GRIND", true);
 
 class KTEntity {
     var $_bUsePearError = false;
