@@ -44,7 +44,7 @@ class KTSubscriptionPlugin extends KTPlugin {
     
     function KTSubscriptionPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Workflow Association Plugin');
+        $this->sFriendlyName = _kt('Subscription Plugin');
         return $res;
     }        
 
