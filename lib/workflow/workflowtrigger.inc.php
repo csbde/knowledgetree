@@ -41,6 +41,7 @@ class KTWorkflowTrigger {
     // generic requirements - both can be true
     var $bIsGuard = false;
     var $bIsAction = false;
+    var $bIsConfigurable = true;
 
     function KTWorkflowTrigger() {
         $this->_oTriggerState = null;  // initialise to initial state
@@ -75,7 +76,7 @@ class KTWorkflowTrigger {
     }
     
     // perform more expensive checks -before- performTransition.
-    function precheckTrigger($oDocument, $oUser) {
+    function precheckTransition($oDocument, $oUser) {
         return true;
     }
     
