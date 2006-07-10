@@ -15,7 +15,9 @@
 {assign var=oDocument value=$aInfo.document}
 {assign var=oContent value=$aInfo.content}
 {assign var=docname value=$oDocument->getName()}
-     {i18n arg_filepath="`$aInfo.path`" arg_docname="$docname" arg_doclink="`$aInfo.doclink`"}#docname# (#doclink# version {$oContent->getMajorVersionNumber()}.{$oContent->getMinorVersionNumber()}) &mdash; Cannot find file:  #filepath#{/i18n}
+{assign var=docid value=$oDocument->getId()}
+     {i18n arg_filepath="`$aInfo.path`" arg_docname="$docname" arg_docid="$docid" arg_doclink="`$aInfo.doclink`"}#docname# (ID: #docid#, version {$oContent->getMajorVersionNumber()}.{$oContent->getMinorVersionNumber()}) - Cannot find file:  #filepath#{/i18n}
+
 {/foreach}
 
 {/if}
