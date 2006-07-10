@@ -124,7 +124,7 @@ function get_php_int_setting($val) {
     return prettySizeToActualSize($r);
 }
 
-function bigEnough($name, $setting, $preferred, $bytes = false, $red = true) {
+function bigEnough($name, $setting, $preferred, $bytes = false, $red = true, $zero_ok = false, $minusone_ok = false) {
     $current = get_php_int_setting($setting);
     if ($bytes === true) {
         $ret = sprintf('<tr><td>%s (%s)</td><td>%s</td><td>', $name, $setting, prettySize($preferred));
@@ -140,6 +140,10 @@ function bigEnough($name, $setting, $preferred, $bytes = false, $red = true) {
         } else {
             $ret .= sprintf('<font color="green"><b>%s</b></font>', $current);
         }
+    } else if (($current == 0) && ($zero_ok)) {
+        $ret .= sprintf('<font color="green"><b>unlimited (%s)</b></font>', $current);
+    } else if (($current == -1) && ($minusone_ok)) {
+        $ret .= sprintf('<font color="green"><b>unlimited (%s)</b></font>', $current);
     } else {
         if ($bytes === true) {
             $ret .= sprintf('<font color="red"><b>%s</b></font>', prettySize($current));
@@ -335,8 +339,8 @@ PHP you are running, and which modules are available.</p>
   </thead>
   <tbody>
 <?php echo bigEnough('Maximum POST size', 'post_max_size', 32 * 1024 * 1024, true)?>
-<?php echo bigEnough('Maximum upload size', 'upload_max_filesize', 32 * 1024 * 1024, true)?>
-<?php echo bigEnough('Memory limit', 'memory_limit', 32 * 1024 * 1024, true)?>
+<?php echo bigEnough('Maximum upload size', 'upload_max_filesize', 32 * 1024 * 1024, true, true, false, true)?>
+<?php echo bigEnough('Memory limit', 'memory_limit', 32 * 1024 * 1024, true, true, false, true)?>
 <?php echo ""; # bigEnough('Maximum execution time', 'max_execution_time', 30)?>
 <?php echo ""; # bigEnough('Maximum input time', 'max_input_time', 60)?>
   <tbody>
