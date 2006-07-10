@@ -563,9 +563,6 @@ class KTPermissionUtil {
 
         if (is_a($oDocumentOrFolder, 'Document')) {
             // If we're a document, no niggly children to worry about.
-            //
-            // Well, except for document versions, which we don't know
-            // how to deal with yet, really.
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
         }
@@ -579,10 +576,14 @@ class KTPermissionUtil {
         $aParams = array($oNewPO->getID(), $oOrigPO->getID(), $sFolderIDs);
         DBUtil::runQuery(array($sQuery, $aParams));
 
+        Folder::clearAllCaches();
+
         $sQuery = "UPDATE $default->documents_table SET
             permission_object_id = ? WHERE permission_object_id = ? AND
             parent_folder_ids LIKE ?";
         DBUtil::runQuery(array($sQuery, $aParams));
+
+        Document::clearAllCaches();
 
         KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
     }
