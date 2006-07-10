@@ -375,4 +375,23 @@ class AdvancedDownloadColumn extends AdvancedColumn {
     function getName() { return _kt('Download'); }
 }
 
+
+class DocumentIDColumn extends AdvancedColumn {
+    var $bSortable = false;
+    var $namespace = 'ktcore.columns.docid';
+    
+    function DocumentIDColumn() {
+        $this->label = _kt("Document ID");
+    }
+
+    function renderData($aDataRow) { 
+        // only _ever_ show this for documents.
+        if ($aDataRow["type"] === "folder") { 
+            return '&nbsp;';
+        }
+    
+        return htmlentities($aDataRow['document']->getId(), ENT_NOQUOTES, 'UTF-8');
+    }
+}
+
 ?>
