@@ -230,7 +230,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aOptions['result_url'] = $this->resultURL;        
         
         $collection->setOptions($aOptions);
-        $collection->setQueryObject(new BrowseQuery("1", $this->oUser, array('ignorepermissions' => false)));    
+        $collection->setQueryObject($this->oQuery);    
         $collection->setColumnOptions('ktcore.columns.selection', array(
             'rangename' => 'selection',
             'show_folders' => true,
