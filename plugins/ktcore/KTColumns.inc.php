@@ -394,4 +394,25 @@ class DocumentIDColumn extends AdvancedColumn {
     }
 }
 
+class ContainingFolderColumn extends AdvancedColumn {
+
+    var $namespace = 'ktcore.columns.containing_folder';
+    
+    function ContainingFolderColumn() {
+        $this->label = _kt("View Folder");
+    }
+
+    function renderData($aDataRow) { 
+        // only _ever_ show this for documents.
+        if ($aDataRow["type"] === "folder") { 
+            return '&nbsp;';
+        }
+    
+        $link = KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
+        return sprintf('<a href="%s" class="ktAction ktMoveUp" title="%s">%s</a>', $link, _kt('View Folder'), _kt('View Folder'));
+    }
+    
+    function getName() { return _kt('Opening Containing Folder'); }
+}
+
 ?>
