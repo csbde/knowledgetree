@@ -1,0 +1,18 @@
+<p class="descriptiveText">
+    {i18n arg_name=$document_name arg_state=$state_name arg_user=$actor->getName()}A
+    user, <b>#user#</b>, has requested help on the document <b>#name#</b>, and you are
+    the owner or an admin of this document.{/i18n}
+</p>
+
+<dl>
+<dt>Subject</dt>
+<dd>{$subject}</dd>
+<dt>Details</dt>
+<dd>{$details} </dd>
+</dl>
+
+    <div class="actionoptions">
+    <a href="{ktLink base="notify.php" query="id=`$notify_id`&notify_action=view"}">{i18n}View Document{/i18n}</a>
+    | <a href="{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
+    </div>
+

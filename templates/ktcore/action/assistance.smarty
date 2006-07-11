@@ -1,0 +1,20 @@
+<p class="descriptiveText">{i18n}If you are unable to perform an action
+on this document that you think you should be able to, or wish to
+request a change in location, metadata values, or workflow status, you
+can use this form to contact the owner of the document and/or the
+administrators to request this change.{/i18n}</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>{i18n}Request Assistance{/i18n}</legend>
+<input type="hidden" name="action" value="assistance" />
+<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
+{foreach from=$fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="{i18n}Request Assistance{/i18n}" />
+</div>
+</fieldset>
+</form>
