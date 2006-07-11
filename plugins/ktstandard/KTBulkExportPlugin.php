@@ -30,6 +30,8 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
+require_once(KT_LIB_DIR . '/config/config.inc.php');
+
 class KTBulkExportPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.bulkexport.plugin";
 
@@ -60,6 +62,11 @@ class KTBulkExportAction extends KTFolderAction {
         $aQuery = $this->buildQuery();
         $this->oValidator->notError($aQuery);
         $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
+        
+        $this->startTransaction();
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
 
         if (empty($aDocumentIds)) {
             $this->addErrorMessage(_kt("No documents found to export"));
@@ -79,6 +86,12 @@ class KTBulkExportAction extends KTFolderAction {
         $aPaths = array();
         foreach ($aDocumentIds as $iId) {
             $oDocument = Document::get($iId);
+            
+            if ($bNoisy) {
+                $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
+                $oDocumentTransaction->create();     
+            }
+            
             $sParentFolder = sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath());
             $newDir = $this->sTmpPath;
             foreach (split('/', $oDocument->getFullPath()) as $dirPart) {
@@ -130,6 +143,14 @@ class KTBulkExportAction extends KTFolderAction {
         }
         pclose($fh);
 
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $this->oFolder->getId(),
+            'comment' => "Bulk export",
+            'transactionNS' => 'ktstandard.transactions.bulk_export',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
         printf(_kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there'), $url);
         printf("</div></div></body></html>\n");
@@ -140,6 +161,8 @@ class KTBulkExportAction extends KTFolderAction {
                 callLater(1, kt_bulkexport_redirect);
 
                 </script>', $url);
+                
+        $this->commitTransaction(); 
         exit(0);
     }
 
