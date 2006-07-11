@@ -38,6 +38,7 @@ require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 /**
  * class Notification
@@ -61,8 +62,11 @@ class KTNotification extends KTEntity {
     // (i.e. you get very stupid subclassing semantics with up to 4 variables this way.
     var $iData1;
     var $iData2;
+    // sData1 and sData2 are 255-length character fields
     var $sData1;
     var $sData2;    
+    // sText1 is a 65535-length text field
+    var $sText1;    
     
     var $_bUsePearError = true;
     
@@ -81,6 +85,8 @@ class KTNotification extends KTEntity {
     function setStrData1($sData1) { $this->sData1 = $sData1; }
     function getStrData2() { return $this->sData2; }    
     function setStrData2($sData2) { $this->sData2 = $sData2; }    
+    function getTextData1() { return $this->sText1; }    
+    function setTextData1($mValue) { $this->sText1 = $mValue; }    
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -92,35 +98,36 @@ class KTNotification extends KTEntity {
         "iData2" => "data_int_2",
         "sData1" => "data_str_1",
         "sData2" => "data_str_2",
-        );
+        "sText1" => "data_text_1",
+    );
     
     function _table () {
         return KTUtil::getTableName('notifications');
     }
-	
-	function render() {
-		$notificationRegistry =& KTNotificationRegistry::getSingleton();
-		$handler = $notificationRegistry->getHandler($this->sType);
-		
-		if (is_null($handler)) { return null; } 
-		
-		return $handler->handleNotification($this);
-	}
-	
-	function resolve() {
-	    $notificationRegistry =& KTNotificationRegistry::getSingleton();
-		$handler = $notificationRegistry->getHandler($this->sType);
-		return $handler->resolveNotification($this);
-	}
+
+    function render() {
+        $notificationRegistry =& KTNotificationRegistry::getSingleton();
+        $handler = $notificationRegistry->getHandler($this->sType);
+        
+        if (is_null($handler)) { return null; } 
+        
+        return $handler->handleNotification($this);
+    }
+    
+    function &getHandler() {
+        $notificationRegistry =& KTNotificationRegistry::getSingleton();
+        $handler =& $notificationRegistry->getHandler($this->sType);
+        return $handler;
+    }
 
     // Static function
     function &get($iId) { return KTEntityUtil::get('KTNotification', $iId); }
     function &getList($sWhereClause = null, $aOptions = null ) { 
-	    if(!is_array($aOptions)) $aOptions = array($aOptions);
-		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'creation_date DESC');
-	    return KTEntityUtil::getList2('KTNotification', $sWhereClause, $aOptions);	
-    }	
-	
+        if(!is_array($aOptions)) $aOptions = array($aOptions);
+            $aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'creation_date DESC');
+        return KTEntityUtil::getList2('KTNotification', $sWhereClause, $aOptions);	
+    }
+
     function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTNotification', $aOptions); }
 
 }
@@ -131,7 +138,7 @@ class KTNotification extends KTEntity {
 $notificationRegistry =& KTNotificationRegistry::getSingleton();
 
 // abstract base-class for notification handler.
-class KTNotificationHandler {
+class KTNotificationHandler extends KTStandardDispatcher {
 
     // FIXME rename this to renderNotification
 	// called to _render_ the notification.
@@ -140,6 +147,10 @@ class KTNotificationHandler {
 		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/generic");
 		$aTemplateData = array("context" => $oKTNotification,);
 		return $oTemplate->render($aTemplateData);
+    }
+
+    function do_main() {
+        $this->resolveNotification($this->notification);
     }
 	
 	// called to resolve the notification (typically from /notify.php?id=xxxxx
