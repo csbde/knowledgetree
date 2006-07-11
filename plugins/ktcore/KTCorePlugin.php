@@ -101,6 +101,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerColumn(_kt("Creator"), 'ktcore.columns.creator', 'CreatorColumn', 'KTColumns.inc.php');                                                
         $this->registerColumn(_kt("Download File"), 'ktcore.columns.download', 'AdvancedDownloadColumn', 'KTColumns.inc.php');                                                        
         $this->registerColumn(_kt("Document ID"), 'ktcore.columns.docid', 'DocumentIDColumn', 'KTColumns.inc.php');                                                                
+        $this->registerColumn(_kt("Open Containing Folder"), 'ktcore.columns.containing_folder', 'ContainingFolderColumn', 'KTColumns.inc.php');                
         
         $this->registerView(_kt("Browse Documents"), 'ktcore.views.browse');
         $this->registerView(_kt("Search"), 'ktcore.views.search');        
