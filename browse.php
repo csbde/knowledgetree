@@ -231,7 +231,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BrowseQuery("1", $this->oUser, array('ignorepermissions' => false)));    
-    
+        $collection->setColumnOptions('ktcore.columns.selection', array(
+            'rangename' => 'selection',
+            'show_folders' => true,
+            'show_document' => true,
+        ));
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
