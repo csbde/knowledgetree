@@ -70,9 +70,11 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
             return $this->clearAll();
         }
     
-    
         // get the notification-handler, instantiate it, call resolveNotification.
-        return $this->notification->resolve();
+        $oHandler =& $this->notification->getHandler();
+        $oHandler->notification =& $this->notification;
+        $oHandler->subDispatch($this);
+        exit(0);
     }
     
     function clearAll() {
