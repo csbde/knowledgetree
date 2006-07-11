@@ -346,6 +346,14 @@ class Group extends KTEntity {
         ));
     }
 
+    function getAdministratorGroups() {
+        return KTEntityUtil::getByDict('Group', array(
+            'is_sys_admin' => true,
+        ), array(
+            'multi' => 'true',
+        ));
+    }
+
     function getByAuthenticationSource($oSource, $aOptions = null) {
         $iSourceId = KTUtil::getId($oSource);
         $aOptions = KTUtil::meldOptions($aOptions, array(
