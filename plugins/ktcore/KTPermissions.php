@@ -46,6 +46,8 @@ require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.permissions';
     var $_sEditShowPermission = "ktcore.permissions.security";
@@ -128,6 +130,39 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         $bEdit = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oDocument);
 		$sInherited = '';
 
+        $aDynamicControls = array();
+        $aWorkflowControls = array();
+
+        // handle conditions
+        $iPermissionObjectId = $this->oDocument->getPermissionObjectID();
+        if (!empty($iPermissionObjectId)) {
+            $oPO = KTPermissionObject::get($iPermissionObjectId);
+            $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
+            if (!PEAR::isError($aDynamicConditions)) {
+                foreach ($aDynamicConditions as $oDynamicCondition) {
+                    $iConditionId = $oDynamicCondition->getConditionId();
+                    if (KTSearchUtil::testConditionOnDocument($iConditionId, $this->oDocument)) {
+                        $aPermissionIds = $oDynamicCondition->getAssignment();
+                        foreach ($aPermissionIds as $iPermissionId) {
+                            $aDynamicControls[$iPermissionId] = true;
+                        }
+                    }
+                }
+            }        
+        }
+
+
+        // indicate that workflow controls a given permission
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($this->oDocument);
+        if (!(PEAR::isError($oState) || is_null($oState) || ($oState == false))) {
+            $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oState);
+            foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
+                $aWorkflowControls[$oAssignment->getPermissionId()] = true;
+                unset($aDynamicControls[$oAssignment->getPermissionId()]);
+            }
+        }       
+
+
         $aTemplateData = array(
             "context" => $this,
             "permissions" => $aPermissions,
@@ -140,6 +175,8 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
 			"aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
+            'workflow_controls' => $aWorkflowControls,
+            'conditions_control' => $aDynamicControls, 
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -186,6 +223,40 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         $bEdit = false;
         $sInherited = '';
 
+
+        $aDynamicControls = array();
+        $aWorkflowControls = array();
+
+        // handle conditions
+        $iPermissionObjectId = $this->oDocument->getPermissionObjectID();
+        if (!empty($iPermissionObjectId)) {
+            $oPO = KTPermissionObject::get($iPermissionObjectId);
+            $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
+            if (!PEAR::isError($aDynamicConditions)) {
+                foreach ($aDynamicConditions as $oDynamicCondition) {
+                    $iConditionId = $oDynamicCondition->getConditionId();
+                    if (KTSearchUtil::testConditionOnDocument($iConditionId, $this->oDocument)) {
+                        $aPermissionIds = $oDynamicCondition->getAssignment();
+                        foreach ($aPermissionIds as $iPermissionId) {
+                            $aDynamicControls[$iPermissionId] = true;
+                        }
+                    }
+                }
+            }        
+        }
+
+
+        // indicate that workflow controls a given permission
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($this->oDocument);
+        if (!(PEAR::isError($oState) || is_null($oState) || ($oState == false))) {
+            $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oState);
+            foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
+                $aWorkflowControls[$oAssignment->getPermissionId()] = true;
+                unset($aDynamicControls[$oAssignment->getPermissionId()]);
+            }
+        }       
+
+
         $aTemplateData = array(
             "context" => $this,
             "permissions" => $aPermissions,
@@ -198,6 +269,8 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
             "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
+            'workflow_controls' => $aWorkflowControls,
+            'conditions_control' => $aDynamicControls,             
         );
         return $oTemplate->render($aTemplateData);
     }
