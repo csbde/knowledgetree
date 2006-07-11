@@ -68,6 +68,28 @@ class Unit extends KTEntity {
         require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
         return Folder::get($this->iFolderId);
     }
+
+    function getUnitsForFolder($oFolder) {
+        $oFolder =& KTUtil::getObject('Folder', $oFolder);
+        $sUnitTable = KTUtil::getTableName('units');
+        if (PEAR::isError($oFolder)) {  // can't be admin for a non-existant folder.
+            return false;
+        }
+        $sFolderIds = $oFolder->getParentFolderIds();
+        $aFolderIds = split(",", $sFolderIds);
+        $aFolderIds[] = $oFolder->getId();
+
+        $sParams = DBUtil::paramArray($aFolderIds);
+        $aParams = $aFolderIds;
+        $sQuery = "SELECT id FROM $sUnitTable WHERE folder_id IN ($sParams)";
+        $aUnitIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+
+        $aRet = array();
+        foreach ($aUnitIds as $iId) {
+            $aRet[] = Unit::get($iId);
+        }
+        return $aRet;
+    }
 }
 
 ?>
