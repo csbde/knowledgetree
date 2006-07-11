@@ -17,9 +17,12 @@ permissions are not shown.{/i18n}</p>
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th width="40%">{i18n}Role or Group{/i18n}</th>
+<th>{i18n}Role or Group{/i18n}</th>
 { foreach item=oPerm from=$permissions }
-<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
+<th title="{$oPerm->getName()}" class="centered" style="white-space: normal !important;">{$oPerm->getHumanName()} {assign var=iPermId value=$oPerm->getId()}
+{if ($workflow_controls.$iPermId)}<br /><span class="descriptiveText">(workflow controlled)</span>{/if}
+{if ($conditions_control.$iPermId)}<br /><span class="descriptiveText">(condition affected)</span>{/if}
+</th>
 { /foreach }
 </tr>
 </thead>

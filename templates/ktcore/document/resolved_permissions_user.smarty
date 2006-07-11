@@ -17,7 +17,9 @@ this document.{/i18n}</p>
 <tr>
 <th width="40%">{i18n}User{/i18n}</th>
 { foreach item=oPerm from=$permissions }
-<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
+<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}{assign var=iPermId value=$oPerm->getId()}
+{if ($workflow_controls.$iPermId)}<br /><span class="descriptiveText">(workflow controlled)</span>{/if}
+{if ($conditions_control.$iPermId)}<br /><span class="descriptiveText">(condition affected)</span>{/if}</th>
 { /foreach }
 </tr>
 </thead>
