@@ -403,10 +403,12 @@ class KTInit {
             $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
             $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskHashedStorageManager');
             $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+            
             $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
             $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
             $oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
             $oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
+            $oKTConfig->setdefaultns("tweaks", "noisyBulkOperations", false);            
             
             $oKTConfig->setdefaultns("user_prefs", "passwordLength", 6);
             $oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
