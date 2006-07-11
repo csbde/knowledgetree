@@ -65,6 +65,12 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
         $this->registerAction('folderaction', 'KTFolderTransactionsAction', 'ktcore.actions.folder.transactions', 'folder/Transactions.php');
 
+        $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
+        // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
+
+        $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
+
+
         // Permissions
         $this->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions', 'KTPermissions.php');
         $this->registerAction('folderaction', 'KTRoleAllocationPlugin', 'ktcore.actions.folder.roles', 'KTPermissions.php');
