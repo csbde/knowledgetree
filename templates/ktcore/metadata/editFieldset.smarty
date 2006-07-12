@@ -62,6 +62,13 @@ field can depend on the user's selections for the others.{/i18n}
 </div>
 
 {if $oFieldset->getIsConditional() }
+{assign var=sIncomplete value=$context->getIncomplete($oFieldset)}
+{if $sIncomplete}
+<div class="ktError">
+<p>{i18n}This error prevents this fieldset from being set
+to complete{/i18n}: {$sIncomplete|escape}</p>
+</div> <br />
+{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
