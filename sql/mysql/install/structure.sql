@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 07, 2006 at 11:48 AM
--- Server version: 5.0.21
+-- Generation Time: Jul 12, 2006 at 10:58 AM
+-- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktcvs`
+-- Database: `pristine`
 -- 
 
 -- --------------------------------------------------------
@@ -87,6 +87,23 @@ CREATE TABLE `authentication_sources` (
   PRIMARY KEY  (`id`),
   KEY `namespace` (`namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `column_entries`
+-- 
+
+CREATE TABLE `column_entries` (
+  `id` int(11) NOT NULL default '0',
+  `column_namespace` varchar(255) NOT NULL default '',
+  `view_namespace` varchar(255) NOT NULL default '',
+  `config_array` text NOT NULL,
+  `position` int(11) NOT NULL default '0',
+  `required` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `view_namespace` (`view_namespace`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1530,6 +1547,17 @@ CREATE TABLE `zseq_browse_criteria` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_column_entries`
+-- 
+
+CREATE TABLE `zseq_column_entries` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_dashlet_disables`
 -- 
 
@@ -2163,7 +2191,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=105 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=107 ;
 
 -- --------------------------------------------------------
 
