@@ -187,6 +187,21 @@ class DocumentField extends KTEntity {
     function hasChildren() {
         return (boolean)KTMetadataUtil::getChildFieldIds($this);
     }
+    
+    function getTypeDescription() {
+        $aDescriptors = array();
+        // type
+        $aDescriptors[] = $this->getType();
+        
+        // required
+        if ($this->getIsMandatory()) {
+            $aDescriptors[] = _kt("Required");    
+        } else {
+            $aDescriptors[] = _kt("Not Required");    
+        }
+        
+        return implode(', ', $aDescriptors);        
+    }
 }
 
 /**

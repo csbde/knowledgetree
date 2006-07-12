@@ -128,15 +128,37 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
 
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="action" value="removefields" />
-<ul>
+
+<table class="kt_collection narrow" cellspacing="0">
+<thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>{i18n}Field Name{/i18n}</th>    
+        <th>{i18n}Edit{/i18n}</th>            
+        <th>{i18n}Type Description{/i18n}</th>            
+    </tr>
+
+</thead>
+
+<tbody>
 {foreach from=$oFieldset->getFields() item=oField}
-  <li><input type="checkbox" name="fields[]"
-value="{$oField->getId()}" />
+  <tr>
+      <td><input type="checkbox" name="fields[]" value="{$oField->getId()}" /></td>
+      <td class="title">
 {$oField->getName()|escape}
-(<a href="{addQS}action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}{/addQS}">{i18n}edit{/i18n}</a>)
-</li>
+</td>
+<td>
+<a href="{addQS}action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
+</td>
+<td>
+<span class="descriptiveText">{$oField->getTypeDescription()}</span>
+</td>
+</tr>
+
 {/foreach}
-</ul>
+</tbody>
+
+</table>
 <div class="form_actions">
   <input type="submit" name="submit" value="{i18n}Remove fields{/i18n}" />
 </div>
