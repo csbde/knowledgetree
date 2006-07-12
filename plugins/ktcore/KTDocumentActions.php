@@ -96,6 +96,9 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
 
+    var $_bMutator = true;
+    var $_bMutationAllowedByAdmin = false;
+
     function getDisplayName() {
         return _kt('Checkout');
     }
@@ -381,6 +384,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.edit';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    var $_bMutator = true;
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -404,6 +408,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.delete';
 
     var $_sShowPermission = "ktcore.permissions.delete";
+    var $_bMutator = true;
 
     function getDisplayName() {
         return _kt('Delete');
@@ -480,6 +485,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.move';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    var $_bMutator = true;
 
     function getDisplayName() {
         return _kt('Move');
@@ -867,6 +873,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 class KTDocumentArchiveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = "ktcore.permissions.write";
+    var $_bMutator = true;
 
     function getDisplayName() {
         return _kt('Archive');
