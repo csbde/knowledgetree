@@ -42,6 +42,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.rename';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    var $_bMutator = true;
 
     function getDisplayName() {
         return _kt('Rename');

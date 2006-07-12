@@ -42,6 +42,9 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $sSection = "view_details";
 
+    var $_bMutator = false;
+    var $_bMutationAllowedByAdmin = true;
+
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
@@ -64,7 +67,18 @@ class KTDocumentAction extends KTStandardDispatcher {
     function _show() {
         if (is_null($this->_sShowPermission)) {
             return true;
-        }        
+        }
+        $oFolder = Folder::get($this->oDocument->getFolderId());
+
+        if ($this->_bMutator && $this->oDocument->getImmutable()) {
+            if ($this->_bMutationAllowedByAdmin === true) {
+                if (!KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
         
         if ($this->_bAdminAlwaysAvailable) {
             if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
@@ -86,7 +100,6 @@ class KTDocumentAction extends KTStandardDispatcher {
 		if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
         if ($this->bAllowInAdminMode) {
             // check if this user is in admin mode
-            $oFolder = Folder::get($this->oDocument->getFolderId());
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {             
                 return true; 
             }		
