@@ -3,13 +3,13 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 07, 2006 at 12:08 PM
--- Server version: 5.0.21
+-- Generation Time: Jul 12, 2006 at 11:10 AM
+-- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktcvs`
+-- Database: `pristine`
 -- 
 
 -- 
@@ -38,6 +38,25 @@ INSERT INTO `archiving_type_lookup` VALUES (2, 'Utilisation');
 -- Dumping data for table `authentication_sources`
 -- 
 
+
+-- 
+-- Dumping data for table `column_entries`
+-- 
+
+INSERT INTO `column_entries` VALUES (1, 'ktcore.columns.selection', 'ktcore.views.browse', '', 0, 1);
+INSERT INTO `column_entries` VALUES (2, 'ktcore.columns.title', 'ktcore.views.browse', '', 1, 1);
+INSERT INTO `column_entries` VALUES (3, 'ktcore.columns.download', 'ktcore.views.browse', '', 2, 0);
+INSERT INTO `column_entries` VALUES (4, 'ktcore.columns.creationdate', 'ktcore.views.browse', '', 3, 0);
+INSERT INTO `column_entries` VALUES (5, 'ktcore.columns.modificationdate', 'ktcore.views.browse', '', 4, 0);
+INSERT INTO `column_entries` VALUES (6, 'ktcore.columns.creator', 'ktcore.views.browse', '', 5, 0);
+INSERT INTO `column_entries` VALUES (7, 'ktcore.columns.workflow_state', 'ktcore.views.browse', '', 6, 0);
+INSERT INTO `column_entries` VALUES (8, 'ktcore.columns.selection', 'ktcore.views.search', '', 0, 1);
+INSERT INTO `column_entries` VALUES (9, 'ktcore.columns.title', 'ktcore.views.search', '', 1, 1);
+INSERT INTO `column_entries` VALUES (10, 'ktcore.columns.download', 'ktcore.views.search', '', 2, 0);
+INSERT INTO `column_entries` VALUES (11, 'ktcore.columns.creationdate', 'ktcore.views.search', '', 3, 0);
+INSERT INTO `column_entries` VALUES (12, 'ktcore.columns.modificationdate', 'ktcore.views.search', '', 4, 0);
+INSERT INTO `column_entries` VALUES (13, 'ktcore.columns.creator', 'ktcore.views.search', '', 5, 0);
+INSERT INTO `column_entries` VALUES (14, 'ktcore.columns.workflow_state', 'ktcore.views.search', '', 6, 0);
 
 -- 
 -- Dumping data for table `comment_searchable_text`
@@ -712,7 +731,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3.4');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -851,11 +870,13 @@ INSERT INTO `upgrades` VALUES (96, 'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql', 'Da
 INSERT INTO `upgrades` VALUES (97, 'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql', 'Database upgrade to version 3.0.2.4: Discussion-fulltext', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (98, 'upgrade*3.0.2.4*99*upgrade3.0.2.4', 'Upgrade from version 3.0.2.2 to 3.0.2.4', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (99, 'upgrade*3.0.3*99*upgrade3.0.3', 'Upgrade from version 3.0.2.4 to 3.0.3', '2006-05-31 13:02:04', 1, 'upgrade*3.0.3*99*upgrade3.0.3');
-INSERT INTO `upgrades` VALUES (100, 'sql*3.0.3.1*0*3.0.3.1/utf8.sql', 'Database upgrade to version 3.0.3.1: Utf8', '2006-06-07 11:45:28', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
-INSERT INTO `upgrades` VALUES (101, 'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql', 'Database upgrade to version 3.0.3.1: Document immutable', '2006-06-07 11:45:28', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
-INSERT INTO `upgrades` VALUES (102, 'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql', 'Database upgrade to version 3.0.3.1: Workflow-triggers', '2006-06-07 11:45:29', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
-INSERT INTO `upgrades` VALUES (103, 'func*3.0.3.2*0*createFolderDetailsPermission', 'Create the Core: Folder Details permission', '2006-06-07 11:45:29', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
-INSERT INTO `upgrades` VALUES (104, 'upgrade*3.0.3.2*99*upgrade3.0.3.2', 'Upgrade from version 3.0.3 to 3.0.3.2', '2006-06-07 11:45:30', 1, 'upgrade*3.0.3.2*99*upgrade3.0.3.2');
+INSERT INTO `upgrades` VALUES (100, 'sql*3.0.3.1*0*3.0.3.1/utf8.sql', 'Database upgrade to version 3.0.3.1: Utf8', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (101, 'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql', 'Database upgrade to version 3.0.3.1: Document immutable', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (102, 'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql', 'Database upgrade to version 3.0.3.1: Workflow-triggers', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (103, 'func*3.0.3.2*0*createFolderDetailsPermission', 'Create the Core: Folder Details permission', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (104, 'func*3.0.3.3*0*generateWorkflowTriggers', 'Migrate old in-transition guards to triggers', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (105, 'sql*3.0.3.4*0*3.0.3.4/column_entries.sql', 'Database upgrade to version 3.0.3.4: Column entries', '2006-07-12 10:57:17', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (106, 'upgrade*3.0.3.4*99*upgrade3.0.3.4', 'Upgrade from version 3.0.3 to 3.0.3.4', '2006-07-12 10:57:17', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
 
 -- 
 -- Dumping data for table `user_history`
@@ -955,6 +976,12 @@ INSERT INTO `zseq_authentication_sources` VALUES (1);
 -- 
 
 INSERT INTO `zseq_browse_criteria` VALUES (5);
+
+-- 
+-- Dumping data for table `zseq_column_entries`
+-- 
+
+INSERT INTO `zseq_column_entries` VALUES (14);
 
 -- 
 -- Dumping data for table `zseq_dashlet_disables`
@@ -1300,7 +1327,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (104);
+INSERT INTO `zseq_upgrades` VALUES (106);
 
 -- 
 -- Dumping data for table `zseq_user_history`
