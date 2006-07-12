@@ -533,6 +533,13 @@ class AdvancedCollection {
     function render() {        
         $this->setSorting();
         $this->getResults(); 
+        
+        // ensure all columns use the correct url
+        //var_dump($this->returnURL); exit(0);
+        $aOpt = array('return_url' => $this->returnURL);
+        foreach ($this->columns as $k => $v) {
+            $this->columns[$k]->setOptions($aOpt);
+        }
     
         // sort out the batch
         $pagecount = (int) floor($this->itemCount / $this->batchSize);
