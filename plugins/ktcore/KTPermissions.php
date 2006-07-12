@@ -529,7 +529,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
         
-        
+        $oRole = Role::get($oRoleAllocation->getRoleId());             
         $this->oPage->setBreadcrumbDetails(_kt('Manage Groups for Role'));
         $this->oPage->setTitle(sprintf(_kt('Manage Groups for Role "%s"'), $oRole->getName()));
         
@@ -556,7 +556,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
         
-        $oRole = Role::get($oRoleAllocation->getRoleId());        
+   
         
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_managegroups");
