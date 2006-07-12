@@ -17,7 +17,6 @@ this is incorrect, or you no longer need to make changes to it, please cancel th
 <p>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you 
 have sufficient priviledges to cancel their checkout.{/i18n}</p>
 </div>
-
 {else}
 <div class="ktInfo">
 <p>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#.  You cannot make 
@@ -27,6 +26,20 @@ contact your KnowledgeTree Administrator.{/i18n}</p>
 {/if}
 {/if}
 {/if}    
+
+{if ($document->getImmutable() == true)}
+<div class="ktInfo">
+<p>{i18n}This document is immutable.  No further content changes can be
+made to this document, and only administrators (in administration mode)
+can make changes to the metadata or can move or delete it.{/i18n}
+{if 1}
+  {i18n}If you require assistance from an administrator to perform one of
+these tasks, use the Request Assistance action.{/i18n}
+{/if}
+</p>
+</div>
+{/if}
+
 {foreach item=oFieldset from=$fieldsets}
 {$oFieldset->render($document_data)}
 {/foreach}
