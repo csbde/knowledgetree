@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 12, 2006 at 10:58 AM
+-- Generation Time: Jul 12, 2006 at 12:02 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -1729,7 +1729,7 @@ CREATE TABLE `zseq_document_subscriptions` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
 
 -- --------------------------------------------------------
 
@@ -2191,7 +2191,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=107 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=108 ;
 
 -- --------------------------------------------------------
 
