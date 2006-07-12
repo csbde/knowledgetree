@@ -1120,6 +1120,17 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		
 		return $this->bHaveConditional; 
 	}
+	
+	function getIncomplete($oFieldset) {
+        $res = KTMetadataUtil::checkConditionalFieldsetCompleteness($oFieldset);
+        if (PEAR::isError($res)) {
+            $sIncomplete = $res->getMessage();
+        } else {
+            $sIncomplete = null;
+        }	
+        return $sIncomplete;
+        
+	}
 
 // }}}
 }
