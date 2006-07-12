@@ -531,7 +531,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         
         
         $this->oPage->setBreadcrumbDetails(_kt('Manage Groups for Role'));
-        $this->oPage->setTitle(sprintf(_kt('Manage Groups for Role')));
+        $this->oPage->setTitle(sprintf(_kt('Manage Groups for Role "%s"'), $oRole->getName()));
         
         $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
         'function startTrans() { var f = getElement("grouproleform"); ' .
@@ -556,6 +556,8 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
         
+        $oRole = Role::get($oRoleAllocation->getRoleId());        
+        
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_managegroups");
         $aTemplateData = array(
@@ -563,6 +565,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             "edit_rolealloc" => $oRoleAllocation,
 			'unused_groups' => $aFreeUsers,
 			'role_groups' => $aRoleUsers,
+			'rolename' => $oRole->getName(),
         );
         return $oTemplate->render($aTemplateData);
 	}

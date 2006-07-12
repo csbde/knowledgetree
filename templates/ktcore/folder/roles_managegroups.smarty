@@ -1,4 +1,4 @@
-<h2>{i18n}Allocate Groups to Role{/i18n}</h2>
+<h2>{i18n arg_rolename=$rolename}Allocate Groups to Role: #rolename#{/i18n}</h2>
 
 {$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
@@ -17,7 +17,7 @@
    
    
    <fieldset>
-      <legend>{i18n}Allocate Groups to Role{/i18n}</legend>
+      <legend>{i18n}Allocate Groups{/i18n}</legend>
       <p class="descriptiveText">{i18n}Select the groups which should be part of this role.{/i18n}</p>
 
 <table border="0" width="600">
