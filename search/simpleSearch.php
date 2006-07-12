@@ -140,9 +140,6 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         );
         $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
-		
-
-        $this->browseType = "Folder"; 
 
 
         $collection = new AdvancedCollection;       
@@ -159,8 +156,8 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
-        $aOptions['result_url'] = KTUtil::addQueryStringSelf("fSearchableText=" . $searchable_text);
-        
+        $aOptions['return_url'] = KTUtil::addQueryStringSelf("fSearchableText=" . urlencode($searchable_text));
+
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new SimpleSearchQuery($searchable_text));    
         
