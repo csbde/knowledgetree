@@ -28,7 +28,7 @@
 {if ($oFieldset->getIsGeneric())}
     <span>{i18n}Yes{/i18n}</span>
 {else}
-	<span>s{i18n}No{/i18n}</span>
+	<span>{i18n}No{/i18n}</span>
 {/if}
       </td>
       <td class="centered">
