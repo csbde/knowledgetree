@@ -748,7 +748,7 @@ class SearchableTextCriterion extends BrowseCriterion {
     var $sDocumentField = "document_text";
     
     function documentDisplay ($oDocument) {
-        return "Simple text search";
+        return "Simple search text";
     }
     function getName() {
         return "searchabletext";
@@ -906,7 +906,7 @@ class Criteria {
                 $oCriterion =& new TransactionTextCriterion(_kt("Transaction Text"), 'transactiontext', 'transactiontext', -11);
                 break;
             case -12:
-                $oCriterion =& new SearchableTextCriterion(_kt("Simple Text Search"), 'searchabletext', 'searchabletext', -12);
+                $oCriterion =& new SearchableTextCriterion(_kt("Simple Search Text"), 'searchabletext', 'searchabletext', -12);
                 break;
             case -13:
                 $oCriterion =& new DiscussionTextCriterion(_kt("Discussion Threads"), 'discussiontext', 'discussiontext', -13);
