@@ -1008,6 +1008,22 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
         
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'query' => 'action=edit&fFieldsetId=' . $fieldset_id,
+            'name' => $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'query' => 'action=manageConditional&fFieldsetId=' . $_REQUEST['fieldset_id'],
+            'name' => _kt('Manage conditional field'),
+        );  
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'query' => 'action=viewOverview&fieldset_id=' . $_REQUEST['fieldset_id'],
+            'name' => _kt('Overview'),
+        );        
+        
         $aBehaviours = array();
 		foreach ($aFields as $oField) {
 		    $aOpts = KTFieldBehaviour::getByField($oField);
