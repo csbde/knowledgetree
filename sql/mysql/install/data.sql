@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 12, 2006 at 11:10 AM
+-- Generation Time: Jul 12, 2006 at 12:02 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -177,6 +177,7 @@ INSERT INTO `document_transaction_types_lookup` VALUES (15, 'Email Attachment', 
 INSERT INTO `document_transaction_types_lookup` VALUES (16, 'Workflow state transition', 'ktcore.transactions.workflow_state_transition');
 INSERT INTO `document_transaction_types_lookup` VALUES (17, 'Permissions changed', 'ktcore.transactions.permissions_change');
 INSERT INTO `document_transaction_types_lookup` VALUES (18, 'Role allocations changed', 'ktcore.transactions.role_allocations_change');
+INSERT INTO `document_transaction_types_lookup` VALUES (19, 'Bulk Export', 'ktstandard.transactions.bulk_export');
 
 -- 
 -- Dumping data for table `document_transactions`
@@ -870,13 +871,14 @@ INSERT INTO `upgrades` VALUES (96, 'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql', 'Da
 INSERT INTO `upgrades` VALUES (97, 'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql', 'Database upgrade to version 3.0.2.4: Discussion-fulltext', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (98, 'upgrade*3.0.2.4*99*upgrade3.0.2.4', 'Upgrade from version 3.0.2.2 to 3.0.2.4', '2006-05-30 10:55:59', 1, 'upgrade*3.0.2.4*99*upgrade3.0.2.4');
 INSERT INTO `upgrades` VALUES (99, 'upgrade*3.0.3*99*upgrade3.0.3', 'Upgrade from version 3.0.2.4 to 3.0.3', '2006-05-31 13:02:04', 1, 'upgrade*3.0.3*99*upgrade3.0.3');
-INSERT INTO `upgrades` VALUES (100, 'sql*3.0.3.1*0*3.0.3.1/utf8.sql', 'Database upgrade to version 3.0.3.1: Utf8', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (101, 'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql', 'Database upgrade to version 3.0.3.1: Document immutable', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (102, 'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql', 'Database upgrade to version 3.0.3.1: Workflow-triggers', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (103, 'func*3.0.3.2*0*createFolderDetailsPermission', 'Create the Core: Folder Details permission', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (104, 'func*3.0.3.3*0*generateWorkflowTriggers', 'Migrate old in-transition guards to triggers', '2006-07-12 10:57:16', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (105, 'sql*3.0.3.4*0*3.0.3.4/column_entries.sql', 'Database upgrade to version 3.0.3.4: Column entries', '2006-07-12 10:57:17', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
-INSERT INTO `upgrades` VALUES (106, 'upgrade*3.0.3.4*99*upgrade3.0.3.4', 'Upgrade from version 3.0.3 to 3.0.3.4', '2006-07-12 10:57:17', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (100, 'sql*3.0.3.1*0*3.0.3.1/utf8.sql', 'Database upgrade to version 3.0.3.1: Utf8', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (101, 'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql', 'Database upgrade to version 3.0.3.1: Document immutable', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (102, 'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql', 'Database upgrade to version 3.0.3.1: Workflow-triggers', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (103, 'func*3.0.3.2*0*createFolderDetailsPermission', 'Create the Core: Folder Details permission', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (104, 'func*3.0.3.3*0*generateWorkflowTriggers', 'Migrate old in-transition guards to triggers', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (105, 'sql*3.0.3.4*0*3.0.3.4/column_entries.sql', 'Database upgrade to version 3.0.3.4: Column entries', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (106, 'sql*3.0.3.4*0*3.0.3.4/bulk_export_transaction.sql', 'Database upgrade to version 3.0.3.4: Bulk export transaction', '2006-07-12 12:00:33', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
+INSERT INTO `upgrades` VALUES (107, 'upgrade*3.0.3.4*99*upgrade3.0.3.4', 'Upgrade from version 3.0.3 to 3.0.3.4', '2006-07-12 12:00:34', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1076,7 +1078,7 @@ INSERT INTO `zseq_document_subscriptions` VALUES (1);
 -- Dumping data for table `zseq_document_transaction_types_lookup`
 -- 
 
-INSERT INTO `zseq_document_transaction_types_lookup` VALUES (18);
+INSERT INTO `zseq_document_transaction_types_lookup` VALUES (19);
 
 -- 
 -- Dumping data for table `zseq_document_transactions`
@@ -1327,7 +1329,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (106);
+INSERT INTO `zseq_upgrades` VALUES (107);
 
 -- 
 -- Dumping data for table `zseq_user_history`
