@@ -54,6 +54,8 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
+<h2>{i18n arg_foldername=$foldername}Upload files into "#foldername#"{/i18n}</h2>
+
 <form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data">
 <fieldset><legend>{i18n}Bulk import{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk upload facility allows for a number

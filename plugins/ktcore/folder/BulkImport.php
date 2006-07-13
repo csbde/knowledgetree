@@ -84,6 +84,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
             'context' => &$this,
             'add_fields' => $add_fields,
             'generic_fieldsets' => $fieldsets,
+            'foldername' => $this->oFolder->getName(),
         ));
         return $oTemplate->render();
     }

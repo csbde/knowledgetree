@@ -387,6 +387,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $aTemplateData = array(
             'context' => &$this,
             'roles' => $aRoles,
+            'foldername' => $this->oFolder->getName(),
         );
         return $oTemplate->render($aTemplateData);
     }
