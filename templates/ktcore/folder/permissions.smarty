@@ -1,4 +1,4 @@
-<h2>{i18n}Folder permissions{/i18n}</h2>
+<h2>{i18n arg_foldername=$foldername}Folder permissions for "#foldername#"{/i18n}</h2>
 
 {if ((empty($roles) && empty($groups)))}
 <div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only
