@@ -54,6 +54,8 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
+<h2>{i18n arg_foldername=$foldername}Import files into "#foldername#"{/i18n}</h2>
+
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
 <fieldset><legend>{i18n}Import from Server Location{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk import facility allows for a number

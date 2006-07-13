@@ -1,4 +1,4 @@
-<h2>{i18n}Allocate Roles{/i18n}</h2>
+<h2>{i18n arg_foldername=$foldername}Allocate Roles for "#foldername#"{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}
     In many cases, workflow actions will be assigned to certain <strong>roles</strong>
