@@ -103,6 +103,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $editFieldset[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name',$oFieldset->getName(), $this->oPage, true);
         $editFieldset[] = new KTStringWidget(_kt('Namespace'), _kt('Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works.'), 'namespace', $oFieldset->getNamespace(), $this->oPage, true);
         $editFieldset[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this fieldset.'), 'description', $oFieldset->getDescription(), $this->oPage, true);                
+        $editFieldset[] = new KTCheckboxWidget(_kt('Generic'), _kt('Whether this fieldset applies to all documents, or only those directly associated with it.  Note that changing this setting will cause the fieldset to be removed from document types which are related to it.'), 'generic', $oFieldset->getIsGeneric(), $this->oPage, false);        
+        
         $createFields = array();
         $createFields[] = new KTStringWidget(_kt('Name'), _kt('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
         $createFields[] = new KTTextWidget(_kt('Description'), _kt('A brief description of the information stored in this field.'), 'description', null, $this->oPage, true);                
@@ -159,9 +161,27 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $aErrorOptions['message'] = sprintf(_kt("The field '%s' is a required field"), _kt("Description"));
         $sDescription = $this->oValidator->validateString($_REQUEST['description'], $aErrorOptions);
 
+        $bGeneric = KTUtil::arrayGet($_REQUEST, 'generic', false);
+        if ($bGeneric !== false) { $bGeneric = true; }
+        
+        $this->startTransaction();        
+        
+        if ($bGeneric != $oFieldset->getIsGeneric) {
+            // delink it from all doctypes.
+            $aTypes = $oFieldset->getAssociatedTypes();
+            foreach ($aTypes as $oType) {
+                $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
+                    exit(0);
+                }
+            }
+        }
+
         $oFieldset->setName($sName);
         $oFieldset->setNamespace($sNamespace);
         $oFieldset->setDescription($sDescription);
+        $oFieldset->setIsGeneric($bGeneric);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
