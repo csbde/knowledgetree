@@ -53,6 +53,10 @@ the field's <strong>child</strong> fields &mdash; to become available.  By assig
 to behaviours, and creating relationships between behaviours, you can create extremely complex 
 relationships between available lookup values.{/i18n}</p>
 
+<p class="descriptiveText important">{i18n}Changes made here are stored immediately, without you needing to
+refresh the page.{/i18n}</p>
+
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
