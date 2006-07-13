@@ -51,7 +51,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
 		
-		$name = KTUtil::arrayGet($_REQUEST, 'name');
+		$name = KTUtil::arrayGet($_REQUEST, 'name', KTUtil::arrayGet($_REQUEST, 'old_search'));
 		$show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 	
@@ -79,6 +79,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 			"search_fields" => $search_fields,
 			"search_results" => $search_results,
 			'no_search' => $no_search,
+            'old_search' => $name,			 
 		);
 		return $oTemplate->render($aTemplateData);
     }
@@ -86,13 +87,15 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     // {{{ do_editGroup
     function do_editGroup() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_kt('edit group'));
 		
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 		$oGroup = Group::get($group_id);
 		if (PEAR::isError($oGroup) || $oGroup == false) {
-		    $this->errorRedirectToMain(_kt('Please select a valid group.'));
+		    $this->errorRedirectToMain(_kt('Please select a valid group.'), sprintf("old_search=%s&do_search=1", $old_search));
 		}
 	
 		$this->oPage->setTitle(sprintf(_kt("Edit Group (%s)"), $oGroup->getName()));
@@ -120,6 +123,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 			"context" => $this,
 			"edit_fields" => $edit_fields,
 			"edit_group" => $oGroup,
+            "old_search" => $old_search,
 		);
 		return $oTemplate->render($aTemplateData);
     }
@@ -127,10 +131,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     // {{{ do_saveGroup
 	function do_saveGroup() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 		$oGroup = Group::get($group_id);
 		if (PEAR::isError($oGroup) || $oGroup == false) {
-		    $this->errorRedirectToMain(_kt('Please select a valid group.'));
+		    $this->errorRedirectToMain(_kt('Please select a valid group.'), sprintf("old_search=%s&do_search=1", $old_search));
 		}
 		$group_name = KTUtil::arrayGet($_REQUEST, 'group_name');
 		if (empty($group_name)) { $this->errorRedirectToMain(_kt('Please specify a name for the group.')); }
@@ -153,25 +159,27 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		}
 
 		$res = $oGroup->update();
-		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain(_kt('Failed to set group details.')); }
+		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain(_kt('Failed to set group details.'), sprintf("old_search=%s&do_search=1", $old_search)); }
 
 		if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
 		    $this->rollbackTransaction();
-		    $this->errorRedirectTo('editGroup', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()));
+		    $this->errorRedirectTo('editGroup', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()), sprintf("old_search=%s&do_search=1", $old_search));
 		    exit(0);
 		}
 
 		
 		$this->commitTransaction();
 		if($unit_id == 0 && $is_unitadmin) {
-		    $this->successRedirectToMain(_kt('Group details updated.') . _kt(' Note: group is set as unit administrator, but is not assigned to a unit.'));
+		    $this->successRedirectToMain(_kt('Group details updated.') . _kt(' Note: group is set as unit administrator, but is not assigned to a unit.'), sprintf("old_search=%s&do_search=1", $old_search));
 		} else {
-		    $this->successRedirectToMain(_kt('Group details updated.'));
+		    $this->successRedirectToMain(_kt('Group details updated.'), sprintf("old_search=%s&do_search=1", $old_search));
 		}   
 	}
     // }}}
 
     function _do_manageUsers_source() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $oGroup =& $this->oValidator->validateGroup($_REQUEST['group_id']);
 
         $aGroupUsers = $oGroup->getMembers();
@@ -181,20 +189,25 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             "context" => $this,
 			'group_users' => $aGroupUsers,
 			'group' => $oGroup,
+            "old_search" => $old_search,			
         );
         return $oTemplate->render($aTemplateData);        
     }
 
     function do_synchroniseGroup() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
         $oGroup =& $this->oValidator->validateGroup($_REQUEST['group_id']);
         $res = KTAuthenticationUtil::synchroniseGroupToSource($oGroup);
-        $this->successRedirectTo('manageusers', 'Group synchronised', sprintf('group_id=%d', $oGroup->getId()));
+        $this->successRedirectTo('manageusers', 'Group synchronised', sprintf('group_id=%d', $oGroup->getId()), sprintf("old_search=%s&do_search=1", $old_search));
         exit(0);
     }
 
     // {{{ do_manageusers
     function do_manageusers() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
@@ -245,6 +258,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             "edit_group" => $oGroup,
 			'unused_users' => $aFreeUsers,
 			'group_users' => $aGroupUsers,
+            "old_search" => $old_search,			
         );
         return $oTemplate->render($aTemplateData);        
     }    
@@ -252,6 +266,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     // {{{ do_updateUserMembers
     function do_updateUserMembers() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
@@ -282,7 +298,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 				}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_kt('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { $usersAdded[] = $oUser->getName(); }
             }
         }
@@ -293,7 +309,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oUser = User::get($iUserId);
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_kt('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { 
 				    $usersRemoved[] = $oUser->getName(); 
 					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
@@ -321,24 +337,26 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . '. <br />'; }
         if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
 
-	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
-	    $this->rollbackTransaction();
-	    $this->errorRedirectTo('manageUsers', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()));
-	    exit(0);
-	}
+        if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('manageUsers', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()), sprintf("old_search=%s&do_search=1", $old_search));
+            exit(0);
+        }
         
         $this->commitTransaction();
-        $this->successRedirectToMain($msg);
+        $this->successRedirectToMain($msg, sprintf("old_search=%s&do_search=1", $old_search));
     }
     // }}}
 	
 	// FIXME copy-paste ...
     // {{{ do_managesubgroups
     function do_managesubgroups() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
-            $this->errorRedirectToMain(_kt('No such group.'));
+            $this->errorRedirectToMain(_kt('No such group.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
         $this->aBreadcrumbs[] = array('name' => $oGroup->getName());
@@ -381,6 +399,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             "edit_group" => $oGroup,
 			'unused_groups' => $aAllowedGroups,
 			'group_members' => $aMemberGroups,
+            "old_search" => $old_search,			
         );
         return $oTemplate->render($aTemplateData);        
     }    
@@ -404,10 +423,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	// FIXME copy-paste ...
     // {{{ do_updateGroupMembers
     function do_updateGroupMembers() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
         $oGroup = Group::get($group_id);
         if ((PEAR::isError($oGroup)) || ($oGroup === false)) {
-            $this->errorRedirectToMain('No such group.');
+            $this->errorRedirectToMain('No such group.', sprintf("old_search=%s&do_search=1", $old_search));
         }
         
         $groupAdded = KTUtil::arrayGet($_REQUEST, 'groupAdded','');
@@ -427,7 +448,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oMemberGroup = Group::get($iMemberGroupID);
                 $res = $oGroup->addMemberGroup($oMemberGroup);
                 if (PEAR::isError($res)) {
-                    $this->errorRedirectToMain(sprintf(_kt("Failed to add %s to %s"), $oMemberGroup->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt("Failed to add %s to %s"), $oMemberGroup->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
 					exit(0);
                 } else { $groupsAdded[] = $oMemberGroup->getName(); }
             }
@@ -438,7 +459,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 $oMemberGroup = Group::get($iMemberGroupID);
                 $res = $oGroup->removeMemberGroup($oMemberGroup);
                 if (PEAR::isError($res)) {
-                    $this->errorRedirectToMain(sprintf(_kt("Failed to remove %s from %s"), $oMemberGroup->getName(), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt("Failed to remove %s from %s"), $oMemberGroup->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
 					exit(0);
                 } else { $groupsRemoved[] = $oMemberGroup->getName(); }
             }
@@ -450,7 +471,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         
         $this->commitTransaction();
 		
-        $this->successRedirectToMain($msg);
+        $this->successRedirectToMain($msg, sprintf("old_search=%s&do_search=1", $old_search));
     }	
     // }}}
 	
@@ -492,7 +513,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$aTemplateData = array(
 			"context" => $this,
 			"add_fields" => $add_fields,
-            "authentication_sources" => $aAuthenticationSources,
+            "authentication_sources" => $aAuthenticationSources,            
 		);
 		return $oTemplate->render($aTemplateData);
     }
@@ -532,28 +553,30 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     // {{{ do_deleteGroup
     function do_deleteGroup() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
+    
         $aErrorOptions = array(
-            'redirect_to' => array('main'),
+            'redirect_to' => array('main', sprintf("old_search=%s&do_search=1", $old_search)),
         );
         $oGroup = $this->oValidator->validateGroup($_REQUEST['group_id'], $aErrorOptions);
         $sGroupName = $oGroup->getName();
 
-	$this->startTransaction();
-
-	foreach($oGroup->getParentGroups() as $oParentGroup) {
-	    $res = $oParentGroup->removeMemberGroup($oGroup);	    
-	}
-
+        $this->startTransaction();
+        
+        foreach($oGroup->getParentGroups() as $oParentGroup) {
+            $res = $oParentGroup->removeMemberGroup($oGroup);	    
+        }
+        
         $res = $oGroup->delete();
         $this->oValidator->notError($res, $aErrorOptions);
-
-	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
-	    $this->rollbackTransaction();
-	    $this->errorRedirectTo('main', _kt('For security purposes, you cannot remove your own administration priviledges.'));
-	    exit(0);
-	}
-	$this->commitTransaction();
-        $this->successRedirectToMain(sprintf(_kt('Group "%s" deleted.'), $sGroupName));
+        
+        if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('main', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf("old_search=%s&do_search=1", $old_search));
+            exit(0);
+        }
+        $this->commitTransaction();
+        $this->successRedirectToMain(sprintf(_kt('Group "%s" deleted.'), $sGroupName), sprintf("old_search=%s&do_search=1", $old_search));
     }
     // }}}
 

@@ -56,14 +56,14 @@ action may take some time if you have many groups).{/i18n}</p>
 {$context->_getUnitName($oGroup)}
 {/if}
 	</td>
-        <td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}{/addQS}"
+        <td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
 class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}{/addQS}"
+        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
 class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a
-href="{addQS}action=manageUsers&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
+href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
         <td><a
-href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
+href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
         <td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
      </tr>   
      {/foreach}

@@ -51,7 +51,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
 		
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        $name = KTUtil::arrayGet($_REQUEST, 'name', KTUtil::arrayGet($_REQUEST, 'old_search'));
         $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
     
@@ -85,7 +85,8 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "search_fields" => $search_fields,
             "search_results" => $search_results,
             "no_search" => $no_search,
-	    "authentication_sources" => $aAuthenticationSources,
+            "authentication_sources" => $aAuthenticationSources,
+            "old_search" => $name,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -158,6 +159,8 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& User::get($user_id);
         
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
+        
         if (PEAR::isError($oUser) || $oUser == false) {
             $this->errorRedirectToMain(_kt('Please select a user first.'));
             exit(0);
@@ -190,6 +193,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "edit_user" => $oUser,
             "provider" => $oProvider,
             "source" => $oAuthenticationSource,
+            'old_search' => $old_search,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -199,6 +203,8 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails(_kt('change user password'));
         $this->oPage->setTitle(_kt("Change User Password"));
+        
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');        
                 
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& User::get($user_id);
@@ -220,12 +226,15 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "context" => $this,
             "edit_fields" => $edit_fields,
             "edit_user" => $oUser,
+            'old_search' => $old_search,
         );
         return $oTemplate->render($aTemplateData);
     }
     
     function do_updatePassword() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
         
         $password = KTUtil::arrayGet($_REQUEST, 'password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
@@ -288,9 +297,12 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
     function do_editgroups() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser = User::get($user_id);
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');           
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
-            $this->errorRedirectToMain(_kt('No such user.'));
+            $this->errorRedirectToMain(_kt('No such user.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
+        
+     
         
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
         $this->oPage->setBreadcrumbDetails(_kt('edit groups'));
@@ -336,15 +348,16 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "unused_groups" => $aFreeGroups,
             "user_groups" => $aUserGroups,
             "edit_user" => $oUser,
+            'old_search' => $old_search,            
         );
         return $oTemplate->render($aTemplateData);        
     }    
     
     function do_saveUser() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
-
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
         $aErrorOptions = array(
-                'redirect_to' => array('editUser', sprintf('user_id=%d', $user_id))
+                'redirect_to' => array('editUser', sprintf('user_id=%d&old_search=%s&do_search=1', $user_id, $old_search))
         );
         
         $name = $this->oValidator->validateString(
@@ -375,7 +388,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         
         $oUser =& User::get($user_id);
         if (PEAR::isError($oUser) || $oUser == false) {
-            $this->errorRedirectToMain(_kt("Please select a user to modify first."));
+            $this->errorRedirectToMain(_kt("Please select a user to modify first."), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
         $oUser->setName($name);
@@ -394,18 +407,18 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         
         
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectoToMain(_kt('Failed to update user.'));
+            $this->errorRedirectoToMain(_kt('Failed to update user.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
         $this->commitTransaction();
-        $this->successRedirectToMain(_kt('User information updated.'));
+        $this->successRedirectToMain(_kt('User information updated.'), sprintf("old_search=%s&do_search=1", $old_search));
     }
     
     function do_createUser() {
         // FIXME generate and pass the error stack to adduser.
-        
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
         $aErrorOptions = array(
-                'redirect_to' => array('addUser')
+                'redirect_to' => array('addUser', sprintf('old_search=%s&do_search=1', $old_search))
         );
         
         $username = $this->oValidator->validateString(
@@ -433,15 +446,15 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         $KTConfig =& KTConfig::getSingleton();
-	$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
-	$restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
+        $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+        $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
         
         if ($restrictAdmin && (strlen($password) < $minLength)) {
-	    $this->errorRedirectTo('addUser', sprintf(_kt("The password must be at least %d characters long."), $minLength));
-	} else if (empty($password)) { 
-            $this->errorRedirectTo('addUser', _kt("You must specify a password for the user."));
+    	    $this->errorRedirectTo('addUser', sprintf(_kt("The password must be at least %d characters long."), $minLength), sprintf("old_search=%s&do_search=1", $old_search));
+    	} else if (empty($password)) { 
+            $this->errorRedirectTo('addUser', _kt("You must specify a password for the user."), sprintf("old_search=%s&do_search=1", $old_search));
         } else if ($password !== $confirm_password) {
-            $this->errorRedirectTo('addUser', _kt("The passwords you specified do not match."));
+            $this->errorRedirectTo('addUser', _kt("The passwords you specified do not match."), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
         $dupUser =& User::getByUserName($username);
@@ -462,14 +475,15 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         ));
         
         if (PEAR::isError($oUser) || ($oUser == false)) {
-            $this->errorRedirectToMain(_kt("failed to create user."));
+            $this->errorRedirectToMain(_kt("failed to create user."), sprintf("old_search=%s&do_search=1", $old_search));
             exit(0);
         }
         
-        $this->successRedirectToMain(_kt('Created new user') . ': "' . $oUser->getUsername() . '"', 'name=' . $oUser->getUsername());
+        $this->successRedirectToMain(_kt('Created new user') . ': "' . $oUser->getUsername() . '"', 'name=' . $oUser->getUsername(), sprintf("old_search=%s&do_search=1", $old_search));
     }
     
     function do_deleteUser() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser = User::get($user_id);
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
@@ -477,17 +491,18 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         }
         $res = $oUser->delete();
         if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(sprintf(_kt('Unable to delete user - the user may still be referred by documents.'), $res->getMessage()));
+            $this->errorRedirectToMain(sprintf(_kt('Unable to delete user - the user may still be referred by documents.'), $res->getMessage()), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
-        $this->successRedirectToMain(_kt('User deleted') . ': ' . $oUser->getName());
+        $this->successRedirectToMain(_kt('User deleted') . ': ' . $oUser->getName(), sprintf("old_search=%s&do_search=1", $old_search));
     }
     
     function do_updateGroups() {
+        $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser = User::get($user_id);
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
-            $this->errorRedirectToMain(_kt('Please select a user first.'));
+            $this->errorRedirectToMain(_kt('Please select a user first.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
         $groupAdded = KTUtil::arrayGet($_REQUEST, 'groupAdded','');
         $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groupRemoved','');
@@ -517,7 +532,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 				}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_kt('Unable to add user to group "%s"'), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to add user to group "%s"'), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { 
 				    $groupsAdded[] = $oGroup->getName(); 
 
@@ -531,7 +546,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
                 $oGroup = Group::get($iGroupID);
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain(sprintf(_kt('Unable to remove user from group "%s"'), $oGroup->getName()));
+                    $this->errorRedirectToMain(sprintf(_kt('Unable to remove user from group "%s"'), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { 
 				   $groupsRemoved[] = $oGroup->getName(); 
 					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
@@ -559,15 +574,14 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added to groups') . ': ' . implode(', ', $groupsAdded) . '. <br />'; }
         if (!empty($groupsRemoved)) { $msg .= ' ' . _kt('Removed from groups') . ': ' . implode(', ',$groupsRemoved) . '.'; }
 
-	if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
-	    $this->rollbackTransaction();
-	    $this->errorRedirectTo('editgroups', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('user_id=%d', $oUser->getId()));
-	    exit(0);
-	}
-	
+        if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('editgroups', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('user_id=%d&do_search=1&old_search=%s', $oUser->getId(), $old_search));
+            exit(0);
+        }
         
         $this->commitTransaction();
-        $this->successRedirectToMain($msg);
+        $this->successRedirectToMain($msg, sprintf("old_search=%s&do_search=1", $old_search));
     }
 
 	function getGroupStringForUser($oUser) {

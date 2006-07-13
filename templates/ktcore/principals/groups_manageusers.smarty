@@ -10,6 +10,7 @@
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateUserMembers" />
    <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
+   <input type="hidden" name="old_search" value="{$old_search}" />      
    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
    
    <input type="hidden" name="userAdded" />
