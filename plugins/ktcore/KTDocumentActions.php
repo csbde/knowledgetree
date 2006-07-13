@@ -776,14 +776,14 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
-        $move_fields = array();
-        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        $copy_fields = array();
+        $copy_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $copy_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
+        $copy_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be copied.'), 'reason', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'move_fields' => $move_fields,
+            'copy_fields' => $copy_fields,
         ));
         return $oTemplate->render();
     }
@@ -797,7 +797,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $this->oValidator->notEmpty($sReason, $aOptions);
 
         if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectTo("main", _kt("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("You do not have permission to copy a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
         
@@ -807,7 +807,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder);
         if (PEAR::isError($oNewDoc)) {
-            $this->errorRedirectTo("main", _kt("Failed to move document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
 

@@ -19,9 +19,8 @@ move</a>.{/i18n}</p>
 
 <div class="field ">
 <label for="fFolderId">{i18n}Target folder{/i18n}</label>
-<p class="descriptiveText">{i18n}The folder given below is where the document
-is going to be moved to.  Use the folder collection and path below to
-browse to the folder you wish to move the documents into.{/i18n}</p>
+<p class="descriptiveText">{i18n}Use the folder collection and path below to
+browse to the folder into which you wish to move the documents.{/i18n}</p>
 
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
 {foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
