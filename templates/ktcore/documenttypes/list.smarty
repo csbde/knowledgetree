@@ -77,10 +77,6 @@ its details, or use the enable/disable buttons to change its availability state.
 {/if}
 </td>
 
-<td>
-   <span class="descriptiveText">{$context->getFieldsetsForType($oDocumentType)}</span>
-</td>
-
 </tr>
   </tbody>
 {/foreach}
