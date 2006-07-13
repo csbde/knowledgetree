@@ -1,4 +1,4 @@
-<h2>{i18n}Permissions{/i18n}</h2>
+<h2>{i18n arg_foldername=$foldername}View Permissions for "#foldername#"{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}This page shows the permissions that apply to
 this specific folder.  Only the roles or groups which have permissions

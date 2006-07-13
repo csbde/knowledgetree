@@ -117,6 +117,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
+            'foldername' => $this->oFolder->getName(),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -176,6 +177,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
+            'foldername' => $this->oFolder->getName(),            
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -240,6 +242,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "conditions" => KTSavedSearch::getConditions(),
             "dynamic_conditions" => $aDynamicConditions,
             'context' => &$this,
+            'foldername' => $this->oFolder->getName(),            
         );
         return $oTemplate->render($aTemplateData);
     }

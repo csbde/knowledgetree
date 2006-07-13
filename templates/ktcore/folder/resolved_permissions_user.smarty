@@ -1,4 +1,4 @@
-<h2>{i18n}Resolved permissions per user{/i18n}</h2>
+<h2>{i18n arg_foldername=$foldername}Resolved permissions per user for "#foldername#"{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}This page shows the permissions that
 individual users have on this folder.  Only the users which have permissions
