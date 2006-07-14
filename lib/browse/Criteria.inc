@@ -363,7 +363,7 @@ class DateCreatedCriterion extends BrowseCriterion {
         */
         $sToRender = $this->getNotWidget($aPreValue);
         $sToRender .= 'after: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and/or ';
-        $sToRender .= 'before: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
+        $sToRender .= 'before: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sEndWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
     function searchSQL ($aRequest) {

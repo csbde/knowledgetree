@@ -51,7 +51,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
 		
-		$name = KTUtil::arrayGet($_REQUEST, 'name', KTUtil::arrayGet($_REQUEST, 'old_search'));
+		$name = KTUtil::arrayGet($_REQUEST, 'search_name', KTUtil::arrayGet($_REQUEST, 'old_search'));
 		$show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
 	
@@ -62,7 +62,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 		
 		$search_fields = array();
-		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'name', $name, $this->oPage, true);
+		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'search_name', $name, $this->oPage, true);
 		
 		if (!empty($name)) {
 			$search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');

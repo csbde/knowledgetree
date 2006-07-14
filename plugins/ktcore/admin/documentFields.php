@@ -967,8 +967,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         // since the root is virtual, we need to fake it here.
         // the inner section is generised.
-        $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">Root</a>';
-        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=0') . '">edit</a>)';
+        $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . _kt('Root') . '</a>';
+        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=0') . '">' . _kt('edit') . '</a>)';
         $treeStr .= '<ul>';
 
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
@@ -1007,12 +1007,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         $actionStr = " (";
         if ($bIsKeyword === true) {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">unlink</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">' . _kt('unlink') . '</a>';
         }
         else
         {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=' . $current_node) .'">attach keywords</a> ';
-           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node='.$current_node.'&subaction=deleteCategory') . '">delete</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=' . $current_node) .'">' . _kt('attach keywords') . '</a> ';
+           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node='.$current_node.'&subaction=deleteCategory') . '">' . _kt('delete') . '</a>';
         }
         $actionStr .= ")";
         return $actionStr;
