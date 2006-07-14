@@ -200,43 +200,44 @@ class KTStandardDispatcher extends KTDispatcher {
             $GLOBALS['main'] =& new KTPage;
         }
         $this->oPage =& $GLOBALS['main'];
-	parent::KTDispatcher();
+        parent::KTDispatcher();
     }
 
     function permissionDenied () {
-	    global $default;
-		
-		$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
-		$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
-		
+        global $default;
+            
+        $msg = '<h2>' . _kt('Permission Denied') . '</h2>';
+        $msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
+            
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
-		$this->oPage->hideSection();
+        $this->oPage->hideSection();
 
         $this->oPage->render();
         exit(0);
     }
 
     function loginRequired() {
-		$oKTConfig =& KTConfig::getSingleton();
-	    if ($oKTConfig->get('allowAnonymousLogin', false)) {
-		    // anonymous logins are now allowed.
-			// the anonymous user is -1.
-			// 
-			// we short-circuit the login mechanisms, setup the session, and go.
-			
-			$oUser =& User::get(-2);
-			if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) { 
-			    ; // do nothing - the database integrity would break if we log the user in now.
-			} else {
-			    $session = new Session();
+        $oKTConfig =& KTConfig::getSingleton();
+        if ($oKTConfig->get('allowAnonymousLogin', false)) {
+            // anonymous logins are now allowed.
+            // the anonymous user is -1.
+            // 
+            // we short-circuit the login mechanisms, setup the session, and go.
+                    
+            $oUser =& User::get(-2);
+            if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) { 
+                ; // do nothing - the database integrity would break if we log the user in now.
+            } else {
+                $session = new Session();
                 $sessionID = $session->create($oUser);
-				
-				return ;
-			}
-		}	
-	
-	
+                $this->sessionStatus = $this->session->verify();
+                if ($this->sessionStatus === true) {
+                    return ;
+                }
+            }
+        }
+    
         $sErrorMessage = "";
         if (PEAR::isError($this->sessionStatus)) {
             $sErrorMessage = $this->sessionStatus->getMessage();
@@ -268,9 +269,9 @@ class KTStandardDispatcher extends KTDispatcher {
             $this->session = new Session();
             $this->sessionStatus = $this->session->verify();
             if ($this->sessionStatus !== true) {
-                $this->loginRequired();	
+                $this->loginRequired();
             }
-			//var_dump($this->sessionStatus);
+            //var_dump($this->sessionStatus);
             $this->oUser =& User::get($_SESSION['userID']);
             $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
             $oProvider->verify($this->oUser);
@@ -295,37 +296,37 @@ class KTStandardDispatcher extends KTDispatcher {
         return true;
     }
 
-	function addInfoMessage($sMessage) { $_SESSION['KTInfoMessage'][] = $sMessage; }
-	
-	function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }	
-	
+    function addInfoMessage($sMessage) { $_SESSION['KTInfoMessage'][] = $sMessage; }
+
+    function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }
+
     function handleOutput($data) {
-	    global $default;
-		global $sectionName;
+        global $default;
+        global $sectionName;
         $this->oPage->setSection($this->sSection);
         $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
         $this->oPage->setPageContents($data);
         $this->oPage->setUser($this->oUser);
-		$this->oPage->setHelp($this->sHelpPage);
-		
-		// handle errors that were set using KTErrorMessage.
-		$errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
-		if (!empty($errors)) {
+        $this->oPage->setHelp($this->sHelpPage);
+        
+        // handle errors that were set using KTErrorMessage.
+        $errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
+        if (!empty($errors)) {
             foreach ($errors as $sError) {
-		        $this->oPage->addError($sError);
-			}
-			$_SESSION['KTErrorMessage'] = array(); // clean it out.
-		}
+                $this->oPage->addError($sError);
+            }
+            $_SESSION['KTErrorMessage'] = array(); // clean it out.
+        }
 
-		// handle notices that were set using KTInfoMessage.
-		$info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
-		
-		if (!empty($info)) {
+        // handle notices that were set using KTInfoMessage.
+        $info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
+        
+        if (!empty($info)) {
             foreach ($info as $sInfo) {
-		        $this->oPage->addInfo($sInfo);
-			}
-			$_SESSION['KTInfoMessage'] = array(); // clean it out.
-		}
+                $this->oPage->addInfo($sInfo);
+            }
+            $_SESSION['KTInfoMessage'] = array(); // clean it out.
+        }
 
         // Get the portlets to display from the portlet registry
         $oPRegistry =& KTPortletRegistry::getSingleton();

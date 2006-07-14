@@ -152,9 +152,6 @@ class Session {
 
     /**
      * Used to verify the current user's session.
-     *
-	 * @param boolean optional parameter set if we're downloading a file     
-     * @return int session verification status
      */
     function verify() {
         global $default;
@@ -165,6 +162,12 @@ class Session {
         header("Cache-Control: must-revalidate");
         header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600) . " GMT");
         $sessionID = session_id();
+        $version = KTUtil::getSystemSetting('knowledgeTreeVersion');
+
+        if ($default->systemVersion != $version) {
+            $default->log->info("Session::verify : Database not upgraded");
+            return PEAR::raiseError(sprintf(_kt('Incompatible database version (%s, expected version %s) - contact the administrator'), $version, $default->systemVersion));
+        }
 
         if (empty($sessionID)) {
             $default->log->info("Session::verify session not in db");
@@ -190,13 +193,13 @@ class Session {
         $iUserID = $aRow["user_id"];
 		
         $oKTConfig = KTConfig::getSingleton();	
-		$allowAnon = $oKTConfig->get('session/allowAnonymousLogin', false);
+        $allowAnon = $oKTConfig->get('session/allowAnonymousLogin', false);
 		
-		$ANON = -2;
+        $ANON = -2;
         if ((!$allowAnon) && ($iUserID == $ANON)) { 
-		    Session::destroy();   // delete the anonymous session - config.ini has changed under this session.
-		    return PEAR::raiseError(_kt("Anonymous logins are no longer allowed by the system administrator.  Please login."));
-		}
+            Session::destroy();   // delete the anonymous session - config.ini has changed under this session.
+            return PEAR::raiseError(_kt("Anonymous logins are no longer allowed by the system administrator.  Please login."));
+        }
 
         $ipTracking = $oKTConfig->get('session/ipTracking', false);
         // check that ip matches
