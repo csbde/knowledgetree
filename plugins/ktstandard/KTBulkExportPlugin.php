@@ -217,6 +217,13 @@ class KTBulkExportAction extends KTFolderAction {
         $aData = KTUtil::arrayGet($_SESSION['bulkexport'], $sCode);
         $this->oValidator->notEmpty($aData);
         $sZipFile = $aData['file'];
+        
+        if (!file_exists($sZipFile)) {
+            $this->addErrorMessage(_kt('The ZIP can only be downloaded once - if you cancel the download, you will need to reload the Bulk Export page.'));
+            redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
+            exit(0);
+        }        
+        
         header("Content-Type: application/zip");
         header("Content-Length: ". filesize($sZipFile));
         header("Content-Disposition: attachment; filename=\"" . $this->oFolder->getName() . ".zip" . "\"");

@@ -51,7 +51,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
 		
-        $name = KTUtil::arrayGet($_REQUEST, 'name', KTUtil::arrayGet($_REQUEST, 'old_search'));
+        $name = KTUtil::arrayGet($_REQUEST, 'search_name', KTUtil::arrayGet($_REQUEST, 'old_search'));
         $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
     
@@ -64,7 +64,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         
         
         $search_fields = array();
-        $search_fields[] =  new KTStringWidget(_kt('Username'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'name', $name, $this->oPage, true);
+        $search_fields[] =  new KTStringWidget(_kt('Username'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'search_name', $name, $this->oPage, true);
         
         // FIXME handle group search stuff.
         $search_results = null;
@@ -120,7 +120,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $add_fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', null, $this->oPage, false, null, null, $aOptions);        
         $add_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', true, $this->oPage, false, null, null, $aOptions);        
-        $add_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'password', null, $this->oPage, true, null, null, $aOptions);        
+        $add_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $aOptions);        
         $add_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
         // nice, easy bits.
         $add_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', null, $this->oPage, false, null, null, $aOptions);        
@@ -217,7 +217,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $this->aBreadcrumbs[] = array('name' => $oUser->getName());
         
         $edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'new_password', null, $this->oPage, true);        
         $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);        
         
         $oTemplating =& KTTemplating::getSingleton();        
@@ -236,7 +236,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 
         $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
         
-        $password = KTUtil::arrayGet($_REQUEST, 'password');
+        $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
    		$KTConfig =& KTConfig::getSingleton();
@@ -442,7 +442,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
                 KTUtil::meldOptions($aErrorOptions, array('message' => _kt("You must specify a numeric value for maximum sessions.")))
         );
 
-        $password = KTUtil::arrayGet($_REQUEST, 'password');
+        $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         $KTConfig =& KTConfig::getSingleton();
