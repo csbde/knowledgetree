@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 12, 2006 at 12:02 PM
+-- Generation Time: Jul 14, 2006 at 03:28 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -877,6 +877,7 @@ CREATE TABLE `notifications` (
   `data_int_2` int(11) default NULL,
   `data_str_1` varchar(255) default NULL,
   `data_str_2` varchar(255) default NULL,
+  `data_text_1` text,
   UNIQUE KEY `id` (`id`),
   KEY `type` (`type`),
   KEY `user_id` (`user_id`)
@@ -2191,7 +2192,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=108 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=110 ;
 
 -- --------------------------------------------------------
 
