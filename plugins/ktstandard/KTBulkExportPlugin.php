@@ -50,8 +50,8 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTBulkExportAction extends KTFolderAction {
     var $sName = 'ktstandard.bulkexport.action';
-    var $sPermissionName = "ktcore.permissions.read";
-    var $_sShowPermission = "ktcore.permissions.read";
+    var $sPermissionName = "ktcore.permissions.folder_details";
+    var $_sShowPermission = "ktcore.permissions.folder_details";
 
     function getDisplayName() {
         return _kt('Bulk Export');
