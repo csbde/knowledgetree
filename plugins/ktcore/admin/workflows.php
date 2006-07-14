@@ -564,11 +564,19 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         $aInfo = $this->buildWorkflowInfo($oWorkflow);
         
+        $aActionsOrig = $aInfo['actions'];
+        $aActions = array();
+        foreach ($aActionsOrig as $oAction) {
+            if ($oAction->getName() != 'ktcore.actions.document.displaydetails') {
+                $aActions[] = $oAction;
+            }
+        }
+        
         $oTemplate->setData(array(
             'context' => $this,
             'oWorkflow' => $oWorkflow,
 
-            'aActions' => $aInfo['actions'],
+            'aActions' => $aActions,
             'aActionsSelected' => $aInfo['controlled_actions'],
                        
             // info
@@ -856,6 +864,14 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         
         
         $this->getPermissionAssignmentsForState($oState);
+        $aActionOrig = KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow));
+        $aActions = array();
+        foreach ($aActionOrig as $k => $oAction) {
+            if ($oAction->getName() == 'ktcore.actions.document.displaydetails') {
+                continue;
+            }
+            $aActions[] = $oAction;
+        }
         
         $oTemplate->setData(array(
             'context' => $this,
@@ -865,7 +881,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
             'aTransitionsTo' => $aTransitionsTo,
             'aTransitions' => $aTransitions,
             'aTransitionsSelected' => $aTransitionsSelected,
-            'aActions' => KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow)),
+            'aActions' => $aActions, 
             'aActionsSelected' => KTWorkflowUtil::getEnabledActionsForState($oState),
             'aGroups' => Group::getList(),
             'aRoles' => Role::getList('id NOT IN (-3,-4)'),
