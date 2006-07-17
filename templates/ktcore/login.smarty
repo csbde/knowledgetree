@@ -6,6 +6,10 @@
     
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
+
+    <link rel="icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon"> 
+
 </head>
 <body onload="document.getElementById('username').focus()">
 
