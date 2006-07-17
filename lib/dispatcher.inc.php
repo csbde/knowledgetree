@@ -204,11 +204,16 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function permissionDenied () {
-        global $default;
-            
-        $msg = '<h2>' . _kt('Permission Denied') . '</h2>';
-        $msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
-            
+        // handle anonymous specially. 
+        if ($this->oUser->getId() == -2) {
+            redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
+        }    
+    
+	    global $default;
+		
+		$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
+		$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
+		
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
         $this->oPage->hideSection();
