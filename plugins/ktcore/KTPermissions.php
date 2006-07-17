@@ -355,7 +355,6 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         
         // map to users, groups.
         foreach ($aRoles as $key => $role) {
-		    /*
             $_users = array();
             foreach ($aRoles[$key]['users'] as $iUserId) {
                 $oUser = User::get($iUserId);
@@ -368,7 +367,6 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			} else {
                 $aRoles[$key]['users'] = join(', ',$_users);
 			}
-			*/
             
             $_groups = array();
             foreach ($aRoles[$key]['groups'] as $iGroupId) {
