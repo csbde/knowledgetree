@@ -111,7 +111,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 return $this->do_error();
             } else if (!Permission::userHasDocumentReadPermission($oDocument)) {
                 $this->oPage->addError(_kt('You are not allowed to view this document'));
-                return $this->do_error();
+                return $this->permissionDenied();
             }
         }
 
@@ -350,7 +350,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     if (!Permission::userHasDocumentReadPermission($oDocument)) {
         // FIXME inconsistent.
         $this->oPage->addError(_kt('You are not allowed to view this document'));
-        return $this->do_error();
+        return $this->permissionDenied();
     }
 
     $this->oDocument =& $oDocument;
@@ -457,10 +457,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     return $oTemplate->render($aTemplateData);
     }
 
-    /* we have a lot of error handling.  this one is the absolute final failure. */
     function do_error() {
-        return ''; // allow normal rendering of errors.
-        // FIXME show something useful / generic.
+        return '&nbsp;'; // don't actually do anything.
     }
 
     function do_startComparison() {
@@ -487,7 +485,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if (!Permission::userHasDocumentReadPermission($oDocument)) {
             // FIXME inconsistent.
             $this->oPage->addError(_kt('You are not allowed to view this document'));
-            return $this->do_error();
+            return $this->permissionDenied();
         }
         $this->oDocument =& $oDocument;
         $this->oPage->setSecondaryTitle($oDocument->getName());
