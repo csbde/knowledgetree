@@ -76,8 +76,10 @@ class AdminVersionPlugin extends KTPlugin {
     }
     
     function setup() {
-	$this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
-	$this->registerPage('versions', 'AdminVersionPage');
+        if (!OS_WINDOWS) {
+	    $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
+	    $this->registerPage('versions', 'AdminVersionPage');
+        }
     }
 }
 
