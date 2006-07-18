@@ -156,22 +156,21 @@ class KTDocumentAction extends KTStandardDispatcher {
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
-		if (!$this->_show()) { return false; }
+	if (!$this->_show()) { return false; }
 		
-        $aOptions = array(
-            "final" => false,
-            "documentaction" => "viewDocument",
-            "folderaction" => "browse",
+        $aOptions = array("final" => false,
+			  "documentaction" => "viewDocument",
+			  "folderaction" => "browse",
         );
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
-            KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+					     KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
-	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-		$oPortlet = new KTActionPortlet(_kt("Document Actions"));
-		$oPortlet->setActions($actions, $this->sName);
-		$this->oPage->addPortlet($oPortlet);              
-		
-		$this->oPage->setSecondaryTitle($this->oDocument->getName());            
+	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
+	$oPortlet = new KTActionPortlet(_kt("Document Actions"));
+	$oPortlet->setActions($actions, $this->sName);
+	$this->oPage->addPortlet($oPortlet);              
+	
+	$this->oPage->setSecondaryTitle($this->oDocument->getName());            
             
         return true;
     }

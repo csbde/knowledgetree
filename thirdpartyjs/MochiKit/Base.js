@@ -1,6 +1,6 @@
 /***
 
-MochiKit.Base 1.2
+MochiKit.Base 1.3.1
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
@@ -19,29 +19,15 @@ if (typeof(MochiKit.Base) == 'undefined') {
     MochiKit.Base = {};
 }
 
-MochiKit.Base.VERSION = "1.2";
-MochiKit.Base.NAME = "MochiKit.Base"
+MochiKit.Base.VERSION = "1.3.1";
+MochiKit.Base.NAME = "MochiKit.Base";
 MochiKit.Base.update = function (self, obj/*, ... */) {
-    /***
-
-        Mutate an object by replacing its key:value pairs with those
-        from other object(s).  Key:value pairs from later objects will
-        overwrite those from earlier objects.
-        
-        If null is given as the initial object, a new one will be created.
-
-        This mutates *and returns* the given object, be warned.
-
-        A version of this function that creates a new object is available
-        as merge(o1, o2, ...)
-
-    ***/
-    if (self == null) {
+    if (self === null) {
         self = {};
     }
     for (var i = 1; i < arguments.length; i++) {
         var o = arguments[i];
-        if (typeof(o) != 'undefined' && o != null) {
+        if (typeof(o) != 'undefined' && o !== null) {
             for (var k in o) {
                 self[k] = o[k];
             }
@@ -60,7 +46,7 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     counter: function (n/* = 1 */) {
-        if (arguments.length == 0) {
+        if (arguments.length === 0) {
             n = 1;
         }
         return function () {
@@ -76,17 +62,24 @@ MochiKit.Base.update(MochiKit.Base, {
         }
     },
             
-    extend: function (self, obj, /* optional */skip) {
-        /***
+    flattenArguments: function (lst/* ...*/) {
+        var res = [];
+        var m = MochiKit.Base;
+        var args = m.extend(null, arguments);
+        while (args.length) {
+            var o = args.shift();
+            if (o && typeof(o) == "object" && typeof(o.length) == "number") {
+                for (var i = o.length - 1; i >= 0; i--) {
+                    args.unshift(o[i]);
+                }
+            } else {
+                res.push(o);
+            }
+        }
+        return res;
+    },
 
-            Mutate an array by extending it with an array-like obj,
-            starting with the "skip" index of obj.  If null is given
-            as the initial array, a new one will be created.
-
-            This mutates *and returns* the given array, be warned.
-
-        ***/
-        
+    extend: function (self, obj, /* optional */skip) {        
         // Extend an array with an array-like object starting
         // from the skip index
         if (!skip) {
@@ -119,12 +112,12 @@ MochiKit.Base.update(MochiKit.Base, {
 
 
     updatetree: function (self, obj/*, ...*/) {
-        if (self == null) {
+        if (self === null) {
             self = {};
         }
         for (var i = 1; i < arguments.length; i++) {
             var o = arguments[i];
-            if (typeof(o) != 'undefined' && o != null) {
+            if (typeof(o) != 'undefined' && o !== null) {
                 for (var k in o) {
                     var v = o[k];
                     if (typeof(self[k]) == 'object' && typeof(v) == 'object') {
@@ -139,18 +132,7 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     setdefault: function (self, obj/*, ...*/) {
-        /***
-
-            Mutate an object by replacing its key:value pairs with those
-            from other object(s) IF they are not already set on the initial
-            object.
-            
-            If null is given as the initial object, a new one will be created.
-
-            This mutates *and returns* the given object, be warned.
-
-        ***/
-        if (self == null) {
+        if (self === null) {
             self = {};
         }
         for (var i = 1; i < arguments.length; i++) {
@@ -165,12 +147,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     keys: function (obj) {
-        /***
-
-            Return an array of the property names of an object
-            (in no particular order).
-
-        ***/
         var rval = [];
         for (var prop in obj) {
             rval.push(prop);
@@ -179,12 +155,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
         
     items: function (obj) {
-        /***
-
-            Return an array of [propertyName, propertyValue] pairs for an
-            object (in no particular order).
-
-        ***/
         var rval = [];
         var e;
         for (var prop in obj) {
@@ -207,12 +177,6 @@ MochiKit.Base.update(MochiKit.Base, {
 
 
     operator: {
-        /***
-
-            A table of JavaScript's operators for usage with map, filter, etc.
-
-        ***/
-
         // unary logic operators
         truth: function (a) { return !!a; }, 
         lognot: function (a) { return !a; },
@@ -246,8 +210,8 @@ MochiKit.Base.update(MochiKit.Base, {
         le: function (a, b) { return a <= b; },
 
         // compare comparators
-        ceq: function (a, b) { return MochiKit.Base.compare(a, b) == 0; },
-        cne: function (a, b) { return MochiKit.Base.compare(a, b) != 0; },
+        ceq: function (a, b) { return MochiKit.Base.compare(a, b) === 0; },
+        cne: function (a, b) { return MochiKit.Base.compare(a, b) !== 0; },
         cgt: function (a, b) { return MochiKit.Base.compare(a, b) == 1; },
         cge: function (a, b) { return MochiKit.Base.compare(a, b) != -1; },
         clt: function (a, b) { return MochiKit.Base.compare(a, b) == -1; },
@@ -259,37 +223,19 @@ MochiKit.Base.update(MochiKit.Base, {
         contains: function (a, b) { return b in a; }
     },
 
-    forward: function (func) {
-        /***
-
-        Returns a function that forwards a method call to this.func(...)
-
-        ***/
+    forwardCall: function (func) {
         return function () {
             return this[func].apply(this, arguments);
         };
     },
 
     itemgetter: function (func) {
-        /***
-
-        Returns a function that returns arg[func]
-
-        ***/
         return function (arg) {
             return arg[func];
         };
     },
 
     typeMatcher: function (/* typ */) {
-        /***
-
-        Given a set of types (as string arguments),
-        returns a function that will return true if the types of the given
-        objects are members of that set.
-
-        ***/
-        
         var types = {};
         for (var i = 0; i < arguments.length; i++) {
             var typ = arguments[i];
@@ -306,13 +252,8 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     isNull: function (/* ... */) {
-        /***
-
-        Returns true if all arguments are null.
-
-        ***/
         for (var i = 0; i < arguments.length; i++) {
-            if (arguments[i] != null) {
+            if (arguments[i] !== null) {
                 return false;
             }
         }
@@ -320,27 +261,20 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     isUndefinedOrNull: function (/* ... */) {
-        /***
-
-            Returns true if all arguments are undefined or null
-
-        ***/
         for (var i = 0; i < arguments.length; i++) {
             var o = arguments[i];
-            if (!(typeof(o) == 'undefined' || o == null)) {
+            if (!(typeof(o) == 'undefined' || o === null)) {
                 return false;
             }
         }
         return true;
     },
 
+    isEmpty: function (obj) {
+        return !MochiKit.Base.isNotEmpty.apply(this, arguments);
+    },
+
     isNotEmpty: function (obj) {
-        /***
-
-            Returns true if all the array or string arguments
-            are not empty
-
-        ***/
         for (var i = 0; i < arguments.length; i++) {
             var o = arguments[i];
             if (!(o && o.length)) {
@@ -351,17 +285,12 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     isArrayLike: function () {
-        /***
-
-            Returns true if all given arguments are Array-like
-
-        ***/
         for (var i = 0; i < arguments.length; i++) {
             var o = arguments[i];
             var typ = typeof(o);
             if (
                 (typ != 'object' && !(typ == 'function' && typeof(o.item) == 'function')) ||
-                o == null ||
+                o === null ||
                 typeof(o.length) != 'number'
             ) {
                 return false;
@@ -371,14 +300,10 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     isDateLike: function () {
-        /***
-
-            Returns true if all given arguments are Date-like
-
-        ***/
         for (var i = 0; i < arguments.length; i++) {
             var o = arguments[i];
-            if (typeof(o) != "object" || typeof(o.getTime) != 'function') {
+            if (typeof(o) != "object" || o === null
+                    || typeof(o.getTime) != 'function') {
                 return false;
             }
         }
@@ -387,15 +312,7 @@ MochiKit.Base.update(MochiKit.Base, {
 
 
     xmap: function (fn/*, obj... */) {
-        /***
-        
-            Return an array composed of fn(obj) for every obj given as an
-            argument.
-
-            If fn is null, operator.identity is used.
-
-        ***/
-        if (fn == null) {
+        if (fn === null) {
             return MochiKit.Base.extend(null, arguments, 1);
         }
         var rval = [];
@@ -406,33 +323,16 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     map: function (fn, lst/*, lst... */) {
-        /***
-
-            Return a new array composed of the results of fn(x) for every x in
-            lst
-
-            If fn is null, and only one sequence argument is given the identity
-            function is used.
-            
-                map(null, lst) -> lst.slice();
-
-            If fn is null, and more than one sequence is given as arguments,
-            then the Array function is used, making it equivalent to zip.
-
-                map(null, p, q, ...)
-                    -> zip(p, q, ...)
-                    -> [[p0, q0, ...], [p1, q1, ...], ...];
-
-        ***/
         var m = MochiKit.Base;
+        var itr = MochiKit.Iter;
         var isArrayLike = m.isArrayLike;
         if (arguments.length <= 2) {
             // allow an iterable to be passed
             if (!isArrayLike(lst)) {
-                if (MochiKit.Iter) {
+                if (itr) {
                     // fast path for map(null, iterable)
-                    lst = MochiKit.Iter.list(lst);
-                    if (fn == null) {
+                    lst = itr.list(lst);
+                    if (fn === null) {
                         return lst;
                     }
                 } else {
@@ -440,7 +340,7 @@ MochiKit.Base.update(MochiKit.Base, {
                 }
             }
             // fast path for map(null, lst)
-            if (fn == null) {
+            if (fn === null) {
                 return m.extend(null, lst);
             }
             // disabled fast path for map(fn, lst)
@@ -457,22 +357,22 @@ MochiKit.Base.update(MochiKit.Base, {
             return rval;
         } else {
             // default for map(null, ...) is zip(...)
-            if (fn == null) {
+            if (fn === null) {
                 fn = Array;
             }
             var length = null;
             for (i = 1; i < arguments.length; i++) {
                 // allow iterables to be passed
                 if (!isArrayLike(arguments[i])) {
-                    if (MochiKit.Iter) {
-                        arguments[i] = MochiKit.Iter.list(arguments[i]);
+                    if (itr) {
+                        return itr.list(itr.imap.apply(null, arguments));
                     } else {
                         throw new TypeError("Argument not an array-like and MochiKit.Iter not present");
                     }
                 }
                 // find the minimum length
                 var l = arguments[i].length;
-                if (length == null || length > l) {
+                if (length === null || length > l) {
                     length = l;
                 }
             }
@@ -490,7 +390,7 @@ MochiKit.Base.update(MochiKit.Base, {
 
     xfilter: function (fn/*, obj... */) {
         var rval = [];
-        if (fn == null) {
+        if (fn === null) {
             fn = MochiKit.Base.operator.truth;
         }
         for (var i = 1; i < arguments.length; i++) {
@@ -513,13 +413,13 @@ MochiKit.Base.update(MochiKit.Base, {
                 throw new TypeError("Argument not an array-like and MochiKit.Iter not present");
             }
         }
-        if (fn == null) {
+        if (fn === null) {
             fn = m.operator.truth;
         }
         if (typeof(Array.prototype.filter) == 'function') {
             // Mozilla fast-path
             return Array.prototype.filter.call(lst, fn, self);
-        } else if (typeof(self) == 'undefined' || self == null) {
+        } else if (typeof(self) == 'undefined' || self === null) {
             for (var i = 0; i < lst.length; i++) {
                 var o = lst[i];
                 if (fn(o)) {
@@ -555,6 +455,11 @@ MochiKit.Base.update(MochiKit.Base, {
         };
     },
             
+    method: function (self, func) {
+        var m = MochiKit.Base;
+        return m.bind.apply(this, m.extend([func, self], arguments, 2));
+    },
+
     bind: function (func, self/* args... */) {
         if (typeof(func) == "string") {
             func = self[func];
@@ -600,12 +505,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     bindMethods: function (self) {
-        /***
-
-            Bind all functions in self to self,
-            which gives you a semi-Pythonic sort of instance.
-
-        ***/
         var bind = MochiKit.Base.bind;
         for (var k in self) {
             var func = self[k];
@@ -616,61 +515,17 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     registerComparator: function (name, check, comparator, /* optional */ override) {
-        /***
-
-            Register a comparator for use with the compare function.
-
-            name should be a unique identifier describing the comparator.
-
-            check is a function (a, b) that returns true if a and b
-            can be compared with comparator.
-
-            comparator is a function (a, b) that returns:
-
-                 0 when a == b
-                 1 when a > b
-                -1 when a < b
-
-            comparator is guaranteed to only be called if check(a, b)
-            returns a true value.
-
-            If override is given and true, then it will be made the
-            highest precedence comparator.  Otherwise, the lowest.
-
-        ***/
         MochiKit.Base.comparatorRegistry.register(name, check, comparator, override);
     },
 
-    _primitives: {'bool': true, 'string': true, 'number': true},
+    _primitives: {'boolean': true, 'string': true, 'number': true},
 
     compare: function (a, b) {
-        /***
-
-            Compare two objects in a sensible manner.  Currently this is:
-            
-                1. undefined and null compare equal to each other
-                2. undefined and null are less than anything else
-                3. comparators registered with registerComparator are
-                   used to find a good comparator.  Built-in comparators
-                   are currently available for arrays and dates.
-                4. Otherwise hope that the built-in comparison operators
-                   do something useful, which should work for numbers
-                   and strings.
-
-            Returns what one would expect from a comparison function.
-
-            returns:
-
-                 0 when a == b
-                 1 when a > b 
-                -1 when a < b
-
-        ***/
         if (a == b) {
             return 0;
         }
-        var aIsNull = (typeof(a) == 'undefined' || a == null);
-        var bIsNull = (typeof(b) == 'undefined' || b == null);
+        var aIsNull = (typeof(a) == 'undefined' || a === null);
+        var bIsNull = (typeof(b) == 'undefined' || b === null);
         if (aIsNull && bIsNull) {
             return 0;
         } else if (aIsNull) {
@@ -724,26 +579,10 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     registerRepr: function (name, check, wrap, /* optional */override) {
-        /***
-
-            Register a repr function.  repr functions should take
-            one argument and return a string representation of it
-            suitable for developers, primarily used when debugging.
-
-            If override is given, it is used as the highest priority
-            repr, otherwise it will be used as the lowest.
-
-        ***/
         MochiKit.Base.reprRegistry.register(name, check, wrap, override);
     },
 
     repr: function (o) {
-        /***
-
-            Return a "programmer representation" for an object
-
-        ***/
-
         if (typeof(o) == "undefined") {
             return "undefined";
         } else if (o === null) {
@@ -798,26 +637,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     registerJSON: function (name, check, wrap, /* optional */override) {
-        /***
-
-            Register a JSON serialization function.  JSON serialization 
-            functions should take one argument and return an object
-            suitable for JSON serialization:
-
-            - string
-            - number
-            - boolean
-            - undefined
-            - object
-                - null
-                - Array-like (length property that is a number)
-                - Objects with a "json" method will have this method called
-                - Any other object will be used as {key:value, ...} pairs
-            
-            If override is given, it is used as the highest priority
-            JSON serialization, otherwise it will be used as the lowest.
-
-        ***/
         MochiKit.Base.jsonRegistry.register(name, check, wrap, override);
     },
 
@@ -827,12 +646,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     serializeJSON: function (o) {
-        /***
-
-            Create a JSON serialization of an object, note that this doesn't
-            check for infinite recursion, so don't do that!
-
-        ***/
         var objtype = typeof(o);
         if (objtype == "undefined") {
             return "undefined";
@@ -913,37 +726,17 @@ MochiKit.Base.update(MochiKit.Base, {
             
 
     objEqual: function (a, b) {
-        /***
-            
-            Compare the equality of two objects.
-
-        ***/
-        return (MochiKit.Base.compare(a, b) == 0);
+        return (MochiKit.Base.compare(a, b) === 0);
     },
 
     arrayEqual: function (self, arr) {
-        /***
-
-            Compare two arrays for equality, with a fast-path for length
-            differences.
-
-        ***/
         if (self.length != arr.length) {
             return false;
         }
-        return (MochiKit.Base.compare(self, arr) == 0);
+        return (MochiKit.Base.compare(self, arr) === 0);
     },
 
     concat: function (/* lst... */) {
-        /***
-
-            Concatenates all given array-like arguments and returns
-            a new array:
-
-                var lst = concat(["1","3","5"], ["2","4","6"]);
-                assert(lst.toString() == "1,3,5,2,4,6");
-
-        ***/
         var rval = [];
         var extend = MochiKit.Base.extend;
         for (var i = 0; i < arguments.length; i++) {
@@ -953,30 +746,20 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     keyComparator: function (key/* ... */) {
-        /***
-
-            A comparator factory that compares a[key] with b[key].
-            e.g.:
-
-                var lst = ["a", "bbb", "cc"];
-                lst.sort(keyComparator("length"));
-                assert(lst.toString() == "a,cc,bbb");
-
-        ***/
         // fast-path for single key comparisons
         var m = MochiKit.Base;
         var compare = m.compare;
         if (arguments.length == 1) {
             return function (a, b) {
                 return compare(a[key], b[key]);
-            }
+            };
         }
         var compareKeys = m.extend(null, arguments);
         return function (a, b) {
             var rval = 0;
             // keep comparing until something is inequal or we run out of
             // keys to compare
-            for (var i = 0; (rval == 0) && (i < compareKeys.length); i++) {
+            for (var i = 0; (rval === 0) && (i < compareKeys.length); i++) {
                 var key = compareKeys[i];
                 rval = compare(a[key], b[key]);
             }
@@ -985,20 +768,10 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     reverseKeyComparator: function (key) {
-        /***
-
-            A comparator factory that compares a[key] with b[key] in reverse.
-            e.g.:
-
-                var lst = ["a", "bbb", "cc"];
-                lst.sort(reverseKeyComparator("length"));
-                assert(lst.toString() == "bbb,cc,aa");
-
-        ***/
         var comparator = MochiKit.Base.keyComparator.apply(this, arguments);
         return function (a, b) {
             return comparator(b, a);
-        }
+        };
     },
 
     partial: function (func) {
@@ -1007,23 +780,7 @@ MochiKit.Base.update(MochiKit.Base, {
     },
      
     listMinMax: function (which, lst) {
-        /***
-
-            If which == -1 then it will return the smallest
-            element of the array-like lst.  This is also available
-            as:
-
-                listMin(lst)
-
-
-            If which == 1 then it will return the largest
-            element of the array-like lst.  This is also available
-            as:
-                
-                listMax(list)
-
-        ***/
-        if (lst.length == 0) {
+        if (lst.length === 0) {
             return null;
         }
         var cur = lst[0];
@@ -1038,25 +795,15 @@ MochiKit.Base.update(MochiKit.Base, {
     },
 
     objMax: function (/* obj... */) {
-        /***
-        
-            Return the maximum object out of the given arguments
-
-        ***/
         return MochiKit.Base.listMinMax(1, arguments);
     },
             
     objMin: function (/* obj... */) {
-        /***
-
-            Return the minimum object out of the given arguments
-
-        ***/
         return MochiKit.Base.listMinMax(-1, arguments);
     },
 
     findIdentical: function (lst, value, start/* = 0 */, /* optional */end) {
-        if (typeof(end) == "undefined" || end == null) {
+        if (typeof(end) == "undefined" || end === null) {
             end = lst.length;
         }
         for (var i = (start || 0); i < end; i++) {
@@ -1067,13 +814,13 @@ MochiKit.Base.update(MochiKit.Base, {
         return -1;
     },
 
-    find: function (lst, value, start/* = 0 */, /* optional */end) {
-        if (typeof(end) == "undefined" || end == null) {
+    findValue: function (lst, value, start/* = 0 */, /* optional */end) {
+        if (typeof(end) == "undefined" || end === null) {
             end = lst.length;
         }
         var cmp = MochiKit.Base.compare;
         for (var i = (start || 0); i < end; i++) {
-            if (cmp(lst[i], value) == 0) {
+            if (cmp(lst[i], value) === 0) {
                 return i;
             }
         }
@@ -1081,18 +828,6 @@ MochiKit.Base.update(MochiKit.Base, {
     },
     
     nodeWalk: function (node, visitor) {
-        /***
-
-            Non-recursive generic node walking function (e.g. for a DOM)
-
-            @param node: The initial node to be searched.
-
-            @param visitor: The visitor function, will be called as
-                            visitor(node), and should return an Array-like
-                            of notes to be searched next (e.g.
-                            node.childNodes).
-
-        ***/
         var nodes = [node];
         var extend = MochiKit.Base.extend;
         while (nodes.length) {
@@ -1153,7 +888,7 @@ MochiKit.Base.update(MochiKit.Base, {
         var urlEncode = MochiKit.Base.urlEncode;
         for (var i = 0; i < len; i++) {
             v = values[i];
-            if (typeof(v) != 'undefined' && v != null) {
+            if (typeof(v) != 'undefined' && v !== null) {
                 rval.push(urlEncode(names[i]) + "=" + urlEncode(v));
             }
         }
@@ -1192,31 +927,11 @@ MochiKit.Base.update(MochiKit.Base, {
 });
     
 MochiKit.Base.AdapterRegistry = function () {
-    /***
-
-        A registry to facilitate adaptation.
-
-        Pairs is an array of [name, check, wrap] triples
-        
-        All check/wrap functions in this registry should be of the same arity.
-
-    ***/
     this.pairs = [];
 };
 
 MochiKit.Base.AdapterRegistry.prototype = {
     register: function (name, check, wrap, /* optional */ override) {
-        /***
-            
-            The check function should return true if the given arguments are
-            appropriate for the wrap function.
-
-            If override is given and true, the check function will be given
-            highest priority.  Otherwise, it will be the lowest priority
-            adapter.
-
-        ***/
-
         if (override) {
             this.pairs.unshift([name, check, wrap]);
         } else {
@@ -1225,13 +940,6 @@ MochiKit.Base.AdapterRegistry.prototype = {
     },
 
     match: function (/* ... */) {
-        /***
-
-            Find an adapter for the given arguments.
-            
-            If no suitable adapter is found, throws NotFound.
-
-        ***/
         for (var i = 0; i < this.pairs.length; i++) {
             var pair = this.pairs[i];
             if (pair[1].apply(this, arguments)) {
@@ -1242,11 +950,6 @@ MochiKit.Base.AdapterRegistry.prototype = {
     },
 
     unregister: function (name) {
-        /***
-
-            Remove a named adapter from the registry
-
-        ***/
         for (var i = 0; i < this.pairs.length; i++) {
             var pair = this.pairs[i];
             if (pair[0] == name) {
@@ -1270,13 +973,14 @@ MochiKit.Base.EXPORT = [
     "items",
     "NamedError",
     "operator",
-    "forward",
+    "forwardCall",
     "itemgetter",
     "typeMatcher",
     "isCallable",
     "isUndefined",
     "isUndefinedOrNull",
     "isNull",
+    "isEmpty",
     "isNotEmpty",
     "isArrayLike",
     "isDateLike",
@@ -1312,8 +1016,10 @@ MochiKit.Base.EXPORT = [
     "registerJSON",
     "evalJSON",
     "parseQueryString",
-    "find",
-    "findIdentical"
+    "findValue",
+    "findIdentical",
+    "flattenArguments",
+    "method"
 ];
 
 MochiKit.Base.EXPORT_OK = [
@@ -1346,6 +1052,11 @@ MochiKit.Base._exportSymbols = function (globals, module) {
 MochiKit.Base.__new__ = function () {
     // A singleton raised when no suitable adapter is found
     var m = this;
+
+    // Backwards compat
+    m.forward = m.forwardCall;
+    m.find = m.findValue;
+
     if (typeof(encodeURIComponent) != "undefined") {
         m.urlEncode = function (unencoded) {
             return encodeURIComponent(unencoded).replace(/\'/g, '%27');
@@ -1372,7 +1083,7 @@ MochiKit.Base.__new__ = function () {
                 return this.name + "()";
             }
         },
-        toString: m.forward("repr")
+        toString: m.forwardCall("repr")
     });
 
     m.NotFound = new m.NamedError("MochiKit.Base.NotFound");
@@ -1413,6 +1124,8 @@ MochiKit.Base.__new__();
 //
 // XXX: Internet Explorer blows
 //
-compare = MochiKit.Base.compare;
+if (!MochiKit.__compat__) {
+    compare = MochiKit.Base.compare;
+}
 
 MochiKit.Base._exportSymbols(this, MochiKit.Base);

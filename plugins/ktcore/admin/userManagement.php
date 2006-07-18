@@ -315,18 +315,6 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         * is there _any_ way to fix that?
         */
         
-        // FIXME move this to a transfer widget
-        // FIXME replace OptionTransfer.js.  me no-likey.
-        
-        // FIXME this is hideous.  refactor the transfer list stuff completely.
-        $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
-        'function startTrans() { var f = getElement("usergroupform"); ' .
-        ' optGroup.saveAddedRightOptions("groupAdded"); ' .
-        ' optGroup.saveRemovedRightOptions("groupRemoved"); ' .
-        ' optGroup.init(f); }; ' .
-        ' addLoadEvent(startTrans); '; 
-        $this->oPage->requireJSStandalone($initJS);
-        
         $aInitialGroups = GroupUtil::listGroupsForUser($oUser);
         $aAllGroups = GroupUtil::listGroups();
         
@@ -340,6 +328,14 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
                 $aFreeGroups[$oGroup->getId()] = $oGroup;
             }
         }
+
+	$oJSONWidget = new KTJSONLookupWidget(_kt('Groups'), 
+					      _kt('Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>.'), 
+					      'groups', '', &$this->oPage, false, null, null, 
+					      array('action'=>'getGroups',
+						    'assigned' => $aUserGroups,
+						    'multi'=>'true',
+						    'size'=>'8'));
         
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/usergroups");
@@ -348,11 +344,28 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "unused_groups" => $aFreeGroups,
             "user_groups" => $aUserGroups,
             "edit_user" => $oUser,
+	    "widget" => $oJSONWidget,
             'old_search' => $old_search,            
         );
         return $oTemplate->render($aTemplateData);        
     }    
     
+    
+    function json_getGroups() {
+	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+	$aGroupList = array('off'=>'-- Please filter --');
+
+	if($sFilter && trim($sFilter)) {
+	    $aGroups = Group::getList(sprintf('name like "%%%s%%"', $sFilter));
+	    $aGroupList = array();
+	    foreach($aGroups as $oGroup) {
+		$aGroupList[$oGroup->getId()] = $oGroup->getName();
+	    }
+	}	 
+	return $aGroupList;
+    }
+
+
     function do_saveUser() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');
@@ -504,8 +517,8 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
             $this->errorRedirectToMain(_kt('Please select a user first.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
-        $groupAdded = KTUtil::arrayGet($_REQUEST, 'groupAdded','');
-        $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groupRemoved','');
+        $groupAdded = KTUtil::arrayGet($_REQUEST, 'groups_items_added','');
+        $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groups_items_removed','');
         
         
         $aGroupToAddIDs = explode(",", $groupAdded);

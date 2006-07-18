@@ -201,9 +201,9 @@ class User extends KTEntity {
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
-    function getEmailUsers() {
+    function getEmailUsers($sWhereClause = null) {
         $aUsers = array();
-        foreach (User::getList() as $oUser) {
+        foreach (User::getList($sWhereClause) as $oUser) {
             if ($oUser->getEmail()) {
                 $aUsers[] = $oUser;
             }

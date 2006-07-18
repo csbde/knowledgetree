@@ -1,6 +1,6 @@
 /***
 
-MochiKit.LoggingPane 1.2
+MochiKit.LoggingPane 1.3.1
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
@@ -31,7 +31,7 @@ if (typeof(MochiKit.LoggingPane) == 'undefined') {
 }
 
 MochiKit.LoggingPane.NAME = "MochiKit.LoggingPane";
-MochiKit.LoggingPane.VERSION = "1.2";
+MochiKit.LoggingPane.VERSION = "1.3.1";
 MochiKit.LoggingPane.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 };
@@ -56,7 +56,7 @@ MochiKit.LoggingPane.createLoggingPane = function (inline/* = false */) {
 MochiKit.LoggingPane.LoggingPane = function (inline/* = false */, logger/* = MochiKit.Logging.logger */) {
     /* Use a div if inline, pop up a window if not */
     /* Create the elements */
-    if (typeof(logger) == "undefined" || logger == null) {
+    if (typeof(logger) == "undefined" || logger === null) {
         logger = MochiKit.Logging.logger;
     }
     this.logger = logger;
@@ -178,7 +178,7 @@ MochiKit.LoggingPane.LoggingPane = function (inline/* = false */, logger/* = Moc
                 infore.test(messageText(msg))
             );
         };
-    }
+    };
 
     var clearMessagePane = function () {
         while (logPane.firstChild) {
@@ -189,7 +189,7 @@ MochiKit.LoggingPane.LoggingPane = function (inline/* = false */, logger/* = Moc
     var clearMessages = function () {
         messages = [];
         clearMessagePane();
-    }
+    };
 
     var closePane = bind(function () {
         if (this.closed) {
@@ -215,7 +215,7 @@ MochiKit.LoggingPane.LoggingPane = function (inline/* = false */, logger/* = Moc
 
         for (var i = 0; i < messages.length; i++) {
             var msg = messages[i];
-            if (messageFilter == null || messageFilter(msg)) {
+            if (messageFilter === null || messageFilter(msg)) {
                 addMessageText(msg);
             }
         }
@@ -245,7 +245,7 @@ MochiKit.LoggingPane.LoggingPane = function (inline/* = false */, logger/* = Moc
     }, this);
 
     /* Create the debug pane */
-    var style = "display: block; left: 0px; bottom: 0px; position: fixed; width: 100%; background-color: white; font: " + this.logFont;
+    var style = "display: block; z-index: 1000; left: 0px; bottom: 0px; position: fixed; width: 100%; background-color: white; font: " + this.logFont;
     if (inline) {
         style += "; height: 10em; border-top: 2px solid black";
     } else {

@@ -52,12 +52,12 @@ class KTBaseWidget {
     // very quick overrides.
     var $sTemplate = "kt3/fields/base";
     
-    function KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
+    function KTBaseWidget($sLabel, $sDescription, $sName, $value, &$oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
         $this->sLabel = $sLabel;
         $this->sDescription = $sDescription;
         $this->sName = $sName;
         $this->value = $value;
-        $this->oPage = $oPage;
+        $this->oPage =& $oPage;
         $this->bRequired = $bRequired;
         $this->sId = $sId;
         $this->aOptions = $aOptions;
@@ -117,5 +117,11 @@ class KTTreeWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/tree"; }
 // TODO KTTransferWidget
 // TODO KTDateWidget
 // TODO KTDateRangeWidget
+
+// Expects $aOptions['action'] => dispatcher action to load from
+//         $aOptions['assigned'] => currently assigned values
+//         $aOptions['bind_add'] (opt) => name of js method to call on add
+//         $aOptions['bind_remove'] (opt) => name of js method to call on remove
+class KTJSONLookupWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/jsonlookup"; }
 
 ?>

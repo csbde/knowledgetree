@@ -205,7 +205,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     }
 
     // {{{ do_manageusers
-    function do_manageusers() {
+    function do_manageUsers() {
         $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
     
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
@@ -214,7 +214,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_kt('No such group.'));
         }
 
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
+	$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
         $this->aBreadcrumbs[] = array('name' => $oGroup->getName());
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of group %s'), $oGroup->getName()));
@@ -223,17 +223,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         if (!empty($iSourceId)) {
             return $this->_do_manageUsers_source();
         }
-        
-        // FIXME replace OptionTransfer.js.  me no-likey.
-        
-        // FIXME this is hideous.  refactor the transfer list stuff completely.
-        $initJS = 'var optGroup = new OptionTransfer("userSelect","chosenUsers"); ' .
-        'function startTrans() { var f = getElement("usergroupform"); ' .
-        ' optGroup.saveAddedRightOptions("userAdded"); ' .
-        ' optGroup.saveRemovedRightOptions("userRemoved"); ' .
-        ' optGroup.init(f); }; ' .
-        ' addLoadEvent(startTrans); '; 
-        $this->oPage->requireJSStandalone($initJS);
         
         $aInitialUsers = $oGroup->getMembers();
         $aAllUsers = User::getList('id > 0');
@@ -251,18 +240,42 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             }
         }
         
+	$oJSONWidget = new KTJSONLookupWidget(_kt('Users'), 
+					      _kt('Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>.'), 
+					      'users', '', &$this->oPage, false, null, null, 
+					      array('action'=>'getUsers',
+						    'assigned' => $aGroupUsers,
+						    'multi'=>'true',
+						    'size'=>'8'));
+        
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/groups_manageusers");
         $aTemplateData = array(
             "context" => $this,
             "edit_group" => $oGroup,
-			'unused_users' => $aFreeUsers,
-			'group_users' => $aGroupUsers,
+	    'widget' => $oJSONWidget,
             "old_search" => $old_search,			
         );
         return $oTemplate->render($aTemplateData);        
     }    
     // }}}
+
+
+    function json_getUsers() {
+	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+	$aUserList = array('off'=>'-- Please filter --');
+
+	if($sFilter && trim($sFilter)) {
+	    $aUsers = User::getList(sprintf('name like "%%%s%%"', $sFilter));
+	    $aUserList = array();
+	    foreach($aUsers as $oUser) {
+		$aUserList[$oUser->getId()] = $oUser->getName();
+	    }
+	}	 
+	return $aUserList;
+    }
+
+
 
     // {{{ do_updateUserMembers
     function do_updateUserMembers() {
@@ -274,9 +287,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_kt('No such group.'));
         }
         
-        $userAdded = KTUtil::arrayGet($_REQUEST, 'userAdded','');
-        $userRemoved = KTUtil::arrayGet($_REQUEST, 'userRemoved','');
-        
+        $userAdded = KTUtil::arrayGet($_REQUEST, 'users_items_added','');
+        $userRemoved = KTUtil::arrayGet($_REQUEST, 'users_items_removed','');        
         
         $aUserToAddIDs = explode(",", $userAdded);
         $aUserToRemoveIDs = explode(",", $userRemoved);
@@ -285,24 +297,24 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $usersAdded = array();
         $usersRemoved = array();
         
-		$addWarnings = array();
-		$removeWarnings = array();    
+	$addWarnings = array();
+	$removeWarnings = array();    
         
-        foreach ($aUserToAddIDs as $iUserId ) {
+	foreach ($aUserToAddIDs as $iUserId ) {
             if ($iUserId > 0) {
                 $oUser= User::Get($iUserId);
-				$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
-				//var_dump($memberReason);
-				if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
-					$addWarnings[] = $memberReason;
-				}				
+		$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+		//var_dump($memberReason);
+		if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+		    $addWarnings[] = $memberReason;
+		}				
                 $res = $oGroup->addMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_kt('Unable to add user "%s" to group "%s"'), $oUser->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { $usersAdded[] = $oUser->getName(); }
             }
         }
-    
+	
         // Remove groups
         foreach ($aUserToRemoveIDs as $iUserId ) {
             if ($iUserId > 0) {
@@ -311,32 +323,32 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 if (PEAR::isError($res) || $res == false) {
                     $this->errorRedirectToMain(sprintf(_kt('Unable to remove user "%s" from group "%s"'), $oUser->getName(), $oGroup->getName()), sprintf("old_search=%s&do_search=1", $old_search));
                 } else { 
-				    $usersRemoved[] = $oUser->getName(); 
-					$memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
-					//var_dump($memberReason);
-					if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
-						$removeWarnings[] = $memberReason;
-					}
-				}
+		    $usersRemoved[] = $oUser->getName(); 
+		    $memberReason = GroupUtil::getMembershipReason($oUser, $oGroup);
+		    //var_dump($memberReason);
+		    if (!(PEAR::isError($memberReason) || is_null($memberReason))) {
+			$removeWarnings[] = $memberReason;
+		    }
+		}
             }
         }        
         
-		if (!empty($addWarnings)) {
-		    $sWarnStr = _kt('Warning:  some users were already members of some subgroups') . ' &mdash; ';
-			$sWarnStr .= implode(', ', $addWarnings);
-			$_SESSION['KTInfoMessage'][] = $sWarnStr;
-		}
-		
-		if (!empty($removeWarnings)) {
-		    $sWarnStr = _kt('Warning:  some users are still members of some subgroups') . ' &mdash; ';
-			$sWarnStr .= implode(', ', $removeWarnings);
-			$_SESSION['KTInfoMessage'][] = $sWarnStr;
-		}        
+	if (!empty($addWarnings)) {
+	    $sWarnStr = _kt('Warning:  some users were already members of some subgroups') . ' &mdash; ';
+	    $sWarnStr .= implode(', ', $addWarnings);
+	    $_SESSION['KTInfoMessage'][] = $sWarnStr;
+	}
+	
+	if (!empty($removeWarnings)) {
+	    $sWarnStr = _kt('Warning:  some users are still members of some subgroups') . ' &mdash; ';
+	    $sWarnStr .= implode(', ', $removeWarnings);
+	    $_SESSION['KTInfoMessage'][] = $sWarnStr;
+	}        
         
         $msg = '';
         if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . join(', ', $usersAdded) . '. <br />'; }
         if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . join(', ',$usersRemoved) . '.'; }
-
+	
         if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
             $this->rollbackTransaction();
             $this->errorRedirectTo('manageUsers', _kt('For security purposes, you cannot remove your own administration priviledges.'), sprintf('group_id=%d', $oGroup->getId()), sprintf("old_search=%s&do_search=1", $old_search));
@@ -349,8 +361,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     // }}}
 	
 	// FIXME copy-paste ...
-    // {{{ do_managesubgroups
-    function do_managesubgroups() {
+    // {{{ do_manageSubgroups
+    function do_manageSubgroups() {
         $old_search = KTUtil::arrayGet($_REQUEST, 'old_search');    
     
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
@@ -364,46 +376,67 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $oGroup->getName()));
         
         
-        // FIXME replace OptionTransfer.js.  me no-likey.
-        
-        // FIXME this is hideous.  refactor the transfer list stuff completely.
-        $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
-        'function startTrans() { var f = getElement("usergroupform"); ' .
-        ' optGroup.saveAddedRightOptions("groupAdded"); ' .
-        ' optGroup.saveRemovedRightOptions("groupRemoved"); ' .
-        ' optGroup.init(f); }; ' .
-        ' addLoadEvent(startTrans); '; 
-        $this->oPage->requireJSStandalone($initJS);
-		
         $aMemberGroupsUnkeyed = $oGroup->getMemberGroups();        
-		$aMemberGroups = array();
+	$aMemberGroups = array();
         $aMemberIDs = array();
         foreach ($aMemberGroupsUnkeyed as $oMemberGroup) {
             $aMemberIDs[] = $oMemberGroup->getID();        
-			$aMemberGroups[$oMemberGroup->getID()] = $oMemberGroup;
-		}
+	    $aMemberGroups[$oMemberGroup->getID()] = $oMemberGroup;
+	}
 		
-        $aGroupArray = GroupUtil::buildGroupArray();
-        $aAllowedGroupIDs = GroupUtil::filterCyclicalGroups($oGroup->getID(), $aGroupArray);
-        $aAllowedGroupIDs = array_diff($aAllowedGroupIDs, $aMemberIDs);
-		$aAllowedGroups = array();
-		foreach ($aAllowedGroupIDs as $iAllowedGroupID) {
-            $aAllowedGroups[$iAllowedGroupID] =& Group::get($iAllowedGroupID);
-		}
-		
-		
+	$oJSONWidget = new KTJSONLookupWidget(_kt('Groups'), 
+					      _kt('Select the groups from the left-hand list that you would like to add to this group and then click the <b>right pointing arrows</b>. Once you have added all the groups that you require, press <b>save changes</b>. Only groups that are logically capable of being included in this group will be available to be added.'), 
+					      'groups', '', &$this->oPage, false, null, null, 
+					      array('action'   => sprintf('getSubGroups&group_id=%d', $oGroup->getID()),
+						    'assigned' => $aMemberGroups,
+						    'multi'    => 'true',
+						    'size'     => '8'));
+        
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/groups_managesubgroups");
-        $aTemplateData = array(
-            "context" => $this,
-            "edit_group" => $oGroup,
-			'unused_groups' => $aAllowedGroups,
-			'group_members' => $aMemberGroups,
+        $aTemplateData = array("context" => $this,
+			       "edit_group" => $oGroup,
+			       'widget'=>$oJSONWidget,
             "old_search" => $old_search,			
         );
         return $oTemplate->render($aTemplateData);        
     }    
     // }}}
+
+
+    function json_getSubGroups() {
+	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+	$aAllowedGroups = array('off'=>'-- Please filter --');
+
+	if($sFilter && trim($sFilter)) {
+	    $iGroupID = KTUtil::arrayGet($_REQUEST, 'group_id', false);
+	    if(!$iGroupID) {
+		return array('error'=>true, 'type'=>'kt.invalid_entity', 'message'=>_kt('An invalid group was selected'));
+	    }
+	
+	    $oGroup = Group::get($iGroupID);
+	    $aMemberGroupsUnkeyed = $oGroup->getMemberGroups();        
+	    $aMemberGroups = array();
+	    $aMemberIDs = array();
+	    foreach ($aMemberGroupsUnkeyed as $oMemberGroup) {
+		$aMemberIDs[] = $oMemberGroup->getID();        
+		$aMemberGroups[$oMemberGroup->getID()] = $oMemberGroup;
+	    }
+	    
+	    $aGroupArray = GroupUtil::buildGroupArray();
+	    $aAllowedGroupIDs = GroupUtil::filterCyclicalGroups($oGroup->getID(), $aGroupArray);
+	    $aAllowedGroupIDs = array_diff($aAllowedGroupIDs, $aMemberIDs);
+	    $aAllowedGroups = array();
+	    foreach ($aAllowedGroupIDs as $iAllowedGroupID) {
+		$g = Group::get($iAllowedGroupID);
+		$aAllowedGroups[$iAllowedGroupID] = $g->getName();
+	    }
+	}
+
+	return $aAllowedGroups;
+    }
+
+
 
     // {{{ _getUnitName
 	function _getUnitName($oGroup) {
@@ -431,8 +464,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain('No such group.', sprintf("old_search=%s&do_search=1", $old_search));
         }
         
-        $groupAdded = KTUtil::arrayGet($_REQUEST, 'groupAdded','');
-        $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groupRemoved','');
+        $groupAdded = KTUtil::arrayGet($_REQUEST, 'groups_items_added','');
+        $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groups_items_removed','');
         
         
         $aGroupToAddIDs = explode(",", $groupAdded);

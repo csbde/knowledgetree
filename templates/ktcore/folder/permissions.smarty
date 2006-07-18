@@ -1,116 +1,93 @@
 <h2>{i18n arg_foldername=$foldername}Folder permissions for "#foldername#"{/i18n}</h2>
 
+
+
+
+{* check if there are roles etc *}
+
 {if ((empty($roles) && empty($groups)))}
-<div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only
-be allocated to roles and groups.{/i18n}</p></div>
+    <div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only be allocated to roles and groups.{/i18n}</p></div>
 {else}
 
+{* otherwise continue *}
 <p>{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fFolderId={$iFolderId}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a></p>
 
-{if $iFolderId != 1}
+
 <div class="ktInfo">
-{ if $inherited }
-<p>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n} 
-<a class="ktActionLink ktEdit"
-   href="{addQS}action=copyPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Override Permissions{/i18n}</a> </p>
-{ else }
-<p>{i18n}This folder defines its own permissions.{/i18n} 
+<p>{i18n}This folder defines its own permissions.{/i18n}
 <a class="ktActionLink ktDelete"
-   kt:deleteMessage="Are you sure you wish to reinstate inherited permissions?"	
+   kt:deleteMessage="Are you sure you wish to reinstate inherited permissions?"
    href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
-{ /if }
 </span>
 </div>
-{ /if }
+
+
+{$context->oPage->requireJSResource("resources/js/jsonlookup.js")}
+{$context->oPage->requireJSResource("resources/js/permissions.js")}
+
+{capture assign=sJavascript}initializePermissions('entities', '{addQS}fFolderId={$context->oFolder->getId()}&action=json&json_action=getEntities{/addQS}', {$jsonpermissions});{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="fFolderId" value="{$iFolderId}">
-<table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
+<div class="field">
+  
+  <p class="descriptiveText">{i18n}Select roles and groups for whom you wish to change permission assignement from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'.{/i18n}</p>
+      
+<table>
+
 <thead>
-<tr>
-<th width="40%">{i18n}Role or Group{/i18n}</th>
-{ foreach item=oPerm from=$permissions }
-<th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
-{ /foreach }
-</tr>
+    <tr>
+        <td style="width:45%"><label for="select_{$name}_avail">Available Entities</label></td>
+        <td style="width:10%">&nbsp;</td>
+        <td style="width:45%"><label for="select_{$name}_assigned">Assigned Entities</label></td>
+    </tr>
 </thead>
+
 <tbody>
+    <tr>
+    <td style="vertical-align: top">
 
-{ foreach item=oRole from=$roles }
-<td><span class="descriptiveText">{i18n}Role:{/i18n}</span> {$oRole->getName()}</td>
-  { assign var=iRoleId value=$oRole->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
+  <select name="entities" id="select_entities_avail" multiple="true"size="5">
+  </select>
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][role][]"
-value="{$iRoleId}"></td>
-{ /if }
-{else}
-{ if $bHasPerm }
-<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
-{ else }
-<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
-{ /if }
-{/if}
-  { /foreach }
-</tr>
-{ /foreach }
+  <div><label for="filter_entities_avail">Filter</label><input type="text" id="filter_entities_avail" /><br/><a href="#" id="entities_show_all">Show All</a></div>
+    </td>
 
+    <td>
+    
+    <input type="button" id="entities_add" value="&raquo;" />
+    <br /><br/>
+    <input type="button" id="entities_remove" value="&laquo;" />
+    
+    </td>
 
-{ foreach item=oGroup from=$groups }
-<td><span class="descriptiveText">{i18n}Group:{/i18n}</span> {$oGroup->getName()}</td>
-  { assign var=iGroupId value=$oGroup->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
+    <td style="vertical-align: top">
 
-{ if $edit}
-{ if $bHasPerm }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}" checked="true"></td>
-{ else }
-<td class="centered"><input type="checkbox" name="foo[{$iPermId}][group][]"
-value="{$iGroupId}"></td>
-{ /if }
-{else}
-{ if $bHasPerm }
-<td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
-{ else }
-<td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
-{ /if }
-{/if}
-
-
-  { /foreach }
-</tr>
-{ /foreach }
+  <select name="entities" id="select_entities_assigned" multiple="true"size="5">
+  </select>
+  <div><label for="filter_entities_assigned">Filter</label><input type="text" id="filter_entities_assigned" /></div>
+    </td>
+    </tr>
 </tbody>
 </table>
+
+  <input name="entities_items_added" id="entities_items_added" type="hidden" />
+  <input name="entities_items_removed" id="entities_items_removed" type="hidden" />
+  
+  <input type="hidden" name="kt_core_fieldsets_expect[entities]" value ="1" />
+</div>
+
+
+<div id="permissions_table_container"></div>
+
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="fFolderId" value="{$iFolderId}">
 <div class="form_actions">
-{if $edit}
   <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
   <input type="submit" name="kt_cancel[{addQS}fFolderId={$iFolderId}{/addQS}]" value="{i18n}Cancel{/i18n}" />
-{else}
-{* non-inherited view mode. *}
-{if ((!$inherited) && (!$edit)) }
-<a class="ktAction ktInline ktEdit"
-   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">{i18n}Edit Permission Assignments{/i18n}</a>
-<a
-   href="{addQS}edit_mode=1&fFolderId={$iFolderId}{/addQS}">{i18n}Edit Permission Assignments{/i18n}</a>
-   
-{/if}
 {/if}
 </div>
 </form>
-
-{ /if }
 
 
 {if (!empty($conditions))}

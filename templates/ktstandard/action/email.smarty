@@ -1,41 +1,3 @@
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/OptionTransfer.js")}
-{capture assign=sJavascript}
-{literal}
-
-    var optGroup = new OptionTransfer("groupSelect","chosenGroups");
-    optGroup.setAutoSort(true);
-    optGroup.setDelimiter(",");
-    optGroup.saveNewLeftOptions("groupNewLeft");
-    optGroup.saveNewRightOptions("groupNewRight");
-    optGroup.saveRemovedLeftOptions("groupRemovedLeft");
-    optGroup.saveRemovedRightOptions("groupRemovedRight");
-    optGroup.saveAddedLeftOptions("groupAddedLeft");
-    optGroup.saveAddedRightOptions("groupAddedRight");
-
-    var optUser = new OptionTransfer("userSelect","chosenUsers");
-    optUser.setAutoSort(true);
-    optUser.setDelimiter(",");
-    optUser.saveNewLeftOptions("userNewLeft");
-    optUser.saveNewRightOptions("userNewRight");
-    optUser.saveRemovedLeftOptions("userRemovedLeft");
-    optUser.saveRemovedRightOptions("userRemovedRight");
-    optUser.saveAddedLeftOptions("userAddedLeft");
-    optUser.saveAddedRightOptions("userAddedRight")
-
-function kt_email_onload() {
-    f = getElement('kt-email-form');
-
-    optGroup.init(f);
-    optUser.init(f);
-}
-
-addLoadEvent(kt_email_onload);
-{/literal}
-{/capture}
-{$context->oPage->requireJSStandalone($sJavascript)}
 
 <h2>{i18n}Email document{/i18n}</h2>
 
@@ -43,76 +5,6 @@ addLoadEvent(kt_email_onload);
 <input type="hidden" name="action" value="email" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 
-<table>
-<tr>
-    <td valign="top" colspan="3"><strong>{i18n}Groups{/i18n}</strong></td>
-</tr>
-<tr>
-    <td valign="top" width="1%">
-
-    <select name="groupSelect" size="4" multiple>
-    {foreach from=$groups item=oGroup}
-    <option value="{$oGroup->getId()}" onDblClick="optGroup.transferRight()" >{$oGroup->getName()}</option>
-    {/foreach}
-    </select>
-    </td>
-
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
-         </td>
-
-
-    <td valign="top" width="1%">
-    <select name="chosenGroups" size="5" multiple="multiple">
-    </select>
-    </td>
-</tr>
-
-<tr>
-         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(groupSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenGroups, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
-         </td>
-      </tr>
-
-<tr>
-    <td colspan="3"><strong>{i18n}Users{/i18n}</strong></td>
-</tr>
-<tr>
-    <td valign="top" width="1%">
-    <select name="userSelect" size="10" multiple="multiple">
-    {foreach from=$users item=oUser}
-    <option value="{$oUser->getId()}" onDblClick="optUser.transferRight()">{$oUser->getName()}</option>
-    {/foreach}
-    </select>
-    </td>
-
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optUser.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optUser.transferLeft()" type="button">
-         </td>
-
-    <td valign="top" width="1%">
-    <select name="chosenUsers" size="10" multiple="multiple">
-    </select>
-    </td>
-</tr>
-<tr>
-         <td><label for="uu-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUU" id="uu-filter" onkeyup="optUser.sortSelectMatch(userSelect, this.value)" onchange="optUser.sortSelectMatch(userSelect, this.value)" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="ou-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOU" id="ou-filter" onkeyup="optUser.sortSelectMatch(chosenUsers, this.value)" onchange="optUser.sortSelectMatch(chosenUsers, this.value)" type="text">
-         </td>
-      </tr>
-    
-
-</table>
 
 {foreach from=$fields item=oWidget }
   {$oWidget->render()}
@@ -121,18 +13,5 @@ addLoadEvent(kt_email_onload);
 <div class="form_actions ">
   <input type="submit" name="submit" value="{i18n}Email{/i18n}" />
 </div>
-
-<input type="hidden" name="groupNewLeft" />
-<input type="hidden" name="groupNewRight" />
-<input type="hidden" name="groupRemovedLeft" />
-<input type="hidden" name="groupRemovedRight" />
-<input type="hidden" name="groupAddedLeft" />
-<input type="hidden" name="groupAddedRight" />
-<input type="hidden" name="userNewLeft" />
-<input type="hidden" name="userNewRight" />
-<input type="hidden" name="userRemovedLeft" />
-<input type="hidden" name="userRemovedRight" />
-<input type="hidden" name="userAddedLeft" />
-<input type="hidden" name="userAddedRight" />
 
 </form>

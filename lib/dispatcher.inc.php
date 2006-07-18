@@ -31,6 +31,8 @@ require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
+require_once(KT_DIR . "/thirdparty/pear/JSON.php");
+
 
 class KTDispatchStandardRedirector {
     function redirect($url) {
@@ -56,7 +58,8 @@ class KTDispatcher {
         if ($action_prefix) {
             $this->action_prefix = $action_prefix;
         }
-        return KTDispatcher::dispatch();
+
+        return $this->dispatch();
     }
 
     function dispatch () {
@@ -80,6 +83,7 @@ class KTDispatcher {
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = $_REQUEST[$this->event_var];
             $proposed_method = sprintf('%s_%s', $this->action_prefix, $event);
+
             if (method_exists($this, $proposed_method)) {
                 $method = $proposed_method;
             }
@@ -98,18 +102,18 @@ class KTDispatcher {
     }
 
     function subDispatch(&$oOrigDispatcher) {
-        if (isset($oOrigDispatcher->aBreadcrumbs)) {
-            $this->aBreadcrumbs = $oOrigDispatcher->aBreadcrumbs;
-        }
-        if (isset($oOrigDispatcher->bTransactionStarted)) {
-            $this->bTransactionStarted = $oOrigDispatcher->bTransactionStarted;
-        }
-        if (isset($oOrigDispatcher->oUser)) {
-            $this->oUser = $oOrigDispatcher->oUser;
-        }
-        if (isset($oOrigDispatcher->session)) {
-            $this->session = $oOrigDispatcher->session;
-        }
+	foreach(array('aBreadcrumbs', 
+		      'bTransactionStarted',
+		      'oUser',
+		      'session',
+		      'event_var',
+		      'action_prefix',
+		      'bJSONMode') as $k) {
+	    if(isset($oOrigDispatcher->$k)) {
+		$this->$k = $oOrigDispatcher->$k;
+	    }
+	}
+
         return $this->dispatch();
     }
 
@@ -194,6 +198,7 @@ class KTStandardDispatcher extends KTDispatcher {
     var $sSection = false;
     var $oPage = false;
     var $sHelpPage = null;
+    var $bJSONMode = false;
     
     function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
@@ -209,32 +214,32 @@ class KTStandardDispatcher extends KTDispatcher {
             redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
         }    
     
-	    global $default;
-		
-		$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
-		$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
+	global $default;
+	     
+	$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
+	$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
 		
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
-        $this->oPage->hideSection();
+	$this->oPage->hideSection();
 
         $this->oPage->render();
         exit(0);
     }
 
     function loginRequired() {
-        $oKTConfig =& KTConfig::getSingleton();
-        if ($oKTConfig->get('allowAnonymousLogin', false)) {
-            // anonymous logins are now allowed.
-            // the anonymous user is -1.
-            // 
-            // we short-circuit the login mechanisms, setup the session, and go.
-                    
-            $oUser =& User::get(-2);
-            if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) { 
-                ; // do nothing - the database integrity would break if we log the user in now.
-            } else {
-                $session = new Session();
+	$oKTConfig =& KTConfig::getSingleton();
+	if ($oKTConfig->get('allowAnonymousLogin', false)) {
+	    // anonymous logins are now allowed.
+	    // the anonymous user is -1.
+	    // 
+	    // we short-circuit the login mechanisms, setup the session, and go.
+			
+	    $oUser =& User::get(-2);
+	    if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) { 
+		; // do nothing - the database integrity would break if we log the user in now.
+	    } else {
+		$session = new Session();
                 $sessionID = $session->create($oUser);
                 $this->sessionStatus = $this->session->verify();
                 if ($this->sessionStatus === true) {
@@ -247,6 +252,17 @@ class KTStandardDispatcher extends KTDispatcher {
         if (PEAR::isError($this->sessionStatus)) {
             $sErrorMessage = $this->sessionStatus->getMessage();
         }
+
+	// check if we're in JSON mode - in which case, throw error
+	// but JSON mode only gets set later, so gonna have to check action
+	if(KTUtil::arrayGet($_REQUEST, 'action', '') == 'json') { //$this->bJSONMode) {
+	    $this->handleOutputJSON(array('error'=>true, 
+					  'type'=>'kt.not_logged_in', 
+					  'alert'=>true,
+					  'message'=>_kt('Your session has expired, please log in again.')));
+	    exit(0);
+	}
+
         // redirect to login with error message
         if ($sErrorMessage) {
             // session timed out
@@ -302,47 +318,8 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function addInfoMessage($sMessage) { $_SESSION['KTInfoMessage'][] = $sMessage; }
-
-    function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }
-
-    function handleOutput($data) {
-        global $default;
-        global $sectionName;
-        $this->oPage->setSection($this->sSection);
-        $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
-        $this->oPage->setPageContents($data);
-        $this->oPage->setUser($this->oUser);
-        $this->oPage->setHelp($this->sHelpPage);
-        
-        // handle errors that were set using KTErrorMessage.
-        $errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
-        if (!empty($errors)) {
-            foreach ($errors as $sError) {
-                $this->oPage->addError($sError);
-            }
-            $_SESSION['KTErrorMessage'] = array(); // clean it out.
-        }
-
-        // handle notices that were set using KTInfoMessage.
-        $info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
-        
-        if (!empty($info)) {
-            foreach ($info as $sInfo) {
-                $this->oPage->addInfo($sInfo);
-            }
-            $_SESSION['KTInfoMessage'] = array(); // clean it out.
-        }
-
-        // Get the portlets to display from the portlet registry
-        $oPRegistry =& KTPortletRegistry::getSingleton();
-        $aPortlets = $oPRegistry->getPortletsForPage($this->aBreadcrumbs);
-        foreach ($aPortlets as $oPortlet) {
-            $oPortlet->setDispatcher($this);
-            $this->oPage->addPortlet($oPortlet);
-        }
-
-        $this->oPage->render();
-    }
+	
+    function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }	
 
     function errorPage($errorMessage, $oException = null) {
         if ($this->bTransactionStarted) {
@@ -355,6 +332,74 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->handleOutput($sOutput);
         exit(0);
     }
+
+    function handleOutput($data) {
+	if($this->bJSONMode) {
+	    return $this->handleOutputJSON($data);
+	} else {
+	    return $this->handleOutputDefault($data);
+	}
+    }
+
+    function handleOutputDefault($data) {
+	global $default;
+	global $sectionName;
+
+        $this->oPage->setSection($this->sSection);
+        $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
+        $this->oPage->setPageContents($data);
+        $this->oPage->setUser($this->oUser);
+	$this->oPage->setHelp($this->sHelpPage);
+		
+	// handle errors that were set using KTErrorMessage.
+	$errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
+	if (!empty($errors)) {
+            foreach ($errors as $sError) {
+		$this->oPage->addError($sError);
+	    }
+	    $_SESSION['KTErrorMessage'] = array(); // clean it out.
+	}
+
+	// handle notices that were set using KTInfoMessage.
+	$info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
+	
+	if (!empty($info)) {
+            foreach ($info as $sInfo) {
+		$this->oPage->addInfo($sInfo);
+	    }
+	    $_SESSION['KTInfoMessage'] = array(); // clean it out.
+	}
+
+        // Get the portlets to display from the portlet registry
+        $oPRegistry =& KTPortletRegistry::getSingleton();
+        $aPortlets = $oPRegistry->getPortletsForPage($this->aBreadcrumbs);
+        foreach ($aPortlets as $oPortlet) {
+            $oPortlet->setDispatcher($this);
+            $this->oPage->addPortlet($oPortlet);
+        }
+
+        $this->oPage->render();
+    }
+
+
+    // JSON handling
+    function handleOutputJSON($data) {
+	$oJSON = new Services_JSON();
+	print $oJSON->encode($data);
+	exit(0);
+    }
+	
+    function do_json() {
+	$this->bJSONMode = true;
+	$this->redispatch('json_action', 'json');	
+    }
+
+    function json_main() {
+	return array('type'=>'error', 'value'=>'Not implemented');
+    }
+
+	
+
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {
