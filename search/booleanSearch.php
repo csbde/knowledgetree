@@ -72,6 +72,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
         }
+	
         $boolean_search_id = KTUtil::arrayGet($_REQUEST, 'boolean_search_id');
         if ($boolean_search_id) {
             $datavars = $_SESSION['boolean_search'][$boolean_search_id];

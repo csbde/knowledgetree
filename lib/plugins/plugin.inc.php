@@ -314,11 +314,13 @@ class KTPlugin {
         DBUtil::setupAdminDatabase();
         for ($i = $iStart; $i <= $iEnd; $i++) {
             $sqlfile = sprintf("%s/upgradeto%d.sql", $this->sSQLDir, $i);
+
             if (!file_exists($sqlfile)) {
                 continue; // skip it.
             }
             $queries = SQLFile::sqlFromFile($sqlfile);            
             $res = DBUtil::runQueries($queries, $default->_admindb);
+
             if (PEAR::isError($res)) {
                 return $i; // break out completely, indicating how far we got pre-error.
             }
@@ -331,6 +333,7 @@ class KTPlugin {
         $friendly_name = '';
         if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
+
             // check for upgrade.
             $iEndVersion = 0; // dest.
             if ($this->iVersion != $oEntity->getVersion()) {

@@ -100,6 +100,7 @@ class KTPage {
 		$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
 		$aJS[] = 'thirdpartyjs/MochiKit/Logging.js';
 		$aJS[] = 'thirdpartyjs/MochiKit/Async.js';
+		$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
 		$aJS[] = 'resources/js/kt-utility.js';
 		//$aJS[] = 'resources/js/translate.js';
 		$aJS[] = 'presentation/i18nJavascript.php';

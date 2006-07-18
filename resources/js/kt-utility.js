@@ -85,3 +85,18 @@ function breadcrumbFind(elem, tagName) {
         return null;
     }
 }
+
+
+
+// JSON stuff
+
+// callback to check for not_logged_in error, throw 
+function checkKTError(res) {
+    if(res.error) {
+	if(res.alert) {
+	    alert(res.message);
+	}
+	throw new NamedError(res.type);
+    }
+    return res;
+}

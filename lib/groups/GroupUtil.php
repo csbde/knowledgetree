@@ -197,8 +197,15 @@ class GroupUtil {
     function listGroupsForUser ($oUser, $aOptions = null) {
         global $default;
         $iUserId = KTUtil::getId($oUser);
+
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
+	$where = KTUtil::arrayGet($aOptions, 'where', false);
+
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
+	if($where) {
+	    $sQuery .= " AND " . $where;
+	}
+
         $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
         $aGroups = array();

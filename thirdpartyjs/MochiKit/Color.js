@@ -1,6 +1,6 @@
 /***
 
-MochiKit.Color 1.2
+MochiKit.Color 1.3.1
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
@@ -30,7 +30,7 @@ if (typeof(MochiKit.Color) == "undefined") {
 }
 
 MochiKit.Color.NAME = "MochiKit.Color";
-MochiKit.Color.VERSION = "1.2";
+MochiKit.Color.VERSION = "1.3.1";
 
 MochiKit.Color.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
@@ -42,7 +42,7 @@ MochiKit.Color.toString = function () {
 
 
 MochiKit.Color.Color = function (red, green, blue, alpha) {
-    if (typeof(alpha) == 'undefined' || alpha == null) {
+    if (typeof(alpha) == 'undefined' || alpha === null) {
         alpha = 1.0;
     }
     this.rgb = {
@@ -107,7 +107,7 @@ MochiKit.Color.Color.prototype = {
     },
 
     blendedColor: function (other, /* optional */ fraction) {
-        if (typeof(fraction) == 'undefined' || fraction == null) {
+        if (typeof(fraction) == 'undefined' || fraction === null) {
             fraction = 0.5;
         }
         var sf = 1.0 - fraction;
@@ -207,7 +207,7 @@ MochiKit.Color.Color.prototype = {
     asHSV: function () {
         var hsv = this.hsv;
         var c = this.rgb;
-        if (typeof(hsv) == 'undefined' || hsv == null) {
+        if (typeof(hsv) == 'undefined' || hsv === null) {
             hsv = MochiKit.Color.rgbToHSV(this.rgb);
             this.hsv = hsv;
         }
@@ -217,7 +217,7 @@ MochiKit.Color.Color.prototype = {
     asHSL: function () {
         var hsl = this.hsl;
         var c = this.rgb;
-        if (typeof(hsl) == 'undefined' || hsl == null) {
+        if (typeof(hsl) == 'undefined' || hsl === null) {
             hsl = MochiKit.Color.rgbToHSL(this.rgb);
             this.hsl = hsl;
         }
@@ -267,6 +267,10 @@ MochiKit.Base.update(MochiKit.Color.Color, {
 
     fromName: function (name) {
         var Color = MochiKit.Color.Color;
+        // Opera 9 seems to "quote" named colors(?!)
+        if (name.charAt(0) == '"') {
+            name = name.substr(1, name.length - 2);
+        }
         var htmlColor = Color._namedColors[name.toLowerCase()];
         if (typeof(htmlColor) == 'string') {
             return Color.fromHexString(htmlColor);
@@ -314,7 +318,7 @@ MochiKit.Base.update(MochiKit.Color.Color, {
 
     _fromColorString: function (pre, method, scales, colorCode) {
         // parses either HSL or RGB
-        if (colorCode.indexOf(pre) == 0) {
+        if (colorCode.indexOf(pre) === 0) {
             colorCode = colorCode.substring(colorCode.indexOf("(", 3) + 1, colorCode.length - 1);
         } 
         var colorChunks = colorCode.split(/\s*,\s*/);
@@ -416,7 +420,7 @@ MochiKit.Base.update(MochiKit.Color, {
         var red;
         var green;
         var blue;
-        if (saturation == 0.0) {
+        if (saturation === 0) {
             red = 0;
             green = 0;
             blue = 0;
@@ -455,7 +459,7 @@ MochiKit.Base.update(MochiKit.Color, {
         var red;
         var green;
         var blue;
-        if (saturation == 0) {
+        if (saturation === 0) {
             red = lightness;
             green = lightness;
             blue = lightness;
@@ -538,7 +542,7 @@ MochiKit.Base.update(MochiKit.Color, {
         var saturation;
         var lightness = (max + min) / 2.0;
         var delta = max - min;
-        if (delta == 0) {
+        if (delta === 0) {
             hue = 0;
             saturation = 0;
         } else {
@@ -572,7 +576,8 @@ MochiKit.Base.update(MochiKit.Color, {
     },
 
     toColorPart: function (num) {
-        var digits = Math.round(num).toString(16);
+        num = Math.round(num);
+        var digits = num.toString(16);
         if (num < 16) {
             return '0' + digits;
         }
@@ -614,7 +619,7 @@ MochiKit.Base.update(MochiKit.Color, {
             var rval = this.fromRGB(r, g, b, a);
             this[name] = function () { return rval; };
             return rval;
-        }
+        };
 
         for (var k in colors) {
             var name = k + "Color";
@@ -632,11 +637,11 @@ MochiKit.Base.update(MochiKit.Color, {
                 }
             }
             return true;
-        }
+        };
 
         var compareColor = function (a, b) {
             return a.compareRGB(b);
-        }
+        };
 
         m.nameFunctions(this);
 

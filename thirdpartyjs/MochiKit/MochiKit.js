@@ -1,6 +1,6 @@
 /***
 
-MochiKit.MochiKit 1.2
+MochiKit.MochiKit 1.3.1
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
@@ -17,7 +17,7 @@ if (typeof(MochiKit.MochiKit) == 'undefined') {
 }
 
 MochiKit.MochiKit.NAME = "MochiKit.MochiKit";
-MochiKit.MochiKit.VERSION = "1.2";
+MochiKit.MochiKit.VERSION = "1.3.1";
 MochiKit.MochiKit.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 };
@@ -36,6 +36,7 @@ MochiKit.MochiKit.SUBMODULES = [
     "DOM",
     "LoggingPane",
     "Color",
+    "Signal",
     "Visual"
 ];
 
@@ -55,6 +56,7 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
         JSAN.use("MochiKit.DOM", []);
         JSAN.use("MochiKit.LoggingPane", []);
         JSAN.use("MochiKit.Color", []);
+        JSAN.use("MochiKit.Signal", []);
         JSAN.use("MochiKit.Visual", []);
     }
     (function () {
@@ -76,8 +78,9 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
             if (!all) {
                 all = extend(null, m.EXPORT, m.EXPORT_OK);
             }
-            for (i = 0; i < all.length; i++) {
-                k = all[i];
+            var j;
+            for (j = 0; j < all.length; j++) {
+                k = all[j];
                 self[k] = m[k];
             }
         }
@@ -108,11 +111,11 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
                 baseElem = scripts[i];
             }
         }
-        if (base == null) {
+        if (base === null) {
             return;
         }
         var modules = MochiKit.MochiKit.SUBMODULES;
-        for (i = 0; i < modules.length; i++) {
+        for (var i = 0; i < modules.length; i++) {
             if (MochiKit[modules[i]]) {
                 continue;
             }
@@ -122,16 +125,28 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
             }
             if (document.documentElement &&
                 document.documentElement.namespaceURI == kXULNSURI) {
-                // doesn't work in Safari
+                // XUL
                 var s = document.createElementNS(kXULNSURI, 'script');
                 s.setAttribute("id", "MochiKit_" + base + modules[i]);
                 s.setAttribute("src", uri);
                 s.setAttribute("type", "application/x-javascript");
                 baseElem.parentNode.appendChild(s);
             } else {
-                var tag = '<' + 'script src="' + uri + '" type="text/javascript"' + '>' + '<' + '/script' + '>';
-                document.write(tag);
+                // HTML
+                /*
+                    DOM can not be used here because Safari does
+                    deferred loading of scripts unless they are
+                    in the document or inserted with document.write
+
+                    This is not XHTML compliant.  If you want XHTML
+                    compliance then you must use the packed version of MochiKit
+                    or include each script individually (basically unroll
+                    these document.write calls into your XHTML source)
+
+                */
+                document.write('<script src="' + uri +
+                    '" type="text/javascript"></script>');
             }
-        }
+        };
     })();
 }

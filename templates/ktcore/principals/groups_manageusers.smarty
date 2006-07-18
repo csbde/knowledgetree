@@ -1,65 +1,16 @@
 <h2>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</h2>
-
-{$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
-
 <p class="descriptiveText">{i18n}Users may be associated with Groups which are then used to grant these users security privileges.{/i18n}</p>  
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateUserMembers" />
    <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
    <input type="hidden" name="old_search" value="{$old_search}" />      
-   <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
-   
-   <input type="hidden" name="userAdded" />
-   <input type="hidden" name="userRemoved" />
    
    
    <fieldset>
       <legend>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>.{/i18n}</p>
 
-<table border="0" width="600">
-   <thead>
-      <tr>
-         <th>{i18n}Available Users{/i18n}</th>
-         <th>&nbsp;</th>
-         <th>{i18n}Member users{/i18n}</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td valign="top" width="1%">
-           <select name="userSelect" size="10" multiple="multiple">
-               {foreach item=oUser from=$unused_users}
-               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
-               {/foreach}
-           </select>
-         </td>
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
-         </td>
-         <td valign="top" width="1%">
-            <select name="chosenUsers" size="10" multiple="multiple">
-               {foreach item=oUser from=$group_users}
-               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
-               {/foreach}
-            </select>
-         </td>
-      </tr>
-      <tr>
-         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(userSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenUsers, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
-         </td>
-      </tr>
-</tbody></table>
+      {$widget->render()}
 
       <div class="form_actions">
          <input type="submit" value="{i18n}save changes{/i18n}" />

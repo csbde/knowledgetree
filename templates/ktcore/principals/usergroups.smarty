@@ -1,9 +1,8 @@
 <h2>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</h2>
 
-{$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+
+
 
 <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
@@ -11,61 +10,15 @@
    <input type="hidden" name="action" value="updateGroups" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
    <input type="hidden" name="old_search" value="{$old_search}" />    
-   <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
-   
-   <input type="hidden" name="groupAdded" />
-   <input type="hidden" name="groupRemoved" />
-   
    
    <fieldset>
       <legend>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</legend>
 
-<p class="descriptiveText">{i18n}Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>.{/i18n}</p>
+	{$widget->render()}
 
-<table border="0" width="600">
-   <thead>
-      <tr>
-         <th>{i18n}Available Groups{/i18n}</th>
-         <th>&nbsp;</th>
-         <th>{i18n}Assigned Groups{/i18n}</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td valign="top" width="1%">
-           <select name="groupSelect" size="10" multiple="multiple">
-               {foreach item=oGroup from=$unused_groups}
-               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
-               {/foreach}
-           </select>
-         </td>
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
-         </td>
-         <td valign="top" width="1%">
-            <select name="chosenGroups" size="10" multiple="multiple">
-               {foreach item=oGroup from=$user_groups}
-               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
-               {/foreach}
-               
-            </select>
-         </td>
-      </tr>
-      <tr>
-         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(groupSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenGroups, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
-         </td>
-      </tr>
-</tbody></table>
-
-      <div class="form_actions">
-         <input type="submit" value="{i18n}save changes{/i18n}" />
-         <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
-      </div>
+	<div class="form_actions">
+            <input type="submit" value="{i18n}save changes{/i18n}" />
+            <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+        </div>
    </fieldset>
    </form>

@@ -71,6 +71,10 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $oAction->dispatch();
     }
 
+    function json_main() {
+	return $this->do_main();
+    }
+
     /**
      * Handle output from this dispatcher.
      *
@@ -79,7 +83,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
      * chained dispatcher will take care of that.
      */
     function handleOutput ($data) {
-        if ($this->error) {
+        if ($this->bJSONMode || $this->error) {
             parent::handleOutput($data);
         } else {
             print $data;

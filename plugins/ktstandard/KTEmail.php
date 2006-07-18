@@ -251,41 +251,48 @@ class KTDocumentEmailAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
-        $fields = array();
         $oConfig = KTConfig::getSingleton();
         $bAttachment = $oConfig->get('email/allowAttachment', false);
         $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
+        $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
+
+
+        $fields = array();
+
+	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
+					      'groups', '', &$this->oPage, false, null, null, 
+					      array('action'=>sprintf('getGroups&fDocumentId=%d', $this->oDocument->getId()),
+						    'assigned' => array(),
+						    'multi'=>'true',
+						    'size'=>'8'));
+
+	$fields[] = new KTJSONLookupWidget(_kt('Users'), '',
+					      'users', '', &$this->oPage, false, null, null, 
+					      array('action'=>sprintf('getUsers&fDocumentId=%d', $this->oDocument->getId()),
+						    'assigned' => array(),
+						    'multi'=>'true',
+						    'size'=>'8'));
+
+
         if ($bAttachment) {
-            $fields[] = new KTCheckboxWidget(_kt("Attach document"), _kt("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
+            $fields[] = new KTCheckboxWidget(_kt("Attach document"), 
+					     _kt("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 
+					     'fAttachDocument', null, $this->oPage);
         }
         if ($bEmailAddresses) {
-            $fields[] = new KTTextWidget(_kt("Email addresses"), _kt("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage, false, null, null, array('cols' => 60, 'rows' => 5));
-        }
-        $fields[] = new KTTextWidget(_kt("Comment"), _kt("A message for those who receive the document"), 'fComment', "", $this->oPage, true, null, null, array('cols' => 60, 'rows' => 5));
-
-        $oKTConfig =& KTConfig::getSingleton();
-        $bOnlyOwnGroup = $oKTConfig->get('email/onlyOwnGroups', false);
-        if ($bOnlyOwnGroup != true) {
-            $aGroups = Group::getList();
-            $aUsers = User::getEmailUsers();
-        } else {
-            $aGroups = GroupUtil::listGroupsForUser($this->oUser);
-            $aMembers = array();
-            foreach ($aGroups as $oGroup) {
-                $aMembers = array_merge($aMembers, $oGroup->getMembers());
-            }
-            $aUsers = array();
-            $aUserIds = array();
-            foreach ($aMembers as $oUser) {
-                if (in_array($oUser->getId(), $aUserIds)) {
-                    continue;
-                }
-                $aUsers[] = $oUser;
-                $aUserIds[] = $oUser->getId();
-            }
+            $fields[] = new KTTextWidget(_kt("Email addresses"), 
+					 _kt("Add extra email addresses here"), 
+					 'fEmailAddresses', "", $this->oPage, 
+					 false, null, null, array('cols' => 60, 'rows' => 5));
         }
 
+        $fields[] = new KTTextWidget(_kt("Comment"), 
+				     _kt("A message for those who receive the document"), 
+				     'fComment', "", $this->oPage, 
+				     true, null, null, array('cols' => 60, 'rows' => 5));
+
+	
+        $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
@@ -294,6 +301,68 @@ class KTDocumentEmailAction extends KTDocumentAction {
         );
         return $oTemplate->render($aTemplateData);
     }
+
+    function json_getGroups() {
+        $oConfig = KTConfig::getSingleton();
+        $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
+
+	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+	$aGroupList = array('off'=>'-- Please filter --');
+
+	if($sFilter && trim($sFilter)) {	    
+	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
+	    if ($bOnlyOwnGroup != true) {
+		$aGroups = Group::getList($sWhere);
+	    } else {
+		$aGroups = GroupUtil::listGroupsForUser($this->oUser, array('where' => $sWhere));
+	    }
+	    
+	    $aGroupList = array();
+	    foreach($aGroups as $g) {
+		$aGroupList[$g->getId()] = $g->getName();
+	    }
+	}
+
+	return $aGroupList;
+    }
+
+
+    function json_getUsers() {
+        $oConfig = KTConfig::getSingleton();
+        $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
+
+	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+	$aUserList = array('off'=>'-- Please filter --');
+
+	if($sFilter && trim($sFilter)) {	    
+	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
+	    if ($bOnlyOwnGroup != true) {
+		$aUsers = User::getEmailUsers($sWhere);
+	    } else {
+		$aGroups = GroupUtil::listGroupsForUser($this->oUser);
+		$aMembers = array();
+		foreach ($aGroups as $oGroup) {
+		    $aMembers = array_merge($aMembers, $oGroup->getMembers());
+		}
+		$aUsers = array();
+		$aUserIds = array();
+		foreach ($aMembers as $oUser) {
+		    if (in_array($oUser->getId(), $aUserIds)) {
+			continue;
+		    }
+		    $aUsers[] = $oUser;
+		}
+	    }
+	    
+	    $aUserList = array();
+	    foreach($aUsers as $u) {
+		$aUserList[$u->getId()] = $u->getName();
+	    }
+	}
+
+	return $aUserList;
+    }
+
 
     function do_email() {
         $groupNewRight = trim($_REQUEST['groupNewRight'], chr(160));
