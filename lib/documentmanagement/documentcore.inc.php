@@ -67,6 +67,9 @@ class KTDocumentCore extends KTEntity {
 
     var $bIsCheckedOut;
     var $iCheckedOutUserId;
+    
+    var $iRestoreFolderId;
+    var $sRestoreFolderPath;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -95,6 +98,10 @@ class KTDocumentCore extends KTEntity {
         "iPermissionObjectId" => 'permission_object_id',
         "iPermissionLookupId" => 'permission_lookup_id',
         "iOwnerId" => 'owner_id',
+        
+        // restore-related
+        'iRestoreFolderId' => 'restore_folder_id',
+        'sRestoreFolderPath' => 'restore_folder_path',
     );
 
     function KTDocument() {
@@ -136,6 +143,12 @@ class KTDocumentCore extends KTEntity {
 
     function getImmutable() { return $this->bImmutable; }
     function setImmutable($mValue) { $this->bImmutable = $mValue; }
+    
+    function getRestoreFolderId() { return $this->iRestoreFolderId; }
+    function setRestoreFolderId($iValue) { $this->iRestoreFolderId = $iValue; }    
+
+    function getRestoreFolderPath() { return $this->sRestoreFolderPath; }
+    function setRestoreFolderPath($sValue) { $this->sRestoreFolderPath = $sValue; }    
     // }}}
 
     // {{{ getParentId
@@ -234,7 +247,9 @@ class KTDocumentCore extends KTEntity {
 
     // {{{ update
     function update($bPathMove = false) {
+        //var_dump($this); exit(0);    
         $res = parent::update();
+
         if (($res === true) && ($bPathMove === true)) {
             KTPermissionUtil::updatePermissionLookup($this);
         }

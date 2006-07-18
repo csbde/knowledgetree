@@ -94,6 +94,13 @@ class Document {
     function getImmutable() { return $this->_oDocumentCore->getImmutable(); }
     function setImmutable($mValue) { $this->_oDocumentCore->setImmutable($mValue); }
     
+    function getRestoreFolderId() { return $this->_oDocumentCore->getRestoreFolderId(); }
+    function setRestoreFolderId($iValue) { $this->_oDocumentCore->setRestoreFolderId($iValue); }    
+
+    function getRestoreFolderPath() { return $this->_oDocumentCore->getRestoreFolderPath(); }
+    function setRestoreFolderPath($sValue) { $this->_oDocumentCore->setRestoreFolderPath($sValue); }    
+    
+    
     // Document Metadata Items
     
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
@@ -443,6 +450,8 @@ class Document {
             "Modified",
             "FolderId", 
             "StatusId",
+            "RestoreFolderId",            
+            "RestoreFolderPath",
         );
         
         $aCore = array();
