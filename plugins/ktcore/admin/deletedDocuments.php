@@ -198,10 +198,10 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         foreach ($aDocuments as $oDoc) {
-            $oFolder = Folder::get($oDoc->getFolderID());
+            $oFolder = Folder::get($oDoc->getRestoreFolderId());
             if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); } // move to root if parent no longer exists.
             if ($oStorage->restore($oDoc)) {
-		$oDoc = Document::get($oDoc->getId()); // storage path has changed for most recent object...
+                $oDoc = Document::get($oDoc->getId()); // storage path has changed for most recent object...
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
@@ -233,6 +233,21 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $this->successRedirectToMain($msg);
     }    
     
+    function getRestoreLocationFor($oDocument) {
+        $iFolderId = $oDocument->getRestoreFolderId();    
+        $oFolder = Folder::get($iFolderId);
+        
+        if (PEAR::isError($oFolder)) {
+            return _kt('Original folder no longer exists.  Document will be restored in the root folder.'); 
+        } else {
+            $aCrumbs = KTBrowseUtil::breadcrumbsForFolder($oFolder);
+            $aParts = array();
+            foreach ($aCrumbs as $aInfo) {
+                $aParts[] = $aInfo['name'];
+            }
+            return implode(' &raquo; ', $aParts);
+        }
+    }
 }
 
 ?>

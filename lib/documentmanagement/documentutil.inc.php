@@ -621,7 +621,9 @@ class KTDocumentUtil {
     // {{{ delete
     function delete($oDocument, $sReason, $iDestFolderId = null) {
         $oDocument =& KTUtil::getObject('Document', $oDocument);
-        if (is_null($iDestFolderId)) { $iDestFolderId = $oDocument->getFolderID(); }
+        if (is_null($iDestFolderId)) { 
+            $iDestFolderId = $oDocument->getFolderID(); 
+        }
         $oStorageManager =& KTStorageManagerUtil::getSingleton();
         
         global $default;
@@ -629,24 +631,34 @@ class KTDocumentUtil {
         if (count(trim($sReason)) == 0) { 
             return PEAR::raiseError('Deletion requires a reason'); 
         }
-        if (PEAR::isError($oDocument) || ($oDocument == false)) { return PEAR::raiseError('Invalid document object.'); }
         
-        if ($oDocument->getIsCheckedOut() == true) { return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); }
+        if (PEAR::isError($oDocument) || ($oDocument == false)) { 
+            return PEAR::raiseError('Invalid document object.'); 
+        }
+        
+        if ($oDocument->getIsCheckedOut() == true) { 
+            return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); 
+        }
         
         // IF we're deleted ...
-        if ($oDocument->getStatusID() == DELETED) { return true; }
-
-
-	$oOrigFolder = Folder::get($oDocument->getFolderId());
-	
+        if ($oDocument->getStatusID() == DELETED) { 
+            return true; 
+        }
         
+        $oOrigFolder = Folder::get($oDocument->getFolderId());
+
         DBUtil::startTransaction();
         
-                // flip the status id
+        // flip the status id
         $oDocument->setStatusID(DELETED);
-        $oDocument->setFolderID($iDestFolderId); // try to keep it in _this_ folder, otherwise move to root.
+        
+        // $iDestFolderId is DEPRECATED.
+        $oDocument->setFolderID(null); 
+        $oDocument->setRestoreFolderId($oOrigFolder->getId());
+        $oDocument->setRestoreFolderPath(Folder::generateFolderIDs($oOrigFolder->getId()));
         
         $res = $oDocument->update();
+        
         if (PEAR::isError($res) || ($res == false)) {
             DBUtil::rollback();
             return PEAR::raiseError(_kt("There was a problem deleting the document from the database."));
