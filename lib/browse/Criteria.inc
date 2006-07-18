@@ -888,7 +888,7 @@ class Criteria {
                 $oCriterion =& new DocumentTypeCriterion(_kt("Document Type"), 'document_type_id', 'document_type_id', -5);
                 break;
             case -6:
-                $oCriterion =& new IDCriterion(_kt("ID"), 'id', 'id', -6);
+                $oCriterion =& new IDCriterion(_kt("Document ID"), 'id', 'id', -6);
                 break;
             case -7:
                 $oCriterion =& new DateModifiedCriterion(_kt("Date Modified"), 'modified', 'modified', -7);
