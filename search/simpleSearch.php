@@ -157,6 +157,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
         $aOptions['return_url'] = KTUtil::addQueryStringSelf("fSearchableText=" . urlencode($searchable_text));
+        $aOptions['empty_message'] = _kt("No documents or folders match this query.");
 
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new SimpleSearchQuery($searchable_text));    

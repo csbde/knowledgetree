@@ -254,7 +254,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
         $aOptions['result_url'] = KTUtil::addQueryStringSelf("action=performSearch&boolean_search_id=" . urlencode($sSearch));
-        
+        $aOptions['empty_message'] = _kt("No documents or folders match this query.");
+                
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BooleanSearchQuery($aCriteriaSet));    
 
