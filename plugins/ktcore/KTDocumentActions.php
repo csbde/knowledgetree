@@ -776,14 +776,30 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $aNames = $this->oDocumentFolder->getPathArray();
         $aNames[] = $this->oDocument->getName();
         $sDocumentName = join(" &raquo; ", $aNames);
+        
+
+        $bNameClash = KTDocumentUtil::nameExists($this->oFolder, $this->oDocument->getName());      
+        $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
+        $bIsClash = $bNameClash or $bFileClash;  
+        
         $copy_fields = array();
         $copy_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         $copy_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
         $copy_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be copied.'), 'reason', "", $this->oPage, true);
+        
+        if ($bIsClash) {
+            if ($bNameClash) {
+                $copy_fields[] = new KTStringWidget(_kt('Title'), _kt('A document with the same title already exists in the folder.  Please supply an alternative filename'), 'name', $this->oDocument->getName(), $this->oPage, true);            
+            }
+            if ($bFileClash) {
+                $copy_fields[] = new KTStringWidget(_kt('Filename'), _kt('A document with the same filename already exists in the folder.  Please supply an alternative filename'), 'filename', $this->oDocument->getFilename(), $this->oPage, true);            
+            }            
+        }
 
         $oTemplate->setData(array(
             'context' => &$this,
             'copy_fields' => $copy_fields,
+            'is_clash' => $bIsClash,
         ));
         return $oTemplate->render();
     }
@@ -792,7 +808,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $aOptions = array(
             'message' => _kt("No reason given"),
-            'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
+            'redirect_to' => array('copy', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
         );
         $this->oValidator->notEmpty($sReason, $aOptions);
 
@@ -804,11 +820,43 @@ class KTDocumentCopyAction extends KTDocumentAction {
         // FIXME agree on document-duplication rules re: naming, etc.
         
         $this->startTransaction();
+        // now try update it.
+        
+        $bNameClash = KTDocumentUtil::nameExists($this->oFolder, $this->oDocument->getName());      
+        $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
+        $bIsClash = $bNameClash or $bFileClash;  
+        
+        if ($bIsClash) {
+            $name = KTUtil::arrayGet($_REQUEST, 'name', $this->oDocument->getName());
+            $filename = KTUtil::arrayGet($_REQUEST, 'filename', $this->oDocument->getFilename());            
+            
+            if (KTDocumentUtil::nameExists($this->oFolder, $name)) {
+                $this->errorRedirectTo('copy', _kt('A document with that name also exists in this folder.  Please try a different name.'), sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId()));
+                exit(0);
+            }
+            
+            if (KTDocumentUtil::fileExists($this->oFolder, $filename)) {
+                $this->errorRedirectTo('copy', _kt('A document with that filename also exists in this folder.  Please try a different name.'), sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId()));
+                exit(0);
+            }            
+        }
 
         $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder);
         if (PEAR::isError($oNewDoc)) {
             $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
+        }
+        
+        if ($bIsClash) {        
+            // use earlier supplied and tested versions.
+            $oNewDoc->setName($name);
+            $oNewDoc->setFilename($filename);
+            
+            $res = $oNewDoc->update();
+            if (PEAR::isError($res)) {
+                $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $res->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+                exit(0);
+            }
         }
 
         $this->commitTransaction();
