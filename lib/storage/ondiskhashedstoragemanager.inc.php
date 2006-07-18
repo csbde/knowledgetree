@@ -170,7 +170,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         if (file_exists($sPath)) {
             //set the correct headers
             header("Content-Type: " .
-                    KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
+                    KTMime::getMimeTypeName($oContentVersion->getMimeTypeID()));
             header("Content-Length: ".  filesize($sPath));
             // prefix the filename presented to the browser to preserve the document extension
             header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oContentVersion->getFileName() . '"');
