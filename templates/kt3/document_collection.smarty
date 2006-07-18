@@ -35,7 +35,7 @@
             </tr>
             {/foreach}
           {else}
-            <tr><td colspan="{$columncount}">{i18n}No documents or folders available in this location.{/i18n}</td></tr>
+            <tr><td colspan="{$columncount}">{$context->empty_message}</td></tr>
           {/if}
         </tbody>
         <tfoot>

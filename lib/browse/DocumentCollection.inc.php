@@ -60,7 +60,15 @@ class DocumentCollection {
    var $sort_column;
    var $sort_order;
    
+   var $is_advanced = false;
+   
+   var $empty_message;
+   
    /* initialisation */
+   
+   function DocumentCollection() {
+       $this->empty_message = _kt("No folders or documents in this location.");   
+   }
    
    // columns should be added in the "correct" order (e.g. display order)
    function addColumn($oBrowseColumn) { array_push($this->columns, $oBrowseColumn); }   
@@ -284,6 +292,7 @@ class AdvancedCollection {
     var $_gotData = false;    
     var $_sorted = false;
     
+    var $empty_message;
 
     /* initialisation */
     function setOptions($aOptions) {
@@ -303,7 +312,9 @@ class AdvancedCollection {
         $this->sort_order = KTUtil::arrayGet($aOptions, 'sort_order', 'asc');        
 
         // url options
-        $this->returnURL = KTUtil::arrayGet($aOptions, 'return_url', $_SERVER['PHP_SELF']);     
+        $this->returnURL = KTUtil::arrayGet($aOptions, 'return_url', $_SERVER['PHP_SELF']);
+        
+        $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No folders or documents in this location."));
     }   
     
     

@@ -102,7 +102,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $collection->setQueryObject($qObj);
         $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
         $batchSize = 20;
-
+        $collection->empty_message = _kt('No folders available in this location.');
         $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit2&unit_name=%s&fFolderId=%d", $sName, $oFolder->getId()));
         $collection->setBatching($resultURL, $batchPage, $batchSize);
 
