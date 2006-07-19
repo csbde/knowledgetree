@@ -384,13 +384,20 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aFoo = $_REQUEST['foo'];
 
 	//	print '<pre>'; var_dump($aFoo); exit(0);
+	// print "<pre>";
 
         $aPermissions = KTPermission::getList();
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
+
+	    print 'permission: ' . $oPermission->getName() . '<br/>';
+	    var_dump(KTUtil::arrayGet($aFoo, $iPermId, false)); print '<br/>';
+
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
+
+	    exit(0);
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),

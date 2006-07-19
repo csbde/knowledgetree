@@ -78,6 +78,7 @@ PermissionsTable.prototype = {
 	dRow.row_type = oRow['type'];
 	dRow.row_id = oRow['id'];
 	appendChildNodes(this.dTBody, dRow); 
+//	this.dTBody.innerHTML += toHTML(dRow);
 	this.aRows[oRow['id']] = dRow;
     },
 
