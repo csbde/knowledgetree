@@ -223,7 +223,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
         $checkin_fields = array();
         $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The updated document.'), 'file', "", $this->oPage, true);
-        $checkin_fields[] = new KTStringWidget(_kt('Description'), _kt('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
+        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _kt('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
         $checkin_fields[] = new KTCheckboxWidget(_kt('Force Original Filename'), _kt('If this is checked, the uploaded document must have the same filename as the original.'), 'forcefilename', '1', $this->oPage, true);
 
         $oTemplate->setData(array(
@@ -235,7 +235,11 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
     function do_checkin() {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $sReason = $this->oValidator->notEmpty($sReason);
+        $aOptions = array(
+            'message' => _kt('You must supply a reason.'),
+            'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
+        );
+        $sReason = $this->oValidator->notEmpty($sReason, $aOptions);
 
 	$bForceFilename = KTUtil::arrayGet($_REQUEST, 'forcefilename');	
 
