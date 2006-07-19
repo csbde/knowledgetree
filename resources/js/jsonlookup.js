@@ -45,7 +45,7 @@ JSONLookupWidget.prototype = {
 	this.triggers['remove'] = null;
 
 	this.initialValuesLoaded = false
-	//this.getValues();
+	this.getValues();
     },
 
     'addTrigger' : function(event, func) {
@@ -241,3 +241,6 @@ function initJSONLookup(name, action) {
 	_aLookupWidgets[name].initialize(name, action);
     }
 }
+
+
+		     
