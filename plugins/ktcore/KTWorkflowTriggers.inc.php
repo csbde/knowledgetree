@@ -157,6 +157,7 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
             return true; // fail safe for cases where the role is deleted.
         }        
 
+        $bHaveRole = true;
         if ($iRoleId) {
             $bHaveRole = false;
             // handle the magic roles            
@@ -167,6 +168,7 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
                 // authenticated
                 $bHaveRole = true;
             } else {
+                $bHaveRole = true;            
                 $oRoleAllocation = DocumentRoleAllocation::getAllocationsForDocumentAndRole($oDocument->getId(), $iRoleId);
                 if ($oRoleAllocation == null) {   // no role allocation on the doc - check the folder.
                     $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getParentID(), $iRoleId);
@@ -174,17 +176,13 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
                 // if that's -also- null                        
                 if ($oRoleAllocation == null) {   // no role allocation, no fulfillment.
                     $bHaveRole = false;
-                } else if ($oRoleAllocation->hasMember($oUser)) {
+                } else if (!$oRoleAllocation->hasMember($oUser)) {
                     $bHaveRole = false;
                 }
             }
-            
-            if (!$bHaveRole) {
-                continue;
-            }
         }
         
-        return true;
+        return $bHaveRole;
     }
     
     function displayConfiguration($args) {
