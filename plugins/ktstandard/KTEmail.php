@@ -260,14 +260,14 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $fields = array();
 
 	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
-					      'groups', '', &$this->oPage, false, null, null, 
+					      'groups', '', $this->oPage, false, null, null, 
 					      array('action'=>sprintf('getGroups&fDocumentId=%d', $this->oDocument->getId()),
 						    'assigned' => array(),
 						    'multi'=>'true',
 						    'size'=>'8'));
 
 	$fields[] = new KTJSONLookupWidget(_kt('Users'), '',
-					      'users', '', &$this->oPage, false, null, null, 
+					      'users', '', $this->oPage, false, null, null, 
 					      array('action'=>sprintf('getUsers&fDocumentId=%d', $this->oDocument->getId()),
 						    'assigned' => array(),
 						    'multi'=>'true',
