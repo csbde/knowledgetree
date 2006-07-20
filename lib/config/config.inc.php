@@ -72,6 +72,11 @@ class KTConfig {
     function loadFile($filename, $bDefault = false) {
         $c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
+        
+        if (PEAR::isError($root)) {
+            return $root;    
+        }        
+        
         $this->aFileRoot[$filename] =& $root;
 
         $conf =& $root->toArray();

@@ -544,7 +544,11 @@ class KTDocumentUtil {
         }
         $bCanMove = KTUtil::arrayGet($aOptions, 'move');
         $oStorage =& KTStorageManagerUtil::getSingleton();
-        $sFilename = tempnam('/tmp', 'kt_storecontents');
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");        
+        
+        $sFilename = tempnam($sBasedir, 'kt_storecontents');
         $oOutputFile = new KTFSFileLike($sFilename);
         $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
         $sType = KTMime::getMimeTypeFromFile($sFilename);

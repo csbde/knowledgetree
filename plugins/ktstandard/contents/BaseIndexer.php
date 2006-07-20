@@ -87,9 +87,13 @@ class KTBaseIndexerTrigger {
         if ($this->command != null) {
             $tempstub = $this->command;
         }
-        $myfilename = tempnam("/tmp", 'kt.' . $tempstub);
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");        
+        
+        $myfilename = tempnam($sBasedir, 'kt.' . $tempstub);
         if (OS_WINDOWS) {
-            $intermediate = tempnam("/tmp", 'kt.' . $tempstub);
+            $intermediate = tempnam($sBasedir, 'kt.' . $tempstub);
             if (!@copy($sFile, $intermediate)) {
                 return ;
             }
