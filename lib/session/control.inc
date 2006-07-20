@@ -137,7 +137,7 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
     // verification failed
     $default->log->debug("checkSession:: session check failed");
     if (empty($bRedirect)) {
-        return false;
+        return $sessionStatus;
     }
 
     $sErrorMessage = "";
