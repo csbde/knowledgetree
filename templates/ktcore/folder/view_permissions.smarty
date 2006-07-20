@@ -5,7 +5,8 @@ this specific folder.  Only the roles or groups which have permissions
 assigned are shown.{/i18n}</p> 
 
 {if $edit}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a> | <a href="{addQS}action=resolved_users&fFolderId={$oFolder->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
+{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a> 
+| <a href="{addQS}action=resolved_users&fFolderId={$oFolder->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
 {/if}
 
 {if $iFolderId != 1}
@@ -69,6 +70,7 @@ assigned are shown.{/i18n}</p>
 
 
 { foreach item=oUser from=$users }
+<tr>
 <td><span class="descriptiveText">{i18n}User: {/i18n}</span> {$oUser->getName()}</td>
   { assign var=iUserId value=$oUser->getId() }
   { foreach item=oPerm from=$permissions }
@@ -99,4 +101,38 @@ value="{$iGroupId}"></td>
 </tbody>
 </table>
 { /if }
+
+{ if (!empty($conditions)) }
+<h3>{i18n}Dynamic Conditions{/i18n}</h3>
+<table class="kt_collection" cellpadding="0" cellspacing="0">
+<thead>
+<tr>
+  <th class="title">{i18n}Group{/i18n}</th>
+  <th class="title">{i18n}Condition{/i18n}</th>
+{foreach from=$permissions item=oPerm}
+  <th  class="title" title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
+{/foreach}
+</tr>
+</thead>
+<tbody>
+{foreach from=$conditions item=aInfo}
+<tr>
+  <td>{$aInfo.group}</td>
+  <td>{$aInfo.name}</td>
+{foreach from=$permissions item=oPerm}
+  {assign var=perm_id value=$oPerm->getId()}
+  { if $aInfo.perms.$perm_id }
+    <td class="centered"><span class="ktAction ktInline ktAllowed">{i18n}Allowed{/i18n}</span></td>
+    { else }
+    <td class="centered"><span class="ktAction ktInline ktDenied">{i18n}Denied{/i18n}</span></td>
+  { /if }  
+{/foreach}
+</tr>
+{/foreach}
+
+</tbody>
+</table>
+{/if}
+
+
 
