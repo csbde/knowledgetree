@@ -14,7 +14,7 @@
 | <a href="{addQS}action=resolved_users&fFolderId={$iFolderId}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
 </p>
 
-
+{if ($can_inherit)}
 <div class="ktInfo">
 <p>{i18n}This folder defines its own permissions.{/i18n}
 <a class="ktActionLink ktDelete"
@@ -22,7 +22,7 @@
    href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
 </span>
 </div>
-
+{/if}
 
 {$context->oPage->requireJSResource("resources/js/jsonlookup.js")}
 {$context->oPage->requireJSResource("resources/js/permissions.js")}
