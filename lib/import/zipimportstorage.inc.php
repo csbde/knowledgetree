@@ -33,7 +33,10 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 
     function init() {
-        $sTmpPath = tempnam('/tmp', 'zipimportstorage');
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");    
+    
+        $sTmpPath = tempnam($sBasedir, 'zipimportstorage');
         if ($sTmpPath === false) {
             return PEAR::raiseError("Could not create temporary directory for zip storage");
         }

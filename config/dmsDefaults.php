@@ -403,6 +403,8 @@ class KTInit {
             $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
             $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskHashedStorageManager');
             $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+
+            $oKTConfig->setdefaultns("urls", "tmpDirectory", '${varDirectory}/tmp');       
             
             $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
             $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
@@ -426,7 +428,8 @@ class KTInit {
             $oKTConfig->setdefaultns("cache", "proxyCacheDirectory", '${varDirectory}/proxies');
             $oKTConfig->setdefaultns("cache", "proxyCacheEnabled", 'true');
             
-            $this->readConfig();
+            $res = $this->readConfig();
+            if (PEAR::isError($res)) { return $res; }
             
             $oKTConfig =& KTConfig::getSingleton();
             @touch($cache_file);
@@ -445,10 +448,17 @@ class KTInit {
         $oKTConfig =& KTConfig::getSingleton();
         $sConfigFile = trim(file_get_contents(KT_DIR .  "/config/config-path"));
         if (KTUtil::isAbsolutePath($sConfigFile)) {
-            $oKTConfig->loadFile($sConfigFile);
+            $res = $oKTConfig->loadFile($sConfigFile);
         } else {
-            $oKTConfig->loadFile(sprintf("%s/%s", KT_DIR, $sConfigFile));
+            $res = $oKTConfig->loadFile(sprintf("%s/%s", KT_DIR, $sConfigFile));
         }
+        
+        if (PEAR::isError($res)) { 
+            $this->handleInitError($res);
+            // returns only in checkup
+            return $res;
+        }        
+        
         foreach (array_keys($oKTConfig->flat) as $k) {
             $v = $oKTConfig->get($k);
             if ($v === "default") {
@@ -480,7 +490,10 @@ class KTInit {
             $this->handleInitError(PEAR::raiseError('Test infrastructure not configured'));
             exit(0);
         }
-        $oKTConfig->loadFile($sConfigFile);
+        $res = $oKTConfig->loadFile($sConfigFile);
+        if (PEAR::isError($res)) { 
+            return $res;
+        }            
     }
     // }}}
 }
@@ -503,9 +516,9 @@ require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
-$KTInit->initConfig(); 
-
 $KTInit->setupI18n();
+
+$KTInit->initConfig(); 
 
 if ($GLOBALS['kt_test']) {
     $KTInit->initTesting(); 

@@ -66,6 +66,7 @@ class KTBulkExportAction extends KTFolderAction {
         $this->startTransaction();
 
         $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
         $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
 
         if (empty($aDocumentIds)) {
@@ -79,7 +80,7 @@ class KTBulkExportAction extends KTFolderAction {
         $this->oPage->template = "kt3/minimal_page";
         $this->handleOutput("");
 
-        $sTmpPath = tempnam('/tmp', 'kt_export');
+        $sTmpPath = tempnam($sBasedir, 'kt_export');
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
         $this->sTmpPath = $sTmpPath;
