@@ -104,6 +104,29 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $iInheritedFolderId = $oInherited->getId();
             $sInherited = join(" &raquo; ", $oInherited->getPathArray());
         }
+        
+        $aConditions = array();
+        $aDynConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
+        
+        foreach ($aDynConditions as $oDynCondition) {
+            $g = Group::get($oDynCondition->getGroupId());
+
+            if (PEAR::isError($g)) { continue; }
+            $c = KTSavedSearch::get($oDynCondition->getConditionId());            
+            if (PEAR::isError($c)) { continue; }
+            
+            $aInfo = array(
+                'group' => $g->getName(),
+                'name' => $c->getName(),
+            );
+            $aAssign = $oDynCondition->getAssignment();
+            $perms = array();
+            foreach ($aAssign as $iPermissionId) {
+                $perms[$iPermissionId] = true;
+            }
+            $aInfo['perms'] = $perms;
+            $aConditions[] = $aInfo;
+        }
 
         $aTemplateData = array(
             "context" => $this,
@@ -118,6 +141,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "edit" => $bEdit,
             "inherited" => $sInherited,
             'foldername' => $this->oFolder->getName(),
+            'conditions' => $aConditions,             
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -177,7 +201,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
             "inherited" => $sInherited,
-            'foldername' => $this->oFolder->getName(),            
+            'foldername' => $this->oFolder->getName(),     
+            "iFolderId" => $this->oFolder->getId(),                   
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -247,13 +272,15 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $aTemplateData = array(			       
             "iFolderId" => $this->oFolder->getId(),
-	    'roles' => Role::getList(),
-	    'groups' => Group::getList(),
+	        'roles' => Role::getList(),
+	        'groups' => Group::getList(),
             "conditions" => KTSavedSearch::getConditions(),
             "dynamic_conditions" => $aDynamicConditions,
             'context' => &$this,
             'foldername' => $this->oFolder->getName(),          
-	    'jsonpermissions' => $sJSONPermissions,
+	        'jsonpermissions' => $sJSONPermissions,
+	        'edit' => true,
+	        'permissions' => KTPermission::getList(),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -390,14 +417,14 @@ class KTFolderPermissionsAction extends KTFolderAction {
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
 
-	    print 'permission: ' . $oPermission->getName() . '<br/>';
-	    var_dump(KTUtil::arrayGet($aFoo, $iPermId, false)); print '<br/>';
+	    //print 'permission: ' . $oPermission->getName() . '<br/>';
+	    //var_dump(KTUtil::arrayGet($aFoo, $iPermId, false)); print '<br/>';
 
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
 
-	    exit(0);
+	    //exit(0);
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
