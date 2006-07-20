@@ -53,7 +53,8 @@ $action = $_REQUEST['action'];
 if ($action != "login") {
 
     // check the session, but don't redirect if the check fails
-    if (checkSessionAndRedirect(false)) {
+    $ret = checkSessionAndRedirect(false);
+    if ($ret === true) {
         //get around the problem with search
         if (strcmp($_REQUEST['fForStandardSearch'], "yes") == 0) {
             $action = "standardSearch";
@@ -76,6 +77,9 @@ if ($action != "login") {
             $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
             if ((strlen($redirect) > 1)) {
                 $url = $url . "&redirect=" . $redirect;
+            }
+            if (PEAR::isError($ret)) {
+                $url = $url . "&errorMessage=" .  urlencode($ret->getMessage());
             }
             redirect($url);
             exit(0);
