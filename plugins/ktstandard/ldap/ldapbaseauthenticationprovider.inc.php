@@ -500,6 +500,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'password' => $this->sSearchPassword,
             'host' => $this->sLdapServer,
             'base' => $this->sBaseDN,
+            'options' => array('LDAP_OPT_REFERRALS' => 0),
         );
 
         $this->oLdap =& Net_LDAP::connect($config);
