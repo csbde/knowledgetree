@@ -129,7 +129,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/adduser");
         $aTemplateData = array(
-            "context" => &$this,
+            "context" => $this,
             "add_fields" => $add_fields,
         );
         return $oTemplate->render($aTemplateData);
@@ -331,7 +331,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 
 	$oJSONWidget = new KTJSONLookupWidget(_kt('Groups'), 
 					      _kt('Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>.'), 
-					      'groups', '', &$this->oPage, false, null, null, 
+					      'groups', '', $this->oPage, false, null, null, 
 					      array('action'=>'getGroups',
 						    'assigned' => $aUserGroups,
 						    'multi'=>'true',

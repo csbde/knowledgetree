@@ -242,7 +242,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         
 	$oJSONWidget = new KTJSONLookupWidget(_kt('Users'), 
 					      _kt('Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>.'), 
-					      'users', '', &$this->oPage, false, null, null, 
+					      'users', '', $this->oPage, false, null, null, 
 					      array('action'=>'getUsers',
 						    'assigned' => $aGroupUsers,
 						    'multi'=>'true',
@@ -386,7 +386,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 	$oJSONWidget = new KTJSONLookupWidget(_kt('Groups'), 
 					      _kt('Select the groups from the left-hand list that you would like to add to this group and then click the <b>right pointing arrows</b>. Once you have added all the groups that you require, press <b>save changes</b>. Only groups that are logically capable of being included in this group will be available to be added.'), 
-					      'groups', '', &$this->oPage, false, null, null, 
+					      'groups', '', $this->oPage, false, null, null, 
 					      array('action'   => sprintf('getSubGroups&group_id=%d', $oGroup->getID()),
 						    'assigned' => $aMemberGroups,
 						    'multi'    => 'true',
