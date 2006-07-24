@@ -40,6 +40,8 @@ require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
 require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.inc.php');
+
 class BooleanSearchDispatcher extends KTStandardDispatcher {
     var $sSection = "browse";
 
