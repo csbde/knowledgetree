@@ -61,7 +61,10 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             $no_search = false;
         }
         
-        
+        if ($name == '*') { 
+            $show_all = true; 
+            $name = '';
+        }		              
         
         $search_fields = array();
         $search_fields[] =  new KTStringWidget(_kt('Username'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'search_name', $name, $this->oPage, true);
@@ -73,8 +76,8 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
         } else if ($show_all !== false) {
             $search_results =& User::getList('id > 0');
             $no_search = false;
+			$name = '*';            
         }
-        
 
         $aAuthenticationSources =& KTAuthenticationSource::getList();        
 
