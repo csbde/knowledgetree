@@ -55,6 +55,7 @@ class KTPlugin {
     var $_aColumns = array();    
     var $_aViews = array();       
     var $_aNotificationHandlers = array();       
+    var $_aTemplateLocations = array();       
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -158,6 +159,11 @@ class KTPlugin {
         $this->_aNotificationHandlers[$sNamespace] = array($sNamespace, $sName, $sPath);
     }        
 
+    function registerTemplateLocation($sName, $sPath) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_aTemplateLocations[$sName] = array($sName, $sPath);
+    }        
+
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
@@ -229,6 +235,7 @@ class KTPlugin {
         $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
         $oColumnRegistry =& KTColumnRegistry::getSingleton();        
         $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
+        $oTemplating =& KTTemplating::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -292,6 +299,10 @@ class KTPlugin {
 
         foreach ($this->_aNotificationHandlers as $k => $v) {
             call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $v);
+        }                
+
+        foreach ($this->_aTemplateLocations as $k => $v) {
+            call_user_func_array(array(&$oTemplating, 'addLocation'), $v);
         }                
     }
 
