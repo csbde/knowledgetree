@@ -356,7 +356,11 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
     function do_checkin() {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $sReason = $this->oValidator->notEmpty($sReason);
+        $aOptions = array(
+            'redirect_to' => array('main',sprintf('fDocumentId=%d', $this->oDocument->getId())),
+            'message' => _kt('Please give a reason for cancelling the check-out.'),        
+        );
+        $sReason = $this->oValidator->notEmpty($sReason, $aOptions);
         
         global $default;
 
