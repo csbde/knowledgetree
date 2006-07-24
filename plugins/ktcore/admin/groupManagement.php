@@ -60,7 +60,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         if (KTUtil::arrayGet($_REQUEST, 'do_search', false) != false) {
             $no_search = false;
         }
-		
+        
+        if ($name == '*') { 
+            $show_all = true;
+            $name = '';
+        }	
+        		
 		$search_fields = array();
 		$search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'search_name', $name, $this->oPage, true);
 		
@@ -69,6 +74,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		} else if ($show_all !== false) {
 			$search_results =& Group::getList('id > 0');
 			$no_search = false;
+			$name = '*';
 		}
 
 			
