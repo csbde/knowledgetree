@@ -40,6 +40,7 @@ class UpgradeFunctions {
         "3.0.2" => array("fixDocumentRoleAllocation"),
         "3.0.3.2" => array("createFolderDetailsPermission"),
         "3.0.3.3" => array("generateWorkflowTriggers"),
+        "3.0.3.7" => array("rebuildAllPermissions"),        
     );
 
     var $descriptions = array(
@@ -56,6 +57,7 @@ class UpgradeFunctions {
         'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
         'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
         'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
+        'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.'
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -758,6 +760,11 @@ class UpgradeFunctions {
             }            
         }
     
+    }
+    
+    function rebuildAllPermissions() {
+        $oRootFolder = Folder::get(1);
+        KTPermissionUtil::updatePermissionLookupRecursive($oRootFolder);
     }
 
 }
