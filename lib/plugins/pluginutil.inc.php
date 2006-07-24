@@ -117,6 +117,11 @@ class KTPluginUtil {
     }
 
     function registerPlugins () {
+        KTPluginUtil::_deleteSmartyFiles();
+        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+        $oCache =& KTCache::getSingleton();
+        $oCache->deleteAllCaches();
+
         $files = array();
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
@@ -145,8 +150,36 @@ class KTPluginUtil {
             }
         }
         KTPluginEntity::clearAllCaches();
+
+        KTPluginUtil::_deleteSmartyFiles();
+        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+        $oCache =& KTCache::getSingleton();
+        $oCache->deleteAllCaches();
+
         $sPluginCache = KT_DIR . '/var/plugin-cache';
         @unlink($sPluginCache);
+    }
+
+    function _deleteSmartyFiles() {
+        $oConfig =& KTConfig::getSingleton();
+        $dir = sprintf('%s/%s', $oConfig->get('urls/varDirectory'), 'tmp');
+
+        $dh = @opendir($dir);
+        if (empty($dh)) {
+            return;
+        }
+        $aFiles = array();
+        while (false !== ($sFilename = readdir($dh))) {
+            if (substr($sFilename, -10) == "smarty.inc") {
+               $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
+            }
+            if (substr($sFilename, -10) == "smarty.php") {
+               $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
+            }
+        }
+        foreach ($aFiles as $sFile) {
+            @unlink($sFile);
+        }
     }
 
     function _walk ($path, &$files) {
