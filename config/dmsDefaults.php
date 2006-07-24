@@ -516,9 +516,8 @@ require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
-$KTInit->setupI18n();
-
 $KTInit->initConfig(); 
+$KTInit->setupI18n();
 
 if ($GLOBALS['kt_test']) {
     $KTInit->initTesting(); 
