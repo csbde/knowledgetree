@@ -57,6 +57,15 @@ class KTTemplating {
         $aPossibilities = array();
 
         foreach ($this->aLocationRegistry as $loc => $path) {
+            if (KTUtil::isAbsolutePath($path)) {
+                $fulldirectory = $path . "/";
+                foreach (array_keys($this->aTemplateRegistry) as $suffix) {
+                    $fullpath = $fulldirectory . $templatename . "." .  $suffix;
+                    if (file_exists($fullpath)) {
+                        $aPossibilities[$loc] = array($suffix, $fullpath);
+                    }
+                }
+            }
             $fulldirectory = KT_DIR . "/" . $path . "/";
             foreach (array_keys($this->aTemplateRegistry) as $suffix) {
                 $fullpath = $fulldirectory . $templatename . "." .  $suffix;
@@ -107,10 +116,10 @@ class KTTemplating {
 
     // {{{ getSingleton
     function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS, 'oKTTemplating')) {
-            $GLOBALS['oKTTemplating'] = new KTTemplating;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTTemplating')) {
+            $GLOBALS['_KT_PLUGIN']['oKTTemplating'] = new KTTemplating;
         }
-        return $GLOBALS['oKTTemplating'];
+        return $GLOBALS['_KT_PLUGIN']['oKTTemplating'];
     }
     // }}}
 }
