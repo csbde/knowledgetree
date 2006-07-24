@@ -61,10 +61,6 @@ class KTDocumentUtil {
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
         if (!$oStorage->upload($oDocument, $sFilename)) {
-            // reinstate the backup
-            copy($sBackupPath, $oDocument->getPath());
-            // remove the backup
-            unlink($sBackupPath);
             return PEAR::raiseError(_kt("An error occurred while storing the new file"));
         }
 
