@@ -11,7 +11,7 @@ assigned are shown.{/i18n}</p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="fFolderId" value="{$iFolderId}">
-<table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
+<table  class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
 <th width="40%">{i18n}Role or Group{/i18n}</th>

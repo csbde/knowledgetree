@@ -23,7 +23,7 @@ assigned are shown.{/i18n}</p>
 <div class="ktInfo"><p>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</p></div>
 {else}
 
-<table class="kt_collection"cellspacing="0" cellpadding="0" border="0">
+<table class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
 <th width="40%">{i18n}Role or Group{/i18n}</th>
