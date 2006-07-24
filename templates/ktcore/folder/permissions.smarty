@@ -20,7 +20,6 @@
 <a class="ktActionLink ktDelete"
    kt:deleteMessage="Are you sure you wish to reinstate inherited permissions?"
    href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
-</span>
 </div>
 {/if}
 

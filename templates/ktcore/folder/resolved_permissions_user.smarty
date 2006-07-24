@@ -12,8 +12,12 @@ this folder.{/i18n}</p>
 <div class="ktInfo"><p>{i18n}No users have permissions on this item.{/i18n}</p></div>
 {else}
 
-<p>{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$iFolderId}{/addQS}">{i18n}View permissions overview{/i18n}</a>
-| <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a></p>
+{if $edit}
+{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a> 
+| <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a> 
+{else}
+{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a> 
+{/if}
 
 <table   class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">
 <thead>
