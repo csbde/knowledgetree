@@ -104,6 +104,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $iInheritedFolderId = $oInherited->getId();
             $sInherited = join(" &raquo; ", $oInherited->getPathArray());
         }
+        // only allow inheritance if not inherited, -and- folders is editable
+        $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());        
+        // only allow edit if the folder is editable.
+        $bEdit = $bEdit && ($oInherited->getId() == $this->oFolder->getId());
         
         $aConditions = array();
         $aDynConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
@@ -139,6 +143,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             "aMapPermissionRole" => $aMapPermissionRole,
             "aMapPermissionUser" => $aMapPermissionUser,
             "edit" => $bEdit,
+            'inheritable' => $bInheritable,
             "inherited" => $sInherited,
             'foldername' => $this->oFolder->getName(),
             'conditions' => $aConditions,             
@@ -247,10 +252,17 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
         }
 
-	// copy permissions if they were inherited
+    	// copy permissions if they were inherited
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
         if ($oInherited->getId() !== $this->oFolder->getId()) {
-	    $this->_copyPermissions();
+            $override = KTUtil::arrayGet($_REQUEST, 'override', false);
+            if (empty($override)) { 
+                $this->errorRedirectToMain(_kt("This folder does not override its permissions"), sprintf("fFolderId=%d", $this->oFolder->getId()));
+            }
+            $this->startTransaction();
+    	    $this->_copyPermissions();
+            $this->commitTransaction();
+            $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());           
         }
 
 
@@ -475,7 +487,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
         KTPermissionUtil::inheritPermissionObject($this->oFolder);
-        return $this->successRedirectTo('edit', _kt('Permissions updated'),
+        return $this->successRedirectTo('main', _kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 

@@ -476,6 +476,18 @@ class KTPermissionUtil {
         $oDocumentOrFolder->setPermissionObjectID($oNewPO->getID());
         $oDocumentOrFolder->update();
 
+        // copy any dynamic conditions
+        $aDPO = KTPermissionDynamicCondition::getByPermissionObject($oOrigPO);
+        foreach ($aDPO as $oOrigDC) {
+            $oNewDC = KTPermissionDynamicCondition::createFromArray(array(
+                'permissionobjectid' => $oNewPO->getId(),
+                'groupid' => $oOrigDC->getGroupId(),
+                'conditionid' => $oOrigDC->getConditionId(),
+            ));
+            
+            $oNewDC->saveAssignment($oOrigDC->getAssignment());
+        }
+
         if (!is_a($oDocumentOrFolder, 'Folder')) {
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
