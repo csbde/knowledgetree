@@ -223,7 +223,7 @@ function htaccess() {
     if (array_key_exists('kt_htaccess_worked', $_SERVER)) {
         return '<p><strong><font color="green">Your web server is set up to use the .htaccess files.</font></strong></p>';
     }
-    return '<p><strong><font color="red">Your web server is NOT set up to use the .htaccess files.</font></strong></p>';
+    return '<p><strong><font color="orange">Your web server is NOT set up to use the .htaccess files.</font></strong></p>';
 }
 
 ?>
