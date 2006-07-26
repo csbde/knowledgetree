@@ -14,7 +14,7 @@
 {* FIXME keep old selection *}
 
 {foreach from=$groups item=sGroupName key=iGroupId}
-   <input type="radio" name="group_id" value="{$iGroupId}" /> {i18n}{$sGroupName}{/i18n} <br />
+   <input type="radio" name="group_id" value="{$iGroupId}" {if ($iGroupId == $current_group)}checked="true"{/if}  /> {i18n}{$sGroupName}{/i18n} <br />
 {/foreach}
 
 <div class="form_action">

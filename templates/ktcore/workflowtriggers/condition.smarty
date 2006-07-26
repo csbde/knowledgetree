@@ -14,7 +14,7 @@
 {* FIXME keep old selection *}
 
 {foreach from=$conditions item=sConditionName key=iConditionId}
-   <input type="radio" name="condition_id" value="{$iConditionId}" /> {i18n}{$sConditionName}{/i18n} <br />
+   <input type="radio" name="condition_id" value="{$iConditionId}"  {if ($iConditionId == $current_condition)}checked="true"{/if} /> {i18n}{$sConditionName}{/i18n} <br />
 {/foreach}
 
 <div class="form_action">

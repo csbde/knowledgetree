@@ -14,7 +14,7 @@
 {* FIXME keep old selection *}
 
 {foreach from=$roles item=sRoleName key=iRoleId}
-   <input type="radio" name="role_id" value="{$iRoleId}" /> {i18n}{$sRoleName}{/i18n} <br />
+   <input type="radio" name="role_id" value="{$iRoleId}" {if ($iRoleId == $current_role)}checked="true"{/if} /> {i18n}{$sRoleName}{/i18n} <br />
 {/foreach}
 
 <div class="form_action">

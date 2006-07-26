@@ -71,12 +71,18 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         $aPermissions = KTPermission::getList();
         $aKeyPermissions = array();
         foreach ($aPermissions as $oPermission) { $aKeyPermissions[$oPermission->getName()] = $oPermission; }
+        
+        $current_perms = array();
+        foreach ($this->aConfig['perms'] as $sPermName) {
+            $current_perms[$sPermName] = true;
+        }
 
         $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/permissions");
 		$aTemplateData = array(
               "context" => $this,
               "perms" => $aKeyPermissions,
+              'current_perms' => $current_perms, 
               'args' => $args,
 		);
 		return $oTemplate->render($aTemplateData);    
@@ -369,7 +375,7 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
 		$aTemplateData = array(
               "context" => $this,
               "conditions" => $aKeyedConditions,
-              "current_group" => KTUtil::arrayGet($this->aConfig, 'group_id'),
+              "current_condition" => KTUtil::arrayGet($this->aConfig, 'condition_id'),
               'args' => $args,
 		);
 		return $oTemplate->render($aTemplateData);    
