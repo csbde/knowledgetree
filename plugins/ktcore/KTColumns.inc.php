@@ -59,7 +59,12 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
     function buildFolderLink($aDataRow) {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
-            return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+            $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
+            if (empty($dest)) {
+                return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+            } else {
+                return KTUtil::addQueryString($dest, 'fFolderId='.$aDataRow["folder"]->getId());                
+            }
         } else {
             return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
         }
@@ -244,8 +249,8 @@ class AdvancedSelectionColumn extends AdvancedColumn {
     function setOptions($aOptions) {
         AdvancedColumn::setOptions($aOptions);
         $this->rangename = KTUtil::arrayGet($this->aOptions, 'rangename', $this->rangename);
-        $this->show_folders = KTUtil::arrayGet($this->aOptions, 'show_folders', $this->show_folders);        
-        $this->show_documents = KTUtil::arrayGet($this->aOptions, 'show_documents', $this->show_documents);                
+        $this->show_folders = KTUtil::arrayGet($this->aOptions, 'show_folders', $this->show_folders, false);        
+        $this->show_documents = KTUtil::arrayGet($this->aOptions, 'show_documents', $this->show_documents, false);                
     }
 
     function renderHeader($sReturnURL) { 
@@ -299,7 +304,7 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
     
     // only include the _f or _d IF WE HAVE THE OTHER TYPE.
     function renderData($aDataRow) { 
-        $localname = $this->name;
+        $localname = $this->rangename;
         
         if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
             if ($this->show_documents) {

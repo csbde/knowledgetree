@@ -234,7 +234,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $collection->setColumnOptions('ktcore.columns.selection', array(
             'rangename' => 'selection',
             'show_folders' => true,
-            'show_document' => true,
+            'show_documents' => true,
         ));
         
         $oTemplating =& KTTemplating::getSingleton();
