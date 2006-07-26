@@ -19,6 +19,8 @@ $oRegistry->registerPlugin('KTImmutableActionPlugin', 'ktstandard.immutableactio
 
 class KTDocumentImmutableAction extends KTDocumentAction {
     var $sName = "ktcore.actions.document.immutable";
+    var $_bMutator = true;
+    
     function getDisplayName() {
         return _kt('Make immutable');
     }
