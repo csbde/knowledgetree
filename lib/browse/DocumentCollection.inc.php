@@ -304,15 +304,15 @@ class AdvancedCollection {
         $this->batchStart =  $this->batchPage * $this->batchSize; 
         
         // visibility
-        $this->bShowFolders = KTUtil::arrayGet($aOptions, 'show_folders', true);       
-        $this->bShowDocuments = KTUtil::arrayGet($aOptions, 'show_documents', true);   
+        $this->bShowFolders = KTUtil::arrayGet($aOptions, 'show_folders', true, false);       
+        $this->bShowDocuments = KTUtil::arrayGet($aOptions, 'show_documents', true, false);
         
         // sorting
         $this->sort_column = KTUtil::arrayGet($aOptions, 'sort_on', "ktcore.columns.title");    
         $this->sort_order = KTUtil::arrayGet($aOptions, 'sort_order', 'asc');        
 
         // url options
-        $this->returnURL = KTUtil::arrayGet($aOptions, 'return_url', $_SERVER['PHP_SELF']);
+        $this->returnURL = KTUtil::arrayGet($aOptions, 'result_url', $_SERVER['PHP_SELF']);
         
         $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No folders or documents in this location."));
     }   
@@ -431,7 +431,11 @@ class AdvancedCollection {
         // assume we have not documents.  This impacts "where" our documents start.
         // 
         $no_folders = true;
-        $documents_to_get = $this->batchSize;
+        if ($this->bShowDocuments) {
+            $documents_to_get = $this->batchSize;
+        } else {
+            $documents_to_get = 0;            
+        }
         $folders_to_get = 0;
 
         if ($this->batchStart < $this->folderCount) {
