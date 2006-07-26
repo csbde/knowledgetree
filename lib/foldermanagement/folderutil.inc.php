@@ -279,6 +279,12 @@ class KTFolderUtil {
             // child documents
             $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
             foreach ($aChildDocs as $oDoc) {
+                if (!$bIgnorePermissions && $oDoc->getImmutable()) {
+                     if (!KTBrowseUtil::inAdminMode($oUser, $oStartFolder)) {
+                        $aFailedDocuments[] = $oDoc->getName();
+                        continue;
+                     }
+                }
                 if ($bIgnorePermissions || (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDoc) && ($oDoc->getIsCheckedOut() == false)) ) {
                     $aDocuments[] = $oDoc;
                 } else {
@@ -290,7 +296,7 @@ class KTFolderUtil {
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
             $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
-        
+
         // FIXME we could subdivide this to provide a per-item display (viz. bulk upload, etc.)
         
         if ((!empty($aFailedDocuments) || (!empty($aFailedFolders)))) {
@@ -304,7 +310,7 @@ class KTFolderUtil {
             }
             return PEAR::raiseError(_kt('You do not have permission to delete these items. ') . $sFD . $sFF);
         }
-        
+
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $res = KTDocumentUtil::delete($oDocument, $sReason);
