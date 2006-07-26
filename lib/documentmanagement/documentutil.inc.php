@@ -863,6 +863,70 @@ class KTDocumentUtil {
         
         return true;    
     }
+    
+    function move($oDocument, $oToFolder, $oUser = null) {
+        
+        $oFolder = $oToFolder; // alias.        
+        
+        $oOriginalFolder = Folder::get($oDocument->getFolderId());
+        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
+        $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
+
+        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
+            $oDocument->setPermissionObjectId($oFolder->getPermissionObjectId());
+        }
+
+        //put the document in the new folder
+        $oDocument->setFolderID($oFolder->getId());
+        $res = $oDocument->update();
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+
+        //move the document on the file system
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $res = $oStorage->moveDocument($oDocument, $oFolder, $oOriginalFolder);
+        if (PEAR::isError($res) || ($res === false)) {
+            $oDocument->setFolderID($oOriginalFolder->getId());
+            $res = $oDocument->update();
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            return $res; // we failed, bail.
+        }
+
+        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: Workflow trigger.",
+            $oOriginalFolder->getFullPath(),
+            $oOriginalFolder->getName(),        
+            $oFolder->getFullPath(),
+            $oFolder->getName());
+
+        // create the document transaction record
+        
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
+        $oDocumentTransaction->create();
+
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $oDocument,
+                "old_folder" => $oOriginalFolder,
+                "new_folder" => $oFolder,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }        
+        
+        return KTPermissionUtil::updatePermissionLookup($oDocument);
+    }
 
 }
 

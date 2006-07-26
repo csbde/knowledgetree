@@ -446,70 +446,14 @@ class CopyActionTrigger extends KTWorkflowTrigger {
     }
     
     function performTransition($oDocument, $oUser) {
+    
         $iFolderId = KTUtil::arrayGet($this->aConfig, 'folder_id');
-        $oFolder = Folder::get($iFolderId);
+        $oToFolder = Folder::get($iFolderId);
         if (PEAR::isError($oFolder)) { 
             return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.')); 
         }
         
-        // FIXME refactor into documentutil.
-        
-        $oOriginalFolder = Folder::get($oDocument->getFolderId());
-        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
-        $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
-
-
-        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
-            $oDocument->setPermissionObjectId($oFolder->getPermissionObjectId());
-        }
-
-        //put the document in the new folder
-        $oDocument->setFolderID($oFolder->getId());
-        if (!$oDocument->update(true)) {
-            $this->errorRedirectTo("main", _kt("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-        }
-
-
-        //move the document on the file system
-        $oStorage =& KTStorageManagerUtil::getSingleton();
-        if (!$oStorage->moveDocument($oDocument, $oFolder, $oOriginalFolder)) {
-            $oDocument->setFolderID($oFolder->getId());
-            $res = $oDocument->update(true);
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-        }
-
-        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: Workflow trigger.",
-            $oOriginalFolder->getFullPath(),
-            $oOriginalFolder->getName(),        
-            $oFolder->getFullPath(),
-            $oFolder->getName());
-
-        // create the document transaction record
-        
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
-        $oDocumentTransaction->create();
-
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                "document" => $oDocument,
-                "old_folder" => $oOriginalFolder,
-                "new_folder" => $oFolder,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-            if (PEAR::isError($ret)) {
-                return $ret;
-            }
-        }        
-        
-        return KTPermissionUtil::updatePermissionLookup($oDocument);
+        return KTDocumentUtil::move($oDocument, $oToFolder, $oUser);
     }
         
     function displayConfiguration($args) {
