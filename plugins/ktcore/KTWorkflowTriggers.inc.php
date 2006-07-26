@@ -417,4 +417,206 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
     }    
 }
 
+
+class CopyActionTrigger extends KTWorkflowTrigger {
+    var $sNamespace = 'ktcore.workflowtriggers.copyaction';
+    var $sFriendlyName;
+    var $sDescription;
+    var $oTriggerInstance;
+    var $aConfig = array();
+    
+    // generic requirements - both can be true
+    var $bIsGuard = false;
+    var $bIsAction = true;
+    
+    function CopyActionTrigger() {
+        $this->sFriendlyName = _kt("Moves Document");
+        $this->sDescription = _kt("Moves the document to another folder.");
+    }
+   
+    // perform more expensive checks -before- performTransition.
+    function precheckTransition($oDocument, $oUser) {
+        $iFolderId = KTUtil::arrayGet($this->aConfig, 'folder_id');
+        $oFolder = Folder::get($iFolderId);
+        if (PEAR::isError($oFolder)) { 
+            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.')); 
+        }
+        
+        return true;
+    }
+    
+    function performTransition($oDocument, $oUser) {
+        $iFolderId = KTUtil::arrayGet($this->aConfig, 'folder_id');
+        $oFolder = Folder::get($iFolderId);
+        if (PEAR::isError($oFolder)) { 
+            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.')); 
+        }
+        
+        // FIXME refactor into documentutil.
+        
+        $oOriginalFolder = Folder::get($oDocument->getFolderId());
+        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
+        $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
+
+
+        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
+            $oDocument->setPermissionObjectId($oFolder->getPermissionObjectId());
+        }
+
+        //put the document in the new folder
+        $oDocument->setFolderID($oFolder->getId());
+        if (!$oDocument->update(true)) {
+            $this->errorRedirectTo("main", _kt("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        }
+
+
+        //move the document on the file system
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->moveDocument($oDocument, $oFolder, $oOriginalFolder)) {
+            $oDocument->setFolderID($oFolder->getId());
+            $res = $oDocument->update(true);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
+
+        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: Workflow trigger.",
+            $oOriginalFolder->getFullPath(),
+            $oOriginalFolder->getName(),        
+            $oFolder->getFullPath(),
+            $oFolder->getName());
+
+        // create the document transaction record
+        
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
+        $oDocumentTransaction->create();
+
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $oDocument,
+                "old_folder" => $oOriginalFolder,
+                "new_folder" => $oFolder,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }        
+        
+        return KTPermissionUtil::updatePermissionLookup($oDocument);
+    }
+        
+    function displayConfiguration($args) {
+        $oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/moveaction");
+		
+        require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
+        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+		
+        $collection = new AdvancedCollection;       
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
+        $aColumns = array();
+        $aColumns[] = $oColumnRegistry->getColumn('ktcore.columns.singleselection');
+        $aColumns[] = $oColumnRegistry->getColumn('ktcore.columns.title');    
+        
+        $collection->addColumns($aColumns);	
+        
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
+        
+        
+        $qsFrag = array();
+        foreach ($args as $k => $v) {
+            if ($k == 'action') { $v = 'editTrigger'; } // horrible hack - we really need iframe embedding. 
+            $qsFrag[] = sprintf("%s=%s",urlencode($k), urlencode($v));
+        }
+        $qs = implode('&',$qsFrag);
+        $aOptions['result_url'] = KTUtil::addQueryStringSelf($qs);                
+        $aOptions['show_documents'] = false;
+        
+        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));        
+        
+        $collection->setOptions($aOptions);
+        $collection->setQueryObject(new BrowseQuery($fFolderId, $this->oUser));    
+        $collection->setColumnOptions('ktcore.columns.singleselection', array(
+            'rangename' => 'folder_id',
+            'show_folders' => true,
+            'show_documents' => false,
+        ));	
+        
+        $collection->setColumnOptions('ktcore.columns.title', array(
+            'direct_folder' => false,
+            'folder_link' => $aOptions['result_url'],
+        ));			
+		
+		$oFolder = Folder::get($fFolderId);
+        $aBreadcrumbs = array();
+        $folder_path_names = $oFolder->getPathArray();
+        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        $folder_path_ids[] = $oFolder->getId();
+        if ($folder_path_ids[0] == 0) {
+            array_shift($folder_path_ids);
+            array_shift($folder_path_names);
+        }
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $qsFrag2 = $qsFrag;
+            $qsFrag2[] = sprintf('fFolderId=%d', $id);
+            $qs2 = implode('&',$qsFrag2);
+            $url = KTUtil::addQueryStringSelf($qs2);              
+            $aBreadcrumbs[] = sprintf("<a href=\"%s\">%s</a>", $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
+        }
+		
+        $sBreadcrumbs = implode(' &raquo; ', $aBreadcrumbs);		
+		
+		$aTemplateData = array(
+              "context" => $this,
+              'breadcrumbs' => $sBreadcrumbs,
+              'collection' => $collection,
+              'args' => $args,
+		);
+		return $oTemplate->render($aTemplateData);    
+    }
+    
+    function saveConfiguration() {
+        $folder_id = KTUtil::arrayGet($_REQUEST, 'folder_id', null);
+        $oFolder = Folder::get($folder_id);
+        if (PEAR::isError($oFolder)) {
+            // silenty ignore
+            $folder_id = null;
+        }
+
+        $config = array();
+        $config['folder_id'] = $folder_id;
+        
+        $this->oTriggerInstance->setConfig($config);
+        $res = $this->oTriggerInstance->update();
+        
+        return $res;
+    }
+    
+    function getConfigDescription() {
+        if (!$this->isLoaded()) {
+            return _kt('This trigger has no configuration.');
+        }
+        // the actual permissions are stored in the array.
+        $perms = array();  
+        if (empty($this->aConfig) || is_null($this->aConfig['folder_id'])) { 
+             return _kt('<strong>This transition cannot be performed:  no folder has been selected.</strong>');
+        }
+        $oFolder = Folder::get($this->aConfig['folder_id']);
+        if (PEAR::isError($oFolder)) {
+            return _kt('<strong>The folder required for this trigger has been deleted, so the transition cannot be performed.</strong>');
+        } else {
+            return sprintf(_kt("The document will be moved to folder \"<a href=\"%s\">%s</a>\"."), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
+        }
+    }    
+}
+
 ?>

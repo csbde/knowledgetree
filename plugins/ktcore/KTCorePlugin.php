@@ -120,6 +120,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.groupguard', 'GroupGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
+        
 
         $this->setupAdmin();
     }
