@@ -108,7 +108,7 @@ class KTNotification extends KTEntity {
     function render() {
         $notificationRegistry =& KTNotificationRegistry::getSingleton();
         $handler = $notificationRegistry->getHandler($this->sType);
-        
+
         if (is_null($handler)) { return null; } 
         
         return $handler->handleNotification($this);
@@ -133,9 +133,6 @@ class KTNotification extends KTEntity {
 }
 
 /** register the base handlers. */
-
-
-$notificationRegistry =& KTNotificationRegistry::getSingleton();
 
 // abstract base-class for notification handler.
 class KTNotificationHandler extends KTStandardDispatcher {
@@ -358,8 +355,6 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 	
 }
 
-$notificationRegistry->registerNotificationHandler("ktcore/subscriptions","KTSubscriptionNotification");
-
 class KTWorkflowNotification extends KTNotificationHandler {
 
     function & clearNotificationsForDocument($oDocument) {
@@ -429,7 +424,5 @@ class KTWorkflowNotification extends KTNotificationHandler {
 		exit(redirect($url));
 	}
 }
-
-$notificationRegistry->registerNotificationHandler("ktcore/workflow","KTWorkflowNotification");
 
 ?>
