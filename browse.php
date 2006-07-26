@@ -724,8 +724,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $documentStr = '<strong>' . _kt('Documents: ') . '</strong>';
             foreach ($aDocumentSelection as $iDocId) {
                 $oD = Document::get($iDocId);
+                if (PEAR::isError($oD)) {
+                    continue;
+                }
                 if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oD)) {
                     $this->errorRedirectToMain(_kt('You do not have permission to delete the document: ') . $oD->getName());
+                }
+                if ($oD->getImmutable()) {
+                    $this->errorRedirectToMain(_kt('This document is immutable and cannot be deleted: ') . $oD->getName());
                 }
                 if (!PEAR::isError($oD)) {
                     $delItems['documents'][] = $oD->getName();
