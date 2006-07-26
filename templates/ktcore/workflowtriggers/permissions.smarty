@@ -12,15 +12,12 @@
 <p class="descriptiveText">{i18n}Specify which permissions the user will require in order to perform this transition.  Note that 
 the user will be required to have <strong>all</strong> these permissions.{/i18n}</p>
 
-{* FIXME keep old selection *}
-
-{foreach from=$perms item=oPerm}
-   <input type="checkbox" name="trigger_perms[{$oPerm->getName()}]" /> {i18n}{$oPerm->getHumanName()}{/i18n} <br />
+{foreach from=$perms item=oPerm key=sPermName}
+   <input type="checkbox" name="trigger_perms[{$sPermName}]" {if ($current_perms.$sPermName)}checked="true"{/if}/> {i18n}{$oPerm->getHumanName()}{/i18n} <br />
 {/foreach}
 
 <div class="form_action">
     <input type="submit" value="{i18n}Save Trigger{/i18n}" />
-    {* FIXME how do I cancel again? *}
 </div>
 </fieldset>
 </form>
