@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 14, 2006 at 03:28 PM
+-- Generation Time: Jul 26, 2006 at 11:51 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -732,7 +732,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3.5');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.0.3.7');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -881,6 +881,9 @@ INSERT INTO `upgrades` VALUES (106, 'sql*3.0.3.4*0*3.0.3.4/bulk_export_transacti
 INSERT INTO `upgrades` VALUES (107, 'upgrade*3.0.3.4*99*upgrade3.0.3.4', 'Upgrade from version 3.0.3 to 3.0.3.4', '2006-07-12 12:00:34', 1, 'upgrade*3.0.3.4*99*upgrade3.0.3.4');
 INSERT INTO `upgrades` VALUES (108, 'sql*3.0.3.5*0*3.0.3.5/notifications_data_text.sql', 'Database upgrade to version 3.0.3.5: Notifications data text', '2006-07-14 15:26:49', 1, 'upgrade*3.0.3.5*99*upgrade3.0.3.5');
 INSERT INTO `upgrades` VALUES (109, 'upgrade*3.0.3.5*99*upgrade3.0.3.5', 'Upgrade from version 3.0.3.4 to 3.0.3.5', '2006-07-14 15:26:49', 1, 'upgrade*3.0.3.5*99*upgrade3.0.3.5');
+INSERT INTO `upgrades` VALUES (110, 'sql*3.0.3.6*0*3.0.3.6/document-restore.sql', 'Database upgrade to version 3.0.3.6: Document-restore', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
+INSERT INTO `upgrades` VALUES (111, 'func*3.0.3.7*0*rebuildAllPermissions', 'Rebuild all permissions to ensure correct functioning of permission-definitions.', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
+INSERT INTO `upgrades` VALUES (112, 'upgrade*3.0.3.7*99*upgrade3.0.3.7', 'Upgrade from version 3.0.3.5 to 3.0.3.7', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1331,7 +1334,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (109);
+INSERT INTO `zseq_upgrades` VALUES (112);
 
 -- 
 -- Dumping data for table `zseq_user_history`

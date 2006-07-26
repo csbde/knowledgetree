@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 14, 2006 at 03:28 PM
+-- Generation Time: Jul 26, 2006 at 11:48 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -497,6 +497,8 @@ CREATE TABLE `documents` (
   `metadata_version_id` int(11) default NULL,
   `owner_id` int(11) NOT NULL default '0',
   `immutable` tinyint(1) NOT NULL default '0',
+  `restore_folder_id` int(11) default NULL,
+  `restore_folder_path` text,
   UNIQUE KEY `id` (`id`),
   KEY `fk_creator_id` (`creator_id`),
   KEY `fk_folder_id` (`folder_id`),
@@ -2192,7 +2194,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=110 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=113 ;
 
 -- --------------------------------------------------------
 
