@@ -19,6 +19,8 @@ function _(trans_string) {
 
 // strings for file: resources/js/add_document.js
 
+// strings for file: resources/js/adminversiondashlet.js
+
 // strings for file: resources/js/conditional_complex_edit.js
 i18n['Finish with this column\'s behaviours.'] = '{i18n}Finish with this column\'s behaviours.{/i18n}';
 i18n['Assuming this field has behaviour "'] = '{i18n}Assuming this field has behaviour "{/i18n}';
@@ -49,9 +51,13 @@ i18n['of the criteria specified.'] = '{i18n}of the criteria specified.{/i18n}';
 
 // strings for file: resources/js/help.js
 
+// strings for file: resources/js/jsonlookup.js
+
 // strings for file: resources/js/kt3calendar.js
 
 // strings for file: resources/js/kt-utility.js
+
+// strings for file: resources/js/permissions.js
 
 // strings for file: resources/js/reorder.js
 
