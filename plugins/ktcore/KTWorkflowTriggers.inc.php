@@ -71,6 +71,7 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         foreach ($aPermissions as $oPermission) { $aKeyPermissions[$oPermission->getName()] = $oPermission; }
         
         $current_perms = array();
+        $this->aConfig['perms'] = KTUtil::arrayGet($this->aConfig, 'perms', array());
         foreach ($this->aConfig['perms'] as $sPermName) {
             $current_perms[$sPermName] = true;
         }
