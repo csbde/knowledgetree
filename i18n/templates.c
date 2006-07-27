@@ -4,6 +4,612 @@ gettext("Orphaned Folders");
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Since KnowledgeTree only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below.");
 
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("search for users");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Name");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Username");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Enabled");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Allocate Key");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("De-allocate Key");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Key Assigned");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("No Key Assigned");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("Extended Transaction Information");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("The DMS tracks a large amount of activity by users.  Use these reports to get better information on who's doing what on the system. Note that transactions are only shown for documents you are allowed to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Select User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Since there may be many users in the system, please select a group from the list below, or type a few letters from the person's username to begin.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Name");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Username");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("View Transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("User Information: #username#");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Each user will have performed a large number of different actions.  In order to make the report more useful, please specify more details about the information you need.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Either select a range in which to view the users actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Global Activity");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("In order to refine the kind of information shown to you, please provide further information below.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Either select a range in which to view the actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
+gettext("KnowledgeTree Recent Documents");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
+gettext("User: #username# &lt;br /&gt;           Action: #action# &lt;br /&gt;           #reason#");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("Recently Added/Changed Documents");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("Usage Information for \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("View information about what documents have been added, or changed in folder and its children.  You can view this information by user or as a whole.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Select User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Since there may be many users in the system, please select a group from the list below, or type a few letters from the person's username to begin.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Name");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Username");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("View Transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("User Information: #username# in \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Each user will have performed a large number of different actions.  In order to make the report more useful, please specify more details about the information you need.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Either select a range in which to view the users actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Global Activity in \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("In order to refine the kind of information shown to you, please provide further information below.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Either select a range in which to view the actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("Document Summary for \"#name#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("Workflow Info");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("No Workflow");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("Top Downloads");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("The top downloads for the last 7 days.  Only documents which you are allowed to see are listed.");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Items you've viewed recently within the DMS.");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Folders");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Documents");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("Jump To Document");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("If you know the numeric ID of a document, type it in here and press \"go\"");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("Go");
+
+/* ./plugins/network/inlineview/templates/inlineview/view.smarty */
+gettext("Inline View");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
+gettext("Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
+gettext("There are no quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("New Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("New Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Use the folder collection and path below to browse to the document you wish to link to.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Link");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Cancel");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Manage Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Quicklinks allow the administrator to create and order a collection of links to documents and folders, which will display on users' dashboards.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Quicklinks are links to documents and folders which you use often.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Add Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink that will appear on users' dashboards.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink that will appear on your dashboard.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Change the order in which quicklinks are shown.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Re-order quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("There are no system quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("You have no quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Target");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Delete");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Delete");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Use the up and down arrows to move an item. Please note that changes are only saved when you click the 're-order' button.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Cancel");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("User Reporting");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login activity");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know who all has logged in the system over a period of time?  You can get an overview of all login activity for all users over a specified period of time.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Full login history for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Since there may be many users in the system, please select a user from the list below, or type a few letters from the person's username to begin. Alternatively, <a href=\"#link#\">view all users</a> (note that this may be very slow if you have many users).");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("search for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("User");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Comments");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Comments");
+
 /* ./templates/ktstandard/authentication/ldapsearchgroup.smarty */
 gettext("Since there may be many groups in the system, please provider a few letters from the groups's name to begin.");
 
@@ -182,10 +788,10 @@ gettext("Post a reply");
 gettext("Post a reply");
 
 /* ./templates/ktstandard/action/discussion_thread.smarty */
-gettext("Close this thread");
+gettext("Change the state of this thread");
 
 /* ./templates/ktstandard/action/discussion_thread.smarty */
-gettext("Close this thread");
+gettext("Change state");
 
 /* ./templates/ktstandard/action/discussion.smarty */
 gettext("Existing threads");
@@ -209,37 +815,31 @@ gettext("Last activity");
 gettext("State");
 
 /* ./templates/ktstandard/action/discussion.smarty */
-gettext("There are no existing threads for this document");
+gettext("There are #closed# closed threads - use the \"View All\" option below to view them.");
+
+/* ./templates/ktstandard/action/discussion.smarty */
+gettext("There are no open threads for this document.");
 
 /* ./templates/ktstandard/action/discussion.smarty */
 gettext("Create a new thread");
 
 /* ./templates/ktstandard/action/discussion.smarty */
 gettext("Create a new thread");
+
+/* ./templates/ktstandard/action/discussion.smarty */
+gettext("View all threads");
+
+/* ./templates/ktstandard/action/discussion.smarty */
+gettext("View threads");
 
 /* ./templates/ktstandard/action/email.smarty */
 gettext("Email document");
 
 /* ./templates/ktstandard/action/email.smarty */
-gettext("Groups");
-
-/* ./templates/ktstandard/action/email.smarty */
-gettext("Filter");
-
-/* ./templates/ktstandard/action/email.smarty */
-gettext("Filter");
-
-/* ./templates/ktstandard/action/email.smarty */
-gettext("Users");
-
-/* ./templates/ktstandard/action/email.smarty */
-gettext("Filter");
-
-/* ./templates/ktstandard/action/email.smarty */
-gettext("Filter");
-
-/* ./templates/ktstandard/action/email.smarty */
 gettext("Email");
+
+/* ./templates/ktstandard/action/discussion_thread_list_item.smarty */
+gettext("Conclusion");
 
 /* ./templates/ktstandard/action/link.smarty */
 gettext("Add Link");
@@ -300,6 +900,18 @@ gettext("Add a new link");
 
 /* ./templates/ktstandard/action/document_links.smarty */
 gettext("Add a new link");
+
+/* ./templates/ktstandard/adminversion/dashlet.smarty */
+gettext("New Version Available");
+
+/* ./templates/ktstandard/adminversion/dashlet.smarty */
+gettext("The following upgrade is available:");
+
+/* ./templates/ktstandard/adminversion/dashlet.smarty */
+gettext("The following upgrades are available:");
+
+/* ./templates/ktstandard/adminversion/dashlet.smarty */
+gettext("Please visit <a href=\"http://www.ktdms.com\">www.ktdms.com</a> to find out more.");
 
 /* ./templates/kt3/fieldsets/conditional_editable.smarty */
 gettext("conditional data.");
@@ -605,7 +1217,16 @@ gettext("showing information for <strong>version #version#</strong>");
 gettext("This document is currently checked out by <strong>you</strong>.  If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.");
 
 /* ./templates/kt3/view_document.smarty */
+gettext("This document is currently checked out by #checkoutuser#, but you have sufficient priviledges to cancel their checkout.");
+
+/* ./templates/kt3/view_document.smarty */
 gettext("This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your KnowledgeTree Administrator.");
+
+/* ./templates/kt3/view_document.smarty */
+gettext("This document is immutable.  No further content changes can be made to this document, and only administrators (in administration mode) can make changes to the metadata or can move or delete it.");
+
+/* ./templates/kt3/view_document.smarty */
+gettext("If you require assistance from an administrator to perform one of these tasks, use the Request Assistance action.");
 
 /* ./templates/kt3/browse.smarty */
 gettext("Delete");
@@ -696,9 +1317,6 @@ gettext("Up");
 
 /* ./templates/kt3/reorderdisplay.smarty */
 gettext("Down");
-
-/* ./templates/kt3/document_collection.smarty */
-gettext("No documents or folders available in this location.");
 
 /* ./templates/kt3/document_collection.smarty */
 gettext("#itemCount# items, #batchSize# per page");
@@ -872,6 +1490,9 @@ gettext("Complex Conditional Metadata depends on what are called \"behaviours\".
 gettext("Each behaviour can cause a number of other behaviours &mdash; in the field's <strong>child</strong> fields &mdash; to become available.  By assigning values to behaviours, and creating relationships between behaviours, you can create extremely complex relationships between available lookup values.");
 
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
+gettext("Changes made here are stored immediately, without you needing to refresh the page.");
+
+/* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
 gettext("This column is not active.");
 
 /* ./templates/ktcore/metadata/conditional/editcomplex.smarty */
@@ -941,7 +1562,7 @@ gettext("Conditional fieldsets allow you to restrict the options a user has for 
 gettext("Complex fieldsets allow you to give far more detailed structure to your information:  The value of \"Residents\" can depend not only on \"Street\", but on how the user was allowed to select the specific street (given another field).");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
-gettext("This conditional fieldset is marked such that it cannot be used.  This happens when the fieldset has been edited and has not been set to complete.  Setting the fieldset to complete will do a check to see if the fieldset is usable by the user.");
+gettext("This conditional fieldset is marked such that it cannot be used.  The system automatically checks whether the fieldset is useable, and if not it will prevent it being used in a \"conditional\" fashion.  Please correct the issues identified below.");
 
 /* ./templates/ktcore/metadata/conditional/manageConditional.smarty */
 gettext("This error prevents this fieldset from being set to complete");
@@ -1061,6 +1682,9 @@ gettext("Description");
 gettext("Type");
 
 /* ./templates/ktcore/metadata/editField.smarty */
+gettext("Required");
+
+/* ./templates/ktcore/metadata/editField.smarty */
 gettext("Change");
 
 /* ./templates/ktcore/metadata/editField.smarty */
@@ -1169,10 +1793,16 @@ gettext("Fieldset properties");
 gettext("Please complete the following fields to edit the fieldset's properties and then click <strong>Change</strong>. Required fields are marked with a red square.");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
-gettext("Conditional");
+gettext("Change");
+
+/* ./templates/ktcore/metadata/editFieldset.smarty */
+gettext("Conditionality");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
 gettext("A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each field can depend on the user's selections for the others.");
+
+/* ./templates/ktcore/metadata/editFieldset.smarty */
+gettext("Conditional");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
 gettext("Yes");
@@ -1181,13 +1811,7 @@ gettext("Yes");
 gettext("No");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
-gettext("Change");
-
-/* ./templates/ktcore/metadata/editFieldset.smarty */
-gettext("Conditionality");
-
-/* ./templates/ktcore/metadata/editFieldset.smarty */
-gettext("A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each field can depend on the user's selections for the others.");
+gettext("This error prevents this fieldset from being set to complete");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
 gettext("Manage conditional");
@@ -1209,6 +1833,15 @@ gettext("A fieldset is a collection of fields that comprise a defined set of doc
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
 gettext("Existing members");
+
+/* ./templates/ktcore/metadata/editFieldset.smarty */
+gettext("Field Name");
+
+/* ./templates/ktcore/metadata/editFieldset.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/metadata/editFieldset.smarty */
+gettext("Type Description");
 
 /* ./templates/ktcore/metadata/editFieldset.smarty */
 gettext("edit");
@@ -1454,21 +2087,6 @@ gettext("Groups may contain other groups, allowing for a convenient way to build
 gettext("Change Sub-Groups in #name#");
 
 /* ./templates/ktcore/principals/groups_managesubgroups.smarty */
-gettext("Select the groups from the left-hand list that you would like to add to this group and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>. Only groups that are logically capable of being included in this group will be available to be added.");
-
-/* ./templates/ktcore/principals/groups_managesubgroups.smarty */
-gettext("Available Groups");
-
-/* ./templates/ktcore/principals/groups_managesubgroups.smarty */
-gettext("Assigned Groups");
-
-/* ./templates/ktcore/principals/groups_managesubgroups.smarty */
-gettext("Filter");
-
-/* ./templates/ktcore/principals/groups_managesubgroups.smarty */
-gettext("Filter");
-
-/* ./templates/ktcore/principals/groups_managesubgroups.smarty */
 gettext("save changes");
 
 /* ./templates/ktcore/principals/groups_managesubgroups.smarty */
@@ -1610,21 +2228,6 @@ gettext("Users may be associated with Groups which are then used to grant these 
 gettext("Manage Users in #name#");
 
 /* ./templates/ktcore/principals/groups_manageusers.smarty */
-gettext("Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>.");
-
-/* ./templates/ktcore/principals/groups_manageusers.smarty */
-gettext("Available Users");
-
-/* ./templates/ktcore/principals/groups_manageusers.smarty */
-gettext("Member users");
-
-/* ./templates/ktcore/principals/groups_manageusers.smarty */
-gettext("Filter");
-
-/* ./templates/ktcore/principals/groups_manageusers.smarty */
-gettext("Filter");
-
-/* ./templates/ktcore/principals/groups_manageusers.smarty */
 gettext("save changes");
 
 /* ./templates/ktcore/principals/groups_manageusers.smarty */
@@ -1704,21 +2307,6 @@ gettext("Users may be classed together as Groups and these groups may be used to
 
 /* ./templates/ktcore/principals/usergroups.smarty */
 gettext("Change #name#'s Groups");
-
-/* ./templates/ktcore/principals/usergroups.smarty */
-gettext("Select the groups which this user should belong to from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>.");
-
-/* ./templates/ktcore/principals/usergroups.smarty */
-gettext("Available Groups");
-
-/* ./templates/ktcore/principals/usergroups.smarty */
-gettext("Assigned Groups");
-
-/* ./templates/ktcore/principals/usergroups.smarty */
-gettext("Filter");
-
-/* ./templates/ktcore/principals/usergroups.smarty */
-gettext("Filter");
 
 /* ./templates/ktcore/principals/usergroups.smarty */
 gettext("save changes");
@@ -2402,6 +2990,9 @@ gettext("Start workflow on document");
 gettext("Change workflow on document");
 
 /* ./templates/ktcore/workflow/documentWorkflow.smarty */
+gettext("Please note that changing the workflow on a document will start the workflow at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>");
+
+/* ./templates/ktcore/workflow/documentWorkflow.smarty */
 gettext("Start Workflow");
 
 /* ./templates/ktcore/workflow/documentWorkflow.smarty */
@@ -2557,6 +3148,51 @@ gettext("Select the target state of the transition, and select the permission, g
 /* ./templates/ktcore/workflow/editTransition.smarty */
 gettext("Save");
 
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Transition Triggers");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Transition triggers allow you to have special actions automatically     occur when a transition is performed, and to control who can perform the transition.  Some triggers     perform <strong>both</strong> of these functions, especially if performing the action requires that     certain conditions are in place before the action will occur.");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Guards");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Items which control whether a given user can perform this transition     on a specific document. <strong>All of these must allow the user to perform the transition.</strong>");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Anybody (with the ability to see the document) can perform this transition.");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Trigger");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Configuration");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Actions which are performed when the document follows the transition.");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("No actions are performed when this transition occurs.");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Trigger");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Configuration");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/workflow/editTransition.smarty */
+gettext("Delete");
+
 /* ./templates/ktcore/workflow/editWorkflow.smarty */
 gettext("Workflow Overview");
 
@@ -2594,7 +3230,7 @@ gettext("Transitions available:");
 gettext("Transitions to this state:");
 
 /* ./templates/ktcore/folder/view_permissions.smarty */
-gettext("Permissions");
+gettext("View Permissions for \"#foldername#\"");
 
 /* ./templates/ktcore/folder/view_permissions.smarty */
 gettext("This page shows the permissions that apply to this specific folder.  Only the roles or groups which have permissions assigned are shown.");
@@ -2609,7 +3245,16 @@ gettext("Edit permissions");
 gettext("View resolved permissions for user");
 
 /* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Manage security");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("View resolved permissions for user");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
 gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Override permissions");
 
 /* ./templates/ktcore/folder/view_permissions.smarty */
 gettext("This folder defines its own permissions.");
@@ -2647,6 +3292,24 @@ gettext("Allowed");
 /* ./templates/ktcore/folder/view_permissions.smarty */
 gettext("Denied");
 
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Dynamic Conditions");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Group");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Condition");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Allowed");
+
+/* ./templates/ktcore/folder/view_permissions.smarty */
+gettext("Denied");
+
+/* ./templates/ktcore/folder/bulkUpload.smarty */
+gettext("Upload files into \"#foldername#\"");
+
 /* ./templates/ktcore/folder/bulkUpload.smarty */
 gettext("Bulk import");
 
@@ -2663,7 +3326,7 @@ gettext("Add");
 gettext("Upload");
 
 /* ./templates/ktcore/folder/roles.smarty */
-gettext("Allocate Roles");
+gettext("Allocate Roles for \"#foldername#\"");
 
 /* ./templates/ktcore/folder/roles.smarty */
 gettext("In many cases, workflow actions will be assigned to certain <strong>roles</strong>     (e.g. Manager, Interviewer, Researcher, Journalist).  You can assign these roles     to specific groups in particular areas of the document management system.");
@@ -2744,6 +3407,9 @@ gettext("Delete");
 gettext("Cancel");
 
 /* ./templates/ktcore/folder/bulkImport.smarty */
+gettext("Import files into \"#foldername#\"");
+
+/* ./templates/ktcore/folder/bulkImport.smarty */
 gettext("Import from Server Location");
 
 /* ./templates/ktcore/folder/bulkImport.smarty */
@@ -2757,6 +3423,9 @@ gettext("Add");
 
 /* ./templates/ktcore/folder/bulkImport.smarty */
 gettext("Import");
+
+/* ./templates/ktcore/folder/rename.smarty */
+gettext("Renaming folder: #name#");
 
 /* ./templates/ktcore/folder/rename.smarty */
 gettext("This page allows you to rename a folder.");
@@ -2798,16 +3467,19 @@ gettext("save changes");
 gettext("Cancel");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Folder permissions");
+gettext("Folder permissions for \"#foldername#\"");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("This folder <strong>inherits</strong> its permissions from #permission_source#.");
+gettext("Manage security");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Override Permissions");
+gettext("View permissions overview");
+
+/* ./templates/ktcore/folder/permissions.smarty */
+gettext("View resolved permissions for user");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("This folder defines its own permissions.");
@@ -2816,37 +3488,13 @@ gettext("This folder defines its own permissions.");
 gettext("Inherit permissions");
 
 /* ./templates/ktcore/folder/permissions.smarty */
-gettext("Role or Group");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Role:");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Denied");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Group:");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Allowed");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Denied");
+gettext("Select roles and groups for whom you wish to change permission assignement from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'.");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Update Permission Assignments");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Cancel");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Edit Permission Assignments");
-
-/* ./templates/ktcore/folder/permissions.smarty */
-gettext("Edit Permission Assignments");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("Dynamic permissions");
@@ -2882,7 +3530,7 @@ gettext("Condition");
 gettext("Add");
 
 /* ./templates/ktcore/folder/resolved_permissions_user.smarty */
-gettext("Resolved permissions per user");
+gettext("Resolved permissions per user for \"#foldername#\"");
 
 /* ./templates/ktcore/folder/resolved_permissions_user.smarty */
 gettext("This page shows the permissions that individual users have on this folder.  Only the users which have permissions assigned are shown.");
@@ -2892,6 +3540,21 @@ gettext("Users may have permissions on this folder due to membership of a group,
 
 /* ./templates/ktcore/folder/resolved_permissions_user.smarty */
 gettext("No users have permissions on this item.");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Manage security");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Edit permissions");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("View permissions overview");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("Manage security");
+
+/* ./templates/ktcore/folder/resolved_permissions_user.smarty */
+gettext("View permissions overview");
 
 /* ./templates/ktcore/folder/resolved_permissions_user.smarty */
 gettext("User");
@@ -2906,13 +3569,13 @@ gettext("Allowed");
 gettext("Denied");
 
 /* ./templates/ktcore/folder/roles_managegroups.smarty */
-gettext("Allocate Groups to Role");
+gettext("Allocate Groups to Role: #rolename#");
 
 /* ./templates/ktcore/folder/roles_managegroups.smarty */
 gettext("Groups must be allocated to roles to ensure that the workflow transition this role is supposed to support can be acted upon by a user.");
 
 /* ./templates/ktcore/folder/roles_managegroups.smarty */
-gettext("Allocate Groups to Role");
+gettext("Allocate Groups");
 
 /* ./templates/ktcore/folder/roles_managegroups.smarty */
 gettext("Select the groups which should be part of this role.");
@@ -2984,7 +3647,7 @@ gettext("Copy document");
 gettext("Copy");
 
 /* ./templates/ktcore/action/copy_final.smarty */
-gettext("Move");
+gettext("Complete Copy");
 
 /* ./templates/ktcore/action/copy_final.smarty */
 gettext("Cancel");
@@ -3086,7 +3749,7 @@ gettext("Move");
 gettext("Target folder");
 
 /* ./templates/ktcore/action/move.smarty */
-gettext("The folder given below is where the document is going to be moved to.  Use the folder collection and path below to browse to the folder you wish to move the documents into.");
+gettext("Use the folder collection and path below to browse to the folder into which you wish to move the documents.");
 
 /* ./templates/ktcore/action/move.smarty */
 gettext("Move");
@@ -3149,16 +3812,16 @@ gettext("Cancel Checkout");
 gettext("Copy document");
 
 /* ./templates/ktcore/action/copy.smarty */
-gettext("Move");
+gettext("Copy");
 
 /* ./templates/ktcore/action/copy.smarty */
 gettext("Target folder");
 
 /* ./templates/ktcore/action/copy.smarty */
-gettext("The folder given below is where the document is going to be moved to.  Use the folder collection and path below to browse to the folder you wish to move the documents into.");
+gettext("Use the folder collection and path below to browse to the folder into which you wish to copy the documents.");
 
 /* ./templates/ktcore/action/copy.smarty */
-gettext("Move");
+gettext("Copy");
 
 /* ./templates/ktcore/action/copy.smarty */
 gettext("Cancel");
@@ -3207,6 +3870,15 @@ gettext("Move");
 
 /* ./templates/ktcore/action/move_final.smarty */
 gettext("Cancel");
+
+/* ./templates/ktcore/action/assistance.smarty */
+gettext("If you are unable to perform an action on this document that you think you should be able to, or wish to request a change in location, metadata values, or workflow status, you can use this form to contact the owner of the document and/or the administrators to request this change.");
+
+/* ./templates/ktcore/action/assistance.smarty */
+gettext("Request Assistance");
+
+/* ./templates/ktcore/action/assistance.smarty */
+gettext("Request Assistance");
 
 /* ./templates/ktcore/document/admin/linktypesadmin.smarty */
 gettext("Document Link Type Management");
@@ -3356,6 +4028,9 @@ gettext("please confirm that you want to restore these documents.");
 gettext("Document Name");
 
 /* ./templates/ktcore/document/admin/restoreconfirmlist.smarty */
+gettext("Restore To");
+
+/* ./templates/ktcore/document/admin/restoreconfirmlist.smarty */
 gettext("Confirm Restore");
 
 /* ./templates/ktcore/document/admin/restoreconfirmlist.smarty */
@@ -3417,6 +4092,18 @@ gettext("Force Checkin");
 
 /* ./templates/ktcore/document/admin/force_checkin_confirm.smarty */
 gettext("Cancel");
+
+/* ./templates/ktcore/document/cleanup_script.smarty */
+gettext("Warning: Database is inconsistent with the contents of the repository.");
+
+/* ./templates/ktcore/document/cleanup_script.smarty */
+gettext("All paths are relative to your Documents directory.");
+
+/* ./templates/ktcore/document/cleanup_script.smarty */
+gettext("These documents have versions that are not present on the filesystem.  Consider restoring them from backups.");
+
+/* ./templates/ktcore/document/cleanup_script.smarty */
+gettext("The following files are present in the repository, but do not exist in the database.");
 
 /* ./templates/ktcore/document/change_type.smarty */
 gettext("Change Document Type");
@@ -3818,7 +4505,112 @@ gettext("Language");
 gettext("login");
 
 /* ./templates/ktcore/login.smarty */
-gettext("Version");
+gettext("KnowledgeTree Version");
+
+/* ./templates/ktcore/login.smarty */
+gettext("&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+
+/* ./templates/ktcore/workflowtriggers/permissions.smarty */
+gettext("Guard permissions for Transition");
+
+/* ./templates/ktcore/workflowtriggers/permissions.smarty */
+gettext("Guard Permissions");
+
+/* ./templates/ktcore/workflowtriggers/permissions.smarty */
+gettext("Specify which permissions the user will require in order to perform this transition.  Note that the user will be required to have <strong>all</strong> these permissions.");
+
+/* ./templates/ktcore/workflowtriggers/permissions.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/workflowtriggers/condition.smarty */
+gettext("Guard Condition for Transition");
+
+/* ./templates/ktcore/workflowtriggers/condition.smarty */
+gettext("Guard Condition");
+
+/* ./templates/ktcore/workflowtriggers/condition.smarty */
+gettext("Specify which condition the document must fulfill before this transition becomes available.");
+
+/* ./templates/ktcore/workflowtriggers/condition.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/workflowtriggers/group.smarty */
+gettext("Guard Groups for Transition");
+
+/* ./templates/ktcore/workflowtriggers/group.smarty */
+gettext("Guard Groups");
+
+/* ./templates/ktcore/workflowtriggers/group.smarty */
+gettext("Specify which group the user will require in order to perform this transition.");
+
+/* ./templates/ktcore/workflowtriggers/group.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/workflowtriggers/roles.smarty */
+gettext("Guard Roles for Transition");
+
+/* ./templates/ktcore/workflowtriggers/roles.smarty */
+gettext("Guard Roles");
+
+/* ./templates/ktcore/workflowtriggers/roles.smarty */
+gettext("Specify which role the user will require in order to perform this transition.");
+
+/* ./templates/ktcore/workflowtriggers/roles.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/workflowtriggers/copyaction.smarty */
+gettext("Guard Condition for Transition");
+
+/* ./templates/ktcore/workflowtriggers/copyaction.smarty */
+gettext("Guard Condition");
+
+/* ./templates/ktcore/workflowtriggers/copyaction.smarty */
+gettext("Specify which condition the document must fulfill before this transition becomes available.");
+
+/* ./templates/ktcore/workflowtriggers/copyaction.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/workflowtriggers/moveaction.smarty */
+gettext("Move Action for Transition");
+
+/* ./templates/ktcore/workflowtriggers/moveaction.smarty */
+gettext("Move");
+
+/* ./templates/ktcore/workflowtriggers/moveaction.smarty */
+gettext("Specify which folder to which the document must be moved.");
+
+/* ./templates/ktcore/workflowtriggers/moveaction.smarty */
+gettext("Save Trigger");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Edit View");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("The columns included in this view are displayed below.  To add additional columns into the view, use the form below the list.  To remove items, click on the \"delete\" icon next to the column name.  Note that some columns may be required in a given view. Also, while you can have multiple copies of a given column in a specific view this is not recommended.");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Column");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Delete");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("No columns have been added to this view");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Add a Column");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Add Column to View");
+
+/* ./templates/ktcore/misc/columns/select_view.smarty */
+gettext("Select View");
+
+/* ./templates/ktcore/misc/columns/select_view.smarty */
+gettext("Views are the selections of documents and folders you will find throughout KnowledgeTree.  Some of those can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.)");
 
 /* ./templates/ktcore/boolean_search_change.smarty */
 gettext("Boolean Search");
@@ -3927,6 +4719,27 @@ gettext("Preview");
 
 /* ./templates/ktcore/edit_lookuptrees.smarty */
 gettext("Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.     To edit a category (including adding or removing keywords) click on the \"attach keywords\" link next to it.");
+
+/* ./templates/ktcore/assist/assist_notification_details.smarty */
+gettext("A     user, <b>#user#</b>, has requested help on the document <b>#name#</b>, and you are     the owner or an admin of this document.");
+
+/* ./templates/ktcore/assist/assist_notification_details.smarty */
+gettext("View Document");
+
+/* ./templates/ktcore/assist/assist_notification_details.smarty */
+gettext("Clear Alert");
+
+/* ./templates/ktcore/assist/assist_notification.smarty */
+gettext("A     user, <b>#user#</b>, has requested help on the document <b>#name#</b>, and you are     the owner or an admin of this document.");
+
+/* ./templates/ktcore/assist/assist_notification.smarty */
+gettext("View Document");
+
+/* ./templates/ktcore/assist/assist_notification.smarty */
+gettext("Document is no longer available");
+
+/* ./templates/ktcore/assist/assist_notification.smarty */
+gettext("Clear Alert");
 
 /* ./templates/ktcore/manage_permissions.smarty */
 gettext("Existing permissions");
