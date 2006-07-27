@@ -4,7 +4,7 @@
 
 .active .inactivity_message { display: none; }
 
-select { width: 100%; }
+/* select { width: 100%; } */
 
 .edit_button { margin-bottom: 0.5em; }
 .save_button,
@@ -94,7 +94,7 @@ refresh the page.{/i18n}</p>
   <td class="inactive" id="md_{$oField->getId()}">
      <p class="inactivity_message">{i18n}This field is not controlled by the currently active group.{/i18n}</p>
      <div class="lookup_items">
-         <select class="item_list">
+         <select class="item_list" size="5">
   {foreach from=$oField->getEnabledValues() item=oMetaData}
 				<option value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</option>
   {/foreach}
