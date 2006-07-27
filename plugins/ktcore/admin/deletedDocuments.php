@@ -197,10 +197,18 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
 
         foreach ($aDocuments as $oDoc) {
             $oFolder = Folder::get($oDoc->getRestoreFolderId());
-            if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); } // move to root if parent no longer exists.
+            // move to root if parent no longer exists.
+            if (PEAR::isError($oFolder)) { 
+                $oDoc->setFolderId(1);  
+                $oFolder = Folder::get(1);
+            } else { 
+                $oDoc->setFolderId($oDoc->getRestoreFolderId());
+            }
+            
             if ($oStorage->restore($oDoc)) {
                 $oDoc = Document::get($oDoc->getId()); // storage path has changed for most recent object...
                 $oDoc->setStatusId(LIVE);
+                $oDoc->setPermissionObjectId($oFolder->getPermissionObjectId());
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
                     $aErrorDocuments[] = $oDoc->getName();
