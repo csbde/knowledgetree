@@ -1,0 +1,23 @@
+<h2>{i18n}Move Action for Transition{/i18n}</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+    <legend>{i18n}Move{/i18n}</legend>
+    
+
+{foreach from=$args item=val key=name}
+<input type="hidden" name="{$name}" value="{$val}" />
+{/foreach}
+
+<p class="descriptiveText">{i18n}Specify which folder to which the document must be moved.{/i18n}</p>
+
+{$breadcrumbs}
+
+{$collection->render()}
+
+<div class="form_action">
+    <input type="submit" value="{i18n}Save Trigger{/i18n}" />
+    {* FIXME how do I cancel again? *}
+</div>
+</fieldset>
+</form>
