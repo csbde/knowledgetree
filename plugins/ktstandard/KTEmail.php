@@ -363,8 +363,8 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
 
     function do_email() {
-        $groupNewRight = trim($_REQUEST['groupNewRight'], chr(160));
-        $userNewRight = trim($_REQUEST['userNewRight'], chr(160));
+        $groupNewRight = trim($_REQUEST['groups_items_added'], chr(160));
+        $userNewRight = trim($_REQUEST['users_items_added'], chr(160));
 
         $fEmailAddresses = trim($_REQUEST['fEmailAddresses']);
         $fAttachDocument = $_REQUEST['fAttachDocument'];
