@@ -58,11 +58,11 @@ class KTFolderWorkflowAssociationPlugin extends KTPlugin {
 
 class FolderWorkflowAssociator extends KTWorkflowAssociationHandler {
     function addTrigger($oDocument) { 
-       return $oW = $this->getWorkflowForDoc($oDocument);       
+       return $this->getWorkflowForDoc($oDocument);       
     }
     
     function editTrigger($oDocument) { 
-       return $oW = $this->getWorkflowForDoc($oDocument);       
+       return $this->getWorkflowForDoc($oDocument);       
     }
     
     function getWorkflowForDoc($oDocument) {
