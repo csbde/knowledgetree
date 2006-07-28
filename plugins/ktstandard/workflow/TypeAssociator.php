@@ -71,8 +71,9 @@ class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
         $sQuery .= ' WHERE `document_type_id` = ?';
         $aParams = array($iDocTypeId);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'workflow_id');
-        if (PEAR::isError($res)) { 
-            return null;
+
+        if (PEAR::isError($res) || (is_null($res))) { 
+            return KTWorkflowUtil::getWorkflowForDocument($oDocument); // don't remove if type changed out.
         }
         return KTWorkflow::get($res);
     }
