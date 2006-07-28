@@ -81,6 +81,10 @@ class KTDocumentContentVersion extends KTEntity {
     function getStoragePath() { return $this->sStoragePath; }
     function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
 
+    function getVersion() {
+        return sprintf("%s.%s", $this->getMajorVersionNumber(), $this->getMinorVersionNumber());
+    }
+
     function _table() {
         return KTUtil::getTableName('document_content_version');
     }
@@ -109,13 +113,14 @@ class KTDocumentContentVersion extends KTEntity {
         return KTEntityUtil::get('KTDocumentContentVersion', $iId);
     }
 
-    function &getByDocument($oDocument) {
+    function &getByDocument($oDocument, $aOptions = null) {
+        $aOptions = KTUtil::meldOptions(array(
+            'multi' => true,
+        ), $aOptions);
         $iDocumentId = KTUtil::getId($oDocument);
         return KTEntityUtil::getByDict('KTDocumentContentVersion', array(
             'document_id' => $iDocumentId,
-        ), array(
-            'multi' => true,
-        ));
+        ), $aOptions);
     }
 }
 
