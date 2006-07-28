@@ -44,7 +44,7 @@ JSONLookupWidget.prototype = {
 	this.triggers['add'] = null;
 	this.triggers['remove'] = null;
 
-	this.initialValuesLoaded = false
+	this.initialValuesLoaded = false;
 	this.getValues();
     },
 
@@ -74,7 +74,7 @@ JSONLookupWidget.prototype = {
 
     'errGetValues' : function(res) {
 	alert('There was an error retrieving data. Please check connectivity and try again.');
-	this.oValues = {'off':'-- Error fetching values --'}
+	this.oValues = {'off':'-- Error fetching values --'};
 	this.renderValues();
     },
 
@@ -94,7 +94,7 @@ JSONLookupWidget.prototype = {
 		}
 	    }
 
-	    if(found) continue;
+	    if(found) { continue; }
 
 		    
 	    var aParam = {'value':k};
@@ -103,22 +103,21 @@ JSONLookupWidget.prototype = {
 	    }
 
 	    var val = this.oValues[k];
+	    var sDisp = val;
 	    if(!isUndefinedOrNull(val['display'])) {
 		var sDisp = val['display'];
-		if(!isUndefinedOrNull(val['selected']) && val['selected'] == true) {
+		if(!isUndefinedOrNull(val['selected']) && val['selected'] === true) {
 		    val['selected'] = undefined;
-		    aParam['selected'] = 'selected';
+		    aParam['selected'] = true;
 		    bSelFound = true;
 		}
-	    } else {
-		var sDisp = val;
 	    }
 	    var oO = OPTION(aParam, sDisp);
 	    aOptions.push(oO);
 	}
 
 	replaceChildNodes(this.oSelectAvail, aOptions);
-	if(bSelFound) this.onclickAdd();
+	if(bSelFound) { this.onclickAdd(); }
     },
 
     'modItems' : function(type, value) {
@@ -128,7 +127,8 @@ JSONLookupWidget.prototype = {
 	// check against other - if other has value, remove it from other, skip next bit
 	var aNewOther = [];
 	var exists = false;
-	for(var i=0; i<this[aOtherTarget].length; i++) {
+	var i = 0;
+	for(i=0; i<this[aOtherTarget].length; i++) {
 	    if(this[aOtherTarget][i]!=value) {
 		aNewOther.push(this[aOtherTarget][i]);
 	    } else {
@@ -143,7 +143,7 @@ JSONLookupWidget.prototype = {
 	}
 
 	exists = false;
-	for(var i=0; i<this[aTarget].length; i++) {
+	for(i=0; i<this[aTarget].length; i++) {
 	    if(this[aTarget][i] == value) {
 		exists = true;
 		break;
@@ -194,16 +194,23 @@ JSONLookupWidget.prototype = {
 
     'onclickAdd' : function(e) {
 	var aCurOptions = extend([], this.oSelectAssigned.options);
-	forEach(this.oSelectAvail.options, bind(function(o) {
-	    if(o.selected == 'selected' || o.selected == true) {
+	forEach(this.oSelectAvail.options, bind(
+		    function(o) {
+			try {
+						    var a = o.selected;						    
+	    if(a == 'selected' || a === true) {
 		this.modItems('add', o.value);
-		o.selected = false;
+		o.setAttribute('selected', false);
 		aCurOptions.push(o);
 
 		if(!isUndefinedOrNull(this.triggers['add'])) {
 		    this.triggers['add'](this.oValues[o.value]);
 		}
 	    }
+			} catch(e) {
+			    log(o.value);
+			    log(e.description);
+			}
 	}, this));
 	
 	aCurOptions.sort(keyComparator('innerHTML'));
@@ -214,7 +221,7 @@ JSONLookupWidget.prototype = {
     'onclickRemove' : function(e) {
 	var aOptions = [];
 	forEach(this.oSelectAssigned.options, bind(function(o) {
-	    if(o.selected == 'selected' || o.selected == true) {
+	    if(o.selected == 'selected' || o.selected === true) {
 		this.modItems('remove', o.value);
 		if(!isUndefinedOrNull(this.triggers['remove'])) {
 		    this.triggers['remove'](this.oValues[o.value]);
@@ -237,7 +244,7 @@ JSONLookupWidget.prototype = {
 
 function initJSONLookup(name, action) {
     return function() {
-	_aLookupWidgets[name] = new JSONLookupWidget;
+	_aLookupWidgets[name] = new JSONLookupWidget();
 	_aLookupWidgets[name].initialize(name, action);
     }
 }

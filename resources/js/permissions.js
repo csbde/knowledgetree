@@ -58,7 +58,7 @@ PermissionsTable.prototype = {
 	}
 	
 	var dRow = TR(null, 
-		      TD(null, SPAN({'class':'descriptiveText'}, oRow['type'][0].toUpperCase() + oRow['type'].substring(1) + ': '), oRow['name']),
+		      TD(null, SPAN({'class':'descriptiveText'}, oRow['type'].substring(0,1).toUpperCase() + oRow['type'].substring(1) + ': '), oRow['name']),
 		      map(function(aPerm) {
 			      var aProps = { 'type':'checkbox', 
 					     'name':'foo['+aPerm['id']+']['+oRow['type']+'][]',
