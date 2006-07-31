@@ -57,14 +57,14 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
 
 class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
     function addTrigger($oDocument) { 
-       return $oW = $this->getWorkflowForType($oDocument->getDocumentTypeID());       
+       return $oW = $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);       
     }
     
     function editTrigger($oDocument) { 
-       return $oW = $this->getWorkflowForType($oDocument->getDocumentTypeID());       
+       return $oW = $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);       
     }
     
-    function getWorkflowForType($iDocTypeId) {
+    function getWorkflowForType($iDocTypeId, $oDocument) {
         if (is_null($iDocTypeId)) { return null; }
         
         $sQuery = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('type_workflow_map');
