@@ -7,15 +7,31 @@ What's new in this release
 
 Improvements
 
-  * Improved information hiding when a user has access to a folder or
-    document but not to at least some of its parent folders.
+    * Improved information hiding when a user has access to a folder or
+      document but not to at least some of its parent folders.
+    * Simplified permissions management page.
+    * Handle large numbers of groups better.
+    * Can now handle international characters in a number of character
+      sets for searching.
+    * Ideographic languages can now set "useLike = true" in the i18n
+      section of the config.ini file to use a (slower) search that will
+      return results.
 
 New Features
 
-  * New "Core: Folder Details" permissions allows more granular
-    permission assignment
+    * New "Core: Folder Details" permissions allows more granular
+      permission assignment, allowing folder visibility (including in
+      breadcrumbs) to be controlled.
+    * The ability to make documents immutable, whereupon no new versions
+      are possible, and only unit or system administrators can move or
+      delete them, or edit their metadata.
+    * "Request Assistance" document action, which allows users to request
+      changes to documents that they don't have the permissions to 
+    * Workflow triggers, which allow actions to be performed at certain
+      stages in the workflow life-cycle.
+    * Columns to be displayed for browse and search can be configured by
+      an administrator.
 
-Bugs fixed
 
 3.0.3
 -----
