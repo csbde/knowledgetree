@@ -3,9 +3,8 @@ KnowledgeTree Installation Notes
 
 *  KnowledgeTree requires the following software to run:
    -  Apache 1.3 or above
-   -  MySQL 4.0 or above with INNODB support
+   -  MySQL 4.1.6 or above, with InnoDB support
    -  PHP 4.3.0 or above, but not yet PHP 5.0
-
 
 *  Move the knowledgeTree folder to the directory it is going to be served from:
    $ mv knowledgeTree /path/to/your/html/directory/
@@ -14,7 +13,7 @@ KnowledgeTree Installation Notes
 
    Due to the many different configuration possibilities, these can not
    all be discussed here.  Please consult the KnowledgeTree Wiki system
-   at http://issues.ktdms.com/confluence/ to see what others have done
+   at http://wiki.ktdms.com/ to see what others have done
    on your platform, and discuss the pros and cons of various options on
    the KnowledgeTree Forums at http://forums.ktdms.com/
 
@@ -42,7 +41,7 @@ KnowledgeTree Installation Notes
    a password (-p, and you will be asked for the password).
 
    Using other tools is beyond the scope of this document.  Consult the
-   KnowledgeTree Wiki at http://issues.ktdms.com/confluence/ to see how
+   KnowledgeTree Wiki at http://wiki.ktdms.com/ to see how
    others have approached this on your platform.
 
 *  Configure your installation in config/config.ini:
@@ -122,7 +121,7 @@ For the Windows platform, these are:
 . InfoZip unzip and zip - http://www.info-zip.org/
 
 Installing these packages is beyond the scope of this document - please
-consult the KnowledgeTree Wiki at http://issues.ktdms.com/confluence/
+consult the KnowledgeTree Wiki at http://wiki.ktdms.com/
 to see how others have approached this on your platform.  We recommend
 that you use the appropriate package management procedures for
 installing these packages on your system to ensure ease of maintenance
@@ -140,7 +139,7 @@ Please make sure that your KnowledgeTree installation passes all the
 pre- and post-installation checkups first.
 
 Refer to the Frequently Asked Questions list on the KnowledgeTree Wiki
-at http://issues.ktdms.com/confluence/
+at http://wiki.ktdms.com/
 
 Ask on the KnowledgeTree forums on http://forums.ktdms.com/.
 
@@ -156,7 +155,7 @@ Refer to docs/UPGRADE.txt
 
 KnowledgeTree Document Management System
 Web page: http://www.ktdms.com/
-Wiki: http://issues.ktdms.com/confluence/
+Wiki: http://wiki.ktdms.com/
 Forums: http://forums.ktdms.com/
 Bug reporting: http://issues.ktdms.com/
 
