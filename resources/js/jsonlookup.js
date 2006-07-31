@@ -200,7 +200,11 @@ JSONLookupWidget.prototype = {
 						    var a = o.selected;						    
 	    if(a == 'selected' || a === true) {
 		this.modItems('add', o.value);
-		o.setAttribute('selected', false);
+		try {
+		    o.selected = false;
+		} catch(e) {
+		    o.setAttribute('selected', false);
+		}
 		aCurOptions.push(o);
 
 		if(!isUndefinedOrNull(this.triggers['add'])) {
