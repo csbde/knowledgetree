@@ -66,6 +66,8 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                 } else {
                     $sRet .= "  <dd>" . _kt('False') . "</dd>\n";
                 }
+            } else if ($sSettingName == 'searchpassword') {
+                $sRet .= "  <dd><em>*** Hidden ***</em></dd>\n";
             } else {
                 $sRet .= "  <dd>" . $sValue . "</dd>\n";
             }
@@ -144,7 +146,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $fields[] = new KTCheckboxWidget(_kt('Use Transaction Layer Security (TLS)'), _kt('Whether to use Transaction Layer Security (TLS), which encrypts traffic to and from the LDAP server'), 'tls_bool', $aConfig['tls'], $this->oPage, true);
         $fields[] = new KTStringWidget(_kt('Base DN'), _kt('The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)'), 'basedn', $aConfig['basedn'], $this->oPage, true);
         $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $aConfig['searchuser'], $this->oPage, true);
-        $fields[] = new KTStringWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
+        $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
         $aOptions = array(
             'rows' => 7,
             'cols' => 25,
