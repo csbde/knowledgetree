@@ -43,6 +43,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             'searchpassword' => _kt('LDAP Search Password'),
             'searchattributes' => _kt('Search Attributes'),
             'objectclasses' => _kt('Object Classes'),
+            'tls' => _kt('Use Transaction Layer Security (TLS)'),
         );
     }
     // }}}
@@ -56,9 +57,15 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $sRet = "<dl>\n";
         foreach ($this->aConfigMap as $sSettingName => $sName) {
             $sRet .= "  <dt>$sName</dt>\n";
-            $sValue = KTUtil::arrayGet($aConfig, $sSettingName, _kt("Unset"));
+            $sValue = KTUtil::arrayGet($aConfig, $sSettingName, _kt("Unset"), false);
             if (is_array($sValue)) {
                 $sRet .= "  <dd>" . join("<br />", $sValue) . "</dd>\n";
+            } else if (is_bool($sValue)) {
+                if ($sValue === true) {
+                    $sRet .= "  <dd>" . _kt('True') . "</dd>\n";
+                } else {
+                    $sRet .= "  <dd>" . _kt('False') . "</dd>\n";
+                }
             } else {
                 $sRet .= "  <dd>" . $sValue . "</dd>\n";
             }
@@ -134,6 +141,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         $fields = array();
         $fields[] = new KTStringWidget(_kt('Server name'), _kt('The host name or IP address of the LDAP server'), 'servername', $aConfig['servername'], $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt('Use Transaction Layer Security (TLS)'), _kt('Whether to use Transaction Layer Security (TLS), which encrypts traffic to and from the LDAP server'), 'tls_bool', $aConfig['tls'], $this->oPage, true);
         $fields[] = new KTStringWidget(_kt('Base DN'), _kt('The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)'), 'basedn', $aConfig['basedn'], $this->oPage, true);
         $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $aConfig['searchuser'], $this->oPage, true);
         $fields[] = new KTStringWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpassword', $aConfig['searchpassword'], $this->oPage, true);
@@ -159,6 +167,8 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $aConfig = unserialize($oSource->getConfig());
         $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
         $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
+        $aConfig['tls'] = false;
+
         foreach ($this->aConfigMap as $k => $v) {
             $sValue = KTUtil::arrayGet($_REQUEST, $k . '_nls');
             if ($sValue) {
@@ -172,6 +182,14 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                     $final_array[] = $nls_item;
                 }
                 $aConfig[$k] = $final_array;
+                continue;
+            }
+            if (array_key_exists($k . '_bool', $_REQUEST)) {
+                if ($_REQUEST[$k . '_bool']) {
+                    $aConfig[$k] = true;
+                } else {
+                    $aConfig[$k] = false;
+                }
                 continue;
             }
             $sValue = KTUtil::arrayGet($_REQUEST, $k);
@@ -491,6 +509,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         if (empty($this->aSearchAttributes)) {
             $this->aSearchAttributes = array('cn', 'samaccountname');
         }
+        $this->bTls = KTUtil::arrayGet($aConfig, 'tls', false);
 
         require_once('Net/LDAP.php');
         $config = array(
@@ -499,6 +518,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'host' => $this->sLdapServer,
             'base' => $this->sBaseDN,
             'options' => array('LDAP_OPT_REFERRALS' => 0),
+            'tls' => $this->bTls,
         );
 
         $this->oLdap =& Net_LDAP::connect($config);
