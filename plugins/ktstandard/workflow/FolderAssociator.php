@@ -83,7 +83,7 @@ class FolderWorkflowAssociator extends KTWorkflowAssociationHandler {
 class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
     var $sName = 'ktstandard.workflowassociation.folder.action';
 
-    var $_sShowPermission = "ktcore.permissions.addFolder";
+    var $_sShowPermission = "ktcore.permissions.workflow";
 
     function getDisplayName() {
         return _kt('Configure Workflows');
