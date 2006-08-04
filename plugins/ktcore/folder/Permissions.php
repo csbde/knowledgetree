@@ -373,18 +373,18 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		}
 		if($bSelected) {
 		    if(count($aPerm))
-		    $aEntityList[$oGroup->getId()] = array('type' => 'group',
-							   'display' => 'Group: ' . $oGroup->getName(),
-							   'name' => $oGroup->getName(),
-							   'permissions' => $aPerm,
-							   'id' => $oGroup->getId(),
-							   'selected' => true);
+		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
+							       'display' => 'Group: ' . $oGroup->getName(),
+							       'name' => $oGroup->getName(),
+							       'permissions' => $aPerm,
+							       'id' => $oGroup->getId(),
+							       'selected' => true);
 		} else {
-		    $aEntityList[$oGroup->getId()] = array('type' => 'group',
-							   'display' => 'Group: ' . $oGroup->getName(),
-							   'name' => $oGroup->getName(),
-							   'permissions' => $aPerm,
-							   'id' => $oGroup->getId());
+		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
+							       'display' => 'Group: ' . $oGroup->getName(),
+							       'name' => $oGroup->getName(),
+							       'permissions' => $aPerm,
+							       'id' => $oGroup->getId());
 		}						      
 	    }
 
@@ -397,18 +397,18 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		
 		if($bSelected) {
 		    if(count($aPerm)) 
-		    $aEntityList[$oRole->getId()] = array('type' => 'role',
-							  'display' => 'Role: ' . $oRole->getName(),
-							  'name' => $oRole->getName(),
-							  'permissions' => $aPerm,
-							  'id' => $oRole->getId(),
-							  'selected' => true);
+		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
+							      'display' => 'Role: ' . $oRole->getName(),
+							      'name' => $oRole->getName(),
+							      'permissions' => $aPerm,
+							      'id' => $oRole->getId(),
+							      'selected' => true);
 		} else {
-		    $aEntityList[$oRole->getId()] = array('type' => 'role',
-							  'display' => 'Role: ' . $oRole->getName(),
-							  'name' => $oRole->getName(),
-							  'permissions' => $aPerm,
-							  'id' => $oRole->getId());
+		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
+							      'display' => 'Role: ' . $oRole->getName(),
+							      'name' => $oRole->getName(),
+							      'permissions' => $aPerm,
+							      'id' => $oRole->getId());
 		}
 	    }
 	}	 
