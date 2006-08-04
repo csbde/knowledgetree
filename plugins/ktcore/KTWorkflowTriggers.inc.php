@@ -29,6 +29,8 @@ require_once(KT_LIB_DIR . "/workflow/workflowtrigger.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
+require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
+
 class PermissionGuardTrigger extends KTWorkflowTrigger {
     var $sNamespace = 'ktcore.workflowtriggers.permissionguard';
     var $sFriendlyName;
@@ -271,8 +273,8 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
         if (PEAR::isError($oGroup)) {
             return true; // fail safe for cases where the role is deleted.
         }        
-        $res = KTGroupUtil::getMembershipReason($oUser, $oGroup);
-        if (PEAR::isError($res) || is_empty($res)) { // broken setup, or no reason
+        $res = GroupUtil::getMembershipReason($oUser, $oGroup);
+        if (PEAR::isError($res) || empty($res)) { // broken setup, or no reason
             return false;
         } else {
             return true;
