@@ -110,6 +110,7 @@ JSONLookupWidget.prototype = {
 		    val['selected'] = undefined;
 		    aParam['selected'] = true;
 		    bSelFound = true;
+		    aParam['value'] = val['id'];
 		}
 	    }
 	    var oO = OPTION(aParam, sDisp);
