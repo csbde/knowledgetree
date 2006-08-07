@@ -74,7 +74,7 @@ class AdminVersionPlugin extends KTPlugin {
     }
     
     function setup() {
-        if (!OS_WINDOWS) {
+        if (function_exists('curl_init') || (!OS_WINDOWS)) {
 	    $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
 	    $this->registerPage('versions', 'AdminVersionPage');
         }
@@ -90,7 +90,11 @@ class AdminVersionPage extends KTStandardDispatcher {
         }
         $sLastValue = KTUtil::getSystemSetting('ktadminversion_lastvalue');
         if (empty($sLastValue)) {
-            return;
+            $now = time();
+            $diff = $now - $iLastCheck;
+            if ($diff > (60 * 5)) {
+                return;
+            }
         }
         $now = time();
         $diff = $now - $iLastCheck;
@@ -102,7 +106,7 @@ class AdminVersionPage extends KTStandardDispatcher {
 
     function do_main() {
         $sCache = $this->_checkCache();
-        if (!empty($sCache)) {
+        if (!is_null($sCache)) {
             return $sCache;
         }
 
@@ -114,12 +118,29 @@ class AdminVersionPage extends KTStandardDispatcher {
         $sIdentifier = KTUtil::getSystemIdentifier();
         $sUrl = KTUtil::addQueryString($sUrl, sprintf("system_identifier=%s", $sIdentifier));
 
-        $stuff = @file_get_contents($sUrl);
-        if ($stuff === false) {
-            return "";
+        if (!function_exists('curl_init')) {
+            if (OS_WINDOWS) {
+                return "";
+            }
+            $stuff = @file_get_contents($sUrl);
+            if ($stuff === false) {
+                $stuff = "";
+            }
+        } else {
+            $ch = @curl_init($sUrl);
+            if (!$ch) {
+                return "";
+            }
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            $stuff = curl_exec($ch);
+            curl_close($ch);
+            if (!$stuff) {
+                $stuff = "";
+            }
         }
         KTUtil::setSystemSetting('ktadminversion_lastcheck', time());
-        KTUtil::setSystemSetting('ktadminversion_lastvalue', $stuff);
+        KTUtil::setSystemSetting('ktadminversion_lastvalue', (string)$stuff);
         return $stuff;
     }
 
