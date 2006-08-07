@@ -610,7 +610,7 @@ class KTUtil {
             return PEAR::raiseError(sprintf(_kt('Unable to retrieve system setting %s: %s'), $name, $res->getMessage()));
         }
         
-        if (empty($res)) { return $default; }
+        if (is_null($res)) { return $default; }
         
         return $res;
     }
