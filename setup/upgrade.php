@@ -95,14 +95,36 @@ function performAllUpgrades () {
         if (PEAR::isError($res)) {
             if (!is_a($res, 'Upgrade_Already_Applied')) {
                 break;
+            } else {
+                $res = true;
             }
         }
         if ($res === false) {
+            $res = PEAR::raiseError("Upgrade returned false");
             break;
         }
-        
     }
-    return $ret;
+    return $res;
+}
+
+function failWritablePath($name, $path) {
+    if (!is_writable($path)) {
+        sprintf("The path for setting %s, which is set to %s, can not be written to.  Correct this situation before continuing.", $name, $path);
+        exit(1);
+    }
+}
+
+failWritablePath('Log directory', $default->logDirectory);
+failWritablePath('Document directory', $default->documentRoot);
+
+if (PEAR::isError($loggingSupport)) {
+    print '<p><font color="red">Logging support is not currently working.  Check post-installation checkup.</font></p>';
+    exit(1);
+}
+
+if (PEAR::isError($dbSupport)) {
+    print '<p><font color="red">Database support is not currently working.  Check post-installation checkup.</font></p>';
+    exit(1);
 }
 
 if ($_REQUEST["go"] === "Upgrade") {
@@ -136,22 +158,26 @@ td { vertical-align: top; }
         upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
         Click on the button below the table to perform the upgrades.</p>
         ";
+        $upgradeTable = generateUpgradeTable();
+        print $upgradeTable;
+        print '<form><input type="submit" name="go" value="Upgrade" /></form>';
+        print '</body></html>';
+
     } else {
         print "
         <p>The table below describes the upgrades that have occurred to
         upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
         ";
 
-        $upgradeTable = performAllUpgrades();
-    }
-
-    print $upgradeTable;
-
-    if (!$performingUpgrade) {
-        print '<form><input type="submit" name="go" value="Upgrade" /></form>';
-    } else {
-        print '<form><input type="submit" name="go" value="ShowUpgrades" /></form>';
+        $res = performAllUpgrades();
+        if (PEAR::isError($res)) {
+            print '<font color="red">Upgrade failed.</font>' . "\n";
+        } else {
+            $sUrl = generateLink("");
+            print sprintf('<font color="green">Upgrade succeeded.  Now
+            try <a href="%s">log in and use the system</a>.</font>',
+            $sUrl) . "\n";
+        }
+        print '</body></html>';
     }
 ?>
-  </body>
-</html>
