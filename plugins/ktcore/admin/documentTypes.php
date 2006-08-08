@@ -155,7 +155,8 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'oDocumentType' => $oDocumentType,
             'aCurrentFieldsets' => $aCurrentFieldsets,
-            'aAvailableFieldsets' => $aAvailableFieldsets,
+            'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
+            'bAvailableFieldsets' => count($vocab) > 0,
             'availableWidget' => $availableTypesWidget,
         ));
         return $oTemplate;
