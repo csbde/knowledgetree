@@ -42,7 +42,7 @@
 <div class="ktInfo"><p>{i18n}No fieldsets are currently associated with this type.{/i18n}</p></div>
 { /if }
 
-{ if $aAvailableFieldsets }
+{ if $bAvailableFieldsets }
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Associate Fieldsets{/i18n}</legend>
@@ -57,8 +57,7 @@
   </div>
 </fieldset>
 </form>
-
-{else}
+{elseif !$bAnyFieldsets}
 <div class="ktInfo"><p>{i18n}No fieldsets are available to be added.  To add a fieldset, please go to 
 DMS Administration{/i18n} &raquo; {i18n}Document Metadata and Workflow Configuration{/i18n} &raquo {i18n}Document Field Management{/i18n} </p></div>
 { /if }
