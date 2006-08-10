@@ -5,7 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<p class="descriptiveText"><strong>FIXME</strong> help text for role-editing.  </p>
+{* <p class="descriptiveText"><strong>FIXME</strong> help text for role-editing.  </p> *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform">
    <input type="hidden" name="action" value="setRoleUsers" />
@@ -18,7 +18,8 @@
    
    <fieldset>
       <legend>{i18n}Allocate User to Role{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the users which should be part of this role.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
+      <p class="descriptiveText">{i18n}Select the users which should be part of this role.{/i18n} {* <strong>FIXME</strong> this helptext
+      is v. awkward. *}</p>
 
 <table border="0" width="600">
    <thead>
