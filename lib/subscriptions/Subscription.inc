@@ -271,7 +271,7 @@ class Subscription extends KTEntity {
                                             $res[Subscription::getIdFieldName($iSubscriptionType)],
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
-        $oSubscription->iId = $iSubscriptionID;
+        $oSubscription->iId = $res['id'];
         return $oSubscription;
     }
 
