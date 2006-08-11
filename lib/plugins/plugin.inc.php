@@ -54,6 +54,7 @@ class KTPlugin {
     var $_aViews = array();       
     var $_aNotificationHandlers = array();       
     var $_aTemplateLocations = array();       
+    var $_aCriteria = array();       
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -162,6 +163,11 @@ class KTPlugin {
         $this->_aTemplateLocations[$sName] = array($sName, $sPath);
     }        
 
+    function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
+	$this->_fixFilename($sFilename);
+	$this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+    }
+
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
@@ -220,6 +226,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/help/help.inc.php");
         require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
         require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");        
+        require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");        
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -234,6 +241,7 @@ class KTPlugin {
         $oColumnRegistry =& KTColumnRegistry::getSingleton();        
         $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
         $oTemplating =& KTTemplating::getSingleton();
+	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -301,6 +309,10 @@ class KTPlugin {
 
         foreach ($this->_aTemplateLocations as $k => $v) {
             call_user_func_array(array(&$oTemplating, 'addLocation'), $v);
+        }                
+
+        foreach ($this->_aCriteria as $k => $v) {
+            call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $v);
         }                
     }
 

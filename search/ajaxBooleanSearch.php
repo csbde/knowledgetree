@@ -31,6 +31,7 @@ require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
+require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");
 
 /*
  * example code - tests the frontend behaviour.  remember to check ajaxConditional.php 
@@ -49,7 +50,9 @@ class AjaxBooleanSearchDispatcher extends KTDispatcher {
         if (empty($criteriaType)) {
             return 'AJAX Error:  no criteria type specified.';
         } 
-        $critObj = Criteria::getCriterionByNumber($criteriaType);
+
+	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $critObj = $oCriteriaRegistry->getCriterion($criteriaType);
         if (PEAR::isError($critObj)) {
            return 'AJAX Error:  failed to initialise critiria of type "'.$type.'".';
         }

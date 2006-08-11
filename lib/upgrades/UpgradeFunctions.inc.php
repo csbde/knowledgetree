@@ -39,6 +39,7 @@ class UpgradeFunctions {
         "3.0.3.2" => array("createFolderDetailsPermission"),
         "3.0.3.3" => array("generateWorkflowTriggers"),
         "3.0.3.7" => array("rebuildAllPermissions"),        
+	"3.1.5" => array("upgradeSavedSearches"),
     );
 
     var $descriptions = array(
@@ -56,6 +57,7 @@ class UpgradeFunctions {
         'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
         'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
         'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.'
+	'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -765,6 +767,57 @@ class UpgradeFunctions {
         KTPermissionUtil::updatePermissionLookupRecursive($oRootFolder);
     }
 
+
+    function _upgradeSavedSearch($aSearch) {
+	$aMapping = array('-1' =>  'ktcore.criteria.name',
+			  '-6' =>  'ktcore.criteria.id',
+			  '-2' =>  'ktcore.criteria.title',
+			  '-3' =>  'ktcore.criteria.creator',
+			  '-4' =>  'ktcore.criteria.datecreated',
+			  '-5' =>  'ktcore.criteria.documenttype',
+			  '-7' =>  'ktcore.criteria.datemodified',
+			  '-8' =>  'ktcore.criteria.size',
+			  '-9' =>  'ktcore.criteria.content',
+			  '-10' =>  'ktcore.criteria.workflowstate',
+			  '-13' =>  'ktcore.criteria.discussiontext',
+			  '-12' =>  'ktcore.criteria.searchabletext',
+			  '-11' =>  'ktcore.criteria.transactiontext');
+
+	$aFieldsets =& KTFieldset::getList();
+	foreach($aFieldsets as $oFieldset) {
+	    $aFields =& DocumentField::getByFieldset($oFieldset);
+	    foreach($aFields as $oField) {
+		$sNamespace = $oFieldset->getNamespace() . '.' . $oField->getName();
+		$sId = (string) $oField->getId();
+		$aMapping[$sId] = $sNamespace;
+	    }
+	}
+
+	foreach(array_keys($aSearch['subgroup']) as $sgkey) {
+	    $sg =& $aSearch['subgroup'][$sgkey];
+	    foreach(array_keys($sg['values']) as $vkey) {
+		$item =& $sg['values'][$vkey];
+		$type = $item['type'];
+		$toreplace = 'bmd' . ((int)$type < 0 ? '_' : '') . abs((int)$type);
+		$item['type'] = $aMapping[$type];
+		$nData = array();
+		foreach($item['data'] as $k=>$v) {
+		    $k = str_replace($toreplace, $aMapping[$type], $k);
+		    $nData[$k] = $v;
+		}
+		$item['data'] = $nData;
+	    }
+	}
+	return $aSearch;
+    }
+
+    function upgradeSavedSearches() {
+	foreach(KTSavedSearch::getSearches() as $oS) {
+	    $aSearch = $this->_upgradeSavedSearch($oS->getSearch());
+	    $oS->setSearch($aSearch);
+	    $oS->update();
+	}
+    }
 }
 
 ?>

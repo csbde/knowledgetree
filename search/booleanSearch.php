@@ -56,7 +56,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
-        $aCriteria = Criteria::getAllCriteria();
+	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $aCriteria = $oCriteriaRegistry->getCriteria();
         
         $aTemplateData = array(
             "context" => &$this,
@@ -193,8 +194,9 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_change");
-        
-        $aCriteria = Criteria::getAllCriteria();
+        	
+	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $aCriteria = $oCriteriaRegistry->getCriteria();
         
         // we need to help out here, since it gets unpleasant inside the template.
         
@@ -203,8 +205,10 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             if (is_array($aSubgroup['values'])) {
                 foreach ($aSubgroup['values'] as $iv => $t) {
                     $datavars =& $aSubgroup['values'][$iv];
-                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
-                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+
+		    $oCriterion = $oCriteriaRegistry->getCriterion($datavars['type']);
+                    $datavars['typename'] = $oCriterion->sDisplay;
+                    $datavars['widgetval'] = $oCriterion->searchWidget(null, $datavars['data']);
                 }
             }
         }
@@ -224,7 +228,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 
 
     function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null) {
-        
         if ($sTitle == null) {
             $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Advanced Search'));
             $sTitle =  _kt('Search Results');
@@ -259,7 +262,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
                 
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BooleanSearchQuery($aCriteriaSet));    
-
 
         //$a = new BooleanSearchQuery($aCriteriaSet); 
         //var_dump($a->getDocumentCount()); exit(0);
