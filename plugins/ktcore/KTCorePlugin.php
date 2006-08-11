@@ -27,7 +27,6 @@
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 
-
 class KTCorePlugin extends KTPlugin {
     var $bAlwaysInclude = true;
     var $sNamespace = "ktcore.plugin";
@@ -119,7 +118,23 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
-        
+
+        // criterion
+	$this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('IDCriterion', 'ktcore.criteria.id', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('TitleCriterion', 'ktcore.criteria.title', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('CreatorCriterion', 'ktcore.criteria.creator', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DateCreatedCriterion', 'ktcore.criteria.datecreated', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DocumentTypeCriterion', 'ktcore.criteria.documenttype', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DateModifiedCriterion', 'ktcore.criteria.datemodified', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('SizeCriterion', 'ktcore.criteria.size', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('WorkflowStateCriterion', 'ktcore.criteria.workflowstate', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
+	$this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
 
         $this->setupAdmin();
     }

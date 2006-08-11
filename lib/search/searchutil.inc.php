@@ -51,7 +51,8 @@ class KTSearchUtil {
             $type = KTUtil::arrayGet($dataset, "type");
             $sql = KTUtil::arrayGet($dataset, "sql");
             if (!empty($type)) {
-                $oCriterion = Criteria::getCriterionByNumber($dataset["type"]);
+		$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
+                $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
                 if (PEAR::isError($oCriterion)) {
                     return PEAR::raiseError('Invalid criteria specified.');
                 }

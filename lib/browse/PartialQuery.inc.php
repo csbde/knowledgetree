@@ -326,7 +326,7 @@ class SimpleSearchQuery extends PartialQuery {
     function getQuery($aOptions = null) {
         $aSubgroup = array(
             'values' => array(
-                array('type' => '-12', 'data' => array('bmd_12' => $this->searchable_text)),
+                array('type' => 'ktcore.criteria.searchabletext', 'data' => array('ktcore.criteria.searchabletext' => $this->searchable_text)),
                 array('sql' => array('D.status_id = 1')),
             ),
             'join' => 'AND',
@@ -388,7 +388,7 @@ class TypeBrowseQuery extends SimpleSearchQuery {
     function getQuery($aOptions = null) {
         $aSubgroup = array(
             'values' => array(
-                array('type' => '-5', 'data' => array('bmd_5' => $this->iDocType)),
+                array('type' => 'ktcore.criteria.documenttype', 'data' => array('ktcore.criteria.documenttype' => $this->iDocType)),
                 array('sql' => array('D.status_id = 1')),
             ),
             'join' => 'AND',
@@ -407,18 +407,18 @@ class TypeBrowseQuery extends SimpleSearchQuery {
 }
 
 class ValueBrowseQuery extends SimpleSearchQuery {
-    var $iFieldId;
+    var $sFieldNamespace;
     var $sValueName;
     
-    function ValueBrowseQuery($oField, $oValue) {
-        $this->iFieldId = $oField->getId();
+    function ValueBrowseQuery($oField, $oValue) {	
+        $this->sFieldNamespace = $oField->getNamespace();
         $this->sValueName = $oValue->getName();
     }
 
     function getQuery($aOptions = null) {
         $aSubgroup = array(
             'values' => array(
-                array('type' => $this->iFieldId, 'data' => array('bmd' . $this->iFieldId => $this->sValueName)),
+                array('type' => $this->sFieldNamespace, 'data' => array($this->sFieldNamespace => $this->sValueName)),
                 array('sql' => array('D.status_id = 1')),
             ),
             'join' => 'AND',

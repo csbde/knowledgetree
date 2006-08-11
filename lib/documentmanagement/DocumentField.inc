@@ -35,21 +35,21 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 
 class DocumentField extends KTEntity {
 	
-	/** primary key value */
-	var $iId = -1;
-	var $sName;
-	var $sDataType;
-	var $sDescription;
-	var $bIsGeneric;
-	var $bHasLookup;
+    /** primary key value */
+    var $iId = -1;
+    var $sName;
+    var $sDataType;
+    var $sDescription;
+    var $bIsGeneric;
+    var $bHasLookup;
     var $iParentFieldset;
-	var $bHasLookupTree;
-	var $bIsMandatory;
+    var $bHasLookupTree;
+    var $bIsMandatory;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
-		'sDescription' => 'description',
+	'sDescription' => 'description',
         'sDataType' => 'data_type',
         'bIsGeneric' => 'is_generic',
         'bHasLookup' => 'has_lookup',
@@ -93,7 +93,7 @@ class DocumentField extends KTEntity {
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-			'description' => $this->sDescription,
+	    'description' => $this->sDescription,
             'data_type' => $this->sDataType,
             'is_generic' => KTUtil::anyToBool($this->bIsGeneric),
             'has_lookup' => KTUtil::anyToBool($this->bHasLookup),
@@ -108,9 +108,9 @@ class DocumentField extends KTEntity {
         return $default->document_fields_table;
     }
 
-	function &getList($sWhereClause = null) {
-            return KTEntityUtil::getList2('DocumentField', $sWhereClause);
-	}	
+    function &getList($sWhereClause = null) {
+	return KTEntityUtil::getList2('DocumentField', $sWhereClause);
+    }	
 
     function &createFromArray($aOptions) {
         return KTEntityUtil::createFromArray('DocumentField', $aOptions);
@@ -205,6 +205,16 @@ class DocumentField extends KTEntity {
         }
         
         return implode(', ', $aDescriptors);        
+    }
+
+    function getNamespace() {
+	$oFieldset = KTFieldset::get($this->getParentFieldsetId());
+	if(PEAR::isError($oFieldset)) {
+	    $sFS = 'nofieldset';
+	} else {
+	    $sFS = $oFieldset->getNamespace();
+	}
+	return $sFS . '.' . $this->getName();
     }
 }
 

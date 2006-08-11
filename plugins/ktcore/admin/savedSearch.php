@@ -55,7 +55,8 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
-        $aCriteria = Criteria::getAllCriteria();
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+	$aCriteria =& $oCriteriaRegistry->getCriteria();
         
         $aTemplateData = array(
             "title" => _kt("Create a new saved search"),
@@ -105,7 +106,8 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");
         
-        $aCriteria = Criteria::getAllCriteria();
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+	$aCriteria =& $oCriteriaRegistry->getCriteria();
         
         // we need to help out here, since it gets unpleasant inside the template.
         
@@ -114,8 +116,9 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
             if (is_array($aSubgroup['values'])) {
                 foreach ($aSubgroup['values'] as $iv => $t) {
                     $datavars =& $aSubgroup['values'][$iv];
-                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
-                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+		    $oCriterion = $oCriteriaRegistry->getCriterion($datavars['type']);
+                    $datavars['typename'] = $oCriterion->sDisplay;
+                    $datavars['widgetval'] = $oCriterion->searchWidget(null, $datavars['data']);
                 }
             }
         }
@@ -124,7 +127,7 @@ class KTSavedSearchDispatcher extends KTAdminDispatcher {
         //$s .= print_r($aSearch, true);
         //$s .= '</pre>';
         //print $s;        
-        
+
         $aTemplateData = array(
             "title" => _kt("Edit an existing condition"),
             "aCriteria" => $aCriteria,

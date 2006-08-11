@@ -78,7 +78,8 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
-        $aCriteria = Criteria::getAllCriteria();
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+	$aCriteria =& $oCriteriaRegistry->getCriteria();
         
         $aTemplateData = array(
             "title" => _kt("Create a new condition"),
@@ -108,7 +109,8 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");
         
-        $aCriteria = Criteria::getAllCriteria();
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+	$aCriteria =& $oCriteriaRegistry->getCriteria();
         
         // we need to help out here, since it gets unpleasant inside the template.
         foreach ($aSearch['subgroup'] as $isg => $as) {
@@ -117,8 +119,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             if(count($aSubgroup['values'])) {
                 foreach ($aSubgroup['values'] as $iv => $t) {
                     $datavars =& $aSubgroup['values'][$iv];
-                    $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
-                    $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+		    $oCriterion = $oCriteriaRegistry->getCriterion($datavars['type']);
+                    $datavars['typename'] = $oCriterion->sDisplay;
+                    $datavars['widgetval'] = $oCriterion->searchWidget(null, $datavars['data']);
                 }
             }
         }

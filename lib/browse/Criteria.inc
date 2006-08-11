@@ -1,15 +1,4 @@
 <?php
-require_once(KT_LIB_DIR . '/security/Permission.inc');
-require_once(KT_LIB_DIR . '/users/User.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
-require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-
-require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
-require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
-
 /**
  * $Id$
  *
@@ -40,6 +29,20 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
  * @package lib.browse
  */
 
+require_once(KT_LIB_DIR . '/security/Permission.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+
+require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+
+require_once(KT_LIB_DIR . '/browse/criteriaregistry.php');
+
+
 $RESTRICTING_SEARCH = true;
 
 class BrowseCriterion {
@@ -56,18 +59,21 @@ class BrowseCriterion {
     var $bContains = false;
     var $bHandleNot = true;
 
-    function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
-        $this->sDisplay =& $sDisplay;
-        $this->sDocumentField =& $sDocumentField;
-        $this->sSortField =& $sSortField;
-        $this->iID = $iID;
+    var $sDocumentField = null;
+    var $sSortField = null;
+    var $sNamespace = null;
+
+    function BrowseCriterion() {
+        $this->sDisplay = '';
     }
+
 
     function headerDisplay () {
         return $this->sDisplay;
     }
 
-    // dummy function
+
+    // for final display
     function documentDisplay ($oDocument) {
         return $this->sDisplay;
     }
@@ -157,6 +163,10 @@ class BrowseCriterion {
     function getID() {
         return $this->iID;
     }
+    
+    function getNameSpace() {
+	return $this->sNamespace;
+    }
 
     function setOptions($aOptions) {
         $this->aOptions = $aOptions;
@@ -171,7 +181,10 @@ class BrowseCriterion {
             // !#@&)*( (*&!@# *(&@NOT (*&!@#
             $k = array_keys($aPreValue);
             $k = $this->getWidgetBase();
-            $preval = $aPreValue[$k];
+
+	    if(array_key_exists($k, $aPreValue)) {
+		$preval = $aPreValue[$k];
+	    }
             return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
         } else {
             return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
@@ -188,8 +201,10 @@ class BrowseCriterion {
         if (is_null($aPreValue)) {
             $is_positive = true;
         } else {
-            $preval = KTUtil::arrayGet($aPreValue, $form_name, "0"); // by default, use "is" not "is not"
-            $is_positive = ($preval == "0"); // 0 or empty or similar.
+	    if(array_key_exists($form_name, $aPreValue)) {
+		$preval = KTUtil::arrayGet($aPreValue, $form_name, "0"); // by default, use "is" not "is not"
+	    }
+	    $is_positive = ($preval == "0"); // 0 or empty or similar.
         }
         if ($is_positive) {
             $pos_select = ' selected="true"';
@@ -208,7 +223,7 @@ class BrowseCriterion {
     }
 
     function getWidgetBase () {
-        return "bmd" . strtr($this->getID(), '-', '_');
+        return strtr($this->getNamespace(), '-', '_');
     }
 
     function getSearchTable() {
@@ -242,12 +257,21 @@ class BrowseCriterion {
     }
 }
 
+
 class NameCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
     var $bString = true;
     var $sSearchTable = "DC";
     var $bContains = true;
     
+    var $sDocumentField = 'filename';
+    var $sSortField = 'filename';
+    var $sNamespace = 'ktcore.criteria.name';
+
+    function NameCriterion() {
+        $this->sDisplay = _kt('Name');
+    }
+
     function documentDisplay ($oDocument) {
         $aOptions = $this->aOptions;
         if (array_key_exists('displayFullPath', $aOptions)) {
@@ -279,6 +303,13 @@ class NameCriterion extends BrowseCriterion {
 
 class IDCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
+    var $sDocumentField = 'id';
+    var $sSortField = 'id';
+    var $sNamespace = 'ktcore.criteria.id';
+
+    function IDCriterion() {
+        $this->sDisplay = _kt('Document ID');
+    }
     function documentDisplay ($oDocument) {
         return $oDocument->getID();
     }
@@ -292,6 +323,13 @@ class TitleCriterion extends BrowseCriterion {
     var $bString = true;
     var $sSearchTable = "DM";
     var $bContains = true;
+    var $sDocumentField = 'name';
+    var $sSortField = 'name';
+    var $sNamespace = 'ktcore.criteria.title';
+
+    function TitleCriterion() {
+        $this->sDisplay = _kt('Title');
+    }
     
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
@@ -312,6 +350,13 @@ class CreatorCriterion extends BrowseCriterion {
         "table" => "users",
         "field" => "name",
     );
+    var $sDocumentField = 'creator_id';
+    var $sSortField = 'creator_id';
+    var $sNamespace = 'ktcore.criteria.creator';
+
+    function CreatorCriterion() {
+        $this->sDisplay = _kt('Creator');
+    }
     
     function documentDisplay ($oDocument) {
         $oCreator = User::get($oDocument->getCreatorID());
@@ -346,6 +391,14 @@ class CreatorCriterion extends BrowseCriterion {
 
 class DateCreatedCriterion extends BrowseCriterion {
     var $sSearchTable = "D";
+    var $sDocumentField = 'created';
+    var $sSortField = 'created';
+    var $sNamespace = 'ktcore.criteria.datecreated';
+
+    function DateCreatedCriterion() {
+        $this->sDisplay = _kt('Date Created');
+    }
+
     function documentDisplay ($oDocument) {
         return $oDocument->getCreatedDateTime();
     }
@@ -419,6 +472,13 @@ class DocumentTypeCriterion extends BrowseCriterion {
         "table" => "document_types_lookup",
         "field" => "name"
     );
+    var $sDocumentField = 'document_type_id';
+    var $sSortField = 'document_type_id';
+    var $sNamespace = 'ktcore.criteria.documenttype';
+
+    function DocumentTypeCriterion() {
+        $this->sDisplay = _kt('Document Type');
+    }
 
     function documentDisplay ($oDocument) {
         $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
@@ -456,15 +516,25 @@ class GenericMetadataCriterion extends BrowseCriterion {
         "joinColumn" => "document_id",
     );
     var $bString = true;
+    var $sDocumentField = null;
+    var $sSortField = null;
+    var $sNamespace = 'ktcore.criteria.generic';
 
-    function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
+    function initialize($sDisplay, $sDocumentField, $sSortField, $iID, $sNamespace) {
+	$this->sDisplay = $sDisplay;
+	$this->sDocumentField = $sDocumentField;
+	$this->sSortField = $sSortField;
+
         $this->iID = $iID;
-        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iID);
         $this->aLookup['whereClause'] = 'document_field_id = ' .  $iID;
-        $this->oField =& DocumentField::get($iID);
+        $this->oField = DocumentField::get($iID);
+	$this->sNamespace = $sNamespace;
         $this->sSearchTable = "DFL" . $iID;
     }
 
+    function getID() {
+        return $this->iID;
+    }
     function documentDisplay ($oDocument) {
         global $default;
         $sQuery = "SELECT DFL.value as value " .
@@ -499,6 +569,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
             $k = $this->getWidgetBase();
             $preval = $aPreValue[$k];
         }
+
         // If there's no lookup, just use the standard text input
         if ($this->oField->getHasLookup() == false) {
             $this->bContains = true; // contains
@@ -542,24 +613,38 @@ class GenericMetadataCriterion extends BrowseCriterion {
 }
 
 class DateModifiedCriterion extends DateCreatedCriterion {
+    var $sDocumentField = 'modified';
+    var $sSortField = 'modified';
+    var $sNamespace = 'ktcore.criteria.datemodified';
+
+    function DateModifiedCriterion() {
+	$this->sDisplay = _kt('Date Modified');
+    }
+
+    function getName() {
+	return 'datemodified';
+    }
+
     function documentDisplay ($oDocument) {
         return $oDocument->getLastModifiedDate();
-    }
-    function getName() {
-        return "datemodified";
     }
 }
 
 class SizeCriterion extends BrowseCriterion {
     var $sSearchTable = "DC";
     var $bVisible = false;
+    var $sDocumentField = 'size';
+    var $sSortField = 'size';
+    var $sNamespace = 'ktcore.criteria.size';
+
+    function SizeCriterion() {
+	$this->sDisplay = _kt('File Size');
+    }
     
     function documentDisplay ($oDocument) {
         return $oDocument->getFileSize();
     }
-    function getName() {
-        return "size";
-    }
+
     function searchDisplay($aRequest) {
         return "";
     }
@@ -570,7 +655,13 @@ class ContentCriterion extends BrowseCriterion {
     var $bHandleNot = false;
     var $bString = true;
     var $sSearchTable = "DT";
-    var $sDocumentField = "document_text";
+    var $sDocumentField = 'document_text';
+    var $sSortField = 'content';
+    var $sNamespace = 'ktcore.criteria.content';
+
+    function ContentCriterion() {
+	$this->sDisplay = _kt('Document Text');
+    }    
     
     function documentDisplay ($oDocument) {
         return "Document Text";
@@ -635,6 +726,14 @@ class ContentCriterion extends BrowseCriterion {
 
 class WorkflowStateCriterion extends BrowseCriterion {
     var $sSearchTable = "DM";
+    var $sDocumentField = 'state';
+    var $sSortField = 'state';
+    var $sNamespace = 'ktcore.criteria.workflowstate';
+
+    function WorkflowStateCriterion() {
+	$this->sDisplay = _kt('Workflow State');
+    }    
+    
     function documentDisplay ($oDocument) {
         $oState =& KTWorkflowState::getByDocument($oDocument);
         if ($oState) {
@@ -689,6 +788,14 @@ class WorkflowStateCriterion extends BrowseCriterion {
 class DiscussionTextCriterion extends BrowseCriterion {
     var $bContains = true;
     var $bHandleNot = false;
+    var $sDocumentField = 'discussiontext';
+    var $sSortField = 'discussiontext';
+    var $sNamespace = 'ktcore.criteria.discussiontext';
+
+    function DiscussionTextCriterion() {
+	$this->sDisplay = _kt('Discussion Threads');
+    }    
+    
     
     function documentDisplay ($oDocument) {
         return "Discussion Threads";
@@ -750,6 +857,12 @@ class SearchableTextCriterion extends BrowseCriterion {
     var $bString = true;
     var $sSearchTable = "DST";
     var $sDocumentField = "document_text";
+    var $sSortField = 'searchable_text';
+    var $sNamespace = 'ktcore.criteria.searchabletext';
+
+    function SearchableTextCriterion() {
+	$this->sDisplay = _kt('Simple Search Text');
+    }        
     
     function documentDisplay ($oDocument) {
         return "Simple search text";
@@ -817,6 +930,13 @@ class SearchableTextCriterion extends BrowseCriterion {
 class TransactionTextCriterion extends BrowseCriterion {
     var $bContains = true;
     var $bHandleNot = false;
+    var $sDocumentField = 'transactiontext';
+    var $sSortField = 'transactiontext';
+    var $sNamespace = 'ktcore.criteria.transactiontext';
+
+    function TransactionTextCriterion() {
+	$this->sDisplay = _kt('Transaction Text');
+    }        
     
     function documentDisplay ($oDocument) {
         return "Transaction text";
@@ -871,121 +991,79 @@ class TransactionTextCriterion extends BrowseCriterion {
     }
 }
 
-class Criteria {
+
+
+class DateCreatedDeltaCriterion extends DateCreatedCriterion {
+    var $sDocumentField = 'created';
+    var $sSortField = 'created';
+    var $aTypes = array('MINUTE'=>'Minutes',
+			'HOUR'=>'Hours',
+			'DAY'=>'Days',
+			'MONTH'=>'Months',
+			'YEAR'=>'Years');
+    var $sNamespace = 'ktcore.criteria.datecreateddelta';
+
+    function DateCreatedDeltaCriterion() {
+	$this->sDisplay = _kt('Date Created Delta');
+    }        
     
-    function &_getBaseCriterionByNumber($iID) {
-        global $default;
-        switch ($iID) {
-            case -1:
-                $oCriterion =& new NameCriterion(_kt("Name"), 'filename', 'filename', -1);
-                break;
-            case -2:
-                $oCriterion =& new TitleCriterion(_kt("Title"), 'name', 'name', -2);
-                break;
-            case -3:
-                $oCriterion =& new CreatorCriterion(_kt("Creator"), 'creator_id', 'creator_id', -3);
-                break;
-            case -4:
-                $oCriterion =& new DateCreatedCriterion(_kt("Date Created"), 'created', 'created', -4);
-                break;
-            case -5:
-                $oCriterion =& new DocumentTypeCriterion(_kt("Document Type"), 'document_type_id', 'document_type_id', -5);
-                break;
-            case -6:
-                $oCriterion =& new IDCriterion(_kt("Document ID"), 'id', 'id', -6);
-                break;
-            case -7:
-                $oCriterion =& new DateModifiedCriterion(_kt("Date Modified"), 'modified', 'modified', -7);
-                break;
-            case -8:
-                $oCriterion =& new SizeCriterion(_kt("File Size"), 'size', 'size', -8);
-                break;
-            case -9:
-                $oCriterion =& new ContentCriterion(_kt("Document Text"), 'content', 'content', -9);
-                break;
-            case -10:
-                $oCriterion =& new WorkflowStateCriterion(_kt("Workflow state"), 'state', 'state', -10);
-                break;
-            case -11:
-                $oCriterion =& new TransactionTextCriterion(_kt("Transaction Text"), 'transactiontext', 'transactiontext', -11);
-                break;
-            case -12:
-                $oCriterion =& new SearchableTextCriterion(_kt("Simple Search Text"), 'searchabletext', 'searchabletext', -12);
-                break;
-            case -13:
-                $oCriterion =& new DiscussionTextCriterion(_kt("Discussion Threads"), 'discussiontext', 'discussiontext', -13);
-                break;
-        }
-        return $oCriterion;
+    function searchWidget ($aRequest, $aPreValue = null) {
+        $sNumWidget = $this->getWidgetBase() . '_num';
+        $sTypeWidget = $this->getWidgetBase() . '_type';
+
+	// build type selection widget
+	$sSelect = '<select name="'.$sTypeWidget.'">';
+	foreach($this->aTypes as $k=>$v) {
+	    $sSelect .= '<option value="'.$k.'"';
+	    $t = KTUtil::arrayGet($aPreValue, $sTypeWidget, 'DAY');
+	    if($k==$t) $sSelect .= ' selected="selected"';
+	    $sSelect .= '>'.$v.'</option>';
+	}
+	$sSelect .= '</select>';
+
+        $sToRender = $this->getNotWidget($aPreValue);
+
+	$sToRender .= '<input name="'.$sNumWidget.'" value="'.$aPreValue[$sNumWidget].'"/>'.$sSelect.' ago';
+        return $sToRender;
     }
 
-    function initCriteria () {
-        global $aBaseCriteria;
-        if (isset($aBaseCriteria)) {
-            return;
-        }
-        $aBaseCriteria = array();
-        $aIDs = range(-1, -13); 
-        foreach ($aIDs as $iID) {
-            $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
-            $aBaseCriteria[$iID] =& $oCriterion;
-        }
-    }
+    function searchSQL ($aRequest) {
+	$sNum = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_num');
+	$sType = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_type');
 
-    function &getBaseCriteria () {
-        global $aBaseCriteria;
-        Criteria::initCriteria();
-        return $aBaseCriteria;
-    }
-
-    function &getGenericCriteria () {
-        global $aGenericCriteria;
-        global $default;
-        $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
-        $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
-        foreach ($aIDs as $iID) {
-            $oCriterion =& Criteria::getCriterionByNumber($iID);
-            $aGenericCriteria[$iID] =& $oCriterion;
-        }
-        return $aGenericCriteria;
-    }
-
-    function &getAllCriteria () {
-        global $aAllCriteria;
-        global $aBaseCriteria;
-        global $default;
-        Criteria::initCriteria();
-        if (isset($aAllCriteria)) {
-            return $aAllCriteria;
-        }
-        $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
-        $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
-        $aAllCriteriaIDs = array_merge(array_keys($aBaseCriteria), $aIDs);
-        foreach ($aAllCriteriaIDs as $iID) {
-            $oCriterion =& Criteria::getCriterionByNumber($iID);
-            $aAllCriteria[$iID] =& $oCriterion;
-        }
-        return $aAllCriteria;
-    }
-
-    function &getCriterionByNumber($iID) {
-        global $aBaseCriteria;
-        global $default;
-        Criteria::initCriteria();
-
-        // array_key_exists 4.3.2 (at least, tested on RHEL3) returns
-        // false if '-1' (the string) is the key given, and the real key
-        // is -1 (the integer).
-        $iID = (int)$iID;
-
-        if (array_key_exists($iID, $aBaseCriteria)) {
-            return $aBaseCriteria[$iID];
+	$val = array($this->getSearchTable() . "." . $this->getSearchField() . " > SUBDATE(NOW(), INTERVAL ? {$sType})", array($sNum));
+        
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert) || ($want_invert == "0")) {
+            return $val;
         } else {
-            $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iID)); /*ok*/
-            $sName = DBUtil::getOneResultKey($aQuery, 'name');
-            return new GenericMetadataCriterion($sName, 'id', 'id', $iID);
+            $val[0] = '(NOT (' . $val[0] . '))';
         }
+        return $val;
     }
 }
+
+
+class DateModifiedDeltaCriterion extends DateCreatedDeltaCriterion {
+    var $sDocumentField = 'modified';
+    var $sSortField = 'modified';
+    var $sNamespace = 'ktcore.criteria.datemodifieddelta';
+
+    function DateModifiedDeltaCriterion() {
+	$this->sDisplay = _kt('Date Modified Delta');
+    }        
+    
+    function documentDisplay ($oDocument) {
+        return $oDocument->getLastModifiedDate();
+    }
+    function getName() {
+        return "datemodified";
+    }
+}
+
+
+
+
+
 
 ?>

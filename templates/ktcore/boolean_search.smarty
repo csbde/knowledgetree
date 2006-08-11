@@ -1,8 +1,3 @@
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
 {$context->oPage->requireJSResource("resources/js/taillog.js")}
 {$context->oPage->requireJSResource("resources/js/constructed_search.js")}
 
@@ -45,7 +40,7 @@ legend { border: 1px dotted #999;}
 <div style="display: none" id="search-criteria-container">
     <select name="querytype">
         {foreach item=oCriteria from=$aCriteria}  {if ($oCriteria->bVisible == true)}
-        <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+        <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 		{/if}
         {/foreach}
     </select>
@@ -86,7 +81,7 @@ legend { border: 1px dotted #999;}
                 <tr>
                     <td><select name="querytype">
                          {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
-                             <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+                             <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 							 {/if}
                         {/foreach}
                         </select>
