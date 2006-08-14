@@ -483,7 +483,7 @@ CREATE TABLE `documents` (
   `id` int(11) NOT NULL default '0',
   `creator_id` int(11) NOT NULL default '0',
   `modified` datetime NOT NULL default '0000-00-00 00:00:00',
-  `folder_id` int(11) NOT NULL default '0',
+  `folder_id` int(11) default '0',
   `is_checked_out` tinyint(1) NOT NULL default '0',
   `parent_folder_ids` mediumtext,
   `full_path` mediumtext,
