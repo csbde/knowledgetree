@@ -28,6 +28,8 @@
  * @author Neil Blakey-Milner <nbm@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
+require_once(KT_LIB_DIR . '/util/KTStopwords.php');
+
 class KTUtil {
     function extractGPC () {
         foreach (func_get_args() as $var) {
@@ -550,7 +552,16 @@ class KTUtil {
         return ((float) $microtime_simple[1] + (float) $microtime_simple[0]);
     }
 
-    function phraseSplit($sSearchString) {    
+    function phraseSplit($sSearchString) {
+	// this should probably be moved to a DBUtil method
+
+	$sMinWord = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'ft_min_word_len'", "Value");
+	if(is_numeric($sMinWord)) {
+	    $iMinWord = (int)$sMinWord;
+	} else {
+	    $iMinWord = 4;
+	}
+
         $a = preg_split('#"#', $sSearchString);
         $i = 0;
         $phrases = array();
@@ -564,20 +575,33 @@ class KTUtil {
             $i += 1;
         }
         
+	$oStopwords =& KTStopwords::getSingleton();
+
         $words = array();
         foreach ($word_parts as $part) {
             $w = (array) explode(' ', $part);
-            foreach ($w as $potential) { if (!empty($potential)) { $words[] = $potential; }}
-        }
-        
-        // XXX: filter each subword (including in phrases) to remove whitespace-broken items and sub-4 character words.
-        
+            foreach ($w as $potential) { 
+		if (strlen($potential) >= $iMinWord && !$oStopwords->isStopword($potential)) { 
+		    $words[] = $potential; 
+		}
+	    }
+        }	
         
         return array(
             'words' => $words,
             'phrases' => $phrases,
         );
+    }
 
+    function phraseQuote($sQuery) {
+	foreach(KTUtil::phraseSplit($sQuery) as $k => $v) { 
+	    $t = array();
+	    foreach ($v as $part) {
+		$t[] = sprintf('+"%s"', $part);
+	    }
+	    $q_set[$k] = join(' ', $t);
+	}
+	return  implode(' ',$q_set);
     }
 
     function running_user() {

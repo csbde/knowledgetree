@@ -43,8 +43,6 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/browse/criteriaregistry.php');
 
 
-$RESTRICTING_SEARCH = true;
-
 class BrowseCriterion {
     var $sDisplay;
     var $sDocumentField;
@@ -689,23 +687,9 @@ class ContentCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DT.document_text) AGAINST (? $boolean_mode)";
-        
+	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
 
-        
-        if ($RESTRICTING_SEARCH) {
-            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
-            $temp = $q_set;
-            foreach ($temp as $k => $v) { 
-                $t = array();
-                foreach ($v as $part) {
-                    $t[] = sprintf('+"%s"', $part);
-                }
-                $q_set[$k] = join(' ', $t);
-            }
-            $p[1] = implode(' ',$q_set);
-        } else {
-            $p[1] = $aRequest[$this->getWidgetBase()]; 
-        }
+	//	var_dump($p[1]);exit(0);
 
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
@@ -815,23 +799,7 @@ class DiscussionTextCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DDCT.body) AGAINST (? $boolean_mode)";
-        
-
-        
-        if ($RESTRICTING_SEARCH) {
-            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
-            $temp = $q_set;
-            foreach ($temp as $k => $v) { 
-                $t = array();
-                foreach ($v as $part) {
-                    $t[] = sprintf('+"%s"', $part);
-                }
-                $q_set[$k] = join(' ', $t);
-            }
-            $p[1] = implode(' ',$q_set);
-        } else {
-            $p[1] = $aRequest[$this->getWidgetBase()]; 
-        }
+	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
@@ -891,23 +859,7 @@ class SearchableTextCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
-        
-
-        
-        if ($RESTRICTING_SEARCH) {
-            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
-            $temp = $q_set;
-            foreach ($temp as $k => $v) { 
-                $t = array();
-                foreach ($v as $part) {
-                    $t[] = sprintf('+"%s"', $part);
-                }
-                $q_set[$k] = join(' ', $t);
-            }
-            $p[1] = implode(' ',$q_set);
-        } else {
-            $p[1] = $aRequest[$this->getWidgetBase()]; 
-        }
+	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
@@ -956,23 +908,7 @@ class TransactionTextCriterion extends BrowseCriterion {
 
         $p = array();
         $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
-        
-
-        
-        if ($RESTRICTING_SEARCH) {
-            $q_set = KTUtil::phraseSplit($aRequest[$this->getWidgetBase()]);
-            $temp = $q_set;
-            foreach ($temp as $k => $v) { 
-                $t = array();
-                foreach ($v as $part) {
-                    $t[] = sprintf('+"%s"', $part);
-                }
-                $q_set[$k] = join(' ', $t);
-            }
-            $p[1] = implode(' ',$q_set);
-        } else {
-            $p[1] = $aRequest[$this->getWidgetBase()]; 
-        }
+	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
         
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
