@@ -119,7 +119,6 @@ class KTMime {
             }
         }
         
-        
         return _kt('Unknown Type');
     }
 
@@ -173,6 +172,13 @@ class KTMime {
         } else {
            return 'unspecified_type';
         }
+    }
+
+    function getAllMimeTypes($sAdditional = '') {
+        $sTable = KTUtil::getTableName('mimetypes');
+        $aQuery = array("SELECT id, mimetypes FROM " . $sTable . ' ' .$sAdditional, array());
+        $res = DBUtil::getResultArray($aQuery);
+	return $res;
     }
 
     /**
