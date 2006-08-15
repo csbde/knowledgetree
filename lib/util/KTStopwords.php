@@ -57,8 +57,8 @@ class KTStopwords {
     function &getSingleton() {
         if (!KTUtil::arrayGet($GLOBALS, 'KTStopwords')) {
             $GLOBALS['KTStopwords'] =& new KTStopwords;
-	    $oConfig = KTConfig::getSingleton();
-	    $GLOBALS['KTStopwords']->loadFile($oConfig->get('stopwordsFile'));
+	    $oConfig =& KTConfig::getSingleton();
+	    $GLOBALS['KTStopwords']->loadFile($oConfig->get('urls/stopwordsFile'));
         }
         return $GLOBALS['KTStopwords'];
     }
