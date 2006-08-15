@@ -164,16 +164,18 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         
         $this->startTransaction();        
         
-        if ($bGeneric != $oFieldset->getIsGeneric) {
-            // delink it from all doctypes.
-            $aTypes = $oFieldset->getAssociatedTypes();
-            foreach ($aTypes as $oType) {
-                $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
-                if (PEAR::isError($res)) {
-                    $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
-                    exit(0);
-                }
-            }
+	// if we're BECOMING generic
+        if ($bGeneric != $oFieldset->getIsGeneric() && $bGeneric == true) {
+            // delink it from all doctypes.            
+	    $aTypes = $oFieldset->getAssociatedTypes();
+	    
+	    foreach ($aTypes as $oType) {
+		$res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
+		if (PEAR::isError($res)) {
+		    $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
+		    exit(0);
+		}
+	    }
         }
 
         $oFieldset->setName($sName);
