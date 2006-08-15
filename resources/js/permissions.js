@@ -32,7 +32,7 @@ PermissionsTable.prototype = {
 	var aKeys = keys(this.aRows);
 	var found = false;
 	for(var i=0; i<aKeys.length; i++) {
-	    var r = this.aRows[aKeys[i]] 
+	    var r = this.aRows[aKeys[i]];	    
 	    if(r['row_type'] == oRow['type'] && r['row_id'] == oRow['id']) {
 		return r;
 	    }
@@ -78,13 +78,14 @@ PermissionsTable.prototype = {
 	dRow.row_type = oRow['type'];
 	dRow.row_id = oRow['id'];
 	appendChildNodes(this.dTBody, dRow); 
-//	this.dTBody.innerHTML += toHTML(dRow);
-	this.aRows[oRow['id']] = dRow;
+	this.aRows[oRow['type'].substring(0,1) + oRow['id']] = dRow;
     },
 
     'removeRow' : function(oRow) {
 	var oExistingRow = this._getARow(oRow);
-	if(!oExistingRow) return;
+	log(oExistingRow);
+	if(!oExistingRow) 
+	    return;
 	removeElement(oExistingRow);
 	this._removeARow(oRow);
     }
@@ -104,10 +105,3 @@ function initializePermissions(sName, sAction, aPermissions) {
 		 });
 }
     
-
-function addPermissionRow(fValue, fName) {
-    _table.addRow(fValue, fName);
-}
-function removePermissionRow(fValue, fName) {
-    _table.removeRow(fValue, fName);
-}

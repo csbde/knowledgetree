@@ -94,7 +94,9 @@ JSONLookupWidget.prototype = {
 		}
 	    }
 
-	    if(found) { continue; }
+	    if(found) { 
+		continue; 
+	    }
 
 		    
 	    var aParam = {'value':k};
@@ -104,13 +106,14 @@ JSONLookupWidget.prototype = {
 
 	    var val = this.oValues[k];
 	    var sDisp = val;
+	    
 	    if(!isUndefinedOrNull(val['display'])) {
 		var sDisp = val['display'];
 		if(!isUndefinedOrNull(val['selected']) && val['selected'] === true) {
 		    val['selected'] = undefined;
 		    aParam['selected'] = true;
 		    bSelFound = true;
-		    aParam['value'] = val['id'];
+		    aParam['value'] = k;
 		}
 	    }
 	    var oO = OPTION(aParam, sDisp);
@@ -118,7 +121,9 @@ JSONLookupWidget.prototype = {
 	}
 
 	replaceChildNodes(this.oSelectAvail, aOptions);
-	if(bSelFound) { this.onclickAdd(); }
+	if(bSelFound) { 
+	    this.onclickAdd();
+	}
     },
 
     'modItems' : function(type, value) {
@@ -198,23 +203,23 @@ JSONLookupWidget.prototype = {
 	forEach(this.oSelectAvail.options, bind(
 		    function(o) {
 			try {
-						    var a = o.selected;						    
-	    if(a == 'selected' || a === true) {
-		this.modItems('add', o.value);
-		try {
-		    o.selected = false;
-		} catch(e) {
-		    o.setAttribute('selected', false);
-		}
-		aCurOptions.push(o);
-
-		if(!isUndefinedOrNull(this.triggers['add'])) {
-		    this.triggers['add'](this.oValues[o.value]);
-		}
-	    }
+			    var a = o.selected;						    
+			    if(a == 'selected' || a === true) {
+				this.modItems('add', o.value);
+				try {
+				    o.selected = false;
+				} catch(e) {
+				    o.setAttribute('selected', false);
+				}
+				aCurOptions.push(o);
+				
+				if(!isUndefinedOrNull(this.triggers['add'])) {
+				    this.triggers['add'](this.oValues[o.value]);
+				}
+			    }
 			} catch(e) {
-			    log(o.value);
-			    log(e.description);
+			    log('exception');
+			    // forEach(keys(e), function(k) { log(k,':', e[k]); });
 			}
 	}, this));
 	
@@ -229,7 +234,9 @@ JSONLookupWidget.prototype = {
 	    if(o.selected == 'selected' || o.selected === true) {
 		this.modItems('remove', o.value);
 		if(!isUndefinedOrNull(this.triggers['remove'])) {
-		    this.triggers['remove'](this.oValues[o.value]);
+		    var obj = { 'type' : (o.value.substring(0,1) == 'g') ? 'group' : 'role',
+				'id' : o.value.substring(1) };
+		    this.triggers['remove'](obj);
 		}
 	    } else {
 		aOptions.push(o);
