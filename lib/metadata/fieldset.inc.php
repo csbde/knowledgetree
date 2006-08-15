@@ -199,7 +199,7 @@ class KTFieldset extends KTEntity {
 	
 	function &getAssociatedTypes() {
 	    // NOTE:  this returns null if we are generic (all is the wrong answer)
-		if ($this->getIsGeneric()) { return null; }
+		if ($this->getIsGeneric()) { return array(); }
 		
 		$sTable = KTUtil::getTableName('document_type_fieldsets');
         $aQuery = array(
