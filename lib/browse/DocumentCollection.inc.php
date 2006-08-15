@@ -310,7 +310,7 @@ class AdvancedCollection {
         $this->sort_order = KTUtil::arrayGet($aOptions, 'sort_order', 'asc');        
 
         // url options
-        $this->returnURL = KTUtil::arrayGet($aOptions, 'result_url', $_SERVER['PHP_SELF']);
+        $this->returnURL = KTUtil::arrayGet($aOptions, 'return_url', $_SERVER['PHP_SELF']);
         
         $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No folders or documents in this location."));
     }   
