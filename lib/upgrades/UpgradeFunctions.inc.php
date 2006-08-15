@@ -56,7 +56,7 @@ class UpgradeFunctions {
         'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
         'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
         'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
-        'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.'
+        'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.',
 	'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
     );
     var $phases = array(
