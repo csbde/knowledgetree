@@ -409,6 +409,7 @@ class KTInit {
             $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
 
             $oKTConfig->setdefaultns("urls", "tmpDirectory", '${varDirectory}/tmp');       
+            $oKTConfig->setdefaultns("urls", 'stopwordsFile', '${fileSystemRoot}/config/stopwords.txt');
             
             $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
             $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
