@@ -45,6 +45,7 @@ class KTDocumentEditAction extends KTDocumentAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $_bMutator = true;
+    var $sIconClass = 'edit_metadata';    
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {

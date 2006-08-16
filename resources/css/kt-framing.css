@@ -210,7 +210,7 @@ a.main_nav_item {
     border-left: 1px solid white;
     border-top: 1px solid white;
     border-right: 1px solid white;
-    border-bottom: 1px solid #ccc;            
+    border-bottom: 1px solid white;            
     padding: 0 0 0.5em;
 }
 
@@ -1029,3 +1029,9 @@ hr {
 #document-views .downloadbox ul li.cancel_checkout {
     background-image: url(../graphics/cancel_checkout.png);
 }
+
+
+#document-views .downloadbox ul li.edit_metadata {
+    background-image: url(../graphics/edit_metadata.png);
+}
+
