@@ -82,7 +82,7 @@ function addNewCriteria(add_button) {
     simpleLog('DEBUG','got boolean group id'+tableId);
 
     // ok, warn the user that we\'re loading the item.
-    replaceChildNodes(notify_message, 'loading...');
+    replaceChildNodes(notify_message, _('loading...'));
     var newCriteriaText = scrapeText(select.options[select.selectedIndex])+' '; // FIXME insert the "input" here.
     replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search[subgroup]['+tableId+'][values]['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
     createAdditionalCriteriaOption(parent_table);
