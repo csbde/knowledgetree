@@ -60,20 +60,29 @@ class KTPermission extends KTEntity {
     }
 
     // STATIC
-    function &get($iId) {
-        return KTEntityUtil::get('KTPermission', $iId);
-    }
-
+    function &get($iId) { return KTEntityUtil::get('KTPermission', $iId); }
+    function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTPermission', $aOptions); }
+    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTPermission', $sWhereClause); }
+    
     // STATIC
-    function &createFromArray($aOptions) {
-        return KTEntityUtil::createFromArray('KTPermission', $aOptions);
-    }
-
-    // STATIC
-    function &getList($sWhereClause = null) {
-        global $default;
-        return KTEntityUtil::getList($default->permissions_table, 'KTPermission', $sWhereClause);
-    }
+    function &getDocumentRelevantList($sWhereClause = null) {
+        $aList =& KTEntityUtil::getList2('KTPermission', $sWhereClause);
+        if (PEAR::isError($aList)) { return $aList; }
+        
+        $nonrelevant = array(
+            'ktcore.permissions.addFolder' => true,
+            'ktcore.permissions.folder_details' => true,            
+        );
+        
+        $aSecondaryList = array();
+        foreach ($aList as $oPerm) {
+            if ($nonrelevant[$oPerm->getName()]) {
+                continue;
+            }
+            $aSecondaryList[] = $oPerm;
+        }
+        return $aSecondaryList;
+    }    
 
     // STATIC
     function &getByName($sName) {

@@ -149,7 +149,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 <tr>
   <th>{i18n}Group{/i18n}</th>
   <th>{i18n}Condition{/i18n}</th>
-{foreach from=$permissions item=oPerm}
+{foreach from=$document_permissions item=oPerm}
   <th title="{$oPerm->getName()}" class="centered">{$oPerm->getHumanName()}</th>
 {/foreach}
 </tr>
@@ -158,7 +158,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 <tr>
   <td>{entity_select entities=$groups name=fGroupId none=true}</td>
   <td>{entity_select entities=$conditions name=fConditionId none=true}</td>
-{entity_checkboxes entities=$permissions name=fPermissionIds assign=aPermissionCheckboxes method="none"}
+{entity_checkboxes entities=$document_permissions name=fPermissionIds assign=aPermissionCheckboxes method="none"}
 {foreach from=$aPermissionCheckboxes item=sCheckbox}
   <td class="centered">{$sCheckbox}</td>
 {/foreach}
