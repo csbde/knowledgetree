@@ -5,7 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-{* <p class="descriptiveText"><strong>FIXME</strong> help text for role-editing.  </p> *}
+<p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p> 
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform">
    <input type="hidden" name="action" value="setRoleUsers" />
@@ -18,8 +18,12 @@
    
    <fieldset>
       <legend>{i18n}Allocate User to Role{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the users which should be part of this role.{/i18n} {* <strong>FIXME</strong> this helptext
-      is v. awkward. *}</p>
+      <p class="descriptiveText">{i18n}
+To add users to this role, select one or more user names in the Available Users field; then, double click or use the right pointing arrow to populate the Member users field.
+To remove users from this role, select one or more user names in the Member users field; then, double click, or use the left pointing arrow to move these names to Available Users.{/i18n}</p>
+
+<p>{i18n}Use the Filter fields to display names in order of specified criteria.
+Use the Ctrl key to multi-select user names.{/i18n}</p>
 
 <table border="0" width="600">
    <thead>
