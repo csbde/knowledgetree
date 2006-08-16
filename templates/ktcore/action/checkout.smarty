@@ -1,3 +1,5 @@
+<h2>{i18n arg_docname=$context->oDocument->getName()}Checkout Document: #docname#{/i18n}</h2>
+
 <p class="descriptiveText">{i18n}Checking out a document reserves it for your
 exclusive use.  This ensures that you can edit the document without
 anyone else changing the document and placing it into the document
