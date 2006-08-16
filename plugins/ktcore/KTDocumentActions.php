@@ -50,6 +50,147 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 }
 // }}}
 
+
+// {{{ KTDocumentHistoryAction
+class KTDocumentTransactionHistoryAction extends KTDocumentAction {
+    var $sName = 'ktcore.actions.document.transactionhistory';
+
+    function getDisplayName() {
+        return _kt('Transaction History');
+    }
+
+    function do_main() {
+        $this->oPage->setSecondaryTitle($this->oDocument->getName());
+
+        $this->oPage->setBreadcrumbDetails(_kt("history"));
+
+        $aTransactions = array();
+        // FIXME create a sane "view user information" page somewhere.
+        // FIXME do we really need to use a raw db-access here?  probably...
+        $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
+            "FROM " . KTUtil::getTableName("document_transactions") . " AS DT INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
+            "INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " .
+            "WHERE DT.document_id = ? ORDER BY DT.datetime DESC";
+        $aParams = array($this->oDocument->getId());
+
+        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (PEAR::isError($res)) {
+           var_dump($res); // FIXME be graceful on failure.
+           exit(0);
+        }
+
+        $aTransactions = $res;
+
+
+        // render pass.
+        $this->oPage->setTitle(_kt("Document History"));
+
+        $oTemplate = $this->oValidator->validateTemplate("ktcore/document/transaction_history");
+        $aTemplateData = array(
+              "context" => $this,
+              "document_id" => $this->oDocument->getId(),
+              "document" => $this->oDocument,
+              "transactions" => $aTransactions,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+}
+// }}}
+
+
+// {{{ KTDocumentHistoryAction
+class KTDocumentVersionHistoryAction extends KTDocumentAction {
+    var $sName = 'ktcore.actions.document.versionhistory';
+
+    function getDisplayName() {
+        return _kt('Version History');
+    }
+
+    function do_main() {
+
+        $this->oPage->setSecondaryTitle($this->oDocument->getName());
+        $this->oPage->setBreadcrumbDetails(_kt("Version History"));
+
+        $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+            $aVersions[] = Document::get($this->oDocument->getId(), $oVersion->getId());
+        }
+
+        // render pass.
+        $this->oPage->title = _kt("Document History");
+
+        $oTemplate = $this->oValidator->validateTemplate("ktcore/document/metadata_history");
+
+        $aActions = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view'), 'documentinfo');
+        $oAction = $aActions[0];
+
+        $oAction->setDocument($this->oDocument);
+
+        $aTemplateData = array(
+              "context" => $this,
+              "document_id" => $this->oDocument->getId(),
+              "document" => $this->oDocument,
+              "versions" => $aVersions,
+              'downloadaction' => $oAction,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_startComparison() {
+        $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
+
+        $oDocument =& Document::get($this->oDocument->getId(), $comparison_version);
+        if (PEAR::isError($oDocument)) {
+            return $this->redirectToMain(_kt("The document you selected was invalid"));
+        }
+        
+        if (!Permission::userHasDocumentReadPermission($oDocument)) {
+            return $this->errorRedirectToMain(_kt('You are not allowed to view this document'));
+        }
+        $this->oDocument =& $oDocument;
+        $this->oPage->setSecondaryTitle($oDocument->getName());
+        $this->oPage->setBreadcrumbDetails(_kt("Select Document Version to compare against"));
+
+        $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+            $aVersions[] = Document::get($oDocument->getId(), $oVersion->getId());
+        }
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/document/comparison_version_select");
+        $aTemplateData = array(
+              "context" => $this,
+              "document_id" => $this->oDocument->getId(),
+              "document" => $oDocument,
+              "versions" => $aVersions,
+              'downloadaction' => $oAction,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_viewComparison() {
+        // this is just a redirector
+        $QS = array(
+            'action' => 'startComparison',
+            'fDocumentId' => urlencode($this->oDocument->getId()),
+            'fComparisonVersion' => urlencode($_REQUEST['fComparisonVersion']),
+        );
+        
+        redirect(KTUtil::ktLink('view.php',null,implode('&', $QS)));
+    }
+    
+    
+    function getUserForId($iUserId) {
+        $u = User::get($iUserId);
+        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+        return $u->getName();
+    }    
+}
+// }}}
+
+
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.view';
@@ -891,34 +1032,6 @@ class KTDocumentCopyAction extends KTDocumentAction {
         
         controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
         exit(0);
-    }
-}
-// }}}
-
-// {{{ KTDocumentHistoryAction
-class KTDocumentTransactionHistoryAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.transactionhistory';
-
-    function getDisplayName() {
-        return _kt('Transaction History');
-    }
-
-    function getURL() {
-        return generateControllerLink("viewDocument", sprintf("action=history&fDocumentId=%d", $this->oDocument->getID()));
-    }
-}
-// }}}
-
-// {{{ KTDocumentHistoryAction
-class KTDocumentVersionHistoryAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.versionhistory';
-
-    function getDisplayName() {
-        return _kt('Version History');
-    }
-
-    function getURL() {
-        return generateControllerLink("viewDocument", sprintf("action=versionhistory&fDocumentId=%d", $this->oDocument->getID()));
     }
 }
 // }}}
