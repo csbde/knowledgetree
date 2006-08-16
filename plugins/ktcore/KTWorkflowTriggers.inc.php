@@ -564,4 +564,36 @@ class CopyActionTrigger extends KTWorkflowTrigger {
     }    
 }
 
+
+class CheckoutGuardTrigger extends KTWorkflowTrigger {
+    var $sNamespace = 'ktcore.workflowtriggers.checkoutguard';
+    var $sFriendlyName;
+    var $sDescription;
+    var $oTriggerInstance;
+    var $aConfig = array();
+    
+    // generic requirements - both can be true
+    var $bIsGuard = true;
+    var $bIsAction = false;
+    
+    var $bIsConfigurable = false;
+    
+    function CheckoutGuardTrigger() {
+        $this->sFriendlyName = _kt("Checkout Guard");
+        $this->sDescription = _kt("Prevents a transition from being followed if the document is checked out..");
+    }
+    
+    // override the allow transition hook.
+    function allowTransition($oDocument, $oUser) {
+        return (!$oDocument->getIsCheckedOut());
+    }
+    
+    
+    function getConfigDescription() {
+        return _kt('This transition cannot be performed while the document is checked out.');
+    }    
+}
+
+
+
 ?>

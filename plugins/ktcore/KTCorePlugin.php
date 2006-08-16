@@ -117,6 +117,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.roleguard', 'RoleGuardTrigger', 'KTWorkflowTriggers.inc.php');
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.groupguard', 'GroupGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.checkoutguard', 'CheckoutGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
         
