@@ -27,6 +27,9 @@
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
+require_once(KT_LIB_DIR . '/widgets/widgetfactory.inc.php');
+require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
+
 class KTFieldsetDisplayRegistry {
     
     var $fieldset_types = array();
@@ -64,6 +67,85 @@ class KTFieldsetDisplayRegistry {
         } else {
             return $this->fieldset_types[$nsname];
         }
+    }
+    
+    // simple function to adapt a fieldset to a form
+    // passing in $oDocument will set the initial default
+    // values to those attached to the document.
+    //
+    // since the field names are stable, there isn't really a problem here
+    function formAdaptor($oFieldset, $oDocument = null) {
+        $widgets = array();
+        $validators = array();
+        
+        $oVF =& KTValidationFactory::getSingleton();
+        $oWF =& KTWidgetFactory::getSingleton();        
+        
+        $fields =& $oFieldset->getFields();
+        foreach ($fields as $oField) {
+            // FIXME we probably want to use some form of factory here.
+            $field_name = 'metadata_' . $oField->getId();
+            if ($field->getHasLookup()) {
+                // lookups
+                if ($field->getHasLookupTree()) {
+                    // tree                
+                    // FIXME we don't handle trees yet
+                    continue;
+                    /*
+
+                    $fieldTree = new MDTree();
+                    $fieldTree->buildForField($field->getId());
+                    $fieldTree->setActiveItem($current_value);
+    	    		$fieldOptions['tree'] = $fieldTree->_evilTreeRenderer($fieldTree, $fieldName);                    
+                    $oField = new KTTreeWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);          
+                    
+                    */
+                } else {
+                    // normal
+                    
+                    $widgets[] = $oWF->get('ktcore.widgets.entityselection', array(
+                        'label' => $oField->getName(),
+                        'name' => 'metadata_' . $oField->getId(),
+                        'description' => $oField->getDescription(),
+                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+                        'id_method' => 'getName',
+                        'label_method' => 'getName',
+                        'required' => $oField->getIsMandatory(),
+                    ));
+                    
+                    if ($oField->getIsMandatory()) {
+                        $validators[] = $oVF->get('ktcore.validators.required', array(
+                            'test' => $field_name,
+                            'basename' => 'metadata_',
+                        ));
+                    }
+                    
+                    $validators[] = $oVF->get('ktcore.validators.membership', array(
+                        'test' => $field_name,
+                        'output' => $field_name,
+                        'basename' => $field_name,
+                        'vocab' => MetaData::getEnabledValuesForField($oField),
+                    ));
+                }
+            } else {
+                $widgets[] = $oWF->get('ktcore.widgets.string', array(
+                    'label' => $oField->getName(),
+                    'output' => $field_name,
+                ));
+
+                if ($oField->getIsMandatory()) {
+                    $validators[] = $oVF->get('ktcore.validators.required', array(
+                        'test' => $field_name,
+                        'basename' => $field_name,
+                    ));
+                }                
+            }               
+        }
+        
+        return array(
+            'widgets' => $widgets,
+            'validators' => $validators,
+        );
     }
 }
 

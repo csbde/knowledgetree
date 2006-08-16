@@ -75,7 +75,6 @@ class KTBaseWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
         
-        
         $aTemplateData = array(
             "context" => $this,
             "label" => $this->sLabel,

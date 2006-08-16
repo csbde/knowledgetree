@@ -1,0 +1,1 @@
+      <input type="checkbox" name="{$name}" {if $has_id}id="{$id}"{/if} {if ($has_value && ($value == true))}checked="checked"{/if} class="noborder"/>

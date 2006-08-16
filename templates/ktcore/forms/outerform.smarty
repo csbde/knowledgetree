@@ -1,0 +1,18 @@
+<form method="POST" action="{$context->_actionurl}"
+{if $context->_enctype}enctype="{$context->_enctype}"{/if}>
+<fieldset>
+    {if !empty($context->sLabel)}<legend>{$context->sLabel}</legend>{/if}
+    {if !empty($context->sDescription)}<p class="descriptiveText">{$context->sDescription}</p>{/if}
+    
+    {* hidden, "extra" args *}
+    <input type="hidden" name="action" value="{$context->_action}">
+    {foreach from=$context->_extraargs item=v key=k}
+    <input type="hidden" name="{$k}" value="{$v}">
+    {/foreach}
+    
+    
+    
+    {$inner}
+    
+</fieldset>
+</form>

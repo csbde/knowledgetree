@@ -31,6 +31,8 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_DIR . "/thirdparty/pear/JSON.php");
 
+require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
+
 
 class KTDispatchStandardRedirector {
     function redirect($url) {
@@ -45,6 +47,8 @@ class KTDispatcher {
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
     var $oValidator = null;
+    
+    var $aPersistParams = array();
 
     function KTDispatcher() {
         $this->oValidator =& new KTDispatcherValidation($this);
@@ -153,20 +157,9 @@ class KTDispatcher {
     }
 
     function redirectTo($event, $sQuery = "") {
-        if (is_array($sQuery)) {
-            $sQuery['action'] = $event;
-            $aQueryStrings = array();
-            foreach ($sQuery as $k => $v) {
-                $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
-            }
-            $sQuery = join('&', $aQueryStrings);
-        } else {
-            if (!empty($sQuery)) {
-                $sQuery = 'action=' . $event . '&' . $sQuery;
-            } else {
-                $sQuery = 'action=' . $event;
-            }
-        }
+        // meld persistant options
+        $sQuery = $this->meldPersistQuery($sQuery, $event);
+        
         $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
@@ -186,6 +179,57 @@ class KTDispatcher {
 
     function handleOutput($sOutput) {
         print $sOutput;
+    }
+    
+    /* persist the following parameters between requests (via redirect), unless a value is passed in. */
+    function persistParams($aParamKeys) {
+        $this->aPersistParams = kt_array_merge($this->aPersistParams, $aParamKeys);
+    }
+    
+    function meldPersistQuery($sQuery = "", $event = "", $asArray = false) {    
+    
+        if (is_array($sQuery)) {
+            $aQuery = $sQuery;
+        } else {
+            if (!empty($sQuery)) {
+                // need an intermediate step here.
+                $aQuery = Net_URL::_parseRawQuerystring($sQuery);
+            } else {
+                $aQuery = array();
+            }
+        }                    
+        // now try to grab each persisted entry
+        // don't overwrite the existing values, if added. 
+
+        if (is_array($this->aPersistParams)) {        
+            foreach ($this->aPersistParams as $k) {
+                if (!array_key_exists($k, $aQuery)) {
+                    $v = KTUtil::arrayGet($_REQUEST, $k);
+                    if (!empty($v)) {
+                        $aQuery[$k] = $v;
+                    }
+                }
+                // handle the case where action is passed in already. 
+            }        
+        }
+
+
+        // if it isn't already set        
+        if ((!array_key_exists('action', $aQuery)) && (!empty($event))) {
+            $aQuery['action'] = urlencode($event);
+        }
+
+        if ($asArray) {
+            return $aQuery;
+        }
+
+        // encode and blend.
+        $aQueryStrings = array();
+        foreach ($aQuery as $k => $v) {
+            $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
+        }
+        $sQuery = join('&', $aQueryStrings);
+        return $sQuery;
     }
 }
 

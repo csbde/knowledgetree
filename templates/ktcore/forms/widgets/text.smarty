@@ -1,0 +1,5 @@
+      <textarea name="{$name}"
+        {if $has_id} id="{$id}"{/if}
+        {if $options.rows} rows="{$options.rows}"{else} rows="7"{/if}
+        {if $options.cols} cols="{$options.cols}"{else} cols="45"{/if}
+      >{if $has_value}{$value}{/if}</textarea>

@@ -54,7 +54,10 @@ class KTPlugin {
     var $_aViews = array();       
     var $_aNotificationHandlers = array();       
     var $_aTemplateLocations = array();       
+    var $_aWidgets = array();         
+    var $_aValidators = array();      
     var $_aCriteria = array();       
+
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -163,10 +166,23 @@ class KTPlugin {
         $this->_aTemplateLocations[$sName] = array($sName, $sPath);
     }        
 
-    function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
-	$this->_fixFilename($sFilename);
-	$this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+    
+    function registerWidget($sClassname, $sNamespace, $sPath) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_aWidgets[$sNamespace] = array($sClassname, $sNamespace, $sPath);
     }
+    
+    function registerValidator($sClassname, $sNamespace, $sPath) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_aValidators[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+    }
+
+
+    function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
+        $this->_fixFilename($sFilename);
+        $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+    }
+
 
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
@@ -225,6 +241,8 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
         require_once(KT_LIB_DIR . "/help/help.inc.php");
         require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+        require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");    
+        require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");          
         require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");        
         require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");        
 
@@ -241,7 +259,9 @@ class KTPlugin {
         $oColumnRegistry =& KTColumnRegistry::getSingleton();        
         $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
         $oTemplating =& KTTemplating::getSingleton();
-	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $oWidgetFactory =& KTWidgetFactory::getSingleton();
+        $oValidatorFactory =& KTValidatorFactory::getSingleton();        
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -314,6 +334,14 @@ class KTPlugin {
         foreach ($this->_aCriteria as $k => $v) {
             call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $v);
         }                
+        
+        foreach ($this->_aWidgets as $k => $v) {
+            call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $v);
+        }                        
+
+        foreach ($this->_aValidators as $k => $v) {
+            call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $v);
+        }
     }
 
     function setup() {
