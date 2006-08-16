@@ -41,13 +41,14 @@ class KTFolderAction extends KTStandardDispatcher {
     var $sSection = "browse";
 
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
+        parent::KTStandardDispatcher();    
         $this->oFolder =& $oFolder;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-        parent::KTStandardDispatcher();
+        $this->persistParams(array('fFolderId'));
     }
 
     function setFolder(&$oFolder) {
