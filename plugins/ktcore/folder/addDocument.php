@@ -105,6 +105,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
                 'initial_string' => _kt('- Please select a document type -'),
                 'id_method' => 'getId',
                 'label_method' => 'getName',
+                'simple_select' => false,
             )),                        
         ));
         
@@ -127,6 +128,15 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         
         return $oForm;
     }
+    
+    function getFieldsetsForType($iTypeId) {
+        $typeid = KTUtil::getId($iTypeId);
+        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($typeid, array('ids' => false));
+        
+        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
+        return $fieldsets;        
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Add a document"));
@@ -147,6 +157,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $data = $res['results'];
         $key = KTUtil::randomString(32);
         $_SESSION['_add_data'] = array($key => $data);
+        
+        // if we don't need metadata
+        $fieldsets = $this->getFieldsetsForType($data['document_type']);
+        if (empty($fieldsets)) {
+            return $this->successRedirectTo('finalise', _kt("File uploaded successfully. Processing."), sprintf("fFileKey=%s", $key));        
+        }
+        
         // if we need metadata
         
         $this->successRedirectTo('metadata', _kt("File uploaded successfully.  Please fill in the metadata below."), sprintf("fFileKey=%s", $key));
@@ -171,10 +188,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         
         $widgets = array();
         $validators = array();
-        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
-        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
-        
-        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
+        $fieldsets = $this->getFieldsetsForType($doctypeid);
         
         foreach ($fieldsets as $oFieldset) {
             $widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));

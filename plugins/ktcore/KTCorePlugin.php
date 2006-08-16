@@ -141,6 +141,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerValidator('KTMembershipValidator', 'ktcore.validators.membership', 'KTValidators.php');                
         $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');                
         $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');                        
+        $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');                   
 
         // criterion
         $this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');

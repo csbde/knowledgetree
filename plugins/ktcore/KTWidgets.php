@@ -22,6 +22,18 @@ class KTCoreFileWidget extends KTWidget {
         $tname = sprintf("_kt_attempt_unique_%s", $this->sName);
         return array($this->sBasename => $_FILES[$tname]);
     }
+    
+    function getValidators() {
+        if (!$this->bAutoValidate) {
+            return null;
+        }
+        
+        $oVF =& KTValidatorFactory::getSingleton();        
+        return $oVF->get('ktcore.validators.requiredfile', array(
+            'test' => sprintf("_kt_attempt_unique_%s", $this->sName),
+            'basename' => $this->sBasename,
+        ));
+    }
 }
 
 
