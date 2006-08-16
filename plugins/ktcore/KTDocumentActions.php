@@ -407,69 +407,109 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         return true;
     }
 
+
+    function form_main() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Checkin Document"),
+            'action' => 'checkin',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Checkin"),
+            'context' => &$this,
+            'file_upload' => true,         // otherwise the post is not received.
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.file', array(
+                'label' => _kt("File"),
+                'description' => sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <strong>%s</strong>'), $this->oDocument->getFilename()),
+                'name' => 'file',
+                'basename' => 'file',
+                'required' => true,
+            )),
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are cancelling this document's checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+            array('ktcore.widgets.boolean',array(
+                'label' => _kt('Force Original Filename'), 
+                'description' => sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), $this->oDocument->getFilename()), 
+                'name' => 'forcefilename', 
+                'value' => true,
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+            array('ktcore.validators.file', array(
+                'test' => 'file',
+                'output' => 'file',
+            )),           
+            array('ktcore.validators.boolean', array(
+                'test' => 'forcefilename',
+                'output' => 'forcefilename',
+            )),                       
+        ));
+        
+        return $oForm;
+    }
+
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails("checkin");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkin');
         
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
-        $checkin_fields = array();
-        $checkin_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The updated document.'), 'file', "", $this->oPage, true);
-        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _kt('Describe the changes made to the document.'), 'reason', $sReason, $this->oPage, true);
-        $checkin_fields[] = new KTCheckboxWidget(_kt('Force Original Filename'), _kt('If this is checked, the uploaded document must have the same filename as the original.'), 'forcefilename', '1', $this->oPage, true);
+        $oForm = $this->form_main();
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'checkin_fields' => $checkin_fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_checkin() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $aOptions = array(
-            'message' => _kt('You must supply a reason.'),
-            'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
-        );
-        $sReason = $this->oValidator->notEmpty($sReason, $aOptions);
-
-	$bForceFilename = KTUtil::arrayGet($_REQUEST, 'forcefilename');	
-
-        // make sure the user actually selected a file first
-        if (strlen($_FILES['file']['name']) == 0) {
-            $this->errorRedirectToMain(_kt("No file was uploaded"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        
+        $extra_errors = array();
+        
+        if ($data['forcefilename'] && ($data['file']['name'] != $this->oDocument->getFilename())) {
+            $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". If you wish to change the filename, please set "Force Original Filename" below to false. '), $this->oDocument->getFilename());
         }
+        
+        if (!empty($res['errors']) || !empty($extra_errors)) {
+            return $oForm->handleError(null, $extra_errors);
+        }
+    
+        $sReason = $data['reason'];
+        
+        $sCurrentFilename = $this->oDocument->getFileName();
+        $sNewFilename = $data['file']['name'];
 
-        // and that the filename matches
-        global $default;
+        $aOptions = array();
 
-	$sCurrentFilename = $this->oDocument->getFileName();
-	$sNewFilename = $_FILES['file']['name'];
-
-        $default->log->info("checkInDocumentBL.php uploaded filename=" . $sNewFilename . "; current filename=" . $sCurrentFilename);
-
-	
-	$aOptions = array();
-
-        if ($this->oDocument->getFileName() != $_FILES['file']['name']) {
-	    if($bForceFilename) {
-		$this->errorRedirectToMain(_kt("The file name of the uploaded file does not match the file name of the document in the system"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
-	    } else {	    
-		$aOptions['newfilename'] = $sNewFilename;
-	    }
-	}
-	    
-
-        $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
+        if ($sCurrentFilename != $sNewFilename) {
+            $aOptions['newfilename'] = $sNewFilename;
+        }
+      
+        $res = KTDocumentUtil::checkin($this->oDocument, $data['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt("An error occurred while trying to check in the document"), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
-        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
+        redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
+        exit(0);
     }
 }
 // }}}
 
 
-// {{{ KTDocumentCheckInAction
+// {{{ KTDocumentCancelCheckOutAction
 class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.cancelcheckout';
 
@@ -490,7 +530,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) { 
                 $this->bAdminMode = true;
                 return parent::getInfo(); 
-            }	               
+            }                   
         } else if ($this->bInAdminMode == true) {
             return parent::getInfo();
         }
@@ -499,8 +539,6 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
         return parent::getInfo();
     }
-
-
 
     function check() {
         $res = parent::check();
@@ -519,7 +557,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) { 
                 $this->bAdminMode = true;
                 return true; 
-            }	               
+            }                   
         } else if ($this->bInAdminMode == true) {
             return true;
         }
@@ -637,35 +675,66 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         return true;
     }
 
+
+    function form_main() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Delete Document"),
+            'action' => 'delete',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Delete Document"),
+            'context' => &$this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are deleting this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+        ));
+        
+        return $oForm;
+    }
+
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("delete");
+        $this->oPage->setBreadcrumbDetails("Delete");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
-        $delete_fields = array();
-        $delete_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be removed.'), 'reason', "", $this->oPage, true);
+
+        $oForm = $this->form_main();
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'delete_fields' => $delete_fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_delete() {
-        global $default;
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $this->oValidator->validateString($sReason, 
-            array('redirect_to' => array('', sprintf('fDocumentId=%d', $this->oDocument->getId()))));
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
+        
+        $sReason = $data['reason'];
         
         $fFolderId = $this->oDocument->getFolderId();
         $res = KTDocumentUtil::delete($this->oDocument, $sReason);
         if (PEAR::isError($res)) {
-            $_SESSION['KTErrorMessage'][] = $res->getMessage();
-            controllerRedirect('viewDocument',sprintf('fDocumentId=%d', $this->oDocument->getId()));
-        } else {
-            $_SESSION['KTInfoMessage'][] = sprintf(_kt('Document "%s" Deleted.'),$this->oDocument->getName());
-        }
-        
-        
+            $this->errorRedirectToMain(sprintf(_kt("Unexpected failure deleting document: %s"), $res->getMessage()));
+        } 
+
+        $_SESSION['KTInfoMessage'][] = sprintf(_kt('Document "%s" Deleted.'),$this->oDocument->getName());
+                
         controllerRedirect('browse', 'fFolderId=' .  $fFolderId);
         exit(0);
     }
@@ -711,6 +780,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+        $this->persistParams(array('fFolderId'));
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
         $this->oFolder = $this->oValidator->validateFolder($iFolderId);
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
@@ -770,43 +840,71 @@ class KTDocumentMoveAction extends KTDocumentAction {
         return $oTemplate->render();
     }
 
+    function form_move() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Move Document"),
+            'action' => 'move_final',
+            'fail_action' => 'move',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Move Document"),
+            'context' => &$this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are moving this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+        ));
+        
+        return $oForm;
+    }
+
     function do_move() {
-        $this->oPage->setBreadcrumbDetails(_kt("move"));
+        $this->persistParams(array('fFolderId'));
+    
+        $this->oPage->setBreadcrumbDetails(_kt("Move"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move_final');
 
-	if($this->oDocument->getFolderId() === $this->oFolder->getId()) {
-	    $this->errorRedirectTo('main', _kt("The document was already in this folder"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-	    exit(0);
-	}
-	
-
-        $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
-        $aNames = $this->oDocumentFolder->getPathArray();
-        $aNames[] = $this->oDocument->getName();
-        $sDocumentName = join(" &raquo; ", $aNames);
-
-        $move_fields = array();
-        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        $move_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $move_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be moved.'), 'reason', "", $this->oPage, true);
+        if($this->oDocument->getFolderId() === $this->oFolder->getId()) {
+            $this->errorRedirectTo('main', _kt("The document was already in this folder"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            exit(0);
+        }
+    
+        $oForm = $this->form_move();
+        
+        //$sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
+        //$aNames = $this->oDocumentFolder->getPathArray();
+        //$aNames[] = $this->oDocument->getName();
+        //$sDocumentName = join(" &raquo; ", $aNames);
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'move_fields' => $move_fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_move_final() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $aOptions = array(
-            'message' => _kt("No reason given"),
-            'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
-        );
-        $this->oValidator->notEmpty($sReason, $aOptions);
+        $oForm = $this->form_move();    
+        $res = $oForm->validate();
+        $data = $res['results'];
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
+        
+        $sReason = $data['reason'];
 
         if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectTo("main", _kt("You do not have permission to move a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt("You do not have permission to move a document to this location"));
             exit(0);
         }
 
@@ -823,18 +921,21 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         //put the document in the new folder
         $this->oDocument->setFolderID($this->oFolder->getId());
-        if (!$this->oDocument->update(true)) {
-            $this->errorRedirectTo("main", _kt("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        $res = $this->oDocument->update();
+        if (PEAR::isError($res) || ($res === false)) {
+            $this->errorRedirectToMain(_kt("There was a problem updating the document's location in the database"));
         }
 
 
         //move the document on the file system
         $oStorage =& KTStorageManagerUtil::getSingleton();
-        if (!$oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder)) {
-            $this->oDocument->setFolderID($this->oDocumentFolder->getId());
-            $this->oDocument->update(true);
-            $this->errorRedirectTo("move", _kt("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        $res = $oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder);
+        if (PEAR::isError($res) || ($res === false)) {
+            $this->oDocument->setFolderID($oOriginalFolder->getId());
+            $this->oDocument->update();
+            $this->errorRedirectToMain(_kt("There was a problem updating the document's location in the repository storage"));
         }
+
 
         $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
             $this->oDocumentFolder->getFullPath(),
@@ -868,7 +969,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             }
         }
         
-        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }
 }

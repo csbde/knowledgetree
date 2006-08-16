@@ -1,20 +1,10 @@
+<h2>{i18n arg_docname=$context->oDocument->getName()}Checkin Document: #docname#{/i18n}</h2>
+
 <p class="descriptiveText">{i18n}Checking in a document updates the document
 and allows others to make changes to the document and its metadata.{/i18n}</p>
 
-{assign var=iDocumentId value=$context->oDocument->getId()}
 <p class="descriptiveText">{i18n}If you do not
 intend to change the document, or you do not wish to prevent others from
 changing the document, you should rather use the action menu to <strong>cancel this checkout</strong>.{/i18n}</p>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>{i18n}Checkin{/i18n}</legend>
-<input type="hidden" name="action" value="checkin" />
-<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
-{foreach from=$checkin_fields item=oWidget }
-  {$oWidget->render()}
-{/foreach}
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Checkin{/i18n}" />
-</div>
-</fieldset>
-</form>
+{$form->render()}
