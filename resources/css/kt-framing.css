@@ -390,7 +390,9 @@ a.main_nav_item {
     color: black;
 }
 
-#content input {
+#content input,
+#content select,
+#content textarea {
     border: 1px solid #888;
 }
 
