@@ -174,12 +174,18 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     function do_viewComparison() {
         // this is just a redirector
         $QS = array(
-            'action' => 'startComparison',
-            'fDocumentId' => urlencode($this->oDocument->getId()),
-            'fComparisonVersion' => urlencode($_REQUEST['fComparisonVersion']),
+            'action' => 'viewComparison',
+            'fDocumentId' => $this->oDocument->getId(),
+            'fComparisonVersion' => $_REQUEST['fComparisonVersion'],
         );
         
-        redirect(KTUtil::ktLink('view.php',null,implode('&', $QS)));
+        $frag = array();
+        
+        foreach ($QS as $k => $v) {
+            $frag[] = sprintf("%s=%s", urlencode($k), urlencode($v));
+        }
+        
+        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
     }
     
     
