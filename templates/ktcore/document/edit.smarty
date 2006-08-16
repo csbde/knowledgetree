@@ -1,0 +1,29 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DateTime.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+<!-- unforunate, but (currently) necessary -->
+
+{$context->oPage->requireJSResource('resources/js/taillog.js')}
+{$context->oPage->requireJSResource('resources/js/conditional_usage.js')}
+
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+
+<h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
+
+{capture assign=link}{addQS}action=selectType&fDocumentId={$document->getId()}{/addQS}{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}Change the <strong><a href="#link#">document type</a></strong>{/i18n}</p>
+
+<p class="descriptiveText">{i18n}The following document metadata is available for editing.{/i18n}</p>
+
+{$form->render()}
+
+{*
+<table id="brad-log">
+<tbody>
+</tbody>
+</table>
+
+*}
