@@ -128,6 +128,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         $aInfo = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
+            'ns' => $this->sName,
             'url' => $url,
         );
         return $this->customiseInfo($aInfo);
@@ -163,12 +164,17 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
 					     KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
-	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-	$oPortlet = new KTActionPortlet(_kt("Document Actions"));
-	$oPortlet->setActions($actions, $this->sName);
-	$this->oPage->addPortlet($oPortlet);              
+    	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about "%s"'), $this->oDocument->getName()));
+	    $oPortlet->setActions($actions, $this->sName);
+	    $this->oPage->addPortlet($oPortlet);              
+
+    	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on "%s"'), $this->oDocument->getName()));
+	    $oPortlet->setActions($actions, $this->sName);
+	    $this->oPage->addPortlet($oPortlet);              
 	
-	$this->oPage->setSecondaryTitle($this->oDocument->getName());            
+	    $this->oPage->setSecondaryTitle($this->oDocument->getName());            
             
         return true;
     }
