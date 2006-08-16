@@ -36,7 +36,7 @@ role allocations may take a some time, depending on the number of folders below 
            {/if}
         </td>
         {if ($aRole.allocation_id === null)}
-        <td colspan="2"><a href="{addQS}action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}">{i18n}Override Parent Allocation{/i18n}</a></td>
+        <td colspan="3"><a href="{addQS}action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}">{i18n}Override Parent Allocation{/i18n}</a></td>
         {else}
         <td><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Users{/i18n}">{i18n}Edit Users{/i18n}</a></td>
         <td><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Groups{/i18n}">{i18n}Edit Groups{/i18n}</a></td>
@@ -47,7 +47,7 @@ role allocations may take a some time, depending on the number of folders below 
     </tr>
 {/foreach}
 {else}
-<tr><td colspan="4" class="ktInfo"><p>{i18n}No roles defined in the Role Administration area.{/i18n}</p></td></tr>
+<tr><td colspan="5" class="ktInfo"><p>{i18n}No roles defined in the Role Administration area.{/i18n}</p></td></tr>
 {/if}
 </tbody>
 </table>
