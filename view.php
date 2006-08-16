@@ -71,6 +71,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
+        $currentaction = $this->sName;
+    
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Info about this document')));
         $oPortlet->setActions($actions, $currentaction);
