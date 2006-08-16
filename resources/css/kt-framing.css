@@ -178,7 +178,7 @@ a.main_nav_item {
 #portletbar
 {
     position: absolute;
-    width: 14em;
+    width: 18em;
     left: 1em;
 /*    top: 0; */           /* stupid IE bug:  absolute position ate my scrollbars */
     background: transparent;
@@ -194,11 +194,26 @@ a.main_nav_item {
 #portletbar .portlet
 {
     margin: 0 0 1.5em 0;
-    border: 0;
-    padding: 0 0 0.5em;
-    border: 1px solid #888;
-    background: #f3f3f3;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 0 0 0 0;
 }
+
+#portletbar .portlet .portletbody {
+    padding: 0 0 0.5em 0;
+}
+
+#portletbar .portlet.expanded
+{
+    margin: 0 0 1.5em 0;
+    border-left: 1px solid white;
+    border-top: 1px solid white;
+    border-right: 1px solid white;
+    border-bottom: 1px solid #ccc;            
+    padding: 0 0 0.5em;
+}
+
 
 #portletbar .portlet a {
     text-decoration: none;
@@ -214,17 +229,47 @@ a.main_nav_item {
     border-bottom: 1px solid red;
 }
 
+#portletbar .portlet h4:hover {
+    text-decoration: underline;
+}
+
 #portletbar .portlet h4
 {
     margin: 0;
-    border: 0;
-    background: #a8a8a8; /* url(../../resources/graphics/portlet-bg.png) center right no-repeat; */
+    border-width: 0 0 1px 0;
+    border-style: none;
+    border-color: #eee;
     padding-top: 0.25em;
     padding-bottom: 0.25em;
-    padding-left: 0.5em;
+    padding-left: 25px;
+    background: url(../graphics/plus.png) 10px 50% no-repeat;
     text-align: left;
-    color: white;
+    color: #333;
     font-size: small;
+}
+
+
+#portletbar .portlet.expanded h4
+{
+    margin: 0;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #eee;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 25px;
+    text-align: left;
+    background: url(../graphics/minus.png) 10px 50% no-repeat;
+    color: #333;
+    font-size: small;
+}
+
+#portletbar .portlet.expanded .portletbody {
+    display: block;
+}
+
+#portletbar .portlet .portletbody {
+    display: none;
 }
 
 #portletbar .portlet .actionlist
@@ -234,21 +279,30 @@ a.main_nav_item {
     font-size: small;
 }
 
+#portletbar .portlet .actionlist li.active {
+    font-weight: bold;
+}
+
 #portletbar .portlet .actionlist li
 {
     display: block;
-    padding: 0; 
+    padding: 0 10px 0 0; 
     margin: 0.5em 0.5em 0.15em 0; 
     text-align: right;
+    background: transparent url(../graphics/rightbullet.png) center right no-repeat;
     border: 0;
 }
 
-/* ------------------ content ------------------ */
+/* ------------------ c0.5ontent ------------------ */
 
 #content
 {
     position: relative;
-    padding-left: 15em;
+    padding-left: 20em;
+}
+
+#content.view {
+    padding-right: 21em;
 }
 
 .noportlets #content {
@@ -257,11 +311,7 @@ a.main_nav_item {
 
 #content h1
 {
-    margin: 0 0 0.5em 0;
-    border: 1px solid #565963;
-    padding: 0.25em;
-    background: #a0a9b8;
-    color: white;
+    display: none;
 }
 
 #content 
@@ -437,6 +487,7 @@ a.main_nav_item {
 #content h2
 {
     font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
+    padding-bottom: 0.25em;
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: #eee;
@@ -502,6 +553,45 @@ a.main_nav_item {
 */
 }
 
+/*  --- table version --- */
+
+.metadatatable {
+    border-width: 0 1px 0 1px;
+    border-style: solid;
+    border-color: #ccc;
+    width: 100%;
+}
+
+.metadatatable .first th,
+.metadatatable .first td {
+    border-top: 1px solid #ccc;
+}
+
+.metadatatable th {
+    text-align: left;
+    font-weight: bold;
+    width: 30% !important;
+    border-bottom: 1px solid #ccc;
+    vertical-align: top;
+}
+
+.metadatatable td {
+    border-bottom: 1px solid #ccc;
+    vertical-align: top;    
+}
+
+.metadatatable .versioned td {
+    width: 35%;
+}
+
+.metadatatable td.current.different {
+    background-color: #fff2b8;
+}
+
+.metadatatable td.previous.different {
+    background-color: #e9dda8;
+}
+
 .document_details .document_history thead th {
     text-align: left;
     border-bottom: 1px solid #666;
@@ -543,7 +633,7 @@ a.main_nav_item {
 {
     display: block;
     clear: both;
-
+    margin-top: 1em;
     overflow: hidden;
 }
 
@@ -559,6 +649,7 @@ a.main_nav_item {
 {
     width: 100%;
     white-space: nowrap !important;
+    border: 1px solid #ccc;
 }
 
 .kt_collection.narrow {
@@ -593,7 +684,9 @@ a.main_nav_item {
     vertical-align: top;
 }
 
-.kt_collection td.title {
+.kt_collection td.title,
+.kt_collection td.datecolumn
+{
     white-space: normal !important;
 }
 
@@ -843,4 +936,94 @@ hr {
     width: 100%;
     height: 500px;
     border: 1px solid #666;
+}
+
+/* -------------- extra info for the "views" column on doc ---------------------- */
+
+#document-views {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 19em;
+    z-index: 2;
+}
+
+#document-views .viewlet {
+    margin: 0 0 1.5em 0;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 0 0 0.5em;
+}
+
+#document-views .viewlet h3 {
+    margin: 0;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #eee;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 0.5em;
+    text-align: left;
+    color: #333;
+    font-size: small;
+}
+
+#document-views .downloadbox {
+    padding: 0.5em;
+    border: 1px transparent;
+    margin-bottom: 1em;
+}
+
+#document-views .downloadbox ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#document-views .downloadbox ul li {
+    padding-left: 25px;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;    
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+
+
+#document-views .viewlet .actionlist
+{
+    list-style: none;
+    padding: 0; margin: 0; border: 0;
+    font-size: small;
+}
+
+#document-views .viewlet .actionlist li
+{
+    display: block;
+    padding: 0 0 0 10px; 
+    margin: 0.5em 0.5em 0.15em 0; 
+    text-align: left;
+    background: transparent url(../graphics/leftbullet.png) center left no-repeat;
+    border: 0;
+}
+
+#document-views .downloadbox ul li.view_details {
+    background-image: url(../graphics/info.png);
+}
+
+
+#document-views .downloadbox ul li.download {
+    background-image: url(../graphics/download.png);
+}
+
+#document-views .downloadbox ul li.checkout {
+    background-image: url(../graphics/checkout.png);
+}
+
+#document-views .downloadbox ul li.checkin {
+    background-image: url(../graphics/checkin.png);
+}
+
+#document-views .downloadbox ul li.cancel_checkout {
+    background-image: url(../graphics/cancel_checkout.png);
 }

@@ -43,3 +43,35 @@ these tasks, use the Request Assistance action.{/i18n}
 {foreach item=oFieldset from=$fieldsets}
 {$oFieldset->render($document_data)}
 {/foreach}
+
+<!--  Document "Views" -->
+<div id="document-views">
+
+<div class="downloadbox">
+    <ul>
+        <li class="view_details"><a href="#">Document Details</a></li>       
+        <li class="download"><a href="#">Download</a></li>    
+        <li class="checkout"><a href="#">Checkout</a></li>            
+        <li class="checkin"><a href="#">Check-in</a></li>    
+        <li class="cancel_checkout"><a href="#">Cancel Checkout</a></li>                    
+    </ul>
+    <span class="descriptiveText" style="font-size: xx-small">Note: this is a mockup - only some would be here, obviously.</span>
+</div>
+
+<div class="viewlet">
+     <h3>Information about "asd asd s"</h3>
+<ul class="actionlist">
+<li><a href="http://ktdevlocal/knowledgeTree-csstidy/control.php?action=viewDocument&qs=action%3Dhistory%26fDocumentId%3D8"
+     >Transaction History</a></li>
+<li><a href="http://ktdevlocal/knowledgeTree-csstidy/control.php?action=viewDocument&qs=action%3Dversionhistory%26fDocumentId%3D8"
+     >Version History</a></li>
+<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.permissions&fDocumentId=8"
+     >Permissions</a></li>
+<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.roles&fDocumentId=8"
+     >View Roles</a></li>
+<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.discussion&fDocumentId=8"
+     >Discussion</a></li>
+</ul>
+</div>
+
+</div>
