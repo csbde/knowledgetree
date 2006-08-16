@@ -1,4 +1,5 @@
-<h2>{i18n}Cancel Checkout{/i18n}</h2>
+<h2>{i18n arg_docname=$context->oDocument->getName()}Cancel Checkout: #docname#{/i18n}</h2>
+
 
 <p class="descriptiveText">{i18n}If you do not want to have this document be checked-out,
 please give a reason and cancel the checkout.{/i18n}</p>
