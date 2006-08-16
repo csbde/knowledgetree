@@ -147,6 +147,26 @@ class KTRequiredValidator extends KTValidator {
     }
 }
 
+// the required validator checks either single or multiple items
+// in the data array.
+class KTRequiredFileValidator extends KTValidator {
+    var $sNamespace = 'ktcore.validators.requiredfile';
+    
+    function validate($data) {
+        $errors = array();
+        
+        $val = KTUtil::arrayGet($_FILES, $this->sInputVariable);
+        if (empty($val) || empty($val['name'])) {
+            $errors[$this->sBasename] = _kt("You must select a file to upload.");
+        } 
+        
+        return array(
+            'errors' => $errors,
+            'results' => array(),
+        );
+    }
+}
+
 class KTEmailValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.emailaddress';
     
