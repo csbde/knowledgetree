@@ -526,30 +526,6 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 // }}}
 
 
-// {{{ KTDocumentEditAction
-class KTDocumentEditAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.edit';
-
-    var $_sShowPermission = "ktcore.permissions.write";
-    var $_bMutator = true;
-
-    function getInfo() {
-        if ($this->oDocument->getIsCheckedOut()) {
-            return null;
-        }
-        return parent::getInfo();
-    }
-
-    function getDisplayName() {
-        return _kt('Edit metadata');
-    }
-
-    function getURL() {
-        return generateControllerLink("editDocument", sprintf("fDocumentId=%d", $this->oDocument->getID()));
-    }
-}
-// }}}
-
 // {{{ KTDocumentDeleteAction
 class KTDocumentDeleteAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.delete';

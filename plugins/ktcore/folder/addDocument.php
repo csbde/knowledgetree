@@ -33,6 +33,8 @@ require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
 
 require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 
+require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
+
 class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
     var $_sShowPermission = "ktcore.permissions.write";
@@ -47,6 +49,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         if (empty($res)) {
             return $res;
         }
+        
         $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
         $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
         if (!empty($postExpected)) {
@@ -59,56 +62,175 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return true;
     }
 
-    function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("add document"));
-        $this->oPage->setTitle(_kt('Add a document'));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
+    function form_initialdata() {
+        $oForm = new KTForm;
         
-        $aOptions = array('width' => '45');
+        $oForm->setOptions(array(
+            'label' => _kt("Add a document"),
+            'action' => 'processInitialData',
+            'actionparams' => 'postExpected=1&fFolderId='.$this->oFolder->getId(),
+            'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'fail_action' => 'main',
+            'context' => &$this,
+            'extraargs' => $this->meldPersistQuery("","",true),
+            'submit_label' => _kt("Add"),
+            'encoding' => "multipart/form-data",
+        ));
         
-        $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget(_kt('File'), _kt('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true, null, null, $aOptions);
-        $add_fields[] = new KTStringWidget(_kt('Title'), _kt('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true, null, null, $aOptions);
-        
-
-
-	/* Allows filename change on upload
-
-        $add_fields[] = new KTStringWidget(_kt('New Filename'), _kt('If you wish to upload this file under a different filename, enter it here.'), 'altfilename', "", $this->oPage, false, null, null, $aOptions);
-	 */
-
-        
-        $aVocab = array('' => _kt('&lt;Please select a document type&gt;'));
+        $aTypes;
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
-                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+                $aTypes[] = $oDocumentType;
             }
-        }
-        
-        $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
-
-        $fieldsets = array();
-        $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-        $activesets = KTFieldset::getGenericFieldsets();
-        foreach ($activesets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
-        }
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'add_fields' => $add_fields,
-            'generic_fieldsets' => $fieldsets,
+        }        
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.file',array(
+                'label' => _kt('File'),
+                'description' => _kt('The contents of the document to be added to the document management system.'),
+                'name' => 'file',
+                'required' => true,
+            )),
+            array('ktcore.widgets.string',array(
+                'label' => _kt('Document Title'),
+                'description' => _kt('The document title is used as the main name of a document throughout KnowledgeTree.'),
+                'name' => 'document_name',
+                'required' => true,
+            )),
+            array('ktcore.widgets.entityselection',array(
+                'label' => _kt('Document Type'),
+                'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
+                'name' => 'document_type',
+                'required' => true,
+                'vocab' => $aTypes,
+                'initial_string' => _kt('- Please select a document type -'),
+                'id_method' => 'getId',
+                'label_method' => 'getName',
+            )),                        
         ));
-        return $oTemplate->render();
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.file', array(
+                'test' => 'file',
+                'output' => 'file',
+            )),
+            array('ktcore.validators.string', array(
+                'test' => 'document_name',
+                'output' => 'document_name',
+            )),
+            array('ktcore.validators.entity', array(
+                'test' => 'document_type',
+                'output' => 'document_type',
+                'class' => 'DocumentType',
+                'ids' => true,
+            )),                        
+        ));
+        
+        return $oForm;
     }
 
-    function do_upload() {
-        $this->oPage->setBreadcrumbDetails(_kt("add document"));
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails(_kt("Add a document"));
         $this->oPage->setTitle(_kt('Add a document'));
+        
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
+
+        $oForm = $this->form_initialdata();
+        return $oForm->render();
+    }    
+    
+    function do_processInitialData() {
+        $oForm = $this->form_initialdata();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }        
+        $data = $res['results'];
+        $key = KTUtil::randomString(32);
+        $_SESSION['_add_data'] = array($key => $data);
+        // if we need metadata
+        
+        $this->successRedirectTo('metadata', _kt("File uploaded successfully.  Please fill in the metadata below."), sprintf("fFileKey=%s", $key));
+    }
+    
+    function form_metadata($sess_key) {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.document.add',
+            'label' => _kt('Specify Metadata'),
+            'submit_label' => _kt('Save Document'),
+            'action' => 'finalise',
+            'fail_action' => 'metadata',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'context' => &$this,
+            'extraargs' => $this->meldPersistQuery("","",true),
+        ));
+    
+        $oFReg =& KTFieldsetRegistry::getSingleton();
+        
+        $doctypeid = $_SESSION['_add_data'][$sess_key]['document_type'];
+        
+        $widgets = array();
+        $validators = array();
+        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
+        
+        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
+        
+        foreach ($fieldsets as $oFieldset) {
+            $widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+            $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));                
+        }
+        
+        $oForm->setWidgets($widgets);
+        $oForm->setValidators($validators);                
+    
+        return $oForm;
+    }
+    
+    function do_metadata() {
+        $this->persistParams(array('fFileKey'));
+        
+        $oForm = $this->form_metadata($_REQUEST['fFileKey']);
+        return $oForm->render();
+    }
+    
+    function do_finalise() {
+        $this->persistParams(array('fFileKey'));    
+        $sess_key = $_REQUEST['fFileKey'];
+        $oForm = $this->form_metadata($sess_key);
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();        
+        }
+        $data = $res['results'];
+        
+        $extra_d = $_SESSION['_add_data'][$sess_key];
+        $doctypeid = $extra_d['document_type'];
+        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
+        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
+        
+
+        $MDPack = array();
+        foreach ($fieldsets as $oFieldset) {
+            $fields = $oFieldset->getFields();
+            $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
+
+            foreach ($fields as $oField) {
+                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());        
+                // ALT.METADATA.LAYER.DIE.DIE.DIE
+                if (!is_null($val)) {    
+                    $MDPack[] = array(
+                        $oField,
+                        $val
+                    );
+                }
+
+            }
+        }
+        // older code 
+
         $mpo =& new JavascriptObserver($this);
-        // $mpo =& new KTSinglePageObserver(&$this);
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->addObserver($mpo);
         
@@ -120,56 +242,29 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
-	    'max_str_len' => 200,
+    	    'max_str_len' => 200,
         );
         
-        $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
-        $sTitle = $this->oValidator->validateString($_REQUEST['title'], $aErrorOptions);
-	$sAltFilename = KTUtil::arrayGet($_REQUEST, 'altfilename', '');
-
-	if(strlen(trim($sAltFilename))) {
-	    $aFile['name'] = $sAltFilename;
-	}
-
+        $aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
+        $sTitle = $extra_d['document_name'];
 
         $iFolderId = $this->oFolder->getId();
-        /*
-        // this is now done in ::add
-        if (Document::fileExists(basename($aFile['name']), $iFolderId)) {
-            $this->errorRedirectToMain(_kt('There is already a file with that filename in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
-            exit(0);
-        }
         
-        if (Document::nameExists($sTitle, $iFolderId)) {
-            $this->errorRedirectToMain(_kt('There is already a file with that title in this folder.'), sprintf('fFolderId=%d', $this->oFolder->getId()));
-            exit(0);
-        }
-        */
-        
-        $matches = array();
-        $aFields = array();
-        foreach ($_REQUEST as $k => $v) {
-            if (preg_match('/^metadata_(\d+)$/', $k, $matches)) {
-                $aFields[] = array(DocumentField::get($matches[1]), $v);
-            }
-        }
-
-        $aErrorOptions['message'] = _kt("Please select a valid document type");
-        $this->oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
-
         $aOptions = array(
             'contents' => new KTFSFileLike($aFile['tmp_name']),
-            'documenttype' => $this->oDocumentType,
-            'metadata' => $aFields,
+            'documenttype' => DocumentType::get($extra_d['document_type']),
+            'metadata' => $MDPack,
             'description' => $sTitle,
         );
+        
+
 
         $mpo->start();
         $this->startTransaction();
         $oDocument =& KTDocumentUtil::add($this->oFolder, basename($aFile['name']), $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
-            $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
+            $this->errorRedirectTo('metadata',sprintf(_kt("Unexpected failure to add document: %s"), $message), 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
         $this->addInfoMessage("Document added");
@@ -177,8 +272,9 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $mpo->redirectToDocument($oDocument->getId());
         $this->commitTransaction();
         exit(0);
-    }
 
+    }
+   
 }
 
 ?>
