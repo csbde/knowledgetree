@@ -53,6 +53,8 @@ class KTFolderViewAction extends KTFolderAction {
 }
 // }}}
 
+require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+
 class KTFolderAddFolderAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addFolder';
 
@@ -61,36 +63,72 @@ class KTFolderAddFolderAction extends KTFolderAction {
     function getDisplayName() {
         return _kt('Add a Folder');
     }
+    
+
+    function form_main() {
+        $oForm = new KTForm;
+
+        $oForm->setOptions(array(
+            'context' => &$this,
+            'identifier' => 'ktcore.folder.add',
+            'action' => 'addFolder',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'label' => _kt('Add a folder'),
+            'submit_label' => _kt('Add Folder'),
+            'extraargs' => $this->meldPersistQuery("","", true),
+        ));                
+        
+        // widgets
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.string', array(
+                'label' => _kt('Folder name'),
+                'description' => _kt('The name for the new folder.'),
+                'required' => true,
+                'name' => 'name')),
+        ));
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'name',
+                'output' => 'name')),
+        ));
+        
+        return $oForm;
+        
+    }    
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
-        $fields = array();
-        $fields[] = new KTStringWidget(_kt('Folder name'), _kt('The name for the new folder.'), 'name', "", $this->oPage, true);
+
+        $oForm = $this->form_main();
+        
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'fields' => $fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_addFolder() {
-        $aErrorOptions = array(
-            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
-        );
-        $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
-        $aErrorOptions['defaultmessage'] = _kt("No name given");
-        $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
+    
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            $oForm->handleError();
+        }
+        $res = $res['results'];
 	
-	if(KTFolderUtil::exists($this->oFolder, $sFolderName)) {
-	    $this->errorRedirectToMain(_kt('A folder with that name already exists.'), $aErrorOptions['redirect_to'][1]);
-	    exit(0);
-	}
+    	if(KTFolderUtil::exists($this->oFolder, $res['name'])) {
+	        $oForm->handleError(null, array('name' => _kt('A folder with that name already exists.')));
+	    }
 
         $this->startTransaction();
 
-        $res = KTFolderUtil::add($this->oFolder, $sFolderName, $this->oUser);
+        $res = KTFolderUtil::add($this->oFolder, $res['name'], $this->oUser);
+
         $aErrorOptions['defaultmessage'] = _kt("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
 
