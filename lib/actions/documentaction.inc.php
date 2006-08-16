@@ -42,6 +42,8 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
+    
+    var $sIconClass;
 
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
@@ -132,8 +134,11 @@ class KTDocumentAction extends KTStandardDispatcher {
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
             'url' => $url,
+            'icon_class' => $this->sIconClass,
         );
-        return $this->customiseInfo($aInfo);
+        
+        $aInfo = $this->customiseInfo($aInfo);
+        return $aInfo;
     }
 
     function getName() {
@@ -167,12 +172,12 @@ class KTDocumentAction extends KTStandardDispatcher {
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about "%s"'), $this->oDocument->getName()));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about this document')));
 	    $oPortlet->setActions($actions, $this->sName);
 	    $this->oPage->addPortlet($oPortlet);              
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on "%s"'), $this->oDocument->getName()));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on this document')));
 	    $oPortlet->setActions($actions, $this->sName);
 	    $this->oPage->addPortlet($oPortlet);              
 	
@@ -192,7 +197,7 @@ class KTDocumentActionUtil {
         return $oRegistry->getActions($slot);
     }
 
-    function &getDocumentActionsForDocument($oDocument, $oUser, $slot = "documentaction") {
+    function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = "documentaction") {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
@@ -217,15 +222,13 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[] =& new $sClassName(&$oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
 
-    function getDocumentActionsByNames($aNames, $slot = "documentaction") {
+    function getDocumentActionsByNames($aNames, $slot = "documentaction", $oDocument = null, $oUser = null) {
         $aObjects = array();
-        $oDocument = null;
-        $oUser = null;
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();

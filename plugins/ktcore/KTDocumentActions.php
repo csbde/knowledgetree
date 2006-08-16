@@ -195,6 +195,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.view';
+    var $sIconClass = 'download';    
 
     function getDisplayName() {
         return _kt('Download');
@@ -238,15 +239,17 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
     var $_bMutator = true;
     var $_bMutationAllowedByAdmin = false;
+    var $sIconClass = 'checkout';
 
     function getDisplayName() {
         return _kt('Checkout');
     }
 
-    function getInfo() {
+    function getInfo() {    
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -373,6 +376,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.checkin';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    var $sIconClass = 'checkin';
 
     function getDisplayName() {
         return _kt('Checkin');
@@ -534,6 +538,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
+    var $sIconClass = 'cancel_checkout';    
 
     function getDisplayName() {
         return _kt('Cancel Checkout');

@@ -71,8 +71,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
+    	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about this document')));
+        $oPortlet->setActions($actions, $currentaction);
+        $this->oPage->addPortlet($oPortlet);    
+    
         $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on "%s"'), $this->oDocument->getName()));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on this document'), $this->oDocument->getName()));
         $oPortlet->setActions($this->actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
     }
@@ -191,10 +196,37 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         $this->oPage->setContentClass('view');
+        /*
+        // we want to enable the viewlets.
 
+        $aMajorInfo = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view',), 'documentinfo', $this->oDocument, $this->oUser);                
+        $aMajorActions = KTDocumentActionUtil::getDocumentActionsByNames(array(
+            'ktcore.actions.document.checkout',
+            'ktcore.actions.document.cancelcheckout',
+             'ktcore.actions.document.checkin',
+             'ktcore.actions.document.edit'
+            ), 'documentaction', $this->oDocument, $this->oUser);
 
+        $aMajorViewletActions = kt_array_merge($aMajorInfo, $aMajorActions);
+        $aViewletInfo = array();
+
+        //var_dump($aMajorActions[0]);
+
+        foreach ($aMajorViewletActions as $action) {
+
+            $aInfo = $action->getInfo();
+
+            if ($aInfo !== null) {
+                if ($aInfo["ns"] == $this->sName) {
+                    unset($aInfo["url"]);
+                    $aInfo['active'] = true;
+                }
+                $aViewletInfo[] = $aInfo;
+            }
+        }
+        */
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/view_document");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/document/view");
         $aTemplateData = array(
               "context" => $this,
               "sCheckoutUser" => $checkout_user,
@@ -204,6 +236,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               "document" => $oDocument,
               "document_data" => $document_data,
               "fieldsets" => $fieldsets,
+              'viewlet_info' => $aViewletInfo,
         );
         //return '<pre>' . print_r($aTemplateData, true) . '</pre>';
         return $oTemplate->render($aTemplateData);
