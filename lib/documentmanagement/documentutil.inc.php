@@ -72,7 +72,12 @@ class KTDocumentUtil {
         $oDocument->setModifiedUserId($oUser->getId());
         $oDocument->setIsCheckedOut(false);
         $oDocument->setCheckedOutUserID(-1);
-        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+        if ($aOptions['major_update']) {
+            $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
+            $oDocument->setMinorVersionNumber('0');    
+        } else {    
+            $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+        }
         $oDocument->setFileSize($iFileSize);
 
         $sFilename = $oDocument->getFileName();
