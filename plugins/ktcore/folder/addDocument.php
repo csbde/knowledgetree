@@ -281,7 +281,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             $this->errorRedirectTo('metadata',sprintf(_kt("Unexpected failure to add document: %s"), $message), 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
-        $this->addInfoMessage("Document added");
+        $this->addInfoMessage(_kt("Document added"));
 
         $mpo->redirectToDocument($oDocument->getId());
         $this->commitTransaction();
