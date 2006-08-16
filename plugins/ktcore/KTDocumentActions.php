@@ -35,6 +35,8 @@ require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
 require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
+require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+
 // {{{ KTDocumentDetailsAction 
 class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
@@ -268,27 +270,69 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         return true;
     }
 
+    function form_checkout() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Checkout"),
+            'action' => 'checkout',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Checkout document"),
+            'context' => &$this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+            array('ktcore.widgets.boolean', array(
+                'label' => _kt("Download File"),
+                'description' => _kt("Indicate whether you would like to download this file as part of the checkout."),
+                'name' => 'download_file',
+                'value' => true,
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+            array('ktcore.validators.boolean', array(
+                'test' => 'download_file',
+                'output' => 'download_file',
+            )),            
+        ));
+        
+        return $oForm;
+    }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("checkout"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout');
-        $checkout_fields = array();
-        $checkout_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the checkout of this document for historical purposes, and to inform those who wish to check out this document.'), 'reason', "", $this->oPage, true);
+
+        $oForm = $this->form_checkout();
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'checkout_fields' => $checkout_fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_checkout() {
-        $aErrorOptions = array(
-            'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
-            'message' => _kt("You must provide a reason"),
-        );
-        
+    
+        $oForm = $this->form_checkout();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
+    
+        $data = $res['results'];
+
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
-        $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
+        $sReason = $data['reason'];
 
         $this->startTransaction();
         $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
@@ -296,7 +340,16 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
         
+
+        
         $this->commitTransaction();
+        
+        if (!$data['download_file']) {
+            $this->addInfoMessage(_kt("Document checked out."));
+            redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
+            exit(0);
+        }
+        
         $oTemplate->setData(array(
             'context' => &$this,
             'reason' => $sReason,
