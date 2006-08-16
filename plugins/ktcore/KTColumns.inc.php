@@ -5,7 +5,7 @@
 require_once(KT_LIB_DIR . '/browse/advancedcolumns.inc.php');
 
 class AdvancedTitleColumn extends AdvancedColumn {
-
+    var $name = 'title';
     var $namespace = 'ktcore.columns.title';
     var $sortable = true;
     var $aOptions = array();
@@ -104,6 +104,8 @@ class AdvancedTitleColumn extends AdvancedColumn {
  */
 
 class AdvancedDateColumn extends AdvancedColumn {
+    var $name = 'datecolumn';
+
     var $document_field_function;
     var $folder_field_function;
     var $sortable = true;    

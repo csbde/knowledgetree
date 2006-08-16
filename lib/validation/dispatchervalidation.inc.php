@@ -369,7 +369,7 @@ class KTDispatcherValidation {
         if (!ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress )) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions,
                                                     'message', 
-                                                    _kt("An invalid email address was given"));
+                                                    _kt("This is not a valid email address."));
             $this->handleError($aOptions);
         }
         return $sEmailAddress;
