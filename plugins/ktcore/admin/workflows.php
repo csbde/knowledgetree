@@ -52,6 +52,8 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 class WorkflowNavigationPortlet extends KTPortlet {   
     var $oWorkflow;
     var $sHelpPage = 'ktcore/admin/workflow.html';
+    var $bActive = true;
+    
     function WorkflowNavigationPortlet($sTitle, $oWorkflow = null) {
         $this->oWorkflow = $oWorkflow;
         parent::KTPortlet($sTitle);
