@@ -29,116 +29,174 @@ require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-
-require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
 
     function check() {
-	$oConfig =& KTConfig::getSingleton();
-	if ($this->oUser->getId() == -2 || 
-	    ($oConfig->get('user_prefs/restrictPreferences', false) && !Permission::userIsSystemAdministrator($this->oUser->getId()))) { 
-	    return false; 
-	}	
-	
-	return parent::check();
+        $oConfig =& KTConfig::getSingleton();
+        if ($this->oUser->getId() == -2 || 
+            ($oConfig->get('user_prefs/restrictPreferences', false) && !Permission::userIsSystemAdministrator($this->oUser->getId()))) { 
+            return false; 
+        }    
+        $this->aBreadcrumbs = array(array('action' => 'preferences', 'name' => _kt('Preferences')));    
+        return parent::check();
     }
-
-    function PreferencesDispatcher() {
-        $this->aBreadcrumbs = array(
-            array('action' => 'preferences', 'name' => _kt('Preferences')),
-        );
-        return parent::KTStandardDispatcher();
+    
+    function form_main() {
+        $oForm = new KTForm;
+        
+        $oForm->setOptions(array(
+            'context' => &$this,
+            'identifier' => 'ktcore.preferences.main',
+            'action' => 'updatePreferences',
+            'fail_action' => 'main',
+            'label' => _kt('Your Details'),
+            'submit_label' => _kt('Update Preferences'),
+            'extraargs' => $this->meldPersistQuery("","", true),
+        ));                
+        
+        // widgets
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.string', array(
+                'label' => _kt('Name'),
+                'description' => _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'),
+                'required' => true,
+                'name' => 'name',
+                'value' => $this->oUser->getName(),
+                'autocomplete' => false)),
+            array('ktcore.widgets.string', array(
+                'label' => _kt('Email Address'),
+                'description' => _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'),
+                'required' => false,
+                'name' => 'email_address', 
+                'value' => $this->oUser->getEmail(),                
+                'autocomplete' => false)),           
+            array('ktcore.widgets.boolean', array(
+                'label' => _kt('Email Notifications'),
+                'description' => _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'),
+                'required' => false,
+                'name' => 'email_notifications', 
+                'value' => $this->oUser->getEmailNotification(),                
+                'autocomplete' => false)),                        
+        ));
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'name',
+                'output' => 'name')),
+            array('ktcore.validators.emailaddress', array(
+                'test' => 'email_address',
+                'output' => 'email_address')),                
+            array('ktcore.validators.boolean', array(
+                'test' => 'email_notifications',
+                'output' => 'email_notifications')),                          
+        ));
+        
+        return $oForm;
+        
+    }
+    
+    function form_password() {
+        $oForm = new KTForm;
+        
+        $oForm->setOptions(array(
+            'context' => &$this,
+            'identifier' => 'ktcore.preferences.password',
+            'action' => 'updatePassword',
+            'fail_action' => 'setPassword',
+            'cancel_action' => 'main',
+            'label' => _kt('Change your password'),
+            'submit_label' => _kt('Set pasword'),
+            'extraargs' => $this->meldPersistQuery("","", true),
+        ));                
+        
+        // widgets
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.password', array(
+                'label' => _kt('Password'),
+                'description' => _kt('Specify your new password.'),
+                'confirm_description' => _kt('Confirm the new password you specified above.'),                
+                'confirm' => true,
+                'required' => true,
+                'name' => 'new_password',
+                'autocomplete' => false)),
+        ));
+        
+                
+        $KTConfig =& KTConfig::getSingleton();
+        $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'new_password',
+                'min_length' => $minLength,
+                'min_length_warning' => sprintf(_kt("Your password is too short - passwords must be at least %d characters long."), $minLength),
+                'output' => 'password')),
+        ));
+        
+        return $oForm;
+        
     }
 
     function do_main() {
-	$this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
-	$this->oPage->title = _kt("Dashboard");
-		
-		
-	$oUser =& $this->oUser;
-		
-	$aOptions = array('autocomplete' => false);
-		
-	$edit_fields = array();
-        $edit_fields[] =  new KTStringWidget(_kt('Name'), _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true, null, null, $aOptions);        
-        $edit_fields[] =  new KTStringWidget(_kt('Email Address'), _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false, null, null, $aOptions);        
-        $edit_fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false, null, null, $aOptions);        
-        $edit_fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('Your mobile phone number.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false, null, null, $aOptions);        
-		
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
+        $this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
+        $this->oPage->title = _kt("Dashboard");
+        $oUser =& $this->oUser;
+        
+        $oForm = $this->form_main();
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
         $iSourceId = $oUser->getAuthenticationSourceId();
         $bChangePassword = true;
         if ($iSourceId) {
             $bChangePassword = false;
         }
-		$aTemplateData = array(
+        $aTemplateData = array(
               "context" => $this,
-			  'edit_fields' => $edit_fields,
+              'edit_form' => $oForm,
               "show_password" => $bChangePassword,
-		);
-		return $oTemplate->render($aTemplateData);    
+        );
+        return $oTemplate->render($aTemplateData);    
     }
 
     function do_setPassword() {
-		$this->oPage->setBreadcrumbDetails(_kt("Your Password"));
-		$this->oPage->title = _kt("Dashboard");
-		
-		
-		$oUser =& $this->oUser;
-		
-		$aOptions = array('autocomplete' => false);
-		
-		$edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify your new password.'), 'password', null, $this->oPage, true, null, null, $aOptions);        
-        $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $aOptions);        
-		
-	
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/password");
-		$aTemplateData = array(
+        $this->oPage->setBreadcrumbDetails(_kt("Your Password"));
+        $this->oPage->title = _kt("Dashboard");
+        
+        $oForm = $this->form_password();
+    
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/password");
+        $aTemplateData = array(
               "context" => $this,
-			  'edit_fields' => $edit_fields,
-		);
-		return $oTemplate->render($aTemplateData);    
+              'form' => $oForm,
+        );
+        return $oTemplate->render($aTemplateData);    
     }
 
 
 
     function do_updatePassword() {
-        
-        $password = KTUtil::arrayGet($_REQUEST, 'password');
-        $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
-        
-        if (empty($password)) { 
-            $this->errorRedirectTo("setPassword", _kt("You must specify a password."));
-        } else if ($password !== $confirm_password) {
-            $this->errorRedirectTo("setPassword", _kt("The passwords you specified do not match."));
+        $oForm = $this->form_password();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            $oForm->handleError();
         }
-		
-		$KTConfig =& KTConfig::getSingleton();
-		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
-		
-		if (strlen($password) < $minLength) {
-            $this->errorRedirectTo("setPassword", sprintf(_kt("Your password is too short - passwords must be at least %d characters long."), $minLength));		
-		}
-		
-        // FIXME more validation would be useful.
-        // validated and ready..
+        $res = $res['results'];
+        
         $this->startTransaction();
         
         $oUser =& $this->oUser;
         
         
         // FIXME this almost certainly has side-effects.  do we _really_ want 
-        $oUser->setPassword(md5($password)); // 
+        $oUser->setPassword(md5($res['password'])); // 
         
         $res = $oUser->update(); 
-        //$res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
         
         
         if (PEAR::isError($res) || ($res == false)) {
@@ -155,32 +213,21 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
-	
-        $oUser =& $this->oUser;
         
-        $name = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'),
-												  KTUtil::meldOptions($aErrorOptions, array('message' => _kt('You must specify your name.'))));
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            $oForm->handleError();
+        }
         
-        $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
-        if(strlen(trim($email_address))) {
-            $email_address = $this->oValidator->validateEmailAddress(
-                $email_address, 
-				KTUtil::meldOptions($aErrorOptions, 
-					array('message' => _kt('Invalid email address.')))
-            );
-	    }
-		
-        $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
-        if ($email_notifications !== false) $email_notifications = true;
-        $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
-        
+        $res = $res['results'];
         
         $this->startTransaction();
-        
-        $oUser->setName($name);
-        $oUser->setEmail($email_address);
-        $oUser->setEmailNotification($email_notifications);
-        $oUser->setMobile($mobile_number);
+        $oUser =& $this->oUser;
+        $oUser->setName($res['name']);
+        $oUser->setEmail($res['email_address']);
+        $oUser->setEmailNotification($res['email_notifications']);
+        $oUser->setMobile(null);
         
         
         // old system used the very evil store.php.
