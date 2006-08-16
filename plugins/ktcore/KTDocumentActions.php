@@ -1,7 +1,6 @@
 <?php
 
 /**
- * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1 ("License"); You may not use this file except in
@@ -501,6 +500,8 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         return parent::getInfo();
     }
 
+
+
     function check() {
         $res = parent::check();
        
@@ -530,37 +531,63 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         return true;
     }
 
+    function form_main() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Cancel Checkout"),
+            'action' => 'checkin',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Cancel Checkin"),
+            'context' => &$this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are cancelling this document's checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+        ));
+        
+        return $oForm;
+    }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("cancel checkout"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
         
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason', "");
-        $checkin_fields = array();
-        $checkin_fields[] = new KTStringWidget(_kt('Reason'), _kt('Give a reason for cancelling this checkout.'), 'reason', $sReason, $this->oPage, true);
-
+        $oForm = $this->form_main();
+        
         $oTemplate->setData(array(
             'context' => &$this,
-            'checkin_fields' => $checkin_fields,
+            'form' => $oForm,
             'document' => $this->oDocument,
         ));
         return $oTemplate->render();
     }
 
     function do_checkin() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $aOptions = array(
-            'redirect_to' => array('main',sprintf('fDocumentId=%d', $this->oDocument->getId())),
-            'message' => _kt('Please give a reason for cancelling the check-out.'),        
-        );
-        $sReason = $this->oValidator->notEmpty($sReason, $aOptions);
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
         
-        global $default;
-
+        $data = $res['results'];
+        
         $this->startTransaction();
         // actually do the checkin.
         $this->oDocument->setIsCheckedOut(0);
         $this->oDocument->setCheckedOutUserID(-1);
-        if (!$this->oDocument->update()) {
+        $res = $this->oDocument->update();
+        if (PEAR::isError($res) || ($res === false)) {
             $this->rollbackTransaction();
             return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
@@ -568,12 +595,12 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         // checkout cancelled transaction
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document checked out cancelled", 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
-        if (PEAR::isError($res) || ($res == false)) {
+        if (PEAR::isError($res) || ($res === false)) {
             $this->rollbackTransaction();
             return $this->errorRedirectToMain(_kt("Failed to force the document's checkin."),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
-        $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
-        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
+        $this->commitTransaction(); 
+        redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
     }
 }
 // }}}
