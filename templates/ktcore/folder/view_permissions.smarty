@@ -5,10 +5,10 @@ this specific folder.  Only the roles or groups which have permissions
 assigned are shown.{/i18n}</p> 
 
 {if $edit}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a> 
-| <a href="{addQS}action=resolved_users&fFolderId={$oFolder->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
+{i18n}Manage security{/i18n}: <a href="{addQS context=$context}action=edit{/addQS}">{i18n}Edit permissions{/i18n}</a> 
+| <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
 {else}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fFolderId={$oFolder->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
+{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a> 
 {/if}
 
 
