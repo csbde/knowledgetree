@@ -42,10 +42,33 @@ class KTCoreTextWidget extends KTWidget {
     var $sTemplate = 'ktcore/forms/widgets/text';
 }
 
+class KTCoreReasonWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.reason';
+    var $sTemplate = 'ktcore/forms/widgets/text';
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        // FIXME make required *either* per-action property
+        // FIXME or a global pref.
+        $global_required_default = true;
+        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+        
+        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
+        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);        
+    }
+}
 
 class KTCoreBooleanWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.boolean';
     var $sTemplate = 'ktcore/forms/widgets/boolean';
+    
+    function setDefault($mValue) {
+        $this->value = ($mValue == true);
+    }
 }
 
 class KTCorePasswordWidget extends KTWidget {
