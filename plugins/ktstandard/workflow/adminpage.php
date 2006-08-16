@@ -50,7 +50,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
 
         $aFields = array();
         $aVocab = array();
-        $aVocab[] = 'No automatic assignment';
+        $aVocab[] = _kt('No automatic assignment');
         foreach ($aTriggers as $aTrigger) {
             $aVocab[$aTrigger[2]] = $aTrigger[0];
         }
