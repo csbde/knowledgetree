@@ -38,6 +38,7 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 class KTPortlet {
     var $sTitle;
     var $oPlugin;
+    var $bActive = false;
         
     function KTPortlet($title='') {
         $this->sTitle = $title;
@@ -58,6 +59,10 @@ class KTPortlet {
 
     function setDispatcher(&$oDispatcher) {
         $this->oDispatcher =& $oDispatcher; 
+    }
+    
+    function getActive() {
+        return $this->bActive;
     }
 }
 
@@ -98,15 +103,18 @@ class KTNavPortlet extends KTPortlet {
 
 class KTActionPortlet extends KTPortlet {
     var $actions = array();
+    
+    var $bActive = true;
 
     // current action is the one we are currently on.
     function setActions($actions, $currentaction) {
         foreach ($actions as $action) {
             $aInfo = $action->getInfo();
-            
+
             if ($aInfo !== null) {
-                if ($aInfo["name"] == $currentaction) {
+                if ($aInfo["ns"] == $currentaction) {
                     unset($aInfo["url"]);
+                    $aInfo['active'] = true;
                 }
                 $this->actions[] = $aInfo;
             }

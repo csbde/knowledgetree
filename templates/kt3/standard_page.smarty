@@ -127,16 +127,18 @@
 {foreach item=oPortlet from=$page->portlets}
 {assign var=portlet_output value=$oPortlet->render() }
 {if $portlet_output}
-<div class="portlet">
-<h4>{$oPortlet->getTitle()}</h4>
+<div class="portlet {if $oPortlet->getActive()}expanded{/if}">
+<h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
+<div class="portletbody">
 {$portlet_output}
+</div>
 </div>
 {/if}
 {/foreach}
 
 
 </div>
-<div id="content">
+<div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
 {if (!$page->hide_section)}
 <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
 {if ($page->getHelpURL() != null)} <a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}

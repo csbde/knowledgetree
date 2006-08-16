@@ -89,6 +89,8 @@ $sectionName = "browse";
 
 class BrowseDispatcher extends KTStandardDispatcher {
 
+    var $sName = 'ktcore.actions.folder.view';
+
     var $oFolder = null;
     var $sSection = "browse";
     var $browse_mode = null;
@@ -174,7 +176,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($oFolder));
                 
-            $portlet = new KTActionPortlet(_kt("Folder Actions"));
+            $portlet = new KTActionPortlet(sprintf(_kt('Info about "%s"'), $this->oFolder->getName()));
+            $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);        
+            $portlet->setActions($aActions,$this->sName);
+            $this->oPage->addPortlet($portlet);                            
+                
+            $portlet = new KTActionPortlet(sprintf(_kt('Actions on "%s"'), $this->oFolder->getName()));
             $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);        
             $portlet->setActions($aActions,null);
             $this->oPage->addPortlet($portlet);

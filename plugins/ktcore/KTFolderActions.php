@@ -38,6 +38,21 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 
+// {{{ KTDocumentDetailsAction 
+class KTFolderViewAction extends KTFolderAction {
+    var $sName = 'ktcore.actions.folder.view';
+
+    function do_main() {
+        redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
+        exit(0);
+    }
+
+    function getDisplayName() {
+        return _kt('Display Details');
+    }
+}
+// }}}
+
 class KTFolderAddFolderAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addFolder';
 
