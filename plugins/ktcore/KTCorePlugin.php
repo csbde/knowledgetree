@@ -45,7 +45,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCancelCheckOutAction', 'ktcore.actions.document.cancelcheckout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin', 'KTDocumentActions.php');
-        $this->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit', 'document/edit.php');
         $this->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCopyAction', 'ktcore.actions.document.copy', 'KTDocumentActions.php');
@@ -119,23 +119,45 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
         
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
+        
+        // widgets
+        $this->registerWidget('KTCoreStringWidget', 'ktcore.widgets.string', 'KTWidgets.php');
+        $this->registerWidget('KTCoreSelectionWidget', 'ktcore.widgets.selection', 'KTWidgets.php');        
+        $this->registerWidget('KTCoreEntitySelectionWidget', 'ktcore.widgets.entityselection', 'KTWidgets.php');
+        $this->registerWidget('KTCoreBooleanWidget', 'ktcore.widgets.boolean', 'KTWidgets.php');        
+        $this->registerWidget('KTCorePasswordWidget', 'ktcore.widgets.password', 'KTWidgets.php');                
+        $this->registerWidget('KTCoreTextWidget', 'ktcore.widgets.text', 'KTWidgets.php');             
+        $this->registerWidget('KTCoreFileWidget', 'ktcore.widgets.file', 'KTWidgets.php');                     
+        $this->registerWidget('KTCoreFieldsetWidget', 'ktcore.widgets.fieldset', 'KTWidgets.php');                     
+        $this->registerWidget('KTCoreTransparentFieldsetWidget', 'ktcore.widgets.transparentfieldset', 'KTWidgets.php');                     
+        
+        // validators
+        $this->registerValidator('KTStringValidator', 'ktcore.validators.string', 'KTValidators.php');
+        $this->registerValidator('KTEntityValidator', 'ktcore.validators.entity', 'KTValidators.php');
+        $this->registerValidator('KTRequiredValidator', 'ktcore.validators.required', 'KTValidators.php');
+        $this->registerValidator('KTEmailValidator', 'ktcore.validators.emailaddress', 'KTValidators.php');        
+        $this->registerValidator('KTBooleanValidator', 'ktcore.validators.boolean', 'KTValidators.php');                
+        $this->registerValidator('KTPasswordValidator', 'ktcore.validators.password', 'KTValidators.php');            
+        $this->registerValidator('KTMembershipValidator', 'ktcore.validators.membership', 'KTValidators.php');                
+        $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');                
+        $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');                        
 
         // criterion
-	$this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('IDCriterion', 'ktcore.criteria.id', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('TitleCriterion', 'ktcore.criteria.title', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('CreatorCriterion', 'ktcore.criteria.creator', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DateCreatedCriterion', 'ktcore.criteria.datecreated', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DocumentTypeCriterion', 'ktcore.criteria.documenttype', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DateModifiedCriterion', 'ktcore.criteria.datemodified', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('SizeCriterion', 'ktcore.criteria.size', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('WorkflowStateCriterion', 'ktcore.criteria.workflowstate', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
-	$this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('IDCriterion', 'ktcore.criteria.id', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('TitleCriterion', 'ktcore.criteria.title', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('CreatorCriterion', 'ktcore.criteria.creator', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DateCreatedCriterion', 'ktcore.criteria.datecreated', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DocumentTypeCriterion', 'ktcore.criteria.documenttype', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DateModifiedCriterion', 'ktcore.criteria.datemodified', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('SizeCriterion', 'ktcore.criteria.size', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('WorkflowStateCriterion', 'ktcore.criteria.workflowstate', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
 
         $this->setupAdmin();
     }
@@ -193,6 +215,9 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("workflows", 'KTWorkflowDispatcher', 'documents',
             _kt('Workflows'), _kt('Configure the process documents go through.'),
             'admin/workflows.php', null);
+        //$this->registerAdminPage("workflows_2", 'KTWorkflowDispatcher', 'documents',
+        //    _kt('Workflows v2'), _kt('Configure the process documents go through.'),
+        //    'admin/workflowsNew.php', null);            
 
         // storage
         $this->registerAdminPage("checkout", 'KTCheckoutAdminDispatcher', 'storage',

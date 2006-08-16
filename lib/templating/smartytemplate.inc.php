@@ -135,6 +135,10 @@ class KTSmartyTemplate extends KTTemplate {
     }
 
     function addQueryStringBlock($params, $content, &$smarty, &$repeat) {
+        $context = KTUtil::arrayGet($params, 'context');
+        if (!is_null($context)) {
+            $content = $context->meldPersistQuery($content);
+        }    
         if (empty($content)) {
             return;
         }
@@ -252,6 +256,8 @@ class KTSmartyTemplate extends KTTemplate {
         return smarty_function_html_radios($params, $smarty);
     }
 
+    // $context is a dispatcher or null
+    // if non-null, it will try persist that dispatcher's persist-vars. 
     function addQueryString($url, $qs) {
         return KTUtil::addQueryString($url, $qs);
     }

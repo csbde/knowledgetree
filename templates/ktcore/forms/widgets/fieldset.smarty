@@ -1,0 +1,6 @@
+<fieldset>
+    {if $label}<legend>{$label}</legend>{/if}
+    {if $description}<p class="descriptiveText">{$description}</p>{/if}    
+    
+    {$widgets}
+</fieldset>

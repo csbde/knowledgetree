@@ -1,0 +1,16 @@
+{if empty($vocab)}
+    <div class="ktInfo"><p>{$context->sEmptyMessage}</p></div>
+{else}
+  <select name="{$name}" 
+    {if $has_id}id="{$id}"{/if} 
+    {if $options.multi}multiple="true"{/if} 
+    >
+    {if $options.initial_string}
+    <option value="">{$options.initial_string}</option>
+    {/if}    
+  {foreach item=lookup key=lookup_key from=$vocab}
+
+       <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>
+  {/foreach}
+  </select>
+{/if}
