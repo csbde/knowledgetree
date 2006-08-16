@@ -419,6 +419,10 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             'context' => &$this,
             'file_upload' => true,         // otherwise the post is not received.
         ));
+        
+        $major_inc = sprintf("%d.%d", $this->oDocument->getMajorVersionNumber()+1, 0);
+        $minor_inc = sprintf("%d.%d", $this->oDocument->getMajorVersionNumber(), $this->oDocument->getMinorVersionNumber()+1);        
+        
         $oForm->setWidgets(array(
             array('ktcore.widgets.file', array(
                 'label' => _kt("File"),
@@ -427,6 +431,12 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'basename' => 'file',
                 'required' => true,
             )),
+            array('ktcore.widgets.boolean',array(
+                'label' => _kt('Major Update'), 
+                'description' => sprintf(_kt('If this is checked, then the document\'s version number will be increased to %s.  Otherwise, it will be considered a minor update, and the version number will be %s.'), $major_inc, $minor_inc), 
+                'name' => 'major_update', 
+                'value' => false,
+            )),            
             array('ktcore.widgets.reason', array(
                 'label' => _kt("Reason"),
                 'description' => _kt("Please specify why you are cancelling this document's checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
@@ -445,6 +455,10 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'max_length' => 250,
                 'output' => 'reason',
             )),
+            array('ktcore.validators.boolean', array(
+                'test' => 'major_update',
+                'output' => 'major_update',
+            )),                                   
             array('ktcore.validators.file', array(
                 'test' => 'file',
                 'output' => 'file',
@@ -493,6 +507,10 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $sNewFilename = $data['file']['name'];
 
         $aOptions = array();
+        
+        if ($data['major_update']) {
+            $aOptions['major_update'] = true;
+        }
 
         if ($sCurrentFilename != $sNewFilename) {
             $aOptions['newfilename'] = $sNewFilename;
