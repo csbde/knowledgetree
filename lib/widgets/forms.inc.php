@@ -93,8 +93,12 @@ class KTForm {
         }
         
         // FIXME process extra arguments more intelligently
+        $default_args = array();
+        if (!is_null($this->_context)) {
+            $default_args = $this->_context->meldPersistQuery("","",true);
+        }
         $this->_extraargs = KTUtil::arrayGet($aOptions, 
-            'extraargs', array());
+            'extraargs', $default_args);
         $this->_extraargs['postReceived'] = 1;
     }
     
@@ -228,7 +232,7 @@ class KTForm {
             $widget->wrapName('data');
             if ($bUseOld) {
                 $widget->setDefault(KTUtil::arrayGet($aOldData, $widget->getBasename(), 
-                    $widget->getDefault()));
+                    $widget->getDefault(), false));
                 $widget->setErrors(KTUtil::arrayGet($aErrors, $widget->getBasename()));
             }
         }
