@@ -1,3 +1,5 @@
+<h2>{i18n arg_docname=$context->oDocument->getName()}Request Assistance: #docname#{/i18n}</h2>
+
 <p class="descriptiveText">{i18n}If you are unable to perform an action
 on this document that you think you should be able to, or wish to
 request a change in location, metadata values, or workflow status, you

@@ -1210,32 +1210,62 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         return parent::getInfo();
     }
 
+    function form_main() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Archive Document"),
+            'action' => 'archive',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt("Archive Document"),
+            'context' => &$this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are archiving this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+        ));
+        
+        return $oForm;
+    }
+    
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("archiving"));
+        $this->oPage->setBreadcrumbDetails(_kt("Archive Document"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
-        $fields = array();
-        $fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.'), 'reason', "", $this->oPage, true);
+
+        $oForm = $this->form_main();
 
         $oTemplate->setData(array(
             'context' => &$this,
-            'fields' => $fields,
+            'form' => $oForm,
         ));
         return $oTemplate->render();
     }
 
     function do_archive() {
     
-        $aErrorOptions = array(
-            'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
-            'message' => _kt("You must provide a reason"),
-        );
+        $oForm = $this->form_main();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
         
-        $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
-    
+        $sReason = $data['reason'];
     
         $this->startTransaction();
         $this->oDocument->setStatusID(ARCHIVED);
-        if (!$this->oDocument->update()) {
+        $res = $this->oDocument->update();
+        if (PEAR::isError($res) || ($res === false)) {
             $_SESSION['KTErrorMessage'][] = _kt("There was a database error while trying to archive this file");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
