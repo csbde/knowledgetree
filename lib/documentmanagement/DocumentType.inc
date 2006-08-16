@@ -185,10 +185,19 @@ class KTDocumentTypeManager {
 	    $this->checkActiveHandler();
 	    if (is_null($this->_active_handler)) {
 		    // as totally normal if nothing is registered.
-		    return DocumentType::getList();
+		    $l = (array) DocumentType::getList();
 		} else {
-		    return $this->_active_handler->getListForUserAndFolder($oUser, $oFolder);
+		    $l = (array) $this->_active_handler->getListForUserAndFolder($oUser, $oFolder);
 		}
+		
+        $final = array();
+        foreach ($l as $oType) {
+            if (PEAR::isError($oType) || ($oType->getDisabled())) {
+                continue;
+            }
+            $final[] = $oType;
+        }
+        return $final;
 	}
 	
 	function checkActiveHandler() {
