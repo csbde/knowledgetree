@@ -55,6 +55,11 @@ class KTForm {
         $this->_action = KTUtil::arrayGet($aOptions, 'action');
         $qs = KTUtil::arrayGet($aOptions, 'actionparams','');
         $this->_enctype = KTUtil::arrayGet($aOptions, 'encoding');
+        if (empty($this->_enctype)) {
+            if (KTUtil::arrayGet($aOptions, 'file_upload', false)) {
+                $this->_enctype="multipart/form-data";
+            }
+        }
         
         $this->_actionurl = KTUtil::addQueryStringSelf($qs);
         $this->_failaction = KTUtil::arrayGet($aOptions, 'fail_action');
