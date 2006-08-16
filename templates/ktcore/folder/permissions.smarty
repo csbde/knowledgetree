@@ -10,8 +10,8 @@
 {else}
 
 {* otherwise continue *}
-<p>{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$iFolderId}{/addQS}">{i18n}View permissions overview{/i18n}</a>
-| <a href="{addQS}action=resolved_users&fFolderId={$iFolderId}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
+<p>{i18n}Manage security{/i18n}: <a href="{addQS context=$context}{/addQS}">{i18n}View permissions overview{/i18n}</a>
+| <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
 </p>
 
 {if ($can_inherit)}
@@ -19,7 +19,7 @@
 <p>{i18n}This folder defines its own permissions.{/i18n}
 <a class="ktActionLink ktDelete"
    kt:deleteMessage="Are you sure you wish to reinstate inherited permissions?"
-   href="{addQS}action=inheritPermissions&fFolderId={$iFolderId}{/addQS}">{i18n}Inherit permissions{/i18n}</a>
+   href="{addQS context=$context}action=inheritPermissions{/addQS}">{i18n}Inherit permissions{/i18n}</a>
 </div>
 {/if}
 
