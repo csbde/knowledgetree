@@ -284,6 +284,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $bCanInherit = ($this->oFolder->getId() != 1);
 
+        $perms = KTPermission::getList();
+        $docperms = KTPermission::getDocumentRelevantList();
         
         $aTemplateData = array(			       
             "iFolderId" => $this->oFolder->getId(),
@@ -295,7 +297,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'foldername' => $this->oFolder->getName(),          
 	        'jsonpermissions' => $sJSONPermissions,
 	        'edit' => true,
-	        'permissions' => KTPermission::getList(),
+	        'permissions' => $perms,
+	        'document_permissions' => $docperms,
 	        'can_inherit' => $bCanInherit,
         );
         return $oTemplate->render($aTemplateData);

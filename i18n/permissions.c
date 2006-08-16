@@ -4,3 +4,4 @@ gettext("Core: Add Folder");
 gettext("Core: Manage security");
 gettext("Core: Delete");
 gettext("Core: Manage workflow");
+gettext("Core: Folder details");
