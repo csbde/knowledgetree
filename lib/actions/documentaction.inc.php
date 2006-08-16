@@ -36,7 +36,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
     var $bAllowInAdminMode = false;
-    var $sHelpPage = 'ktcore/browse.html';	
+    var $sHelpPage = 'ktcore/browse.html';    
 
     var $sSection = "view_details";
 
@@ -50,6 +50,8 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
+        
+        $this->persistParams('fDocumentId');
 
         parent::KTStandardDispatcher();
     }
@@ -93,14 +95,14 @@ class KTDocumentAction extends KTStandardDispatcher {
         if (!KTWorkflowUtil::actionEnabledForDocument($this->oDocument, $this->sName)) {
             return false;
         }
-		// be nasty in archive/delete status.
-		$status = $this->oDocument->getStatusID();
-		if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
+        // be nasty in archive/delete status.
+        $status = $this->oDocument->getStatusID();
+        if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
         if ($this->bAllowInAdminMode) {
             // check if this user is in admin mode
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {             
                 return true; 
-            }		
+            }        
         }        
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
     }
@@ -155,14 +157,14 @@ class KTDocumentAction extends KTStandardDispatcher {
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
-	if (!$this->_show()) { return false; }
-		
+    if (!$this->_show()) { return false; }
+        
         $aOptions = array("final" => false,
-			  "documentaction" => "viewDocument",
-			  "folderaction" => "browse",
+              "documentaction" => "viewDocument",
+              "folderaction" => "browse",
         );
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
-					     KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+            KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Info about "%s"'), $this->oDocument->getName()));
