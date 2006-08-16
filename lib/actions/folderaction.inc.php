@@ -98,6 +98,7 @@ class KTFolderAction extends KTStandardDispatcher {
         $aInfo = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
+            'ns' => $this->sName,
             'url' => $this->getURL(),
         );
         return $this->customiseInfo($aInfo);
@@ -134,9 +135,14 @@ class KTFolderAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
 
-        $portlet = new KTActionPortlet(_kt("Folder Actions"));
+        $portlet = new KTActionPortlet(sprintf(_kt('Info about "%s"'), $this->oFolder->getName()));
+        $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);        
+        $portlet->setActions($aActions,$this->sName);
+        $this->oPage->addPortlet($portlet);            
+
+        $portlet = new KTActionPortlet(sprintf(_kt('Actions on "%s"'), $this->oFolder->getName()));
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);        
-        $portlet->setActions($aActions,null);
+        $portlet->setActions($aActions,$this->sName);
         $this->oPage->addPortlet($portlet);            
             
         if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $this->oFolder)) {
@@ -163,6 +169,10 @@ class KTFolderActionUtil {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions('folderaction');
     }
+    function getFolderInfoActions() {
+        $oRegistry =& KTActionRegistry::getSingleton();
+        return $oRegistry->getActions('folderinfo');
+    }   
     function &getFolderActionsForFolder($oFolder, $oUser) {
         $aObjects = array();
         foreach (KTFolderActionUtil::getFolderActions() as $aAction) {
@@ -176,6 +186,19 @@ class KTFolderActionUtil {
         }
         return $aObjects;
     }
+    function &getFolderInfoActionsForFolder($oFolder, $oUser) {
+        $aObjects = array();
+        foreach (KTFolderActionUtil::getFolderInfoActions() as $aAction) {
+            list($sClassName, $sPath, $sPlugin) = $aAction;
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPlugin);
+            if (!empty($sPath)) {
+                require_once($sPath);
+            }
+            $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
+        }
+        return $aObjects;
+    }    
 }
 
 ?>

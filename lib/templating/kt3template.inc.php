@@ -39,7 +39,6 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/session/control.inc");
 
 class KTPage {
-
     var $hide_section = false;
 	var $secondary_title = null;
 
@@ -78,6 +77,8 @@ class KTPage {
 
     var $contentType = 'text/html';
     var $charset = 'UTF-8';
+    
+    var $content_class;
     
     /* further initialisation */
     function KTPage() {
@@ -211,6 +212,8 @@ class KTPage {
     
     function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
 	function setUser($oUser) { $this->user = $oUser; }
+    
+    function setContentClass($sClass) { $this->content_class = $sClass; }    
     
     // FIXME refactor setSection to be generic, not an if-else.
     // assume this is admin for now.
