@@ -74,7 +74,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
             'submit_label' => _kt("Add"),
-            'encoding' => "multipart/form-data",
+            'file_upload' => true,
         ));
         
         $aTypes;
