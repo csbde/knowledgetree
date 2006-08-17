@@ -66,6 +66,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     function check() {
         if (!parent::check()) { return false; }
+        
+        $this->persistParams(array('fDocumentId'));
+        
         return true;
     }
 
