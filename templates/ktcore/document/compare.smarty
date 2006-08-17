@@ -1,18 +1,16 @@
 <h2>{i18n}Version Comparison{/i18n}: {$document->getName()}</h2>
+
+
 {capture assign=from}
 <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> ({$document->getMetadataVersion()})
 {/capture}
 {capture assign=to}
 <strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()}</strong> ({$comparison_document->getMetadataVersion()})
 {/capture}
-<p class="descriptiveText">
-{i18n arg_from=$from arg_to=$to}showing comparison between versions #from# and #to#{/i18n}</p>
-
-<!-- 
-  its possible that one of the versions isn't "real" 
-  and it isn't entirely clear how to show that to the
-  user in the best possible way.
--->
+<div class="ktInfo"><p>
+{i18n arg_from=$from arg_to=$to}showing comparison between versions #from# and #to#.  {/i18n}
+<a href="{addQS context=$context}action=main{/addQS}">{i18n}View current version{/i18n}</a>.
+</p></div>
 
 {if ($document_data.is_manufactured)}
 <p class="descriptiveText"><strong class="ktInlineError">{i18n}Please
