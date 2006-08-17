@@ -212,7 +212,7 @@ JSONLookupWidget.prototype = {
 	forEach(this.oSelectAvail.options, bind(
 		    function(o) {
 			try {
-			    if(o.value == 'off') continue;
+			    if(o.value == 'off') return;
 			    var a = o.selected;						    
 			    if(a == 'selected' || a === true) {
 				this.modItems('add', o.value);
