@@ -1,9 +1,5 @@
 <h2>{$document->getName()|escape}</h2>
-{capture assign=version}
-{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}
-{/capture}
-<p class="descriptiveText">{i18n arg_version=$version}showing information for <strong>version
-#version#</strong>{/i18n}</p>
+
 {if ($document->getIsCheckedOut() == 1)}
 {capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
 {if ($isCheckoutUser)}
@@ -47,31 +43,17 @@ these tasks, use the Request Assistance action.{/i18n}
 <!--  Document "Views" -->
 <div id="document-views">
 
+<div class="ktError"><p>Someone please suggest some "viewlets" we can ship by default ...
+this is a tad bare.</p></div>
+
+{*
 <div class="downloadbox">
     <ul>
-        <li class="view_details"><a href="#">Document Details</a></li>       
-        <li class="download"><a href="#">Download</a></li>    
-        <li class="checkout"><a href="#">Checkout</a></li>            
-        <li class="checkin"><a href="#">Check-in</a></li>    
-        <li class="cancel_checkout"><a href="#">Cancel Checkout</a></li>                    
+        {foreach from=$viewlet_info item=aInfo}
+        <li class="{$aInfo.icon_class}"><a href="{$aInfo.url}">{$aInfo.name}</a></li>       
+        {/foreach}
     </ul>
-    <span class="descriptiveText" style="font-size: xx-small">Note: this is a mockup - only some would be here, obviously.</span>
 </div>
-
-<div class="viewlet">
-     <h3>Information about "asd asd s"</h3>
-<ul class="actionlist">
-<li><a href="http://ktdevlocal/knowledgeTree-csstidy/control.php?action=viewDocument&qs=action%3Dhistory%26fDocumentId%3D8"
-     >Transaction History</a></li>
-<li><a href="http://ktdevlocal/knowledgeTree-csstidy/control.php?action=viewDocument&qs=action%3Dversionhistory%26fDocumentId%3D8"
-     >Version History</a></li>
-<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.permissions&fDocumentId=8"
-     >Permissions</a></li>
-<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.roles&fDocumentId=8"
-     >View Roles</a></li>
-<li><a href="/knowledgeTree-csstidy/action.php?kt_path_info=ktcore.actions.document.discussion&fDocumentId=8"
-     >Discussion</a></li>
-</ul>
-</div>
+*}
 
 </div>
