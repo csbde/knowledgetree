@@ -39,6 +39,7 @@ class KTFSFileLike extends KTFileLike {
 
     function KTFSFileLike ($sFilename) {
         $this->sFilename = $sFilename;
+
     }
 
     function getFSPath() {
@@ -49,7 +50,7 @@ class KTFSFileLike extends KTFileLike {
      * Set up any resources needed to perform work.
      */
     function open($mode = "r") {
-        $this->fh = fopen($this->sFilename, $mode);
+        $this->fh = @fopen($this->sFilename, $mode);
         if ($this->fh === false) {
             $this->fh = null;
             return PEAR::raiseError('Error opening file');
