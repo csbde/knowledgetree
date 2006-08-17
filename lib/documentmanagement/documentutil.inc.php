@@ -556,14 +556,24 @@ class KTDocumentUtil {
         $sFilename = tempnam($sBasedir, 'kt_storecontents');
         $oOutputFile = new KTFSFileLike($sFilename);
         $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
+        if (($res === false)) { 
+            return PEAR::raiseError(_kt("Couldn't store contents, and no reason given."));
+        } else if (PEAR::isError($res)) {
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
+        }        
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
         $res = $oStorage->upload($oDocument, $sFilename);
-        if (($res == false) || PEAR::isError($res)) {
-            return PEAR::raiseError("Couldn't store contents");
+        if (($res === false) || PEAR::isError($res)) {
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
         }
         KTDocumentUtil::setComplete($oDocument, "contents");
+        
+        if ($aOptions['cleanup_initial_file']) {
+            unlink($oContents->sFilename);
+        }
+        
         return true;
     }
     // }}}
