@@ -45,7 +45,8 @@ JSONLookupWidget.prototype = {
 	this.triggers['remove'] = null;
 
 	this.initialValuesLoaded = false;
-	this.getValues();
+	var d = this.getValues();
+	d.addCallback(this.postInitialize);
     },
 
     'addTrigger' : function(event, func) {
@@ -70,6 +71,7 @@ JSONLookupWidget.prototype = {
 	d.addCallback(checkKTError);
 	d.addCallback(this.saveValues);
 	d.addCallback(this.renderValues);
+	return d;
     },
 
     'errGetValues' : function(res) {
@@ -125,6 +127,13 @@ JSONLookupWidget.prototype = {
 	    this.onclickAdd();
 	}
     },
+
+    'postInitialize' : function(res) {
+	if(!isUndefinedOrNull(this.triggers['postInitialize'])) {
+	    this.triggers['postInitialize']();
+	}
+    }, 
+	
 
     'modItems' : function(type, value) {
 	var aTarget = (type == 'add') ? 'aItemsAdded' : 'aItemsRemoved';
@@ -203,6 +212,7 @@ JSONLookupWidget.prototype = {
 	forEach(this.oSelectAvail.options, bind(
 		    function(o) {
 			try {
+			    if(o.value == 'off') continue;
 			    var a = o.selected;						    
 			    if(a == 'selected' || a === true) {
 				this.modItems('add', o.value);

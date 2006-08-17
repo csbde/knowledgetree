@@ -83,7 +83,7 @@
 
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="fFolderId" value="{$iFolderId}">
-<div class="form_actions">
+<div id="submitButtons" class="form_actions">
   <input type="submit" value="{i18n}Update Permission Assignments{/i18n}" />
   <input type="submit" name="kt_cancel[{addQS}fFolderId={$iFolderId}{/addQS}]" value="{i18n}Cancel{/i18n}" />
 {/if}

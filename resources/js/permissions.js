@@ -13,6 +13,7 @@ PermissionsTable.prototype = {
 	this.oLookup.sAction += '&' + queryString({'permissions':map(function(a){return a['id'];}, aPermissions)});
 	this.oLookup.addTrigger('add', this.addRow);
 	this.oLookup.addTrigger('remove', this.removeRow);
+	this.oLookup.addTrigger('postInitialize', this.enableForm);
 
 	this.aRows = {};
 
@@ -25,6 +26,9 @@ PermissionsTable.prototype = {
 				   }, aPermissions)));
 	this.dTBody = TBODY(null);
 	this.dTable = TABLE({'class':'kt_collection'}, this.dTHead, this.dTBody);
+
+	this.dSubmit = $('submitButtons');
+	hideElement(this.dSubmit);
 	replaceChildNodes(this.dContainer, this.dTable);
     },
 
@@ -51,6 +55,11 @@ PermissionsTable.prototype = {
 	}
 	this.aRows = aNewRows;
     },	
+
+    'enableForm' : function() {
+	showElement(this.dSubmit);
+    },
+	
 
     'addRow' : function(oRow) {	
 	if(this._getARow(oRow)) {
