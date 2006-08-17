@@ -312,6 +312,7 @@ class AdvancedCollection {
         // url options
 	$sURL = KTUtil::arrayGet($aOptions, 'return_url', false);
 	if($sURL === false) $sUrl = KTUtil::arrayGet($aOptions, 'result_url', $_SERVER['PHP_SELF']);
+	$this->returnURL = $sURL;
         
         $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No folders or documents in this location."));
     }   
