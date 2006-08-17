@@ -156,7 +156,24 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         }        
         $data = $res['results'];
         $key = KTUtil::randomString(32);
-        $_SESSION['_add_data'] = array($key => $data);
+
+        
+        // joy joy, we need to store the file first, or PHP will (helpfully) 
+        // clean it up for us
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");        
+        
+        $sFilename = tempnam($sBasedir, 'kt_storecontents');
+        $oContents = new KTFSFileLike($data['file']['tmp_name']);
+        $oOutputFile = new KTFSFileLike($sFilename);
+        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);   
+        $data['file']['tmp_name'] = $sFilename;     
+
+        if (PEAR::isError($res)) {
+            $oForm->handleError(sprintf(_kt("Failed to store file: %s"), $res->getMessage()));
+        }
+        $_SESSION['_add_data'] = array($key => $data);        
         
         // if we don't need metadata
         $fieldsets = $this->getFieldsetsForType($data['document_type']);
@@ -263,28 +280,26 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $sTitle = $extra_d['document_name'];
 
         $iFolderId = $this->oFolder->getId();
-        
         $aOptions = array(
             'contents' => new KTFSFileLike($aFile['tmp_name']),
             'documenttype' => DocumentType::get($extra_d['document_type']),
             'metadata' => $MDPack,
             'description' => $sTitle,
+            'cleanup_initial_file' => true,
         );
-        
-
 
         $mpo->start();
         $this->startTransaction();
         $oDocument =& KTDocumentUtil::add($this->oFolder, basename($aFile['name']), $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
-            $this->errorRedirectTo('metadata',sprintf(_kt("Unexpected failure to add document: %s"), $message), 'fFolderId=' . $this->oFolder->getId());
+            $this->errorRedirectTo('main',sprintf(_kt("Unexpected failure to add document - %s"), $message), 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
         $this->addInfoMessage(_kt("Document added"));
 
-        $mpo->redirectToDocument($oDocument->getId());
         $this->commitTransaction();
+        $mpo->redirectToDocument($oDocument->getId());
         exit(0);
 
     }
