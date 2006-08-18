@@ -630,10 +630,22 @@ class DateModifiedCriterion extends DateCreatedCriterion {
 
 class SizeCriterion extends BrowseCriterion {
     var $sSearchTable = "DC";
-    var $bVisible = false;
     var $sDocumentField = 'size';
     var $sSortField = 'size';
     var $sNamespace = 'ktcore.criteria.size';
+
+    var $aTypes = array('B'=>'Bytes',
+			'KB'=>'Kilobytes',
+			'M'=>'Megabytes');
+
+    var $aTypeAssocs = array('B' => 1, 'KB' => 1024, 'M' => 1048576);
+
+    var $aCmps = array('LT'=>'Less than',
+		       'GT'=>'Greater than',
+		       'EQ'=>'Equal to',
+		       'NEQ'=>'Not equal to');
+
+    var $aCmpAssocs = array('LT' => '<', 'GT' => '>', 'EQ' => '=', 'NEQ' => '!=');
 
     function SizeCriterion() {
 	$this->sDisplay = _kt('File Size');
@@ -646,6 +658,43 @@ class SizeCriterion extends BrowseCriterion {
     function searchDisplay($aRequest) {
         return "";
     }
+
+    function searchWidget ($aRequest, $aPreValue = null) {
+	$sBase = $this->getWidgetBase();
+	$sCmpWidget = $sBase . '_not';
+        $sNumWidget = $sBase . '_num';
+        $sTypeWidget = $sBase . '_type';
+
+	// build gt/lt/eq/neq widget
+	$sCmpSelect = '<select name="'.$sCmpWidget.'">';
+	$sCmpSelect .= KTUtil::buildSelectOptions($this->aCmps, KTUtil::arrayGet($aPreValue, $sCmpWidget, 'LT'));
+	$sCmpSelect .= '</select>';
+
+	// build number
+	$sNumInput = sprintf('<input type="text" name="%s" value="%s"/>', $sNumWidget, KTUtil::arrayGet($aPreValue, $sNumWidget, ''));
+	       
+
+	// build type selection widget
+	$sTypeSelect = '<select name="'.$sTypeWidget.'">';
+	$sTypeSelect .= KTUtil::buildSelectOptions($this->aTypes, KTUtil::arrayGet($aPreValue, $sTypeWidget, 'M'));
+	$sTypeWidget .= '</select>';
+
+	$sToRender = sprintf("%s %s %s", $sCmpSelect, $sNumInput, $sTypeSelect);
+        return $sToRender;
+    }
+
+    function searchSQL ($aRequest) {
+	$sCmp = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+	$sNum = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_num');
+	$sType = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_type');
+
+
+	$sQry = sprintf("%s.%s %s ?", $this->getSearchTable(), $this->getSearchField(), $this->aCmpAssocs[$sCmp]);
+	$val = array($sQry, (int)$sNum * $this->aTypeAssocs[$sType]);
+
+        return $val;
+    }
+
 }
 
 class ContentCriterion extends BrowseCriterion {
