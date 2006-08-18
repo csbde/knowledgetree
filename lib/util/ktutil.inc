@@ -690,6 +690,18 @@ class KTUtil {
         return $aVersions;
     }
 
+
+    // this will have to move somewhere else
+    function buildSelectOptions($aVocab, $cur = null) {
+	$sRet = '';
+	foreach($aVocab as $k=>$v) {
+	    $sRet .= '<option value="' . $k . '"';
+	    if($k == $cur) $sRet .= ' selected="selected"';
+	    $sRet .= '>' . $v . '</option>';
+	}
+	return $sRet;
+    }
+
 }
 
 /**
