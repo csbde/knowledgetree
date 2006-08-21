@@ -220,7 +220,7 @@ class KTDispatcher {
         if ((!array_key_exists($this->event_var, $aQuery)) && (!empty($event))) {
             $aQuery[$this->event_var] = urlencode($event);
         }
-        var_dump($aQuery);
+        //var_dump($aQuery);
 
         if ($asArray) {
             return $aQuery;
