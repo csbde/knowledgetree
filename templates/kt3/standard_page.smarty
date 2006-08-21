@@ -58,6 +58,7 @@
     <div class="floatClear"></div>
 </div>
 
+{if (!$page->hide_navbar)}
 <div id="navbar">
     <ul>
       <!-- area menu -->
@@ -90,6 +91,7 @@
       </li>
     </ul>
 </div>
+{/if}
 
 {if (!$page->hide_section)}
 <div id="breadcrumbs">
