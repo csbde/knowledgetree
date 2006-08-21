@@ -21,6 +21,7 @@ class KTForm {
     var $_validators;       // validators
     var $_submitlabel;      // what is the "submit" button called
     var $_action;           // where does the success message go
+    var $_event;           // where does the success message go
     var $_extraargs;        // various extra arguments
     var $_failaction;       // should this error out, which action handles it
     var $_failurl;          // if we don't have a failaction, try this url
@@ -66,6 +67,15 @@ class KTForm {
         $this->_failurl = KTUtil::arrayGet($aOptions, 'fail_url');
         $this->_submitlabel = KTUtil::arrayGet($aOptions, 'submit_label',
             _kt('Submit'));
+
+        $this->_event = KTUtil::arrayGet($aOptions, 'event');
+        if (empty($this->_event)) {
+            if (!is_null($context)) {
+                $this->_event = $context->event_var;
+            } else {
+                $this->_event = "action";
+            }
+        }
         
         // cancel
         // there are a few options here:
@@ -86,7 +96,7 @@ class KTForm {
             } else {
                 // give it a try using addQSSelf
                 $this->_cancelurl = KTUtil::addQueryStringSelf(
-                    sprintf('action=%s', $cancel_action));           
+                    sprintf('%s=%s', $this->_event, $cancel_action));           
             }
             
             
@@ -275,7 +285,7 @@ class KTForm {
         
         // remove inner "action" var from extraargs
         // if its there at all.
-        unset($this->_extraargs['action']);
+        unset($this->_extraargs[$this->_event]);
         $this->_extraargs['_kt_form_name'] = $this->_kt_form_name;
         
         // now do the render.

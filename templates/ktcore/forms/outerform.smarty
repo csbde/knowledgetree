@@ -5,7 +5,7 @@
     {if !empty($context->sDescription)}<p class="descriptiveText">{$context->sDescription}</p>{/if}
     
     {* hidden, "extra" args *}
-    <input type="hidden" name="action" value="{$context->_action}">
+    <input type="hidden" name="{$context->_event}" value="{$context->_action}">
     {foreach from=$context->_extraargs item=v key=k}
     <input type="hidden" name="{$k}" value="{$v}">
     {/foreach}
