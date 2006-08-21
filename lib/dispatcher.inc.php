@@ -56,6 +56,10 @@ class KTDispatcher {
     }
 
     function redispatch($event_var, $action_prefix = null) {
+        $previous_event = KTUtil::arrayGet($_REQUEST, $this->event_var);
+        if ($previous_event) {
+            $this->persistParams(array($this->event_var));
+        }
         $this->event_var = $event_var;
         if ($action_prefix) {
             $this->action_prefix = $action_prefix;
@@ -212,12 +216,11 @@ class KTDispatcher {
                 // handle the case where action is passed in already. 
             }        
         }
-
-
         // if it isn't already set        
-        if ((!array_key_exists('action', $aQuery)) && (!empty($event))) {
-            $aQuery['action'] = urlencode($event);
+        if ((!array_key_exists($this->event_var, $aQuery)) && (!empty($event))) {
+            $aQuery[$this->event_var] = urlencode($event);
         }
+        var_dump($aQuery);
 
         if ($asArray) {
             return $aQuery;
