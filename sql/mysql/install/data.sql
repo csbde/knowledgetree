@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 31, 2006 at 10:43 AM
+-- Generation Time: Aug 22, 2006 at 10:19 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -391,6 +391,11 @@ INSERT INTO `help` VALUES (100, 'pageDisclaimer', 'pageDisclaimer.html');
 
 
 -- 
+-- Dumping data for table `interceptor_instances`
+-- 
+
+
+-- 
 -- Dumping data for table `links`
 -- 
 
@@ -732,7 +737,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -885,6 +890,10 @@ INSERT INTO `upgrades` VALUES (110, 'sql*3.0.3.6*0*3.0.3.6/document-restore.sql'
 INSERT INTO `upgrades` VALUES (111, 'func*3.0.3.7*0*rebuildAllPermissions', 'Rebuild all permissions to ensure correct functioning of permission-definitions.', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
 INSERT INTO `upgrades` VALUES (112, 'upgrade*3.0.3.7*99*upgrade3.0.3.7', 'Upgrade from version 3.0.3.5 to 3.0.3.7', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
 INSERT INTO `upgrades` VALUES (113, 'upgrade*3.1*99*upgrade3.1', 'Upgrade from version 3.0.3.7 to 3.1', '2006-07-31 10:41:12', 1, 'upgrade*3.1*99*upgrade3.1');
+INSERT INTO `upgrades` VALUES (114, 'sql*3.1.1*0*3.1.1/parentless-documents.sql', 'Database upgrade to version 3.1.1: Parentless-documents', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
+INSERT INTO `upgrades` VALUES (115, 'func*3.1.5*0*upgradeSavedSearches', 'Upgrade saved searches to use namespaces instead of integer ids', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
+INSERT INTO `upgrades` VALUES (116, 'sql*3.1.6*0*3.1.6/interceptor_instances.sql', 'Database upgrade to version 3.1.6: Interceptor instances', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
+INSERT INTO `upgrades` VALUES (117, 'upgrade*3.1.6*99*upgrade3.1.6', 'Upgrade from version 3.1 to 3.1.6', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1188,6 +1197,11 @@ INSERT INTO `zseq_help` VALUES (98);
 INSERT INTO `zseq_help_replacement` VALUES (1);
 
 -- 
+-- Dumping data for table `zseq_interceptor_instances`
+-- 
+
+
+-- 
 -- Dumping data for table `zseq_links`
 -- 
 
@@ -1335,7 +1349,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (113);
+INSERT INTO `zseq_upgrades` VALUES (117);
 
 -- 
 -- Dumping data for table `zseq_user_history`
