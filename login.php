@@ -9,6 +9,7 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
+require_once(KT_LIB_DIR . '/authentication/interceptorregistry.inc.php');
 
 /**
  * $Id$
@@ -69,8 +70,46 @@ class LoginPageDispatcher extends KTDispatcher {
         exit(0);
     }
 
+    function performLogin(&$oUser) {
+        $session = new Session();
+        $sessionID = $session->create($oUser);
+
+        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+
+        // DEPRECATED initialise page-level authorisation array
+        $_SESSION["pageAccess"] = NULL; 
+
+        $cookietest = KTUtil::randomString();
+        setcookie("CookieTestCookie", $cookietest, 0);
+
+        $this->redirectTo('checkCookie', array(
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
+        ));
+        exit(0);
+    }
+
     function do_main() {
         global $default;
+
+        $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
+        if (is_a($oUser, 'User')) {
+            $this->performLogin($oUser);
+        }
+        if (is_array($oUser) && count($oUser)) {
+            if (empty($_REQUEST['errorMessage'])) {
+                $_REQUEST['errorMessage'] = array();
+            } else {
+                $_REQUEST['errorMessage'] = array($_REQUEST['errorMessage']);
+            }
+            foreach ($oUser as $oError) {
+                $_REQUEST['errorMessage'][] = $oError->getMessage();
+            }
+            $_REQUEST['errorMessage'] = join('. <br /> ', $_REQUEST['errorMessage']);
+        }
+
+
+        KTInterceptorRegistry::checkInterceptorsForTakeOver();
     
         $this->check(); // bounce here, potentially.
         header('Content-type: text/html; charset=UTF-8');
@@ -117,6 +156,21 @@ class LoginPageDispatcher extends KTDispatcher {
     }
     
     function do_login() {
+        $aExtra = array();
+        $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
+        if (is_a($oUser, 'User')) {
+            $this->performLogin($oUser);
+        }
+        if (is_array($oUser)) {
+            foreach ($oUser as $oError) {
+                if (is_a($oError, 'KTNoLocalUser')) {
+                    $aExtra = kt_array_merge($aExtra, $oError->aExtra);
+                }
+            }
+        }
+
+        KTInterceptorRegistry::checkInterceptorsForTakeOver();
+
         $this->check();
         global $default;
 
@@ -142,12 +196,15 @@ class LoginPageDispatcher extends KTDispatcher {
             $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $queryParams);
         }
         
-        if (empty($password)) {
-            $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $queryParams);
-        }
+        #if (empty($password)) {
+        #    $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $queryParams);
+        #}
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
+            if (is_a($oUser, 'ktentitynoobjects')) {
+                $this->handleUserDoesNotExist($username, $aExtra);
+            }
             $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
             exit(0);
         }
@@ -163,19 +220,35 @@ class LoginPageDispatcher extends KTDispatcher {
             exit(0);
         }
 
-        $session = new Session();
-        $sessionID = $session->create($oUser);
+        $this->performLogin($oUser);
+    }
 
-        // DEPRECATED initialise page-level authorisation array
-        $_SESSION["pageAccess"] = NULL; 
+    function handleUserDoesNotExist($username, $aExtra = null) {
+        if (empty($aExtra)) {
+            $aExtra = array();
+        }
+        $res = KTAuthenticationUtil::autoSignup($username, $aExtra);
+        if (empty($res)) {
+            return $res;
+        }
+        if (is_a($res, 'User')) {
+            $this->performLogin($oUser);
+        }
+        if (is_a($res, 'KTAuthenticationSource')) {
+            $_SESSION['autosignup'] = $aExtra;
+            $this->redirectTo('autoSignup', array(
+                'source_id' => $res->getId(),
+                'username' => $username,
+            ));
+            exit(0);
+        }
+    }
 
-        $cookietest = KTUtil::randomString();
-        setcookie("CookieTestCookie", $cookietest, 0);
-
-        $this->redirectTo('checkCookie', array(
-            'cookieVerify' => $cookietest,
-            'redirect' => $redirect,
-        ));
+    function do_autoSignup() {
+        $oSource =& $this->oValidator->validateAuthenticationSource($_REQUEST['source_id']);
+        $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
+        $oDispatcher = $oProvider->getSignupDispatcher($oSource);
+        $oDispatcher->subDispatch($this);
         exit(0);
     }
 
