@@ -71,6 +71,10 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 
     function performLogin(&$oUser) {
+        if (!is_a($oUser, 'User')) {
+            var_dump($oUser);
+            var_dump(PEAR::raiseError());
+        }
         $session = new Session();
         $sessionID = $session->create($oUser);
 
@@ -196,18 +200,19 @@ class LoginPageDispatcher extends KTDispatcher {
             $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $queryParams);
         }
         
-        #if (empty($password)) {
-        #    $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $queryParams);
-        #}
-
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
             if (is_a($oUser, 'ktentitynoobjects')) {
-                $this->handleUserDoesNotExist($username, $aExtra);
+                $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
             $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
             exit(0);
         }
+
+        if (empty($password)) {
+            $this->simpleRedirectToMain(_kt('Please enter your password.'), $url, $queryParams);
+        }
+
         $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
         if (PEAR::isError($authenticated)) {
@@ -223,16 +228,16 @@ class LoginPageDispatcher extends KTDispatcher {
         $this->performLogin($oUser);
     }
 
-    function handleUserDoesNotExist($username, $aExtra = null) {
+    function handleUserDoesNotExist($username, $password, $aExtra = null) {
         if (empty($aExtra)) {
             $aExtra = array();
         }
-        $res = KTAuthenticationUtil::autoSignup($username, $aExtra);
+        $res = KTAuthenticationUtil::autoSignup($username, $password, $aExtra);
         if (empty($res)) {
             return $res;
         }
         if (is_a($res, 'User')) {
-            $this->performLogin($oUser);
+            $this->performLogin($res);
         }
         if (is_a($res, 'KTAuthenticationSource')) {
             $_SESSION['autosignup'] = $aExtra;
