@@ -41,6 +41,7 @@ class KTAuthenticationUtil {
     }
 
     function &getAuthenticationProviderForUser($oUser) {
+        if (PEAR::isError($oUser)) { var_dump($oUser); }
         $iSourceId = $oUser->getAuthenticationSourceId();
         return KTAuthenticationUtil::getAuthenticationProviderForSource($iSourceId);
     }
@@ -69,11 +70,11 @@ class KTAuthenticationUtil {
         return $oAuthenticator->synchroniseGroup($oGroup);
     }
 
-    function autoSignup($sUsername, $aExtra) {
+    function autoSignup($sUsername, $sPassword, $aExtra) {
         $aSources = KTAuthenticationSource::getSources();
         foreach ($aSources as $oSource) {
             $oProvider = KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
-            $res = $oProvider->autoSignup($sUsername, $aExtra, $oSource);
+            $res = $oProvider->autoSignup($sUsername, $sPassword, $aExtra, $oSource);
             if ($res) {
                 return $res;
             }

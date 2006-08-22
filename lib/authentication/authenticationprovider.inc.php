@@ -110,7 +110,7 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     function verify($oUser) {
     }
 
-    function autoSignup($sUsername, $aExtra, $oSource) {
+    function autoSignup($sUsername, $sPassword, $aExtra, $oSource) {
         return false;
     }
 }
