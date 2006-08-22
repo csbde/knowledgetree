@@ -106,31 +106,33 @@ class Folder extends KTEntity {
     }
     // }}}
 
-	/**
-	 * Returns a comma delimited string containing the parent folder ids, strips leading /
-	 * 
-	 * @return String	comma delimited string containing the parent folder ids
-	 */	
-	function generateFolderIDs($iFolderId) {
-	    if (empty($iFolderId)) {
-		    return;
-		}
-	    $oFolder =& Folder::get($iFolderId);
-		if (PEAR::isError($oFolder)) {
-		    return $oFolder;
-		}
-		
-		$iParentId = $oFolder->getParentId();
-		if (empty($iParentId)) {
-		    return $oFolder->getId();
-		}
-		$oParentFolder =& Folder::get($iParentId);
-		$sParentFolderParentFolderIds = $oParentFolder->getParentFolderIDs();
-		if (empty($sParentFolderParentFolderIds)) {
-		    return sprintf('%s,%s', $iParentId, $oFolder->getId());;
-		}
-		return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
-	}
+        /**
+         * Returns a comma delimited string containing the parent folder ids, strips leading /
+         * 
+         * @return String	comma delimited string containing the parent folder ids
+         */
+        function generateFolderIDs($iFolderId) {
+            if (empty($iFolderId)) {
+                    return;
+            }
+            $oFolder =& Folder::get($iFolderId);
+            if (PEAR::isError($oFolder)) {
+                return $oFolder;
+            }
+            $iParentId = $oFolder->getParentId();
+            if (empty($iParentId)) {
+                return $oFolder->getId();
+            }
+            $oParentFolder =& Folder::get($iParentId);
+            if (PEAR::isError($oParentFolder)) {
+                return $oParentFolder;
+            }
+            $sParentFolderParentFolderIds = $oParentFolder->getParentFolderIDs();
+            if (empty($sParentFolderParentFolderIds)) {
+                return sprintf('%s,%s', $iParentId, $oFolder->getId());;
+            }
+            return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
+        }
 	
 	/**
 	 * Recursively generates forward slash deliminated string giving full path of document
