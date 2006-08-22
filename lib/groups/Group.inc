@@ -367,6 +367,15 @@ class Group extends KTEntity {
         ), $aOptions);
     }
 
+    function getByAuthenticationSourceAndDetails($oSource, $sDetails, $aOptions = null) {
+        $iSourceId = KTUtil::getId($oSource);
+        return KTEntityUtil::getByDict('Group', array(
+            'authentication_source_id' => $iSourceId,
+            'authentication_details_s1' => $sDetails,
+        ), $aOptions);
+    }
+
+
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('Group', $aOptions); }
 }
 
