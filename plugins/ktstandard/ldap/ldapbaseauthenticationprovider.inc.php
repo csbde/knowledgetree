@@ -32,6 +32,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
     var $sNamespace = "ktstandard.authentication.ldapprovider";
 
     var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
+    var $aMembershipAttributes = array ("memberOf");
 
     // {{{ KTLDAPBaseAuthenticationProvider
     function KTLDAPBaseAuthenticationProvider() {
@@ -480,6 +481,83 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         exit(0);
     }
     // }}}
+
+    // {{{ autoSignup
+    function autoSignup($sUsername, $sPassword, $aExtra, $oSource) {
+        $oAuthenticator =& $this->getAuthenticator($oSource);
+        $dn = $oAuthenticator->checkSignupPassword($sUsername, $sPassword);
+
+        if (PEAR::isError($dn)) {
+            return;
+        }
+        if (!is_string($dn)) {
+            return;
+        }
+
+        if (empty($dn)) {
+            return;
+        }
+
+        $aResults = $oAuthenticator->getUser($dn);
+        $sUserName = $aResults[$this->aAttributes[1]];
+        $sName = $aResults[$this->aAttributes[0]];
+        $sEmailAddress = $aResults[$this->aAttributes[4]];
+        $sMobileNumber = $aResults[$this->aAttributes[5]];
+
+        $oUser = User::createFromArray(array(
+            "Username" => $sUserName,
+            "Name" => $sName,
+            "Email" => $sEmailAddress,
+            "EmailNotification" => true,
+            "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
+            "MaxSessions" => 3,
+            "authenticationsourceid" => $oSource->getId(),
+            "authenticationdetails" => $dn,
+            "authenticationdetails2" => $sUserName,
+            "password" => "",
+        ));
+
+        if (PEAR::isError($oUser)) {
+            return;
+        }
+
+        if (!is_a($oUser, 'User')) {
+            return;
+        }
+
+        $this->_createSignupGroups($dn, $oSource);
+
+        return $oUser;
+    }
+
+    function _createSignupGroups($dn, $oSource) {
+        $oAuthenticator =& $this->getAuthenticator($oSource);
+        $aGroupDNs = $oAuthenticator->getGroups($dn);
+        foreach ($aGroupDNs as $sGroupDN) {
+            $oGroup = Group::getByAuthenticationSourceAndDetails($oSource, $sGroupDN);
+            if (PEAR::isError($oGroup)) {
+                $oGroup = $this->_createGroup($sGroupDN, $oSource);
+                if (PEAR::isError($oGroup)) {
+                    continue;
+                }
+            }
+            $oAuthenticator->synchroniseGroup($oGroup);
+        }
+    }
+
+    function _createGroup($dn, $oSource) {
+        $oAuthenticator =& $this->getAuthenticator($oSource);
+        $aGroupDetails = $oAuthenticator->getGroup($dn);
+        $name = $aGroupDetails['cn'];
+        $oGroup =& Group::createFromArray(array(
+            "name" => $name,
+            "isunitadmin" => false,
+            "issysadmin" => false,
+            "authenticationdetails" => $dn,
+            "authenticationsourceid" => $oSource->getId(),
+        ));
+        return $oGroup;
+    }
 }
 
 class KTLDAPBaseAuthenticator extends Authenticator {
@@ -544,6 +622,40 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         return $res;
     }
 
+    function checkSignupPassword($sUsername, $sPassword) {
+        $aUsers = $this->findUser($sUsername);
+        if (empty($aUsers)) {
+            return false;
+        }
+        if (count($aUsers) !== 1) {
+            return false;
+        }
+        $dn = $aUsers[0]['dn'];
+        $config = array(
+            'host' => $this->sLdapServer,
+            'base' => $this->sBaseDN,
+        );
+        $oLdap =& Net_LDAP::connect($config);
+        $res = $oLdap->reBind($dn, $sPassword);
+        if ($res === true) {
+            return $dn;
+        }
+        return $res;
+    }
+
+    function getGroups($dn) {
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
+        }
+
+        $oEntry = $this->oLdap->getEntry($dn, array('memberOf'));
+        if (PEAR::isError($oEntry)) {
+            return $oEntry;
+        }
+        $aAttr = $oEntry->attributes();
+        return $aAttr['memberOf'];
+    }
+
 
     /**
      * Searched the directory for a specific user
@@ -603,6 +715,43 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         $sSearchAttributes = "|";
         foreach ($this->aSearchAttributes as $sSearchAttribute) {
             $sSearchAttributes .= sprintf('(%s=*%s*)', trim($sSearchAttribute), $sSearch);
+        }
+        $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
+        $default->log->debug("Search filter is: " . $sFilter);
+        $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
+        if (PEAR::isError($oResult)) {
+            return $oResult;
+        }
+        $aRet = array();
+        foreach($oResult->entries() as $oEntry) {
+            $aAttr = $oEntry->attributes();
+            $aAttr['dn'] = $oEntry->dn();
+            $aRet[] = $aAttr;
+        }
+        return $aRet;
+    }
+
+    function findUser($sUsername) {
+        global $default;
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
+        }
+
+        $aParams = array(
+            'scope' => 'sub',
+            'attributes' => array('cn', 'dn', 'samaccountname'),
+        );
+        $rootDn = $this->sBaseDN;
+        if (is_array($rootDn)) {
+            $rootDn = join(",", $rootDn);
+        }
+        $sObjectClasses = "|";
+        foreach ($this->aObjectClasses as $sObjectClass) {
+            $sObjectClasses .= sprintf('(objectClass=%s)', trim($sObjectClass));
+        }
+        $sSearchAttributes = "|";
+        foreach ($this->aSearchAttributes as $sSearchAttribute) {
+            $sSearchAttributes .= sprintf('(%s=%s)', trim($sSearchAttribute), $sUsername);
         }
         $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
         $default->log->debug("Search filter is: " . $sFilter);
