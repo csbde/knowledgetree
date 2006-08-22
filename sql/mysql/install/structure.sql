@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 31, 2006 at 10:42 AM
+-- Generation Time: Aug 22, 2006 at 10:18 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -483,7 +483,7 @@ CREATE TABLE `documents` (
   `id` int(11) NOT NULL default '0',
   `creator_id` int(11) NOT NULL default '0',
   `modified` datetime NOT NULL default '0000-00-00 00:00:00',
-  `folder_id` int(11) default '0',
+  `folder_id` int(11) default NULL,
   `is_checked_out` tinyint(1) NOT NULL default '0',
   `parent_folder_ids` mediumtext,
   `full_path` mediumtext,
@@ -780,6 +780,21 @@ CREATE TABLE `help_replacement` (
   `description` mediumtext NOT NULL,
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `interceptor_instances`
+-- 
+
+CREATE TABLE `interceptor_instances` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `interceptor_namespace` varchar(255) NOT NULL,
+  `config` text,
+  PRIMARY KEY  (`id`),
+  KEY `interceptor_namespace` (`interceptor_namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1924,6 +1939,17 @@ CREATE TABLE `zseq_help_replacement` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_interceptor_instances`
+-- 
+
+CREATE TABLE `zseq_interceptor_instances` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_links`
 -- 
 
@@ -2194,7 +2220,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=114 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=118 ;
 
 -- --------------------------------------------------------
 

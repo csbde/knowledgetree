@@ -68,4 +68,16 @@ class KTAuthenticationUtil {
         $oAuthenticator = KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
         return $oAuthenticator->synchroniseGroup($oGroup);
     }
+
+    function autoSignup($sUsername, $aExtra) {
+        $aSources = KTAuthenticationSource::getSources();
+        foreach ($aSources as $oSource) {
+            $oProvider = KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
+            $res = $oProvider->autoSignup($sUsername, $aExtra, $oSource);
+            if ($res) {
+                return $res;
+            }
+        }
+        return false;
+    }
 }

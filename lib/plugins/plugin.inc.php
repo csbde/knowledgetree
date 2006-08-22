@@ -57,7 +57,7 @@ class KTPlugin {
     var $_aWidgets = array();         
     var $_aValidators = array();      
     var $_aCriteria = array();       
-
+    var $_aInterceptors = array();       
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -183,6 +183,10 @@ class KTPlugin {
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
     }
 
+    function registerInterceptor($sClassname, $sNamespace, $sPath = null) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+    }
 
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
@@ -245,6 +249,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");          
         require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");        
         require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");        
+        require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -262,6 +267,7 @@ class KTPlugin {
         $oWidgetFactory =& KTWidgetFactory::getSingleton();
         $oValidatorFactory =& KTValidatorFactory::getSingleton();        
         $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $oInterceptorRegistry =& KTInterceptorRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -341,6 +347,10 @@ class KTPlugin {
 
         foreach ($this->_aValidators as $k => $v) {
             call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $v);
+        }
+
+        foreach ($this->_aInterceptors as $k => $v) {
+            call_user_func_array(array(&$oInterceptorRegistry, 'registerInterceptor'), $v);
         }
     }
 

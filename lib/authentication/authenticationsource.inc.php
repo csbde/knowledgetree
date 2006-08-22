@@ -94,6 +94,14 @@ class KTAuthenticationSource extends KTEntity {
         }
         return KTAuthenticationSource::get($iAuthenticationSourceId);
     }
+
+    function &getByAuthenticationProvider($sProvider) {
+        return KTEntityUtil::getBy('KTAuthenticationSource', 'authentication_provider', $sProvider);
+    }
+
+    function &getSources() {
+        return KTEntityUtil::getList2('KTAuthenticationSource');
+    }
 }
 
 ?>
