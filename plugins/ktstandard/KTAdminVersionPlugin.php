@@ -105,6 +105,7 @@ class AdminVersionPage extends KTStandardDispatcher {
     }
 
     function do_main() {
+        session_write_close();
         $sCache = $this->_checkCache();
         if (!is_null($sCache)) {
             return $sCache;
