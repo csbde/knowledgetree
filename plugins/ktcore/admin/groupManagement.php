@@ -433,7 +433,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	    $aAllowedGroups = array();
 	    foreach ($aAllowedGroupIDs as $iAllowedGroupID) {
 		$g = Group::get($iAllowedGroupID);
-		$aAllowedGroups[$iAllowedGroupID] = $g->getName();
+		if (!PEAR::isError($g) && ($g != false)) {
+			$aAllowedGroups[$iAllowedGroupID] = $g->getName();
+		}
 	    }
 	}
 
