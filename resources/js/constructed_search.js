@@ -204,7 +204,7 @@ function addBooleanGroup(addbutton) {
     // get an id for the table.
     var table_id = getBooleanGroupId(tableObj);
     // add the grouping string
-    groupingString = '<p class="helpText">' + _('Return items which match')+' &nbsp;<select name="boolean_search['+table_id+'][join]"><option value="AND">'+_('all')+'</option><option value="OR">'+_('any')+'</option></select>'+_('of the criteria specified.')+'</p>';    
+    groupingString = '<p class="helpText">' + _('Return items which match')+' &nbsp;<select name="boolean_search[subgroup]['+table_id+'][join]"><option value="AND">'+_('all')+'</option><option value="OR">'+_('any')+'</option></select>'+_('of the criteria specified.')+'</p>';    
     t = DIV(null);
     t.innerHTML = groupingString;
     var paraObj = t.getElementsByTagName('P')[0];

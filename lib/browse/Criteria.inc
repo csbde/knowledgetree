@@ -80,6 +80,20 @@ class BrowseCriterion {
         return "&nbsp;";
     }
 
+    // for parameter display
+    function baseParameterDisplay() {
+	$sDisp = sprintf("<b>%s</b>: ", $this->sDisplay);
+	$bNot = KTUtil::arrayGet($aData, $this->getWidgetBase().'_not', null);
+	if($bNot !== null) {
+	    if((bool)$bNot) { $sDisp .= _kt('NOT'); }
+	}
+	return $sDisp;
+    }
+
+    function parameterDisplay($aData) {
+	return sprintf("%s %s", $this->baseParameterDisplay(), $aData[$this->getWidgetBase()]);
+    }
+
     function folderQuery ($iParentID, $sSortDirection) {
         global $default;
         $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";/*ok*/
@@ -363,9 +377,20 @@ class CreatorCriterion extends BrowseCriterion {
         }
         return "&nbsp;";
     }
+
     function folderDisplay($oFolder) {
         return $this->documentDisplay($oFolder);
     }
+
+    function parameterDisplay($aData) {
+	$sBase = $this->baseParameterDisplay();
+	$oUser =& User::get($aData[$this->getWidgetBase()]);
+	if(PEAR::isError($oUser)) {
+	    return $sBase . 'unknown user';
+	} 
+	return $sBase . $oUser->getName();
+    }
+
     function searchWidget ($aRequest, $aPreValue = null) {
         $preval = null;
         if ($aPreValue != null) {
@@ -400,6 +425,24 @@ class DateCreatedCriterion extends BrowseCriterion {
     function documentDisplay ($oDocument) {
         return $oDocument->getCreatedDateTime();
     }
+
+    function parameterDisplay($aData) {
+	$sDisp = $this->baseParameterDisplay();
+	$sStart = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_start', false);
+	$sEnd = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_end', false);
+
+	if($sStart) {
+	    $sDisp .= 'after ' .$sStart;
+	} 
+	if($sStart && $sEnd) {
+	    $sDisp .= ' and ';
+	}
+	if($sEnd) {
+	    $sDisp .= 'before ' .$sEnd;
+	}
+	return $sDisp;
+    }
+
     function getName() {
         return "created";
     }
@@ -659,6 +702,11 @@ class SizeCriterion extends BrowseCriterion {
         return "";
     }
 
+    function parameterDisplay($aData) {
+	$sBase = $this->getWidgetBase();
+	return sprintf("%s %s %s %s", $this->baseParameterDisplay(), $this->aCmps[$aData[$sBase.'_not']], $aData[$sBase.'_num'], $this->aTypes[$aData[$sBase.'_type']]);
+    }
+
     function searchWidget ($aRequest, $aPreValue = null) {
 	$sBase = $this->getWidgetBase();
 	$sCmpWidget = $sBase . '_not';
@@ -688,6 +736,9 @@ class SizeCriterion extends BrowseCriterion {
 	$sNum = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_num');
 	$sType = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_type');
 
+	if(!is_numeric($sNum)) {
+	    return null;
+	}
 
 	$sQry = sprintf("%s.%s %s ?", $this->getSearchTable(), $this->getSearchField(), $this->aCmpAssocs[$sCmp]);
 	$val = array($sQry, (int)$sNum * $this->aTypeAssocs[$sType]);
@@ -774,6 +825,22 @@ class WorkflowStateCriterion extends BrowseCriterion {
             return $oWorkflow->getName() . " - " . $oState->getName();
         }
         return "Not in workflow";
+    }
+
+    function parameterDisplay($aData) {
+	$sId = $aData[$this->getWidgetBase()];
+
+	if($sId == '-1') {
+	    $sState = _kt('none');
+	} else {
+	    $oState =& KTWorkflowState::get((int)$sId);
+	    if(!PEAR::isError($oState)) {
+		$sState = $oState->getName();
+	    } else {
+		$sState = _kt('unknown state');
+	    }
+	}
+	return $this->baseParameterDisplay() . $sState;
     }
 
     function getName() {
@@ -991,6 +1058,12 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
     function DateCreatedDeltaCriterion() {
 	$this->sDisplay = _kt('Date Created Delta');
     }        
+
+    function parameterDisplay($aData) {	
+	$sNum = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_num');
+	$sType = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_type');
+	return sprintf('%s %s %s', $this->baseParameterDisplay(), $sNum, $this->aTypes[$sType]);
+    }
     
     function searchWidget ($aRequest, $aPreValue = null) {
         $sNumWidget = $this->getWidgetBase() . '_num';

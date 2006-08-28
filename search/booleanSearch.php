@@ -243,11 +243,30 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $sSearch = md5(serialize($aCriteriaSet));
         $_SESSION['boolean_search'][$sSearch] = $aCriteriaSet;
 
-
         $collection = new AdvancedCollection;       
         $oColumnRegistry = KTColumnRegistry::getSingleton();
         $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
         $collection->addColumns($aColumns);	
+
+	// get search parameters
+	$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+	$aParams = array();
+	$aJoins = array();
+
+	$aJoins['main'] = ($aCriteriaSet['join'] == 'AND') ? _kt('all') : _kt('any');
+	
+	foreach($aCriteriaSet['subgroup'] as $k => $subgroup) {
+
+	    $aGroup = array();
+	    $aJoins[$k] = ($subgroup['join'] == 'AND') ? _kt('all') : _kt('any');
+
+	    foreach($subgroup['values'] as $value) {
+		$oCriterion =& $oCriteriaRegistry->getCriterion($value['type']);
+		$aGroup[] = $oCriterion->parameterDisplay($value['data']);
+	    }
+	    
+	    $aParams[] = $aGroup;
+	}
         
         // set a view option
         $aTitleOptions = array(
@@ -288,6 +307,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             "collection" => $collection,
             "custom_title" => $sTitle,
             "save_fields" => $save_fields,
+	    "params" => $aParams,
+	    "joins" => $aJoins,
             "boolean_search" => $sSearch,
         );
         return $oTemplate->render($aTemplateData);
