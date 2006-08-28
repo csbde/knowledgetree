@@ -9,6 +9,27 @@
 {/if}
 
 
+{if ($params)}
+<div class="collapsible">
+<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Parameters{/i18n}</h4>
+<div class="collapsiblebody">
+{assign var=mainjoin value=$joins.main}
+
+<p class="descriptiveText">{i18n arg_join=$mainjoin}Match <b>#join#</b> of the following:{/i18n}</p>
+{foreach from=$params key=key item=group}
+{assign var=join value=$joins[$key]}
+
+<b>{i18n}Group{/i18n}</b> ({i18n arg_join=$join}match <b>#join#</b>{/i18n})
+<ul>
+{foreach from=$group item=param}
+<li>{$param}</li>
+{/foreach}
+</ul>
+{/foreach}
+</div>
+</div>
+{/if}
+
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <input type="hidden" name="action" value="massaction" />
 {if ($isEditable)}

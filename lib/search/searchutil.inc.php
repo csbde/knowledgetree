@@ -139,7 +139,11 @@ class KTSearchUtil {
             $aValues = KTUtil::arrayGet($aOneCriteriaSet, "values");
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
-                list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
+		$res = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
+		if(PEAR::isError($res)) {
+		    return $res;
+		}
+                list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
                 $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
                 $aParams = kt_array_merge($aParams, $aThisParams);
                 $tabs = str_repeat("\t", ($iRecurseLevel + 2));
@@ -250,7 +254,9 @@ class KTSearchUtil {
             $sInitialJoin = $sInitialJoin[0];
         }
 
-        list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
+	$res = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
+	if(PEAR::isError($res)) return $res;
+        list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = $res;
 
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 

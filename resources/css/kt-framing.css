@@ -1035,3 +1035,76 @@ hr {
     background-image: url(../graphics/edit_metadata.png);
 }
 
+
+
+/* -------------------------- general collapsable blocks ------------------------ */
+
+.collapsible
+{
+    margin: 0 0 1.5em 0;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 0 0 0 0;
+}
+
+.collapsible .collapsiblebody {
+    padding: 0 0 0.5em 0;
+}
+
+.collapsible.expanded
+{
+    margin: 0 0 1.5em 0;
+    border-left: 1px solid white;
+    border-top: 1px solid white;
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;            
+    padding: 0 0 0.5em;
+}
+
+.collapsible h4:hover {
+    text-decoration: underline;
+}
+
+.collapsible h4
+{
+    margin: 0;
+    border-width: 0 0 1px 0;
+    border-style: none;
+    border-color: #eee;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 25px;
+    background: url(../graphics/plus.png) 10px 50% no-repeat;
+    text-align: left;
+    color: #333;
+    font-size: small;
+}
+
+
+.collapsible.expanded h4
+{
+    margin: 0;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #eee;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 25px;
+    text-align: left;
+    background: url(../graphics/minus.png) 10px 50% no-repeat;
+    color: #333;
+    font-size: small;
+}
+
+.collapsible.expanded .collapsiblebody {
+    display: block;
+}
+
+.collapsible .collapsiblebody {
+    display: none;
+}
+
+
+
+
