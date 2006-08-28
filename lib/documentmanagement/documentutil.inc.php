@@ -839,6 +839,18 @@ class KTDocumentUtil {
         
         $res = $oNewDocument->update();
         if (PEAR::isError($res)) { return $res; }
+
+        $sTable = KTUtil::getTableName('document_text');
+        $aQuery = array("SELECT document_text FROM $sTable WHERE document_id = ?", array($oDocument->getId()));
+        $sData = DBUtil::getOneResultKey($aQuery, 'document_text');
+
+        $aInsertValues = array(
+            'document_id' => $oNewDocument->getId(),
+            'document_text' => $contents,
+        );
+        DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
+        KTDocumentUtil::updateSearchableText($oNewDocument);
+        KTPermissionUtil::updatePermissionLookup($oNewDocument);
         
         return $oNewDocument;
     }
