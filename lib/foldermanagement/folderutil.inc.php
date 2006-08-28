@@ -93,6 +93,30 @@ class KTFolderUtil {
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
+        $iOriginalPermissionObjectId = $oFolder->getPermissionObjectId();
+        $iOriginalParentFolderId = $oFolder->getParentID();
+        if (empty($iOriginalParentFolderId)) {
+            // If we have no parent, then we're the root.  If we're the
+            // root - how do we move inside something?
+            return PEAR::raiseError(_kt("Folder has no parent"));
+        }
+        $oOriginalParentFolder = Folder::get($iOriginalParentFolderId);
+        if (PEAR::isError($oOriginalParentFolder)) {
+            // If we have no parent, then we're the root.  If we're the
+            // root - how do we move inside something?
+            return PEAR::raiseError(_kt("Folder parent does not exist"));
+        }
+        $iOriginalParentPermissionObjectId = $oOriginalParentFolder->getPermissionObjectId();
+        $iTargetPermissionObjectId = $oFolder->getPermissionObjectId();
+
+        $bChangePermissionObject = false;
+        if ($iOriginalPermissionObjectId == $iOriginalParentPermissionObjectId) {
+            // If the folder inherited from its parent, we should change
+            // its permissionobject
+            $bChangePermissionObject = true;
+        }
+
+
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
         
@@ -144,10 +168,12 @@ class KTFolderUtil {
         }
 
         $table = "documents";
-        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
+        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)), parent_folder_ids = CONCAT(?, SUBSTRING(parent_folder_ids FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
             sprintf("%s", $sNewParentFolderPath),
             strlen($oFolder->getFullPath()) + 1,
+            $sNewParentFolderIds,
+            strlen($oFolder->getParentFolderIDs()) + 1,
             sprintf("%s%%", $sOldFolderPath),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
@@ -170,6 +196,13 @@ class KTFolderUtil {
 
         Document::clearAllCaches();
         Folder::clearAllCaches();
+
+        if ($bChangePermissionObject) {
+            $aOptions = array(
+                'evenifnotowner' => true, // Inherit from parent folder, even though not permission owner
+            );
+            KTPermissionUtil::inheritPermissionObject($oFolder, $aOptions);
+        }
 
         return;
     }

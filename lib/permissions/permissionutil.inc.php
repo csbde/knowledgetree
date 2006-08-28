@@ -557,9 +557,10 @@ class KTPermissionUtil {
      * Inherits permission object from parent, throwing away our own
      * permission object.
      */
-    function inheritPermissionObject(&$oDocumentOrFolder) {
+    function inheritPermissionObject(&$oDocumentOrFolder, $aOptions = null) {
         global $default;
-        if (!KTPermissionUtil::isPermissionOwner($oDocumentOrFolder)) {
+        $bEvenIfNotOwner = KTUtil::arrayGet($aOptions, 'evenifnotowner');
+        if (empty($bEvenIfNotOwner) && !KTPermissionUtil::isPermissionOwner($oDocumentOrFolder)) {
             return PEAR::raiseError("Document or Folder doesn't own its permission object");
         }
         $oOrigPO =& KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
