@@ -218,9 +218,9 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("workflows", 'KTWorkflowDispatcher', 'documents',
             _kt('Workflows'), _kt('Configure the process documents go through.'),
             'admin/workflows.php', null);
-        //$this->registerAdminPage("workflows_2", 'KTWorkflowDispatcher', 'documents',
-        //    _kt('Workflows v2'), _kt('Configure the process documents go through.'),
-        //    'admin/workflowsNew.php', null);            
+        $this->registerAdminPage("workflows_2", 'KTWorkflowAdminV2', 'documents',
+            _kt('Workflows v2'), _kt('Configure the process documents go through.'),
+            'admin/workflowsv2.php', null);            
 
         // storage
         $this->registerAdminPage("checkout", 'KTCheckoutAdminDispatcher', 'storage',

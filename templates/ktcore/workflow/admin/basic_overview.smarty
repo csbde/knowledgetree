@@ -1,0 +1,75 @@
+<h2>{i18n arg_name=$workflow_name}States and Transitions: #name#{/i18n}</h2>
+
+<p class="descriptiveText">The core of a workflow is the <strong>process</strong>
+that documents in that workflow follow.  These processes are made up of <strong>states</strong>
+(which documents are in, e.g. "reviewed" or "published") and <strong>transitions</strong>
+which documents follow (e.g. "submit for review" or "publish").</p>
+
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=transitionconnections{/addQS}">Configure Workflow Process</a>
+<a href="{addQS context=$context}action=transitionconnections{/addQS}">Configure Workflow Process</a> <span class="descriptiveText">(e.g. which transitions lead to which states)</span></p>
+
+<div style="width: 40%; float: left; ">
+
+<h3>States</h3>
+                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addstates{/addQS}">Add New States</a>
+                <a href="{addQS context=$context}action=addstates{/addQS}">Add New States</a><br /><br />
+            
+            
+                <table class="kt_collection" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>State Name</th>
+                            <th>Edit</th>                            
+                            <th>Delete</th>                                                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {foreach from=$states item=oState}                    
+                        <tr>
+                            <td>
+                                {$oState->getName()}
+                            </td>
+                            <td>                
+                              <a class="ktAction ktEdit" href="{addQS context=$context}action=editstate&fStateId={$oState->getId()}{/addQS}">Edit State</a>
+                            </td>
+                            <td>                
+                              <a class="ktAction ktDelete" href="{addQS context=$context}action=deletestate&fStateId={$oState->getId()}{/addQS}">Delete State</a>
+                            </td>                            
+                        </tr>
+                       {/foreach}
+                    </tbody>
+                 </table>
+</div>
+<div style="float: left; width: 40%; margin-left: 1em;">
+<h3>Transitions</h3>
+
+                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addtransitions{/addQS}">Add New Transitions</a>
+                <a href="{addQS context=$context}action=addtransitions{/addQS}">Add New Transitions</a><br /><br />
+
+
+
+                <table class="kt_collection" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Transition Name</th>
+                            <th>Edit</th>                            
+                            <th>Delete</th>                                                        
+                        </tr>
+                    </thead>
+                    <tbody>
+              {foreach from=$transitions item=oTransition}               
+                        <tr>
+                            <td>
+                                {$oTransition->getName()}
+                            </td>
+                            <td>                
+                                <a class="ktAction ktEdit" href="{addQS context=$context}action=edittransition&fTransitionId={$oTransition->getId()}{/addQS}">Edit</a>
+                            </td>
+                            <td>                
+                                <a class="ktAction ktDelete" href="{addQS context=$context}action=deletetransition&fTransitionId={$oTransition->getId()}{/addQS}">Delete</a>
+                            </td>
+                        </tr>
+                       {/foreach}
+                    </tbody>
+                 </table>
+</div>

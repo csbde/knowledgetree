@@ -130,6 +130,24 @@ class KTWorkflowTransition extends KTEntity {
         $oWorkflowState =& KTWorkflowState::get($this->getTargetStateId());
         return sprintf("%s (to state %s)", $this->getName(), $oWorkflowState->getName());
     }
+    
+    // STATIC
+    function nameExists($sName, $oWorkflow) {
+        $iWorkflowId = KTUtil::getId($oWorkflow);
+        $res = KTEntityUtil::getByDict(
+            'KTWorkflowTransition', array(
+                'name' => $sName,
+                'workflow_id' => $iWorkflowId
+            )        
+        );
+        // expect KTEntityNoObjects
+        if (PEAR::isError($res)) {
+            return false;
+        }
+        
+        return true;
+    }
+    
 }
 
 ?>

@@ -1,0 +1,3 @@
+<h2>{i18n arg_name=$workflow_name}Edit Workflow Details: #name#{/i18n}</h2>
+
+{$edit_form->render()}

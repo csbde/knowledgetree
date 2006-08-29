@@ -1,0 +1,13 @@
+<h2>Manage Transition</h2>
+
+{$edit_form->render()}
+
+{* The real meat is down here.  We define and list a set of actions and links to them. *}
+
+<dl>
+    <dt><strong><a href="">{i18n}Transition Requirements{/i18n}</a></strong></dt>
+    <dd class="descriptiveText">{i18n}You can control when and by whom transitions can
+    be performed by setting up various guards.  These can include permissions, roles,
+    groups or a variety of other restriction conditions.{/i18n}</dd> 
+    
+</dl>

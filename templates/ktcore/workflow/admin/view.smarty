@@ -1,0 +1,9 @@
+<h2>{i18n arg_name=$workflow_name}Workflow: #name#{/i18n}</h2>
+
+<p class="descriptiveText">One of the most powerful features of KnowledgeTree is the workflow
+system.  This allows you to direct the lifecycle of a document from start to finish.  The 
+"Workflow Administration" menu on the left allows you to access and update information
+about states, transitions, security and notifications as they apply to this workflow.</p>
+
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=editcore{/addQS}">Edit Workflow Details</a>
+<a href="{addQS context=$context}action=editcore{/addQS}">Edit Workflow Details</a> <span class="descriptiveText">(e.g. workflow name, starting state)</span></p>

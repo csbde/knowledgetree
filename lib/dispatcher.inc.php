@@ -55,7 +55,7 @@ class KTDispatcher {
         $this->oRedirector =& new KTDispatchStandardRedirector($this);
     }
 
-    function redispatch($event_var, $action_prefix = null) {
+    function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null) {
         $previous_event = KTUtil::arrayGet($_REQUEST, $this->event_var);
         if ($previous_event) {
             $this->persistParams(array($this->event_var));
@@ -64,7 +64,22 @@ class KTDispatcher {
         if ($action_prefix) {
             $this->action_prefix = $action_prefix;
         }
-
+        
+        if (!is_null($orig_dispatcher)) {
+            $this->persistParams($orig_dispatcher->aPersistParams);
+            $core = array('aBreadcrumbs', 
+                'bTransactionStarted',
+                'oUser',
+                'session',
+                'action_prefix',
+                'bJSONMode');
+            foreach($core as $k) {
+                if(isset($orig_dispatcher->$k)) {
+                    $this->$k = $orig_dispatcher->$k;
+                }
+            }
+        }
+        
         return $this->dispatch();
     }
 
@@ -99,6 +114,10 @@ class KTDispatcher {
             $this->startTransaction();
         }
 
+        if (method_exists($this, 'predispatch')) {
+            $this->predispatch();
+        }
+
         $ret = $this->$method();
         $this->handleOutput($ret);
         
@@ -108,17 +127,18 @@ class KTDispatcher {
     }
 
     function subDispatch(&$oOrigDispatcher) {
-	foreach(array('aBreadcrumbs', 
-		      'bTransactionStarted',
-		      'oUser',
-		      'session',
-		      'event_var',
-		      'action_prefix',
-		      'bJSONMode') as $k) {
-	    if(isset($oOrigDispatcher->$k)) {
-		$this->$k = $oOrigDispatcher->$k;
-	    }
-	}
+        $core = array('aBreadcrumbs', 
+            'bTransactionStarted',
+            'oUser',
+            'session',
+            'event_var',
+            'action_prefix',
+            'bJSONMode');
+        foreach($core as $k) {
+            if(isset($oOrigDispatcher->$k)) {
+                $this->$k = $oOrigDispatcher->$k;
+            }
+        }
 
         return $this->dispatch();
     }

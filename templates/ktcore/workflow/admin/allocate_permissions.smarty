@@ -1,0 +1,69 @@
+
+{$context->oPage->requireJSResource("resources/js/jsonlookup.js")}
+{$context->oPage->requireJSResource("resources/js/permissions.js")}
+
+{capture assign=sJavascript}initializePermissions('entities', '{addQS context=$context}action=json&json_action=getEntities{/addQS}', {$jsonpermissions});{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<div class="field">
+  
+  <p class="descriptiveText">{i18n}Select roles and groups for whom you wish to change permission assignement from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'.{/i18n}</p>
+      
+<table>
+
+<thead>
+    <tr>
+        <td style="width:45%"><label for="select_{$name}_avail">Available Entities</label></td>
+        <td style="width:10%">&nbsp;</td>
+        <td style="width:45%"><label for="select_{$name}_assigned">Assigned Entities</label></td>
+    </tr>
+</thead>
+
+<tbody>
+    <tr>
+    <td style="vertical-align: top">
+
+  <select name="entities" id="select_entities_avail" multiple="true"size="5">
+  </select>
+
+  <div><label for="filter_entities_avail">Filter</label><input type="text" id="filter_entities_avail" /><br/><a href="#" id="entities_show_all">Show All</a></div>
+    </td>
+
+    <td>
+    
+    <input type="button" id="entities_add" value="&raquo;" />
+    <br /><br/>
+    <input type="button" id="entities_remove" value="&laquo;" />
+    
+    </td>
+
+    <td style="vertical-align: top">
+
+  <select name="entities" id="select_entities_assigned" multiple="true"size="5">
+  </select>
+  <div><label for="filter_entities_assigned">Filter</label><input type="text" id="filter_entities_assigned" /></div>
+    </td>
+    </tr>
+</tbody>
+</table>
+
+  <input name="entities_items_added" id="entities_items_added" type="hidden" />
+  <input name="entities_items_removed" id="entities_items_removed" type="hidden" />
+  
+  <input type="hidden" name="kt_core_fieldsets_expect[entities]" value ="1" />
+</div>
+
+
+<div id="permissions_table_container"></div>
+
+{foreach from=$args key=k item=v}
+    <input type="hidden" name="{$k}" value="{$v}" />
+{/foreach}
+<div id="submitButtons" class="form_actions">
+  <input type="submit" value="{i18n}Update Workflow Permissions{/i18n}" />
+  <a class="form_cancel" href="{addQS}action=managepermissions{/addQS}">{i18n}Cancel{/i18n}</a>
+</div>
+</form>
+
+
