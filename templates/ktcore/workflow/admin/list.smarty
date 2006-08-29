@@ -1,0 +1,34 @@
+<h2>{i18n}Workflow Admin{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Workflow is a description of a document's lifecycle. It is made up of workflow states, which describe where in the lifecycle the document is, and workflow transitions, which describe the next steps within the lifecycle of the document.{/i18n}</p>
+
+<a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=newWorkflow{/addQS}">{i18n}Create New Workflow{/i18n}</a><a href="{addQS context=$context}action=newWorkflow{/addQS}">{i18n}Create New Workflow{/i18n}</a>
+
+{if !empty($workflows)}
+
+<h3>{i18n}Existing workflows{/i18n}</h3>
+<p class="descriptiveText">{i18n}Select a workflow to modify. To enable a disabled workflow, edit it and set a proper starting state.{/i18n}</p>
+
+<table class="kt_collection narrow" cellspacing="0">
+
+  <thead>
+    <tr>
+      <th>{i18n}Name{/i18n}</th>
+      <th>{i18n}Status{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+{foreach from=$workflows item=oWorkflow}
+
+    <tr>
+      <td>{$oWorkflow->getName()}</td>
+      <td class="centered">{if $oWorkflow->getIsFunctional()} <span class="ktAction ktAllowed">{i18n}Enabled{/i18n}</span> {else} <span class="ktAction ktDenied">{i18n}Disabled{/i18n}</span> {/if}</td>
+      <td><a class="ktAction ktEdit" href="{addQS}action=view&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Edit{/i18n}</a></td>
+    </tr>  
+{/foreach}
+  </tbody>
+</table>
+
+{/if}

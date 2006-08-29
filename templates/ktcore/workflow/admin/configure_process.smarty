@@ -1,0 +1,41 @@
+<h2>{i18n arg_name=$context->oWorkflow->getName()}States and Transitions: #name#{/i18n}</h2>
+
+{capture assign=widgets}
+
+
+    <table class="kt_collection" cellspacing="0">
+        <thead>
+            <tr>
+                <th>{i18n}Transition{/i18n}</th>
+                <th>{i18n}Leads to state{/i18n}</th>                
+                {foreach from=$states item=oState}
+                <th>{$oState->getName()}</th>                
+                {/foreach}                
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$transitions item=oTransition}
+                <tr class="row {cycle values=odd,even}">
+                    <td>{$oTransition->getName()}</td>
+                    <td><select name="fTo[{$oTransition->getId()}]">
+                        {foreach from=$states item=oState}
+                            <option value="{$oState->getId()}"
+                              {if ($oState->getId() == $oTransition->getTargetStateId())}selected="true"{/if}
+                            >{$oState->getName()}</option>
+                        {/foreach}
+                    </select></td>     
+                    {foreach from=$states item=oState}
+                        {assign value=$oTransition->getId() var=trans_id}
+                        {assign value=$oState->getId() var=state_id}                        
+                        <td><input type="checkbox" name="fFrom[{$trans_id}][{$state_id}]" 
+                            {if ($availability.$trans_id.$state_id)}checked="true"{/if}/></td>
+                    {/foreach}               
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{/capture}
+{assign value=$form->renderButtons() var=buttons}
+
+{$form->renderContaining($widgets, $buttons)}

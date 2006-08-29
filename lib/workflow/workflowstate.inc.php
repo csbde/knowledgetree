@@ -106,6 +106,23 @@ class KTWorkflowState extends KTEntity {
         return KTWorkflowState::get($iStateId);
     }
 
+    // STATIC
+    function nameExists($sName, $oWorkflow) {
+        $iWorkflowId = KTUtil::getId($oWorkflow);
+        $res = KTEntityUtil::getByDict(
+            'KTWorkflowState', array(
+                'name' => $sName,
+                'workflow_id' => $iWorkflowId
+            )        
+        );
+        // expect KTEntityNoObjects
+        if (PEAR::isError($res)) {
+            return false;
+        }
+        
+        return true;
+    }
+
 }
 
 ?>

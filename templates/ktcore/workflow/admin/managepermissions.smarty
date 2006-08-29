@@ -1,0 +1,41 @@
+<h2>{i18n arg_statename=$context->oState->getName()}Manage Permissions: #statename#{/i18n}</h2>
+
+{if empty($perm_grid)}
+<div class="ktInfo"><p>{i18n}No permissions are controlled by this state.  
+Indicate below which permissions are controlled to allocate them.{/i18n}</p></div>
+{else}
+
+<p class="descriptiveText">{i18n}Once you've selected the permissions you want to control
+for this workflow state, you should allocate these to the appropriate groups
+and roles.{/i18n}</p>
+
+<a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=allocatepermissions{/addQS}">Allocate permissions</a>
+<a href="{addQS context=$context}action=allocatepermissions{/addQS}">Allocate permissions</a>
+
+{/if}
+
+<h3>Specify permissions</h3>
+
+{capture assign=permgrid}
+
+<p class="descriptiveText">{i18n}Select the permissions you want controlled by this state.{/i18n}</p>
+
+<table class="kt_collection" cellspacing="0">
+    <thead>
+        <tr>
+          {foreach from=$perms item=oPerm}
+            <th class="centered">{i18n}{$oPerm->getHumanName()}{/i18n}</th>
+          {/foreach}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          {foreach from=$perms item=oPerm}
+          {assign value=$oPerm->getId() var=perm_id}
+            <td class="centered"><input type="checkbox" name="fControlled[{$perm_id}]" {if ($perm_grid[$perm_id])}checked="true"{/if}/></td>
+          {/foreach}            
+        </tr>
+    </tbody>
+</table>
+{/capture}
+{$form->renderContaining($permgrid, $form->renderButtons())}

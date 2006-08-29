@@ -1,0 +1,44 @@
+<h2>{i18n}Step 2:  Connect transitions to states{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}In order to move between states, the transitions
+you specified earlier must be configured to move from a set of states to a "destination"
+states.  Use the table below to configure this behaviour.{/i18n}</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+    {foreach from=$args key=k item=v}
+        <input type="hidden" name="{$k}" value="{$v}" />
+    {/foreach}
+    
+    <table class="kt_collection" cellspacing="0">
+        <thead>
+            <tr>
+                <th>{i18n}Transition{/i18n}</th>
+                <th>{i18n}Leads to state{/i18n}</th>                
+                {foreach from=$states item=state}
+                <th>{$state}</th>                
+                {/foreach}                
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$transitions item=transition}
+                <tr class="row {cycle values=odd,even}">
+                    <td>{$transition}</td>
+                    <td><select name="fTo[{$transition}]">
+                        {foreach from=$states item=state}
+                            <option value="{$state}">{$state}</option>
+                        {/foreach}
+                    </select></td>     
+                    {foreach from=$states item=state}
+                        <td><input type="checkbox" name="fFrom[{$transition}][{$state}]"/></td>
+                    {/foreach}               
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    
+    
+    <div class="form_actions">
+        <input type="submit" value="{i18n}Create Workflow{/i18n}" />
+        <a href="{$smarty.server.PHP_SELF}">Cancel</a>
+    </div>
+</form>

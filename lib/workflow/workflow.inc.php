@@ -37,12 +37,14 @@ class KTWorkflow extends KTEntity {
     var $sName;
     var $sHumanName;
     var $iStartStateId;
+    var $bEnabled;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
         "sName" => "name",
         "sHumanName" => "human_name",
         "iStartStateId" => "start_state_id",
+        'bEnabled' => 'enabled',
     );
 
     var $_bUsePearError = true;
@@ -51,10 +53,12 @@ class KTWorkflow extends KTEntity {
     function getName() { return $this->sName; }
     function getHumanName() { return $this->sHumanName; }
     function getStartStateId() { return $this->iStartStateId; }
+    function getIsEnabled() { return ($this->bEnabled == true); }
     function setID($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
     function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
     function setStartStateId($iStartStateId) { $this->iStartStateId = $iStartStateId; }
+    function setIsEnabled($mValue) { $this->bEnabled = ($mValue == true); }
 
     function _table () {
         return KTUtil::getTableName('workflows');
@@ -79,10 +83,14 @@ class KTWorkflow extends KTEntity {
     function &getByName($sName) {
         return KTEntityUtil::getBy('KTWorkflow', 'name', $sName);
     }
+    
+    function getIsFunctional() {
+        return (($this->getStartStateId() != false) && ($this->getIsEnabled()));
+    }
 
     // STATIC
     function &getFunctional() {
-        return KTEntityUtil::getList2('KTWorkflow', 'start_state_id IS NOT NULL');
+        return KTEntityUtil::getList2('KTWorkflow', 'start_state_id IS NOT NULL AND enabled = 1');
     }
 
     function &getByDocument($oDocument) {

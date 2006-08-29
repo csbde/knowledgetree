@@ -702,6 +702,16 @@ class KTUtil {
 	return $sRet;
     }
 
+    function keyArray($aEntities, $sIdFunc = 'getId') {
+        $aRet = array();
+        foreach ($aEntities as $oEnt) {
+            $meth = array(&$oEnt, $sIdFunc);
+            $id = call_user_func($meth);  
+            $aRet[$id] = $oEnt;
+        }
+        return $aRet;
+    }
+
 }
 
 /**
