@@ -1,6 +1,6 @@
 <div class="form_actions">
     <input type="submit" name="" value="{$context->_submitlabel}" /> 
     {if ($context->bCancel)}
-        <a href="{$context->_cancelurl}">{i18n}Cancel{/i18n}</a>
+        <a class="form_cancel" href="{$context->_cancelurl}">{i18n}Cancel{/i18n}</a>
     {/if}
 </div>
