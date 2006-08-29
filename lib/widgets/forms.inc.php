@@ -279,7 +279,11 @@ class KTForm {
         return $oTemplate->render();
     }
     
-    function renderContaining($sInner) {
+    function renderContaining() {
+    
+        $args = func_get_args();
+        $sInner = implode(' ', $args);
+    
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oKTTemplating->loadTemplate('ktcore/forms/outerform');
         

@@ -404,6 +404,12 @@ a.main_nav_item {
     font-weight: normal;
 }
 
+.form_actions .form_cancel {
+    margin-left: 2em;
+}
+
+/* old cancel style */
+
 #content a.ktCancelLink {
     border: 1px solid #888;
     background: #eee;
@@ -452,7 +458,7 @@ a.main_nav_item {
 #content .field .descriptiveText
 {
     margin: 0;
-    line-height: 1.2em;
+    line-height: 1.4em;
     margin-bottom: 0.5em;
 }
 
@@ -562,6 +568,10 @@ a.main_nav_item {
     border-style: solid;
     border-color: #ccc;
     width: 100%;
+}
+
+.metadatatable.narrow {
+    width: auto !important;
 }
 
 .metadatatable .first th,
@@ -691,6 +701,7 @@ a.main_nav_item {
 {
     white-space: normal !important;
 }
+
 
 .centered, .kt_collection thead th.centered { text-align: center; }
 .centered .ktAction { margin-left: auto; margin-right: auto; width: 100%;  background-position: top center;}
@@ -828,6 +839,12 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     background-repeat: no-repeat;
     background-color: transparent;    
 }
+
+.ktActionDescribed {
+    float: left;
+    margin-right: 0.5em;    
+}
+
 
 .ktActionLink {
     padding-left: 25px;
@@ -1035,6 +1052,9 @@ hr {
     background-image: url(../graphics/edit_metadata.png);
 }
 
+#content ul {
+    list-style-image: url(../graphics/bullet.png);
+}
 
 
 /* -------------------------- general collapsable blocks ------------------------ */
@@ -1104,7 +1124,4 @@ hr {
 .collapsible .collapsiblebody {
     display: none;
 }
-
-
-
 
