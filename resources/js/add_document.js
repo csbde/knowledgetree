@@ -11,7 +11,8 @@ function kt_add_document_newFile(filename) {
 
 function kt_add_document_redirectToDocument(id) {
 	base = getElement('kt-core-baseurl').value;
-        document.location.href = base + "/control.php?action=viewDocument&fDocumentId=" + id;
+    href = base + "/control.php?action=viewDocument&fDocumentId=" + id;
+	document.location.href = href;
 }
 
 function kt_add_document_redirectToFolder(id) {
