@@ -1,0 +1,33 @@
+<p class="descriptiveText">{i18n}Fieldsets bring together different fields into a collection
+of related information.{/i18n}</p>
+
+<a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a>
+
+{if (!empty($fields))}
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Field Name{/i18n}</th>    
+            <th>{i18n}Edit{/i18n}</th>
+            <th>{i18n}Delete{/i18n}</th>                                
+            <th>{i18n}Type Description{/i18n}</th>            
+        </tr>
+    </thead>
+    <tbody>
+      {foreach from=$fields item=oField}
+        <tr>
+            <td class="title">
+                {$oField->getName()|escape}
+            </td>
+            <td>
+                <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
+            </td>
+            <td>
+                <span class="descriptiveText">{$oField->getTypeDescription()}</span>
+            </td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
+{/if}

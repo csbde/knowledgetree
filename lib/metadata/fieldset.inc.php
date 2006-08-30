@@ -233,6 +233,12 @@ class KTFieldset extends KTEntity {
             'namespace' => $sNamespace,
         ));
     }
+    
+    function &getByName($sName) {
+        return KTEntityUtil::getByDict('KTFieldset', array(
+            'name' => $sName,
+        ));
+    }	    
 }
 
 ?>

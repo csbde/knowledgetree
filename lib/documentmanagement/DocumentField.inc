@@ -208,14 +208,15 @@ class DocumentField extends KTEntity {
     }
 
     function getNamespace() {
-	$oFieldset = KTFieldset::get($this->getParentFieldsetId());
-	if(PEAR::isError($oFieldset)) {
-	    $sFS = 'nofieldset';
-	} else {
-	    $sFS = $oFieldset->getNamespace();
-	}
-	return $sFS . '.' . $this->getName();
+        $oFieldset = KTFieldset::get($this->getParentFieldsetId());
+        if(PEAR::isError($oFieldset)) {
+            $sFS = 'nofieldset';
+        } else {
+            $sFS = $oFieldset->getNamespace();
+        }
+        return $sFS . '.' . $this->getName();
     }
+    
 }
 
 /**
