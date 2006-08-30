@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 22, 2006 at 10:18 AM
+-- Generation Time: Aug 30, 2006 at 11:48 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -1431,6 +1431,8 @@ CREATE TABLE `workflow_states` (
   `name` char(255) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
   `inform_descriptor_id` int(11) default NULL,
+  `manage_permissions` int(1) unsigned NOT NULL default '0',
+  `manage_actions` int(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `workflow_id` (`workflow_id`),
   KEY `name` (`name`),
@@ -1491,6 +1493,7 @@ CREATE TABLE `workflows` (
   `name` char(250) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
   `start_state_id` int(11) default NULL,
+  `enabled` int(1) unsigned NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `start_state_id` (`start_state_id`)
@@ -2220,7 +2223,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=118 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=120 ;
 
 -- --------------------------------------------------------
 
