@@ -128,7 +128,7 @@ class KTWorkflowTransition extends KTEntity {
 
     function showDescription() {
         $oWorkflowState =& KTWorkflowState::get($this->getTargetStateId());
-        return sprintf("%s (to state %s)", $this->getName(), $oWorkflowState->getName());
+        return sprintf(_kt("%s (to state %s)"), $this->getName(), $oWorkflowState->getName());
     }
     
     // STATIC
