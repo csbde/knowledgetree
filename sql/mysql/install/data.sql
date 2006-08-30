@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 22, 2006 at 10:19 AM
+-- Generation Time: Aug 30, 2006 at 11:50 AM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -737,7 +737,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6.1');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -894,6 +894,8 @@ INSERT INTO `upgrades` VALUES (114, 'sql*3.1.1*0*3.1.1/parentless-documents.sql'
 INSERT INTO `upgrades` VALUES (115, 'func*3.1.5*0*upgradeSavedSearches', 'Upgrade saved searches to use namespaces instead of integer ids', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
 INSERT INTO `upgrades` VALUES (116, 'sql*3.1.6*0*3.1.6/interceptor_instances.sql', 'Database upgrade to version 3.1.6: Interceptor instances', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
 INSERT INTO `upgrades` VALUES (117, 'upgrade*3.1.6*99*upgrade3.1.6', 'Upgrade from version 3.1 to 3.1.6', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
+INSERT INTO `upgrades` VALUES (118, 'sql*3.1.6*0*3.1.6/workflow-sanity.sql', 'Database upgrade to version 3.1.6: Workflow-sanity', '2006-08-30 11:36:55', 1, 'upgrade*3.1.6.1*99*upgrade3.1.6.1');
+INSERT INTO `upgrades` VALUES (119, 'upgrade*3.1.6.1*99*upgrade3.1.6.1', 'Upgrade from version 3.1.6 to 3.1.6.1', '2006-08-30 11:36:55', 1, 'upgrade*3.1.6.1*99*upgrade3.1.6.1');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1349,7 +1351,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (117);
+INSERT INTO `zseq_upgrades` VALUES (119);
 
 -- 
 -- Dumping data for table `zseq_user_history`
