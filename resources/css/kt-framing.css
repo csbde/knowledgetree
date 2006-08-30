@@ -178,7 +178,7 @@ a.main_nav_item {
 #portletbar
 {
     position: absolute;
-    width: 18em;
+    width: 16em;
     left: 1em;
 /*    top: 0; */           /* stupid IE bug:  absolute position ate my scrollbars */
     background: transparent;
@@ -298,7 +298,7 @@ a.main_nav_item {
 #content
 {
     position: relative;
-    padding-left: 20em;
+    padding-left: 17em;
 }
 
 #content.view {
@@ -585,11 +585,13 @@ a.main_nav_item {
     width: 30% !important;
     border-bottom: 1px solid #ccc;
     vertical-align: top;
+    padding: 0.5em;
 }
 
 .metadatatable td {
     border-bottom: 1px solid #ccc;
     vertical-align: top;    
+    padding: 0.5em;    
 }
 
 .metadatatable .versioned td {

@@ -211,6 +211,10 @@ class KTCorePlugin extends KTPlugin {
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFields.php', null);
+        $this->registerAdminPage("fieldmanagement2", 'KTDocumentFieldDispatcher', 'documents',
+             _kt('Document Fieldsets v2'),
+            _kt('Manage the different types of information that can be associated with classes of documents.'),
+            'admin/documentFieldsv2.php', null);            
         $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
             _kt('Link Type Management'),
             _kt('Manage the different ways documents can be associated with one another.'),

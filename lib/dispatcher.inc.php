@@ -47,6 +47,7 @@ class KTDispatcher {
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
     var $oValidator = null;
+    var $sParentUrl = null; // it is handy for subdispatched items to have an "exit" url, for cancels, etc.
     
     var $aPersistParams = array();
 
@@ -55,18 +56,17 @@ class KTDispatcher {
         $this->oRedirector =& new KTDispatchStandardRedirector($this);
     }
 
-    function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null) {
+    function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null, $parent_url = null) {
         $previous_event = KTUtil::arrayGet($_REQUEST, $this->event_var);
-        if ($previous_event) {
-            $this->persistParams(array($this->event_var));
-        }
-        $this->event_var = $event_var;
+        $this->sParentUrl = $parent_url;
+
         if ($action_prefix) {
             $this->action_prefix = $action_prefix;
         }
         
         if (!is_null($orig_dispatcher)) {
             $this->persistParams($orig_dispatcher->aPersistParams);
+            $this->persistParams(array($orig_dispatcher->event_var));            
             $core = array('aBreadcrumbs', 
                 'bTransactionStarted',
                 'oUser',
@@ -77,9 +77,10 @@ class KTDispatcher {
                 if(isset($orig_dispatcher->$k)) {
                     $this->$k = $orig_dispatcher->$k;
                 }
-            }
+            }            
         }
-        
+        $this->event_var = $event_var;        
+   
         return $this->dispatch();
     }
 

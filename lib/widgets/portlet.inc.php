@@ -116,10 +116,10 @@ class KTActionPortlet extends KTPortlet {
                     unset($aInfo["url"]);
                     $aInfo['active'] = true;
                 }
-                $this->actions[] = $aInfo;
+                $this->actions[$aInfo['name']] = $aInfo;
             }
         }
-        //var_dump($this->actions);
+        ksort($this->actions);
     }
     
     function render() {

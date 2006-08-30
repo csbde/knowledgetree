@@ -1,0 +1,33 @@
+<h2>{i18n arg_fieldset_name=$fieldset_name}Edit Fieldset: #fieldset_name#{/i18n}</h2>
+
+<table class="metadatatable" cellspacing="0">
+    <tbody>
+        <tr class="first">
+            <th>{i18n}Name{/i18n}</th><td>{$context->oFieldset->getName()}</td>
+        </tr>
+        <tr>
+            <th>{i18n}Description{/i18n}</th><td>{$context->oFieldset->getDescription()}</td>
+        </tr>        
+        <tr>
+            <th>{i18n}Generic{/i18n}</th><td>{if $context->oFieldset->getIsGeneric()}
+            <span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>
+            {else}
+            <span class="ktAction ktDenied">{i18n}No{/i18n}</span>            
+            {/if}</td>
+        </tr>      
+        {if (!$context->oFieldset->getIsGeneric())}
+        <tr>
+            <th>{i18n}Used by{/i18n}</th><td>{$context->getTypesForFieldset($context->oFieldset)}</td>
+        </tr>                       
+        {/if}
+        <tr>
+            <th>&nbsp;</th>
+            <td><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editfieldset{/addQS}">{i18n}Edit these details{/i18n}</a>
+            <a href="{addQS context=$context}action=editfieldset{/addQS}">{i18n}Edit these details{/i18n}</a></td>
+        </tr>            
+    </tbody>
+</table>
+
+<h3>{i18n}Additional Information{/i18n}</h3>
+
+{$additional}
