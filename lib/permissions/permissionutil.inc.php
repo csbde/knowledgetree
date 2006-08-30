@@ -601,7 +601,7 @@ class KTPermissionUtil {
     // }}}
 
     // {{{ rebuildPermissionLookups
-    function rebuildPermissionLookups($bEmptyOnly = false) {
+    function rebuildPermissionLookups($bEmptyOnly = true) {
         if ($bEmptyOnly) {
             $sTable = KTUtil::getTableName('folders');
             $sQuery = sprintf("SELECT id FROM %s WHERE permission_lookup_id IS NULL AND permission_object_id IS NOT NULL", $sTable);
@@ -615,7 +615,7 @@ class KTPermissionUtil {
             KTPermissionUtil::updatePermissionLookup($oFolder);
         }
 
-        if (empty($bEmptyOnly)) {
+        if ($bEmptyOnly) {
             $sTable = KTUtil::getTableName('documents');
             $sQuery = sprintf("SELECT id FROM %s WHERE permission_lookup_id IS NULL", $sTable);
         } else {
