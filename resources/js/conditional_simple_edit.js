@@ -4,7 +4,12 @@
  */
 
 
-var target_url = 'ajaxSimpleConditionals.php';
+var target_url = '/plugins/ktcore/admin/ajaxSimpleConditionals.php';
+
+function getTargetUrl() {
+    var base = getElement('kt-core-baseurl');
+    return base.value + target_url;
+}
 
 /** Simple edit: HTML helper functions */
 
@@ -99,7 +104,8 @@ function updateActiveFields() {
    
    simpleLog('DEBUG','function updateActiveFields called.');
    var req = getXMLHttpRequest();
-   req.open('GET',target_url+'?action=updateActiveFields&active_field='+current_fixed, true);
+   
+   req.open('GET',getTargetUrl()+'?action=updateActiveFields&active_field='+current_fixed, true);
    var deferred = sendXMLHttpRequest(req);
    deferred.addCallback(do_updateActiveFields);
    deferred.addErrback(partial(do_handleAjaxError, 'updateActiveFields'));
@@ -114,7 +120,7 @@ function updateActiveLookups(selected_lookup, lookup_label) {
    
    simpleLog('DEBUG','function updateActiveLookups called.');
    var req = getXMLHttpRequest();
-   req.open('GET',target_url+'?action=updateActiveLookups&active_field='+current_fixed+'&selected_lookup='+selected_lookup, true);
+   req.open('GET',getTargetUrl()+'?action=updateActiveLookups&active_field='+current_fixed+'&selected_lookup='+selected_lookup, true);
    var deferred = sendXMLHttpRequest(req);
    deferred.addCallback(partial(do_updateActiveLookups, lookup_label));
    deferred.addErrback(partial(do_handleAjaxError, 'updateActiveLookups'));
@@ -157,7 +163,7 @@ function storeRelationship(selected_lookup, child_lookups) {
   var POSTval = queryString(formKeys, formValues);
   simpleLog('DEBUG','query from storeRelationship: \n'+POSTval);
   var req = getXMLHttpRequest();
-  req.open('POST', target_url, true);
+  req.open('POST', getTargetUrl(), true);
   req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
   var deferred = sendXMLHttpRequest(req, POSTval);
 

@@ -45,6 +45,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         } else {
             $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","edit")), 'name' => $this->oFieldset->getName());
         }
+        $this->bHaveConditional = KTPluginUtil::pluginIsActive('ktextra.conditionalmetadata.plugin');
     }
 
 
@@ -69,7 +70,11 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'action' => 'create',
             'context' => $this,            
         ));
-        $oForm->setWidgets(array(
+        
+        
+        // construct the widget set.
+        // we use a slight variation here, because "type" is only present in certain circumstances.
+        $widgets = array(
             array('ktcore.widgets.string',array(
                 'label' => _kt("Fieldset Name"),
                 'name' => 'name',
@@ -82,13 +87,37 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 'required' => true,
                 'description' => _kt("In order to ensure that the data that users enter is useful, it is essential that you provide a good example."),
             )),            
-            array('ktcore.widgets.boolean',array(
+        );
+        if ($this->bHaveConditional) {
+        
+            // FIXME get this from some external source.
+            $type_vocab = array(
+                'normal' => _kt("Normal"),
+                'conditional' => _kt("Conditional"),                
+            );
+        
+            $widgets[] = array('ktcore.widgets.selection', array(
+                'label' => _kt("Fieldset Type"),
+                'use_simple' => false,
+                'description' => _kt("It is possibler to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."),
+                'important_description' => _kt('Note that it is not possible to convert between different types of fieldsets, so please choose carefully.'),
+                'name' => 'fieldset_type',
+                'required' => true,
+                'value' => 'normal',
+                'vocab' => $type_vocab,
+            ));
+        }
+        
+        $widgets[] = array('ktcore.widgets.boolean',array(
                 'label' => _kt("Generic"),
                 'name' => 'generic',
                 'description' => _kt("A generic fieldset is one that is available for every document by default. These fieldsets will be available for users to edit and add for every document in the document management system."),
-            )),                        
-        ));
-        $oForm->setValidators(array(
+            ));
+            
+        $oForm->setWidgets($widgets);
+        
+        // similarly, we construct validators here.
+        $validators = array(
             array('ktcore.validators.string', array(
                 'test' => 'name',
                 'output' => 'name', 
@@ -101,7 +130,16 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 'test' => 'generic',
                 'output' => 'generic',
             )),
-        ));
+        );
+        
+        if ($this->bHaveConditional) {
+            $validators[] = array('ktcore.validators.string', array(
+                'test' => 'fieldset_type',
+                'output' => 'fieldset_type',
+            ));
+        }
+        
+        $oForm->setValidators($validators);
         
         return $oForm;
     }
@@ -129,6 +167,13 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             }   
         }
         
+        $is_conditional = false;
+        // FIXME this is inelegant.  get it from somewhere else.
+        if ($this->bHaveConditional && ($data['fieldset_type'] == 'conditional')) {
+            $is_conditional = true;
+        }
+        
+        
         if (!empty($errors) || !empty($extra_errors)) {
             return $oForm->handleError(null, $extra_errors);
         }
@@ -151,7 +196,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 	    	"description" => $data['description'],
             "namespace" => $namespace,
             "mandatory" => false,       // FIXME deprecated
-	    	"isConditional" => false,   // handle this
+	    	"isConditional" => $is_conditional,   // handle this
             "isGeneric" => $data['generic'],
             "isComplete" => false,
             "isComplex" => false,
@@ -192,8 +237,13 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // saves a little code-duplication (actually, a lot of code-duplication)
         
         // FIXME this is essentially a stub for the fieldset-delegation code.
-        require_once('fieldsets/basic.inc.php');
-        $oSubDispatcher = new BasicFieldsetManagementDispatcher;
+        if ($this->oFieldset->getIsConditional()) {
+            require_once('fieldsets/conditional.inc.php');
+            $oSubDispatcher = new ConditionalFieldsetManagementDispatcher;        
+        } else {
+            require_once('fieldsets/basic.inc.php');
+            $oSubDispatcher = new BasicFieldsetManagementDispatcher;
+        }
         
         $subevent_var = 'fieldset_action';
         $subevent = KTUtil::arrayGet($_REQUEST, $subevent_var);

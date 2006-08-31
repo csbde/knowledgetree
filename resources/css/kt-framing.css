@@ -889,6 +889,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
 .ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.png); }
 .ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.png); }
+.ktActionLink.ktInfo, .ktAction.ktInfo { background-image: url(../graphics/info.png); }
 
 /* this is sometimes used separately to get the auto-delete help. */
 .ktDelete { }

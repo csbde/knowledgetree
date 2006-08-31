@@ -22,8 +22,9 @@ it may be useful to rename some of the system-generated names.  You can do that 
 </table>
 
 <div class="form_actions">
-    <input type="hidden" name="action" value="finalRename" />
-    <input type="hidden" name="fieldset_id" value="{$fieldset_id}" />
+    {foreach from=$args item=v key=k}
+        <input type="hidden" name="{$k}" value="{$v}" />
+    {/foreach}
     <input type="submit" value="{i18n}Rename Behaviours{/i18n}" />
 </div>
 </form>
