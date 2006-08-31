@@ -100,10 +100,10 @@ class KTDocumentContentVersion extends KTEntity {
         if (empty($this->iMimeTypeId)) {
             $this->iMimeTypeId = 0;
         }
-        if (empty($this->iMajorVersion)) {
+        if (is_null($this->iMajorVersion)) {
             $this->iMajorVersion = 0;
         }
-        if (empty($this->iMinorVersion)) {
+        if (is_null($this->iMinorVersion)) {
             $this->iMinorVersion = 1;
         }
         return parent::create();
