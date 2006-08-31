@@ -15,23 +15,28 @@
         <th>{i18n}File is a{/i18n}</th>
         <td>{$context->_mimeHelper($document->getMimeTypeID())}</td>
     </tr>
-        
+
     <tr class="even">
+        <th>{i18n}Document Version{/i18n}</th>
+        <td>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</td>
+    </tr>
+        
+    <tr class="odd">
         <th>{i18n}Created by{/i18n}</th>
         <td>{$creator} ({$creation_date})</td>
     </tr>
 
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Last update by{/i18n}</th>
         <td>{$last_modified_by} ({$last_modified_date})</td>
     </tr>
 
-    <tr class="even">
+    <tr class="odd">
         <th>{i18n}Document Type{/i18n}</th>
         <td>{$document_type}</td>
     </tr>
 
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Workflow status{/i18n}</th>
         <td>
 {if $workflow_state}
@@ -41,7 +46,7 @@
 {/if}</td>
     </tr>
 
-    <tr class="even">
+    <tr class="odd">
         <th>{i18n}Document ID{/i18n}</th>
         <td>{$document->getId()}</td>
     </tr>

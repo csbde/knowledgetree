@@ -31,7 +31,15 @@
         <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
     </tr>
         
+{capture assign="oldval"}{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()}{/capture}
+{capture assign="newval"}{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}{/capture}
     <tr class="even">
+        <th>{i18n}Document Version{/i18n}</th>
+        <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+    </tr>
+        
+    <tr class="odd">
         <th>{i18n}Created by{/i18n}</th>
         <td colspan="2">{$creator} ({$creation_date}) <span class="descriptiveText">({i18n}this cannot not change between versions{/i18n})</td>
     </tr>
@@ -39,7 +47,7 @@
 
 {capture assign="oldval"}{$comparison_last_modified_by} ({$comparison_last_modified_date}){/capture}
 {capture assign="newval"}{$last_modified_by} ({$last_modified_date}){/capture}
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Last update by{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
         <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
@@ -47,7 +55,7 @@
 
 {capture assign="oldval"}{$comparison_document_type}{/capture}
 {capture assign="newval"}{$document_type}{/capture}    
-    <tr class="even">
+    <tr class="odd">
         <th>{i18n}Document Type{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
         <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
@@ -63,13 +71,13 @@
 {else}
 {i18n}No workflow{/i18n}
 {/if}{/capture}
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Workflow status{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
         <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
     </tr>
 
-    <tr class="even">
+    <tr class="odd">
         <th>{i18n}Document ID{/i18n}</th>
         <td colspan="2">{$document->getId()} <span class="descriptiveText">({i18n}this cannot not change between versions{/i18n})</span></td>
     </tr>

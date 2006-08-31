@@ -449,7 +449,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             )),            
             array('ktcore.widgets.reason', array(
                 'label' => _kt("Reason"),
-                'description' => _kt("Please specify why you are cancelling this document's checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'description' => _kt("Please describe the changes you made to the document.  Bear in mind that you can use a maximum of <strong>250</strong> characters."),
                 'name' => 'reason',
             )),
             array('ktcore.widgets.boolean',array(

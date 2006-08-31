@@ -28,10 +28,11 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
 
 class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
-	var $bHaveConditional = null;
+    var $bHaveConditional = null;
     var $sHelpPage = 'ktcore/admin/document fieldsets.html';
 
     function predispatch() {
@@ -437,9 +438,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
-			if (PEAR::isError($oMetaData)) {
-			    $this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
-			}
+            if (PEAR::isError($oMetaData)) {
+                $this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
+            }
             $oMetaData->delete();
         }
         $this->successRedirectTo('managelookups', _kt('Lookups removed'));
@@ -457,9 +458,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
-			if (PEAR::isError($oMetaData)) {
-			    $this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
-			}
+            if (PEAR::isError($oMetaData)) {
+                $this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
+            }
             $oMetaData->setDisabled(true);
             $oMetaData->update();
         }
@@ -478,9 +479,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
-			if (PEAR::isError($oMetadata)) {
-				$this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
-			}
+            if (PEAR::isError($oMetadata)) {
+                $this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
+            }
             $oMetaData->setDisabled(!$oMetaData->getDisabled());
             $oMetaData->update();
         }
@@ -499,9 +500,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
-			if (PEAR::isError($oMetaData)) {
-				$this->errorRedirectTo('managelookups', _kt('Invalid lookups selected'));
-			}
+            if (PEAR::isError($oMetaData)) {
+                $this->errorRedirectTo('managelookups', _kt('Invalid lookups selected'));
+            }
             $bStuck = (boolean)$oMetaData->getIsStuck();
             $oMetaData->setIsStuck(!$bStuck);
             $oMetaData->update();
@@ -538,42 +539,19 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
 // {{{ TREE
     // create and display the tree editing form.
-    function do_editTree() {
+    function do_managetree() {
         global $default;
         // extract.
 
-	$iFieldsetId = KTUtil::arrayGet($_REQUEST, 'fFieldsetId', false);
-	$iFieldId = KTUtil::arrayGet($_REQUEST, 'field_id', false);
+        $iFieldsetId = KTUtil::getId($this->oFieldset);
+        $iFieldId = KTUtil::getId($this->oField);
 
-        $oFieldset =& KTFieldset::get($iFieldsetId);
-	if(PEAR::isError($oFieldset)) {
-	    $this->errorRedirectTo('main', _kt('Unable to find fieldset'), sprintf('fFieldId=%d&fFieldsetId=%d', $iFieldsetId, $iFieldId));
-	    exit(0);
-	}
+        $oFieldset =& $this->oFieldset;
+        $oField =& $this->oField;
 
-        $oField =& DocumentField::get($iFieldId);
-	if(PEAR::isError($oField)) {
-	    $this->errorRedirectTo('main', _kt('Unable to find field'), sprintf('fFieldId=%d&fFieldsetId=%d', $iFieldsetId, $iFieldId));
-	    exit(0);
-	}
-
-
-
-	
-
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=edit&fFieldsetId=' . $iFieldsetId,
-            'name' => $oFieldset->getName()
-        );
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=editField&fFieldsetId=' . $iFieldsetId . '&fFieldId=' . $oField->getId(),
-            'name' => $oField->getName()
-        );
         $this->oPage->setBreadcrumbDetails(_kt('edit lookup tree'));
 
-        $field_id = KTUtil::arrayGet($_REQUEST, 'field_id');
+        $field_id = $iFieldId;
         $current_node = KTUtil::arrayGet($_REQUEST, 'current_node', 0);
         $subaction = KTUtil::arrayGet($_REQUEST, 'subaction');
 
@@ -593,15 +571,15 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $fieldTree->buildForField($oField->getId());
 
         if ($subaction !== null) {
-            $target = 'editTree';
+            $target = 'managetree';
             $msg = _kt('Changes saved.');
             if ($subaction === "addCategory") {
                 $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
                 if (empty($new_category)) { 
-		    return $this->errorRedirectTo("editTree", _kt("Must enter a name for the new category."), array("field_id" => $field_id, "fFieldsetId" => $iFieldsetId)); 
-		} else { 
-		    $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);
-		}
+                    return $this->errorRedirectTo("managetree", _kt("Must enter a name for the new category."), array("field_id" => $field_id, "fFieldsetId" => $iFieldsetId)); 
+                } else { 
+                    $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);
+                }
                 $msg = _kt('Category added'). ': ' . $new_category;
             }
             if ($subaction === "deleteCategory") {
@@ -634,29 +612,31 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $free_metadata = MetaData::getList('document_field_id = '.$oField->getId().' AND (treeorg_parent = 0 OR treeorg_parent IS NULL) AND (disabled = 0)');
 
         // render edit template.
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/edit_lookuptrees");
+
+        $oTemplate = $this->oValidator->validateTemplate("ktcore/metadata/admin/edit_lookuptree");
         $renderedTree = $this->_evilTreeRenderer($fieldTree);
 
         $this->oPage->setTitle(_kt('Edit Lookup Tree'));
 
         //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
-		
-		if ($current_node == 0) { $category_name = 'Root'; }
-		else {
-			$oNode = MDTreeNode::get($current_node);
-			$category_name = $oNode->getName();
-		}
-		
+        
+        if ($current_node == 0) { $category_name = 'Root'; }
+        else {
+            $oNode = MDTreeNode::get($current_node);
+            $category_name = $oNode->getName();
+        }
+        
         $aTemplateData = array(
+            "context" => $this,
+            "args" => $this->meldPersistQuery("","managetree", true),        
             "field" => $oField,
             "oFieldset" => $oFieldset,
             "tree" => $fieldTree,
             "renderedTree" => $renderedTree,
             "currentNode" => $current_node,
-			'category_name' => $category_name,
+            'category_name' => $category_name,
             "freechildren" => $free_metadata,
-            "context" => $this,
+
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -682,9 +662,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
     function subact_unlinkKeyword(&$constructedTree, $keyword) {
         $oKW = MetaData::get($keyword);
-		if (PEAR::isError($oKW)) {
-		    return true;
-		}
+        if (PEAR::isError($oKW)) {
+            return true;
+        }
         $constructedTree->reparentKeyword($oKW->getId(), 0);
         return true;
     }
@@ -706,10 +686,10 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
     function _evilTreeRecursion($subnode, $treeToRender)
     {
-	// deliver us from evil....
-	$iFieldId = $treeToRender->field_id;
-	$oField = DocumentField::get($iFieldId);
-	$iFieldsetId = $oField->getParentFieldsetId();
+        // deliver us from evil....
+        $iFieldId = $treeToRender->field_id;
+        $oField = DocumentField::get($iFieldId);
+        $iFieldsetId = $oField->getParentFieldsetId();
 
         $treeStr = "<ul>";
         foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
@@ -743,16 +723,10 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $stack = array();
         $exitstack = array();
 
-	// deliver us from evil....
-	$iFieldId = $treeToRender->field_id;
-	$oField = DocumentField::get($iFieldId);
-	$iFieldsetId = $oField->getParentFieldsetId();
-	$sBaseQS = sprintf('field_id=%d&fFieldsetId=%d&', $iFieldId, $iFieldsetId);
-
         // since the root is virtual, we need to fake it here.
         // the inner section is generised.
         $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . _kt('Root') . '</a>';
-        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=0') . '">' . _kt('edit') . '</a>)';
+        $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($this->meldPersistQuery('current_node=0', 'managetree')) . '">' . _kt('attach keywords') . '</a>)';
         $treeStr .= '<ul>';
 
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
@@ -787,64 +761,17 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     // BD: sorry. I hate you.
     
     function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node) {
-	$sBaseQS = sprintf('fFieldsetId=%d&field_id=%d&', $iFieldsetId, $iFieldId);
-
         $actionStr = " (";
         if ($bIsKeyword === true) {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&keyword_id='.$current_node.'&subaction=unlinkKeyword') . '">' . _kt('unlink') . '</a>';
-        }
-        else
-        {
-           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node=' . $current_node) .'">' . _kt('attach keywords') . '</a> ';
-           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($sBaseQS . 'action=editTree&current_node='.$current_node.'&subaction=deleteCategory') . '">' . _kt('delete') . '</a>';
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf(KTUtil::addQueryStringSelf($this->meldPersistQuery('keyword_id='.$current_node.'&subaction=unlinkKeyword', 'managetree'))) . '">' . _kt('unlink') . '</a>';
+        } else {
+           $actionStr .= '<a href="' . KTUtil::addQueryStringSelf($this->meldPersistQuery('current_node=' . $current_node, 'managetree')) .'">' . _kt('attach keywords') . '</a> ';
+           $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($this->meldPersistQuery('current_node='.$current_node.'&subaction=deleteCategory', 'managetree')) . '">' . _kt('delete') . '</a>';
         }
         $actionStr .= ")";
         return $actionStr;
     }
-	
-	
-    function do_viewOverview() {
-        $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/conditional_overview");
 
-        
-        $oFieldset =& KTFieldset::get($fieldset_id);
-        $aFields =& $oFieldset->getFields();
-        
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=edit&fFieldsetId=' . $fieldset_id,
-            'name' => $oFieldset->getName()
-        );
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=manageConditional&fFieldsetId=' . $_REQUEST['fieldset_id'],
-            'name' => _kt('Manage conditional field'),
-        );  
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'query' => 'action=viewOverview&fieldset_id=' . $_REQUEST['fieldset_id'],
-            'name' => _kt('Overview'),
-        );        
-        
-        $aBehaviours = array();
-		foreach ($aFields as $oField) {
-		    $aOpts = KTFieldBehaviour::getByField($oField);
-		    $aBehaviours = kt_array_merge($aBehaviours, $aOpts);
-		}
-        
-        $aTemplateData = array(
-            "context" => &$this,
-            "fieldset_id" => $fieldset_id,
-            "aFields" => $aFields,
-	    "behaviours" => $aBehaviours,
-            "iMasterFieldId" => $oFieldset->getMasterFieldId(),
-        );
-        return $oTemplate->render($aTemplateData);
-    }
-	
-// }}}
 }
 
 ?>
