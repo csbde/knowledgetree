@@ -125,7 +125,7 @@ refresh the page.{/i18n}</p>
 
 
 </form>
-<!--
+{*
 <table id="brad-log">
 <tr>
     <th>Severity</th>
@@ -136,4 +136,4 @@ refresh the page.{/i18n}</p>
 
 </tbody>
 </table>
--->
+*}

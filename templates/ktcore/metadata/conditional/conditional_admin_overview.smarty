@@ -1,0 +1,89 @@
+<p class="descriptiveText important">{i18n}This is a conditional fieldset.  That means that the values selected in one field affect the possible
+values in the other fields.  Only <strong>lookup</strong> fields can be added to this fieldset.{/i18n}</p>
+
+<p>
+    <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a>
+    <a href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a>
+</p>
+
+
+<p>
+    <a class="ktAction ktInfo ktActionDescribed" href="{addQS context=$context}fieldset_action=viewOverview{/addQS}">{i18n}View Overview{/i18n}</a>
+    <a href="{addQS context=$context}fieldset_action=viewOverview{/addQS}">{i18n}View Overview{/i18n}</a>    
+</p>
+
+<fieldset><legend>{i18n}Conditional Fieldset Management{/i18n}</legend>
+
+{if ($context->oMasterfield && empty($context->aFreeFields))}
+    <p>
+       <a class="ktAction ktActionDescribed ktEdit"
+          href="{addQS context=$context}fieldset_action=editconditional{/addQS}">{i18n}Manage Conditional Behaviours{/i18n}</a>
+       <a href="{addQS context=$context}fieldset_action=editconditional{/addQS}">{i18n}Manage Conditional Behaviours{/i18n}</a>
+    </p>
+{/if}
+
+
+<p>
+    <a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=manageordering{/addQS}">{i18n}Manage Field Ordering{/i18n}</a>
+    <a href="{addQS context=$context}fieldset_action=manageordering{/addQS}">{i18n}Manage Field Ordering{/i18n}</a>
+</p>
+
+
+<p>
+    <a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=renameBehaviours{/addQS}">{i18n}Rename Behaviours{/i18n}</a>
+    <a href="{addQS context=$context}fieldset_action=renameBehaviours{/addQS}">{i18n}Rename Behaviours{/i18n}</a>
+</p>
+
+{if $oFieldset->getIsComplex()}
+<p>{i18n}The fieldset is currently designated as <strong>Complex</strong>.{/i18n} {i18n}Changing the conditional type set will remove all existing field
+ordering!{/i18n}</p> 
+
+
+<p><a href="{addQS context=$context}fieldset_action=changeToSimple{/addQS}"
+   class="ktAction ktActionDescribed ktEdit">{i18n}Change to simple{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=changeToSimple{/addQS}">{i18n}Change to simple{/i18n}</a></p>
+
+{else}
+
+<p class="descriptiveText important">{i18n}The fieldset is currently designated as <strong>Simple</strong>.{/i18n}</p> 
+
+<p><a href="{addQS context=$context}fieldset_action=changeToComplex{/addQS}"
+   class="ktAction ktActionDescribed ktEdit">{i18n}Change to complex{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=changeToComplex{/addQS}">{i18n}Change to complex{/i18n}</a></p>
+
+{/if}
+
+</fieldset>
+
+<br />
+
+{if (!empty($fields))}
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Field Name{/i18n}</th>    
+            <th>{i18n}Edit{/i18n}</th>
+            <th>{i18n}Delete{/i18n}</th>                                
+            <th>{i18n}Type Description{/i18n}</th>            
+        </tr>
+    </thead>
+    <tbody>
+      {foreach from=$fields item=oField}
+        <tr>
+            <td class="title">
+                {$oField->getName()|escape}
+            </td>
+            <td>
+                <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
+            </td>
+            <td>
+                <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktDelete">{i18n}delete{/i18n}</a>
+            </td>            
+            <td>
+                <span class="descriptiveText">{$oField->getTypeDescription()}</span>
+            </td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
+{/if}

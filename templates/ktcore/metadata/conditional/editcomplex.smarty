@@ -22,6 +22,15 @@
 .assigned_items_message { display: none; }
 
 .helpText { color: #666; }
+
+
+/*   logging support */
+#brad-log .severity-INFO { color: blue; font-weight: bold; }
+#brad-log .severity-DEBUG { color: green; font-weight: bold; }
+#brad-log .severity-ERROR { color: red; font-weight: bold; }
+#brad-log .explanation { font-family: monospace; white-space: pre; }
+
+
 {/literal}
 {/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}

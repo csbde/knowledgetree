@@ -152,12 +152,16 @@ class AjaxConditionalAdminDispatcher extends KTAdminDispatcher {
                 
                 //print $oInstance->getBehaviourId() . ' - ';
                 //continue;
-                
-                if (is_null($aBehaviours[$oInstance->getBehaviourId()])) {
-                    $aBehaviours[$oInstance->getBehaviourId()] = KTFieldBehaviour::get($oInstance->getBehaviourId());
+                $behaviour_id = $oInstance->getBehaviourId();
+                if (is_null($behaviour_id)) {                
+                    $aValues[$oInstance->getId()] = $oValue->getName();
+                } else {
+                    if (is_null($aBehaviours[$behaviour_id])) {
+                        $aBehaviours[$behaviour_id] = KTFieldBehaviour::get($behaviour_id);
+                    }
+    
+                    $aValues[$oInstance->getId()] = $oValue->getName() . ' - ' . $aBehaviours[$behaviour_id]->getName();
                 }
-                
-                $aValues[$oInstance->getId()] = $oValue->getName() . ' - ' . $aBehaviours[$oInstance->getBehaviourId()]->getName();
             }
         }
         $aData = array(

@@ -3,7 +3,12 @@
  * Perform various and sundry operations on the edit-page. 
  */
 
-var targeturl = 'ajaxComplexConditionals.php';
+var target_url = '/plugins/ktcore/admin/ajaxComplexConditionals.php';
+
+function getTargetUrl() {
+    var base = getElement('kt-core-baseurl');
+    return base.value + target_url;
+}
 
 // returns the td element representing the row, for use as Parent.
 function getColumnForField(field_id) {
@@ -228,8 +233,8 @@ function removeFromBehaviour(field_id) {
 
     // boilerplate.
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
-    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var req = getPOSTRequest(getTargetUrl());
+    simpleLog('DEBUG','sending request (to '+getTargetUrl()+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_removeItems, field_id));
     deferred.addErrback(handleError);
@@ -268,8 +273,8 @@ function updateItemListForField(field_id) {
 
     // boilerplate.
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
-    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var req = getPOSTRequest(getTargetUrl());
+    simpleLog('DEBUG','sending request (to '+getTargetUrl()+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_updateItemList, field_id));
     deferred.addErrback(handleError);
@@ -301,8 +306,8 @@ function updateItemListForField(field_id) {
 
     // boilerplate.
     POSTval = queryString(formKeys, formValues);
-    req2 = getPOSTRequest(targeturl);
-    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    req2 = getPOSTRequest(getTargetUrl());
+    simpleLog('DEBUG','sending request (to '+getTargetUrl()+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred2 = sendXMLHttpRequest(req2, POSTval);
     deferred2.addCallback(partial(do_updateAssignedItemList, field_id));
     deferred2.addErrback(handleError);
@@ -336,8 +341,8 @@ function updateBehaviourListsForField(field_id) {
 
     // boilerplate.
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
-    simpleLog('DEBUG','sending request (to '+targeturl+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var req = getPOSTRequest(getTargetUrl());
+    simpleLog('DEBUG','sending request (to '+getTargetUrl()+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_updateBehaviours, field_id));
     deferred.addErrback(handleError);
@@ -371,8 +376,8 @@ function updateActiveFields() {
     formValues.push(getFieldsetId());
 
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
-    simpleLog('DEBUG','sending request (to '+targeturl+' with action '+action+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
+    var req = getPOSTRequest(getTargetUrl());
+    simpleLog('DEBUG','sending request (to '+getTargetUrl()+' with action '+action+'): \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(do_updateActiveFields);
     deferred.addErrback(handleError);
@@ -414,7 +419,7 @@ function createBehaviourAndAssign(field_id, values, behaviour_name) {
         formValues.push(values[i]);
     }
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
+    var req = getPOSTRequest(getTargetUrl());
     simpleLog('DEBUG','sending request: \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_createBehaviour, field_id));
@@ -457,7 +462,7 @@ function useBehaviourAndAssign(field_id, values, behaviour_id) {
         formValues.push(values[i]);
     }
     var POSTval = queryString(formKeys, formValues);
-    var req = getPOSTRequest(targeturl);
+    var req = getPOSTRequest(getTargetUrl());
     simpleLog('DEBUG','sending request: \n'+repr(map(null, formKeys, formValues))+'\nqueryString: '+POSTval);
     var deferred = sendXMLHttpRequest(req, POSTval);
     deferred.addCallback(partial(do_createBehaviour, field_id));
@@ -543,12 +548,14 @@ function do_updateItemList(field_id, req) {
 function do_updateAssignedItemList(field_id, req) {
     simpleLog('DEBUG','entering callback for assigned-item-list update.');
     var items = req.responseXML.getElementsByTagName('item');
-	
+
     var itemNodes = Array();
     for (var i=0; i<items.length; i++) {
         var item = items[i];
         itemNodes.push(createDOM('option',{'value':item.getAttribute('value')},item.getAttribute('label')));
+
     }
+
     // now, find the array and replaceChildNodes() it.
     var column = getColumnForField(field_id);
 	var assigned_wrapper = getElementsByTagAndClassName('DIV','assigned_items',column)[0];
