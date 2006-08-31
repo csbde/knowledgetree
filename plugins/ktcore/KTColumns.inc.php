@@ -143,7 +143,7 @@ class AdvancedDateColumn extends AdvancedColumn {
         return array(null, null, null);
     }
     function addToDocumentQuery() {
-        return array(null, null, $this->name);
+        return array(null, null, $this->document_sort_column);
     }
 }
 
