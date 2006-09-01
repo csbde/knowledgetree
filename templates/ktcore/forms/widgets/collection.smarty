@@ -1,20 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/resources/css/kt-framing.css" />
-<link rel="stylesheet" type="text/css" href="/resources/css/kt-contenttypes.css" />
-<link rel="stylesheet" type="text/css" href="/resources/css/kt-headings.css" />
+<link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-framing.css" />
+<link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-contenttypes.css" />
+<link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-headings.css" />
 <!--[if lt IE 7]><style type="text/css" media="all">@import url(/resources/css/kt-ie-icons.css);</style><![endif]-->    
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/Logging.js"> </script>
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
-<script type="text/javascript" src="/thirdpartyjs/MochiKit/Signal.js"> </script>
-<script type="text/javascript" src="/resources/js/kt-utility.js"> </script>
-<script type="text/javascript" src="/presentation/i18nJavascript.php"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Base.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/DOM.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Logging.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Async.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Signal.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/resources/js/kt-utility.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/presentation/i18nJavascript.php"> </script>
 </head>
 
-<body class="browse-body">
+<body class="browse_body">
 <div class="noportlets">
 <div id="content">
 
@@ -29,5 +31,6 @@
 {$collection->render()}
 </div>
 </div>
+
 </body>
 </html>

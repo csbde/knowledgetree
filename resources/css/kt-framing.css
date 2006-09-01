@@ -301,7 +301,7 @@ a.main_nav_item {
     padding-left: 17em;
 }
 
-#content.view {
+#content.view.withviewlets {
     padding-right: 21em;
 }
 
@@ -1138,6 +1138,6 @@ hr {
     margin: 0;
 }
 
-.browse-body { 
+.browse_body { 
     padding: 0;
 }
