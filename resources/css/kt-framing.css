@@ -1128,3 +1128,16 @@ hr {
     display: none;
 }
 
+
+/* -------------------------- iframe browse ------------------------ */
+.browse-frame { 
+    width: 100%;
+    height: 55em;
+    border-width: 0px;
+    padding:0;
+    margin: 0;
+}
+
+.browse-body { 
+    padding: 0;
+}

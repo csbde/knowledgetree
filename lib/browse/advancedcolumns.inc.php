@@ -27,6 +27,10 @@ class AdvancedColumn {
         $this->sort_direction = KTUtil::arrayGet($this->aOptions, 'sort_on', $this->sort_direction);              
     }
 
+    function getOptions() {
+        return $this->aOptions;
+    }
+
     /*
        return the html for the header.  
        

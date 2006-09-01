@@ -350,6 +350,14 @@ class AdvancedCollection {
         }
     }
    
+    function getColumnOptions($sColumnNamespace) {
+        foreach ($this->columns as $key => $oColumn) {
+            if ($oColumn->namespace == $sColumnNamespace) {
+                return $this->columns[$key]->getOptions();
+            }
+        }
+    }
+   
     // columns should be added in the "correct" order (e.g. display order)
     function addColumn($oBrowseColumn) { array_push($this->columns, $oBrowseColumn); }   
     function addColumns($aColumns) { $this->columns = kt_array_merge($this->columns, $aColumns); }

@@ -54,37 +54,6 @@ require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
 
 require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
-/******* NBM's FAMOUS MOVECOLUMN HACK
- *
- * Also in /plugins/ktcore/KTDocumentActions.php
- */
-
-class KTMassMoveColumn extends TitleColumn {
-    var $sMoveCode;
-
-    function KTMassMoveColumn($sLabel, $sName, $sMoveCode) {
-        $this->sMoveCode = $sMoveCode;
-        parent::TitleColumn($sLabel, $sName);
-    }
-    
-    function renderFolderLink($aDataRow) {
-        $aFolders = $_SESSION['moves'][$this->sMoveCode]['folders'];
-        if (array_search($aDataRow['folder']->getId(), $aFolders) === false) {
-            $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
-            $outStr .= $aDataRow["folder"]->getName();
-            $outStr .= '</a>';
-        } else { 
-            $outStr = $aDataRow["folder"]->getName() . ' <span class="descriptiveText">(' . _kt('you cannot move folders to themselves') . ')';
-        }
-        return $outStr;    
-    
-    }
-    
-    function buildFolderLink($aDataRow) {
-        return KTUtil::addQueryStringSelf(sprintf('fMoveCode=%s&fFolderId=%d&action=startMove', $this->sMoveCode, $aDataRow["folder"]->getId()));
-    }
-}
-
 $sectionName = "browse";
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -231,13 +200,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
 
     function do_main() {
+        $oColumnRegistry =& KTColumnRegistry::getSingleton();
+
         $collection = new AdvancedCollection;       
-        $oColumnRegistry = KTColumnRegistry::getSingleton();
-        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.browse');
-        $collection->addColumns($aColumns);	
+        $collection->addColumns($oColumnRegistry->getColumnsForView('ktcore.views.browse'));    
         
-        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-        
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment        
         $aOptions['result_url'] = $this->resultURL;        
         
         $collection->setOptions($aOptions);
@@ -247,7 +215,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             'show_folders' => true,
             'show_documents' => true,
         ));
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
         $aTemplateData = array(
@@ -342,7 +310,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
-	    $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
+            $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }        
         
@@ -414,13 +382,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $documentStr .= implode(', ', $cantMoveItems['documents']);
             }
 
-	    $bMoveError = false;
+            $bMoveError = false;
             if (!empty($folderStr)) {
                 $_SESSION["KTErrorMessage"][] = _kt("The following folders can not be moved") . ": " . $folderStr;
             }
             if (!empty($documentStr)) {
                 $_SESSION["KTErrorMessage"][] = _kt("The following documents can not be moved as they are either checked out, or controlled by a workflow") . ": " . $documentStr;
-		$bMoveError = true;
+                $bMoveError = true;
             }
         }
 
@@ -435,53 +403,48 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $moveSet = $_SESSION['moves'][$sMoveCode];
 
         if (empty($moveSet['folders']) && empty($moveSet['documents'])) {
-	    if(!$bMoveError) {
-		$sMsg = _kt('Please select documents or folders first.');
-	    } else {
-		$sMsg = '';
-	    }
-	    $this->errorRedirectToMain($sMsg, sprintf('fFolderId=%d', $oFolder->getId()));
+            if(!$bMoveError) {
+                $sMsg = _kt('Please select documents or folders first.');
+            } else {
+                $sMsg = '';
+            }
+            $this->errorRedirectToMain($sMsg, sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }        
         
         // Setup the collection for move display.
-        
-        $collection = new DocumentCollection();
-        $collection->addColumn(new KTMassMoveColumn("Test 1 (title)","title", $sMoveCode));
+        $collection = new AdvancedCollection();
+
+        $oCR =& KTColumnRegistry::getSingleton();
+        $col = $oCR->getColumn('ktcore.columns.title');
+        $col->setOptions(array('qs_params'=>array('fMoveCode'=>$sMoveCode,
+                                                  'fFolderId'=>$oFolder->getId(),
+                                                  'action'=>'startMove')));
+        $collection->addColumn($col);
+
         $qObj = new FolderBrowseQuery($oFolder->getId());
         $collection->setQueryObject($qObj);
 
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
+        $aOptions = $collection->getEnvironOptions();
+        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+                                                         array('fMoveCode' => $sMoveCode,
+                                                               'fFolderId' => $oFolder->getId(),
+                                                               'action' => 'startMove'));
 
-        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $oFolder->getId()));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
+        $collection->setOptions($aOptions);
 
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
 
-        $collection->setSorting($displayControl, $displayOrder);
+	$oWF =& KTWidgetFactory::getSingleton();
+	$oWidget = $oWF->get('ktcore.widgets.collection', 
+			     array('label' => _kt('Browse'),
+				   'description' => _kt('Select something'),
+				   'required' => true,
+				   'name' => 'browse',
+                                   'folder_id' => $oFolder->getId(),
+				   'collection' => $collection));
 
-        $collection->getResults();
 
-        $aBreadcrumbs = array();
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        $folder_path_ids[] = $oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
 
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $id));
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
-        }
-        
-        
         // now show the items...
         $moveItems = array();
         $moveItems['folders'] = array();
@@ -514,8 +477,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               "context" => $this,
               'folder' => $oFolder,
               'move_code' => $sMoveCode,
-              'collection' => $collection,
-              'collection_breadcrumbs' => $aBreadcrumbs,
+              'collection' => $oWidget,
               'folders' => $folderStr,
               'documents' => $documentStr,
         );

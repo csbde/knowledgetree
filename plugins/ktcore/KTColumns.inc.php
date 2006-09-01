@@ -57,14 +57,23 @@ class AdvancedTitleColumn extends AdvancedColumn {
         return KTBrowseUtil::getUrlForDocument($aDataRow["document"]->getId());
     }
 
+
+    // 'folder_link' allows you to link to a different URL when you're connecting, instead of addQueryStringSelf
+    // 'direct_folder' means that you want to go to 'browse folder'
+    // 'qs_params' is an array (or string!) of params to add to the link
+
     function buildFolderLink($aDataRow) {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
             $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
+	    $params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()), 
+				     array('fFolderId' => $aDataRow['folder']->getId()));
+
             if (empty($dest)) {
-                return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+                return KTUtil::addQueryStringSelf($params);
             } else {
-                return KTUtil::addQueryString($dest, 'fFolderId='.$aDataRow["folder"]->getId());                
+                return KTUtil::addQueryString($dest, $params);
             }
+
         } else {
             return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
         }

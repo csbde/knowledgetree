@@ -126,6 +126,13 @@ class KTTemplating {
         return $GLOBALS['_KT_PLUGIN']['oKTTemplating'];
     }
     // }}}
+
+    function renderTemplate($sTemplate, $aOptions) {
+	$oTemplating =& KTTemplating::getSingleton();
+	$oTemplate =& $oTemplating->loadTemplate($sTemplate);
+	return $oTemplate->render($aOptions);
+    }
+
 }
 
 ?>

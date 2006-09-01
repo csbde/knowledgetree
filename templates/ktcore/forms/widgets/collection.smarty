@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/resources/css/kt-framing.css" />
+<link rel="stylesheet" type="text/css" href="/resources/css/kt-contenttypes.css" />
+<link rel="stylesheet" type="text/css" href="/resources/css/kt-headings.css" />
+<!--[if lt IE 7]><style type="text/css" media="all">@import url(/resources/css/kt-ie-icons.css);</style><![endif]-->    
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/Logging.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/MochiKit/Signal.js"> </script>
+<script type="text/javascript" src="/resources/js/kt-utility.js"> </script>
+<script type="text/javascript" src="/presentation/i18nJavascript.php"> </script>
+</head>
+
+<body class="browse-body">
+<div class="noportlets">
+<div id="content">
+
+<input type="hidden" name="fFolderId" value="{$folder->getId()}" />
+
+{foreach from=$breadcrumbs item=breadcrumb name=bc}
+<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
+{if !$smarty.foreach.bc.last}
+&raquo;
+{/if}
+{/foreach}
+{$collection->render()}
+</div>
+</div>
+</body>
+</html>

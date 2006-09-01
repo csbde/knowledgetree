@@ -58,6 +58,10 @@ class KTWidget {
         }
     }
 
+    function requireJSResource($sResourceURL) {
+	$this->aJavascript[] = $sResourceURL;
+    }
+
     function render() {
         // very simple, general purpose passthrough.  Chances are this is sufficient,
         // just override the template being used.

@@ -481,12 +481,18 @@ class KTUtil {
     }
     // }}}
 
-    // {{{ addQueryString 
+    // now accepts strings OR arrays!
+    // {{{ addQueryString     
     function addQueryString($url, $qs) {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
         $oUrl = new Net_URL($url);
         
-        $aQs = $oUrl->_parseRawQuerystring($qs);
+	if(!is_array($qs)) {
+	    $aQs = $oUrl->_parseRawQuerystring($qs);
+	} else {
+	    $aQs =& $qs;
+	}
+
         foreach ($aQs as $k => $v) {
             $oUrl->addQueryString($k, $v, true);
         }

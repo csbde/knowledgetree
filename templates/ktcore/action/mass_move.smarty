@@ -18,13 +18,6 @@
 <p class="descriptiveText">{i18n}Use the folder collection and path below to
 browse to the folder you wish to move the documents into.{/i18n}</p>
 
-<input type="hidden" name="fFolderId" value="{$folder->getId()}" />
-{foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
-<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
-{if !$smarty.foreach.bc.last}
-&raquo;
-{/if}
-{/foreach}
 {$collection->render()}
 </div>
 
