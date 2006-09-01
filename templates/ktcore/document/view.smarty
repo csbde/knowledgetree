@@ -40,20 +40,14 @@ these tasks, use the Request Assistance action.{/i18n}
 {$oFieldset->render($document_data)}
 {/foreach}
 
+{if !empty($viewlets)}
+
 <!--  Document "Views" -->
 <div id="document-views">
 
-<div class="ktError"><p>Someone please suggest some "viewlets" we can ship by default ...
-this is a tad bare.</p></div>
-
-{*
-<div class="downloadbox">
-    <ul>
-        {foreach from=$viewlet_info item=aInfo}
-        <li class="{$aInfo.icon_class}"><a href="{$aInfo.url}">{$aInfo.name}</a></li>       
-        {/foreach}
-    </ul>
-</div>
-*}
+{foreach from=$viewlets item=oViewlet}
+  {$oViewlet->display_viewlet()}
+{/foreach}
 
 </div>
+{/if}
