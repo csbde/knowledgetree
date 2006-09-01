@@ -436,4 +436,129 @@ class KTExtraConditionalFieldsetWidget extends KTCoreFieldsetWidget {
     }    
 }
 
+class KTCoreCollectionWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.collection';
+    var $sTemplate = 'ktcore/forms/widgets/collectionframe';
+    
+    var $oCollection;
+    var $sCode;
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) { 
+            return $res;
+        }
+
+	$this->oCollection = KTUtil::arrayGet($aOptions, 'collection');
+	if(empty($this->oCollection)) return PEAR::raiseError(_kt('No collection specified.'));
+
+	$this->iFolderId = KTUtil::arrayGet($aOptions, 'folder_id');
+	if(empty($this->iFolderId)) return PEAR::raiseError(_kt('No initial folder specified specified.'));
+
+	$this->aCols = array();
+	foreach($this->oCollection->columns as $oCol) {
+	    $this->aCols[] = $oCol->namespace;
+	}	    
+
+	$this->sCode = KTUtil::randomString();
+	$this->sCollection = serialize($this->oCollection);
+	$_SESSION['collection_widgets'][$this->sCode] = serialize($this);
+
+	$this->requireJSResource('resources/js/collectionframe.js');
+    }
+
+    function getTargetURL() {
+        $oPluginRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oPluginRegistry->getPlugin('ktcore.plugin');
+        $sPath = $oPlugin->getPagePath('collection');
+        $oKTConfig =& KTConfig::getSingleton();
+        $sPath = KTUtil::addQueryString($sPath, array('code'=>$this->sCode, 
+                                                      'fFolderId'=>$this->iFolderId));
+
+	// $sPath .= (($oKTConfig->get("KnowledgeTree/pathInfoSupport")) ? '?' : '&') . 'code=' . $this->sCode;
+        return $sPath;
+    }
+
+    function getCollection() {
+	$oCR =& KTColumnRegistry::getSingleton();
+	//print '<pre>';
+	foreach($this->aCols as $ns) { 
+	    //	    print $ns . "\n";
+	    //	    var_dump($oCR->getColumn($ns)); 
+	    $oCR->getColumn($ns);
+	}
+	//var_dump($this->oCollection->columns);
+	//print '</pre>';
+	$this->oCollection = unserialize($this->sCollection);
+	return $this->oCollection;
+    }
+}
+
+class KTCoreCollectionPage extends KTStandardDispatcher {
+
+    function _generate_breadcrumbs(&$oFolder, $sCode) {
+        $aBreadcrumbs = array();
+        $folder_path_names = $oFolder->getPathArray();
+        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        $folder_path_ids[] = $oFolder->getId();
+        if ($folder_path_ids[0] == 0) {
+            array_shift($folder_path_ids);
+            array_shift($folder_path_names);
+        }
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+                                          array('fFolderId' => $id,
+                                                'code' => $sCode));
+            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+        }
+        
+        return $aBreadcrumbs;
+    }        
+        
+
+
+    function do_main() {
+        $sCode = KTUtil::arrayGet($_REQUEST, 'code');
+        $oWidget = unserialize($_SESSION['collection_widgets'][$sCode]);
+
+        $oCollection = $oWidget->getCollection();
+
+        $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
+        if (PEAR::isError($oFolder)) {
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
+            exit(0);
+        }
+
+	$aOptions = array('ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder));
+	$oCollection->_queryObj->folder_id = $oFolder->getId();
+            
+	$aOptions = $oCollection->getEnvironOptions();
+	$aOptions['return_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], array('code'=>$sCode));
+
+	$oCollection->setOptions($aOptions);
+
+        // add the collection code to the title column QS params
+        $aColOpts = $oCollection->getColumnOptions('ktcore.columns.title');
+
+        $aColOpts['qs_params'] = kt_array_merge(KTUtil::arrayGet($aColOpts, 'qs_params', array()), 
+                                                array('code' => $sCode));
+
+	$oCollection->setColumnOptions('ktcore.columns.title', $aColOpts);
+
+
+        // make the breadcrumbs
+        $aBreadcrumbs = $this->_generate_breadcrumbs($oFolder, $sCode);
+
+	print KTTemplating::renderTemplate('ktcore/forms/widgets/collection', 
+					   array('collection'=>$oCollection,
+                                                 'folder'=>$oFolder,
+                                                 'breadcrumbs'=>$aBreadcrumbs));
+
+        exit(0);
+    }
+}
+
+
 ?>

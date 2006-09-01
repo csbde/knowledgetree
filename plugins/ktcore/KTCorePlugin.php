@@ -132,7 +132,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreReasonWidget', 'ktcore.widgets.reason', 'KTWidgets.php');                                  
         $this->registerWidget('KTCoreFileWidget', 'ktcore.widgets.file', 'KTWidgets.php');                     
         $this->registerWidget('KTCoreFieldsetWidget', 'ktcore.widgets.fieldset', 'KTWidgets.php');                     
-        $this->registerWidget('KTCoreTransparentFieldsetWidget', 'ktcore.widgets.transparentfieldset', 'KTWidgets.php');                     
+        $this->registerWidget('KTCoreTransparentFieldsetWidget', 'ktcore.widgets.transparentfieldset', 'KTWidgets.php');
+        $this->registerWidget('KTCoreCollectionWidget', 'ktcore.widgets.collection', 'KTWidgets.php');
+	$this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
+
         
         // validators
         $this->registerValidator('KTStringValidator', 'ktcore.validators.string', 'KTValidators.php');
