@@ -200,36 +200,26 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        $this->oPage->setContentClass('view');
-        /*
-        // we want to enable the viewlets.
-
-        $aMajorInfo = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view',), 'documentinfo', $this->oDocument, $this->oUser);                
-        $aMajorActions = KTDocumentActionUtil::getDocumentActionsByNames(array(
-            'ktcore.actions.document.checkout',
-            'ktcore.actions.document.cancelcheckout',
-             'ktcore.actions.document.checkin',
-             'ktcore.actions.document.edit'
-            ), 'documentaction', $this->oDocument, $this->oUser);
-
-        $aMajorViewletActions = kt_array_merge($aMajorInfo, $aMajorActions);
-        $aViewletInfo = array();
-
-        //var_dump($aMajorActions[0]);
-
-        foreach ($aMajorViewletActions as $action) {
-
-            $aInfo = $action->getInfo();
-
+        // viewlets.
+        $aViewlets = array();
+        $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
+        foreach ($aViewletActions as $oAction) {
+            $aInfo = $oAction->getInfo();
+            
             if ($aInfo !== null) {
-                if ($aInfo["ns"] == $this->sName) {
-                    unset($aInfo["url"]);
-                    $aInfo['active'] = true;
-                }
-                $aViewletInfo[] = $aInfo;
+                $aViewlets[] = $oAction; // use the action, since we display_viewlet() later.            
             }
-        }
-        */
+        } 
+        
+        
+        $content_class = 'view';
+        if (!empty($aViewlets)) {
+            $content_class = 'view withviewlets';
+        } 
+        $this->oPage->setContentClass($content_class);
+        
+
+        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/document/view");
         $aTemplateData = array(
@@ -241,7 +231,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               "document" => $oDocument,
               "document_data" => $document_data,
               "fieldsets" => $fieldsets,
-              'viewlet_info' => $aViewletInfo,
+              'viewlets' => $aViewlets,
         );
         //return '<pre>' . print_r($aTemplateData, true) . '</pre>';
         return $oTemplate->render($aTemplateData);
