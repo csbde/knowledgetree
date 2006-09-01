@@ -1426,4 +1426,89 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 }
 // }}}
 
+class KTOwnershipChangeAction extends KTDocumentAction {
+    var $sName = 'ktcore.actions.document.ownershipchange';
+    var $_sShowPermission = "ktcore.permissions.manageSecurity";
+
+    function getDisplayName() {
+        return _kt('Change Document Ownership');
+    }
+    
+    function form_owner() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Change Document Ownership"),
+            'description' => _kt('Changing document ownership allows you to keep the "owner" role relevant, even when the original user no longer is an appropriate choice.'),
+            'action' => 'reown',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'fail_action' => 'main',
+            'identifier' => 'ktcore.actions.document.owner',
+            'context' => $this,
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.entityselection', array(
+                'label' => _kt("New Owner"),
+                'description' => _kt("The owner of a document is usually the person with ultimate responsibility for its contents.  It is initially set to the person who created the document, but can be changed to any other user."),
+                'important_description' => _kt('Please note that changing the owner may affect access to this document.'),
+                'label_method' => 'getName',
+                'vocab' => User::getList('id > 0'),
+                'value' => $this->oDocument->getOwnerID(),
+                'name' => 'user_id'
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.entity', array(
+                'test' => 'user_id',
+                'class' => 'User',
+                'output' => 'user',
+            )),
+        ));
+        
+        return $oForm;
+    }
+
+    function do_main() { 
+        $this->oPage->setBreadcrumbDetails(_kt("Changing Ownership"));
+        $oTemplate =& $this->oValidator->validateTemplate("ktcore/document/ownershipchangeaction");
+        
+        $change_form = $this->form_owner();
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'docname' => $this->oDocument->getName(),
+            'form' => $change_form,
+        ));     
+        return $oTemplate->render();
+    }
+    
+    function do_reown() {
+        $oForm = $this->form_owner();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        $errors = $res['errors'];
+        
+        if (!empty($errors)) {
+            return $oForm->handleError();   
+        }
+
+        $oUser = $data['user'];
+        
+        $this->startTransaction();
+        
+        $this->oDocument->setOwnerID($oUser->getId());
+        $res = $this->oDocument->update();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain(sprintf(_kt("Failed to update document: %s"), $res->getMessage()), sprintf('fDocumentId=%d', $this->oDocument->getId()));
+        }
+        
+        $res = KTPermissionUtil::updatePermissionLookup($this->oDocument);
+        
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain(sprintf(_kt("Failed to update document: %s"), $res->getMessage()), sprintf('fDocumentId=%d', $this->oDocument->getId()));
+        }
+        
+        $this->successRedirectToMain(_kt("Ownership changed."), sprintf('fDocumentId=%d', $this->oDocument->getId()));
+    }
+}
+
 ?>
