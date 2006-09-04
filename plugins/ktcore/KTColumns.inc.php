@@ -10,8 +10,12 @@ class AdvancedTitleColumn extends AdvancedColumn {
     var $sortable = true;
     var $aOptions = array();
     var $aIconPaths = array();
+    var $link_folders = true;
+    var $link_documents = true;
 
-    function setOptions($aOptions) {
+    function setOptions($aOptions) {        
+        $this->link_folders = KTUtil::arrayGet($aOptions, 'link_folders', $this->link_folders, false);
+        $this->link_documents = KTUtil::arrayGet($aOptions, 'link_documents', $this->link_documents, false);        
         parent::setOptions($aOptions);
     }
     
@@ -40,16 +44,19 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
     
     function renderFolderLink($aDataRow) {
-        $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
-        $outStr .= htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
-        $outStr .= '</a> ';
+        $outStr = htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        if($this->link_folders) {
+            $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
+        }
         return $outStr;
     }
 
     function renderDocumentLink($aDataRow) {
-        $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
-        $outStr .= htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
-        $outStr .= '</a>';
+        $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        if($this->link_documents) {
+            $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">' . 
+                $outStr . '</a>';
+        }
         return $outStr;
     }
 

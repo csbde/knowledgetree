@@ -57,13 +57,13 @@ class KTColumnRegistry {
     }        
     
     function getColumn($sNamespace) {
-        $aInfo = KTUtil::arrayGet($this->columns, $sNamespace, null);
+        $aInfo = $this->getColumnInfo($sNamespace);
         if (empty($aInfo)) {
             return PEAR::raiseError(sprintf(_kt("No such column: %s"), $sNamespace));
         } 
         
         require_once($aInfo['file']);
-        
+
         return new $aInfo['class'];
     }
     

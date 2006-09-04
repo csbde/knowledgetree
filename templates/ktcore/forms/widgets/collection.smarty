@@ -13,6 +13,7 @@
 <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Async.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Signal.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/resources/js/kt-utility.js"> </script>
+<script type="text/javascript" src="{$rootUrl}/resources/js/toggleselect.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/presentation/i18nJavascript.php"> </script>
 </head>
 

@@ -33,33 +33,8 @@ require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
+require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
 
-class KTDocumentLinkTitle extends TitleColumn {
-
-    function renderDocumentLink($aDataRow) {
-        $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        
-        if ($aDataRow["document"]->getId() != $parentDocumentId) {
-            $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
-            $outStr .= $aDataRow["document"]->getName();
-            $outStr .= '</a>';
-        } else { 
-            $outStr = $aDataRow["document"]->getName() . ' <span class="descriptiveText">(' . _kt('you cannot link to the source document') . ')';
-        }
-        return $outStr;
-    }
-    
-    function buildDocumentLink($aDataRow) {
-        $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        return KTUtil::addQueryStringSelf(sprintf('action=type_select&fDocumentId=%d&fTargetDocumentId=%d', $parentDocumentId, $aDataRow["document"]->getId()));
-    }
-
-    function buildFolderLink($aDataRow) {
-        $parentDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        
-        return KTUtil::addQueryStringSelf(sprintf('action=new&fDocumentId=%d&fFolderId=%d', $parentDocumentId, $aDataRow["folder"]->getId()));
-    }
-}
 
 class KTDocumentLinks extends KTPlugin {
     var $sNamespace = "ktstandard.documentlinks.plugin";
@@ -72,6 +47,8 @@ class KTDocumentLinks extends KTPlugin {
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentLinkAction', 'ktcore.actions.document.link');
+        $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle', 
+                              dirname(__FILE__) . '/KTDocumentLinksColumns.php');
     }
 }
 
@@ -139,49 +116,47 @@ class KTDocumentLinkAction extends KTDocumentAction {
         
         // Setup the collection for move display.
         
-        $collection = new DocumentCollection();
-        $collection->addColumn(new KTDocumentLinkTitle("Target Documents","title"));        
+        $collection = new AdvancedCollection();
+        $aBaseParams = array('fDocumentId'=>$oParentDocument->getId());
+
+
+        $oCR =& KTColumnRegistry::getSingleton();
+
+        $col = $oCR->getColumn('ktcore.columns.singleselection');
+        $col->setOptions(array('qs_params'=>kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()))));
+        $collection->addColumn($col);        
+        
+        $col = $oCR->getColumn('ktdocumentlinks.columns.title');
+        $col->setOptions(array('qs_params'=>kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()))));
+        $collection->addColumn($col);
         
         $qObj = new BrowseQuery($iFolderId);
         $collection->setQueryObject($qObj);
 
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
+        $aOptions = $collection->getEnvironOptions();
+        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+                                                         array(kt_array_merge($aBaseParams, array('fFolderId' => $oFolder->getId()))));
 
-        $resultURL = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d&fFolderId=%d", $oParentDocument->getId(), $oFolder->getId()));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
+        $collection->setOptions($aOptions);
 
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+	$oWF =& KTWidgetFactory::getSingleton();
+	$oWidget = $oWF->get('ktcore.widgets.collection', 
+			     array('label' => _kt('Browse'),
+				   'description' => _kt('Select something'),
+				   'required' => true,
+				   'name' => 'browse',
+                                   'folder_id' => $oFolder->getId(),
+                                   'bcurl_params' => $aBaseParams,
+				   'collection' => $collection));
 
-        $collection->setSorting($displayControl, $displayOrder);
 
-        $collection->getResults();    
-        
-        $aBreadcrumbs = array();
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
-        $folder_path_ids[] = $oFolder->getId();
-
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryStringSelf(sprintf("action=new&fDocumentId=%d&fFolderId=%d", $oParentDocument->getId(), $id));
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
-        }
         
         $aTemplateData = array(
               'context' => $this,
               'folder' => $oFolder,
+              'parent' => $oParentDocument,
               'breadcrumbs' => $aBreadcrumbs,
-              'collection' => $collection,
-              'collection_breadcrumbs' => $aBreadcrumbs,
+              'collection' => $oWidget,
               'link_types' => LinkType::getList("id > 0"),
         );
         
@@ -199,7 +174,14 @@ class KTDocumentLinkAction extends KTDocumentAction {
             exit(0);
         }
 
-        $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fTargetDocumentId'));
+        /*
+        print '<pre>';
+        var_dump($_REQUEST);
+        exit(0);
+        */
+
+
+        $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, '_d'));
         if (PEAR::isError($oTargetDocument)) { 
             $this->errorRedirectToMain(_kt('Invalid target document selected.'));
             exit(0);
