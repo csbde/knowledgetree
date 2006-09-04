@@ -455,6 +455,8 @@ class KTCoreCollectionWidget extends KTWidget {
 	$this->iFolderId = KTUtil::arrayGet($aOptions, 'folder_id');
 	if(empty($this->iFolderId)) return PEAR::raiseError(_kt('No initial folder specified specified.'));
 
+	$this->aBCUrlParams = KTUtil::arrayGet($aOptions, 'bcurl_params', array());
+
 	$this->aCols = array();
 	foreach($this->oCollection->columns as $oCol) {
 	    $this->aCols[] = $oCol->namespace;
@@ -483,8 +485,8 @@ class KTCoreCollectionWidget extends KTWidget {
 	$oCR =& KTColumnRegistry::getSingleton();
 	//print '<pre>';
 	foreach($this->aCols as $ns) { 
-	    //	    print $ns . "\n";
-	    //	    var_dump($oCR->getColumn($ns)); 
+	    // print $ns . "\n";
+	    // var_dump($oCR->getColumn($ns)); 
 	    $oCR->getColumn($ns);
 	}
 	//var_dump($this->oCollection->columns);
@@ -496,7 +498,7 @@ class KTCoreCollectionWidget extends KTWidget {
 
 class KTCoreCollectionPage extends KTStandardDispatcher {
 
-    function _generate_breadcrumbs(&$oFolder, $sCode) {
+    function _generate_breadcrumbs(&$oFolder, $sCode, $aURLParams) {
         $aBreadcrumbs = array();
         $folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
@@ -506,11 +508,13 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
             array_shift($folder_path_names);
         }
 
+        
+
         foreach (range(0, count($folder_path_ids) - 1) as $index) {
             $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
-                                          array('fFolderId' => $id,
-                                                'code' => $sCode));
+        
+            $aParams = kt_array_merge($aURLParams, array('fFolderId'=>$id, 'code'=>$sCode));
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
             $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
         }
         
@@ -540,16 +544,17 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
 	$oCollection->setOptions($aOptions);
 
         // add the collection code to the title column QS params
-        $aColOpts = $oCollection->getColumnOptions('ktcore.columns.title');
 
-        $aColOpts['qs_params'] = kt_array_merge(KTUtil::arrayGet($aColOpts, 'qs_params', array()), 
-                                                array('code' => $sCode));
-
-	$oCollection->setColumnOptions('ktcore.columns.title', $aColOpts);
+	foreach($oWidget->aCols as $ns) { 
+            $aColOpts = $oCollection->getColumnOptions($ns);
+            $aColOpts['qs_params'] = kt_array_merge(KTUtil::arrayGet($aColOpts, 'qs_params', array()), 
+                                                    array('code' => $sCode));
+	    $oCollection->setColumnOptions($ns, $aColOpts);
+	}
 
 
         // make the breadcrumbs
-        $aBreadcrumbs = $this->_generate_breadcrumbs($oFolder, $sCode);
+        $aBreadcrumbs = $this->_generate_breadcrumbs($oFolder, $sCode, $oWidget->aBCUrlParams);
 
 	print KTTemplating::renderTemplate('ktcore/forms/widgets/collection', 
 					   array('collection'=>$oCollection,

@@ -24,9 +24,13 @@ function setupFrame(frame) {
     var moveInputs = function(e) {
         for(var e in {'input':1, 'select':1, 'textarea':1}) {
             var elms = frame.contentDocument.getElementsByTagName(e);
+            forEach(elms, function(e) {
+                        e.style.display = 'none';
+                    });
             appendChildNodes(form, elms);
         }
     }
+
     resizeFrame(frame);
     connect(frame, 'onload', function(e) { resizeFrame(e.src()); });
     connect(form, 'onsubmit', moveInputs);

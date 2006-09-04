@@ -68,52 +68,50 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         
         // Setup the collection for move display.
         
-        $collection = new DocumentCollection();
+        $aBaseParams = array();
+
+        $collection = new AdvancedCollection();
+
+        $oCR =& KTColumnRegistry::getSingleton();
+
+        // selection col
+        $col = $oCR->getColumn('ktcore.columns.selection');
+        $col->setOptions(array('show_folders' => false, 'rangename' => '_d[]'));
+        $collection->addColumn($col);
         
-        $collection->addColumn(new SelectionColumn("Select","selected_docs[]", false, true));
-        $collection->addColumn(new KTArchiveTitle("Archive Documents","title"));        
+        // title col
+        $col = $oCR->getColumn('ktcore.columns.title');
+        $col->setOptions(array('link_documents' => false));
         
+        $collection->addColumn($col);
+
         $qObj = new ArchivedBrowseQuery($oFolder->getId());
         $collection->setQueryObject($qObj);
 
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
+        $aOptions = $collection->getEnvironOptions();
+        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+                                                         array(kt_array_merge($aBaseParams, array('fFolderId' => $oFolder->getId()))));
 
-        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d&action=browse", $sMoveCode, $oFolder->getId()));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
+        $collection->setOptions($aOptions);
 
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+	$oWF =& KTWidgetFactory::getSingleton();
+	$oWidget = $oWF->get('ktcore.widgets.collection', 
+			     array('label' => _kt('Browse'),
+				   'description' => _kt('Select something'),
+				   'required' => true,
+				   'name' => 'browse',
+                                   'folder_id' => $oFolder->getId(),
+                                   'bcurl_params' => $aBaseParams,
+				   'collection' => $collection));
 
-        $collection->setSorting($displayControl, $displayOrder);
 
-        $collection->getResults();    
-        
-        $aBreadcrumbs = array();
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        $folder_path_ids[] = $oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
-
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d", $sMoveCode, $id));
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
-        }
-        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/document/admin/archivebrowse");
         $aTemplateData = array(
               "context" => $this,
               'folder' => $oFolder,
               'breadcrumbs' => $aBreadcrumbs,
-              'collection' => $collection,
-              'collection_breadcrumbs' => $aBreadcrumbs,
+              'collection' => $oWidget,
         );
         
         return $oTemplate->render($aTemplateData);                  
@@ -129,7 +127,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
     function do_confirm_restore() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
         
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
+        $selected_docs = KTUtil::arrayGet($_REQUEST, '_d', array()); 
         
         $this->oPage->setTitle(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
         
