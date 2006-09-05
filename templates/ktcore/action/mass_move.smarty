@@ -13,13 +13,7 @@
 {if ($documents)}{$documents}{/if}
 </div>
 
-<div class="field ">
-<label for="fFolderId">{i18n}Target folder{/i18n}</label>
-<p class="descriptiveText">{i18n}Use the folder collection and path below to
-browse to the folder you wish to move the documents into.{/i18n}</p>
-
 {$collection->render()}
-</div>
 
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />

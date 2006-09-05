@@ -96,8 +96,8 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
 	$oWF =& KTWidgetFactory::getSingleton();
 	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Browse'),
-				   'description' => _kt('Select something'),
+			     array('label' => _kt('Target Documents'),
+				   'description' => _kt('Use the folder collection and path below to browse to the folder containing the documents you wish to restore.'),
 				   'required' => true,
 				   'name' => 'browse',
                                    'folder_id' => $oFolder->getId(),

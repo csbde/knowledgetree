@@ -436,8 +436,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	$oWF =& KTWidgetFactory::getSingleton();
 	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Browse'),
-				   'description' => _kt('Select something'),
+			     array('label' => _kt('Target Folder'),
+				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to move the documents into.'),
 				   'required' => true,
 				   'name' => 'browse',
                                    'folder_id' => $oFolder->getId(),

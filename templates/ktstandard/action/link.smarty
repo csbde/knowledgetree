@@ -6,16 +6,12 @@
 </p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<p class="descriptiveText">{i18n}Use the folder collection and path below to
-browse to the document you wish to link to.{/i18n}</p>
-
 {$collection->render()}
 <div class="form_actions">
 <input type="hidden" name="action" value="type_select" />
 <input type="hidden" name="fDocumentId" value="{$parent->getId()}" />
 <input type="submit" name="submit[move]" value="{i18n}Link{/i18n}" />
 </div>
-</fieldset>
 </form>
 {else}
 <div class="ktInfo"><p>

@@ -141,8 +141,8 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
 	$oWF =& KTWidgetFactory::getSingleton();
 	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Browse'),
-				   'description' => _kt('Select something'),
+			     array('label' => _kt('Target Document'),
+				   'description' => _kt('Use the folder collection and path below to browse to the document you wish to link to.'),
 				   'required' => true,
 				   'name' => 'browse',
                                    'folder_id' => $oFolder->getId(),
