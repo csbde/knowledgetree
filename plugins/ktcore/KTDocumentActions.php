@@ -1037,46 +1037,36 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $sDocumentName = join(" &raquo; ", $aNames);
         $move_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
         
-        $collection = new DocumentCollection();
-        $collection->addColumn(new KTDocumentMoveColumn("Test 1 (title)","title", $this->oDocument));
+
+        $collection = new AdvancedCollection();
+        $oCR =& KTColumnRegistry::getSingleton();
+        $col = $oCR->getColumn('ktcore.columns.title');
+        $col->setOptions(array('qs_params'=>array('fMoveCode'=>$sMoveCode,
+                                                  'fFolderId'=>$this->oFolder->getId(),
+                                                  'action'=>'startMove')));
+        $collection->addColumn($col);
+
         $qObj = new FolderBrowseQuery($this->oFolder->getId());
         $collection->setQueryObject($qObj);
-        
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
-        
-        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
-        
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
-        
-        $collection->setSorting($displayControl, $displayOrder);
-        
-        $collection->getResults();
-        
-        $aBreadcrumbs = array();
-        $folder_path_names = $this->oFolder->getPathArray();
-        $folder_path_ids = explode(',', $this->oFolder->getParentFolderIds());
-        $folder_path_ids[] = $this->oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
 
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $id));
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
-        }
+        $aOptions = $collection->getEnvironOptions();
+        $collection->setOptions($aOptions);
+
+	$oWF =& KTWidgetFactory::getSingleton();
+	$oWidget = $oWF->get('ktcore.widgets.collection', 
+			     array('label' => _kt('Target Folder'),
+				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
+				   'required' => true,
+				   'name' => 'browse',
+                                   'folder_id' => $this->oFolder->getId(),
+				   'collection' => $collection));        
+        $move_fields[] = $oWidget;
 
         $oTemplate->setData(array(
             'context' => &$this,
             'move_fields' => $move_fields,
-            'collection' => $collection,
-            'collection_breadcrumbs' => $aBreadcrumbs,
+            //            'collection' => $collection,
+            //            'collection_breadcrumbs' => $aBreadcrumbs,
         ));
         return $oTemplate->render();
     }
