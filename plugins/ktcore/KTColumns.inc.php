@@ -431,7 +431,7 @@ class ContainingFolderColumn extends AdvancedColumn {
             return '&nbsp;';
         }
     
-        $link = KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
+        $link = KTBrowseUtil::getUrlForFolder($aDataRow['document']->getFolderId());
         return sprintf('<a href="%s" class="ktAction ktMoveUp" title="%s">%s</a>', $link, _kt('View Folder'), _kt('View Folder'));
     }
     
