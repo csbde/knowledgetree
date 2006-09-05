@@ -94,58 +94,48 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $_REQUEST['fFolderId'] = $iFolderId;
         $oFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
 
-        $collection = new DocumentCollection();
-        $collection->addColumn(new KTUnitTitleColumn($sName));
+
+
+        // Setup the collection for move display.
+        $collection = new AdvancedCollection();
+
+        $oCR =& KTColumnRegistry::getSingleton();
+        $col = $oCR->getColumn('ktcore.columns.title');
+        $col->setOptions(array('qs_params'=>array('fFolderId'=>$oFolder->getId())));
+        $collection->addColumn($col);
+
         $qObj = new FolderBrowseQuery($oFolder->getId());
         $collection->setQueryObject($qObj);
-        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $batchSize = 20;
+
         $collection->empty_message = _kt('No folders available in this location.');
-        $resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit2&unit_name=%s&fFolderId=%d", $sName, $oFolder->getId()));
-        $collection->setBatching($resultURL, $batchPage, $batchSize);
+        $aOptions = $collection->getEnvironOptions();
+        $collection->setOptions($aOptions);
 
-        // ordering. (direction and column)
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
-
-        $collection->setSorting($displayControl, $displayOrder);
-
-        $collection->getResults();
-
-        $aBreadcrumbs = array();
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        $folder_path_ids[] = $oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
-
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("action=addUnit2&unit_name=%s&fFolderId=%d", $sName, $id));
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
-        }
+        $oWF =& KTWidgetFactory::getSingleton();
+        $oWidget = $oWF->get('ktcore.widgets.collection',
+                             array('label' => _kt('Target Folder'),
+                                   'description' => _kt('<p>The folder given below is where the unit folder will be created. Use the folder collection and path below to browse to the folder you wish to create the unit folder into.</p><p>The unit administrators have additional rights within that portion of the document management system.
+</p>'),
+                                   'required' => true,
+                                   'name' => 'browse',
+                                   'folder_id' => $oFolder->getId(),
+                                   'collection' => $collection));
+                                                       
+        
 
         $add_fields = array();
         $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
 
-		$isValid = true;
-		if (KTFolderUtil::exists($oFolder, $sName)) {
-			$isValid = false; // can't add a unit folder with the same name.
-		}
+        $add_fields[] = $oWidget;
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit2");
         $aTemplateData = array(
             "context" => $this,
             "add_fields" => $add_fields,
-            "collection" => $collection,
-            "collection_breadcrumbs" => $aBreadcrumbs,
+            "unit_name" => $sName,
             "folder" => $oFolder,
             "name" => $sName,
-			"is_valid" => $isValid,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -161,9 +151,9 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'message' => _kt('No name given'),
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
-		$aOptions['message'] = _kt('A unit with that name already exists.');
-		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
-
+        $aOptions['message'] = _kt('A unit with that name already exists.');
+        $sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
+                
         $oFolder = KTFolderUtil::add($oParentFolder, $sName, $this->oUser);
         $aOptions = array(
             'redirect_to' => array('addUnit2', sprintf('fFolderId=%d&unit_name=%s', $oParentFolder->getId(), $sName)),
