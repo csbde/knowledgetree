@@ -13,32 +13,9 @@ your unit folder.{/i18n}</p>
         {$oWidget->render()}
       {/foreach}
 
-<div class="field ">
-<label for="fFolderId">{i18n}Target folder{/i18n}</label>
-<p class="descriptiveText">{i18n}The folder given below is where the
-unit folder will be created.  Use the folder collection and path below
-to browse to the folder you wish to create the unit folder into.{/i18n}</p>
-
-<p class="descriptiveText">{i18n}The unit administrators have additional
-rights within that portion of the document management system.{/i18n}</p>
-
-<input type="hidden" name="fFolderId" value="{$folder->getId()}" />
-{foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
-<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
-{if !$smarty.foreach.bc.last}
-&raquo;
-{/if}
-{/foreach}
-{$collection->render()}
-</div>
 
       <div class="form_actions">
-         {if $is_valid}
          <input type="submit" value="{i18n}create unit{/i18n}" />
-         {else}
-         <p class="descriptiveText">{i18n}A folder with this name already exists in this location.  Please select
-         another folder before creating the unit.{/i18n}</p>
-         {/if}
          <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
