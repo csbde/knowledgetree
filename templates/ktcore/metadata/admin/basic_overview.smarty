@@ -9,8 +9,8 @@ of related information.{/i18n}</p>
     <thead>
         <tr>
             <th>{i18n}Field Name{/i18n}</th>    
-            <th>{i18n}Edit{/i18n}</th>
-            <th>{i18n}Delete{/i18n}</th>                                
+            <th class="centered">{i18n}Edit{/i18n}</th>
+            <th class="centered">{i18n}Delete{/i18n}</th>                                
             <th>{i18n}Type Description{/i18n}</th>            
         </tr>
     </thead>
@@ -20,9 +20,12 @@ of related information.{/i18n}</p>
             <td class="title">
                 {$oField->getName()|escape}
             </td>
-            <td>
+            <td class="centered">
                 <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
             </td>
+            <td class="centered">
+                <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktDelete">{i18n}delete{/i18n}</a>
+            </td>            
             <td>
                 <span class="descriptiveText">{$oField->getTypeDescription()}</span>
             </td>

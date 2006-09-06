@@ -22,7 +22,9 @@ class KTStringValidator extends KTValidator {
         $this->sMinLengthWarning = KTUtil::arrayGet($aOptions, 'min_length_warning',
             sprintf(_kt('You must provide a value which is at least %d characters long.'), $this->iMinLength));
         $this->sMaxLengthWarning = KTUtil::arrayGet($aOptions, 'max_length_warning',
-            sprintf(_kt('You must provide a value which is at most %d characters long.'), $this->iMaxLength));            
+            sprintf(_kt('You must provide a value which is at most %d characters long.'), $this->iMaxLength));      
+            
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
     }
     
     function validate($data) {
@@ -32,6 +34,10 @@ class KTStringValidator extends KTValidator {
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
+        
+        if ($this->bTrim) {
+            $val = trim($val);
+        }
         
         $l = strlen($val);
         if ($l < $this->iMinLength) {

@@ -267,6 +267,129 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         ));
         return $oTemplate->render();
     }
+    
+    function do_delete() {
+        $this->startTransaction();
+        $res = $this->oFieldset->delete();
+        $this->oValidator->notErrorFalse($res, array(
+            'redirect_to' => array('main', ''),
+            'message' => _kt('Could not delete fieldset'),
+        ));
+        $this->successRedirectToMain(_kt('Fieldset deleted'));
+    }
+    
+    function form_edit() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.fieldsets.edit',
+            'label' => _kt("Change Fieldset Details"),
+            'submit_label' => _kt('Update Fieldset'),
+            'cancel_action' => 'edit',
+            'fail_action' => 'editfieldset',
+            'action' => 'savefieldset',
+            'context' => $this,            
+        ));
+        
+        
+        // construct the widget set.
+        // we use a slight variation here, because "type" is only present in certain circumstances.
+        $widgets = array(
+            array('ktcore.widgets.string',array(
+                'label' => _kt("Fieldset Name"),
+                'name' => 'name',
+                'required' => true,
+                'description' => _kt("Each fieldset needs a unique name."),
+                'value' => $this->oFieldset->getName(),
+            )),
+            array('ktcore.widgets.text',array(
+                'label' => _kt("Description"),
+                'name' => 'description',
+                'required' => true,
+                'description' => _kt("In order to ensure that the data that users enter is useful, it is essential that you provide a good example."),
+                'value' => $this->oFieldset->getDescription(),                
+            )),            
+        );
+       
+        $widgets[] = array('ktcore.widgets.boolean',array(
+                'label' => _kt("Generic"),
+                'name' => 'generic',
+                'description' => _kt("A generic fieldset is one that is available for every document by default. These fieldsets will be available for users to edit and add for every document in the document management system."),
+                'value' => $this->oFieldset->getIsGeneric(),                                
+            ));
+            
+        $oForm->setWidgets($widgets);
+        
+        // similarly, we construct validators here.
+        $validators = array(
+            array('ktcore.validators.string', array(
+                'test' => 'name',
+                'output' => 'name', 
+            )),
+            array('ktcore.validators.string', array(
+                'test' => 'description',
+                'output' => 'description',
+            )),
+            array('ktcore.validators.boolean', array(
+                'test' => 'generic',
+                'output' => 'generic',
+            )),
+        );
+        
+        $oForm->setValidators($validators);
+        
+        return $oForm;
+    }
+    
+    function do_editfieldset() {    
+        $oForm = $this->form_edit();
+        return $oForm->renderPage(_kt("Edit Fieldset"));
+    }
+    
+    function do_savefieldset() {    
+        $oForm = $this->form_edit();
+        $res = $oForm->validate();
+        
+        $data = $res['results'];
+        $errors = $res['errors'];
+        $extra_errors = array();
+        if ($data['name'] != $this->oFieldset->getName()) {
+            $oOldFieldset = KTFieldset::getByName($data['name']);
+            if (!PEAR::isError($oOldFieldset)) {
+                $extra_errors['name'][] = _kt("A fieldset with that name already exists.");
+            }
+        }
+        
+        if (!empty($errors) || !empty($extra_errors)) {
+            return $oForm->handleError(null, $extra_errors);
+        }
+        
+        $this->startTransaction();
+        
+        $this->oFieldset->setName($data['name']);
+        $this->oFieldset->setDescription($data['description']);     
+        $bGeneric = $data['generic'];
+        if ($bGeneric != $this->oFieldset->getIsGeneric() && $bGeneric == true) {
+            // delink it from all doctypes.            
+            $aTypes = $oFieldset->getAssociatedTypes();
+            foreach ($aTypes as $oType) {
+                $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'));
+                    exit(0);
+                }
+            }
+        }
+           
+        $this->oFieldset->setIsGeneric($data['generic']);                
+        
+        $res = $this->oFieldset->update();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'));
+            exit(0);
+        }
+        
+        return $this->successRedirectTo('edit', _kt("Fieldset details updated."));
+    }    
 }
 
 ?>
