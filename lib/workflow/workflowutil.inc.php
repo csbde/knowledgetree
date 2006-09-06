@@ -253,6 +253,8 @@ class KTWorkflowUtil {
     }
     // }}}
 
+    // FIXME DEPRECATED
+
     // {{{ setEnabledActionsForState
     /**
      * Sets the actions that are enabled by this workflow state.
@@ -295,6 +297,34 @@ class KTWorkflowUtil {
     }
     // }}}
 
+    function setDisabledActionsForState($oState, $aActions) {
+        $iStateId = KTUtil::getId($oState);
+        $sTable = KTUtil::getTableName('workflow_state_disabled_actions');
+
+        $aQuery = array(
+            "DELETE FROM $sTable WHERE state_id = ?",
+            array($iStateId),
+        );
+        $res = DBUtil::runQuery($aQuery);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        if(!is_array($aActions)) return;
+        
+        $aOptions = array('noid' => true);
+        foreach ($aActions as $sAction) {
+            $res = DBUtil::autoInsert($sTable, array(
+                'state_id' => $iStateId,
+                'action_name' => $sAction,
+            ), $aOptions);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
+        return;
+    }      
+
     // {{{ getEnabledActionsForState
     /**
      * Gets the actions that are enabled by this workflow state.
@@ -320,6 +350,17 @@ class KTWorkflowUtil {
     }
     // }}}
 
+    function getDisabledActionsForState($oState) {
+        $iStateId = KTUtil::getId($oState);
+        $sTable = KTUtil::getTableName('workflow_state_disabled_actions');
+
+        $aQuery = array(
+            "SELECT action_name FROM $sTable WHERE state_id = ?",
+            array($iStateId),
+        );
+        return DBUtil::getResultArrayKey($aQuery, 'action_name');
+    }
+
     // {{{ actionEnabledForDocument
     /**
      * Checks if a particular action is enabled to occur on a document
@@ -343,7 +384,7 @@ class KTWorkflowUtil {
             return true;
         }
         $oState =& KTWorkflowState::getByDocument($oDocument);
-        if (!in_array($sName, KTWorkflowUtil::getEnabledActionsForState($oState))) {
+        if (in_array($sName, KTWorkflowUtil::getDisabledActionsForState($oState))) {
             return false;
         }
         return true;

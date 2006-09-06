@@ -1,0 +1,34 @@
+<h2>{i18n}Transition Restrictions{/i18n}</h2>
+    
+<p class="descriptiveText important">{i18n}All of these must allow the user to perform the transition.{/i18n}</p>
+
+{$add_form->render()}
+    
+<br />    
+    
+{if empty($aGuardTriggers)}
+  <div class="ktInfo"><p>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</p></div>    
+{else}
+    
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Restriction{/i18n}</th>        
+            <th>{i18n}Edit{/i18n}</th>        
+            <th>{i18n}Delete{/i18n}</th>                                          
+            <th>{i18n}Configuration{/i18n}</th>                    
+        </tr>    
+    </thead>    
+    <tbody>
+        {foreach from=$aGuardTriggers item=oTrigger}
+         <tr>
+             <td>{$oTrigger->getName()}</td>
+             <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS context=$context}action=editguardtrigger&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a>{else}&mdash;{/if}</td>
+             <td><a class="ktAction ktDelete" href="{addQS context=$context}action=deleteguardtrigger&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>                                       
+             <td>{$oTrigger->getConfigDescription()}</td>             
+         </tr>
+        {/foreach}    
+    </tbody>
+    </table>    
+    
+    {/if}

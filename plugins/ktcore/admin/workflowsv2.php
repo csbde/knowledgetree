@@ -1073,40 +1073,300 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
         
         $states = KTWorkflowState::getByWorkflow($this->oWorkflow);
+        $action_grid = array();
+        foreach ($states as $oState) {
+            $state_actions = array();
+            $disabled = KTWorkflowUtil::getDisabledActionsForState($oState);
+            
+            foreach ($disabled as $name) {
+                $state_actions[$name] = $name;
+            }
+            
+            $action_grid[$oState->getId()] = $state_actions;
+        }
         
         $oTemplate->setData(array(
             'context' => $this,
             'states' => $states,
             'actions' => $actions,
+            'grid' => $action_grid,
         ));
         return $oTemplate->render();    
     }   
     
     function do_editactions() {
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_edit');            
         $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
+        $blacklist = array('ktcore.actions.document.displaydetails');
+        
+        foreach ($blacklist as $name) {
+            unset($actions[$name]);   
+        }
+        
+        $states = KTWorkflowState::getByWorkflow($this->oWorkflow);
+        $action_grid = array();
+        foreach ($states as $oState) {
+            $state_actions = array();
+            $disabled = KTWorkflowUtil::getDisabledActionsForState($oState);
+            
+            foreach ($disabled as $name) {
+                $state_actions[$name] = $name;
+            }
+            
+            $action_grid[$oState->getId()] = $state_actions;
+        }
         
         $oTemplate->setData(array(
             'context' => $this,
-            'workflow_name' => $this->oWorkflow->getName(),
+            'states' => $states,
+            'actions' => $actions,
+            'grid' => $action_grid,
+            'args' => $this->meldPersistQuery("","saveactions", true),
         ));
         return $oTemplate->render();    
     }       
     
     function do_saveactions() {
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
-        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        $disabled_actions = (array) $_REQUEST['fActions'];
 
-        $res = KTWorkflowUtil::setEnabledActionsForState($oState, $_REQUEST['fActions']);
+        
+        $states = KTWorkflowState::getByWorkflow($this->oWorkflow);
+        $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
+
+        $this->startTransaction();
+
+        foreach ($states as $oState) {
+            $disable = array();
+            $state_disabled = (array) $disabled_actions[$oState->getId()];
+            if (!empty($state_disabled)) {
+                foreach ($actions as $name => $oAction) {
+                    if ($state_disabled[$name]) {
+                        $disable[] = $name;
+                    }
+                }
+            }
+
+            $res = KTWorkflowUtil::setDisabledActionsForState($oState, $disable);
+        }
+
+        $this->successRedirectTo('actionsoverview', _kt('Disabled actions updated.'));
+    }   
+
+    function do_transitionsecurityoverview() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_guards_overview');            
+        $this->oPage->setBreadcrumbDetails(_kt("Transition Guards"));
+
+        $transitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);
         
         $oTemplate->setData(array(
             'context' => $this,
-            'workflow_name' => $this->oWorkflow->getName(),
+            'transitions' => $transitions,
         ));
         return $oTemplate->render();    
     }   
     
+    // helper
+    function describeTransitionGuards($oTransition) {
+        $restrictions = KTWorkflowUtil::getGuardTriggersForTransition($oTransition);
+        
+        if (empty($restrictions)) {
+            return _kt("No restrictions in place for this transition.");
+        }
+        
+        $restriction_text = array();
+        foreach ($restrictions as $oGuard) {
+            $restriction_text[] = $oGuard->getConfigDescription();
+        }
+        
+        return implode('. ', $restriction_text);
+    }
+    
+    function form_addtransitionguard() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.admin.workflow.addguard',
+            'label' => _kt("Add New Transition Restriction"),
+            'action' => 'addguard',
+            'cancel_action' => 'manageguards',
+            'fail_action' => 'manageguards', 
+            'submit_label' => _kt("Add Restriction"),
+            'context' => $this,
+        ));
+        
+        $oTriggerSingleton =& KTWorkflowTriggerRegistry::getSingleton();
+        $aTriggerList = $oTriggerSingleton->listWorkflowTriggers();
+        $vocab = array();
+        foreach ($aTriggerList as $ns => $aTriggerInfo) {
+            $aInfo = $aTriggerInfo; // i am lazy.
+            //var_dump($aInfo);
+            $actions = array();
+            if ($aInfo['guard']) {
+                $actions[] = _kt('Guard');
+            } else { 
+                continue;
+            }
+            if ($aInfo['action']) {
+                $actions[] = _kt('Action');
+            }
+            $sActStr = implode(', ', $actions);
+            $vocab[$ns] = sprintf(_kt("%s (%s)"), $aInfo['name'], $sActStr);
+        }    
+        
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.selection', array(
+                'label' => _kt("Restriction Type"),
+                'name' => 'guard_name',
+                'vocab' => $vocab,
+                'simple_select' => false,
+                'required' => true,
+            )),
+        ));
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'guard_name',
+                'output' => 'guard_name',
+            )),
+        ));
+        return $oForm;
+    }   
+    
+    function do_manageguards() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/restrictions_edit');            
+        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        
+        $restrictions = KTWorkflowUtil::getGuardTriggersForTransition($this->oTransition);
+        $add_form = $this->form_addtransitionguard();
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'add_form' => $add_form,
+            'aGuardTriggers' => $restrictions,
+        ));
+        return $oTemplate->render();    
+    }       
+    
+    function do_addguard() {
+        $oForm = $this->form_addtransitionguard();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        $errors = $res['errors'];
+        
+        if (!empty($errors)) {
+            return $oForm->handleError();
+        }
 
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger(KTUtil::arrayGet($data, 'guard_name'));
+        if (PEAR::isError($oTrigger)) {
+            return $oForm->handleError(_kt('Unable to add trigger.'));
+        }
+
+        $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+            'transitionid' => KTUtil::getId($this->oTransition),
+            'namespace' =>  KTUtil::arrayGet($data, 'guard_name'),
+            'config' => array(),
+        ));
+        
+        if (PEAR::isError($oTriggerConfig)) {
+            return $oForm->handleError(_kt('Unable to add trigger.') . $oTriggerConfig->getMessage());
+        }
+
+        // now, if the trigger is editable...
+        $oTrigger->loadConfig($oTriggerConfig);
+        if ($oTrigger->bIsConfigurable) {
+            $this->successRedirectTo('editguardtrigger', _kt("New restriction added. This restriction requires configuration:  please specify this below."), array('fTriggerInstanceId' => $oTriggerConfig->getId()));        
+        } else {
+            $this->successRedirectTo('manageguards', _kt("New restriction added."));
+        }
+        exit(0);        
+    }
+    
+    
+    function do_editguardtrigger() {
+        $this->oPage->setBreadcrumbDetails(_kt('editing restriction'));
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            return $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to add trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+
+        return $oTrigger->displayConfiguration($this->meldPersistQuery(array('fTriggerInstanceId' => $oTriggerInstance->getId()), 'saveguardtrigger', true));
+    }
+
+    // }}}
+
+    function do_saveguardtrigger() {
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
+            exit(0);        
+        }
+        
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTrigger->saveConfiguration();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('manageguards', _kt('Unable to save trigger: ') . $res->getMessage());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('manageguards', _kt('Trigger saved.'));
+        exit(0);    
+    }
+
+    function do_deleteguardtrigger() {
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            return $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTriggerInstance->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('editTransition', _kt('Unable to delete trigger: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('manageguards', _kt('Trigger deleted.'));
+        exit(0);    
+    }
+
+    
     // ----------------- Effects ---------------------
     function do_effects() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/effects_overview');            

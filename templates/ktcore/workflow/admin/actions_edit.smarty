@@ -1,0 +1,42 @@
+<h2>Assign blocked actions</h2>
+
+<p class="descriptiveText important">Actions which are checked on this page will 
+<strong>not</strong> be available to users.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>Assign Blocked Actions</legend>
+
+{foreach from=$args item=v key=k}
+    <input type="hidden" name="{$k}" value="{$v}" />
+{/foreach}
+
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <th>State</th>
+      {foreach from=$actions item=oAction}
+        <th>{$oAction->getDisplayName()}</th>  
+      {/foreach}
+    </thead>
+    
+    <tbody>
+      {foreach from=$states item=oState}
+      {assign value=$oState->getId() var=state_id}
+        <tr>
+            <td>{$oState->getName()}</td>
+            {foreach from=$actions item=oAction}
+            {assign value=$oAction->getName() var=action_id}
+                <td class="centered">            
+              <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
+                </td>
+            {/foreach}
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
+
+<div class="form_actions">
+    <input type="submit" value="{i18n}Block actions{/i18n}" />
+</div>
+
+</fieldset>
+</form>
