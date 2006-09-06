@@ -88,7 +88,7 @@ class KTFieldsetRegistry {
                 // we try to make this a little more "sane"
                 $type = '';
                 if ($oField->getHasLookup()) {
-                    if ($oField->getHasLookupTree) {
+                    if ($oField->getHasLookupTree()) {
                         $type = 'ktcore.fields.tree';
                     } else {
                         $type = 'ktcore.fields.lookup';
@@ -117,13 +117,14 @@ class KTFieldsetRegistry {
                         'label_method' => 'getName',
                     ));
                 } else if ($type == 'ktcore.fields.tree') {
-                    $widgets[] = $this->oWF->get('ktcore.widgets.tree', array(
+                    $widgets[] = $this->oWF->get('ktcore.widgets.treemetadata', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
                         'name' => $fname,
                         'value' => $value,
                         'description' => $oField->getDescription(),
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
+                        'field_id' => $oField->getId(),
                     ));
                 }
             }
@@ -167,7 +168,7 @@ class KTFieldsetRegistry {
 
                 $type = '';
                 if ($oField->getHasLookup()) {
-                    if ($oField->getHasLookupTree) {
+                    if ($oField->getHasLookupTree()) {
                         $type = 'ktcore.fields.tree';
                     } else {
                         $type = 'ktcore.fields.lookup';

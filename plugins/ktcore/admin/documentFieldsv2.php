@@ -223,7 +223,9 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		}
 		$aNames = array();
 		foreach ($types as $oType) { 
-		    $aNames[] = $oType->getName();
+		    if (!PEAR::isError($oType)) {
+    		    $aNames[] = $oType->getName();
+    		}
 		}
 		return implode(', ', $aNames);
 	}

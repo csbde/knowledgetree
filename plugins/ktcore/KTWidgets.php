@@ -251,6 +251,37 @@ class KTCoreEntitySelectionWidget extends KTCoreSelectionWidget {
     }
 }
 
+class KTCoreTreeMetadataWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.treemetadata';
+    var $iFieldId;
+    var $aCSS = array('resources/css/kt-treewidget.css');
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $this->iFieldId = KTUtil::arrayGet($aOptions, 'field_id');
+        if (is_null($this->iFieldId)) {
+            return PEAR::raiseError(_kt("Tree metadata fields must be associated with a particular type."));
+        }
+    }
+    
+    function getWidget() {
+        // very simple, general purpose passthrough.  Chances are this is sufficient,
+        // just override the template being used.
+        $bHasErrors = false;       
+        
+        require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
+        
+        $fieldTree = new MDTree();
+        $fieldTree->buildForField($this->iFieldId);
+        $fieldTree->setActiveItem($this->value);
+        return $fieldTree->_evilTreeRenderer($fieldTree, $this->sName);        
+    } 
+}
+
 // wrap a set of fields into a core, basic one.
 //
 // this *also* subdivides the form data output namespace.

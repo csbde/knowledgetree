@@ -9,8 +9,10 @@
 
 .leafnode {font-weight: bold; }
 
-.kt_treenodes ul {
+#content .kt_treenodes ul, 
+#content ul.kt_treenodes  {
     list-style: none;
+    list-style-image: none !important;    
     text-align: left;
 }
 .kt_treenodes li.treenode > a.pathnode {
