@@ -1,0 +1,27 @@
+<h2>Actions Overview</h2>
+
+<p class="descriptiveText">In addition to restricting permissions, it is also 
+possible to block certain <strong>actions</strong> at any given point.  Actions
+which are not blocked are still controlled by the usual permissions.</p>
+
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <th>State</th>
+      {foreach from=$actions item=oAction}
+        <th>{$oAction->getDisplayName()}</th>  
+      {/foreach}
+    </thead>
+    
+    <tbody>
+      {foreach from=$states item=oState}
+      {assign value=$oState->getId() var=state_id}
+        <tr>
+            <td>{$oState->getName()}</td>
+            {foreach from=$actions item=oAction}
+            {assign value=$oAction->getName() var=action_id}
+             <td>&mdash;</td>
+            {/foreach}
+        </tr>
+      {/foreach}
+    </tbody>
+</table>

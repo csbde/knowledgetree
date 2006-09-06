@@ -1059,6 +1059,53 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('managepermissions', _kt('Permissions Allocated.'));
     }
     
+    // ACTIONS
+    
+    function do_actionsoverview() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
+        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        
+        $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
+        $blacklist = array('ktcore.actions.document.displaydetails');
+        
+        foreach ($blacklist as $name) {
+            unset($actions[$name]);   
+        }
+        
+        $states = KTWorkflowState::getByWorkflow($this->oWorkflow);
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'states' => $states,
+            'actions' => $actions,
+        ));
+        return $oTemplate->render();    
+    }   
+    
+    function do_editactions() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
+        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'workflow_name' => $this->oWorkflow->getName(),
+        ));
+        return $oTemplate->render();    
+    }       
+    
+    function do_saveactions() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
+        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+
+        $res = KTWorkflowUtil::setEnabledActionsForState($oState, $_REQUEST['fActions']);
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'workflow_name' => $this->oWorkflow->getName(),
+        ));
+        return $oTemplate->render();    
+    }   
+    
 
     // ----------------- Effects ---------------------
     function do_effects() {

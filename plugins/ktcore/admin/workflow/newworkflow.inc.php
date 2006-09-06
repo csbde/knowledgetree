@@ -47,7 +47,8 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             )),
             array('ktcore.widgets.text',array(
                 'label' => _kt('States'),
-                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Note that the first state you list is the one in which documents will start the workflow - this can be changed later on. Please enter a list of states, one per line.  State names must be unique.'),
+                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Please enter a list of states, one per line.  State names must be unique.'),
+                'important_description' => _kt('Note that the first state you list is the one in which documents will start the workflow - this can be changed later on. '),
                 'required' => true,
                 'name' => 'states',
                 'rows' => 15,
