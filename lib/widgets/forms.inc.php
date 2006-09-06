@@ -212,6 +212,11 @@ class KTForm {
         return $this->renderContaining($sWidgets . ' ' . $sButtons);
     }
     
+    function renderPage($sTitle) {
+        $pageval =  $this->render();
+        return sprintf('<h2>%s</h2> %s', $sTitle, $pageval);
+    }    
+    
     function renderWidgets() {
         if (empty($this->_widgets)) {
             return '&nbsp;';

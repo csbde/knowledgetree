@@ -512,31 +512,6 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     }
     // }}}
 
-    // {{{ do_removeFields
-    function do_removeFields() {
-        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
-        foreach ($_REQUEST['fields'] as $iFieldId) {
-            $oField =& DocumentField::get($iFieldId);
-            $oField->delete();
-        }
-        $this->successRedirectTo('edit', _kt('Fields removed'), 'fFieldsetId=' . $oFieldset->getId());
-        exit(0);
-    }
-    // }}}
-
-    // {{{ do_delete
-    function do_delete() {
-        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
-        $res = $oFieldset->delete();
-        $this->oValidator->notErrorFalse($res, array(
-            'redirect_to' => array('main', ''),
-            'message' => _kt('Could not delete fieldset'),
-        ));
-        $this->successRedirectToMain(_kt('Fieldset deleted'));
-    }
-    // }}}
-
-
 // {{{ TREE
     // create and display the tree editing form.
     function do_managetree() {
@@ -770,6 +745,15 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
         $actionStr .= ")";
         return $actionStr;
+    }
+
+    function do_deletefield() {
+        $res = $this->oField->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToParent(sprintf(_kt("Unable to delete field: %s"), $res->getMessage()));
+        } 
+        
+        $this->successRedirectToParent(_kt("Field deleted."));
     }
 
 }

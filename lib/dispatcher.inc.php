@@ -180,6 +180,27 @@ class KTDispatcher {
         }
         $this->redirectTo($event, $sQuery);
     }
+    
+    function errorRedirectToParent($error_message) {
+        if ($this->bTransactionStarted) {
+            $this->rollbackTransaction();
+        }
+
+        $_SESSION['KTErrorMessage'][] = $error_message;
+        redirect($this->sParentUrl); 
+        exit(0);
+    }
+
+    function successRedirectToParent($info_message) {
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+        if (!empty($info_message)) {
+            $_SESSION['KTInfoMessage'][] = $info_message;
+        }
+        redirect($this->sParentUrl); 
+        exit(0);
+    }    
 
     function redirectTo($event, $sQuery = "") {
         // meld persistant options
