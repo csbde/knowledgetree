@@ -1,0 +1,29 @@
+<h2>Transition Restrictions Overview</h2>
+
+<p class="descriptiveText">In order to ensure that the workflow is followed 
+correctly, it is often necessary to restrict the situations in which a 
+transition can be followed.  This can include things like the permissions the
+user has on the document, the user's groups or roles, or whether the document
+is checked-out or not.</p>
+
+<p class="descriptiveText important">Please note that the plugins that are installed
+will affect the available options</p>
+
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <th>Transition</th>
+        <th>Edit</th>
+        <th>Existing Restrictions</th>        
+    </thead>
+    
+    <tbody>
+      {foreach from=$transitions item=oTransition}
+      {assign value=$oTransition->getId() var=transition_id}
+        <tr>
+            <td>{$oTransition->getName()}</td>
+            <td class="centered"><a href="{addQS context=$context}action=manageguards&fTransitionId={$transition_id}{/addQS}" class="ktAction ktEdit"></a></td>
+            <td><span class="descriptiveText">{$context->describeTransitionGuards($oTransition)}</span></td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>

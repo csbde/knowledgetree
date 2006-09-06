@@ -11,7 +11,7 @@ with the system's security:</p>
 <ol>
     <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">Document Permissions</a> (by state)</li>
     <li><a href="{addQS context=$context}action=actionsoverview{/addQS}">Action Restrictions</a> (by state)</li>            
-    <li><a href="{addQS context=$context}action=transitionrestrictionoverview{/addQS}">Transition Restrictions</a></li>    
+    <li><a href="{addQS context=$context}action=transitionsecurityoverview{/addQS}">Transition Restrictions</a></li>    
 
 </ol>
 

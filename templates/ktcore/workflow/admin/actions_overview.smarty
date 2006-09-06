@@ -4,6 +4,9 @@
 possible to block certain <strong>actions</strong> at any given point.  Actions
 which are not blocked are still controlled by the usual permissions.</p>
 
+<p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions{/addQS}">Edit Actions</a>
+<a href="{addQS context=$context}action=editactions{/addQS}">Edit Actions</a></p>
+
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <th>State</th>
@@ -19,7 +22,11 @@ which are not blocked are still controlled by the usual permissions.</p>
             <td>{$oState->getName()}</td>
             {foreach from=$actions item=oAction}
             {assign value=$oAction->getName() var=action_id}
-             <td>&mdash;</td>
+              {if $grid.$state_id.$action_id}
+                <td class="centered"><span class="ktAction ktDenied">Denied</span></td>              
+              {else}
+                <td class="centered">&mdash;</td>
+              {/if}
             {/foreach}
         </tr>
       {/foreach}
