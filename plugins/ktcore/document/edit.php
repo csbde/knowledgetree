@@ -96,7 +96,7 @@ class KTDocumentEditAction extends KTDocumentAction {
             $widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
             $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));                
         }
-        
+
         $oForm->setWidgets($widgets);
         $oForm->setValidators($validators);                
     
@@ -129,7 +129,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         }
         
         $data = $res['results'];
-        
+
         // we need to format these in MDPack format
         // which is a little archaic:
         //
@@ -148,11 +148,16 @@ class KTDocumentEditAction extends KTDocumentAction {
             $fields = $oFieldset->getFields();
             $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
             foreach ($fields as $oField) {
-                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());            
-                $MDPack[] = array(
-                    $oField,
-                    $val
-                );
+                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());        
+                
+                // FIXME "null" has strange meanings here.
+                if (!is_null($val)) {    
+                    $MDPack[] = array(
+                        $oField,
+                        $val
+                    );
+                }
+                
             }
         } 
 
@@ -164,7 +169,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         }
         $core_res = KTDocumentUtil::saveMetadata($this->oDocument, $MDPack);
         if (PEAR::isError($core_res)) {
-            $oForm->handleError(_kt("Unexpected validation failure."));
+            $oForm->handleError(sprintf(_kt("Unexpected validation failure: %s."), $core_res->getMessage()));
         }
 
         // post-triggers.

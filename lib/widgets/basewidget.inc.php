@@ -21,6 +21,7 @@ class KTWidget {
     var $bAutoValidate;
     
     var $aJavascript = array(); // what javascript do we need added.
+    var $aCSS = array();
     
     // allow very quick overrides.
     var $sTemplate = "ktcore/widgets/base";
@@ -59,7 +60,7 @@ class KTWidget {
     }
 
     function requireJSResource($sResourceURL) {
-	$this->aJavascript[] = $sResourceURL;
+        $this->aJavascript[] = $sResourceURL;
     }
 
     function render() {
@@ -76,6 +77,11 @@ class KTWidget {
             $oPage =& $GLOBALS['main'];            
             $oPage->requireJSResources($this->aJavascript);
         }
+        if (!empty($this->aCSS)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireCSSResources($this->aCSS);
+        }        
         
         $widget_content = $this->getWidget();
         
