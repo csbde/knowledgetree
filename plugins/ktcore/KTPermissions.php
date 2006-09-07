@@ -384,6 +384,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'context' => &$this,
             'roles' => $aRoles,
             'foldername' => $this->oFolder->getName(),
+            'is_root' => ($this->oFolder->getId() == 1),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -472,10 +473,39 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $this->successRedirectToMain(_kt('Role now uses parent.'), sprintf('fFolderId=%d',$this->oFolder->getId())); 
     }
     
+    function rootoverride($role_id) {
+        if ($this->oFolder->getId() != 1) {
+            $this->errorRedirectToMain(_kt("Cannot create allocation for non-root locations."));
+        }
+        
+        $oRoleAllocation = new RoleAllocation();
+        $oRoleAllocation->setFolderId($this->oFolder->getId());
+        $oRoleAllocation->setRoleId($role_id);
+        
+        // create a new permission descriptor. 
+        // FIXME we really want to duplicate the original (if it exists)
+        
+        $aAllowed = array(); // no-op, for now.
+		$this->startTransaction();
+		
+        $oRoleAllocation->setAllowed($aAllowed);
+        $res = $oRoleAllocation->create();
+		
+		if (PEAR::isError($res) || ($res == false)) {
+			$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
+		}
+		
+		return $oRoleAllocation;
+    }
+    
     function do_editRoleUsers() {
 
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
-        $oRoleAllocation = RoleAllocation::get($role_allocation_id);
+        if (($this->oFolder->getId() == 1) && is_null($role_allocation_id)) {
+            $oRoleAllocation = $this->rootoverride($_REQUEST['role_id']);
+        } else {
+            $oRoleAllocation = RoleAllocation::get($role_allocation_id);
+        }
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
             $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
@@ -521,7 +551,11 @@ class KTRoleAllocationPlugin extends KTFolderAction {
     function do_editRoleGroups() { 
 
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
-        $oRoleAllocation = RoleAllocation::get($role_allocation_id);
+        if (($this->oFolder->getId() == 1) && is_null($role_allocation_id)) {
+            $oRoleAllocation = $this->rootoverride($_REQUEST['role_id']);
+        } else {
+            $oRoleAllocation = RoleAllocation::get($role_allocation_id);
+        }
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
             $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
