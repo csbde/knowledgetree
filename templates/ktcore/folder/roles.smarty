@@ -9,14 +9,14 @@
 <div class='ktInfo'><p><strong>{i18n}Warning:{/i18n}</strong> {i18n}Please note that changing
 role allocations may take a some time, depending on the number of folders below this one.{/i18n}</p></div>
 
-<table class="listing">
+<table class="kt_collection narrow" cellspacing="0">
 <thead>
     <tr>
         <th>{i18n}Role{/i18n}</th>
         <th>{i18n}Allocated users{/i18n}</th>
-        <th>{i18n}Edit Users{/i18n}</th> 
-        <th>{i18n}Edit Groups{/i18n}</th>
-        <th>{i18n}Use Parent{/i18n}</th>
+        <th class="centered">{i18n}Edit Users{/i18n}</th> 
+        <th class="centered">{i18n}Edit Groups{/i18n}</th>
+        {if !$is_root}<th class="centered">{i18n}Use Parent{/i18n}</th>{/if}
     </tr>
 </thead>
 <tbody>
@@ -25,7 +25,7 @@ role allocations may take a some time, depending on the number of folders below 
     <tr class="{cycle values=odd,even}">
         <td>{$aRole.name}</td>
         <td>
-           {if ($aRole.allocation_id === null)}
+           {if ($aRole.allocation_id === null) && !$is_root}
               <strong>{i18n}inherited from parent folder.{/i18n}</strong><br />
               <span class="descriptiveText">
            {/if}
@@ -35,15 +35,17 @@ role allocations may take a some time, depending on the number of folders below 
               </span class="descriptiveText">
            {/if}
         </td>
-        {if ($aRole.allocation_id === null)}
+        {if ($aRole.allocation_id === null) && !$is_root}
         <td colspan="3"><a href="{addQS}action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}">{i18n}Override Parent Allocation{/i18n}</a></td>
         {else}
-        <td><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Users{/i18n}">{i18n}Edit Users{/i18n}</a></td>
-        <td><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Groups{/i18n}">{i18n}Edit Groups{/i18n}</a></td>
-        <td><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete" 
-	       kt:deleteMessage="Are you sure you wish to remove this role allocation?"	 
-	       title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
-        {/if}
+        <td class="centered"><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}&role_id={$role_id}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Users{/i18n}">{i18n}Edit Users{/i18n}</a></td>
+        <td class="centered"><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}&role_id={$role_id}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Groups{/i18n}">{i18n}Edit Groups{/i18n}</a></td>
+          {if !$is_root}
+            <td class="centered"><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete" 
+	           kt:deleteMessage="Are you sure you wish to remove this role allocation?"	 
+	           title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
+          {/if}
+        {/if}        
     </tr>
 {/foreach}
 {else}
