@@ -14,7 +14,7 @@
 <h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
 
 {capture assign=link}{addQS}action=selectType&fDocumentId={$document->getId()}{/addQS}{/capture}
-<p class="descriptiveText">{i18n arg_link=$link}Change the <strong><a href="#link#">document type</a></strong>{/i18n}</p>
+<p class="descriptiveText">{i18n arg_link=$link arg_name=$type_name}Change the <strong><a href="#link#">document type</a></strong>. The current type is "#name#"{/i18n}</p>
 
 <p class="descriptiveText">{i18n}The following document metadata is available for editing.{/i18n}</p>
 

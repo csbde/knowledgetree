@@ -671,11 +671,14 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ fieldsetsForDocument 
-    function fieldsetsForDocument($oDocument) {
+    function fieldsetsForDocument($oDocument, $iTypeOverride = null) {
         global $default;
         $oDocument = KTUtil::getObject('Document', $oDocument);
         $iMetadataVersionId = $oDocument->getMetadataVersionId();
         $iDocumentTypeId = $oDocument->getDocumentTypeId();
+        if (!is_null($iTypeOverride)) {
+            $iDocumentTypeId = $iTypeOverride;
+        }
 
         $sQuery = "SELECT DISTINCT F.id AS fieldset_id " .
             "FROM $default->document_metadata_version_table AS DM INNER JOIN document_fields_link AS DFL ON DM.id = DFL.metadata_version_id " .
