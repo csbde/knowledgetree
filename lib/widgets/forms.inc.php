@@ -212,9 +212,13 @@ class KTForm {
         return $this->renderContaining($sWidgets . ' ' . $sButtons);
     }
     
-    function renderPage($sTitle) {
+    function renderPage($sTitle, $sDescription = null) {
         $pageval =  $this->render();
-        return sprintf('<h2>%s</h2> %s', $sTitle, $pageval);
+        $sHelpText = '';
+        if (!is_null($sDescription)) {
+            $sHelpText = sprintf('<p class="descriptiveText">%s</p>', $sDescription);
+        }
+        return sprintf('<h2>%s</h2> %s %s', $sTitle, $sHelpText, $pageval);
     }    
     
     function renderWidgets() {
