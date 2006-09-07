@@ -1379,6 +1379,223 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         ));
         return $oTemplate->render();    
     }    
+    
+
+    function form_addtransitionaction() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.admin.workflow.addaction',
+            'label' => _kt("Add New Transition Action"),
+            'action' => 'addactiontrigger',
+            'cancel_action' => 'managetransitionactions',
+            'fail_action' => 'managetransitionactions', 
+            'submit_label' => _kt("Add Action"),
+            'context' => $this,
+        ));
+        
+        $oTriggerSingleton =& KTWorkflowTriggerRegistry::getSingleton();
+        $aTriggerList = $oTriggerSingleton->listWorkflowTriggers();
+        $vocab = array();
+        foreach ($aTriggerList as $ns => $aTriggerInfo) {
+            $aInfo = $aTriggerInfo; // i am lazy.
+            //var_dump($aInfo);
+            $actions = array();
+            if ($aInfo['guard']) {
+                $actions[] = _kt('Guard');
+            } 
+            if ($aInfo['action']) {
+                $actions[] = _kt('Action');
+            } else { 
+                continue;
+            }
+            $sActStr = implode(', ', $actions);
+            $vocab[$ns] = sprintf(_kt("%s (%s)"), $aInfo['name'], $sActStr);
+        }    
+        
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.selection', array(
+                'label' => _kt("Action/Effect Type"),
+                'name' => 'action_name',
+                'vocab' => $vocab,
+                'simple_select' => false,
+                'required' => true,
+            )),
+        ));
+        
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'action_name',
+                'output' => 'action_name',
+            )),
+        ));
+        return $oForm;
+    }       
+
+    function do_transitionactions() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_effects_overview');            
+        $this->oPage->setBreadcrumbDetails(_kt("Transition Effects"));
+        
+        $aTransitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);
+                
+        $oTemplate->setData(array(
+            'context' => $this,
+            'transitions' => $aTransitions,
+       ));
+        return $oTemplate->render();    
+    }           
+    
+    
+    // helper
+    function describeTransitionActions($oTransition) {
+        $actions = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
+        
+        if (empty($actions)) {
+            return '&mdash;';
+        }
+        
+        $action_text = array();
+        foreach ($actions as $oAction) {
+            $action_text[] = $oAction->getConfigDescription();
+        }
+        
+        return implode('. ', $action_text);
+    }
+    
+
+    function do_managetransitionactions() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_actions_edit');            
+        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        
+        $actions = KTWorkflowUtil::getActionTriggersForTransition($this->oTransition);
+        $add_form = $this->form_addtransitionaction();
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'add_form' => $add_form,
+            'aActionTriggers' => $actions,
+        ));
+        return $oTemplate->render();    
+    }       
+    
+    function do_addactiontrigger() {
+        $oForm = $this->form_addtransitionaction();
+        $res = $oForm->validate();
+        $data = $res['results'];
+        $errors = $res['errors'];
+        
+        if (!empty($errors)) {
+            return $oForm->handleError();
+        }
+
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger(KTUtil::arrayGet($data, 'action_name'));
+        if (PEAR::isError($oTrigger)) {
+            return $oForm->handleError(_kt('Unable to add trigger.'));
+        }
+
+        $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
+            'transitionid' => KTUtil::getId($this->oTransition),
+            'namespace' =>  KTUtil::arrayGet($data, 'action_name'),
+            'config' => array(),
+        ));
+        
+        if (PEAR::isError($oTriggerConfig)) {
+            return $oForm->handleError(_kt('Unable to add trigger.') . $oTriggerConfig->getMessage());
+        }
+
+        // now, if the trigger is editable...
+        $oTrigger->loadConfig($oTriggerConfig);
+        if ($oTrigger->bIsConfigurable) {
+            $this->successRedirectTo('editactiontrigger', _kt("New action added. This action requires configuration:  please specify this below."), array('fTriggerInstanceId' => $oTriggerConfig->getId()));        
+        } else {
+            $this->successRedirectTo('managetransitionactions', _kt("New restriction added."));
+        }
+        exit(0);        
+    }
+    
+    
+    function do_editactiontrigger() {
+        $this->oPage->setBreadcrumbDetails(_kt('editing restriction'));
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            return $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to add trigger.'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+
+        return $oTrigger->displayConfiguration($this->meldPersistQuery(array('fTriggerInstanceId' => $oTriggerInstance->getId()), 'saveactiontrigger', true));
+    }
+
+    // }}}
+
+    function do_saveactiontrigger() {
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
+            exit(0);        
+        }
+        
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTrigger->saveConfiguration();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to save trigger: ') . $res->getMessage());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('managetransitionactions', _kt('Trigger saved.'));
+        exit(0);    
+    }
+
+    function do_deleteactiontrigger() {
+        $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
+        if (PEAR::isError($oTriggerInstance)) {
+            return $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
+        }
+
+        // grab the transition ns from the request.
+        $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
+        $this->startTransaction();
+
+        $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($oTriggerInstance->getNamespace());
+        if (PEAR::isError($oTrigger)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
+            exit(0);
+        }
+        $oTrigger->loadConfig($oTriggerInstance);
+        
+        $res = $oTriggerInstance->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo('managetransitionactions', _kt('Unable to delete trigger: ') . $res->getMessage(), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+            exit(0);            
+        }
+    
+        $this->successRedirectTo('managetransitionactions', _kt('Trigger deleted.'));
+        exit(0);    
+    }
+    
 }
 
 ?>

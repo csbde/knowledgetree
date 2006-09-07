@@ -5,3 +5,8 @@ varies other actions to occur.  For example, you can attach a "Move" action to a
 which will cause any document moving through that workflow to be moved to a particular folder. 
 Or you can specify that when a document reaches the "Pending Review" state, users
 with the role "Reviewer" on that document are informed.</p>
+
+<ul class="descriptiveText">
+    <li><a href="{addQS context=$context}action=transitionactions{/addQS}">Transition Effects</a></li>
+    <li><a href="{addQS context=$context}action=statenotifications{/addQS}">Notifications</a></li>    
+</ul>

@@ -1,0 +1,23 @@
+<h2>Transition Actions Overview</h2>
+
+<p class="descriptiveText important">Please note that the plugins that are installed
+will affect the available options</p>
+
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <th>Transition</th>
+        <th>Edit</th>
+        <th>Effects</th>        
+    </thead>
+    
+    <tbody>
+      {foreach from=$transitions item=oTransition}
+      {assign value=$oTransition->getId() var=transition_id}
+        <tr>
+            <td>{$oTransition->getName()}</td>
+            <td class="centered"><a href="{addQS context=$context}action=managetransitionactions&fTransitionId={$transition_id}{/addQS}" class="ktAction ktEdit"></a></td>
+            <td><span class="descriptiveText">{$context->describeTransitionActions($oTransition)}</span></td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
