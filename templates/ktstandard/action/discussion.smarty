@@ -35,7 +35,7 @@
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="{i18n}Create a new thread{/i18n}" />
+  <input type="submit" name="submit" value="{i18n}Create thread{/i18n}" />
 </div>
 </fieldset>
 </form>

@@ -14,7 +14,7 @@
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="{i18n}Post a reply{/i18n}" />
+  <input type="submit" name="submit" value="{i18n}Post reply{/i18n}" />
 </div>
 </fieldset>
 </form>
