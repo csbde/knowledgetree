@@ -80,6 +80,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     }
 
     function form_newfield() {
+        $this->oPage->setBreadcrumbDetails(_kt('add field'));
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.basic.field.create',
@@ -327,8 +329,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     }
     
     function do_addlookupvalues() {
-        $oForm = $this->form_addlookups();
-        
+        $this->oPage->setBreadcrumbDetails(_kt('add lookup values'));
+
+        $oForm = $this->form_addlookups();        
         return $oForm->render();
     }
     
@@ -399,6 +402,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     }    
     
     function do_managelookups() {
+        $this->oPage->setBreadcrumbDetails(_kt('manage lookup values'));
+
         $oTemplate =& $this->oValidator->validateTemplate("ktcore/metadata/admin/manage_lookups");
         
         $lookups =& MetaData::getByDocumentField($this->oField);
@@ -517,7 +522,6 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     function do_managetree() {
         global $default;
         // extract.
-
         $iFieldsetId = KTUtil::getId($this->oFieldset);
         $iFieldId = KTUtil::getId($this->oField);
 

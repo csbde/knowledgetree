@@ -342,6 +342,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     
     function do_editfieldset() {    
         $oForm = $this->form_edit();
+        $this->oPage->setBreadcrumbDetails(_kt('edit fieldset'));
         return $oForm->renderPage(_kt("Edit Fieldset"));
     }
     
