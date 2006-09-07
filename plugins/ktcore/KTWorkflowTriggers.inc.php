@@ -477,7 +477,7 @@ class CopyActionTrigger extends KTWorkflowTrigger {
         
         $qsFrag = array();
         foreach ($args as $k => $v) {
-            if ($k == 'action') { $v = 'editTrigger'; } // horrible hack - we really need iframe embedding. 
+            if ($k == 'action') { $v = 'editactiontrigger'; } // horrible hack - we really need iframe embedding. 
             $qsFrag[] = sprintf("%s=%s",urlencode($k), urlencode($v));
         }
         $qs = implode('&',$qsFrag);
