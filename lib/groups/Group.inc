@@ -136,6 +136,13 @@ class Group extends KTEntity {
         return KTEntityUtil::getList2('Group', $sWhereClause, $aOptions);
 	}
 	
+	function &getByName($sName) {
+	    $dict = array(
+	        'name' => $sName,
+	    );
+	    return KTEntityUtil::getByDict('Group', $dict);
+	}
+	
 	/**
 	 * Returns an array of Users in this group.
 	 */
@@ -188,21 +195,6 @@ class Group extends KTEntity {
             }
         }
         return $aParents;
-    }
-
-
-    function delete() {
-        global $default;
-
-        $sQuery = "DELETE FROM $default->users_groups_table WHERE group_id = ?";
-        $aParams = array($this->getId());
-        DBUtil::runQuery(array($sQuery, $aParams));
-
-        $sQuery = "DELETE FROM $default->groups_units_table WHERE group_id = ?";
-        $aParams = array($this->getId());
-        DBUtil::runQuery(array($sQuery, $aParams));
-
-        return parent::delete();
     }
 
     // {{{ hasMember
