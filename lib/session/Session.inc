@@ -211,6 +211,12 @@ class Session {
         if ($ipTracking && ($ip != trim($aRow["ip"]))) {
             return PEAR::raiseError(_kt("You are coming from a different IP address than the session requires"));
         }
+        
+        if (empty($_SESSION['userID'])) {
+            Session::removeStaleSessions();
+
+            return PEAR::raiseError(_kt('Session timed out'));
+        }
 
         // now check if the timeout has been exceeded
         $lastused = $aRow["lastused"];
