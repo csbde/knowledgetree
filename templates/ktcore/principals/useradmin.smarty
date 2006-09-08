@@ -1,7 +1,7 @@
 <h2>{i18n}User Management{/i18n}</h2>
 
 
-
+{if $can_add}
 <fieldset> <legend>{i18n}Add new users{/i18n}</legend> <p
 class="descriptiveText">{i18n}To add users to the DMS authentication
 provider, you need to provide them with credentials through this
@@ -12,9 +12,8 @@ href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
 style="float: left; padding-right: 0.5em;">{i18n}Add a new
 user{/i18n}</a><a href="{addQS}action=addUser{/addQS}">{i18n}Add a new
 user{/i18n}</a></p>
-
-
 </fieldset>
+
 {if $authentication_sources}
    <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="addUserFromSource" />
@@ -35,6 +34,7 @@ system.{/i18n}</p>
    </fieldset>
    </form>
 </p>
+{/if}
 {/if}
 
 

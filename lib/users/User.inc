@@ -302,7 +302,7 @@ class User extends KTEntity {
 
     function getNumberEnabledUsers() {
         $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ?', KTUtil::getTableName('users'));
-        $aParams = array(true);
+        $aParams = array(false);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
 	
