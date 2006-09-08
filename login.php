@@ -77,6 +77,9 @@ class LoginPageDispatcher extends KTDispatcher {
         }
         $session = new Session();
         $sessionID = $session->create($oUser);
+        if (PEAR::isError($sessionID)) {
+            return $sessionID;
+        }
 
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
@@ -98,7 +101,10 @@ class LoginPageDispatcher extends KTDispatcher {
 
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
         if (is_a($oUser, 'User')) {
-            $this->performLogin($oUser);
+            $res = $this->performLogin($oUser);
+            if ($res) {
+                $oUser = array($res);
+            }
         }
         if (is_array($oUser) && count($oUser)) {
             if (empty($_REQUEST['errorMessage'])) {
@@ -164,6 +170,9 @@ class LoginPageDispatcher extends KTDispatcher {
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
         if (is_a($oUser, 'User')) {
             $this->performLogin($oUser);
+            if ($res) {
+                $oUser = array($res);
+            }
         }
         if (is_array($oUser)) {
             foreach ($oUser as $oError) {
@@ -225,7 +234,12 @@ class LoginPageDispatcher extends KTDispatcher {
             exit(0);
         }
 
-        $this->performLogin($oUser);
+        $res = $this->performLogin($oUser);
+        
+        if ($res) {
+            $this->simpleRedirectToMain($res->getMessage(), $url, $queryParams);
+            exit(0);
+        }
     }
 
     function handleUserDoesNotExist($username, $password, $aExtra = null) {
