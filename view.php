@@ -207,13 +207,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $aInfo = $oAction->getInfo();
             
             if ($aInfo !== null) {
-                $aViewlets[] = $oAction; // use the action, since we display_viewlet() later.            
+                $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.            
             }
         } 
         
+        $viewlet_data = implode(" ", $aViewlets);
+        $viewlet_data = trim($viewlet_data);
         
         $content_class = 'view';
-        if (!empty($aViewlets)) {
+        if (!empty($viewlet_data)) {
             $content_class = 'view withviewlets';
         } 
         $this->oPage->setContentClass($content_class);
@@ -231,7 +233,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               "document" => $oDocument,
               "document_data" => $document_data,
               "fieldsets" => $fieldsets,
-              'viewlets' => $aViewlets,
+              'viewlet_data' => $viewlet_data,
         );
         //return '<pre>' . print_r($aTemplateData, true) . '</pre>';
         return $oTemplate->render($aTemplateData);

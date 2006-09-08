@@ -23,7 +23,7 @@
  * All Rights Reserved.
  *
  */
-
+require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/LinkType.inc');
@@ -47,6 +47,7 @@ class KTDocumentLinks extends KTPlugin {
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentLinkAction', 'ktcore.actions.document.link');
+        $this->registerAction('documentviewlet', 'KTDocumentLinkViewlet', 'ktcore.viewlets.document.link');        
         $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle', 
                               dirname(__FILE__) . '/KTDocumentLinksColumns.php');
         $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
@@ -54,6 +55,74 @@ class KTDocumentLinks extends KTPlugin {
             _kt('Manage the different ways documents can be associated with one another.'),
             __FILE__, null);                              
     }
+}
+
+
+
+class KTDocumentLinkViewlet extends KTDocumentViewlet {
+    var $sName = 'ktcore.viewlets.document.link';
+    
+    function display_viewlet() {
+        $oKTTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oKTTemplating->loadTemplate("ktstandard/links/links_viewlet");
+        if (is_null($oTemplate)) { return ""; }
+
+        $temp_links_from = DocumentLink::getLinksFromDocument($this->oDocument->getId());
+        $temp_links_to = DocumentLink::getLinksToDocument($this->oDocument->getId());
+
+        $links_to = array();
+        $links_from = array();        
+        
+        foreach ($temp_links_from as $link) {
+            $oDoc = $link->getChildDocument();
+            if (PEAR::isError($oDoc)) {
+                continue;
+            }
+            
+            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
+                $type = $link->getLinkType();
+                $aInfo = array(
+                    'url' => KTBrowseUtil::getUrlForDocument($oDoc),
+                    'name' => $oDoc->getName(),
+                    'type' => $type->getName(),
+                    'description' => $type->getDescription(),
+                );
+                
+                $links_from[] = $aInfo;
+            }
+        }
+        
+        foreach ($temp_links_to as $link) {
+            $oDoc = $link->getParentDocument();
+            if (PEAR::isError($oDoc)) {
+                continue;
+            }
+            
+            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
+                $type = $link->getLinkType();
+                $aInfo = array(
+                    'url' => KTBrowseUtil::getUrlForDocument($oDoc),
+                    'name' => $oDoc->getName(),
+                    'type' => $type->getName(),
+                    'description' => $type->getDescription(),
+                );
+                
+                $links_to[] = $aInfo;
+            }
+        }        
+
+        if (empty($links_from) && empty($links_to)) {
+            return "";
+        }
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'links_from' => $links_from,
+            'links_to' => $links_to,
+        ));
+        return $oTemplate->render();
+    }
+
 }
 
 class KTDocumentLinkAction extends KTDocumentAction {
