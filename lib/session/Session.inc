@@ -40,6 +40,16 @@ class Session {
         global $default;
         
         session_start();
+
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            if (!$oUser->isAnonymous()) {
+                require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+                $res = BaobabKeyUtil::isBaobabUser($oUser);
+                if (PEAR::isError($res)) {
+                    return $res;
+                }
+            }
+        }
         
         // bind user id to session
         $_SESSION["userID"] = $iUserId;
