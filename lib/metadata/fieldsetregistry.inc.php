@@ -115,6 +115,7 @@ class KTFieldsetRegistry {
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
                         'id_method' => 'getName',
                         'label_method' => 'getName',
+                        'unselected_label' => _kt("No selection."),                        
                     ));
                 } else if ($type == 'ktcore.fields.tree') {
                     $widgets[] = $this->oWF->get('ktcore.widgets.treemetadata', array(
