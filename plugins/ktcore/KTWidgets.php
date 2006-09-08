@@ -170,6 +170,27 @@ class KTCoreSelectionWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
 
+        // have to do this here, and not in "configure" since it breaks 
+        // entity-select.
+        $unselected = KTUtil::arrayGet($this->aOptions, 'unselected_label');
+        if (!empty($unselected)) {
+            // NBM:  we get really, really nasty interactions if we try merge
+            // NBM:  items with numeric (but important) key values and other
+            // NBM:  numerically / null keyed items
+            $vocab = array();
+            $vocab[] = $unselected;
+            foreach ($this->aVocab as $k => $v) {
+                $vocab[$k] = $v;
+            }
+            
+            $this->aVocab = $vocab;
+
+            // make sure its the selected one if there's no value specified.
+            if (empty($this->value)) {
+                $this->value = 0;
+            }
+        }
+
         // performance optimisation for large selected sets.
         if ($this->bMulti) {
             $this->_valuesearch = array();
