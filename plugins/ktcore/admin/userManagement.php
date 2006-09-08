@@ -40,7 +40,7 @@ require_once(KT_LIB_DIR . "/authentication/authenticationproviderregistry.inc.ph
 require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php");
 
 class KTUserAdminDispatcher extends KTAdminDispatcher {
-var $sHelpPage = 'ktcore/admin/manage users.html';
+    var $sHelpPage = 'ktcore/admin/manage users.html';
     function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails(_kt('select a user'));
@@ -79,6 +79,15 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
 
         $aAuthenticationSources =& KTAuthenticationSource::getList();        
 
+        $bCanAdd = true;
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $bCanAdd = BaobabKeyUtil::canAddUser();
+            if (PEAR::isError($bCanAdd)) {
+                $bCanAdd = false;
+            }
+        }
+
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/useradmin");
         $aTemplateData = array(
@@ -88,6 +97,7 @@ var $sHelpPage = 'ktcore/admin/manage users.html';
             "no_search" => $no_search,
             "authentication_sources" => $aAuthenticationSources,
             "old_search" => $name,
+            "can_add" => $bCanAdd,
         );
         return $oTemplate->render($aTemplateData);
     }
