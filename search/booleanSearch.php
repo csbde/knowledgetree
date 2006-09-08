@@ -93,7 +93,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
         
-        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1), $title);
+        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1), $title, $oSearch->getIsCondition());
         
         return $res;
     }
@@ -227,14 +227,19 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
 
 
-    function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null) {
+    function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null, $bIsCondition = false) {
         if ($sTitle == null) {
             $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Advanced Search'));
             $sTitle =  _kt('Search Results');
         } else {
-            $this->aBreadcrumbs[] = array('name' => _kt('Saved Search'));
-            $this->oPage->setTitle(_kt('Saved Search: ') . $sTitle);
-            $this->oPage->setBreadcrumbDetails($sTitle);                
+            if ($bIsCondition) {
+                $this->aBreadcrumbs[] = array('name' => _kt('Test Condition'));
+                $this->oPage->setTitle(sprintf(_kt('Test Condition: %s'), $sTitle));            
+            } else {
+                $this->aBreadcrumbs[] = array('name' => _kt('Saved Search'));
+                $this->oPage->setTitle(sprintf(_kt('Saved Search: %s'), $sTitle));
+            }
+            $this->oPage->setBreadcrumbDetails($sTitle);                            
         }
 
         
