@@ -25,7 +25,7 @@ will be maintained as it is in the authentication source.{/i18n}</p>
 <p class="descriptiveText">{i18n}Alternatively, you can manually create a user
 within KnowledgeTree below.{/i18n}</p>
 {/if}
-
+{*
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createGroup" />
    
@@ -41,3 +41,5 @@ within KnowledgeTree below.{/i18n}</p>
       </div>
    </fieldset>
    </form>
+*}
+{$form->render()}
