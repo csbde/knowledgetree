@@ -232,10 +232,11 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Advanced Search'));
             $sTitle =  _kt('Search Results');
         } else {
-           $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Saved Search'));
+            $this->aBreadcrumbs[] = array('name' => _kt('Saved Search'));
             $this->oPage->setTitle(_kt('Saved Search: ') . $sTitle);
+            $this->oPage->setBreadcrumbDetails($sTitle);                
         }
-        $this->oPage->setBreadcrumbDetails($sTitle);
+
         
 
         $this->browseType = "Folder";
