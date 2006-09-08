@@ -39,7 +39,8 @@ class UpgradeFunctions {
         "3.0.3.2" => array("createFolderDetailsPermission"),
         "3.0.3.3" => array("generateWorkflowTriggers"),
         "3.0.3.7" => array("rebuildAllPermissions"),        
-	"3.1.5" => array("upgradeSavedSearches"),
+        "3.1.5" => array("upgradeSavedSearches"),
+        "3.1.6.3" => array("cleanupGroupMembership"),    	
     );
 
     var $descriptions = array(
@@ -57,7 +58,8 @@ class UpgradeFunctions {
         'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
         'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
         'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.',
-	'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
+        'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
+        'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
     );
     var $phases = array(
         "setPermissionFolder" => 1,
@@ -818,6 +820,60 @@ class UpgradeFunctions {
 	    $oS->update();
 	}
     }
+    
+    function cleanupGroupMembership() {
+        // 4 cases.
+        $child_query = 'select L.id as link_id FROM groups_groups_link as L left outer join groups_lookup as G on (L.member_group_id = G.id) WHERE G.id IS NULL';
+        $parent_query = 'select L.id as link_id FROM groups_groups_link as L left outer join groups_lookup as G on (L.parent_group_id = G.id) WHERE G.id IS NULL';
+        $group_query = 'select L.id as link_id FROM users_groups_link as L left outer join groups_lookup as G on (L.group_id = G.id) WHERE G.id IS NULL';
+        $user_query = 'select L.id as link_id FROM users_groups_link as L left outer join users as U on (L.user_id = U.id) WHERE U.id IS NULL';
+        
+        $bad_group_links = array();
+        $res = DBUtil::getResultArrayKey(array($child_query, null), 'link_id');
+        if (PEAR::isError($res)) {
+            return $res;
+        } else {
+            $bad_group_links = $res;
+        }
+        
+        $res = DBUtil::getResultArrayKey(array($parent_query, null), 'link_id');
+        if (PEAR::isError($res)) {
+            return $res;
+        } else {
+            $bad_group_links = kt_array_merge($bad_group_links, $res);
+        }       
+        
+        foreach ($bad_group_links as $link_id) {
+            $res = DBUtil::runQuery(array("DELETE FROM groups_groups_link WHERE id = ?", $link_id));
+            if (PEAR::isError($res)) {
+                return $res;
+            }    
+        }
+
+        $res = DBUtil::getResultArrayKey(array($group_query, null), 'link_id');
+        if (PEAR::isError($res)) {
+            return $res;
+        } else {
+            $bad_user_links = $res;
+        }
+
+        $res = DBUtil::getResultArrayKey(array($user_query, null), 'link_id');
+        if (PEAR::isError($res)) {
+            return $res;
+        } else {    
+            $bad_user_links = kt_array_merge($bad_user_links, $res);
+        }
+
+        foreach ($bad_user_links as $link_id) {
+            $res = DBUtil::runQuery(array("DELETE FROM users_groups_link WHERE id = ?", $link_id));
+            if (PEAR::isError($res)) {
+                return $res;
+            }    
+        }
+
+        return true;
+
+    }    
 }
 
 ?>
