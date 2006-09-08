@@ -565,6 +565,16 @@ if ($checkup !== true) {
     KTPluginUtil::loadPlugins();
 }
 
+if ($checkup !== true) {
+    if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+        require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+        $name = BaobabKeyUtil::getName();
+        if ($name) {
+            $default->versionName = sprintf("%s %s", $default->versionName, $name);
+        }
+    }
+}
+
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] =& new KTPage();
 
