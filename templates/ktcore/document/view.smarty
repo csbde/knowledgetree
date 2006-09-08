@@ -40,12 +40,12 @@ these tasks, use the Request Assistance action.{/i18n}
 {$oFieldset->render($document_data)}
 {/foreach}
 
-{if !empty($viewlets)}
+{if !empty($viewlet_data)}
 
 <!--  Document "Views" -->
 <div id="document-views">
 
-{$sviewlet_data}
+{$viewlet_data}
 
 </div>
 {/if}

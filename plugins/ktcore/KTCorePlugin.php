@@ -67,6 +67,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
+        // Viewlets
+        $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');        
+
+
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
         $this->registerNotificationHandler("KTSubscriptionNotification", "ktcore/subscriptions", KT_LIB_DIR . '/dashboard/Notification.inc.php');
         $this->registerNotificationHandler("KTWorkflowNotification", "ktcore/workflow", KT_LIB_DIR . '/dashboard/Notification.inc.php');
