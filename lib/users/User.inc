@@ -69,6 +69,7 @@ class User extends KTEntity {
     var $bAuthenticationDetailsBool1 = null;
     var $bAuthenticationDetailsBool2 = null;
     var $dLastLogin = null;
+    var $bDisabled = false;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -93,6 +94,7 @@ class User extends KTEntity {
         'bAuthenticationDetailsBool1' => 'authentication_details_b1',
         'bAuthenticationDetailsBool2' => 'authentication_details_b2',
         'dLastLogin' => 'last_login',
+        'bDisabled' => 'disabled',
     );
 
     var $_bUsePearError = true;
@@ -147,6 +149,9 @@ class User extends KTEntity {
 
     function getLastLogin() { return $this->dLastLogin; }
     function setLastLogin($mValue) { $this->dLastLogin = $mValue; }
+
+    function getDisabled() { return $this->bDisabled; }
+    function setDisabled($mValue) { $this->bDisabled = $mValue; }
 
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
@@ -294,6 +299,33 @@ class User extends KTEntity {
             'last_login' => array('type' => 'after', 'value' => $dDateTime),
         ), array('multi' => true));
     }
+
+    function getNumberEnabledUsers() {
+        $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ?', KTUtil::getTableName('users'));
+        $aParams = array(true);
+        return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
+    }
 	
     function isAnonymous() { return $this->iId == -2; }
+
+    function disable() {
+        $this->setDisabled(true);
+        $this->update();
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            BaobabKeyUtil::deallocate($this);
+        }
+        return;
+    }
+
+    function create() {
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $res = BaobabKeyUtil::canAddUser();
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
+        return parent::create();
+    }
 }
