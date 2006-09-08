@@ -1,0 +1,9 @@
+<div class="viewlet">
+    <h3>Available Transitions</h3>
+    <p class="descriptiveText">{i18n arg_name=$state_name}The document is currently in state "#name#"{/i18n}</p>
+    <ul>
+    {foreach from=$transitions item=info}
+        <li><a href="{$info.url}">{$info.name}</a></li>
+    {/foreach}
+    </ul>
+</div>

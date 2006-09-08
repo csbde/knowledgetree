@@ -1303,6 +1303,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     
     var $sHelpPage = 'ktcore/user/workflow.html';    
 
+    function predispatch() {
+        $this->persistParams(array("fTransitionId"));    
+    }
+
     function getDisplayName() {
         return _kt('Workflow');
     }
@@ -1392,6 +1396,75 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             array('fDocumentId' => $oDocument->getId()));
         }
     }
+    
+    function form_quicktransition() {
+
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.workflow.quicktransition',
+            'label' => _kt("Perform Quick Transition"),
+            'submit_label' => _kt("Perform Transition"),
+            'context' => $this,
+            'action' => 'performquicktransition',
+            'fail_action' => 'quicktransition',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+        ));
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Specify your reason for performing this action."),
+                'important_description' => _kt("Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),                     
+        ));
+        
+        return $oForm;
+    }
+
+    function do_quicktransition() {
+        // make sure this gets through.
+        $this->persistParams(array('fTransitionId'));
+        
+        $transition_id = $_REQUEST['fTransitionId'];
+        $oTransition = KTWorkflowTransition::get($transition_id);
+        
+        $oForm = $this->form_quicktransition();
+        return $oForm->renderPage(sprintf(_kt("Perform Transition: %s"), $oTransition->getName()));
+    }
+    
+    function do_performquicktransition() {
+        $oForm = $this->form_quicktransition();
+        $res = $oForm->validate();
+        
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }    
+        
+        $this->startTransaction();
+        
+        $data = $res['results'];
+        $oTransition = KTWorkflowTransition::get($_REQUEST['fTransitionId']);
+        
+        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, $data['reason']);
+
+        if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
+            $this->commitTransaction();
+            $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
+            controllerRedirect('browse', sprintf('fFolderId=%d', $this->oDocument->getFolderId()));
+        } else {
+            $this->commitTransaction();        
+            $_SESSION['KTInfoMessage'][] = _kt('Transition performed');
+            controllerRedirect('viewDocument', sprintf('fDocumentId=%d', $this->oDocument->getId()));
+        }        
+    }
+
 }
 // }}}
 
