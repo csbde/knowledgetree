@@ -45,9 +45,7 @@ these tasks, use the Request Assistance action.{/i18n}
 <!--  Document "Views" -->
 <div id="document-views">
 
-{foreach from=$viewlets item=oViewlet}
-  {$oViewlet->display_viewlet()}
-{/foreach}
+{$sviewlet_data}
 
 </div>
 {/if}

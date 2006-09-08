@@ -1,0 +1,20 @@
+<div class="viewlet">
+    {if $links_from}
+    <h3>Links from this document</h3>
+    <ul>
+    {foreach from=$links_from item=info}
+      <li class="descriptiveText">{i18n}from{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name}</a> ({$info.type})</li>
+    {/foreach}
+    </ul>
+    {/if}
+
+    {if $links_to}
+    <h3>Links to this document</h3>
+    <ul>
+    {foreach from=$links_to item=info}
+      <li class="descriptiveText">{i18n}to{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name}</a> ({$info.type})</li>
+    {/foreach}
+    </ul>
+    {/if}
+    
+</div>
