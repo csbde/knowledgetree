@@ -49,6 +49,10 @@ class KTDocumentLinks extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentLinkAction', 'ktcore.actions.document.link');
         $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle', 
                               dirname(__FILE__) . '/KTDocumentLinksColumns.php');
+        $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
+            _kt('Link Type Management'),
+            _kt('Manage the different ways documents can be associated with one another.'),
+            __FILE__, null);                              
     }
 }
 
@@ -307,6 +311,129 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $this->successRedirectToMain(_kt('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
+    }
+}
+class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
+    var $sHelpPage = 'ktcore/admin/link type management.html';
+
+   // Breadcrumbs base - added to in methods
+    function check() {
+        return true;
+    }
+
+    function do_main() {
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
+        $this->oPage->setBreadcrumbDetails(_kt("view"));
+        
+        $aLinkTypes =& LinkType::getList('id > 0');
+        
+        $addLinkForm = array();
+        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
+        $addLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
+        $addLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
+        
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');       
+        $oTemplate->setData(array(
+            "context" => $this,
+            "add_form" => $addLinkForm,
+            "links" => $aLinkTypes,
+        ));
+        return $oTemplate;
+    }
+    
+    function do_edit() {
+        $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
+        if ($link_id === null) {
+           $this->errorRedirectToMain(_kt("Please specify a link type to edit."));
+        }
+        
+        $oLinkType =& LinkType::get($link_id);
+        
+        $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
+        $this->oPage->setBreadcrumbDetails(_kt("view"));
+        
+        $aLinkTypes =& LinkType::getList('id > 0');
+        
+        $editLinkForm = array();
+        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
+        $editLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
+        $editLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
+        
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');       
+        $oTemplate->setData(array(
+            "context" => $this,
+            "edit_form" => $editLinkForm,
+            "old_link" => $oLinkType,
+            "links" => $aLinkTypes,
+        ));
+        return $oTemplate;
+    }    
+    
+
+    function do_update() {
+        $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
+        if ($link_id === null) {
+            $this->errorRedirectToMain(_kt("Please specify a link type to update."));
+        }
+        
+        $name = KTUtil::arrayGet($_REQUEST, 'fName');        
+        $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
+
+        if (empty($name) || empty($description)) { // for bonus points, make this go to edit, and edit catch it.
+            $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
+        }
+        
+        $oLinkType =& LinkType::get($link_id);
+        
+        $oLinkType->setName($name);
+        $oLinkType->setDescription($description);
+        $oLinkType->update();
+        
+        $this->successRedirectToMain(_kt("Link Type updated."));
+    }
+    
+    function do_add() {
+        $name = KTUtil::arrayGet($_REQUEST, 'fName');        
+        $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
+
+        if (empty($name) || empty($description)) {
+            $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
+        }
+        
+        $oLinkType = new LinkType($name, $description);
+        $oLinkType->create();
+             
+        //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
+        
+        $this->successRedirectToMain(_kt("Link Type created."));
+    }
+    
+    function do_delete() {
+        $types_to_delete = KTUtil::arrayGet($_REQUEST, 'fLinksToDelete');         // is an array.
+
+        if (empty($types_to_delete)) {
+            $this->errorRedirectToMain(_kt('Please select one or more link types to delete.'));
+        }
+        
+        $count = 0;
+        foreach ($types_to_delete as $link_id) {
+            $oLinkType = LinkType::get($link_id);
+
+            foreach(DocumentLink::getList(sprintf("link_type_id = %d", $link_id)) as $oLink) {
+                $oLink->delete();
+            }
+            
+            $oLinkType->delete(); // technically, this is a bad thing
+            $count += 1; 
+        }
+        
+        //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
+        
+        $this->successRedirectToMain($count . " " . _kt("Link types deleted."));
     }
 
 
