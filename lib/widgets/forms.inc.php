@@ -117,6 +117,51 @@ class KTForm {
         $this->_extraargs['postReceived'] = 1;
     }
     
+    function getWidget(&$aInfo) {
+        if (is_null($this->_oWF)) {
+            $this->_oWF =& KTWidgetFactory::getSingleton();
+        }
+
+        if (is_null($aInfo)) {
+            $widget = null;
+        } else if (is_object($aInfo)) {
+        
+            // assume this is a fully configured object
+            $widget =& $aInfo;
+        } else {
+            $namespaceOrObject = $aInfo[0];
+            $config = (array) $aInfo[1];
+            
+            $widget =& $this->_oWF->get($namespaceOrObject, $config);
+        }
+
+        return $widget;
+    }
+
+    function getValidator($aInfo) {
+        if (is_null($this->_oVF)) {
+            $this->_oVF =& KTValidatorFactory::getSingleton();
+        }        
+        
+        $validator = null;
+        
+        // we don't want to expose the factory stuff to the user - its an
+        // arbitrary distinction to the user.  Good point from NBM ;)
+        if (is_null($aInfo)) {
+            $validator = null;
+        } else if (is_object($aInfo)) {
+            // assume this is a fully configured object
+            $validator =& $aInfo;
+        } else {
+            $namespaceOrObject = $aInfo[0];
+            $config = (array) $aInfo[1];
+                
+            $validator =& $this->_oVF->get($namespaceOrObject, $config);
+        }
+        
+        return $validator;
+    }
+    
     // set the "form widgets" that will be used.
     // these are pushed into the "data" component
     function setWidgets($aWidgets) {
@@ -126,21 +171,17 @@ class KTForm {
             $this->_oWF =& KTWidgetFactory::getSingleton();
         }
         
-        // we don't want to expose the factory stuff to the user - its an
-        // arbitrary distinction to the user.  Good point from NBM ;)
-        foreach ($aWidgets as $aInfo) {
-
-            if (is_null($aInfo)) {
-                continue;
-            } else if (is_object($aInfo)) {
+        $this->addWidgets($aWidgets);
+    }
+    
+    function addWidgets($aWidgets) {
+        foreach ($aWidgets as $aInfo) {    
+            $widget = $this->getWidget($aInfo);
             
-                // assume this is a fully configured object
-                $this->_widgets[] =& $aInfo;
+            if (is_null($widget)) {
+                continue;
             } else {
-                $namespaceOrObject = $aInfo[0];
-                $config = (array) $aInfo[1];
-                
-                $this->_widgets[] =& $this->_oWF->get($namespaceOrObject, $config);
+                $this->_widgets[] = $widget;
             }
         }
     }
@@ -152,56 +193,40 @@ class KTForm {
             $this->_oVF =& KTValidatorFactory::getSingleton();
         }        
         
+        $this->addValidators($aValidators);
+    }
+    
+    function addValidators($aValidators) {
         // we don't want to expose the factory stuff to the user - its an
         // arbitrary distinction to the user.  Good point from NBM ;)
         foreach ($aValidators as $aInfo) {
-            if (is_null($aInfo)) {
+            $validator = $this->getValidator($aInfo);
+        
+            if (is_null($validator)) {
                 continue;
-            } else if (is_object($aInfo)) {
-                // assume this is a fully configured object
-                $this->_validators[] =& $aInfo;
             } else {
-                $namespaceOrObject = $aInfo[0];
-                $config = (array) $aInfo[1];
-                
-                $this->_validators[] =& $this->_oVF->get($namespaceOrObject, $config);
+                $this->_validators[] = $validator;
             }
-        }        
+        }    
     }
     
     function addValidator($aInfo) {
-        if (is_null($this->_oVF)) {
-            $this->_oVF =& KTValidatorFactory::getSingleton();
-        }            
-    
-        if (is_null($aInfo)) {
-            continue;
-        } else if (is_object($aInfo)) {
-            // assume this is a fully configured object
-            $this->_validators[] =& $aInfo;
-        } else {
-            $namespaceOrObject = $aInfo[0];
-            $config = (array) $aInfo[1];
+        $validator = $this->getValidator($aInfo);
             
-            $this->_validators[] =& $this->_oVF->get($namespaceOrObject, $config);
+        if (is_null($validator)) {
+            return false;
+        } else {
+            $this->_validators[] =& $validator;
         }    
     }
     
     function addWidget($aInfo) {
-        if (is_null($this->_oWF)) {
-            $this->_oWF =& KTWidgetFactory::getSingleton();
-        }            
+        $widget = $this->getWidget($aInfo);
     
-        if (is_null($aInfo)) {
-            continue;
-        } else if (is_object($aInfo)) {
-            // assume this is a fully configured object
-            $this->_widgets[] =& $aInfo;
+        if (is_null($widget)) {
+            return false;
         } else {
-            $namespaceOrObject = $aInfo[0];
-            $config = (array) $aInfo[1];
-            
-            $this->_widgets[] =& $this->_oWF->get($namespaceOrObject, $config);
+            $this->_widgets[] =& $widget;
         }    
     }    
     
