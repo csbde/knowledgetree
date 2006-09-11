@@ -371,7 +371,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         
         $oStorage =& KTStorageManagerUtil::getSingleton();
-        $oStorage->download($this->oDocument);
+        $oStorage->download($this->oDocument, true);
         exit(0);
     }
 }

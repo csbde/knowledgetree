@@ -129,14 +129,21 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return;
     }
     
-    function download($oDocument) {
+    function download($oDocument, $bIsCheckout = false) {
         //get the path to the document on the server
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
+        $mimetype = KTMime::getMimeTypeName($oDocument->getMimeTypeID());
+        
+        if ($bIsCheckout && $oConfig->get('ui/fakeMimetype' ,false)) {
+            $mimetype = 'application/x-download';
+            // note this does not work for "image" types in some browsers 
+            // go web.
+        }
+        
         if (file_exists($sPath)) {
             //set the correct headers
-            header("Content-Type: " .
-                    KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
+            header("Content-Type: " . $mimetype);
             header("Content-Length: ". $oDocument->getFileSize());
             header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
