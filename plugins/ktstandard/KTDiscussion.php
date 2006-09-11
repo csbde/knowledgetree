@@ -191,6 +191,22 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $res = $oThread->update();
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
+        
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('discussion', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+                "comment" => $oComment,                
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $this->oValidator->notError($res, $aErrorOptions);
+            }
+        }        
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
@@ -303,7 +319,21 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
 
-
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('discussion', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+                "comment" => $oComment,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $this->oValidator->notError($res, $aErrorOptions);
+            }
+        }  
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
