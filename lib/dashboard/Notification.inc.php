@@ -189,7 +189,9 @@ class KTSubscriptionNotification extends KTNotificationHandler {
         "CheckOutDocument" => 'document',
         "MovedDocument" => 'document',
         "ArchivedDocument" => 'document', // can go through and request un-archival (?)
-        "RestoredArchivedDocument" => 'document');	
+        "RestoredArchivedDocument" => 'document',
+        "DiscussDocument" => 'document',
+        );	
 
     function KTSubscriptionNotification() {
         $this->_eventTypeNames = array(
@@ -204,7 +206,8 @@ class KTSubscriptionNotification extends KTNotificationHandler {
             "CheckOutDocument" => _kt('Document checked out'),
             "MovedDocument" => _kt('Document moved'),
             "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
-            "RestoredArchivedDocument" => _kt('Document restored')
+            "RestoredArchivedDocument" => _kt('Document restored'),
+            "DiscussDocument" => _kt('Document Discussions updated'),            
         );
         //parent::KTNotificationHandler();
     }

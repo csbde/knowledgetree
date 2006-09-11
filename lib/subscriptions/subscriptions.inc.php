@@ -317,6 +317,59 @@ class SubscriptionEvent {
 			}
 		}
     }
+    
+    function DiscussDocument($oModifiedDocument, $oParentFolder)  { 
+        $content = new SubscriptionContent(); // needed for i18n	
+	    // OK:  two actions:  document registrants, folder registrants.
+        $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
+		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
+		foreach ($aUsers as $oSubscriber) {
+		
+		    // notification object first.		
+			$aNotificationOptions = array();
+			$aNotificationOptions['target_user'] = $oSubscriber->getID();
+		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
+		    $aNotificationOptions['event_type'] = "DiscussDocument";		
+			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+			
+			// now the email content.			
+			// FIXME this needs to be handled entirely within notifications from now on.
+			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+			    $emailContent = $content->getEmailAlertContent($oNotification);
+				$emailSubject = $content->getEmailAlertSubject($oNotification);
+				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+				$oEmail->send();
+			}
+		}
+		
+        $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
+		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
+		foreach ($aUsers as $oSubscriber) {
+		
+		    // notification object first.		
+			$aNotificationOptions = array();
+			$aNotificationOptions['target_user'] = $oSubscriber->getID();
+		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
+		    $aNotificationOptions['event_type'] = "DiscussDocument";		
+			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+			
+			// now the email content.			
+			// FIXME this needs to be handled entirely within notifications from now on.
+			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+			    $emailContent = $content->getEmailAlertContent($oNotification);
+				$emailSubject = $content->getEmailAlertSubject($oNotification);
+				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+				$oEmail->send();
+			}
+		}
+    }
+    
     function CheckInDocument($oModifiedDocument, $oParentFolder)  { 
         $content = new SubscriptionContent(); // needed for i18n	
 	    // OK:  two actions:  document registrants, folder registrants.
@@ -677,7 +730,8 @@ class SubscriptionContent {
             "CheckOutDocument" => _kt('Document checked out'),
             "MovedDocument" => _kt('Document moved'),
             "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
-            "RestoredArchivedDocument" => _kt('Document restored')
+            "RestoredArchivedDocument" => _kt('Document restored'),
+            "DiscussDocument" => _kt('Document Discussions updated'),                  
         );
 	}
 
@@ -729,7 +783,8 @@ class SubscriptionContent {
         "CheckOutDocument" => 'document',
         "MovedDocument" => 'document',
         "ArchivedDocument" => 'document', // can go through and request un-archival (?)
-        "RestoredArchivedDocument" => 'document');	
+        "RestoredArchivedDocument" => 'document',
+        "DiscussDocument" => 'document');	
 
 
 	

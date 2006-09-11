@@ -63,6 +63,8 @@ class KTSubscriptionPlugin extends KTPlugin {
             'ktstandard.triggers.subscription.moveDocument');
         $this->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger',
             'ktstandard.triggers.subscription.archive');
+        $this->registerTrigger('discussion', 'postValidate', 'KTDiscussionSubscriptionTrigger',
+            'ktstandard.triggers.subscription.archive');          
         $this->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction',
             'ktstandard.subscription.foldersubscription');
         $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
@@ -295,6 +297,24 @@ class KTArchiveSubscriptionTrigger {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+    }
+}
+// }}}
+
+
+
+class KTDiscussionSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        $oDocument =& $this->aInfo["document"];
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        
+        $oSubscriptionEvent->DiscussDocument($oDocument, $oFolder);
     }
 }
 // }}}
