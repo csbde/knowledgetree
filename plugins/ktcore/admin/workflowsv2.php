@@ -660,7 +660,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_savestate() {
-        $oForm = $this->form_editstate();
+        $oForm = $this->form_editstate($this->oState);
         $res = $oForm->validate();
         $data = $res['results'];
         $errors = $res['errors'];
@@ -691,7 +691,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $oForm->handleError(sprintf(_kt("Unable to update state: %s"), $res->getMessage()));
         }
         
-        $this->successRedirectTo('editstate', _kt("State updated."));
+        $this->successRedirectTo('basic', _kt("State updated."));
     }
     
     function form_edittransition($oTransition) {
@@ -747,7 +747,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_savetransition() {
-        $oForm = $this->form_edittransition();
+        $oForm = $this->form_edittransition($this->oTransition);
         $res = $oForm->validate();
         $data = $res['results'];
         $errors = $res['errors'];
@@ -760,7 +760,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         // otherwise we're looking for something different if there's a conflict.
         
-        if (KTWorkflowTransitions::nameExists($data['name'], $this->oWorkflow)) {
+        if (KTWorkflowTransition::nameExists($data['name'], $this->oWorkflow)) {
             $extra_errors['name'][] = _kt('There is already a transition with that name in this workflow.');
         }
         
@@ -778,7 +778,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $oForm->handleError(sprintf(_kt("Unable to update transition: %s"), $res->getMessage()));
         }
         
-        $this->successRedirectTo('transition', _kt("Transition updated."));
+        $this->successRedirectTo('basic', _kt("Transition updated."));
     }
     
     // ----------------- Security ---------------------
