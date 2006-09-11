@@ -376,6 +376,7 @@ class RecordUpgradeItem extends UpgradeItem {
 
     function _performUpgrade() {
         $this->_deleteSmartyFiles();
+        $this->_deleteProxyFiles();        
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
@@ -419,6 +420,42 @@ class RecordUpgradeItem extends UpgradeItem {
             @unlink($sFile);
         }
     }
+    
+
+    function _deleteProxyFiles() {
+        $oKTConfig =& KTConfig::getSingleton();
+        
+        
+        // from ktentityutil::_proxyCreate
+        $sDirectory = $oKTConfig->get('cache/proxyCacheDirectory');
+
+        if (!file_exists($sDirectory)) {
+            return;
+        }
+        $sRunningUser = KTUtil::running_user();
+        if ($sRunningUser) {
+            $sDirectory = sprintf("%s/%s", $sDirectory, $sRunningUser);
+        }
+        if (!file_exists($sDirectory)) {
+            return ;
+        }
+        
+        $dh = @opendir($sDirectory);
+        if (empty($dh)) {
+            return;
+        }
+        $aFiles = array();
+        while (false !== ($sFilename = readdir($dh))) {
+  
+            if (substr($sFilename, -8) == ".inc.php") {
+               $aFiles[] = sprintf('%s/%s', $sDirectory, $sFilename);
+            }
+        }
+
+        foreach ($aFiles as $sFile) {
+            @unlink($sFile);
+        }
+    }    
 }
 
 ?>
