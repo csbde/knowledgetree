@@ -18,9 +18,9 @@
 
 <thead>
     <tr>
-        <td style="width:45%"><label for="select_{$name}_avail">Available {$label}</label></td>
+        <td style="width:45%"><label for="select_{$name}_avail">{i18n}Available{/i18n} {$label}</label></td>
         <td style="width:10%">&nbsp;</td>
-        <td style="width:45%"><label for="select_{$name}_assigned">Assigned {$label}</label></td>
+        <td style="width:45%"><label for="select_{$name}_assigned">{i18n}Assigned{/i18n} {$label}</label></td>
     </tr>
 </thead>
 
@@ -34,7 +34,7 @@
   {/foreach}
   </select>
 
-  <div><label for="filter_{$name}_avail">Filter</label><input type="text" id="filter_{$name}_avail" /><br/><a href="#" id="{$name}_show_all">Show All</a></div>
+  <div><label for="filter_{$name}_avail">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_avail" /><br/><a href="#" id="{$name}_show_all">{i18n}Show All{/i18n}</a></div>
     </td>
 
     <td>
