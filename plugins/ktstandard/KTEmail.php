@@ -247,7 +247,20 @@ class KTDocumentEmailAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Email');
     }
-
+    
+    function getInfo() {
+        $oConfig =& KTConfig::getSingleton();
+        $sEmailServer = $oConfig->get('email/emailServer');
+        if ($sEmailServer == 'none') {
+            return null;
+        }
+        if (empty($sEmailServer)) {
+            return null;
+        }        
+        
+        return parent::getInfo();
+    }
+    
     function do_main() {
         $oConfig = KTConfig::getSingleton();
         $bAttachment = $oConfig->get('email/allowAttachment', false);
