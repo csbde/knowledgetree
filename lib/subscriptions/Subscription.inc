@@ -180,6 +180,14 @@ class Subscription extends KTEntity {
             return generateControllerUrl("browse", "fBrowseType=folder&fFolderId=$this->iExternalID");
         }
     }
+    
+    function isValid() {
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return !PEAR::isError(Document::get($this->iExternalID));
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return !PEAR::isError(Folder::get($this->iExternalID));
+        }
+    }    
 
     function getAlertLink() {
         global $default;
