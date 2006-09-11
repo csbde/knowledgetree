@@ -154,20 +154,30 @@ class SubscriptionManager {
     * @return array of subscription objects, false if the database interaction fails
     */
     function retrieveUserSubscriptions($iUserID, $iSubscriptionType) {
-        global $default;
-
-        $sql = $default->db;
-        if ($sql->query(array("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " ./*ok*/
-                        "WHERE user_id = ?", $iUserID))) {
-            $aSubscriptions = array();
-            while ($sql->next_record()) {
-                $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
+    
+        $table = Subscription::getTableName($iSubscriptionType); // EVIL!
+        $aQuery = array(
+            "SELECT id FROM $table WHERE user_id = ?",
+            $iUserID,
+        );
+    
+    
+        $res = DBUtil::getResultArrayKey($aQuery, 'id');
+        if (PEAR::isError($res)) {
+            // isn't this hideous?
+            $_SESSION['_ktErrorMessage'][] = $res->getMessage();
             return false;
         }
-        return $aSubscriptions;
+
+        $items = array();
+        foreach ($res as $id) {
+            $item = Subscription::get($id, $iSubscriptionType);
+            if ($item->isValid()) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
     }
     
     /**
