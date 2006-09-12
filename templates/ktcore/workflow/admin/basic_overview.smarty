@@ -33,7 +33,7 @@ which documents follow (e.g. "submit for review" or "publish").</p>
                               <a class="ktAction ktEdit" href="{addQS context=$context}action=editstate&fStateId={$oState->getId()}{/addQS}">Edit State</a>
                             </td>
                             <td>                
-                              <a class="ktAction ktDelete" href="{addQS context=$context}action=deletestate&fStateId={$oState->getId()}{/addQS}">Delete State</a>
+                              <a class="ktAction ktDelete" href="{addQS context=$context}action=replacestate&fStateId={$oState->getId()}{/addQS}">Delete State</a>
                             </td>                            
                         </tr>
                        {/foreach}
