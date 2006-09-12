@@ -35,6 +35,11 @@ system.{/i18n}</p>
    </form>
 </p>
 {/if}
+
+{else}
+
+<div class="ktInfo"><p>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</p></div>
+
 {/if}
 
 
