@@ -781,6 +781,31 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("Transition updated."));
     }
     
+
+    function do_deletetransition() {
+        $this->startTransaction();
+        
+        if (is_null($this->oTransition)) {
+            return $this->errorRedirectTo("basic", _kt("No transition selected"));
+        }
+        
+        // grab all the triggers
+        $aTriggers = KTWorkflowTriggerInstance::getByTransition($this->oTransition);
+        foreach ($aTriggers as $oTrigger) {
+            $res = $oTrigger->delete();
+            if (PEAR::isError($res)) {
+                $this->errorRedirectTo("basic", sprintf(_kt("Failed to clear trigger: %s"), $res->getMessage()));
+            }   
+        }
+        
+        $res = $this->oTransition->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo("basic", sprintf(_kt("Failed to clear transition: %s"), $res->getMessage()));
+        }   
+        
+        $this->successRedirectTo('basic', _kt("Transition updated."));
+    }    
+    
     // ----------------- Security ---------------------
     function do_security() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/security_overview');            
