@@ -803,8 +803,83 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $this->errorRedirectTo("basic", sprintf(_kt("Failed to clear transition: %s"), $res->getMessage()));
         }   
         
-        $this->successRedirectTo('basic', _kt("Transition updated."));
+        $this->successRedirectTo('basic', _kt("Transition deleted."));
     }    
+
+    function form_deletestate() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt("Delete Existing State"),
+            'identifier' => 'ktcore.workflow.deletestate',
+            'action' => 'deletestate',
+            'cancel_action' => 'basic',
+            'fail_action' => 'replacestate',
+            'submit_label' => _kt("Delete State"),
+            'context' => $this,
+        ));
+        $other_states = sprintf('id != %d', $this->oState->getId());
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.entityselection', array(
+                'vocab' => KTWorkflowState::getList($other_states),
+                'label' => _kt("Replacement State"),
+                'description' => _kt("In order to remove this state from the system, please select a new state which will take its place.  All references to the state you are deleting will be replaced by this new state."),
+                'important_description' => _kt("All references will be changed, including on old documents."),
+                'label_method' => 'getName',
+                'name' => 'replacement',
+                'required' => true,
+            )),
+        ));
+        $oForm->setValidators(array(
+            array('ktcore.validators.entity', array(
+                'test' => 'replacement',
+                'output' => 'replacement', 
+                'class' => 'KTWorkflowState',
+            )),
+        ));
+        return $oForm;
+    }
+    
+    function do_replacestate() {
+        $oForm = $this->form_deletestate();
+        return $oForm->renderPage(_kt("Delete State"));
+    }
+    
+    function do_deletestate() {
+        $oForm = $this->form_deletestate();
+        $res = $oForm->validate();
+        
+        $errors = $res['errors'];
+        $data = $res['results'];
+        
+        if (!empty($errors)) {
+            return $oForm->handleError();
+        }
+    
+        $this->startTransaction();
+        
+        if (is_null($this->oState)) {
+            return $this->errorRedirectTo("basic", _kt("No state selected"));
+        }
+        
+        $replacement = $data['replacement'];
+        
+        KTWorkflowUtil::replaceState($this->oState, $replacement);  
+        
+        if ($this->oWorkflow->getStartStateId() == $this->oState->getId()) {
+            $this->oWorkflow->setStartStateId($replacement->getId());
+            $res = $this->oWorkflow->update();
+            if (PEAR::isError($res)) {
+                $this->errorRedirectTo("basic", sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
+            }           
+        }      
+        
+        $res = $this->oState->delete();
+        if (PEAR::isError($res)) {
+            $this->errorRedirectTo("basic", sprintf(_kt("Failed to delete state: %s"), $res->getMessage()));
+        }   
+        
+        $this->successRedirectTo('basic', _kt("State deleted."));
+    }        
     
     // ----------------- Security ---------------------
     function do_security() {

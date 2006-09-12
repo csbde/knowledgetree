@@ -788,7 +788,44 @@ class KTWorkflowUtil {
         }
         return $aGuards;
     }
-}
+    
+
+    function replaceState($oState, $oReplacement) {
+        $state_id = KTUtil::getId($oState);
+        $replacement_id = KTUtil::getId($oReplacement);
+                
+        // we need to convert:
+        //   - documents
+        //   - transitions
+        // before we do a delete.
+        $doc = KTUtil::getTableName('document_metadata_version');        
+        $aDocQuery = array(
+            'UPDATE $doc SET workflow_state_id = ? WHERE workflow_state_id = ?',
+            array($state_id, $replacement_id),
+        ); 
+        $res = DBUtil::runQuery($aDocQuery);
+        if (PEAR::isError($res)) { return $res; }
+        
+        $wf = KTUtil::getTableName('workflow_transitions');
+        $aTransitionQuery = array(
+            'UPDATE $wf SET target_state_id = ? WHERE workflow_state_id = ?',
+            array($state_id, $replacement_id),
+        ); 
+        $res = DBUtil::runQuery($aTransitionQuery);        
+        if (PEAR::isError($res)) { return $res; }
+        
+        $wf = KTUtil::getTableName('workflow_state_transitions');
+        $aTransitionQuery = array(
+            'DELETE FROM $wf WHERE state_id = ?',
+            array($state_id),
+        ); 
+        $res = DBUtil::runQuery($aTransitionQuery);          
+        if (PEAR::isError($res)) { return $res; }
+        
+        Document::clearAllCaches();
+        KTWorkflowTransitions::clearAllCaches();        
+    }
+}    
 
 class KTWorkflowTriggerRegistry {
     var $triggers;
@@ -832,5 +869,5 @@ class KTWorkflowTriggerRegistry {
         // FIXME do we want to order this alphabetically?
         return $triggerlist;
     }
-}
+}    
 
