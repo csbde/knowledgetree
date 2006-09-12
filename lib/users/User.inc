@@ -31,6 +31,8 @@
  
 require_once(KT_LIB_DIR . '/database/dbutil.inc'); 
 require_once(KT_LIB_DIR . '/ktentity.inc'); 
+
+define('ADMIN_USER_ID', 1);
  
 class User extends KTEntity {
     /** user's login name */

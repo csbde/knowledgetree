@@ -628,6 +628,52 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 		return implode(', ', $aGroupNames);
 	}
 
+
+
+        // change enabled / disabled status of users
+        function do_change_enabled() {
+            $this->startTransaction();
+
+            $iLicenses = 0;
+            if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+                require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+                $iLicenses = BaobabKeyUtil::getLicenseCount();
+            }
+
+            // "-2" to account for admin/anonymous
+            $iEnabledUsers = User::getNumberEnabledUsers() - 2;
+
+            foreach(KTUtil::arrayGet($_REQUEST, 'disable_user', array()) as $sUserId => $v) {
+                $oUser = User::get((int)$sUserId);
+                if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }                
+                $oUser->setDisabled(True);
+                $res = $oUser->update();
+                if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+                $iEnabledUsers--;
+            }
+
+            foreach(KTUtil::arrayGet($_REQUEST, 'enable_user', array()) as $sUserId => $v) {
+                // check that we haven't hit max user limit
+                if($iLicenses !== 0 && $iEnabledUsers >= $iLicenses) { 
+                    // if so, add to error messages, but commit transaction (break this loop)
+                    $_SESSION['KTErrorMessage'][] = _kt('You may only have ') . $iLicenses . _kt(' users enabled at one time.');
+                    break;
+                }
+
+                // else enable user
+                $oUser = User::get((int)$sUserId);
+                if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }               
+                $oUser->setDisabled(False);
+                $res = $oUser->update();
+                if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+                $iEnabledUsers++;
+            }
+
+            $this->commitTransaction();
+            $this->successRedirectToMain(_kt('Users updated'));
+
+        }
+
 }
 
 ?>
