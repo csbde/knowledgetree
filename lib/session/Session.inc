@@ -51,6 +51,10 @@ class Session {
             }
         }
         
+        if ($oUser->getDisabled()) {
+            return PEAR::raiseError("Your account has been disabled.  Please contact the system administrator for assistance.");
+        }
+        
         // bind user id to session
         $_SESSION["userID"] = $iUserId;
         $_SESSION["KTErrorMessage"] = array();
