@@ -767,7 +767,7 @@ class KTDocumentUtil {
     }
 
 
-    function copy($oDocument, $oDestinationFolder) {
+    function copy($oDocument, $oDestinationFolder, $sReason = null) {
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -851,6 +851,18 @@ class KTDocumentUtil {
         DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
         KTDocumentUtil::updateSearchableText($oNewDocument);
         KTPermissionUtil::updatePermissionLookup($oNewDocument);
+        
+        if (is_null($sReason)) {
+            $sReason = '';
+        }
+        
+        
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf("Copied to folder \"%s\". %s", $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction->create();        
+
+        $oSrcFolder = Folder::get($oDocument->getFolderID());
+        $oDocumentTransaction = & new DocumentTransaction($oNewDocument, sprintf("Copied from original in folder \"%s\". %s", $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction->create();        
         
         return $oNewDocument;
     }
