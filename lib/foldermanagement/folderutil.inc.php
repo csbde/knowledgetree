@@ -209,7 +209,7 @@ class KTFolderUtil {
     
     function rename($oFolder, $sNewName, $oUser) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
-        
+        $sOldName = $oFolder->getName();
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
         
@@ -252,6 +252,17 @@ class KTFolderUtil {
         
         $oFolder->setName($sNewName);
         $res = $oFolder->update();
+
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $oFolder->getId(),
+            'comment' => sprintf("Renamed from \"%s\" to \"%s\"", $sOldName, $sNewName),
+            'transactionNS' => 'ktcore.transactions.rename',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
+        ));
+        if (PEAR::isError($oTransaction)) {
+            return $oTransaction;
+        }
 
         KTFolderUtil::updateSearchableText($oFolder);
 
