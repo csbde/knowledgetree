@@ -605,7 +605,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             'action' => 'checkin',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt("Cancel Checkin"),
+            'submit_label' => _kt("Cancel Checkout"),
             'context' => &$this,
         ));
         $oForm->setWidgets(array(
@@ -1143,7 +1143,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             }            
         }
 
-        $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder);
+        $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder, $sReason);
         if (PEAR::isError($oNewDoc)) {
             $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
@@ -1179,9 +1179,9 @@ class KTDocumentCopyAction extends KTDocumentAction {
             $ret = $oTrigger->postValidate();
         }
         
-        $aOptions = array('user' => $oUser);
-        $oDocumentTransaction = & new DocumentTransaction($oNewDoc, "Document copied from old version.", 'ktcore.transactions.create', $aOptions);
-        $res = $oDocumentTransaction->create();
+        //$aOptions = array('user' => $oUser);
+        //$oDocumentTransaction = & new DocumentTransaction($oNewDoc, "Document copied from old version.", 'ktcore.transactions.create', $aOptions);
+        //$res = $oDocumentTransaction->create();
         
         $_SESSION['KTInfoMessage'][] = _kt('Document copied.');
         
