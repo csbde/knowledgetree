@@ -397,4 +397,27 @@ class KTFileValidator extends KTValidator {
     }
 }
 
+
+class KTArrayValidator extends KTValidator {
+    var $sNamespace = 'ktcore.validators.array';
+    
+    function validate($data) {
+        $results = array();
+        $errors = array();
+        
+        // very simple if we're required and not present, fail
+        // otherwise, its ok.
+        $val = KTUtil::arrayGet($data, $this->sInputVariable);
+        //var_dump($data); exit(0);        
+        if ($this->bProduceOutput) {
+            $results[$this->sOutputVariable] = $val;
+        }
+        
+        return array(
+            'errors' => $errors,
+            'results' => $results,
+        );
+    }
+}
+
 ?>

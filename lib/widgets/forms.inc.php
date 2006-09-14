@@ -237,7 +237,10 @@ class KTForm {
         return $this->renderContaining($sWidgets . ' ' . $sButtons);
     }
     
-    function renderPage($sTitle, $sDescription = null) {
+    function renderPage($sTitle = null, $sDescription = null) {
+        if ($sTitle == null) {
+            $sTitle = $this->sLabel;
+        }
         $pageval =  $this->render();
         $sHelpText = '';
         if (!is_null($sDescription)) {
