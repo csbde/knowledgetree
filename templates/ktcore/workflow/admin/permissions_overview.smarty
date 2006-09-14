@@ -1,21 +1,21 @@
 <h2>{i18n}Permissions Overview{/i18n}</h2>
 
-<p class="descriptiveText">A particular workflow state can override some, all, 
+<p class="descriptiveText">{i18n}A particular workflow state can override some, all, 
 or none of the permissions that would normally apply to a document.  In this
 way you can (for example) let the folder's permissions decide who can see
 the document (with <strong>Read</strong> permissions), while having the workflow
-restrict access to the "edit" permission.</p>
+restrict access to the "edit" permission.{/i18n}</p>
 
-<p class="descriptiveText important">States which control permissions have a tick in
+<p class="descriptiveText important">{i18n}States which control permissions have a tick in
 the "Control" column.  Permissions which are not controlled by a state (e.g. which 
 are controlled by the folder a document is in) are marked with a dash (&mdash;). 
 Controlled permissions are marked with a tick. <strong>Click on the state name to 
-specify how it controls permissions.</strong></p>
+specify how it controls permissions.</strong>{/i18n}</p>
 
 <table class="kt_collection" cellspacing="0">
     <thead>
         <tr>
-            <th>States</th>
+            <th>{i18n}States{/i18n}</th>
             <th class="centered">Control</th>            
           {foreach from=$perms item=oPerm}
             <th class="centered">{i18n}{$oPerm->getHumanName()}{/i18n}</th>

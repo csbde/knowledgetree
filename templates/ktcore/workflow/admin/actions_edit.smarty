@@ -1,10 +1,10 @@
-<h2>Assign blocked actions</h2>
+<h2>{i18n}Assign blocked actions{/i18n}</h2>
 
-<p class="descriptiveText important">Actions which are checked on this page will 
-<strong>not</strong> be available to users.</p>
+<p class="descriptiveText important">{i18n}Actions which are checked on this page will 
+<strong>not</strong> be available to users.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>Assign Blocked Actions</legend>
+<fieldset><legend>{i18n}Assign Blocked Actions{/i18n}</legend>
 
 {foreach from=$args item=v key=k}
     <input type="hidden" name="{$k}" value="{$v}" />
@@ -12,7 +12,7 @@
 
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
-        <th>State</th>
+        <th>{i18n}State{/i18n}</th>
       {foreach from=$actions item=oAction}
         <th>{$oAction->getDisplayName()}</th>  
       {/foreach}

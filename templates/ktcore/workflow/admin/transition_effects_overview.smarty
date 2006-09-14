@@ -1,13 +1,13 @@
-<h2>Transition Actions Overview</h2>
+<h2>{i18n}Transition Actions Overview{/i18n}</h2>
 
-<p class="descriptiveText important">Please note that the plugins that are installed
-will affect the available options</p>
+<p class="descriptiveText important">{i18n}Please note that the plugins that are installed
+will affect the available options{/i18n}</p>
 
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
-        <th>Transition</th>
-        <th>Edit</th>
-        <th>Effects</th>        
+        <th>{i18n}Transition<{/i18n}/th>
+        <th>{i18n}Edit{/i18n}</th>
+        <th>{i18n}Effects{/i18n}</th>        
     </thead>
     
     <tbody>

@@ -1,26 +1,26 @@
 <h2>{i18n arg_name=$workflow_name}States and Transitions: #name#{/i18n}</h2>
 
-<p class="descriptiveText">The core of a workflow is the <strong>process</strong>
+<p class="descriptiveText">{i18n}The core of a workflow is the <strong>process</strong>
 that documents in that workflow follow.  These processes are made up of <strong>states</strong>
 (which documents are in, e.g. "reviewed" or "published") and <strong>transitions</strong>
-which documents follow (e.g. "submit for review" or "publish").</p>
+which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
 
-<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=transitionconnections{/addQS}">Configure Workflow Process</a>
-<a href="{addQS context=$context}action=transitionconnections{/addQS}">Configure Workflow Process</a> <span class="descriptiveText">(e.g. which transitions lead to which states)</span></p>
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=transitionconnections{/addQS}">{i18n}Configure Workflow Process{/i18n}</a>
+<a href="{addQS context=$context}action=transitionconnections{/addQS}">{i18n}Configure Workflow Process{/i18n}</a> <span class="descriptiveText">{i18n}(e.g. which transitions lead to which states){/i18n}</span></p>
 
 <div style="width: 40%; float: left; ">
 
-<h3>States</h3>
-                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addstates{/addQS}">Add New States</a>
-                <a href="{addQS context=$context}action=addstates{/addQS}">Add New States</a><br /><br />
+<h3>{i18n}States{/i18n}</h3>
+                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addstates{/addQS}">{i18n}Add New States{/i18n}</a>
+                <a href="{addQS context=$context}action=addstates{/addQS}">{i18n}Add New States{/i18n}</a><br /><br />
             
             
                 <table class="kt_collection" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>State Name</th>
-                            <th>Edit</th>                            
-                            <th>Delete</th>                                                        
+                            <th>{i18n}State Name{/i18n}</th>
+                            <th>{i18n}Edit{/i18n}</th>                            
+                            <th>{i18n}Delete{/i18n}</th>                                                        
                         </tr>
                     </thead>
                     <tbody>
@@ -30,10 +30,10 @@ which documents follow (e.g. "submit for review" or "publish").</p>
                                 {$oState->getName()}
                             </td>
                             <td>                
-                              <a class="ktAction ktEdit" href="{addQS context=$context}action=editstate&fStateId={$oState->getId()}{/addQS}">Edit State</a>
+                              <a class="ktAction ktEdit" href="{addQS context=$context}action=editstate&fStateId={$oState->getId()}{/addQS}">{i18n}Edit State{/i18n}</a>
                             </td>
                             <td>                
-                              <a class="ktAction ktDelete" href="{addQS context=$context}action=replacestate&fStateId={$oState->getId()}{/addQS}">Delete State</a>
+                              <a class="ktAction ktDelete" href="{addQS context=$context}action=replacestate&fStateId={$oState->getId()}{/addQS}">{i18n}Delete State{/i18n}</a>
                             </td>                            
                         </tr>
                        {/foreach}
@@ -41,19 +41,19 @@ which documents follow (e.g. "submit for review" or "publish").</p>
                  </table>
 </div>
 <div style="float: left; width: 40%; margin-left: 1em;">
-<h3>Transitions</h3>
+<h3>{i18n}Transitions{/i18n}</h3>
 
-                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addtransitions{/addQS}">Add New Transitions</a>
-                <a href="{addQS context=$context}action=addtransitions{/addQS}">Add New Transitions</a><br /><br />
+                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addtransitions{/addQS}">{i18n}Add New Transitions{/i18n}</a>
+                <a href="{addQS context=$context}action=addtransitions{/addQS}">{i18n}Add New Transitions{/i18n}</a><br /><br />
 
 
 
                 <table class="kt_collection" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Transition Name</th>
-                            <th>Edit</th>                            
-                            <th>Delete</th>                                                        
+                            <th>{i18n}Transition Name{/i18n}</th>
+                            <th>{i18n}Edit{/i18n}</th>                            
+                            <th>{i18n}Delete{/i18n}</th>                                                        
                         </tr>
                     </thead>
                     <tbody>
@@ -63,10 +63,10 @@ which documents follow (e.g. "submit for review" or "publish").</p>
                                 {$oTransition->getName()}
                             </td>
                             <td>                
-                                <a class="ktAction ktEdit" href="{addQS context=$context}action=edittransition&fTransitionId={$oTransition->getId()}{/addQS}">Edit</a>
+                                <a class="ktAction ktEdit" href="{addQS context=$context}action=edittransition&fTransitionId={$oTransition->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
                             </td>
                             <td>                
-                                <a class="ktAction ktDelete" href="{addQS context=$context}action=deletetransition&fTransitionId={$oTransition->getId()}{/addQS}">Delete</a>
+                                <a class="ktAction ktDelete" href="{addQS context=$context}action=deletetransition&fTransitionId={$oTransition->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
                             </td>
                         </tr>
                        {/foreach}
