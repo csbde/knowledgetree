@@ -272,6 +272,55 @@ class KTCoreEntitySelectionWidget extends KTCoreSelectionWidget {
     }
 }
 
+
+class KTDescriptorSelectionWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.descriptorselection';
+    var $sTemplate = 'ktcore/forms/widgets/descriptor';
+    
+    var $aJavascript = array('resources/js/jsonlookup.js');
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        
+    }
+    
+    function getWidget() {
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate($this->sTemplate); 
+
+        $src_location = $this->aOptions['src'];
+        $sJS = sprintf("addLoadEvent(initJSONLookup(\"%s\", \"%s\"));", $this->sBasename, $src_location);
+
+
+        // its bad, but that's life.
+        $oPage =& $GLOBALS['main'];            
+        $oPage->requireJSStandalone($sJS);        
+        
+        $this->aOptions['multi'] = true;
+        
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "required" => $this->bRequired,
+            "has_id" => ($this->sId !== null),
+            "id" => $this->sId,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            'short_name' => $this->sBasename,
+            "options" => $this->aOptions,
+        );
+        return $oTemplate->render($aTemplateData);      
+    }
+}
+
 class KTCoreTreeMetadataWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.treemetadata';
     var $iFieldId;

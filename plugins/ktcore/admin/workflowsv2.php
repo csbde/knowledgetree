@@ -1696,6 +1696,270 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);    
     }
     
+    function do_managenotifications() {
+        $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/admin/manage_notifications");
+        $oTemplate->setData(array(
+            'context' => $this,
+            'states' => KTWorkflowState::getByWorkflow($this->oWorkflow),
+        ));
+        return $oTemplate->render();
+    }
+    
+    function describeStateNotifications($oState) {
+        $aAllowed = KTWorkflowUtil::getInformedForState($oState);
+        
+        $aUsers = array();
+        $aGroups = array();
+        $aRoles = array();
+        
+        foreach (KTUtil::arrayGet($aAllowed,'user',array()) as $iUserId) {
+            $oU = User::get($iUserId);
+            if (PEAR::isError($oU) || ($oU == false)) {
+                continue;
+            } else {
+                $aUsers[] = $oU->getName();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aAllowed,'group',array()) as $iGroupId) {
+            $oG = Group::get($iGroupId);
+            if (PEAR::isError($oG) || ($oG == false)) {
+                continue;
+            } else {
+                $aGroups[] = $oG->getName();
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aAllowed,'role',array()) as $iRoleId) {
+            $oR = Role::get($iRoleId);
+            if (PEAR::isError($oR) || ($oR == false)) {
+                continue;
+            } else {
+                $aRoles[] = $oR->getName();
+            }
+        }
+        
+        $sNotify = '';
+        if (!empty($aUsers)) {
+            $sNotify .= '<em>' . _kt('Users:') . '</em> ';
+            $sNotify .= implode(', ', $aUsers);
+        }
+        
+        if (!empty($aGroups)) {
+            if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
+            $sNotify .= '<em>' . _kt('Groups:') . '</em> ';
+            $sNotify .= implode(', ', $aGroups);
+        }
+        
+        if (!empty($aRoles)) {
+            if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
+            $sNotify .= '<em>' . _kt('Roles:') . '</em> ';
+            $sNotify .= implode(', ', $aRoles);
+        }
+        
+        if (empty($sNotify)) { $sNotify = _kt('No notifications.'); }
+        
+        return $sNotify;
+    }
+    
+    function descriptorToJSON($aAllowed) {
+        $values = array();        
+                   
+        foreach (KTUtil::arrayGet($aAllowed,'user',array()) as $oU) {
+            if (!is_object($oU)) {
+                $iUserId = $oU;
+                $oU = User::get($iUserId);
+            } else {
+                $iUserId = $oU->getId();
+            }
+
+            if (PEAR::isError($oU) || ($oU == false)) {
+                continue;
+            } else {
+                $values[sprintf("users[%d]", $iUserId)] = sprintf('User: %s', $oU->getName());
+            }
+        }
+
+        foreach (KTUtil::arrayGet($aAllowed,'group',array()) as $oG) {
+            if (!is_object($oG)) {
+                $iGroupId = $oG;
+                $oG = Group::get($iGroupId);
+            } else {
+                $iGroupId = $oG->getId();
+            }
+            if (PEAR::isError($oG) || ($oG == false)) {
+                continue;
+            } else {
+                $values[sprintf("groups[%d]", $iGroupId)] = sprintf('Group: %s', $oG->getName());
+            }
+        }
+        
+        foreach (KTUtil::arrayGet($aAllowed,'role',array()) as $oR) {
+            if (!is_object($oR)) {
+                $iRoleId = $oR;
+                $oR = Role::get($iRoleId);
+            } else {
+                $iRoleId = $oR->getId();
+            }
+
+            if (PEAR::isError($oR) || ($oR == false)) {
+                continue;
+            } else {
+                $values[sprintf("roles[%d]", $iRoleId)] = sprintf('Role: %s', $oR->getName());
+            }
+        }
+        
+        return $values;
+    }
+    
+    function form_editnotifications($oState) {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'context' => $this,
+            'label' => _kt("Edit State Notifications."),
+            'identifier' => 'ktcore.workflow.notifications',
+            'submit_label' => _kt("Update Notifications"),
+            'cancel_action' => 'managenotifications',
+            'action' => 'savenotifications',
+            'fail_action' => 'editnotifications',
+        ));
+        $preval = KTWorkflowUtil::getInformedForState($oState);
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.descriptorselection', array(
+                'label' => _kt("Users to inform"),
+                'description' => _kt("Select which users, groups and roles to be notified."),
+                'name' => 'users',
+                'src' => KTUtil::addQueryStringSelf($this->meldPersistQuery(array('json_action'=> 'notificationusers'), "json")),
+                'value' => $this->descriptorToJSON($preval),
+            )),
+        ));    
+        $oForm->setValidators(array(
+            array('ktcore.validators.array', array(
+                'test' => 'users',
+                'output' => 'users',
+            )),
+        ));
+        return  $oForm;
+    }
+    
+    function do_editnotifications() {
+        $oForm = $this->form_editnotifications($this->oState);
+        return $oForm->renderPage();       
+    }
+    
+    function do_savenotifications() {
+
+        
+        $oForm = $this->form_editnotifications($this->oState);
+        $res = $oForm->validate();
+
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
+
+        $data = $res['results'];
+        // now, an annoying problem is that we do *not* have the final set.
+        // so we need to get the original, add the new ones, remove the old ones.
+        //
+        // because its not *really* isolated properly, we need to post-process
+        // the data.
+        
+        // we need the old one
+        $aAllowed = KTWorkflowUtil::getInformedForState($this->oState);
+        
+        $user_pattern = '|users\[(.*)\]|';
+        $group_pattern = '|groups\[(.*)\]|';
+        $role_pattern = '|roles\[(.*)\]|';                
+        
+        $user = KTUtil::arrayGet($aAllowed, 'user', array());
+        $group = KTUtil::arrayGet($aAllowed, 'group', array());
+        $role = KTUtil::arrayGet($aAllowed, 'role', array());
+        
+        // do a quick overpass
+        $newAllowed = array();        
+        if (!empty($user)) { $newAllowed['user'] = array_combine($user, $user); }
+        else { $newAllowed['user'] = array(); }        
+        if (!empty($group)) { $newAllowed['group'] = array_combine($group, $group); }
+        else { $newAllowed['group'] = array(); }
+        if (!empty($role)) { $newAllowed['role'] = array_combine($role, $role); }                
+        else { $newAllowed['role'] = array(); }        
+               
+        $added = explode(',', $data['users']['added']);               
+        $removed = explode(',', $data['users']['removed']);        
+        
+        foreach ($added as $akey) {
+            $matches = array();
+            if (preg_match($user_pattern, $akey, $matches)) { $newAllowed['user'][$matches[1]] = $matches[1]; }
+            else if (preg_match($group_pattern, $akey, $matches)) { $newAllowed['group'][$matches[1]] = $matches[1]; }
+            else if (preg_match($role_pattern, $akey, $matches)) { $newAllowed['role'][$matches[1]] = $matches[1]; }                        
+        }
+        
+        foreach ($removed as $akey) {
+            $matches = array();
+            if (preg_match($user_pattern, $akey, $matches)) { unset($newAllowed['user'][$matches[1]]); }
+            else if (preg_match($group_pattern, $akey, $matches)) { unset($newAllowed['group'][$matches[1]]); }
+            else if (preg_match($role_pattern, $akey, $matches)) { unset($newAllowed['role'][$matches[1]]); }
+        }        
+        
+        // FIXME check that these are all users.
+    
+        $res = KTWorkflowUtil::setInformedForState($this->oState, $newAllowed);    
+        if (PEAR::isError($res)) {
+            return $oForm->handleError($res->getMessage());
+        }
+        
+        $this->successRedirectTo("managenotifications", _kt("Notifications updated."));
+    }
+    
+    function json_notificationusers() {
+        $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+        if ($sFilter == false) {
+        	$values = array('off'=>'-- Please filter --'); // default        
+        }
+        $sFilter = trim($sFilter);
+    	$values = array('off'=>'-- Please filter --'); // default
+        
+    	if (!empty($sFilter)) {
+    	    $allowed = array();
+    	    $q = sprintf('name like "%%%s%%"', DBUtil::escapeSimple($sFilter));
+
+    	    $aUsers = User::getList($q);
+        	$aGroups = Group::getList($q);
+            $aRoles = Role::getList($q);
+
+            $empty = true;
+            
+            if (!PEAR::isError($aUsers)) {
+                $allowed['user'] = $aUsers;
+                if (!empty($aUsers)) { 
+                    $empty = false;
+                }
+            }
+
+            if (!PEAR::isError($aGroups)) {
+                $allowed['group'] = $aGroups;
+                if (!empty($aGroups)) { 
+                    $empty = false;
+                }               
+            }
+           
+            if (!PEAR::isError($aRole)) {
+                $allowed['role'] = $aRoles;
+                if (!empty($aRoles)) { 
+                    $empty = false;
+                }
+                
+            }                        
+      
+            if ($empty) {
+            	$values = array('off'=>'-- No results --'); // default
+            } else {
+                $values = $this->descriptorToJSON($allowed);
+            }
+    	}
+
+    	return $values;
+    }
 }
 
 ?>

@@ -1,0 +1,47 @@
+
+<table>
+
+<thead>
+    <tr>
+        <td style="width:45%"><label for="select_{$short_name}_avail">{i18n}Available{/i18n} {$user_name}</label></td>
+        <td style="width:10%">&nbsp;</td>
+        <td style="width:45%"><label for="select_{$short_name}_assigned">{i18n}Assigned{/i18n} {$user_name}</label></td>
+    </tr>
+</thead>
+
+<tbody>
+    <tr>
+    <td style="vertical-align: top">
+
+  <select name="select_{$short_name}_avail" id="select_{$short_name}_avail" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
+  {foreach item=lookup key=lookup_key from=$options.vocab}
+       <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>
+  {/foreach}
+  </select>
+
+  <div><label for="filter_{$short_name}_avail">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$short_name}_avail" /><br/><a href="#" id="{$short_name}_show_all">{i18n}Show All{/i18n}</a></div>
+    </td>
+
+    <td>
+    
+    <input type="button" id="{$short_name}_add" value="&raquo;" />
+    <br /><br/>
+    <input type="button" id="{$short_name}_remove" value="&laquo;" />
+    
+    </td>
+
+    <td style="vertical-align: top">
+
+  <select name="{$name}[final]" id="select_{$short_name}_assigned" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
+  {foreach item=lookup key=lookup_key from=$value}
+       <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>
+  {/foreach}
+  </select>
+  <div><label for="filter_{$short_name}_assigned">Filter</label><input type="text" id="filter_{$short_name}_assigned" /></div>
+    </td>
+    </tr>
+</tbody>
+</table>
+
+  <input name="{$name}[added]" id="{$short_name}_items_added" type="hidden" />
+  <input name="{$name}[removed]" id="{$short_name}_items_removed" type="hidden" />

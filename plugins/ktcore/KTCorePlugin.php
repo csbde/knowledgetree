@@ -139,6 +139,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreTransparentFieldsetWidget', 'ktcore.widgets.transparentfieldset', 'KTWidgets.php');
         $this->registerWidget('KTCoreCollectionWidget', 'ktcore.widgets.collection', 'KTWidgets.php');
         $this->registerWidget('KTCoreTreeMetadataWidget', 'ktcore.widgets.treemetadata', 'KTWidgets.php');
+        $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');        
                 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
 
@@ -154,6 +155,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');                
         $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');                        
         $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');                   
+        $this->registerValidator('KTArrayValidator', 'ktcore.validators.array', 'KTValidators.php');           
 
         // criterion
         $this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');

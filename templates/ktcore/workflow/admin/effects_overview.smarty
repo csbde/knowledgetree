@@ -8,5 +8,5 @@ with the role "Reviewer" on that document are informed.</p>
 
 <ul class="descriptiveText">
     <li><a href="{addQS context=$context}action=transitionactions{/addQS}">Transition Effects</a></li>
-    <li><a href="{addQS context=$context}action=statenotifications{/addQS}">Notifications</a></li>    
+    <li><a href="{addQS context=$context}action=managenotifications{/addQS}">Notifications</a></li>    
 </ul>
