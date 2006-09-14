@@ -140,6 +140,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreCollectionWidget', 'ktcore.widgets.collection', 'KTWidgets.php');
         $this->registerWidget('KTCoreTreeMetadataWidget', 'ktcore.widgets.treemetadata', 'KTWidgets.php');
         $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');        
+        $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');        
                 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
 

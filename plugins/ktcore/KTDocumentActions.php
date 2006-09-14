@@ -1027,96 +1027,137 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
         return true;
     }
+    
+    function form_copyselection() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => sprintf(_kt("Copy Document \"%s\""), $this->oDocument->getName()),
+            'submit_label' => _kt("Copy"),
+            'identifier' => 'ktcore.actions.copydoc',
+            'action' => 'copy',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'fail_action' => 'main',
+            'context' => $this,
+        ));    
+
+        /*
+         *  This is somewhat more complex than most forms, since the "filename"
+         *  and title shouldn't appear unless there's a clash.
+         *
+         *  This is still not the most elegant solution.
+         */   
+    
+        $oForm->setWidgets(array(
+            array('ktcore.widgets.foldercollection', array(
+                'label' => _kt('Target Folder'),
+			    'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
+			    'required' => true,
+			    'name' => 'browse',
+                'folder_id' => $this->oFolder->getId(),
+                )),
+            array('ktcore.widgets.reason', array(
+                'label' => _kt("Reason"),
+                'description' => _kt("Please specify why you are copying this document.  Bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'name' => 'reason',
+            )),
+        ));
+ 
+         
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+            array('ktcore.validators.entity', array(
+                'class' => 'Folder',
+                'test' => 'browse',
+                'output' => 'browse',
+            )),
+        ));        
+ 
+        // here's the ugly bit.
+        
+        $err = $oForm->getErrors();
+        if (!empty($err['name']) || !empty($err['filename'])) {
+            $oForm->addWidget(
+                array('ktcore.widgets.string', array(
+                    'label' => _kt("Document Title"),
+                    'value' => $this->oDocument->getName(),
+                    'important_description' => _kt("Please indicate a new title to use to resolve any title conflicts."),
+                    'name' => 'name',
+                    'required' => true,
+                ))
+            );
+            $oForm->addValidator(
+                array('ktcore.validators.string', array(
+                    'output' => 'name',
+                    'test' => 'name'
+                ))
+            );
+
+            $oForm->addWidget(
+                array('ktcore.widgets.string', array(
+                    'label' => _kt("Filename"),
+                    'value' => $this->oDocument->getFilename(),
+                    'important_description' => _kt("Please indicate a new filename to use to resolve any conflicts."),
+                    'name' => 'filename',
+                    'required' => true,
+                ))
+            );
+            $oForm->addValidator(
+                array('ktcore.validators.string', array(
+                    'output' => 'filename',
+                    'test' => 'filename'
+                ))
+            );
+        }
+        return $oForm;
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Copy"));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy');
-        $move_fields = array();
-        $aNames = $this->oDocumentFolder->getPathArray();
-        $aNames[] = $this->oDocument->getName();
-        $sDocumentName = join(" &raquo; ", $aNames);
-        $move_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        
-
-        $collection = new AdvancedCollection();
-        $oCR =& KTColumnRegistry::getSingleton();
-        $col = $oCR->getColumn('ktcore.columns.title');
-        $col->setOptions(array('qs_params'=>array('fMoveCode'=>$sMoveCode,
-                                                  'fFolderId'=>$this->oFolder->getId(),
-                                                  'action'=>'startMove')));
-        $collection->addColumn($col);
-
-        $qObj = new FolderBrowseQuery($this->oFolder->getId());
-        $collection->setQueryObject($qObj);
-
-        $aOptions = $collection->getEnvironOptions();
-        $collection->setOptions($aOptions);
-
-	$oWF =& KTWidgetFactory::getSingleton();
-	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Target Folder'),
-				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
-				   'required' => true,
-				   'name' => 'browse',
-                                   'folder_id' => $this->oFolder->getId(),
-				   'collection' => $collection));        
-        $move_fields[] = $oWidget;
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'move_fields' => $move_fields,
-            //            'collection' => $collection,
-            //            'collection_breadcrumbs' => $aBreadcrumbs,
-        ));
-        return $oTemplate->render();
+        $oForm = $this->form_copyselection();
+        return $oForm->renderPage();
     }
 
-    function do_copy() {
-        $this->oPage->setBreadcrumbDetails(_kt("Copy"));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/copy_final');
-        $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
-        $aNames = $this->oDocumentFolder->getPathArray();
-        $aNames[] = $this->oDocument->getName();
-        $sDocumentName = join(" &raquo; ", $aNames);
-        
+    function do_copy() {   
+        $oForm = $this->form_copyselection();
+        $res = $oForm->validate();
+        $errors = $res['errors'];
+        $data = $res['results'];
+        $extra_errors = array();
 
-        $bNameClash = KTDocumentUtil::nameExists($this->oFolder, $this->oDocument->getName());      
-        $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
-        $bIsClash = $bNameClash or $bFileClash;  
-        
-        $copy_fields = array();
-        $copy_fields[] = new KTStaticTextWidget(_kt('Document to copy'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-        $copy_fields[] = new KTStaticTextWidget(_kt('Target folder'), '', 'fFolderId', $sFolderPath, $this->oPage, false);
-        $copy_fields[] = new KTStringWidget(_kt('Reason'), _kt('The reason for this document to be copied.'), 'reason', "", $this->oPage, true);
-        
-        if ($bIsClash) {
-            if ($bNameClash) {
-                $copy_fields[] = new KTStringWidget(_kt('Title'), _kt('A document with the same title already exists in the folder.  Please supply an alternative filename'), 'name', $this->oDocument->getName(), $this->oPage, true);            
+        if (!is_null($data['browse'])) {
+            $bNameClash = KTDocumentUtil::nameExists($data['browse'], $this->oDocument->getName());        
+            if ($bNameClash && isset($data['name'])) {
+                $name = $data['name'];
+                $bNameClash = KTDocumentUtil::nameExists($data['browse'], $name);                        
+            } else {
+                $name = $this->oDocument->getName();
             }
-            if ($bFileClash) {
-                $copy_fields[] = new KTStringWidget(_kt('Filename'), _kt('A document with the same filename already exists in the folder.  Please supply an alternative filename'), 'filename', $this->oDocument->getFilename(), $this->oPage, true);            
-            }            
+            if ($bNameClash) {
+                $extra_errors['name'] = _kt("A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.");
         }
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'copy_fields' => $copy_fields,
-            'is_clash' => $bIsClash,
-        ));
-        return $oTemplate->render();
-    }
-
-    function do_copy_final() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $aOptions = array(
-            'message' => _kt("No reason given"),
-            'redirect_to' => array('copy', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
-        );
-        $this->oValidator->notEmpty($sReason, $aOptions);
-
-        if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectTo("main", _kt("You do not have permission to copy a document to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-            exit(0);
+        
+            $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
+            if ($bFileClash && isset($data['filename'])) {
+                $filename = $data['filename'];
+                $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $filename);              
+            } else {
+                $filename = $this->oDocument->getFilename();
+            }            
+            if ($bFileClash) {
+                $extra_errors['filename'] = _kt("A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.");
+            }
+            
+            if (!Permission::userHasFolderWritePermission($data['browse'])) {
+                $extra_errors['browse'] = _kt("You do not have permission to create new documents in that folder.");
+            }
+        }
+        
+        if (!empty($errors) || !empty($extra_errors)) {
+            return $oForm->handleError(null, $extra_errors);   
         }
         
         // FIXME agree on document-duplication rules re: naming, etc.
@@ -1124,46 +1165,22 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $this->startTransaction();
         // now try update it.
         
-        $bNameClash = KTDocumentUtil::nameExists($this->oFolder, $this->oDocument->getName());      
-        $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
-        $bIsClash = $bNameClash or $bFileClash;  
-        
-        if ($bIsClash) {
-            $name = KTUtil::arrayGet($_REQUEST, 'name', $this->oDocument->getName());
-            $filename = KTUtil::arrayGet($_REQUEST, 'filename', $this->oDocument->getFilename());            
-            
-            if (KTDocumentUtil::nameExists($this->oFolder, $name)) {
-                $this->errorRedirectTo('copy', _kt('A document with that name also exists in this folder.  Please try a different name.'), sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId()));
-                exit(0);
-            }
-            
-            if (KTDocumentUtil::fileExists($this->oFolder, $filename)) {
-                $this->errorRedirectTo('copy', _kt('A document with that filename also exists in this folder.  Please try a different name.'), sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId()));
-                exit(0);
-            }            
-        }
-
         $oNewDoc = KTDocumentUtil::copy($this->oDocument, $this->oFolder, $sReason);
         if (PEAR::isError($oNewDoc)) {
             $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $oNewDoc->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
             exit(0);
         }
         
-        if ($bIsClash) {        
-            // use earlier supplied and tested versions.
-            $oNewDoc->setName($name);
-            $oNewDoc->setFilename($filename);
-            
-            $res = $oNewDoc->update();
-            if (PEAR::isError($res)) {
-                $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $res->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-                exit(0);
-            }
+        $oNewDoc->setName($name);
+        $oNewDoc->setFilename($filename);
+                
+        $res = $oNewDoc->update();
+        if (PEAR::isError($res)) {
+            return $this->errorRedirectTo("main", _kt("Failed to copy document: ") . $res->getMessage(), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         }
 
         $this->commitTransaction();
-        
-        
+            
         // FIXME do we need to refactor all trigger usage into the util function?
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('copyDocument', 'postValidate');

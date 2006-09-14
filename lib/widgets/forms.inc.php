@@ -249,6 +249,16 @@ class KTForm {
         return sprintf('<h2>%s</h2> %s %s', $sTitle, $sHelpText, $pageval);
     }    
     
+    function getErrors() {
+        $aErrors = array();
+        $old_data = KTUtil::arrayGet((array) $_SESSION['_kt_old_data'], 
+            $this->_kt_form_name, array());
+        if (KTUtil::arrayGet($old_data, 'identifier') == $this->sIdentifier) {
+            $aErrors = (array) unserialize(KTUtil::arrayGet($old_data, 'errors'));
+        }    
+        return $aErrors;
+    }
+    
     function renderWidgets() {
         if (empty($this->_widgets)) {
             return '&nbsp;';
