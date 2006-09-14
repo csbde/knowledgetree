@@ -1,18 +1,16 @@
 <h2>{i18n arg_name=$workflow_name}Security Overview: #name#{/i18n}</h2>
 
-<p class="descriptiveText">KnowledgeTree has a powerful security model, in which users
+<p class="descriptiveText">{i18n}KnowledgeTree has a powerful security model, in which users
 can only see documents they have permissions to see.  Workflow is the finest-grained
 way to allocate permissions to a document, since it can override the permissions 
-assigned at a folder level.</p>
+assigned at a folder level.{/i18n}</p>
 
-<p class="descriptiveText">There are 3 different ways in which workflows interact
-with the system's security:</p>
+<p class="descriptiveText">{i18n}There are 3 different ways in which workflows interact
+with the system's security:{/i18n}</p>
 
 <ol>
-    <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">Document Permissions</a> (by state)</li>
-    <li><a href="{addQS context=$context}action=actionsoverview{/addQS}">Action Restrictions</a> (by state)</li>            
-    <li><a href="{addQS context=$context}action=transitionsecurityoverview{/addQS}">Transition Restrictions</a></li>    
+    <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">{i18n}Document Permissions{/i18n}</a> {i18n}(by state){/i18n}</li>
+    <li><a href="{addQS context=$context}action=actionsoverview{/addQS}">{i18n}Action Restrictions{/i18n}</a> {i18n}(by state){/i18n}</li>            
+    <li><a href="{addQS context=$context}action=transitionsecurityoverview{/addQS}">{i18n}Transition Restrictions{/i18n}</a></li>    
 
 </ol>
-
-<p class="descriptiveText">Each of these can be managed from this area.</p>

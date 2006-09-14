@@ -1,12 +1,12 @@
 <h2>{i18n arg_name=$workflow_name}Workflow Effects Overview: #name#{/i18n}</h2>
 
-<p class="descriptiveText">As a document moves through a workflow, it can cause
+<p class="descriptiveText">{i18n}As a document moves through a workflow, it can cause
 varies other actions to occur.  For example, you can attach a "Move" action to a transition,
 which will cause any document moving through that workflow to be moved to a particular folder. 
 Or you can specify that when a document reaches the "Pending Review" state, users
-with the role "Reviewer" on that document are informed.</p>
+with the role "Reviewer" on that document are informed.{/i18n}</p>
 
 <ul class="descriptiveText">
-    <li><a href="{addQS context=$context}action=transitionactions{/addQS}">Transition Effects</a></li>
-    <li><a href="{addQS context=$context}action=managenotifications{/addQS}">Notifications</a></li>    
+    <li><a href="{addQS context=$context}action=transitionactions{/addQS}">{i18n}Transition Effects{/i18n}</a></li>
+    <li><a href="{addQS context=$context}action=managenotifications{/addQS}">{i18n}Notifications{/i18n}</a></li>    
 </ul>

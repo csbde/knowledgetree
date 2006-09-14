@@ -1,15 +1,15 @@
-<h2>Actions Overview</h2>
+<h2>{i18n}Actions Overview{/i18n}</h2>
 
-<p class="descriptiveText">In addition to restricting permissions, it is also 
+<p class="descriptiveText">{i18n}In addition to restricting permissions, it is also 
 possible to block certain <strong>actions</strong> at any given point.  Actions
-which are not blocked are still controlled by the usual permissions.</p>
+which are not blocked are still controlled by the usual permissions.{/i18n}</p>
 
-<p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions{/addQS}">Edit Actions</a>
-<a href="{addQS context=$context}action=editactions{/addQS}">Edit Actions</a></p>
+<p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a>
+<a href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a></p>
 
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
-        <th>State</th>
+        <th>{i18n}State{/i18n}</th>
       {foreach from=$actions item=oAction}
         <th>{$oAction->getDisplayName()}</th>  
       {/foreach}
@@ -23,7 +23,7 @@ which are not blocked are still controlled by the usual permissions.</p>
             {foreach from=$actions item=oAction}
             {assign value=$oAction->getName() var=action_id}
               {if $grid.$state_id.$action_id}
-                <td class="centered"><span class="ktAction ktDenied">Denied</span></td>              
+                <td class="centered"><span class="ktAction ktDenied">{i18n}Denied{/i18n}</span></td>              
               {else}
                 <td class="centered">&mdash;</td>
               {/if}
