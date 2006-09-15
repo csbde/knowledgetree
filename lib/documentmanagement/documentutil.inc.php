@@ -907,7 +907,7 @@ class KTDocumentUtil {
         return true;    
     }
     
-    function move($oDocument, $oToFolder, $oUser = null, $sReason) {
+    function move($oDocument, $oToFolder, $oUser = null, $sReason = null) {
         
         $oFolder = $oToFolder; // alias.        
         
