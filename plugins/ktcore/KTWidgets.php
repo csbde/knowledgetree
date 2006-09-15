@@ -612,16 +612,21 @@ class KTCoreFolderCollectionWidget extends KTCoreCollectionWidget {
 
     function configure($aOptions) {
 
+        if (!isset($aOptions['value'])) {
+            $aOptions['value'] = KTUtil::arrayGet($aOptions,'folder_id', 1);
+        }
+        $this->value = $aOptions['value'];
+
 
         $collection = new AdvancedCollection();
         $oCR =& KTColumnRegistry::getSingleton();
         $col = $oCR->getColumn('ktcore.columns.title');
         $col->setOptions(array('qs_params'=>array('fMoveCode'=>$sMoveCode,
-                                                  'fFolderId'=> KTUtil::arrayGet($aOptions,'folder_id', 1),
+                                                  'fFolderId'=> $this->value,
                                                   'action'=>'startMove')));
         $collection->addColumn($col);
 
-        $qObj = new FolderBrowseQuery(KTUtil::arrayGet($aOptions,'folder_id', 1));
+        $qObj = new FolderBrowseQuery(KTUtil::arrayGet($aOptions,'value'));
         $collection->setQueryObject($qObj);
 
         $aO = $collection->getEnvironOptions();
@@ -632,6 +637,18 @@ class KTCoreFolderCollectionWidget extends KTCoreCollectionWidget {
     
         return parent::configure($aOptions);
     }
+    
+    function getDefault() { return $this->value; }
+    function setDefault($mValue) { 
+        if ($mValue != $this->value) {
+            $this->oCollection->setQueryObject(new FolderBrowseQuery($mValue));
+            $this->value = $mValue;
+            $this->aOptions['folder_id'] = $this->value;
+            $this->iFolderId = $this->value;
+            $this->sCollection = serialize($this->oCollection);
+            $_SESSION['collection_widgets'][$this->sCode] = serialize($this);         
+        }
+    }    
 }
 
 class KTCoreCollectionPage extends KTStandardDispatcher {
