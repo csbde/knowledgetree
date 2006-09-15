@@ -17,7 +17,7 @@
 
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
-<input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
+<a href="{addQS context=$context}action=main&fFolderId={$folder->getId()}{/addQS}" class="form_cancel">Cancel</a>
 </div>
 </fieldset>
 </form>

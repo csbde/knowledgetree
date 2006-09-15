@@ -439,7 +439,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			     array('label' => _kt('Target Folder'),
 				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to move the documents into.'),
 				   'required' => true,
-				   'name' => 'browse',
+				   'name' => 'fFolderId',
+				   'broken_name' => true,
                                    'folder_id' => $oFolder->getId(),
 				   'collection' => $collection));
 
@@ -544,7 +545,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'folder' => $target_folder,
               'move_code' => $move_code,
               'folders' => $folderStr,
-              'documents' => $documentStr,              
+              'documents' => $documentStr,      
+       
         );
         return $oTemplate->render($aTemplateData);        
     }

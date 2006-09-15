@@ -795,7 +795,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             return $res;
         }
         if ($this->oDocument->getIsCheckedOut()) {
-            $_SESSION["KTErrorMessage"][]= _kt("This document can't be deleted because it is checked out");
+            $_SESSION["KTErrorMessage"][]= _kt("This document can't be moved because it is checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
@@ -807,179 +807,163 @@ class KTDocumentMoveAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("move"));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move');
-        $move_fields = array();
-        $aNames = $this->oDocumentFolder->getPathArray();
-        $aNames[] = $this->oDocument->getName();
-        $sDocumentName = join(" &raquo; ", $aNames);
-        $move_fields[] = new KTStaticTextWidget(_kt('Document to move'), '', 'fDocumentId', $sDocumentName, $this->oPage, false);
-
-        $collection = new AdvancedCollection();
-        $oCR =& KTColumnRegistry::getSingleton();
-        $col = $oCR->getColumn('ktcore.columns.title');
-        $col->setOptions(array('qs_params'=>array('fMoveCode'=>$sMoveCode,
-                                                  'fFolderId'=>$oFolder->getId(),
-                                                  'action'=>'startMove')));
-        $collection->addColumn($col);
-
-        $qObj = new FolderBrowseQuery($this->oFolder->getId());
-        $collection->setQueryObject($qObj);
-
-        $aOptions = $collection->getEnvironOptions();
-        $collection->setOptions($aOptions);
-
-	$oWF =& KTWidgetFactory::getSingleton();
-	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Target Folder'),
-				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to move the documents into.'),
-				   'required' => true,
-				   'name' => 'browse',
-                                   'folder_id' => $oFolder->getId(),
-				   'collection' => $collection));        
-        $move_fields[] = $oWidget;
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'move_fields' => $move_fields,
-            //'collection' => $collection,
-            //'collection_breadcrumbs' => $aBreadcrumbs,
-        ));
-        return $oTemplate->render();
+        $oForm = $this->form_move();
+        return $oForm->renderPage();
     }
 
     function form_move() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt("Move Document"),
-            'action' => 'move_final',
-            'fail_action' => 'move',
+            'label' => sprintf(_kt("Move Document \"%s\""), $this->oDocument->getName()),
+            'submit_label' => _kt("Move"),
+            'identifier' => 'ktcore.actions.movedoc',
+            'action' => 'move',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt("Move Document"),
-            'context' => &$this,
-        ));
+            'fail_action' => 'main',
+            'context' => $this,
+        ));    
+
+        /*
+         *  This is somewhat more complex than most forms, since the "filename"
+         *  and title shouldn't appear unless there's a clash.
+         *
+         *  This is still not the most elegant solution.
+         */   
+    
         $oForm->setWidgets(array(
+            array('ktcore.widgets.foldercollection', array(
+                'label' => _kt('Target Folder'),
+			    'description' => _kt('Use the folder collection and path below select the folder into which you wish to move the document.'),
+			    'required' => true,
+			    'name' => 'browse',
+                'folder_id' => $this->oDocument->getFolderID(),
+                )),
             array('ktcore.widgets.reason', array(
                 'label' => _kt("Reason"),
-                'description' => _kt("Please specify why you are moving this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."),
+                'description' => _kt("Please specify why you are moving this document.  Bear in mind that you can use a maximum of <strong>250</strong> characters."),
                 'name' => 'reason',
             )),
         ));
+ 
+         
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'max_length' => 250,
                 'output' => 'reason',
             )),
-        ));
+            array('ktcore.validators.entity', array(
+                'class' => 'Folder',
+                'test' => 'browse',
+                'output' => 'browse',
+            )),
+        ));        
+ 
+        // here's the ugly bit.
         
+        $err = $oForm->getErrors();
+        if (!empty($err['name']) || !empty($err['filename'])) {
+            $oForm->addWidget(
+                array('ktcore.widgets.string', array(
+                    'label' => _kt("Document Title"),
+                    'value' => $this->oDocument->getName(),
+                    'important_description' => _kt("Please indicate a new title to use to resolve any title conflicts."),
+                    'name' => 'name',
+                    'required' => true,
+                ))
+            );
+            $oForm->addValidator(
+                array('ktcore.validators.string', array(
+                    'output' => 'name',
+                    'test' => 'name'
+                ))
+            );
+
+            $oForm->addWidget(
+                array('ktcore.widgets.string', array(
+                    'label' => _kt("Filename"),
+                    'value' => $this->oDocument->getFilename(),
+                    'important_description' => _kt("Please indicate a new filename to use to resolve any conflicts."),
+                    'name' => 'filename',
+                    'required' => true,
+                ))
+            );
+            $oForm->addValidator(
+                array('ktcore.validators.string', array(
+                    'output' => 'filename',
+                    'test' => 'filename'
+                ))
+            );
+        }
         return $oForm;
     }
-
+    
     function do_move() {
-        $this->persistParams(array('fFolderId'));
-    
-        $this->oPage->setBreadcrumbDetails(_kt("Move"));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move_final');
-
-        if($this->oDocument->getFolderId() === $this->oFolder->getId()) {
-            $this->errorRedirectTo('main', _kt("The document was already in this folder"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
-            exit(0);
-        }
-    
         $oForm = $this->form_move();
-        
-        //$sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
-        //$aNames = $this->oDocumentFolder->getPathArray();
-        //$aNames[] = $this->oDocument->getName();
-        //$sDocumentName = join(" &raquo; ", $aNames);
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'form' => $oForm,
-        ));
-        return $oTemplate->render();
-    }
-
-    function do_move_final() {
-        $oForm = $this->form_move();    
         $res = $oForm->validate();
+        $errors = $res['errors'];
         $data = $res['results'];
-        if (!empty($res['errors'])) {
-            return $oForm->handleError();
-        }
-        
-        $sReason = $data['reason'];
+        $extra_errors = array();
 
-        if (!Permission::userHasFolderWritePermission($this->oFolder)) {
-            $this->errorRedirectToMain(_kt("You do not have permission to move a document to this location"));
-            exit(0);
-        }
-
-        $this->startTransaction();
-
-        $oOriginalFolder = Folder::get($this->oDocument->getFolderId());
-        $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
-        $iDocumentPermissionObjectId = $this->oDocument->getPermissionObjectId();
-
-
-        if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
-            $this->oDocument->setPermissionObjectId($this->oFolder->getPermissionObjectId());
-        }
-
-        //put the document in the new folder
-        $this->oDocument->setFolderID($this->oFolder->getId());
-        $res = $this->oDocument->update();
-        if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectToMain(_kt("There was a problem updating the document's location in the database"));
-        }
-
-
-        //move the document on the file system
-        $oStorage =& KTStorageManagerUtil::getSingleton();
-        $res = $oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder);
-        if (PEAR::isError($res) || ($res === false)) {
-            $this->oDocument->setFolderID($oOriginalFolder->getId());
-            $this->oDocument->update();
-            $this->errorRedirectToMain(_kt("There was a problem updating the document's location in the repository storage"));
-        }
-
-
-        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
-            $this->oDocumentFolder->getFullPath(),
-            $this->oDocumentFolder->getName(),
-            $this->oFolder->getFullPath(),
-            $this->oFolder->getName(),
-            $sReason);
-
-        // create the document transaction record
-        
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sMoveMessage, 'ktcore.transactions.move');
-        $oDocumentTransaction->create();
-
-        $this->commitTransaction();
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                "document" => $this->oDocument,
-                "old_folder" => $this->oDocumentFolder,
-                "new_folder" => $this->oFolder,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-            if (PEAR::isError($ret)) {
-                $this->oDocument->delete();
-                return $ret;
+        if (!is_null($data['browse'])) {
+            if ($data['browse']->getId() == $this->oDocument->getFolderID()) {
+                $extra_errors['browse'] = _kt("You cannot move the document within the same folder.");
+            } else {
+                $bNameClash = KTDocumentUtil::nameExists($data['browse'], $this->oDocument->getName());        
+                if ($bNameClash && isset($data['name'])) {
+                    $name = $data['name'];
+                    $bNameClash = KTDocumentUtil::nameExists($data['browse'], $name);                        
+                } else {
+                    $name = $this->oDocument->getName();
+                }
+                if ($bNameClash) {
+                    $extra_errors['name'] = _kt("A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.");
+            }
+            
+                $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
+                if ($bFileClash && isset($data['filename'])) {
+                    $filename = $data['filename'];
+                    $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $filename);              
+                } else {
+                    $filename = $this->oDocument->getFilename();
+                }            
+                if ($bFileClash) {
+                    $extra_errors['filename'] = _kt("A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.");
+                }
+                
+                if (!Permission::userHasFolderWritePermission($data['browse'])) {
+                    $extra_errors['browse'] = _kt("You do not have permission to create new documents in that folder.");
+                }
             }
         }
         
-        redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
-        exit(0);
+        if (!empty($errors) || !empty($extra_errors)) {
+            return $oForm->handleError(null, $extra_errors);   
+        }
+        
+        $this->startTransaction();
+        // now try update it.
+        
+        $res = KTDocumentUtil::move($this->oDocument, $data['browse'], $this->oUser, $sReason);
+        if (PEAR::isError($oNewDoc)) {
+            $this->errorRedirectTo("main", _kt("Failed to move document: ") . $oNewDoc->getMessage());
+            exit(0);
+        }
+        
+        $this->oDocument->setName($name);       // if needed.
+        $this->oDocument->setFilename($filename);   // if needed.
+                
+        $res = $this->oDocument->update();
+        if (PEAR::isError($res)) {
+            return $this->errorRedirectTo("main", _kt("Failed to move document: ") . $res->getMessage());
+        }
+
+        $this->commitTransaction();
+        
+        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        exit(0);        
     }
+
 }
 // }}}
 
@@ -1053,7 +1037,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
 			    'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
 			    'required' => true,
 			    'name' => 'browse',
-                'folder_id' => $this->oFolder->getId(),
+                'folder_id' => $this->oDocument->getFolderID(),
                 )),
             array('ktcore.widgets.reason', array(
                 'label' => _kt("Reason"),
