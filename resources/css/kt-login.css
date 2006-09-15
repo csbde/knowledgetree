@@ -27,6 +27,7 @@
         }
 
         #formbox { 
+            border: 0; padding: 0; margin: 0;
             width: 252px;
             float: left;
         }
@@ -51,11 +52,12 @@
 
         input {
             border: 1px solid #666;
-            width: 252px;
+            width: 250px;
         }
         
         select {
             border: 1px solid #666;
+            margin: 0;
             width: 252px;
         }
 
@@ -64,9 +66,10 @@
         }
 
         .form_actions {
-            margin-top: 1em;
-            padding-top: 1em;
+            margin: 1em 0 0 0;
+            padding: 1em 0 0 0;
             border-top: 0px solid #eee;
+            border-width: 1px 0 0 0;
             text-align: right;
         }
 
