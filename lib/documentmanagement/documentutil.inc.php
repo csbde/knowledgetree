@@ -907,7 +907,7 @@ class KTDocumentUtil {
         return true;    
     }
     
-    function move($oDocument, $oToFolder, $oUser = null) {
+    function move($oDocument, $oToFolder, $oUser = null, $sReason) {
         
         $oFolder = $oToFolder; // alias.        
         
@@ -939,11 +939,12 @@ class KTDocumentUtil {
             return $res; // we failed, bail.
         }
 
-        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: Workflow trigger.",
+        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s. %s",
             $oOriginalFolder->getFullPath(),
             $oOriginalFolder->getName(),        
             $oFolder->getFullPath(),
-            $oFolder->getName());
+            $oFolder->getName(),
+            $sReason);
 
         // create the document transaction record
         
