@@ -51,6 +51,7 @@ php_flag session.auto_start OFF
 
 <IfModule mod_env.c>
 SetEnv kt_htaccess_worked yes
+SetEnvIf Authorization (.*) kt_auth=$1
 </IfModule>
 LimitRequestBody 0
 DirectoryIndex index.html index.php
