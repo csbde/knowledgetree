@@ -315,10 +315,20 @@ class User extends KTEntity {
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
-            BaobabKeyUtil::deallocate($this);
+            BaobabKeyUtil::deallocateUser($this);
         }
         return;
     }
+    
+    function enable() {
+        $this->setDisabled(false);
+        $this->update();
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            BaobabKeyUtil::allocateUser($this);
+        }
+        return;
+    }    
 
     function create() {
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
