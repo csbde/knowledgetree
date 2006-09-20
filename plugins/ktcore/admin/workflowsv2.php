@@ -398,7 +398,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setWidgets(array(
             array('ktcore.widgets.text',array(
                 'label' => _kt('New States'),
-                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Note that the first state you list is the one in which documents will start the workflow - this can be changed later on. Please enter a list of states, one per line.  State names must be unique, and this includes states already in this workflow.'),
+                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Note that the first state you list is the one in which documents will start the workflow - this can be changed later on.'),
+                'important_description' => _kt('Please enter a list of states, one per line.  State names must be unique, and this includes states already in this workflow.'),
                 'required' => true,
                 'name' => 'states',
                 'rows' => 15,
@@ -504,7 +505,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setWidgets(array(
             array('ktcore.widgets.text',array(
                 'label' => _kt('Transitions'),
-                'description' => _kt('In order to move between states, users will cause "transitions" to occur.  These transitions represent processes followed, e.g. "review document", "distribute invoice" or "publish".  Please enter a list of transitions, one per line.  Transition names must be unique.  You\'ll assign transitions to states in the next step.'),
+                'description' => _kt('In order to move between states, users will cause "transitions" to occur.  These transitions represent processes followed, e.g. "review document", "distribute invoice" or "publish".  You\'ll assign transitions to states in the next step.'  ),
+                'important_description' => _kt('Please enter a list of transitions, one per line.  Transition names must be unique.'),
                 'required' => false,
                 'name' => 'transitions',
             )),           
@@ -623,7 +625,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             array('ktcore.widgets.string', array(
                 'name' => 'name',
                 'label' => _kt('State Name'),
-                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Note that the first state you list is the one in which documents will start the workflow - this can be changed later on. Please enter a list of states, one per line.  State names must be unique, and this includes states already in this workflow.'),
+                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  State names must be unique, and this includes states already in this workflow.'),
                 'required' => true,
                 'value' => $oState->getName(),
             )),
