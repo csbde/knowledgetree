@@ -38,10 +38,10 @@ class KTFSImportStorage extends KTImportStorage {
 
     function init() {
         if (!file_exists($this->sBasePath)) {
-            return PEAR::raiseError("Filesystem location given does not exist");
+            return PEAR::raiseError(_kt("Filesystem location given does not exist"));
         }
         if (!is_dir($this->sBasePath)) {
-            return PEAR::raiseError("Filesystem location given is not a directory");
+            return PEAR::raiseError(_kt("Filesystem location given is not a directory"));
         }
     }
 

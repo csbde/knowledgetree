@@ -484,7 +484,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("checkin");
+        $this->oPage->setBreadcrumbDetails(_kt("Checkin"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkin');
         
         $oForm = $this->form_main();
@@ -734,7 +734,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("Delete");
+        $this->oPage->setBreadcrumbDetails(_kt("Delete"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
 
         $oForm = $this->form_main();

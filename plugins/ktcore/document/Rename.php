@@ -67,7 +67,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("rename");
+        $this->oPage->setBreadcrumbDetails(_kt("Rename"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/rename');
         $fields = array();
 

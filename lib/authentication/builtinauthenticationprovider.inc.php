@@ -54,7 +54,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     }
 
     function editUserSource_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('change user password'));
+        $this->oPage->setBreadcrumbDetails(_kt('Change User Password'));
         $this->oPage->setTitle(_kt("Change User Password"));
 
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
@@ -161,7 +161,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function verify($oUser) {
         if (isset($_SESSION['mustChangePassword'])) {
             $url = generateControllerUrl("login", "action=providerVerify&type=1");
-            $this->addErrorMessage("Your password has expired");
+            $this->addErrorMessage(_kt("Your password has expired"));
             redirect($url);
             exit(0);
         }
