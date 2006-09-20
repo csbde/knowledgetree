@@ -114,7 +114,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     }
     
     function do_main() {   
-        $this->oPage->setBreadcrumbDetails("Edit Metadata");    
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Metadata"));    
         
         $oTemplate = $this->oValidator->validateTemplate('ktcore/document/edit');
         

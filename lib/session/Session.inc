@@ -52,7 +52,7 @@ class Session {
         }
         
         if ($oUser->getDisabled()) {
-            return PEAR::raiseError("Your account has been disabled.  Please contact the system administrator for assistance.");
+            return PEAR::raiseError(_kt("Your account has been disabled.  Please contact the system administrator for assistance."));
         }
         
         // bind user id to session
@@ -201,7 +201,7 @@ class Session {
         if ($numrows < 1) {
             // the session doesn't exist in the db
             $default->log->info("Session::verify sessionID=$sessionID, not in db");
-            return PEAR::raiseError('You need to login to access this page');
+            return PEAR::raiseError(_kt('You need to login to access this page'));
             return false;
         }
 

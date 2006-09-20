@@ -57,7 +57,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("Document Permissions");
+        $this->oPage->setBreadcrumbDetails(_kt("Document Permissions"));
         $oTemplate = $this->oValidator->validateTemplate("ktcore/document/document_permissions");
 		
         $oPL = KTPermissionLookup::get($this->oDocument->getPermissionLookupID());

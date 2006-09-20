@@ -242,7 +242,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
 
     function do_edit() {
-        $this->oPage->setBreadcrumbDetails(_kt("viewing permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt("Viewing Permissions"));
 
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());

@@ -96,7 +96,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $this->aBreadcrumbs[] = array('name' => $oSource->getName());
         $this->oPage->setTitle(sprintf(_kt("Authentication source: %s"), $oSource->getName()));
-        $this->oPage->setBreadcrumbDetails('viewing');
+        $this->oPage->setBreadcrumbDetails(_kt('Viewing'));
         $sProvider = $oSource->getAuthenticationProvider();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
@@ -118,7 +118,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
                 'query' => sprintf('action=viewsource&source_id=%d', $oSource->getId()),
         );
         $this->oPage->setTitle(sprintf(_kt("Editing authentication source: %s"), $oSource->getName()));
-        $this->oPage->setBreadcrumbDetails('editing');
+        $this->oPage->setBreadcrumbDetails(_kt("Editing"));
 
         $fields = array();
 
