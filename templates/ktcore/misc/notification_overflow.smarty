@@ -1,0 +1,17 @@
+<h2>{i18n}Items that require your attention{/i18n}</h2>
+
+{if !empty($notifications)}
+
+<strong>{$count_string}</strong>
+
+<dl>
+{foreach item=oNotification from=$notifications}
+{$oNotification->render()}
+{/foreach}
+</dl>
+
+<p>{i18n arg_batch=$batch_html}Page: #batch#{/i18n}</p>
+
+{else}
+<div class="ktInfo"><p>{i18n}No items require your attention{/i18n}</p></div>
+{/if}

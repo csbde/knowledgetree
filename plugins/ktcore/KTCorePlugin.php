@@ -143,6 +143,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');        
                 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
+        $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
         
         // validators
