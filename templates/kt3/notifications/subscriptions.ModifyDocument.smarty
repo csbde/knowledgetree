@@ -2,7 +2,7 @@
 <dd class="actionmessage">
 <!-- could break this up. -->
     The document "{$info.object_name}" has been changed in the folder "{$info.location_name}"{if ($info.has_actor)} 
-	by {$info.actor_name}{/if}. {$info.object}
+	by {$info.actor_name}{/if}. 
     <div class="actionoptions">    
         {if !$is_broken}
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Document{/i18n}</a>
