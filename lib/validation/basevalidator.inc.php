@@ -14,9 +14,15 @@ class KTValidator {
     var $aOptions;
     
     function configure($aOptions) {
-        $this->sInputVariable = KTUtil::arrayGet($aOptions, 'test');
+        $this->sInputVariable = KTUtil::arrayGet($aOptions, 'name', KTUtil::arrayGet($aOptions, 'test'));
+        if (empty($this->sInputVariable)) { return PEAR::raiseError(_kt("You must specify a variable name")); }
         $this->sBasename = KTUtil::arrayGet($aOptions, 'basename', $this->sInputVariable);      
         $this->sOutputVariable = KTUtil::arrayGet($aOptions, 'output');
+        if (empty($this->sOutputVariable)) {
+            if (!KTUtil::arrayGet($aOptions, 'no_output', false)) {
+                $this->sOutputVariable = $this->sInputVariable;
+            }
+        }
         $this->bProduceOutput = !empty($this->sOutputVariable);
         $this->bRequired = KTUtil::arrayGet($aOptions, 'required', false , false);
         
