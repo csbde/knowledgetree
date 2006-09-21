@@ -120,12 +120,17 @@ class KTNotificationDashlet extends KTBaseDashlet {
             $notifications = array_slice($notifications, 0, $_MAX_NOTIFICATIONS);
         }
         
+        $oPluginRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oPluginRegistry->getPlugin('ktcore.plugin');
+        $link = $oPlugin->getPagePath('notifications');
+        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/notifications");
         $aTemplateData = array(
             "notifications" => $notifications,
             "notification_count" => $num_notifications,
             "visible_count" => count($notifications),
+            "link_all" => $link,
         );
         return $oTemplate->render($aTemplateData);
     }

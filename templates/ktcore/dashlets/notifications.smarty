@@ -7,7 +7,7 @@
 </dl>
 {if ($notification_count > $visible_count)}
 {* pagination standin *}
-<p class="descriptiveText">{i18n arg_count=$notification_count arg_visible=$visible_count}These are the most recent #visible# notifications.  You have a total of #count# notifications waiting.{/i18n}</p>
+<p class="descriptiveText">{i18n arg_count=$notification_count arg_visible=$visible_count}Showing first #visible# of #count# notifications.{/i18n} <a href="{$link_all}">{i18n}View All{/i18n}</a></p>
 {/if}
 {* clear all link *}
 <a href="{ktLink base="notify.php" query="clearAll=1"}"
