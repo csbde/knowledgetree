@@ -62,7 +62,7 @@ legend { border: 1px dotted #999;}
     <input type="hidden" name="action" value="updateSearch" />
 	<input type="hidden" name="fSavedSearchId" value="{$iSearchId}" />
 {if $sNameTitle}
-    {$sNameTitle}: <input type="text" name="name" value="{$old_name}" /> <br />
+    {$sNameTitle}: <input type="text" name="name" value="{$old_name|htmlentities}" /> <br />
 {/if}
 
 {capture assign=options}
