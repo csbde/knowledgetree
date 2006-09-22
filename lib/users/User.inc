@@ -102,9 +102,16 @@ class User extends KTEntity {
     var $_bUsePearError = true;
 
     function _table() {
-        global $default;
-        return $default->users_table;
+        return KTUtil::getTableName("users");
     }
+    
+    // STATIC
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'name',
+        );
+    }
+    
 
     function getUserName() { return $this->sUserName; }
     function setUserName($sNewValue) { $this->sUserName = $sNewValue; }

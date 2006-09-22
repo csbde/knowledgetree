@@ -375,6 +375,12 @@ class KTEntity {
         }
         return true;
     }
+    
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'id',
+        );
+    }
 }
 
 class KTEntityUtil {
@@ -388,6 +394,10 @@ class KTEntityUtil {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+        
+        $aBaseOpts = call_user_func(array($sClassName, "_ktentityOptions"));
+        $aOptions = KTUtil::meldOptions($aBaseOpts, $aOptions);
+        
         $bIDs = false;
         $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
         $sIDField = 'id';

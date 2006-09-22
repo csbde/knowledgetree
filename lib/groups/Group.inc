@@ -68,6 +68,14 @@ class Group extends KTEntity {
         global $default;
         return $default->groups_table;
     }
+    
+    // STATIC
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'name',
+        );
+    }
+    
     // }}}
 
     // {{{ getters/setters

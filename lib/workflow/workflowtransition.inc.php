@@ -80,6 +80,13 @@ class KTWorkflowTransition extends KTEntity {
     function _table () {
         return KTUtil::getTableName('workflow_transitions');
     }
+    
+    // STATIC
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'human_name',
+        );
+    }
 
     // STATIC
     function &get($iId) {
