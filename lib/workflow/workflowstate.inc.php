@@ -61,6 +61,12 @@ class KTWorkflowState extends KTEntity {
     function _table () {
         return KTUtil::getTableName('workflow_states');
     }
+    
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'human_name',
+        );
+    }
 
     // STATIC
     function &get($iId) {

@@ -46,6 +46,14 @@ class Role extends KTEntity {
 		//object not yet created in database
 		$this->sName = $sNewName;
 	}
+	
+    // STATIC
+    function _ktentityOptions() {
+        return array(
+            'orderby' => 'name',
+        );
+    }
+	
 
     var $_bUsePearError = true;
 
