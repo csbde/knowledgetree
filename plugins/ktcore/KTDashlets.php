@@ -104,7 +104,8 @@ class KTNotificationDashlet extends KTBaseDashlet {
     
     function is_active($oUser) {
         $this->oUser = $oUser;
-        
+        $notifications = KTNotification::getList(array("user_id = ?", $this->oUser->getId()));
+        if (empty($notifications)) { return false; }
         return true;
     }
     
@@ -145,6 +146,9 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     
     function is_active($oUser) {
         $this->oUser = $oUser;
+        $this->checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
+        
+        return (!empty($this->checked_out_documents));
         return true;
     }
     
@@ -154,16 +158,12 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     
     function render() {
         
-        $checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
-        if (empty($checked_out_documents)) {
-            return null;
-        }
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/checkedout");
         $aTemplateData = array(
             "context" => $this,
-            "documents" => $checked_out_documents,
+            "documents" => $this->checked_out_documents,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -173,15 +173,14 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 // replace the old checked-out docs.
 class KTIndexerStatusDashlet extends KTBaseDashlet {
 
+    var $aTriggerSet;
+    var $noTransforms;
+
     function is_active($oUser) {
-        if (Permission::userIsSystemAdministrator($oUser)) {
-            return true;
+        if (!Permission::userIsSystemAdministrator($oUser)) {
+            return false;
         }
         
-        return false;
-    }
-    
-    function render() {	
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
         
         $noTransforms = false;
@@ -215,14 +214,22 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                 
                 $aTriggerSet[] = array('types' => $aTypesStr, 'diagnostic' => $sDiagnostic);
             }
-        }
+        }     
+        $this->aTriggerSet = $aTriggerSet;
+        $this->noTransforms = $noTransforms;   
+
+        return ($noTransforms || !empty($aTriggerSet)); // no diags and have some transforms.
+    }
+    
+    function render() {	
+        
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/indexer_status");
         $aTemplateData = array(
             "context" => $this,
-            "no_transforms" => $noTransforms,
-            'transforms' => $aTriggerSet,
+            "no_transforms" => $this->noTransforms,
+            'transforms' => $this->aTriggerSet,
         );
         return $oTemplate->render($aTemplateData);
     }
