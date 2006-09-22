@@ -1,0 +1,23 @@
+<h2>{i18n}Workflow Notifications{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Please select which roles or groups should be informed when each state is reached.{/i18n}</p>
+
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <th>{i18n}State{/i18n}</th>
+        <th>{i18n}Edit{/i18n}</th>
+        <th>{i18n}Existing Notifications{/i18n}</th>        
+    </thead>
+    
+    <tbody>
+      {foreach from=$states item=oState}
+      {assign value=$oState->getId() var=state_id}
+        <tr>
+            <td>{$oState->getName()}</td>
+            <td class="centered"><a href="{addQS context=$context}action=editnotifications&fStateId={$state_id}{/addQS}" class="ktAction ktEdit"></a></td>
+            <td><span class="descriptiveText">{$context->describeStateNotifications($oState)}</span></td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
+
