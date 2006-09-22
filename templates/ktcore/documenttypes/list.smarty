@@ -53,7 +53,7 @@ its details, or use the enable/disable buttons to change its availability state.
 {foreach from=$aFieldsets item=oFieldset name=fieldsets}
 
     {capture assign=fsid}{$oFieldset->getId()}{/capture}
-<a href="{ktLink base="admin.php" subpath="/documents/fieldmanagement" query="action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
+<a href="{ktLink base="admin.php" subpath="/documents/fieldmanagement2" query="action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
 
 {/foreach}
 
