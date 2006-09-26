@@ -96,6 +96,9 @@ class KTUtil {
     }
 
     function arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
+        if (!is_array($aArray)) { 
+            $aArray = (array) $aArray; 
+        }
         if (empty($aArray)) {
             return $mDefault;
         }
