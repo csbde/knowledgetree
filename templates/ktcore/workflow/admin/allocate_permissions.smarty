@@ -62,7 +62,7 @@
 {/foreach}
 <div id="submitButtons" class="form_actions">
   <input type="submit" value="{i18n}Update Workflow Permissions{/i18n}" />
-  <a class="form_cancel" href="{addQS}action=managepermissions{/addQS}">{i18n}Cancel{/i18n}</a>
+  <a class="form_cancel" href="{addQS context=$context}action=managepermissions{/addQS}">{i18n}Cancel{/i18n}</a>
 </div>
 </form>
 

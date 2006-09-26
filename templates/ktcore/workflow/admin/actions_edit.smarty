@@ -36,6 +36,7 @@
 
 <div class="form_actions">
     <input type="submit" value="{i18n}Block actions{/i18n}" />
+    <a href="{addQS context=$context}action=actionsoverview{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
 </div>
 
 </fieldset>
