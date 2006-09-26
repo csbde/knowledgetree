@@ -11,6 +11,10 @@ with the system's security:{/i18n}</p>
 <ol>
     <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">{i18n}Document Permissions{/i18n}</a> {i18n}(by state){/i18n}</li>
     <li><a href="{addQS context=$context}action=actionsoverview{/addQS}">{i18n}Action Restrictions{/i18n}</a> {i18n}(by state){/i18n}</li>            
+    
+    {* Probably not the _cleanest_ approach, but it works. *}
+    {if is_null($context->oState)}
     <li><a href="{addQS context=$context}action=transitionsecurityoverview{/addQS}">{i18n}Transition Restrictions{/i18n}</a></li>    
+    {/if}
 
 </ol>

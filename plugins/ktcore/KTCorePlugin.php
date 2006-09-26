@@ -225,11 +225,8 @@ class KTCorePlugin extends KTPlugin {
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFieldsv2.php', null);            
-        $this->registerAdminPage("workflows", 'KTWorkflowDispatcher', 'documents',
-            _kt('Workflows'), _kt('Configure the process documents go through.'),
-            'admin/workflows.php', null);
         $this->registerAdminPage("workflows_2", 'KTWorkflowAdminV2', 'documents',
-            _kt('Workflows v2'), _kt('Configure the process documents go through.'),
+            _kt('Workflows'), _kt('Configure the process documents go through.'),
             'admin/workflowsv2.php', null);            
 
         // storage

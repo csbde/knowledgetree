@@ -15,7 +15,7 @@ will affect the available options{/i18n}</p>
       {assign value=$oTransition->getId() var=transition_id}
         <tr>
             <td>{$oTransition->getName()}</td>
-            <td class="centered"><a href="{addQS context=$context}action=managetransitionactions&fTransitionId={$transition_id}{/addQS}" class="ktAction ktEdit"></a></td>
+            <td class="centered"><a href="{addQS context=$context}action=managetransitionactions&fTransitionId={$transition_id}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
             <td><span class="descriptiveText">{$context->describeTransitionActions($oTransition)}</span></td>
         </tr>
       {/foreach}

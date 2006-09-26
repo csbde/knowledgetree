@@ -39,7 +39,7 @@ class WorkflowNavigationPortlet extends KTPortlet {
         $aAdminPages[] = array('name' => _kt('States and Transitions'), 'query' => 'action=basic&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _kt('Security'), 'query' => 'action=security&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _kt('Workflow Effects'), 'query' => 'action=effects&fWorkflowId=' . $this->oWorkflow->getId());
-        $aAdminPages[] = array('name' => _kt('Select different workflow'), 'query' => 'action=main&fWorkflowId=' . $this->oWorkflow->getId());        
+        $aAdminPages[] = array('name' => _kt('Select different workflow'), 'query' => 'action=main');        
     
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate("ktcore/workflow/admin_portlet");
@@ -255,12 +255,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     // ----------------- Basic - States & Transition ---------------------
-    function do_basic() {
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/basic_overview');            
+    function breadcrumbs_basic() {
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", "basic")),
             'name' => _kt("States and Transitions"),
-        );
+        );    
+    }
+    
+    function do_basic() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/basic_overview');            
+        $this->breadcrumbs_basic();
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
         
         $aStates = KTWorkflowState::getByWorkflow($this->oWorkflow);
@@ -297,7 +301,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         //
         $oForm = $this->form_transitionconnections();
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/configure_process');
-
+        
+        $this->breadcrumbs_basic();
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Transition Connections"));
+        
         // we want to re-use this for *subsets*.
         $transition_ids = KTUtil::arrayGet($_REQUEST, 'transition_ids');
         $bRestrict = is_array($transition_ids);
@@ -418,7 +425,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     function do_addstates() {
         $oForm = $this->form_addstates();
-        
+        $this->breadcrumbs_basic();    
+        $this->oPage->setBreadcrumbDetails(_kt("Add States"));        
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/add_states');
         $oTemplate->setData(array(
             'context' => $this,
@@ -524,7 +532,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     function do_addtransitions() {
         $oForm = $this->form_addtransitions();
-        
+        $this->breadcrumbs_basic();    
+        $this->oPage->setBreadcrumbDetails(_kt("Add Transitions"));        
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/add_transitions');
         $oTemplate->setData(array(
             'context' => $this,
@@ -642,6 +651,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_editstate() {
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oState->getHumanName(),
+        );    
+    
         // remember that we check for state,
         // and its null if none or an error was passed.
         if (is_null($this->oState)) {
@@ -649,7 +662,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
         
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/admin/edit_state');
-        $this->oPage->setBreadcrumbDetails(_kt('Manage State Details'));
+        $this->oPage->setBreadcrumbDetails(_kt('Manage State'));
         
         $oForm = $this->form_editstate($this->oState);
         
@@ -729,6 +742,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_edittransition() {
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oTransition->getHumanName(),
+        );
+    
         // remember that we check for state,
         // and its null if none or an error was passed.
         if (is_null($this->oTransition)) {
@@ -842,6 +859,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_replacestate() {
+        $this->breadcrumbs_basic();    
+        $this->oPage->setBreadcrumbDetails(_kt("Delete State"));
         $oForm = $this->form_deletestate();
         return $oForm->renderPage(_kt("Delete State"));
     }
@@ -882,11 +901,18 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         $this->successRedirectTo('basic', _kt("State deleted."));
     }        
+
+    function breadcrumbs_security() {
+        $this->aBreadcrumbs[] = array(
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("fTransitionId=&fStateId=","security", true)),
+            'name' => _kt("Security"),
+        );
+    }
     
     // ----------------- Security ---------------------
     function do_security() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/security_overview');            
-        $this->oPage->setBreadcrumbDetails(_kt("Security"));
+        $this->breadcrumbs_security();
         
         
         $oTemplate->setData(array(
@@ -900,7 +926,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     // == PERMISSIONS
     function do_permissionsoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/permissions_overview');
-        
+        $this->breadcrumbs_security();
+        $this->oPage->setBreadcrumbDetails(_kt("Permissions Overview"));        
         // we want to give a complete overview.
         // this involves a grid of:
         //          permission permissions
@@ -952,7 +979,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/managepermissions');
        
         $oForm = $this->form_managepermissions();       
-       
+        
+        $this->breadcrumbs_security();
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oState->getHumanName(),
+        );
+        $this->oPage->setBreadcrumbDetails(_kt("Manage Permissions"));
+               
         $aUsefulPermissions = KTPermission::getDocumentRelevantList();
         $aPermissionGrid = array();
         $aStatePermAssigns = KTWorkflowStatePermissionAssignment::getByState($this->oState);
@@ -1012,6 +1045,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/allocate_permissions');
        
         $oForm = $this->form_managepermissions();       
+
+        $this->breadcrumbs_security();
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oState->getHumanName(),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managepermissions", true)),
+        );
+        $this->oPage->setBreadcrumbDetails(_kt("Allocate Permissions"));
        
         $aUsefulPermissions = KTPermission::getDocumentRelevantList();
         $aPermissionGrid = array();
@@ -1166,7 +1206,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     function do_actionsoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');            
         $this->oPage->setBreadcrumbDetails(_kt("Actions"));
-        
+        $this->breadcrumbs_security();        
         $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
         $blacklist = array('ktcore.actions.document.displaydetails');
         
@@ -1198,10 +1238,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     function do_editactions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_edit');            
-        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Actions"));
         $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
         $blacklist = array('ktcore.actions.document.displaydetails');
-        
+        $this->breadcrumbs_security();        
         foreach ($blacklist as $name) {
             unset($actions[$name]);   
         }
@@ -1257,8 +1297,14 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     function do_transitionsecurityoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_guards_overview');            
-        $this->oPage->setBreadcrumbDetails(_kt("Transition Guards"));
-
+        $this->oPage->setBreadcrumbDetails(_kt("Overview"));
+        $this->oPage->setTitle(_kt("Transition Restrictions Overview"));
+        $this->breadcrumbs_security();
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Restrictions"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", "transitionsecurityoverview", true)),
+        );
+        
         $transitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);
         
         $oTemplate->setData(array(
@@ -1336,8 +1382,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     function do_manageguards() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/restrictions_edit');            
-        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
-        
+        $this->oPage->setBreadcrumbDetails(_kt("Manage Restrictions"));
+        $this->breadcrumbs_security();
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Restrictions"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", "transitionsecurityoverview", true)),
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oTransition->getHumanName(),
+        );
         $restrictions = KTWorkflowUtil::getGuardTriggersForTransition($this->oTransition);
         $add_form = $this->form_addtransitionguard();
         
@@ -1390,7 +1443,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     
     function do_editguardtrigger() {
-        $this->oPage->setBreadcrumbDetails(_kt('editing restriction'));
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Restriction"));
+        $this->breadcrumbs_security();
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Restrictions"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", "transitionsecurityoverview", true)),
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oTransition->getHumanName(),
+        );
+
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
         if (PEAR::isError($oTriggerInstance)) {
             return $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
@@ -1470,9 +1532,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     
     // ----------------- Effects ---------------------
+    function breadcrumb_effects() {
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Workflow Effects"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","effects",true)),
+        );
+    }
+    
     function do_effects() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/effects_overview');            
-        $this->oPage->setBreadcrumbDetails(_kt("Workflow Effects"));
+        $this->breadcrumb_effects();
         
         
         $oTemplate->setData(array(
@@ -1534,8 +1603,14 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }       
 
     function do_transitionactions() {
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_effects_overview');            
-        $this->oPage->setBreadcrumbDetails(_kt("Transition Effects"));
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_effects_overview');       
+        $this->breadcrumb_effects();             
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Effects"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","transitionactions",true)),            
+        );
+        $this->oPage->setBreadcrumbDetails(_kt("Overview"));
+        $this->oPage->setTitle(_kt("Transition Effects Overview"));
         
         $aTransitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);
                 
@@ -1566,7 +1641,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     function do_managetransitionactions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_actions_edit');            
-        $this->oPage->setBreadcrumbDetails(_kt("Actions"));
+        $this->breadcrumb_effects();             
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Effects"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","transitionactions",true)),            
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oTransition->getHumanName(),
+        );        
+        $this->oPage->setBreadcrumbDetails(_kt("Manage Transition Actions"));
         
         $actions = KTWorkflowUtil::getActionTriggersForTransition($this->oTransition);
         $add_form = $this->form_addtransitionaction();
@@ -1620,7 +1703,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
     
     function do_editactiontrigger() {
-        $this->oPage->setBreadcrumbDetails(_kt('editing restriction'));
+        $this->breadcrumb_effects();             
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Transition Effects"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","transitionactions",true)),            
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oTransition->getHumanName(),
+        );        
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Transition Action"));
+        
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);        
         if (PEAR::isError($oTriggerInstance)) {
             return $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
@@ -1699,6 +1791,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_managenotifications() {
+        $this->breadcrumb_effects();             
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Notifications"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managenotifications",true)),            
+        );
+            
         $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/admin/manage_notifications");
         $oTemplate->setData(array(
             'context' => $this,
@@ -1845,6 +1943,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
     
     function do_editnotifications() {
+        $this->breadcrumb_effects();             
+        $this->aBreadcrumbs[] = array(
+            'name' => _kt("Notifications"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managenotifications",true)),            
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => $this->oState->getHumanName(),
+        );        
+        $this->oPage->setBreadcrumbDetails(_kt("Edit State Notifications"));
+            
         $oForm = $this->form_editnotifications($this->oState);
         return $oForm->renderPage();       
     }
