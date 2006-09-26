@@ -20,6 +20,7 @@ require_once(KT_LIB_DIR . '/groups/Group.inc');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_DIR . "/thirdparty/pear/GraphViz.php");
 
 class WorkflowNavigationPortlet extends KTPortlet {   
     var $oWorkflow;
@@ -56,9 +57,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     var $oWorkflow;
     var $oState;
     var $oTransition;
+    var $HAVE_GRAPHVIZ;
 
-    function check() {
-        $res = parent::check();
+    function predispatch() {
         $this->persistParams(array('fWorkflowId', 'fStateId', 'fTransitionId'));    
         
         $iWorkflowId = KTUtil::arrayGet($_REQUEST, 'fWorkflowId');
@@ -99,8 +100,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'name' => $this->oWorkflow->getName(),
             );            
         }
-        
-        return $res;
+       
+        // FIXME actually detect this.
+        $this->HAVE_GRAPHVIZ = true;
+       
     }
 
     function do_main() {
@@ -157,6 +160,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'workflow_name' => $this->oWorkflow->getName(),
             'state_name' => $state_name,
             'workflow' => $this->oWorkflow,
+            'have_graphviz' => $this->HAVE_GRAPHVIZ,
         ));
         return $oTemplate->render();
     }
@@ -2070,6 +2074,189 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     	return $values;
     }
+    
+    /* ---------------- GraphViz / DOT support --------------- */
+    //
+    // FIXME detect and handle the support issues sanely.
+    
+    var $state_names;
+    var $transition_names; 
+    
+    function get_graph($oWorkflow) {
+    
+        $fontsize = 11.0;
+        $fontname = "Times-Roman";
+    
+        $opts = array(
+            'fontsize' => $fontsize,
+            'fontname' => $fontname,
+        );    
+    
+        $graph = new Image_GraphViz(true, $opts);        
+
+        // we need all states & transitions
+        // FIXME do we want guards?
+        
+        // we want to enable link-editing, and indicate that transitions "converge"
+        // so we use a temporary "node" for transitions
+        // we also use a "fake" URL which we catch later
+        // so we can give good "alt" tags.
+        
+        $states = KTWorkflowState::getByWorkflow($oWorkflow);
+        $transitions = KTWorkflowTransition::getByWorkflow($oWorkflow);
+
+        $this->state_names = array();
+        $this->transition_names = array();
+        
+        $state_opts = array(
+            'shape' => 'box',
+            'fontsize' => $fontsize,         
+            'fontname' => $fontname,               
+        );
+
+        $transition_opts = array(
+            'shape' => 'box',
+            'color' => '#ffffff',
+            'fontsize' => $fontsize,         
+            'fontname' => $fontname,               
+        );
+
+        $finaltransition_opts = array(
+            'color' => '#333333',        
+        );
+        
+        $sourcetransition_opts = array(
+            'color' => '#999999',        
+        );
+        
+
+        foreach ($states as $oState) {
+            $this->state_names[$oState->getId()] = $oState->getHumanName();
+            
+            $local_opts = array(
+                'URL'   => sprintf("s%d", $oState->getId()),
+                'label' => $oState->getHumanName(),
+                'color' => '#666666',
+            );
+            if ($oState->getId() == $oWorkflow->getStartStateId()) {
+                $local_opts['color'] = '#000000';            
+                $local_opts['style'] = 'filled';                
+                $local_opts['fillcolor'] = '#cccccc';                                
+            }
+            
+            $graph->addNode(
+                sprintf('state%d', $oState->getId()),
+                KTUtil::meldOptions($state_opts, $local_opts));                
+        }
+        
+        foreach ($transitions as $oTransition) {
+            $name = sprintf('transition%d', $oTransition->getId());
+            $this->transition_names[$oTransition->getId()] = $oTransition->getHumanName();        
+            // we "cheat" and use 
+        
+            $graph->addNode(
+                $name,
+                KTUtil::meldOptions($transition_opts, 
+                    array(
+                      'URL'   => sprintf("t%d", $oTransition->getId()),
+                      'label' => $oTransition->getHumanName(),
+                    )
+                ));
+            
+            $dest = sprintf("state%d", $oTransition->getTargetStateId());
+            $sources = KTWorkflowAdminUtil::getSourceStates($oTransition, array('ids' => true));
+            
+            $graph->addEdge(
+                array($name => $dest),
+                $finaltransition_opts
+            );            
+            
+            foreach ($sources as $source_id) {
+                $source_name = sprintf("state%d", $source_id);
+                $graph->addEdge(
+                    array($source_name => $name),
+                    $sourcetransition_opts
+                );                            
+            }
+        }
+
+        return $graph;
+    }
+    
+    function do_graphimage() {
+        header('Content-Type: image/jpeg');
+        $graph = $this->get_graph($this->oWorkflow);
+        $graph->image('jpeg');
+        exit(0);        
+    }
+    
+    function do_graphrepresentation() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/graphrep');
+        
+        // this is not ideal
+        // is there no way to get graphviz to give us this more "usefully"
+        $graph = $this->get_graph($this->oWorkflow);        
+        $rdata = $graph->fetch("imap");
+        
+        // we can skip some of this.
+        $data = explode("\n", $rdata);
+        $data = array_slice($data, 1, -1);
+        
+        if (false) {
+            print '<pre>';
+            print print_r($data, true); exit(0);
+        }
+        $pat = '|^([\w]+).    # rect, circle, etc.
+            ([^ ]+).       # href
+            ([\d]+),        # x0
+            ([\d]+).         # x1            
+            ([\d]+),        # y0
+            ([\d]+)         # y1                        
+        |x';
+        
+        $coords = array();
+        foreach ($data as $row) {
+            $matches = array();
+            if (preg_match($pat, $row, $matches)) {
+                $rowdata = array_slice($matches, 1);
+                list($shape, $href, $x0, $y0, $x1, $y1) = $rowdata;
+                
+                // FIXME sanity check, we only handle "rect"
+                
+                $real_href = null;
+                $m = array();
+                $alt = null;
+                if (preg_match('|^(\w)([\d]+)$|', $href, $m)) {
+                    if ($m[1] == 's') {
+                        $real_href = KTUtil::addQueryStringSelf($this->meldPersistQuery(array('fStateId' => $m[2]), "editstate"));
+                        $alt = sprintf('Edit State "%s"', $this->state_names[$m[2]]);
+                    } else {
+                        $real_href = KTUtil::addQueryStringSelf($this->meldPersistQuery(array('fTransitionId' => $m[2]), "edittransition"));                    
+                        $alt = sprintf('Edit Transition "%s"', $this->transition_names[$m[2]]);                        
+                    }
+                }
+                $coords[] = array(
+                    'shape' => $shape,
+                    'href' => $real_href,
+                    'coords' => sprintf("%d,%d,%d,%d", $x0, $y0, $x1, $y1),
+                    'alt' => $alt,
+                );
+                
+
+            }            
+        }    
+        if (false) {
+            print '<pre>'; var_dump($coords); exit(0);        
+        }
+        $oTemplate->setData(array(
+            'context' => $this,
+            'coords' => $coords,
+        ));
+        print $oTemplate->render();
+        exit(0);
+    }
+    
+    
 }
 
 ?>
