@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<body>
+<map name="graphmap">
+{foreach from=$coords item=entry}
+    <area
+        shape="{$entry.shape}"
+        coords="{$entry.coords}"
+        href="{$entry.href}"                
+        alt="{$entry.alt|htmlentities}"                        
+        title="{$entry.alt|htmlentities}"                  
+    />
+{/foreach}
+</map>
+<img src="{addQS context=$context}action=graphimage{/addQS}" usemap="graphmap" style="border: 0;" />
+</body>
+</html>
