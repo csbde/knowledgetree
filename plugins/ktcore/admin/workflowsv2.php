@@ -101,9 +101,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             );            
         }
        
-        // FIXME actually detect this.
-        $this->HAVE_GRAPHVIZ = true;
-       
+        $this->HAVE_GRAPHVIZ = false;
+        $dotCommand = KTUtil::findCommand("ui/dot", 'dot');
+        if (!empty($dotCommand)) {
+            $this->HAVE_GRAPHVIZ = true;
+            $this->dotCommand = $dotCommand;
+        }
     }
 
     function do_main() {
@@ -155,16 +158,18 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         // we want to "outsource" some of the analysis
         
-        $graph_data = $this->get_graph($this->oWorkflow);        
-        if (!empty($graph_data['errors'])) {
-            foreach ($graph_data['errors'] as $error) {
-                $this->addErrorMessage($error);
+        if ($this->HAVE_GRAPHVIZ) {
+            $graph_data = $this->get_graph($this->oWorkflow);        
+            if (!empty($graph_data['errors'])) {
+                foreach ($graph_data['errors'] as $error) {
+                    $this->addErrorMessage($error);
+                }
             }
-        }
-
-        if (!empty($graph_data['info'])) {
-            foreach ($graph_data['info'] as $info) {
-                $this->addInfoMessage($info);
+    
+            if (!empty($graph_data['info'])) {
+                foreach ($graph_data['info'] as $info) {
+                    $this->addInfoMessage($info);
+                }
             }
         }
         
@@ -288,18 +293,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $aTransitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);        
         
 
-        $graph_data = $this->get_graph($this->oWorkflow);        
-        if (!empty($graph_data['errors'])) {
-            foreach ($graph_data['errors'] as $error) {
-                $this->addErrorMessage($error);
+        if ($this->HAVE_GRAPHVIZ) {
+            $graph_data = $this->get_graph($this->oWorkflow);        
+            if (!empty($graph_data['errors'])) {
+                foreach ($graph_data['errors'] as $error) {
+                    $this->addErrorMessage($error);
+                }
+            }
+    
+            if (!empty($graph_data['info'])) {
+                foreach ($graph_data['info'] as $info) {
+                    $this->addInfoMessage($info);
+                }
             }
         }
-
-        if (!empty($graph_data['info'])) {
-            foreach ($graph_data['info'] as $info) {
-                $this->addInfoMessage($info);
-            }
-        }        
         
         $oTemplate->setData(array(
             'context' => $this,
@@ -363,18 +370,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
         
 
-        $graph_data = $this->get_graph($this->oWorkflow);        
-        if (!empty($graph_data['errors'])) {
-            foreach ($graph_data['errors'] as $error) {
-                $this->addErrorMessage($error);
+        if ($this->HAVE_GRAPHVIZ) {
+            $graph_data = $this->get_graph($this->oWorkflow);        
+            if (!empty($graph_data['errors'])) {
+                foreach ($graph_data['errors'] as $error) {
+                    $this->addErrorMessage($error);
+                }
             }
-        }
-
-        if (!empty($graph_data['info'])) {
-            foreach ($graph_data['info'] as $info) {
-                $this->addInfoMessage($info);
+    
+            if (!empty($graph_data['info'])) {
+                foreach ($graph_data['info'] as $info) {
+                    $this->addInfoMessage($info);
+                }
             }
-        }        
+        }   
         
         $oTemplate->setData(array(
             'context' => $this,
@@ -2133,7 +2142,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'fontname' => $fontname,
         );    
     
-        $graph = new Image_GraphViz(true, $opts);        
+        $graph = new Image_GraphViz(true, $opts);
+        $graph->dotCommand = $this->dotCommand;        
 
         // we need all states & transitions
         // FIXME do we want guards?
@@ -2287,6 +2297,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 $sourceless_transitions[] = $oTransition->getHumanName();
             }
         }
+        
         if (!empty($sourceless_transitions)) {
             $errors[] = sprintf(_kt("Some transitions have no source states: %s"), implode(', ', $sourceless_transitions));
         }
