@@ -153,7 +153,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $state_name = $oState->getName();
         }
         
+        // we want to "outsource" some of the analysis
+        
+        $graph_data = $this->get_graph($this->oWorkflow);        
+        if (!empty($graph_data['errors'])) {
+            foreach ($graph_data['errors'] as $error) {
+                $this->addErrorMessage($error);
+            }
+        }
 
+        if (!empty($graph_data['info'])) {
+            foreach ($graph_data['info'] as $info) {
+                $this->addInfoMessage($info);
+            }
+        }
         
         $oTemplate->setData(array(
             'context' => $this,
@@ -274,6 +287,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $aStates = KTWorkflowState::getByWorkflow($this->oWorkflow);
         $aTransitions = KTWorkflowTransition::getByWorkflow($this->oWorkflow);        
         
+
+        $graph_data = $this->get_graph($this->oWorkflow);        
+        if (!empty($graph_data['errors'])) {
+            foreach ($graph_data['errors'] as $error) {
+                $this->addErrorMessage($error);
+            }
+        }
+
+        if (!empty($graph_data['info'])) {
+            foreach ($graph_data['info'] as $info) {
+                $this->addInfoMessage($info);
+            }
+        }        
+        
         $oTemplate->setData(array(
             'context' => $this,
             'workflow_name' => $this->oWorkflow->getName(),
@@ -334,6 +361,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         if ($bRestrict) {
             $transitions = $final_transitions;
         }
+        
+
+        $graph_data = $this->get_graph($this->oWorkflow);        
+        if (!empty($graph_data['errors'])) {
+            foreach ($graph_data['errors'] as $error) {
+                $this->addErrorMessage($error);
+            }
+        }
+
+        if (!empty($graph_data['info'])) {
+            foreach ($graph_data['info'] as $info) {
+                $this->addInfoMessage($info);
+            }
+        }        
         
         $oTemplate->setData(array(
             'context' => $this,
@@ -2129,8 +2170,63 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'color' => '#999999',        
         );
         
+        // to make this a little more useful, we want to cascade our output from
+        // start to end states - this will tend to give a better output.
+        //
+        // to do this, we need to order our nodes in terms of "nearness" to the 
+        // initial node.
+        
+        $processing_nodes = array();
+        $sorted_ids = array();
+        
+        $availability = array();
+        $sources = array();
+        $destinations = array();
+        
+        $states = KTUtil::keyArray($states);
+        $transitions = KTUtil::keyArray($transitions);        
+        
+        foreach ($transitions as $tid => $oTransition) {
+            $sources[$tid] = KTWorkflowAdminUtil::getSourceStates($oTransition, array('ids' => true));
+            $destinations[$tid] = $oTransition->getTargetStateId();
+            foreach ($sources[$tid] as $sourcestateid) {
+                $av = (array) KTUtil::arrayGet($availability, $sourcestateid, array());
+                $av[] = $tid;
+                $availability[$sourcestateid] = $av;
+            }
+        }
+        
+        //var_dump($sources); exit(0);
 
-        foreach ($states as $oState) {
+        //var_dump($availability); exit(0);
+
+        $processing = array($oWorkflow->getStartStateId());
+        while (!empty($processing)) {
+            $active = array_shift($processing);
+
+            if (!$processing_nodes[$active]) {
+                // mark that we've seen this node
+                
+                $processing_nodes[$active] = true;
+                $sorted[] = $active;
+                
+                // now add all reachable nodes to the *end* of the queue.
+                foreach ((array) $availability[$active] as $tid) {
+                    $next = $destinations[$tid];
+                    if (!$processing_nodes[$next]) {
+                        $processing[] = $next;
+                    }
+                }
+            }
+            //var_dump($processing);            
+        }
+        
+        //var_dump($sorted); exit(0);
+
+        foreach ($sorted as $sid) {
+        
+            $oState = $states[$sid];
+        
             $this->state_names[$oState->getId()] = $oState->getHumanName();
             
             $local_opts = array(
@@ -2149,8 +2245,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 KTUtil::meldOptions($state_opts, $local_opts));                
         }
         
-        foreach ($transitions as $oTransition) {
-            $name = sprintf('transition%d', $oTransition->getId());
+        foreach ($transitions as $tid => $oTransition) {
+            $name = sprintf('transition%d', $tid);
             $this->transition_names[$oTransition->getId()] = $oTransition->getHumanName();        
             // we "cheat" and use 
         
@@ -2158,20 +2254,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 $name,
                 KTUtil::meldOptions($transition_opts, 
                     array(
-                      'URL'   => sprintf("t%d", $oTransition->getId()),
+                      'URL'   => sprintf("t%d", $tid),
                       'label' => $oTransition->getHumanName(),
                     )
                 ));
             
             $dest = sprintf("state%d", $oTransition->getTargetStateId());
-            $sources = KTWorkflowAdminUtil::getSourceStates($oTransition, array('ids' => true));
+
             
             $graph->addEdge(
                 array($name => $dest),
                 $finaltransition_opts
             );            
             
-            foreach ($sources as $source_id) {
+            foreach ($sources[$tid] as $source_id) {
                 $source_name = sprintf("state%d", $source_id);
                 $graph->addEdge(
                     array($source_name => $name),
@@ -2179,14 +2275,45 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 );                            
             }
         }
+        
+        // some simple analysis
+        
+        $errors = array();
+        $info = array();
+        
+        $sourceless_transitions = array();
+        foreach ($transitions as $tid => $oTransition) {
+            if (empty($sources[$tid])) {
+                $sourceless_transitions[] = $oTransition->getHumanName();
+            }
+        }
+        if (!empty($sourceless_transitions)) {
+            $errors[] = sprintf(_kt("Some transitions have no source states: %s"), implode(', ', $sourceless_transitions));
+        }
 
-        return $graph;
+        $unlinked_states = array();
+        foreach ($states as $sid => $oState) {
+            if (!$processing_nodes[$sid]) {  // quick sanity check
+                $unlinked_states[] = $oState->getHumanName();
+            }
+        }
+        if (!empty($unlinked_states)) {
+            $errors[] = sprintf(_kt("Some states cannot be reached from the initial state (<strong>%s</strong>): %s"), $states[$oWorkflow->getStartStateId()]->getHumanName() , implode(', ', $unlinked_states));
+        }
+
+        $data = array(
+            'graph' => $graph,
+            'errors' => $errors,
+            'info' => $info,
+        );
+
+        return $data;
     }
     
     function do_graphimage() {
         header('Content-Type: image/jpeg');
         $graph = $this->get_graph($this->oWorkflow);
-        $graph->image('jpeg');
+        $graph['graph']->image('jpeg');
         exit(0);        
     }
     
@@ -2196,7 +2323,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         // this is not ideal
         // is there no way to get graphviz to give us this more "usefully"
         $graph = $this->get_graph($this->oWorkflow);        
-        $rdata = $graph->fetch("imap");
+        $rdata = $graph['graph']->fetch("imap");
         
         // we can skip some of this.
         $data = explode("\n", $rdata);
