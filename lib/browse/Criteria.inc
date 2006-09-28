@@ -432,13 +432,13 @@ class DateCreatedCriterion extends BrowseCriterion {
 	$sEnd = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_end', false);
 
 	if($sStart) {
-	    $sDisp .= 'after ' .$sStart;
+	    $sDisp .= _kt('after ') .$sStart;
 	} 
 	if($sStart && $sEnd) {
-	    $sDisp .= ' and ';
+	    $sDisp .= _kt(' and ');
 	}
 	if($sEnd) {
-	    $sDisp .= 'before ' .$sEnd;
+	    $sDisp .= _kt('before ') .$sEnd;
 	}
 	return $sDisp;
     }
@@ -460,8 +460,8 @@ class DateCreatedCriterion extends BrowseCriterion {
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         */
         $sToRender = $this->getNotWidget($aPreValue);
-        $sToRender .= 'after: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and/or ';
-        $sToRender .= 'before: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sEndWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
+        $sToRender .= _kt('after') . ': <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> and/or ';
+        $sToRender .= _kt('before') . ': <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sEndWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
     function searchSQL ($aRequest) {

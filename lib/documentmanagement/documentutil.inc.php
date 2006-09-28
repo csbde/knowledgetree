@@ -648,11 +648,11 @@ class KTDocumentUtil {
         global $default;
         
         if (count(trim($sReason)) == 0) { 
-            return PEAR::raiseError('Deletion requires a reason'); 
+            return PEAR::raiseError(_kt('Deletion requires a reason')); 
         }
         
         if (PEAR::isError($oDocument) || ($oDocument == false)) { 
-            return PEAR::raiseError('Invalid document object.'); 
+            return PEAR::raiseError(_kt('Invalid document object.')); 
         }
         
         if ($oDocument->getIsCheckedOut() == true) { 

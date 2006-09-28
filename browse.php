@@ -327,8 +327,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
     
     function do_startMove() {
-        $this->oPage->setTitle('Move Files and Folders');
-        $this->oPage->setBreadcrumbDetails('Move Files and Folders');
+        $this->oPage->setTitle(_kt('Move Files and Folders'));
+        $this->oPage->setBreadcrumbDetails(_kt('Move Files and Folders'));
     
         // FIXME double-check that the movecode actually exists...
     
@@ -666,8 +666,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
     
     function do_startDelete() {
-        $this->oPage->setTitle('Delete Files and Folders');
-        $this->oPage->setBreadcrumbDetails('Delete Files and Folders');
+        $this->oPage->setTitle(_kt('Delete Files and Folders'));
+        $this->oPage->setBreadcrumbDetails(_kt('Delete Files and Folders'));
         $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
     
         $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());

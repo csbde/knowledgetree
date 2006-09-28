@@ -44,7 +44,7 @@
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 <input type="hidden" name="fIncludeClosed" value="1" />
 <fieldset><legend>{i18n}View all threads{/i18n}</legend>
-<p class="descriptiveText">Click below to view all discussion threads on this document, including those that are closed.</p>
+<p class="descriptiveText">{i18n}Click below to view all discussion threads on this document, including those that are closed.{/i18n}</p>
 
 <div class="form_actions ">
   <input type="submit" name="submit" value="{i18n}View threads{/i18n}" />
