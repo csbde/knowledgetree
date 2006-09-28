@@ -15,7 +15,7 @@
         </thead>
         <tbody>
           {foreach item=aTransactionRow from=$transactions}
-            <tr class="{cycle options=even,odd}">
+            <tr class="{cycle values=even,odd}">
                 <td class="username">{$aTransactionRow.user_name}</td>
                 <td class="action">{$aTransactionRow.transaction_name}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>
