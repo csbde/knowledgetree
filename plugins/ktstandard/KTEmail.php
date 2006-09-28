@@ -158,7 +158,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     } else if ($res === false) {
         $default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");
         $aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
-        return PEAR::raiseError("Error sending email ($sTitle) to $sDestEmailAddress");
+        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmailAddress));
     } else {
         $default->log->info("Send email ($sTitle) to $sDestEmailAddress");
     }
@@ -209,7 +209,7 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
     } else if ($res === false) {
 		$default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");		
 		$aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
-        return PEAR::raiseError("Error sending email ($sTitle) to $sDestEmailAddress");
+        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmailAddress));
     } else {
 		$default->log->info("Send email ($sTitle) to $sDestEmailAddress");
 	}

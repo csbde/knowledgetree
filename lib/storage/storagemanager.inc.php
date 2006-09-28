@@ -36,7 +36,7 @@ class KTStorageManager {
      * into the document.
      */
     function upload (&$oDocument, $sTmpFilePath) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -45,7 +45,7 @@ class KTStorageManager {
      * attachment.
      */
     function download (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -53,7 +53,7 @@ class KTStorageManager {
      * writes it to the standard content with HTTP headers.
      */
     function downloadVersion (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -62,7 +62,7 @@ class KTStorageManager {
      * view.
      */
     function inlineView (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -78,7 +78,7 @@ class KTStorageManager {
      *          (1, 3, 9, 27)
      */
     function move (&$oDocument, $aOldInfo, $aNewInfo) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -86,11 +86,11 @@ class KTStorageManager {
      * tree in the repository to a different location.
      */
     function moveFolder ($oFolder, $oDestFolder) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
     
     function renameFolder($oFolder, $sNewName) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -98,7 +98,7 @@ class KTStorageManager {
      * document object.
      */
      function copy ($oSrcDocument, &$oNewDocument) {
-        return PEAR::raiseError("Not implemented");     
+        return PEAR::raiseError(_kt("Not implemented"));   
      }
 
     /**
@@ -106,7 +106,7 @@ class KTStorageManager {
      * document being marked as deleted.
      */
     function delete (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -114,7 +114,7 @@ class KTStorageManager {
      * storage.
      */
     function expunge (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
@@ -122,27 +122,27 @@ class KTStorageManager {
      * document (previously marked as deleted) being restored.
      */
     function restore (&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     function getPath(&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     function setPath(&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     function generatePath(&$oDocument) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     function createFolder($sFolderPath) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
     
     function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
-        return PEAR::raiseError("Not implemented");
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 }
 

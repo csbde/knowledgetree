@@ -80,7 +80,7 @@ class KTTemplating {
         }
 
         if (count($aPossibilities) === 0) {
-            return PEAR::raiseError("No template found");
+            return PEAR::raiseError(_kt("No template found"));
         }
 
         return $this->_chooseTemplate($templatename, $aPossibilities);
@@ -104,7 +104,7 @@ class KTTemplating {
         list($sLanguage, $sTemplatePath) = $res;
         $sClass = $this->aTemplateRegistry[$sLanguage];
         if (!class_exists($sClass)) {
-            return PEAR::raiseError("Could not find template language");
+            return PEAR::raiseError(_kt("Could not find template language"));
         }
         
         $oTemplate =& new $sClass($sTemplatePath);

@@ -53,7 +53,7 @@ class KTFSFileLike extends KTFileLike {
         $this->fh = @fopen($this->sFilename, $mode);
         if ($this->fh === false) {
             $this->fh = null;
-            return PEAR::raiseError('Error opening file');
+            return PEAR::raiseError(_kt('Error opening file'));
         }
     }
 
@@ -62,7 +62,7 @@ class KTFSFileLike extends KTFileLike {
      */
     function close() {
         if (is_null($this->fh)) {
-            return PEAR::raiseError('Not open');
+            return PEAR::raiseError(_kt('Not open'));
         }
         return fclose($this->fh);
     }

@@ -141,7 +141,7 @@ class KTUtil {
                 }
                 $aParams = array_merge($aParams, $aNewParams); 
             } else {
-                return PEAR::raiseError("Weird WhereClause passed");
+                return PEAR::raiseError(_kt("Weird WhereClause passed"));
             }
         }
         if (count($aStrings) === 0) {
@@ -207,7 +207,7 @@ class KTUtil {
     // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
         if (file_exists($sDst)) {
-            return PEAR::raiseError("Destination directory already exists.");
+            return PEAR::raiseError(_kt("Destination directory already exists."));
         }
         if (OS_UNIX) {
             if ($bMove && file_exists('/bin/mv')) {
@@ -221,16 +221,16 @@ class KTUtil {
         }
 
         if (substr($sDst, 0, strlen($sSrc)) === $sSrc) {
-            return PEAR::raiseError("Destination of move is within source");
+            return PEAR::raiseError(_kt("Destination of move is within source"));
         }
 
         $hSrc = @opendir($sSrc);
         if ($hSrc === false) {
-            return PEAR::raiseError("Could not open source directory: $sSrc");
+            return PEAR::raiseError(sprintf(_kt("Could not open source directory: %s"), $sSrc));
         }
 
         if (@mkdir($sDst, 0777) === false) {
-            return PEAR::raiseError("Could not create destination directory: $sDst");
+            return PEAR::raiseError(sprintf(_kt("Could not create destination directory: %s"), $sDst));
         }
 
         while (($sFilename = readdir($hSrc)) !== false) {
@@ -307,32 +307,32 @@ class KTUtil {
 
             $aSrcStat = stat($sSrc);
             if ($aSrcStat === false) {
-                return PEAR::raiseError("Couldn't stat source file: $sSrc");
+                return PEAR::raiseError(sprintf(_kt("Couldn't stat source file: %s"), $sSrc));
             }
             $aDstStat = stat(dirname($sDst));
             if ($aDstStat === false) {
-                return PEAR::raiseError("Couldn't stat destination location: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Couldn't stat destination location: %s"), $sDst));
             }
             if ($aSrcStat["dev"] === $aDstStat["dev"]) {
                 $res = @rename($sSrc, $sDst);
                 if ($res === false) {
-                    return PEAR::raiseError("Couldn't move file to destination: $sDst");
+                    return PEAR::raiseError(sprintf(_kt("Couldn't move file to destination: %s"), $sDst));
                 }
                 return;
             }
 
             $res = @copy($sSrc, $sDst);
             if ($res === false) {
-                return PEAR::raiseError("Could not copy to destination: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Could not copy to destination: %s"), $sDst));
             }
             $res = @unlink($sSrc);
             if ($res === false) {
-                return PEAR::raiseError("Could not remove source: $sSrc");
+                return PEAR::raiseError(sprintf(_kt("Could not remove source: %s"), $sSrc));
             }
         } else {
             $res = @rename($sSrc, $sDst);
             if ($res === false) {
-                return PEAR::raiseError("Could not move to destination: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Could not move to destination: %s"), $sDst));
             }
         }
     }
@@ -345,21 +345,21 @@ class KTUtil {
         if (OS_UNIX) {
             $aSrcStat = stat($sSrc);
             if ($aSrcStat === false) {
-                return PEAR::raiseError("Couldn't stat source file: $sSrc");
+                return PEAR::raiseError(sprintf(_kt("Couldn't stat source file: %s"), $sSrc));
             }
             $aDstStat = stat(dirname($sDst));
             if ($aDstStat === false) {
-                return PEAR::raiseError("Couldn't stat destination location: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Couldn't stat destination location: %s"), $sDst));
             }
 
             $res = @copy($sSrc, $sDst);
             if ($res === false) {
-                return PEAR::raiseError("Could not copy to destination: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Could not copy to destination: %s"), $sDst));
             }
         } else {
             $res = @copy($sSrc, $sDst);
             if ($res === false) {
-                return PEAR::raiseError("Could not copy to destination: $sDst");
+                return PEAR::raiseError(sprintf(_kt("Could not copy to destination: %s"), $sDst));
             }
         }
     }
@@ -385,14 +385,14 @@ class KTUtil {
             if (method_exists($oEntity, 'getId')) {
                 return $oEntity->getId();
             }
-            return PEAR::raiseError('Non-entity object');
+            return PEAR::raiseError(_kt('Non-entity object'));
         }
 
         if (is_numeric($oEntity)) {
             return $oEntity;
         }
 
-        return PEAR::raiseError('Non-entity object');
+        return PEAR::raiseError(_kt('Non-entity object'));
     }
     // }}}
 
@@ -405,7 +405,7 @@ class KTUtil {
         if (is_numeric($iId)) {
             return call_user_func(array($sClassName, 'get'), $iId);
         }
-        return PEAR::raiseError('Non-entity object');
+        return PEAR::raiseError(_kt('Non-entity object'));
     }
     // }}}
 

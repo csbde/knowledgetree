@@ -52,11 +52,11 @@ class KTFSImportStorage extends KTImportStorage {
         }
         $sFullPath = sprintf("%s/%s", $this->sBasePath, $sFolderPath);
         if (!is_dir($sFullPath)) {
-            return PEAR::raiseError('Path is not a folder');
+            return PEAR::raiseError(_kt('Path is not a folder'));
         }
         $rDir = @opendir($sFullPath);
         if ($rDir === false) {
-            return PEAR::raiseError('Failed to open folder');
+            return PEAR::raiseError(_kt('Failed to open folder'));
         }
         while (($sFilename = readdir($rDir)) !== false) {
             if (in_array($sFilename, array(".", ".."))) {
@@ -64,7 +64,7 @@ class KTFSImportStorage extends KTImportStorage {
             }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
             if (!file_exists($sThisPath)) {
-                return PEAR::raiseError('Could not read file: ' . $sThisPath);
+                return PEAR::raiseError(sprintf(_kt('Could not read file: %s') , $sThisPath));
             }
             if (@is_file($sThisPath)) {
                 if (empty($sFolderPath)) {
@@ -85,11 +85,11 @@ class KTFSImportStorage extends KTImportStorage {
         }
         $sFullPath = sprintf("%s/%s", $this->sBasePath, $sFolderPath);
         if (!is_dir($sFullPath)) {
-            return PEAR::raiseError('Path is not a folder');
+            return PEAR::raiseError(_kt('Path is not a folder'));
         }
         $rDir = @opendir($sFullPath);
         if ($rDir === false) {
-            return PEAR::raiseError('Failed to open folder');
+            return PEAR::raiseError(_kt('Failed to open folder'));
         }
         while (($sFilename = readdir($rDir)) !== false) {
             if (in_array($sFilename, array(".", ".."))) {
@@ -97,7 +97,7 @@ class KTFSImportStorage extends KTImportStorage {
             }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
             if (!file_exists($sThisPath)) {
-                return PEAR::raiseError('Could not read file: ' . $sThisPath);
+                return PEAR::raiseError(sprintf(_kt('Could not read file: %s'), $sThisPath));
             }
             if (@is_dir($sThisPath)) {
                 if (empty($sFolderPath)) {
