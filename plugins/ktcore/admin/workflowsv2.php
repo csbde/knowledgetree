@@ -669,7 +669,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
         $transition_ids_query = implode('&', $transition_ids_query);
         
-        $this->successRedirectTo('transitionconnections', _kt("New States Created."), $transition_ids_query);
+        $this->successRedirectTo('transitionconnections', _kt("New Transitions Created."), $transition_ids_query);
     }
     
     function form_editstate($oState) {
@@ -1036,7 +1036,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         $this->breadcrumbs_security();
         $this->aBreadcrumbs[] = array(
+            'name' => _kt("Document Permissions"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("fStateId=","permissionsoverview",true)),
+        );        
+        $this->aBreadcrumbs[] = array(
             'name' => $this->oState->getHumanName(),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managepermissions",true)),
         );
         $this->oPage->setBreadcrumbDetails(_kt("Manage Permissions"));
                
@@ -1102,8 +1107,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         $this->breadcrumbs_security();
         $this->aBreadcrumbs[] = array(
+            'name' => _kt("Document Permissions"),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("fStateId=","permissionsoverview",true)),
+        );        
+        $this->aBreadcrumbs[] = array(
             'name' => $this->oState->getHumanName(),
-            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managepermissions", true)),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","managepermissions",true)),
         );
         $this->oPage->setBreadcrumbDetails(_kt("Allocate Permissions"));
        
