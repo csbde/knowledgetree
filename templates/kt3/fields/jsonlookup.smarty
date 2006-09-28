@@ -52,7 +52,7 @@
        <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup->getName()}</option>
   {/foreach}
   </select>
-  <div><label for="filter_{$name}_assigned">Filter</label><input type="text" id="filter_{$name}_assigned" /></div>
+  <div><label for="filter_{$name}_assigned">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_assigned" /></div>
     </td>
     </tr>
 </tbody>

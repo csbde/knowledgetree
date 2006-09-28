@@ -42,7 +42,7 @@
 {else}
 
 <div>
-    Thread closed ({$thread->getCloseReason()})
+    {i18n}Thread closed{/i18n} ({$thread->getCloseReason()})
 </div>
 
 {/if}

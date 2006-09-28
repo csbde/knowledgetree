@@ -18,7 +18,7 @@ assigned are shown.{/i18n}</p>
 <p>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n}
 {if $inheritable}
 <a class="ktActionLink ktDelete"
-   kt:deleteMessage="Are you sure you wish to override the permissions?"
+   kt:deleteMessage="{i18n}Are you sure you wish to override the permissions?{/i18n}"
    href="{addQS}action=edit&fFolderId={$oFolder->getId()}&override=1{/addQS}">{i18n}Override permissions{/i18n}</a>
 {/if}
 </p>
