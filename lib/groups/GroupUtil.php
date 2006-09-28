@@ -156,13 +156,13 @@ class GroupUtil {
                 $aDetails["is_system_admin"]);
         $ret = $oGroup->create();
         if ($ret === false) {
-            return PEAR::raiseError("Legacy error creating group, may be: " . $_SESSION["errorMessage"]);
+            return PEAR::raiseError(sprintf(_kt("Legacy error creating group, may be: %s"), $_SESSION["errorMessage"]));
         }
         if (PEAR::isError($ret)) {
             return $ret;
         }
         if ($ret !== true) {
-            return PEAR::raiseError("Non-true and non-error return value");
+            return PEAR::raiseError(_kt("Non-true and non-error return value"));
         }
         return $oGroup;
     }

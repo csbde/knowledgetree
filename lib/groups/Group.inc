@@ -275,7 +275,7 @@ class Group extends KTEntity {
             return $res;
         }
         if ($this->hasMember($oUser)) {
-            return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
+            return PEAR::raiseError(_kt("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?"));
         }
         return true;
     }
@@ -314,7 +314,7 @@ class Group extends KTEntity {
             return $res;
         }
         if ($this->hasMember($oGroup)) {
-            return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
+            return PEAR::raiseError(_kt("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?"));
         }
         return true;
     }

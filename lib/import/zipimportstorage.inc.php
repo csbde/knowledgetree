@@ -42,17 +42,17 @@ class KTZipImportStorage extends KTFSImportStorage {
     
         $sTmpPath = tempnam($sBasedir, 'zipimportstorage');
         if ($sTmpPath === false) {
-            return PEAR::raiseError("Could not create temporary directory for zip storage");
+            return PEAR::raiseError(_kt("Could not create temporary directory for zip storage"));
         }
         if (!file_exists($this->sZipPath)) {
-            return PEAR::raiseError("Zip file given does not exist");
+            return PEAR::raiseError(_kt("Zip file given does not exist"));
         }
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
         $this->sBasePath = $sTmpPath;
         $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
         if (empty($sUnzipCommand)) {
-            return PEAR::raiseError("unzip command not found on system");
+            return PEAR::raiseError(_kt("unzip command not found on system"));
         }
         $aArgs = array(
             $sUnzipCommand,
@@ -63,7 +63,7 @@ class KTZipImportStorage extends KTFSImportStorage {
         $res = KTUtil::pexec($aArgs);
 
         if ($res !== 0) {
-            return PEAR::raiseError("Could not retrieve contents from zip storage");
+            return PEAR::raiseError(_kt("Could not retrieve contents from zip storage"));
         }
     }
 

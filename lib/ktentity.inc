@@ -194,7 +194,7 @@ class KTEntity {
         global $default;
         if (is_null($iId)) {
             if (is_null($this->iId)) {
-                return PEAR::raiseError("No ID given");
+                return PEAR::raiseError(_kt("No ID given"));
             }
             $iId = $this->iId;
         }
@@ -204,7 +204,7 @@ class KTEntity {
         $group = sprintf("%s/%s", $sClassName , 'id');
         list($bCached, $mCached) = $oCache->get($group, $iId);
         if ($bCached && EVIL_CACHE_GRIND) {
-            $default->log->debug(sprintf("Found and testing object cache for class %s, id %d", $sClassName, $iId));
+            $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
             
             $table = $this->_table();
             $select = $this->_getSqlSelection();
@@ -257,11 +257,11 @@ class KTEntity {
                return $res;
             }
             if (count($res) === 0) {
-                return PEAR::raiseError("No such ID: $iId");
+                return PEAR::raiseError(_kt("No such ID: ") . $iId);
             }
             
             if (count($res) > 1) {
-                return PEAR::raiseError("Multiple matches for ID: $iId");
+                return PEAR::raiseError(_kt("Multiple matches for ID: ") . $iId);
             }
             $oCache->set($group, $iId, $res);  // finally, cache if its "good".
         }
@@ -278,13 +278,13 @@ class KTEntity {
 
     function loadFromArray ($aOptions) {
         if (!is_array($aOptions)) {
-            return PEAR::raiseError("Expected an array!");
+            return PEAR::raiseError(_kt("Expected an array!"));
         }
 
         foreach ($aOptions as $sField => $sValue) {
             $sElement = $this->_getElementFromMethod($sField);
             if ($sElement === false) {
-                return PEAR::raiseError('Setting a non-existent field: ' . $sField);
+                return PEAR::raiseError(_kt('Setting a non-existent field: ') . $sField);
             }
             if (PEAR::isError($sElement)) {
                 return $sElement;
@@ -345,7 +345,7 @@ class KTEntity {
             return $case[$sLowerElement];
         }
 
-        return PEAR::raiseError("No such element");
+        return PEAR::raiseError(_kt("No such element"));
     }
 
     function _fieldValues () {
@@ -840,7 +840,7 @@ class KTEntityUtil {
 
             $sFunc = array('KTEntityUtil', sprintf('_getby_%s', $sType));
             if (!is_callable($sFunc)) {
-                return PEAR::raiseError('Unknown comparison type given: ' . $sType);
+                return PEAR::raiseError(_kt('Unknown comparison type given: ') . $sType);
             }
             $aWhere[] = call_user_func($sFunc, $sField, $mThisValue);
         }
@@ -858,7 +858,7 @@ class KTEntityUtil {
                 return new KTEntityNoObjects();
             }
             if (count($aObjects) > 1) {
-                return PEAR::raiseError("Multiple objects returned");
+                return PEAR::raiseError(_kt("Multiple objects returned"));
             }
             return $aObjects[0];
         } else {

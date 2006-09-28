@@ -54,13 +54,13 @@ class KTSearchUtil {
 		$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
                 $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
                 if (PEAR::isError($oCriterion)) {
-                    return PEAR::raiseError('Invalid criteria specified.');
+                    return PEAR::raiseError(_kt('Invalid criteria specified.'));
                 }
                 $criteria_set[] = array($oCriterion, $dataset["data"]);
             } else if (!empty($sql)) {
                 $criteria_set[] = $sql;
             } else {
-                return PEAR::raiseError('Invalid criteria specified.');
+                return PEAR::raiseError(_kt('Invalid criteria specified.'));
             }
         }
 
@@ -100,7 +100,7 @@ class KTSearchUtil {
         }
 
         if (count($aCritQueries) == 0) {
-            return PEAR::raiseError("No search criteria were specified");
+            return PEAR::raiseError(_kt("No search criteria were specified"));
         }
 
         return array($aCritQueries, $aCritParams, $aJoinSQL);
@@ -198,7 +198,7 @@ class KTSearchUtil {
             ";
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
         if (count($aPermissionDescriptors) === 0) {
-            return PEAR::raiseError('You have no permissions');
+            return PEAR::raiseError(_kt('You have no permissions'));
         }
         $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
         $sSQLString = "PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
@@ -366,7 +366,7 @@ class KTSearchUtil {
             return false;
         }
         if (!is_numeric($cnt)) {
-            return PEAR::raiseError("Non-integer returned when looking for count");
+            return PEAR::raiseError(_kt("Non-integer returned when looking for count"));
         }
         return $cnt > 0;
     }

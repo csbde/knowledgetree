@@ -37,63 +37,63 @@ class KTFileLike {
      * Set up any resources needed to perform work.
      */
     function open($mode = "r") {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Take care of getting rid of any active resources.
      */
     function close() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like fread
      */
     function read($iBytes) {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like fwrite
      */
     function write($sData) {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like file_get_contents
      */
     function get_contents() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like file_get_contents
      */
     function put_contents() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like feof
      */
     function eof() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * If $bIsFSFile, returns the FSPath (for rename/move)
      */
     function getFSPath() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     /**
      * Behaves like filesize
      */
     function filesize() {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
 }

@@ -125,7 +125,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }
         $res = @mkdir($sPath, 0755);
         if ($res === false) {
-            return PEAR::raiseError("Couldn't create folder");
+            return PEAR::raiseError(_kt("Couldn't create folder"));
         }
         return true;
     }

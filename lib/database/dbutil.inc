@@ -162,7 +162,7 @@ class DBUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
-        return PEAR::raiseError('Unknown return value for autoInsert');
+        return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
     }
 
     function &autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
@@ -177,7 +177,7 @@ class DBUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
-        return PEAR::raiseError('Unknown return value for autoUpdate');
+        return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
     }
 
     function &whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
@@ -202,7 +202,7 @@ class DBUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
-        return PEAR::raiseError('Unknown return value for whereUpdate');
+        return PEAR::raiseError(_kt('Unknown return value for whereUpdate'));
     }
 
     function &lastQuery($db = null) {

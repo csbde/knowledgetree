@@ -89,7 +89,7 @@ class KTFolderUtil {
 
     function move($oFolder, $oNewParentFolder, $oUser) {
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
-            return PEAR::raiseError("Folder with the same name already exists in the new parent folder");
+            return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
@@ -308,13 +308,13 @@ class KTFolderUtil {
             $oFolder = Folder::get($iFolderId);
             if (PEAR::isError($oFolder) || ($oFolder == false)) {
                 DBUtil::rollback();
-                return PEAR::raiseError(sprintf('Failure resolving child folder with id = %d.', $iFolderId));
+                return PEAR::raiseError(sprintf(_kt('Failure resolving child folder with id = %d.'), $iFolderId));
             }
 
             $oUnit = Unit::getByFolder($oFolder);
             if (!empty($oUnit)) {
                 DBUtil::rollback();
-                return PEAR::raiseError(sprintf('Cannot remove unit folder: %s.', $oFolder->getName()));
+                return PEAR::raiseError(sprintf(_kt('Cannot remove unit folder: %s.'), $oFolder->getName()));
             }
 
             // don't just stop ... plough on.
@@ -393,7 +393,7 @@ class KTFolderUtil {
     
     function copy($oSrcFolder, $oDestFolder, $oUser, $sReason) {
         if (KTFolderUtil::exists($oDestFolder, $oSrcFolder->getName())) {
-            return PEAR::raiseError("Folder with the same name already exists in the new parent folder");
+            return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
         //
         // FIXME the failure cleanup code here needs some serious work.
@@ -419,7 +419,7 @@ class KTFolderUtil {
             $oFolder = Folder::get($iFolderId);
             if (PEAR::isError($oFolder) || ($oFolder == false)) {
                 DBUtil::rollback();
-                return PEAR::raiseError(sprintf('Failure resolving child folder with id = %d.', $iFolderId));
+                return PEAR::raiseError(sprintf(_kt('Failure resolving child folder with id = %d.'), $iFolderId));
             }
             
             // don't just stop ... plough on.

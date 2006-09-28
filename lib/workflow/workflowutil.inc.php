@@ -542,7 +542,7 @@ class KTWorkflowUtil {
     function performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments) {
         $oWorkflow =& KTWorkflow::getByDocument($oDocument);
         if (empty($oWorkflow)) {
-            return PEAR::raiseError("Document has no workflow");
+            return PEAR::raiseError(_kt("Document has no workflow"));
         }
         if (PEAR::isError($oWorkflow)) {
             return $oWorkflow;

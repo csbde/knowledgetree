@@ -31,15 +31,15 @@
 
 class KTImportStorage {
     function listDocuments($sFolderPath) {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     function listFolders($sFolderPath) {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     function getDocumentInfo($sDocumentPath) {
-        return PEAR::raiseError('Not implemented');
+        return PEAR::raiseError(_kt('Not implemented'));
     }
 
     function init() {

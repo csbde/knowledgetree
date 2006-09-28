@@ -125,14 +125,14 @@ class Email {
 	        //send the email
 	        if(!$this->oMailer->Send()) {
 	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-	            return PEAR::raiseError("Error sending mail to $mToEmail; mailer error code=" .  $this->oMailer->ErrorInfo);
+	            return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"),$mToEmail,  $this->oMailer->ErrorInfo));
 	        } else {
 	        	$default->log->info("Successfully sent mail to $mToEmail");
 	        }
 	        return true;
         } else {
         	// no valid email addresses supplied
-        	return PEAR::raiseError("No valid email addresses supplied");
+        	return PEAR::raiseError(_kt("No valid email addresses supplied"));
         }
     }
 
@@ -180,14 +180,14 @@ class Email {
 	        //send the email
 	        if(!$this->oMailer->Send()) {
 	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-	            return PEAR::raiseError("Error sending mail to $mToEmail; mailer error code=" .  $this->oMailer->ErrorInfo);
+	            return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"), $mToEmail,  $this->oMailer->ErrorInfo));
 	        } else {
 	        	$default->log->info("Successfully sent mail to $mToEmail");
 	        }
 	        return true;
         } else {
         	// no valid email addresses supplied
-        	return PEAR::raiseError("No valid email addresses supplied");
+        	return PEAR::raiseError(_kt("No valid email addresses supplied"));
         }
     }
 

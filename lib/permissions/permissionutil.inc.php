@@ -561,7 +561,7 @@ class KTPermissionUtil {
         global $default;
         $bEvenIfNotOwner = KTUtil::arrayGet($aOptions, 'evenifnotowner');
         if (empty($bEvenIfNotOwner) && !KTPermissionUtil::isPermissionOwner($oDocumentOrFolder)) {
-            return PEAR::raiseError("Document or Folder doesn't own its permission object");
+            return PEAR::raiseError(_kt("Document or Folder doesn't own its permission object"));
         }
         $oOrigPO =& KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
         $oFolder =& Folder::get($oDocumentOrFolder->getParentID());

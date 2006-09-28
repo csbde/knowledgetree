@@ -74,7 +74,7 @@ class DocumentType extends KTEntity {
 	
 	function delete() {
         if ($this->isUsed()) {
-            return PEAR::raiseError('Document type still in use');
+            return PEAR::raiseError(_kt('Document type still in use'));
         }
         return parent::delete();
 	}
