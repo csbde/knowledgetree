@@ -143,7 +143,7 @@ class KTDocumentUtil {
 
     function checkout($oDocument, $sCheckoutComment, $oUser) {
         if ($oDocument->getIsCheckedOut()) {
-            return PEAR::raiseError('Already checked out.');
+            return PEAR::raiseError(_kt('Already checked out.'));
         }
         
         // FIXME at the moment errors this _does not_ rollback.
