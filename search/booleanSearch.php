@@ -284,6 +284,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         
         $aOptions['return_url'] = KTUtil::addQueryStringSelf("action=performSearch&boolean_search_id=" . urlencode($sSearch));
         $aOptions['empty_message'] = _kt("No documents or folders match this query.");
+        $aOptions['is_browse'] = true;
                 
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BooleanSearchQuery($aCriteriaSet));    
