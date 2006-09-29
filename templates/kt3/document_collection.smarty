@@ -40,7 +40,11 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="{$columncount}"><span class="descriptiveText">
+                {if ($bIsBrowseCollection)}
+                <td colspan="{$columncount-1}"><span class="descriptiveText">
+                {else}
+                <td colspan="{$columncount}"><span class="descriptiveText">                
+                {/if}
 {i18n arg_itemCount=$context->itemCount arg_batchSize=$context->batchSize}#itemCount# items, #batchSize# per page{/i18n}</span>
                 <span class="collectionNavigation">
                 {if ($pagecount > 1)}
@@ -98,6 +102,15 @@ and only 3 from the back if we're not in the back 20 or so.  20 - 16 = 5
                 {/if} 
                 </span>
                 </td>
+                {if ($bIsBrowseCollection)}                
+                <td>
+                    <select name="perpage" onchange="document_collection_setbatching(this.value, '{$returnURL|htmlentities}');">
+                    <option value="10" {if ($batch_size == 10)}selected="true"{/if}>10</option>
+                    <option value="25" {if ($batch_size == 25)}selected="true"{/if}>25</option>                    
+                    <option value="50" {if ($batch_size == 50)}selected="true"{/if}>50</option>                    
+                    </select> {i18n}per page{/i18n}
+                </td>
+                {/if}
             </tr>
         </tfoot>
     </table>

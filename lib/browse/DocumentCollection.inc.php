@@ -290,6 +290,8 @@ class AdvancedCollection {
     var $_gotData = false;    
     var $_sorted = false;
     
+    var $is_browse = false;
+    
     var $empty_message;
 
     /* initialisation */
@@ -304,6 +306,8 @@ class AdvancedCollection {
         // visibility
         $this->bShowFolders = KTUtil::arrayGet($aOptions, 'show_folders', true, false);       
         $this->bShowDocuments = KTUtil::arrayGet($aOptions, 'show_documents', true, false);
+        
+        $this->is_browse = KTUtil::arrayGet($aOptions, 'is_browse', false);
         
         // sorting
         $this->sort_column = KTUtil::arrayGet($aOptions, 'sort_on', "ktcore.columns.title");    
@@ -327,7 +331,16 @@ class AdvancedCollection {
         
         // batching
         $aNewOptions['batch_page'] = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-        $aNewOptions['batch_size'] = KTUtil::arrayGet($_REQUEST, "page_size", 25);
+        
+        // evil with cookies.
+        $batch_size = KTUtil::arrayGet($_REQUEST, "page_size");
+        if (empty($batch_size)) {
+            // try for a cookie
+            $batch_size = KTUtil::arrayGet($_COOKIE, '__kt_batch_size', 25);
+        } else {
+            setcookie('__kt_batch_size', $batch_size);
+        }
+        $aNewOptions['batch_size'] = (int) $batch_size;
         
         // ordering. (direction and column)
         $aNewOptions['sort_on'] = KTUtil::arrayGet($_REQUEST, 'sort_on', "ktcore.columns.title");	   
@@ -572,6 +585,10 @@ class AdvancedCollection {
             $pagecount += 1;
         }
 	  
+	    // ick.
+	    global $main;
+	    $main->requireJSResource("resources/js/browsehelper.js");
+	  
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/document_collection");
         $aTemplateData = array(
@@ -580,6 +597,8 @@ class AdvancedCollection {
 		    "currentpage" => $this->batchPage,
             "returnURL" => $this->returnURL,
             "columncount" => count($this->columns),
+            "bIsBrowseCollection" => $this->is_browse,            
+            'batch_size' => $this->batchSize,
         );
         
         // in order to allow OTHER things than batch to move us around, we do:

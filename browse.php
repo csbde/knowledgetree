@@ -207,6 +207,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment        
         $aOptions['result_url'] = $this->resultURL;        
+        $aOptions['is_browse'] = true;
         
         $collection->setOptions($aOptions);
         $collection->setQueryObject($this->oQuery);    
