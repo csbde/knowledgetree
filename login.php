@@ -10,6 +10,7 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/authentication/interceptorregistry.inc.php');
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 /**
  * $Id$
