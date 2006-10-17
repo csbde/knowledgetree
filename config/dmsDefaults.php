@@ -499,6 +499,7 @@ class KTInit {
         if (PEAR::isError($res)) { 
             return $res;
         }            
+        $_SESSION['userID'] = 1;
     }
     // }}}
 }
