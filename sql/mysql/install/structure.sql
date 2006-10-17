@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 30, 2006 at 11:48 AM
+-- Generation Time: Oct 17, 2006 at 12:12 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -695,6 +695,7 @@ CREATE TABLE `folders` (
   `permission_object_id` int(11) default NULL,
   `permission_lookup_id` int(11) default NULL,
   `restrict_document_types` tinyint(1) NOT NULL default '0',
+  `owner_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   KEY `fk_parent_id` (`parent_id`),
   KEY `fk_creator_id` (`creator_id`),
@@ -730,7 +731,9 @@ CREATE TABLE `groups_groups_link` (
   `id` int(11) NOT NULL default '0',
   `parent_group_id` int(11) NOT NULL default '0',
   `member_group_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `groups_groups_link_ibfk_1` (`parent_group_id`),
+  KEY `groups_groups_link_ibfk_2` (`member_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1327,12 +1330,14 @@ CREATE TABLE `users` (
   `authentication_details_d2` datetime default NULL,
   `authentication_details_b2` tinyint(1) default NULL,
   `last_login` datetime default NULL,
+  `disabled` tinyint(1) NOT NULL,
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `authentication_source` (`authentication_source_id`),
   KEY `authentication_details_b1` (`authentication_details_b1`),
   KEY `authentication_details_b2` (`authentication_details_b2`),
-  KEY `last_login` (`last_login`)
+  KEY `last_login` (`last_login`),
+  KEY `disabled` (`disabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1385,6 +1390,19 @@ CREATE TABLE `workflow_documents` (
 -- 
 
 CREATE TABLE `workflow_state_actions` (
+  `state_id` int(11) NOT NULL default '0',
+  `action_name` char(255) NOT NULL default '0',
+  KEY `state_id` (`state_id`),
+  KEY `action_name` (`action_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_state_disabled_actions`
+-- 
+
+CREATE TABLE `workflow_state_disabled_actions` (
   `state_id` int(11) NOT NULL default '0',
   `action_name` char(255) NOT NULL default '0',
   KEY `state_id` (`state_id`),
@@ -1750,7 +1768,7 @@ CREATE TABLE `zseq_document_subscriptions` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
 
 -- --------------------------------------------------------
 
@@ -2113,7 +2131,7 @@ CREATE TABLE `zseq_permissions` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=48 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=49 ;
 
 -- --------------------------------------------------------
 
@@ -2223,7 +2241,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=120 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=129 ;
 
 -- --------------------------------------------------------
 
@@ -2257,6 +2275,17 @@ CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflow_state_disabled_actions`
+-- 
+
+CREATE TABLE `zseq_workflow_state_disabled_actions` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2391,6 +2420,13 @@ ALTER TABLE `folder_transactions`
   ADD CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 -- 
+-- Constraints for table `groups_groups_link`
+-- 
+ALTER TABLE `groups_groups_link`
+  ADD CONSTRAINT `groups_groups_link_ibfk_1` FOREIGN KEY (`parent_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `groups_groups_link_ibfk_2` FOREIGN KEY (`member_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE;
+
+-- 
 -- Constraints for table `groups_lookup`
 -- 
 ALTER TABLE `groups_lookup`
@@ -2467,11 +2503,18 @@ ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`authentication_source_id`) REFERENCES `authentication_sources` (`id`) ON DELETE SET NULL;
 
 -- 
+-- Constraints for table `users_groups_link`
+-- 
+ALTER TABLE `users_groups_link`
+  ADD CONSTRAINT `users_groups_link_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `users_groups_link_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+-- 
 -- Constraints for table `workflow_state_permission_assignments`
 -- 
 ALTER TABLE `workflow_state_permission_assignments`
-  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_7` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`),
-  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_8` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`);
+  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_7` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_8` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `workflow_states`
