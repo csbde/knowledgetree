@@ -41,6 +41,12 @@ require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 class KTFolderUtil {
     function _add ($oParentFolder, $sFolderName, $oUser) {
+        if (PEAR::isError($oParentFolder)) {
+            return $oParentFolder;
+        }
+        if (PEAR::isError($oUser)) {
+            return $oUser;
+        }
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oFolder =& Folder::createFromArray(array(
             'name' => $sFolderName,
