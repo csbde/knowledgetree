@@ -565,7 +565,10 @@ class KTDocumentUtil {
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
         $res = $oStorage->upload($oDocument, $sFilename);
-        if (($res === false) || PEAR::isError($res)) {
+        if ($res === false) {
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt("No reason given")));
+        }
+        if (PEAR::isError($res)) {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
         }
         KTDocumentUtil::setComplete($oDocument, "contents");
