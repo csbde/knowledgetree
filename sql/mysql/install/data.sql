@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 30, 2006 at 11:50 AM
+-- Generation Time: Oct 17, 2006 at 12:13 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -178,6 +178,7 @@ INSERT INTO `document_transaction_types_lookup` VALUES (16, 'Workflow state tran
 INSERT INTO `document_transaction_types_lookup` VALUES (17, 'Permissions changed', 'ktcore.transactions.permissions_change');
 INSERT INTO `document_transaction_types_lookup` VALUES (18, 'Role allocations changed', 'ktcore.transactions.role_allocations_change');
 INSERT INTO `document_transaction_types_lookup` VALUES (19, 'Bulk Export', 'ktstandard.transactions.bulk_export');
+INSERT INTO `document_transaction_types_lookup` VALUES (20, 'Copy', 'ktcore.transactions.copy');
 
 -- 
 -- Dumping data for table `document_transactions`
@@ -262,7 +263,7 @@ INSERT INTO `folder_searchable_text` VALUES (1, 'Root Folder');
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 5, 0);
+INSERT INTO `folders` VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, NULL, NULL, 1, 5, 0, 1);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -686,13 +687,13 @@ INSERT INTO `permission_objects` VALUES (1);
 -- Dumping data for table `permissions`
 -- 
 
-INSERT INTO `permissions` VALUES (1, 'ktcore.permissions.read', 'Core: Read', 1);
-INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Core: Write', 1);
-INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
-INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Core: Manage security', 1);
-INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Core: Delete', 1);
-INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Core: Manage workflow', 1);
-INSERT INTO `permissions` VALUES (7, 'ktcore.permissions.folder_details', 'Core: Folder Details', 1);
+INSERT INTO `permissions` VALUES (1, 'ktcore.permissions.read', 'Read', 1);
+INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Write', 1);
+INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Add Folder', 1);
+INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Manage security', 1);
+INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Delete', 1);
+INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Manage workflow', 1);
+INSERT INTO `permissions` VALUES (7, 'ktcore.permissions.folder_details', 'Folder Details', 1);
 
 -- 
 -- Dumping data for table `plugins`
@@ -737,7 +738,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6.1');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6.7');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -890,12 +891,21 @@ INSERT INTO `upgrades` VALUES (110, 'sql*3.0.3.6*0*3.0.3.6/document-restore.sql'
 INSERT INTO `upgrades` VALUES (111, 'func*3.0.3.7*0*rebuildAllPermissions', 'Rebuild all permissions to ensure correct functioning of permission-definitions.', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
 INSERT INTO `upgrades` VALUES (112, 'upgrade*3.0.3.7*99*upgrade3.0.3.7', 'Upgrade from version 3.0.3.5 to 3.0.3.7', '2006-07-26 11:48:28', 1, 'upgrade*3.0.3.7*99*upgrade3.0.3.7');
 INSERT INTO `upgrades` VALUES (113, 'upgrade*3.1*99*upgrade3.1', 'Upgrade from version 3.0.3.7 to 3.1', '2006-07-31 10:41:12', 1, 'upgrade*3.1*99*upgrade3.1');
-INSERT INTO `upgrades` VALUES (114, 'sql*3.1.1*0*3.1.1/parentless-documents.sql', 'Database upgrade to version 3.1.1: Parentless-documents', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
-INSERT INTO `upgrades` VALUES (115, 'func*3.1.5*0*upgradeSavedSearches', 'Upgrade saved searches to use namespaces instead of integer ids', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
-INSERT INTO `upgrades` VALUES (116, 'sql*3.1.6*0*3.1.6/interceptor_instances.sql', 'Database upgrade to version 3.1.6: Interceptor instances', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
-INSERT INTO `upgrades` VALUES (117, 'upgrade*3.1.6*99*upgrade3.1.6', 'Upgrade from version 3.1 to 3.1.6', '2006-08-22 10:13:57', 1, 'upgrade*3.1.6*99*upgrade3.1.6');
-INSERT INTO `upgrades` VALUES (118, 'sql*3.1.6*0*3.1.6/workflow-sanity.sql', 'Database upgrade to version 3.1.6: Workflow-sanity', '2006-08-30 11:36:55', 1, 'upgrade*3.1.6.1*99*upgrade3.1.6.1');
-INSERT INTO `upgrades` VALUES (119, 'upgrade*3.1.6.1*99*upgrade3.1.6.1', 'Upgrade from version 3.1.6 to 3.1.6.1', '2006-08-30 11:36:55', 1, 'upgrade*3.1.6.1*99*upgrade3.1.6.1');
+INSERT INTO `upgrades` VALUES (114, 'sql*3.1.1*0*3.1.1/parentless-documents.sql', 'Database upgrade to version 3.1.1: Parentless-documents', '2006-08-15 11:58:07', 1, 'upgrade*3.1.1*99*upgrade3.1.1');
+INSERT INTO `upgrades` VALUES (115, 'upgrade*3.1.1*99*upgrade3.1.1', 'Upgrade from version 3.1 to 3.1.1', '2006-08-15 11:58:07', 1, 'upgrade*3.1.1*99*upgrade3.1.1');
+INSERT INTO `upgrades` VALUES (116, 'sql*3.1.2*0*3.1.2/user-disable.sql', 'Database upgrade to version 3.1.2: User-disable', '2006-09-08 17:08:26', 1, 'upgrade*3.1.2*99*upgrade3.1.2');
+INSERT INTO `upgrades` VALUES (117, 'upgrade*3.1.2*99*upgrade3.1.2', 'Upgrade from version 3.1.1 to 3.1.2', '2006-09-08 17:08:26', 1, 'upgrade*3.1.2*99*upgrade3.1.2');
+INSERT INTO `upgrades` VALUES (118, 'func*3.1.5*0*upgradeSavedSearches', 'Upgrade saved searches to use namespaces instead of integer ids', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (119, 'sql*3.1.6*0*3.1.6/interceptor_instances.sql', 'Database upgrade to version 3.1.6: Interceptor instances', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (120, 'sql*3.1.6*0*3.1.6/workflow-sanity.sql', 'Database upgrade to version 3.1.6: Workflow-sanity', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (121, 'sql*3.1.6.2*0*3.1.6.2/workflow_state_disabled_actions.sql', 'Database upgrade to version 3.1.6.2: Workflow state disabled actions', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (122, 'sql*3.1.6.2*0*3.1.6.2/folder_owner_role.sql', 'Database upgrade to version 3.1.6.2: Folder owner role', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (123, 'func*3.1.6.3*0*cleanupGroupMembership', 'Cleanup any old references to missing groups, etc.', '2006-10-17 12:09:45', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (124, 'sql*3.1.6.3*0*3.1.6.3/groups-integrity.sql', 'Database upgrade to version 3.1.6.3: Groups-integrity', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (125, 'sql*3.1.6.5*0*3.1.6.5/workflow-state-referencefixes.sql', 'Database upgrade to version 3.1.6.5: Workflow-state-referencefixes', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (126, 'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql', 'Database upgrade to version 3.1.6.6: Copy transaction', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (127, 'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql', 'Database upgrade to version 3.1.6.7: Sane-names-for-stuff', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (128, 'upgrade*3.1.6.7*99*upgrade3.1.6.7', 'Upgrade from version 3.1.2 to 3.1.6.7', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 
 -- 
 -- Dumping data for table `user_history`
@@ -906,8 +916,8 @@ INSERT INTO `upgrades` VALUES (119, 'upgrade*3.1.6.1*99*upgrade3.1.6.1', 'Upgrad
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO `users` VALUES (-2, 'anonymous', 'Anonymous', '---------------', 0, 0, NULL, NULL, 0, 0, NULL, 30000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (-2, 'anonymous', 'Anonymous', '---------------', 0, 0, NULL, NULL, 0, 0, NULL, 30000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `users` VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- 
 -- Dumping data for table `users_groups_link`
@@ -927,6 +937,11 @@ INSERT INTO `users_groups_link` VALUES (1, 1, 1);
 
 -- 
 -- Dumping data for table `workflow_state_actions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_state_disabled_actions`
 -- 
 
 
@@ -1095,7 +1110,7 @@ INSERT INTO `zseq_document_subscriptions` VALUES (1);
 -- Dumping data for table `zseq_document_transaction_types_lookup`
 -- 
 
-INSERT INTO `zseq_document_transaction_types_lookup` VALUES (19);
+INSERT INTO `zseq_document_transaction_types_lookup` VALUES (20);
 
 -- 
 -- Dumping data for table `zseq_document_transactions`
@@ -1291,7 +1306,7 @@ INSERT INTO `zseq_permissions` VALUES (7);
 -- Dumping data for table `zseq_plugins`
 -- 
 
-INSERT INTO `zseq_plugins` VALUES (31);
+INSERT INTO `zseq_plugins` VALUES (48);
 
 -- 
 -- Dumping data for table `zseq_role_allocations`
@@ -1351,7 +1366,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (119);
+INSERT INTO `zseq_upgrades` VALUES (128);
 
 -- 
 -- Dumping data for table `zseq_user_history`
@@ -1369,6 +1384,11 @@ INSERT INTO `zseq_users` VALUES (3);
 -- 
 
 INSERT INTO `zseq_users_groups_link` VALUES (3);
+
+-- 
+-- Dumping data for table `zseq_workflow_state_disabled_actions`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_workflow_state_permission_assignments`
