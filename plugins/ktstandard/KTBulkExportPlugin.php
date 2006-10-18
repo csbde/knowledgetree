@@ -83,6 +83,14 @@ class KTBulkExportAction extends KTFolderAction {
         mkdir($sTmpPath, 0700);
         $this->sTmpPath = $sTmpPath;
         $aPaths = array();
+        $aReplace = array(
+            "[" => "[[]",
+            " " => "[ ]",
+            "*" => "[*]",
+            "?" => "[?]",
+        );
+        $aReplaceKeys = array_keys($aReplace);
+        $aReplaceValues = array_values($aReplace);
         foreach ($aDocumentIds as $iId) {
             $oDocument = Document::get($iId);
             
@@ -102,7 +110,9 @@ class KTBulkExportAction extends KTFolderAction {
             $sOrigFile = $oStorage->temporaryFile($oDocument);
             $sFilename = sprintf("%s/%s", $sParentFolder, $oDocument->getFileName());
             copy($sOrigFile, $sFilename);
-            $aPaths[] = sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName());
+            $sPath = sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName());
+            $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
+            $aPaths[] = $sPath;
         }
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $aPaths));
