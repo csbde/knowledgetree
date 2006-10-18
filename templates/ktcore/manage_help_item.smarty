@@ -3,7 +3,7 @@
 {literal}
 tinyMCE.init({
 		mode : "textareas",
-		theme : "simple",
+		theme : "simple"
 });
 {/literal}
 {/capture}
