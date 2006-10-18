@@ -41,6 +41,7 @@ class KTPostscriptIndexerTrigger extends KTBaseIndexerTrigger {
     }    
     
     function getDiagnostic() {
+        return null; // KTS-1335: don't show diagnostic message for PostScript
         $sCommand = $this->findLocalCommand();
         
         if (OS_WINDOWS) {
