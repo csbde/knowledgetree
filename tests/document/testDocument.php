@@ -32,8 +32,14 @@ class DocumentTestCase extends KTUnitTestCase {
             'metadata' => array(),
         )); 
 
-        $this->assertEntity($oDocument, 'Document');
-        $this->assertEqual($oDocument->getStatusId(), 1);
+        $res = $this->assertEntity($oDocument, 'Document');
+        if ($res === false) {
+            return;
+        }
+        $res = $this->assertEqual($oDocument->getStatusId(), 1);
+        if ($res === false) {
+            return;
+        }
 
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $sTmpFile = $oStorage->temporaryFile($oDocument);
@@ -41,12 +47,18 @@ class DocumentTestCase extends KTUnitTestCase {
         $sStoredContents = file_get_contents($sTmpFile);
         $oStorage->freeTemporaryFile($sTmpFile);
 
-        $this->assertEqual($sLocalContents, $sStoredContents);
+        $res = $this->assertEqual($sLocalContents, $sStoredContents);
+        if ($res === false) {
+            return;
+        }
 
         $oDocument =& KTDocumentUtil::add($this->oFolder, "testaddinonego.txt", $this->oUser, array(
             'contents' => new KTFSFileLike($sFilename),
         ));
-        $this->assertEntity($oDocument, 'PEAR_Error');
+        $res = $this->assertEntity($oDocument, 'PEAR_Error');
+        if ($res === false) {
+            return;
+        }
     }
 
     function testAddSeparately() {
