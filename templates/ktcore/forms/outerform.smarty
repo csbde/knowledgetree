@@ -1,4 +1,5 @@
-<form method="POST" action="{$context->_actionurl}"
+<form method="{$context->_method}" action="{$context->_actionurl}"
+{if $context->_noframe}class="noframe" {/if}
 {if $context->_enctype}enctype="{$context->_enctype}"{/if}>
 <fieldset>
     {if !empty($context->sLabel)}<legend>{$context->sLabel}</legend>{/if}

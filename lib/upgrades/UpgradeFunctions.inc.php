@@ -815,7 +815,8 @@ class UpgradeFunctions {
 
     function upgradeSavedSearches() {
 	foreach(KTSavedSearch::getSearches() as $oS) {
-	    $aSearch = $this->_upgradeSavedSearch($oS->getSearch());
+            $sS = $oS->getSearch();
+	    $aSearch = UpgradeFunctions::_upgradeSavedSearch($sS);
 	    $oS->setSearch($aSearch);
 	    $oS->update();
 	}

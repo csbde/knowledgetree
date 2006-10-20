@@ -408,6 +408,18 @@ a.main_nav_item {
     margin-left: 2em;
 }
 
+/* unframed (single button) forms */
+#content .noframe fieldset 
+{ 
+   border-width: 0px;
+   padding: 0;
+}
+
+#content .noframe .form_actions
+{ 
+   margin-top: 0; 
+}
+
 /* old cancel style */
 
 #content a.ktCancelLink {

@@ -29,6 +29,8 @@ class KTForm {
     var $bCancel;
     var $_context;
     var $_errors;
+    var $_method;
+    var $_noframe;
     
     var $_oVF;
     var $_oWF;
@@ -62,7 +64,13 @@ class KTForm {
             }
         }
         
-        $this->_actionurl = KTUtil::addQueryStringSelf($qs);
+        $targeturl = KTUtil::arrayGet($aOptions, 'targeturl', false);
+        if($targeturl === false) {
+            $this->_actionurl = KTUtil::addQueryStringSelf($qs);
+        } else {
+            $this->_actionurl = KTUtil::addQueryString($targeturl, $qs);
+        }
+
         $this->_failaction = KTUtil::arrayGet($aOptions, 'fail_action');
         $this->_failurl = KTUtil::arrayGet($aOptions, 'fail_url');
         $this->_submitlabel = KTUtil::arrayGet($aOptions, 'submit_label',
@@ -76,6 +84,8 @@ class KTForm {
                 $this->_event = "action";
             }
         }
+
+        $this->_noframe = KTUtil::arrayGet($aOptions, 'noframe', false);
         
         // cancel
         // there are a few options here:
@@ -114,6 +124,10 @@ class KTForm {
         }
         $this->_extraargs = KTUtil::arrayGet($aOptions, 
             'extraargs', $default_args);
+
+        // method
+        $this->_method = KTUtil::arrayGet($aOptions, 'method', 'post');
+
         $this->_extraargs['postReceived'] = 1;
     }
     
@@ -230,6 +244,10 @@ class KTForm {
         }    
     }    
     
+    function addInitializedWidget($oWidget) {
+        $this->_widgets[] = $oWidget;
+    }
+
     function render() {
         $sWidgets = $this->renderWidgets();
         $sButtons = $this->renderButtons();
@@ -368,7 +386,6 @@ class KTForm {
         // we first ask each widget to pull its data out.
         // while we do that, we create the storage set for the session
         // that widgets can call on later.
-
         
         $raw_data = KTUtil::arrayGet($_REQUEST, 'data');
         $processed_data = array();

@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
 require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
+require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 class SimpleSearchTitleColumn extends TitleColumn {
     function setSearch($sSearch) {
@@ -157,6 +158,14 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
             'direct_folder' => true,
         );
         $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
+
+        // set the selection options
+        $collection->setColumnOptions('ktcore.columns.selection', array(
+            'rangename' => 'selection',
+            'show_folders' => true,
+            'show_documents' => true,
+        ));
+
         
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
@@ -171,7 +180,12 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $oTemplate = $oTemplating->loadTemplate("kt3/browse");
         $aTemplateData = array(
             "context" => $this,
-            "collection" => $collection, 
+            "collection" => $collection,
+            'isEditable' => true,
+            'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
+            'browseutil' => new KTBrowseUtil(),
+            'returnaction' => 'simpleSearch',
+            'returndata' => $searchable_text,
         );
         return $oTemplate->render($aTemplateData);
         }   

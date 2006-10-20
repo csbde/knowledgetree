@@ -48,6 +48,21 @@ class KTActionRegistry {
     function getActionByNsname($nsname) {
         return $this->nsnames[$nsname];
     }
+
+    function initializeAction($nsname, $oUser) {
+        list($sClassName, $sPath, $sName, $sPlugin) = $this->getActionByNsname($nsname);
+        if (!empty($sPath)) {
+            require_once($sPath);
+        }
+
+        $oPluginRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oPluginRegistry->getPlugin($sPlugin);
+        $oAction =& new $sClassName($oUser, $oPlugin);            
+
+        return $oAction;
+    }
+            
+
 }
 
 ?>

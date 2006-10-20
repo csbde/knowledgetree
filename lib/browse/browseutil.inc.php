@@ -300,25 +300,43 @@ class KTBrowseUtil {
     }
     // }}}
 
-    // {{{ getBrowseBaseUrl
-    function getBrowseBaseUrl() {
+
+
+    function buildBaseUrl($sPage) {
         $sExt = ".php";
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = "";
         }
-        return sprintf("%s/browse%s", $GLOBALS['KTRootUrl'], $sExt);
+        return sprintf("%s/%s%s", $GLOBALS['KTRootUrl'], $sPage, $sExt);
+    }
+    // }}}
+
+
+
+    // {{{ getBrowseBaseUrl
+    function getBrowseBaseUrl() {
+        return KTBrowseUtil::buildBaseUrl('browse');
     }
     // }}}
 
     // {{{ getViewBaseUrl
     function getViewBaseUrl() {
-        $sExt = ".php";
-        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
-        }
-        return sprintf("%s/view%s", $GLOBALS['KTRootUrl'], $sExt);
+        return KTBrowseUtil::buildBaseUrl('view');
     }
     // }}}
+
+    // {{{ getActionBaseUrl
+    function getActionBaseUrl() {
+        return KTBrowseUtil::buildBaseUrl('action');
+    }
+    // }}}
+
+    function getSimpleSearchBaseUrl() {
+        return KTBrowseUtil::buildBaseUrl('search/simpleSearch');
+    }
+    function getBooleanSearchBaseUrl() {
+        return KTBrowseUtil::buildBaseUrl('search/booleanSearch');
+    }
 
     // {{{ inAdminMode
     /**

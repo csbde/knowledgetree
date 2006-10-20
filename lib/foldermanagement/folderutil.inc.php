@@ -93,7 +93,7 @@ class KTFolderUtil {
         return $oFolder;
     }
 
-    function move($oFolder, $oNewParentFolder, $oUser) {
+    function move($oFolder, $oNewParentFolder, $oUser, $sReason=null) {
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
             return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
@@ -192,9 +192,14 @@ class KTFolderUtil {
             return $res;
         }
 
+        $sComment = sprintf("Folder moved from %s to %s", $sOldPath, $sNewParentFolderPath);
+        if($sReason !== null) {
+            $sComment .= sprintf(" (reason: %s)", $sReason);
+        }
+
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
-            'comment' => sprintf("Folder moved from %s to %s", $sOldPath, $sNewParentFolderPath),
+            'comment' => $sComment,
             'transactionNS' => 'ktcore.transactions.move',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),

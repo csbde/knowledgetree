@@ -81,6 +81,12 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('folderaction', 'KTRoleAllocationPlugin', 'ktcore.actions.folder.roles', 'KTPermissions.php');
         $this->registerAction('documentinfo', 'KTDocumentRolesAction', 'ktcore.actions.document.roles', 'KTPermissions.php');
 
+        // Bulk Actions
+        $this->registerAction('bulkaction', 'KTBulkDeleteAction', 'ktcore.actions.bulk.delete', 'KTBulkActions.php');
+        $this->registerAction('bulkaction', 'KTBulkMoveAction', 'ktcore.actions.bulk.move', 'KTBulkActions.php');
+
+
+        // Dashlets
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
         $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');

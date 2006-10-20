@@ -30,20 +30,31 @@
 </div>
 {/if}
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
-<input type="hidden" name="action" value="massaction" />
+<form action="{$browseutil->getActionBaseUrl()}" method="post">
+
 {if ($isEditable)}
+
+{if ($context->oFolder)}
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
 {/if}
+
+{/if}
+
 {$collection->render()}
 {if ($isEditable)}
 <div class="form_actions">
-  <input type="submit" name="submit[delete]" value="{i18n}Delete{/i18n}" />
-  <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+  <input type="hidden" name="sListCode" value="{$code}" />
+  <input type="hidden" name="action" value="bulkaction" />
+  <input type="hidden" name="fReturnAction" value="{$returnaction}" />
+  <input type="hidden" name="fReturnData" value="{$returndata}" />
+
+  {foreach from=$bulkactions item=bulkaction}
+      <input type="submit" name="submit[{$bulkaction->getName()}]" value="{$bulkaction->getDisplayName()}" />
+  {/foreach}
+
 </div>
 {/if}
 </form>
-
 
 
 {if ($save_fields)}

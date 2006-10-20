@@ -1,0 +1,53 @@
+<h2>{$context->getDisplayName()}</h2>
+
+<p class="descriptiveText">{i18n}These are the results of the bulk action:{/i18n}</p>
+
+{if count($list.folders)}
+<table class="kt_collection">
+<thead>
+<tr>
+    <th colspan="2">{i18n}Folders{/i18n}</th>
+</tr>
+<tr>
+    <th width="20%">{i18n}Name{/i18n}</th>
+    <th>{i18n}Status{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+{foreach from=$list.folders item=item}
+    <tr class="{cycle values=even,odd}">
+        <td>{$item.0}</td>
+        <td>{$item.1}</td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+<br/>
+{/if}
+
+{if count($list.documents)}
+<table class="kt_collection">
+<thead>
+<tr>
+    <th colspan="2">{i18n}Documents{/i18n}</th>
+</tr>
+<tr>
+    <th width="20%">{i18n}Name{/i18n}</th>
+    <th>{i18n}Status{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+
+{foreach from=$list.documents item=item}
+    <tr class="{cycle values=even,odd}">
+        <td>{$item.0}</td>
+        <td>{$item.1}</td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+{/if}
+
+{$form->render()}
