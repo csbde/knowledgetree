@@ -39,6 +39,7 @@ require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 class BooleanSearchDispatcher extends KTStandardDispatcher {
     var $sSection = "browse";
@@ -83,6 +84,9 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $oSearch = KTSavedSearch::get($iSavedSearchId);
             $datavars = $oSearch->getSearch();
             $title = $oSearch->getName();
+            $bIsCondition = $oSearch->getIsCondition();
+        } else {
+            $bIsCondition = false;
         }
 
         if (is_null(KTUtil::arrayGet($datavars["subgroup"][0], "values"))) {
@@ -93,9 +97,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain(_kt('You need to have at least 1 condition.'));
         }
         
-        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1), $title, $oSearch->getIsCondition());
-        
-        return $res;
+        return $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1), $title, $bIsCondition);
     }
     
     function do_saveSearch() {
@@ -279,6 +281,11 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             'documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',
         );
         $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
+        $collection->setColumnOptions('ktcore.columns.selection', array(
+            'rangename' => 'selection',
+            'show_folders' => true,
+            'show_documents' => true,
+        ));
         
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
         
@@ -316,7 +323,13 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             "save_fields" => $save_fields,
 	    "params" => $aParams,
 	    "joins" => $aJoins,
+            'isEditable' => true,
             "boolean_search" => $sSearch,
+            'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
+            'browseutil' => new KTBrowseUtil(),
+            'returnaction' => 'booleanSearch',
+            'returndata' => $sSearch,
+
         );
         return $oTemplate->render($aTemplateData);
     }

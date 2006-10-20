@@ -73,6 +73,50 @@ class KTActionDispatcher extends KTStandardDispatcher {
 	return $this->do_main();
     }
 
+    function do_bulkaction() {
+        $act = (array) KTUtil::arrayGet($_REQUEST, 'submit',null);
+        
+        $targets = array_keys($act);
+        if (!empty($targets)) {
+            $target = $targets[0];
+        } else {
+            $this->errorRedirectToMain(_kt('No action selected.'));
+            exit(0);
+        }
+
+        $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
+        $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());        
+
+        $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
+        if (PEAR::isError($oFolder)) { 
+            $this->errorRedirectToMain(_kt('Invalid folder selected.'));
+            exit(0);
+        }
+
+        if (empty($aFolderSelection) && empty($aDocumentSelection)) {
+            $this->errorRedirectToMain(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
+            exit(0);
+        }        
+        
+        // prepare for passing to bulk actions
+        $oActionRegistry =& KTActionRegistry::getSingleton();
+        $oAction =& $oActionRegistry->initializeAction($target, $this->oUser);
+        
+        if(!$oAction || PEAR::isError($oAction)) {
+            $this->errorRedirectToMain(_kt('No such action.'));
+            exit(0);
+        }
+
+        $oAction->oFolder = $oFolder;
+
+        $oEntityList = new KTEntityList($aDocumentSelection, $aFolderSelection);
+        $oAction->setEntityList($oEntityList);
+        $oAction->redispatch('action', 'do_', $this);
+
+        //        exit(0);
+    }
+        
+
     /**
      * Handle output from this dispatcher.
      *

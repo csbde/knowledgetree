@@ -1,0 +1,89 @@
+<h2>{$context->getDisplayName()}</h2>
+
+<p class="descriptiveText">{i18n}The following list shows documents and folders in your list which cannot be acted on by this bulk action:{/i18n}</p>
+
+{if count($failed.folders)}
+<table class="kt_collection">
+<thead>
+<tr>
+    <th colspan="2">{i18n}Folders{/i18n}</th>
+</tr>
+<tr>
+    <th width="20%">{i18n}Name{/i18n}</th>
+    <th>{i18n}Reason for failure{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+{foreach from=$failed.folders item=item}
+    <tr class="{cycle values=even,odd}">
+        <td>{$item.0}</td>
+        <td>{$item.1}</td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+<br/>
+{/if}
+
+{if (count($failed.documents))}
+
+<table class="kt_collection">
+<thead>
+<tr>
+    <th colspan="2">{i18n}Documents{/i18n}</th>
+</tr>
+<tr>
+    <th width="20%">{i18n}Name{/i18n}</th>
+    <th>{i18n}Reason for failure{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+
+{foreach from=$failed.documents item=item}
+    <tr class="{cycle values=even,odd}">
+        <td>{$item.0}</td>
+        <td>{$item.1}</td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+{/if}
+
+
+{if (count($documents)  || count($folders))}
+<p class="descriptiveText">{i18n}The action will be performed on the following documents and folders:{/i18n}</p>
+
+{if (count($folders))}
+<h3>{i18n}Folders{/i18n}</h3>
+<ul>
+{foreach from=$folders item=folder}
+<li>{$folder}</li>
+{/foreach}
+</ul>
+{/if}
+
+{if count($documents)}
+<h3>{i18n}Documents{/i18n}</h3>
+<ul>
+{foreach from=$documents item=document}
+<li>{$document}</li>
+{/foreach}
+</ul>
+{/if}
+{/if}
+
+
+
+
+{if (!count($failed.folders) && !count($failed.documents))}
+<p>{i18n}The action can be performed on the entire selection.{/i18n}</p>
+{/if}
+
+{if (!$activecount)}
+<p>{i18n}The action cannot be performed on any of the selected entities.{/i18n}</p>
+{$failedform->render()}
+{else}
+{$form->render()}
+{/if}
