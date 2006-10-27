@@ -95,7 +95,7 @@ class KTUtil {
         return $sString;
     }
 
-    function arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
+    function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (!is_array($aArray)) { 
             $aArray = (array) $aArray; 
         }
@@ -103,7 +103,7 @@ class KTUtil {
             return $mDefault;
         }
         if (array_key_exists($sKey, $aArray)) {
-            $mVal = $aArray[$sKey];
+            $mVal =& $aArray[$sKey];
             if (empty($mVal) && $bDefaultIfEmpty) {
                 return $mDefault;
             }
