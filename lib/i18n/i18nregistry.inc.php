@@ -76,7 +76,8 @@ class KTi18nRegistry {
         }
         $aDetails = KTUtil::arrayGet($this->_ai18nDetails, $sDomain);
         if (empty($aDetails)) {
-            return new KTi18nGeneric;
+            $oi18n =& new KTi18nGeneric;
+            return $oi18n;
         }
         $aDirectories = KTUtil::arrayGet($this->_ai18nLangs, $sDomain);
         $oi18n =& new KTi18n($sDomain, $sDirectory, $aDirectories);
