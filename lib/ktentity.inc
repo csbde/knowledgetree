@@ -583,7 +583,7 @@ class KTEntityUtil {
         }
         $aRet = array();
         foreach ($aIDs as $iId) {
-            $aRet[] =& call_user_func(array($sClassName, 'get'), $iId);
+            $aRet[] = call_user_func(array($sClassName, 'get'), $iId);
         }
         return $aRet;
     }
@@ -726,20 +726,22 @@ class KTEntityUtil {
         }
 
         $allcode[] = sprintf('function &_fetch() {
-        $oObject =& KTUtil::arrayGet($GLOBALS["_OBJECTCACHE"][%s], $this->iId);
-        if ($oObject) { return $oObject; }
+        if (!empty($GLOBALS["_OBJECTCACHE"]["%s"][$this->iId])) {
+            $oObject =& $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId];
+            return $oObject;
+        }
         $oObject =& new %s;
         $res = $oObject->load($this->iId);
         if (PEAR::isError($res)) {
             return $res;
         }
-        $GLOBALS["_OBJECTCACHE"][%s][$this->iId] =& $oObject;
+        $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId] =& $oObject;
         return $oObject;
     }
-        ', $sClassName, $sClassName, $sClassName);
+        ', $sClassName, $sClassName, $sClassName, $sClassName);
 
-        $allcode[] = sprintf('function &_save(&$oObject) {
-        $GLOBALS["_OBJECTCACHE"][%s][$this->iId] =& $oObject;
+        $allcode[] = sprintf('function _save(&$oObject) {
+        $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId] =& $oObject;
     }
         ', $sClassName);
 
