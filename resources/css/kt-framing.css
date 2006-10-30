@@ -268,7 +268,7 @@ a.main_nav_item {
     display: none;
 }
 
-#portletbar .expanded .portletbody {
+#portletbar .portlet.expanded .portletbody {
     display: block;
 }
 
