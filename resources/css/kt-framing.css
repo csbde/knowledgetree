@@ -264,12 +264,12 @@ a.main_nav_item {
     font-size: small;
 }
 
-#portletbar .portlet.expanded .portletbody {
-    display: block;
-}
-
 #portletbar .portlet .portletbody {
     display: none;
+}
+
+#portletbar .expanded .portletbody {
+    display: block;
 }
 
 #portletbar .portlet .actionlist
