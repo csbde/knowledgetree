@@ -57,6 +57,7 @@ class KTPluginUtil {
     function loadPlugins () {
         $sPluginCache = KT_DIR . '/var/plugin-cache';
         if (file_exists($sPluginCache)) {
+            require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
             require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
             require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
             require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
@@ -66,6 +67,10 @@ class KTPluginUtil {
             require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
             require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
             require_once(KT_LIB_DIR . "/help/help.inc.php");
+            require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+            require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
+            require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
+            require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
             $GLOBALS['_KT_PLUGIN'] = unserialize(file_get_contents($sPluginCache));
             $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPlugins = array();
             return;
