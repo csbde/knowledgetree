@@ -233,7 +233,7 @@ class DBUtil {
         return DBUtil::runQuery(array($sQuery, $aValues), $db);
     }
 
-    function &paramArray($aArray) {
+    function paramArray($aArray) {
         $iNumIds = count($aArray);
         if (empty($iNumIds)) {
             return "";
