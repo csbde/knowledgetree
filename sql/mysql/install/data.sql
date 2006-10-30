@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 17, 2006 at 12:13 PM
+-- Generation Time: Oct 30, 2006 at 12:50 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -738,7 +738,7 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.1.6.7');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.3.0.1');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -906,6 +906,7 @@ INSERT INTO `upgrades` VALUES (125, 'sql*3.1.6.5*0*3.1.6.5/workflow-state-refere
 INSERT INTO `upgrades` VALUES (126, 'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql', 'Database upgrade to version 3.1.6.6: Copy transaction', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (127, 'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql', 'Database upgrade to version 3.1.6.7: Sane-names-for-stuff', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (128, 'upgrade*3.1.6.7*99*upgrade3.1.6.7', 'Upgrade from version 3.1.2 to 3.1.6.7', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
+INSERT INTO `upgrades` VALUES (129, 'upgrade*3.3.0.1*99*upgrade3.3.0.1', 'Upgrade from version 3.1.6.7 to 3.3.0.1', '2006-10-30 12:49:33', 1, 'upgrade*3.3.0.1*99*upgrade3.3.0.1');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1366,7 +1367,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (128);
+INSERT INTO `zseq_upgrades` VALUES (129);
 
 -- 
 -- Dumping data for table `zseq_user_history`
