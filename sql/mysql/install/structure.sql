@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 17, 2006 at 12:12 PM
+-- Generation Time: Oct 30, 2006 at 12:50 PM
 -- Server version: 5.0.22
 -- PHP Version: 4.4.2-1build1
 
@@ -2241,7 +2241,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=129 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=130 ;
 
 -- --------------------------------------------------------
 
