@@ -20,6 +20,7 @@
             margin-right: auto;
             text-align: left;
             background: white url(../graphics/ktbg.png) bottom right no-repeat;
+            -moz-border-radius: 1em;
         }
 
         #loginbox.hasDisclaimer { 

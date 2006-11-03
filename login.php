@@ -73,8 +73,8 @@ class LoginPageDispatcher extends KTDispatcher {
 
     function performLogin(&$oUser) {
         if (!is_a($oUser, 'User')) {
-            var_dump($oUser);
-            var_dump(PEAR::raiseError());
+            #var_dump($oUser);
+            #var_dump(PEAR::raiseError());
         }
         $session = new Session();
         $sessionID = $session->create($oUser);

@@ -17,7 +17,9 @@
 
 <div class="ktError" id="admin_version_dashlet" >
 
-<h2>{i18n}New Version Available{/i18n}</h2>
+<h2 class="dashboard_block_handle">{i18n}New Version Available{/i18n}</h2>
+
+<div class="dashboard_block_body">
 <p>
 <span id="up_single">{i18n}The following upgrade is available:{/i18n}</span>
 <span id="up_multi">{i18n}The following upgrades are available:{/i18n}</span>
@@ -25,4 +27,5 @@
 {i18n}Please visit <a href="http://www.ktdms.com">www.ktdms.com</a> to find out more.{/i18n}
 </p>
 
+</div>
 </div>

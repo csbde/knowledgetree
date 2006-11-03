@@ -25,6 +25,10 @@ AdminVersionDashlet.prototype = {
 	}
 
 	if(updates == 0) {
+            // next line is cause I thought this dashlet was causing orphaned 
+            // dashlet buttons. it doesn't seem to be, but this may be needed.
+            // more investigation necessary.
+            //            this.dashlet.style.display = 'none';
 	} else if(updates == 1) {
 	    $('up_single').style.display = 'block';
 	    this.dashlet.style.display = 'block';
