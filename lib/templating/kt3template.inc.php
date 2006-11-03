@@ -94,15 +94,22 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
         /* default js files initialisation */
         $aJS = Array();
-		$aJS[] = 'thirdpartyjs/MochiKit/Base.js';
-		$aJS[] = 'thirdpartyjs/MochiKit/Iter.js';
-		$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
-		$aJS[] = 'thirdpartyjs/MochiKit/Logging.js';
-		$aJS[] = 'thirdpartyjs/MochiKit/Async.js';
-		$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
-		$aJS[] = 'resources/js/kt-utility.js';
-		//$aJS[] = 'resources/js/translate.js';
-		$aJS[] = 'presentation/i18nJavascript.php';
+	$aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
+	$aJS[] = 'thirdpartyjs/MochiKit/New.js';
+	$aJS[] = 'thirdpartyjs/MochiKit/DragAndDrop.js';
+	$aJS[] = 'thirdpartyjs/MochiKit/Sortable.js';
+        $aJS[] = 'resources/js/kt-utility.js';
+        $aJS[] = 'presentation/i18nJavascript.php';
+
+        
+        //$aJS[] = 'thirdpartyjs/MochiKit/Iter.js';
+        //$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
+        //$aJS[] = 'thirdpartyjs/MochiKit/Logging.js';
+        //$aJS[] = 'thirdpartyjs/MochiKit/Async.js';
+        //$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';	
+        //$aJS[] = 'thirdpartyjs/MochiKit/.js';
+        //$aJS[] = 'resources/js/translate.js';
+
         $this->requireJSResources($aJS);
         
         // this is horrid, but necessary.
@@ -121,7 +128,8 @@ class KTPage {
     function initMenu() {
 	// FIXME:  we lost the getDefaultAction stuff - do we care?
 	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
-	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
+	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "ajaxdashboard", "active" => 0)),
+                            "olddashboard" => $this->_actionHelper(array("name" => _kt("Old Dashboard"), "action" => "dashboard", "active" => 0)),
 			    "browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
 			    "administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),);
     }

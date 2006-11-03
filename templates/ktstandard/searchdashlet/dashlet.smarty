@@ -1,5 +1,8 @@
-<h2>{i18n}Search{/i18n}</h2>
+<div class="ktBlock">
+<h2 class="dashboard_block_handle">{i18n}Search{/i18n}</h2>
 
+
+<div class="dashboard_block_body">
 <form action="{ktLink base="search/simpleSearch.php"}" method="GET">
 <input type="text" name="fSearchableText" id="dashlet-search-text"
 size="15" /><input type="submit" value="{i18n}search{/i18n}"
@@ -20,4 +23,5 @@ href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSaved
 
 
 {/if}
-
+</div>
+</div>

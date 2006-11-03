@@ -1,5 +1,6 @@
-<h2>{$title}</h2>
-
+<div class="ktBlock">
+<h2 class="dashboard_block_handle">{$title}</h2>
+<div class="dashboard_block_body">
 {$body}
 
 {if $can_edit}
@@ -9,3 +10,5 @@
 {if $help_id}| <a class="ktActionLink ktDelete" href="{ktLink base="admin.php" subpath="/misc/helpmanagement" query="action=deleteReplacement&id=`$help_id`"}">{i18n}Use the standard introduction.{/i18n}</a></p>
 {/if}
 {/if}
+</div>
+</div>

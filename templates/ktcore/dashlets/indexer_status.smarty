@@ -1,5 +1,7 @@
-<h2>{i18n}Indexer Status{/i18n}</h2>
+<div class="ktBlock">
+<h2 class="dashboard_block_handle">{i18n}Indexer Status{/i18n}</h2>
 
+<div class="dashboard_block_body">
 {if $no_transforms}
 <div class="ktError"><p><strong>{i18n}Warning:{/i18n}</strong>  {i18n}There are currently
 no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
@@ -32,3 +34,5 @@ no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
 </table>
 {/if}
 {/if}
+</div>
+</div>

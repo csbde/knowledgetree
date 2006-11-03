@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id$
+ * $Id: dashboard.php 5758 2006-07-27 10:17:43Z bshuttle $
  *
  * Main dashboard page -- This page is presented to the user after login.
  * It contains a high level overview of the users subscriptions, checked out 
@@ -27,7 +27,7 @@
  * All Rights Reserved.
  *
  *
- * @version $Revision$
+ * @version $Revision: 5758 $
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
@@ -83,9 +83,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
+        $this->oPage->requireJSResource('resources/js/dashboard.js');
 
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/olddashboard");
+        $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
         $aTemplateData = array(
               "context" => $this,
               "dashlets_left" => $aDashletsLeft,
@@ -94,6 +95,12 @@ class DashboardDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
     
+    // return some kind of ID for each dashlet
+    // currently uses the class name
+    function _getDashletId($oDashlet) {
+        return get_class($oDashlet);
+    }
+
     // disable a dashlet.  
     // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
     function do_disableDashlet() {

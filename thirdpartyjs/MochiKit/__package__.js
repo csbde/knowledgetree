@@ -1,17 +1,2 @@
-dojo.hostenv.conditionalLoadModule({
-    "common": [
-        "MochiKit.Base",
-        "MochiKit.Iter",
-        "MochiKit.Logging",
-        "MochiKit.DateTime",
-        "MochiKit.Format",
-        "MochiKit.Async",
-        "MochiKit.Color"
-    ],
-    "browser": [
-        "MochiKit.DOM",
-        "MochiKit.LoggingPane",
-        "MochiKit.Visual"
-    ]
-});
+dojo.hostenv.conditionalLoadModule({"common": ["MochiKit.MochiKit"]});
 dojo.hostenv.moduleLoaded("MochiKit.*");

@@ -398,9 +398,9 @@ a.main_nav_item {
 
 #content .form_actions input
 {
-    border: 1px solid #888;
-    background: #eee;
-    color: black;
+    border: 1px solid #ccc;
+    background: #fdfdfd;
+    color: #333;
     font-weight: normal;
 }
 
@@ -676,6 +676,7 @@ a.main_nav_item {
     width: 100%;
     white-space: nowrap !important;
     border: 1px solid #ccc;
+    -moz-border-radius: 1em;
 }
 
 .kt_collection.narrow {
@@ -800,6 +801,23 @@ a.main_nav_item {
     padding-left: 25px;
     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 }
+
+
+.ktBlock
+{ 
+    padding: 0 1em;
+    border: 1px solid #c5c5c5;
+    background-color: #fcfcfc;
+    margin: 0.5em 0;
+}
+
+.ktInfo, .ktError, .ktBlock 
+{ 
+    -moz-border-radius: 15px;
+    background-image: url(../../resources/graphics/dashlet-gradient.png);
+    background-repeat: no-repeat;
+}
+
 
 
 /** portlet stuff. */
@@ -1152,4 +1170,108 @@ hr {
 
 .browse_body { 
     padding: 0;
+}
+
+
+
+/* -------------------------- dashboard ------------------------ */
+
+.dashboard_block_icons
+{ 
+    text-align: right;
+    margin-bottom: -3em;
+    margin-right: 1em;
+}
+
+.dashboard_block_handle
+{ 
+}
+
+.dashboard_block.rolled-up .dashboard_block_body
+{ 
+    display: none;
+}
+
+/* actions */
+
+#content .dashboard_block .action
+{ 
+    padding: 1em 0.5em;
+    border-bottom-width: 0px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+#content .dashboard_block .action:hover
+{ 
+    border-bottom-width: 0px;
+}
+
+#content .dashboard_block .action_rollup 
+{ 
+    background-image: url(../graphics/bullet_toggle_minus.png);
+}
+
+#content .dashboard_block.rolled-up .action_rollup 
+{ 
+    background-image: url(../graphics/bullet_toggle_plus.png);
+}
+
+#content .dashboard_block .action_close 
+{ 
+    background-image: url(../graphics/delete.gif);
+}
+
+/* action effects */
+#content .dashboard_block.rolled-up h2 
+{ 
+    border-bottom-width: 0px;
+    padding-bottom: 0px;
+}
+
+
+#content .dashboard_block.closed 
+{ 
+    display: none;
+}
+
+.addDialogScreen
+{ 
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+/*    background-color: white;
+    opacity: 0.5; */
+    text-align: center;
+}
+
+.addDialog
+{ 
+    display: block;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 2em;
+    margin: 10% 30%;
+    opacity: 1;
+    overflow: hidden;
+    text-align: left;
+}
+
+
+.addDialog .dashletLink
+{ 
+    color: #666;
+    text-decoration: none;
+    display: block;
+}
+
+body #content #add_dashlet
+{ 
+    display: none;
+    text-decoration: none;
+    border-width: 0px;
+    
 }
