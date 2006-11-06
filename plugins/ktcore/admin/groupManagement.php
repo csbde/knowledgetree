@@ -654,14 +654,16 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         if (!is_null($data['unit'])) {
             $unit = $data['unit']->getId();
         }
-        
+
         $oGroup =& Group::createFromArray(array(
              'sName' => $data['group_name'],
-             'bIsUnitAdmin' => $data['unitadmin'],
+             'bIsUnitAdmin' => KTUtil::arrayGet($data, 'unitadmin', false),
              'bIsSysAdmin' => $data['sysadmin'],
              'UnitId' => $unit,
         ));
+
         if (PEAR::isError($oGroup)) {
+
             return $oForm->handleError(sprintf(_kt("Unable to create group: %s"), $oGroup->getMessage()));
         }
         $this->commitTransaction();
