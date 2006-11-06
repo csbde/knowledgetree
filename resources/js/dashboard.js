@@ -40,7 +40,7 @@ KTDashlet.prototype = {
         return this.dashboard.getStatus(this.id);
     }
         
-}
+};
 
 
 function KTDashboard() {
@@ -59,15 +59,17 @@ KTDashboard.prototype = {
             'dropOnEmpty':true,
             'constraint': false,  
             'tree':true,
-            'only' : ['dashboard_block', ],
-            'handle' : 'dashboard_block_handle',
-        }
+            'only' : ['dashboard_block'],
+            'handle' : 'dashboard_block_handle'
+        };
 
         MochiKit.Sortable.Sortable.create(dashboard, dashOpts);
 
         var self = this;
         map(function(e) {
-                if(hasElementClass(e, 'empty')) return;
+                if(hasElementClass(e, 'empty')) {
+                    return;
+                }
                 var d = new KTDashlet();
                 d.initialize(e, self);
                 self.dashlets[e.id] = { 'object' : d, 'state' : KTDashboard.OPEN };
@@ -86,7 +88,7 @@ KTDashboard.prototype = {
             showElement(this.addButton);
         } else if(status == KTDashboard.OPEN) {
             var closed = this.getDashletsInState(KTDashboard.CLOSED);
-            if(closed.length == 0) {
+            if(closed.length === 0) {
                 hideElement(this.addButton);
             }
         }

@@ -98,7 +98,7 @@ MochiKit.Sortable.Sortable = {
     },
 
     /** @id MochiKit.Sortable.Sortable.create */
-        create: function (element, options, droppables) {
+        create: function (element, options) {
         element = MochiKit.DOM.getElement(element);
         var self = MochiKit.Sortable.Sortable;
         
@@ -206,7 +206,7 @@ MochiKit.Sortable.Sortable = {
             hoverclass: options.hoverclass,
             onhover: self.onHover,
             tree: options.tree,
-            accept: options.accept,
+            accept: options.accept
         }
 
         var options_for_tree = {

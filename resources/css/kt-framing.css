@@ -676,7 +676,6 @@ a.main_nav_item {
     width: 100%;
     white-space: nowrap !important;
     border: 1px solid #ccc;
-    -moz-border-radius: 1em;
 }
 
 .kt_collection.narrow {
@@ -811,13 +810,21 @@ a.main_nav_item {
     margin: 0.5em 0;
 }
 
-.ktInfo, .ktError, .ktBlock 
+.ktBlock, .ktInfo, .ktError
 { 
-    -moz-border-radius: 15px;
-    background-image: url(../../resources/graphics/dashlet-gradient.png);
+    -moz-border-radius: 15px; 
     background-repeat: no-repeat;
 }
 
+.ktInfo
+{ 
+    background-image: url(../../resources/graphics/dashlet-gradient-info.gif);
+}
+
+.ktError
+{ 
+    background-image: url(../../resources/graphics/dashlet-gradient-error.gif);
+}
 
 
 /** portlet stuff. */
