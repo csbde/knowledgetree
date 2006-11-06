@@ -373,6 +373,9 @@ class KTEntity {
         if (PEAR::isError($ret)) {
             return $ret;
         }
+        if ($ret === false) {
+            return PEAR::raiseError(sprintf(_kt("update for class %s failed"), $sClassName));
+        }
         return true;
     }
     
@@ -598,6 +601,9 @@ class KTEntityUtil {
         if (PEAR::isError($ret)) {
             return $ret;
         }
+        if ($ret === false) {
+            return PEAR::raiseError(sprintf(_kt("create for class %s failed"), $sClassName));
+        }
         $meth = array($sClassName, 'get');
         return call_user_func($meth, $oObject->getId());
     }
@@ -615,6 +621,9 @@ class KTEntityUtil {
         $ret = $this->update();
         if (PEAR::isError($ret)) {
             return $ret;
+        }
+        if ($ret === false) {
+            return PEAR::raiseError(sprintf(_kt("update for class %s failed"), $sClassName));
         }
         return true;
     }
