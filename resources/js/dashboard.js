@@ -162,7 +162,7 @@ addLoadEvent(
         var browser = navigator.appName;
         if(browser == 'Microsoft Internet Explorer') {
             alert("For this technology preview, the draggable dashboard does not work in Internet Explorer. Please try with Firefox.");
-            var location = window.location.href.toString().replace(/2/gi, '');
+            var location = window.location.href.toString().replace(/dashboard2/gi, 'dashboard');
             window.location = location;
         } else {
             var dashboard = new KTDashboard();

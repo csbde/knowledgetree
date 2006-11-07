@@ -12,22 +12,42 @@ function _getParentElm(elm, type) {
     return _getParentElm(n, type);
 }
 
+function _getContentDocument(id) {
+    var elm = $(id);
+    var ret = null;
+
+    if(elm.contentDocument) {
+        ret = elm.contentDocument;
+    } else {
+        if(elm.id) {
+            id = elm.id;
+        }
+        ret = document.frames[id].document;
+    }
+    return ret;
+}
+
 function resizeFrame(elm) {
     var frame = $(elm);
-    var size = frame.contentDocument.body.offsetHeight;
+    var size = _getContentDocument(elm).body.offsetHeight;
     frame.style.display = 'block';
     frame.style.height = (parseInt(size) + 32) + 'px';
 }
 
 function setupFrame(frame) {
     var form = _getParentElm(frame, 'FORM');
-    var moveInputs = function(e) {
+    var moveInputs = function(event) {
         for(var e in {'input':1, 'select':1, 'textarea':1}) {
-            var elms = frame.contentDocument.getElementsByTagName(e);
-            forEach(elms, function(e) {
-                        e.style.display = 'none';
+            var elms = _getContentDocument(frame).getElementsByTagName(e);
+            if(!elms.length) {
+                continue;
+            }
+            forEach(elms, function(v) {
+                        var newInput = INPUT({'type':'hidden',
+                                              'name':v.name,
+                                              'value':v.value});
+                        appendChildNodes(form, newInput);
                     });
-            appendChildNodes(form, elms);
         }
     }
 
