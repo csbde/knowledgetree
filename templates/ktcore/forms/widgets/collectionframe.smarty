@@ -1,1 +1,1 @@
-<iframe class="browse-frame" src="{$context->getTargetURL()}"></iframe>
+<iframe class="browse-frame" id="browse-frame" src="{$context->getTargetURL()}"></iframe>
