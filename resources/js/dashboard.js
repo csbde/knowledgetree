@@ -77,7 +77,7 @@ KTDashboard.prototype = {
 
         this.addButton = $('add_dashlet');
         connect(this.addButton, 'onclick', this, 'onclickAdd');
-        hideElement(this.addButton);
+        //hideElement(this.addButton);
 
         // alert(keys(this.dashlets));
         // alert(values(this.dashlets));
@@ -159,8 +159,15 @@ KTDashboard.prototype = {
 
 addLoadEvent(
     function() {
-        var dashboard = new KTDashboard();
-        dashboard.initialize($('content'));
+        var browser = navigator.appName;
+        if(browser == 'Microsoft Internet Explorer') {
+            alert("For this technology preview, the draggable dashboard does not work in Internet Explorer. Please try with Firefox.");
+            var location = window.location.href.toString().replace(/2/gi, '');
+            window.location = location;
+        } else {
+            var dashboard = new KTDashboard();
+            dashboard.initialize($('content'));
+        }
     });
 
                
