@@ -100,3 +100,10 @@ function checkKTError(res) {
     }
     return res;
 }
+
+// Sets
+function Set() {
+    var set = {};
+    forEach(arguments, function(k) { set[k] = 1; });
+    return set;
+}

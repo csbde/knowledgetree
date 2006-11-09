@@ -34,7 +34,7 @@ $default->siteMap = new SiteMap(false);
 $default->siteMap->addPage("login", "/login.php", "General", None, "");
 
 // dashboard
-$default->siteMap->addPage("ajaxdashboard", "/dashboard2.php", "General", Guest, "dashboard2");
+$default->siteMap->addPage("ajaxdashboard", "/dashboard2.php", "General", Guest, "ajaxdashboard");
 
 // old dashboard
 $default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "dashboard");

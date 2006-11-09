@@ -54,6 +54,8 @@ KTDashboard.CLOSED = 2;
 
 KTDashboard.prototype = {
     'initialize' : function(dashboard) {
+        this.element = dashboard;
+
         var dashOpts = {
             'tag':'div',
             'dropOnEmpty':true,
@@ -62,8 +64,7 @@ KTDashboard.prototype = {
             'only' : ['dashboard_block'],
             'handle' : 'dashboard_block_handle'
         };
-
-        MochiKit.Sortable.Sortable.create(dashboard, dashOpts);
+        MochiKit.Sortable.Sortable.create(this.element, dashOpts);
 
         var self = this;
         map(function(e) {
@@ -73,14 +74,10 @@ KTDashboard.prototype = {
                 var d = new KTDashlet();
                 d.initialize(e, self);
                 self.dashlets[e.id] = { 'object' : d, 'state' : KTDashboard.OPEN };
-            }, getElementsByTagAndClassName('*', 'dashboard_block', dashboard));
+            }, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
 
         this.addButton = $('add_dashlet');
         connect(this.addButton, 'onclick', this, 'onclickAdd');
-        //hideElement(this.addButton);
-
-        // alert(keys(this.dashlets));
-        // alert(values(this.dashlets));
     },
 
     'statusChange' : function(status) {
@@ -152,7 +149,28 @@ KTDashboard.prototype = {
         appendChildNodes(addDialog, closeLink);
         appendChildNodes(addDialogScreen, addDialog);
         appendChildNodes(document.body, addDialogScreen);
+    },
+
+    'serialize' : function() {
+        var self = this;
+        var cols = Set('left', 'right');
+        var ret = {};
+
+        for(var col in cols) {
+            ret[col] = [];
+            var container = $('dashboard-container-' + col);
+            forEach(getElementsByTagAndClassName('*', 'dashboard_block', container), function(e) {
+                        if(e.id != '') {                        
+                            ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
+                        }
+                    });
+        }
+        
+        alert(ret);                        
+        
     }
+        
+
 }
 
 
@@ -167,6 +185,7 @@ addLoadEvent(
         } else {
             var dashboard = new KTDashboard();
             dashboard.initialize($('content'));
+            dashboard.serialize();
         }
     });
 

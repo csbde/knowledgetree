@@ -52,7 +52,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'dashboard', 'name' => _kt('Dashboard')),
+            array('action' => 'ajaxdashboard', 'name' => _kt('Dashboard')),
         );
         return parent::KTStandardDispatcher();
     }
