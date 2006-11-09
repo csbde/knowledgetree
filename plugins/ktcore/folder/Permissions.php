@@ -459,7 +459,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $this->commitTransaction();
 
+        $this->addInfoMessage(_kt("Permissions on folder updated"));
         $po->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], "action=edit&fFolderId=" . $this->oFolder->getId()));
+        exit(0);
     }
 
 
