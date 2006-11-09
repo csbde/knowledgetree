@@ -1,0 +1,3 @@
+<h2>{$context->getDisplayName()}</h2>
+
+{$form->render()}

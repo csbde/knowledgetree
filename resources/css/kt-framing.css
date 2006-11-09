@@ -1192,6 +1192,7 @@ hr {
 
 .dashboard_block_handle
 { 
+    cursor: pointer;
 }
 
 .dashboard_block.rolled-up .dashboard_block_body

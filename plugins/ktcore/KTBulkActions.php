@@ -72,7 +72,7 @@ class KTBulkDeleteAction extends KTBulkAction {
         $this->store_lists();
         $this->get_lists();
 	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/move_bulk_action_info');
+	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
         return $oTemplate->render(array('context' => $this,
                                         'form' => $this->form_collectinfo()));
     }
@@ -194,7 +194,7 @@ class KTBulkMoveAction extends KTBulkAction {
         $this->store_lists();
         $this->get_lists();
 	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/move_bulk_action_info');
+	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
         return $oTemplate->render(array('context' => $this,
                                         'form' => $this->form_collectinfo()));
     }
