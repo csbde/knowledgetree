@@ -162,6 +162,19 @@ class User extends KTEntity {
     function getDisabled() { return $this->bDisabled; }
     function setDisabled($mValue) { $this->bDisabled = $mValue; }
 
+    /* return the key for storing dashboard in system settings */
+    function _getDashboardStateKey() {
+        return 'dashboard-state-' . $this->getId();
+    }
+
+    function getDashboardState() {         
+        return KTUtil::getSystemSetting($this->_getDashboardStateKey());
+    }
+
+    function setDashboardState($mValue) { 
+        KTUtil::setSystemSetting($this->_getDashboardStateKey(), $mValue);
+    }
+
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
     }

@@ -124,6 +124,13 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->commitTransaction();
         $this->successRedirectToMain('Dashlet disabled.');
     }
+
+
+    function json_saveDashboardState() {
+        $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error'=>true));
+        $this->oUser->setDashboardState($sState);
+        return array('success' => true);
+    }
 }
 
 $oDispatcher = new DashboardDispatcher();
