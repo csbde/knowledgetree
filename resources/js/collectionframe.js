@@ -37,7 +37,7 @@ function resizeFrame(elm) {
 function setupFrame(frame) {
     var form = _getParentElm(frame, 'FORM');
     var moveInputs = function(event) {
-        for(var e in {'input':1, 'select':1, 'textarea':1}) {
+        for(var e in Set('input', 'select', 'textarea')) {
             var elms = _getContentDocument(frame).getElementsByTagName(e);
             if(!elms.length) {
                 continue;

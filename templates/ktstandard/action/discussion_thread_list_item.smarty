@@ -10,6 +10,6 @@
   {$sStateName}<br/>
   {if ($iStateId==DISCUSSION_FINALISED || $iStateId==DISCUSSION_IMPLEMENTED || $iStateId==DISCUSSION_CLOSED)}
   <strong>{i18n}Conclusion{/i18n}:</strong> {$thread->getCloseReason()}{/if}
-  {if ($iStateId==DISCUSSION_CLOSED)}<br/>{i18n arg_ver=$thread->getCloseMetadataVersion()}(Closed at metadata version: #ver#{/i18n]{/if}
+  {if ($iStateId==DISCUSSION_CLOSED)}<br/>{i18n arg_ver=$thread->getCloseMetadataVersion()}(Closed at metadata version: #ver#){/i18n}{/if}
   </td>
 </tr>

@@ -30,6 +30,7 @@ KTDashlet.prototype = {
         } else {
             this.setStatus(KTDashboard.OPEN);
         }
+        event.stop();
     },
 
     'setStatus' : function(status) {
@@ -50,6 +51,7 @@ function KTDashboard() {
 KTDashboard.OPEN = 0;
 KTDashboard.ROLLEDUP = 1;
 KTDashboard.CLOSED = 2;
+KTDashboard.columns = Set('left', 'right');
 
 
 KTDashboard.prototype = {
@@ -77,7 +79,9 @@ KTDashboard.prototype = {
             }, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
 
         this.addButton = $('add_dashlet');
+
         connect(this.addButton, 'onclick', this, 'onclickAdd');
+        connect(window, 'onbeforeunload', this, 'pushState');
     },
 
     'statusChange' : function(status) {
@@ -149,27 +153,51 @@ KTDashboard.prototype = {
         appendChildNodes(addDialog, closeLink);
         appendChildNodes(addDialogScreen, addDialog);
         appendChildNodes(document.body, addDialogScreen);
+
+        event.stop();
+    },
+
+    'getColumn' : function(which) {
+        return $('dashboard-container-' + which);
     },
 
     'serialize' : function() {
         var self = this;
-        var cols = Set('left', 'right');
         var ret = {};
 
-        for(var col in cols) {
+        for(var col in KTDashboard.columns) {
             ret[col] = [];
-            var container = $('dashboard-container-' + col);
+            var container = this.getColumn(col);
             forEach(getElementsByTagAndClassName('*', 'dashboard_block', container), function(e) {
                         if(e.id != '') {                        
                             ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
                         }
                     });
         }
+        return ret;
+    },
+
+    'unserialize' : function(state) {
+        var bucket = DIV({'style':'display:none'});
+        appendChildNodes(document.body, bucket);
+        appendChildNodes(bucket, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
         
-        alert(ret);                        
-        
+        for(var col in KTDashboard.columns) {
+            var container = this.getColumn(col);
+            for(var dashlet in state[col]) {
+                var elm = $(dashlet['id']);
+                this.setStatus(dashlet['id'], dashlet['state']);
+                appendChildNodes(container, elm);
+            }
+        }
+    },
+
+    'pushState' : function(event) {
+        var args = {'action' : 'json', 
+                    'json_action' : 'saveDashboardState', 
+                    'state' : serializeJSON(this.serialize())  };
+        var def = loadJSONDoc(window.location.href, args);
     }
-        
 
 }
 
