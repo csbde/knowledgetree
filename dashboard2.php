@@ -83,6 +83,16 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
+        $sDashboardState = $this->oUser->getDashboardState();
+        $sDSJS = "var savedState = ";
+        if($sDashboardState == null) {
+            $sDSJS .= "false";
+            $sDashboardState = false;
+        } else {
+            $sDSJS .= $sDashboardState;
+        }
+        $sDSJS .= ';';
+        $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
         $oTemplating =& KTTemplating::getSingleton();
