@@ -19,8 +19,9 @@ KTDashlet.prototype = {
         } else {
             this.setStatus(KTDashboard.OPEN);
         }
-
-        event.stop();
+        if(event) {
+            event.stop();
+        }
     },
 
     'toggleClose' : function(event) {
@@ -30,7 +31,9 @@ KTDashlet.prototype = {
         } else {
             this.setStatus(KTDashboard.OPEN);
         }
-        event.stop();
+        if(event) {
+            event.stop();
+        }
     },
 
     'setStatus' : function(status) {
@@ -60,7 +63,7 @@ KTDashboard.prototype = {
 
         var dashOpts = {
             'tag':'div',
-            'dropOnEmpty':true,
+            //'dropOnEmpty':true,
             'constraint': false,  
             'tree':true,
             'only' : ['dashboard_block'],
@@ -84,9 +87,13 @@ KTDashboard.prototype = {
         connect(window, 'onbeforeunload', this, 'pushState');
     },
 
+    'showAddButton' : function() {
+        showElement(this.addButton);
+    },
+
     'statusChange' : function(status) {
         if(status == KTDashboard.CLOSED) {
-            showElement(this.addButton);
+            this.showAddButton();
         } else if(status == KTDashboard.OPEN) {
             var closed = this.getDashletsInState(KTDashboard.CLOSED);
             if(closed.length === 0) {
@@ -141,6 +148,7 @@ KTDashboard.prototype = {
                     connect(link, 'onclick', function(event) {
                                 removeElement(linkli);
                                 dashlet.toggleClose(event);
+                                event.stop();
                             });
                     appendChildNodes(dashletList, linkli);
                 });
@@ -182,21 +190,44 @@ KTDashboard.prototype = {
         appendChildNodes(document.body, bucket);
         appendChildNodes(bucket, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
         
+        var hasClosed = false;
+
         for(var col in KTDashboard.columns) {
             var container = this.getColumn(col);
-            for(var dashlet in state[col]) {
+            for(var i=0; i<state[col].length; i++) {
+                var dashlet = state[col][i];
                 var elm = $(dashlet['id']);
-                this.setStatus(dashlet['id'], dashlet['state']);
+                var dstate = dashlet['state'];
+                var dobj = this.dashlets[dashlet['id']];
+
+                if(dstate == KTDashboard.ROLLEDUP) {
+                    dobj.object.toggleRollup();
+                } else if (dstate == KTDashboard.CLOSED) {
+                    dobj.object.toggleClose();
+                    hasClosed = true;
+                }
+                    
                 appendChildNodes(container, elm);
             }
         }
+        if(hasClosed) {
+            this.showAddButton();
+        }
+    },
+
+    'getPushLocation' : function() {
+        var l = window.location;
+        return l.protocol + '//' + l.host + l.pathname;
     },
 
     'pushState' : function(event) {
         var args = {'action' : 'json', 
                     'json_action' : 'saveDashboardState', 
                     'state' : serializeJSON(this.serialize())  };
-        var def = loadJSONDoc(window.location.href, args);
+
+        var xmlreq = getXMLHttpRequest();
+        xmlreq.open('GET', this.getPushLocation() + '?' + queryString(args), false);
+        xmlreq.send(null);	
     }
 
 }
@@ -206,14 +237,16 @@ KTDashboard.prototype = {
 addLoadEvent(
     function() {
         var browser = navigator.appName;
-        if(browser == 'Microsoft Internet Explorer') {
+        if(0 && browser == 'Microsoft Internet Explorer') {
             alert("For this technology preview, the draggable dashboard does not work in Internet Explorer. Please try with Firefox.");
             var location = window.location.href.toString().replace(/dashboard2/gi, 'dashboard');
             window.location = location;
         } else {
             var dashboard = new KTDashboard();
             dashboard.initialize($('content'));
-            dashboard.serialize();
+            if(savedState) {
+                dashboard.unserialize(savedState);
+            }
         }
     });
 

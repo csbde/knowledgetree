@@ -1,0 +1,1 @@
+ALTER TABLE `system_settings` CHANGE VALUE VALUE TEXT;
