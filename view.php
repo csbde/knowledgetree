@@ -194,7 +194,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         foreach ($this->actions as $oDocAction) {
             $sActName = $oDocAction->sName;
             if ($sActName == 'ktcore.actions.document.cancelcheckout') {
-                if ($oDocAction->_show()) {
+                if ($oDocAction->getInfo()) {
                     $bCanCheckin = true;
                 }
             }
