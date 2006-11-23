@@ -504,7 +504,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             exit(0);
         }
         
-        $this->successRedirectToMain(_kt('Created new user') . ': "' . $oUser->getUsername() . '"', 'name=' . $oUser->getUsername(), sprintf("old_search=%s&do_search=1", $old_search));
+        $this->successRedirectToMain(_kt('Created new user') . ': ' . $oUser->getUsername(), 'name=' . $oUser->getUsername(), sprintf("old_search=%s&do_search=1", $old_search));
     }
     
     function do_deleteUser() {
