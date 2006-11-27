@@ -21,6 +21,10 @@ function _(trans_string) {
 
 // strings for file: resources/js/adminversiondashlet.js
 
+// strings for file: resources/js/browsehelper.js
+
+// strings for file: resources/js/collectionframe.js
+
 // strings for file: resources/js/conditional_complex_edit.js
 i18n['Finish with this column\'s behaviours.'] = '{i18n}Finish with this column\'s behaviours.{/i18n}';
 i18n['Assuming this field has behaviour "'] = '{i18n}Assuming this field has behaviour "{/i18n}';
@@ -36,6 +40,7 @@ i18n['Undo'] = '{i18n}Undo{/i18n}';
 i18n['Undo'] = '{i18n}Undo{/i18n}';
 
 // strings for file: resources/js/constructed_search.js
+i18n['loading...'] = '{i18n}loading...{/i18n}';
 i18n['Remove'] = '{i18n}Remove{/i18n}';
 i18n['first select a type of query'] = '{i18n}first select a type of query{/i18n}';
 i18n['Add'] = '{i18n}Add{/i18n}';
@@ -48,6 +53,8 @@ i18n['any'] = '{i18n}any{/i18n}';
 i18n['of the criteria specified.'] = '{i18n}of the criteria specified.{/i18n}';
 
 // strings for file: resources/js/constructed_search_postprocess.js
+
+// strings for file: resources/js/dashboard.js
 
 // strings for file: resources/js/help.js
 
