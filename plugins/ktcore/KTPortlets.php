@@ -71,7 +71,7 @@ class KTBrowseModePortlet extends KTPortlet {
     function KTBrowseModePortlet($sTitle = null) {
         // match empty, false.
         if ($sTitle == null) {
-            $sTitle = _kt('Browse Documents By');
+            $sTitle = _kt('Browse documents by...');
         }
         parent::KTPortlet($sTitle);
     }
