@@ -149,7 +149,7 @@ class KTStorageManager {
 class KTStorageManagerUtil {
     function &getSingleton() {
         $oConfig =& KTConfig::getSingleton();
-        $sDefaultManager = 'KTOnDiskPathStorageManager';
+        $sDefaultManager = 'KTOnDiskHashedStorageManager';
         $klass = $oConfig->get('storage/manager', $sDefaultManager);
         if (!class_exists($klass)) {
             $klass = $sDefaultManager;
