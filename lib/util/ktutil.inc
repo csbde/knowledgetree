@@ -489,6 +489,15 @@ class KTUtil {
     function addQueryString($url, $qs) {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
         $oUrl = new Net_URL($url);
+
+        $oKTConfig =& KTConfig::getSingleton();
+        if ($oKTConfig->get("KnowledgeTree/sslEnabled")) {
+            $oUrl->protocol = 'https';
+            if ($oUrl->port == 80) {
+                $oUrl->port = 443;
+            }
+        }
+        $oUrl->host = $oKTConfig->get("KnowledgeTree/serverName");
         
 	if(!is_array($qs)) {
 	    $aQs = $oUrl->_parseRawQuerystring($qs);
