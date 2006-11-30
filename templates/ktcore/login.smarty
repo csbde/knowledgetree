@@ -57,7 +57,7 @@
 
 	<p class="descriptiveText version">
 	{i18n}KnowledgeTree Version{/i18n}<br />{$versionName}<br/>
-	{i18n}&copy; 2006 <a href="http://www.ktdms.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
+	{i18n}&copy; 2006 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
 	</p>
         
 
