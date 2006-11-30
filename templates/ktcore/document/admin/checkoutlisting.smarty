@@ -24,8 +24,8 @@ override the checked-out status.{/i18n}</p>
             <td>{$oDocument->getName()}</td>
             <td>{assign var=iUserId
 value=$oDocument->getCheckedOutUserId()}{php}$oUser =
-User::get($this->_tpl_vars['iUserId']);  if ($oUser) { print
-$oUser->getName(); }{/php}</td>
+User::get($this->_tpl_vars['iUserId']);  if (!PEAR::isError($oUser)) { print
+$oUser->getName(); } else { print _kt("N/A"); }{/php}</td>
             <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
             <td><a href="{addQS}action=confirm&fDocumentId={$oDocument->getId()}{/addQS}">{i18n}force checkin{/i18n}</a></td>
         </tr>
