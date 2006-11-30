@@ -616,6 +616,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         $config = array(
             'host' => $this->sLdapServer,
             'base' => $this->sBaseDN,
+            'tls' => $this->bTls,
         );
         $oLdap =& Net_LDAP::connect($config);
         $res = $oLdap->reBind($dn, $sPassword);
