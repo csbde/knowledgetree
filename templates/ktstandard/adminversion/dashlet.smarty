@@ -24,7 +24,7 @@
 <span id="up_single">{i18n}The following upgrade is available:{/i18n}</span>
 <span id="up_multi">{i18n}The following upgrades are available:{/i18n}</span>
 <span id="up_upgrades"></span>
-{i18n}Please visit <a href="http://www.ktdms.com">www.ktdms.com</a> to find out more.{/i18n}
+{i18n}Please visit <a href="http://www.knowledgetree.com">www.knowledgetree.com</a> to find out more.{/i18n}
 </p>
 
 </div>

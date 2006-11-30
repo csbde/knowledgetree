@@ -1,6 +1,6 @@
 <h2>{i18n}Support and System Information{/i18n}</h2>
 
-{capture assign=kt_tracker_location}<a href="http://support.ktdms.com/">{i18n}KnowledgeTree Issue Tracker{/i18n}</a>{/capture}
+{capture assign=kt_tracker_location}<a href="http://support.knowledgetree.com/">{i18n}KnowledgeTree Issue Tracker{/i18n}</a>{/capture}
 <p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker#{/i18n}</a> 
 {i18n}first if you believe you have found a bug.  Always check for known issues relating
 to the version you are using &mdash; we may already have found the problem you're referring to,
