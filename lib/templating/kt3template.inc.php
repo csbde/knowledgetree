@@ -58,7 +58,7 @@ class KTPage {
     /** miscellaneous items */
     var $title = '';
     var $systemName = 'KnowledgeTree';
-    var $systemURL = 'http://ktdms.com/';
+    var $systemURL = 'http://www.knowledgetree.com/';
     var $breadcrumbs = false;
     var $breadcrumbDetails = false;
     var $breadcrumbSection = false;
