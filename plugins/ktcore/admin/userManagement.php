@@ -415,6 +415,13 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oUser) || $oUser == false) {
             $this->errorRedirectToMain(_kt("Please select a user to modify first."), sprintf("old_search=%s&do_search=1", $old_search));
         }
+
+        $dupUser =& User::getByUserName($username);
+        if(!PEAR::isError($dupUser)) {
+            if ($dupUser->getId() != $oUser->getId()) {
+                $this->errorRedirectTo('addUser', _kt("A user with that username already exists"));
+            }
+        }
         
         $oUser->setName($name);
         $oUser->setUsername($username);  // ?
