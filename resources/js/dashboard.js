@@ -61,15 +61,7 @@ KTDashboard.prototype = {
     'initialize' : function(dashboard) {
         this.element = dashboard;
 
-        var dashOpts = {
-            'tag':'div',
-            //'dropOnEmpty':true,
-            'constraint': false,  
-            'tree':true,
-            'only' : ['dashboard_block'],
-            'handle' : 'dashboard_block_handle'
-        };
-        MochiKit.Sortable.Sortable.create(this.element, dashOpts);
+        this.initializeDraggables();
 
         var self = this;
         map(function(e) {
@@ -79,12 +71,46 @@ KTDashboard.prototype = {
                 var d = new KTDashlet();
                 d.initialize(e, self);
                 self.dashlets[e.id] = { 'object' : d, 'state' : KTDashboard.OPEN };
-            }, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
+            }, this.getDashletBlocks());
 
-        this.addButton = $('add_dashlet');
+        // make add button
+        var breadcrumbs = $('breadcrumbs');
+        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':'Add Dashlet'}, 'Add Dashlet');
+        breadcrumbs.insertBefore(this.addButton, breadcrumbs.firstChild);
+        this.hideAddButton();
 
         connect(this.addButton, 'onclick', this, 'onclickAdd');
         connect(window, 'onbeforeunload', this, 'pushState');
+    },
+
+    'mochikitInitializeDraggables' : function() {
+        var dashOpts = {
+            'tag':'div',
+            'constraint': false,  
+            'tree':true,
+            'only' : ['dashboard_block'],
+            'handle' : 'dashboard_block_handle'
+        };
+        MochiKit.Sortable.Sortable.create(this.element, dashOpts);
+    },
+
+    'initializeDraggables' : function() {
+        map(function(e) {
+                if(e.id) {
+                    new YAHOO.example.DDList(e.id);
+                    //new YAHOO.util.DD(e.id);
+                }                    
+            }, this.getDashletBlocks());
+        new YAHOO.example.DDListBoundary('copyrightbar');
+        YAHOO.util.DDM.mode = 1;
+    },
+
+    'getDashletBlocks' : function() {
+        return getElementsByTagAndClassName('*', 'dashboard_block', this.element);
+    },
+
+    'hideAddButton' : function() {
+        hideElement(this.addButton);
     },
 
     'showAddButton' : function() {

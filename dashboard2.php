@@ -83,6 +83,16 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
+        // javascript
+        // yahoo
+        $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
+        $this->oPage->requireJSResource('resources/js/DDList.js');
+        
+
+        // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
         $sDSJS = "var savedState = ";
         if($sDashboardState == null) {
@@ -95,6 +105,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
+
+        // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
         $aTemplateData = array(

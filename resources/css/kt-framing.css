@@ -1283,3 +1283,13 @@ body #content #add_dashlet
     border-width: 0px;
     
 }
+
+#add_dashlet
+{
+    border: 1px solid #ccc;
+    background: #fdfdfd;
+    color: #333;
+    font-weight: normal;
+    float: right;
+}
+

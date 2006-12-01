@@ -136,7 +136,7 @@ class KTFolderAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
 
-        $portlet = new KTActionPortlet(sprintf(_kt('Info about this folder')));
+        $portlet = new KTActionPortlet(sprintf(_kt('About this folder')));
         $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);        
         $portlet->setActions($aActions,$this->sName);
         $this->oPage->addPortlet($portlet);            
