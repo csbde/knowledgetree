@@ -1,5 +1,3 @@
-<a href="#" id="add_dashlet">Add Dashlet</a>
-
 <div id="dashboard-container-left">
 {foreach item=oDashlet from=$dashlets_left}
 <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
@@ -12,7 +10,7 @@
 {$oDashlet->render()}
 </div>
 {/foreach}
-<div class="dashboard_block empty">&nbsp;</div>
+<div class="dashboard_block empty" id="end-left">&nbsp;</div>
 </div>
 
 <div id="dashboard-container-right">
@@ -28,7 +26,7 @@
 </div>
 {/foreach}
 
-<div class="dashboard_block empty">&nbsp;</div>
+<div class="dashboard_block empty" id="end-right">&nbsp;</div>
 </div>
 
 
