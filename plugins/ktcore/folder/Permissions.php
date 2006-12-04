@@ -350,7 +350,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
 	$bSelected = KTUtil::arrayGet($_REQUEST, 'selected', false);
 
-	$aEntityList = array('off'=>'-- Please filter --');
+	$aEntityList = array('off' => _kt('-- Please filter --'));
 
 	// check permissions
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());

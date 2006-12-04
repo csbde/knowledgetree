@@ -103,9 +103,13 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 			      DISCUSSION_CONCLUSION => array(DISCUSSION_OPEN, DISCUSSION_CLOSED),
 			      DISCUSSION_CLOSED => array());
 
-    var $aStateNames = array(DISCUSSION_OPEN => 'Under discussion',
-			     DISCUSSION_CONCLUSION => 'Conclusion',
-			     DISCUSSION_CLOSED => 'Closed');
+
+    function KTDocumentDiscussionAction($oDocument = null, $oUser = null, $oPlugin = null) {
+        $this->aStateNames = array(DISCUSSION_OPEN => _kt('Under discussion'),
+			     DISCUSSION_CONCLUSION => _kt('Conclusion'),
+			     DISCUSSION_CLOSED => _kt('Closed'));
+        parent::KTDocumentAction($oDocument, $oUser, $oPlugin);
+    }
     
 
     function getDisplayName() {

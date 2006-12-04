@@ -128,7 +128,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
             $_SESSION["KTErrorMessage"][] = _kt("Bulk import failed") . ": " . $res->getMessage();
         } else {
             DBUtil::commit();
-            $this->addInfoMessage("Bulk import succeeded");
+            $this->addInfoMessage(_kt("Bulk import succeeded"));
         }
 
         $po->redirectToFolder($this->oFolder->getId());
