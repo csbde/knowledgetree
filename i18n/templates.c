@@ -1013,7 +1013,7 @@ gettext("The following upgrade is available:");
 gettext("The following upgrades are available:");
 
 /* ./templates/ktstandard/adminversion/dashlet.smarty */
-gettext("Please visit <a href=\"http://www.ktdms.com\">www.ktdms.com</a> to find out more.");
+gettext("Please visit <a href=\"http://www.knowledgetree.com\">www.knowledgetree.com</a> to find out more.");
 
 /* ./templates/ktstandard/links/links_viewlet.smarty */
 gettext("from");
@@ -1056,6 +1056,12 @@ gettext("Document Version");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("Created by");
+
+/* ./templates/kt3/fieldsets/generic_versioned.smarty */
+gettext("this cannot not change between versions");
+
+/* ./templates/kt3/fieldsets/generic_versioned.smarty */
+gettext("Owned by");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("this cannot not change between versions");
@@ -1104,6 +1110,9 @@ gettext("Document Version");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Created by");
+
+/* ./templates/kt3/fieldsets/generic.smarty */
+gettext("Owned by");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Last update by");
@@ -1415,7 +1424,7 @@ gettext("No items in the category.");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+gettext("&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("KnowledgeTree Version: #version#");
@@ -5333,7 +5342,7 @@ gettext("login");
 gettext("KnowledgeTree Version");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+gettext("&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
 
 /* ./templates/ktcore/manage_permissions.smarty */
 gettext("Existing permissions");
