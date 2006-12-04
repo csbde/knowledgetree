@@ -497,7 +497,9 @@ class KTUtil {
                 $oUrl->port = 443;
             }
         }
-        $oUrl->host = $oKTConfig->get("KnowledgeTree/serverName");
+        $host = $oKTConfig->get("KnowledgeTree/serverName");
+        $host = explode(':', $host);
+        $oUrl->host = $host[0];
         
 	if(!is_array($qs)) {
 	    $aQs = $oUrl->_parseRawQuerystring($qs);
