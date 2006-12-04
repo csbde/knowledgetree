@@ -1181,7 +1181,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     
         $bSelected = KTUtil::arrayGet($_REQUEST, 'selected', false);
     
-        $aEntityList = array('off'=>'-- Please filter --');
+        $aEntityList = array('off' => _kt('-- Please filter --'));
     
         // get permissions map
         $aPermissionsMap =& $this->_getPermissionsMap();
@@ -2089,10 +2089,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     function json_notificationusers() {
         $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
         if ($sFilter == false) {
-        	$values = array('off'=>'-- Please filter --'); // default        
+        	$values = array('off' => _kt('-- Please filter --')); // default        
         }
         $sFilter = trim($sFilter);
-    	$values = array('off'=>'-- Please filter --'); // default
+    	$values = array('off' => _kt('-- Please filter --')); // default
         
     	if (!empty($sFilter)) {
     	    $allowed = array();

@@ -125,7 +125,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $aErrorOptions['message'] = _kt("Bulk upload failed");
         $this->oValidator->notError($res, $aErrorOptions);
 
-        $this->addInfoMessage("Bulk upload successful");
+        $this->addInfoMessage(_kt("Bulk upload successful"));
         $this->commitTransaction();
         controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
         exit(0);

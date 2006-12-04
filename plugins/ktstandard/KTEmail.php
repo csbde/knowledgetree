@@ -318,7 +318,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
 	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-	$aGroupList = array('off'=>'-- Please filter --');
+	$aGroupList = array('off'=> _kt('-- Please filter --'));
 
 	if($sFilter && trim($sFilter)) {	    
 	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
@@ -343,7 +343,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
 	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-	$aUserList = array('off'=>'-- Please filter --');
+	$aUserList = array('off' => _kt('-- Please filter --'));
 
 	if($sFilter && trim($sFilter)) {	    
 	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);

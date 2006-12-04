@@ -274,7 +274,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function json_getUsers() {
     $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-    $aUserList = array('off'=>'-- Please filter --');
+    $aUserList = array('off' => _kt('-- Please filter --'));
 
     if($sFilter && trim($sFilter)) {
         $aUsers = User::getList(sprintf('name like "%%%s%%"', $sFilter));
@@ -417,7 +417,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function json_getSubGroups() {
     $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-    $aAllowedGroups = array('off'=>'-- Please filter --');
+    $aAllowedGroups = array('off' => _kt('-- Please filter --'));
 
     if($sFilter && trim($sFilter)) {
         $iGroupID = KTUtil::arrayGet($_REQUEST, 'group_id', false);
