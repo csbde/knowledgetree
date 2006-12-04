@@ -192,6 +192,12 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         } else {
            $creator_name = $creator->getName();
         }
+        $owner =& User::get($document->getOwnerId());
+        if (PEAR::isError($owner)) {
+           $owner_name = "<span class='ktError'>" . _kt("Unable to find the document's owner") . "</span>";
+        } else {
+           $owner_name = $owner->getName();
+        }
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
            $modified_user_name = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
@@ -220,6 +226,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 			"filename" => $document->getFileName(),
 			
             "creator" => $creator_name,
+            "owner" => $owner_name,
             "creation_date" => $creation_date,
             
             "last_modified_by" => $modified_user_name,
@@ -262,6 +269,13 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         } else {
            $modified_user = $modified_user->getName();
         }
+
+        $owner_user =& User::get($document->getOwnerId());
+        if (PEAR::isError($owner_user)) {
+           $owner_user = "<span class='ktError'>" . _kt("Unable to find the document's owner") . "</span>";
+        } else {
+           $owner_user = $owner_user->getName();
+        }
 		
 
 
@@ -293,6 +307,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 			
             "creator" => $creator,
             "creation_date" => $creation_date,
+            "owner" => $owner_user,
             
             "last_modified_by" => $modified_user,
             "last_modified_date" => $last_modified_date,

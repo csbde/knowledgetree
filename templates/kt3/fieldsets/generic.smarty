@@ -27,16 +27,21 @@
     </tr>
 
     <tr class="even">
+        <th>{i18n}Owned by{/i18n}</th>
+        <td>{$owner}</td>
+    </tr>
+
+    <tr class="odd">
         <th>{i18n}Last update by{/i18n}</th>
         <td>{$last_modified_by} ({$last_modified_date})</td>
     </tr>
 
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Document Type{/i18n}</th>
         <td>{$document_type}</td>
     </tr>
 
-    <tr class="even">
+    <tr class="odd">
         <th>{i18n}Workflow status{/i18n}</th>
         <td>
 {if $workflow_state}
@@ -46,7 +51,7 @@
 {/if}</td>
     </tr>
 
-    <tr class="odd">
+    <tr class="even">
         <th>{i18n}Document ID{/i18n}</th>
         <td>{$document->getId()}</td>
     </tr>
