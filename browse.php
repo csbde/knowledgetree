@@ -257,8 +257,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'bulkactions' => $aBulkActions,
               'browseutil' => new KTBrowseUtil(),
               'returnaction' => 'browse',
-              'returndata' => $this->oFolder->getId(),
         );
+        if ($this->oFolder) {
+            $aTemplateDate['returndata'] = $this->oFolder->getId();
+        }
         return $oTemplate->render($aTemplateData);
     }   
     
