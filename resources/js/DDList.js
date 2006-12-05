@@ -37,7 +37,7 @@ YAHOO.example.DDList.prototype.startDrag = function(x, y) {
     dragEl.innerHTML = clickEl.innerHTML;
     dragEl.className = clickEl.className;
     dragEl.style.color = clickEl.style.color;
-    dragEl.style.border = "1px dashed #ccc";
+    dragEl.style.border = "1px dotted #ccc";
 
 };
 
@@ -65,6 +65,9 @@ YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
     if (YAHOO.util.Event.getPageY(e) < mid) {
         var el2 = this.getEl();
         var p = el.parentNode;
+        if(p.id != 'dashboard-container-left' && p.id != 'dashboard-container-right') {
+            return;
+        }
         p.insertBefore(el2, el);
     }
 };
