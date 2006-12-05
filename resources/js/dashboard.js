@@ -204,7 +204,10 @@ KTDashboard.prototype = {
             var container = this.getColumn(col);
             forEach(getElementsByTagAndClassName('*', 'dashboard_block', container), function(e) {
                         if(e.id != '') {                        
-                            ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
+                            try {
+                                ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
+                            } catch(e) {
+                            };
                         }
                     });
         }
@@ -250,7 +253,6 @@ KTDashboard.prototype = {
         var args = {'action' : 'json', 
                     'json_action' : 'saveDashboardState', 
                     'state' : serializeJSON(this.serialize())  };
-
         var xmlreq = getXMLHttpRequest();
         xmlreq.open('GET', this.getPushLocation() + '?' + queryString(args), false);
         xmlreq.send(null);	
