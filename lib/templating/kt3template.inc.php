@@ -94,10 +94,16 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
         /* default js files initialisation */
         $aJS = Array();
-	$aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
+
+        /*	
+        $aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/New.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/DragAndDrop.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/Sortable.js';
+	$aJS[] = 'thirdpartyjs/MochiKit/Style.js';
+	$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
+        */
+	$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
 
