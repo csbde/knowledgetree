@@ -312,7 +312,7 @@ a.main_nav_item {
     background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
     border: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 #portletbar .portlet .portletTopRepeat {
