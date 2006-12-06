@@ -1518,7 +1518,7 @@ hr {
 { 
     float: right;
     text-align: right;
-    margin-right: 1em;
+    margin: 0.75em 0em 0 0;
     z-index: 100;
 }
 
@@ -1564,7 +1564,7 @@ hr {
 
 #content .dashboard_block .action_close 
 { 
-    background-image: url(../graphics/delete.gif);
+    background-image: url(../graphics/bullet_toggle_close.png);
 }
 
 /* action effects */

@@ -77,12 +77,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $currentaction = $this->sName;
     
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about this document')));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Document info')));
         $oPortlet->setActions($actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);    
     
         $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on this document'), $this->oDocument->getName()));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Document actions'), $this->oDocument->getName()));
         $oPortlet->setActions($this->actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
     }

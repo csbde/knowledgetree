@@ -172,12 +172,12 @@ class KTDocumentAction extends KTStandardDispatcher {
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Info about this document')));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Document info')));
 	    $oPortlet->setActions($actions, $this->sName);
 	    $this->oPage->addPortlet($oPortlet);              
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions on this document')));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Document actions')));
 	    $oPortlet->setActions($actions, $this->sName);
 	    $this->oPage->addPortlet($oPortlet);              
 	
