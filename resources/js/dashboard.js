@@ -75,7 +75,7 @@ KTDashboard.prototype = {
 
         // make add button
         var breadcrumbs = $('breadcrumbs');
-        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':'Add Dashlet'}, 'Add Dashlet');
+        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':'Add Dashlet'});
         breadcrumbs.insertBefore(this.addButton, breadcrumbs.firstChild);
         this.hideAddButton();
 
@@ -203,7 +203,7 @@ KTDashboard.prototype = {
             ret[col] = [];
             var container = this.getColumn(col);
             forEach(getElementsByTagAndClassName('*', 'dashboard_block', container), function(e) {
-                        if(e.id != '') {                        
+                        if(e.id) {                        
                             try {
                                 ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
                             } catch(e) {
@@ -258,7 +258,7 @@ KTDashboard.prototype = {
         xmlreq.send(null);	
     }
 
-}
+};
 
 
 
