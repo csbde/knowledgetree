@@ -185,6 +185,7 @@
             <div class="floatClear"></div>
         </div>
     </div>
+    </div>
     <div id="copyrightbarBorder">
         <div id="copyrightbar">
             {i18n}&copy; 2006 <a href="http://www.ktdms.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
@@ -193,6 +194,6 @@
         </div>
         <div id="copyrightbarLeft"></div>
         <div id="copyrightbarRight"></div>
-    </div>
+    </div>    
 </body>
 </html>
