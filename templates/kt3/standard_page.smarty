@@ -146,10 +146,13 @@
                             <div class="portletbody">
                                 {$portlet_output}
                                 <div class="Right"></div>
+                                <div class="RightMiddleTop"></div>
+                                <div class="RightMiddleBottom"></div>
+                                <div class="RightBottom"></div>
                                 <div class="Bottom"></div>
                                 <div class="BottomLeft"></div>
                                 <div class="BottomRight"></div>
-                             </div>
+                            </div>
                         </div>
                     {/if}
                 {/foreach}
