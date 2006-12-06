@@ -1,4 +1,5 @@
 <div id="dashboard-container-left">
+<div class="dashboard_block empty" id="start-left">&nbsp;</div>
 {foreach item=oDashlet from=$dashlets_left}
 
 <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
@@ -21,7 +22,12 @@
 <div class="dashboard_block empty" id="end-left">&nbsp;</div>
 </div>
 
+
+
+
 <div id="dashboard-container-right">
+<div class="dashboard_block empty" id="start-right">&nbsp;</div>
+
 {foreach item=oDashlet from=$dashlets_right}
 
 <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
@@ -33,8 +39,19 @@
 </div>
 
 <h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
+
 <div class="dashboard_block_body">
 {$oDashlet->render()}
 </div>
+
+</div>
 </div>
 {/foreach}
+<div class="dashboard_block empty" id="end-right">&nbsp;</div>
+</div>
+
+
+                <div class="floatClear"> </div>
+
+
+

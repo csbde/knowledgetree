@@ -220,7 +220,10 @@ KTDashboard.prototype = {
     'unserialize' : function(state) {
         var bucket = DIV({'style':'display:none'});
         appendChildNodes(document.body, bucket);
-        appendChildNodes(bucket, getElementsByTagAndClassName('*', 'dashboard_block', this.element));
+        forEach(this.getDashletBlocks(), function(d) {
+                    if(d.id && !hasElementClass(d, 'empty')) {
+                        appendChildNodes(bucket, d);
+                    }});
         
         var hasClosed = false;
 
@@ -241,6 +244,7 @@ KTDashboard.prototype = {
                     
                 appendChildNodes(container, elm);
             }
+            appendChildNodes(container, $('end-'+col));
         }
         if(hasClosed) {
             this.showAddButton();

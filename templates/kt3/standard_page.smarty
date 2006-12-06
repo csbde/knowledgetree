@@ -158,11 +158,13 @@
 
 
             <div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
+
                 {if (!$page->hide_section)}
                     <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
                         {if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
                     </h1>
                 {/if}
+
                 <!-- any status / error messages get added here. -->
                 {if (!empty($page->errStack))}
                     <div class="ktError">
@@ -171,6 +173,7 @@
                         {/foreach}
                     </div>
                 {/if}
+
                 {if (!empty($page->infoStack))}
                     <div class="ktInfo">
                         {foreach item=sInfo from=$page->infoStack}
@@ -178,19 +181,21 @@
                         {/foreach}
                     </div>
                 {/if}
+
                 <!-- and finally, the content. -->
                 {$page->contents}
+                <div class="floatClear"> </div>
 	    </div>
 
-                <div class="floatClear"> </div>
 
-        </div>
         <div id="bodyLeftRepeat"></div>
         <div id="bodyRightRepeat"></div>
         <div id="bodyBottomRepeat"></div>
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
-    </div>
+        </div>
+        </div>
+
     <div id="copyrightbarBorder">
         <div id="copyrightbar">
             {i18n}&copy; 2006 <a href="http://www.ktdms.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}

@@ -1008,16 +1008,16 @@ a.main_nav_item {
 .ktBlock
 { 
     padding: 0 1em;
-    //border: 1px solid #c5c5c5;
-    //background-color: #fcfcfc;
+    border: 1px solid #c5c5c5;
+    background-color: #fcfcfc;
     margin: 0.5em 0;
 }
 
 
 .ktBlock, .ktInfo, .ktError
 { 
-    //-moz-border-radius: 15px; 
-    //background-repeat: no-repeat;
+    -moz-border-radius: 15px; 
+    background-repeat: no-repeat;
 }
 
 .ktInfo
@@ -1165,7 +1165,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding-bottom: 2em;
     height: 100%;
     min-height: 5em;
- background-color: #eef;
+/*     background-color: #dfd; */
 }
 
 #dashboard-container-right { 
@@ -1176,7 +1176,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding-bottom: 2em;
     height: 100%;
     min-height: 5em;
- background-color: #efe;
+/*     background-color: #ddf; */
 }
 
 #dashboard_block_topleft {
@@ -1245,7 +1245,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .dashboard_block {
     width: 100%;
-    padding-top: 1em;
+/*     background-color: #fdd; */
 }
 
 #copyrightbarBorder {
