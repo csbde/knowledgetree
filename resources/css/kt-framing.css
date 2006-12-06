@@ -1623,5 +1623,10 @@ body #content #add_dashlet
     color: #333;
     font-weight: normal;
     float: right;
+    margin-right: 3em;
 }
 
+#dashlet-search-text
+{ 
+    z-index: 5;
+}
