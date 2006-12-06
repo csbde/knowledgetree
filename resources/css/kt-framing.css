@@ -38,6 +38,7 @@ body
     position: relative;
     border: 1px solid white;
     z-index: 0;
+    height: 100%;
 }
 
 #pageBodyBg {
@@ -292,7 +293,8 @@ a.main_nav_item {
 
 #portletbar
 {
-    position: absolute;
+/*    position: absolute;*/
+    float: left;
     width: 16em;
     left: 1em;
 /*    top: 0; */           /* stupid IE bug:  absolute position ate my scrollbars */
@@ -300,6 +302,7 @@ a.main_nav_item {
     margin: 0 10px 0 0 ;
     padding: 0;
     z-index: 2;  /*  IE layers this below the content bar. */
+    overflow: auto;
 }
 
 /* horrible, custom dashboard hack. */
@@ -571,6 +574,7 @@ a.main_nav_item {
 {
     border: 1px solid #ccc;
     padding: 1em;
+    background-color: white;
 }
 
 #content fieldset legend
@@ -848,7 +852,6 @@ a.main_nav_item {
 .detail_fieldset
 {
     display: block;
-    clear: both;
     margin-top: 1em;
     overflow: hidden;
 }
@@ -1408,6 +1411,7 @@ hr {
     text-align: right;
     margin-bottom: -3em;
     margin-right: 1em;
+    z-index: 100;
 }
 
 .dashboard_block_handle

@@ -137,6 +137,7 @@
             {/if}
         </div>
         <div id="kt-wrapper">
+
             <div id="portletbar">
                 {foreach item=oPortlet from=$page->portlets}
                     {assign var=portlet_output value=$oPortlet->render() }
@@ -155,7 +156,6 @@
                         </div>
                     {/if}
                 {/foreach}
-                <div class="floatClear"></div>
             </div>
             <div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
                 {if (!$page->hide_section)}
@@ -182,6 +182,7 @@
                 {$page->contents}
                 <div class="floatClear"></div>
 	    </div>
+            <div class="floatClear"></div>
         </div>
     </div>
     <div id="copyrightbarBorder">
