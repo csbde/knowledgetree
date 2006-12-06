@@ -38,8 +38,3 @@
 </div>
 </div>
 {/foreach}
-<div class="dashboard_block empty" id="end-right">&nbsp;</div>
-</div>
-
-
-

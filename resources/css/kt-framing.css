@@ -43,17 +43,17 @@ body
 
 #pageBodyBg {
     position: absolute;
-    background: url(../../resources/graphics/page_bg.png)bottom left repeat-x;
-    top: 0;
-    left: 0;
-    width: 100%;
+    background: url(../../resources/graphics/page_bg.png) bottom left repeat-x;
+    bottom: 0px;
+    left: 3px;
+    width: 99.2%;
     height: 100%;
     z-index: -1;
 }
 
 #bodyTopLeft {
     position: absolute;
-    background: url(../../resources/graphics/page_border_topleft.gif)top left no-repeat;
+    background: url(../../resources/graphics/page_border_topleft.gif) top left no-repeat;
     top: 0;
     left: 0;
     width: 50px;
@@ -62,34 +62,36 @@ body
 
 #bodyTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/page_border_toprepeat.gif)top left repeat-x;
+    background: url(../../resources/graphics/page_border_toprepeat.gif) top left repeat-x;
     width:95%;
     height: 20px;
-    margin-left: 40px;
+    top: 0px;
+    left: 40px;
 }
 
 #bodyLeftRepeat {
     position: absolute;
-    background: url(../../resources/graphics/page_border_leftrepeat.gif)top left repeat-y;
+    background: url(../../resources/graphics/page_border_leftrepeat.gif) top left repeat-y;
     width: 3px;
-    height:94%;
-    margin-top: 40px; 
+    height: 100%;
+    top: 40px;
+    left: 0px;
 }
 
 #bodyRightRepeat {
     position: absolute;
-    background: url(../../resources/graphics/page_border_rightrepeat.gif)top right repeat-y;
-    top: 15;
-    right: 0;
+    background: url(../../resources/graphics/page_border_rightrepeat.gif) top right repeat-y;
     width: 8px;
     height:100%;
+    top: 15px;
+    right: 0px;
 }
 
 #bodyTopRight {
     position: absolute;
-    background: url(../../resources/graphics/page_border_topright.gif)top right no-repeat;
-    top:0;
-    right:0;
+    background: url(../../resources/graphics/page_border_topright.gif) top right no-repeat;
+    top:0px;
+    right:0px;
     width: 50px;
     height:100%;
 }
@@ -103,10 +105,10 @@ body
 #bodyBottomRepeat {
     position: absolute;
     background: url(../../resources/graphics/page_border_bottomrepeat.gif) bottom left repeat-x;
-    width:100%;
+    width:99%;
     height: 20px;
-    bottom:0;
-    right:20;
+    bottom: 0px;
+    left: 10px;
 }
 
 #bodyBottomLeft {
@@ -152,14 +154,15 @@ body
 
 #navbarBorder {
     position: relative;
-    height: 2.45em;
+    height: 2.36em;
+    width: 99%;
 }
 
 #navbarLeft {
     position: absolute;
     background: url(../../resources/graphics/menu_corner_left.png) top left no-repeat;
     width:8px;
-    height:2.45em;
+    height:2.36em;
     top:0;
     left:0;
 }
@@ -168,7 +171,7 @@ body
     position: absolute;
     background: url(../../resources/graphics/menu_corner_right.png) top right no-repeat;
     width:8px;
-    height:2.45em;
+    height:2.36em;
     top:0;
     right:0;
 }
@@ -180,9 +183,9 @@ body
     background: #a6c367 url(../../resources/graphics/menubg.png) top left repeat-x;
     padding: 0em 1em;
     margin-bottom: 1em;
-    height: 2.45em;
+    height: 2.36em;
     overflow: hidden;
-
+    top:0;
 }
 
 #navbar ul
@@ -192,12 +195,10 @@ body
     margin: 0;
     padding: 0;
     border: 0;
-
 }
 
 #navbar ul li
 {
-    //margin: .75em;
     padding: .5em .75em;
     display: block;
     float: left;
@@ -308,80 +309,84 @@ a.main_nav_item {
 #portletbar .portlet {
     position: relative;
     margin: 0 0 1.5em 0;
-    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png)top left no-repeat;
+    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
+    border: 0;
     z-index: 1000;
-    
 }
 
 #portletbar .portlet .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg_collapsed.png)top left repeat-x;
+    background: url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
     top: 0;
-    left: 40px;
+    left: 30px;
     height: 30px;
-    width: 65%;
+    width: 68%;
     z-index: -1;
+    border:0;
 }
 
 #portletbar .portlet.expanded .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg.png)top left repeat-x;
-    top: 0;
-    left: 40px;
+    background: url(../../resources/graphics/portlet_bg.png) top left repeat-x;
+    top: 0px;
+    left: 30px;
     height: 28px;
-    width: 65%;
+    width: 68%;
     z-index: -1;
+    border: 0;
 }
 
 #portletbar .portlet .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png)top right no-repeat;
+    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 30px;
     width: 60%;
     z-index: -1;
+    border: 0;
 }
 
 #portletbar .portlet.expanded .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright.png)top right no-repeat;
+    background: url(../../resources/graphics/portlet_corner_topright.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 28px;
     width: 60%;
     z-index: -1;
+    border: 0;
 }
 
 #portletbar .portlet .portletbody {
-    background: url(../../resources/graphics/portlet_borderrepeat.png)top left repeat-y;
     position: relative;
+    background: url(../../resources/graphics/portlet_borderrepeat.png) top left repeat-y;
     padding: 0 0 1em 0;
     background-color: white;
     z-index: -2;
+    border: 0;
 }
 
-#portletbar .portlet .portletbodyBottomLeft {
+#portletbar .portlet .portletbody .BottomLeft {
     position: absolute;
     bottom: 0px;
     left: 0px;
     width: 10px;
     height: 10px;
-    background: url(../../resources/graphics/portlet_corner_bottomleft.png)bottom left no-repeat;
+    background: url(../../resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
 }
 
-#portletbar .portlet .portletbodyBottomRight {
+#portletbar .portlet .portletbody .BottomRight {
     position: absolute;
     bottom: 0px;
     right: 0px;
     width: 10px;
     height: 10px;
-    //border: 1px solid red;
-    background: url(../../resources/graphics/portlet_corner_bottomright.png)bottom right no-repeat;
+    background: url(../../resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
 }
 
-#portletbar .portlet .portletbodyBottom {
+#portletbar .portlet .portletbody .Bottom {
     position: absolute;
     bottom: 0px;
     left: 5px;
@@ -390,25 +395,24 @@ a.main_nav_item {
     background: url(../../resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
 }
 
-#portletbar .portlet .portletbodyRight {
+#portletbar .portlet .portletbody .Right {
     position: absolute;
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 0px;
     right: 0px;
     height: 100%;
     width: 5px;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
 }
 
 #portletbar .portlet.expanded {
     margin: 0 0 1.5em 0;        
     padding: 0 0 0.5em;
-    background: url(../../resources/graphics/portlet_corner_topleft.png)top left no-repeat;
+    background: url(../../resources/graphics/portlet_corner_topleft.png) top left no-repeat;
 }
 
 
 #portletbar .portlet a {
     text-decoration: none;
-    border-bottom: 1px solid blue;
 }
 
 #portletbar .portlet a:visited {
@@ -999,15 +1003,16 @@ a.main_nav_item {
 .ktBlock
 { 
     padding: 0 1em;
-    border: 1px solid #c5c5c5;
-    background-color: #fcfcfc;
+    //border: 1px solid #c5c5c5;
+    //background-color: #fcfcfc;
     margin: 0.5em 0;
 }
 
+
 .ktBlock, .ktInfo, .ktError
 { 
-    -moz-border-radius: 15px; 
-    background-repeat: no-repeat;
+    //-moz-border-radius: 15px; 
+    //background-repeat: no-repeat;
 }
 
 .ktInfo
@@ -1167,6 +1172,70 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 100%;
     min-height: 5em;
  background-color: #efe;
+}
+
+#dashboard_block_topleft {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 0px;
+    left: 0px;
+}
+
+#dashboard_block_toprepeat {
+    position: absolute;
+    width: 95%;
+    height: 3px;
+    top: 0px;
+    left: 30px;
+}
+
+#dashboard_block_topright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 0px;
+    right: 0px;
+}
+
+#dashboard_block_leftrepeat {
+    position: absolute;
+    width: 3px;
+    height: 95%;
+    top: 30px;
+    left: 0px;
+}
+
+#dashboard_block_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    left: 0px;
+}
+
+#dashboard_block_bottomrepeat {
+    position: absolute;
+    width: 95%;
+    height: 3px;
+    bottom: 0px;
+    left: 30px;
+}
+
+#dashboard_block_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+}
+
+#dashboard_block_rightrepeat {
+    position: absolute;
+    width: 3px;
+    height: 95%;
+    top: 30px;
+    right: 0px;
 }
 
 .dashboard_block {
