@@ -1532,6 +1532,11 @@ hr {
     display: none;
 }
 
+.dashboard_block .dashboard_block_body 
+{ 
+    z-index:99;
+}
+
 /* actions */
 
 #content .dashboard_block .action
@@ -1624,9 +1629,4 @@ body #content #add_dashlet
     font-weight: normal;
     float: right;
     margin-right: 3em;
-}
-
-#dashlet-search-text
-{ 
-    z-index: 5;
 }
