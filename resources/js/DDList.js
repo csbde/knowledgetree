@@ -16,8 +16,6 @@ YAHOO.example.DDList = function(id, sGroup, config) {
 YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy);
 
 YAHOO.example.DDList.prototype.startDrag = function(x, y) {
-    this.logger.log(this.id + " startDrag");
-
     var dragEl = this.getDragEl();
     var clickEl = this.getEl();
 
@@ -37,7 +35,6 @@ YAHOO.example.DDList.prototype.onDrag = function(e, id) {
 };
 
 YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
-    // this.logger.log(this.id.toString() + " onDragOver " + id);
     var el;
     
     if ("string" == typeof id) {
@@ -46,17 +43,22 @@ YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
         el = YAHOO.util.DDM.getBestMatch(id).getEl();
     }
     
+
     var mid = YAHOO.util.DDM.getPosY(el) + ( Math.floor(el.offsetTop / 2));
-    this.logger.log("mid: " + mid);
 
     if (YAHOO.util.Event.getPageY(e) < mid) {
         var el2 = this.getEl();
+         if(el.id && hasElementClass(el, 'empty') && el.id.search('start') == 0) {
+             return;
+         }
+
         var p = el.parentNode;
         if(p.id != 'dashboard-container-left' && p.id != 'dashboard-container-right') {
             return;
         }
         p.insertBefore(el2, el);
     }
+        
 };
 
 YAHOO.example.DDList.prototype.toString = function() {
