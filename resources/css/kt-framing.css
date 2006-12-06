@@ -403,7 +403,35 @@ a.main_nav_item {
     top: 0px;
     right: 0px;
     width: 5px;
-    height: 100%;                                           
+    height: 80px;
+}
+
+#portletbar .portlet .portletbody .RightBottom {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    bottom: 10px;
+    right: 0px;
+    width: 5px;
+    height: 80px;
+}
+
+
+#portletbar .portlet .portletbody .RightMiddleTop {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    top: 50%;
+    right: 0px;
+    width: 5px;
+    height: 40px;
+}
+
+#portletbar .portlet .portletbody .RightMiddleBottom {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    bottom: 50%;
+    right: 0px;
+    width: 5px;
+    height: 40px;
 }
 
 #portletbar .portlet.expanded {
