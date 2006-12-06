@@ -51,15 +51,12 @@
 <body {if (!$page->show_portlets)}class="noportlets"{/if}>
 <input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
     <div id="pageBody">
+
         <div id="bodyTopLeft"></div>
         <div id="bodyTopRepeat"></div>
-        <div id="bodyLeftRepeat"></div>
-        <div id="bodyRightRepeat"></div>
-        <div id="bodyBottomRepeat"></div>
-        <div id="bodyBottomRight"></div>
-        <div id="bodyBottomLeft"></div>
         <div id="bodyTopRight"></div>
         <div id="pageBodyBg"></div>
+
         <div id="bodyPad">
             <div id="logobar">
                 <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
@@ -145,12 +142,13 @@
                             <h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
                             <div class="portletTopRepeat {if $oPortlet->getActive()}expanded{/if}"></div>
                             <div class="portletTopRight {if $oPortlet->getActive()}expanded{/if}"></div>
+
                             <div class="portletbody">
+                                {$portlet_output}
+                                <div class="Right"></div>
                                 <div class="Bottom"></div>
                                 <div class="BottomLeft"></div>
-                                <div class="Right"></div>
                                 <div class="BottomRight"></div>
-                                {$portlet_output}
                              </div>
                         </div>
                     {/if}
@@ -187,6 +185,11 @@
                 <div class="floatClear"> </div>
 
         </div>
+        <div id="bodyLeftRepeat"></div>
+        <div id="bodyRightRepeat"></div>
+        <div id="bodyBottomRepeat"></div>
+        <div id="bodyBottomRight"></div>
+        <div id="bodyBottomLeft"></div>
     </div>
     <div id="copyrightbarBorder">
         <div id="copyrightbar">
