@@ -155,7 +155,10 @@
                         </div>
                     {/if}
                 {/foreach}
+                <div class="floatClear"> </div>
             </div>
+
+
             <div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
                 {if (!$page->hide_section)}
                     <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
@@ -179,10 +182,11 @@
                 {/if}
                 <!-- and finally, the content. -->
                 {$page->contents}
-                <div class="floatClear"></div>
 	    </div>
+
+                <div class="floatClear"> </div>
+
         </div>
-    </div>
     </div>
     <div id="copyrightbarBorder">
         <div id="copyrightbar">

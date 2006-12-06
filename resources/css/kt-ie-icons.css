@@ -32,8 +32,12 @@
 /* IE is woefully unable to */
 #portletbar { width: 200px; }
 #portlet-search-text { width: 150px; }
-#content { padding-left: 220px; }
+/* #content { padding-left: 220px; } */
 
+#content { 
+    float: left;
+    padding: 0 25px 0 0;    
+}
 
 
 /* NO CHILD SELECTORS IN IE! */
@@ -60,3 +64,4 @@
 .kt_treenodes li.inactive ul {
     display: none;
 }
+
