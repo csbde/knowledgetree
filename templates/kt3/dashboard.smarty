@@ -1,13 +1,21 @@
 <div id="dashboard-container-left">
 {foreach item=oDashlet from=$dashlets_left}
+
 <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
 
+<div class="{$oDashlet->sClass}">
 <div class="dashboard_block_icons">
 <a href="#" class="action action_rollup">&nbsp;</a>
 <a href="#" class="action action_close">&nbsp;</a>
 </div>
 
+<h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
+
+<div class="dashboard_block_body">
 {$oDashlet->render()}
+</div>
+
+</div>
 </div>
 {/foreach}
 <div class="dashboard_block empty" id="end-left">&nbsp;</div>
@@ -15,20 +23,23 @@
 
 <div id="dashboard-container-right">
 {foreach item=oDashlet from=$dashlets_right}
+
 <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
 
+<div class="{$oDashlet->sClass}">
 <div class="dashboard_block_icons">
 <a href="#" class="action action_rollup">&nbsp;</a>
 <a href="#" class="action action_close">&nbsp;</a>
 </div>
 
+<h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
+<div class="dashboard_block_body">
 {$oDashlet->render()}
 </div>
+</div>
 {/foreach}
-
 <div class="dashboard_block empty" id="end-right">&nbsp;</div>
 </div>
-
 
 
 

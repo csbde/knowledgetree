@@ -1,7 +1,3 @@
-<div class="ktBlock">
-<h2 class="dashboard_block_handle">{i18n}Your Checked-out Documents{/i18n}</h2>
-
-<div class="dashboard_block_body">
 <p class="descriptiveText">{i18n}A checked-out document may not be modified by others. Please ensure that you check-in your documents to the repository as soon as you have finished working with them.{/i18n}</p>
 {if (!empty($documents))}
 <dl>
@@ -12,5 +8,3 @@
 {else}
 <div class="ktInfo"><p>{i18n}You have no documents which are currently checked out.{/i18n}</p></div>
 {/if}
-</div>
-</div>

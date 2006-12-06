@@ -29,6 +29,8 @@ require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
 
 class KTBaseDashlet {
     var $oPlugin;
+    var $sTitle = 'Default Dashlet Title';
+    var $sClass = 'ktBlock';
     
     function setPlugin($oPlugin) { $this->oPlugin =& $oPlugin; }
     

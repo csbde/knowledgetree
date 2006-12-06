@@ -293,16 +293,13 @@ a.main_nav_item {
 
 #portletbar
 {
-/*    position: absolute;*/
     float: left;
     width: 16em;
     left: 1em;
-/*    top: 0; */           /* stupid IE bug:  absolute position ate my scrollbars */
     background: transparent;
     margin: 0 10px 0 0 ;
     padding: 0;
-    z-index: 2;  /*  IE layers this below the content bar. */
-    overflow: auto;
+    z-index: 100;  /*  IE layers this below the content bar. */
 }
 
 /* horrible, custom dashboard hack. */
@@ -313,6 +310,7 @@ a.main_nav_item {
     margin: 0 0 1.5em 0;
     background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png)top left no-repeat;
     padding: 0 0 0 0;
+    z-index: 1000;
     
 }
 
@@ -492,6 +490,7 @@ a.main_nav_item {
     position: relative;
     padding-left: 17em;
     padding-right: 2.75em;
+    z-index: 1;
 }
 
 #content.view.withviewlets {
@@ -787,17 +786,19 @@ a.main_nav_item {
 
 .metadatatable th {
     text-align: left;
-    font-weight: bold;
     width: 30% !important;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px dotted #ccc;
     vertical-align: top;
     padding: 0.5em;
+    background-color: #eee;
+    font-weight: normal;
 }
 
 .metadatatable td {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px dotted #ccc;
     vertical-align: top;    
     padding: 0.5em;    
+    font-weight: bold;
 }
 
 .metadatatable .versioned td {
@@ -1146,21 +1147,26 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 #dashboard-container-left { 
     clear: left;
-    width: 45%;
+    width: 47%;
     margin-top: 0;
     margin-left: 0;
-    margin-right: 2em;
+    padding-right: 2em;
     float: left;
-    margin-bottom: 2em;
-    
+    padding-bottom: 2em;
+    height: 100%;
+    min-height: 5em;
+ background-color: #eef;
 }
 
 #dashboard-container-right { 
-    width: 45%;
+    width: 47%;
     margin-top: 0;
     margin-left: 0;
     float: left;
-    margin-bottom: 2em;
+    padding-bottom: 2em;
+    height: 100%;
+    min-height: 5em;
+ background-color: #efe;
 }
 
 .dashboard_block {
@@ -1408,8 +1414,8 @@ hr {
 
 .dashboard_block_icons
 { 
+    float: right;
     text-align: right;
-    margin-bottom: -3em;
     margin-right: 1em;
     z-index: 100;
 }

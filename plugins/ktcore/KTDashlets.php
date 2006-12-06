@@ -39,6 +39,10 @@ class KTInfoDashlet extends KTBaseDashlet {
     var $helpLocation = 'ktcore/welcome.html';
     var $help_id;
 
+    function KTInfoDashlet() {
+        $this->sTitle = _kt('Welcome to KnowledgeTree');
+    }
+
     function is_active($oUser) {
         // FIXME help is a little too mixed.
         $aHelpInfo = array();
@@ -84,7 +88,7 @@ class KTInfoDashlet extends KTBaseDashlet {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/kt3release");
         
-        
+        $this->sTitle = $this->aHelpInfo['title'];
         
         $aTemplateData = array(
             'title' => $this->aHelpInfo['title'],
@@ -99,9 +103,12 @@ class KTInfoDashlet extends KTBaseDashlet {
 
 
 class KTNotificationDashlet extends KTBaseDashlet {
-
     var $oUser;
     
+    function KTNotificationDashlet() {
+        $this->sTitle = _kt('Items that require your attention');
+    }
+
     function is_active($oUser) {
         $this->oUser = $oUser;
         $notifications = KTNotification::getList(array("user_id = ?", $this->oUser->getId()));
@@ -144,6 +151,10 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 
     var $oUser;
     
+    function KTCheckoutDashlet() {
+        $this->sTitle = _kt('Your Checked-out Documents');
+    }
+
     function is_active($oUser) {
         $this->oUser = $oUser;
         $this->checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
@@ -175,6 +186,10 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
 
     var $aTriggerSet;
     var $noTransforms;
+
+    function KTIndexerStatusDashlet() {
+        $this->sTitle = _kt('Indexer Status');
+    }
 
     function is_active($oUser) {
         if (!Permission::userIsSystemAdministrator($oUser)) {
@@ -237,6 +252,11 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
 
 // replace the old checked-out docs.
 class KTMailServerDashlet extends KTBaseDashlet {
+    var $sClass = 'ktError';
+
+    function KTMailServerDashlet() {
+        $this->sTitle = _kt('Mail Server Status');
+    }
 
     function is_active($oUser) {
         $oConfig =& KTConfig::getSingleton();

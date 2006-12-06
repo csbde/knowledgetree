@@ -31,7 +31,12 @@ define('KT_VERSION_URL', 'http://www.knowledgetree.com/kt_versions');
 
 class AdminVersionDashlet extends KTBaseDashlet {
     var $oUser;
-    
+    var $sClass = 'ktError';
+
+    function AdminVersionDashlet() {
+        $this->sTitle = _kt('New Version Available');
+    }
+
     function is_active($oUser) {
 	$this->oUser = $oUser;
 	return Permission::userIsSystemAdministrator($oUser);

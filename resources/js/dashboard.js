@@ -102,6 +102,9 @@ KTDashboard.prototype = {
                 }                    
             }, this.getDashletBlocks());
         new YAHOO.example.DDListBoundary('copyrightbar');
+        new YAHOO.example.DDListBoundary('breadcrumbs');
+        new YAHOO.example.DDListBoundary('bodyLeftRepeat');
+        new YAHOO.example.DDListBoundary('bodyRightRepeat');
         YAHOO.util.DDM.mode = 1;
     },
 

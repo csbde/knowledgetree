@@ -1,14 +1,3 @@
-/* Copyright (c) 2006 Yahoo! Inc. All rights reserved. */
-
-/**
- * @class a YAHOO.util.DDProxy implementation. During the drag over event, the
- * dragged element is inserted before the dragged-over element.
- *
- * @extends YAHOO.util.DDProxy
- * @constructor
- * @param {String} id the id of the linked element
- * @param {String} sGroup the group of related DragDrop objects
- */
 YAHOO.example.DDList = function(id, sGroup, config) {
 
     if (id) {
@@ -24,9 +13,7 @@ YAHOO.example.DDList = function(id, sGroup, config) {
     //s.filter = "alpha(opacity=76)";
 };
 
-// YAHOO.example.DDList.prototype = new YAHOO.util.DDProxy();
 YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy);
-//YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DD);
 
 YAHOO.example.DDList.prototype.startDrag = function(x, y) {
     this.logger.log(this.id + " startDrag");
@@ -72,22 +59,10 @@ YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
     }
 };
 
-YAHOO.example.DDList.prototype.onDragEnter = function(e, id) {
-    // this.logger.log(this.id.toString() + " onDragEnter " + id);
-    // this.getDragEl().style.border = "1px solid #449629";
-};
-
-YAHOO.example.DDList.prototype.onDragOut = function(e, id) {
-    // I need to know when we are over nothing
-    // this.getDragEl().style.border = "1px solid #964428";
-};
-
 YAHOO.example.DDList.prototype.toString = function() {
     return "DDList " + this.id;
 };
 
-
-/////////////////////////////////////////////////////////////////////////////
 
 YAHOO.example.DDListBoundary = function(id, sGroup, config) {
     if (id) {
@@ -97,7 +72,6 @@ YAHOO.example.DDListBoundary = function(id, sGroup, config) {
     }
 };
 
-// YAHOO.example.DDListBoundary.prototype = new YAHOO.util.DDTarget();
 YAHOO.extend(YAHOO.example.DDListBoundary, YAHOO.util.DDTarget);
 
 YAHOO.example.DDListBoundary.prototype.toString = function() {

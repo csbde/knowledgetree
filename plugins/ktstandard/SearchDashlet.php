@@ -26,6 +26,10 @@
 
 
 class SearchDashlet extends KTBaseDashlet {
+    function SearchDashlet() {
+        $this->sTitle = _kt('Search Dashlet');
+    }
+
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktstandard/searchdashlet/dashlet');
