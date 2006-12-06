@@ -300,7 +300,7 @@ a.main_nav_item {
     background: transparent;
     margin: 0 10px 0 0 ;
     padding: 0;
-    z-index: 100;  /*  IE layers this below the content bar. */
+    z-index: 2;  /*  IE layers this below the content bar. */
 }
 
 /* horrible, custom dashboard hack. */
@@ -312,7 +312,7 @@ a.main_nav_item {
     background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
     border: 0;
-    z-index: 1000;
+    z-index: 2;
 }
 
 #portletbar .portlet .portletTopRepeat {
@@ -369,7 +369,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody .BottomLeft {
-    position: absolute;
+    position: absolute;                                                
     bottom: 0px;
     left: 0px;
     width: 10px;
@@ -378,7 +378,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody .BottomRight {
-    position: absolute;
+    position: absolute;                                                
     bottom: 0px;
     right: 0px;
     width: 10px;
@@ -387,7 +387,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody .Bottom {
-    position: absolute;
+    position: absolute;                                                
     bottom: 0px;
     left: 5px;
     height: 3px;
@@ -396,7 +396,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody .Right {
-    position: absolute;
+    position: absolute;                                                
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 0px;
     right: 0px;
@@ -492,9 +492,12 @@ a.main_nav_item {
 #content
 {
     position: relative;
-    padding-left: 17em;
-    padding-right: 2.75em;
+    display: block;
+    top: 0;
     z-index: 1;
+    width: auto;
+    padding-left: 17em;
+    padding-right: 2em;
 }
 
 #content.view.withviewlets {
