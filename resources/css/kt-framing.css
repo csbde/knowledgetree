@@ -41,7 +41,7 @@ body
 
 #pageBodyBg {
     position: absolute;
-    background: url(../../resources/graphics/page_bg.png) bottom left repeat-x; 
+    background: url(../../resources/graphics/page_bg.png) bottom left repeat-x;
     width: 99.2%;
     height: 611px;
     bottom: 0px;
@@ -312,6 +312,7 @@ a.main_nav_item {
     float: left;
     width: 16em;
     left: 1em;
+    background: transparent;
     margin: 0 10px 0 0 ;
     padding: 0;
     z-index: 2;  /*  IE layers this below the content bar. */
@@ -383,14 +384,13 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody {
-/* THIS CAUSES IE RENDERING MADNESS */
-/*     position: relative;                                     */
+    position: relative;
     background: url(../../resources/graphics/portlet_borderrepeat.png) top left repeat-y;
     padding: 0 0 1em 0;
     background-color: white;
     border: 0;
     width: 100%;
-    height: 100%;             
+    height: 100%;                                
 }
 
 #portletbar .portlet .portletbodyBottomLeft {
@@ -488,6 +488,10 @@ a.main_nav_item {
     text-decoration: underline;
 }
 
+#portletbar .portlet h4:hover {
+    text-decoration: underline;
+}
+
 #portletbar .portlet h4
 {
     padding-top: 0.35em;
@@ -497,7 +501,6 @@ a.main_nav_item {
     text-align: left;
     color: #FFFFFF;
     font-size: small;
-    margin: 0;
 }
 
 #portletbar .portlet.expanded h4
@@ -513,10 +516,6 @@ a.main_nav_item {
     background: url(../graphics/minus.gif) 10px 45% no-repeat;
     color: #FFFFFF;
     font-size: small;
-}
-
-#portletbar .portlet h4:hover {
-    text-decoration: underline;
 }
 
 #portletbar .portlet .portletbody {
@@ -1681,9 +1680,9 @@ hr {
     background-color: white;
     padding: 2em;
     margin: 10% 30%;
+    opacity: 1;
     overflow: hidden;
     text-align: left;
-    z-index:100;
 }
 
 
