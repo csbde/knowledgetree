@@ -39,6 +39,49 @@
     padding: 0 25px 0 0;    
 }
 
+#kt-wrapper {
+    height: 600px;
+}
+
+/* IE does not know what 100% is!! */
+#copyrightbarBg {
+    width: 101%;
+}
+
+#portletbar .portlet {
+    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.gif) top left no-repeat;
+}
+
+#portletbar .portlet.expanded {
+    background: url(../../resources/graphics/portlet_corner_topleft.gif) top left no-repeat;
+}
+
+#portletbar .portlet .portletTopRight {
+    background: url(../../resources/graphics/portlet_corner_topright_collapsed.gif) top right no-repeat;
+}
+
+#portletbar .portlet.expanded .portletTopRight {
+    background: url(../../resources/graphics/portlet_corner_topright.gif) top right no-repeat;
+}
+
+#portletbar .portlet .portletbodyBottomLeft {
+    background: url(../../resources/graphics/portlet_corner_bottomleft.gif) bottom left no-repeat;
+}
+
+#portletbar .portlet .portletbodyBottomRight {
+    background: url(../../resources/graphics/portlet_corner_bottomright.gif) bottom right no-repeat;
+}
+
+#portletbar .portlet .portletTopRepeat {
+    background: url(../../resources/graphics/portlet_bg_collapsed.gif) top left repeat-x;
+    width: 65%;
+}
+
+#portletbar .portlet.expanded .portletTopRepeat {
+    background: url(../../resources/graphics/portlet_bg.gif) top left repeat-x;
+    width: 65%;
+}
+
 
 /* NO CHILD SELECTORS IN IE! */
 
