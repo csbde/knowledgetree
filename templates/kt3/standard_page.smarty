@@ -53,13 +53,7 @@
     <div id="pageBody">
         <div id="bodyTopLeft"></div>
         <div id="bodyTopRepeat"></div>
-        <div id="bodyTopRight"></div>
-        <div id="pageBodyBg"></div>
-        <div id="bodyLeftRepeatTop"></div>
-        <div id="bodyLeftRepeatBottom"></div>
-        <div id="bodyRightRepeatTop"></div>
-        <div id="bodyRightRepeatBottom"></div>
-        
+        <div id="bodyTopRight"></div>        
         <div id="bodyPad">
             <div id="logobar">
                 <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
@@ -143,16 +137,16 @@
                     {if $portlet_output}
                         <div class="portlet {if $oPortlet->getActive()}expanded{/if}">
                             <h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
-                            <div class="portletTopRepeat {if $oPortlet->getActive()}expanded{/if}"></div>
-                            <div class="portletTopRight {if $oPortlet->getActive()}expanded{/if}"></div>
+                            <div class="portletTopRepeat"></div>
+                            <div class="portletTopRight"></div>
                             <div class="portletbody">
-                                {$portlet_output}
-                                <div class="portletbodyRight"></div>
+                                <div class="portletbodyRightTop"></div>
                                 <div class="portletbodyRightMiddleTop"></div>
                                 <div class="portletbodyRightMiddleBottom"></div>
                                 <div class="portletbodyRightQuartTop"></div>
                                 <div class="portletbodyRightQuartBottom"></div>
                                 <div class="portletbodyRightBottom"></div>
+                                {$portlet_output}
                                 <div class="portletbodyBottom"></div>
                                 <div class="portletbodyBottomLeft"></div>
                                 <div class="portletbodyBottomRight"></div>
@@ -191,6 +185,11 @@
                 <div class="floatClear"></div>
 	    </div>
         </div>
+        <div id="pageBodyBg"></div>
+        <div id="bodyLeftRepeatTop"></div>
+        <div id="bodyLeftRepeatBottom"></div>
+        <div id="bodyRightRepeatTop"></div>
+        <div id="bodyRightRepeatBottom"></div>
         <div id="bodyBottomRepeat"></div>
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
