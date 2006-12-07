@@ -39,8 +39,8 @@
     padding: 0 25px 0 0;    
 }
 
-#kt-wrapper {
-    height: 600px;
+#pageBody {
+    height: 800px;
 }
 
 /* IE does not know what 100% is!! */
