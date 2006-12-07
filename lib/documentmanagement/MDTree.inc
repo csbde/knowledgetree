@@ -115,8 +115,15 @@ class MDTree {
         // right. we are now ready to start with the treebuild.
         // root is a virtual node (id: 0).
         $this->field_id = $iFieldId;
-        $orderedTreeNodes =& MDTreeNode::getList('WHERE document_field_id = '.$iFieldId.' ORDER BY metadata_lookup_tree_parent, name ASC');
-        
+        $orderedTreeNodes =& MDTreeNode::getList('WHERE document_field_id = '.$iFieldId);
+        if (PEAR::isError($orderedTreeNodes) || ($orderedTreeNodes === false)) {
+            #echo $orderedTreeNodes->message . "<br><br>";
+            #echo $orderedTreeNodes->userinfo . "<br><br>";
+            #echo print_r($orderedTreeNodes, true);
+            #exit;
+            $this->clear();  // make sure we don't get pollution.
+            return ; // and leave all null.  WHY DOESN'T PHP HAVE EXCEPTIONS?
+        }
         // since we have these nodes ordered by parent, we can perform a build
         // we can build:
         //      $this->mapnodes   [node_id => node]
