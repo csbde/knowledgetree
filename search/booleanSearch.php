@@ -268,12 +268,13 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 	    $aGroup = array();
 	    $aJoins[$k] = ($subgroup['join'] == 'AND') ? _kt('all') : _kt('any');
 
-	    foreach($subgroup['values'] as $value) {
-		$oCriterion =& $oCriteriaRegistry->getCriterion($value['type']);
-		$aGroup[] = $oCriterion->parameterDisplay($value['data']);
-	    }
-	    
-	    $aParams[] = $aGroup;
+        if(!empty($subgroup['values'])) {
+            foreach($subgroup['values'] as $value) {
+                $oCriterion =& $oCriteriaRegistry->getCriterion($value['type']);
+                $aGroup[] = $oCriterion->parameterDisplay($value['data']);
+            }
+        }
+        $aParams[] = $aGroup;
 	}
         
         // set a view option
