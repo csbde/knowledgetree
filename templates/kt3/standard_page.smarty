@@ -49,7 +49,7 @@
     {/foreach}
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if}>
-<form><input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" /></form>
+<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
     <div id="pageBody">
         <div id="bodyTopLeft"></div>
         <div id="bodyTopRepeat"></div>
@@ -184,7 +184,6 @@
                 {$page->contents}
                 <div class="floatClear"></div>
 	    </div>
-            <div class="floatClear"></div>
         </div>
         <div id="pageBodyBg"></div>
         <div id="bodyLeftRepeatTop"></div>
@@ -194,7 +193,6 @@
         <div id="bodyBottomRepeat"></div>
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
-        <div class="floatClear"></div>
     </div>
     <div id="copyrightbarBorder">
         <div id="copyrightbarLeft"></div>
