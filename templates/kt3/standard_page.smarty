@@ -71,7 +71,7 @@
                                 {else}
                                     <li><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
                                 {/if}
-                                    <li><img src="{$rootUrl}/resources/graphics/menu_divider.png"/></li>
+                                    <li><div id="menu_divider"></div></li>
                             {/foreach}
         
                             <!-- user menu -->
@@ -140,16 +140,7 @@
                             <div class="portletTopRepeat"></div>
                             <div class="portletTopRight"></div>
                             <div class="portletbody">
-                                <div class="portletbodyRightTop"></div>
-                                <div class="portletbodyRightMiddleTop"></div>
-                                <div class="portletbodyRightMiddleBottom"></div>
-                                <div class="portletbodyRightQuartTop"></div>
-                                <div class="portletbodyRightQuartBottom"></div>
-                                <div class="portletbodyRightBottom"></div>
                                 {$portlet_output}
-                                <div class="portletbodyBottom"></div>
-                                <div class="portletbodyBottomLeft"></div>
-                                <div class="portletbodyBottomRight"></div>
                             </div>
                         </div>
                     {/if}
@@ -187,8 +178,16 @@
         </div>
         <div id="pageBodyBg"></div>
         <div id="bodyLeftRepeatTop"></div>
+        <div id="bodyLeftRepeatQuartTop"></div>
+        <div id="bodyLeftRepeatMiddleTop"></div>
+        <div id="bodyLeftRepeatMiddleBottom"></div>
+        <div id="bodyLeftRepeatQuartBottom"></div>
         <div id="bodyLeftRepeatBottom"></div>
         <div id="bodyRightRepeatTop"></div>
+        <div id="bodyRightRepeatQuartTop"></div>
+        <div id="bodyRightRepeatMiddleTop"></div>
+        <div id="bodyRightRepeatMiddleBottom"></div>
+        <div id="bodyRightRepeatQuartBottom"></div>
         <div id="bodyRightRepeatBottom"></div>
         <div id="bodyBottomRepeat"></div>
         <div id="bodyBottomRight"></div>

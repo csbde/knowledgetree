@@ -13,15 +13,90 @@
         }
 
         #loginbox {
+            position: relative;
             padding: 1em;
-            border: 1px solid #888;
+            /*border: 1px solid #888;*/
             width: 252px;
             margin-left: auto;
             margin-right: auto;
             text-align: left;
-            background: white url(../graphics/ktbg.png) bottom right no-repeat;
-            -moz-border-radius: 1em;
+            background: white url(../graphics/ktbg.png) bottom left no-repeat;
+            /*-moz-border-radius: 1em;*/
         }
+
+        #loginboxTopLeft {
+            position: absolute;
+            background: url(../graphics/login_corner_topleft.gif) top left no-repeat;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #loginboxTopMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_repeat.png) top left repeat-x;
+            top:0;
+            left:35px;
+            width: 230px;
+            height: 3px; 
+        }
+
+        #loginboxTopRight {
+            position: absolute;
+            background: url(../graphics/login_corner_topright.gif) top right no-repeat;
+            top:0;
+            right:0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #loginboxBottomLeft {
+            position: absolute;
+            background: url(../graphics/login_corner_bottomleft.gif) bottom left no-repeat;
+            bottom:0;
+            left:0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #loginboxBottomMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
+            bottom: 0;
+            left: 35px;
+            width: 230px;
+            height: 3px;
+        }
+
+        #loginboxBottomRight {
+            position: absolute;
+            background: url(../graphics/login_corner_bottomright.gif) bottom left no-repeat;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #loginboxLeft {
+            position: absolute;
+            background: url(../graphics/login_border_repeat.png) top left repeat-y;
+            top: 35px;
+            left: 0;
+            width: 3px;
+            height: 405px;
+        }
+
+        #loginboxRight {
+            position: absolute;
+            background: url(../graphics/login_border_right.png) top right repeat-y;
+            top: 35px;
+            right: 0;
+            width: 3px;
+            height: 405px;
+        }
+
+
 
         #loginbox.hasDisclaimer { 
             width: 564px;
@@ -89,6 +164,10 @@
     font-size: x-small;
 }
 
+#bottomspacer {
+    height: 50px;
+
+}
 
 /* block level. */
 .ktError 

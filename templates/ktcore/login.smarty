@@ -46,21 +46,27 @@
                     <input type="submit" value="{i18n}login{/i18n}" />
 		</div>
             </form>
-
 	</div>
-
         {if ($disclaimer)}
         <div id="disclaimerbox">
 	    {$disclaimer}
 	</div>
 	{/if}
 
-	<p class="descriptiveText version">
+	<span class="descriptiveText version">
 	{i18n}KnowledgeTree Version{/i18n}<br />{$versionName}<br/>
 	{i18n}&copy; 2006 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
-	</p>
+	</span>
+        <div id="bottomspacer"></div>
         
-
+        <div id="loginboxTopLeft"></div>
+        <div id="loginboxTopMiddle"></div>
+        <div id="loginboxTopRight"></div>
+        <div id="loginboxBottomLeft"></div>
+        <div id="loginboxBottomMiddle"></div>
+        <div id="loginboxBottomRight"></div>
+        <div id="loginboxLeft"></div>
+        <div id="loginboxRight"></div>
     </div>
 
 
