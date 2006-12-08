@@ -26,7 +26,7 @@ KTDashlet.prototype = {
 
     'toggleClose' : function(event) {
         toggleElementClass('closed', this.elm);
-        if(this.getStatus() == KTDashboard.OPEN) {
+        if(this.getStatus() == KTDashboard.OPEN || this.getStatus() == KTDashboard.ROLLEDUP) {
             this.setStatus(KTDashboard.CLOSED);
         } else {
             this.setStatus(KTDashboard.OPEN);
@@ -121,9 +121,19 @@ KTDashboard.prototype = {
     },
 
     'statusChange' : function(status) {
+        var s = 0;
+        if(status == KTDashboard.CLOSED) {
+            s = 'closed';
+        } else if (status == KTDashboard.OPEN) {
+            s = 'open';
+        } else if (status == KTDashboard.ROLLEDUP) {
+            s = 'rolled';
+        } else {
+            s = 'undefined';
+        }
         if(status == KTDashboard.CLOSED) {
             this.showAddButton();
-        } else if(status == KTDashboard.OPEN) {
+        } else if(status == KTDashboard.OPEN || status == KTDashboard.ROLLEDUP) {
             var closed = this.getDashletsInState(KTDashboard.CLOSED);
             if(closed.length === 0) {
                 hideElement(this.addButton);
@@ -177,6 +187,9 @@ KTDashboard.prototype = {
                     connect(link, 'onclick', function(event) {
                                 removeElement(linkli);
                                 dashlet.toggleClose(event);
+                                if(hasElementClass(dashlet.elm, 'rolled-up')) {
+                                    self.setStatus(id, KTDashboard.ROLLEDUP);
+                                }                                    
                                 event.stop();
                             });
                     appendChildNodes(dashletList, linkli);
