@@ -719,8 +719,7 @@ a.main_nav_item {
     top: 0;
     z-index: 1;
     width: auto;
-    padding-left: 17em;
-    padding-right: 2em;
+    padding: 0 2em 1em 17em;
 }
 
 #content.view.withviewlets {
@@ -1682,13 +1681,14 @@ hr {
     font-size: small;
 }
 
+.collapsible .collapsiblebody {
+    display: none;
+}
+
 .collapsible.expanded .collapsiblebody {
     display: block;
 }
 
-.collapsible .collapsiblebody {
-    display: none;
-}
 
 
 /* -------------------------- iframe browse ------------------------ */
@@ -1785,6 +1785,7 @@ hr {
 /*    background-color: white;
     opacity: 0.5; */
     text-align: center;
+    z-index: 1000;
 }
 
 .addDialog
