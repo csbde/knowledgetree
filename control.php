@@ -112,6 +112,11 @@ if (empty($queryString)) {
     }
 }
 
+if ($action == 'dashboard') { 
+    $oKTConfig = KTConfig::getSingleton();
+    if(!$oKTConfig->get('useNewDashboard')) $action = 'olddashboard'; 
+}
+
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, isset($_SESSION["userID"]) ? $_SESSION["userID"] : "");
 
