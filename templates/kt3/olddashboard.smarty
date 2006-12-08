@@ -1,19 +1,42 @@
 <div id="dashboard-container-left">
 {foreach item=oDashlet from=$dashlets_left}
+
 <div class="dashboard_block">
+
+<div class="{$oDashlet->sClass}">
+
+<h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
+
+<div class="dashboard_block_body">
 {$oDashlet->render()}
 </div>
-{/foreach}
+
 </div>
+</div>
+{/foreach}
+<div class="dashboard_block empty" id="end-left">&nbsp;</div>
+</div>
+
+
+
 
 <div id="dashboard-container-right">
+
 {foreach item=oDashlet from=$dashlets_right}
+
 <div class="dashboard_block">
+
+<div class="{$oDashlet->sClass}">
+
+<h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
+
+<div class="dashboard_block_body">
 {$oDashlet->render()}
+</div>
+
+</div>
 </div>
 {/foreach}
 </div>
-
-
 
 
