@@ -1,5 +1,5 @@
 <form action="{ktLink base="search/simpleSearch.php"}" method="GET">
-<input type="text" name="fSearchableText" id="dashlet-search-text"
+<input onclick="this.focus()" type="text" name="fSearchableText" id="dashlet-search-text"
 size="15" /><input type="submit" value="{i18n}search{/i18n}"
 class="searchbutton frontpage" />
 </form>
