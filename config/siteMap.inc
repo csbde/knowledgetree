@@ -34,10 +34,10 @@ $default->siteMap = new SiteMap(false);
 $default->siteMap->addPage("login", "/login.php", "General", None, "");
 
 // dashboard
-$default->siteMap->addPage("ajaxdashboard", "/dashboard2.php", "General", Guest, "ajaxdashboard");
+$default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "dashboard");
 
 // old dashboard
-$default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "dashboard");
+$default->siteMap->addPage("olddashboard", "/olddashboard.php", "General", Guest, "olddashboard");
 // dashboard news
 
 //pages for manage documents section

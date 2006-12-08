@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: dashboard.php 5758 2006-07-27 10:17:43Z bshuttle $
+ * $Id: dashboard.php 6039 2006-11-03 10:01:51Z bryndivey $
  *
  * Main dashboard page -- This page is presented to the user after login.
  * It contains a high level overview of the users subscriptions, checked out 
@@ -27,7 +27,7 @@
  * All Rights Reserved.
  *
  *
- * @version $Revision: 5758 $
+ * @version $Revision: 6039 $
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
@@ -52,7 +52,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'ajaxdashboard', 'name' => _kt('Dashboard')),
+            array('action' => 'olddashboard', 'name' => _kt('Dashboard')),
         );
         return parent::KTStandardDispatcher();
     }
@@ -83,32 +83,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
-        // javascript
-        // yahoo
-        $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
-        $this->oPage->requireJSResource('resources/js/DDList.js');
-        
 
-        // dashboard
-        $sDashboardState = $this->oUser->getDashboardState();
-        $sDSJS = "var savedState = ";
-        if($sDashboardState == null) {
-            $sDSJS .= "false";
-            $sDashboardState = false;
-        } else {
-            $sDSJS .= $sDashboardState;
-        }
-        $sDSJS .= ';';
-        $this->oPage->requireJSStandalone($sDSJS);
-        $this->oPage->requireJSResource('resources/js/dashboard.js');
-
-
-        // render
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
+        $oTemplate = $oTemplating->loadTemplate("kt3/olddashboard");
         $aTemplateData = array(
               "context" => $this,
               "dashlets_left" => $aDashletsLeft,
@@ -117,12 +94,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
     
-    // return some kind of ID for each dashlet
-    // currently uses the class name
-    function _getDashletId($oDashlet) {
-        return get_class($oDashlet);
-    }
-
     // disable a dashlet.  
     // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
     function do_disableDashlet() {
@@ -145,13 +116,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
     
         $this->commitTransaction();
         $this->successRedirectToMain('Dashlet disabled.');
-    }
-
-
-    function json_saveDashboardState() {
-        $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error'=>true));
-        $this->oUser->setDashboardState($sState);
-        return array('success' => true);
     }
 }
 
