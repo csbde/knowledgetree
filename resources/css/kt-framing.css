@@ -16,6 +16,7 @@ body
     clear: both;
     height: 1px !important;
     margin: 0; border: 0; padding: 0;
+    width: 1px;
 }
 
 #kt-wrapper
@@ -718,7 +719,7 @@ a.main_nav_item {
     display: block;
     top: 0;
     z-index: 1;
-    width: auto;
+    width:auto;
     padding: 0 2em 1em 17em;
 }
 
@@ -1252,7 +1253,9 @@ a.main_nav_item {
 { 
     -moz-border-radius: 15px; 
 }
-
+#dashboardBox {
+    width: 80%
+}
 
 /** portlet stuff. */
 #portlet-search-text {
@@ -1391,7 +1394,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /*     background-color: #dfd; */
 }
 
-#dashboard-container-right { 
+#dashboard-container-right {
     width: 47%;
     margin-top: 0;
     margin-left: 0;
