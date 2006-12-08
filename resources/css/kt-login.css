@@ -78,7 +78,7 @@
             height: 40px;
         }
 
-        #loginboxLeft {
+        #loginboxLeftTop {
             position: absolute;
             background: url(../graphics/login_border_repeat.png) top left repeat-y;
             top: 35px;
@@ -86,8 +86,17 @@
             width: 3px;
             height: 405px;
         }
+        
+        #loginboxLeftBottom {
+            position: absolute;
+            background: url(../graphics/login_border_repeat.png) top left repeat-y;
+            bottom: 35px;
+            left: 0;
+            width: 3px;
+            height: 405px;
+        }
 
-        #loginboxRight {
+        #loginboxRightTop {
             position: absolute;
             background: url(../graphics/login_border_right.png) top right repeat-y;
             top: 35px;
@@ -96,6 +105,14 @@
             height: 405px;
         }
 
+        #loginboxRightBottom {
+            position: absolute;
+            background: url(../graphics/login_border_right.png) top right repeat-y;
+            bottom: 35px;
+            right: 0;
+            width: 3px;
+            height: 405px;
+        }
 
 
         #loginbox.hasDisclaimer { 

@@ -58,15 +58,17 @@
 	{i18n}&copy; 2006 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
 	</span>
         <div id="bottomspacer"></div>
-        
         <div id="loginboxTopLeft"></div>
         <div id="loginboxTopMiddle"></div>
         <div id="loginboxTopRight"></div>
         <div id="loginboxBottomLeft"></div>
         <div id="loginboxBottomMiddle"></div>
         <div id="loginboxBottomRight"></div>
-        <div id="loginboxLeft"></div>
-        <div id="loginboxRight"></div>
+        <div id="loginboxLeftTop"></div>
+        <div id="loginboxRightTop"></div>
+        <div id="loginboxLeftBottom"></div>
+        <div id="loginboxRightBottom"></div>
+
     </div>
 
 
