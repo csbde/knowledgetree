@@ -82,6 +82,10 @@
     width: 65%;
 }
 
+#menu_divider {
+    background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
+}
+
 
 /* NO CHILD SELECTORS IN IE! */
 
