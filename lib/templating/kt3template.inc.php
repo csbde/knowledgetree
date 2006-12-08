@@ -135,7 +135,6 @@ class KTPage {
 	// FIXME:  we lost the getDefaultAction stuff - do we care?
 	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
 	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
-                            "olddashboard" => $this->_actionHelper(array("name" => _kt("Old Dashboard"), "action" => "olddashboard", "active" => 0)),
 			    "browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
 			    "administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),);
     }

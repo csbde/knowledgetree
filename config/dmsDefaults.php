@@ -402,6 +402,7 @@ class KTInit {
                     $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
                 }
             }
+            $oKTConfig->setdefaultns("KnowledgeTree", "useNewDashboard", true);
             $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $this->guessRootUrl());
             $oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
             $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
