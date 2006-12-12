@@ -957,7 +957,8 @@ a.main_nav_item {
 .metadata dt
 {
     font-weight: bold;
-    clear: left;
+    /*this seems to force a huge space above the container in firefox*/
+    /*clear: left;*/
 }
 
 .metadata.versioned dd div {
