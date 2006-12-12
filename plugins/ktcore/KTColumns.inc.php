@@ -52,7 +52,14 @@ class AdvancedTitleColumn extends AdvancedColumn {
     }
 
     function renderDocumentLink($aDataRow) {
-        $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        /* this chack has to be done so that any titles longer than 40 characters is not displayed incorrectly.
+         as mozilla cannot wrap text without white spaces */
+        if(strlen($aDataRow["document"]->getName()) > 40){
+            $outStr = htmlentities(substr($aDataRow["document"]->getName(), 0, 40)."...", ENT_NOQUOTES, 'UTF-8');
+        }else{
+            $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        }
+        
         if($this->link_documents) {
             $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">' . 
                 $outStr . '</a>';

@@ -29,8 +29,7 @@
             <tr class="{cycle name=rows values=",odd"}">
               {foreach item=oColumn from=$context->columns name=coliter}
                 <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
-                   {assign var='temp' value=$oColumn->renderData($context->getDocumentInfo($document_row_id.id))}
-                   {$temp}
+                   {$oColumn->renderData($context->getDocumentInfo($document_row_id.id))}
                 </td>
               {/foreach}
             </tr>
