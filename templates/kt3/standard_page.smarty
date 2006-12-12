@@ -117,7 +117,7 @@
                             {if ($aCrumb.url) }
                                 <a href="{$aCrumb.url}">{$aCrumb.label|escape}</a> 
                             {else}
-                                <span>{$aCrumb.label|escape}</span> 
+                                <span>{$aCrumb.label|escape|truncate:40:"...":true}</span> 
                             {/if}
                             {if (!$smarty.foreach.bc.last)}
                                 &raquo;
