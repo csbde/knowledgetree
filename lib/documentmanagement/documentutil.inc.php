@@ -608,6 +608,7 @@ class KTDocumentUtil {
         if (isset($GLOBALS['_IN_ADD']) && empty($bOverride)) {
             return;
         }
+        $sMetadata = KTUtil::arrayGet( $_REQUEST, "metadata_2");
         $oDocument = KTUtil::getObject('Document', $oDocument);
         $iDocumentId = $oDocument->getId();
         $sTable = KTUtil::getTableName('document_transaction_text');
@@ -626,7 +627,7 @@ class KTDocumentUtil {
         $sAllFieldText = join(" ", $aFieldValues);
         $sDocumentFilename = $oDocument->getFilename();
         $sDocumentTitle = $oDocument->getName();
-        $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments . " " . $sDocumentFilename . " " . $sDocumentTitle;
+        $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments . " " . $sDocumentFilename . " " . $sDocumentTitle . " " . $sMetadata;
         $sTable = KTUtil::getTableName('document_searchable_text');
         $aDelete = array(
             "document_id" => $iDocumentId,
