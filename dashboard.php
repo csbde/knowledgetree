@@ -92,6 +92,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSResource('resources/js/DDList.js');
         
 
+        $this->oUser->refreshDashboadState();
+        
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
         $sDSJS = "var savedState = ";
