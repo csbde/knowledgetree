@@ -76,7 +76,7 @@ class KTPluginUtil {
             return;
         }
         $GLOBALS['_KT_PLUGIN'] = array();
-        $aPlugins = KTPluginEntity::getList();
+        $aPlugins = KTPluginEntity::getList("disabled=0");
         if (count($aPlugins) === 0) {
             KTPluginUtil::registerPlugins();
         }
