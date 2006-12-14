@@ -175,6 +175,58 @@ class User extends KTEntity {
         KTUtil::setSystemSetting($this->_getDashboardStateKey(), $mValue);
     }
 
+    function refreshDashboadState()
+    {
+    	require_once(KT_DIR . "/thirdparty/pear/JSON.php");
+
+    	$dashletRegistry = & KTDashletRegistry::getSingleton();
+    	
+    	$aDashlets = $dashletRegistry->getDashlets($this);
+    	
+    	$oJSON = new Services_JSON();
+
+    	$state = $this->getDashboardState();
+    	$dashlets = $oJSON->decode($state);
+    	$mergedlist = array_merge($dashlets->left,$dashlets->right);
+    	
+    	
+    	$knownlist = array();
+    	foreach($mergedlist as $dashlet)
+    	{
+    		array_push($knownlist,$dashlet->id);
+    	}
+    	$update=false;
+    	
+    	if (!isset($dashlets->left)) $dashlets->left=array();
+    	if (!isset($dashlets->right)) $dashlets->right=array();
+    	
+    	$column=1;
+    	foreach($aDashlets as $dashlet)
+    	{
+    		$class = get_class($dashlet);
+    		$column=($column + 1) %2;
+    		if (!in_array($class,$knownlist))
+    		{
+    			$obj = new stdClass();
+    			$obj->id=$class;
+    			$obj->state=0;
+    			
+    			if ($column == 0)
+    				array_push($dashlets->left,$obj);
+				else
+    				array_push($dashlets->right,$obj);
+    			$update=true;
+    		}
+    	}
+    	
+    	if ($update)
+    	{
+    		$state = $oJSON->encode($dashlets);
+	    	$this->setDashboardState($state);
+    	}
+    }
+    
+    
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
     }
