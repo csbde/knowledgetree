@@ -2,6 +2,7 @@
 
 require_once(KT_LIB_DIR . "/widgets/basewidget.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 
 class KTCoreStringWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.string';
@@ -679,6 +680,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
 
 
     function do_main() {
+
         $sCode = KTUtil::arrayGet($_REQUEST, 'code');
         $sName = KTUtil::arrayGet($_REQUEST, 'varname','fFolderId');        
         $oWidget = unserialize($_SESSION['collection_widgets'][$sCode]);
