@@ -26,8 +26,7 @@
         {foreach item=sResourceURL from=$page->getCSSResourcesForIE()}
         <style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
         {/foreach}
-    <![endif]-->    
-    
+    <![endif]-->
     
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
@@ -47,6 +46,9 @@
 {$sJavascript}
        </script>
     {/foreach}
+    <!--[if IE 7]>
+        <style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-7.css);</style>
+    <![endif]-->
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if}>
 <input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />

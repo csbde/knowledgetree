@@ -48,6 +48,13 @@
     width: 101%;
 }
 
+.floatClear
+{
+    height: 1px !important;
+    margin: 0; border: 0; padding: 0;
+    width: 1px;
+}
+
 #portletbar .portlet {
     background: url(../../resources/graphics/portlet_corner_topleft_collapsed.gif) top left no-repeat;
 }
@@ -111,4 +118,3 @@
 .kt_treenodes li.inactive ul {
     display: none;
 }
-
