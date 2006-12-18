@@ -27,6 +27,7 @@
 require_once(KT_LIB_DIR . "/templating/templating.inc.php"); 
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc"); 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc"); 
+require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
 class DocumentCollection {
    // handle the sorting, etc.
