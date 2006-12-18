@@ -145,9 +145,10 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('main'),
             'message' => _kt('Invalid folder chosen'),
         );
-        $oParentFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId'], $aOptions);
+
+        $oParentFolder = $this->oValidator->validateFolder($_REQUEST['browse'], $aOptions);
         $aOptions = array(
-            'redirect_to' => array('addUnit', sprintf('fFolderId=%d', $oParentFolder->getId())),
+            'redirect_to' => array('addUnit', sprintf('browse=%d', $oParentFolder->getId())),
             'message' => _kt('No name given'),
         );
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
