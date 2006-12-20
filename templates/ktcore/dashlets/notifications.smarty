@@ -1,6 +1,4 @@
 <div class="ktBlock">
-<h2 class="dashboard_block_handle">{i18n}Items that require your attention{/i18n}</h2>
-
 <div class="dashboard_block_body">
 {if (!empty($notifications))}
 <dl>
