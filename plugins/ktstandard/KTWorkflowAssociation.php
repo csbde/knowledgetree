@@ -155,7 +155,7 @@ $oPluginRegistry->registerPlugin('KTWorkflowAssociationPlugin', 'ktstandard.work
 
 /* include others */
 
-require_once('workflow/TypeAssociator.php');
-require_once('workflow/FolderAssociator.php');
+require_once(KT_DIR . '/plugins/ktstandard/workflow/TypeAssociator.php');
+require_once(KT_DIR . '/plugins/ktstandard/workflow/FolderAssociator.php');
 
 ?>
