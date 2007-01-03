@@ -41,6 +41,7 @@ function setupAdminDatabase() {
         'password' => $default->dbAdminPass,
         'hostspec' => $default->dbHost,
         'database' => $default->dbName,
+        'port' => $default->dbPort,
     );
 
     $options = array(
