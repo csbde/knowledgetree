@@ -12,10 +12,6 @@ ALTER TABLE authentication_sources MODIFY authentication_provider varbinary(255)
 ALTER TABLE authentication_sources MODIFY authentication_provider varchar(255) CHARACTER SET utf8;
 ALTER TABLE authentication_sources MODIFY config blob;
 ALTER TABLE authentication_sources MODIFY config text CHARACTER SET utf8;
-ALTER TABLE baobab_keys MODIFY license_id varbinary(50);
-ALTER TABLE baobab_keys MODIFY license_id varchar(50) CHARACTER SET utf8;
-ALTER TABLE baobab_keys MODIFY company_name varbinary(255);
-ALTER TABLE baobab_keys MODIFY company_name varchar(255) CHARACTER SET utf8;
 ALTER TABLE `comment_searchable_text` DROP INDEX `comment_search_text`;
 ALTER TABLE comment_searchable_text MODIFY body blob;
 ALTER TABLE comment_searchable_text MODIFY body text CHARACTER SET utf8;
