@@ -1234,7 +1234,7 @@ a.main_nav_item {
 
 .ktBlock, .ktInfo, .ktError { 
     background-repeat: repeat-x;
-    top left;
+    background-position: top left;
 }
 
 .ktInfo { 
