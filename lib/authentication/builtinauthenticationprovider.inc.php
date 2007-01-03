@@ -26,7 +26,7 @@
 
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
-require_once('DBAuthenticator.inc');
+require_once(KT_LIB_DIR . '/authentication/DBAuthenticator.inc');
 
 class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     var $sNamespace = "ktcore.authentication.builtin";
