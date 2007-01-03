@@ -128,6 +128,7 @@ class KTBulkMoveAction extends KTBulkAction {
         ));
 
         // Setup the collection for move display.
+        require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
         $collection = new AdvancedCollection();
 
         $oCR =& KTColumnRegistry::getSingleton();
