@@ -49,6 +49,7 @@ if (!defined('KT_DIR')) {
     $rootLoc = realpath(dirname(__FILE__) . '/..');
     if (OS_WINDOWS) {
             $rootLoc = str_replace('\\','/',$rootLoc);    
+            $rootLoc = strtolower($rootLoc);
     }
     define('KT_DIR', $rootLoc);
 }
