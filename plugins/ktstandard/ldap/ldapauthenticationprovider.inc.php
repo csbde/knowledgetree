@@ -26,8 +26,8 @@
 
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
-require_once("Net/LDAP.php");
-require_once("ldapbaseauthenticationprovider.inc.php");
+require_once('Net/LDAP.php');
+require_once(KT_DIR . '/plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php');
 
 class KTLDAPAuthenticationProvider extends KTLDAPBaseAuthenticationProvider {
     var $sNamespace = "ktstandard.authentication.ldapprovider";
