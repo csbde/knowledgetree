@@ -25,13 +25,13 @@
  */
 
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once('KTSubscriptions.php');
-require_once('KTDiscussion.php');
-require_once('KTEmail.php');
-require_once('KTIndexer.php');
-require_once('KTDocumentLinks.php');
-require_once('KTWorkflowAssociation.php');
-require_once('KTDisclaimers.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTSubscriptions.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTDiscussion.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTEmail.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTIndexer.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTDocumentLinks.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTWorkflowAssociation.php');
+require_once(KT_DIR . '/plugins/ktstandard/KTDisclaimers.php');
 
 
 ?>
