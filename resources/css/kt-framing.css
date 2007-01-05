@@ -1343,7 +1343,6 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     cursor: pointer;
 }
 
-
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
 .ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.png); }
 .ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.png); }
