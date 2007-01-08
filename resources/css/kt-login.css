@@ -42,6 +42,15 @@
             height: 3px; 
         }
 
+        #loginbox.hasDisclaimer #loginboxTopMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_repeat.png) top left repeat-x;
+            top:0;
+            left:35px;
+            width: 520px;
+            height: 3px; 
+        }
+
         #loginboxTopRight {
             position: absolute;
             background: url(../graphics/login_corner_topright.gif) top right no-repeat;
@@ -69,6 +78,15 @@
             height: 3px;
         }
 
+        #loginbox.hasDisclaimer #loginboxBottomMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
+            bottom: 0;
+            left: 35px;
+            width: 520px;
+            height: 3px;
+        }
+
         #loginboxBottomRight {
             position: absolute;
             background: url(../graphics/login_corner_bottomright.gif) bottom left no-repeat;
@@ -86,6 +104,10 @@
             width: 3px;
             height: 405px;
         }
+
+        #loginbox.hasDisclaimer #loginboxLeftTop {
+            height: 200px;
+        }
         
         #loginboxLeftBottom {
             position: absolute;
@@ -94,6 +116,10 @@
             left: 0;
             width: 3px;
             height: 405px;
+        }
+
+        #loginbox.hasDisclaimer #loginboxLeftBottom {
+            height: 200px;
         }
 
         #loginboxRightTop {
@@ -105,6 +131,10 @@
             height: 405px;
         }
 
+        #loginbox.hasDisclaimer #loginboxRightTop {
+            height: 200px;
+        }
+
         #loginboxRightBottom {
             position: absolute;
             background: url(../graphics/login_border_right.png) top right repeat-y;
@@ -114,8 +144,12 @@
             height: 405px;
         }
 
+        #loginbox.hasDisclaimer #loginboxRightBottom {
+            height: 200px;
+        }
 
-        #loginbox.hasDisclaimer { 
+        #loginbox.hasDisclaimer {
+            background: white url(../graphics/ktbg.png) bottom left repeat-x;
             width: 564px;
         }
 
@@ -166,6 +200,11 @@
             text-align: right;
         }
 
+        #loginbox.hasDisclaimer .form_actions {
+            padding: 1em 0 6em 0;
+            border-width: 0 0 0 0;
+        }
+
         .form_actions input {
             width: auto;
         }
@@ -198,4 +237,12 @@
 .ktError p {
     padding-left: 25px;
     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+}
+
+.floatClear
+{
+    clear: both;
+    height: 1px !important;
+    margin: 0; border: 0; padding: 0;
+    width: 1px;
 }
