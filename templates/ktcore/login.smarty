@@ -68,7 +68,7 @@
         <div id="loginboxRightTop"></div>
         <div id="loginboxLeftBottom"></div>
         <div id="loginboxRightBottom"></div>
-
+        <div class="floatClear"></div>
     </div>
 
 
