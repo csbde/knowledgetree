@@ -10622,3 +10622,15 @@ msgstr ""
 #: plugins/ktstandard/KTDocumentLinksColumns.php:52
 msgid "you cannot link to the source document"
 msgstr ""
+
+#: plugins/ktstandard/SearchDashlet.php:30
+msgid "Search Dashlet"
+msgstr ""
+
+#: plugins/ktcore/KTDashlets.php:43
+msgid "Welcome to KnowledgeTree"
+msgstr ""
+
+#: plugins/ktcore/KTPortlets.php:74
+msgid "Browse by..."
+msgstr ""
