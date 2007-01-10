@@ -80,6 +80,7 @@ class KTInfoDashlet extends KTBaseDashlet {
         
         $this->aHelpInfo = $aHelpInfo;
         $this->canEdit = $can_edit;
+        $this->sTitle = $this->aHelpInfo['title'];
         
         return true;
     }
@@ -87,9 +88,7 @@ class KTInfoDashlet extends KTBaseDashlet {
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/kt3release");
-        
-        $this->sTitle = $this->aHelpInfo['title'];
-        
+              
         $aTemplateData = array(
             'title' => $this->aHelpInfo['title'],
             'body' => $this->aHelpInfo['body'],
