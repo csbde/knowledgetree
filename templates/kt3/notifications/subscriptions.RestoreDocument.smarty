@@ -1,7 +1,7 @@
 <dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    The document "{$info.object_name}" has been restored by an administrator.
+    {i18n arg_object_name=$info.object_name}The document "#object_name#" has been restored by an administrator.{/i18n}
     <div class="actionoptions">    
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}">{i18n}Clear Alert{/i18n}</a>
     </div>

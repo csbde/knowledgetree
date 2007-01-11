@@ -1,8 +1,7 @@
 <dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    The document "{$info.object_name}" has been checked in{if ($info.has_actor)} 
-	by {$info.actor_name}{/if}, in the folder "{$info.location_name}".
+    {i18n arg_object_name=$info.object_name}The document "#object_name#" has been checked in{/i18n}{if ($info.has_actor)} {i18n arg_actor_name=$info.actor_name}by #actor_name#{/i18n}{/if}{if ($info.location_name !== null)}, {i18n arg_location_name=$info.location_name}in the folder "#location_name#"{/i18n}{/if}.
     <div class="actionoptions">    
         {if !$is_broken}
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Document{/i18n}</a>
