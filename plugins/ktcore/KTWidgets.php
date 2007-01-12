@@ -697,7 +697,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         $oCollection->_queryObj->folder_id = $oFolder->getId();
                 
         $aOptions = $oCollection->getEnvironOptions();
-        $aOptions['return_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], array('code'=>$sCode, 'varname' => $sName));
+        $aOptions['return_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], array('code'=>$sCode, 'varname' => $sName, 'fFolderId' => $oFolder->getId()));
     
         $oCollection->setOptions($aOptions);
     
