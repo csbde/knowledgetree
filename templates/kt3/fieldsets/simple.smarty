@@ -8,7 +8,7 @@
       {foreach item=aFieldPair from=$fieldset_values name=fields}
     <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
         <th>{$aFieldPair.field->getName()}</th>
-        <td>{if ($aFieldPair.value !== null)}{$aFieldPair.value}
+        <td>{if ($aFieldPair.value !== null)}{$aFieldPair.value|escape:"htmlall"}
             {else}<span class="descriptiveText">{i18n}no value{/i18n}</span>{/if}</td>
     </tr>
       {/foreach}

@@ -2,7 +2,7 @@
     <legend>{$title}</legend>
     <input type="hidden" class="fixed" name="fieldset" value="{$fieldset_id}" />
     <p class="descriptiveText">
-        {$description}
+        {$description|escape:"htmlall"}
     </p>
     
     <div class="conditional_target">
