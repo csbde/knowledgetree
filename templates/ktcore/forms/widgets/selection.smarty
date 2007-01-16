@@ -6,11 +6,11 @@
     {if $options.multi}multiple="true"{/if} 
     >
     {if $options.initial_string}
-    <option value="">{$options.initial_string|htmlentities}</option>
+    <option value="">{$options.initial_string}</option>
     {/if}    
   {foreach item=lookup key=lookup_key from=$vocab}
 
-       <option value="{$lookup_key|htmlentities}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup|htmlentities}</option>
+       <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>
   {/foreach}
   </select>
 {/if}
