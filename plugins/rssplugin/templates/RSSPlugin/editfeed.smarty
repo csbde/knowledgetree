@@ -1,0 +1,37 @@
+{$context->oPage->requireJSResource("thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js")}
+{capture assign=sJS}
+{literal}
+tinyMCE.init({
+		mode : "textareas",
+		theme : "simple",
+});
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
+
+
+
+<h2>{i18n}Edit RSS Feed{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Edit a RSS feed{/i18n}</p>
+
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="updateFeed" />
+   <input type="hidden" name="feed_id" value="{$feed_id}" />
+   <fieldset>
+      <legend>{i18n}Edit RSS feed{/i18n}</legend>
+      {foreach item=oWidget from=$add_fields}
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="{i18n}Save changes{/i18n}" />
+         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+      </div>
+   </fieldset>
+   </form>
+
+
+
+
+
+
