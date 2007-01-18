@@ -2540,4 +2540,19 @@ ALTER TABLE `workflow_transitions`
 ALTER TABLE `workflows`
   ADD CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`);
 
+
+CREATE TABLE `plugin_rss` 
+( `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `url` varchar(200) NOT NULL,
+  `title` varchar(20) NOT NULL,
+  PRIMARY KEY  (`id`)) 
+ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `zseq_plugin_rss` 
+(
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
+   PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
 SET FOREIGN_KEY_CHECKS=1;
