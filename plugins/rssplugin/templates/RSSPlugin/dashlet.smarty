@@ -1,0 +1,100 @@
+<div>
+	{literal}
+	<script>
+	    var currloc = location.pathname.substring(0,location.pathname.lastIndexOf('/')+1);
+	    // Loadfeed function that is called by event
+		function loadFeed(){
+			xmlHttp=GetXmlHttpObject();
+			if (xmlHttp===null){
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			var feed = document.nullForm.feedSelect.options[document.nullForm.feedSelect.options.selectedIndex].value;
+			// First check if there is a feed - in the event the 'Select feed' option was selected
+			if(feed !== 'null'){
+				var url=currloc+"plugins/rssplugin/loadFeed.inc.php";
+				url=url+"?feed="+feed;
+				url=url+"&user="+{/literal}{$user}{literal};
+				url=url+"&sid="+Math.random();
+				xmlHttp.onreadystatechange=stateChanged;
+				xmlHttp.open("GET",url,true);
+				xmlHttp.send(null);
+			}
+		}
+		
+		function stateChanged(){ 
+			if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete"){ 
+				document.getElementById("rssBlock").innerHTML=xmlHttp.responseText;
+			}else{
+			    document.getElementById("rssBlock").innerHTML="Loading feed...";
+			}
+		} 
+		
+		function GetXmlHttpObject(){ 
+			var objXMLHttp=null;
+			if (window.XMLHttpRequest){
+				objXMLHttp=new XMLHttpRequest();
+			}else if (window.ActiveXObject){
+				objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			return objXMLHttp;
+		}
+	</script>
+	{/literal}
+	{if $internalrss or $feedlist}
+	<form name='nullForm' id='nullForm' action=''>
+	<select id='feedSelect' name='feedSelect' onchange='loadFeed()'>
+		{if $internalrss}
+			<option selected='selected' value='{$internalrss}'>KnowledgeTree RSS</option>
+		{else}
+			<option selected='selected' value='null'>Select External RSS Feed</option>
+		{/if}
+		{if $feedlist}
+		{section name=feed loop=$feedlist}
+		<option value='{$feedlist[feed].url}'>{$feedlist[feed].title}</option>
+		{/section}
+		{/if}
+	</select>
+	{if ($action.url)}<a href="{$action.url}"
+{if $action.description}title="{$action.description}"{/if}
+     >{$action.name}</a>{else}{$action.name}{/if}
+	</form>
+	{/if}
+</div>
+<div id="rssBlock">
+	{if ($internalrss)}
+	<h3>{$internalrss.channel.title}</h3>
+ 	<div class='outerContainer' id='outerContainer'>
+		<table width='80%'>
+		    {section name=i start=0 loop=$itemcount}
+			<tr>
+				<td colspan='2'><strong>{$internalrss.items[i].title}<strong></td>
+			</tr>
+			<tr>
+				<td>{$internalrss.items[i].description}</td>
+				<td>{$internalrss.items[i].pubDate}</td>
+			</tr>
+			<tr>
+				<td colspan='2'><a href='{$internalrss.items[i].link}'>...full story</a></td>
+			</tr>
+			<tr><td colspan='2'><hr><br></td></tr>
+			{/section}
+		</table>
+	</div>
+	{else}
+		{if !$feedlist}
+			{if ($action.url)}<a href="{$action.url}"
+				{if $action.description}title="{$action.description}"{/if}>{$action.name}</a><br>{else}{$action.name}
+	    	{/if}
+    	{/if}
+		<br>No internal {if !$feedlist}or external {/if}feeds available.
+		<br>
+		<br>
+	{/if}
+</div>
+
+
+
+
+
+

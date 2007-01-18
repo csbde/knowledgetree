@@ -1,0 +1,36 @@
+<h2>{i18n}Manage RSS Feeds{/i18n}</h2>
+<fieldset>
+<legend>{i18n}Add RSS feeds{/i18n}</legend>
+<p class="descriptiveText">{i18n}These RSS feeds will be viewable on your dashboard.{/i18n}</p>
+<p><a class="ktAction ktInline ktAdd" href="{addQS}action=addFeed{/addQS}">&nbsp;</a><a href="{addQS}action=addFeed{/addQS}">{i18n}Create a link to a new RSS feed{/i18n}</a></p>
+</fieldset>
+
+{if empty($feedlist)}
+<div class="ktInfo"><p>{i18n}Your RSS feed list is empty.{/i18n}</p></div>
+{else}
+<table class="listing">
+<thead>
+   <tr>
+      <th>{i18n}Title{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
+   </tr>
+</thead>
+
+
+<tbody>
+{section name=feed loop=$feedlist}
+    <tr>
+        <td>{$feedlist[feed].title}</td>
+		<td><a href="{addQS}action=editFeed&feed_id={$feedlist[feed].id}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+		<td><a href="{addQS}action=deleteFeed&feed_id={$feedlist[feed].id}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+    </tr>
+{/section}
+</tbody>
+</table>
+{/if}
+
+
+
+
+
