@@ -25,7 +25,7 @@ class RSSDocumentLinkAction extends KTDocumentAction {
         $iFId = $oDocument->getID();
         
         // return link...there MIGHT be a nicer way of doing this?
-        return "<a href='".KTBrowseUtil::buildBaseUrl('rss')."?folderId=".$iFId."' target='_blank'><img src='".$hostPath."resources/graphics/rss.gif' alt='RSS' border=0/></a>";
+        return "<a href='".KTBrowseUtil::buildBaseUrl('rss')."?docId=".$iFId."' target='_blank'><img src='".$hostPath."resources/graphics/rss.gif' alt='RSS' border=0/></a>";
     }
 }
 ?>
