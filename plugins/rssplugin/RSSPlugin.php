@@ -9,6 +9,8 @@
 require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once('manageRSSFeeds.php');
+require_once('RSSFolderLinkAction.php');
+require_once('RSSDocumentLinkAction.php');
 
 
  class RSSPlugin extends KTPlugin
@@ -23,6 +25,8 @@ require_once('manageRSSFeeds.php');
     }
     
     function setup() {
+		$this->registerAction('folderaction', 'RSSFolderLinkAction', 'ktcore.rss.plugin.folder.link', $sFilename = null);
+		$this->registerAction('documentaction', 'RSSDocumentLinkAction', 'ktcore.rss.document.plugin', $sFilename = null);
 		$this->registerDashlet('RSSDashlet', 'ktcore.rss.feed.dashlet', 'RSSDashlet.php');
 		$this->registerPage('managerssfeeds', 'ManageRSSFeedsDispatcher');
 		

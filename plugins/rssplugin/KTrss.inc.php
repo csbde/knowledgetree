@@ -6,7 +6,30 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 
-class KTrss extends KTEntity {
+// boilerplate.
+require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+require_once(KT_LIB_DIR . "/dispatcher.inc.php");
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
+require_once(KT_LIB_DIR . "/database/dbutil.inc");
+
+// document related includes
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentFieldLink.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/documentmetadataversion.inc.php");
+require_once(KT_LIB_DIR . "/documentmanagement/documentcontentversion.inc.php");
+require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
+require_once(KT_LIB_DIR . "/security/Permission.inc");
+
+// widget includes.
+require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
+require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
+require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
+require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
+require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
+
+class KTrss{
     // Gets a listing of external feeds for user
     function getExternalFeedsList($iUserId){
     	$sQuery = "SELECT id, url, title FROM plugin_rss WHERE user_id = ?";
@@ -107,10 +130,49 @@ class KTrss extends KTEntity {
 		        if($aFoldersInfo){
 		        	$aFolders[] = $aFoldersInfo;
 		        }
-		        
 	    	}
     	}
     	if (PEAR::isError($aFolders)) {
+            // XXX: log error
+            return false;
+        }
+        if ($aFolders){
+            return $aFolders;
+        }
+    }
+    
+    function getOneDocument($iDocumentId){
+		$sQuery = "SELECT dt.document_id AS id, dt.datetime AS date, dt.comment AS transaction, dmv.name AS name " .
+				"FROM document_metadata_version AS dmv, document_transactions AS dt " .
+				"WHERE dmv.document_id = dt.document_id " .
+				"AND dt.document_id = ? " .
+				"ORDER BY date DESC ";
+        $aParams = array($iDocumentId);
+        $aDocumentInfo = DBUtil::getResultArray(array($sQuery, $aParams));
+        if($aDocumentInfo){
+        	$aDocuments[] = $aDocumentInfo;
+        }
+    	if (PEAR::isError($aDocumentInfo)) {
+            return false;
+        }
+        if ($aDocuments){
+            return $aDocuments;
+        }
+    }
+    
+    function getOneFolder($iFolderId){
+    	$sQuery = "SELECT ft.folder_id AS id, ft.datetime AS date, ft.comment AS transaction, f.name AS name " .
+    			"FROM folders AS f, folder_transactions AS ft " .
+    			"WHERE ft.folder_id = f.id " .
+    			"AND f.id = ? " .
+    			"ORDER BY date DESC " .
+    			"LIMIT 1";
+        $aParams = array($iFolderId);
+        $aFoldersInfo = DBUtil::getResultArray(array($sQuery, $aParams));
+        if($aFoldersInfo){
+        	$aFolders[] = $aFoldersInfo;
+        }
+        if (PEAR::isError($aFoldersInfo)) {
             // XXX: log error
             return false;
         }
@@ -124,29 +186,61 @@ class KTrss extends KTEntity {
     	// Build path to host
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
     	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
-    	$feed = "<?xml version=\"1.0\"?>";
-    	$feed .= "<rss version=\"2.0\">".
-    			 "<channel>" .
-	    			"<title>KnowledgeTree RSS</title>" .
-	    			"<copyright>(c) 2006 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved - KnowledgeTree Version: OSS 3.3 beta 7</copyright>" .
-	    			"<link>".$hostPath."</link>" .
-	    			"<description>KT-RSS</description>" .
-	    			"<image>".
-					"<title>KNowledgeTree RSS</title>".
-					"<width>140</width>".
+    	$feed = "<?xml version=\"1.0\"?>\n";
+    	$feed .= "<rss version=\"2.0\">\n".
+    			 "<channel>\n" .
+	    			"<title>KnowledgeTree RSS</title>\n" .
+	    			"<copyright>(c) 2006 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved - KnowledgeTree Version: OSS 3.3 beta 7</copyright>\n" .
+	    			"<link>".$hostPath."</link>\n" .
+	    			"<description>KT-RSS</description>\n" .
+	    			"<image>\n".
+					"<title>KNowledgeTree RSS</title>\n".
+					"<width>140</width>\n".
 					"<height>28</height>".
-					"<link>".$hostPath."knowledgeTree/</link>".
-					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>".
-					"</image>";
+					"<link>".$hostPath."knowledgeTree/</link>\n".
+					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
+					"</image>\n";
 	    foreach($aItems as $item){
 	    	$feed .= "<item>" .
-	    	         	"<title>".$item[0]['name']."</title>" .
-	    	         	"<link>".$hostPath."view.php?fDocumentId=".$item[0]['id']."</link>" .
-	    	         	"<description>".$item[0]['transaction']."</description>".
-	    			 "</item>";
+	    	         	"<title>".$item[0]['name']."</title>\n" .
+	    	         	"<link>".$hostPath."view.php?fDocumentId=".$item[0]['id']."</link>\n" .
+	    	         	"<description>".$item[0]['transaction']."</description>\n".
+	    			 "</item>\n";
 	    }
-	    $feed .= "</channel>" .
-	    		 "</rss>";
+	    $feed .= "</channel>\n" .
+	    		 "</rss>\n";
+	    		 
+	   return $feed;		
+    }
+    
+    // Takes in an array as a parameter and returns rss 2.0 compatible xml
+    function arrayToXMLSingle($aItems){
+    	// Build path to host
+    	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
+    	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	$feed = "<?xml version=\"1.0\"?>\n";
+    	$feed .= "<rss version=\"2.0\">\n".
+    			 "<channel>\n" .
+	    			"<title>KnowledgeTree RSS</title>\n" .
+	    			"<copyright>(c) 2006 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved - KnowledgeTree Version: OSS 3.3 beta 7</copyright>\n" .
+	    			"<link>".$hostPath."</link>\n" .
+	    			"<description>KT-RSS</description>\n" .
+	    			"<image>\n".
+					"<title>KNowledgeTree RSS</title>\n".
+					"<width>140</width>\n".
+					"<height>28</height>".
+					"<link>".$hostPath."knowledgeTree/</link>\n".
+					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
+					"</image>\n";
+	    foreach($aItems as $item){
+	    	$feed .= "<item>" .
+	    	         	"<title>".$item[0]['name']."</title>\n" .
+	    	         	"<link>".$hostPath."view.php?fDocumentId=".$item[0]['id']."</link>\n" .
+	    	         	"<description>".$item[0]['transaction']."</description>\n".
+	    			 "</item>\n";
+	    }
+	    $feed .= "</channel>\n" .
+	    		 "</rss>\n";
 	    		 
 	   return $feed;		
     }
@@ -206,5 +300,75 @@ class KTrss extends KTEntity {
 
         return $res;
     }
+    
+    // Should be removed...not being used anywhere
+    function authenticateFolder($iUserId, $iFolderId){
+    	$aFList = KTrss::getFolderList($iUserId);
+    	$result = false;
+    	if($aFList){
+	    	foreach($aFList as $folder_id){
+	    		if($folder_id == $iFolderId){
+	    			$result = true;
+	    		}
+	    	}
+    	}
+    	
+    	return $result;
+    }
+    
+    // Should be removed...not being used anywhere
+    function authenticateDocument($iUserId ,$iDocumentId){
+    	$aDList = KTrss::getDocumentList($iUserId);
+    	$result = false;
+    	if($aDList){
+	    	foreach($aDList as $document_id){
+	    		if($document_id == $iDocumentId){
+	    			$result = true;
+	    		}
+	    	}
+    	}
+    	
+    	return $result;
+    }
+    
+    // Function to validate that a user has permissions for a specific document
+    function validateDocumentPermissions($iUserId, $iDocumentId){
+		// check if user id is in session. If not, set it
+		if(!isset($_SESSION["userID"])){
+			$_SESSION['userID'] = $iUserId;	
+		}
+		// get document object
+		$oDocument =& Document::get($iDocumentId);
+		if (PEAR::isError($oDocument)) {
+            return false;
+        }
+		
+		// check permissions for document
+		if(Permission::userHasDocumentReadPermission($oDocument)){
+		    return true;	
+		}else{
+			return false;
+		}
+	}
+	
+	// Function to validate that a user has permissions for a specific folder
+	function validateFolderPermissions($iUserId, $iFolderId){
+		// check if user id is in session. If not, set it
+		if(!isset($_SESSION["userID"])){
+			$_SESSION['userID'] = $iUserId;	
+		}
+		// get folder object
+		$oFolder = Folder::get($iFolderId);
+		if (PEAR::isError($oFolder)) {
+            return false;
+        }
+		
+		// check permissions for folder
+		if(Permission::userHasFolderReadPermission($oFolder)){
+		    return true;	
+		}else{
+			return false;
+		}
+	}
 }
 ?>
