@@ -1,0 +1,9 @@
+<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>Document RSS</h2>
+<p>
+You can copy the following link into any RSS aggregator to create a feed to the selected document.
+<ul>
+	<li>{$link}</li>
+</ul>
+Another way of quickly accessing a RSS feed for a document of folder is by RSS icon {$linkIcon},
+which you will find in your actions portlet on the left.
+</p>

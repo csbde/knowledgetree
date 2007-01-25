@@ -75,7 +75,7 @@
 				<td>{$internalrss.items[i].pubDate}</td>
 			</tr>
 			<tr>
-				<td colspan='2'><a href='{$internalrss.items[i].link}'>...full story</a></td>
+				<td colspan='2'><a href='{$internalrss.items[i].link}'>...read more story</a></td>
 			</tr>
 			<tr><td colspan='2'><hr><br></td></tr>
 			{/section}
