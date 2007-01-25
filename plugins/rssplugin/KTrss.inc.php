@@ -206,12 +206,41 @@ class KTrss{
 	    	}elseif($item['itemType'] == 'document'){
 	    		$sTypeSelect = 'document.transactionhistory&amp;fDocumentId';
 	    	}
-	    	$feed .= "<item>" .
+	    	$feed .= "<item>\n" .
 	    	         	"<title>".$item[0]['name']."</title>\n" .
 	    	         	"<link>".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$item[0]['id']."</link>\n" .
 	    	         	"<description>".$item[0]['transaction']."</description>\n".
 	    			 "</item>\n";
 	    }
+	    $feed .= "</channel>\n" .
+	    		 "</rss>\n";
+	    		 
+	   return $feed;		
+    }
+    
+    // Takes in an array as a parameter and returns rss2.0 compatible xml
+    function errorToXML($sError){
+    	// Build path to host
+    	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
+    	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	$feed = "<?xml version=\"1.0\"?>\n";
+    	$feed .= "<rss version=\"2.0\">\n".
+    			 "<channel>\n" .
+	    			"<title>KnowledgeTree RSS</title>\n" .
+	    			"<copyright>(c) 2006 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved - KnowledgeTree Version: OSS 3.3 beta 7</copyright>\n" .
+	    			"<link>".$hostPath."</link>\n" .
+	    			"<description>KT-RSS</description>\n" .
+	    			"<image>\n".
+					"<title>KNowledgeTree RSS</title>\n".
+					"<width>140</width>\n".
+					"<height>28</height>".
+					"<link>".$hostPath."knowledgeTree/</link>\n".
+					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
+					"</image>\n";
+    	$feed .= "<item>\n".
+    	         	"<title>Feed load error</title>\n" .
+    	         	"<description>".$sError."</description>\n".
+    			 "</item>\n";
 	    $feed .= "</channel>\n" .
 	    		 "</rss>\n";
 	    		 
