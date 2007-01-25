@@ -22,10 +22,6 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentcontentversion.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . "/security/Permission.inc");
 
-// widget includes.
-require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
-require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
-require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
 require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
@@ -100,7 +96,10 @@ class KTrss{
 		    			"LIMIT 1";
 		        $aParams = array($document_id, $iUserId);
 		        $aDocumentsInfo = DBUtil::getResultArray(array($sQuery, $aParams));
-		        $aDocuments[] = $aDocumentsInfo;
+		        $aDocumentsInfo['itemType'] = 'document';
+		        if($aDocumentsInfo){
+		        	$aDocuments[] = $aDocumentsInfo;
+		        }
 	    	}
     	}
     	if (PEAR::isError($aDocuments)) {
@@ -127,6 +126,7 @@ class KTrss{
 		    			"LIMIT 1";
 		        $aParams = array($folder_id, $iUserId);
 		        $aFoldersInfo = DBUtil::getResultArray(array($sQuery, $aParams));
+		        $aFoldersInfo['itemType'] = 'folder';
 		        if($aFoldersInfo){
 		        	$aFolders[] = $aFoldersInfo;
 		        }
@@ -201,41 +201,14 @@ class KTrss{
 					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
 					"</image>\n";
 	    foreach($aItems as $item){
+	    	if($item['itemType'] == 'folder'){
+	    		$sTypeSelect = 'folder.transactions&amp;fFolderId';
+	    	}elseif($item['itemType'] == 'document'){
+	    		$sTypeSelect = 'document.transactionhistory&amp;fDocumentId';
+	    	}
 	    	$feed .= "<item>" .
 	    	         	"<title>".$item[0]['name']."</title>\n" .
-	    	         	"<link>".$hostPath."view.php?fDocumentId=".$item[0]['id']."</link>\n" .
-	    	         	"<description>".$item[0]['transaction']."</description>\n".
-	    			 "</item>\n";
-	    }
-	    $feed .= "</channel>\n" .
-	    		 "</rss>\n";
-	    		 
-	   return $feed;		
-    }
-    
-    // Takes in an array as a parameter and returns rss 2.0 compatible xml
-    function arrayToXMLSingle($aItems){
-    	// Build path to host
-    	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
-    	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
-    	$feed = "<?xml version=\"1.0\"?>\n";
-    	$feed .= "<rss version=\"2.0\">\n".
-    			 "<channel>\n" .
-	    			"<title>KnowledgeTree RSS</title>\n" .
-	    			"<copyright>(c) 2006 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved - KnowledgeTree Version: OSS 3.3 beta 7</copyright>\n" .
-	    			"<link>".$hostPath."</link>\n" .
-	    			"<description>KT-RSS</description>\n" .
-	    			"<image>\n".
-					"<title>KNowledgeTree RSS</title>\n".
-					"<width>140</width>\n".
-					"<height>28</height>".
-					"<link>".$hostPath."knowledgeTree/</link>\n".
-					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
-					"</image>\n";
-	    foreach($aItems as $item){
-	    	$feed .= "<item>" .
-	    	         	"<title>".$item[0]['name']."</title>\n" .
-	    	         	"<link>".$hostPath."view.php?fDocumentId=".$item[0]['id']."</link>\n" .
+	    	         	"<link>".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$item[0]['id']."</link>\n" .
 	    	         	"<description>".$item[0]['transaction']."</description>\n".
 	    			 "</item>\n";
 	    }
@@ -370,5 +343,36 @@ class KTrss{
 			return false;
 		}
 	}
+	
+	function getRssLinkIcon(){
+    	// built server path
+        $sHostPath = "http://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/";
+        
+        // create image
+        $icon = "<img src='".$sHostPath."resources/graphics/rss.gif' alt='RSS' border=0/>";
+        
+        return $icon;
+    }
+    
+    function getRssLink($iItemId, $sItemType){
+        $item = strToLower($sItemType);
+        if($item == 'folder'){
+        	$sItemParameter = '?folderId';
+        }else if($item == 'document'){
+        	$sItemParameter = '?docId';
+        }
+        
+        // built server path
+        $sHostPath = "http://".$_SERVER['HTTP_HOST'];
+        
+        // build link
+    	$sLink = $sHostPath.KTBrowseUtil::buildBaseUrl('rss').$sItemParameter.'='.$iItemId;
+    	
+    	return $sLink;
+    }
+    
+    function getImageLink($iItemId, $sItemType){
+    	return "<a href='".KTrss::getRssLink($iItemId, $sItemType)."' target='_blank'>".KTrss::getRssLinkIcon()."</a>";
+    }
 }
 ?>
