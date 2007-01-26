@@ -65,19 +65,15 @@
 	{if ($internalrss)}
 	<h3>{$internalrss.channel.title}</h3>
  	<div class='outerContainer' id='outerContainer'>
-		<table width='80%'>
+		<table width='90%'>
 		    {section name=i start=0 loop=$itemcount}
 			<tr>
-				<td colspan='2'><strong>{$internalrss.items[i].title}<strong></td>
+				<td><strong><a href='{$internalrss.items[i].link}'>{$internalrss.items[i].title}</a><strong></td>
 			</tr>
 			<tr>
 				<td>{$internalrss.items[i].description}</td>
-				<td>{$internalrss.items[i].pubDate}</td>
 			</tr>
-			<tr>
-				<td colspan='2'><a href='{$internalrss.items[i].link}'>...read more story</a></td>
-			</tr>
-			<tr><td colspan='2'><hr><br></td></tr>
+			<tr><td><br></td></tr>
 			{/section}
 		</table>
 	</div>

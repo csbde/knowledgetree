@@ -17,6 +17,8 @@ require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
 require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
+require_once(KT_LIB_DIR . '/mime.inc.php');
+
 if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
    header('WWW-Authenticate: Basic realm="KnowledgeTree DMS"');
    header('HTTP/1.0 401 Unauthorized');
@@ -33,9 +35,9 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 		
 		if(KTrss::validateDocumentPermissions($id, $iDocumentId)){ // if document passes validation check
 			// get document info
-			$aDocumentInfo = KTrss::getOneDocument($iDocumentId);
+			$aDocumentInfo[] = KTrss::getOneDocument($iDocumentId, $id);
 			
-			if($aDocumentInfo){
+			if($aDocumentInfo){			
 				// create rss xml for document
 				$documentFeed = KTrss::arrayToXML($aDocumentInfo);
 			}else{
@@ -58,7 +60,7 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 
 		if(KTrss::validateFolderPermissions($id, $iFolderId)){ // if folder passes validation check
 			// get folder info
-			$aFolderInfo = KTrss::getOneFolder($iFolderId);
+			$aFolderInfo[] = KTrss::getOneFolder($iFolderId);
 			
 			if($aFolderInfo){
 				// create rss xml for folder
