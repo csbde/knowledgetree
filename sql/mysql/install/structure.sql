@@ -1178,7 +1178,7 @@ CREATE TABLE `status_lookup` (
 CREATE TABLE `system_settings` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
-  `value` char(255) NOT NULL default '',
+  `value` text NOT NULL default '',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

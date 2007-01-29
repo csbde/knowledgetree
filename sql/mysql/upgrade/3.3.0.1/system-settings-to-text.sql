@@ -1,1 +1,1 @@
-ALTER TABLE `system_settings` CHANGE VALUE VALUE TEXT;
+ALTER TABLE `system_settings` CHANGE value value TEXT;

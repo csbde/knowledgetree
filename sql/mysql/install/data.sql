@@ -907,6 +907,9 @@ INSERT INTO `upgrades` VALUES (126, 'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql'
 INSERT INTO `upgrades` VALUES (127, 'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql', 'Database upgrade to version 3.1.6.7: Sane-names-for-stuff', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (128, 'upgrade*3.1.6.7*99*upgrade3.1.6.7', 'Upgrade from version 3.1.2 to 3.1.6.7', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (129, 'upgrade*3.3.0.1*99*upgrade3.3.0.1', 'Upgrade from version 3.1.6.7 to 3.3.0.1', '2006-10-30 12:49:33', 1, 'upgrade*3.3.0.1*99*upgrade3.3.0.1');
+INSERT INTO `upgrades` VALUES (130, 'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql', 'Database upgrade to version 3.3.0.1: System-settings-to-text', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (131, 'sql*3.3.1*0*3.3.1/rss.sql', 'Database upgrade to version 3.3.1: Rss', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (132, 'upgrade*3.3.1*99*upgrade3.3.1', 'Upgrade from version 3.3.0.1 to 3.3.1', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
 
 -- 
 -- Dumping data for table `user_history`
