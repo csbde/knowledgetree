@@ -738,8 +738,8 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.3.0.1');
-INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.3.1');
+INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.3.1');
 
 -- 
 -- Dumping data for table `time_period`
