@@ -180,7 +180,7 @@ class Session {
         header("Cache-Control: must-revalidate");
         header("Expires: " . gmdate("D, d M Y H:i:s", time() - 3600) . " GMT");
         $sessionID = session_id();
-        $version = KTUtil::getSystemSetting('knowledgeTreeVersion');
+        $version = KTUtil::getSystemSetting('databaseVersion');
 
         if ($default->systemVersion != $version) {
             $default->log->info("Session::verify : Database not upgraded");
