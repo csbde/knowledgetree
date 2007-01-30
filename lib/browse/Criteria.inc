@@ -45,8 +45,6 @@ require_once(KT_LIB_DIR . '/browse/criteriaregistry.php');
 
 class BrowseCriterion {
     var $sDisplay;
-    var $sDocumentField;
-    var $sSortField;
     var $aLookup = null;
     var $bFolderCriterion = false;
     var $aOptions = array();
