@@ -132,7 +132,8 @@ class HelpDispatcher extends KTStandardDispatcher {
             $aTemplateData = array(
                   "context" => $this,
                   "help_body" => $aHelpData['body'],
-                  "target_name" => KTUtil::arrayGet($aLocInfo, 'internal'),
+				  "help_title" => $aHelpData['title'],
+				  "target_name" => KTUtil::arrayGet($aLocInfo, 'subpath'),
                   "back_key" => $sBackKey,
                   'can_edit' => $bCanEdit,
             );
