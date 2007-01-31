@@ -1473,7 +1473,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
 class KTOwnershipChangeAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.ownershipchange';
-    var $_sShowPermission = "ktcore.permissions.manageSecurity";
+    var $_sShowPermission = "ktcore.permissions.security";
 
     function getDisplayName() {
         return _kt('Change Document Ownership');
