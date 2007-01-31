@@ -97,13 +97,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $document_data = array();
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if ($document_id === null) {
-            $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+            $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
         // try get the document.
         $oDocument =& Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+            $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
         $document_id = $oDocument->getId();
@@ -146,7 +146,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $is_valid_doctype = true;
 
         if (PEAR::isError($document_data["document_type"])) {
-            $this->oPage->addError('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.');
+            $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
             $is_valid_doctype = false;
         }
 
@@ -248,7 +248,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $document_data = array();
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if ($document_id === null) {
-            $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+            $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
     
@@ -259,7 +259,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // try get the document.
         $oDocument =& Document::get($document_id, $base_version);
         if (PEAR::isError($oDocument)) {
-            $this->oPage->addError('The base document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
+            $this->oPage->addError(sprintf(_kt("The base document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
     
@@ -281,7 +281,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     
         $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
         if ($comparison_version=== null) {
-            $this->oPage->addError('No comparison version was requested.  Please <a href="' . KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id) . '">s elect a version</a>.');
+            $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id)));
             return $this->do_error();
         }
     
@@ -302,7 +302,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $is_valid_doctype = true;
     
         if (PEAR::isError($document_data["document_type"])) {
-            $this->oPage->addError('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display     it.');
+            $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
             $is_valid_doctype = false;
         }
     

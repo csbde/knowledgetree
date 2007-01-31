@@ -109,7 +109,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
             'fail_action' => 'setPassword',
             'cancel_action' => 'main',
             'label' => _kt('Change your password'),
-            'submit_label' => _kt('Set pasword'),
+            'submit_label' => _kt('Set password'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));                
         
