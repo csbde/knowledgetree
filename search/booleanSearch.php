@@ -112,6 +112,11 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             exit(0);
         }
         
+        if ($this->oUser->isAnonymous()) {
+            $this->errorRedirectTo('performSearch', _kt('Cannot save searches as anonymous user'), sprintf('boolean_search_id=%s', $sSearch));
+            exit(0);
+        }
+        
         $datavars = $_SESSION['boolean_search'][$sSearch];
             if (!is_array($datavars)) {
                 $datavars = unserialize($datavars);
