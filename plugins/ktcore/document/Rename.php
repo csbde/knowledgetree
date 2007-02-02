@@ -87,6 +87,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
         $aOptions = array(
             'redirect_to' => array('', sprintf('fDocumentId=%d', $this->oDocument->getId())),
             'message' => _kt("No filename given"),
+            'max_str_len' => 255,
         );
         $this->oValidator->validateString($sFilename, $aOptions);
         
