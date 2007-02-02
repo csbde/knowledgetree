@@ -53,7 +53,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $action = trim($action, "/");
         if (empty($action)) {
             $this->error = true;
-            $this->errorPage("No action given");
+            $this->errorPage(_kt("No action given"));
         }
         $oRegistry =& KTActionRegistry::getSingleton();
         $aActionInfo = $oRegistry->getActionByNsname($action);
