@@ -9,7 +9,7 @@
   <dt>{i18n arg_subject=$comment->getSubject() arg_author=$creator->getName() arg_date=$comment->getDate()}
     <span class="subject">#subject#</span>
     by
-    <span class="author">{#author#}</span>
+    <span class="author">#author#</span>
     <span class="date">(#date#)</span>
     {/i18n}
   </dt>

@@ -318,7 +318,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 	function resolveNotification($oKTNotification) {
 	    $notify_action = KTUtil::arrayGet($_REQUEST, 'notify_action', null);
 		if ($notify_action == 'clear') {
-		    $_SESSION['KTInfoMessage'][] = 'Cleared notification.';
+            $_SESSION['KTInfoMessage'][] = _kt('Cleared notification.');
 			$oKTNotification->delete();
 			exit(redirect(generateControllerLink('dashboard')));
 		}

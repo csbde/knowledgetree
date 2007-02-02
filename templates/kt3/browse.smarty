@@ -60,7 +60,7 @@
 {if ($save_fields)}
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <fieldset>
-<legend>Edit search</legend>
+<legend>{i18n}Edit search{/i18n}</legend>
 <p class="descriptiveText">{i18n}To modify this search, press the 'Edit' button.{/i18n}</p>
 <input type="hidden" name="action" value="editSearch" />
 <input type="hidden" name="boolean_search" value="{$boolean_search}" />
