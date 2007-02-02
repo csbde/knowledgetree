@@ -200,7 +200,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         }
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user_name = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
+           $modified_user_name = "<span class='ktError'>" . _kt("Unable to find the document's modifier") . "</span>";
         } else {
            $modified_user_name = $modified_user->getName();
         }
@@ -263,7 +263,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         $document_type = $aDocumentData["document_type"]->getName();
         $comparison_document_type = $aComparisonData["document_type"]->getName();
         
-        $modified_user =& User::get($document->getModifiedUserId());
+        $modified_user =& User::get($document->getVersionCreatorId());
         if (PEAR::isError($modified_user)) {
            $modified_user = "<span class='ktError'>" . _kt("Unable to find the document's modifier") . "</span>";
         } else {
@@ -279,9 +279,9 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 		
 
 
-        $comparison_modified_user =& User::get($comparison_document->getModifiedUserId());
+        $comparison_modified_user =& User::get($comparison_document->getVersionCreatorId());
         if (PEAR::isError($comparison_modified_user)) {
-           $comparison_modified_user = "<span class='ktError'>" . _kt("Unable to find the document's creator") . "</span>";
+           $comparison_modified_user = "<span class='ktError'>" . _kt("Unable to find the document's modifier") . "</span>";
         } else {
            $comparison_modified_user = $comparison_modified_user->getName();
         }
