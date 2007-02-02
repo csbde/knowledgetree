@@ -404,6 +404,15 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+        $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+        $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+        if (!empty($postExpected)) {
+            $aErrorOptions = array(
+                'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
+                'message' => sprintf(_kt('Upload larger than maximum POST size: %s (post_max_size variable in .htaccess or php.ini)'), ini_get('post_max_size')),
+            );
+            $this->oValidator->notEmpty($postReceived, $aErrorOptions);
+        }
         if (!$this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _kt("This document is not checked out");
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
@@ -423,6 +432,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $oForm->setOptions(array(
             'label' => _kt("Checkin Document"),
             'action' => 'checkin',
+            'actionparams' => 'postExpected=1&fDocumentId='.$this->oDocument->getId(),
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'submit_label' => _kt("Checkin"),
