@@ -123,12 +123,12 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     global $default;
     $oSendingUser = User::get($_SESSION["userID"]);
 
-    $sMessage = 'Your colleague, ' . $oSendingUser->getName() . ', wishes you to view the attached document entitled "' .  $sDocumentName . '".';
+    $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
     $sMessage .= "\n\n";
 	if (strlen($sComment) > 0) {
-		$sMessage .= "<br><br>Comments:<br>$sComment";
+		$sMessage .= "<br><br>" . _kt("Comments:") . "<br>" . $sComment;
 	}
-    $sTitle = "Document: " . $sDocumentName . " from " .  $oSendingUser->getName();
+    $sTitle = sprintf(_kt("Document: %s from %s"), $sDocumentName, $oSendingUser->getName());
 
     $sEmail = null;
     $sEmailFrom = null;
@@ -180,16 +180,17 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
     if ($sDestUserName) {
         $sMessage .= $sDestUserName . ",<br><br>";
     }
-	$sMessage .= "Your colleague, " . $oSendingUser->getName() . ", wishes you to view the document entitled '" . $sDocumentName . "'.\n  ";
-	$sMessage .= "Click on the hyperlink below to view it.";
+	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
+	$sMessage .= " \n";
+	$sMessage .= _kt("Click on the hyperlink below to view it.");
 	// add the link to the document to the mail
 	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName);
 	// add optional comment
 	if (strlen($sComment) > 0) {
-		$sMessage .= "<br><br>Comments:<br>$sComment";
+		$sMessage .= "<br><br>" . _kt("Comments:") . "<br>" . $sComment;
 	}
 	$sMessage .= "</font>";
-	$sTitle = "Link: " . $sDocumentName . " from " . $oSendingUser->getName();
+	$sTitle = sprintf(_kt("Link: %s from %s"), $sDocumentName, $oSendingUser->getName());
 	//email the hyperlink
     //
     $sEmail = null;
