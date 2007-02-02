@@ -188,7 +188,7 @@ class KTCoreSelectionWidget extends KTWidget {
 
             // make sure its the selected one if there's no value specified.
             if (empty($this->value)) {
-                $this->value = 0;
+                $this->value = "0";
             }
         }
 
