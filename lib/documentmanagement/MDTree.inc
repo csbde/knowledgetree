@@ -277,7 +277,7 @@ class MDTree {
 		    $extraclass = ' inactive';
 		}
 
-                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . 'Root</a>';
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }
