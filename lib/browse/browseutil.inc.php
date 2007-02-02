@@ -198,6 +198,10 @@ class KTBrowseUtil {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
+                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
+                if (!empty($sAction)) {
+                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+                }
                 if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
                     if (KTBrowseUtil::inAdminMode($oUser, $oThisFolder)) {
                         $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $folder_path_names[$index]));
@@ -206,16 +210,17 @@ class KTBrowseUtil {
                     }
                     continue;
                 }
-                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
-                if (!empty($sAction)) {
-                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
-                }
                 $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
             }
         }
 
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
+            $id = $oFolder->getId();
+            $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
+            if (!empty($sAction)) {
+                $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+            }
             if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oFolder)) {
                 if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
                     $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $oFolder->getName()));
@@ -225,11 +230,6 @@ class KTBrowseUtil {
             } else if ($bFinal) {
                 $aBreadcrumbs[] = array("name" => $oFolder->getName());
             } else {
-                $id = $oFolder->getId();
-                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
-                if (!empty($sAction)) {
-                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
-                }
                 $aBreadcrumbs[] = array("url" => $url, "name" => $oFolder->getName());
             }
         }
