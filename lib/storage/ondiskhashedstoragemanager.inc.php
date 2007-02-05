@@ -142,10 +142,16 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
         
         if (file_exists($sPath)) {
+
+            $oUrlEncodedFileName = $oDocument->getFileName( );
+            $browser = $_SERVER['HTTP_USER_AGENT'];
+            if ( strpos( strtoupper( $browser), 'MSIE') !== false) {
+                $oUrlEncodedFileName = rawurlencode( $oUrlEncodedFileName);
+            }
             //set the correct headers
             header("Content-Type: " . $mimetype);
             header("Content-Length: ". $oDocument->getFileSize());
-            header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
+            header("Content-Disposition: attachment; filename=\"" . $oUrlEncodedFileName . "\"");
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
