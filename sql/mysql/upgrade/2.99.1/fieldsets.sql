@@ -83,6 +83,13 @@ CREATE TABLE `zseq_fieldsets` (
 
 ALTER TABLE `document_fields` TYPE=InnoDB;
 ALTER TABLE `document_fields` ADD INDEX `parent_fieldset` (`parent_fieldset`);
+
+-- CLEAROUT ANY BROKEN RECORDS PRIOR TO ASSIGNING CONSTRAINT
+DELETE FROM `document_fields` as df USING `document_fields` as df, fieldsets
+	WHERE not exists(select 1 from `fieldsets` as f where df.parent_fieldset = f.id);
+        
+-- ADD CONSTRAINT
+
 ALTER TABLE `document_fields` ADD CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 ALTER TABLE `fieldsets` ADD COLUMN `is_complex` tinyint(1) NOT NULL default '0';
 ALTER TABLE `fieldsets` ADD COLUMN `is_complete` tinyint(1) NOT NULL default '1';
