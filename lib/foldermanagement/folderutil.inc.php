@@ -7,7 +7,7 @@
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.ktdms.com/KPL
+ * http://www.knowledgetree.com/KPL
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis,
