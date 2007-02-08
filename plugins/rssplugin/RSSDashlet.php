@@ -1,7 +1,6 @@
 <?php
 
 /**
- * $Id: TestDashlet.php,v 1.3 2006/02/28 16:53:49 nbm Exp $
  *
  * Copyright (c) 2006 Jam Warehouse http://www.jamwarehouse.com
  *
@@ -23,7 +22,7 @@
  * You can contact the copyright owner regarding licensing via the contact
  * details that can be found on the KnowledgeTree web site:
  *
- *         http://www.ktdms.com/
+ *         http://www.knowledgetree.com/
  */
 
 
