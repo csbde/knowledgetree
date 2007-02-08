@@ -13,9 +13,9 @@ KnowledgeTree Installation Notes
 
    Due to the many different configuration possibilities, these can not
    all be discussed here.  Please consult the KnowledgeTree Wiki system
-   at http://wiki.ktdms.com/ to see what others have done
+   at http://wiki.knowledgetree.com/ to see what others have done
    on your platform, and discuss the pros and cons of various options on
-   the KnowledgeTree Forums at http://forums.ktdms.com/
+   the KnowledgeTree Forums at http://forums.knowledgetree.com/
 
 *  Check the pre-installation checkup:
 
@@ -41,7 +41,7 @@ KnowledgeTree Installation Notes
    a password (-p, and you will be asked for the password).
 
    Using other tools is beyond the scope of this document.  Consult the
-   KnowledgeTree Wiki at http://wiki.ktdms.com/ to see how
+   KnowledgeTree Wiki at http://wiki.knowledgetree.com/ to see how
    others have approached this on your platform.
 
 *  Configure your installation in config/config.ini:
@@ -121,7 +121,7 @@ For the Windows platform, these are:
 . InfoZip unzip and zip - http://www.info-zip.org/
 
 Installing these packages is beyond the scope of this document - please
-consult the KnowledgeTree Wiki at http://wiki.ktdms.com/
+consult the KnowledgeTree Wiki at http://wiki.knowledgetree.com/
 to see how others have approached this on your platform.  We recommend
 that you use the appropriate package management procedures for
 installing these packages on your system to ensure ease of maintenance
@@ -139,12 +139,12 @@ Please make sure that your KnowledgeTree installation passes all the
 pre- and post-installation checkups first.
 
 Refer to the Frequently Asked Questions list on the KnowledgeTree Wiki
-at http://wiki.ktdms.com/
+at http://wiki.knowledgetree.com/
 
-Ask on the KnowledgeTree forums on http://forums.ktdms.com/.
+Ask on the KnowledgeTree forums on http://forums.knowledgetree.com/.
 
 If you have found a bug, please report it to the KnowledgeTree bug
-reporting system at http://issues.ktdms.com/.
+reporting system at http://issues.knowledgetree.com/.
 
 Upgrading
 ---------
@@ -154,9 +154,9 @@ Refer to docs/UPGRADE.txt
 
 
 KnowledgeTree Document Management System
-Web page: http://www.ktdms.com/
-Wiki: http://wiki.ktdms.com/
-Forums: http://forums.ktdms.com/
-Bug reporting: http://issues.ktdms.com/
+Web page: http://www.knowledgetree.com/
+Wiki: http://wiki.knowledgetree.com/
+Forums: http://forums.knowledgetree.com/
+Bug reporting: http://issues.knowledgetree.com/
 
 $Id$
