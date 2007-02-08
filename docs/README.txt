@@ -41,9 +41,9 @@ New and extended functionality includes:
 For installation instructions please refer to docs/INSTALL.txt
 
 KnowledgeTree Document Management System
-Web page: http://www.ktdms.com/
-Wiki: http://wiki.ktdms.com/
-Forums: http://forums.ktdms.com/
-Bug reporting: http://issues.ktdms.com/
+Web page: http://www.knowledgetree.com/
+Wiki: http://wiki.knowledgetree.com/
+Forums: http://forums.knowledgetree.com/
+Bug reporting: http://issues.knowledgetree.com/
 
 $Id$
