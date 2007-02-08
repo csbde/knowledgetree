@@ -3,7 +3,7 @@
 /**
  * $Id: criteriaregistry.php 5492 2006-06-04 20:50:43Z bryndivey $
  *
- * Copyright (c) 2006 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2007 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

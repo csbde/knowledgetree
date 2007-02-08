@@ -21,7 +21,7 @@ require_once(KT_LIB_DIR . "/authentication/Authenticator.inc");
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
- * (C) 2006 The Jam Warehouse Software (Pty) Ltd;
+ * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  *
  *
