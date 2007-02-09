@@ -130,7 +130,7 @@ msgid "%s is not an archived document. Aborting restore."
 msgstr ""
 
 #: i18n/templates.c:1427 i18n/templates.c:5345
-msgid "&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved"
+msgid "&copy; 2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved"
 msgstr ""
 
 #: plugins/ktcore/folder/BulkImport.php:63

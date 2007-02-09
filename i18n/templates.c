@@ -1424,7 +1424,7 @@ gettext("No items in the category.");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+gettext("&copy; 2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("KnowledgeTree Version: #version#");
@@ -5342,7 +5342,7 @@ gettext("login");
 gettext("KnowledgeTree Version");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
+gettext("&copy; 2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
 
 /* ./templates/ktcore/manage_permissions.smarty */
 gettext("Existing permissions");
