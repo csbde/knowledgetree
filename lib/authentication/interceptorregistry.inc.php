@@ -46,7 +46,7 @@ class KTInterceptorRegistry {
     }
     // }}}
 
-    function registerInterceptor($class, $nsname, $path = "", $sPlugin = null) {
+    function registerInterceptor($class, $nsname, $path = '', $sPlugin = null) {
         $this->_aInterceptorsInfo[$nsname] = array($class, $nsname, $path, $sPlugin);
     }
 
@@ -64,7 +64,7 @@ class KTInterceptorRegistry {
             }
         }
         if (!class_exists($sClass)) {
-            return PEAR::raiseError(sprintf(_kt("Can't find interceptor: %s"), $nsname));
+            return PEAR::raiseError(sprintf(_kt('Can\'t find interceptor: %s'), $nsname));
         }
         $oInterceptor =& new $sClass;
         if ($config) {
