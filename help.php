@@ -25,16 +25,16 @@
  */
 
 // main library routines and defaults
-require_once("config/dmsDefaults.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once(KT_LIB_DIR . "/util/ktutil.inc");
+require_once('config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-require_once(KT_LIB_DIR . "/security/Permission.inc");
+require_once(KT_LIB_DIR . '/security/Permission.inc');
 
-require_once(KT_LIB_DIR . "/help/helpreplacement.inc.php");
-require_once(KT_LIB_DIR . "/help/help.inc.php");
+require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
+require_once(KT_LIB_DIR . '/help/help.inc.php');
 
 /*
  *  KT3 Help functionality.
@@ -55,7 +55,7 @@ require_once(KT_LIB_DIR . "/help/help.inc.php");
 
 class HelpDispatcher extends KTStandardDispatcher {
 
-    var $sSection = "dashboard";
+    var $sSection = 'dashboard';
     var $bIsReplacement = false;
 
     function HelpDispatcher() {
@@ -130,11 +130,11 @@ class HelpDispatcher extends KTStandardDispatcher {
             $oTemplating =& KTTemplating::getSingleton();
             $oTemplate = $oTemplating->loadTemplate("ktcore/help_with_edit");
             $aTemplateData = array(
-                  "context" => $this,
-                  "help_body" => $aHelpData['body'],
-				  "help_title" => $aHelpData['title'],
-				  "target_name" => KTUtil::arrayGet($aLocInfo, 'subpath'),
-                  "back_key" => $sBackKey,
+                  'context' => $this,
+                  'help_body' => $aHelpData['body'],
+				  'help_title' => $aHelpData['title'],
+				  'target_name' => KTUtil::arrayGet($aLocInfo, 'subpath'),
+                  'back_key' => $sBackKey,
                   'can_edit' => $bCanEdit,
             );
             return $oTemplate->render($aTemplateData);
@@ -195,7 +195,7 @@ class HelpDispatcher extends KTStandardDispatcher {
             redirect($sReferer);
             exit(0);
         } else {
-            $this->errorRedirectToMain(_kt("Invalid return key from help system."));
+            $this->errorRedirectToMain(_kt('Invalid return key from help system.'));
         }        
     }
 }
