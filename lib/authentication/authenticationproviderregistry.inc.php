@@ -58,7 +58,7 @@ class KTAuthenticationProviderRegistry {
     }
     // }}}
 
-    function registerAuthenticationProvider($name, $class, $nsname, $path = "", $sPlugin = null) {
+    function registerAuthenticationProvider($name, $class, $nsname, $path = '', $sPlugin = null) {
         $this->_aAuthenticationProvidersInfo[$nsname] = array($name, $class, $nsname, $path, $sPlugin);
     }
 
