@@ -24,12 +24,12 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
-require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
 
 class KTBulkDeleteAction extends KTBulkAction {
     var $sName = 'ktcore.actions.bulk.delete';
-    var $_sPermission = "ktcore.permissions.delete";
+    var $_sPermission = 'ktcore.permissions.delete';
     var $_bMutator = true;
 
     function getDisplayName() {
@@ -40,8 +40,8 @@ class KTBulkDeleteAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.delete.form',
-            'label' => _kt("Delete Items"),
-            'submit_label' => _kt("Delete"),
+            'label' => _kt('Delete Items'),
+            'submit_label' => _kt('Delete'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
             'cancel_action' => 'main',
@@ -50,7 +50,7 @@ class KTBulkDeleteAction extends KTBulkAction {
         $oForm->setWidgets(array(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt("Reason"),
+                'label' => _kt('Reason'),
                 'description' => _kt('The reason for the deletion of these documents and folders for historical purposes.'),
                 'value' => null,
                 'required' => true,
@@ -108,7 +108,7 @@ class KTBulkDeleteAction extends KTBulkAction {
 
 class KTBulkMoveAction extends KTBulkAction {
     var $sName = 'ktcore.actions.bulk.move';
-    var $_sPermission = "ktcore.permissions.write";
+    var $_sPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
 
     function getDisplayName() {
@@ -119,8 +119,8 @@ class KTBulkMoveAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.move.form',
-            'label' => _kt("Move Items"),
-            'submit_label' => _kt("Move"),
+            'label' => _kt('Move Items'),
+            'submit_label' => _kt('Move'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
             'cancel_action' => 'main',
@@ -139,6 +139,18 @@ class KTBulkMoveAction extends KTBulkAction {
         $collection->addColumn($col);
 
         $qObj = new FolderBrowseQuery(1);
+        
+        $exclude=array();
+       
+        foreach( $this->oEntityList->aFolderIds as $folderid)
+        {
+        	$exclude[] = $folderid+0;
+        }
+        
+       	$qObj->exclude_folders = $exclude;
+        
+        
+        
         $collection->setQueryObject($qObj);
 
         $aOptions = $collection->getEnvironOptions();
@@ -164,7 +176,7 @@ class KTBulkMoveAction extends KTBulkAction {
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt("Reason"),
+                'label' => _kt('Reason'),
                 'description' => _kt('The reason for moving these documents and folders, for historical purposes.'),
                 'value' => null,
                 'required' => true,
@@ -221,7 +233,7 @@ class KTBulkMoveAction extends KTBulkAction {
         
         // does the user have write permission
         if(!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
-            $this->errorRedirectTo('collectinfo', _kt("You do not have permission to move items to this location"));
+            $this->errorRedirectTo('collectinfo', _kt('You do not have permission to move items to this location'));
         }        
 
         return parent::do_performaction();
