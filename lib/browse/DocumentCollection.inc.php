@@ -24,9 +24,9 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/templating/templating.inc.php"); 
-require_once(KT_LIB_DIR . "/documentmanagement/Document.inc"); 
-require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc"); 
+require_once(KT_LIB_DIR . '/templating/templating.inc.php'); 
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc'); 
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc'); 
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
 class DocumentCollection {
@@ -66,7 +66,7 @@ class DocumentCollection {
    /* initialisation */
    
    function DocumentCollection() {
-       $this->empty_message = _kt("No folders or documents in this location.");   
+       $this->empty_message = _kt('No folders or documents in this location.');   
    }
    
    // columns should be added in the "correct" order (e.g. display order)
@@ -90,8 +90,8 @@ class DocumentCollection {
       // FIXME affect the column based on this.
 	  
 	  // defaults
-	  $this->_sDocumentSortField = "DM.name";
-	  $this->_sFolderSortField = "F.name";
+	  $this->_sDocumentSortField = 'DM.name';
+	  $this->_sFolderSortField = 'F.name';
 	  
 	  // then we start.
       $this->sort_column = $sSortColumn; 
@@ -176,8 +176,8 @@ class DocumentCollection {
 	  }
 	  //var_dump($folderSet);
 	  $this->activeset = array(
-		 "folders" => $folderSet,
-		 "documents" => $documentSet,
+		 'folders' => $folderSet,
+		 'documents' => $documentSet,
 	  );
    }
 
@@ -191,9 +191,9 @@ class DocumentCollection {
       }
    }   
    function _retrieveDocumentInfo($iDocumentId) { 
-      $row_info = array("docid" => $iDocumentId);
-	  $row_info["type"] = "document";
-	  $row_info["document"] =& Document::get($iDocumentId);
+      $row_info = array('docid' => $iDocumentId);
+	  $row_info['type'] = 'document';
+	  $row_info['document'] =& Document::get($iDocumentId);
 	  
 	  return $row_info;
    }
@@ -210,9 +210,9 @@ class DocumentCollection {
    
    // FIXME get more folder info.
    function _retrieveFolderInfo($iFolderId) { 
-      $row_info = array("folderid" => $iFolderId);
-	  $row_info["type"] = "folder";
-	  $row_info["folder"] =& Folder::get($iFolderId);	  
+      $row_info = array('folderid' => $iFolderId);
+	  $row_info['type'] = 'folder';
+	  $row_info['folder'] =& Folder::get($iFolderId);	  
 	  
 	  return $row_info;
    }
@@ -221,7 +221,7 @@ class DocumentCollection {
    function renderRow($iDocumentId) { ; }
    // link url for a particular page.
    function pageLink($iPageNumber) { 
-	  return $this->returnURL . "&page=" . $iPageNumber . "&sort_on=" . $this->sort_column . "&sort_order=" . $this->sort_order; 
+	  return $this->returnURL . '&page=' . $iPageNumber . '&sort_on=' . $this->sort_column . '&sort_order=' . $this->sort_order; 
    }
    
    function render() {
@@ -233,13 +233,13 @@ class DocumentCollection {
 	  // FIXME expose the current set of rows to the document.
 	  
       $oTemplating =& KTTemplating::getSingleton();
-	  $oTemplate = $oTemplating->loadTemplate("kt3/document_collection");
+	  $oTemplate = $oTemplating->loadTemplate('kt3/document_collection');
 	  $aTemplateData = array(
-         "context" => $this,
-		 "pagecount" => $pagecount,
-		 "currentpage" => $this->batchPage,
-		 "returnURL" => $this->returnURL,
-		 "columncount" => count($this->columns),
+         'context' => $this,
+		 'pagecount' => $pagecount,
+		 'currentpage' => $this->batchPage,
+		 'returnURL' => $this->returnURL,
+		 'columncount' => count($this->columns),
 	  );
 	  
 	  // in order to allow OTHER things than batch to move us around, we do:
@@ -311,7 +311,7 @@ class AdvancedCollection {
         $this->is_browse = KTUtil::arrayGet($aOptions, 'is_browse', false);
         
         // sorting
-        $this->sort_column = KTUtil::arrayGet($aOptions, 'sort_on', "ktcore.columns.title");    
+        $this->sort_column = KTUtil::arrayGet($aOptions, 'sort_on', 'ktcore.columns.title');    
         $this->sort_order = KTUtil::arrayGet($aOptions, 'sort_order', 'asc');        
 
         // url options
@@ -321,7 +321,7 @@ class AdvancedCollection {
         }
         $this->returnURL = $sURL;
         
-        $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No folders or documents in this location."));
+        $this->empty_message = KTUtil::arrayGet($aOptions, 'empty_message', _kt('No folders or documents in this location.'));
     }   
     
     
@@ -331,10 +331,10 @@ class AdvancedCollection {
         $aNewOptions = array();
         
         // batching
-        $aNewOptions['batch_page'] = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $aNewOptions['batch_page'] = (int) KTUtil::arrayGet($_REQUEST, 'page', 0);
         
         // evil with cookies.
-        $batch_size = KTUtil::arrayGet($_REQUEST, "page_size");
+        $batch_size = KTUtil::arrayGet($_REQUEST, 'page_size');
         if (empty($batch_size)) {
             // try for a cookie
             $batch_size = KTUtil::arrayGet($_COOKIE, '__kt_batch_size', 25);
@@ -344,9 +344,9 @@ class AdvancedCollection {
         $aNewOptions['batch_size'] = (int) $batch_size;
         
         // ordering. (direction and column)
-        $aNewOptions['sort_on'] = KTUtil::arrayGet($_REQUEST, 'sort_on', "ktcore.columns.title");	   
-        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");		
-        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $aNewOptions['sort_on'] = KTUtil::arrayGet($_REQUEST, 'sort_on', 'ktcore.columns.title');	   
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', 'asc');		
+        if ($displayOrder !== 'asc') { $displayOrder = 'desc'; }
         $aNewOptions['sort_order'] = $displayOrder;
         
         // probably URL         
@@ -383,8 +383,8 @@ class AdvancedCollection {
         $this->_sorted = true;    
     
         // defaults
-        $this->_sDocumentSortField = "DM.name";
-        $this->_sFolderSortField = "F.name";        
+        $this->_sDocumentSortField = 'DM.name';
+        $this->_sFolderSortField = 'F.name';        
         
         foreach ($this->columns as $key => $oColumn) { 
             if ($oColumn->namespace == $this->sort_column) { 
@@ -501,13 +501,13 @@ class AdvancedCollection {
         }
 
         if (PEAR::isError($folderSet)) {
-            $_SESSION['KTErrorMessage'][] = sprintf(_kt("Failed to retrieve folders: %s"), $folderSet->getMessage());
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt('Failed to retrieve folders: %s'), $folderSet->getMessage());
             $folderSet = array();
             $this->folderCount = 0;
         }
 
         if (PEAR::isError($documentSet)) {
-            $_SESSION['KTErrorMessage'][] = sprintf(_kt("Failed to retrieve documents: %s"), $documentSet->getMessage());
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt('Failed to retrieve documents: %s'), $documentSet->getMessage());
             //var_dump($documentSet); exit(0);
             $documentSet = array();
             $this->documentCount = 0;
@@ -517,8 +517,8 @@ class AdvancedCollection {
         $this->itemCount = $this->documentCount + $this->folderCount;        
         
         $this->activeset = array(
-            "folders" => $folderSet,
-            "documents" => $documentSet,
+            'folders' => $folderSet,
+            'documents' => $documentSet,
         );
 
         $this->_gotInfo = true; // don't do this twice ...
@@ -535,9 +535,9 @@ class AdvancedCollection {
     }
       
     function _retrieveDocumentInfo($iDocumentId) { 
-        $row_info = array("docid" => $iDocumentId);
-        $row_info["type"] = "document";
-        $row_info["document"] =& Document::get($iDocumentId);
+        $row_info = array('docid' => $iDocumentId);
+        $row_info['type'] = 'document';
+        $row_info['document'] =& Document::get($iDocumentId);
         return $row_info;
     }
    
@@ -553,9 +553,9 @@ class AdvancedCollection {
    
     // FIXME get more folder info.
     function _retrieveFolderInfo($iFolderId) { 
-        $row_info = array("folderid" => $iFolderId);
-        $row_info["type"] = "folder";
-        $row_info["folder"] =& Folder::get($iFolderId);	  
+        $row_info = array('folderid' => $iFolderId);
+        $row_info['type'] = 'folder';
+        $row_info['folder'] =& Folder::get($iFolderId);	  
         
         return $row_info;
     }
@@ -565,7 +565,7 @@ class AdvancedCollection {
     
     // link url for a particular page.
     function pageLink($iPageNumber) { 
-        $qs = sprintf("page=%s&sort_on=%s&sort_order=%s", $iPageNumber, $this->sort_column, $this->sort_order);    
+        $qs = sprintf('page=%s&sort_on=%s&sort_order=%s', $iPageNumber, $this->sort_column, $this->sort_order);    
         return KTUtil::addQueryString($this->returnURL, $qs); 
     }
    
@@ -588,17 +588,17 @@ class AdvancedCollection {
 	  
 	    // ick.
 	    global $main;
-	    $main->requireJSResource("resources/js/browsehelper.js");
+	    $main->requireJSResource('resources/js/browsehelper.js');
 	  
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/document_collection");
+        $oTemplate = $oTemplating->loadTemplate('kt3/document_collection');
         $aTemplateData = array(
-            "context" => $this,
-            "pagecount" => $pagecount,
-		    "currentpage" => $this->batchPage,
-            "returnURL" => $this->returnURL,
-            "columncount" => count($this->columns),
-            "bIsBrowseCollection" => $this->is_browse,            
+            'context' => $this,
+            'pagecount' => $pagecount,
+		    'currentpage' => $this->batchPage,
+            'returnURL' => $this->returnURL,
+            'columncount' => count($this->columns),
+            'bIsBrowseCollection' => $this->is_browse,            
             'batch_size' => $this->batchSize,
         );
         
