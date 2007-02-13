@@ -35,7 +35,7 @@ class KTPortletRegistry {
     }
     // }}}
 
-    function registerPortlet($action, $name, $nsname, $path = "", $sPlugin = "") {
+    function registerPortlet($action, $name, $nsname, $path = '', $sPlugin = '') {
         if (!is_array($action)) {
             $action = array($action);
         }
