@@ -24,20 +24,20 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/users/User.inc");
-require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/ktentity.inc');
 
 class KTInterceptorInstance extends KTEntity {
     var $sName;
     var $sInterceptorNamespace;
     var $sAuthenticationProvider;
-    var $sConfig = "";
+    var $sConfig = '';
 
     var $_aFieldToSelect = array(
-        "iId" => "id",
-        "sName" => "name",
-        "sInterceptorNamespace" => "interceptor_namespace",
-        "sConfig" => "config",
+        'iId' => 'id',
+        'sName' => 'name',
+        'sInterceptorNamespace' => 'interceptor_namespace',
+        'sConfig' => 'config',
     );
 
     var $_bUsePearError = true;
