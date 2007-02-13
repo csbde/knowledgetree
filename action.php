@@ -50,16 +50,16 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $this->error = false;
         $action = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
         $action = trim($action);
-        $action = trim($action, "/");
+        $action = trim($action, '/');
         if (empty($action)) {
             $this->error = true;
-            $this->errorPage(_kt("No action given"));
+            $this->errorPage(_kt('No action given'));
         }
         $oRegistry =& KTActionRegistry::getSingleton();
         $aActionInfo = $oRegistry->getActionByNsname($action);
         if (empty($aActionInfo)) {
             $this->error = true;
-            $this->errorPage("No such action exists in KnowledgeTree");
+            $this->errorPage(_kt('No such action exists in KnowledgeTree'));
         }
         $sFilename = $aActionInfo[1];
         if (!empty($sFilename)) {
