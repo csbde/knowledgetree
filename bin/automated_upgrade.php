@@ -64,13 +64,13 @@ foreach ($upgrades as $step) {
         continue;
     }
     $res = $step->performUpgrade();
-    print "    RESULT: ";
+    print '    RESULT: ';
     if ($res === true) {
-        print "Success";
+        print 'Success';
     }
     if (PEAR::isError($res)) {
-        if (is_a($res, strtolower("Upgrade_Already_Applied"))) {
-            print "Already applied";
+        if (is_a($res, strtolower('Upgrade_Already_Applied'))) {
+            print 'Already applied';
         } else {
             print "ERROR\n";
             print $res->toString();
