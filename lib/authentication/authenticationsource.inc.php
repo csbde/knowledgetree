@@ -24,25 +24,25 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/users/User.inc");
-require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/ktentity.inc');
 
 class KTAuthenticationSource extends KTEntity {
     var $sName;
     var $sNamespace;
     var $sAuthenticationProvider;
-    var $sConfig = "";
+    var $sConfig = '';
     var $bIsUserSource = false;
     var $bIsGroupSource = false;
 
     var $_aFieldToSelect = array(
-        "iId" => "id",
-        "sName" => "name",
-        "sNamespace" => "namespace",
-        "sAuthenticationProvider" => "authentication_provider",
-        "sConfig" => "config",
-        "bIsUserSource" => "is_user_source",
-        "bIsGroupSource" => "is_group_source",
+        'iId' => 'id',
+        'sName' => 'name',
+        'sNamespace' => 'namespace',
+        'sAuthenticationProvider' => 'authentication_provider',
+        'sConfig' => 'config',
+        'bIsUserSource' => 'is_user_source',
+        'bIsGroupSource' => 'is_group_source',
     );
 
     var $_bUsePearError = true;
