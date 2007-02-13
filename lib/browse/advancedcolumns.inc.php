@@ -8,7 +8,7 @@ class AdvancedColumn {
 
     var $label = '';
     var $sort_on = false;
-    var $sort_direction = "asc";
+    var $sort_direction = 'asc';
     var $sortable = false;
     var $return_url = null;
     var $aOptions;
@@ -53,8 +53,8 @@ class AdvancedColumn {
         }
         
         // merge the sorting options into the header.        
-        $sort_order = $this->sort_direction == "asc" ? "desc" : "asc";
-        $qs = sprintf("sort_on=%s&sort_order=%s", $this->namespace, $sort_order);  
+        $sort_order = $this->sort_direction == 'asc' ? 'desc' : 'asc';
+        $qs = sprintf('sort_on=%s&sort_order=%s', $this->namespace, $sort_order);  
         if (is_null($this->return_url)) {
             $url = KTUtil::addQueryStringSelf($qs);
         } else {
@@ -65,10 +65,10 @@ class AdvancedColumn {
     }
     
     function renderData($aDataRow) { 
-       if ($aDataRow["type"] == "folder") {
-           return $this->name . ": ". $aDataRow["folder"]->getName();            
+       if ($aDataRow['type'] == 'folder') {
+           return $this->name . ': '. $aDataRow['folder']->getName();            
         } else {
-           return $this->name . ": ". $aDataRow["document"]->getName(); 
+           return $this->name . ': '. $aDataRow['document']->getName(); 
         }
     }
     
