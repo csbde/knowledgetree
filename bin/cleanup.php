@@ -131,7 +131,7 @@ function checkRepoDocument($oDocument) {
 function checkRepoVersions($oDocument) {
     global $fsPath, $aRepoVersionProblems;
     $table = 'document_transactions';
-    $aVersions = DBUtil::getResultArrayKey(array("SELECT DISTINCT version FROM $table WHERE document_id = ?", array($oDocument->getID())), "version");
+    $aVersions = DBUtil::getResultArrayKey(array("SELECT DISTINCT version FROM $table WHERE document_id = ?", array($oDocument->getID())), 'version');
     foreach($aVersions as $sVersion) {
         if ($sVersion == $oDocument->getVersion()) {
             continue;
