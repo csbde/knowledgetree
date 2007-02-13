@@ -47,7 +47,7 @@ unset($microtime_simple);
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
     $rootLoc = realpath(dirname(__FILE__) . '/..');
-    if (OS_WINDOWS) {
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
             $rootLoc = str_replace('\\','/',$rootLoc);    
     }
     define('KT_DIR', $rootLoc);
