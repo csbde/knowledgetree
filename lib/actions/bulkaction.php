@@ -43,7 +43,7 @@ class KTBulkAction extends KTStandardDispatcher {
     var $bAllowInAdminMode = false;
     var $sHelpPage = 'ktcore/browse.html';    
 
-    var $sSection = "view_details";
+    var $sSection = 'view_details';
 
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
@@ -82,14 +82,14 @@ class KTBulkAction extends KTStandardDispatcher {
 
     function getURL() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
-            return sprintf("%s/action%s/%s", $GLOBALS['KTRootUrl'], $sExt, $this->sName);
+        if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
+            return sprintf('%s/action%s/%s', $GLOBALS['KTRootUrl'], $sExt, $this->sName);
         } else {
-            return sprintf("%s/action%s?kt_path_info=%s", $GLOBALS['KTRootUrl'], $sExt, $this->sName);
+            return sprintf('%s/action%s?kt_path_info=%s', $GLOBALS['KTRootUrl'], $sExt, $this->sName);
         }
     }
 
@@ -153,9 +153,9 @@ class KTBulkAction extends KTStandardDispatcher {
         //$this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
         
         $aOptions = array(
-            "final" => false,
-            "documentaction" => "viewDocument",
-            "folderaction" => "browse",
+            'final' => false,
+            'documentaction' => 'viewDocument',
+            'folderaction' => 'browse',
         );
 
         $this->aBreadcrumbs = array(array('name'=>_kt('Bulk Actions')),
@@ -289,7 +289,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.listing.form',
-            'submit_label' => _kt("Continue"),
+            'submit_label' => _kt('Continue'),
             'targeturl' => $this->getURL(),
             'action' => 'collectinfo',
             'fail_action' => 'main',
@@ -325,7 +325,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.complete.form',
-            'submit_label' => _kt("Return"),
+            'submit_label' => _kt('Return'),
             'targeturl' => $sTargetUrl,
             'context' => $this,
             'action' => $sAction,
@@ -391,7 +391,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
     // override to do the actual action, on an individual entity
     function perform_action($oEntity) {
-        return PEAR::raiseError(_kt("Action component not implemented"));
+        return PEAR::raiseError(_kt('Action component not implemented'));
     }
 
     // check an individual entity - this should be overrided with additional
@@ -459,12 +459,12 @@ class KTBulkFolderAction extends KTBulkAction {
 // util class for bulk actions
 
 class KTBulkActionUtil {
-    function getBulkActionInfo($slot = "bulkaction") {
+    function getBulkActionInfo($slot = 'bulkaction') {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    function getAllBulkActions($slot = "bulkaction") {
+    function getAllBulkActions($slot = 'bulkaction') {
         $aObjects = array();
 
         foreach (KTBulkActionUtil::getBulkActionInfo($slot) as $aAction) {
@@ -479,7 +479,7 @@ class KTBulkActionUtil {
         return $aObjects;
     }
 
-    function getBulkActionsByNames($aNames, $slot = "bulkaction", $oUser = null) {
+    function getBulkActionsByNames($aNames, $slot = 'bulkaction', $oUser = null) {
         $aObjects = array();
         foreach (KTBulkActionUtil::getBulkActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
