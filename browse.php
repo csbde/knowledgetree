@@ -28,27 +28,27 @@
  */
 
 // main library routines and defaults
-require_once("config/dmsDefaults.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once(KT_LIB_DIR . "/util/ktutil.inc");
-require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
-require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
-require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
-require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
+require_once('config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
+require_once(KT_LIB_DIR . '/browse/BrowseColumns.inc.php');
+require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 
-require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
+require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/KTFolderActions.php');
 
-require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
-require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 
 require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
 
@@ -56,14 +56,14 @@ require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/entitylist.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
-$sectionName = "browse";
+$sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
 
     var $sName = 'ktcore.actions.folder.view';
 
     var $oFolder = null;
-    var $sSection = "browse";
+    var $sSection = 'browse';
     var $browse_mode = null;
     var $query = null;
     var $resultURL;
@@ -78,7 +78,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     }
     
     function check() {
-        $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', "folder"); 
+        $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder'); 
         $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
         $this->editable = false;
         
@@ -92,7 +92,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
         // folder browse mode
         if ($this->browse_mode == 'folder') {
-            $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId");
+            $in_folder_id = KTUtil::arrayGet($_REQUEST, 'fFolderId');
             if (empty($in_folder_id)) {
                 $oConfig = KTConfig::getSingleton();
                 if ($oConfig->get('tweaks/browseToUnitFolder')) {
@@ -146,7 +146,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 'ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder),
             );
             $this->oQuery =  new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
-            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fFolderId=%d", $oFolder->getId()));
+            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
             
             // and the portlets
             $portlet = new KTActionPortlet(sprintf(_kt('About this folder')));
@@ -183,7 +183,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
             $this->oQuery = new ValueBrowseQuery($oField, $oValue);
             $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
-                                                      sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value));
+                                                      sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value));
 
             // setup breadcrumbs
             $this->aBreadcrumbs = 
@@ -193,7 +193,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
                       array('name' => $oField->getName(), 
                             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId())),
                       array('name' => $oValue->getName(), 
-                            'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fBrowseMode=lookup_value&fField=%d&fValue=%d", $field, $value))));
+                            'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value))));
 
 
 
@@ -215,7 +215,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs[] = array('name' => _kt('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType')); 
             $this->aBreadcrumbs[] = array('name' => $oDocType->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'fBrowseMode=document_type&fType=' . $oDocType->getId())); 
             
-            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf("fType=%s&fBrowseMode=document_type", $doctype));;
+            $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fType=%s&fBrowseMode=document_type', $doctype));;
 
 
         } else {
@@ -248,10 +248,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/browse");
+        $oTemplate = $oTemplating->loadTemplate('kt3/browse');
         $aTemplateData = array(
-              "context" => $this,
-              "collection" => $collection,
+              'context' => $this,
+              'collection' => $collection,
               'browse_mode' => $this->browse_mode,
               'isEditable' => $this->editable,
               'bulkactions' => $aBulkActions,
@@ -277,10 +277,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $_REQUEST['fBrowseMode'] = 'lookup_value';
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_selection");
+        $oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_selection');
         $aTemplateData = array(
-              "context" => $this,
-              "fields" => $aFields,
+              'context' => $this,
+              'fields' => $aFields,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -298,11 +298,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $aValues = MetaData::getByDocumentField($oField);
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/browse_lookup_value");
+        $oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_value');
         $aTemplateData = array(
-              "context" => $this,
-              "oField" => $oField,
-              "values" => $aValues,
+              'context' => $this,
+              'oField' => $oField,
+              'values' => $aValues,
         );
         return $oTemplate->render($aTemplateData);
     }    
@@ -319,10 +319,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
         } 
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/browse_types");
+        $oTemplate = $oTemplating->loadTemplate('kt3/browse_types');
         $aTemplateData = array(
-              "context" => $this,
-              "document_types" => $aTypes,
+              'context' => $this,
+              'document_types' => $aTypes,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -345,7 +345,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         // log this entry
         $oLogEntry =& KTUserHistory::createFromArray(array(
             'userid' => $this->oUser->getId(),
-            'datetime' => date("Y-m-d H:i:s", time()),
+            'datetime' => date('Y-m-d H:i:s', time()),
             'actionnamespace' => 'ktcore.user_history.enable_admin_mode',
             'comments' => 'Admin Mode enabled',
             'sessionid' => $_SESSION['sessionID'],
@@ -389,7 +389,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         // log this entry
         $oLogEntry =& KTUserHistory::createFromArray(array(
             'userid' => $this->oUser->getId(),
-            'datetime' => date("Y-m-d H:i:s", time()),
+            'datetime' => date('Y-m-d H:i:s', time()),
             'actionnamespace' => 'ktcore.user_history.disable_admin_mode',
             'comments' => 'Admin Mode disabled',
             'sessionid' => $_SESSION['sessionID'],
