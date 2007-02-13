@@ -38,7 +38,7 @@ class KTFolderAction extends KTStandardDispatcher {
     
     var $_bAdminAlwaysAvailable = false;
 
-    var $sSection = "browse";
+    var $sSection = 'browse';
 
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
         parent::KTStandardDispatcher();    
@@ -80,14 +80,14 @@ class KTFolderAction extends KTStandardDispatcher {
 
     function getURL() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
-            return sprintf("%s/action%s/%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
+        if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
+            return sprintf('%s/action%s/%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
         } else {
-            return sprintf("%s/action%s?kt_path_info=%s&fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
+            return sprintf('%s/action%s?kt_path_info=%s&fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
         }
     }
 
@@ -129,9 +129,9 @@ class KTFolderAction extends KTStandardDispatcher {
         if (!$this->_show()) { return false; }
         
         $aOptions = array(
-            "final" => false,
-            "documentaction" => "viewDocument",
-            "folderaction" => "browse",
+            'final' => false,
+            'documentaction' => 'viewDocument',
+            'folderaction' => 'browse',
         );
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
@@ -160,7 +160,7 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function do_main() {
-        return _kt("Dispatcher component of action not implemented.");
+        return _kt('Dispatcher component of action not implemented.');
     }
 
 }
