@@ -29,10 +29,10 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once(KT_LIB_DIR . '/authentication/DBAuthenticator.inc');
 
 class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
-    var $sNamespace = "ktcore.authentication.builtin";
+    var $sNamespace = 'ktcore.authentication.builtin';
 
     function KTBuiltinAuthenticationProvider() {
-        $this->sName = _kt("Built-in authentication provider");
+        $this->sName = _kt('Built-in authentication provider');
         parent::KTAuthenticationProvider();
     }
 
@@ -45,7 +45,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function showUserSource($oUser, $oSource) {
         $sQuery = sprintf('action=editUserSource&user_id=%d', $oUser->getId());
         $sUrl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
-        return '<p class="descriptiveText"><a href="' . $sUrl . '">' . sprintf(_kt("Change %s's password"), $oUser->getName()) . '</a></p>';
+        return '<p class="descriptiveText"><a href="' . $sUrl . '">' . sprintf(_kt('Change %s\'s password'), $oUser->getName()) . '</a></p>';
     }
 
     function do_editUserSource() {
@@ -55,7 +55,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
 
     function editUserSource_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Change User Password'));
-        $this->oPage->setTitle(_kt("Change User Password"));
+        $this->oPage->setTitle(_kt('Change User Password'));
 
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& User::get($user_id);
@@ -68,11 +68,11 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         $edit_fields = array();
         $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);         $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true); 
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/updatepassword");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/principals/updatepassword');
         $aTemplateData = array(
-            "context" => $this,
-            "edit_fields" => $edit_fields,
-            "edit_user" => $oUser,
+            'context' => $this,
+            'edit_fields' => $edit_fields,
+            'edit_user' => $oUser,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -112,7 +112,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
 
         if ($restrictAdmin && (strlen($sPassword) < $minLength)) {
-            $this->errorRedirectToMain(sprintf(_kt("The password must be at least %d characters long."), $minLength));
+            $this->errorRedirectToMain(sprintf(_kt('The password must be at least %d characters long.'), $minLength));
         }
 
         $this->startTransaction();
@@ -160,8 +160,8 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
 
     function verify($oUser) {
         if (isset($_SESSION['mustChangePassword'])) {
-            $url = generateControllerUrl("login", "action=providerVerify&type=1");
-            $this->addErrorMessage(_kt("Your password has expired"));
+            $url = generateControllerUrl('login', 'action=providerVerify&type=1');
+            $this->addErrorMessage(_kt('Your password has expired'));
             redirect($url);
             exit(0);
         }
@@ -188,7 +188,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function providerVerify_return() {
         $url = KTUtil::arrayGet($_SESSION, 'providerVerifyReturnUrl');
         if (empty($url)) {
-            $url = generateControllerUrl("login");
+            $url = generateControllerUrl('login');
         }
         redirect($url);
         exit(0);
@@ -204,13 +204,13 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         $minLength = (int) $KTConfig->get('user_prefs/passwordLength', 6);
 
         if (strlen($sPassword) < $minLength) {
-            $this->errorRedirectTo('providerVerify', sprintf(_kt("The password must be at least %d characters long."), $minLength));
+            $this->errorRedirectTo('providerVerify', sprintf(_kt('The password must be at least %d characters long.'), $minLength));
         }
 
         $sNewMD5 = md5($sPassword);
         $sOldMD5 = $this->oUser->getPassword();
         if ($sNewMD5 == $sOldMD5) {
-            $this->errorRedirectTo('providerVerify', _kt("Can not use the same password as before."));
+            $this->errorRedirectTo('providerVerify', _kt('Can not use the same password as before.'));
         }
 
         // FIXME more validation would be useful.
@@ -264,7 +264,7 @@ class BuiltinAuthenticator extends Authenticator {
      */
     function getUser($sUserName, $aAttributes) {
         $sTable = KTUtil::getTableName('users'); 
-        $sQuery = "SELECT ";/*ok*/
+        $sQuery = 'SELECT ';/*ok*/
         $sQuery .= implode(', ', $aAttributes);
         $sQuery .= " FROM $sTable WHERE username = ?";
         $aParams = array($sUserName);
@@ -292,7 +292,7 @@ class BuiltinAuthenticator extends Authenticator {
      */
     function searchUsers($sUserNameSearch, $aAttributes) {
         $sTable = KTUtil::getTableName('users');
-        $sQuery = "SELECT "; /*ok*/
+        $sQuery = 'SELECT '; /*ok*/
         $sQuery .= implode(', ', $aAttributes); 
         $sQuery .= " FROM $sTable where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
 
