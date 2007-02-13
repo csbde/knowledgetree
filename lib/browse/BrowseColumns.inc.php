@@ -139,7 +139,7 @@ class TitleColumn extends BrowseColumn {
         } else {
            $outStr .= '<span class="contenttype '.$this->_mimeHelper($aDataRow['document']->getMimeTypeId()).'">';
            $outStr .= $this->renderDocumentLink($aDataRow);
-           $outStr .= ' (' . $this->prettySize($aDataRow["document"]->getSize()) . ')';
+           $outStr .= ' (' . $this->prettySize($aDataRow['document']->getSize()) . ')';
            $outStr .= '</span>';
         }
         //return $outStr;
@@ -237,7 +237,7 @@ class UserColumn extends BrowseColumn {
         if ($this->sort_on) {
             $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
-            $href .= $this->sort_direction = "asc";
+            $href .= $this->sort_direction = 'asc';
         }
         
         return '<a href="' . $href . '">'.$text.'</a>';
@@ -408,7 +408,7 @@ class DownloadColumn extends BrowseColumn {
 
         
         // only _ever_ show this folder documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow['type'] === 'folder') { 
             return '&nbsp;';
         }
     
