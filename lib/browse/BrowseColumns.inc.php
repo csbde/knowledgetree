@@ -36,7 +36,7 @@
  *  renderData returns the _content_ of the body row.
  */
  
-require_once(KT_LIB_DIR . "/database/dbutil.inc");
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
@@ -46,8 +46,8 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 class BrowseColumn {
     var $label = null;
     var $sort_on = false;
-    var $sort_direction = "asc";
-    var $name = "-";
+    var $sort_direction = 'asc';
+    var $name = '-';
     
     function BrowseColumn($sLabel, $sName) { 
        $this->label = $sLabel; 
@@ -55,22 +55,22 @@ class BrowseColumn {
     }
     // FIXME is it _really_ worth using a template here?
     function renderHeader($sReturnURL) { 
-        $text = _kt("Abstract") . ": " . $this->label; 
-        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $text = _kt('Abstract') . ': ' . $this->label; 
+        $href = $sReturnURL . '&sort_on=' . $this->name . '&sort_order=';
         if ($this->sort_on) {
-            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+            $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
-            $href .= $this->sort_direction = "asc";
+            $href .= $this->sort_direction = 'asc';
         }
         
         return '<a href="' . $href . '">'.$text.'</a>';        
     }
     
     function renderData($aDataRow) { 
-       if ($aDataRow["type"] == "folder") {
-           return $this->name . ": ". print_r($aDataRow["folder"]->getName(), true);            
+       if ($aDataRow['type'] == 'folder') {
+           return $this->name . ': '. print_r($aDataRow['folder']->getName(), true);            
         } else {
-           return $this->name . ": ". print_r($aDataRow["document"]->getName(), true); 
+           return $this->name . ': '. print_r($aDataRow['document']->getName(), true); 
         }
     }
     function setSortedOn($bIsSortedOn) { $this->sort_on = $bIsSortedOn; }
@@ -91,12 +91,12 @@ class TitleColumn extends BrowseColumn {
     }
     // unlike others, this DOESN'T give its name.
     function renderHeader($sReturnURL) { 
-        $text = _kt("Title");
-        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $text = _kt('Title');
+        $href = $sReturnURL . '&sort_on=' . $this->name . '&sort_order=';
         if ($this->sort_on) {
-            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+            $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
-            $href .= $this->sort_direction = "asc";
+            $href .= $this->sort_direction = 'asc';
         }
         
         return '<a href="' . $href . '">'.$text.'</a>';
@@ -105,25 +105,25 @@ class TitleColumn extends BrowseColumn {
 
     function renderFolderLink($aDataRow) {
         $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
-        $outStr .= htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        $outStr .= htmlentities($aDataRow['folder']->getName(), ENT_NOQUOTES, 'UTF-8');
         $outStr .= '</a> ';
         return $outStr;
     }
 
     function renderDocumentLink($aDataRow) {
-        $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
-        $outStr .= htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow['document']->getFilename().'">';
+        $outStr .= htmlentities($aDataRow['document']->getName(), ENT_NOQUOTES, 'UTF-8');
         $outStr .= '</a>';
         return $outStr;
     }
 
     function buildDocumentLink($aDataRow) {
-        return KTBrowseUtil::getUrlForDocument($aDataRow["document"]->getId());
+        return KTBrowseUtil::getUrlForDocument($aDataRow['document']->getId());
     }
 
     function buildFolderLink($aDataRow) {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
-            return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow["folder"]->getId());
+            return KTUtil::addQueryStringSelf('fFolderId='.$aDataRow['folder']->getId());
         } else {
             return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
         }
@@ -132,12 +132,12 @@ class TitleColumn extends BrowseColumn {
     // use inline, since its just too heavy to even _think_ about using smarty.
     function renderData($aDataRow) { 
        $outStr = '';
-       if ($aDataRow["type"] == "folder") {
+       if ($aDataRow['type'] == 'folder') {
            $outStr .= '<span class="contenttype folder">';
            $outStr .= $this->renderFolderLink($aDataRow);
            $outStr .= '</span>';           
         } else {
-           $outStr .= '<span class="contenttype '.$this->_mimeHelper($aDataRow["document"]->getMimeTypeId()).'">';
+           $outStr .= '<span class="contenttype '.$this->_mimeHelper($aDataRow['document']->getMimeTypeId()).'">';
            $outStr .= $this->renderDocumentLink($aDataRow);
            $outStr .= ' (' . $this->prettySize($aDataRow["document"]->getSize()) . ')';
            $outStr .= '</span>';
@@ -174,11 +174,11 @@ class DateColumn extends BrowseColumn {
     
     function renderHeader($sReturnURL) { 
         $text = $this->label;
-        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $href = $sReturnURL . '&sort_on=' . $this->name . '&sort_order=';
         if ($this->sort_on) {
-            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+            $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
-            $href .= $this->sort_direction = "asc";
+            $href .= $this->sort_direction = 'asc';
         }
         
         return '<a href="' . $href . '">'.$text.'</a>';
@@ -188,14 +188,14 @@ class DateColumn extends BrowseColumn {
     // use inline, since its just too heavy to even _think_ about using smarty.
     function renderData($aDataRow) { 
        $outStr = '';
-       if ($aDataRow["type"] == "folder") {
+       if ($aDataRow['type'] == 'folder') {
            $outStr = '&nbsp;';       // no-op on folders.
         } else {
            $fn = $this->field_function;
-           $dColumnDate = strtotime($aDataRow["document"]->$fn());
+           $dColumnDate = strtotime($aDataRow['document']->$fn());
            
            // now reformat this into something "pretty"
-           $outStr = date("Y-m-d H:i", $dColumnDate);
+           $outStr = date('Y-m-d H:i', $dColumnDate);
         }
         return $outStr;
     }
@@ -233,9 +233,9 @@ class UserColumn extends BrowseColumn {
     
     function renderHeader($sReturnURL) { 
         $text = $this->label;
-        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $href = $sReturnURL . '&sort_on=' . $this->name . '&sort_order=';
         if ($this->sort_on) {
-            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+            $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
             $href .= $this->sort_direction = "asc";
         }
@@ -249,7 +249,7 @@ class UserColumn extends BrowseColumn {
         $outStr = '';
         $fn = $this->field_function;
         $iUserId = null;
-        if ($aDataRow["type"] == "folder") {
+        if ($aDataRow['type'] == 'folder') {
             if (method_exists($aDataRow['folder'], $fn)) {
                 $iUserId = $aDataRow['folder']->$fn(); // FIXME this should check if the function exists first.
             }
@@ -273,7 +273,7 @@ class UserColumn extends BrowseColumn {
     function addToDocumentQuery() {
         $sUsersTable = KTUtil::getTableName('users');
         $sJoinSQL = "LEFT JOIN $sUsersTable AS users_order_join ON D.{$this->name} = users_order_join.id";
-        return array($sJoinSQL, null, "users_order_join.name");
+        return array($sJoinSQL, null, 'users_order_join.name');
     }
 }
 
@@ -292,7 +292,7 @@ class SelectionColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         // FIXME clean up access to oPage.
         global $main;
-        $main->requireJSResource("resources/js/toggleselect.js");
+        $main->requireJSResource('resources/js/toggleselect.js');
         
         return '<input type="checkbox" title="toggle all" onclick="toggleSelectFor(this, \''.$this->name.'\')">';
         
@@ -302,16 +302,16 @@ class SelectionColumn extends BrowseColumn {
     function renderData($aDataRow) { 
         $localname = $this->name;
         
-        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+        if (($aDataRow['type'] === 'folder') && ($this->show_folders)) { 
             if ($this->show_documents) {
-                $localname .= "_f[]"; 
+                $localname .= '_f[]'; 
             }
-            $v = $aDataRow["folderid"]; 
-        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            $v = $aDataRow['folderid']; 
+        } else if (($aDataRow['type'] === 'document') && $this->show_documents) { 
             if ($this->show_folders) {
-                $localname .= "_d[]"; 
+                $localname .= '_d[]'; 
             }
-            $v = $aDataRow["docid"]; 
+            $v = $aDataRow['docid']; 
         } else { 
             return '&nbsp;'; 
         }
@@ -340,16 +340,16 @@ class SingleSelectionColumn extends SelectionColumn {
     function renderData($aDataRow) { 
         $localname = $this->name;
         
-        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+        if (($aDataRow['type'] === 'folder') && ($this->show_folders)) { 
             if ($this->show_documents) {
-                $localname .= "_f"; 
+                $localname .= '_f'; 
             }
-            $v = $aDataRow["folderid"]; 
-        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            $v = $aDataRow['folderid']; 
+        } else if (($aDataRow['type'] === 'document') && $this->show_documents) { 
             if ($this->show_folders) {
-                $localname .= "_d"; 
+                $localname .= '_d'; 
             }
-            $v = $aDataRow["docid"]; 
+            $v = $aDataRow['docid']; 
         } else { 
             return '&nbsp;'; 
         }
@@ -364,11 +364,11 @@ class WorkflowColumn extends BrowseColumn {
 
     function renderHeader($sReturnURL) {         
         $text = $this->label; 
-        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $href = $sReturnURL . '&sort_on=' . $this->name . '&sort_order=';
         if ($this->sort_on) {
-            $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+            $href .= $this->sort_direction == 'asc' ? 'desc' : 'asc' ;
         } else {
-            $href .= $this->sort_direction = "asc";
+            $href .= $this->sort_direction = 'asc';
         }
         
         return '<a href="' . $href . '">'.$text.'</a>';
@@ -380,7 +380,7 @@ class WorkflowColumn extends BrowseColumn {
 
         
         // only _ever_ show this folder documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow['type'] === 'folder') { 
             return '&nbsp;';
         }
         
