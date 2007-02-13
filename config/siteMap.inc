@@ -31,37 +31,37 @@ $default->siteMap = new SiteMap(false);
 // action, page, section, group with access, link text
 
 // general pages
-$default->siteMap->addPage("login", "/login.php", "General", None, "");
+$default->siteMap->addPage('login', '/login.php', 'General', None, '');
 
 // dashboard
-$default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "dashboard");
+$default->siteMap->addPage('dashboard', '/dashboard.php', 'General', Guest, 'dashboard');
 
 // old dashboard
-$default->siteMap->addPage("olddashboard", "/olddashboard.php", "General", Guest, "olddashboard");
+$default->siteMap->addPage('olddashboard', '/olddashboard.php', 'General', Guest, 'olddashboard');
 // dashboard news
 
 //pages for manage documents section
-$default->siteMap->addPage("browse", "/browse.php", "Manage Documents", Guest, _kt("browse documents"));
-$default->siteMap->addPage("viewDocument", "/view.php", "Manage Documents", Guest, _kt("View Document"), false);
-$default->siteMap->addPage("editDocument", "/edit.php", "Manage Documents", Guest, _kt("Edit Document"), false);
+$default->siteMap->addPage('browse', '/browse.php', 'Manage Documents', Guest, _kt('browse documents'));
+$default->siteMap->addPage('viewDocument', '/view.php', 'Manage Documents', Guest, _kt('View Document'), false);
+$default->siteMap->addPage('editDocument', '/edit.php', 'Manage Documents', Guest, _kt('Edit Document'), false);
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, _kt("Administration"));
+$default->siteMap->addDefaultPage('administration', '/admin.php', 'Administration', UnitAdmin, _kt('Administration'));
 
 // pages for advanced search section
-$default->siteMap->addDefaultPage("advancedSearch", "/search/advancedSearchBL.php", "Advanced Search", Guest, _kt("Advanced Search"), true);
-$default->siteMap->addPage("booleanSearch", "/search/booleanSearch.php", "Boolean Search", Guest, _kt("Boolean Search"), false);
+$default->siteMap->addDefaultPage('advancedSearch', '/search/advancedSearchBL.php', 'Advanced Search', Guest, _kt('Advanced Search'), true);
+$default->siteMap->addPage('booleanSearch', '/search/booleanSearch.php', 'Boolean Search', Guest, _kt('Boolean Search'), false);
 
-$default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
-$default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
+$default->siteMap->addSectionColour('Advanced Search', 'th', 'A1571B');
+$default->siteMap->addSectionColour('Standard Search', 'th', 'A1571B');
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, _kt("Preferences"));
+$default->siteMap->addDefaultPage('preferences', '/preferences.php', 'Preferences', User, _kt('Preferences'));
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, _kt("Help"));
+$default->siteMap->addDefaultPage('help', '/presentation/lookAndFeel/knowledgeTree/help.php', 'Help', Guest, _kt('Help'));
 
 // pages for logout section section
-$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, _kt("Logout"));
+$default->siteMap->addDefaultPage('logout', '/presentation/logout.php', 'Logout', Guest, _kt('Logout'));
 
 ?>
