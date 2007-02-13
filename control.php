@@ -25,7 +25,7 @@
  */
 
 // main library routines and defaults
-require_once("./config/dmsDefaults.php");
+require_once('config/dmsDefaults.php');
 
 /**
  * $Id$
@@ -48,17 +48,17 @@ require_once("./config/dmsDefaults.php");
 
 $action = $_REQUEST['action'];
 
-if ($action != "login") {
+if ($action != 'login') {
 
     // check the session, but don't redirect if the check fails
     $ret = checkSessionAndRedirect(false);
     if ($ret === true) {
         //get around the problem with search
-        if (strcmp($_REQUEST['fForStandardSearch'], "yes") == 0) {
-            $action = "standardSearch";
+        if (strcmp($_REQUEST['fForStandardSearch'], 'yes') == 0) {
+            $action = 'standardSearch';
         } else if (!isset($action)) {
         // session check succeeds, so default action should be the dashboard if no action was specified
-            $action = "dashboard";
+            $action = 'dashboard';
         }
     } else {
         // session check fails, so default action should be the login form if no action was specified
@@ -71,13 +71,13 @@ if ($action != "login") {
         } elseif ($action <> $dest) {
             // we have a controller link and auth has failed, so redirect to the login page
             // with the controller link as the redirect
-            $url = generateControllerUrl("login");
-            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
+            $url = generateControllerUrl('login');
+            $redirect = urlencode($_SERVER[PHP_SELF] . '?' . $_SERVER['QUERY_STRING']);
             if ((strlen($redirect) > 1)) {
-                $url = $url . "&redirect=" . $redirect;
+                $url = $url . '&redirect=' . $redirect;
             }
             if (PEAR::isError($ret)) {
-                $url = $url . "&errorMessage=" .  urlencode($ret->getMessage());
+                $url = $url . '&errorMessage=' .  urlencode($ret->getMessage());
             }
             redirect($url);
             exit(0);
@@ -99,16 +99,16 @@ if (is_array($queryString)) {
 
 if (empty($queryString)) {
     // need to strip query string params from action before attempting to retrieve from sitemap
-    $queryString = "";
+    $queryString = '';
     // check for the presence of additional params
-    if (strstr($_SERVER["QUERY_STRING"], "&")) {
+    if (strstr($_SERVER['QUERY_STRING'], '&')) {
         // strip and save the querystring
-        $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
-    } else if (strstr($_SERVER["QUERY_STRING"], "?")) {
+        $queryString = substr($_SERVER['QUERY_STRING'], strpos($_SERVER['QUERY_STRING'], '&')+1, strlen($_SERVER['QUERY_STRING']));
+    } else if (strstr($_SERVER['QUERY_STRING'], '?')) {
         // strip and save the querystring
-        $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "?")+1, strlen($_SERVER["QUERY_STRING"]));
+        $queryString = substr($_SERVER['QUERY_STRING'], strpos($_SERVER['QUERY_STRING'], '?')+1, strlen($_SERVER['QUERY_STRING']));
         // update
-        $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
+        $action = substr($_SERVER['QUERY_STRING'], 0, strpos($_SERVER['QUERY_STRING'], '?'));
     }
 }
 
@@ -118,13 +118,13 @@ if ($action == 'dashboard') {
 }
 
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
-$page = $default->siteMap->getPage($action, isset($_SESSION["userID"]) ? $_SESSION["userID"] : "");
+$page = $default->siteMap->getPage($action, isset($_SESSION['userID']) ? $_SESSION['userID'] : '');
 
 if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     // redirect to no permission page
-    $default->log->error("control.php getPage failed for ($action, " . $_SESSION["userID"] . ")");
+    $default->log->error("control.php getPage failed for ($action, " . $_SESSION['userID'] . ")");
     redirect("$default->uiUrl/noAccess.php");
 } else {
     $page = $default->rootUrl . $page;
@@ -132,15 +132,17 @@ if (!$page) {
     // strip querystring from the page returned from the sitemap
     // before setting page authorisation flag (since checkSession checks page level
     // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
-    if (strstr($page, "?")) {
-        $accessPage = substr($page, 0, strpos($page, "?"));
+    
+    $paramStart=strpos($page, '?');
+    if ($paramStart !== false) {
+        $accessPage = substr($page, 0, $paramStart);
     } else {
         $accessPage = $page;
     }
-    $_SESSION["pageAccess"][$accessPage] = true;
+    $_SESSION['pageAccess'][$accessPage] = true;
     // if we have a querystring add it on
     if (strlen($queryString) > 0) {
-        $page = $page . (strstr($page, "?") ? "&$queryString" : "?$queryString");
+        $page = $page . (($paramStart !== false) ? "&$queryString" : "?$queryString");
         $default->log->info("control.php: about to redirect to $page");
     }
     redirect($page);
