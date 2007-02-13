@@ -33,16 +33,16 @@
  
 // FIXME API how to handle indicating which other rows need joining 
 
-require_once(KT_LIB_DIR . "/util/ktutil.inc");
-require_once(KT_LIB_DIR . "/database/dbutil.inc");
-require_once(KT_LIB_DIR . "/search/searchutil.inc.php");
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
+require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
  
 define('XXX_HARDCODE_SIMPLE_FOLDER_SEARCH', true); 
  
 // Abstract base class.
 class PartialQuery {
-    var $sPermissionName = "ktcore.permissions.read";
-    var $sFolderPermissionName = "ktcore.permissions.folder_details";
+    var $sPermissionName = 'ktcore.permissions.read';
+    var $sFolderPermissionName = 'ktcore.permissions.folder_details';
 
     // initialise here (pass whatever this needs)
     function PartialQuery() { ; }
@@ -81,6 +81,7 @@ class PartialQuery {
 class BrowseQuery extends PartialQuery{
     // FIXME cache permission lookups, etc.
     var $folder_id = -1;
+    var $exclude_folders=array();
 
     function BrowseQuery($iFolderId, $oUser = null, $aOptions = null) {
         $this->folder_id = $iFolderId;
@@ -107,26 +108,26 @@ class BrowseQuery extends PartialQuery{
             if (empty($sWhere)) {
                 continue;
             }
-            if ($sWhere == "()") {
+            if ($sWhere == '()') {
                 continue;
             }
             $aWhere[] = $sWhere;
         }
-        $sWhere = "";
+        $sWhere = '';
         if ($aWhere) {
-            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+            $sWhere = "\tWHERE " . join(' AND ', $aWhere);
         }
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
 
-        $sQuery = sprintf("SELECT %s FROM %s AS D
+        $sQuery = sprintf('SELECT %s FROM %s AS D
                 LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
                 LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
                 %s
-                %s %s",
-                $sSelect, KTUtil::getTableName("documents"),
-                KTUtil::getTableName("document_metadata_version"),
-                KTUtil::getTableName("document_content_version"),
+                %s %s',
+                $sSelect, KTUtil::getTableName('documents'),
+                KTUtil::getTableName('document_metadata_version'),
+                KTUtil::getTableName('document_content_version'),
                 $this->sDocumentJoinClause, $sPermissionJoin, $sWhere);
         $aParams = array();
         $aParams = kt_array_merge($aParams, $this->aDocumentJoinParams);
@@ -136,7 +137,7 @@ class BrowseQuery extends PartialQuery{
     }
 
     function _getFolderQuery($aOptions = null) {
-        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sFolderPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sFolderPermissionName, 'F');
         if (PEAR::isError($res)) {
            return $res;
         }
@@ -148,19 +149,34 @@ class BrowseQuery extends PartialQuery{
             if (empty($sWhere)) {
                 continue;
             }
-            if ($sWhere == "()") {
+            if ($sWhere == '()') {
                 continue;
             }
             $aWhere[] = $sWhere;
         }
-        $sWhere = "";
+        $sWhere = '';
         if ($aWhere) {
-            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+            $sWhere = "\tWHERE " . join(' AND ', $aWhere);
         }
 
+        if (count($this->exclude_folders) > 0)
+        {
+	        if (strpos($sWhere,'WHERE') == 0)
+	        {
+	        	$sWhere	.= ' WHERE ';
+	        }        	
+	        else 
+	        	$sWhere .= ' AND ';
+	        	
+	        $sWhere .= 'F.id NOT IN (' . implode(',',$this->exclude_folders) . ')';
+	     //   print $sWhere;
+        }
+        
+        
+        
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
 
-        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("folders") . " AS F $sPermissionJoin $sWhere ";
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . " AS F $sPermissionJoin $sWhere ";
         $aParams = array();
         $aParams = kt_array_merge($aParams,  $aPermissionParams);
         $aParams[] = $this->folder_id;
@@ -173,6 +189,7 @@ class BrowseQuery extends PartialQuery{
         );
         $aQuery = $this->_getFolderQuery($aOptions);
         if (PEAR::isError($aQuery)) { return 0; }
+       
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
@@ -191,9 +208,9 @@ class BrowseQuery extends PartialQuery{
         $res = $this->_getFolderQuery();
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
-        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
+        $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
 
-        $sQuery .= " LIMIT ?, ?";
+        $sQuery .= ' LIMIT ?, ?';
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
     
@@ -210,9 +227,9 @@ class BrowseQuery extends PartialQuery{
         $res = $this->_getDocumentQuery();
         if (PEAR::isError($res)) { return array(); } // no permissions 
         list($sQuery, $aParams) = $res;
-        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
+        $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
 
-        $sQuery .= " LIMIT ?, ?";
+        $sQuery .= ' LIMIT ?, ?';
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
         
@@ -233,9 +250,9 @@ class TestQuery extends PartialQuery{
     var $testfolders;
 
     function TestQuery() { 
-        $this->testdocs = array(array("id" => 2), array("id" => 3),
+        $this->testdocs = array(array('id' => 2), array('id' => 3),
         );
-        $this->testfolders = array(array("id" => 3),);
+        $this->testfolders = array(array('id' => 3),);
     }
     
     function getFolderCount() { count($this->testfolders); }
@@ -259,7 +276,7 @@ class SimpleSearchQuery extends PartialQuery {
 
     function _getFolderQuery($aOptions = null) {
         $oUser = User::get($_SESSION['userID']);
-        $res = KTSearchUtil::permissionToSQL($oUser, $this->sFolderPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($oUser, $this->sFolderPermissionName, 'F');
         if (PEAR::isError($res)) {
            return $res;
         }
@@ -271,20 +288,20 @@ class SimpleSearchQuery extends PartialQuery {
             if (empty($sWhere)) {
                 continue;
             }
-            if ($sWhere == "()") {
+            if ($sWhere == '()') {
                 continue;
             }
             $aWhere[] = $sWhere;
         }
-        $sWhere = "";
+        $sWhere = '';
         if ($aWhere) {
-            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+            $sWhere = "\tWHERE " . join(' AND ', $aWhere);
         }
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
 
-        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("folders") . " AS F 
-        LEFT JOIN " . KTUtil::getTableName("folder_searchable_text") . " AS FST ON (F.id = FST.folder_id) 
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . ' AS F 
+        LEFT JOIN ' . KTUtil::getTableName('folder_searchable_text') . " AS FST ON (F.id = FST.folder_id) 
         $sPermissionJoin $sWhere ";
         $aParams = array($this->searchable_text);
         $aParams = kt_array_merge($aPermissionParams, $aParams);   
@@ -310,9 +327,9 @@ class SimpleSearchQuery extends PartialQuery {
         $res = $this->_getFolderQuery();
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
-        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
+        $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
 
-        $sQuery .= " LIMIT ?, ?";
+        $sQuery .= ' LIMIT ?, ?';
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
     
@@ -364,8 +381,8 @@ class SimpleSearchQuery extends PartialQuery {
         $res = $this->getQuery($aOptions);
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
-        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
-        $sQuery .= " LIMIT ?, ?";
+        $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
+        $sQuery .= ' LIMIT ?, ?';
 
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
@@ -481,8 +498,8 @@ class BooleanSearchQuery extends PartialQuery {
         $res = $this->getQuery($aOptions);
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
-        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
-        $sQuery .= " LIMIT ?, ?";
+        $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
+        $sQuery .= ' LIMIT ?, ?';
 
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
@@ -518,25 +535,25 @@ class ArchivedBrowseQuery extends BrowseQuery {
             if (empty($sWhere)) {
                 continue;
             }
-            if ($sWhere == "()") {
+            if ($sWhere == '()') {
                 continue;
             }
             $aWhere[] = $sWhere;
         }
-        $sWhere = "";
+        $sWhere = '';
         if ($aWhere) {
-            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+            $sWhere = "\tWHERE " . join(' AND ', $aWhere);
         }
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
 
-        $sQuery = sprintf("SELECT %s FROM %s AS D
+        $sQuery = sprintf('SELECT %s FROM %s AS D
                 LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
                 LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
-                %s %s",
-                $sSelect, KTUtil::getTableName("documents"),
-                KTUtil::getTableName("document_metadata_version"),
-                KTUtil::getTableName("document_content_version"),
+                %s %s',
+                $sSelect, KTUtil::getTableName('documents'),
+                KTUtil::getTableName('document_metadata_version'),
+                KTUtil::getTableName('document_content_version'),
                 $sPermissionJoin, $sWhere);
         $aParams = array();
         $aParams = kt_array_merge($aParams,  $aPermissionParams);
