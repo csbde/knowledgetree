@@ -23,12 +23,12 @@
  *
  */
 
-require_once("config/dmsDefaults.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
+require_once('config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
-require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
+require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
     var $category = '';
@@ -52,7 +52,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $categories = $oRegistry->getCategories();		
 		$KTConfig =& KTConfig::getSingleton();
-        $condensed_admin = $KTConfig->get("condensedAdminUI");
+        $condensed_admin = $KTConfig->get('condensedAdminUI');
         
         $aAllItems = array();
         // we need to investigate sub_url solutions.
@@ -63,20 +63,20 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
         
-        $this->oPage->title = _kt("DMS Administration") . ": ";
+        $this->oPage->title = _kt('DMS Administration') . ': ';
         $oTemplating =& KTTemplating::getSingleton();
         
         if ($condensed_admin) {
-            $oTemplate = $oTemplating->loadTemplate("kt3/admin_fulllist");
+            $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
         } else {
-            $oTemplate = $oTemplating->loadTemplate("kt3/admin_categories");
+            $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
         
         $aTemplateData = array(
-              "context" => $this,
-              "categories" => $categories,
-              "all_items" => $aAllItems,
-              "baseurl" => $_SERVER['PHP_SELF'],
+              'context' => $this,
+              'categories' => $categories,
+              'all_items' => $aAllItems,
+              'baseurl' => $_SERVER['PHP_SELF'],
         );
         return $oTemplate->render($aTemplateData);				
     }
@@ -84,23 +84,23 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     function do_viewCategory() {
         // are we categorised, or not?
         
-        $category = KTUtil::arrayGet($_REQUEST, "fCategory", $this->category);
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
         
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);		
         
         $aItems = $oRegistry->getItemsForCategory($category);
-        $this->aBreadcrumbs[] = array("name" => $aCategory["title"], "url" => KTUtil::ktLink('admin.php',$category));
+        $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 
         
-        $this->oPage->title = _kt("DMS Administration") . ": " . $aCategory["title"];
+        $this->oPage->title = _kt('DMS Administration') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/admin_items");
+        $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
         $aTemplateData = array(
-              "context" => $this,
-              "category" => $aCategory,
-              "items" => $aItems, 
-              "baseurl" =>  $_SERVER['PHP_SELF'],
+              'context' => $this,
+              'category' => $aCategory,
+              'items' => $aItems, 
+              'baseurl' =>  $_SERVER['PHP_SELF'],
         );
         return $oTemplate->render($aTemplateData);				
     }
@@ -109,7 +109,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
 
 $sub_url = trim($sub_url);
-$sub_url= trim($sub_url, "/");
+$sub_url= trim($sub_url, '/');
 
 if (empty($sub_url)) {
     $oDispatcher = new AdminSplashDispatcher();
@@ -124,8 +124,8 @@ if (empty($sub_url)) {
        $aCategory = $oRegistry->getCategory($aParts[0]);			   
        
        $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('action' => "administration", 'name' => _kt('Administration'));
-       $oDispatcher->aBreadcrumbs[] = array("name" => $aCategory['title'], "url" => KTUtil::ktLink('admin.php',$aParts[0]));
+       $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Administration'));
+       $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
        
     } else {
        // FIXME (minor) redirect to no-suburl?
