@@ -33,12 +33,12 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
 
-    var $_sShowPermission = "ktcore.permissions.read";
+    var $_sShowPermission = 'ktcore.permissions.read';
     var $_sDisablePermission;
     var $bAllowInAdminMode = false;
     var $sHelpPage = 'ktcore/browse.html';    
 
-    var $sSection = "view_details";
+    var $sSection = 'view_details';
 
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
@@ -111,14 +111,14 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function getURL() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
-            return sprintf("%s/action%s/%s?fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
+        if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
+            return sprintf('%s/action%s/%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
         } else {
-            return sprintf("%s/action%s?kt_path_info=%s&fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
+            return sprintf('%s/action%s?kt_path_info=%s&fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
         }
     }
 
@@ -164,9 +164,9 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     if (!$this->_show()) { return false; }
         
-        $aOptions = array("final" => false,
-              "documentaction" => "viewDocument",
-              "folderaction" => "browse",
+        $aOptions = array('final' => false,
+              'documentaction' => 'viewDocument',
+              'folderaction' => 'browse',
         );
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
@@ -187,17 +187,17 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function do_main() {
-        return _kt("Dispatcher component of action not implemented.");
+        return _kt('Dispatcher component of action not implemented.');
     }
 }
 
 class KTDocumentActionUtil {
-    function getDocumentActionInfo($slot = "documentaction") {
+    function getDocumentActionInfo($slot = 'documentaction') {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = "documentaction") {
+    function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
@@ -211,7 +211,7 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getAllDocumentActions($slot = "documentaction") {
+    function getAllDocumentActions($slot = 'documentaction') {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
@@ -227,7 +227,7 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getDocumentActionsByNames($aNames, $slot = "documentaction", $oDocument = null, $oUser = null) {
+    function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null) {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
