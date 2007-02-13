@@ -1,7 +1,7 @@
 <?php
 
-require_once(KT_LIB_DIR . "/widgets/basewidget.inc.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . '/widgets/basewidget.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 
 class KTCoreStringWidget extends KTWidget {
@@ -14,13 +14,13 @@ class KTCoreFileWidget extends KTWidget {
     var $sTemplate = 'ktcore/forms/widgets/file';
     
     function wrapName($outer) {
-        $this->sName = sprintf("_kt_attempt_unique_%s", $this->sName);
+        $this->sName = sprintf('_kt_attempt_unique_%s', $this->sName);
         // we don't have access via "wrap" when processing, so we can't actually
         // wrap.  just don't use a lot of names
     }
     
     function process($data){
-        $tname = sprintf("_kt_attempt_unique_%s", $this->sName);
+        $tname = sprintf('_kt_attempt_unique_%s', $this->sName);
         return array($this->sBasename => $_FILES[$tname]);
     }
     
@@ -31,7 +31,7 @@ class KTCoreFileWidget extends KTWidget {
         
         $oVF =& KTValidatorFactory::getSingleton();        
         return $oVF->get('ktcore.validators.requiredfile', array(
-            'test' => sprintf("_kt_attempt_unique_%s", $this->sName),
+            'test' => sprintf('_kt_attempt_unique_%s', $this->sName),
             'basename' => $this->sBasename,
         ));
     }
@@ -188,7 +188,7 @@ class KTCoreSelectionWidget extends KTWidget {
 
             // make sure its the selected one if there's no value specified.
             if (empty($this->value)) {
-                $this->value = "0";
+                $this->value = '0';
             }
         }
 
@@ -202,13 +202,13 @@ class KTCoreSelectionWidget extends KTWidget {
         }
         
         $aTemplateData = array(
-            "context" => $this,
-            "name" => $this->sName,
-            "has_id" => ($this->sId !== null),
-            "id" => $this->sId,
-            "has_value" => ($this->value !== null),
-            "value" => $this->value,
-            "options" => $this->aOptions,
+            'context' => $this,
+            'name' => $this->sName,
+            'has_id' => ($this->sId !== null),
+            'id' => $this->sId,
+            'has_value' => ($this->value !== null),
+            'value' => $this->value,
+            'options' => $this->aOptions,
             'vocab' => $this->aVocab,
         );
         return $oTemplate->render($aTemplateData);
@@ -294,7 +294,7 @@ class KTDescriptorSelectionWidget extends KTWidget {
         $oTemplate = $oTemplating->loadTemplate($this->sTemplate); 
 
         $src_location = $this->aOptions['src'];
-        $sJS = sprintf("addLoadEvent(initJSONLookup(\"%s\", \"%s\"));", $this->sBasename, $src_location);
+        $sJS = sprintf('addLoadEvent(initJSONLookup("%s", "%s"));', $this->sBasename, $src_location);
 
 
         // its bad, but that's life.
@@ -304,19 +304,19 @@ class KTDescriptorSelectionWidget extends KTWidget {
         $this->aOptions['multi'] = true;
         
         $aTemplateData = array(
-            "context" => $this,
-            "label" => $this->sLabel,
-            "description" => $this->sDescription,
-            "name" => $this->sName,
-            "required" => $this->bRequired,
-            "has_id" => ($this->sId !== null),
-            "id" => $this->sId,
-            "has_value" => ($this->value !== null),
-            "value" => $this->value,
-            "has_errors" => $bHasErrors,
-            "errors" => $this->aErrors,
+            'context' => $this,
+            'label' => $this->sLabel,
+            'description' => $this->sDescription,
+            'name' => $this->sName,
+            'required' => $this->bRequired,
+            'has_id' => ($this->sId !== null),
+            'id' => $this->sId,
+            'has_value' => ($this->value !== null),
+            'value' => $this->value,
+            'has_errors' => $bHasErrors,
+            'errors' => $this->aErrors,
             'short_name' => $this->sBasename,
-            "options" => $this->aOptions,
+            'options' => $this->aOptions,
         );
         return $oTemplate->render($aTemplateData);      
     }
@@ -335,7 +335,7 @@ class KTCoreTreeMetadataWidget extends KTWidget {
 
         $this->iFieldId = KTUtil::arrayGet($aOptions, 'field_id');
         if (is_null($this->iFieldId)) {
-            return PEAR::raiseError(_kt("Tree metadata fields must be associated with a particular type."));
+            return PEAR::raiseError(_kt('Tree metadata fields must be associated with a particular type.'));
         }
     }
     
@@ -344,7 +344,7 @@ class KTCoreTreeMetadataWidget extends KTWidget {
         // just override the template being used.
         $bHasErrors = false;       
         
-        require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
+        require_once(KT_LIB_DIR . '/documentmanagement/MDTree.inc');
         
         $fieldTree = new MDTree();
         $fieldTree->buildForField($this->iFieldId);
@@ -401,10 +401,10 @@ class KTCoreFieldsetWidget extends KTWidget {
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/fieldset');
         
         $aTemplateData = array(
-            "context" => $this,
-            "label" => $this->sLabel,
-            "description" => $this->sDescription,
-            "widgets" => $this->renderWidgets(),
+            'context' => $this,
+            'label' => $this->sLabel,
+            'description' => $this->sDescription,
+            'widgets' => $this->renderWidgets(),
         );
         return $oTemplate->render($aTemplateData);   
     }
@@ -514,7 +514,7 @@ class KTCoreTransparentFieldsetWidget extends KTCoreFieldsetWidget {
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/transparent_fieldset');
         
         $aTemplateData = array(
-            "widgets" => $this->renderWidgets(),
+            'widgets' => $this->renderWidgets(),
         );
         return $oTemplate->render($aTemplateData);   
     }    
@@ -530,9 +530,9 @@ class KTExtraConditionalFieldsetWidget extends KTCoreFieldsetWidget {
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/conditionalfieldset');
         
         $aTemplateData = array(
-            "context" => $this,
-            "label" => $this->sLabel,
-            "description" => $this->sDescription,        
+            'context' => $this,
+            'label' => $this->sLabel,
+            'description' => $this->sDescription,        
         );
         return $oTemplate->render($aTemplateData);   
     }    
@@ -598,6 +598,7 @@ class KTCoreCollectionWidget extends KTWidget {
         $oCR =& KTColumnRegistry::getSingleton();
         //print '<pre>';
         foreach($this->aCols as $ns) { 
+        	
             $oCR->getColumn($ns);
         }
         $this->oCollection = unserialize($this->sCollection);
@@ -671,7 +672,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         
             $aParams = kt_array_merge($aURLParams, array('fFolderId'=>$id, 'code'=>$sCode, 'varname'=>$sName));
             $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
-            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+            $aBreadcrumbs[] = array('url' => $url, 'name' => $folder_path_names[$index]);
         }
         
         return $aBreadcrumbs;
