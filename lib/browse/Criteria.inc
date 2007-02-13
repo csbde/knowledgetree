@@ -870,7 +870,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
         }
         $sRet = $this->getNotWidget($aPreValue);
         $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
-        $aStates = KTWorkflowState::getList("ORDER BY workflow_id");
+        $aStates = KTWorkflowState::getList();
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aStates as $oState) {
             $oWorkflow =& KTWorkflow::get($oState->getWorkflowId());
