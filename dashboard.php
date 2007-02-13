@@ -32,18 +32,18 @@
  */
 
 // main library routines and defaults
-require_once("config/dmsDefaults.php");
-require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
+require_once('config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 
-require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
-require_once(KT_LIB_DIR . "/dashboard/dashlet.inc.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
+require_once(KT_LIB_DIR . '/dashboard/dashletregistry.inc.php');
+require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
-require_once(KT_LIB_DIR . "/dashboard/DashletDisables.inc.php");
+require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 
-$sectionName = "dashboard";
+$sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
     
@@ -65,9 +65,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
         
-        $this->sSection = "dashboard";
-        $this->oPage->setBreadcrumbDetails(_kt("Home"));
-        $this->oPage->title = _kt("Dashboard");
+        $this->sSection = 'dashboard';
+        $this->oPage->setBreadcrumbDetails(_kt('Home'));
+        $this->oPage->title = _kt('Dashboard');
     
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
@@ -96,9 +96,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
         
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
-        $sDSJS = "var savedState = ";
+        $sDSJS = 'var savedState = ';
         if($sDashboardState == null) {
-            $sDSJS .= "false";
+            $sDSJS .= 'false';
             $sDashboardState = false;
         } else {
             $sDSJS .= $sDashboardState;
@@ -110,11 +110,11 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         // render
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
+        $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
         $aTemplateData = array(
-              "context" => $this,
-              "dashlets_left" => $aDashletsLeft,
-              "dashlets_right" => $aDashletsRight,
+              'context' => $this,
+              'dashlets_left' => $aDashletsLeft,
+              'dashlets_right' => $aDashletsRight,
         );
         return $oTemplate->render($aTemplateData);
     }
