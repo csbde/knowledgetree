@@ -25,9 +25,9 @@
  */
 
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
-require_once(KT_LIB_DIR . "/security/Permission.inc");
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/dashboard/Notification.inc.php');
+require_once(KT_LIB_DIR . '/security/Permission.inc');
 
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
@@ -87,7 +87,7 @@ class KTInfoDashlet extends KTBaseDashlet {
     
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/kt3release");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/kt3release');
               
         $aTemplateData = array(
             'title' => $this->aHelpInfo['title'],
@@ -110,14 +110,14 @@ class KTNotificationDashlet extends KTBaseDashlet {
 
     function is_active($oUser) {
         $this->oUser = $oUser;
-        $notifications = KTNotification::getList(array("user_id = ?", $this->oUser->getId()));
+        $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         if (empty($notifications)) { return false; }
         return true;
     }
     
     function render() {
         
-        $notifications = KTNotification::getList(array("user_id = ?", $this->oUser->getId()));
+        $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         $num_notifications = count($notifications);
         
         $_MAX_NOTIFICATIONS = 5;
@@ -132,12 +132,12 @@ class KTNotificationDashlet extends KTBaseDashlet {
         $link = $oPlugin->getPagePath('notifications');
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/notifications");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/notifications');
         $aTemplateData = array(
-            "notifications" => $notifications,
-            "notification_count" => $num_notifications,
-            "visible_count" => count($notifications),
-            "link_all" => $link,
+            'notifications' => $notifications,
+            'notification_count' => $num_notifications,
+            'visible_count' => count($notifications),
+            'link_all' => $link,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -156,7 +156,7 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 
     function is_active($oUser) {
         $this->oUser = $oUser;
-        $this->checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
+        $this->checked_out_documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
         
         return (!empty($this->checked_out_documents));
         return true;
@@ -170,10 +170,10 @@ class KTCheckoutDashlet extends KTBaseDashlet {
         
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/checkedout");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/checkedout');
         $aTemplateData = array(
-            "context" => $this,
-            "documents" => $this->checked_out_documents,
+            'context' => $this,
+            'documents' => $this->checked_out_documents,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -239,10 +239,10 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
         
         
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/indexer_status");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/indexer_status');
         $aTemplateData = array(
-            "context" => $this,
-            "no_transforms" => $this->noTransforms,
+            'context' => $this,
+            'no_transforms' => $this->noTransforms,
             'transforms' => $this->aTriggerSet,
         );
         return $oTemplate->render($aTemplateData);
@@ -271,10 +271,10 @@ class KTMailServerDashlet extends KTBaseDashlet {
     
     function render() {	
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/mailserver");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/mailserver');
         $admin = Permission::userIsSystemAdministrator($_SESSION['userID']);
         $aTemplateData = array(
-            "context" => $this,
+            'context' => $this,
             'admin' => $admin,
         );
         return $oTemplate->render($aTemplateData);
