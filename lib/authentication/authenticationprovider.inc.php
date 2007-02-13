@@ -24,7 +24,7 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 class KTAuthenticationProvider extends KTStandardDispatcher {
     var $sName;
@@ -79,11 +79,11 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     }
 
     function do_editSourceProvider() {
-        return $this->errorRedirectTo('viewsource', _kt("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
+        return $this->errorRedirectTo('viewsource', _kt('Provider does not support editing'), 'source_id=' .  $_REQUEST['source_id']);
     }
 
     function do_performEditSourceProvider() {
-        return $this->errorRedirectTo('viewsource', _kt("Provider does not support editing"), 'source_id=' .  $_REQUEST['source_id']);
+        return $this->errorRedirectTo('viewsource', _kt('Provider does not support editing'), 'source_id=' .  $_REQUEST['source_id']);
     }
 
     /**
