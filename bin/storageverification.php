@@ -1,9 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__) . '/../config/dmsDefaults.php');
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "Administration";
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+$sectionName = 'Administration';
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
@@ -32,7 +32,7 @@ class VerifyDispatcher extends KTDispatcher {
         global $aRepoVersionProblems;
 
 
-        $this->checkDirectory("");
+        $this->checkDirectory('');
 
         $aDocuments =& Document::getList();
         foreach ($aDocuments as $oDocument) {
@@ -54,7 +54,7 @@ class VerifyDispatcher extends KTDispatcher {
     }
 
     function checkDirectory($path) {
-        $fullpath = sprintf("%s/%s", $this->fsPath, $path);
+        $fullpath = sprintf('%s/%s', $this->fsPath, $path);
 
         if (!is_dir($fullpath)) {
             print "Not a directory: $fullpath\n";
@@ -66,11 +66,11 @@ class VerifyDispatcher extends KTDispatcher {
         }
         while (($filename = readdir($dh)) !== false) {
             if (in_array($filename, $this->aIgnore)) { continue; }
-            $subrelpath = sprintf("%s/%s", $path, $filename);
-            if (substr($subrelpath, 0, 1) == "/") {
+            $subrelpath = sprintf('%s/%s', $path, $filename);
+            if (substr($subrelpath, 0, 1) == '/') {
                 $subrelpath = substr($subrelpath, 1);
             }
-            $subfullpath = sprintf("%s/%s", $this->fsPath, $subrelpath);
+            $subfullpath = sprintf('%s/%s', $this->fsPath, $subrelpath);
             if (is_dir($subfullpath)) {
                 $this->checkDirectory($subrelpath);
             }
@@ -95,7 +95,7 @@ class VerifyDispatcher extends KTDispatcher {
         $aDCVs = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aDCVs as $oDCV) {
             $sDocumentPath = $oDCV->getStoragePath();
-            $sFullPath = sprintf("%s/%s", $this->fsPath, $sDocumentPath);
+            $sFullPath = sprintf('%s/%s', $this->fsPath, $sDocumentPath);
             if (!is_file($sFullPath)) {
                 $this->aRepoDocumentProblems[] = array(
                     'document' => $oDocument,
