@@ -46,7 +46,7 @@ class KTEntityList {
     // serialize to session
     function serialize() {
         $sList = serialize($this);
-        $_SESSION["ktentitylists"][$this->sCode] = $sList;
+        $_SESSION['ktentitylists'][$this->sCode] = $sList;
     }   
 
     // get the storage code
@@ -65,7 +65,7 @@ class KTEntityList {
     function &retrieveList($sCode) {
         $sList = KTUtil::arrayGet($_SESSION['ktentitylists'], $sCode, False);
         if($sList === False) {
-            return PEAR::raiseError(_kt("No such KTEntityList"));
+            return PEAR::raiseError(_kt('No such KTEntityList'));
         }
         $oList = unserialize($sList);
         return $oList;
