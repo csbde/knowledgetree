@@ -142,7 +142,8 @@ if (!$page) {
     $_SESSION['pageAccess'][$accessPage] = true;
     // if we have a querystring add it on
     if (strlen($queryString) > 0) {
-        $page = $page . (($paramStart !== false) ? "&$queryString" : "?$queryString");
+    	$page .= ($paramStart !== false)?'&':'?';
+    	$page .= $queryString;
         $default->log->info("control.php: about to redirect to $page");
     }
     redirect($page);
