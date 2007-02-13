@@ -54,7 +54,7 @@ class KTBrowseUtil {
             return false;
         }
 
-        $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
+        $sQuery = 'SELECT id FROM folders WHERE parent_id = ? AND name = ?';
         $aParams = array($iFolderID, $sFileName);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
         if (PEAR::isError($id)) {
@@ -65,9 +65,9 @@ class KTBrowseUtil {
             return array($id, null, null);
         }
 
-        $sQuery = sprintf("SELECT d.id FROM %s AS d" .
-        " LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)" .
-        " WHERE d.folder_id = ? AND dc.filename = ?", 
+        $sQuery = sprintf('SELECT d.id FROM %s AS d' .
+        ' LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)' .
+        ' WHERE d.folder_id = ? AND dc.filename = ?', 
         KTUtil::getTableName(documents),
         KTUtil::getTableName('document_metadata_version'),
         KTUtil::getTableName('document_content_version'));
@@ -106,10 +106,10 @@ class KTBrowseUtil {
         while (count($aRemaining)) {
             $sFolderName = $aRemaining[0];
             $aRemaining = array_slice($aRemaining, 1);
-            if ($sFolderName === "") {
+            if ($sFolderName === '') {
                 continue;
             }
-            $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
+            $sQuery = 'SELECT id FROM folders WHERE parent_id = ? AND name = ?';
             $aParams = array($iFolderID, $sFolderName);
             $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
             if (PEAR::isError($id)) {
@@ -120,13 +120,13 @@ class KTBrowseUtil {
                 // Some intermediary folder path doesn't exist
                 return false;
             }
-            $default->log->error("iFolderID set to " . print_r($id, true));
+            $default->log->error('iFolderID set to ' . print_r($id, true));
             $iFolderID = (int)$id;
         }
 
-        $sQuery = sprintf("SELECT d.id FROM %s AS d" .
-        " LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)" .
-        " WHERE d.folder_id = ? AND dc.filename = ?", 
+        $sQuery = sprintf('SELECT d.id FROM %s AS d' .
+        ' LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)' .
+        ' WHERE d.folder_id = ? AND dc.filename = ?', 
         KTUtil::getTableName(documents),
         KTUtil::getTableName('document_metadata_version'),
         KTUtil::getTableName('document_content_version'));
@@ -139,7 +139,7 @@ class KTBrowseUtil {
         }
         
         if ($iDocumentID === null) {
-            $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
+            $sQuery = 'SELECT id FROM folders WHERE parent_id = ? AND name = ?';
             $aParams = array($iFolderID, $sFileName);
             $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
             
@@ -148,7 +148,7 @@ class KTBrowseUtil {
                 return false;
             }
             if (is_null($id)) {
-                if ($sFileName === "") {
+                if ($sFileName === '') {
                     return array($iFolderID, null);
                 }
                 // XXX: log error
@@ -167,16 +167,16 @@ class KTBrowseUtil {
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 	
 	if(PEAR::isError($oFolder)) {
-	    $url = KTUtil::addQueryStringSelf("fFolderId=1");
+	    $url = KTUtil::addQueryStringSelf('fFolderId=1');
 	    if(!empty($sAction)) {
-		$url = generateControllerUrl($sAction, "fFolderId=1");
+		$url = generateControllerUrl($sAction, 'fFolderId=1');
 	    }
 	    return array( array( 'url'=> $url, 'name' => '&hellip;'));
 	}
 
 
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
-        $bFolderBrowseBase = KTUtil::arrayGet($aOptions, 'folderbase', "");
+        $bFolderBrowseBase = KTUtil::arrayGet($aOptions, 'folderbase', '');
         $aBreadcrumbs = array();
         
         // skip root.
@@ -187,50 +187,50 @@ class KTBrowseUtil {
 
         // we have made the "default" folder non-root, so we need to be able
         // to reach "Root" (Folder::get(1)).
-        $url = KTUtil::addQueryStringSelf("fFolderId=1");
+        $url = KTUtil::addQueryStringSelf('fFolderId=1');
         if (!empty($sAction)) {
-            $url = generateControllerUrl($sAction, "fFolderId=1");
+            $url = generateControllerUrl($sAction, 'fFolderId=1');
         }
-        $aBreadcrumbs[] = array("url" => $url, "name" => _kt('Folders'));
+        $aBreadcrumbs[] = array('url' => $url, 'name' => _kt('Folders'));
         $oUser = User::get($_SESSION['userID']);
         
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
-                $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
+                $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
                 if (!empty($sAction)) {
-                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+                    $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
                 if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
                     if (KTBrowseUtil::inAdminMode($oUser, $oThisFolder)) {
-                        $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $folder_path_names[$index]));
+                        $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $folder_path_names[$index]));
                     } else {
                         $aBreadcrumbs[] = array('name' => '...');
                     }
                     continue;
                 }
-                $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+                $aBreadcrumbs[] = array('url' => $url, 'name' => $folder_path_names[$index]);
             }
         }
 
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
             $id = $oFolder->getId();
-            $url = KTUtil::addQueryStringSelf("fFolderId=" . $id);
+            $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
             if (!empty($sAction)) {
-                $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+                $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
             }
             if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oFolder)) {
                 if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
-                    $aBreadcrumbs[] = array("url" => $url, "name" => sprintf('(%s)', $oFolder->getName()));
+                    $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $oFolder->getName()));
                 } else {
                     $aBreadcrumbs[] = array('name' => '...');
                 }
             } else if ($bFinal) {
-                $aBreadcrumbs[] = array("name" => $oFolder->getName());
+                $aBreadcrumbs[] = array('name' => $oFolder->getName());
             } else {
-                $aBreadcrumbs[] = array("url" => $url, "name" => $oFolder->getName());
+                $aBreadcrumbs[] = array('url' => $url, 'name' => $oFolder->getName());
             }
         }
 
@@ -256,7 +256,7 @@ class KTBrowseUtil {
     function breadcrumbsForDocument($oDocument, $aOptions = null) {
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
         $aOptions = KTUtil::meldOptions($aOptions, array(
-            "final" => false,
+            'final' => false,
         ));
 
         $iFolderId = $oDocument->getFolderId();
@@ -264,15 +264,15 @@ class KTBrowseUtil {
 
 
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
-        $url = KTUtil::addQueryStringSelf("fDocumentId=" . $oDocument->getId());
+        $url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
         if (!empty($sAction)) {
-            $url = generateControllerUrl($sAction, "fDocumentId=" .  $oDocument->getId());
+            $url = generateControllerUrl($sAction, 'fDocumentId=' .  $oDocument->getId());
         }
 
         if ($bFinal) {
-            $aBreadcrumbs[] = array("name" => $oDocument->getName());
+            $aBreadcrumbs[] = array('name' => $oDocument->getName());
         } else {
-            $aBreadcrumbs[] = array("url" => $url, "name" => $oDocument->getName());
+            $aBreadcrumbs[] = array('url' => $url, 'name' => $oDocument->getName());
         }
         return $aBreadcrumbs;
     }
@@ -281,33 +281,33 @@ class KTBrowseUtil {
     // {{{ getUrlForFolder
     function getUrlForFolder($oFolder) {
         $iFolderId = KTUtil::getId($oFolder);
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        return sprintf("%s/browse%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
+        return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
     }
     // }}}
 
     // {{{ getUrlForDocument
     function getUrlForDocument($oDocument) {
         $iDocumentId = KTUtil::getId($oDocument);
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        return sprintf("%s/view%s?fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
+        return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
     }
     // }}}
 
 
 
     function buildBaseUrl($sPage) {
-        $sExt = ".php";
+        $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
-            $sExt = "";
+            $sExt = '';
         }
-        return sprintf("%s/%s%s", $GLOBALS['KTRootUrl'], $sPage, $sExt);
+        return sprintf('%s/%s%s', $GLOBALS['KTRootUrl'], $sPage, $sExt);
     }
     // }}}
 
