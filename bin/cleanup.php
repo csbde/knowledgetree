@@ -66,14 +66,14 @@ function checkFile($path, $first = true) {
     }
     $fod = KTBrowseUtil::folderOrDocument($path);
     if ($fod === false) {
-        $GLOBALS["aFilesToRemove"][] = $path;
+        $GLOBALS['aFilesToRemove'][] = $path;
         return;
     }
 }
 
 function checkDirectory($path) {
     global $fsPath, $aIgnore;
-    $fullpath = sprintf("%s/%s", $fsPath, $path);
+    $fullpath = sprintf('%s/%s', $fsPath, $path);
 
     if (!is_dir($fullpath)) {
         print "Not a directory: $fullpath\n";
@@ -87,7 +87,7 @@ function checkDirectory($path) {
     if (!empty($path)) {
         $fod = KTBrowseUtil::folderOrDocument($path);
         if ($fod === false) {
-            $GLOBALS["aFoldersToRemove"][] = $path;
+            $GLOBALS['aFoldersToRemove'][] = $path;
             return;
         }
     }
@@ -98,8 +98,8 @@ function checkDirectory($path) {
     }
     while (($filename = readdir($dh)) !== false) {
         if (in_array($filename, $aIgnore)) { continue; }
-        $subrelpath = sprintf("%s/%s", $path, $filename);
-        $subfullpath = sprintf("%s/%s", $fsPath, $subrelpath);
+        $subrelpath = sprintf('%s/%s', $path, $filename);
+        $subfullpath = sprintf('%s/%s', $fsPath, $subrelpath);
         if (is_dir($subfullpath)) {
             checkDirectory($subrelpath);
         }
@@ -111,8 +111,8 @@ function checkDirectory($path) {
 
 function checkRepoFolder($oFolder) {
     global $fsPath, $aRepoFolderProblems;
-    $sFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
-    $sFullPath = sprintf("%s/%s", $fsPath, $sFolderPath);
+    $sFolderPath = sprintf('%s/%s', $oFolder->getFullPath(), $oFolder->getName());
+    $sFullPath = sprintf('%s/%s', $fsPath, $sFolderPath);
     if (!is_dir($sFullPath)) {
         $aRepoFolderProblems[] = $sFolderPath;
     }
@@ -121,7 +121,7 @@ function checkRepoFolder($oFolder) {
 function checkRepoDocument($oDocument) {
     global $fsPath, $aRepoDocumentProblems;
     $sDocumentPath = $oDocument->getStoragePath();
-    $sFullPath = sprintf("%s/%s", $fsPath, $sDocumentPath);
+    $sFullPath = sprintf('%s/%s', $fsPath, $sDocumentPath);
     if (!is_file($sFullPath)) {
         $aRepoDocumentProblems[] = $sDocumentPath;
     }
@@ -130,14 +130,14 @@ function checkRepoDocument($oDocument) {
 
 function checkRepoVersions($oDocument) {
     global $fsPath, $aRepoVersionProblems;
-    $table = "document_transactions";
+    $table = 'document_transactions';
     $aVersions = DBUtil::getResultArrayKey(array("SELECT DISTINCT version FROM $table WHERE document_id = ?", array($oDocument->getID())), "version");
     foreach($aVersions as $sVersion) {
         if ($sVersion == $oDocument->getVersion()) {
             continue;
         }
         $sDocumentPath = $oDocument->getStoragePath();
-        $sFullPath = sprintf("%s/%s-%s", $fsPath, $sDocumentPath, $sVersion);
+        $sFullPath = sprintf('%s/%s-%s', $fsPath, $sDocumentPath, $sVersion);
         if (!is_file($sFullPath)) {
             $aRepoVersionProblems[] = array($sDocumentPath, $sVersion);
             continue;
@@ -145,7 +145,7 @@ function checkRepoVersions($oDocument) {
     }
 }
 
-checkDirectory("");
+checkDirectory('');
 
 print "\n";
 print "Would remove these folders (and all their contents):\n";
@@ -169,7 +169,7 @@ foreach ($aRepoFolderProblems as $path) {
     print "\t$path\n";
 }
 
-$aDocuments =& Document::getList(array("status_id = ?", array(LIVE)));
+$aDocuments =& Document::getList(array('status_id = ?', array(LIVE)));
 foreach ($aDocuments as $oDocument) {
     checkRepoDocument($oDocument);
 }
