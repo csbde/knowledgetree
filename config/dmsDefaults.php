@@ -86,7 +86,7 @@ class KTInit {
         if (!is_numeric($logLevel)) {
             $logLevel = @constant($logLevel);
             if (is_null($logLevel)) {
-                $logLevel = @constant("ERROR");
+                $logLevel = @constant('ERROR');
             }
         }
         $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel);
@@ -96,14 +96,14 @@ class KTInit {
             // returns only in checkup
             return $res;
         }
-        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, "query");
+        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, 'query');
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
-        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, "timer");
+        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, 'timer');
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
@@ -111,7 +111,7 @@ class KTInit {
             return $res;
         }
 
-        require_once("Log.php");
+        require_once('Log.php');
         $default->phpErrorLog =& Log::factory('composite');
 
         if ($default->phpErrorLogFile) {
@@ -133,7 +133,7 @@ class KTInit {
      */
     function setupI18n () {
         require_once(KT_LIB_DIR . '/i18n/i18nutil.inc.php');
-        require_once("HTTP.php");
+        require_once('HTTP.php');
         global $default;
         $language = KTUtil::arrayGet($_COOKIE, 'kt_language');
         if ($language) {
@@ -146,7 +146,7 @@ class KTInit {
     function setupDB () {
         global $default;
 
-        require_once("DB.php");
+        require_once('DB.php');
 
         // DBCompat allows phplib API compatibility
         require_once(KT_LIB_DIR . '/database/dbcompat.inc');
@@ -233,7 +233,7 @@ class KTInit {
     // {{{ setupServerVariables
     function setupServerVariables() {
         $oKTConfig =& KTConfig::getSingleton();
-        $bPathInfoSupport = $oKTConfig->get("KnowledgeTree/pathInfoSupport");
+        $bPathInfoSupport = $oKTConfig->get('KnowledgeTree/pathInfoSupport');
         if ($bPathInfoSupport) {
             // KTS-21: Some environments (FastCGI only?) don't set PATH_INFO
             // correctly, but do set ORIG_PATH_INFO.
@@ -241,12 +241,12 @@ class KTInit {
             $orig_path_info = KTUtil::arrayGet($_SERVER, 'ORIG_PATH_INFO');
             if (empty($path_info) && !empty($orig_path_info)) {
                 $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
-                $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+                $_SERVER['PHP_SELF'] .= $_SERVER['PATH_INFO'];
             }
             $env_path_info = KTUtil::arrayGet($_SERVER, 'REDIRECT_kt_path_info');
             if (empty($path_info) && !empty($env_path_info)) {
                 $_SERVER['PATH_INFO'] = $env_path_info;
-                $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+                $_SERVER['PHP_SELF'] .= $_SERVER['PATH_INFO'];
             }
 
             // KTS-50: IIS (and probably most non-Apache web servers) don't
@@ -264,8 +264,8 @@ class KTInit {
 
         $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
         if (!empty($kt_path_info)) {
-            $_SERVER["PHP_SELF"] .= "?kt_path_info=" . $kt_path_info;
-            $_SERVER["PATH_INFO"] = $kt_path_info;
+            $_SERVER['PHP_SELF'] .= '?kt_path_info=' . $kt_path_info;
+            $_SERVER['PATH_INFO'] = $kt_path_info;
         }
 
         $oConfig =& KTConfig::getSingleton();
@@ -331,7 +331,7 @@ class KTInit {
     function guessRootUrl() {
         $urlpath = $_SERVER['SCRIPT_NAME'];
         $bFound = false;
-        $rootUrl = "";
+        $rootUrl = '';
         while ($urlpath) {
             if (file_exists(KT_DIR . '/' . $urlpath)) {
                 $bFound = true;
@@ -350,7 +350,7 @@ class KTInit {
             }
             return $rootUrl;
         }
-        return "";
+        return '';
     }
     // }}}
     
@@ -359,16 +359,16 @@ class KTInit {
         global $default;
         $use_cache = false;
         $store_cache = false;
-        if (file_exists(KT_DIR .  "/config/cache-path")) {
+        if (file_exists(KT_DIR .  '/config/cache-path')) {
             $store_cache = true;
             $user = KTLegacyLog::running_user();
             // handle vhosts.
             $truehost = KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'default');
             $trueport = KTUtil::arrayGet($_SERVER, 'SERVER_PORT', '80'); 
-            $cache_file = trim(file_get_contents(KT_DIR .  "/config/cache-path")) . '/configcache' . $user . $truehost . $trueport;
-            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf("%s/%s", KT_DIR, $cache_file); }            
-            $config_file = trim(file_get_contents(KT_DIR .  "/config/config-path"));                
-            if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf("%s/%s", KT_DIR, $config_file); }
+            $cache_file = trim(file_get_contents(KT_DIR .  '/config/cache-path')) . '/configcache' . $user . $truehost . $trueport;
+            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf('%s/%s', KT_DIR, $cache_file); }            
+            $config_file = trim(file_get_contents(KT_DIR .  '/config/config-path'));                
+            if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf('%s/%s', KT_DIR, $config_file); }
             
             $exists = file_exists($cache_file);
             if ($exists) {
@@ -394,45 +394,45 @@ class KTInit {
         } else {
             $oKTConfig =& KTConfig::getSingleton();
 
-            $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
-            $oKTConfig->setdefaultns("KnowledgeTree", "serverName", KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
-            $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
+            $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
+            $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
+            $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', false);
             if (array_key_exists('HTTPS', $_SERVER)) {
                 if (strtolower($_SERVER['HTTPS']) === 'on') {
-                    $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
+                    $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', true);
                 }
             }
-            $oKTConfig->setdefaultns("KnowledgeTree", "useNewDashboard", true);
-            $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $this->guessRootUrl());
-            $oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
-            $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", false);
-            $oKTConfig->setdefaultns("storage", "manager", 'KTOnDiskHashedStorageManager');
-            $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+            $oKTConfig->setdefaultns('KnowledgeTree', 'useNewDashboard', true);
+            $oKTConfig->setdefaultns('KnowledgeTree', 'rootUrl', $this->guessRootUrl());
+            $oKTConfig->setdefaultns('KnowledgeTree', 'execSearchPath', $_SERVER['PATH']);
+            $oKTConfig->setdefaultns('KnowledgeTree', 'pathInfoSupport', false);
+            $oKTConfig->setdefaultns('storage', 'manager', 'KTOnDiskHashedStorageManager');
+            $oKTConfig->setdefaultns('config', 'useDatabaseConfiguration', false);
 
-            $oKTConfig->setdefaultns("urls", "tmpDirectory", '${varDirectory}/tmp');       
-            $oKTConfig->setdefaultns("urls", 'stopwordsFile', '${fileSystemRoot}/config/stopwords.txt');
+            $oKTConfig->setdefaultns('urls', 'tmpDirectory', '${varDirectory}/tmp');       
+            $oKTConfig->setdefaultns('urls', 'stopwordsFile', '${fileSystemRoot}/config/stopwords.txt');
             
-            $oKTConfig->setdefaultns("tweaks", "browseToUnitFolder", false);
-            $oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
-            $oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
-            $oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
-            $oKTConfig->setdefaultns("tweaks", "noisyBulkOperations", false);            
+            $oKTConfig->setdefaultns('tweaks', 'browseToUnitFolder', false);
+            $oKTConfig->setdefaultns('tweaks', 'genericMetaDataRequired', true);
+            $oKTConfig->setdefaultns('tweaks', 'phpErrorLogFile', false);
+            $oKTConfig->setdefaultns('tweaks', 'developmentWindowLog', false);
+            $oKTConfig->setdefaultns('tweaks', 'noisyBulkOperations', false);            
             
-            $oKTConfig->setdefaultns("user_prefs", "passwordLength", 6);
-            $oKTConfig->setdefaultns("user_prefs", "restrictAdminPasswords", false);
+            $oKTConfig->setdefaultns('user_prefs', 'passwordLength', 6);
+            $oKTConfig->setdefaultns('user_prefs', 'restrictAdminPasswords', false);
             
-            $oKTConfig->setdefaultns("session", "allowAnonymousLogin", false);
+            $oKTConfig->setdefaultns('session', 'allowAnonymousLogin', false);
             
-            $oKTConfig->setdefaultns("ui", "ieGIF", true);
-            $oKTConfig->setdefaultns("ui", "alwaysShowAll", false);
-            $oKTConfig->setdefaultns("ui", "condensedAdminUI", false);
+            $oKTConfig->setdefaultns('ui', 'ieGIF', true);
+            $oKTConfig->setdefaultns('ui', 'alwaysShowAll', false);
+            $oKTConfig->setdefaultns('ui', 'condensedAdminUI', false);
             
-            $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
-            $oKTConfig->setdefaultns("import", "unzip", 'unzip');
-            $oKTConfig->setdefaultns("cache", "cacheDirectory", '${varDirectory}/cache');
-            $oKTConfig->setdefaultns("cache", "cacheEnabled", 'false');
-            $oKTConfig->setdefaultns("cache", "proxyCacheDirectory", '${varDirectory}/proxies');
-            $oKTConfig->setdefaultns("cache", "proxyCacheEnabled", 'true');
+            $oKTConfig->setdefaultns(null, 'logLevel', 'INFO');
+            $oKTConfig->setdefaultns('import', 'unzip', 'unzip');
+            $oKTConfig->setdefaultns('cache', 'cacheDirectory', '${varDirectory}/cache');
+            $oKTConfig->setdefaultns('cache', 'cacheEnabled', 'false');
+            $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
+            $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
             
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
@@ -452,11 +452,11 @@ class KTInit {
     function readConfig () {
         global $default;
         $oKTConfig =& KTConfig::getSingleton();
-        $sConfigFile = trim(file_get_contents(KT_DIR .  "/config/config-path"));
+        $sConfigFile = trim(file_get_contents(KT_DIR .  '/config/config-path'));
         if (KTUtil::isAbsolutePath($sConfigFile)) {
             $res = $oKTConfig->loadFile($sConfigFile);
         } else {
-            $res = $oKTConfig->loadFile(sprintf("%s/%s", KT_DIR, $sConfigFile));
+            $res = $oKTConfig->loadFile(sprintf('%s/%s', KT_DIR, $sConfigFile));
         }
         
         if (PEAR::isError($res)) { 
@@ -467,14 +467,14 @@ class KTInit {
         
         foreach (array_keys($oKTConfig->flat) as $k) {
             $v = $oKTConfig->get($k);
-            if ($v === "default") {
+            if ($v === 'default') {
                 continue;
             }
-            if ($v === "false") {
+            if ($v === 'false') {
                 $v = false;
                 
             }
-            if ($v === "true") {
+            if ($v === 'true') {
                 $v = true;
             }
             $default->$k = $v;
@@ -485,12 +485,12 @@ class KTInit {
     // {{{ initTesting
     function initTesting() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sConfigFile = trim(@file_get_contents(KT_DIR .  "/config/test-config-path"));
+        $sConfigFile = trim(@file_get_contents(KT_DIR .  '/config/test-config-path'));
         if (empty($sConfigFile)) {
             $sConfigFile = 'config/test.ini';
         }
         if (!KTUtil::isAbsolutePath($sConfigFile)) {
-            $sConfigFile = sprintf("%s/%s", KT_DIR, $sConfigFile);
+            $sConfigFile = sprintf('%s/%s', KT_DIR, $sConfigFile);
         }
         if (!file_exists($sConfigFile)) {
             $this->handleInitError(PEAR::raiseError('Test infrastructure not configured'));
@@ -521,7 +521,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
-require_once(KT_LIB_DIR . "/config/config.inc.php");
+require_once(KT_LIB_DIR . '/config/config.inc.php');
 
 $KTInit->initConfig(); 
 $KTInit->setupI18n();
@@ -547,7 +547,7 @@ $GLOBALS['KTRootUrl'] = $oKTConfig->get('KnowledgeTree/rootUrl');
 require_once(KT_LIB_DIR . '/database/lookup.inc');
 
 // table mapping entries
-include("tableMappings.inc");
+include('tableMappings.inc');
 
 $default->systemVersion = trim(file_get_contents(KT_DIR . '/docs/VERSION.txt'));
 $default->versionName = trim(file_get_contents(KT_DIR . '/docs/VERSION-NAME.txt'));
@@ -556,7 +556,7 @@ $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
 
 // site map definition
-require_once(KT_DIR . "/config/siteMap.inc");
+require_once(KT_DIR . '/config/siteMap.inc');
 
 require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/session/control.inc');
@@ -572,7 +572,7 @@ if ($checkup !== true) {
         require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
         $name = BaobabKeyUtil::getName();
         if ($name) {
-            $default->versionName = sprintf("%s %s", $default->versionName, $name);
+            $default->versionName = sprintf('%s %s', $default->versionName, $name);
         }
     }
 }
