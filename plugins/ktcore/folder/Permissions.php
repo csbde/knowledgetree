@@ -6,15 +6,15 @@ require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
+require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 
 class KTFolderPermissionsAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.permissions';
 
-    var $_sEditShowPermission = "ktcore.permissions.security";
-    var $_sShowPermission = "ktcore.permissions.security";
+    var $_sEditShowPermission = 'ktcore.permissions.security';
+    var $_sShowPermission = 'ktcore.permissions.security';
     var $_bAdminAlwaysAvailable = true;
     var $bAutomaticTransaction = true;
 
@@ -23,8 +23,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("Permissions"));
-        $oTemplate = $this->oValidator->validateTemplate("ktcore/folder/view_permissions");
+        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/view_permissions');
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectID());
         $aPermissions = KTPermission::getList();
@@ -75,18 +75,21 @@ class KTFolderPermissionsAction extends KTFolderAction {
         // this should be quite limited - direct role -> user assignment is typically rare.
         foreach ($aActiveUsers as $id => $marker) {
             $oUser = User::get($id);
+            if (is_null($oUser)) continue; // this is just a patch in case there is a db integrity issue.
             $users[$oUser->getName()] = $oUser;
         }
         asort($users); // ascending, per convention.
 
         foreach ($aActiveGroups as $id => $marker) {
             $oGroup = Group::get($id);
+            if (is_null($oGroup)) continue; // this is just a patch in case there is a db integrity issue.
             $groups[$oGroup->getName()] = $oGroup;
         }
         asort($groups);
 
         foreach ($aActiveRoles as $id => $marker) {
             $oRole = Role::get($id);
+            if (is_null($oRole)) continue; // this is just a patch in case there is a db integrity issue.
             $roles[$oRole->getName()] = $oRole;
         }
         asort($roles);
@@ -102,7 +105,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         // from a folder.
         if ($oInherited->getId() !== $this->oFolder->getId()) {
             $iInheritedFolderId = $oInherited->getId();
-            $sInherited = join(" &raquo; ", $oInherited->getPathArray());
+            $sInherited = join(' &raquo; ', $oInherited->getPathArray());
         }
         // only allow inheritance if not inherited, -and- folders is editable
         $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());        
@@ -114,9 +117,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
         
         foreach ($aDynConditions as $oDynCondition) {
             $g = Group::get($oDynCondition->getGroupId());
-
+			if (is_null($g)) continue; // db integrity catch
+			
             if (PEAR::isError($g)) { continue; }
-            $c = KTSavedSearch::get($oDynCondition->getConditionId());            
+            $c = KTSavedSearch::get($oDynCondition->getConditionId());     
+            if (is_null($c)) continue; // db integrity catch       
             if (PEAR::isError($c)) { continue; }
             
             $aInfo = array(
@@ -133,18 +138,18 @@ class KTFolderPermissionsAction extends KTFolderAction {
         }
 
         $aTemplateData = array(
-            "context" => $this,
-            "permissions" => $aPermissions,
-            "groups" => $groups,
-            "users" => $users,
-            "roles" => $roles,
-            "oFolder" => $this->oFolder,
-            "aMapPermissionGroup" => $aMapPermissionGroup,
-            "aMapPermissionRole" => $aMapPermissionRole,
-            "aMapPermissionUser" => $aMapPermissionUser,
-            "edit" => $bEdit,
+            'context' => $this,
+            'permissions' => $aPermissions,
+            'groups' => $groups,
+            'users' => $users,
+            'roles' => $roles,
+            'oFolder' => $this->oFolder,
+            'aMapPermissionGroup' => $aMapPermissionGroup,
+            'aMapPermissionRole' => $aMapPermissionRole,
+            'aMapPermissionUser' => $aMapPermissionUser,
+            'edit' => $bEdit,
             'inheritable' => $bInheritable,
-            "inherited" => $sInherited,
+            'inherited' => $sInherited,
             'foldername' => $this->oFolder->getName(),
             'conditions' => $aConditions,             
         );
@@ -152,8 +157,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_resolved_users() {
-        $this->oPage->setBreadcrumbDetails(_kt("Permissions"));
-        $oTemplate = $this->oValidator->validateTemplate("ktcore/folder/resolved_permissions_user");
+        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/resolved_permissions_user');
 
         $oPL = KTPermissionLookup::get($this->oFolder->getPermissionLookupID());
         $aPermissions = KTPermission::getList();
@@ -187,6 +192,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         // this should be quite limited - direct role -> user assignment is typically rare.
         foreach ($aActiveUsers as $id => $marker) {
             $oUser = User::get($id);
+            if (is_null($oUser)) continue;
             $users[$oUser->getName()] = $oUser;
         }
         asort($users); // ascending, per convention.
@@ -195,19 +201,19 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $sInherited = '';
 
         $aTemplateData = array(
-            "context" => $this,
-            "permissions" => $aPermissions,
-            "groups" => $groups,
-            "users" => $users,
-            "roles" => $roles,
-            "oFolder" => $this->oFolder,
-            "aMapPermissionGroup" => $aMapPermissionGroup,
-            "aMapPermissionRole" => $aMapPermissionRole,
-            "aMapPermissionUser" => $aMapPermissionUser,
-            "edit" => $bEdit,
-            "inherited" => $sInherited,
+            'context' => $this,
+            'permissions' => $aPermissions,
+            'groups' => $groups,
+            'users' => $users,
+            'roles' => $roles,
+            'oFolder' => $this->oFolder,
+            'aMapPermissionGroup' => $aMapPermissionGroup,
+            'aMapPermissionRole' => $aMapPermissionRole,
+            'aMapPermissionUser' => $aMapPermissionUser,
+            'edit' => $bEdit,
+            'inherited' => $sInherited,
             'foldername' => $this->oFolder->getName(),     
-            "iFolderId" => $this->oFolder->getId(),                   
+            'iFolderId' => $this->oFolder->getId(),                   
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -226,7 +232,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     function _copyPermissions() {
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Override permissions from parent",
+            'comment' => 'Override permissions from parent',
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -242,7 +248,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
 
     function do_edit() {
-        $this->oPage->setBreadcrumbDetails(_kt("Viewing Permissions"));
+        $this->oPage->setBreadcrumbDetails(_kt('Viewing Permissions'));
 
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
@@ -257,7 +263,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         if ($oInherited->getId() !== $this->oFolder->getId()) {
             $override = KTUtil::arrayGet($_REQUEST, 'override', false);
             if (empty($override)) { 
-                $this->errorRedirectToMain(_kt("This folder does not override its permissions"), sprintf("fFolderId=%d", $this->oFolder->getId()));
+                $this->errorRedirectToMain(_kt('This folder does not override its permissions'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             }
             $this->startTransaction();
     	    $this->_copyPermissions();
@@ -280,7 +286,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
 	// templating
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
+        $oTemplate = $oTemplating->loadTemplate('ktcore/folder/permissions');
 
         $bCanInherit = ($this->oFolder->getId() != 1);
 
@@ -288,11 +294,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $docperms = KTPermission::getDocumentRelevantList();
         
         $aTemplateData = array(			       
-            "iFolderId" => $this->oFolder->getId(),
+            'iFolderId' => $this->oFolder->getId(),
 	        'roles' => Role::getList(),
 	        'groups' => Group::getList(),
-            "conditions" => KTSavedSearch::getConditions(),
-            "dynamic_conditions" => $aDynamicConditions,
+            'conditions' => KTSavedSearch::getConditions(),
+            'dynamic_conditions' => $aDynamicConditions,
             'context' => &$this,
             'foldername' => $this->oFolder->getName(),          
 	        'jsonpermissions' => $sJSONPermissions,
@@ -309,7 +315,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	return array('error' => true,
 		     'type' => 'kt.permission_denied',
 		     'alert' => true,
-		     'message' => _kt("You do not have permission to alter security settings."));
+		     'message' => _kt('You do not have permission to alter security settings.'));
     }
 
     function &_getPermissionsMap() {
@@ -368,7 +374,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		$aEntityList = array();
 	    }
 
-	    $aGroups = Group::getList(sprintf('name like "%%%s%%"', $sFilter));
+	    $aGroups = Group::getList(sprintf('name like \'%%%s%%\'', $sFilter));
 	    foreach($aGroups as $oGroup) {
 		$aPerm = @array_keys($aPermissionsMap['group'][$oGroup->getId()]);
 		if(!is_array($aPerm)) {
@@ -391,7 +397,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		}						      
 	    }
 
-	    $aRoles = Role::getList(sprintf('name like "%%%s%%"', $sFilter));
+	    $aRoles = Role::getList(sprintf('name like \'%%%s%%\'', $sFilter));
 	    foreach($aRoles as $oRole) {
 		$aPerm = @array_keys($aPermissionsMap['role'][$oRole->getId()]);
 		if(!is_array($aPerm)) {
@@ -425,7 +431,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
             $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
         }
-        require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
+        require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aFoo = $_REQUEST['foo'];
 
@@ -439,7 +445,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Updated permissions",
+            'comment' => 'Updated permissions',
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -459,8 +465,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $this->commitTransaction();
 
-        $this->addInfoMessage(_kt("Permissions on folder updated"));
-        $po->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], "action=edit&fFolderId=" . $this->oFolder->getId()));
+        $this->addInfoMessage(_kt('Permissions on folder updated'));
+        $po->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=edit&fFolderId=' . $this->oFolder->getId()));
         exit(0);
     }
 
@@ -472,7 +478,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         }
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Inherit permissions from parent",
+            'comment' => 'Inherit permissions from parent',
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -504,7 +510,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Added dynamic permissions",
+            'comment' => 'Added dynamic permissions',
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -524,7 +530,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        $this->successRedirectTo('edit', _kt("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
+        $this->successRedirectTo('edit', _kt('Dynamic permission added'), 'fFolderId=' . $this->oFolder->getId());
     }
 
     function do_removeDynamicCondition() {
@@ -541,7 +547,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Removed dynamic permissions",
+            'comment' => 'Removed dynamic permissions',
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -554,7 +560,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        $this->successRedirectTo('edit', _kt("Dynamic permission removed"), "fFolderId=" . $this->oFolder->getId());
+        $this->successRedirectTo('edit', _kt('Dynamic permission removed'), 'fFolderId=' . $this->oFolder->getId());
     }
 }
 
