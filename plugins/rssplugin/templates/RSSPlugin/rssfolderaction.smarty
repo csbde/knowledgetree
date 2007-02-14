@@ -1,9 +1,0 @@
-<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>Folder RSS</h2>
-<p>
-You can copy the following link into any RSS aggragator to create a feed to the selected folder.
-<ul>
-	<li>{$link}</li>
-</ul>
-Another way of quickly accessing a RSS feed to a document of folder is by RSS icon {$linkIcon},
-which you will find in your actions portlet on the left.
-</p>

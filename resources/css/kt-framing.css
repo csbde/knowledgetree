@@ -1281,12 +1281,6 @@ a.main_nav_item {
     margin: 0.5em;
 }
 
-.outerContainer{
-	height: 450px;
-	overflow: auto;
-    margin-bottom: 20px;
-}
-
 /* ========== kt actions 
 
 These are used to mark up various different "actions" (e.g. cut, copy, delete).
