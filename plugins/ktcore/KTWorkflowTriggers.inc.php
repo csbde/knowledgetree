@@ -24,12 +24,12 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/workflow/workflowtrigger.inc.php");
+require_once(KT_LIB_DIR . '/workflow/workflowtrigger.inc.php');
 
-require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
-require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 
-require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
+require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 
 class PermissionGuardTrigger extends KTWorkflowTrigger {
     var $sNamespace = 'ktcore.workflowtriggers.permissionguard';
@@ -43,8 +43,8 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
     var $bIsAction = false;
     
     function PermissionGuardTrigger() {
-        $this->sFriendlyName = _kt("Permission Restrictions");
-        $this->sDescription = _kt("Prevents users who do not have the specified permission from using this transition.");
+        $this->sFriendlyName = _kt('Permission Restrictions');
+        $this->sDescription = _kt('Prevents users who do not have the specified permission from using this transition.');
     }
     
     // override the allow transition hook.
@@ -79,10 +79,10 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         }
 
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/permissions");
+		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/permissions');
 		$aTemplateData = array(
-              "context" => $this,
-              "perms" => $aKeyPermissions,
+              'context' => $this,
+              'perms' => $aKeyPermissions,
               'current_perms' => $current_perms, 
               'args' => $args,
 		);
@@ -148,8 +148,8 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
     var $bIsAction = false;
     
     function RoleGuardTrigger() {
-        $this->sFriendlyName = _kt("Role Restrictions");
-        $this->sDescription = _kt("Prevents users who do not have the specified role from using this transition.");
+        $this->sFriendlyName = _kt('Role Restrictions');
+        $this->sDescription = _kt('Prevents users who do not have the specified role from using this transition.');
     }
     
     // override the allow transition hook.
@@ -199,11 +199,11 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
         foreach ($aRoles as $oRole) { $aKeyedRoles[$oRole->getId()] = $oRole->getName(); }
 
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/roles");
+		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/roles');
 		$aTemplateData = array(
-              "context" => $this,
-              "roles" => $aKeyedRoles,
-              "current_role" => KTUtil::arrayGet($this->aConfig, 'role_id'),
+              'context' => $this,
+              'roles' => $aKeyedRoles,
+              'current_role' => KTUtil::arrayGet($this->aConfig, 'role_id'),
               'args' => $args,
 		);
 		return $oTemplate->render($aTemplateData);    
@@ -240,7 +240,7 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
         if (PEAR::isError($oRole)) {
             return _kt('The role required for this trigger has been deleted, so anyone can perform this action.');
         } else {
-            return sprintf(_kt("The user will require the <strong>%s</strong> role."), htmlentities($oRole->getName(), ENT_NOQUOTES, 'UTF-8'));
+            return sprintf(_kt('The user will require the <strong>%s</strong> role.'), htmlentities($oRole->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
     }    
 }
@@ -258,8 +258,8 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
     var $bIsAction = false;
     
     function GroupGuardTrigger() {
-        $this->sFriendlyName = _kt("Group Restrictions");
-        $this->sDescription = _kt("Prevents users who are not members of the specified group from using this transition.");
+        $this->sFriendlyName = _kt('Group Restrictions');
+        $this->sDescription = _kt('Prevents users who are not members of the specified group from using this transition.');
     }
     
     // override the allow transition hook.
@@ -288,11 +288,11 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
         foreach ($aGroups as $oGroup) { $aKeyedGroups[$oGroup->getId()] = $oGroup->getName(); }
 
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/group");
+		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/group');
 		$aTemplateData = array(
-              "context" => $this,
-              "groups" => $aKeyedGroups,
-              "current_group" => KTUtil::arrayGet($this->aConfig, 'group_id'),
+              'context' => $this,
+              'groups' => $aKeyedGroups,
+              'current_group' => KTUtil::arrayGet($this->aConfig, 'group_id'),
               'args' => $args,
 		);
 		return $oTemplate->render($aTemplateData);    
@@ -329,7 +329,7 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
         if (PEAR::isError($oGroup)) {
             return _kt('The group required for this trigger has been deleted, so anyone can perform this action.');
         } else {
-            return sprintf(_kt("The user must be a member of the group \"<strong>%s</strong>\"."), htmlentities($oGroup->getName(), ENT_NOQUOTES, 'UTF-8'));
+            return sprintf(_kt('The user must be a member of the group "<strong>%s</strong>".'), htmlentities($oGroup->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
     }    
 }
@@ -347,8 +347,8 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
     var $bIsAction = false;
     
     function ConditionGuardTrigger() {
-        $this->sFriendlyName = _kt("Conditional Restrictions");
-        $this->sDescription = _kt("Prevents this transition from occuring if the condition specified is not met for the document.");
+        $this->sFriendlyName = _kt('Conditional Restrictions');
+        $this->sDescription = _kt('Prevents this transition from occuring if the condition specified is not met for the document.');
     }
     
     // override the allow transition hook.
@@ -372,11 +372,11 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
         foreach ($aConditions as $oCondition) { $aKeyedConditions[$oCondition->getId()] = $oCondition->getName(); }
 
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/condition");
+		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/condition');
 		$aTemplateData = array(
-              "context" => $this,
-              "conditions" => $aKeyedConditions,
-              "current_condition" => KTUtil::arrayGet($this->aConfig, 'condition_id'),
+              'context' => $this,
+              'conditions' => $aKeyedConditions,
+              'current_condition' => KTUtil::arrayGet($this->aConfig, 'condition_id'),
               'args' => $args,
 		);
 		return $oTemplate->render($aTemplateData);    
@@ -413,7 +413,7 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
         if (PEAR::isError($oCondition)) {
             return _kt('The condition required for this trigger has been deleted, so it is always available.');
         } else {
-            return sprintf(_kt("The document must match condition \"<strong>%s</strong>\"."), htmlentities($oCondition->getName(), ENT_NOQUOTES, 'UTF-8'));
+            return sprintf(_kt('The document must match condition "<strong>%s</strong>".'), htmlentities($oCondition->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
     }    
 }
@@ -431,8 +431,8 @@ class CopyActionTrigger extends KTWorkflowTrigger {
     var $bIsAction = true;
     
     function CopyActionTrigger() {
-        $this->sFriendlyName = _kt("Moves Document");
-        $this->sDescription = _kt("Moves the document to another folder.");
+        $this->sFriendlyName = _kt('Moves Document');
+        $this->sDescription = _kt('Moves the document to another folder.');
     }
    
     // perform more expensive checks -before- performTransition.
@@ -459,10 +459,10 @@ class CopyActionTrigger extends KTWorkflowTrigger {
         
     function displayConfiguration($args) {
         $oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/workflowtriggers/moveaction");
+		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/moveaction');
 		
-        require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
-        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+        require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
+        require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 		
         $collection = new AdvancedCollection;       
         $oColumnRegistry = KTColumnRegistry::getSingleton();
@@ -478,7 +478,7 @@ class CopyActionTrigger extends KTWorkflowTrigger {
         $qsFrag = array();
         foreach ($args as $k => $v) {
             if ($k == 'action') { $v = 'editactiontrigger'; } // horrible hack - we really need iframe embedding. 
-            $qsFrag[] = sprintf("%s=%s",urlencode($k), urlencode($v));
+            $qsFrag[] = sprintf('%s=%s',urlencode($k), urlencode($v));
         }
         $qs = implode('&',$qsFrag);
         $aOptions['result_url'] = KTUtil::addQueryStringSelf($qs);                
@@ -515,13 +515,13 @@ class CopyActionTrigger extends KTWorkflowTrigger {
             $qsFrag2[] = sprintf('fFolderId=%d', $id);
             $qs2 = implode('&',$qsFrag2);
             $url = KTUtil::addQueryStringSelf($qs2);              
-            $aBreadcrumbs[] = sprintf("<a href=\"%s\">%s</a>", $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
+            $aBreadcrumbs[] = sprintf('<a href="%s">%s</a>', $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
         }
 		
         $sBreadcrumbs = implode(' &raquo; ', $aBreadcrumbs);		
 		
 		$aTemplateData = array(
-              "context" => $this,
+              'context' => $this,
               'breadcrumbs' => $sBreadcrumbs,
               'collection' => $collection,
               'args' => $args,
@@ -559,7 +559,7 @@ class CopyActionTrigger extends KTWorkflowTrigger {
         if (PEAR::isError($oFolder)) {
             return _kt('<strong>The folder required for this trigger has been deleted, so the transition cannot be performed.</strong>');
         } else {
-            return sprintf(_kt("The document will be moved to folder \"<a href=\"%s\">%s</a>\"."), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
+            return sprintf(_kt('The document will be moved to folder "<a href="%s">%s</a>".'), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
     }    
 }
@@ -579,8 +579,8 @@ class CheckoutGuardTrigger extends KTWorkflowTrigger {
     var $bIsConfigurable = false;
     
     function CheckoutGuardTrigger() {
-        $this->sFriendlyName = _kt("Checkout Guard");
-        $this->sDescription = _kt("Prevents a transition from being followed if the document is checked out..");
+        $this->sFriendlyName = _kt('Checkout Guard');
+        $this->sDescription = _kt('Prevents a transition from being followed if the document is checked out..');
     }
     
     // override the allow transition hook.
