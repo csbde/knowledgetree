@@ -347,7 +347,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 	$aUserList = array('off' => _kt('-- Please filter --'));
 
 	if($sFilter && trim($sFilter)) {	    
-	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
+	    $sWhere = sprintf('name LIKE \'%%%s%%\' AND disabled = \'0\'', $sFilter);
 	    if ($bOnlyOwnGroup != true) {
 		$aUsers = User::getEmailUsers($sWhere);
 	    } else {
