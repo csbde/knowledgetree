@@ -576,6 +576,7 @@ INSERT INTO `mime_types` VALUES (158, 'odi', 'application/vnd.oasis.opendocument
 INSERT INTO `mime_types` VALUES (159, 'zip', 'application/x-zip', 'compressed', 'ZIP Compressed File');
 INSERT INTO `mime_types` VALUES (160, 'csv', 'text/csv', 'spreadsheet', 'Comma delimited spreadsheet');
 INSERT INTO `mime_types` VALUES (161, 'msi', 'application/msword', 'compressed', 'MSI Installer file');
+INSERT INTO `mime_types` VALUES (162, 'pps', 'application/vnd.ms-powerpoint', 'office', 'Powerpoint Presentation');
 
 -- 
 -- Dumping data for table `news`
