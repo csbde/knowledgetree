@@ -11,3 +11,5 @@ CREATE TABLE `zseq_plugin_rss`
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
+
+INSERT INTO `zseq_plugin_rss` (id) VALUES ('1');
