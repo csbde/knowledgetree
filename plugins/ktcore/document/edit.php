@@ -205,6 +205,7 @@ class KTDocumentEditAction extends KTDocumentAction {
             $oTrigger = new $sTrigger;
             $aInfo = array(
                 "document" => $this->oDocument,
+                "aOptions" => $MDPack,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
