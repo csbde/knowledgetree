@@ -165,6 +165,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aMapPermissionGroup = array();
         $aMapPermissionRole = array();
         $aMapPermissionUser = array();
+        $aActiveUsers = array();
 
         $aUsers = User::getList();
 
