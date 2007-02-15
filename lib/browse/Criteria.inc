@@ -1041,7 +1041,46 @@ class TransactionTextCriterion extends BrowseCriterion {
     }
 }
 
+class TagCloudCriterion extends BrowseCriterion {
+    var $bString = true;
+	var $bContains = false;
+    var $bHandleNot = false;
+    var $sDocumentField = 'tag';// this is linked to the field
+    var $sSortField = 'tag';
+    var $sNamespace = 'ktcore.criteria.tagcloud';
+    var $sSearchTable = "TWS" ;
+    
+    function TagCloudCriterion() {
+	$this->sDisplay = _kt('Tag Cloud');
+    }        
+    
+    function documentDisplay ($oDocument) {
+        return "Tag Cloud";
+    }
+    function getName() {
+        return "tagcloud";
+    }
 
+    function searchSQL ($aRequest) {
+         $p = parent::searchSQL($aRequest, false); // handle not ourselves.
+                
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert) || ($want_invert == "0")) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }        
+        
+        return $p;   	
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN document_tags AS DTS ON DTS.document_id = D.id
+        		INNER JOIN tag_words AS TWS ON tws.id = DTS.tag_id";
+    }
+}
 
 class DateCreatedDeltaCriterion extends DateCreatedCriterion {
     var $sDocumentField = 'created';

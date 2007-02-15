@@ -422,6 +422,7 @@ class KTDocumentUtil {
 
     // {{{ _in_add
     function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
+        $aOrigOptions = $aOptions;
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
 	    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
 	    if (PEAR::isError($oDoc)) {
@@ -514,6 +515,7 @@ class KTDocumentUtil {
             $oTrigger = new $sTrigger;
             $aInfo = array(
                 "document" => $oDocument,
+                'aOptions' => $aOrigOptions,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();

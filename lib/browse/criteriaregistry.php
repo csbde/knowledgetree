@@ -44,6 +44,7 @@ class KTCriteriaRegistry {
         foreach($aFields as $oField) {
             $sNamespace = $oField->getNamespace();
             $oFieldset =& KTFieldset::get($oField->getParentFieldset());
+            if(is_null($oFieldset->userinfo)){continue;}
             $aInitialize = array(sprintf("%s: %s", $oFieldset->getName(), $oField->getName()), 'id', 'id', $oField->getId(), $sNamespace);
             $this->registerCriterion('GenericMetadataCriterion', $sNamespace, null, $aInitialize);
         }
