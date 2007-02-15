@@ -371,7 +371,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $bGeneric = $data['generic'];
         if ($bGeneric != $this->oFieldset->getIsGeneric() && $bGeneric == true) {
             // delink it from all doctypes.            
-            $aTypes = $oFieldset->getAssociatedTypes();
+            $aTypes = $this->oFieldset->getAssociatedTypes();
             foreach ($aTypes as $oType) {
                 $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
                 if (PEAR::isError($res)) {
