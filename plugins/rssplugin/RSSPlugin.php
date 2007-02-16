@@ -25,6 +25,8 @@ require_once('RSSDocumentLinkAction.php');
     }
     
     function setup() {
+    	// automatically register the plugin
+    	$this->autoRegister = true;
 		$this->registerAction('folderaction', 'RSSFolderLinkAction', 'ktcore.rss.plugin.folder.link', $sFilename = null);
 		$this->registerAction('documentaction', 'RSSDocumentLinkAction', 'ktcore.rss.plugin.document.link', $sFilename = null);
 		$this->registerDashlet('RSSDashlet', 'ktcore.rss.feed.dashlet', 'RSSDashlet.php');
