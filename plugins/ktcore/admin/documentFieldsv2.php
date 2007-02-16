@@ -373,7 +373,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             // delink it from all doctypes.            
             $aTypes = $this->oFieldset->getAssociatedTypes();
             foreach ($aTypes as $oType) {
-                $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $oFieldset->getId());
+                $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $this->oFieldset->getId());
                 if (PEAR::isError($res)) {
                     $this->errorRedirectTo('edit', _kt('Could not save fieldset changes'));
                     exit(0);
