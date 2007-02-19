@@ -10634,3 +10634,7 @@ msgstr ""
 #: plugins/ktcore/KTPortlets.php:74
 msgid "Browse by..."
 msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:126 
+msgid "Your colleague, %s, wishes you to view the attached document entitled '%s'."
+msgstr ""
