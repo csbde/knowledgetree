@@ -1,4 +1,4 @@
-<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>{$document->getName()|escape|truncate:40:"..."}</h2>
+<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>{$document->getName()|escape|wordwrap:40:"\n":true}</h2>
 
 {if ($document->getIsCheckedOut() == 1)}
 {capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
