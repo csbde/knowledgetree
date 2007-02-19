@@ -930,7 +930,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     $extra_errors['name'] = _kt('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
             }
             
-                $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $this->oDocument->getFilename());              
+                $bFileClash = KTDocumentUtil::fileExists($data['browse'], $this->oDocument->getFilename());              
                 if ($bFileClash && isset($data['filename'])) {
                     $filename = $data['filename'];
                     $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $filename);              
