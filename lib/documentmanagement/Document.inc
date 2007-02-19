@@ -296,7 +296,7 @@ class Document {
         $sQuery = "SELECT D.id AS id FROM $sD AS D
             LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
             LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
-            WHERE DC.filename = ? AND D.folder_id = ?";
+            WHERE DC.filename = ? AND D.folder_id = ? AND D.status_id=1";
         $aParams = array($sFileName, $iFolderID);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
         if (empty($id)) {
@@ -336,7 +336,7 @@ class Document {
         $sQuery = "SELECT D.id AS id FROM $sD AS D
             LEFT JOIN $sDM AS DM ON D.metadata_version_id = DM.id
             LEFT JOIN $sDC AS DC ON DM.content_version_id = DC.id
-            WHERE DM.name = ? AND D.folder_id = ?";
+            WHERE DM.name = ? AND D.folder_id = ? AND D.status_id=1";
         $aParams = array($sName, $iFolderID);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
         if (empty($id)) {
