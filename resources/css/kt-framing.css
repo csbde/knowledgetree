@@ -1224,14 +1224,15 @@ a.main_nav_item {
 
 
 .ktBlock { 
-    padding: 0 1em;
-    border: 1px solid #c5c5c5;
-    background-color: #fcfcfc;
-    margin: 0.5em 0;
+    padding: 0.1em 1em;
+    /*border-right: 1px solid #c5c5c5;*/
+    /*background-color: #fcfcfc;*/
+    margin: 1em 0;
+    position:relative;
 }
 
 
-.ktBlock, .ktInfo, .ktError { 
+.ktInfo, .ktError { 
     background-repeat: repeat-x;
     background-position: top left;
 }
@@ -1244,14 +1245,12 @@ a.main_nav_item {
     background-image: url(../../resources/graphics/dashlet-gradient-error.gif);
 }
 
-#dashboard-container-left .ktBlock,
 #dashboard-container-left .ktInfo,
 #dashboard-container-left .ktError,
-#dashboard-container-right .ktBlock,
 #dashboard-container-right .ktInfo,
 #dashboard-container-right .ktError 
 { 
-    -moz-border-radius: 15px; 
+    -moz-border-radius: 15px;
 }
 #dashboardBox {
     width: 80%
@@ -1410,73 +1409,139 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /*     background-color: #ddf; */
 }
 
-#dashboard_block_topleft {
+.dashboard_block_topleft {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 36px;
     top: 0px;
     left: 0px;
+    background: url(../graphics/dashlet_topleft.png) top left no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_toprepeat {
+.dashboard_block_toprepeat {
     position: absolute;
-    width: 95%;
-    height: 3px;
+    width: 90%;
+    height: 36px;
     top: 0px;
     left: 30px;
+    background: white url(../graphics/dashlet_toprepeat.png) top left repeat-x;
+    z-index:-1;
 }
 
-#dashboard_block_topright {
+.dashboard_block_topright {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 36px;
     top: 0px;
     right: 0px;
+    background: url(../graphics/dashlet_topright.png) top right no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_leftrepeat {
+.dashboard_block_leftrepeat_top {
     position: absolute;
-    width: 3px;
-    height: 95%;
-    top: 30px;
+    width: 13px;
+    height: 50%;
+    top: 5px;
     left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
 }
 
-#dashboard_block_bottomleft {
+.dashboard_block_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.dashboard_block_bottomleft {
     position: absolute;
     width: 40px;
     height: 40px;
     bottom: 0px;
     left: 0px;
+    background: url(../graphics/dashlet_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_bottomrepeat {
+.dashboard_block_bottomrepeat {
     position: absolute;
-    width: 95%;
-    height: 3px;
+    width: 90%;
+    height: 13px;
     bottom: 0px;
     left: 30px;
+    background: white url(../graphics/dashlet_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
 }
 
-#dashboard_block_bottomright {
+.dashboard_block_bottomright {
     position: absolute;
     width: 40px;
     height: 40px;
     bottom: 0px;
     right: 0px;
+    background: url(../graphics/dashlet_bottomright.png) bottom right no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_rightrepeat {
+.dashboard_block_rightrepeat_top {
     position: absolute;
-    width: 3px;
-    height: 95%;
-    top: 30px;
+    width: 13px;
+    height: 50%;
+    top: 5px;
     right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_bottom
+{ 
+    display: none;
 }
 
 .dashboard_block {
     width: 100%;
-/*     background-color: #fdd; */
+    /*background-color: #fdd;*/
+}
+
+.dashboard_block_empty{
+	border:none;
 }
 
 #copyrightbarBorder {
@@ -1730,13 +1795,15 @@ hr {
 { 
     float: right;
     text-align: right;
-    margin: 0.75em 0em 0 0;
+    margin: 0.2em 0em 0 0;
     z-index: 100;
 }
 
 .dashboard_block_handle
 { 
     cursor: pointer;
+    margin: 0.2em -0.5em 0.5em 0;
+    font-size:small;
 }
 
 .dashboard_block.rolled-up .dashboard_block_body
@@ -1744,9 +1811,17 @@ hr {
     display: none;
 }
 
-.dashboard_block .dashboard_block_body 
+.ktBlock .dashboard_block_body
 { 
     z-index:99;
+    margin: 8px 0 10px 0;
+    background-color:#FFFFFF;
+}
+
+.dashboard_block .dashboard_block_body  .edit_action 
+{ 
+    z-index:99;
+    background-color:#FFFFFF;
 }
 
 /* actions */
@@ -1783,9 +1858,15 @@ hr {
 #content .dashboard_block.rolled-up h2 
 { 
     border-bottom-width: 0px;
-    padding-bottom: 0px;
+    padding-bottom: 10px;
 }
 
+#content .ktBlock h2 
+{ 
+    border-bottom-width: 0px;
+    color: #FFFFFF;
+    font-size: small;
+}
 
 #content .dashboard_block.closed 
 { 
