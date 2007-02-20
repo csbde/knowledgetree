@@ -31,7 +31,7 @@ require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
 
 function generateUpgradeTable () {
     global $default;
-    $query = sprintf('SELECT value FROM %s WHERE name = "knowledgeTreeVersion"', $default->system_settings_table);
+    $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
     $lastVersion = DBUtil::getOneResultKey($query, 'value');
     $currentVersion = $default->systemVersion;
 
@@ -70,7 +70,7 @@ $GLOBALS['row'] = 1;
 
 function performAllUpgrades () {
     global $default;
-    $query = sprintf('SELECT value FROM %s WHERE name = "knowledgeTreeVersion"', $default->system_settings_table);
+    $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
     $lastVersion = DBUtil::getOneResultKey($query, 'value');
     $currentVersion = $default->systemVersion;
 
