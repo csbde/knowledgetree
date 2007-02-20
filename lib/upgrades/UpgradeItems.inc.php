@@ -394,8 +394,17 @@ class RecordUpgradeItem extends UpgradeItem {
         KTPermissionUtil::rebuildPermissionLookups(true);
         $po->end();
 
+        $versionFile=KT_DIR . '/docs/VERSION-NAME.txt';
+        $fp = fopen($versionFile,'rt');
+        $systemVersion = fread($fp, filesize($versionFile));
+        fclose($fp);
+
         $query = "UPDATE system_settings SET value = ? WHERE name = ?";
-        $aParams = array($this->version, "knowledgeTreeVersion");
+        $aParams = array($systemVersion, "knowledgetreeVersion");
+        DBUtil::runQuery(array($query, $aParams));
+        
+        $query = "UPDATE system_settings SET value = ? WHERE name = ?";
+        $aParams = array($this->version, "databaseVersion");
         return DBUtil::runQuery(array($query, $aParams));
     }
 
