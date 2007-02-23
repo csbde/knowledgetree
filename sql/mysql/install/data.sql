@@ -1423,4 +1423,10 @@ INSERT INTO `zseq_workflow_transitions` VALUES (1);
 
 INSERT INTO `zseq_workflows` VALUES (1);
 
+INSERT INTO `zseq_plugin_rss` (id) VALUES ('1');
+
+INSERT INTO `zseq_document_tags` (id) VALUES ('1');
+
+INSERT INTO `zseq_tag_words` (id) VALUES ('1');
+
 SET FOREIGN_KEY_CHECKS=1;
