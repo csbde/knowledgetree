@@ -911,6 +911,8 @@ INSERT INTO `upgrades` VALUES (129, 'upgrade*3.3.0.1*99*upgrade3.3.0.1', 'Upgrad
 INSERT INTO `upgrades` VALUES (130, 'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql', 'Database upgrade to version 3.3.0.1: System-settings-to-text', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
 INSERT INTO `upgrades` VALUES (131, 'sql*3.3.1*0*3.3.1/rss.sql', 'Database upgrade to version 3.3.1: Rss', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
 INSERT INTO `upgrades` VALUES (132, 'upgrade*3.3.1*99*upgrade3.3.1', 'Upgrade from version 3.3.0.1 to 3.3.1', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (133, 'sql*3.3.2*0*3.3.2/tagclouds.sql', 'Database upgrade to version 3.3.2: Tagclouds', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
+INSERT INTO `upgrades` VALUES (134, 'upgrade*3.3.2*99*upgrade3.3.2', 'Upgrade from version 3.3.1 to 3.3.2', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
 
 -- 
 -- Dumping data for table `user_history`
