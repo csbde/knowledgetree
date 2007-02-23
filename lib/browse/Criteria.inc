@@ -651,6 +651,48 @@ class GenericMetadataCriterion extends BrowseCriterion {
     }
 }
 
+class GeneralMetadataCriterion extends BrowseCriterion {
+    var $aLookup = array(
+        "table" => "document_fields_link",
+        "field" => "value",
+        "joinColumn" => "document_id",
+    );
+    var $bString = true;
+    var $sDocumentField = 'value';
+    var $sSortField = null;
+    var $bContains = true;
+    var $sNamespace = 'ktcore.criteria.generalmetadata';
+    var $sSearchTable = "DFL" ;
+ 	var $bHandleNot = false;
+    function GeneralMetadataCriterion()
+    {
+    	$this->sDisplay = _kt('General Metadata');
+    }
+    
+    function documentDisplay ($oDocument) {
+       
+        return 'General Metadata';
+    }
+
+
+    function getSearchField () {
+        return $this->aLookup['field'];
+    }
+
+    
+    function searchSQL ($aRequest) {
+        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%'  or dm.name LIKE '%!%'  )", 
+        array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));       
+        
+        return $val;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "LEFT JOIN $default->document_fields_link_table AS $this->sSearchTable ON $this->sSearchTable.metadata_version_id = D.metadata_version_id";
+    }
+}
+
 class DateModifiedCriterion extends DateCreatedCriterion {
     var $sDocumentField = 'modified';
     var $sSortField = 'modified';
