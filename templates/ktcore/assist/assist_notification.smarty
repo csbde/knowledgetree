@@ -5,7 +5,7 @@
     the owner or an admin of this document.{/i18n}
     <div class="actionoptions">
     {if !$is_broken}
-    <a href="{ktLink base="notify.php" query="id=`$notify_id`"}">{i18n}View Document{/i18n}</a>
+    <a href="{ktLink base="notify.php" query="id=`$notify_id`"}">{i18n}View Help Request{/i18n}</a>
     {else}
     <span class="descriptiveText">{i18n}Document is no longer available{/i18n}</span>
     {/if}
