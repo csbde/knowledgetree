@@ -43,6 +43,9 @@ function setupFrame(frame) {
                 continue;
             }
             forEach(elms, function(v) {
+//rrr fix for correct document linking r.m. 11.01.2007
+if(v.type=='radio') { if (!v.checked){ return; }}
+//rre
                         var newInput = INPUT({'type':'hidden',
                                               'name':v.name,
                                               'value':v.value});
