@@ -1,0 +1,15 @@
+<form action="{$url}" method="POST">
+<input onclick="this.focus()" type="text" name="fSearchableText" id="dashlet-search-text"
+size="15" /><input type="submit" value="{i18n}search{/i18n}"
+class="searchbutton frontpage" />
+</form>
+{if (!empty($saved_searches))}
+<hr />
+<h3>{i18n}Saved Searches{/i18n}</h3>
+{foreach item=oSearch from=$saved_searches}
+<span class="descriptiveText">{i18n}Saved Search{/i18n}: </span><a
+href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()}</a><br />
+{/foreach}
+
+
+{/if}
