@@ -1,1 +1,3 @@
-<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>PDF Generation</h2>
+<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>{i18n arg_docname=$context->oDocument->getName()}Convert to PDF: #docname#{/i18n}</h2>
+
+{$form->render()}
