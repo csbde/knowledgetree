@@ -50,7 +50,7 @@ class PDFGeneratorAction extends KTDocumentAction {
     function getDisplayName() {
         // We need to handle Windows differently - as usual ;)
         if (substr( PHP_OS, 0, 3) == 'WIN') {
-            $cmdpath = KT_DIR . "../openoffice/openoffice/program/python.bat";
+            $cmdpath = KT_DIR . "/../openoffice/openoffice/program/python.bat";
             $cmdpath = str_replace( '/','\\',$cmdpath);   
         } else {
             $cmdpath = "../openoffice/program/python";
@@ -171,13 +171,13 @@ class PDFGeneratorAction extends KTDocumentAction {
             # We need to handle Windows differently - as usual ;)
             if (substr( PHP_OS, 0, 3) == 'WIN') {
                
-               $cmd = KT_DIR . '..\openoffice\openoffice\program\python.bat '. KT_DIR . '\bin\openoffice\pdfgen.py ' . $sPath . ' ' . $sTempFilename;
+               $cmd = "\"" . KT_DIR . "/../openoffice/openoffice/program/python.bat\" \"". KT_DIR . "/bin/openoffice/pdfgen.py\" \"" . $sPath . "\" \"" . $sTempFilename . "\"";
                $cmd = str_replace( '/','\\',$cmd);   
                            
                 // TODO: Check for more errors here
                 // SECURTIY: Ensure $sPath and $sTempFilename are safe or they could be used to excecute arbitrary commands!
                 // Excecute the python script. TODO: Check this works with Windows
-                $res = exec($cmd);
+               $res = `"$cmd" 2>&1`;
             
             } else {
 
