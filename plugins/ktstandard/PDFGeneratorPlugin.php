@@ -30,6 +30,7 @@ require_once('PDFGeneratorAction.php');
 
  class PDFGeneratorPlugin extends KTPlugin
  {
+	var $autoRegister = true;
  	var $sNamespace = 'ktstandard.pdf.plugin';
  	
  	function PDFGeneratorPlugin($sFilename = null) {
