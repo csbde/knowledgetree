@@ -249,7 +249,7 @@ function create_backup_stmt($targetfile=null)
 	$dbHost = $oKTConfig->get('db/dbHost');
 	$dbName = $oKTConfig->get('db/dbName');
 	$dbPort = trim($oKTConfig->get('db/dbPort'));
-	if ($dbPort=='' || $dbPort=='default') $dbPort =3306;
+	if ($dbPort=='' || $dbPort=='default') $dbPort = get_cfg_var('mysql.default_port');
 
 	$date=date('Y-m-d-H-i-s');
 
@@ -290,7 +290,7 @@ function create_restore_stmt($targetfile)
 	$dbHost = $oKTConfig->get('db/dbHost');
 	$dbName = $oKTConfig->get('db/dbName');
 	$dbPort = trim($oKTConfig->get('db/dbPort'));
-	if ($dbPort=='' || $dbPort=='default') $dbPort =3306;
+	if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
 
 	 
 	$dir=resolveMysqlDir();
