@@ -50,9 +50,9 @@ class PDFGeneratorAction extends KTDocumentAction {
     function getDisplayName() {
         // We need to handle Windows differently - as usual ;)
         if (substr( PHP_OS, 0, 3) == 'WIN') {
-            $cmdpath = KT_DIR . "../openoffice/openoffice/program/python.bat"
+            $cmdpath = KT_DIR . "../openoffice/openoffice/program/python.bat";
         } else {
-            $cmdpath = "../openoffice/program/python"
+            $cmdpath = "../openoffice/program/python";
         }
         // Check if openoffice and python are available
         if(file_exists($cmdpath)) {
