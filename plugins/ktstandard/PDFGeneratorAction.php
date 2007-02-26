@@ -48,8 +48,14 @@ class PDFGeneratorAction extends KTDocumentAction {
                                     'otg', 'std', 'asc');
 
     function getDisplayName() {
+        // We need to handle Windows differently - as usual ;)
+        if (substr( PHP_OS, 0, 3) == 'WIN') {
+            $cmdpath = KT_DIR . "../openoffice/openoffice/program/python.bat"
+        } else {
+            $cmdpath = "../openoffice/program/python"
+        }
         // Check if openoffice and python are available
-        if(file_exists('../openoffice/program/python')) {
+        if(file_exists($cmdpath)) {
             $sDocType = $this->getMimeExtension();
             // make sure that the selected document id of an acceptable extension
             foreach($this->aAcceptedMimeTypes as $acceptType){
@@ -161,10 +167,25 @@ class PDFGeneratorAction extends KTDocumentAction {
             # Get a tmp file
             $sTempFilename = tempnam('/tmp', 'ktpdf');
             
-            // TODO: Check for more errors here
-            // SECURTIY: Ensure $sPath and $sTempFilename are safe or they could be used to excecute arbitrary commands!
-            // Excecute the python script. TODO: Check this works with Windows
-            $res = exec('../openoffice/program/python bin/openoffice/pdfgen.py ' . escapeshellcmd($sPath) . ' ' . escapeshellcmd($sTempFilename) );
+            # We need to handle Windows differently - as usual ;)
+            if (substr( PHP_OS, 0, 3) == 'WIN') {
+               
+               $cmd = KT_DIR . '..\openoffice\openoffice\program\python.bat '. KT_DIR . '\bin\openoffice\pdfgen.py ' . $sPath . ' ' . $sTempFilename;
+               $cmd = str_replace( '/','\\',$cmd);   
+                           
+                // TODO: Check for more errors here
+                // SECURTIY: Ensure $sPath and $sTempFilename are safe or they could be used to excecute arbitrary commands!
+                // Excecute the python script. TODO: Check this works with Windows
+                $res = exec($cmd);
+            
+            } else {
+
+                // TODO: Check for more errors here
+                // SECURTIY: Ensure $sPath and $sTempFilename are safe or they could be used to excecute arbitrary commands!
+                // Excecute the python script. TODO: Check this works with Windows
+                $res = exec('../openoffice/program/python bin/openoffice/pdfgen.py ' . escapeshellcmd($sPath) . ' ' . escapeshellcmd($sTempFilename) );
+            
+            }
             
             # Check the tempfile exists and the python script did not return anything (which would indicate an error) 
             if (file_exists($sTempFilename) && $res == '') {
