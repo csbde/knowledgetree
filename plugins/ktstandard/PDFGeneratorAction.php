@@ -51,6 +51,7 @@ class PDFGeneratorAction extends KTDocumentAction {
         // We need to handle Windows differently - as usual ;)
         if (substr( PHP_OS, 0, 3) == 'WIN') {
             $cmdpath = KT_DIR . "../openoffice/openoffice/program/python.bat";
+            $cmdpath = str_replace( '/','\\',$cmdpath);   
         } else {
             $cmdpath = "../openoffice/program/python";
         }
