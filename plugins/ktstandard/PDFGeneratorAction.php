@@ -191,8 +191,8 @@ class PDFGeneratorAction extends KTDocumentAction {
                 # Create the document transaction
                 $oDocumentTransaction = & new DocumentTransaction($oDocument, 'Document downloaded as PDF', 'ktcore.transactions.download', $aOptions);
                 $oDocumentTransaction->create();
-
-                return true;
+                # Just stop here - the content has already been sent.
+                exit(0);  
                 
             } else {
                 # Set the error messsage and redirect to view document
