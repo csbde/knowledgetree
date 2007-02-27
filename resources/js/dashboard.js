@@ -101,6 +101,12 @@ KTDashboard.prototype = {
                     //new YAHOO.util.DD(e.id);
                 }                    
             }, this.getDashletBlocks());
+        map(function(e) {
+                if(e.id) {
+                    new YAHOO.example.DDList(e.id);
+                    //new YAHOO.util.DD(e.id);
+                }                    
+            }, this.getDashletBlockStoppers());
         new YAHOO.example.DDListBoundary('copyrightbar');
         new YAHOO.example.DDListBoundary('breadcrumbs');
         new YAHOO.example.DDListBoundary('bodyLeftRepeat');
@@ -110,6 +116,10 @@ KTDashboard.prototype = {
 
     'getDashletBlocks' : function() {
         return getElementsByTagAndClassName('*', 'dashboard_block', this.element);
+    },
+    
+    'getDashletBlockStoppers' : function(){
+    	return getElementsByTagAndClassName('*', 'dashboard_block_empty', this.element);
     },
 
     'hideAddButton' : function() {

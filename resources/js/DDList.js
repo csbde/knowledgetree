@@ -1,5 +1,4 @@
 YAHOO.example.DDList = function(id, sGroup, config) {
-
     if (id) {
         this.init(id, sGroup, config);
         this.initFrame();
@@ -55,6 +54,9 @@ YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
         var p = el.parentNode;
         if(p.id != 'dashboard-container-left' && p.id != 'dashboard-container-right') {
             return;
+        }
+        if(el2.id === 'end-left' || el2.id === 'end-right'){
+        	return;
         }
         p.insertBefore(el2, el);
     }
