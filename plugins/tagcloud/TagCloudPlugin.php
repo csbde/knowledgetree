@@ -320,64 +320,62 @@ class KTEditDocumentTrigger {
         		return false;
     		}
         }
-        // proceed to add the tags as per normal
-        if($res){
-			$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
-			'WHERE df.name = \'Tag\'';
-	
-	        $sTags = DBUtil::getOneResultKey(array($sQuery), 'id');
-	        if (PEAR::isError($sTags)) {
-	            // XXX: log error
-	            return false;
-	        }
-	        $tagString = '';
-	        if ($sTags) {
-				foreach($aMeta as $aMetaData){
-					$oProxy = $aMetaData[0];
-					if($oProxy->iId == $sTags){
-						$tagString = $aMetaData[1];
-						break;
-					}
+        // proceed to add the tags as per normaly
+		$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
+		'WHERE df.name = \'Tag\'';
+
+        $sTags = DBUtil::getOneResultKey(array($sQuery), 'id');
+        if (PEAR::isError($sTags)) {
+            // XXX: log error
+            return false;
+        }
+        $tagString = '';
+        if ($sTags) {
+			foreach($aMeta as $aMetaData){
+				$oProxy = $aMetaData[0];
+				if($oProxy->iId == $sTags){
+					$tagString = $aMetaData[1];
+					break;
 				}
-				if($tagString != ''){
-		        	$words_table = KTUtil::getTableName('tag_words');
-		        	$tagString = str_replace('  ', ' ', $tagString);
-			    	$tags = explode(',',$tagString);
-			    	
-			    	$aTagIds = array();
-			    	
-			    	foreach($tags as $sTag)
-			    	{
-			    		$sTag=strtolower(trim($sTag));
-			    		
-			    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
-			
-			    		if (PEAR::isError($res)) {
-			            	return $res;
-			        	}
-			        	
-			        	if (is_null($res)) 
-			        	{
-			        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
-			        		$aTagIds[$sTag] = $id;
-			        	}
-			        	else 
-			        	{
-			        		$aTagIds[$sTag] = $res['id'];
-			        	}
-			    	}
-			    	
-			    	$doc_tags = KTUtil::getTableName('document_tags');
-			    	
-			    	foreach($aTagIds as $sTag=>$tagid)
-			    	{
-			    		DBUtil::autoInsert($doc_tags, array(
-			    			'document_id'=>$iDocId,
-			    			'tag_id'=>$tagid),
-			    			array('noid'=>true));
-			    	}
-	        	}
-	        }
+			}
+			if($tagString != ''){
+	        	$words_table = KTUtil::getTableName('tag_words');
+	        	$tagString = str_replace('  ', ' ', $tagString);
+		    	$tags = explode(',',$tagString);
+		    	
+		    	$aTagIds = array();
+		    	
+		    	foreach($tags as $sTag)
+		    	{
+		    		$sTag=strtolower(trim($sTag));
+		    		
+		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
+		
+		    		if (PEAR::isError($res)) {
+		            	return $res;
+		        	}
+		        	
+		        	if (is_null($res)) 
+		        	{
+		        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
+		        		$aTagIds[$sTag] = $id;
+		        	}
+		        	else 
+		        	{
+		        		$aTagIds[$sTag] = $res['id'];
+		        	}
+		    	}
+		    	
+		    	$doc_tags = KTUtil::getTableName('document_tags');
+		    	
+		    	foreach($aTagIds as $sTag=>$tagid)
+		    	{
+		    		DBUtil::autoInsert($doc_tags, array(
+		    			'document_id'=>$iDocId,
+		    			'tag_id'=>$tagid),
+		    			array('noid'=>true));
+		    	}
+        	}
         }
     }
 }
