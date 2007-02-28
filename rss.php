@@ -19,6 +19,23 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . '/mime.inc.php');
 
+// workaround to get http authentication working in cgi mode
+$altinfo = KTUtil::arrayGet( $_SERVER, 'kt_auth', KTUtil::arrayGet( $_SERVER, 'REDIRECT_kt_auth'));
+if ( !empty( $altinfo) && !isset( $_SERVER['PHP_AUTH_USER'])) {
+    $val = $altinfo;
+    $pieces = explode( ' ', $val);   // bad.
+    if ( $pieces[0] == 'Basic') {
+        $chunk = $pieces[1];
+        $decoded = base64_decode( $chunk);
+        $credential_info = explode( ':', $decoded);
+        if ( count( $credential_info) == 2) {
+            $_SERVER['PHP_AUTH_USER'] = $credential_info[0];
+            $_SERVER['PHP_AUTH_PW'] = $credential_info[1];
+            $_SERVER["AUTH_TYPE"] = 'Basic';
+        }
+    }
+}
+
 if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
    header('WWW-Authenticate: Basic realm="KnowledgeTree DMS"');
    header('HTTP/1.0 401 Unauthorized');
