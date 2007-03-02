@@ -399,6 +399,9 @@ class KTPermissionUtil {
         if (PEAR::isError($oPermission)) {
             return false;
         }
+        if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
+            return false;
+        }
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
         $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
         if (PEAR::isError($oPLA)) {
