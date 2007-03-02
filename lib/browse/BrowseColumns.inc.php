@@ -142,7 +142,7 @@ class TitleColumn extends BrowseColumn {
            $outStr .= ' (' . $this->prettySize($aDataRow['document']->getSize()) . ')';
            $outStr .= '</span>';
         }
-        //return $outStr;
+        return $outStr;
     }
     
     function prettySize($size) {
