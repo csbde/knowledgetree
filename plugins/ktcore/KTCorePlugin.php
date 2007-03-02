@@ -230,7 +230,14 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'documents',
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
-            'admin/documentFieldsv2.php', null);            
+            'admin/documentFieldsv2.php', null);
+        if(KTPluginUtil::pluginIsActive('ktdms.wintools'))
+        {
+            $this->registerAdminPage('emailtypemanagement', 'KTEmailDocumentTypeDispatcher', 'documents',
+                    _kt('Email Document Types'),
+                    _kt('Manage the addition of Email document types to the system.'),
+                    '../wintools/email/emailDocumentTypes.php', null);
+        }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
             _kt('Workflows'), _kt('Configure the process documents go through.'),
             'admin/workflowsv2.php', null);            
