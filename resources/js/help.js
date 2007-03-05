@@ -1,10 +1,19 @@
 var curloc = null,
     path_info = null,
-    back_key = null;
+    back_key = null,
+    curloc_path = null;
 
 function correctLink(attr, elm) {
     if(elm.className.search('externalLink') == -1) {	
-	elm[attr] = curloc + '?' + queryString({'kt_path_info' : path_info + elm.getAttribute(attr), 
+    	
+    elem_info = unescape(elm.getAttribute(attr));
+
+    if (elem_info.indexOf(cur_loc_path) >= 0)
+    {
+    	elem_info=elem_info.substring(cur_loc_path.length);    	 
+    }
+    	
+	elm[attr] = curloc + '?' + queryString({'kt_path_info' : path_info + elem_info, 
 						'back_key' : back_key });
     }
 }
@@ -12,6 +21,8 @@ function correctLink(attr, elm) {
 
 
 addLoadEvent(function(){
+	 
+	
     var query = window.location.toString().split('?');
 
     // location of the help.php
@@ -20,6 +31,7 @@ addLoadEvent(function(){
     // get kt_path_info out of the query
     query = parseQueryString(query[1]);
     
+     
     path_info = query.kt_path_info.split('/');
     path_info.pop();
     
@@ -36,6 +48,14 @@ addLoadEvent(function(){
     }
     
     path_info = newpath.join('/') + '/';
+    
+    cur_loc_path = '';
+    cur_loc_tmp = curloc.split('/');
+    for(i=0;i<cur_loc_tmp.length-1;i++)
+    {
+    	
+    	cur_loc_path += cur_loc_tmp[i] + '/';
+    }    
 
     forEach(getElementsByTagAndClassName('A', null, 'kt_help_body'), partial(correctLink, 'href'));
     forEach(getElementsByTagAndClassName('IMG', null, 'kt_help_body'), partial(correctLink, 'src'));
