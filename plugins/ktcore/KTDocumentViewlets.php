@@ -47,6 +47,9 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
         }
         
         foreach ($aTransitions as $oTransition) {
+        	if(is_null($oTransition) || PEAR::isError($oTransition)){
+            	continue;
+            }
             $aDisplayTransitions[] = array(
                 'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array("fDocumentId" => $this->oDocument->getId(), "action" => "quicktransition", "fTransitionId" => $oTransition->getId())),
                 'name' => $oTransition->getName(),
