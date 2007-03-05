@@ -312,6 +312,10 @@ class KTBulkAction extends KTStandardDispatcher {
         $sAction = 'main';
 
         if($sReturnAction == 'browse') {
+        	if ($sReturnData == '')
+        	{
+        		$sReturnData = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        	}        	 
             $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
         } else if($sReturnAction == 'simpleSearch') {
             $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
