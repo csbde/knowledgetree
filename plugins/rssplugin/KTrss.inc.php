@@ -61,7 +61,11 @@ class KTrss{
     
     // Gets full listing of data of documents and folders subscribed to
     function getInternalFeed($iUserId){
-    	$aFullList = array_merge(KTrss::getDocuments($iUserId), KTrss::getFolders($iUserId));
+    	$documents=KTrss::getDocuments($iUserId);
+    	$folders=KTrss::getFolders($iUserId);
+    	if (is_null($documents)) $documents=array();
+    	if (is_null($folders)) $folders=array();
+    	$aFullList = array_merge($documents,$folders );
     	if($aFullList){
     		$internalFeed = KTrss::arrayToXML($aFullList);
     		$response = rss2arrayBlock($internalFeed);
