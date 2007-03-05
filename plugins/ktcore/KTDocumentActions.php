@@ -1348,6 +1348,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if ($aTransitions) {
             $aVocab = array();
             foreach ($aTransitions as $oTransition) {
+            	if(is_null($oTransition) || PEAR::isError($oTransition)){
+            		continue;
+            	}
+
                 $aVocab[$oTransition->getId()] = $oTransition->showDescription();
             }
             $fieldOptions = array('vocab' => $aVocab);
