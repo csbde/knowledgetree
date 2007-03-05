@@ -45,6 +45,9 @@ class RSSDocumentLinkAction extends KTDocumentAction {
         $oDocument = $this->oDocument;
         
         // get document id
+        if(!isset($oDocument)){
+        	return null;
+        }
         $iFId = $oDocument->getID();
         
         // return link...there MIGHT be a nicer way of doing this?

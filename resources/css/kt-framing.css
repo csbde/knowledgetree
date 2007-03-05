@@ -32,6 +32,16 @@ body
     border-top: 1px solid #ccc;
 }
 
+.action_overview_scroll {
+	border:1px ;
+	overflow: auto;
+	width: 80%;
+	height: 450px;
+	position: absolute;
+	top:100; 
+	left:100;
+}
+
 #pageBody {
     position: relative;
     border: 1px solid white;

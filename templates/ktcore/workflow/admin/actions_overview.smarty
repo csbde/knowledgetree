@@ -6,12 +6,14 @@ which are not blocked are still controlled by the usual permissions.{/i18n}</p>
 
 <p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a>
 <a href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a></p>
-
-<table class="kt_collection narrow" cellspacing="0">
+<div class="action_overview_scroll">
+<table class="kt_collection narrow" width="50" cellspacing="0">
     <thead>
         <th>{i18n}State{/i18n}</th>
       {foreach from=$actions item=oAction}
-        <th>{$oAction->getDisplayName()}</th>  
+      	{if ($oAction->getDisplayName() != '')}
+        <th>{$oAction->getDisplayName()}</th> 
+        {/if} 
       {/foreach}
     </thead>
     
@@ -21,14 +23,17 @@ which are not blocked are still controlled by the usual permissions.{/i18n}</p>
         <tr>
             <td>{$oState->getName()}</td>
             {foreach from=$actions item=oAction}
+            {if ($oAction->getDisplayName() != '')}
             {assign value=$oAction->getName() var=action_id}
               {if $grid.$state_id.$action_id}
                 <td class="centered"><span class="ktAction ktDenied">{i18n}Denied{/i18n}</span></td>              
               {else}
                 <td class="centered">&mdash;</td>
               {/if}
+            {/if}
             {/foreach}
         </tr>
       {/foreach}
     </tbody>
 </table>
+</div>
