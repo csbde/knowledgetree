@@ -933,7 +933,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 $bFileClash = KTDocumentUtil::fileExists($data['browse'], $this->oDocument->getFilename());              
                 if ($bFileClash && isset($data['filename'])) {
                     $filename = $data['filename'];
-                    $bFileClash = KTDocumentUtil::fileExists($this->oFolder, $filename);              
+                    $bFileClash = KTDocumentUtil::fileExists($data['browse'], $filename);              
                 } else {
                     $filename = $this->oDocument->getFilename();
                 }            
@@ -1348,6 +1348,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if ($aTransitions) {
             $aVocab = array();
             foreach ($aTransitions as $oTransition) {
+            	if(is_null($oTransition) || PEAR::isError($oTransition)){
+            		continue;
+            	}
+
                 $aVocab[$oTransition->getId()] = $oTransition->showDescription();
             }
             $fieldOptions = array('vocab' => $aVocab);
