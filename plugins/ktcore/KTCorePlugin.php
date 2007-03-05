@@ -270,8 +270,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'misc',
             _kt('Support and System information'), _kt('Information about this system and how to get support.'),
             'admin/techsupport.php', null);
-        $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'misc',
-            _kt('Verify document storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
+        $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'storage',
+            _kt('Verify Document Storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
             'admin/manageCleanup.php', null);
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'misc',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
