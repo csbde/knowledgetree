@@ -893,6 +893,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
         ));
         $other_states = sprintf('id != %d', $this->oState->getId());
+        $other_states .= sprintf(' AND workflow_id = %d', $this->oWorkflow->getId());
+       
         $oForm->setWidgets(array(
             array('ktcore.widgets.entityselection', array(
                 'vocab' => KTWorkflowState::getList($other_states),
