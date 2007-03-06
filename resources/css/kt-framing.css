@@ -36,8 +36,8 @@ body
 	border:1px ;
 	overflow: auto;
 	width: 80%;
-	height: 450px;
-	position: absolute;
+	min-height: 200px;
+	position: relative;
 	top:100; 
 	left:100;
 }
