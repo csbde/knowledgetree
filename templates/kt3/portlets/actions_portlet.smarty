@@ -1,7 +1,14 @@
 <ul class="actionlist">
 {foreach item=action from=$context->actions }
-<li {if $action.active}class="active"{/if}>{if ($action.url)}<a href="{$action.url}"
-{if $action.description}title="{$action.description}"{/if}
-     >{$action.name}</a>{else}{$action.name}{/if}</li>
+{if $action != null}
+<li {if $action.active}class="active"{/if}>
+{if ($action.url)}
+<a href="{$action.url}" {if $action.description}title="{$action.description}"{/if}>
+	{$action.name}
+</a>
+{else}
+	{$action.name}
+{/if}</li>
+{/if}
 {/foreach}
 </ul>
