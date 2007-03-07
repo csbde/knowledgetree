@@ -54,7 +54,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         
         $oTemplate->setData(array(
 		    'context' => $this,
-            'fieldsets' => KTFieldset::getList(),
+            'fieldsets' => KTFieldset::getList('disabled != true'),
         ));
         return $oTemplate;
     }
@@ -270,7 +270,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     
     function do_delete() {
         $this->startTransaction();
-        $res = $this->oFieldset->delete();
+        $res = $this->oFieldset->delete('true');
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('main', ''),
             'message' => _kt('Could not delete fieldset'),

@@ -158,6 +158,7 @@ class KTFieldset extends KTEntity {
         ));
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => false,
+            'disabled' => false,
         ), $aOptions);
     }	
 
@@ -168,6 +169,7 @@ class KTFieldset extends KTEntity {
 	);
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => true,
+            'disabled' => false,
         ), $aOptions);
     }	
 
@@ -231,12 +233,14 @@ class KTFieldset extends KTEntity {
     function &getByNamespace($sNamespace) {
         return KTEntityUtil::getByDict('KTFieldset', array(
             'namespace' => $sNamespace,
+            'disabled' => false,
         ));
     }
     
     function &getByName($sName) {
         return KTEntityUtil::getByDict('KTFieldset', array(
             'name' => $sName,
+            'disabled' => false,
         ));
     }	    
 }

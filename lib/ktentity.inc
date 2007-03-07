@@ -161,13 +161,17 @@ class KTEntity {
     * @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
     *
     */
-    function delete() {
+    function delete($dereference = null) {
         $group = sprintf("%s/%s", get_class($this), 'id');
         $oCache =& KTCache::getSingleton();
         $oCache->remove($group, $this->iId);
         $this->clearCachedGroups();
         if ($this->iId >= 0) {
-            $res = DBUtil::autoDelete($this->_table(), $this->iId);
+            if($dereference = 'true'){
+            	$res = DBUtil::deReference($this->_table(), $this->iId);
+            }else{
+            	$res = DBUtil::autoDelete($this->_table(), $this->iId);
+            }
             if (PEAR::isError($res)) {
                 if ($this->_bUsePearError === false) {
                     $_SESSION['errorMessage'] = $res->toString();

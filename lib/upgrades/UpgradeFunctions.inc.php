@@ -785,7 +785,7 @@ class UpgradeFunctions {
 			  '-12' =>  'ktcore.criteria.searchabletext',
 			  '-11' =>  'ktcore.criteria.transactiontext');
 
-	$aFieldsets =& KTFieldset::getList();
+	$aFieldsets =& KTFieldset::getList('disabled != true');
 	foreach($aFieldsets as $oFieldset) {
 	    $aFields =& DocumentField::getByFieldset($oFieldset);
 	    foreach($aFields as $oField) {
