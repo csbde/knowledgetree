@@ -52,7 +52,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
 
     function do_main() {
 
-        $aFieldsets = KTFieldset::getList("is_conditional = 1");
+        $aFieldsets = KTFieldset::getList("is_conditional = 1 AND disabled != true");
         $oTemplating =& KTTemplating::getSingleton();
 
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/select_fieldset");
