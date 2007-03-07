@@ -146,7 +146,7 @@ class ManageRSSFeedsDispatcher extends KTStandardDispatcher {
 	        $this->errorRedirectToMain(sprintf(_kt('Unable to create feed: %s','rssplugin'), $res->getMessage())); 
 	    }
 	    else{
-	        $this->successRedirectToMain(sprintf(_kt('Created new rss feed','rssplugin') . ': "' . KTrss::getExternalFeedTitle($iFeedId)) . '"');
+	        $this->successRedirectToMain(sprintf(_kt('Created new rss feed: %s','rssplugin'),  KTrss::getExternalFeedTitle($res)));
 	    }
     }
 }
