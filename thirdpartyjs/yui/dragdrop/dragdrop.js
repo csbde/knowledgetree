@@ -768,8 +768,6 @@ YAHOO.util.DragDrop.prototype = {
         if (!this.hasOuterHandles && !this.DDM.isOverTarget(pt, this) )  {
         } else {
             if (this.clickValidator(e)) {
-
-
                 // set the initial element position
                 this.setStartPosition();
 
@@ -887,6 +885,10 @@ YAHOO.util.DragDrop.prototype = {
 
         for (var i=0, len=this.invalidHandleClasses.length; valid && i<len; ++i) {
             valid = !Dom.hasClass(node, this.invalidHandleClasses[i]);
+        }
+        
+        if(node.className !== 'dashboard_block_handle'){
+        	valid = false;
         }
 
 
