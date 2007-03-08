@@ -3,12 +3,13 @@ YAHOO.example.DDList = function(id, sGroup, config) {
         this.init(id, sGroup, config);
         this.initFrame();
         this.logger = this.logger || YAHOO;
+        this.addInvalidHandleClass("dashboard_block_body");
     }
 
     var s = this.getDragEl().style;
     //s.borderColor = "transparent";
     //s.backgroundColor = "#f6f5e5";
-    //s.opacity = 0.76;
+    s.opacity = 0.76;
     //s.filter = "alpha(opacity=76)";
 };
 
