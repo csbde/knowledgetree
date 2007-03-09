@@ -52,7 +52,7 @@
 			</tr>
 			<tr><td colspan='2'><br></td></tr>";
 		}
- $reposonse .= "</table></div>";
+ $reposonse .= "</table></div><br>";
 	 
  echo  $reposonse;
 ?>

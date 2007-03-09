@@ -77,6 +77,7 @@
 			{/section}
 		</table>
 	</div>
+	<br>
 	{else}
 		{if !$feedlist}
 			{if ($action.url)}<a href="{$action.url}"
@@ -88,9 +89,3 @@
 		<br>
 	{/if}
 </div>
-
-
-
-
-
-
