@@ -51,12 +51,18 @@
         #
 
         if(preg_match("/^http:\/\/([^\/]+)(.*)$/", $url, $matches)){
-
+			
             $host = $matches[1];
             $uri = $matches[2];
-
+            $hostSplit = explode(':', $host);            
+            if(isset($hostSplit[1])){
+            	$port = $hostSplit[1];
+				$host = $hostSplit[0];
+            }else{
+            	$port = '80';
+            }
             $request = "GET $uri HTTP/1.0\r\n";
-            $request .= "Host: $host\r\n";
+			$request .= "Host: $host\r\n";
             $request .= "User-Agent: RSSMix/0.1 http://www.rssmix.com\r\n";
 			$request .= "Connection: close\r\n\r\n";
 
@@ -64,7 +70,7 @@
             # open the connection
             #
 
-            if($http = fsockopen($host, 80, $errno, $errstr, 5)){
+            if($http = fsockopen($host, $port, $errno, $errstr, 5)){
 
                 #
                 # make the request
