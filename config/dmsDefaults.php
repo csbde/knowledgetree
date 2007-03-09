@@ -316,7 +316,7 @@ class KTInit {
             $priority = PEAR_LOG_ERR;
             break;
         default:
-            $priotity = PEAR_LOG_INFO;
+            $priority = PEAR_LOG_INFO;
         }
 
         if (!empty($default->phpErrorLog)) {
