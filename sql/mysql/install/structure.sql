@@ -2580,4 +2580,6 @@ CREATE TABLE `zseq_tag_words` (
    PRIMARY KEY  (`id`))
 ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+ALTER TABLE fieldsets ADD disabled tinyint not null default 0;
+
 SET FOREIGN_KEY_CHECKS=1;
