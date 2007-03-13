@@ -5,7 +5,7 @@ allowed to see.  These are called "orphaned folders" since you can't access thei
 and they are are listed below.{/i18n}</p>
 
 {if empty($folders)}
-<div><p>You have no orphaned folders.</p></div>
+<div><p>{i18n}You have no orphaned folders.{/i18n}</p></div>
 {else}
 <table class="kt_collection">
 <thead>
