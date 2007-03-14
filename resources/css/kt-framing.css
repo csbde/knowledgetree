@@ -1210,7 +1210,7 @@ a.main_nav_item {
 .ktError {
     padding: 0 1em;
     border: 1px solid #ffc21e;
-    margin: 0.5em 0;
+    margin: 1em 0 0 0.5em;
     background: #ffdd80;
 }
 
@@ -1223,7 +1223,7 @@ a.main_nav_item {
 .ktInfo {
     padding: 0 1em;
     border: 1px solid #c5c5c5;
-    margin: 0.5em 0;
+    margin: 1em 0 0 0.5em;
     background: #dedede;
 }
 
@@ -1233,16 +1233,17 @@ a.main_nav_item {
 }
 
 
-.ktBlock { 
+.ktBlock {
+	position: relative;
     padding: 0.1em 1em;
     /*border-right: 1px solid #c5c5c5;*/
     /*background-color: #fcfcfc;*/
-    margin: 1em 0;
-    position:relative;
+    margin: 1em 0 0 0.5em;
 }
 
 
-.ktInfo, .ktError { 
+.ktInfo, .ktError {
+	position: relative;
     background-repeat: repeat-x;
     background-position: top left;
 }
@@ -1353,7 +1354,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding: 0;
     padding-top: 16px;
     height: 0px !important;
-    height /**/: 16px;
+    height: 16px;
     width: 16px;
     cursor: pointer;
 }
@@ -1481,7 +1482,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .dashboard_block_bottomrepeat {
     position: absolute;
-    width: 90%;
+    width: 92%;
     height: 13px;
     bottom: 0px;
     left: 30px;
@@ -1803,14 +1804,15 @@ hr {
 
 .dashboard_block_icons
 { 
-    float: right;
+    position: absolute;
+	top: 0px;
+	right: 10px;
     text-align: right;
     margin: 0.2em 0em 0 0;
-    z-index: 100;
 }
 
 .dashboard_block_handle
-{ 
+{
     cursor: pointer;
     margin: 0.2em -0.5em 0.5em 0;
     font-size:small;

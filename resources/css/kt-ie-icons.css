@@ -1,6 +1,16 @@
 .ktInfo p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) center left no-repeat; }
-.ktError p {     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
+.ktError p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
 .ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
+.ktBlock {
+	background-color: white;
+	border: 1px solid #ccc;
+	padding-left: 0em;
+}
+
+.ktInfo, .ktError {
+	padding: 0.1em 1em;
+	margin: 0.5em 0 0.5em 0em;
+}
 
 .ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.gif); }
 .ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); }
@@ -13,7 +23,7 @@
 .ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.gif); }
 .ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); }
 .ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); }
-
+.ktBlock {margin: 0.5em 0;}
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
 .contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
@@ -93,6 +103,21 @@
     background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
 }
 
+#content .dashboard_block .action_rollup 
+{ 
+    background-image: url(../graphics/bullet_toggle_minus.gif);
+}
+
+#content .dashboard_block.rolled-up .action_rollup 
+{ 
+    background-image: url(../graphics/bullet_toggle_plus.gif);
+}
+
+#content .dashboard_block .action_close 
+{ 
+    background-image: url(../graphics/bullet_toggle_close.gif);
+}
+
 
 /* NO CHILD SELECTORS IN IE! */
 
@@ -117,4 +142,55 @@
 
 .kt_treenodes li.inactive ul {
     display: none;
+}
+
+
+.dashboard_block_topleft {
+    background: white url(../graphics/dashlet_toprepeat.gif) top left repeat-x;
+}
+
+.dashboard_block_toprepeat {
+	width: 95%;
+    background: white url(../graphics/dashlet_toprepeat.gif) top left repeat-x;
+}
+
+.dashboard_block_topright {
+    background: white url(../graphics/dashlet_toprepeat.gif) top left repeat-x;
+}
+
+.dashboard_block_leftrepeat_top {
+    display: none;
+}
+
+.dashboard_block_leftrepeat_bottom {
+    display: none;
+}
+
+.dashboard_block_bottomleft {
+    display: none;
+}
+
+.dashboard_block_bottomrepeat {
+	display: none;
+}
+
+.dashboard_block_bottomright {
+    display: none;
+}
+
+.dashboard_block_rightrepeat_top {
+    display: none;
+}
+
+.dashboard_block_rightrepeat_bottom {
+    display: none;
+}
+
+.dashboard_block_handle { 
+    margin: 0.2em -0.5em 0.5em 1em;
+}
+
+.ktBlock .dashboard_block_body
+{ 
+    margin: 8px 0 10px 1em;
 }
