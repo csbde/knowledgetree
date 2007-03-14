@@ -35,7 +35,7 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 
 class KTFolderRenameAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.rename';
-    var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.folder_rename";
 
     function getDisplayName() {
         return _kt('Rename');
