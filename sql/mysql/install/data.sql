@@ -605,6 +605,7 @@ INSERT INTO `permission_assignments` VALUES (4, 4, 1, 2);
 INSERT INTO `permission_assignments` VALUES (5, 5, 1, 2);
 INSERT INTO `permission_assignments` VALUES (6, 6, 1, 2);
 INSERT INTO `permission_assignments` VALUES (7, 7, 1, 2);
+INSERT INTO `permission_assignments` VALUES (8, 8, 1, 2);
 
 -- 
 -- Dumping data for table `permission_descriptor_groups`
@@ -1272,7 +1273,7 @@ INSERT INTO `zseq_organisations_lookup` VALUES (1);
 -- Dumping data for table `zseq_permission_assignments`
 -- 
 
-INSERT INTO `zseq_permission_assignments` VALUES (7);
+INSERT INTO `zseq_permission_assignments` VALUES (8);
 
 -- 
 -- Dumping data for table `zseq_permission_descriptors`
