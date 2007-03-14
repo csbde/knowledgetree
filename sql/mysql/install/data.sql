@@ -695,6 +695,7 @@ INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Manage secu
 INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Delete', 1);
 INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Manage workflow', 1);
 INSERT INTO `permissions` VALUES (7, 'ktcore.permissions.folder_details', 'Folder Details', 1);
+INSERT INTO `permissions` VALUES (8, 'ktcore.permissions.folder_rename', 'Rename Folder', 1);
 
 -- 
 -- Dumping data for table `plugins`
@@ -1307,7 +1308,7 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- Dumping data for table `zseq_permissions`
 -- 
 
-INSERT INTO `zseq_permissions` VALUES (7);
+INSERT INTO `zseq_permissions` VALUES (8);
 
 -- 
 -- Dumping data for table `zseq_plugins`
