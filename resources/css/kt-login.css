@@ -24,6 +24,17 @@
             /*-moz-border-radius: 1em;*/
         }
 
+		#loginbox_skin {
+			position: relative;
+            padding: 1em;
+            /*border: 1px solid #888;*/
+            width: 252px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            background: white url(../powered-by-kt.png) bottom right no-repeat;
+		}
+
         #loginboxTopLeft {
             position: absolute;
             background: url(../graphics/login_corner_topleft.gif) top left no-repeat;

@@ -1602,6 +1602,13 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     overflow: hidden;
 }
 
+.copyrightbarBorderLogo{
+	position: absolute;
+    top:1px;
+    right:20px;
+	border: 0;
+}
+
 hr {
     border-width: 1px 0 0 0;
     border-style: solid;

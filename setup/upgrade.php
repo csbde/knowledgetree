@@ -147,7 +147,12 @@ td { vertical-align: top; }
   </head>
 
   <body>
-  <img src="../resources/graphics/ktlogo-topbar-right.png">
+  <img src="<?php 
+  	if($oKTConfig->get('ui/mainLogo')){
+  		echo $oKTConfig->get('ui/mainLogo');
+  	}else{
+	  	echo '../resources/graphics/ktlogo-topbar-right.png';
+	}?>">
   <p>
   <img src="upgrade-title.jpg">
   <table width=800 height=500>
@@ -949,5 +954,10 @@ function Upgrade()
 
 ?>
 <tr>
-<td height=80 background="../resources/graphics/ktbg.png">&nbsp;
+<td height=80 <?php 
+  	if($oKTConfig->get('ui/poweredByDisabled') == '0'){
+  		?> align="right"><img src="<?php echo $oKTConfig->get('ui/powerLogo');?>"></td>
+  	<?php }else{ ?>
+	  	background="../resources/graphics/ktbg.png">&nbsp;</td>;
+	<?php }?>
 </table>
