@@ -58,8 +58,14 @@
         <div id="bodyTopRight"></div>        
         <div id="bodyPad">
             <div id="logobar">
-                <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
-                <a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="secondary" /></a>
+            	{if $config->get("ui/mainLogo") != ''}
+            		<a href="{$rootUrl}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
+            	{else}
+                	<a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
+                {/if}
+                {if $config->get("ui/companyLogo") != ''}
+                	<a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="secondary" /></a>
+                {/if}
                 <div class="floatClear"></div>
             </div>
             {if (!$page->hide_navbar)}
@@ -205,6 +211,9 @@
             &mdash; {i18n arg_version="$versionname"}KnowledgeTree Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
             {$page->getDisclaimer()}
         </div>
+        {if $config->get("ui/poweredByDisabled") == '0'}
+        	<a href="{$rootUrl}"><img src="{$config->get("ui/powerLogo")}" class="copyrightbarBorderLogo" alt="{$config->get("ui/powerLogoTitle")}" title="{$config->get("ui/powerLogoTitle")}"/></a>
+        {/if}
     </div>    
 </body>
 </html>

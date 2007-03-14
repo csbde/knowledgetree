@@ -13,7 +13,7 @@
 </head>
 <body onload="document.getElementById('username').focus()">
 
-    <div id="loginbox" {if ($disclaimer)} class="hasDisclaimer" {/if}>
+    <div id="{if $config->get("ui/poweredByDisabled") == '0'}loginbox_skin{else}loginbox{/if}" {if ($disclaimer)} class="hasDisclaimer" {/if}>
 
         <div id="formbox">
 
@@ -21,7 +21,11 @@
 	        <input type="hidden" name="action" value="login" />
 		<input type="hidden" name="cookieverify" value="{$cookietest}" />
 		<input type="hidden" name="redirect" value="{$redirect|escape}" />
-		<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
+		{if $config->get("ui/mainLogo") != ''}
+			<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class="logoimage"/><br />
+		{else}
+			<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
+		{/if}
             
 	        {if ($errorMessage == null)}
 		    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
