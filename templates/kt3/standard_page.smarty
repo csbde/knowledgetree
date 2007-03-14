@@ -94,7 +94,7 @@
                                         &middot;
                                     {/if}
                                 {/foreach}
-                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.png" border="0" align="top" /></a>{/if}
+                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" border="0" align="top" /></a>{/if}
                             </li>
                         </ul>
                     </div>
