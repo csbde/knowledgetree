@@ -107,6 +107,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $this->HAVE_GRAPHVIZ = true;
             $this->dotCommand = $dotCommand;
         }
+
     }
 
     function do_main() {
