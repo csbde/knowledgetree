@@ -10638,3 +10638,8 @@ msgstr ""
 #: plugins/ktstandard/KTEmail.php:126 
 msgid "Your colleague, %s, wishes you to view the attached document entitled '%s'."
 msgstr ""
+
+#: plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty:8 
+msgid "You have no orphaned folders."
+msgstr ""
+
