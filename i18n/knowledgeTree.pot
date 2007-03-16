@@ -10650,3 +10650,19 @@ msgstr ""
 #: view.php:85
 msgid "Document actions"
 msgstr ""
+
+#: resources/js/dashboard.js:77
+msgid "Add Dashlet"
+msgstr ""
+
+#: resources/js/dashboard.js:197
+msgid "Add Dashlets"
+msgstr ""
+
+#: resources/js/permissions.js:106
+msgid "Role or Group"
+msgstr ""
+
+#: templates/ktcore/document/viewlets/workflow.smarty:2
+msgid "Available Transitions"
+msgstr ""
