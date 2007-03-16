@@ -75,7 +75,7 @@ KTDashboard.prototype = {
 
         // make add button
         var breadcrumbs = $('breadcrumbs');
-        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':'Add Dashlet'});
+        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':_('Add Dashlet')});
         breadcrumbs.insertBefore(this.addButton, breadcrumbs.firstChild);
         this.hideAddButton();
 
@@ -204,10 +204,10 @@ KTDashboard.prototype = {
                             });
                     appendChildNodes(dashletList, linkli);
                 });
-        appendChildNodes(addDialog, H2(null, 'Add Dashlets'));
+        appendChildNodes(addDialog, H2(null, _('Add Dashlets')));
         appendChildNodes(addDialog, dashletList);
         
-        var closeLink = A({'class':'closeLink','href':'#'}, 'close');
+        var closeLink = A({'class':'closeLink','href':'#'}, _('close');
         connect(closeLink, 'onclick', function(event) { removeElement(addDialogScreen); });
 
         appendChildNodes(addDialog, closeLink);

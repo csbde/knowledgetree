@@ -384,14 +384,14 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		if($bSelected) {
 		    if(count($aPerm))
 		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
-							       'display' => 'Group: ' . $oGroup->getName(),
+							       'display' => _kt('Group:') . ' ' . $oGroup->getName(),
 							       'name' => $oGroup->getName(),
 							       'permissions' => $aPerm,
 							       'id' => $oGroup->getId(),
 							       'selected' => true);
 		} else {
 		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
-							       'display' => 'Group: ' . $oGroup->getName(),
+							       'display' => _kt('Group:') . ' ' . $oGroup->getName(),
 							       'name' => $oGroup->getName(),
 							       'permissions' => $aPerm,
 							       'id' => $oGroup->getId());
@@ -408,14 +408,14 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		if($bSelected) {
 		    if(count($aPerm)) 
 		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
-							      'display' => 'Role: ' . $oRole->getName(),
+							      'display' => _kt('Role:') . ' ' . $oRole->getName(),
 							      'name' => $oRole->getName(),
 							      'permissions' => $aPerm,
 							      'id' => $oRole->getId(),
 							      'selected' => true);
 		} else {
 		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
-							      'display' => 'Role: ' . $oRole->getName(),
+							      'display' => _kt('Role:') . ' ' . $oRole->getName(),
 							      'name' => $oRole->getName(),
 							      'permissions' => $aPerm,
 							      'id' => $oRole->getId());
