@@ -10643,3 +10643,10 @@ msgstr ""
 msgid "You have no orphaned folders."
 msgstr ""
 
+#: view.php:80
+msgid "Document info"
+msgstr ""
+
+#: view.php:85
+msgid "Document actions"
+msgstr ""
