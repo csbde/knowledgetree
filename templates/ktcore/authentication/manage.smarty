@@ -1,6 +1,6 @@
 <h2>{i18n}Authentication Sources{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}By default, KnowledgeTree controls its
+<p class="descriptiveText">{i18n}By default, {$appname} controls its
 own users and groups and stores all information about them inside the database.
 In many situations, an organisation will already have a list of users and groups,
 and needs to use that existing information to allow access to the DMS.  

@@ -76,12 +76,15 @@ class KTInit {
         ini_set('include_path', $path . PATH_SEPARATOR . $include_path);
     }
     // }}}
-
     // {{{ setupLogging()
     function setupLogging () {
         global $default;
         require_once(KT_LIB_DIR . '/Log.inc');
         $oKTConfig =& KTConfig::getSingleton();
+        
+        if(!defined('APP_NAME')) {
+		    define('APP_NAME', $oKTConfig->get('ui/appName', 'KnowledgeTree'));
+		}
         $logLevel = $default->logLevel;
         if (!is_numeric($logLevel)) {
             $logLevel = @constant($logLevel);
@@ -393,7 +396,8 @@ class KTInit {
             }
         } else {
             $oKTConfig =& KTConfig::getSingleton();
-
+			
+			$oKTConfig->setdefaultns('ui', 'appName', 'KnowledgeTree');
             $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
             $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
             $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', false);

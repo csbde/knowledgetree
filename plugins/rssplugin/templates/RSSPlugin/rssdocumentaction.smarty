@@ -1,4 +1,4 @@
-<h2><img src="{$rootUrl}/resources/graphics/title_bullet.png"/>Document RSS</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>Document RSS</h2>
 <p>
 You can copy the following link into any RSS aggregator to create a feed to the selected document.
 <ul>

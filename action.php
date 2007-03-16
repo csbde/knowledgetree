@@ -59,7 +59,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $aActionInfo = $oRegistry->getActionByNsname($action);
         if (empty($aActionInfo)) {
             $this->error = true;
-            $this->errorPage(_kt('No such action exists in KnowledgeTree'));
+            $this->errorPage(_kt('No such action exists in '.APP_NAME.'KnowledgeTree'));
         }
         $sFilename = $aActionInfo[1];
         if (!empty($sFilename)) {

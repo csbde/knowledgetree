@@ -9,6 +9,11 @@
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
+    {if $config->get("ui/morphEnabled") == '1'}
+	{foreach item=sResourceURL from=$page->getThemeCSSResources()}
+	<link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
+	{/foreach}
+    {/if}
     
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
@@ -26,6 +31,11 @@
         {foreach item=sResourceURL from=$page->getCSSResourcesForIE()}
         <style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
         {/foreach}
+        {if $config->get("ui/morphEnabled") == '1'}
+    	{foreach item=sResourceURL from=$page->getThemeCSSResourcesForIE()}
+		<style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
+    	{/foreach}
+	    {/if}
     <![endif]-->
     
     <!-- Standalone CSS. -->
@@ -208,12 +218,14 @@
         <div id="copyrightbarBg"></div>
         <div id="copyrightbar">
             {i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
-            &mdash; {i18n arg_version="$versionname"}KnowledgeTree Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
+            &mdash; {i18n arg_version="$versionname"}{$appname} Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
             {$page->getDisclaimer()}
         </div>
         {if $config->get("ui/poweredByDisabled") == '0'}
         	<a href="{$rootUrl}"><img src="{$config->get("ui/powerLogo")}" class="copyrightbarBorderLogo" alt="{$config->get("ui/powerLogoTitle")}" title="{$config->get("ui/powerLogoTitle")}"/></a>
+        	
         {/if}
+        <div class="floatClear"></div>
     </div>    
 </body>
 </html>

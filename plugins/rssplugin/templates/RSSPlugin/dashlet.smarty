@@ -45,7 +45,7 @@
 	<form name='nullForm' id='nullForm' action=''>
 	<select id='feedSelect' name='feedSelect' onchange='loadFeed()'>
 		{if $internalrss}
-			<option selected='selected' value='{$internalrss}'>KnowledgeTree RSS</option>
+			<option selected='selected' value='{$internalrss}'>{$appname} RSS</option>
 		{else}
 			<option selected='selected' value='null'>Select External RSS Feed</option>
 		{/if}

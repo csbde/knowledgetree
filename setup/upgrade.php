@@ -134,7 +134,7 @@ if (PEAR::isError($dbSupport)) {
 ?>
 <html>
   <head>
-    <title>KnowledgeTree Upgrade</title>
+    <title><?php echo APP_NAME;?> Upgrade</title>
     <style>
 th { text-align: left; }
 td { vertical-align: top; }
@@ -877,8 +877,8 @@ function welcome()
 	set_state(1);
 ?>
 <br>
-Welcome to the KnowledgeTree Database Upgrade Utility.<P> If you have just applied an upgrade stack installer or have updated
-your KnowledgeTree code base, you will need to complete the upgrade process in order to ensure your system is fully operational with the new version.
+Welcome to the <?php echo APP_NAME;?> Database Upgrade Utility.<P> If you have just applied an upgrade stack installer or have updated
+your <?php echo APP_NAME;?> code base, you will need to complete the upgrade process in order to ensure your system is fully operational with the new version.
 <P>
 <font color=orange>!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
 
@@ -887,7 +887,7 @@ If you have already done this, you may skip this step can continue directly to t
 <P>
  
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to KnowledgeTree" onclick="document.location='..';"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="document.location='..';"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup" onclick="javascript:start('BackupConfirm')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:start('UpgradeConfirm')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore" onclick="javascript:start('RestoreConfirm')"> 
@@ -905,7 +905,7 @@ function UpgradePreview()
 	global $default;
 ?>
         <p>The table below describes the upgrades that need to occur to
-        upgrade your KnowledgeTree installation to <strong><?=$default->systemVersion?></strong>.
+        upgrade your <?php echo APP_NAME;?> installation to <strong><?=$default->systemVersion?></strong>.
         Click on the button below the table to perform the upgrades.</p>
   <?
         $upgradeTable = generateUpgradeTable();
@@ -926,7 +926,7 @@ function Upgrade()
 	global $default;
 ?>
         <p>The table below describes the upgrades that have occurred to
-        upgrade your KnowledgeTree installation to <strong><?=$default->systemVersion?></strong>.
+        upgrade your <?php echo APP_NAME;?> installation to <strong><?=$default->systemVersion?></strong>.
  
   <?
 	$res = performAllUpgrades();
@@ -948,7 +948,7 @@ function Upgrade()
 <p>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to KnowledgeTree" onclick="javascript:document.location='..';"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="javascript:document.location='..';"> 
 <?	 
 }
 
