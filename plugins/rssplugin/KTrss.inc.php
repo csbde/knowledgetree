@@ -197,7 +197,7 @@ class KTrss{
     	$feed = "<?xml version=\"1.0\"?>\n";
     	$feed .= "<rss version=\"2.0\">\n".
     			 "<channel>\n" .
-	    			"<title>KnowledgeTree RSS</title>\n" .
+	    			"<title>".APP_NAME." RSS</title>\n" .
 	    			"<copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n" .
 	    			"<link>".$hostPath."</link>\n" .
 	    			"<description>KT-RSS</description>\n" .

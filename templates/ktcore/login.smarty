@@ -2,13 +2,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{i18n}Login{/i18n} | KnowledgeTree</title>
+    <title>{i18n}Login{/i18n} | {$appname}</title>
     
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
-
-    <link rel="icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon"> 
+    <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
 
 </head>
 <body onload="document.getElementById('username').focus()">
@@ -24,7 +23,7 @@
 		{if $config->get("ui/mainLogo") != ''}
 			<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class="logoimage"/><br />
 		{else}
-			<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" height="50" width="252"/><br />
+			<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="{$appname}" class="logoimage" height="50" width="252"/><br />
 		{/if}
             
 	        {if ($errorMessage == null)}
@@ -58,7 +57,7 @@
 	{/if}
 
 	<span class="descriptiveText version">
-	{i18n}KnowledgeTree Version{/i18n}<br />{$versionName}<br/>
+	{i18n}{$appname} Version{/i18n}<br />{$versionName}<br/>
 	{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
 	</span>
         <div id="bottomspacer"></div>
