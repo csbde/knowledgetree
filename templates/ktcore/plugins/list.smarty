@@ -16,7 +16,7 @@ method=getUserFriendlyName assign=boxes name="pluginids"}
 
 <h3>{i18n}Read plugins from filesystem{/i18n}</h3>
 
-<p class="descriptiveText">{i18n}If you have moved the location of {$appname} on your server filesystem, or installed or removed plugins, the plugins
+<p class="descriptiveText">{i18n arg_appname="$appname"}If you have moved the location of #appname# on your server filesystem, or installed or removed plugins, the plugins
 must be re-read from the filesystem{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">

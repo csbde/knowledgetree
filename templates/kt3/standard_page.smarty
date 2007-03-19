@@ -18,8 +18,8 @@
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
 
-    <link rel="icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon"> 
+    <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
 
 {if $refreshTimeout}
        <meta http-equiv="refresh" content="{$refreshTimeout}" />
@@ -218,7 +218,7 @@
         <div id="copyrightbarBg"></div>
         <div id="copyrightbar">
             {i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
-            &mdash; {i18n arg_version="$versionname"}{$appname} Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
+            &mdash; {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
             {$page->getDisclaimer()}
         </div>
         {if $config->get("ui/poweredByDisabled") == '0'}

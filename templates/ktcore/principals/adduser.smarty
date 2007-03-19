@@ -1,8 +1,8 @@
 <h2>{i18n}Add a user{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Please complete the form below to add
+<p class="descriptiveText">{i18n arg_appname="$appname"}Please complete the form below to add
 a new user. Fields marked with a red square are required. By default,
-users are created using {$appname}'s builtin authentication
+users are created using #appname#'s builtin authentication
 provider. Should you wish to use an external authentication provider
 such as LDAP, please ensure that the provider's plugin is registered
 and use the form on the User Management page.{/i18n}</p>

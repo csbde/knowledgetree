@@ -92,7 +92,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             )),
             array('ktcore.widgets.string',array(
                 'label' => _kt('Document Title'),
-                'description' => _kt('The document title is used as the main name of a document throughout '.APP_NAME.'.'),
+                'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s&trade;.'), APP_NAME),
                 'name' => 'document_name',
                 'required' => true,
             )),

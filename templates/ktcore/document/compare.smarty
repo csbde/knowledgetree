@@ -14,15 +14,15 @@
 
 {if ($document_data.is_manufactured)}
 <p class="descriptiveText"><strong class="ktInlineError">{i18n}Please
-note{/i18n}:</strong> {i18n arg_version=$from}the information for version
-#version# comes from an older version of {$appname} and may be
+note{/i18n}:</strong> {i18n arg_version=$from arg_appname="$appname"}the information for version
+#version# comes from an older version of #appname# and may be
 incorrect.{/i18n}
 {/if}
 
 {if ($comparison_data.is_manufactured)}
 <p class="descriptiveText"><strong class="ktInlineError">{i18n}Please
-note{/i18n}:</strong> {i18n arg_version=$to}the information for version
-#version# comes from an older version of {$appname} and may be
+note{/i18n}:</strong> {i18n arg_version=$to arg_appname="$appname"}the information for version
+#version# comes from an older version of #appname# and may be
 incorrect.{/i18n}
 {/if}
   
