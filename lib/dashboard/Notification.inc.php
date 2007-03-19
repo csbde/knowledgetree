@@ -350,7 +350,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 				exit(redirect($url));
 			} 
 		}
-		$_SESSION['KTErrorMessage'][] = 'This notification has no "target".  Please inform the '.APP_NAME.' developers that there is a target bug with type: ' . $info['event_type'];		
+		$_SESSION['KTErrorMessage'][] = sprintf('This notification has no "target".  Please inform the %s developers that there is a target bug with type: ' . $info['event_type'], APP_NAME);		
 		exit(redirect(generateControllerLink('dashboard')));
 	}
 	

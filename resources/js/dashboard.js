@@ -207,7 +207,7 @@ KTDashboard.prototype = {
         appendChildNodes(addDialog, H2(null, _('Add Dashlets')));
         appendChildNodes(addDialog, dashletList);
         
-        var closeLink = A({'class':'closeLink','href':'#'}, _('close');
+        var closeLink = A({'class':'closeLink','href':'#'}, _('close'));
         connect(closeLink, 'onclick', function(event) { removeElement(addDialogScreen); });
 
         appendChildNodes(addDialog, closeLink);

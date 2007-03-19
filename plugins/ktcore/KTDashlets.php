@@ -40,7 +40,7 @@ class KTInfoDashlet extends KTBaseDashlet {
     var $help_id;
 
     function KTInfoDashlet() {
-        $this->sTitle = _kt('Welcome to '.APP_NAME);
+        $this->sTitle = sprintf(_kt('Welcome to %s'), APP_NAME);
     }
 
     function is_active($oUser) {

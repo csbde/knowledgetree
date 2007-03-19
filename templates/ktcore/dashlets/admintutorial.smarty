@@ -1,6 +1,6 @@
-<h2>{i18n}KnowledgeTree administrator's Guide{/i18n}</h2>
-<p class="descriptiveText">{i18n}If this is your first KnowledgeTree installation,
-or if you've just upgraded from KnowledgeTree 2.x, we've put together some information
+<h2>{i18n arg_appname="$appname"}#appname# administrator's Guide{/i18n}</h2>
+<p class="descriptiveText">{i18n arg_appname="$appname"}If this is your first #appname# installation,
+or if you've just upgraded from #appname# 2.x, we've put together some information
 which might help you get to grips with the new system.{/i18n}</p>
 
 <a

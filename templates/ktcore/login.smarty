@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{i18n}Login{/i18n} | {$appname}</title>
+    <title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>
     
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
@@ -57,7 +57,7 @@
 	{/if}
 
 	<span class="descriptiveText version">
-	{i18n}{$appname} Version{/i18n}<br />{$versionName}<br/>
+	{i18n arg_appname="$appname"}#appname# Version{/i18n}<br />{$versionName}<br/>
 	{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
 	</span>
         <div id="bottomspacer"></div>

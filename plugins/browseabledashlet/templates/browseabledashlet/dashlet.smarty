@@ -1,4 +1,4 @@
-<p class="descriptiveText">{i18n}Since KnowledgeTree only shows you the folders and
+<p class="descriptiveText">{i18n arg_appname="$appname"}Since #appname# only shows you the folders and
 documents you are allowed to see, there are some placed that you can view
 but can't get to &mdash; for example, if they are in a folder you are not 
 allowed to see.  These are called "orphaned folders" since you can't access their parents 

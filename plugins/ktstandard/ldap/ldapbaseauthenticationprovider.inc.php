@@ -232,7 +232,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
-        $fields[] =  new KTStringWidget(_kt('Username'), _kt('The username the user will enter to gain access to '.APP_NAME.'.  e.g. <strong>jsmith</strong>'), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
         $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $aResults[$this->aAttributes[0]], $this->oPage, true);
         $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $aResults[$this->aAttributes[4]], $this->oPage, false);
         $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', true, $this->oPage, false);
@@ -439,7 +439,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         
         $fields = array();
         $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $aAttributes['dn'], $this->oPage);
-        $fields[] = new KTStringWidget(_kt('Group Name'), _kt('The name the group will enter to gain access to '.APP_NAME.'.  e.g. <strong>accountants</strong>'), 'ldap_groupname', $aAttributes['cn'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $aAttributes['cn'], $this->oPage, true);
         $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
         $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 

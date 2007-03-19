@@ -6,8 +6,8 @@
 
 <h3>{i18n}State Effects{/i18n}</h3>
 
-<p class="descriptiveText">{i18n}One of the reasons that workflow is so key to
-the way KnowledgeTree is used is that states can have a variety of effects on
+<p class="descriptiveText">{i18n arg_appname="$appname"}One of the reasons that workflow is so key to
+the way #appname# is used is that states can have a variety of effects on
 the way other systems work.  For example:  workflow states can override the permissions
 on a document, and reaching a state can cause notifications to be sent out.{/i18n}</p>
 

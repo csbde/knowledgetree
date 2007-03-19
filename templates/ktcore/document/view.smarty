@@ -15,9 +15,9 @@ have sufficient priviledges to cancel their checkout.{/i18n}</p>
 </div>
 {else}
 <div class="ktInfo">
-<p>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#.  You cannot make 
+<p>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make 
 changes until that user checks it in.  If you have urgent modifications to make, please
-contact your {$appname} Administrator.{/i18n}</p>
+contact your #appname# Administrator.{/i18n}</p>
 </div>
 {/if}
 {/if}
