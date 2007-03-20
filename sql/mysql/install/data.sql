@@ -1369,7 +1369,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (129);
+INSERT INTO `zseq_upgrades` VALUES (134);
 
 -- 
 -- Dumping data for table `zseq_user_history`
