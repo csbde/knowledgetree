@@ -22,7 +22,7 @@
  * You can contact the copyright owner regarding licensing via the contact
  * details that can be found on the KnowledgeTree web site:
  *
- *         http://www.ktdms.com/
+ *         http://www.knowledgetree.com/
  **/
  
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
