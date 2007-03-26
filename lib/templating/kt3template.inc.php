@@ -353,6 +353,7 @@ class KTPage {
 		$this->userMenu = array("logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
 	    } else {
 		$this->userMenu = array("preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
+					"aboutkt" => $this->_actionhelper(array("name" => sprintf(_kt("About %s"), APP_NAME), "action" => "aboutkt", "active" => 0)),
 					"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
 	    }
 	} else {
