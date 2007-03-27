@@ -117,12 +117,12 @@ class AdminVersionPage extends KTStandardDispatcher {
         }
 
         $sUrl = KT_VERSION_URL;
-	$aVersions = KTUtil::getKTVersions();
+        $aVersions = KTUtil::getKTVersions();
         foreach ($aVersions as $k => $v) {
-            $sUrl = KTUtil::addQueryString($sUrl, sprintf("%s=%s", $k, $v));
+            $sUrl .=  '?' . sprintf("%s=%s", $k, $v);
         }
         $sIdentifier = KTUtil::getSystemIdentifier();
-        $sUrl = KTUtil::addQueryString($sUrl, sprintf("system_identifier=%s", $sIdentifier));
+        $sUrl .= '&' . sprintf("system_identifier=%s", $sIdentifier);
 
         if (!function_exists('curl_init')) {
             if (OS_WINDOWS) {
