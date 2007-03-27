@@ -59,7 +59,7 @@ $default->siteMap->addSectionColour('Standard Search', 'th', 'A1571B');
 $default->siteMap->addDefaultPage('preferences', '/preferences.php', 'Preferences', User, _kt('Preferences'));
 
 // pages for about section
-$default->siteMap->addDefaultPage('aboutkt', '/about.php', 'About '.APP_NAME, User, sprintf(_kt("About %s"), APP_NAME));
+$default->siteMap->addDefaultPage('aboutkt', '/about.php', 'About', Guest, _kt('About'));
 
 // pages for Help section
 $default->siteMap->addDefaultPage('help', '/presentation/lookAndFeel/knowledgeTree/help.php', 'Help', Guest, _kt('Help'));
