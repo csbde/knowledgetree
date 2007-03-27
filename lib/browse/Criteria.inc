@@ -681,7 +681,7 @@ class GeneralMetadataCriterion extends BrowseCriterion {
 
     
     function searchSQL ($aRequest) {
-        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%'  or dm.name LIKE '%!%'  )", 
+        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR dm.name LIKE '%!%'  )", 
         array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));       
         
         return $val;
@@ -1120,7 +1120,7 @@ class TagCloudCriterion extends BrowseCriterion {
     function searchJoinSQL () {
         global $default;
         return "INNER JOIN document_tags AS DTS ON DTS.document_id = D.id
-        		INNER JOIN tag_words AS TWS ON tws.id = DTS.tag_id";
+        		INNER JOIN tag_words AS TWS ON TWS.id = DTS.tag_id";
     }
 }
 
