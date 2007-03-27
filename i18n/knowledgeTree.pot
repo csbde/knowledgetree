@@ -10670,3 +10670,15 @@ msgstr ""
 #: templates/ktcore/document/viewlets/workflow.smarty:2
 msgid "Available Transitions"
 msgstr ""
+
+#: about.php:39
+msgid "About"
+msgstr ""
+
+#: lib/templating/kt3template.inc.php:356
+msgid "About"
+msgstr ""
+
+#: i18n/templates.c:5747
+msgid "#appname# #versionname#"
+msgstr ""

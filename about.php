@@ -36,14 +36,26 @@ class KTAbout extends KTStandardDispatcher {
     var $sSection = 'aboutkt';
 
     function do_main() {
-        $this->aBreadcrumbs = array(array('action' => 'aboutkt', 'name' => sprintf(_kt("About %s"), APP_NAME)));
+        global $default;
+        $this->aBreadcrumbs = array(array('action' => 'aboutkt', 'name' => _kt("About")));
         $oUser =& $this->oUser;
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/about");
         
+        $aVersionInfo = explode(' ', $default->versionName);
+        foreach($aVersionInfo as $sVersionpiece){
+        	if(substr($sVersionpiece, 1, 1) == '.'){
+        		$sVersionNo = $sVersionpiece;
+        	}else{
+        		$sVersionName .= " ".$sVersionpiece;
+        	}
+        }
+        
         $aTemplateData = array(
               "context" => $this,
+              "versionname" => $sVersionName,
+			  "versionnumber" => $sVersionNo,
         );
         return $oTemplate->render($aTemplateData);    
     }

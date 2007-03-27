@@ -5742,3 +5742,6 @@ gettext("The action cannot be performed on any of the selected entities.");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/dashlet.smarty */
 gettext("#appname# RSS");
+
+/* ./templates/ktcore/principles/about.smarty */
+gettext("#appname# #versionname#");
