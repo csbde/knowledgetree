@@ -279,7 +279,7 @@ class NameCriterion extends BrowseCriterion {
     var $sNamespace = 'ktcore.criteria.name';
 
     function NameCriterion() {
-        $this->sDisplay = _kt('Name');
+        $this->sDisplay = _kt('Document Filename');
     }
 
     function documentDisplay ($oDocument) {
@@ -338,7 +338,7 @@ class TitleCriterion extends BrowseCriterion {
     var $sNamespace = 'ktcore.criteria.title';
 
     function TitleCriterion() {
-        $this->sDisplay = _kt('Title');
+        $this->sDisplay = _kt('Document Title');
     }
     
     function documentDisplay ($oDocument) {
