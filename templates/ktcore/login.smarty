@@ -8,6 +8,8 @@
 
     <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
+    
+    <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-ie-icons.css" type="text/css" />
 
 </head>
 <body onload="document.getElementById('username').focus()">
@@ -52,7 +54,7 @@
 	</div>
         {if ($disclaimer)}
         <div id="disclaimerbox">
-	    {$disclaimer}
+	    <p>{$disclaimer}</p>
 	</div>
 	{/if}
 
