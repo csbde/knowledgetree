@@ -194,3 +194,37 @@
 { 
     margin: 8px 0 10px 1em;
 }
+
+#loginbox.hasDisclaimer #loginboxTopMiddle {
+    position: absolute;
+    background: url(../graphics/login_border_repeat.png) top left repeat-x;
+    top:0;
+    left:35px;
+    width: 520px;
+    height: 3px; 
+}
+
+#loginbox.hasDisclaimer #loginboxBottomMiddle {
+    position: absolute;
+    background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
+    bottom: 0;
+    left: 35px;
+    width: 520px;
+    height: 3px;
+}
+
+#loginbox.hasDisclaimer #loginboxLeftTop {
+    height: 250px;
+}
+
+#loginbox.hasDisclaimer #loginboxLeftBottom {
+    height: 250px;
+}
+
+#loginbox.hasDisclaimer #loginboxRightTop {
+    height: 250px;
+}
+
+#loginbox.hasDisclaimer #loginboxRightBottom {
+    height: 250px;
+}

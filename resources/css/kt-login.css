@@ -178,7 +178,7 @@
         #disclaimerbox {
             width: 252px;
             float: left;
-            padding-left: 20px;
+            padding-left: 0px;
             border-left: 1px solid #eee;
             margin-left: -1px;
         }
