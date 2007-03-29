@@ -212,14 +212,15 @@
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
     </div>
-    <div id="copyrightbarBorder">
-        <div id="copyrightbarLeft"></div>
-        <div id="copyrightbarRight"></div>
-        <div id="copyrightbarBg"></div>
-        <div id="copyrightbar">
-            {i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
-            &mdash; {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
-            {$page->getDisclaimer()}
+    <div id="{if $page->getDisclaimer() != ''}copyrightbarBorderDisclaimer{else}copyrightbarBorder{/if}">
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarLeftDisclaimer{else}copyrightbarLeft{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarRightDisclaimer{else}copyrightbarRight{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarBgDisclaimer{else}copyrightbarBg{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarDisclaimer{else}copyrightbar{/if}">
+            <span style="float:left;">{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}</span>
+            <span style="float:right; margin-right:5px;">{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}</span><br />
+            {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}
+            <p>{$page->getDisclaimer()}</p>
         </div>
         {if $config->get("ui/poweredByDisabled") == '0'}
         	<a href="{$rootUrl}"><img src="{$config->get("ui/powerLogo")}" class="copyrightbarBorderLogo" alt="{$config->get("ui/powerLogoTitle")}" title="{$config->get("ui/powerLogoTitle")}"/></a>
