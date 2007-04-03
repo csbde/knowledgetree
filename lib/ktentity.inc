@@ -167,7 +167,7 @@ class KTEntity {
         $oCache->remove($group, $this->iId);
         $this->clearCachedGroups();
         if ($this->iId >= 0) {
-            if($dereference = 'true'){
+            if($dereference){
             	$res = DBUtil::deReference($this->_table(), $this->iId);
             }else{
             	$res = DBUtil::autoDelete($this->_table(), $this->iId);
