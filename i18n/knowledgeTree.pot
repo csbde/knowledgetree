@@ -1766,7 +1766,7 @@ msgid "Configure the document metadata: Document Types, Document Fieldsets, Link
 msgstr ""
 
 #: plugins/ktcore/KTCorePlugin.php:235
-msgid "Configure the process documents go through."
+msgid "Configure automated Workflows that map to document life-cycles."
 msgstr ""
 
 #: i18n/templates.c:5399
