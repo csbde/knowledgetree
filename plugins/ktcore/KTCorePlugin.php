@@ -241,7 +241,7 @@ class KTCorePlugin extends KTPlugin {
                     '../wintools/email/emailDocumentTypes.php', null);
         }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
-            _kt('Workflows'), _kt('Configure the process documents go through.'),
+            _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);            
 
         // storage
