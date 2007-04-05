@@ -61,6 +61,7 @@ function init_kt_calendar(source) {
         
         c.create();
         c.showAtElement(source,'Bc'); // the button
+        c.element.style.zIndex = "1000";
         c.show();
         match._kt3cal = c;
     }
