@@ -301,8 +301,8 @@ class KTDocumentUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
-        $aMetadata = $res;
-
+        $aMetadata = empty($res)?array():$res;
+        
         $iMetadataVersionId = $oDocument->getMetadataVersionId();
         $res = DBUtil::runQuery(array("DELETE FROM $table WHERE metadata_version_id = ?", array($iMetadataVersionId)));
         if (PEAR::isError($res)) {
