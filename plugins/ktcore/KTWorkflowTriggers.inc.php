@@ -53,7 +53,9 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
             return true;
         }
         // the actual permissions are stored in the array.  
-        foreach ($this->aConfig['perms'] as $sPermName) {
+        if (!is_null($this->aConfig['perms']))
+        {
+        	foreach ($this->aConfig['perms'] as $sPermName) {
             $oPerm = KTPermission::getByName($sPermName);
             if (PEAR::isError($oPerm)) {
                 continue; // possible loss of referential integrity, just ignore it for now.
@@ -62,6 +64,7 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
             if (!$res) {
                 return false;
             }
+        }
         }
         return true;
     }
