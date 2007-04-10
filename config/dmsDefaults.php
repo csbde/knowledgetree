@@ -515,6 +515,7 @@ $KTInit = new KTInit();
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 $KTInit->prependPath(KT_DIR . '/thirdparty/simpletest');
+$KTInit->prependPath(KT_DIR . '/ktapi');
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions
