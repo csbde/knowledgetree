@@ -438,6 +438,12 @@ class KTInit {
             $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
             $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
             
+            $oKTConfig->setdefaultns('webservice', 'uploadDirectory', '${varDirectory}/uploads');
+            $oKTConfig->setdefaultns('webservice', 'downloadUrl', '${rootUrl}/ktwebservice/download.php');
+            $oKTConfig->setdefaultns('webservice', 'uploadExpiry', '30');
+            $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
+            $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
+            
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
             
