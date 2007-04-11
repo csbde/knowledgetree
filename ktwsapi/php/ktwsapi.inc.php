@@ -208,7 +208,9 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_folder_detail->message);
 		}
 		
-		return new KTWSAPI_Folder($ktapi, $kt_folder_detail);		
+		$folder = & new KTWSAPI_Folder($ktapi, $kt_folder_detail);		
+		
+		return $folder;
 	}
 
 	/**
@@ -271,7 +273,8 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_folder_detail->message);
 		}
 		
-		return new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);			
+		$folder= & new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);	
+		return $folder;		
 	}
 		
 	/**
@@ -337,7 +340,9 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_document_detail->message);
 		}
 		
-		return new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		
+		return $document;
 	}
 
 	/**
@@ -370,7 +375,8 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_document_detail->message);
 		}
 		
-		return new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		return $document;
 	}
 	
 	
@@ -393,7 +399,9 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_folder_detail->message);
 		}
 		
-		return new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);
+		$folder = &new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);
+		
+		return $folder;
 	}
 	
 	/**
@@ -535,7 +543,8 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_document_detail->message);
 		}
 		
-		return new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
+		return $document;
 	}
 }
 
@@ -616,7 +625,8 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 			);
 		}
 		
-		return new KTWSAPI_Document($ktapi, $kt_document_detail);		
+		$document=& new KTWSAPI_Document($ktapi, $kt_document_detail);	
+		return $document;	
 	}
 	
 	/**
