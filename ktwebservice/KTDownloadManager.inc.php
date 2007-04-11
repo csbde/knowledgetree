@@ -33,20 +33,25 @@ class KTDownloadManager
 	var $random;
 	
 	/**
-	 * Enter description here...
+	 * Constructor for the download manager.
 	 *
 	 * @param KTAPI_Session $session
 	 * @return KTDownloadManager
 	 */
 	function KTDownloadManager()
 	{		
-		$config = KTConfig::getSingleton();		 
+		$config = &KTConfig::getSingleton();		 
 		
 		$this->age = $config->get('webservice/downloadExpiry',5);
 		$this->download_url = $config->get('webservice/downloadUrl');
 		$this->random=$config->get('webservice/randomKeyText','jhsdf8q1jkjpoiudfs7sd3ds1');
 	}
 
+	/**
+	 * Sets the current session.
+	 *
+	 * @param string $session
+	 */
 	function set_session($session)
 	{
 		$this->session = $session;		
@@ -116,7 +121,7 @@ class KTDownloadManager
 		$storage =& KTStorageManagerUtil::getSingleton();
         
         
-        $ktapi = new KTAPI();
+        $ktapi = &new KTAPI();
         $res = $ktapi->get_active_session($this->session);
         if (PEAR::isError($res))
         {
