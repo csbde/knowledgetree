@@ -27,7 +27,7 @@
 
 require_once('../config/dmsDefaults.php');
 require_once('../ktapi/ktapi.inc.php');
-require_once("SOAP/Server.php");
+require_once('SOAP/Server.php');
 require_once('SOAP/Disco.php');
 require_once('KTDownloadManager.inc.php');
 
@@ -198,6 +198,7 @@ class KTWebService
     	$this->__typedef['kt_metadata_fieldset'] =
          	array(
 				'fieldset' => 'string',
+				'description' => 'string',
         		'fields' => "{urn:$this->namespace}kt_metadata_fields" ,
          	);
          	
@@ -1655,6 +1656,45 @@ class KTWebService
     	} 
     	
     	$metadata = $document->get_metadata();	
+    	
+		$num_metadata=count($metadata);
+		for($i=0;$i<$num_metadata;$i++)
+		{
+			$num_fields = count($metadata[$i]['fields']);
+			for($j=0;$j<$num_fields;$j++)
+			{
+				$selection=$metadata[$i]['fields'][$j]['selection'];
+				$new = array();
+				 
+				foreach($selection as $item)
+				{
+					$new[] = array(
+						'id'=>null,
+						'name'=>$item,
+						'value'=>$item,
+						'parent_id'=>null
+					);
+				}
+				$metadata[$i]['fields'][$j]['selection'] = $new;
+			}
+		}
+		/*foreach($metadata as & $fieldset)
+		{
+			foreach($fieldset['fields'] as &$fields)
+			{
+				$selection = array();
+				foreach($fields['selection'] as $item)
+				{
+					$selection[] = array(
+						'id'=>null,
+						'name'=>$item,
+						'value'=>$item,
+						'parent_id'=>null
+					);
+				}
+				$fieldset['fields']['selection'] = $selection;
+			}
+		}*/
     	
     	$response = array(
     		'status_code' => KTWS_SUCCESS,
