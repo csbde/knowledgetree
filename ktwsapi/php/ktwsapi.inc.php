@@ -445,7 +445,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 			return new PEAR_Error($kt_document_detail->message);
 		}
 		
-		return true;    
+		return new KTWSAPI_Document($this->ktapi, $kt_document_detail);
 	}
 }
 
