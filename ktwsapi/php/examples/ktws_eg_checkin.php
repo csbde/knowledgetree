@@ -31,7 +31,7 @@ $ktapi = new KTWSAPI(KTWebService_WSDL);
 
 // change session to something that is in table 'active_sessions'
 
-$response = $ktapi->active_session('qekolkpkk9mq2nlc31ghndi1l2');
+$response = $ktapi->active_session('sj5827sohdoj6h3nvifrcsa1f2');
 if (PEAR::isError($response))
 {
 	print $response->getMessage();
@@ -39,12 +39,32 @@ if (PEAR::isError($response))
 }
 
 $root = $ktapi->get_root_folder();
+if (PEAR::isError($root))
+{
+	print $root->getMessage();
+	exit;
+}
 
 $document = $root->add_document('c:/temp/test.doc');
+if (PEAR::isError($document))
+{
+	print $document->getMessage();
+	exit;
+}
 
-$document->checkout('going to update','c:/');
+$result = $document->checkout('going to update','c:/');
+if (PEAR::isError($result))
+{
+	print $result->getMessage();
+	exit;
+}
 
-$document->checkin('c:/test.doc','have updated',false);
+$result = $document->checkin('c:/test.doc','have updated',false);
+if (PEAR::isError($result))
+{
+	print $result->getMessage();
+	exit;
+}
 
 $ktapi->logout();
  
