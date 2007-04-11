@@ -75,15 +75,15 @@ class KTAPI_Session
 	var $sessionid = -1;
 	var $ip = null;
 	
-	function KTAPI_Session($ktapi, $user, $session, $sessionid, $ip)
+	function KTAPI_Session(&$ktapi, &$user, $session, $sessionid, $ip)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi,'KTAPI'));
 		assert(!is_null($user));
 		assert(is_a($user,'User'));
 				
-		$this->ktapi 	= $ktapi;
-		$this->user 	= $user;
+		$this->ktapi 	= &$ktapi;
+		$this->user 	= &$user;
 		$this->session 	= $session;
 		$this->sessionid = $sessionid;
 		$this->ip 		= $ip;
@@ -116,9 +116,9 @@ class KTAPI_Session
 	/**
 	 * This returns a user object for the use rassociated with the session. 
 	 *
-	 * @return KTAPI_User
+	 * @return User
 	 */
-	function get_user()
+	function &get_user()
 	{
 		 return $this->user;
 	}
@@ -161,7 +161,7 @@ class KTAPI_Session
 	 * @param string $password
 	 * @return KTAPI_Session
 	 */
-	function start_session($ktapi, $username, $password, $ip=null)
+	function &start_session(&$ktapi, $username, $password, $ip=null)
 	{		
 		
 		if ( empty($username) ) 
@@ -179,7 +179,7 @@ class KTAPI_Session
         {
         	$authenticated = true;
         	
-        	$config = KTConfig::getSingleton();	
+        	$config = &KTConfig::getSingleton();	
     	    $allow_anonymous = $config->get('session/allowAnonymousLogin', false);
     	    
     	    if (!$allow_anonymous)
@@ -245,7 +245,7 @@ class KTAPI_Session
         	return $sessionid;
         }
                 
-		$session = new KTAPI_Session($ktapi, $user, $session, $sessionid, $ip);		
+		$session = &new KTAPI_Session($ktapi, $user, $session, $sessionid, $ip);		
 		
 		return $session;
 	}	
@@ -256,9 +256,9 @@ class KTAPI_Session
 	 * @param KTAPI $ktapi
 	 * @param string $session
 	 * @param string $ip
-	 * @return unknown
+	 * @return KTAPI_Session
 	 */
-	function get_active_session($ktapi, $session, $ip)
+	function &get_active_session(&$ktapi, $session, $ip)
 	{        		
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
 		if (!empty($ip))
@@ -275,7 +275,7 @@ class KTAPI_Session
 		$sessionid = $row['id'];
 		$userid = $row['user_id'];
 		
-		$user = User::get($userid);
+		$user = &User::get($userid);
 		if (is_null($user) || PEAR::isError($user))
 		{
 			return new PEAR_Error(KTAPI_ERROR_USER_INVALID);
@@ -287,7 +287,7 @@ class KTAPI_Session
         $sql = "UPDATE active_sessions SET last_used='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
         
-		$session = new KTAPI_Session($ktapi, $user, $session, $sessionid, $ip);		
+		$session = &new KTAPI_Session($ktapi, $user, $session, $sessionid, $ip);		
 		return $session;
 	}
 	
@@ -322,11 +322,9 @@ class KTAPI_FolderItem
 	 */
 	var $ktapi;	
 	
-	function can_user_access_object_requiring_permission($object, $permission)
-	{
-		$user = $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
-		
-		return $user;
+	function &can_user_access_object_requiring_permission(&$object, &$permission)
+	{	
+		return $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
 	}
 }
 
@@ -357,7 +355,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	function get($ktapi, $folderid)
+	function &get(&$ktapi, $folderid)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -365,7 +363,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		
 		$folderid += 0;
 		
-		$folder = Folder::get($folderid);
+		$folder = &Folder::get($folderid);
 		if (is_null($folder) || PEAR::isError($folder))
 		{
 			return new PEAR_Error(KTAPI_ERROR_FOLDER_INVALID);
@@ -389,10 +387,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param Folder $folder
 	 * @return KTAPI_Folder
 	 */
-	function KTAPI_Folder($ktapi, $folder)
+	function KTAPI_Folder(&$ktapi, &$folder)
 	{
-		$this->ktapi = $ktapi;
-		$this->folder = $folder;	
+		$this->ktapi = &$ktapi;
+		$this->folder = &$folder;	
 		$this->folderid = $folder->getId();
 	}
 	
@@ -402,7 +400,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access protected
 	 * @return Folder
 	 */	
-	function get_folder()
+	function &get_folder()
 	{
 		return $this->folder;
 	}
@@ -453,7 +451,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */	
-	function get_folder_by_name($foldername)
+	function &get_folder_by_name($foldername)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -482,8 +480,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
 		
-//		$path = substr($path,11);
-		
 		return $path;
 	}
 	
@@ -495,7 +491,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $function
 	 * @return KTAPI_Document
 	 */	
-	function _get_document_by_name($documentname, $function='getByNameAndFolder')
+	function &_get_document_by_name($documentname, $function='getByNameAndFolder')
 	{
 		$documentname=trim($documentname);
 		if (empty($documentname))
@@ -532,10 +528,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return $user;
 		}
-				
-		$document = new KTAPI_Document($this->ktapi, $ktapi_folder, $document);	
-
-		return $document;	
+		 
+		return new KTAPI_Document($this->ktapi, $ktapi_folder, $document);
 	}
 	
 	/**
@@ -545,7 +539,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */	
-	function get_document_by_name($documentname)
+	function &get_document_by_name($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByNameAndFolder');
 	}
@@ -557,7 +551,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */	
-	function get_document_by_filename($documentname)
+	function &get_document_by_filename($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByFilenameAndFolder');
 	}	
@@ -568,7 +562,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return array();
 		}
-		$permission = KTPermission::getByName(KTAPI_PERMISSION_READ);
+		$permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
 		$permissionid= $permission->getId();
 		
 		$user = $this->ktapi->get_user();
@@ -651,22 +645,23 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		
-		foreach($contents as & $item)
+		$num_items = count($contents);
+		for($i=0;$i<$num_items;$i++)		
 		{
-			if ($item['item_type'] == 'D')
+			if ($contents[$i]['item_type'] == 'D')
 			{
-				$item['items'] = array();
+				$contents[$i]['items'] = array();
 			}
 			else 
 			{
 				if ($depth-1 > 0)
 				{
-					$folder = $this->ktapi->get_folder_by_id($item['id']);
-					$item['items'] = $folder->get_listing($depth-1);					
+					$folder = &$this->ktapi->get_folder_by_id($item['id']);
+					$contents[$i]['items'] = $folder->get_listing($depth-1);					
 				}
 				else 
 				{
-					$item['items'] = array();
+					$contents[$i]['items'] = array();
 				}
 			}
 		}
@@ -684,7 +679,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
 	 * @return KTAPI_Document
 	 */	
-	function add_document($title, $filename, $documenttype, $tempfilename)
+	function &add_document($title, $filename, $documenttype, $tempfilename)
 	{
 		if (!is_file($tempfilename))
 		{
@@ -726,11 +721,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return $result;
 		}
-		
-		
-		$ktapi_document = new KTAPI_Document($this->ktapi, $this, $document);
 
-		return $ktapi_document;
+		return new KTAPI_Document($this->ktapi, $this, $document);
 	}
 	
 	/**
@@ -740,7 +732,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */	
-	function add_folder($foldername)
+	function &add_folder($foldername)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_ADD_FOLDER);
 		
@@ -751,7 +743,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::add($this->folder, $foldername, $user);
-
 		
 		if (PEAR::isError($result))
 		{
@@ -760,10 +751,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 		$folderid = $result->getId();
-
-		$ktapi_folder = $this->ktapi->get_folder_by_id($folderid);
 		
-		return $ktapi_folder;
+		return $this->ktapi->get_folder_by_id($folderid);
 	}
 	
 	/**
@@ -775,7 +764,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function delete($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_DELETE);
-		
 		if (PEAR::isError($user))
 		{
 			return $user;
@@ -806,10 +794,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @return true
 	 */
 	function rename($newname)
-	{
-		
+	{		
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_RENAME_FOLDER);
-		
 		if (PEAR::isError($user))
 		{
 			return $user;
@@ -920,9 +906,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		return new PEAR_Error('TODO');		
 	}
-	
-	
-
 }
 
 class KTAPI_Document extends KTAPI_FolderItem 
@@ -954,7 +937,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param int $documentid
 	 * @return KTAPI_Document
 	 */
-	function get($ktapi, $documentid)
+	function &get(&$ktapi, $documentid)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -962,7 +945,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		
 		$documentid += 0;
 		
-		$document = Document::get($documentid);
+		$document = &Document::get($documentid);
 		if (is_null($document) || PEAR::isError($document))
 		{
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_INVALID);
@@ -977,7 +960,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		
 		$folderid = $document->getParentID();
 
-		$ktapi_folder = KTAPI_Folder::get($ktapi, $folderid);
+		$ktapi_folder = &KTAPI_Folder::get($ktapi, $folderid);
 		// We don't do any checks on this folder as it could possibly be deleted, and is not required right now.
 
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
@@ -991,14 +974,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param Document $document
 	 * @return KTAPI_Document
 	 */	
-	function KTAPI_Document($ktapi, $ktapi_folder, $document)
+	function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
 	{
 		assert(is_a($ktapi,'KTAPI'));
 		assert(is_a($ktapi_folder,'KTAPI_Folder'));
 		
-		$this->ktapi = $ktapi;
-		$this->ktapi_folder = $ktapi_folder;
-		$this->document = $document;
+		$this->ktapi = &$ktapi;
+		$this->ktapi_folder = &$ktapi_folder;
+		$this->document = &$document;
 		$this->documentid = $document->getId();
 	}
 	
@@ -1175,7 +1158,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		           
         DBUtil::startTransaction();
         
-        $user = User::getByUserName($newusername);
+        $user = &User::getByUserName($newusername);
         if (is_null($user) || PEAR::isError($user))
         {
         	return new PEAR_Error('User could not be found');
@@ -1207,7 +1190,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 			DBUtil::rollback();
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
-
         
 		DBUtil::commit();
 		return true;		
@@ -1222,7 +1204,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $newfilename
 	 * @return true
 	 */
-	function copy($ktapi_target_folder, $reason, $newname=null, $newfilename=null)
+	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -1244,7 +1226,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_CHECKED_OUT);
 		}
 
-		$target_folder = $ktapi_target_folder->get_folder();
+		$target_folder = &$ktapi_target_folder->get_folder();
 		
 		$result = $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
 
@@ -1327,7 +1309,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $newfilename
 	 * @return true
 	 */
-	function move($ktapi_target_folder, $reason, $newname=null, $newfilename=null)
+	function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -1650,14 +1632,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
 		}	
 		
-		$transition = KTWorkflowTransition::getByName($transition);
+		$transition = &KTWorkflowTransition::getByName($transition);
 		if (is_null($transition) || PEAR::isError($transition))
 		{
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
 		}
-		
-		list($permission, $user) = $perm_and_user;	
-		
+				
 		DBUtil::startTransaction();
 		$result = KTWorkflowUtil::performTransitionOnDocument($transition, $this->document, $user, $reason);
 		if (is_null($result) || PEAR::isError($result))
@@ -1818,9 +1798,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
 		}		
-		
-		list($permission, $user) = $perm_and_user;	
-		
+				
 		$result = array();
 		
 		$transitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->document, $user);
@@ -1855,8 +1833,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
 		}		
-		
-		list($permission, $user) = $perm_and_user;	
 		
 		$result = array();
 		
@@ -1967,8 +1943,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function download($version=null)
 	{		
 		$storage =& KTStorageManagerUtil::getSingleton();
-        $options = array();
-         
+        $options = array();    
 		
 		
         $oDocumentTransaction = & new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
@@ -2011,7 +1986,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         $versions = array();
         foreach ($metadata_versions as $version) 
         {
-        	$document = Document::get($this->documentid, $version->getId());
+        	$document = &Document::get($this->documentid, $version->getId());
         	
         	$version = array();
         	
@@ -2111,7 +2086,7 @@ class KTAPI
  	 * @access public
  	 * @return KTAPI_Session
  	 */ 	
- 	function get_session()
+ 	function &get_session()
  	{
  		return $this->session;
  	}
@@ -2122,7 +2097,7 @@ class KTAPI
  	 * @access public
  	 * @return User
  	 */
- 	function get_user()
+ 	function & get_user()
  	{ 		
  		$ktapi_session = $this->get_session();
 		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
@@ -2146,9 +2121,9 @@ class KTAPI
  	 * @param string $permission
  	 * @return KTPermission
  	 */
- 	function get_permission($permission)
+ 	function &get_permission($permission)
  	{ 	 		
-		$permission = KTPermission::getByName($permission);
+		$permission = & KTPermission::getByName($permission);
 		if (is_null($permission) || PEAR::isError($permission))
 		{
 			return new PEAR_Error(KTAPI_ERROR_PERMISSION_INVALID);
@@ -2165,18 +2140,18 @@ class KTAPI
  	 * @param string $permission
  	 * @return User
  	 */
- 	function can_user_access_object_requiring_permission($object, $permission)
+ 	function can_user_access_object_requiring_permission(&$object, &$permission)
  	{
 		assert(!is_null($object));
  		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));		
 		
- 		$permission = KTAPI::get_permission($permission);
+ 		$permission = &KTAPI::get_permission($permission);
 		if (is_null($permission) || PEAR::isError($permission))
 		{
 			return $permission;
 		}
 		
- 		$user = KTAPI::get_user();
+ 		$user = &KTAPI::get_user();
 		if (is_null($user) || PEAR::isError($user))
 		{
 			return $user;
@@ -2204,14 +2179,14 @@ class KTAPI
 			return new PEAR_Error('A session is currently active.');
 		}
 		
-		$session = KTAPI_Session::get_active_session($this, $session, $ip);
+		$session = &KTAPI_Session::get_active_session($this, $session, $ip);
 		
 		if (is_null($session) || PEAR::isError($session))
 		{
 			return new PEAR_Error('Session is invalid');
 		}
 		
-		$this->session = $session;
+		$this->session = &$session;
 		return $session;
 	}
 	
@@ -2230,17 +2205,23 @@ class KTAPI
 			return new PEAR_Error('A session is currently active.');
 		}
 				
-		$session = KTAPI_Session::start_session($this, $username, $password, $ip);
+		$session = &KTAPI_Session::start_session($this, $username, $password, $ip);
 		if (is_null($session) || PEAR::isError($session))
 		{
 			return new PEAR_Error('Session is invalid');
 		}
-		$this->session = $session;
+		$this->session = &$session;
 		
 		return $session;
 	}
 	
-	function start_anonymous_session($ip=null)
+	/**
+	 * Starts an anonymous session.
+	 *
+	 * @param string $ip
+	 * @return KTAPI_Session
+	 */
+	function &start_anonymous_session($ip=null)
 	{
 		return $this->start_session('anonymous','',$ip);
 	}
@@ -2252,7 +2233,7 @@ class KTAPI
 	 * @access public
 	 * @return KTAPI_Folder
 	 */
-	function get_root_folder()
+	function &get_root_folder()
 	{
 		return $this->get_folder_by_id(1);
 	}
@@ -2264,16 +2245,14 @@ class KTAPI
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	function get_folder_by_id($folderid)
+	function &get_folder_by_id($folderid)
 	{
 		if (is_null($this->session))
 		{
 			return new PEAR_Error('A session is not active');			
 		}
-		
-		$folder = KTAPI_Folder::get($this, $folderid);
 				
-		return $folder;
+		return KTAPI_Folder::get($this, $folderid);
 	}
 		
 	/**
@@ -2283,11 +2262,9 @@ class KTAPI
 	 * @param int $documentid
 	 * @return KTAPI_Document
 	 */
-	function get_document_by_id($documentid)
-	{
-		$document = KTAPI_Document::get($this, $documentid);
-		
-		return $document;
+	function &get_document_by_id($documentid)
+	{		
+		return KTAPI_Document::get($this, $documentid);
 	}
 	 
 	/**
@@ -2459,7 +2436,7 @@ class KTIndexingManager
 	 */
 	function start_indexing()
 	{
-		throw new PEAR_Error('TODO');
+		return new PEAR_Error('TODO');
 	}
 	
 	/**
@@ -2470,7 +2447,7 @@ class KTIndexingManager
 	 */
 	function process_file()
 	{
-		throw new PEAR_Error('TODO');		
+		return new PEAR_Error('TODO');		
 	}
 	
 	/**
@@ -2481,7 +2458,7 @@ class KTIndexingManager
 	 */
 	function report_pending_indexing()
 	{
-		throw new PEAR_Error('TODO');				
+		return new PEAR_Error('TODO');				
 	}
 	
 	/**
@@ -2498,10 +2475,8 @@ class KTIndexingManager
 		}
 		
 		
-		throw new PEAR_Error('TODO');				
-	}
-	
-	
+		return new PEAR_Error('TODO');				
+	}	
 }
  
  
