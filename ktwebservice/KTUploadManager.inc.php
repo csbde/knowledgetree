@@ -41,9 +41,15 @@ class KTUploadManager
 		$this->temp_dir= $config->get('webservice/uploadDirectory');
 	} 
 	
+	/**
+	 * Sets the current session.
+	 *
+	 * @param KTAPI_Session $session
+	 */
 	function set_session($session)
 	{
-		$this->userid=$session->get_user()->getId();
+		$user = &$session->get_user();
+		$this->userid=$user->getId();
 		$this->session = $session->get_session();		
 	}
 
