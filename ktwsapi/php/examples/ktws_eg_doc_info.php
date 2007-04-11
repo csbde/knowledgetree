@@ -31,7 +31,7 @@ $ktapi = new KTWSAPI(KTWebService_WSDL);
 
 // change session to something that is in table 'active_sessions'
 
-$response = $ktapi->active_session('qekolkpkk9mq2nlc31ghndi1l2');
+$response = $ktapi->active_session('sj5827sohdoj6h3nvifrcsa1f2');
 if (PEAR::isError($response))
 {
 	print $response->getMessage();

@@ -2,7 +2,7 @@
 
 /**
  *
- * Demonstrates creating a folder in an active session.
+ * Demonstrates document checkout and checkin
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1 ("License"); You may not use this file except in
@@ -31,7 +31,7 @@ $ktapi = new KTWSAPI(KTWebService_WSDL);
 
 // change session to something that is in table 'active_sessions'
 
-$response = $ktapi->active_session('qekolkpkk9mq2nlc31ghndi1l2');
+$response = $ktapi->active_session('sj5827sohdoj6h3nvifrcsa1f2');
 if (PEAR::isError($response))
 {
 	print $response->getMessage();
@@ -45,18 +45,22 @@ if (PEAR::isError($root))
 	exit;
 }
 
-$folder = $root->add_folder('test folder');
-if (PEAR::isError($folder))
+$listing = $root->get_listing();
+if (PEAR::isError($listing))
 {
-	print $folder->getMessage();
+	print $listing->getMessage();
 	exit;
 }
 
-$subfolder = $folder->add_folder('test sub folder');
-if (PEAR::isError($subfolder))
+// lets display the items
+
+foreach($listing as $folderitem)
 {
-	print $subfolder->getMessage();
-	exit;
+	$title = $folderitem->title;
+	$item_type = $folderitem->item_type;
+	$mime_display = $folderitem->mime_display;
+	 
+	print "$title $item_type $mime_display\n";
 }
 
 ?>
