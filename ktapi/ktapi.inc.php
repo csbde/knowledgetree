@@ -322,7 +322,7 @@ class KTAPI_FolderItem
 	 */
 	var $ktapi;	
 	
-	function &can_user_access_object_requiring_permission(&$object, &$permission)
+	function &can_user_access_object_requiring_permission(&$object, $permission)
 	{	
 		return $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
 	}
@@ -1865,9 +1865,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$documenttype = DocumentType::get($documenttypeid);
 
-			$detail['document_type'] = $documenttype->getName();
+			$documenttype=$documenttype->getName();
 		}
-
+		else 
+		{
+			$documenttype = '* unknown *';
+		}
+		$detail['document_type'] = $documenttype;
+		
 		$detail['version'] = $document->getVersion();
 		$detail['filename'] = $document->getFilename();
 
@@ -1878,22 +1883,25 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$user = User::get($userid);
 			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-			
-
-			$detail['created_by'] = $username;
 		}
-
+		else 
+		{
+			$username='n/a';
+		}
+		$detail['created_by'] = $username;
 		$detail['updated_date'] = $document->getLastModifiedDate();
 
 		$userid = $document->getModifiedUserId();
 		if (is_numeric($userid))
 		{
 			$user = User::get($userid);
-			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-			
-			$detail['updated_by'] = $username;
+			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();			
 		}
-
+		else 
+		{
+			$username='n/a';
+		}
+		$detail['updated_by'] = $username;
 		$detail['document_id'] = $document->getId();
 		$detail['folder_id'] = $document->getFolderID();
 
@@ -1902,17 +1910,24 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$workflow = KTWorkflow::get($workflowid);
 			$workflowname=(is_null($workflow) || PEAR::isError($workflow))?'* unknown *':$workflow->getName();
-			$detail['workflow'] = $workflowname;
 		}
+		else 
+		{
+			$workflowname='n/a';
+		}
+		$detail['workflow'] = $workflowname;
 
 		$stateid = $document->getWorkflowStateId();
 		if (is_numeric($stateid))
 		{
 			$state = KTWorkflowState::get($stateid);
 			$workflowstate=(is_null($state) || PEAR::isError($state))?'* unknown *':$state->getName();
-
-			$detail['workflow_state'] = $workflowstate;
 		}
+		else 
+		{
+			$workflowstate = 'n/a';
+		}
+		$detail['workflow_state']=$workflowstate;
 
 		$userid = $document->getCheckedOutUserID();
 		 
@@ -1920,9 +1935,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$user = User::get($userid);
 			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-			
-			$detail['checkout_by'] = $username;
 		}
+		else 
+		{
+			$username = 'n/a';
+		}
+		$detail['checkout_by'] = $username;
 		
 		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
 		
@@ -2140,7 +2158,7 @@ class KTAPI
  	 * @param string $permission
  	 * @return User
  	 */
- 	function can_user_access_object_requiring_permission(&$object, &$permission)
+ 	function can_user_access_object_requiring_permission(&$object, $permission)
  	{
 		assert(!is_null($object));
  		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));		
@@ -2360,6 +2378,8 @@ class KTAPI
 	 */
 	function _load_metadata_tree($fieldid, $parentid=0)
 		{
+			return KTAPI::get_metadata_lookup($fieldid);
+			/*
 			$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
 			$rows = DBUtil::getResultArray($sql);
 			if (is_null($rows) || PEAR::isError($rows))
@@ -2375,7 +2395,7 @@ class KTAPI
 				);
 				$results[] = $result;
 			}
-			return $results;
+			return $results;*/
 		}
 	
 	/**
