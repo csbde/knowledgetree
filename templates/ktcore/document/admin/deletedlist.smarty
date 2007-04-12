@@ -3,6 +3,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+{$context->oPage->requireJSResource('resources/js/expungeList.js')}
 
 <h2>{i18n}Deleted Documents{/i18n}</h2>
 
@@ -28,7 +29,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
       <th>{i18n}Deletion Comment{/i18n}</th>
     </tr>
   </thead>  
-  <tbody>
+  <tbody id="output">
     {foreach item=oDoc from=$documents}
     <tr>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
@@ -39,6 +40,22 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
     </tr>
     {/foreach}
   </tbody>
+  <tfoot>
+  	<tr>
+  		<td colspan="4">
+  			<span style="float: left">{$itemcount} items, 10 per page</span>
+  		</td>
+  	</tr>
+  	<tr>
+  		<td colspan="4">
+  			<div align="center">
+	  			{foreach item=page from=$pagelist}
+					<a href="#" onclick="buildList(this.innerHTML)">{$page}</a>
+				{/foreach}
+			</div>
+		</td>
+  	</tr>
+  </tfoot>
 </table>
 <div class="form_actions">
    <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />

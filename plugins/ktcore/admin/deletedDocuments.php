@@ -43,14 +43,29 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $this->oPage->setBreadcrumbDetails(_kt('view'));
     
         $aDocuments =& Document::getList("status_id=" . DELETED);
-        
-        
+		$items = count($aDocuments);
+		
+		if(fmod($items, 10) > 0){
+			$pages = floor($items/10)+1;
+		}else{
+			$pages = ($items/10);
+		}
+		for($i=1; $i<=$pages; $i++){
+			$aPages[] = $i;
+		}
+		
+		for($i = 0; $i <= 9; $i++){
+			$aDocumentsList[] = $aDocuments[$i];
+		}
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/deletedlist');
         $oTemplate->setData(array(
             'context' => $this,
-            'documents' => $aDocuments,
+            'documents' => $aDocumentsList,
+            'pagelist' => $aPages,
+            'pagecount' => $pages,
+            'itemcount' => $items,
         ));
         return $oTemplate;
     }
