@@ -43,6 +43,9 @@ class RSSDashlet extends KTBaseDashlet {
 	}
 
 	function render() {
+		global $main;
+        $main->requireJSResource("plugins/rssplugin/js/update.js");
+		
 		$oTemplating =& KTTemplating::getSingleton();
        	$oTemplate = $oTemplating->loadTemplate('RSSPlugin/dashlet');
        	
