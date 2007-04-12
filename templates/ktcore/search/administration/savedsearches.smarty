@@ -36,7 +36,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 	<td>{if ($iUserId === '')}Global{else}{$context->_getUserName($iUserId)}{/if}</td>
         <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=delete&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
-        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">Run Search</a></td>
+        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{i18n}Run Search{/i18n}</a></td>
     </tr>
 {/foreach}
 </tbody>

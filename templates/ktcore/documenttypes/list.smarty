@@ -72,7 +72,7 @@ its details, or use the enable/disable buttons to change its availability state.
     <a class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
     <a class="ktAction ktDelete" 
-    kt:deleteMessage="Are you sure you wish to disable this document type?" 
+    kt:deleteMessage="{i18n}Are you sure you wish to disable this document type?{/i18n}" 
     href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
