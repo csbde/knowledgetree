@@ -164,7 +164,7 @@ class KTSmartyTemplate extends KTTemplate {
         $params['output'] = array();
         if ($none) {
             $params['values'][] = '';
-            $params['output'][] = 'None';
+            $params['output'][] = _kt('None');
         }
         foreach ($entities as $oEntity) {
             $params['values'][] = $oEntity->getId();

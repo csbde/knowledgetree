@@ -16,7 +16,7 @@ specify how it controls permissions.</strong>{/i18n}</p>
     <thead>
         <tr>
             <th>{i18n}States{/i18n}</th>
-            <th class="centered">Control</th>            
+            <th class="centered">{i18n}Control{/i18n}</th>            
           {foreach from=$perms item=oPerm}
             <th class="centered">{i18n}{$oPerm->getHumanName()}{/i18n}</th>
           {/foreach}

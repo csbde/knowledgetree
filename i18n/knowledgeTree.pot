@@ -10682,3 +10682,20 @@ msgstr ""
 #: i18n/templates.c:5747
 msgid "#appname# #versionname#"
 msgstr ""
+
+#: templates/ktcore/search/administration/savedsearches.smarty:40
+msgid "Run Search"
+msgstr ""
+
+#: templates/ktcore/dashlets/notifications.smarty:15
+#: templates/ktcore/dashlets/notifications.smarty:18
+msgid "Are you sure you wish to clear all notifications?"
+msgstr ""
+
+#: templates/ktcore/documenttypes/list.smarty:74
+msgid "Are you sure you wish to disable this document type?"
+msgstr ""
+
+#: templates/ktcore/workflow/admin/permissions_overview.smarty:19
+msgid "Control"
+msgstr ""

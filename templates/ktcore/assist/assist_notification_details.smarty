@@ -5,9 +5,9 @@
 </p>
 
 <dl>
-<dt>Subject</dt>
+<dt>{i18n}Subject{/i18n}</dt>
 <dd>{$subject}</dd>
-<dt>Details</dt>
+<dt>{i18n}Details{/i18n}</dt>
 <dd>{$details} </dd>
 </dl>
 
