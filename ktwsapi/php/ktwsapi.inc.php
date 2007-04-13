@@ -42,6 +42,8 @@ class KTWSAPI_FolderItem
 {
 	var $ktapi;
 	
+	var $parent_id;
+	
 	/**
 	 * Upload a file to KT. Returns a temp filename on the server.
 	 *
@@ -157,14 +159,24 @@ class KTWSAPI_FolderItem
     	return $response;		
 	}
 	
+	/**
+	 * Returns a reference to the parent folder.
+	 *
+	 * @return KTWSAPI_Folder
+	 */
+	function &get_parent_folder()
+	{
+		$parent = &KTAPI::get_folder_by_id($this->parent_id);
+		return $parent;
+	}
+	
 }
 
 class KTWSAPI_Folder extends KTWSAPI_FolderItem
 {
 	var $folder_name;
-	var $parent_id;
 	var $full_path;
-	var $folderid;
+	var $folder_id;
 	
 	/**
 	 * Constructor
@@ -176,7 +188,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	function KTWSAPI_Folder(&$ktapi, $kt_folder_detail)
 	{
 		$this->ktapi = &$ktapi;
-		$this->folderid = $kt_folder_detail->id+0;
+		$this->folder_id = $kt_folder_detail->id+0;
 		$this->folder_name = $kt_folder_detail->folder_name;
 		$this->parent_id = $kt_folder_detail->parent_id+0;
 		$this->full_path = $kt_folder_detail->full_path;		
@@ -240,7 +252,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function get_folderid()
 	{
-		return $this->folderid;
+		return $this->folder_id;
 	}	
 
 	/**
@@ -296,7 +308,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function get_listing($depth=1, $what='DF')
 	{
-		$kt_folder_contents = $this->ktapi->soapclient->get_folder_contents($this->ktapi->session, $this->folderid, $depth+0, $what);
+		$kt_folder_contents = $this->ktapi->soapclient->get_folder_contents($this->ktapi->session, $this->folder_id, $depth+0, $what);
 		if (SOAP_Client::isError($kt_folder_contents))
 		{
 			return $kt_folder_contents;
@@ -388,7 +400,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function &add_folder($foldername)
 	{
-		$kt_folder_detail = $this->ktapi->soapclient->create_folder($this->ktapi->session, $this->folderid, $foldername);
+		$kt_folder_detail = $this->ktapi->soapclient->create_folder($this->ktapi->session, $this->folder_id, $foldername);
 		if (SOAP_Client::isError($kt_folder_detail))
 		{
 			return $kt_folder_detail;
@@ -413,7 +425,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	function delete($reason)
 	{
 		// TODO: check why no transaction in folder_transactions
-		$kt_response = $this->ktapi->soapclient->delete_folder($this->ktapi->session, $this->folderid, $reason);
+		$kt_response = $this->ktapi->soapclient->delete_folder($this->ktapi->session, $this->folder_id, $reason);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
@@ -435,7 +447,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function rename($newname)
 	{
-		$kt_response = $this->ktapi->soapclient->rename_folder($this->ktapi->session, $this->folderid, $newname);
+		$kt_response = $this->ktapi->soapclient->rename_folder($this->ktapi->session, $this->folder_id, $newname);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
@@ -461,7 +473,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		assert(!is_null($ktwsapi_target_folder));
 		assert(is_a($ktwsapi_target_folder,'KTWSAPI_Folder'));
 		
-		$kt_response = $this->ktapi->soapclient->move_folder($this->ktapi->session, $this->folderid,$ktwsapi_target_folder->get_folderid(), $newname);
+		$kt_response = $this->ktapi->soapclient->move_folder($this->ktapi->session, $this->folder_id,$ktwsapi_target_folder->get_folderid(), $newname);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
@@ -489,7 +501,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		
 		$targetid=$ktwsapi_target_folder->get_folderid();
 		
-		$kt_response = $this->ktapi->soapclient->copy_folder($this->ktapi->session, $this->folderid,$targetid, $reason);
+		$kt_response = $this->ktapi->soapclient->copy_folder($this->ktapi->session, $this->folder_id,$targetid, $reason);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
@@ -532,7 +544,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		}
 
 		// Second step - move file into KT
-		$kt_document_detail = $this->ktapi->soapclient->add_document($this->ktapi->session, $this->folderid, $title, $basename, $documenttype, $tempfilename );
+		$kt_document_detail = $this->ktapi->soapclient->add_document($this->ktapi->session, $this->folder_id, $title, $basename, $documenttype, $tempfilename );
 		if (SOAP_Client::isError($kt_document_detail))
 		{
 			return $kt_document_detail;
@@ -559,7 +571,6 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	var $created_by;
 	var $updated_date;
 	var $updated_by;
-	var $folder_id;
 	var $workflow;
 	var $workflow_state;
 	var $checkout_by;
@@ -584,7 +595,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		$this->created_by = $kt_document_detail->created_by;
 		$this->updated_date = $kt_document_detail->updated_date;
 		$this->updated_by = $kt_document_detail->updated_by;
-		$this->folder_id = $kt_document_detail->folder_id;
+		$this->parent_id = $kt_document_detail->folder_id;
 		$this->workflow = $kt_document_detail->workflow;
 		$this->workflow_state = $kt_document_detail->workflow_state;
 		$this->checkout_by = $kt_document_detail->checkout_by;
@@ -968,7 +979,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
      *
      * @return true
      */    
-    function delete_document_workflow()
+    function delete_workflow()
     {
 		$kt_response = $this->ktapi->soapclient->delete_document_workflow($this->ktapi->session, $this->document_id);
 		if (SOAP_Client::isError($kt_response))
@@ -991,7 +1002,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
      * @param string $reason
      * @return true
      */
-    function perform_document_workflow_transition($transition,$reason)
+    function perform_workflow_transition($transition,$reason)
     {
 		$kt_response = $this->ktapi->soapclient->delete_document_workflow($this->ktapi->session, $this->document_id, $transition, $reason);
 		if (SOAP_Client::isError($kt_response))
@@ -1113,7 +1124,7 @@ class KTWSAPI
 	 * @param int $timeout
 	 * @return KTWSAPI
 	 */
-	function KTWSAPI($wsdl, $timeout=30)
+	function KTWSAPI($wsdl = KTWebService_WSDL, $timeout=30)
 	{
 		$this->wsdl = new SOAP_WSDL($wsdl);
 		$this->timeout = $timeout;
