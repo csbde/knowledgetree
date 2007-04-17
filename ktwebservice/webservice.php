@@ -84,7 +84,7 @@ class KTWebService
     		$config->setns('cache','cacheEnabled',false);
     	}
     	
-    	$this->namespace = 'KTWebService';
+    	$this->namespace = 'KnowledgeTree';
 
     	$this->__typedef['kt_response'] =
          	array(
@@ -467,7 +467,7 @@ class KTWebService
             
             //update_document_metadata
             $this->__dispatch_map['update_document_metadata'] =
-            array('in' => array('session_id'=>'string','document_id'=>'int','metadata'=>"{urn:$this->webservice}kt_metadata_fieldsets"  ), 
+            array('in' => array('session_id'=>'string','document_id'=>'int','metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets"  ), 
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );             
             
