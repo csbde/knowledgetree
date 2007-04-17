@@ -741,8 +741,8 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.3.2');
-INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.3.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.4.5');
+INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.4.0');
 
 -- 
 -- Dumping data for table `time_period`
@@ -915,6 +915,8 @@ INSERT INTO `upgrades` VALUES (131, 'sql*3.3.1*0*3.3.1/rss.sql', 'Database upgra
 INSERT INTO `upgrades` VALUES (132, 'upgrade*3.3.1*99*upgrade3.3.1', 'Upgrade from version 3.3.0.1 to 3.3.1', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
 INSERT INTO `upgrades` VALUES (133, 'sql*3.3.2*0*3.3.2/tagclouds.sql', 'Database upgrade to version 3.3.2: Tagclouds', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
 INSERT INTO `upgrades` VALUES (134, 'upgrade*3.3.2*99*upgrade3.3.2', 'Upgrade from version 3.3.1 to 3.3.2', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
+INSERT INTO `upgrades` VALUES (135, 'sql*3.4.0*0*3.4.0/upload_download.sql', 'Upgrade to version 3.4.0: Upload download', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
+INSERT INTO `upgrades` VALUES (136, 'upgrade*3.4.0*99*upgrade3.4.0', 'Upgrade from version 3.3.2 to 3.4.0', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1375,7 +1377,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (134);
+INSERT INTO `zseq_upgrades` VALUES (136);
 
 -- 
 -- Dumping data for table `zseq_user_history`
