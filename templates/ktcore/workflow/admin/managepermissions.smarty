@@ -9,12 +9,12 @@ Indicate below which permissions are controlled to allocate them.{/i18n}</p></di
 for this workflow state, you should allocate these to the appropriate groups
 and roles.{/i18n}</p>
 
-<a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=allocatepermissions{/addQS}">Allocate permissions</a>
-<a href="{addQS context=$context}action=allocatepermissions{/addQS}">Allocate permissions</a>
+<a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=allocatepermissions{/addQS}">{i18n}Allocate permissions{/i18n}</a>
+<a href="{addQS context=$context}action=allocatepermissions{/addQS}">{i18n}Allocate permissions{/i18n}</a>
 
 {/if}
 
-<h3>Specify permissions</h3>
+<h3>{i18n}Specify permissions{/i18n}</h3>
 
 {capture assign=permgrid}
 
