@@ -1942,7 +1942,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oU) || ($oU == false)) {
                 continue;
             } else {
-                $values[sprintf("users[%d]", $iUserId)] = sprintf('User: %s', $oU->getName());
+                $values[sprintf("users[%d]", $iUserId)] = sprintf(_kt('User: %s'), $oU->getName());
             }
         }
 
@@ -1956,7 +1956,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oG) || ($oG == false)) {
                 continue;
             } else {
-                $values[sprintf("groups[%d]", $iGroupId)] = sprintf('Group: %s', $oG->getName());
+                $values[sprintf("groups[%d]", $iGroupId)] = sprintf(_kt('Group: %s'), $oG->getName());
             }
         }
         
@@ -1971,7 +1971,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oR) || ($oR == false)) {
                 continue;
             } else {
-                $values[sprintf("roles[%d]", $iRoleId)] = sprintf('Role: %s', $oR->getName());
+                $values[sprintf("roles[%d]", $iRoleId)] = sprintf(_kt('Role: %s'), $oR->getName());
             }
         }
         
