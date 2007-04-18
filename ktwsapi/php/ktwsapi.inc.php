@@ -473,7 +473,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		assert(!is_null($ktwsapi_target_folder));
 		assert(is_a($ktwsapi_target_folder,'KTWSAPI_Folder'));
 		
-		$kt_response = $this->ktapi->soapclient->move_folder($this->ktapi->session, $this->folder_id,$ktwsapi_target_folder->get_folderid(), $newname);
+		$kt_response = $this->ktapi->soapclient->move_folder($this->ktapi->session, $this->folder_id,$ktwsapi_target_folder->get_folderid());
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
@@ -1004,7 +1004,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
      */
     function perform_workflow_transition($transition,$reason)
     {
-		$kt_response = $this->ktapi->soapclient->delete_document_workflow($this->ktapi->session, $this->document_id, $transition, $reason);
+		$kt_response = $this->ktapi->soapclient->perform_workflow_transition($this->ktapi->session, $this->document_id, $transition, $reason);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
