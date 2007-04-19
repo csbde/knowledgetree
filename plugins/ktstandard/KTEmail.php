@@ -184,7 +184,7 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	$sMessage .= " \n";
 	$sMessage .= _kt("Click on the hyperlink below to view it.");
 	// add the link to the document to the mail
-	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName);
+	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add optional comment
 	if (strlen($sComment) > 0) {
 		$sMessage .= "<br><br>" . _kt("Comments:") . "<br>" . $sComment;
