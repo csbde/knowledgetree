@@ -124,10 +124,10 @@ class TagCloudDashlet extends KTBaseDashlet {
 
 		$sql = "
     		SELECT 
-    			tw.tag, count(*) as freq 
+    			TW.tag, count(*) as freq 
     		FROM 
-    			document_tags dt INNER JOIN tag_words tw ON dt.tag_id=tw.id
-    		WHERE dt.document_id in (SELECT d.id FROM documents d $joins WHERE $where) GROUP BY tw.tag";
+    			document_tags DT INNER JOIN tag_words TW ON DT.tag_id=TW.id
+    		WHERE DT.document_id in (SELECT D.id FROM documents D $joins WHERE $where) GROUP BY TW.tag";
 
 
 		$tags = DBUtil::getResultArray(
