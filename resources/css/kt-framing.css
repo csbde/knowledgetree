@@ -1628,7 +1628,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .copyrightbarBorderLogo{
 	position: absolute;
-    top:1px;
+    top:30px;
     right:20px;
 	border: 0;
 }
