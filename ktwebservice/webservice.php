@@ -1997,7 +1997,8 @@ class KTWebService
     /**
      * This runs the web service
      *
-     * @access static
+     * @static
+     * @access public
      */
     function run()
     {
