@@ -132,6 +132,9 @@ class PDFGeneratorAction extends KTDocumentAction {
     * @return string mime time extension
     */
     function getMimeExtension() {
+
+        if($this->Document == null || $this->Document == "" || PEAR::isError($this->Document) ) return _kt('Unknown Type');
+
         $oDocument = $this->oDocument;
         $iMimeTypeId = $oDocument->getMimeTypeID();
         $mimetypename = KTMime::getMimeTypeName($iMimeTypeId); // mime type name
