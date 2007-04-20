@@ -112,7 +112,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         }
         
         // checkout cancelled transaction
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document checked out cancelled", 'ktcore.transactions.force_checkin');
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document checked out cancelled'), 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res == false)) {
             $this->rollbackTransaction();

@@ -494,7 +494,7 @@ class KTDocumentUtil {
         // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt("Creating transaction")));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document created", 'ktcore.transactions.create', $aOptions);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document created'), 'ktcore.transactions.create', $aOptions);
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res)) {
             $oDocument->delete();
@@ -711,7 +711,7 @@ class KTDocumentUtil {
             return PEAR::raiseError(_kt("There was a problem deleting the document from storage."));
         }
         
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document deleted: " . $sReason, 'ktcore.transactions.delete');
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
         
         $oDocument->setFolderID(1);
@@ -863,11 +863,11 @@ class KTDocumentUtil {
         }
         
         
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf("Copied to folder \"%s\". %s", $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt("Copied to folder \"%s\". %s"), $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();        
 
         $oSrcFolder = Folder::get($oDocument->getFolderID());
-        $oDocumentTransaction = & new DocumentTransaction($oNewDocument, sprintf("Copied from original in folder \"%s\". %s", $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction = & new DocumentTransaction($oNewDocument, sprintf(_kt("Copied from original in folder \"%s\". %s"), $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();        
         
         return $oNewDocument;
@@ -902,7 +902,7 @@ class KTDocumentUtil {
         }
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'Document renamed', 'ktcore.transactions.update');
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
         
         // fire subscription alerts for the checked in document
@@ -945,7 +945,7 @@ class KTDocumentUtil {
             return $res; // we failed, bail.
         }
 
-        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s. %s",
+        $sMoveMessage = sprintf(_kt("Moved from %s/%s to %s/%s. %s"),
             $oOriginalFolder->getFullPath(),
             $oOriginalFolder->getName(),        
             $oFolder->getFullPath(),

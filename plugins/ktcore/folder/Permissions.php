@@ -233,7 +233,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     function _copyPermissions() {
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => 'Override permissions from parent',
+            'comment' => _kt('Override permissions from parent'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -446,7 +446,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => 'Updated permissions',
+            'comment' => _kt('Updated permissions'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -479,7 +479,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         }
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => 'Inherit permissions from parent',
+            'comment' => _kt('Inherit permissions from parent'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -511,7 +511,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => 'Added dynamic permissions',
+            'comment' => _kt('Added dynamic permissions'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -548,7 +548,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => 'Removed dynamic permissions',
+            'comment' => _kt('Removed dynamic permissions'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),

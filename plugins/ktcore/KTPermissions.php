@@ -417,7 +417,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Override parent allocation",
+            'comment' => _kt('Override parent allocation'),
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -457,7 +457,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Use parent allocation",
+            'comment' => _kt('Use parent allocation'),
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -640,7 +640,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Set role users",
+            'comment' => _kt('Set role users'),
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -695,7 +695,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
-            'comment' => "Set role groups",
+            'comment' => _kt('Set role groups'),
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),

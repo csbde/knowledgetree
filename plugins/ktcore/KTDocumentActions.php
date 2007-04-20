@@ -230,7 +230,7 @@ class KTDocumentViewAction extends KTDocumentAction {
             exit(0);  
         }
         
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
         exit(0);
     }
