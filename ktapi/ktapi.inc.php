@@ -126,7 +126,7 @@ class KTAPI_Session
 	/**
 	 * This resolves the user's ip
 	 *
-	 * @access static
+	 * @access private
 	 * @return string
 	 */
 	function resolveIP()
@@ -156,7 +156,7 @@ class KTAPI_Session
 	/**
 	 * This returns a session object based on authentication credentials.
 	 *
-	 * @access static
+	 * @access private
 	 * @param string $username
 	 * @param string $password
 	 * @return KTAPI_Session
@@ -350,7 +350,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	/**
 	 * This is used to get a folder based on a folder id.
 	 *
-	 * @access static
+	 * @access private
 	 * @param KTAPI $ktapi
 	 * @param int $folderid
 	 * @return KTAPI_Folder
@@ -932,7 +932,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This is used to get a document based on document id.
 	 *
-	 * @access static
+	 * @static 
+	 * @access public
 	 * @param KTAPI $ktapi
 	 * @param int $documentid
 	 * @return KTAPI_Document
@@ -2135,7 +2136,8 @@ class KTAPI
  	/**
  	 * This returns a permission.
  	 *
- 	 * @access static
+ 	 * @static
+ 	 * @access public
  	 * @param string $permission
  	 * @return KTPermission
  	 */
@@ -2288,7 +2290,8 @@ class KTAPI
 	/**
 	 * This returns a document type id based on the name.
 	 *
-	 * @access static
+	 * @static
+	 * @access public
 	 * @param string $documenttype
 	 * @return int
 	 */
@@ -2307,7 +2310,8 @@ class KTAPI
 	/**
 	 * Returns an array of document types.
 	 *
-	 * @access static
+	 * @static
+	 * @access public
 	 * @return array
 	 */
 	function get_documenttypes()
@@ -2331,7 +2335,8 @@ class KTAPI
 	/**
 	 * Returns an array of username/name combinations.
 	 *
-	 * @access static
+	 * @static
+	 * @access public
 	 * @return array
 	 */
 	function get_users()
@@ -2348,7 +2353,8 @@ class KTAPI
 	/**
 	 * This returns an array for a lookup.
 	 *
-	 * @access static
+	 * @static
+	 * @access public
 	 * @param int $fieldid
 	 * @return array
 	 */
@@ -2401,7 +2407,8 @@ class KTAPI
 	/**
 	 * This returns a metadata tree.
 	 *
-	 * @access static
+	 * @static
+	 * @access public
 	 * @param int $fieldid
 	 * @return array
 	 */
@@ -2413,7 +2420,8 @@ class KTAPI
 	/**
 	 * Returns a list of workflows that are active.
 	 *
-	 * @access static
+	 * @static 
+	 * @access public
 	 * @return array
 	 */
 	function get_workflows()
@@ -2434,70 +2442,4 @@ class KTAPI
 	
 }
 
-class KTIndexingManager
-{
-	/**
-	 * This is the maximum number of documents to index in one session.
-	 *
-	 * @var int
-	 */
-	var $max_workload;
-	
-	function KTIndexingManager()
-	{
-		$this->max_workload = 5;
-	}
-	
-	/**
-	 * This starts and indexing session.
-	 *
-	 * @access public
-	 * @return bool
-	 */
-	function start_indexing()
-	{
-		return new PEAR_Error('TODO');
-	}
-	
-	/**
-	 * This indexes a new document.
-	 *
-	 * @access private
-	 * @return bool
-	 */
-	function process_file()
-	{
-		return new PEAR_Error('TODO');		
-	}
-	
-	/**
-	 * This returns a complete list of documents to be indexed. This is ideally used in reporting.
-	 *
-	 * @access public
-	 * @return array
-	 */
-	function report_pending_indexing()
-	{
-		return new PEAR_Error('TODO');				
-	}
-	
-	/**
-	 * This returns a list of documents to be indexed. This is used by start_indexing().
-	 *
-	 * @access public
-	 * @param int $workload
-	 */
-	function get_pending_indexing($workload=null)
-	{
-		if (is_null($workload))
-		{
-			$workload=$this->max_workload;
-		}
-		
-		
-		return new PEAR_Error('TODO');				
-	}	
-}
- 
- 
 ?>
