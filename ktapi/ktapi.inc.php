@@ -209,7 +209,8 @@ class KTAPI_Session
         
         if (is_null($ip))
         {
-        	$ip = KTAPI_Session::resolveIP();
+        	$ip = '127.0.0.1';
+        	//$ip = KTAPI_Session::resolveIP();
         }
         
         session_start();
@@ -2226,9 +2227,13 @@ class KTAPI
 		}
 				
 		$session = &KTAPI_Session::start_session($this, $username, $password, $ip);
-		if (is_null($session) || PEAR::isError($session))
+		if (is_null($session))
 		{
-			return new PEAR_Error('Session is invalid');
+			return new PEAR_Error('Session is null.');
+		}
+		if (PEAR::isError($session))
+		{
+			return new PEAR_Error('Session is invalid. ' . $session->getMessage());
 		}
 		$this->session = &$session;
 		
