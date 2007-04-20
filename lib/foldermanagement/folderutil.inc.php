@@ -78,7 +78,7 @@ class KTFolderUtil {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
-            'comment' => "Folder created",
+            'comment' => _kt('Folder created'),
             'transactionNS' => 'ktcore.transactions.create',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
@@ -266,7 +266,7 @@ class KTFolderUtil {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
-            'comment' => sprintf("Renamed from \"%s\" to \"%s\"", $sOldName, $sNewName),
+            'comment' => sprintf(_kt("Renamed from \"%s\" to \"%s\""), $sOldName, $sNewName),
             'transactionNS' => 'ktcore.transactions.rename',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),

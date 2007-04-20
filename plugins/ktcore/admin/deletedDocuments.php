@@ -241,7 +241,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                 
                 // create a doc-transaction.
                 // FIXME does this warrant a transaction-type?
-                $oTransaction = new DocumentTransaction($oDoc, 'Restored from deleted state by ' . $this->oUser->getName(), 'ktcore.transactions.update');
+                $oTransaction = new DocumentTransaction($oDoc, _kt('Restored from deleted state by ') . $this->oUser->getName(), 'ktcore.transactions.update');
                 if (!$oTransaction->create()) {
                     ; // do nothing?  the state of physicaldocumentmanager...
                 }

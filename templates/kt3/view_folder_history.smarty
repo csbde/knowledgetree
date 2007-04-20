@@ -17,7 +17,7 @@
           {foreach item=aTransactionRow from=$transactions}
             <tr class="{cycle values=even,odd}">
                 <td class="username">{$aTransactionRow.user_name}</td>
-                <td class="action">{$aTransactionRow.transaction_name}</td>
+                <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>
                 <td class="comment">{$aTransactionRow.comment}</td>
             </tr>

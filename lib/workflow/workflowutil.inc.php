@@ -163,12 +163,12 @@ class KTWorkflowUtil {
 
             $oDocument->setWorkflowId($iWorkflowId);
             $oDocument->setWorkflowStateId($iStartStateId);
-	        $sTransactionComments = "Workflow \"" . $oWorkflow->getHumanName() . "\" started.";
+            $sTransactionComments = sprintf(_kt("Workflow \"%s\" started."), $oWorkflow->getHumanName());
 	        
         } else {
             $oDocument->setWorkflowId(null);
             $oDocument->setWorkflowStateId(null);
-	        $sTransactionComments = "Workflow removed from document.";
+            $sTransactionComments = _kt('Workflow removed from document.');
         }
 
         $res = $oDocument->update();
@@ -578,9 +578,10 @@ class KTWorkflowUtil {
         $sTargetState = $oTargetState->getName();
 
         // create the document transaction record
-        $sTransactionComments = "Workflow state changed from $sSourceState to $sTargetState";
+        $sTransactionComments = sprintf(_kt("Workflow state changed from %s to %s"), $sSourceState, $sTargetState);
+        
         if ($sComments) {
-            $sTransactionComments .= "; Reason given was: " . $sComments;
+            $sTransactionComments .= _kt("; Reason given was: ") . $sComments;
         }
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
