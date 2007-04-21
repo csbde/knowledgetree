@@ -1,8 +1,6 @@
 <?php
 
-/**
- * $Id$
- *
+/*
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -28,18 +26,10 @@
 require_once('config/dmsDefaults.php');
 
 /**
- * $Id$
- *
  * Controller page -- controls the web application by responding to a set of
  * defined actions.  The controller performs session handling, page-level
  * authentication and forwards the request to the appropriate handling
  * page.
- *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package controller
  */
 
 // -------------------------------
