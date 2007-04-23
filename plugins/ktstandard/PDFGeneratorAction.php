@@ -167,10 +167,10 @@ class PDFGeneratorAction extends KTDocumentAction {
 
         if (file_exists($sPath)) {
 
-# Get a tmp file
+            // Get a tmp file
             $sTempFilename = tempnam('/tmp', 'ktpdf');
 
-# We need to handle Windows differently - as usual ;)
+            // We need to handle Windows differently - as usual ;)
             if (substr( PHP_OS, 0, 3) == 'WIN') {
 
                 $cmd = "\"" . KT_DIR . "/../openoffice/openoffice/program/python.bat\" \"". KT_DIR . "/bin/openoffice/pdfgen.py\" \"" . $sPath . "\" \"" . $sTempFilename . "\"";
@@ -197,7 +197,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 
             }
 
-# Check the tempfile exists and the python script did not return anything (which would indicate an error) 
+            // Check the tempfile exists and the python script did not return anything (which would indicate an error) 
             if (file_exists($sTempFilename) && $res == '') {
 
                 $sUrlEncodedFileName = substr($oDocument->getFileName(), 0, strrpos($oDocument->getFileName(), '.') );
@@ -213,28 +213,28 @@ class PDFGeneratorAction extends KTDocumentAction {
                 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
                 header("Cache-Control: must-revalidate");
 
-# Get a filelike object and send it to the browser
+                // Get a filelike object and send it to the browser
                 $oFile = new KTFSFileLike($sTempFilename);
                 KTFileLikeUtil::send_contents($oFile);
-# Remove the tempfile
+                // Remove the tempfile
                 unlink($sTempFilename);
 
-# Create the document transaction
+                // Create the document transaction
                 $oDocumentTransaction = & new DocumentTransaction($oDocument, 'Document downloaded as PDF', 'ktcore.transactions.download', $aOptions);
                 $oDocumentTransaction->create();
-# Just stop here - the content has already been sent.
+                // Just stop here - the content has already been sent.
                 exit(0);  
 
             } else {
-# Set the error messsage and redirect to view document
-                $this->addErrorMessage(_kt('An error occured generating the PDF - please contact the system administrator.'));
+                // Set the error messsage and redirect to view document
+                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>' . $res));
                 redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
                 exit(0);  
             }
 
         } else {
-# Set the error messsage and redirect to view document
-            $this->addErrorMessage(_kt('An error occured generating the PDF - please contact the system administrator.'));
+            // Set the error messsage and redirect to view document
+            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>The path to the document did not exist.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
             exit(0);  
         }
