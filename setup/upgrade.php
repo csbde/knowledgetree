@@ -159,7 +159,7 @@ td { vertical-align: top; }
 <tr><td>
 <P>
    <script>
-function start(action)
+function do_start(action)
 {
 	document.location='?go=' + action;
 }
@@ -367,8 +367,8 @@ function upgradeConfirm()
 We are about to start the upgrade process.  
 <P>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to preview available upgrades" onclick="javascript:start('UpgradePreview')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to preview available upgrades" onclick="javascript:do_start('UpgradePreview')"> 
 
 <?
 	
@@ -418,14 +418,14 @@ You can continue to do the backup manually using the following process:
 Press <i>continue to backup</i> to attempt the command(s) above.
 <P>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
 
 <?
 if ($dir != '')
 {
 ?>
 
-<input type=button value="continue to backup" onclick="javascript:start('Backup')"> 
+<input type=button value="continue to backup" onclick="javascript:do_start('Backup')"> 
 
 
 <?
@@ -494,7 +494,7 @@ function restoreSelect()
    ?>
 
    <p>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
    <?
 
 }
@@ -570,8 +570,8 @@ Press <i>continue to restore</i> to attempt the command(s) above.
 }
 ?>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup to restore" onclick="javascript:start('RestoreSelect')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup to restore" onclick="javascript:do_start('RestoreSelect')"> 
 
 <?
 if ($dir != '')
@@ -582,7 +582,7 @@ function restore()
 {
 	if (confirm('Are you sure you want to restore? This is your last chance if the current data has not been backed up.'))
 	{
-		start('Restore');
+		do_start('Restore');
 	}
 }
 </script>
@@ -659,12 +659,12 @@ We appologise for the inconvenience.
 ?>
 <br>				
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
 <?
 	if ($status)
 	{
 		?>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:start('UpgradeConfirm')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:do_start('UpgradeConfirm')"> 
 	
 <?	
 	}
@@ -711,7 +711,7 @@ We appologise for the inconvenience.
 
 <br>				
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
 
 <?	
 	
@@ -791,7 +791,7 @@ function backup()
 <P>
 	The <i>mysqldump</i> utility was not found in the <?=$dir?> subdirectory.
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
 <?		
 	}
 
@@ -863,7 +863,7 @@ function restore()
 <P>
 	The <i>mysql</i> utility was not found in the <?=$dir?> subdirectory.
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
 <?		
 	}
 
@@ -888,9 +888,9 @@ If you have already done this, you may skip this step can continue directly to t
  
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="document.location='..';"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup" onclick="javascript:start('BackupConfirm')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:start('UpgradeConfirm')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore" onclick="javascript:start('RestoreConfirm')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup" onclick="javascript:do_start('BackupConfirm');"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:do_start('UpgradeConfirm');"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore" onclick="javascript:do_start('RestoreConfirm');"> 
 
 
 <?
@@ -913,8 +913,8 @@ function UpgradePreview()
 	?>
 	<br> 
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="upgrade" onclick="javascript:start('Upgrade')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="upgrade" onclick="javascript:do_start('Upgrade')"> 
 	<?
 
 }
@@ -947,7 +947,7 @@ function Upgrade()
 ?>
 <p>
 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="javascript:document.location='..';"> 
 <?	 
 }
