@@ -138,7 +138,7 @@ class KTBulkMoveAction extends KTBulkAction {
         //                                          'action'=>'startMove')));
         $collection->addColumn($col);
 
-        $qObj = new FolderBrowseQuery(1);
+        $qObj = new FolderBrowseQuery($this->oFolder->iId);
         
         $exclude=array();
        
@@ -155,7 +155,7 @@ class KTBulkMoveAction extends KTBulkAction {
 
         $aOptions = $collection->getEnvironOptions();
         $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
-                                                         array('fFolderId' => '1',
+                                                         array('fFolderId' => $this->oFolder->iId,
                                                                'action' => 'collectinfo'));
 
         $collection->setOptions($aOptions);
@@ -167,7 +167,7 @@ class KTBulkMoveAction extends KTBulkAction {
 				   'required' => true,
 				   'name' => 'fFolderId',
 				   'broken_name' => true,
-                                   'folder_id' => 1,
+                                   'folder_id' => $this->oFolder->iId,
 				   'collection' => $collection));
 
 
