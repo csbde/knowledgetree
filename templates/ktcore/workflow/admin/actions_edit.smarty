@@ -9,7 +9,7 @@
 {foreach from=$args item=v key=k}
     <input type="hidden" name="{$k}" value="{$v}" />
 {/foreach}
-
+<div class="action_overview_scroll">
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <th>{i18n}State{/i18n}</th>
@@ -33,7 +33,7 @@
       {/foreach}
     </tbody>
 </table>
-
+</div>
 <div class="form_actions">
     <input type="submit" value="{i18n}Block actions{/i18n}" />
     <a href="{addQS context=$context}action=actionsoverview{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
