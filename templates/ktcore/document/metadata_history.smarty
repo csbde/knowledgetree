@@ -12,7 +12,7 @@
                 <th class="date">{i18n}Content Version{/i18n}</th>
                 <th class="compare">{i18n}Compare with Current{/i18n}</th>
                 <th class="compare">{i18n}Compare with Other Version{/i18n}</th>
-
+				<th class="versiondate">Date Created</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +37,7 @@
                 <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
                 {/if}
                 </td>
+                <td class="versiondate">{$oVersion->getVersionCreated()}</td>
             </tr>
             {/foreach}
         </tbody>
