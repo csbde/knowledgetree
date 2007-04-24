@@ -276,6 +276,9 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if(!empty($subgroup['values'])) {
             foreach($subgroup['values'] as $value) {
                 $oCriterion =& $oCriteriaRegistry->getCriterion($value['type']);
+                if($oCriterion == null || $oCriterion == "" || PEAR:isError($oCriterion)) {
+                    $this->errorRedirectToMain('Criterion error');
+                }
                 $aGroup[] = $oCriterion->parameterDisplay($value['data']);
             }
         }
