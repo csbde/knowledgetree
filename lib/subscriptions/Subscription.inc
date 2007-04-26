@@ -1,13 +1,5 @@
 <?php
-require_once(KT_LIB_DIR . "/subscriptions/SubscriptionConstants.inc");
-require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
-require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
-/**
- * $Id$
- *
- * Represents a subscription.
- *
+/*
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -27,11 +19,13 @@ require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  *
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.subscriptions
- */ 
+ */
+
+require_once(KT_LIB_DIR . "/subscriptions/SubscriptionConstants.inc");
+require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
+
 class Subscription extends KTEntity {
 
     /**
