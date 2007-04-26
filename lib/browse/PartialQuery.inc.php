@@ -272,7 +272,11 @@ class SimpleSearchQuery extends PartialQuery {
     // FIXME cache permission lookups, etc.
     var $searchable_text;
 
-    function SimpleSearchQuery($sSearchableText) { $this->searchable_text = $sSearchableText; }
+    function SimpleSearchQuery($sSearchableText){
+    	$sSearchableText = str_replace("\t", ' ', $sSearchableText);
+    	$sSearchableText = '%'.$sSearchableText.'%';
+    	$this->searchable_text = $sSearchableText;
+    }
 
     function _getFolderQuery($aOptions = null) {
         $oUser = User::get($_SESSION['userID']);
@@ -281,8 +285,29 @@ class SimpleSearchQuery extends PartialQuery {
            return $res;
         }
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
-
-        $aPotentialWhere = array($sPermissionString, 'MATCH (FST.folder_text) AGAINST (? IN BOOLEAN MODE) <> 0');
+        
+		$temp = str_replace('%', '', $this->searchable_text);
+		$keywords = explode(' ', $temp);
+		
+		for($i=0; $i<count($keywords); $i++){
+			if($keywords[$i] == ' ' or $keywords[$i] == ''){
+				continue;
+			}else{
+				$keywords_temp[] = trim($keywords[$i]);
+			}
+		}
+		$keywords = $keywords_temp;
+		
+		if(count($keywords) > 1){
+			for($i=0; $i<count($keywords); $i++){
+				$keywords[$i] = '%'.$keywords[$i].'%';
+			}			
+			$aPotentialWhereString = 'FST.folder_text LIKE ? AND FST.folder_text LIKE ? ';
+		}else{
+			$aPotentialWhereString = 'FST.folder_text LIKE ? ';
+		}
+		
+        $aPotentialWhere = array($sPermissionString, $aPotentialWhereString);
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
@@ -303,7 +328,12 @@ class SimpleSearchQuery extends PartialQuery {
         $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . ' AS F 
         LEFT JOIN ' . KTUtil::getTableName('folder_searchable_text') . " AS FST ON (F.id = FST.folder_id) 
         $sPermissionJoin $sWhere ";
-        $aParams = array($this->searchable_text);
+        if(count($keywords) > 1){
+        	$aParams = $keywords;
+        }else{
+        	$aParams = array($this->searchable_text);
+        }
+        
         $aParams = kt_array_merge($aPermissionParams, $aParams);   
         return array($sQuery, $aParams);
     }

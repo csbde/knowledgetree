@@ -1012,11 +1012,35 @@ class SearchableTextCriterion extends BrowseCriterion {
         } else {
             $boolean_mode = "";
         }
+		
+		$p = array();
+		$temp = str_replace('%', '', $aRequest[$this->getWidgetBase()]);
+		$keywords = explode(' ', $temp);
+		
+		for($i=0; $i<count($keywords); $i++){
+			if($keywords[$i] == ' ' or $keywords[$i] == ''){
+				continue;
+			}else{
+				$keywords_temp[] = trim($keywords[$i]);
+			}
+		}
+		$keywords = $keywords_temp;
 
-        $p = array();
-        $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
-	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
-        
+		if(count($keywords) > 1){
+			for($i=0; $i<count($keywords); $i++){
+				$word = trim($keywords[$i]);
+				if(empty($word)){
+					continue;
+				}
+				$keywords[$i] = '%'.$keywords[$i].'%';
+			}			
+			$p[0] = "DST.document_text LIKE ? AND DST.document_text LIKE ? ";
+			$p[1] = $keywords;
+		}else{
+			$p[0] = "DST.document_text LIKE ? ";
+			$p[1] = $aRequest[$this->getWidgetBase()];
+		}
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
