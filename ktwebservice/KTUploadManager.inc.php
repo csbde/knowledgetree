@@ -108,7 +108,7 @@ class KTUploadManager
 	 */
 	function get_uploaded_list($action=null)
 	{
-		$sql = "SELECT id, tempfilename, filename, userid, action, related_uploadid FROM uploaded_files WHERE userid=$this->userid";
+		$sql = "SELECT id, tempfilename, filename, userid, action FROM uploaded_files WHERE userid=$this->userid";
 		if (!is_null($action))
 		{
 			$sql .= " AND action='$action'";
