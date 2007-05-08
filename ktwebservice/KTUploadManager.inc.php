@@ -77,7 +77,7 @@ class KTUploadManager
 				'userid'=>$this->userid,
 				'uploaddate'=>$now,
 				'action'=>$action,
-				'related_uploadid'=>$relatedid				
+			//	'related_uploadid'=>$relatedid				
 				),
 				array('noid'=>true)	
 			);
