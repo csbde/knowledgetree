@@ -69,7 +69,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'label' => _kt("Add a document"),
             'action' => 'processInitialData',
             'actionparams' => 'postExpected=1&fFolderId='.$this->oFolder->getId(),
-            'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+        //    'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
             'fail_action' => 'main',
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
@@ -194,7 +194,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'submit_label' => _kt('Save Document'),
             'action' => 'finalise',
             'fail_action' => 'metadata',
-            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+         //   'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
         ));
