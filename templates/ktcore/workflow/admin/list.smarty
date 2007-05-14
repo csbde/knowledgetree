@@ -9,10 +9,14 @@
 <h3>{i18n}Existing workflows{/i18n}</h3>
 <p class="descriptiveText">{i18n}Select a workflow to modify. To enable a disabled workflow, edit it and set a proper starting state.{/i18n}</p>
 
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<input type="hidden" name="action" value="branchConfirm" />
 <table class="kt_collection narrow" cellspacing="0">
 
   <thead>
     <tr>
+      <th></th>
       <th>{i18n}Name{/i18n}</th>
       <th>{i18n}Status{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
@@ -21,14 +25,21 @@
   
   <tbody>
 {foreach from=$workflows item=oWorkflow}
-
     <tr>
+      <td><input type="radio" name="workflowSelect" value="{$oWorkflow->getId()}" /></td>
       <td>{$oWorkflow->getName()}</td>
       <td class="centered">{if $oWorkflow->getIsFunctional()} <span class="ktAction ktAllowed">{i18n}Enabled{/i18n}</span> {else} <span class="ktAction ktDenied">{i18n}Disabled{/i18n}</span> {/if}</td>
       <td><a class="ktAction ktEdit" href="{addQS}action=view&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Edit{/i18n}</a></td>
     </tr>  
 {/foreach}
+	<tr>
+	  <td colspan="4"><hr/></td>
+	</tr>
+	<tr>
+	  <td><input type="submit" name="submit[copy]" value="{i18n}Copy{/i18n}" /></td>
+	</tr>
   </tbody>
 </table>
+</form>
 
 {/if}
