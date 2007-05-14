@@ -120,7 +120,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
                 foreach ($aSubgroup['values'] as $iv => $t) {
                     $datavars =& $aSubgroup['values'][$iv];
                     $oCriterion = $oCriteriaRegistry->getCriterion($datavars['type']);
-                    if($oCriterion == null || $oCriterion == "" || PEAR:isError($oCriterion)) {
+                    if($oCriterion == null || $oCriterion == "" || PEAR::isError($oCriterion)) {
                         $this->errorRedirectToMain('Criterion error');
                     }
                     $datavars['typename'] = $oCriterion->sDisplay;
