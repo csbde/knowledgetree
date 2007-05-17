@@ -161,12 +161,18 @@ class UpgradeItem {
         } else {
             $parentid = null;
         }
+        $query = "SELECT MAX(id) FROM upgrades";
+        $id = DBUtil::getOneResult($query);
+        if (PEAR::isError($id)) {
+            return false;
+        }
         return DBUtil::autoInsert("upgrades", array( 
             "descriptor" => $this->getDescriptor(),
             "description" => $this->description,
             "date_performed" => $this->date,
             "result" => $result,
             "parent" => $parentid,
+            "parent" => $id[1]+1,
         ));
     }
 
