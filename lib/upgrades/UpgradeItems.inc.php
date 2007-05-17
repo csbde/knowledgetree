@@ -172,7 +172,7 @@ class UpgradeItem {
             "date_performed" => $this->date,
             "result" => $result,
             "parent" => $parentid,
-            "parent" => $id[1]+1,
+            "id" => $id[1]+1,
         ));
     }
 
