@@ -76,6 +76,14 @@ class KTAuthenticationUtil {
             $oProvider = KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
             $res = $oProvider->autoSignup($sUsername, $sPassword, $aExtra, $oSource);
             if ($res) {
+                $oUser = User::getByUsername($sUsername);
+                // TODO: The check for this lower down....checkPassword
+                if(empty($sPassword) || is_null($oUser) || PEAR::isError($oUser)){
+                	return false;
+                }
+                if(!KTAuthenticationUtil::checkPassword($oUser, $sPassword)){
+		        	return false;
+		        }
                 return $res;
             }
         }
