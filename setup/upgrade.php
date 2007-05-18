@@ -28,6 +28,7 @@ $GLOBALS["checkup"] = true;
 session_start();
 require_once('../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 function generateUpgradeTable () {
 	global $default;
@@ -106,6 +107,7 @@ function performAllUpgrades () {
 			break;
 		}
 	}
+	KTPluginUtil::registerPlugins();
 	return $res;
 }
 
