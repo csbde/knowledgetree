@@ -51,7 +51,7 @@ class KTBaseIndexerTrigger {
      * Any options to send to the command before the input file.
      */
     var $args = array();
-    var $support_url = 'http://support.knowledgetree.com/confluence/display/KTWiki/Document+Indexers';
+    var $support_url = 'http://wiki.knowledgetree.com/Document_Indexers';
 
     /**
      * Setting use_pipes to true will cause the output of the command to

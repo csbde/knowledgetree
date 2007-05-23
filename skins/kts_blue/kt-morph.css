@@ -1,0 +1,177 @@
+
+.ktActionLink.ktDownload, .ktAction.ktDownload { 
+    background-image: url(download.png); 
+}
+
+#pageBodyBg {
+    background: url(page_bg.png) bottom left repeat-x;
+}
+
+#bodyBottomLeft {
+    background: url(page_border_bottomleft.gif) bottom left no-repeat;
+}
+
+#bodyBottomRepeat {
+    background: url(page_border_bottomrepeat.gif) bottom left repeat-x;
+}
+
+#bodyBottomRight {
+    background: url(page_border_bottomright.gif) bottom right no-repeat;
+}
+
+#navbar
+{
+    background: url(menubg.png) top left repeat-x;
+}
+
+#navbarLeft {
+    background: url(menu_corner_left.png) top left no-repeat;
+}
+
+#navbarRight {
+    background: url(menu_corner_right.png) top right no-repeat;
+}
+
+#navbar ul li.active {
+    background: #6c8c2f url(menubg-active.png) top left repeat-x;
+}
+
+#menu_divider {
+    background: url(menu_divider.png) top left no-repeat;
+}
+
+.dashboard_block_topleft {
+    background: url(dashlet_topleft.png) top left no-repeat;
+}
+
+.dashboard_block_toprepeat {
+    background: white url(dashlet_toprepeat.png) top left repeat-x;
+}
+
+.dashboard_block_topright {
+    background: url(dashlet_topright.png) top right no-repeat;
+}
+
+#portletbar .portlet.expanded h4
+{
+    background: url(minus.gif) 10px 45% no-repeat;
+}
+
+#portletbar .portlet.expanded .portletTopRepeat {
+    background: url(portlet_bg.png) top left repeat-x;
+}
+
+#portletbar .portlet.expanded {
+    background: url(portlet_corner_topleft.png) top left no-repeat;
+}
+
+#portletbar .portlet.expanded .portletTopRight {
+    background: url(portlet_corner_topright.png) top right no-repeat;
+}
+
+#portletbar .portlet .portletTopRepeat {
+    background: url(portlet_bg_collapsed.png) top left repeat-x;
+}
+
+#portletbar .portlet {
+    background: url(portlet_corner_topleft_collapsed.png) top left no-repeat;
+}
+
+#portletbar .portlet .portletTopRight {
+    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
+}
+
+.collapsible.expanded h4
+{
+    background: url(minus.gif) 10px 50% no-repeat;
+}
+
+#content .dashboard_block .action_rollup 
+{ 
+    background-image: url(bullet_toggle_minus.png);
+}
+
+#content .dashboard_block.rolled-up .action_rollup 
+{ 
+    background-image: url(bullet_toggle_plus.png);
+}
+
+#content .dashboard_block .action_close 
+{ 
+    background-image: url(bullet_toggle_close.png);
+}
+
+#document-views .downloadbox ul li.download {
+    background-image: url(download.png);
+}
+
+#copyrightbarBg {
+    background: url(footer_bg.png) top left repeat-x;
+}
+
+#copyrightbarLeft{
+    background: url(footer_left.png) top left no-repeat;
+}
+
+#copyrightbarRight{
+    background: url(footer_right.png) top right no-repeat;
+}
+
+/* Font colour definitions */
+/*
+#content h2
+{
+    border-color: #eee;
+    color: #333;
+}
+
+#portletbar .portlet h4
+{
+    color: #FFFFFF;
+}
+
+#portletbar .portlet.expanded h4
+{
+    color: #FFFFFF;
+}
+
+#content a.ktCancelLink {
+    border: 1px solid #888;
+    color: black;
+}
+
+#copyrightbar {
+    color: #000000;
+}
+
+.copyright {
+    color: #888;
+    border-top: 1px solid #ccc;
+}
+
+#document-views .viewlet h3 {
+    color: #333;
+}
+
+.collapsible h4
+{
+    border-color: #eee;
+    color: #333;
+}
+
+.collapsible.expanded h4
+{
+    border-color: #eee;
+    color: #333;
+}
+
+.dashboard_block_handle
+{
+    font-size:small;
+}
+
+#content .ktBlock h2 
+{ 
+    color: #FFFFFF;
+}
+*/

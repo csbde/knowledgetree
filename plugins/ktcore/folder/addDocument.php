@@ -69,7 +69,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'label' => _kt("Add a document"),
             'action' => 'processInitialData',
             'actionparams' => 'postExpected=1&fFolderId='.$this->oFolder->getId(),
-            'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+        //    'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
             'fail_action' => 'main',
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
@@ -92,7 +92,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             )),
             array('ktcore.widgets.string',array(
                 'label' => _kt('Document Title'),
-                'description' => _kt('The document title is used as the main name of a document throughout KnowledgeTree.'),
+                'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s&trade;.'), APP_NAME),
                 'name' => 'document_name',
                 'required' => true,
             )),
@@ -194,7 +194,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'submit_label' => _kt('Save Document'),
             'action' => 'finalise',
             'fail_action' => 'metadata',
-            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+         //   'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
         ));

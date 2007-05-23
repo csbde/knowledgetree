@@ -50,12 +50,52 @@ class KTBulkExportAction extends KTFolderAction {
     var $sName = 'ktstandard.bulkexport.action';
     var $sPermissionName = "ktcore.permissions.read";
     var $_sShowPermission = "ktcore.permissions.read";
+    var $sOutputEncoding = 'UTF-8';
+
+    function _checkConvertEncoding() {
+        if(!function_exists("iconv")) {
+            $this->addErrorMessage(_kt('IConv PHP extension not installed. Bulk export could not handle output filename encoding conversion !'));
+            return false;
+        }
+        $oKTConfig = KTConfig::getSingleton();
+        $this->sOutputEncoding = $oKTConfig->get('export/encoding', 'UTF-8');
+
+        // Test the specified encoding
+        if(iconv("UTF-8", $this->sOutputEncoding, "") === FALSE) {
+            $this->addErrorMessage(_kt('Specified output encoding for bulk export does not exists !'));
+            return false;
+        }
+        return true;
+    }
+
+	/**
+	 * Convert encoding to defined character encoding
+	 *
+	 * @param string the string to convert
+	 * @param boolean encode(true) or decode(false) string
+	 * @return string the encoded string
+	 */
+    function _convertEncoding($sMystring, $bEncode) {
+    	if (strcasecmp($this->sOutputEncoding, "UTF-8") === 0) {
+    		return $sMystring;
+    	}
+    	if ($bEncode) {
+    		return iconv("UTF-8", $this->sOutputEncoding, $sMystring);
+    	} else {
+    		return iconv($this->sOutputEncoding, "UTF-8", $sMystring);
+    	}
+    }
 
     function getDisplayName() {
         return _kt('Bulk Export');
     }
 
     function do_main() {
+        if(!$this->_checkConvertEncoding()) {
+            redirect(KTBrowseUtil::getUrlForFolder($oFolder));
+            exit(0);
+        }
+
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $aQuery = $this->buildQuery();
         $this->oValidator->notError($aQuery);
@@ -101,7 +141,8 @@ class KTBulkExportAction extends KTFolderAction {
             
             $sParentFolder = sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath());
             $newDir = $this->sTmpPath;
-            foreach (split('/', $oDocument->getFullPath()) as $dirPart) {
+            $sFullPath = $this->_convertEncoding($oDocument->getFullPath(), true);
+            foreach (split('/', $sFullPath) as $dirPart) { 
                 $newDir = sprintf("%s/%s", $newDir, $dirPart); 
                 if (!file_exists($newDir)) {
                     mkdir($newDir, 0700);
@@ -109,9 +150,11 @@ class KTBulkExportAction extends KTFolderAction {
             }
             $sOrigFile = $oStorage->temporaryFile($oDocument);
             $sFilename = sprintf("%s/%s", $sParentFolder, $oDocument->getFileName());
+            $sFilename = $this->_convertEncoding($sFilename, true);
             copy($sOrigFile, $sFilename);
             $sPath = sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName());
             $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
+            $sPath = $this->_convertEncoding($sPath, true);
             $aPaths[] = $sPath;
         }
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
@@ -146,7 +189,7 @@ class KTBulkExportAction extends KTFolderAction {
             }
             $contents = fread($fh, 4096);
             if ($contents) {
-                print nl2br($contents);
+                print nl2br($this->_convertEncoding($contents, false));
             }
             $i++;
         }

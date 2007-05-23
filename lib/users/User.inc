@@ -187,6 +187,9 @@ class User extends KTEntity {
 
     	$state = $this->getDashboardState();
     	$dashlets = $oJSON->decode($state);
+
+    	if (!isset($dashlets->left)) $dashlets->left = array();
+    	if (!isset($dashlets->right)) $dashlets->right = array();
     	$mergedlist = array_merge($dashlets->left,$dashlets->right);
     	
     	
@@ -197,8 +200,8 @@ class User extends KTEntity {
     	}
     	$update=false;
     	
-    	if (!isset($dashlets->left)) $dashlets->left=array();
-    	if (!isset($dashlets->right)) $dashlets->right=array();
+    	//if (!isset($dashlets->left)) $dashlets->left=array();
+    	//if (!isset($dashlets->right)) $dashlets->right=array();
     	
     	$column=1;
     	foreach($aDashlets as $dashlet)

@@ -1,6 +1,6 @@
 <h2>{i18n arg_name=$workflow_name}Security Overview: #name#{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}KnowledgeTree has a powerful security model, in which users
+<p class="descriptiveText">{i18n arg_appname="$appname"}#appname# has a powerful security model, in which users
 can only see documents they have permissions to see.  Workflow is the finest-grained
 way to allocate permissions to a document, since it can override the permissions 
 assigned at a folder level.{/i18n}</p>

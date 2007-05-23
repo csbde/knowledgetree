@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-contenttypes.css" />
 <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-headings.css" />
 <!--[if lt IE 7]><style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-icons.css);</style><![endif]-->    
+
 <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Base.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Iter.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/DOM.js"> </script>

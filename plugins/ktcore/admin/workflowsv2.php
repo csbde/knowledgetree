@@ -102,13 +102,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
        
         $this->HAVE_GRAPHVIZ = false;
-        /*
         $dotCommand = KTUtil::findCommand("ui/dot", 'dot');
         if (!empty($dotCommand)) {
             $this->HAVE_GRAPHVIZ = true;
             $this->dotCommand = $dotCommand;
         }
-        */
+
     }
 
     function do_main() {
@@ -121,6 +120,198 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'workflows' => $aWorkflows,
         ));
         return $oTemplate->render();
+    }
+    
+    function do_branchConfirm() {
+        $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
+        if (array_key_exists('copy',$submit)) {
+            $selection = KTUtil::arrayGet($_REQUEST, 'workflowSelect' , array());
+            if(empty($selection)){
+            	$this->errorRedirectToMain(_kt('No workflow selected.'));
+            }
+            return $this->do_copy();
+        }
+        if (array_key_exists('confirmCopy',$submit)) {
+            $workflowId = KTUtil::arrayGet($_REQUEST, 'workflowId' , array());
+            if(empty($workflowId)){
+            	$this->errorRedirectToMain(_kt('An unexpected error has occured.'));
+            }
+            return $this->do_confirmCopy();
+        }
+        $this->errorRedirectToMain(_kt('No action specified.'));
+    }
+    
+    function do_copy() {
+    	$this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Copy Workflow'));    
+        $selection = KTUtil::arrayGet($_REQUEST, 'workflowSelect' , array());
+        $this->oPage->setTitle('Copy Workflow');
+        
+        // get selected workflow from database
+        $oSelWorkflow = KTWorkflow::get($selection);
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/workflow/admin/copy');
+        $oTemplate->setData(array(
+            'context' => $this,
+            'workFlowName' => $oSelWorkflow->getName(),
+            'workFlowId' => $oSelWorkflow->getId(),
+            
+        ));
+        return $oTemplate;
+    }
+    
+    function do_confirmCopy(){    	
+    	$oSelWorkflow = KTWorkflow::get(KTUtil::arrayGet($_REQUEST, 'workflowId' , array()));
+    	$sWorkflowName = KTUtil::arrayGet($_REQUEST, 'workflowName' , array());
+    	// create the initial workflow
+        $oNewWorkflow = KTWorkflow::createFromArray(array(
+            'name' => $sWorkflowName,
+            'humanname' => $sWorkflowName,
+            'enabled' => true,
+        ));
+
+    	// get selected workflow states from database
+        $oSelWorkflowStates = KTWorkflowState::getByWorkflow($oSelWorkflow);
+        
+        // array to store map of old and new states
+        $aStatesMap = array();
+        
+        // create new states and build old-to-new map
+        foreach ($oSelWorkflowStates as $oOldState) {
+            $oNewState = KTWorkflowState::createFromArray(array(
+                'workflowid' => $oNewWorkflow->getId(),
+                'name' => $oOldState->getName(),
+                'humanname' => $oOldState->getName(),
+            ));
+            $aStatesMap[oldId][] = $oOldState->getId();
+            $aStatesMap[newId][] = $oNewState->getId();
+            if (PEAR::isError($oNewState)) {
+                $oForm->errorRedirectToMain(sprintf(_kt("Unexpected failure cloning state: %s"), $oNewState->getMessage()));
+            }
+            
+            // Get all state permission assignments for old workflow transitions and copy for copied workflow state permission assignments
+	        $aPermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oOldState);
+	        if(count($aPermissionAssignments) > 0){
+		        foreach ($aPermissionAssignments as $oPermAssign) {
+		            for($i=0;$i<count($aStatesMap[oldId]);$i++){
+			        	if($aStatesMap[oldId][$i] == $oPermAssign->getStateId()){
+			        		$iStateId = $aStatesMap[newId][$i];
+			        		
+			        		$res = KTWorkflowStatePermissionAssignment::createFromArray(array(
+					            'iStateId' => $iStateId,
+			                    'iPermissionId' => $oPermAssign->getPermissionId(),
+			                    'iDescriptorId' => $oPermAssign->getDescriptorId(),
+			                ));
+				        
+				        	if (PEAR::isError($res)) {
+				            	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy state permission assignment: %s"), $res->getMessage()));
+				        	}
+			        	}
+			        }
+	        	}
+	        }
+	        
+	        // Copy all disabled actions for states
+	        $aDisabled = KTWorkflowUtil::getDisabledActionsForState($oOldState);
+	        $res = KTWorkflowUtil::setDisabledActionsForState($oNewState, $aDisabled);
+	        
+	        // Copy all enabled actions for states
+	        $aDisabled = KTWorkflowUtil::getEnabledActionsForState($oOldState);
+	        $res = KTWorkflowUtil::setEnabledActionsForState($oNewState, $aDisabled);
+	        
+	        if (PEAR::isError($res)) {
+            	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy disabled state actions: %s"), $res->getMessage()));
+        	}
+        }
+        
+        // update workflow and set initial state 
+        for($i=0;$i<count($aStatesMap[oldId]);$i++){
+        	if($oSelWorkflow->getStartStateId() == $aStatesMap[oldId][$i]){
+        		$oNewWorkflow->setStartStateId($aStatesMap[newId][$i]);
+        		$res = $oNewWorkflow->update();
+		        if (PEAR::isError($res)) {
+		            $this->errorRedirectToMain(sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
+		        }
+        	}
+        }
+        
+        // set controlled workflow actions
+        $aWFActions = KTWorkflowUtil::getControlledActionsForWorkflow($oSelWorkflow);
+        $res = KTWorkflowUtil::setControlledActionsForWorkflow($oNewWorkflow, $aWFActions);
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain(sprintf(_kt("Failed to copy workflow controlled actions: %s"), $res->getMessage()));
+        }
+        
+        // get selected workflow transitions from database
+        $oSelWorkflowTransitions = KTWorkflowTransition::getByWorkflow($oSelWorkflow);
+        
+        // array to store map of old and new transitions
+        $aTransitionsMap = array();
+        
+        // copy transitions for workflow
+        foreach ($oSelWorkflowTransitions as $oOldTransition) {
+            for($i=0;$i<count($aStatesMap[oldId]);$i++){
+	        	if($oOldTransition->getTargetStateId() == $aStatesMap[oldId][$i]){
+	        		$iDestState = $aStatesMap[newId][$i];
+	        	}
+	        }
+            $oNewTransition = KTWorkflowTransition::createFromArray(array(
+                'workflowid' => $oNewWorkflow->getId(),
+                'Name' => $oOldTransition->getName(),
+                'HumanName' => $oOldTransition->getName(),
+                'TargetStateId' => $iDestState,
+                'GuardPermissionId' => null,
+                'GuardGroupId' => null,
+                'GuardRoleId' => null,
+                'GuardConditionId' => null,            
+            ));
+            
+            $aTransitionsMap[oldId][] = $oOldTransition->getId();
+            $aTransitionsMap[newId][] = $oNewTransition->getId();
+            
+            if (PEAR::isError($oNewTransition)) {
+                $this->errorRedirectToMain(sprintf(_kt("Failed to copy transition: %s"), $oTransition->getMessage()));              
+            }
+            
+            // map source transitions onto states
+            $aOldTransitionSources = KTWorkflowAdminUtil::getSourceStates($oOldTransition);
+            $aSourceStates = array();
+            for($j=0;$j<count($aOldTransitionSources);$j++){
+	            for($i=0;$i<count($aStatesMap[oldId]);$i++){
+		        	if($aStatesMap[oldId][$i] == $aOldTransitionSources[$j]->getId()){
+		        		$aSourceStates[] = $aStatesMap[newId][$i];
+		        		continue;
+		        	}
+		        }
+            }
+            $res = KTWorkflowAdminUtil::saveTransitionSources($oNewTransition, $aSourceStates);
+	        if (PEAR::isError($res)) {
+	            $this->errorRedirectToMain(sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));                              
+	        }
+	        
+	        // Get all triggers for old workflow transitions and copy for copied workflow transitions 
+	        $aTriggers = KTWorkflowTriggerInstance::getByTransition($oOldTransition);
+	        if(count($aTriggers) > 0){
+		        foreach ($aTriggers as $oTrigger) {
+		            for($i=0;$i<count($aTransitionsMap[oldId]);$i++){
+			        	if($aTransitionsMap[oldId][$i] == $oTrigger->getTransitionId()){
+			        		$iTransitionId = $aTransitionsMap[newId][$i];
+			        		
+			        		$res = KTWorkflowTriggerInstance::createFromArray(array(
+				            'transitionid' => $iTransitionId,
+				            'namespace' =>  $oTrigger->getNamespace(),
+				            'config' => $oTrigger->getConfigArrayText(),
+				        	));
+				        
+				        	if (PEAR::isError($res)) {
+				            	return $this->errorRedirectToMain(sprintf(_kt("Unable to add trigger: %s"), $res->getMessage()));
+				        	}
+			        	}
+			        }
+	        	}
+	        }
+        }
+        return $this->successRedirectToMain(sprintf(_kt("%s successfully copied as %s"), $oSelWorkflow->getName(), $oNewWorkflow->getName()));
     }
     
     function do_newWorkflow() {
@@ -1943,7 +2134,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oU) || ($oU == false)) {
                 continue;
             } else {
-                $values[sprintf("users[%d]", $iUserId)] = sprintf('User: %s', $oU->getName());
+                $values[sprintf("users[%d]", $iUserId)] = sprintf(_kt('User: %s'), $oU->getName());
             }
         }
 
@@ -1957,7 +2148,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oG) || ($oG == false)) {
                 continue;
             } else {
-                $values[sprintf("groups[%d]", $iGroupId)] = sprintf('Group: %s', $oG->getName());
+                $values[sprintf("groups[%d]", $iGroupId)] = sprintf(_kt('Group: %s'), $oG->getName());
             }
         }
         
@@ -1972,7 +2163,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($oR) || ($oR == false)) {
                 continue;
             } else {
-                $values[sprintf("roles[%d]", $iRoleId)] = sprintf('Role: %s', $oR->getName());
+                $values[sprintf("roles[%d]", $iRoleId)] = sprintf(_kt('Role: %s'), $oR->getName());
             }
         }
         

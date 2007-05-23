@@ -200,9 +200,9 @@ msgstr ""
 msgid "<strong>This transition cannot be performed:  no folder has been selected.</strong>"
 msgstr ""
 
-#: plugins/wintools/BaobabPlugin.php:25
+#: plugins/wintools/BaobabPlugin.php:30
 #, php-format
-msgid "<strong>You are using an evaluation copy of KnowledgeTree Commercial.</strong>  Please consider <a href='%s'>upgrading to a full version</a>, and supporting the continued development of this application."
+msgid "<strong>You are using an evaluation copy of %s Commercial.</strong>  Please consider <a href='%s'>upgrading to a full version</a>, and supporting the continued development of this application."
 msgstr ""
 
 #: i18n/templates.c:1583
@@ -845,7 +845,7 @@ msgid "Already using a different descriptor."
 msgstr ""
 
 #: i18n/templates.c:2582
-msgid "Alternatively, you can manually create a user within KnowledgeTree below."
+msgid "Alternatively, you can manually create a user within #appname# below."
 msgstr ""
 
 #: plugins/ktcore/authentication/authenticationadminpage.inc.php:165
@@ -1255,11 +1255,11 @@ msgid "Bulk upload successful"
 msgstr ""
 
 #: plugins/ktcore/KTCorePlugin.php:96
-msgid "By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data."
+msgid "By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data."
 msgstr ""
 
 #: i18n/templates.c:1460
-msgid "By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data."
+msgid "By default, #appname# controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data."
 msgstr ""
 
 #: plugins/ktstandard/KTEmail.php:290
@@ -1766,7 +1766,7 @@ msgid "Configure the document metadata: Document Types, Document Fieldsets, Link
 msgstr ""
 
 #: plugins/ktcore/KTCorePlugin.php:235
-msgid "Configure the process documents go through."
+msgid "Configure automated Workflows that map to document life-cycles."
 msgstr ""
 
 #: i18n/templates.c:5399
@@ -2070,7 +2070,7 @@ msgid "Couldn't store contents: %s"
 msgstr ""
 
 #: i18n/templates.c:3110
-msgid "Crash Course in KnowledgeTree"
+msgid "Crash Course in #appname#"
 msgstr ""
 
 #: i18n/templates.c:2072 i18n/templates.c:2366 i18n/templates.c:3077
@@ -2626,7 +2626,7 @@ msgid "Document History"
 msgstr ""
 
 #: i18n/templates.c:4946 i18n/templates.c:5000 i18n/templates.c:5024
-msgid "Document History for KnowledgeTree New UI Presentation"
+msgid "Document History for #appname# New UI Presentation"
 msgstr ""
 
 #: lib/browse/Criteria.inc:323 plugins/ktcore/KTColumns.inc.php:407
@@ -3205,7 +3205,7 @@ msgid "Edit state properties"
 msgstr ""
 
 #: i18n/templates.c:3131
-msgid "Edit the [email] section of the config.ini file to set your email server and the sending address of the KnowledgeTree server."
+msgid "Edit the [email] section of the config.ini file to set your email server and the sending address of the #appname# server."
 msgstr ""
 
 #: i18n/templates.c:2144 i18n/templates.c:2147
@@ -4265,7 +4265,7 @@ msgid "If this is specified then the you will receive certain notifications.  If
 msgstr ""
 
 #: i18n/templates.c:3155
-msgid "If this is your first KnowledgeTree installation, or if you've just upgraded from KnowledgeTree 2.x, we've put together some information which might help you get to grips with the new system."
+msgid "If this is your first #appname# installation, or if you've just upgraded from #appname# 2.x, we've put together some information which might help you get to grips with the new system."
 msgstr ""
 
 #: i18n/templates.c:4601
@@ -4301,7 +4301,7 @@ msgid "If you have converted a simple conditional fieldset to a complex one, it 
 msgstr ""
 
 #: i18n/templates.c:2315
-msgid "If you have moved the location of KnowledgeTree on your server filesystem, or installed or removed plugins, the plugins must be re-read from the filesystem"
+msgid "If you have moved the location of #appname# on your server filesystem, or installed or removed plugins, the plugins must be re-read from the filesystem"
 msgstr ""
 
 #: i18n/templates.c:590
@@ -4676,31 +4676,31 @@ msgid "Keywords which are directly below the   <strong>Root</strong> are conside
 msgstr ""
 
 #: i18n/templates.c:5378
-msgid "KnowledgeTree Issue Tracker"
+msgid "#appname# Issue Tracker"
 msgstr ""
 
 #: i18n/templates.c:440
-msgid "KnowledgeTree Recent Documents"
+msgid "#appname# Recent Documents"
 msgstr ""
 
 #: i18n/templates.c:5342
-msgid "KnowledgeTree Version"
+msgid "#appname# Version"
 msgstr ""
 
 #: i18n/templates.c:1430
-msgid "KnowledgeTree Version: #version#"
+msgid "#appname# Version: #version#"
 msgstr ""
 
 #: i18n/templates.c:3152
-msgid "KnowledgeTree administrator's Guide"
+msgid "#appname# administrator's Guide"
 msgstr ""
 
 #: i18n/templates.c:2858
-msgid "KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units."
+msgid "#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units."
 msgstr ""
 
 #: i18n/templates.c:3959
-msgid "KnowledgeTree has a powerful security model, in which users can only see documents they have permissions to see.  Workflow is the finest-grained way to allocate permissions to a document, since it can override the permissions assigned at a folder level."
+msgid "#appname# has a powerful security model, in which users can only see documents they have permissions to see.  Workflow is the finest-grained way to allocate permissions to a document, since it can override the permissions assigned at a folder level."
 msgstr ""
 
 #: plugins/ktstandard/KTLDAPAuthenticationPlugin.php:41
@@ -4765,7 +4765,7 @@ msgid "Leads to state"
 msgstr ""
 
 #: i18n/templates.c:3119
-msgid "Learn about KnowledgeTree 3."
+msgid "Learn about #appname# 3."
 msgstr ""
 
 #: lib/groups/GroupUtil.php:159
@@ -4837,7 +4837,7 @@ msgid "Location is no longer available"
 msgstr ""
 
 #: lib/templating/kt3template.inc.php:325 i18n/templates.c:5324
-msgid "Login"
+msgid "Login | #appname#"
 msgstr ""
 
 #: plugins/professional-reporting/admin/userReporting.php:145
@@ -5391,7 +5391,7 @@ msgid "New thread created"
 msgstr ""
 
 #: i18n/templates.c:3113
-msgid "New to Document Management, or to KnowledgeTree&trade; 3?  We've written some quick documentation to help you along"
+msgid "New to Document Management, or to #appname#&trade; 3?  We've written some quick documentation to help you along"
 msgstr ""
 
 #: plugins/ktcore/admin/workflow/newworkflow.inc.php:37 i18n/templates.c:2849
@@ -5723,7 +5723,7 @@ msgid "No permissions are required to perform this transition"
 msgstr ""
 
 #: i18n/templates.c:3332
-msgid "No permissions have been created within KnowledgeTree."
+msgid "No permissions have been created within #appname#."
 msgstr ""
 
 #: i18n/templates.c:4847
@@ -6082,7 +6082,7 @@ msgid "One of the powerful aspects of transitions is     that you can specify a 
 msgstr ""
 
 #: i18n/templates.c:3860
-msgid "One of the reasons that workflow is so key to the way KnowledgeTree is used is that states can have a variety of effects on the way other systems work.  For example:  workflow states can override the permissions on a document, and reaching a state can cause notifications to be sent out."
+msgid "One of the reasons that workflow is so key to the way #appname# is used is that states can have a variety of effects on the way other systems work.  For example:  workflow states can override the permissions on a document, and reaching a state can cause notifications to be sent out."
 msgstr ""
 
 #: i18n/templates.c:1469
@@ -6279,11 +6279,11 @@ msgid "Please complete the following fields to edit the fieldset's properties an
 msgstr ""
 
 #: i18n/templates.c:2741
-msgid "Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and use the form on the User Management page."
+msgid "Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using #appname#'s builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and use the form on the User Management page."
 msgstr ""
 
 #: i18n/templates.c:2705
-msgid "Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled."
+msgid "Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using #appname#'s builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled."
 msgstr ""
 
 #: i18n/templates.c:4796
@@ -6762,7 +6762,7 @@ msgid "Reply posted"
 msgstr ""
 
 #: plugins/professional-reporting/ProfessionalReportingPlugin.php:37
-msgid "Report on usage of KnowledgeTree"
+msgid "Report on usage of %s"
 msgstr ""
 
 #: plugins/professional-reporting/ProfessionalReportingPlugin.php:36
@@ -7290,7 +7290,7 @@ msgid "Simple Search Text"
 msgstr ""
 
 #: i18n/templates.c:5
-msgid "Since KnowledgeTree only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below."
+msgid "Since #appname# only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below."
 msgstr ""
 
 #: i18n/templates.c:710
@@ -7722,12 +7722,12 @@ msgid "The document must match condition \"<strong>%s</strong>\"."
 msgstr ""
 
 #: lib/widgets/fieldsetDisplay.inc.php:335
-msgid "The document title is used as the main name of a document throughout KnowledgeTree&trade;."
+msgid "The document title is used as the main name of a document throughout %s&trade;."
 msgstr ""
 
 #: plugins/ktcore/document/edit.php:91
 #: plugins/ktcore/folder/addDocument.php:95
-msgid "The document title is used as the main name of a document throughout KnowledgeTree."
+msgid "The document title is used as the main name of a document throughout %s&trade;."
 msgstr ""
 
 #: plugins/ktcore/KTWorkflowTriggers.inc.php:562
@@ -7847,11 +7847,11 @@ msgid "The host name or IP address of the LDAP server"
 msgstr ""
 
 #: i18n/templates.c:1043 i18n/templates.c:1100
-msgid "The information in this section is stored by KnowledgeTree&trade; for every         document."
+msgid "The information in this section is stored by #appname#&trade; for every         document."
 msgstr ""
 
 #: lib/widgets/fieldsetDisplay.inc.php:345
-msgid "The information in this section is stored by KnowledgeTree&trade; for every document."
+msgid "The information in this section is stored by %s&trade; for every document."
 msgstr ""
 
 #: plugins/ktcore/admin/managePermissions.php:40
@@ -7892,8 +7892,8 @@ msgstr ""
 msgid "The name for the new folder."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:439
-msgid "The name the group will enter to gain access to KnowledgeTree.  e.g. <strong>accountants</strong>"
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:442
+msgid "The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>"
 msgstr ""
 
 #: search/booleanSearch.php:304
@@ -8024,8 +8024,8 @@ msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:130
 #: plugins/ktcore/admin/userManagement.php:183
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:232
-msgid "The username the user will enter to gain access to KnowledgeTree.  e.g. <strong>jsmith</strong>"
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:235
+msgid "The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>"
 msgstr ""
 
 #: i18n/templates.c:1697 i18n/templates.c:1820
@@ -8213,7 +8213,7 @@ msgid "This document is currently checked out by #checkoutuser#, but you have su
 msgstr ""
 
 #: i18n/templates.c:4973
-msgid "This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your KnowledgeTree Administrator."
+msgid "This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your #appname# Administrator."
 msgstr ""
 
 #: i18n/templates.c:4967
@@ -8275,7 +8275,7 @@ msgid "This installation assigns workflows by Document Type. Configure this proc
 msgstr ""
 
 #: i18n/templates.c:869
-msgid "This installation of KnowledgeTree allocates workflows to documents by their location.  To specify the workflow to be used by all documents <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached."
+msgid "This installation of #appname# allocates workflows to documents by their location.  To specify the workflow to be used by all documents <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached."
 msgstr ""
 
 #: i18n/templates.c:1733
@@ -8418,11 +8418,11 @@ msgid "To add users to this role, select one or more user names in the Available
 msgstr ""
 
 #: i18n/templates.c:704
-msgid "To connect to KnowledgeTree via a third-party WebDAV client, please use the following address:"
+msgid "To connect to #appname# via a third-party WebDAV client, please use the following address:"
 msgstr ""
 
 #: i18n/templates.c:707
-msgid "To connect with the KnowledgeTree Tools for Windows package, use this address:"
+msgid "To connect with the #appname# Tools for Windows package, use this address:"
 msgstr ""
 
 #: i18n/templates.c:5504
@@ -8745,7 +8745,7 @@ msgstr ""
 #: plugins/ktstandard/contents/RtfIndexer.php:52
 #: plugins/ktstandard/contents/WordIndexer.php:67
 #, php-format
-msgid "Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the KnowledgeTree Path.  For more information on indexers and helper applications, please <a href=\"%s\">visit the KTDMS site</a>."
+msgid "Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the %s Path.  For more information on indexers and helper applications, please <a href=\"%s\">visit the %s site</a>."
 msgstr ""
 
 #: lib/widgets/fieldsetDisplay.inc.php:191
@@ -9436,7 +9436,7 @@ msgid "Views"
 msgstr ""
 
 #: i18n/templates.c:5630
-msgid "Views are the selections of documents and folders you will find throughout KnowledgeTree.  Some of those can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.)"
+msgid "Views are the selections of documents and folders you will find throughout #appname#.  Some of those can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.)"
 msgstr ""
 
 #: i18n/templates.c:5381
@@ -9521,7 +9521,7 @@ msgid "Windows Tools:  Key Management"
 msgstr ""
 
 #: i18n/templates.c:4613
-msgid "Within KnowledgeTree it is possible for users to create links between related documents. Link types may include constructs such as \"associated with\" and \"duplicated by\". Please create link types required by your organisation below."
+msgid "Within #appname# it is possible for users to create links between related documents. Link types may include constructs such as \"associated with\" and \"duplicated by\". Please create link types required by your organisation below."
 msgstr ""
 
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:103
@@ -9652,7 +9652,7 @@ msgid "Workflow status"
 msgstr ""
 
 #: i18n/templates.c:842
-msgid "Workflow types are allocated by Document Type in this KnowledgeTree installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old workflow."
+msgid "Workflow types are allocated by Document Type in this #appname# installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old workflow."
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:278
@@ -10539,7 +10539,7 @@ msgid "synchronise"
 msgstr ""
 
 #: i18n/templates.c:5075 i18n/templates.c:5081
-msgid "the information for version #version# comes from an older version of KnowledgeTree and may be incorrect."
+msgid "the information for version #version# comes from an older version of #appname# and may be incorrect."
 msgstr ""
 
 #: i18n/templates.c:4769
@@ -10556,6 +10556,10 @@ msgstr ""
 
 #: i18n/templates.c:1022
 msgid "to"
+msgstr ""
+
+#: i18n/templates.c:5722
+msgid "#appname# RSS"
 msgstr ""
 
 #: plugins/ktcore/folder/Transactions.php:45
@@ -10628,7 +10632,7 @@ msgid "Search Dashlet"
 msgstr ""
 
 #: plugins/ktcore/KTDashlets.php:43
-msgid "Welcome to KnowledgeTree"
+msgid "Welcome to %s"
 msgstr ""
 
 #: plugins/ktcore/KTPortlets.php:74
@@ -10637,4 +10641,61 @@ msgstr ""
 
 #: plugins/ktstandard/KTEmail.php:126 
 msgid "Your colleague, %s, wishes you to view the attached document entitled '%s'."
+msgstr ""
+
+#: plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty:8 
+msgid "You have no orphaned folders."
+msgstr ""
+
+#: view.php:80
+msgid "Document info"
+msgstr ""
+
+#: view.php:85
+msgid "Document actions"
+msgstr ""
+
+#: resources/js/dashboard.js:77
+msgid "Add Dashlet"
+msgstr ""
+
+#: resources/js/dashboard.js:197
+msgid "Add Dashlets"
+msgstr ""
+
+#: resources/js/permissions.js:106
+msgid "Role or Group"
+msgstr ""
+
+#: templates/ktcore/document/viewlets/workflow.smarty:2
+msgid "Available Transitions"
+msgstr ""
+
+#: about.php:39
+msgid "About"
+msgstr ""
+
+#: lib/templating/kt3template.inc.php:356
+msgid "About"
+msgstr ""
+
+#: i18n/templates.c:5747
+msgid "#appname# #versionname#"
+msgstr ""
+
+#: templates/ktcore/search/administration/savedsearches.smarty:40
+msgid "Run Search"
+msgstr ""
+
+#: templates/ktcore/dashlets/notifications.smarty:15
+#: templates/ktcore/dashlets/notifications.smarty:18
+msgid "Are you sure you wish to clear all notifications?"
+msgstr ""
+
+#: templates/ktcore/documenttypes/list.smarty:74
+msgid "Are you sure you wish to disable this document type?"
+msgstr ""
+
+#: templates/ktcore/workflow/admin/permissions_overview.smarty:19
+msgid "Control"
 msgstr ""

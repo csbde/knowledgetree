@@ -76,12 +76,15 @@ class KTInit {
         ini_set('include_path', $path . PATH_SEPARATOR . $include_path);
     }
     // }}}
-
     // {{{ setupLogging()
     function setupLogging () {
         global $default;
         require_once(KT_LIB_DIR . '/Log.inc');
         $oKTConfig =& KTConfig::getSingleton();
+        
+        if(!defined('APP_NAME')) {
+		    define('APP_NAME', $oKTConfig->get('ui/appName', 'KnowledgeTree'));
+		}
         $logLevel = $default->logLevel;
         if (!is_numeric($logLevel)) {
             $logLevel = @constant($logLevel);
@@ -316,7 +319,7 @@ class KTInit {
             $priority = PEAR_LOG_ERR;
             break;
         default:
-            $priotity = PEAR_LOG_INFO;
+            $priority = PEAR_LOG_INFO;
         }
 
         if (!empty($default->phpErrorLog)) {
@@ -393,7 +396,8 @@ class KTInit {
             }
         } else {
             $oKTConfig =& KTConfig::getSingleton();
-
+			
+			$oKTConfig->setdefaultns('ui', 'appName', 'KnowledgeTree');
             $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
             $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
             $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', false);
@@ -433,6 +437,12 @@ class KTInit {
             $oKTConfig->setdefaultns('cache', 'cacheEnabled', 'false');
             $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
             $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
+            
+            $oKTConfig->setdefaultns('webservice', 'uploadDirectory', '${varDirectory}/uploads');
+            $oKTConfig->setdefaultns('webservice', 'downloadUrl', '${rootUrl}/ktwebservice/download.php');
+            $oKTConfig->setdefaultns('webservice', 'uploadExpiry', '30');
+            $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
+            $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
             
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
@@ -511,6 +521,7 @@ $KTInit = new KTInit();
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 $KTInit->prependPath(KT_DIR . '/thirdparty/simpletest');
+$KTInit->prependPath(KT_DIR . '/ktapi');
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions

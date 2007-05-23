@@ -21,8 +21,18 @@
             margin-right: auto;
             text-align: left;
             background: white url(../graphics/ktbg.png) bottom left no-repeat;
-            /*-moz-border-radius: 1em;*/
         }
+
+		#loginbox_skin {
+			position: relative;
+            padding: 1em;
+            /*border: 1px solid #888;*/
+            width: 252px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            background: white url(../powered-by-kt.gif) bottom right no-repeat;
+		}
 
         #loginboxTopLeft {
             position: absolute;
@@ -43,6 +53,15 @@
         }
 
         #loginbox.hasDisclaimer #loginboxTopMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_repeat.png) top left repeat-x;
+            top:0;
+            left:35px;
+            width: 520px;
+            height: 3px; 
+        }
+        
+        #loginbox_skin.hasDisclaimer #loginboxTopMiddle {
             position: absolute;
             background: url(../graphics/login_border_repeat.png) top left repeat-x;
             top:0;
@@ -86,6 +105,15 @@
             width: 520px;
             height: 3px;
         }
+        
+        #loginbox_skin.hasDisclaimer #loginboxBottomMiddle {
+            position: absolute;
+            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
+            bottom: 0;
+            left: 35px;
+            width: 520px;
+            height: 3px;
+        }
 
         #loginboxBottomRight {
             position: absolute;
@@ -109,6 +137,10 @@
             height: 200px;
         }
         
+        #loginbox_skin.hasDisclaimer #loginboxLeftTop {
+            height: 200px;
+        }
+        
         #loginboxLeftBottom {
             position: absolute;
             background: url(../graphics/login_border_repeat.png) top left repeat-y;
@@ -119,7 +151,11 @@
         }
 
         #loginbox.hasDisclaimer #loginboxLeftBottom {
-            height: 200px;
+            height: 250px;
+        }
+        
+        #loginbox_skin.hasDisclaimer #loginboxLeftBottom {
+            height: 250px;
         }
 
         #loginboxRightTop {
@@ -132,7 +168,11 @@
         }
 
         #loginbox.hasDisclaimer #loginboxRightTop {
-            height: 200px;
+            height: 250px;
+        }
+        
+        #loginbox_skin.hasDisclaimer #loginboxRightTop {
+            height: 250px;
         }
 
         #loginboxRightBottom {
@@ -147,8 +187,17 @@
         #loginbox.hasDisclaimer #loginboxRightBottom {
             height: 200px;
         }
+        
+        #loginbox_skin.hasDisclaimer #loginboxRightBottom {
+            height: 200px;
+        }
 
         #loginbox.hasDisclaimer {
+            background: white url(../graphics/ktbg.png) bottom left repeat-x;
+            width: 564px;
+        }
+        
+        #loginbox_skin.hasDisclaimer {
             background: white url(../graphics/ktbg.png) bottom left repeat-x;
             width: 564px;
         }
@@ -163,11 +212,16 @@
             padding-right: 20px;
             border-right: 1px solid #eee;
         }
+        
+        #loginbox_skin.hasDisclaimer #formbox { 
+            padding-right: 20px;
+            border-right: 1px solid #eee;
+        }
 
         #disclaimerbox {
             width: 252px;
             float: left;
-            padding-left: 20px;
+            padding-left: 0px;
             border-left: 1px solid #eee;
             margin-left: -1px;
         }

@@ -1,0 +1,73 @@
+KnowledgeTree WebServices
+=========================
+
+Dependencies
+------------
+
+This is dependant on:
+1) KTAPI
+2) libcurl
+3) PEAR:SOAP
+
+
+Installation
+------------
+
+Assuming that <ktroot> denotes the base directory where KnowledgeTree is installed,
+the following structure is expected:
+
+<ktroot>/ktapi				- location of KT API
+<ktroot>/ktwebservice		- location of KT Web Service
+<ktroot>/var/uploads		- location of uploads
+
+Installing libcurl
+------------------
+
+Curl and libcurl are available from http://curl.haxx.se/ and http://curl.haxx.se/libcurl/ respectively.
+
+You may need to edit your php.ini file. You may require to add something like:
+
+extension=php_curl.dll
+
+
+Installing PEAR::SOAP
+---------------------
+
+We assume PEAR::SOAP will be available in the <ktroot>/thirdparty/pear/SOAP directory.
+
+Please review http://pear.php.net/ on the installation procedure if a newer version is required.
+
+Configuration
+-------------
+
+The following can be configured in the configuration file (config.ini):
+
+[webservices]
+
+; the upload directory 
+uploadDirectory = ${varDirectory}/uploads
+
+; this is the location for downloads from calls to web services
+downloadUrl = ${rootUrl}/ktwebservice/download.php
+
+; Files must be uploaded before they can be interacted with
+uploadExpiry = 30
+
+; The Web Service download request just makes a file temporarily available. If it is not downloaded in the time frame below, it will not be available.
+downloadExpiry = 30
+
+; It is recommended that the administrator add some random text here. This will prevent different installations generating hashes in the same manner.
+randomKeyText = bkdfjhg23yskjdhf2iu
+
+Using Web Services
+------------------
+
+The WSDL for the KnowledgeTree Web Service can be referenced as follows:
+
+http://ktdms.trunk/ktwebservice/?wsdl
+
+or
+
+http://ktdms.trunk/ktwebservice/webservice.php?wsdl
+
+The KTWS API package provides an object oriented wrapping of the web service functionality.

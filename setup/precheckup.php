@@ -26,6 +26,8 @@
 
 error_reporting(E_ALL);
 
+require_once('../config/dmsDefaults.php');
+
 function get_php_setting($val) {
     $r =  (ini_get($val) == '1' ? 1 : 0);
     return $r ? 'ON' : 'OFF';
@@ -197,7 +199,7 @@ function can_extension_loaded($ext, $message = "") {
 
 $phpversion4 = phpversion() < '4' ? '<b><font color="red">No</font></b> <small>(You need at least PHP 4)</small>' : '<b><font color="green">Yes</font></b>';
 $phpversion43 = phpversion() < '4.3' ? '<b><font color="orange">No</font></b> <small>(PHP 4.3 is recommended)</small>' : '<b><font color="green">Yes</font></b>';
-$phpversion5 = phpversion() >= '5' ? '<b><font color="red">No</font></b> <small>(KnowledgeTree does not yet work with PHP5)</small>' : '<b><font color="green">Yes</font></b>';
+$phpversion5 = phpversion() >= '5' ? '<b><font color="red">No</font></b> <small>('.APP_NAME.' does not yet work with PHP5)</small>' : '<b><font color="green">Yes</font></b>';
 
 function running_user() {
     if (substr(PHP_OS, 0, 3) == "WIN") {
@@ -227,7 +229,7 @@ function htaccess() {
 ?>
 <html>
   <head>
-    <title>KnowledgeTree Checkup</title>
+    <title><?php echo APP_NAME;?> Checkup</title>
     <style>
 th { text-align: left; }
 td { vertical-align: top; }
@@ -236,10 +238,10 @@ td { vertical-align: top; }
 
   <body>
 
-<h1>KnowledgeTree Checkup</h1>
+<h1><?php echo APP_NAME;?> Checkup</h1>
 
 <p>This checkup allows you to check that your environment is ready to
-support a KnowledgeTree installation, and that you can proceed to
+support a <?php echo APP_NAME;?> installation, and that you can proceed to
 configure your system.  Red items are things to fix.  Orange items means
 you may not be having the ultimate experience unless the support is
 added.  Green items means you're ready to go in this area.  You can
@@ -248,10 +250,10 @@ you have any problems.</p>
 
 <h2>.htaccess file</h2>
 
-<p>You can let KnowledgeTree manage the PHP settings that apply to the
-KnowledgeTree application (it won't affect your other applications) by
+<p>You can let <?php echo APP_NAME;?> manage the PHP settings that apply to the
+<?php echo APP_NAME;?> application (it won't affect your other applications) by
 configuring your web server to use the .htaccess files that come with
-KnowledgeTree.  This will ensure that the settings for KnowledgeTree
+<?php echo APP_NAME;?>.  This will ensure that the settings for <?php echo APP_NAME;?>
 (detailed below) are set up for optimal, reliable performance.</p>
 
 <?php echo htaccess()?>
@@ -378,7 +380,7 @@ $username = running_user();
 if (is_null($username)) {
     $message = "You are on a system that does not make user details available, and so no advice is possible on the correct ownership of the <b>log</b> and <b>Documents</b> directories.";
 } else {
-    $message = 'KnowledgeTree will be run as the <b><font color="orange">' . $username . '</font></b> system user, and must be able to write to the <b>log</b> and <b>Documents</b> directories.';
+    $message = APP_NAME.' will be run as the <b><font color="orange">' . $username . '</font></b> system user, and must be able to write to the <b>log</b> and <b>Documents</b> directories.';
 }
 ?>
 <tr>

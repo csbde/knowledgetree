@@ -103,7 +103,7 @@ PermissionsTable.prototype = {
 function initializeTable(aPermissions) {
     _table = new PermissionsTable;
     _table.initialize('entities',
-		      'Role or Group',
+		      _('Role or Group'),
 		      aPermissions);
 };
 

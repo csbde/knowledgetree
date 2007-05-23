@@ -279,7 +279,7 @@ class NameCriterion extends BrowseCriterion {
     var $sNamespace = 'ktcore.criteria.name';
 
     function NameCriterion() {
-        $this->sDisplay = _kt('Name');
+        $this->sDisplay = _kt('Document Filename');
     }
 
     function documentDisplay ($oDocument) {
@@ -338,7 +338,7 @@ class TitleCriterion extends BrowseCriterion {
     var $sNamespace = 'ktcore.criteria.title';
 
     function TitleCriterion() {
-        $this->sDisplay = _kt('Title');
+        $this->sDisplay = _kt('Document Title');
     }
     
     function documentDisplay ($oDocument) {
@@ -643,6 +643,48 @@ class GenericMetadataCriterion extends BrowseCriterion {
         }        
         
         return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "LEFT JOIN $default->document_fields_link_table AS $this->sSearchTable ON $this->sSearchTable.metadata_version_id = D.metadata_version_id";
+    }
+}
+
+class GeneralMetadataCriterion extends BrowseCriterion {
+    var $aLookup = array(
+        "table" => "document_fields_link",
+        "field" => "value",
+        "joinColumn" => "document_id",
+    );
+    var $bString = true;
+    var $sDocumentField = 'value';
+    var $sSortField = null;
+    var $bContains = true;
+    var $sNamespace = 'ktcore.criteria.generalmetadata';
+    var $sSearchTable = "DFL" ;
+ 	var $bHandleNot = false;
+    function GeneralMetadataCriterion()
+    {
+    	$this->sDisplay = _kt('General Metadata');
+    }
+    
+    function documentDisplay ($oDocument) {
+       
+        return 'General Metadata';
+    }
+
+
+    function getSearchField () {
+        return $this->aLookup['field'];
+    }
+
+    
+    function searchSQL ($aRequest) {
+        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR dm.name LIKE '%!%'  )", 
+        array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));       
+        
+        return $val;
     }
 
     function searchJoinSQL () {
@@ -970,11 +1012,35 @@ class SearchableTextCriterion extends BrowseCriterion {
         } else {
             $boolean_mode = "";
         }
+		
+		$p = array();
+		$temp = str_replace('%', '', $aRequest[$this->getWidgetBase()]);
+		$keywords = explode(' ', $temp);
+		
+		for($i=0; $i<count($keywords); $i++){
+			if($keywords[$i] == ' ' or $keywords[$i] == ''){
+				continue;
+			}else{
+				$keywords_temp[] = trim($keywords[$i]);
+			}
+		}
+		$keywords = $keywords_temp;
 
-        $p = array();
-        $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
-	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
-        
+		if(count($keywords) > 1){
+			for($i=0; $i<count($keywords); $i++){
+				$word = trim($keywords[$i]);
+				if(empty($word)){
+					continue;
+				}
+				$keywords[$i] = '%'.$keywords[$i].'%';
+			}			
+			$p[0] = "DST.document_text LIKE ? AND DST.document_text LIKE ? ";
+			$p[1] = $keywords;
+		}else{
+			$p[0] = "DST.document_text LIKE ? ";
+			$p[1] = $aRequest[$this->getWidgetBase()];
+		}
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
@@ -1041,7 +1107,46 @@ class TransactionTextCriterion extends BrowseCriterion {
     }
 }
 
+class TagCloudCriterion extends BrowseCriterion {
+    var $bString = true;
+	var $bContains = false;
+    var $bHandleNot = false;
+    var $sDocumentField = 'tag';// this is linked to the field
+    var $sSortField = 'tag';
+    var $sNamespace = 'ktcore.criteria.tagcloud';
+    var $sSearchTable = "TWS" ;
+    
+    function TagCloudCriterion() {
+	$this->sDisplay = _kt('Tag Cloud');
+    }        
+    
+    function documentDisplay ($oDocument) {
+        return "Tag Cloud";
+    }
+    function getName() {
+        return "tagcloud";
+    }
 
+    function searchSQL ($aRequest) {
+         $p = parent::searchSQL($aRequest, false); // handle not ourselves.
+                
+        // handle the boolean "not" stuff.
+        $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
+        if (is_null($want_invert) || ($want_invert == "0")) {
+            return $p;
+        } else {
+            $p[0] = '(NOT (' . $p[0] . '))';
+        }        
+        
+        return $p;   	
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN document_tags AS DTS ON DTS.document_id = D.id
+        		INNER JOIN tag_words AS TWS ON TWS.id = DTS.tag_id";
+    }
+}
 
 class DateCreatedDeltaCriterion extends DateCreatedCriterion {
     var $sDocumentField = 'created';

@@ -605,6 +605,7 @@ INSERT INTO `permission_assignments` VALUES (4, 4, 1, 2);
 INSERT INTO `permission_assignments` VALUES (5, 5, 1, 2);
 INSERT INTO `permission_assignments` VALUES (6, 6, 1, 2);
 INSERT INTO `permission_assignments` VALUES (7, 7, 1, 2);
+INSERT INTO `permission_assignments` VALUES (8, 8, 1, 2);
 
 -- 
 -- Dumping data for table `permission_descriptor_groups`
@@ -695,6 +696,7 @@ INSERT INTO `permissions` VALUES (4, 'ktcore.permissions.security', 'Manage secu
 INSERT INTO `permissions` VALUES (5, 'ktcore.permissions.delete', 'Delete', 1);
 INSERT INTO `permissions` VALUES (6, 'ktcore.permissions.workflow', 'Manage workflow', 1);
 INSERT INTO `permissions` VALUES (7, 'ktcore.permissions.folder_details', 'Folder Details', 1);
+INSERT INTO `permissions` VALUES (8, 'ktcore.permissions.folder_rename', 'Rename Folder', 1);
 
 -- 
 -- Dumping data for table `plugins`
@@ -739,8 +741,8 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.3.0.2');
-INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.3.0.2');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.4.5');
+INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.4.0');
 
 -- 
 -- Dumping data for table `time_period`
@@ -907,8 +909,14 @@ INSERT INTO `upgrades` VALUES (125, 'sql*3.1.6.5*0*3.1.6.5/workflow-state-refere
 INSERT INTO `upgrades` VALUES (126, 'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql', 'Database upgrade to version 3.1.6.6: Copy transaction', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (127, 'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql', 'Database upgrade to version 3.1.6.7: Sane-names-for-stuff', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
 INSERT INTO `upgrades` VALUES (128, 'upgrade*3.1.6.7*99*upgrade3.1.6.7', 'Upgrade from version 3.1.2 to 3.1.6.7', '2006-10-17 12:09:46', 1, 'upgrade*3.1.6.7*99*upgrade3.1.6.7');
-INSERT INTO `upgrades` VALUES (129, 'upgrade*3.3.0.1*99*upgrade3.3.0.1', 'Upgrade from version 3.1.6.7 to 3.3.0.1', '2006-10-30 12:49:33', 1, 'upgrade*3.3.0.1*99*upgrade3.3.0.1');
-INSERT INTO `upgrades` VALUES (130, 'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql', 'Database upgrade to version 3.3.0.1: System-settings-to-text', '2007-01-28 23:49:52', 1, 'upgrade*3.3.0.1*99*upgrade3.3.0.1');
+INSERT INTO `upgrades` VALUES (129, 'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql', 'Database upgrade to version 3.3.0.1: System-settings-to-text', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (130, 'upgrade*3.3.0.1*99*upgrade3.3.0.1', 'Upgrade from version 3.1.6.7 to 3.3.0.1', '2006-10-30 12:49:33', 1, 'upgrade*3.3.0.1*99*upgrade3.3.0.1');
+INSERT INTO `upgrades` VALUES (131, 'sql*3.3.1*0*3.3.1/rss.sql', 'Database upgrade to version 3.3.1: Rss', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (132, 'upgrade*3.3.1*99*upgrade3.3.1', 'Upgrade from version 3.3.0.1 to 3.3.1', '2007-01-28 23:49:52', 1, 'upgrade*3.3.1*99*upgrade3.3.1');
+INSERT INTO `upgrades` VALUES (133, 'sql*3.3.2*0*3.3.2/tagclouds.sql', 'Database upgrade to version 3.3.2: Tagclouds', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
+INSERT INTO `upgrades` VALUES (134, 'upgrade*3.3.2*99*upgrade3.3.2', 'Upgrade from version 3.3.1 to 3.3.2', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
+INSERT INTO `upgrades` VALUES (135, 'sql*3.4.0*0*3.4.0/upload_download.sql', 'Upgrade to version 3.4.0: Upload download', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
+INSERT INTO `upgrades` VALUES (136, 'upgrade*3.4.0*99*upgrade3.4.0', 'Upgrade from version 3.3.2 to 3.4.0', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1267,7 +1275,7 @@ INSERT INTO `zseq_organisations_lookup` VALUES (1);
 -- Dumping data for table `zseq_permission_assignments`
 -- 
 
-INSERT INTO `zseq_permission_assignments` VALUES (7);
+INSERT INTO `zseq_permission_assignments` VALUES (8);
 
 -- 
 -- Dumping data for table `zseq_permission_descriptors`
@@ -1303,7 +1311,7 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- Dumping data for table `zseq_permissions`
 -- 
 
-INSERT INTO `zseq_permissions` VALUES (7);
+INSERT INTO `zseq_permissions` VALUES (8);
 
 -- 
 -- Dumping data for table `zseq_plugins`
@@ -1369,7 +1377,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (134);
+INSERT INTO `zseq_upgrades` VALUES (136);
 
 -- 
 -- Dumping data for table `zseq_user_history`
@@ -1420,5 +1428,11 @@ INSERT INTO `zseq_workflow_transitions` VALUES (1);
 -- 
 
 INSERT INTO `zseq_workflows` VALUES (1);
+
+INSERT INTO `zseq_plugin_rss` (id) VALUES ('1');
+
+INSERT INTO `zseq_document_tags` (id) VALUES ('1');
+
+INSERT INTO `zseq_tag_words` (id) VALUES ('1');
 
 SET FOREIGN_KEY_CHECKS=1;

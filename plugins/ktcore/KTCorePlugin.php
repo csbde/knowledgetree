@@ -93,7 +93,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTIndexerStatusDashlet', 'ktcore.dashlet.indexer_status', 'KTDashlets.php');
         $this->registerDashlet('KTMailServerDashlet', 'ktcore.dashlet.mail_server', 'KTDashlets.php');
 
-        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), _kt('By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), 'authentication/authenticationadminpage.inc.php');
+        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
         $this->registerPortlet(array('browse'),
                 'KTAdminModePortlet', 'ktcore.portlets.admin_mode',
@@ -181,6 +181,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerCriterion('GeneralMetadataCriterion', 'ktcore.criteria.generalmetadata', KT_LIB_DIR . '/browse/Criteria.inc');
+        
 
         $this->setupAdmin();
     }
@@ -239,7 +241,7 @@ class KTCorePlugin extends KTPlugin {
                     '../wintools/email/emailDocumentTypes.php', null);
         }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
-            _kt('Workflows'), _kt('Configure the process documents go through.'),
+            _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);            
 
         // storage
@@ -268,8 +270,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'misc',
             _kt('Support and System information'), _kt('Information about this system and how to get support.'),
             'admin/techsupport.php', null);
-        $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'misc',
-            _kt('Verify document storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
+        $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'storage',
+            _kt('Verify Document Storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
             'admin/manageCleanup.php', null);
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'misc',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),

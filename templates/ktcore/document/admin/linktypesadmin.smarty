@@ -1,6 +1,6 @@
 <h2>{i18n}Document Link Type Management{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Within KnowledgeTree it is possible for users to create links between related documents. Link types may include constructs such as "associated with" and "duplicated by". Please create link types required by your organisation below.{/i18n}</p>
+<p class="descriptiveText">{i18n arg_appname="$appname"}Within #appname# it is possible for users to create links between related documents. Link types may include constructs such as "associated with" and "duplicated by". Please create link types required by your organisation below.{/i18n}</p>
 
 {if ($add_form)}
 

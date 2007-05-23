@@ -43,7 +43,7 @@ class KTPowerpointIndexerTrigger extends KTBaseIndexerTrigger {
         
         // can't find the local command.
         if (empty($sCommand)) {
-            return sprintf(_kt('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the KnowledgeTree Path.  For more information on indexers and helper applications, please <a href="%s">visit the KnowledgeTree site</a>.'), $this->command, $this->support_url);
+            return sprintf(_kt('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the %s Path.  For more information on indexers and helper applications, please <a href="%s">visit the %s site</a>.'), $this->command, APP_NAME, $this->support_url, APP_NAME);
         }
         
         return null;

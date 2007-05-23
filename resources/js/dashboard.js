@@ -75,7 +75,7 @@ KTDashboard.prototype = {
 
         // make add button
         var breadcrumbs = $('breadcrumbs');
-        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':'Add Dashlet'});
+        this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':_('Add Dashlet')});
         breadcrumbs.insertBefore(this.addButton, breadcrumbs.firstChild);
         this.hideAddButton();
 
@@ -101,6 +101,12 @@ KTDashboard.prototype = {
                     //new YAHOO.util.DD(e.id);
                 }                    
             }, this.getDashletBlocks());
+        map(function(e) {
+                if(e.id) {
+                    new YAHOO.example.DDList(e.id);
+                    //new YAHOO.util.DD(e.id);
+                }                    
+            }, this.getDashletBlockStoppers());
         new YAHOO.example.DDListBoundary('copyrightbar');
         new YAHOO.example.DDListBoundary('breadcrumbs');
         new YAHOO.example.DDListBoundary('bodyLeftRepeat');
@@ -110,6 +116,10 @@ KTDashboard.prototype = {
 
     'getDashletBlocks' : function() {
         return getElementsByTagAndClassName('*', 'dashboard_block', this.element);
+    },
+    
+    'getDashletBlockStoppers' : function(){
+    	return getElementsByTagAndClassName('*', 'dashboard_block_empty', this.element);
     },
 
     'hideAddButton' : function() {
@@ -194,10 +204,10 @@ KTDashboard.prototype = {
                             });
                     appendChildNodes(dashletList, linkli);
                 });
-        appendChildNodes(addDialog, H2(null, 'Add Dashlets'));
+        appendChildNodes(addDialog, H2(null, _('Add Dashlets')));
         appendChildNodes(addDialog, dashletList);
         
-        var closeLink = A({'class':'closeLink','href':'#'}, 'close');
+        var closeLink = A({'class':'closeLink','href':'#'}, _('close'));
         connect(closeLink, 'onclick', function(event) { removeElement(addDialogScreen); });
 
         appendChildNodes(addDialog, closeLink);

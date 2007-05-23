@@ -2,7 +2,7 @@
 gettext("Orphaned Folders");
 
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
-gettext("Since KnowledgeTree only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below.");
+gettext("Since #appname# only shows you the folders and documents you are allowed to see, there are some placed that you can view but can't get to &mdash; for example, if they are in a folder you are not allowed to see.  These are called \"orphaned folders\" since you can't access their parents and they are are listed below.");
 
 /* ./plugins/wintools/templates/wintools/key_overview.smarty */
 gettext("Manage keys");
@@ -437,7 +437,7 @@ gettext("General Activity");
 gettext("Documents by Workflow and Document Type");
 
 /* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
-gettext("KnowledgeTree Recent Documents");
+gettext("#appname# Recent Documents");
 
 /* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
 gettext("User: #username# &lt;br /&gt;           Action: #action# &lt;br /&gt;           #reason#");
@@ -701,10 +701,10 @@ gettext("Downloads");
 gettext("Connection Information");
 
 /* ./plugins/toolsdashlet/templates/toolsdashlet/dashlet.smarty */
-gettext("To connect to KnowledgeTree via a third-party WebDAV client, please use the following address:");
+gettext("To connect to #appname# via a third-party WebDAV client, please use the following address:");
 
 /* ./plugins/toolsdashlet/templates/toolsdashlet/dashlet.smarty */
-gettext("To connect with the KnowledgeTree Tools for Windows package, use this address:");
+gettext("To connect with the #appname# Tools for Windows package, use this address:");
 
 /* ./templates/ktstandard/authentication/ldapsearchgroup.smarty */
 gettext("Since there may be many groups in the system, please provider a few letters from the groups's name to begin.");
@@ -839,7 +839,7 @@ gettext("Update");
 gettext("Workflow Allocation by Document Type");
 
 /* ./templates/ktstandard/workflow/type_allocation.smarty */
-gettext("Workflow types are allocated by Document Type in this KnowledgeTree installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old workflow.");
+gettext("Workflow types are allocated by Document Type in this #appname# installation.  Documents will be assigned a workflow based on their document type and will have their allocated workflows changed if their document type changes.  Naturally, if the workflow changes then the documents will lose any \"progress\" in the old workflow.");
 
 /* ./templates/ktstandard/workflow/type_allocation.smarty */
 gettext("Document Types with no pre-allocated workflow will either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed).");
@@ -866,7 +866,7 @@ gettext("Apply");
 gettext("Configure Workflows for this Folder");
 
 /* ./templates/ktstandard/workflow/folderconfigure.smarty */
-gettext("This installation of KnowledgeTree allocates workflows to documents by their location.  To specify the workflow to be used by all documents <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached.");
+gettext("This installation of #appname# allocates workflows to documents by their location.  To specify the workflow to be used by all documents <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise, users will be able to choose the workflow, and some documents may have no workflow attached.");
 
 /* ./templates/ktstandard/workflow/folderconfigure.smarty */
 gettext("Note that documents which are moved into this folder will change to use this workflow, and if their previous workflow was different they will lose any progress they have made in that workflow.");
@@ -1040,7 +1040,7 @@ gettext("no value");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
-gettext("The information in this section is stored by KnowledgeTree&trade; for every         document.");
+gettext("The information in this section is stored by %s&trade; for every         document.");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("Document Title");
@@ -1097,7 +1097,7 @@ gettext("no value");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
-gettext("The information in this section is stored by KnowledgeTree&trade; for every         document.");
+gettext("The information in this section is stored by #appname#&trade; for every         document.");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Document Filename");
@@ -1427,7 +1427,7 @@ gettext("You are here");
 gettext("&copy; 2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("KnowledgeTree Version: #version#");
+gettext("#appname# Version: #version#");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("Request created in #timing#s");
@@ -1457,7 +1457,7 @@ gettext("Save");
 gettext("Authentication Sources");
 
 /* ./templates/ktcore/authentication/manage.smarty */
-gettext("By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data.");
+gettext("By default, #appname# controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data.");
 
 /* ./templates/ktcore/authentication/manage.smarty */
 gettext("Add authentication source");
@@ -2312,7 +2312,7 @@ gettext("Update");
 gettext("Read plugins from filesystem");
 
 /* ./templates/ktcore/plugins/list.smarty */
-gettext("If you have moved the location of KnowledgeTree on your server filesystem, or installed or removed plugins, the plugins must be re-read from the filesystem");
+gettext("If you have moved the location of #appname# on your server filesystem, or installed or removed plugins, the plugins must be re-read from the filesystem");
 
 /* ./templates/ktcore/plugins/list.smarty */
 gettext("Reread plugins");
@@ -2579,7 +2579,7 @@ gettext("Instead of manually creating the group within the document management s
 gettext("Add from source");
 
 /* ./templates/ktcore/principals/addgroup.smarty */
-gettext("Alternatively, you can manually create a user within KnowledgeTree below.");
+gettext("Alternatively, you can manually create a user within #appname# below.");
 
 /* ./templates/ktcore/principals/addgroup.smarty */
 gettext("Specify group details");
@@ -2702,7 +2702,7 @@ gettext("Edit User Details");
 gettext("Change User Details");
 
 /* ./templates/ktcore/principals/edituser.smarty */
-gettext("Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled.");
+gettext("Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using #appname#'s builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled.");
 
 /* ./templates/ktcore/principals/edituser.smarty */
 gettext("save changes");
@@ -2738,7 +2738,7 @@ gettext("Cancel");
 gettext("Add a user");
 
 /* ./templates/ktcore/principals/adduser.smarty */
-gettext("Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and use the form on the User Management page.");
+gettext("Please complete the form below to add a new user. Fields marked with a red square are required. By default, users are created using #appname#'s builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and use the form on the User Management page.");
 
 /* ./templates/ktcore/principals/adduser.smarty */
 gettext("Create a new user");
@@ -2855,7 +2855,7 @@ gettext("Cancel");
 gettext("Unit Administration");
 
 /* ./templates/ktcore/principals/unitadmin.smarty */
-gettext("KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.");
+gettext("#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.");
 
 /* ./templates/ktcore/principals/unitadmin.smarty */
 gettext("Add New Unit");
@@ -3107,16 +3107,16 @@ gettext("Edit this introduction.");
 gettext("Use the standard introduction.");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
-gettext("Crash Course in KnowledgeTree");
+gettext("Crash Course in #appname#");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
-gettext("New to Document Management, or to KnowledgeTree&trade; 3?  We've written some quick documentation to help you along");
+gettext("New to Document Management, or to #appname#&trade; 3?  We've written some quick documentation to help you along");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
 gettext("Take the crash course.");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
-gettext("Learn about KnowledgeTree 3.");
+gettext("Learn about #appname# 3.");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
 gettext("Don't show me this again.");
@@ -3128,7 +3128,7 @@ gettext("Mail server status");
 gettext("Email has not been configured on this server.  Emailing of documents and sending of notifications are disabled.");
 
 /* ./templates/ktcore/dashlets/mailserver.smarty */
-gettext("Edit the [email] section of the config.ini file to set your email server and the sending address of the KnowledgeTree server.");
+gettext("Edit the [email] section of the config.ini file to set your email server and the sending address of the #appname# server.");
 
 /* ./templates/ktcore/dashlets/notifications.smarty */
 gettext("Items that require your attention");
@@ -3149,10 +3149,10 @@ gettext("Clear all notifications");
 gettext("No items require your attention.");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
-gettext("KnowledgeTree administrator's Guide");
+gettext("#appname# administrator's Guide");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
-gettext("If this is your first KnowledgeTree installation, or if you've just upgraded from KnowledgeTree 2.x, we've put together some information which might help you get to grips with the new system.");
+gettext("If this is your first #appname# installation, or if you've just upgraded from #appname# 2.x, we've put together some information which might help you get to grips with the new system.");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
 gettext("Read the admin introduction.");
@@ -3329,7 +3329,7 @@ gettext("Group:");
 gettext("Update Allocated Permissions");
 
 /* ./templates/ktcore/workflow/editState.smarty */
-gettext("No permissions have been created within KnowledgeTree.");
+gettext("No permissions have been created within #appname#.");
 
 /* ./templates/ktcore/workflow/workflow_notification.smarty */
 gettext("The document <strong>#name#</strong> has changed to     state <strong>#state#</strong>, and you are specified as one of the users to inform     about documents in this state.");
@@ -3857,7 +3857,7 @@ gettext("Manage State");
 gettext("State Effects");
 
 /* ./templates/ktcore/workflow/admin/edit_state.smarty */
-gettext("One of the reasons that workflow is so key to the way KnowledgeTree is used is that states can have a variety of effects on the way other systems work.  For example:  workflow states can override the permissions on a document, and reaching a state can cause notifications to be sent out.");
+gettext("One of the reasons that workflow is so key to the way #appname# is used is that states can have a variety of effects on the way other systems work.  For example:  workflow states can override the permissions on a document, and reaching a state can cause notifications to be sent out.");
 
 /* ./templates/ktcore/workflow/admin/edit_state.smarty */
 gettext("Security");
@@ -3956,7 +3956,7 @@ gettext("Configuration");
 gettext("Security Overview: #name#");
 
 /* ./templates/ktcore/workflow/admin/security_overview.smarty */
-gettext("KnowledgeTree has a powerful security model, in which users can only see documents they have permissions to see.  Workflow is the finest-grained way to allocate permissions to a document, since it can override the permissions assigned at a folder level.");
+gettext("#appname# has a powerful security model, in which users can only see documents they have permissions to see.  Workflow is the finest-grained way to allocate permissions to a document, since it can override the permissions assigned at a folder level.");
 
 /* ./templates/ktcore/workflow/admin/security_overview.smarty */
 gettext("There are 3 different ways in which workflows interact with the system's security:");
@@ -4610,7 +4610,7 @@ gettext("Request Assistance");
 gettext("Document Link Type Management");
 
 /* ./templates/ktcore/document/admin/linktypesadmin.smarty */
-gettext("Within KnowledgeTree it is possible for users to create links between related documents. Link types may include constructs such as \"associated with\" and \"duplicated by\". Please create link types required by your organisation below.");
+gettext("Within #appname# it is possible for users to create links between related documents. Link types may include constructs such as \"associated with\" and \"duplicated by\". Please create link types required by your organisation below.");
 
 /* ./templates/ktcore/document/admin/linktypesadmin.smarty */
 gettext("Add a link type");
@@ -4943,7 +4943,7 @@ gettext("Select Document Version to compare against");
 gettext("This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content.");
 
 /* ./templates/ktcore/document/comparison_version_select.smarty */
-gettext("Document History for KnowledgeTree New UI Presentation");
+gettext("Document History for #appname# New UI Presentation");
 
 /* ./templates/ktcore/document/comparison_version_select.smarty */
 gettext("User");
@@ -4970,7 +4970,7 @@ gettext("This document is currently checked out by <strong>you</strong>.  If thi
 gettext("This document is currently checked out by #checkoutuser#, but you have sufficient priviledges to cancel their checkout.");
 
 /* ./templates/ktcore/document/view.smarty */
-gettext("This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your KnowledgeTree Administrator.");
+gettext("This document is currently checked out by #checkoutuser#.  You cannot make changes until that user checks it in.  If you have urgent modifications to make, please contact your #appname# Administrator.");
 
 /* ./templates/ktcore/document/view.smarty */
 gettext("This document is immutable.  No further content changes can be made to this document, and only administrators (in administration mode) can make changes to the metadata or can move or delete it.");
@@ -4997,7 +4997,7 @@ gettext("Transaction History");
 gettext("This page provides details of all activities that have been carried out on the document.");
 
 /* ./templates/ktcore/document/transaction_history.smarty */
-gettext("Document History for KnowledgeTree New UI Presentation");
+gettext("Document History for #appname# New UI Presentation");
 
 /* ./templates/ktcore/document/transaction_history.smarty */
 gettext("User");
@@ -5021,7 +5021,7 @@ gettext("Version History");
 gettext("This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content.");
 
 /* ./templates/ktcore/document/metadata_history.smarty */
-gettext("Document History for KnowledgeTree New UI Presentation");
+gettext("Document History for #appname# New UI Presentation");
 
 /* ./templates/ktcore/document/metadata_history.smarty */
 gettext("User");
@@ -5072,13 +5072,13 @@ gettext("View current version");
 gettext("Please note");
 
 /* ./templates/ktcore/document/compare.smarty */
-gettext("the information for version #version# comes from an older version of KnowledgeTree and may be incorrect.");
+gettext("the information for version #version# comes from an older version of #appname# and may be incorrect.");
 
 /* ./templates/ktcore/document/compare.smarty */
 gettext("Please note");
 
 /* ./templates/ktcore/document/compare.smarty */
-gettext("the information for version #version# comes from an older version of KnowledgeTree and may be incorrect.");
+gettext("the information for version #version# comes from an older version of #appname# and may be incorrect.");
 
 /* ./templates/ktcore/boolean_search.smarty */
 gettext("Boolean Search");
@@ -5321,7 +5321,7 @@ gettext("Test conditions");
 gettext("Fieldset cannot be made conditional. One of the fields must not be a lookup.");
 
 /* ./templates/ktcore/login.smarty */
-gettext("Login");
+gettext("Login | #appname#");
 
 /* ./templates/ktcore/login.smarty */
 gettext("Please enter your details below to login.");
@@ -5339,7 +5339,7 @@ gettext("Language");
 gettext("login");
 
 /* ./templates/ktcore/login.smarty */
-gettext("KnowledgeTree Version");
+gettext("#appname# Version");
 
 /* ./templates/ktcore/login.smarty */
 gettext("&copy; 2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved");
@@ -5375,7 +5375,7 @@ gettext("Delete Permission");
 gettext("Support and System Information");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree Issue Tracker");
+gettext("#appname# Issue Tracker");
 
 /* ./templates/ktcore/support.smarty */
 gettext("Visit the #tracker#");
@@ -5627,7 +5627,7 @@ gettext("Save Trigger");
 gettext("Select View");
 
 /* ./templates/ktcore/misc/columns/select_view.smarty */
-gettext("Views are the selections of documents and folders you will find throughout KnowledgeTree.  Some of those can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.)");
+gettext("Views are the selections of documents and folders you will find throughout #appname#.  Some of those can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.)");
 
 /* ./templates/ktcore/misc/columns/edit_view.smarty */
 gettext("Edit View");
@@ -5740,3 +5740,8 @@ gettext("The action can be performed on the entire selection.");
 /* ./templates/ktcore/bulk_action_listing.smarty */
 gettext("The action cannot be performed on any of the selected entities.");
 
+/* ./plugins/rssplugin/templates/RSSPlugin/dashlet.smarty */
+gettext("#appname# RSS");
+
+/* ./templates/ktcore/principles/about.smarty */
+gettext("#appname# #versionname#");

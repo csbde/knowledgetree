@@ -1,0 +1,49 @@
+<div>
+	{if $internalrss or $feedlist}
+	<form name='nullForm' id='nullForm' action=''>
+	<select id='feedSelect' name='feedSelect' onchange='loadFeed({$user})'>
+		{if $internalrss}
+			<option selected='selected' value='{$internalrss}'>{i18n arg_appname="$appname"}#appname# RSS{/i18n}</option>
+		{else}
+			<option selected='selected' value='null'>Select External RSS Feed</option>
+		{/if}
+		{if $feedlist}
+		{section name=feed loop=$feedlist}
+		<option value='{$feedlist[feed].url}'>{$feedlist[feed].title}</option>
+		{/section}
+		{/if}
+	</select>
+	{if ($action.url)}<a href="{$action.url}"
+{if $action.description}title="{$action.description}"{/if}
+     >{$action.name}</a>{else}{$action.name}{/if}
+	</form>
+	{/if}
+</div>
+<div id="rssBlock">
+	{if ($internalrss)}
+	<h3>{$internalrss.channel.title}</h3>
+ 	<div class='outerContainer' id='outerContainer'>
+		<table width='90%'>
+		    {section name=i start=0 loop=$itemcount}
+			<tr>
+				<td><strong><a href='{$internalrss.items[i].link}'>{$internalrss.items[i].title}</a><strong></td>
+			</tr>
+			<tr>
+				<td>{$internalrss.items[i].description}</td>
+			</tr>
+			<tr><td><br></td></tr>
+			{/section}
+		</table>
+	</div>
+	<br>
+	{else}
+		{if !$feedlist}
+			{if ($action.url)}<a href="{$action.url}"
+				{if $action.description}title="{$action.description}"{/if}>{$action.name}</a><br>{else}{$action.name}
+	    	{/if}
+    	{/if}
+		<br>No internal {if !$feedlist}or external {/if}feeds available.
+		<br>
+		<br>
+	{/if}
+</div>

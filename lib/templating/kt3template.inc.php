@@ -45,7 +45,9 @@ class KTPage {
     /** resources are "filename"->1 to allow subcomponents to require items. */
     var $js_resources = Array();
     var $css_resources = Array();
+    var $theme_css_resources = Array();
 	var $ie_only_css = Array();
+	var $theme_ie_only_css = Array();
     var $js_standalone = Array();
     var $css_standalone = Array();
 	
@@ -57,7 +59,7 @@ class KTPage {
     
     /** miscellaneous items */
     var $title = '';
-    var $systemName = 'KnowledgeTree';
+    var $systemName = APP_NAME;
     var $systemURL = 'http://www.knowledgetree.com/';
     var $breadcrumbs = false;
     var $breadcrumbDetails = false;
@@ -82,6 +84,9 @@ class KTPage {
     
     /* further initialisation */
     function KTPage() {
+        global $default; 
+        $oConfig = KTConfig::getSingleton();
+        
         /* default css files initialisation */
         $aCSS = Array(
            "resources/css/kt-framing.css",
@@ -90,8 +95,14 @@ class KTPage {
         );
         $this->requireCSSResources($aCSS);
         
+        if($oConfig->get('ui/morphEnabled') == '1'){
+        	$morphTheme = $oConfig->get('ui/morphTo');
+        	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
+        	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
+        }
         // IE only
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
+        
         /* default js files initialisation */
         $aJS = Array();
 
@@ -180,6 +191,15 @@ class KTPage {
 		}
     }
     
+    // require that the specified CSS file is referenced.
+    function requireThemeCSSResource($sResourceURL, $ieOnly = false) {
+        if ($ieOnly !== true) {
+            $this->theme_css_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+		} else {
+		    $this->theme_ie_only_css[$sResourceURL] = 1;
+		}
+    }
+    
     // require that the specified CSS files are referenced.
     function requireCSSResources($aResourceURLs) {
         foreach ($aResourceURLs as $sResourceURL) {
@@ -191,9 +211,18 @@ class KTPage {
     function getCSSResources() {
         return array_keys($this->css_resources);
     }
+    
+    // list the distinct CSS resources.
+    function getThemeCSSResources() {
+        return array_keys($this->theme_css_resources);
+    }
 	
 	function getCSSResourcesForIE() {
         return array_keys($this->ie_only_css);
+    }
+    
+    function getThemeCSSResourcesForIE() {
+        return array_keys($this->theme_ie_only_css);
     }
 
     function requireCSSStandalone($sCSS) {
@@ -324,6 +353,7 @@ class KTPage {
 		$this->userMenu = array("logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
 	    } else {
 		$this->userMenu = array("preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
+					"aboutkt" => $this->_actionhelper(array("name" => _kt("About"), "action" => "aboutkt", "active" => 0)),
 					"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
 	    }
 	} else {

@@ -218,6 +218,15 @@ class DBUtil {
         $aParams = array($iId);
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
+    
+    function deReference($sTable, $iId, $db = null) {
+        global $default;
+        // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
+        $db =& DBUtil::getDB();
+        $sQuery = "UPDATE " . $sTable . " SET disabled = true WHERE id = ?";
+        $aParams = array($iId);
+        return DBUtil::runQuery(array($sQuery, $aParams), $db);
+    }
 
     function &whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;

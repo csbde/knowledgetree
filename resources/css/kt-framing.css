@@ -340,8 +340,6 @@ a.main_nav_item {
     padding-left: 1.5em;
 }
 */
-#navbar ul li.active a:hover:visited,
-#navbar ul li.active a:visited,
 #navbar ul li.active a:hover,
 #navbar ul li.active a
 {
@@ -378,19 +376,11 @@ a.main_nav_item {
 
 }
 
-#breadcrumbs a:visited:hover,
 #breadcrumbs a:hover
 {
     color: #9d0a0a;
     text-decoration: none;
     border-bottom: 1px solid #9d0a0a;
-}
-
-#breadcrumbs a:visited 
-{
-    color: #6b0763;
-    text-decoration: none;
-    border-bottom: 1px solid #6b0763;
 }
     
 /* ------------------ portlets ----------------- */
@@ -424,7 +414,7 @@ a.main_nav_item {
     top: 0;
     left: 30px;
     height: 30px;
-    width: 67%;
+    width: 80%;
     z-index: -1;  
     border:0;
 }
@@ -455,7 +445,7 @@ a.main_nav_item {
     top: 0px;
     left: 30px;
     height: 28px;
-    width: 67%;
+    width: 80%;
     z-index: -1;  
     border: 0;
 }
@@ -472,8 +462,6 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody {
-    /* This is for the left-hand side border */
-    /*background: url(../../resources/graphics/portlet_borderrepeat.png) top left repeat-y;*/
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     padding: 0 0 1em 0;
     margin-right: 1px;
@@ -600,15 +588,12 @@ a.main_nav_item {
 }*/
 
 #portletbar .portlet a {
+	color: #344a6a;
     text-decoration: none;
 }
 
-#portletbar .portlet a:visited {
-    border-bottom: 1px solid purple;
-}
-
 #portletbar .portlet a:hover {
-    color: red;
+    color: #9d0a0a;
     text-decoration: underline;
 }
 
@@ -760,19 +745,11 @@ a.main_nav_item {
 
 }
 
-#content a:visited:hover,
 #content a:hover
 {
     color: #9d0a0a;
     text-decoration: none;
     border-bottom: 1px solid #9d0a0a;
-}
-
-#content a:visited 
-{
-    color: #6b0763;
-    text-decoration: none;
-    border-bottom: 1px solid #6b0763;
 }
 
 #content .descriptiveText 
@@ -940,7 +917,7 @@ a.main_nav_item {
 {
     font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
     padding-bottom: 0.25em;
-    border-width: 0 0 1px 0;
+    border-width: 0 0 0 0;
     border-style: solid;
     border-color: #eee;
     font-size: large;
@@ -1208,61 +1185,40 @@ a.main_nav_item {
 
 /* block level. */
 .ktError {
-    padding: 0 1em;
-    border: 1px solid #ffc21e;
-    margin: 0.5em 0;
-    background: #ffdd80;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
 .ktError p {
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    margin-top: 20px;
 }
 
 /* block level. */
 .ktInfo {
-    padding: 0 1em;
-    border: 1px solid #c5c5c5;
-    margin: 0.5em 0;
-    background: #dedede;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
 .ktInfo p {
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    margin-top: 20px;
 }
 
 
-.ktBlock { 
-    padding: 0 1em;
-    border: 1px solid #c5c5c5;
-    background-color: #fcfcfc;
-    margin: 0.5em 0;
+.ktBlock {
+	position: relative;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
 
-.ktBlock, .ktInfo, .ktError { 
-    background-repeat: repeat-x;
-    background-position: top left;
+.ktInfo, .ktError {
+	position: relative;
 }
 
-.ktInfo { 
-    background-image: url(../../resources/graphics/dashlet-gradient-info.gif);
-}
-
-.ktError { 
-    background-image: url(../../resources/graphics/dashlet-gradient-error.gif);
-}
-
-#dashboard-container-left .ktBlock,
-#dashboard-container-left .ktInfo,
-#dashboard-container-left .ktError,
-#dashboard-container-right .ktBlock,
-#dashboard-container-right .ktInfo,
-#dashboard-container-right .ktError 
-{ 
-    -moz-border-radius: 15px; 
-}
 #dashboardBox {
     width: 80%
 }
@@ -1289,6 +1245,12 @@ a.main_nav_item {
 .searchbutton {
     border: 1px solid black;
     margin: 0.5em;
+}
+
+.outerContainer{
+	height: 450px;
+	overflow: auto;
+    margin-bottom: 20px;
 }
 
 /* ========== kt actions 
@@ -1348,7 +1310,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding: 0;
     padding-top: 16px;
     height: 0px !important;
-    height /**/: 16px;
+    height: 16px;
     width: 16px;
     cursor: pointer;
 }
@@ -1414,78 +1376,498 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /*     background-color: #ddf; */
 }
 
-#dashboard_block_topleft {
+.dashboard_block_topleft {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 36px;
     top: 0px;
     left: 0px;
+    background: url(../graphics/dashlet_topleft.png) top left no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_toprepeat {
+.dashboard_block_toprepeat {
     position: absolute;
-    width: 95%;
-    height: 3px;
+    width: 90%;
+    height: 36px;
     top: 0px;
     left: 30px;
+    background: white url(../graphics/dashlet_toprepeat.png) top left repeat-x;
+    z-index:-1;
 }
 
-#dashboard_block_topright {
+.dashboard_block_topright {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 36px;
     top: 0px;
     right: 0px;
+    background: url(../graphics/dashlet_topright.png) top right no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_leftrepeat {
+.dashboard_block_leftrepeat_top {
     position: absolute;
-    width: 3px;
-    height: 95%;
-    top: 30px;
+    width: 13px;
+    height: 50%;
+    top: 5px;
     left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
 }
 
-#dashboard_block_bottomleft {
+.dashboard_block_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.dashboard_block_bottomleft {
     position: absolute;
     width: 40px;
     height: 40px;
     bottom: 0px;
     left: 0px;
+    background: url(../graphics/dashlet_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_bottomrepeat {
+.dashboard_block_bottomrepeat {
     position: absolute;
-    width: 95%;
-    height: 3px;
+    width: 92%;
+    height: 13px;
     bottom: 0px;
     left: 30px;
+    background: white url(../graphics/dashlet_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
 }
 
-#dashboard_block_bottomright {
+.dashboard_block_bottomright {
     position: absolute;
     width: 40px;
     height: 40px;
     bottom: 0px;
     right: 0px;
+    background: url(../graphics/dashlet_bottomright.png) bottom right no-repeat;
+    z-index:-1;
 }
 
-#dashboard_block_rightrepeat {
+.dashboard_block_rightrepeat_top {
     position: absolute;
-    width: 3px;
-    height: 95%;
-    top: 30px;
+    width: 13px;
+    height: 50%;
+    top: 5px;
     right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_bottom
+{ 
+    display: none;
 }
 
 .dashboard_block {
     width: 100%;
-/*     background-color: #fdd; */
 }
+
+.dashboard_block_empty{
+	border:none;
+}
+
+.error_dashlet_topleft {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/error_topleft.png) top left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_topleft_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/error_topleft_small.png) top left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_toprepeat {
+    position: absolute;
+    width: 95%;
+    height: 55px;
+    top: 0px;
+    left: 13px;
+    background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_toprepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    top: 0px;
+    left: 13px;
+    background: #ffdd80 url(../graphics/error_toprepeat.png) bottom left repeat-x;
+    z-index:-1;
+    border-top: 1px solid #FFC21E;
+}
+
+.error_dashlet_topright {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/error_topright.png) top right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_topright_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/error_topright_small.png) top right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_leftrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    left: 0px;
+    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.error_dashlet_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.error_dashlet_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    bottom: 0px;
+    left: 0px;
+    background: url(../graphics/error_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_bottomrepeat {
+    position: absolute;
+    width: 95%;
+    height: 30px;
+    bottom: 0px;
+    left: 10x;
+    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_bottomrepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    bottom: 0px;
+    left: 10x;
+    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+    background: url(../graphics/error_bottomright.png) bottom right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_rightrepeat_top {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.error_dashlet_rightrepeat_bottom {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: #ffdd80 url(../graphics/error_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.error_dashlet_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_toprepeat
+{ 
+    height: 38px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_bottomrepeat
+{ 
+    height: 20px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_leftrepeat_bottom
+{ 
+    display: none;
+}
+
+.info_dashlet_topleft {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/info_topleft.png) top left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_topleft_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/info_topleft_small.png) top left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_toprepeat {
+    position: absolute;
+    width: 95%;
+    height: 55px;
+    top: 0px;
+    left: 13px;
+    background: #DEDEDE url(../graphics/info_toprepeat.png) top left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_toprepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    top: 0px;
+    left: 13px;
+    background: #DEDEDE url(../graphics/info_toprepeat.png) bottom left repeat-x;
+    z-index:-1;
+    border-top: 1px solid #C5C5C5;
+}
+
+.info_dashlet_topright {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/info_topright.png) top right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_topright_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/info_topright_small.png) top right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_leftrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    left: 0px;
+    background: #DEDEDE url(../graphics/info_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.info_dashlet_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: #DEDEDE url(../graphics/info_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.info_dashlet_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    bottom: 0px;
+    left: 0px;
+    background: url(../graphics/info_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_bottomrepeat {
+    position: absolute;
+    width: 95%;
+    height: 30px;
+    bottom: 0px;
+    left: 10x;
+    background: #DEDEDE url(../graphics/info_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_bottomrepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    bottom: 0px;
+    left: 10x;
+    background: #DEDEDE url(../graphics/info_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+    background: url(../graphics/info_bottomright.png) bottom right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_rightrepeat_top {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #DEDEDE url(../graphics/info_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.info_dashlet_rightrepeat_bottom {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: #DEDEDE url(../graphics/info_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.info_dashlet_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_toprepeat
+{ 
+    height: 38px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_bottomrepeat
+{ 
+    height: 20px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_leftrepeat_bottom
+{ 
+    display: none;
+}
+
 
 #copyrightbarBorder {
     position: relative;
-    height: 2.45em;
+    height: 62px;
     width: 97.65%;
     padding: 0em 1em;
     margin-top: 10px;
@@ -1495,7 +1877,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 #copyrightbarBg {
     position: absolute;
     background: url(../../resources/graphics/footer_bg.png) top left repeat-x;
-    height: 2.45em;
+    height: 62px;
     width: 99%;
     right: 5px;
     top: 0px;
@@ -1505,7 +1887,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     position: absolute;
     background: url(../../resources/graphics/footer_left.png) top left no-repeat;
     width:8px;
-    height:2.45em;
+    height:62px;
     top:0px;
     left:3px;
 }
@@ -1513,7 +1895,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 #copyrightbarRight{
     position: absolute;
     background: url(../../resources/graphics/footer_right.png) top right no-repeat;
-    height:2.45em;
+    height:62px;
     width:8px;
     top:0px;
     right:0px;
@@ -1521,13 +1903,67 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 #copyrightbar {
     position: absolute;
+    top:10px;
+    left:20px;
+    color: #000000;
+    font-size: small;
+    height:62px;
+    width: 98%;
+    overflow: hidden;
+}
+
+#copyrightbarBorderDisclaimer {
+    position: relative;
+    height: 82px;
+    width: 97.65%;
+    padding: 0em 1em;
+    margin-top: 10px;
+    margin: 0.5em 0 0.5em 0;
+}
+
+#copyrightbarBgDisclaimer{
+    position: absolute;
+    background: url(../../resources/graphics/footer_bg_disclaimer.png) top left repeat-x;
+    height: 100px;
+    width: 99%;
+    right: 5px;
+    top: 0px;
+}
+
+#copyrightbarLeftDisclaimer{
+    position: absolute;
+    background: url(../../resources/graphics/footer_left_disclaimer.png) top left no-repeat;
+    width:8px;
+    height:100px;
+    top:0px;
+    left:3px;
+}
+
+#copyrightbarRightDisclaimer{
+    position: absolute;
+    background: url(../../resources/graphics/footer_right_disclaimer.png) top right no-repeat;
+    height:100px;
+    width:8px;
+    top:0px;
+    right:0px;
+}
+
+#copyrightbarDisclaimer {
+    position: absolute;
     top:6px;
     left:20px;
     color: #000000;
     font-size: small;
-    height: 2.45em;
+    height:82px;
     width: 98%;
     overflow: hidden;
+}
+
+.copyrightbarBorderLogo{
+	position: absolute;
+    top:25px;
+    right:20px;
+	border: 0;
 }
 
 hr {
@@ -1732,15 +2168,18 @@ hr {
 
 .dashboard_block_icons
 { 
-    float: right;
+    position: absolute;
+	top: 0px;
+	right: 10px;
     text-align: right;
-    margin: 0.75em 0em 0 0;
-    z-index: 100;
+    margin: 0.2em 0em 0 0;
 }
 
 .dashboard_block_handle
-{ 
+{
     cursor: pointer;
+    margin: 0.2em -0.5em 0.5em 0;
+    font-size:small;
 }
 
 .dashboard_block.rolled-up .dashboard_block_body
@@ -1748,9 +2187,31 @@ hr {
     display: none;
 }
 
-.dashboard_block .dashboard_block_body 
+.ktBlock .dashboard_block_body
 { 
     z-index:99;
+    margin: 8px 0 10px 0;
+    background-color:#FFFFFF;
+}
+
+.ktError .dashboard_block_body
+{
+    z-index:99;
+    margin: 0;
+    background-color: #ffdd80;
+}
+
+.ktInfo .dashboard_block_body
+{
+    z-index:99;
+    margin: 0;
+    background-color: #DEDEDE;
+}
+
+.dashboard_block .dashboard_block_body  .edit_action 
+{ 
+    z-index:99;
+    background-color:#FFFFFF;
 }
 
 /* actions */
@@ -1787,9 +2248,17 @@ hr {
 #content .dashboard_block.rolled-up h2 
 { 
     border-bottom-width: 0px;
-    padding-bottom: 0px;
+    padding-bottom: 10px;
 }
 
+
+
+#content .ktBlock h2 
+{ 
+    border-bottom-width: 0px;
+    color: #FFFFFF;
+    font-size: small;
+}
 
 #content .dashboard_block.closed 
 { 

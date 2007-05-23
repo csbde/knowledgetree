@@ -154,8 +154,13 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             header("Content-Disposition: attachment; filename=\"" . $oUrlEncodedFileName . "\"");
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Cache-Control: must-revalidate");
-
+            // HTTP/1.1
+			header("Cache-Control: no-store, no-cache, must-revalidate");
+			header("Cache-Control: post-check=0, pre-check=0", false);
+			
+			// HTTP/1.0
+			header("Pragma: no-cache");
+			
             $oFile = new KTFSFileLike($sPath);
             KTFileLikeUtil::send_contents($oFile);
         } else {

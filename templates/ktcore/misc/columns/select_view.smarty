@@ -1,6 +1,6 @@
 <h2>{i18n}Select View{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Views are the selections of documents and folders you will find throughout KnowledgeTree.  Some of those
+<p class="descriptiveText">{i18n arg_appname="$appname"}Views are the selections of documents and folders you will find throughout #appname#.  Some of those
 can be configured to use different kinds of columns (e.g. workflow state, the creator's name, etc.){/i18n}</p>
 
 <ul>

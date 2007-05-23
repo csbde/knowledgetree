@@ -14,10 +14,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 msgid ""
-"&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software "
+"&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software "
 "(Pty) Ltd.</a> All Rights Reserved"
 msgstr ""
-"&copy; 2006 <a href=\"http://www.ktdms.com/\">The Jam Warehouse Software "
+"&copy; 2006 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software "
 "(Pty) Ltd.</a> Todos los Derechos Reservados - <a href=\"http://www."
 "oriondatacenter.com/\">Orion Datacenter.</a> Bussines Partner para Colombia"
 

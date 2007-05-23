@@ -2540,4 +2540,73 @@ ALTER TABLE `workflow_transitions`
 ALTER TABLE `workflows`
   ADD CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`);
 
+
+CREATE TABLE `plugin_rss` 
+( `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `url` varchar(200) NOT NULL,
+  `title` varchar(20) NOT NULL,
+  PRIMARY KEY  (`id`)) 
+ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `zseq_plugin_rss` 
+(
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
+   PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
+CREATE TABLE `tag_words` (            
+   `id` int(10) NOT NULL,     
+   `tag` varchar(100) default NULL,    
+   PRIMARY KEY  (`id`))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+
+CREATE TABLE `document_tags` (
+   `document_id` int(10) NOT NULL, 
+   `tag_id` int(10) NOT NULL,       
+   PRIMARY KEY  (`document_id`,`tag_id`),
+   CONSTRAINT fk_document_tags_document_id FOREIGN KEY (document_id) REFERENCES documents(id) ON UPDATE CASCADE ON DELETE CASCADE,
+   CONSTRAINT fk_document_tags_tag_id FOREIGN KEY (tag_id) REFERENCES tag_words(id) ON UPDATE CASCADE ON DELETE CASCADE
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `zseq_document_tags` (                    
+   `id` int(10) NOT NULL auto_increment,       
+   PRIMARY KEY  (`id`))
+ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `zseq_tag_words` (                         
+   `id` int(10) NOT NULL auto_increment,        
+   PRIMARY KEY  (`id`))
+ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE fieldsets ADD disabled tinyint not null default 0;
+
+CREATE TABLE `uploaded_files` (                                                           
+`tempfilename` varchar(100) NOT NULL,                                                   
+`filename` varchar(100) NOT NULL,                                                       
+`userid` int(11) NOT NULL,                                                              
+`uploaddate` timestamp NOT NULL,  
+`action` char(1) NOT NULL COMMENT 'A = Add, C = Checkin',                         
+`document_id` int(11) default NULL                                                      
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `download_files` (                              
+`document_id` int(10) unsigned NOT NULL,                   
+`session` varchar(100) NOT NULL,                           
+`download_date` timestamp NULL default CURRENT_TIMESTAMP,  
+`downloaded` int(10) unsigned NOT NULL default '0',        
+`filesize` int(10) unsigned NOT NULL,                      
+`content_version` int(10) unsigned NOT NULL,               
+`hash` varchar(100) NOT NULL,                              
+PRIMARY KEY  (`document_id`,`session`)                     
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `index_files` (
+`document_id` int(10) unsigned NOT NULL,                                               
+`user_id` int(10) unsigned NOT NULL,                                                   
+`indexdate` timestamp NOT NULL,  
+PRIMARY KEY  (`document_id`)                                                           
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
 SET FOREIGN_KEY_CHECKS=1;

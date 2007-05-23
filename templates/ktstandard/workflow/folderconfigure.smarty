@@ -1,6 +1,6 @@
 <h2>{i18n}Configure Workflows for this Folder{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}This installation of KnowledgeTree allocates workflows
+<p class="descriptiveText">{i18n arg_appname="$appname"}This installation of #appname# allocates workflows
 to documents by their location.  To specify the workflow to be used by all documents 
 <strong>directly</strong> in this folder, please specify the workflow below.  Otherwise,
 users will be able to choose the workflow, and some documents may have no workflow

@@ -63,7 +63,7 @@ function controllerRedirect($sAction, $sQueryString = "") {
  * @param string the link text (optional)
  * @return string the html link if the link text is specified, otherwise just the url
  */
-function generateLink($sTargetPage, $sQueryString = "", $sLinkText = "") {
+function generateLink($sTargetPage, $sQueryString = "", $sLinkText = "", $bLinkUrl = false) {
     global $default;
 
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
@@ -72,7 +72,9 @@ function generateLink($sTargetPage, $sQueryString = "", $sLinkText = "") {
              $sTargetPage;
     
     $sLink = KTUtil::addQueryString($sLink, $sQueryString);
-
+	if($bLinkUrl == true){
+		$sLinkText = $sLink;
+	}
     return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
 }
 
@@ -112,12 +114,12 @@ function generateControllerUrl($sAction, $sQueryString = "", $bReturnLink = true
  * @param string the querystring (optional)
  * @return string the generated href
  */
-function generateControllerLink($sAction, $sQueryString = "", $sLinkText = "") {
+function generateControllerLink($sAction, $sQueryString = "", $sLinkText = "", $bLinkUrl = false) {
     $qs = "";
     if (!empty($sQueryString)) {
         $qs = 'qs=' . urlencode($sQueryString);
     }
-    return generateLink("/control.php?action=$sAction", $qs, $sLinkText);
+    return generateLink("/control.php?action=$sAction", $qs, $sLinkText, $bLinkUrl);
 }
 
 /**

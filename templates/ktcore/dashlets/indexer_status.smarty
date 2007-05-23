@@ -1,9 +1,21 @@
 {if $no_transforms}
-<div class="ktError"><p><strong>{i18n}Warning:{/i18n}</strong>  {i18n}There are currently
-no active indexers registered.  No content indexing will occur.{/i18n}</p></div>
+<div class="ktError">
+	<div class="error_dashlet_rightrepeat_bottom"></div>
+	<div class="error_dashlet_leftrepeat_bottom"></div>
+	<p><strong>{i18n}Warning:{/i18n}</strong>  {i18n}There are currently no active indexers registered.  No content indexing will occur.{/i18n}</p>
+	<div class="error_dashlet_topleft_small"></div>
+    <div class="error_dashlet_toprepeat_small"></div>
+	<div class="error_dashlet_topright_small"></div>
+	
+	<div class="error_dashlet_bottomleft"></div>
+    <div class="error_dashlet_bottomrepeat_small"></div>
+	<div class="error_dashlet_bottomright"></div>
+</div>
 {else}
 {if empty($transforms)} 
-<div class="ktInfo"><p>{i18n}All indexers claim to be working correctly.{/i18n}</p></div>
+<div class="ktInfo">
+	<p>{i18n}All indexers claim to be working correctly.{/i18n}</p>
+</div>
 {else}
 <table class="kt_collection">
 <thead>

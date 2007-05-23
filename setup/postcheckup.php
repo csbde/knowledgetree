@@ -41,7 +41,7 @@ function writablePath($name, $path) {
 ?>
 <html>
   <head>
-    <title>KnowledgeTree Post-Configuration Checkup</title>
+    <title><?php echo APP_NAME;?> Post-Configuration Checkup</title>
     <style>
 th { text-align: left; }
     </style>
@@ -49,9 +49,9 @@ th { text-align: left; }
 
   <body>
 
-<h1>KnowledgeTree post-configuration checkup</h1>
+<h1><?php echo APP_NAME;?> post-configuration checkup</h1>
 
-<p>This allows you to check that your KnowledgeTree configuration is set
+<p>This allows you to check that your <?php echo APP_NAME;?> configuration is set
 up correctly.  You can run this at any time after configuration to check
 that things are still set up correctly.</p>
 
@@ -71,7 +71,7 @@ if (substr($default->documentRoot, 0, strlen(KT_DIR)) == KT_DIR) {
     set to the default, which is inside the web root.  This may present
     a security problem if your documents can be accessed from the web,
     working around the permission system in
-    KnowledgeTree.</font></strong></p>';
+    '.APP_NAME.'.</font></strong></p>';
 }
 
 ?>

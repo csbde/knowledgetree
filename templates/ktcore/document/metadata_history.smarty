@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content.{/i18n}</p>
 
 
-    <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">
+    <table class="document_history" summary="{i18n arg_appname="$appname"}Document History for #appname# New UI Presentation{/i18n}" cellspacing="0">
 
         <thead>
             <tr>
@@ -12,7 +12,7 @@
                 <th class="date">{i18n}Content Version{/i18n}</th>
                 <th class="compare">{i18n}Compare with Current{/i18n}</th>
                 <th class="compare">{i18n}Compare with Other Version{/i18n}</th>
-
+				<th class="versiondate">Date Created</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +37,7 @@
                 <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
                 {/if}
                 </td>
+                <td class="versiondate">{$oVersion->getVersionCreated()}</td>
             </tr>
             {/foreach}
         </tbody>

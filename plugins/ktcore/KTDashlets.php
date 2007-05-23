@@ -40,7 +40,7 @@ class KTInfoDashlet extends KTBaseDashlet {
     var $help_id;
 
     function KTInfoDashlet() {
-        $this->sTitle = _kt('Welcome to KnowledgeTree');
+        $this->sTitle = sprintf(_kt('Welcome to %s'), APP_NAME);
     }
 
     function is_active($oUser) {
@@ -80,7 +80,7 @@ class KTInfoDashlet extends KTBaseDashlet {
         
         $this->aHelpInfo = $aHelpInfo;
         $this->canEdit = $can_edit;
-        $this->sTitle = $this->aHelpInfo['title'];
+        $this->sTitle = str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['title']);
         
         return true;
     }
@@ -90,8 +90,8 @@ class KTInfoDashlet extends KTBaseDashlet {
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/kt3release');
               
         $aTemplateData = array(
-            'title' => $this->aHelpInfo['title'],
-            'body' => $this->aHelpInfo['body'],
+            'title' => str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['title']),
+            'body' => str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['body']),
             'can_edit' => $this->canEdit,
             'target_name' => $this->helpLocation,
             'help_id' => $this->aHelpInfo['help_id'],

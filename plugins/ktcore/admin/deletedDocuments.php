@@ -43,14 +43,38 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $this->oPage->setBreadcrumbDetails(_kt('view'));
     
         $aDocuments =& Document::getList("status_id=" . DELETED);
-        
-        
+
+        if(!empty($aDocuments)){
+        	$items = count($aDocuments);
+
+			if(fmod($items, 10) > 0){
+				$pages = floor($items/10)+1;
+			}else{
+				$pages = ($items/10);
+			}
+			for($i=1; $i<=$pages; $i++){
+				$aPages[] = $i;
+			}
+			if($items < 10){
+				$limit = $items-1;
+			}else{
+				$limit = 9;
+			}
+				
+			for($i = 0; $i <= $limit; $i++){
+				$aDocumentsList[] = $aDocuments[$i];
+			}
+        }
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/deletedlist');
         $oTemplate->setData(array(
             'context' => $this,
-            'documents' => $aDocuments,
+            'fullList' => $aDocuments,
+            'documents' => $aDocumentsList,
+            'pagelist' => $aPages,
+            'pagecount' => $pages,
+            'itemcount' => $items,
         ));
         return $oTemplate;
     }
@@ -63,13 +87,21 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         if (array_key_exists('restore', $submit)) {
             return $this->do_confirm_restore();
         }
+        if (array_key_exists('expungeall', $submit)) {
+            return $this->do_confirm_expunge(true);
+        }
         $this->errorRedirectToMain(_kt('No action specified.'));
     }
     
-    function do_confirm_expunge() {
+    function do_confirm_expunge($all = false) {
         $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
+        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
+        $full_docs = KTUtil::arrayGet($_REQUEST, 'docIds', array());
+        
+        if($all == true){
+        	$selected_docs = $full_docs;
+        }
         
         $this->oPage->setTitle(sprintf(_kt('Confirm Expunge of %d documents'), count($selected_docs)));
         
@@ -96,9 +128,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         return $oTemplate;
     }
 
-    function do_finish_expunge() {
-
-        
+    function do_finish_expunge() {     
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
     
         $aDocuments = array();
@@ -224,7 +254,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                 
                 // create a doc-transaction.
                 // FIXME does this warrant a transaction-type?
-                $oTransaction = new DocumentTransaction($oDoc, 'Restored from deleted state by ' . $this->oUser->getName(), 'ktcore.transactions.update');
+                $oTransaction = new DocumentTransaction($oDoc, _kt('Restored from deleted state by ') . $this->oUser->getName(), 'ktcore.transactions.update');
                 if (!$oTransaction->create()) {
                     ; // do nothing?  the state of physicaldocumentmanager...
                 }

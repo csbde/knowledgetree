@@ -1,0 +1,105 @@
+<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
+<h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
+<p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
+<p>Copyright &copy; 2004-2007 <a href="http://www.jamwarehouse.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved. <a href="http://www.knowledgetree.com/About/legal/license">View License Agreement</a><br />
+KnowledgeTree&trade; is a <a href="http://www.knowledgetree.com/About/legal/trademark_usage_grant">trademark</a> of The Jam Warehouse Software (Pty) Ltd.
+</p>
+<p>
+<strong>KnowledgeTree is a business unit of The Jam Warehouse Software (Pty) Ltd.</strong><br />
+Unit 1, Tramber Place, Blake Street, Observatory, Cape Town, 7925 South Africa,  +27 21 4477440,  <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
+</p>
+<p>
+<strong>KnowledgeTree Sales</strong><br />
+To purchase support and extended features for KnowledgeTree or to license KnowledgeTree for use in your own application, please contact our sales team:
+</p>
+<p>
+Email Sales: <a href="mailto:sales@knowledgetree.com">sales@knowledgetree.com</a><br />
+Call Sales: +1 415 670-9759
+</p>
+<p><strong>Join the KnowledgeTree Community</strong>
+<ul>
+	<li><a href="http://forge.knowledgetree.com/">KTForge</a>: Collaborate and develop KnowledgeTree extensions</li>
+	<li><a href="http://forums.knowledgetree.com/">Forums</a>: Discuss KnowledgeTree with expert community users and developers</li>
+	<li><a href="http://wiki.knowledgetree.com/">Wiki</a>: Search the knowledge base of user and developer topics</li>
+	<li><a href="http://issues.knowledgetree.com/">Issues</a>: Log a bug or suggest a new feature</li>
+	<li><a href="http://people.knowledgetree.com/">Blogs</a>: See what the KnowledgeTree team have to say</li>
+</ul>
+</p>
+<p>
+<strong>Thanks to the following developers for their contributions</strong></p>
+<ul>
+	<li>
+		Fu Bin
+	</li>
+	<li>
+		Guillaume Duflouxc
+	</li>
+	<li>
+		David Alfonso Faspar
+	</li>
+	<li>
+		Rogerio Kohler
+	</li>
+	<li>
+		Pavel Lastovicka
+	</li>
+	<li>
+		 Marco Lusini
+	</li>
+	<li>
+		 Michael Malone
+	</li>
+	<li>
+		 Jochen Meijers
+	</li>
+	<li>
+		Antti Poro
+	</li>
+	<li>
+		 Nicolas Quienot
+	</li>
+	<li>
+		 Leonardo Russo
+	</li>
+	<li>
+		 Ricardo Silva
+	</li>
+	<li>
+		 Paul Trgina
+	</li>
+</ul>
+
+<p><strong>Third Party Software</strong></p>
+<table border="0" cellpadding="10">
+	<tr>
+		<td><div style="background-color:#339900; width:104px;"><img src="{$rootUrl}/resources/graphics/thirdparty/pear.gif"/></div></td>
+		<td>Pear</td>
+	</tr>
+	<tr>
+		<td><img src="{$rootUrl}/resources/graphics/thirdparty/phpmailer.gif"/></td>
+		<td>PHP Mailer</td>
+	</tr>
+	<tr>
+		<td><img src="{$rootUrl}/resources/graphics/thirdparty/smarty.gif"/></td>
+		<td>Smarty</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>JSCalendar</td>
+	</tr>
+	<tr>
+		<td><img src="{$rootUrl}/resources/graphics/thirdparty/mochikit.gif"/></td>
+		<td>MochiKit</td>
+	</tr>
+	<tr>
+		<td><img src="{$rootUrl}/resources/graphics/thirdparty/tinymce.gif"/></td>
+		<td>TinyMCE</td>
+	</tr>
+	<tr>
+		<td><img src="{$rootUrl}/resources/graphics/thirdparty/yui.gif"/></td>
+		<td>YUI</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+</table>

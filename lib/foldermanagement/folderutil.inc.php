@@ -72,13 +72,13 @@ class KTFolderUtil {
         }
         
         // check for conflicts first
-        if (Folder::folderExistsName(KTUtil::getId($oParentfolder), $sFolderName)) {
+        if (Folder::folderExistsName(KTUtil::getId($oParentFolder), $sFolderName)) {
             return PEAR::raiseError(sprintf(_kt('The folder %s already exists.'), $sFolderName));
         }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
-            'comment' => "Folder created",
+            'comment' => _kt('Folder created'),
             'transactionNS' => 'ktcore.transactions.create',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
@@ -215,7 +215,7 @@ class KTFolderUtil {
             KTPermissionUtil::inheritPermissionObject($oFolder, $aOptions);
         }
 
-        return;
+        return true;
     }
     
     function rename($oFolder, $sNewName, $oUser) {
@@ -266,7 +266,7 @@ class KTFolderUtil {
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
-            'comment' => sprintf("Renamed from \"%s\" to \"%s\"", $sOldName, $sNewName),
+            'comment' => sprintf(_kt("Renamed from \"%s\" to \"%s\""), $sOldName, $sNewName),
             'transactionNS' => 'ktcore.transactions.rename',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
@@ -529,12 +529,12 @@ class KTFolderUtil {
         }
         
         
-        var_dump($aFolderMap);
+       // var_dump($aFolderMap);
         
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]);
-            var_dump($oDocument->getFolderID());
+//            var_dump($oDocument->getFolderID());
             $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
             if (PEAR::isError($res) || ($res === false)) {
                 $oStorage->removeFolder($oNewBaseFolder);

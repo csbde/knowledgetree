@@ -76,6 +76,7 @@ class KTSmartyTemplate extends KTTemplate {
         $absroot .= $KTConfig->get("KnowledgeTree/rootUrl");
         
         $smarty->assign("config", $KTConfig);
+        $smarty->assign("appname", $KTConfig->get("ui/appName", "KnowledgeTree"));
         $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
         $smarty->assign("absoluteRootUrl", $absroot);
         $smarty->caching = false;
@@ -163,7 +164,7 @@ class KTSmartyTemplate extends KTTemplate {
         $params['output'] = array();
         if ($none) {
             $params['values'][] = '';
-            $params['output'][] = 'None';
+            $params['output'][] = _kt('None');
         }
         foreach ($entities as $oEntity) {
             $params['values'][] = $oEntity->getId();

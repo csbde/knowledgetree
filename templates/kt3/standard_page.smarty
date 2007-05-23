@@ -9,12 +9,17 @@
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
+    {if $config->get("ui/morphEnabled") == '1'}
+	{foreach item=sResourceURL from=$page->getThemeCSSResources()}
+	<link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
+	{/foreach}
+    {/if}
     
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
 
-    <link rel="icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="{$rootUrl}/resources/graphics/favicon.ico" type="image/x-icon"> 
+    <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
 
 {if $refreshTimeout}
        <meta http-equiv="refresh" content="{$refreshTimeout}" />
@@ -26,6 +31,11 @@
         {foreach item=sResourceURL from=$page->getCSSResourcesForIE()}
         <style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
         {/foreach}
+        {if $config->get("ui/morphEnabled") == '1'}
+    	{foreach item=sResourceURL from=$page->getThemeCSSResourcesForIE()}
+		<style type="text/css" media="all">@import url({$rootUrl}/{$sResourceURL});</style>
+    	{/foreach}
+	    {/if}
     <![endif]-->
     
     <!-- Standalone CSS. -->
@@ -58,8 +68,14 @@
         <div id="bodyTopRight"></div>        
         <div id="bodyPad">
             <div id="logobar">
-                <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
-                <a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="secondary" /></a>
+            	{if $config->get("ui/mainLogo") != ''}
+            		<a href="{$rootUrl}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
+            	{else}
+                	<a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
+                {/if}
+                {if $config->get("ui/companyLogo") != ''}
+                	<a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="secondary" /></a>
+                {/if}
                 <div class="floatClear"></div>
             </div>
             {if (!$page->hide_navbar)}
@@ -94,7 +110,7 @@
                                         &middot;
                                     {/if}
                                 {/foreach}
-                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.png" border="0" align="top" /></a>{/if}
+                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" border="0" align="top" /></a>{/if}
                             </li>
                         </ul>
                     </div>
@@ -161,17 +177,35 @@
                 <!-- any status / error messages get added here. -->
                 {if (!empty($page->errStack))}
                     <div class="ktError">
+				    	<div class="error_dashlet_rightrepeat_bottom"></div>
+				    	<div class="error_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sError from=$page->errStack}
                             <p>{$sError}</p>
                         {/foreach}
+                        <div class="error_dashlet_topleft_small"></div>
+			            <div class="error_dashlet_toprepeat_small"></div>
+			        	<div class="error_dashlet_topright_small"></div>
+			        	
+			        	<div class="error_dashlet_bottomleft"></div>
+			            <div class="error_dashlet_bottomrepeat_small"></div>
+			        	<div class="error_dashlet_bottomright"></div>
                     </div>
                 {/if}
 
                 {if (!empty($page->infoStack))}
                     <div class="ktInfo">
+                    	<div class="info_dashlet_rightrepeat_bottom"></div>
+				    	<div class="info_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sInfo from=$page->infoStack}
                             <p>{$sInfo}</p>
                         {/foreach}
+                        <div class="info_dashlet_topleft_small"></div>
+			            <div class="info_dashlet_toprepeat_small"></div>
+			        	<div class="info_dashlet_topright_small"></div>
+			        	
+			        	<div class="info_dashlet_bottomleft"></div>
+			            <div class="info_dashlet_bottomrepeat_small"></div>
+			        	<div class="info_dashlet_bottomright"></div>
                     </div>
                 {/if}
                 <!-- and finally, the content. -->
@@ -196,15 +230,22 @@
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
     </div>
-    <div id="copyrightbarBorder">
-        <div id="copyrightbarLeft"></div>
-        <div id="copyrightbarRight"></div>
-        <div id="copyrightbarBg"></div>
-        <div id="copyrightbar">
-            {i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
-            &mdash; {i18n arg_version="$versionname"}KnowledgeTree Version: #version#{/i18n} &mdash; {i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
-            {$page->getDisclaimer()}
+    <script src="../../resources/js/loader.js"></script>
+    <div id="{if $page->getDisclaimer() != ''}copyrightbarBorderDisclaimer{else}copyrightbarBorder{/if}">
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarLeftDisclaimer{else}copyrightbarLeft{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarRightDisclaimer{else}copyrightbarRight{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarBgDisclaimer{else}copyrightbarBg{/if}"></div>
+        <div id="{if $page->getDisclaimer() != ''}copyrightbarDisclaimer{else}copyrightbar{/if}">
+            <span style="float:left;">{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}</span>
+            <span style="float:right; margin-right:5px;">{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}</span><br />
+            {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}
+            <p>{$page->getDisclaimer()}</p>
         </div>
+        {if $config->get("ui/poweredByDisabled") == '0'}
+        	<a href="{$rootUrl}"><img src="{$config->get("ui/powerLogo")}" class="copyrightbarBorderLogo" alt="{$config->get("ui/powerLogoTitle")}" title="{$config->get("ui/powerLogoTitle")}"/></a>
+        	
+        {/if}
+        <div class="floatClear"></div>
     </div>    
 </body>
 </html>

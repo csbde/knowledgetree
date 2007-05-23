@@ -43,9 +43,19 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = "", $bAttachDocumen
     	// validate the group id
     	if ($aGroupIDs[$i] > 0) {
 		    $oDestGroup = Group::get($aGroupIDs[$i]);
+
+		    $aMemberGroups = $oDestGroup->getMemberGroups();
+		    foreach ($aMemberGroups as $member){
+		    	$aDestinationGroups[] = $member;
+		    }
+		    $aDestinationGroups[] = $oDestGroup;
+			
 		    $default->log->info("sendingEmail to group " . $oDestGroup->getName());
 		    // for each group, retrieve all the users
-		    $aUsers = $oDestGroup->getUsers();
+		    foreach($aDestinationGroups as $oGroup){
+		    	$aUsers = array_merge($aUsers, $oGroup->getUsers());
+		    }
+
 		    // FIXME: this should send one email with multiple To: users
 		    for ($j=0; $j<count($aUsers); $j++) {
 	    		$default->log->info("sendingEmail to group-member " . $aUsers[$j]->getName() . " with email " . $aUsers[$j]->getEmail());	    	
@@ -164,7 +174,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     }
 
     // emailed link transaction
-    $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document link emailed to " . $sDestEmailAddress, 'ktcore.transactions.email_attachment');
+    $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document copy emailed to ') . $sDestEmailAddress, 'ktcore.transactions.email_attachment');
     if ($oDocumentTransaction->create()) {
         $default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
     } else {
@@ -184,7 +194,7 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	$sMessage .= " \n";
 	$sMessage .= _kt("Click on the hyperlink below to view it.");
 	// add the link to the document to the mail
-	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName);
+	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add optional comment
 	if (strlen($sComment) > 0) {
 		$sMessage .= "<br><br>" . _kt("Comments:") . "<br>" . $sComment;
@@ -219,7 +229,7 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	// need a document to do this.
 	$oDocument =& Document::get($iDocumentID);
 	
-	$oDocumentTransaction = & new DocumentTransaction($oDocument, "Document link emailed to " . $sDestEmailAddress, 'ktcore.transactions.email_link');
+    $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document link emailed to ') . $sDestEmailAddress, 'ktcore.transactions.email_link');
 	if ($oDocumentTransaction->create()) {
 		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");                                    	
 	} else {
@@ -378,6 +388,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
     function do_email() {
         $groupNewRight = trim($_REQUEST['groups_items_added'], chr(160));
+        
         $userNewRight = trim($_REQUEST['users_items_added'], chr(160));
 
         $fEmailAddresses = trim($_REQUEST['fEmailAddresses']);
