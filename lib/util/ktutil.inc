@@ -700,12 +700,22 @@ class KTUtil {
         $aVersions = array();
         $sProfessionalFile = KT_DIR . '/docs/VERSION-PRO.txt';
         $sOssFile = KT_DIR . '/docs/VERSION-OSS.txt';
-        if (file_exists($sProfessionalFile)) {
+        $sDevProfessionalFile = KT_DIR . '/docs/VERSION-PRO-DEV.txt';
+        $sDevOssFile = KT_DIR . '/docs/VERSION-OSS-DEV.txt';
+        if (file_exists($sDevProfessionalFile)) {
+            $sVersion = trim(file_get_contents($sDevProfessionalFile));
+            $aVersions['Development Commercial'] = $sVersion;
+        } elseif (file_exists($sDevOssFile)) {
+            $sVersion = trim(file_get_contents($sDevOssFile));
+            $aVersions['Development OSS'] = $sVersion;
+        } elseif (file_exists($sProfessionalFile)) {
             $sVersion = trim(file_get_contents($sProfessionalFile));
             $aVersions['Pro'] = $sVersion;
-        } else {
+        } elseif (file_exists($sOssFile)) {
             $sVersion = trim(file_get_contents($sOssFile));
             $aVersions['OSS'] = $sVersion;
+        } else {
+            $aVersions['ERR'] = "Unknown version";
         }
         return $aVersions;
     }

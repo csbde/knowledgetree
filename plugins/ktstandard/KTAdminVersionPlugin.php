@@ -26,7 +26,7 @@
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php'); 
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
- 
+
 define('KT_VERSION_URL', 'http://www.knowledgetree.com/kt_versions');
 
 class AdminVersionDashlet extends KTBaseDashlet {
@@ -38,50 +38,50 @@ class AdminVersionDashlet extends KTBaseDashlet {
     }
 
     function is_active($oUser) {
-	$this->oUser = $oUser;
-	return Permission::userIsSystemAdministrator($oUser);
+        $this->oUser = $oUser;
+        return Permission::userIsSystemAdministrator($oUser);
     }
-    
+
     function render() {
-	global $default;
+        global $default;
         $oPlugin =& $this->oPlugin;
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktstandard/adminversion/dashlet');
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktstandard/adminversion/dashlet');
 
-	$aVersions = KTUtil::getKTVersions();
-	$sVersions = '{';
-	
-	foreach($aVersions as $k=>$v) {
-	    $sVersions .= "'$k' : '$v',";
-	}
+        $aVersions = KTUtil::getKTVersions();
+        $sVersions = '{';
 
-	$sVersions = substr($sVersions, 0, -1) . '}';	    
+        foreach($aVersions as $k=>$v) {
+            $sVersions .= "'$k' : '$v',";
+        }
+
+        $sVersions = substr($sVersions, 0, -1) . '}';	    
 
         $sUrl = $oPlugin->getPagePath('versions');
 
-	$aTemplateData = array('context' => $this, 
-			       'kt_versions' => $sVersions,
-			       'kt_versions_url' => $sUrl,
-                               );
+        $aTemplateData = array('context' => $this, 
+                'kt_versions' => $sVersions,
+                'kt_versions_url' => $sUrl,
+                );
 
-	return $oTemplate->render($aTemplateData);
+        return $oTemplate->render($aTemplateData);
     }
 }
- 
+
 class AdminVersionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.adminversion.plugin";
     var $autoRegister = true;
-    
+
     function AdminVersionPlugin($sFilename = null) {
-	$res = parent::KTPlugin($sFilename);
-	$this->sFriendlyName = _kt('Admin Version Plugin');
-	return $res;
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Admin Version Plugin');
+        return $res;
     }
-    
+
     function setup() {
         if (function_exists('curl_init') || (!OS_WINDOWS)) {
-	    $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
-	    $this->registerPage('versions', 'AdminVersionPage');
+            $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
+            $this->registerPage('versions', 'AdminVersionPage');
         }
     }
 }
