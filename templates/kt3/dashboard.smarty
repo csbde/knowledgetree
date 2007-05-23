@@ -3,12 +3,25 @@
     <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
         <div class="{$oDashlet->sClass}">
         	{if $oDashlet->sClass === "ktBlock"}
-        	<div class="dashboard_block_rightrepeat_top"></div>
-        	<div class="dashboard_block_rightrepeat_bottom"></div>
-        	<div class="dashboard_block_leftrepeat_top"></div>
-        	<div class="dashboard_block_leftrepeat_bottom"></div>
-        	{/if}
-        	
+	    	<div class="dashboard_block_rightrepeat_top"></div>
+	    	<div class="dashboard_block_rightrepeat_bottom"></div>
+	    	<div class="dashboard_block_leftrepeat_top"></div>
+	    	<div class="dashboard_block_leftrepeat_bottom"></div>
+	    	{/if}
+	    	
+	    	{if $oDashlet->sClass === "ktError"}
+	    	<div class="error_dashlet_rightrepeat_top"></div>
+	    	<div class="error_dashlet_rightrepeat_bottom"></div>
+	    	<div class="error_dashlet_leftrepeat_top"></div>
+	    	<div class="error_dashlet_leftrepeat_bottom"></div>
+	    	{/if}
+	    	
+	    	{if $oDashlet->sClass === "ktInfo"}
+	    	<div class="info_dashlet_rightrepeat_top"></div>
+	    	<div class="info_dashlet_rightrepeat_bottom"></div>
+	    	<div class="info_dashlet_leftrepeat_top"></div>
+	    	<div class="info_dashlet_leftrepeat_bottom"></div>
+	    	{/if}
             <div class="dashboard_block_icons">
                 <a href="#" class="action action_rollup">&nbsp;</a>
                 <a href="#" class="action action_close">&nbsp;</a>
@@ -20,14 +33,32 @@
                 {$oDashlet->render()}
             </div>
             {if $oDashlet->sClass === "ktBlock"}
-            <div class="dashboard_block_topleft"></div>
-            <div class="dashboard_block_toprepeat"></div>
-        	<div class="dashboard_block_topright"></div>
-        	
-        	<div class="dashboard_block_bottomleft"></div>
-            <div class="dashboard_block_bottomrepeat"></div>
-        	<div class="dashboard_block_bottomright"></div>
-        	{/if}
+	        <div class="dashboard_block_topleft"></div>
+	        <div class="dashboard_block_toprepeat"></div>
+	    	<div class="dashboard_block_topright"></div>
+	    	
+	    	<div class="dashboard_block_bottomleft"></div>
+	        <div class="dashboard_block_bottomrepeat"></div>
+	    	<div class="dashboard_block_bottomright"></div>
+	    	{/if}
+	    	{if $oDashlet->sClass === "ktError"}
+	        <div class="error_dashlet_topleft"></div>
+	        <div class="error_dashlet_toprepeat"></div>
+	    	<div class="error_dashlet_topright"></div>
+	    	
+	    	<div class="error_dashlet_bottomleft"></div>
+	        <div class="error_dashlet_bottomrepeat"></div>
+	    	<div class="error_dashlet_bottomright"></div>
+	    	{/if}
+	    	{if $oDashlet->sClass === "ktInfo"}
+	        <div class="info_dashlet_topleft"></div>
+	        <div class="info_dashlet_toprepeat"></div>
+	    	<div class="info_dashlet_topright"></div>
+	    	
+	    	<div class="info_dashlet_bottomleft"></div>
+	        <div class="info_dashlet_bottomrepeat"></div>
+	    	<div class="info_dashlet_bottomright"></div>
+	    	{/if}
         </div>
     </div>
     {/foreach}
@@ -44,6 +75,18 @@
             <div class="dashboard_block_leftrepeat_top"></div>
         	<div class="dashboard_block_leftrepeat_bottom"></div>
             {/if}
+            {if $oDashlet->sClass === "ktError"}
+        	<div class="error_dashlet_rightrepeat_top"></div>
+        	<div class="error_dashlet_rightrepeat_bottom"></div>
+        	<div class="error_dashlet_leftrepeat_top"></div>
+        	<div class="error_dashlet_leftrepeat_bottom"></div>
+        	{/if}
+        	{if $oDashlet->sClass === "ktInfo"}
+        	<div class="info_dashlet_rightrepeat_top"></div>
+        	<div class="info_dashlet_rightrepeat_bottom"></div>
+        	<div class="info_dashlet_leftrepeat_top"></div>
+        	<div class="info_dashlet_leftrepeat_bottom"></div>
+        	{/if}
             <div class="dashboard_block_icons">
                 <a href="#" class="action action_rollup">&nbsp;</a>
                 <a href="#" class="action action_close">&nbsp;</a>
@@ -62,6 +105,24 @@
         	<div class="dashboard_block_bottomleft"></div>
             <div class="dashboard_block_bottomrepeat"></div>
         	<div class="dashboard_block_bottomright"></div>
+        	{/if}
+        	{if $oDashlet->sClass === "ktError"}
+            <div class="error_dashlet_topleft"></div>
+            <div class="error_dashlet_toprepeat"></div>
+        	<div class="error_dashlet_topright"></div>
+        	
+        	<div class="error_dashlet_bottomleft"></div>
+            <div class="error_dashlet_bottomrepeat"></div>
+        	<div class="error_dashlet_bottomright"></div>
+        	{/if}
+        	{if $oDashlet->sClass === "ktInfo"}
+            <div class="info_dashlet_topleft"></div>
+            <div class="info_dashlet_toprepeat"></div>
+        	<div class="info_dashlet_topright"></div>
+        	
+        	<div class="info_dashlet_bottomleft"></div>
+            <div class="info_dashlet_bottomrepeat"></div>
+        	<div class="info_dashlet_bottomright"></div>
         	{/if}
         </div>
     </div>

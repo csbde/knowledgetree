@@ -177,17 +177,35 @@
                 <!-- any status / error messages get added here. -->
                 {if (!empty($page->errStack))}
                     <div class="ktError">
+				    	<div class="error_dashlet_rightrepeat_bottom"></div>
+				    	<div class="error_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sError from=$page->errStack}
                             <p>{$sError}</p>
                         {/foreach}
+                        <div class="error_dashlet_topleft_small"></div>
+			            <div class="error_dashlet_toprepeat_small"></div>
+			        	<div class="error_dashlet_topright_small"></div>
+			        	
+			        	<div class="error_dashlet_bottomleft"></div>
+			            <div class="error_dashlet_bottomrepeat_small"></div>
+			        	<div class="error_dashlet_bottomright"></div>
                     </div>
                 {/if}
 
                 {if (!empty($page->infoStack))}
                     <div class="ktInfo">
+                    	<div class="info_dashlet_rightrepeat_bottom"></div>
+				    	<div class="info_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sInfo from=$page->infoStack}
                             <p>{$sInfo}</p>
                         {/foreach}
+                        <div class="info_dashlet_topleft_small"></div>
+			            <div class="info_dashlet_toprepeat_small"></div>
+			        	<div class="info_dashlet_topright_small"></div>
+			        	
+			        	<div class="info_dashlet_bottomleft"></div>
+			            <div class="info_dashlet_bottomrepeat_small"></div>
+			        	<div class="info_dashlet_bottomright"></div>
                     </div>
                 {/if}
                 <!-- and finally, the content. -->
@@ -212,6 +230,7 @@
         <div id="bodyBottomRight"></div>
         <div id="bodyBottomLeft"></div>
     </div>
+    <script src="../../resources/js/loader.js"></script>
     <div id="{if $page->getDisclaimer() != ''}copyrightbarBorderDisclaimer{else}copyrightbarBorder{/if}">
         <div id="{if $page->getDisclaimer() != ''}copyrightbarLeftDisclaimer{else}copyrightbarLeft{/if}"></div>
         <div id="{if $page->getDisclaimer() != ''}copyrightbarRightDisclaimer{else}copyrightbarRight{/if}"></div>
