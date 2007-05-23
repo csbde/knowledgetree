@@ -1,7 +1,8 @@
+<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
 <p>Copyright &copy; 2004-2007 <a href="http://www.jamwarehouse.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved. <a href="http://www.knowledgetree.com/About/legal/license">View License Agreement</a><br />
-KnowledgeTree&trade; is <a href="http://www.knowledgetree.com/About/legal/trademark_usage_grant">trademarks</a> of The Jam Warehouse Software (Pty) Ltd.
+KnowledgeTree&trade; is a <a href="http://www.knowledgetree.com/About/legal/trademark_usage_grant">trademark</a> of The Jam Warehouse Software (Pty) Ltd.
 </p>
 <p>
 <strong>KnowledgeTree is a business unit of The Jam Warehouse Software (Pty) Ltd.</strong><br />
@@ -69,7 +70,7 @@ Call Sales: +1 415 670-9759
 </ul>
 
 <p><strong>Third Party Software</strong></p>
-<table border="0">
+<table border="0" cellpadding="10">
 	<tr>
 		<td><div style="background-color:#339900; width:104px;"><img src="{$rootUrl}/resources/graphics/thirdparty/pear.gif"/></div></td>
 		<td>Pear</td>
