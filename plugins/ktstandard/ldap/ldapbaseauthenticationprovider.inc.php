@@ -639,6 +639,11 @@ class KTLDAPBaseAuthenticator extends Authenticator {
     }
 
     function checkSignupPassword($sUsername, $sPassword) {
+    
+        if(empty($sPassword) || empty($sUsername)) {
+            return false;
+        }
+
         $aUsers = $this->findUser($sUsername);
         if (empty($aUsers)) {
             return false;
