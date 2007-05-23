@@ -4,8 +4,16 @@
 {capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
 {if ($isCheckoutUser)}
 <div class="ktInfo">
-<p>{i18n}This document is currently checked out by <strong>you</strong>.  If 
-this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</p>
+	<div class="info_dashlet_rightrepeat_bottom"></div>
+	<div class="info_dashlet_leftrepeat_bottom"></div>
+	<p>{i18n}This document is currently checked out by <strong>you</strong>.  If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</p>
+	<div class="info_dashlet_topleft_small"></div>
+    <div class="info_dashlet_toprepeat_small"></div>
+	<div class="info_dashlet_topright_small"></div>
+	
+	<div class="info_dashlet_bottomleft"></div>
+    <div class="info_dashlet_bottomrepeat_small"></div>
+	<div class="info_dashlet_bottomright"></div>
 </div>
 {else}
 {if ($canCheckin)}
