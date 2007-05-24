@@ -681,7 +681,7 @@ class GeneralMetadataCriterion extends BrowseCriterion {
 
     
     function searchSQL ($aRequest) {
-        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR dm.name LIKE '%!%'  )", 
+        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR DM.name LIKE '%!%'  )", 
         array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));       
         
         return $val;
