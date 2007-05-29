@@ -1261,6 +1261,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                     if(PEAR::isError($oDocument)) {
                         $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
+		                unlink($sTempFilename);
                         return "409 Conflict - " . $oDocument->getMessage();
                     }
 
@@ -1310,11 +1311,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                 if(PEAR::isError($oDocument)) {
                     $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
+                    unlink($sTempFilename);
                     return "409 Conflict - " . $oDocument->getMessage();
                 }
 
                 $this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
 
+                unlink($sTempFilename);
                 return "201 Created";
 
             }  else return "423 Locked - KTWebDAV is in SafeMode";
