@@ -1,11 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.8.0.3-Debian-1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: Oct 30, 2006 at 12:50 PM
--- Server version: 5.0.22
--- PHP Version: 4.4.2-1build1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- 
@@ -102,6 +94,10 @@ INSERT INTO `data_types` VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
+INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words');
+INSERT INTO `document_fields` VALUES (3,'Document Author','STRING',0,0,0,3,0,'Please add a document author');
+INSERT INTO `document_fields` VALUES (4,'Category','STRING',0,1,0,3,0,'Please select a category');
+INSERT INTO `document_fields` VALUES (5,'Media Type','STRING',0,1,0,3,0,'Please select a media type');
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -230,6 +226,8 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default', 0);
 -- Dumping data for table `fieldsets`
 -- 
 
+INSERT INTO `fieldsets` VALUES (2,'Tag Cloud','tagcloud',0,0,NULL,1,0,0,0,'Tag Cloud',0);
+INSERT INTO `fieldsets` VALUES (3,'General information','generalinformation',0,0,NULL,1,0,0,0,'General document information',0);
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
@@ -405,6 +403,16 @@ INSERT INTO `help` VALUES (100, 'pageDisclaimer', 'pageDisclaimer.html');
 -- Dumping data for table `metadata_lookup`
 -- 
 
+INSERT INTO `metadata_lookup` VALUES (2,4,'Technical',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (3,4,'Financial',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (4,4,'Legal',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (5,4,'Administrative',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (6,4,'Miscellaneous',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (7,4,'Sales',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (8,5,'Text',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (9,5,'Image',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (10,5,'Audio',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES (11,5,'Video',NULL,0,0);
 
 -- 
 -- Dumping data for table `metadata_lookup_tree`
@@ -715,6 +723,8 @@ INSERT INTO `permissions` VALUES (8, 'ktcore.permissions.folder_rename', 'Rename
 INSERT INTO `roles` VALUES (-4, 'Authenticated Users');
 INSERT INTO `roles` VALUES (-3, 'Everyone');
 INSERT INTO `roles` VALUES (-2, 'Owner');
+INSERT INTO `roles` VALUES (2, 'Publisher');
+INSERT INTO `roles` VALUES (3, 'Reviewer');
 
 -- 
 -- Dumping data for table `saved_searches`
@@ -965,16 +975,28 @@ INSERT INTO `users_groups_link` VALUES (1, 1, 1);
 -- Dumping data for table `workflow_state_transitions`
 -- 
 
+INSERT INTO `workflow_state_transitions` VALUES (2,2),(3,3),(3,4),(5,5),(6,6);
 
 -- 
 -- Dumping data for table `workflow_states`
 -- 
 
+INSERT INTO `workflow_states` VALUES (2,2,'Draft','Draft',NULL,0,0);
+INSERT INTO `workflow_states` VALUES (3,2,'Approval','Approval',NULL,0,0);
+INSERT INTO `workflow_states` VALUES (4,2,'Published','Published',NULL,0,0);
+INSERT INTO `workflow_states` VALUES (5,3,'Draft','Draft',NULL,0,0);
+INSERT INTO `workflow_states` VALUES (6,3,'Final','Final',NULL,0,0);
+INSERT INTO `workflow_states` VALUES (7,3,'Published','Published',NULL,0,0);
 
 -- 
 -- Dumping data for table `workflow_transitions`
 -- 
 
+INSERT INTO `workflow_transitions` VALUES (2,2,'Request Approval','Request Approval',3,NULL,NULL,NULL,NULL);
+INSERT INTO `workflow_transitions` VALUES (3,2,'Reject','Reject',2,NULL,NULL,NULL,NULL);
+INSERT INTO `workflow_transitions` VALUES (4,2,'Approve','Approve',4,NULL,NULL,NULL,NULL);
+INSERT INTO `workflow_transitions` VALUES (5,3,'Draft Completed','Draft Completed',6,NULL,NULL,NULL,NULL);
+INSERT INTO `workflow_transitions` VALUES (6,3,'Publish','Publish',7,NULL,NULL,NULL,NULL);
 
 -- 
 -- Dumping data for table `workflow_trigger_instances`
@@ -985,6 +1007,8 @@ INSERT INTO `users_groups_link` VALUES (1, 1, 1);
 -- Dumping data for table `workflows`
 -- 
 
+INSERT INTO `workflows` VALUES (2,'Review Process','Review Process',2,1);
+INSERT INTO `workflows` VALUES (3,'Generate Document','Generate Document',5,1);
 
 -- 
 -- Dumping data for table `zseq_active_sessions`
@@ -1080,7 +1104,7 @@ INSERT INTO `zseq_document_content_version` VALUES (1);
 -- Dumping data for table `zseq_document_fields`
 -- 
 
-INSERT INTO `zseq_document_fields` VALUES (1);
+INSERT INTO `zseq_document_fields` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_document_fields_link`
@@ -1098,7 +1122,7 @@ INSERT INTO `zseq_document_link` VALUES (1);
 -- Dumping data for table `zseq_document_link_types`
 -- 
 
-INSERT INTO `zseq_document_link_types` VALUES (2);
+INSERT INTO `zseq_document_link_types` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_document_metadata_version`
@@ -1169,7 +1193,7 @@ INSERT INTO `zseq_field_value_instances` VALUES (1);
 -- Dumping data for table `zseq_fieldsets`
 -- 
 
-INSERT INTO `zseq_fieldsets` VALUES (1);
+INSERT INTO `zseq_fieldsets` VALUES (3);
 
 -- 
 -- Dumping data for table `zseq_folder_doctypes_link`
@@ -1239,7 +1263,7 @@ INSERT INTO `zseq_links` VALUES (1);
 -- Dumping data for table `zseq_metadata_lookup`
 -- 
 
-INSERT INTO `zseq_metadata_lookup` VALUES (1);
+INSERT INTO `zseq_metadata_lookup` VALUES (11);
 
 -- 
 -- Dumping data for table `zseq_metadata_lookup_tree`
@@ -1329,7 +1353,7 @@ INSERT INTO `zseq_role_allocations` VALUES (1);
 -- Dumping data for table `zseq_roles`
 -- 
 
-INSERT INTO `zseq_roles` VALUES (1);
+INSERT INTO `zseq_roles` VALUES (4);
 
 -- 
 -- Dumping data for table `zseq_saved_searches`
@@ -1410,13 +1434,13 @@ INSERT INTO `zseq_users_groups_link` VALUES (3);
 -- Dumping data for table `zseq_workflow_states`
 -- 
 
-INSERT INTO `zseq_workflow_states` VALUES (1);
+INSERT INTO `zseq_workflow_states` VALUES (7);
 
 -- 
 -- Dumping data for table `zseq_workflow_transitions`
 -- 
 
-INSERT INTO `zseq_workflow_transitions` VALUES (1);
+INSERT INTO `zseq_workflow_transitions` VALUES (6);
 
 -- 
 -- Dumping data for table `zseq_workflow_trigger_instances`
@@ -1427,7 +1451,7 @@ INSERT INTO `zseq_workflow_transitions` VALUES (1);
 -- Dumping data for table `zseq_workflows`
 -- 
 
-INSERT INTO `zseq_workflows` VALUES (1);
+INSERT INTO `zseq_workflows` VALUES (3);
 
 INSERT INTO `zseq_plugin_rss` (id) VALUES ('1');
 
