@@ -579,7 +579,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                     'name' => 'unitadmin',
                     'label' => _kt("Unit Administrators"),
                     'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
-                    'important_description' => _kt("Note that its not possible to set a group without a unit as as having unit administration privileges."),
+                    'important_description' => _kt("Note that its not possible to set a group without a unit as having unit administration privileges."),
                     'value' => null,
                 )),                     
             ));        

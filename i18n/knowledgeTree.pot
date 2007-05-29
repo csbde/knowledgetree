@@ -6018,7 +6018,7 @@ msgid "Note that it is not possible to convert between different types of fields
 msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:582
-msgid "Note that its not possible to set a group without a unit as as having unit administration privileges."
+msgid "Note that its not possible to set a group without a unit as having unit administration privileges."
 msgstr ""
 
 #: plugins/ktcore/admin/workflow/newworkflow.inc.php:51
