@@ -1,6 +1,6 @@
-<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
+<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
 <p>Copyright &copy; 2004-2007 <a href="http://www.jamwarehouse.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved. <a href="http://www.knowledgetree.com/About/legal/license">View License Agreement</a><br />
 KnowledgeTree&trade; is a <a href="http://www.knowledgetree.com/About/legal/trademark_usage_grant">trademark</a> of The Jam Warehouse Software (Pty) Ltd.
 </p>
@@ -32,7 +32,7 @@ Call Sales: +1 415 670-9759
 		Fu Bin
 	</li>
 	<li>
-		Guillaume Duflouxc
+		Guillaume Dufloux
 	</li>
 	<li>
 		David Alfonso Faspar
@@ -44,28 +44,34 @@ Call Sales: +1 415 670-9759
 		Pavel Lastovicka
 	</li>
 	<li>
-		 Marco Lusini
+		Michel Loiseleur 
 	</li>
 	<li>
-		 Michael Malone
+		Marco Lusini
 	</li>
 	<li>
-		 Jochen Meijers
+		Michael Malone
+	</li>
+	<li>
+		Jochem Meijers
 	</li>
 	<li>
 		Antti Poro
 	</li>
 	<li>
-		 Nicolas Quienot
+		Nicolas Quienot
 	</li>
 	<li>
-		 Leonardo Russo
+		Antonio Rizzelli
 	</li>
 	<li>
-		 Ricardo Silva
+		Leonardo Russo
 	</li>
 	<li>
-		 Paul Trgina
+		Ricardo Silva
+	</li>
+	<li>
+		Paul Trgina
 	</li>
 </ul>
 
