@@ -155,7 +155,12 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     }
 
     function is_active($oUser) {
-        $this->oUser = $oUser;
+
+    	global $default;
+    	$oConfig =& KTConfig::getSingleton();
+    	if($oConfig->get('dashboard/alwaysShowYCOD')) return true;
+    	
+    	$this->oUser = $oUser;
         $this->checked_out_documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
         
         return (!empty($this->checked_out_documents));
