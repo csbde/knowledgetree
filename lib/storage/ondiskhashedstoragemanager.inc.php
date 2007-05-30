@@ -29,10 +29,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Neil Blakey-Milner, Jam Warehouse (Pty) Ltd, South Africa
  */
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');

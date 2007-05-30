@@ -28,11 +28,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Brad Shuttleworth, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.roles
  */
  
 require_once(KT_LIB_DIR . "/ktentity.inc"); 

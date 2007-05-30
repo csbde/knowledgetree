@@ -28,12 +28,8 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Omar Rahbeeni, CS Holdings, South Africa
- * @package lib.discussions 
  */
+
 class DiscussionThread extends KTEntity{
     var $_bUsePearError = true;
 

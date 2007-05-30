@@ -1,17 +1,4 @@
 <?php
-
-// main library routines and defaults
-require_once("config/dmsDefaults.php");
-require_once(KT_LIB_DIR . '/templating/templating.inc.php');
-require_once(KT_LIB_DIR . '/session/control.inc');
-require_once(KT_LIB_DIR . '/session/Session.inc');
-require_once(KT_LIB_DIR . '/users/User.inc');
-require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
-require_once(KT_LIB_DIR . '/help/help.inc.php');
-require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
-require_once(KT_LIB_DIR . '/authentication/interceptorregistry.inc.php');
-require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
-
 /**
  * $Id$
  *  
@@ -42,11 +29,19 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
+
+// main library routines and defaults
+require_once("config/dmsDefaults.php");
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/session/control.inc');
+require_once(KT_LIB_DIR . '/session/Session.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
+require_once(KT_LIB_DIR . '/help/help.inc.php');
+require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
+require_once(KT_LIB_DIR . '/authentication/interceptorregistry.inc.php');
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 class LoginPageDispatcher extends KTDispatcher {
 

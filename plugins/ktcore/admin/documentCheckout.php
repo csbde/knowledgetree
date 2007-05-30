@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Document Checkout Administration
  *
@@ -27,10 +26,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- * @version $Revision$
- * @author Brad Shuttleworth <brad@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package documentmanagement
  */
 
 /* boilerplate */
