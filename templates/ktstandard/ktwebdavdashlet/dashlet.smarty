@@ -1,0 +1,6 @@
+<div>
+<p>{i18n arg_appname="$appname"}To connect to #appname# via a third-party WebDAV client, please use the following address:{/i18n}<br/>
+<b><a href="{$url}ktwebdav/ktwebdav.php" target="_blank">{$url}ktwebdav/ktwebdav.php</a></b><br/><br/>
+</p>
+</div>
+
