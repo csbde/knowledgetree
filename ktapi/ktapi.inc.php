@@ -314,7 +314,6 @@ class KTAPI_Session
 		$this->user 		= null;
 		$this->session 		= '';
 		$this->sessionid 	= -1;
-		return true;
 	}
 	
 }
@@ -655,6 +654,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$num_items = count($contents);
 		for($i=0;$i<$num_items;$i++)		
 		{
+			$contents[$i]['id'] = (int) $contents[$i]['id'];
 			if ($contents[$i]['item_type'] == 'D')
 			{
 				$contents[$i]['items'] = array();
@@ -766,7 +766,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * This deletes the current folder.
 	 *
 	 * @param string $reason
-	 * @return true
 	 */
 	function delete($reason)
 	{
@@ -790,15 +789,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-
-		return true;
 	}
 
 	/**
 	 * This renames the folder
 	 *
 	 * @param string $newname
-	 * @return true
 	 */
 	function rename($newname)
 	{		
@@ -817,8 +813,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-
-		return true;
 	}
 	
 	/**
@@ -826,7 +820,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @param KTAPI_Folder $ktapi_target_folder
 	 * @param string $reason
-	 * @return true
 	 */
 	function move($ktapi_target_folder, $reason='')
 	{
@@ -852,8 +845,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-
-		return true;
 	}
 	
 	/**
@@ -861,7 +852,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @param KTAPI_Folder $ktapi_target_folder
 	 * @param string $reason
-	 * @return true
 	 */
 	function copy($ktapi_target_folder, $reason='')
 	{
@@ -888,8 +878,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-
-		return true;
 	}
 		
 	/**
@@ -1000,7 +988,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason
 	 * @param string $tempfilename
 	 * @param bool $major_update
-	 * @return true
 	 */	
 	function checkin($filename, $reason, $tempfilename, $major_update=false)
 	{	
@@ -1038,14 +1025,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-		return true;    	
 	}
 	
 	/**
 	 * This reverses the checkout process.
 	 *
 	 * @param string $reason
-	 * @return true
 	 */
 	function undo_checkout($reason)
 	{
@@ -1080,14 +1065,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
-		return true;
 	}
 
 	/**
 	 * This returns a URL to the file that can be downloaded.
 	 *
 	 * @param string $reason
-	 * @return true;
 	 */
 	function checkout($reason)
 	{
@@ -1112,15 +1095,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		DBUtil::commit();
-
-		return true;
 	}
 	
 	/**
 	 * This deletes a document from the folder.
 	 *
 	 * @param string $reason
-	 * @return mixed This returns true or a PEAR::Error 
 	 */
 	function delete($reason)
 	{
@@ -1145,15 +1125,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		DBUtil::commit();
-
-		return true;		
 	}
 	
 	/**
 	 * This changes the owner of the file.
 	 *
 	 * @param string $ktapi_newuser
-	 * @return true
 	 */	
 	function change_owner($newusername, $reason='Changing of owner.')
 	{
@@ -1200,7 +1177,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
         
 		DBUtil::commit();
-		return true;		
 	}	
 	
 	/**
@@ -1210,7 +1186,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason
 	 * @param string $newname
 	 * @param string $newfilename
-	 * @return true
 	 */
 	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
@@ -1225,7 +1200,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$newfilename=null;
 		}
-		
 		
 		$user = $this->ktapi->get_user();
 
@@ -1303,9 +1277,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
-        }	
-        
-		return true;        
+        }
 	}
 	
 	/**
@@ -1315,7 +1287,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason
 	 * @param string $newname
 	 * @param string $newfilename
-	 * @return true
 	 */
 	function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
@@ -1403,15 +1374,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
 
         DBUtil::commit();
-                   
-		return true; 	
 	}	
 	
 	/**
 	 * This changes the filename of the document.
 	 *
 	 * @param string $newname
-	 * @return true
 	 */
 	function renameFile($newname)
 	{
@@ -1430,15 +1398,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
         }
         DBUtil::commit(); 
-		 	
-        return true;
 	}
 	
 	/**
 	 * This changes the document type of the document.
 	 *
 	 * @param string $newname
-	 * @return true
 	 */
 	function change_document_type($documenttype)
 	{
@@ -1464,14 +1429,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 			DBUtil::commit();
 		}
-        return true;
 	}	
 		
 	/**
 	 * This changes the title of the document.
 	 *
 	 * @param string $newname
-	 * @return true
 	 */
 	function rename($newname)
 	{
@@ -1496,15 +1459,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 			DBUtil::commit();
 		}
-			
-        return true;
 	}
 	
 	/**
 	 * This flags the document as 'archived'.
 	 *
 	 * @param string $reason
-	 * @return true
 	 */
 	function archive($reason)
 	{
@@ -1541,16 +1501,13 @@ class KTAPI_Document extends KTAPI_FolderItem
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
-        }
-		 	
-        return true;		
+        }	
 	}	
 	
 	/**
 	 * This starts a workflow on a document.
 	 *
 	 * @param string $workflow
-	 * @return true
 	 */
 	function start_workflow($workflow)
 	{
@@ -1582,14 +1539,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
 		}
 		DBUtil::commit();
-		
-		return true;		
 	}
 	
 	/**
 	 * This deletes the workflow on the document.
 	 *
-	 * @return true
 	 */
 	function delete_workflow()
 	{
@@ -1614,8 +1568,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
 		}
 		DBUtil::commit();
-		
-		return true;		
 	}
 	
 	/**
@@ -1623,7 +1575,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $transition
 	 * @param string $reason
-	 * @return true
 	 */
 	function perform_workflow_transition($transition, $reason)
 	{
@@ -1653,9 +1604,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			DBUtil::rollback();
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
 		}
-		DBUtil::commit();
-		
-		return true;			
+		DBUtil::commit();	
 	}		
 	
 	
@@ -1737,7 +1686,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * This updates the metadata on the file. This includes the 'title'.
 	 *
 	 * @param array This is an array containing the metadata to be associated with the file.
-	 * @return mixed This returns true or a PEAR::Error 
 	 */
 	function update_metadata($metadata)
 	{		 
@@ -1782,8 +1730,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	return new PEAR_Error(sprintf(_kt("Unexpected validation failure: %s."), $result->getMessage()));	
 		 }
 		 DBUtil::commit();
-		 
-		 return true; 		
 	}
 	
 
@@ -1964,7 +1910,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * This does a download of a version of the document.
 	 *
 	 * @param string $version
-	 * @return true
 	 */
 	function download($version=null)
 	{		
@@ -1974,8 +1919,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		
         $oDocumentTransaction = & new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
-        
-        return true;
 	}
 	
 	/**
@@ -2032,11 +1975,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * This expunges a document from the system.
 	 *
 	 * @access public
-	 * @return mixed This returns true or a PEAR::Error 
 	 */
 	function expunge()
 	{
-		if ($this->document->getStatusID())
+		if ($this->document->getStatusID() != 3)
+		{
+			return new PEAR_Error('You should not purge this');
+		}
 		DBUtil::startTransaction();
 		
 		$transaction = & new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
@@ -2052,15 +1997,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$result= $storage->expunge($this->document);
 
 		$this->commitTransaction();
-
-		return true; 
 	}
 	
 	/**
 	 * This expunges a document from the system.
 	 *
 	 * @access public
-	 * @return mixed This returns true or a PEAR::Error 
 	 */
 	function restore()
 	{
