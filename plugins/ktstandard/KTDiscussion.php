@@ -223,6 +223,10 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $iThreadId = KTUtil::arrayGet($_REQUEST, 'fThreadId');
         $oThread = DiscussionThread::get($iThreadId);
 
+        if (PEAR::isError($oThread) || empty($oThread)) {
+            return null;
+        }
+        
         $iCommentId = $oThread->getFirstCommentId();
         $oComment = DiscussionComment::get($iCommentId);
 
