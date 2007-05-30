@@ -147,7 +147,10 @@ INSERT INTO `document_fields` VALUES (5,'Media Type','STRING',0,1,0,3,0,'Please 
 -- 
 
 INSERT INTO `document_link_types` VALUES (-1, 'depended on', 'was depended on by', 'Depends relationship whereby one documents depends on another''s creation to go through approval');
-INSERT INTO `document_link_types` VALUES (0, 'Default', 'Default (reverse)', 'Default link type');
+INSERT INTO `document_link_types` VALUES (0,'Default','Default (reverse)','Default link type');
+INSERT INTO `document_link_types` VALUES (3,'Attachment','','Document Attachment');
+INSERT INTO `document_link_types` VALUES (4,'Reference','','Document Reference');
+INSERT INTO `document_link_types` VALUES (5,'Copy','','Document Copy');
 
 -- 
 -- Dumping data for table `document_metadata_version`
@@ -738,6 +741,27 @@ INSERT INTO `permissions` VALUES (8, 'ktcore.permissions.folder_rename', 'Rename
 -- Dumping data for table `plugins`
 -- 
 
+INSERT INTO `plugins` VALUES (49,'ktcore.generalmetadata.plugin','plugins/generalmetadata/GeneralMetadataPlugin.php',0,0,NULL,0,'General Metadata Search Plugin');
+INSERT INTO `plugins` VALUES (50,'ktcore.tagcloud.plugin','plugins/tagcloud/TagCloudPlugin.php',0,0,NULL,0,'Tag Cloud Plugin');
+INSERT INTO `plugins` VALUES (51,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin');
+INSERT INTO `plugins` VALUES (52,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support');
+INSERT INTO `plugins` VALUES (53,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality');
+INSERT INTO `plugins` VALUES (54,'ktstandard.adminversion.plugin','plugins/ktstandard/KTAdminVersionPlugin.php',0,0,NULL,0,'Admin Version Plugin');
+INSERT INTO `plugins` VALUES (55,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin');
+INSERT INTO `plugins` VALUES (56,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin');
+INSERT INTO `plugins` VALUES (57,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin');
+INSERT INTO `plugins` VALUES (58,'ktstandard.immutableaction.plugin','plugins/ktstandard/ImmutableActionPlugin.php',0,0,NULL,0,'Immutable action plugin');
+INSERT INTO `plugins` VALUES (59,'ktstandard.subscriptions.plugin','plugins/ktstandard/KTSubscriptions.php',0,0,NULL,0,'Subscription Plugin');
+INSERT INTO `plugins` VALUES (60,'ktstandard.discussion.plugin','plugins/ktstandard/KTDiscussion.php',0,0,NULL,0,'Document Discussions Plugin');
+INSERT INTO `plugins` VALUES (61,'ktstandard.email.plugin','plugins/ktstandard/KTEmail.php',0,0,NULL,0,'Email Plugin');
+INSERT INTO `plugins` VALUES (62,'ktstandard.indexer.plugin','plugins/ktstandard/KTIndexer.php',0,0,NULL,0,'Full-text Content Indexing');
+INSERT INTO `plugins` VALUES (63,'ktstandard.documentlinks.plugin','plugins/ktstandard/KTDocumentLinks.php',0,0,NULL,0,'Inter-document linking');
+INSERT INTO `plugins` VALUES (64,'ktstandard.workflowassociation.plugin','plugins/ktstandard/KTWorkflowAssociation.php',0,0,NULL,0,'Workflow Association Plugin');
+INSERT INTO `plugins` VALUES (65,'ktstandard.workflowassociation.documenttype.plugin','plugins/ktstandard/workflow/TypeAssociator.php',0,0,NULL,0,'Workflow allocation by document type');
+INSERT INTO `plugins` VALUES (66,'ktstandard.workflowassociation.folder.plugin','plugins/ktstandard/workflow/FolderAssociator.php',0,0,NULL,0,'Workflow allocation by location');
+INSERT INTO `plugins` VALUES (67,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin');
+INSERT INTO `plugins` VALUES (68,'ktstandard.searchdashlet.plugin','plugins/ktstandard/SearchDashletPlugin.php',0,0,NULL,0,'Search Dashlet Plugin');
+INSERT INTO `plugins` VALUES (69,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin');
 
 -- 
 -- Dumping data for table `role_allocations`
@@ -749,6 +773,7 @@ INSERT INTO `permissions` VALUES (8, 'ktcore.permissions.folder_rename', 'Rename
 -- 
 
 INSERT INTO `roles` VALUES (-4, 'Authenticated Users');
+INSERT INTO `roles` VALUES (4, 'Creator');
 INSERT INTO `roles` VALUES (-3, 'Everyone');
 INSERT INTO `roles` VALUES (-2, 'Owner');
 INSERT INTO `roles` VALUES (2, 'Publisher');
@@ -1369,7 +1394,7 @@ INSERT INTO `zseq_permissions` VALUES (8);
 -- Dumping data for table `zseq_plugins`
 -- 
 
-INSERT INTO `zseq_plugins` VALUES (48);
+INSERT INTO `zseq_plugins` VALUES (69);
 
 -- 
 -- Dumping data for table `zseq_role_allocations`
