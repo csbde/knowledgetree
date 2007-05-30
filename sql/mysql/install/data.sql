@@ -152,8 +152,6 @@ INSERT INTO `document_link_types` VALUES (3,'Attachment','','Document Attachment
 INSERT INTO `document_link_types` VALUES (4,'Reference','','Document Reference');
 INSERT INTO `document_link_types` VALUES (5,'Copy','','Document Copy');
 
-INSERT INTO `document_link_types` VALUES (0, 'Default', 'Default (reverse)', 'Default link type');
-
 -- 
 -- Dumping data for table `document_metadata_version`
 -- 
