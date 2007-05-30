@@ -28,8 +28,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- * @version $Revision$
  */ 
 
 class Session {

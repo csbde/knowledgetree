@@ -1,9 +1,4 @@
 <?php
-require_once(KT_LIB_DIR . '/database/datetime.inc');
-// define error levels
-define("DEBUG", 0);
-define("INFO", 1);
-define("ERROR", 2);
 /**
  * $Id$
  *
@@ -33,12 +28,14 @@ define("ERROR", 2);
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib
  */ 
+
+require_once(KT_LIB_DIR . '/database/datetime.inc');
+// define error levels
+define("DEBUG", 0);
+define("INFO", 1);
+define("ERROR", 2);
+
 class KTLegacyLog {
     /**
      * The minimum logging level- log everything with

@@ -1,8 +1,4 @@
 <?php
-
-require_once(KT_LIB_DIR . "/subscriptions/Subscription.inc");
-require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
-
 /**
  * $Id$
  *
@@ -32,12 +28,11 @@ require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.subscriptions
  */ 
+
+require_once(KT_LIB_DIR . "/subscriptions/Subscription.inc");
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
+
 class SubscriptionManager {
 
     /**

@@ -1,7 +1,4 @@
 <?php
-
-require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
-
 /**
  * $Id$
  *
@@ -33,12 +30,9 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.documentmanagement 
  */
+
+require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
  
 require_once(KT_LIB_DIR . '/users/User.inc'); 
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransactionType.inc.php'); 

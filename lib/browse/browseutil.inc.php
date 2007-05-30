@@ -1,5 +1,4 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
 /**
  * $Id$
  *
@@ -29,11 +28,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Neil Blakey-Milner <nbm@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.browse
  */
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
