@@ -1,11 +1,4 @@
 <?php
-require_once(KT_LIB_DIR . '/security/Permission.inc');
-// define access constants
-define("None", 1);
-define("Guest", 2);
-define("User", 3);
-define("UnitAdmin", 4);
-define("SysAdmin", 5);
 /**
  * $Id$
  *
@@ -35,12 +28,16 @@ define("SysAdmin", 5);
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.session
  */
+
+require_once(KT_LIB_DIR . '/security/Permission.inc');
+// define access constants
+define("None", 1);
+define("Guest", 2);
+define("User", 3);
+define("UnitAdmin", 4);
+define("SysAdmin", 5);
+
 class SiteMap {
 
     /**
