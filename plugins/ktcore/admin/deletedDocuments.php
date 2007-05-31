@@ -37,8 +37,8 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
-require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
-require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
 var $sHelpPage = 'ktcore/admin/deleted documents.html';
@@ -47,7 +47,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         
         $this->oPage->setBreadcrumbDetails(_kt('view'));
     
-        $aDocuments =& Document::getList("status_id=" . DELETED);
+        $aDocuments =& Document::getList('status_id=' . DELETED);
 
         if(!empty($aDocuments)){
         	$items = count($aDocuments);
@@ -160,7 +160,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         
             if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
-                $oDocumentTransaction = & new DocumentTransaction($oDoc, "Document expunged", 'ktcore.transactions.expunge');
+                $oDocumentTransaction = & new DocumentTransaction($oDoc, _kt('Document expunged'), 'ktcore.transactions.expunge');
                 $oDocumentTransaction->create();
     
                 // delete this from the db now
@@ -259,7 +259,8 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                 
                 // create a doc-transaction.
                 // FIXME does this warrant a transaction-type?
-                $oTransaction = new DocumentTransaction($oDoc, _kt('Restored from deleted state by ') . $this->oUser->getName(), 'ktcore.transactions.update');
+                $oTransaction = new DocumentTransaction($oDoc, sprintf(_kt("Restored from deleted state by %s"), $this->oUser->getName()), 'ktcore.transactions.update');
+
                 if (!$oTransaction->create()) {
                     ; // do nothing?  the state of physicaldocumentmanager...
                 }
