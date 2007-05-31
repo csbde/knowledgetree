@@ -762,6 +762,7 @@ INSERT INTO `plugins` VALUES (66,'ktstandard.workflowassociation.folder.plugin',
 INSERT INTO `plugins` VALUES (67,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin');
 INSERT INTO `plugins` VALUES (68,'ktstandard.searchdashlet.plugin','plugins/ktstandard/SearchDashletPlugin.php',0,0,NULL,0,'Search Dashlet Plugin');
 INSERT INTO `plugins` VALUES (69,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin');
+INSERT INTO `plugins` VALUES (70,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin');
 
 -- 
 -- Dumping data for table `role_allocations`
@@ -1394,7 +1395,7 @@ INSERT INTO `zseq_permissions` VALUES (8);
 -- Dumping data for table `zseq_plugins`
 -- 
 
-INSERT INTO `zseq_plugins` VALUES (69);
+INSERT INTO `zseq_plugins` VALUES (70);
 
 -- 
 -- Dumping data for table `zseq_role_allocations`
