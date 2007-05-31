@@ -10699,3 +10699,7 @@ msgstr ""
 #: templates/ktcore/workflow/admin/permissions_overview.smarty:19
 msgid "Control"
 msgstr ""
+
+#: plugins\network\extendedtransactioninfo\templates\extendedtransactioninfo\dashlet.smarty:2
+msgid "There are no recent items."
+msgstr ""
