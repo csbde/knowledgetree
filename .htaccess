@@ -72,6 +72,7 @@ php_value post_max_size 2000M
 php_value memory_limit -1
 php_value max_input_time -1
 php_value max_execution_time 0
+php_value error_reporting 5
 </IfModule>
 <IfModule sapi_apache2.c>
 php_value upload_max_filesize -1
@@ -79,6 +80,7 @@ php_value post_max_size 2000M
 php_value memory_limit -1
 php_value max_input_time -1
 php_value max_execution_time 0
+php_value error_reporting 5
 </IfModule>
 
 
