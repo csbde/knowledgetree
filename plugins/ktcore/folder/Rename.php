@@ -47,7 +47,6 @@ class KTFolderRenameAction extends KTFolderAction {
     }
     
     function getInfo() {
-        if ($this->oFolder->getId() == 1) { return null; }
         return parent::getInfo();
     }
 
@@ -76,15 +75,17 @@ class KTFolderRenameAction extends KTFolderAction {
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
         $sOldFolderName = $this->oFolder->getName();
 
-        $oParentFolder =& Folder::get($this->oFolder->getParentID());
-        if(PEAR::isError($oParentFolder)) {
-            $this->errorRedirectToMain(_kt('Unable to retrieve parent folder.'), $aErrorOptions['redirect_to'][1]);
-            exit(0);
-        }
+        if ($this->oFolder->getId() != 1) {
+            $oParentFolder =& Folder::get($this->oFolder->getParentID());
+            if(PEAR::isError($oParentFolder)) {
+                $this->errorRedirectToMain(_kt('Unable to retrieve parent folder.'), $aErrorOptions['redirect_to'][1]);
+                exit(0);
+            }
 
-        if(KTFolderUtil::exists($oParentFolder, $sFolderName)) {
-            $this->errorRedirectToMain(_kt('A folder with that name already exists.'), $aErrorOptions['redirect_to'][1]);
-            exit(0);
+            if(KTFolderUtil::exists($oParentFolder, $sFolderName)) {
+                $this->errorRedirectToMain(_kt('A folder with that name already exists.'), $aErrorOptions['redirect_to'][1]);
+                exit(0);
+            }
         }
 
         $res = KTFolderUtil::rename($this->oFolder, $sFolderName, $this->oUser);
