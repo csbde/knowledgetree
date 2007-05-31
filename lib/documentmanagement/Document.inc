@@ -1,4 +1,4 @@
-<?php /* vim: set expandtab softtabstop=4 shiftwidth=4 foldmethod=marker: */
+<?php
 /**
  * $Id$
  *
@@ -26,13 +26,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * -------------------------------------------------------------------------
- *
- * Represents a document as per the documents database table.
- *
- * @author Neil Blakey-Milner, Jam Warehouse (Pty) Ltd, South Africa
  */
 
 // document statuses
@@ -537,6 +530,9 @@ class Document {
     function startNewMetadataVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentMetadataVersion =& $this->_oDocumentMetadataVersion->newCopy();
+        if (PEAR::isError($this->_oDocumentMetadataVersion)) {
+		    return $this->_oDocumentMetadataVersion;
+        }
         $this->_oDocumentMetadataVersion->bumpMetadataVersion();
         $this->_oDocumentMetadataVersion->setVersionCreated(getCurrentDateTime());
         $this->_oDocumentMetadataVersion->setVersionCreatorId($iUserId);
@@ -554,6 +550,12 @@ class Document {
         $iUserId = KTUtil::getId($oUser);
         $this->_oDocumentContentVersion =& $this->_oDocumentContentVersion->newCopy();
         $this->_oDocumentMetadataVersion =& $this->_oDocumentMetadataVersion->newCopy();
+        if (PEAR::isError($this->_oDocumentContentVersion)) {
+		    return $this->_oDocumentContentVersion;
+        }
+        if (PEAR::isError($this->_oDocumentMetadataVersion)) {
+		    return $this->_oDocumentMetadataVersion;
+        }
         $this->_oDocumentMetadataVersion->bumpMetadataVersion();
         $this->_oDocumentMetadataVersion->setVersionCreated(getCurrentDateTime());
         $this->_oDocumentMetadataVersion->setVersionCreatorId($iUserId);
