@@ -541,6 +541,8 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
     function _createSignupGroups($dn, $oSource) {
         $oAuthenticator =& $this->getAuthenticator($oSource);
         $aGroupDNs = $oAuthenticator->getGroups($dn);
+        if(PEAR::isError($aGroupDNs) || empty($aGroupDNs)) return;
+        
         foreach ($aGroupDNs as $sGroupDN) {
             $oGroup = Group::getByAuthenticationSourceAndDetails($oSource, $sGroupDN);
             if (PEAR::isError($oGroup)) {
