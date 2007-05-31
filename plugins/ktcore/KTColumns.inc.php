@@ -82,9 +82,9 @@ class AdvancedTitleColumn extends AdvancedColumn {
     function renderDocumentLink($aDataRow) {
         /* this chack has to be done so that any titles longer than 40 characters is not displayed incorrectly.
          as mozilla cannot wrap text without white spaces */
-        if(strlen($aDataRow["document"]->getName()) > 40){
+        if (mb_strlen($aDataRow["document"]->getName(), 'UTF-8') > 40) { 
         	mb_internal_encoding("UTF-8");
-            $outStr = htmlentities(mb_substr($aDataRow["document"]->getName(), 0, 40)."...", ENT_NOQUOTES, 'UTF-8');
+            $outStr = htmlentities(mb_substr($aDataRow["document"]->getName(), 0, 40, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
         }else{
             $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
         }
