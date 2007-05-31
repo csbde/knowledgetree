@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * The contents of this file are subject to the KnowledgeTree Public
@@ -1199,7 +1198,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         }
         
         //$aOptions = array('user' => $oUser);
-        //$oDocumentTransaction = & new DocumentTransaction($oNewDoc, "Document copied from old version.", 'ktcore.transactions.create', $aOptions);
+        //$oDocumentTransaction = & new DocumentTransaction($oNewDoc, 'Document copied from old version.', 'ktcore.transactions.create', $aOptions);
         //$res = $oDocumentTransaction->create();
         
         $_SESSION['KTInfoMessage'][] = _kt('Document copied.');
