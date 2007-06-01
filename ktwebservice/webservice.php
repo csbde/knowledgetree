@@ -36,6 +36,8 @@ require_once('../ktapi/ktapi.inc.php');
 require_once('SOAP/Server.php');
 require_once('SOAP/Disco.php');
 require_once('KTDownloadManager.inc.php');
+require_once('KTUploadManager.inc.php');
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 // TODO: Test getting files/metadata based on versioning works and implementation is consistent.
 
@@ -369,10 +371,23 @@ class KTWebService
             array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','tempfilename' =>'string', 'major_update'=>'boolean' ), 
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );      
+
+          //  checkin_small_document
+         $this->__dispatch_map['checkin_small_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','base64' =>'string', 'major_update'=>'boolean' ), 
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );      
+
             
-                 // add_document
+         // add_document
          $this->__dispatch_map['add_document'] =
             array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string' ), 
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            );  
+         
+         // add_small_document
+         $this->__dispatch_map['add_small_document'] =
+            array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','base64' =>'string' ), 
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
             );  
     
@@ -388,18 +403,33 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );   
 
+          // checkout_small_document
+           $this->__dispatch_map['checkout_small_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string','download' => 'boolean'), 
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );   
+            
+            
             // undo_document_checkout
             $this->__dispatch_map['undo_document_checkout'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string'), 
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );             
-                // download_document
+
+            // download_document
             $this->__dispatch_map['download_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int' ), 
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );                      
             
-			// delete_document 
+            // download_small_document
+            $this->__dispatch_map['download_small_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int' ), 
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );                      
+
+            
+            // delete_document 
 			$this->__dispatch_map['delete_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason'=>'string'), 
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
@@ -1162,7 +1192,7 @@ class KTWebService
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
-    	if (substr($tempfilename,0,length($upload_manager->temp_dir)) != $upload_manager->temp_dir)
+    	if (substr($tempfilename,0,strlen($upload_manager->temp_dir)) != $upload_manager->temp_dir)
     	{
 			$response=array(
 				'status_code'=>KTWS_ERR_INVALID_FOLDER,
@@ -1196,7 +1226,96 @@ class KTWebService
 		$detail['message'] = '';  
 		    	
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);   	   	
-    }     
+    }   
+    
+    /**
+     * Adds a document to the repository.
+     *
+     * @param string $session_id
+     * @param int $folder_id
+     * @param string $title
+     * @param string $filename
+     * @param string $documenttype
+     * @param string $base64
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     */    
+    function add_small_document($session_id, $folder_id,  $title, $filename, $documenttype, $base64)
+    {
+		$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt); 
+    	}
+		
+    	// create a temporary file
+		$oConfig = KTConfig::getSingleton();
+		$tmp_dir = $oConfig->get('webservice/uploadDirectory');
+		
+		$tempfilename = tempnam($tmp_dir,'sa_');
+		if (!is_writable($tempfilename))
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_FOLDER,
+				'message'=>'Cannot write to temp folder: ' + $tempfilename
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+		    	
+		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
+		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
+    	$upload_manager = new KTUploadManager();
+		if ( substr($tempfilename,0,strlen($upload_manager->temp_dir))  != $upload_manager->temp_dir)
+    	{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_FOLDER,
+				'message'=>'Invalid temporary file.'
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	}    	
+    	
+    	$folder = &$kt->get_folder_by_id($folder_id);
+		if (PEAR::isError($folder))
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_FOLDER,
+				'message'=>$folder->getMessage()
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+				
+		// write to the temporary file
+		$fp=fopen($tempfilename, 'wt');
+		if ($fp === false)
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+				'message'=>'Cannot write to temp file: ' + $tempfilename
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+		fwrite($fp, base64_decode($base64));
+		fclose($fp);
+
+		// simulate the upload
+		$upload_manager->uploaded($filename,$tempfilename, 'A');
+		
+		// add the document
+    	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
+		if (PEAR::isError($document))
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+				'message'=>$document->getMessage()
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+		    	
+    	$detail = $document->get_detail();
+    	$detail['status_code'] = KTWS_SUCCESS;
+		$detail['message'] = '';  
+		    	
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);   	   	
+    }  
 
     /**
      * Does a document checkin.
@@ -1225,7 +1344,7 @@ class KTWebService
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
-    	if (substr($tempfilename,0,length($upload_manager->temp_dir)) != $upload_manager->temp_dir)
+    	if (substr($tempfilename,0,strlen($upload_manager->temp_dir)) != $upload_manager->temp_dir)
     	{
 			$response['message'] = 'Invalid temporary file';
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
@@ -1238,6 +1357,7 @@ class KTWebService
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
 		}
 		
+		// checkin
 		$result = $document->checkin($filename, $reason, $tempfilename, $major_update);
 		if (PEAR::isError($result))
 		{
@@ -1248,7 +1368,89 @@ class KTWebService
 		$response['status_code'] = KTWS_SUCCESS;		
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);   	
-    }     
+    }
+    
+    /**
+     * Does a document checkin.
+     *
+     * @param string $session_id
+     * @param int $document_id
+     * @param string $filename
+     * @param string $reason
+     * @param string $base64
+     * @param boolean $major_update
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     */    
+    function checkin_small_document($session_id, $document_id,  $filename, $reason, $base64, $major_update )
+    {    	
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+    	}
+		
+    	$response=array(
+			'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+			'message'=>'',
+		);
+		
+		// create a temporary file
+		$oConfig = KTConfig::getSingleton();
+		$tmp_dir = $oConfig->get('webservice/uploadDirectory');
+		
+		$tempfilename = tempnam($tmp_dir,'su_');
+		if (!is_writable($tempfilename))
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_FOLDER,
+				'message'=>'Cannot write to temp folder: ' + $tempfilename
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}		
+		
+		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
+		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
+    	$upload_manager = new KTUploadManager();
+    	if (substr($tempfilename,0,strlen($upload_manager->temp_dir)) != $upload_manager->temp_dir)
+    	{
+			$response['message'] = 'Invalid temporary file';
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	}		
+				
+		// write to the temporary file
+		$fp=fopen($tempfilename, 'wt');
+		if ($fp === false)
+		{
+			$response=array(
+				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+				'message'=>'Cannot write to temp file: ' + $tempfilename
+			);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+		fwrite($fp, base64_decode($base64));
+		fclose($fp);	
+		
+    	// simulate the upload		 
+		$upload_manager->uploaded($filename,$tempfilename, 'C');
+			
+    	$document = &$kt->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+		{
+			$response['message'] = $document->getMessage();
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}
+				
+		$result = $document->checkin($filename, $reason, $tempfilename, $major_update);
+		if (PEAR::isError($result))
+		{
+			$response['message'] = $result->getMessage();
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		}		
+				
+		$response['status_code'] = KTWS_SUCCESS;		
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);   	
+    }
         
     /**
      * Does a document checkout.
@@ -1290,8 +1492,7 @@ class KTWebService
     	$download_manager = new KTDownloadManager();
     	$download_manager->set_session($session->session);
     	$download_manager->cleanup(); 
-    	$url = $download_manager->allow_download($document);
-    	
+    	$url = $download_manager->allow_download($document);    	
     	
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = $url;    	 
@@ -1299,6 +1500,67 @@ class KTWebService
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     }
  
+    /**
+     * Does a document checkout.
+     *
+     * @param string $session_id
+     * @param int $document_id
+     * @param string $reason
+     * @param boolean $download
+     * @return kt_response  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
+     */
+    function checkout_small_document($session_id, $document_id, $reason, $download)
+    {
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+		$response=array(
+    		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+    		'message'=>''
+    	); 
+    	
+    	$document = &$kt->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		$response['message'] = $document->getMessage();
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	}    	
+
+    	$result = $document->checkout($reason);
+		if (PEAR::isError($result))
+    	{
+    		$response['message'] = $result->getMessage();
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	}
+    	
+    	$content='';
+    	if ($download)
+    	{
+    		$document = $document->document;
+    		
+    		$oStorage =& KTStorageManagerUtil::getSingleton();
+            $filename = $oStorage->temporaryFile($document);
+    		
+    		$fp=fopen($filename,'rt');
+    		if ($fp === false)
+    		{
+    			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
+    			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		}
+    		$content = fread($fp, filesize($filename));
+    		fclose($fp);
+    		$content = base64_encode($content); 
+    	}
+    	
+    	$response['status_code'] = KTWS_SUCCESS;
+		$response['message'] = $content;    	 
+		   	
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    }
+    
     /**
      * Undoes a document checkout.
      *
@@ -1386,6 +1648,65 @@ class KTWebService
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     }    
 
+    /**
+     * Returns a reference to a file to be downloaded.
+     *
+     * @param string $session_id
+     * @param int $document_id
+ 
+     * @return kt_response. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     */
+    function download_small_document($session_id, $document_id)
+    {
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+		$response=array(
+    		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+    		'message'=>''
+    	); 
+    	
+    	$document = &$kt->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		$response['message'] = $document->getMessage();
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);	
+    	}    	
+
+    	$result = $document->download();
+		if (PEAR::isError($result))
+    	{
+    		$response['message'] = $result->getMessage();
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	}
+
+    	$content='';
+    	 
+    		$document = $document->document;
+    		
+    		$oStorage =& KTStorageManagerUtil::getSingleton();
+            $filename = $oStorage->temporaryFile($document);
+    		
+    		$fp=fopen($filename,'rt');
+    		if ($fp === false)
+    		{
+    			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
+    			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		}
+    		$content = fread($fp, filesize($filename));
+    		fclose($fp);
+    		$content = base64_encode($content); 
+    	 
+    	
+    	$response['status_code'] = KTWS_SUCCESS;
+		$response['message'] = $content;    	 
+		   	
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    }     
+    
     /**
      * Deletes a document.
      *
