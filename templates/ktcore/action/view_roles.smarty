@@ -28,7 +28,7 @@
     </tr>
 {/foreach}
 {else}
-<tr><td colspan="4" class="ktInfo"><p>{i18n}No roles defined in the Role Administration area.{/i18n}</p></td></tr>
+<tr><td colspan="4" class="ktInfoMessage"><span>{i18n}No roles defined in the Role Administration area.{/i18n}</span></td></tr>
 {/if}
 </tbody>
 </table>

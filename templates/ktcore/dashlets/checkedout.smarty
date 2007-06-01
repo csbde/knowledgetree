@@ -6,5 +6,5 @@
 {/foreach}
 </ul>
 {else}
-<div class="ktInfo"><p>{i18n}You have no documents which are currently checked out.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}You have no documents which are currently checked out.{/i18n}</span></div>
 {/if}

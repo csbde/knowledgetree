@@ -1,8 +1,8 @@
 <h2>{i18n arg_statename=$context->oState->getName()}Manage Permissions: #statename#{/i18n}</h2>
 
 {if empty($perm_grid)}
-<div class="ktInfo"><p>{i18n}No permissions are controlled by this state.  
-Indicate below which permissions are controlled to allocate them.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No permissions are controlled by this state.  
+Indicate below which permissions are controlled to allocate them.{/i18n}</span></div>
 {else}
 
 <p class="descriptiveText">{i18n}Once you've selected the permissions you want to control

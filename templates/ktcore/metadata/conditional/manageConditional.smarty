@@ -16,11 +16,11 @@ how the user was allowed to select the specific street (given another field).{/i
 
 {if ($oMasterField && empty($free_fields))}
 {if $sIncomplete}
-<div class="ktInfo">
-<p>{i18n}This conditional fieldset is marked such that it
+<div class="ktInfoMessage">
+<span>{i18n}This conditional fieldset is marked such that it
 cannot be used.  The system automatically checks whether the fieldset is useable,
 and if not it will prevent it being used in a "conditional" fashion.  Please correct
-the issues identified below.{/i18n}</p>
+the issues identified below.{/i18n}</span>
 </div>
 {/if}
 

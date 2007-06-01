@@ -11,199 +11,45 @@
             display: block;
             margin: 0.5em 0;
         }
-
-        #loginbox {
-            position: relative;
+		
+		#loginbox_outer {  
+           	position: relative;
             padding: 1em;
-            /*border: 1px solid #888;*/
-            width: 252px;
+            border: 1px solid #B7B7B7;
+            width: 280px;
             margin-left: auto;
             margin-right: auto;
+            background-color: #FFFFFF;
+        }
+        
+        #loginbox_outer.hasDisclaimer {  
+           	width: 580px;
+        }
+		
+        #loginbox {
             text-align: left;
+            margin: 0 10px;
             background: white url(../graphics/ktbg.png) bottom left no-repeat;
         }
 
 		#loginbox_skin {
-			position: relative;
-            padding: 1em;
-            /*border: 1px solid #888;*/
-            width: 252px;
-            margin-left: auto;
-            margin-right: auto;
             text-align: left;
+            margin: 0 10px;
             background: white url(../powered-by-kt.gif) bottom right no-repeat;
 		}
 
-        #loginboxTopLeft {
-            position: absolute;
-            background: url(../graphics/login_corner_topleft.gif) top left no-repeat;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 40px;
-        }
-
-        #loginboxTopMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_repeat.png) top left repeat-x;
-            top:0;
-            left:35px;
-            width: 230px;
-            height: 3px; 
-        }
-
-        #loginbox.hasDisclaimer #loginboxTopMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_repeat.png) top left repeat-x;
-            top:0;
-            left:35px;
-            width: 520px;
-            height: 3px; 
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxTopMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_repeat.png) top left repeat-x;
-            top:0;
-            left:35px;
-            width: 520px;
-            height: 3px; 
-        }
-
-        #loginboxTopRight {
-            position: absolute;
-            background: url(../graphics/login_corner_topright.gif) top right no-repeat;
-            top:0;
-            right:0;
-            width: 40px;
-            height: 40px;
-        }
-
-        #loginboxBottomLeft {
-            position: absolute;
-            background: url(../graphics/login_corner_bottomleft.gif) bottom left no-repeat;
-            bottom:0;
-            left:0;
-            width: 40px;
-            height: 40px;
-        }
-
-        #loginboxBottomMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
-            bottom: 0;
-            left: 35px;
-            width: 230px;
-            height: 3px;
-        }
-
-        #loginbox.hasDisclaimer #loginboxBottomMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
-            bottom: 0;
-            left: 35px;
-            width: 520px;
-            height: 3px;
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxBottomMiddle {
-            position: absolute;
-            background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
-            bottom: 0;
-            left: 35px;
-            width: 520px;
-            height: 3px;
-        }
-
-        #loginboxBottomRight {
-            position: absolute;
-            background: url(../graphics/login_corner_bottomright.gif) bottom left no-repeat;
-            bottom: 0;
-            right: 0;
-            width: 40px;
-            height: 40px;
-        }
-
-        #loginboxLeftTop {
-            position: absolute;
-            background: url(../graphics/login_border_repeat.png) top left repeat-y;
-            top: 35px;
-            left: 0;
-            width: 3px;
-            height: 405px;
-        }
-
-        #loginbox.hasDisclaimer #loginboxLeftTop {
-            height: 200px;
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxLeftTop {
-            height: 200px;
-        }
-        
-        #loginboxLeftBottom {
-            position: absolute;
-            background: url(../graphics/login_border_repeat.png) top left repeat-y;
-            bottom: 35px;
-            left: 0;
-            width: 3px;
-            height: 405px;
-        }
-
-        #loginbox.hasDisclaimer #loginboxLeftBottom {
-            height: 250px;
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxLeftBottom {
-            height: 250px;
-        }
-
-        #loginboxRightTop {
-            position: absolute;
-            background: url(../graphics/login_border_right.png) top right repeat-y;
-            top: 35px;
-            right: 0;
-            width: 3px;
-            height: 405px;
-        }
-
-        #loginbox.hasDisclaimer #loginboxRightTop {
-            height: 250px;
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxRightTop {
-            height: 250px;
-        }
-
-        #loginboxRightBottom {
-            position: absolute;
-            background: url(../graphics/login_border_right.png) top right repeat-y;
-            bottom: 35px;
-            right: 0;
-            width: 3px;
-            height: 405px;
-        }
-
-        #loginbox.hasDisclaimer #loginboxRightBottom {
-            height: 200px;
-        }
-        
-        #loginbox_skin.hasDisclaimer #loginboxRightBottom {
-            height: 200px;
-        }
-
         #loginbox.hasDisclaimer {
             background: white url(../graphics/ktbg.png) bottom left repeat-x;
-            width: 564px;
         }
         
         #loginbox_skin.hasDisclaimer {
             background: white url(../graphics/ktbg.png) bottom left repeat-x;
-            width: 564px;
         }
 
         #formbox { 
-            border: 0; padding: 0; margin: 0;
+            border: 0; 
+            padding: 0; 
+            margin: 0;
             width: 252px;
             float: left;
         }
@@ -228,6 +74,7 @@
 
         #disclaimerbox p { 
             margin-top: 0;
+            margin-left: 5px;
             margin-bottom: 1em;
         }
 
@@ -265,6 +112,7 @@
 
 .descriptiveText 
 {
+	margin-top: 5px;
     color: #666;
     clear: both;
 }
@@ -280,17 +128,22 @@
 }
 
 /* block level. */
-.ktError 
-{
-    padding: 0 1em;
-    border: 1px solid #ffc21e;
-    margin: 0.5em 0;
-    background: #ffdd80;
+.ktError {
+	background: #ffdd80 url(../../resources/graphics/error_toprepeat.png) top left repeat-x;
+    border: 1px solid #FFC21E;
+    margin: 20px auto;
 }
 
 .ktError p {
+    margin-left: 20px;
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+}
+
+.ktError span {
+    margin-left: 20px;
+    padding-left: 25px;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
 }
 
 .floatClear

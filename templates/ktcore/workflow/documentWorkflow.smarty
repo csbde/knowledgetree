@@ -64,17 +64,17 @@ at the beginning of the new workflow.  <strong>This is true even if the new work
 </div>
 </form>
 {else}
-<div class="ktInfo">
-<p>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</p>
+<div class="ktInfoMessage">
+<span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
 </div>
 {/if}
 {else}
 <h3>{i18n}No defined workflows{/i18n}</h3>
-<div class="ktInfo">
-<p>{i18n}There are no defined workflows which can be started on this
+<div class="ktInfoMessage">
+<span>{i18n}There are no defined workflows which can be started on this
 document.  An administrator can create workflows to map the lifecycle of
 a document.  Contact your administrator to discuss
-workflows.{/i18n}</p>
+workflows.{/i18n}</span>
 </div>
 {/if}
 </fieldset>

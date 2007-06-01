@@ -34,7 +34,7 @@ $oUser->getName(); } else { print _kt("N/A"); }{/php}</td>
     <!-- FIXME do we want batching? -->
 </table>
 {else}
-   <div class="ktInfo">
-     <p>{i18n}No documents are currently checked out.{/i18n}</p>
+   <div class="ktInfoMessage">
+     <span>{i18n}No documents are currently checked out.{/i18n}</span>
    </div>
 {/if}

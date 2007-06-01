@@ -13,8 +13,8 @@
 </div>
 {else}
 {if empty($transforms)} 
-<div class="ktInfo">
-	<p>{i18n}All indexers claim to be working correctly.{/i18n}</p>
+<div class="ktInfoMessage">
+	<span>{i18n}All indexers claim to be working correctly.{/i18n}</span>
 </div>
 {else}
 <table class="kt_collection">

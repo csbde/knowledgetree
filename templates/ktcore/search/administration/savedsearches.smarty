@@ -42,5 +42,5 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 </tbody>
 </table>
 {else}
-<div class="ktInfo"><p>{i18n}No Saved Searches have been defined.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No Saved Searches have been defined.{/i18n}</span></div>
 {/if}

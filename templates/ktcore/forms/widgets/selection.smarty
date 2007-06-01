@@ -1,5 +1,5 @@
 {if empty($vocab)}
-    <div class="ktInfo"><p>{$context->sEmptyMessage}</p></div>
+    <div class="ktInfoMessage"><span>{$context->sEmptyMessage}</span></div>
 {else}
   <select name="{$name}" 
     {if $has_id}id="{$id}"{/if} 

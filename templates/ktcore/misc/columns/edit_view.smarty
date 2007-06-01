@@ -28,7 +28,7 @@ have multiple copies of a given column in a specific view this is not recommende
     </tbody>
 </table>
 {else}
-<div class="ktInfo"><p>{i18n}No columns have been added to this view{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No columns have been added to this view{/i18n}</span></div>
 {/if}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">

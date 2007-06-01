@@ -7,7 +7,7 @@
 <br />    
     
 {if empty($aGuardTriggers)}
-  <div class="ktInfo"><p>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</p></div>    
+  <div class="ktInfoMessage"><span>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</span></div>    
 {else}
     
 <table class="kt_collection narrow" cellspacing="0">

@@ -20,7 +20,7 @@ various different states for documents.{/i18n}</p>
 
 
 {if (empty($workflow_info.states))}
-<div class="ktInfo"><p>{i18n}This workflow does not define any states.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}This workflow does not define any states.{/i18n}</span></div>
 {else}
 <ul id="workflow-states-list">
 {foreach item=oState from=$workflow_info.states}

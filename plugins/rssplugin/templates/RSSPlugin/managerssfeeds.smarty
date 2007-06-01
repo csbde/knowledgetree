@@ -6,7 +6,7 @@
 </fieldset>
 
 {if empty($feedlist)}
-<div class="ktInfo"><p>{i18n}Your RSS feed list is empty.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}Your RSS feed list is empty.{/i18n}</span></div>
 {else}
 <table class="listing">
 <thead>

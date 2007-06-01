@@ -111,6 +111,8 @@ class KTPage {
         /* default js files initialisation */
         $aJS = Array();
 
+		$aJS[] = 'thirdpartyjs/yui/yahoo/yahoo.js';
+		$aJS[] = 'thirdpartyjs/yui/utilities/utilities.js';
         /*	
         $aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/New.js';
@@ -119,9 +121,13 @@ class KTPage {
 	$aJS[] = 'thirdpartyjs/MochiKit/Style.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
         */
-	$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
+		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
+        $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
+        $aJS[] = 'resources/js/loader.js';
+        $aJS[] = 'thirdpartyjs/yui/tools/tools.js';
+        
 
         
         //$aJS[] = 'thirdpartyjs/MochiKit/Iter.js';
