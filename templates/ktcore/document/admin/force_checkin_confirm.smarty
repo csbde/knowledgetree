@@ -16,7 +16,7 @@
       {$checkout_user->getName()}
    </dd>
    {else}
-   <dd class="ktError">
+   <dd class="ktErrorMessage">
       {i18n}The user who checked this document out is no longer valid.{/i18n}
    </dd>
    {/if}

@@ -54,12 +54,20 @@ window.onload = function()
 	    infoMessages[s].style.margin="0 0 26px 0";
     }
     
-    //error message popups
-    var errorMessages = getElementsByClass("ktError");
-    for(var r = 0; r < errorMessages.length; r++){
-    	var errorBlock = new curvyCorners(settings_dashlets, errorMessages[r]);
+    //error message dashlets
+    var errordashlets = getElementsByClass("ktError");
+    for(var r = 0; r < errordashlets.length; r++){
+    	var errorBlock = new curvyCorners(settings_dashlets, errordashlets[r]);
     	errorBlock.applyCornersToAll();
-	    errorMessages[r].style.margin="0 0 26px 0";
+	    errordashlets[r].style.margin="0 0 26px 0";
+    }
+    
+    //error message popups
+    var errorMessages = getElementsByClass("ktErrorMessage");
+    for(var v = 0; v < errorMessages.length; v++){
+    	var errorMessage = new curvyCorners(settings_dashlets, errorMessages[v]);
+    	errorMessage.applyCornersToAll();
+	    errorMessages[v].style.margin="0 0 26px 0";
     }
     
     //portlets

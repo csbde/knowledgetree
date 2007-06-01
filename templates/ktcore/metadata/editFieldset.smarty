@@ -1,9 +1,9 @@
 <h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()|escape}</h2>
 
 {if $sIncomplete}
-<div class="ktError">
-<p><strong>{i18n}Incomplete{/i18n}: </strong>{i18n}This conditional fieldset cannot be used{/i18n}: <br />
-{$sIncomplete|escape}</p>
+<div class="ktErrorMessage">
+<span><strong>{i18n}Incomplete{/i18n}: </strong>{i18n}This conditional fieldset cannot be used{/i18n}: <br />
+{$sIncomplete|escape}</span>
 </div>
 {/if}
 

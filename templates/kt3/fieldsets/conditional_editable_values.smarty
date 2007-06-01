@@ -2,12 +2,12 @@
     <legend>{$title}</legend>
     <input type="hidden" class="fixed" name="fieldset" value="{$fieldset_id}" />
     {if $context->aError}
-    <div class="ktError">
-    <p>
+    <div class="ktErrorMessage">
+    <span>
 	{i18n}The data for this conditional metadata fieldset was not
 completely provided.  Provide the extra information, and save your
 changes afterwards.{/i18n}
-    </p>
+    </span>
     </div>
     {/if}
     <p class="descriptiveText">
