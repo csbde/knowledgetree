@@ -109,7 +109,7 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
 {else}
 
 {if $context->haveConditional()}
-<div class="ktInfo"><p>{i18n}This fieldset cannot be made conditional, since it contains fields which are not lookup types.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}This fieldset cannot be made conditional, since it contains fields which are not lookup types.{/i18n}</span></div>
 {/if}
 
 {/if}

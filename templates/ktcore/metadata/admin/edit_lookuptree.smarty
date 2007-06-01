@@ -52,8 +52,8 @@ are immediately stored, so when you are done simply navigate back to the field m
   those in subcategories of the subcategory).
   {/i18n}</p>
 
-<div class="ktInfo"><p>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
-make it available.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
+make it available.{/i18n}</span></div>
 {else}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>

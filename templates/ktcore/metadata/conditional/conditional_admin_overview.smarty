@@ -8,7 +8,7 @@ values in the other fields.  Only <strong>lookup</strong> fields can be added to
 
 
 <p>
-    <a class="ktAction ktInfo ktActionDescribed" href="{addQS context=$context}fieldset_action=viewOverview{/addQS}">{i18n}View Overview{/i18n}</a>
+    <a class="ktAction ktInfoMessage ktActionDescribed" href="{addQS context=$context}fieldset_action=viewOverview{/addQS}">{i18n}View Overview{/i18n}</a>
     <a href="{addQS context=$context}fieldset_action=viewOverview{/addQS}">{i18n}View Overview{/i18n}</a>    
 </p>
 

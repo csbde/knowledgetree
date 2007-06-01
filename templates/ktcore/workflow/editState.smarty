@@ -71,7 +71,7 @@ informed when this state is reached.{/i18n}</p>
 {/if}
 
 {if (empty($aGroups) && empty($aRoles))}
-<div class="ktInfo"><p>{i18n}No groups or roles are defined in the DMS.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No groups or roles are defined in the DMS.{/i18n}</span></div>
 {else}
 <div class="form_actions">
   <input type="submit" value="{i18n}Update users to inform{/i18n}" />
@@ -112,7 +112,7 @@ title="Transition
 
 {/if}
 {else}
-<div class="ktInfo"><p>{i18n}No transitions lead to this state.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No transitions lead to this state.{/i18n}</span></div>
 {/if}
 
 <h3>{i18n}Transitions from this state{/i18n}</h3>
@@ -127,7 +127,7 @@ title="Transition
 <input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 </div>
 {else}
-<div class="ktInfo"><p>{i18n}No transitions have been defined for this workflow.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No transitions have been defined for this workflow.{/i18n}</span></div>
 {/if}
 </form>
 </fieldset>
@@ -153,8 +153,8 @@ title="Transition
 </fieldset>
 </form>
 {else}
-<div class="ktInfo"><p>{i18n}No actions are controlled by this workflow, so all actions are available when
-documents are in this state.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No actions are controlled by this workflow, so all actions are available when
+documents are in this state.{/i18n}</span></div>
 {/if}
 
 
@@ -223,7 +223,7 @@ documents are in this state.{/i18n}</p></div>
 {/if}
 
 {else}
-<div class="ktInfo"><p>{i18n arg_appname="$appname"}No permissions have been created within #appname#.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n arg_appname="$appname"}No permissions have been created within #appname#.{/i18n}</span></div>
 {/if}
 
 

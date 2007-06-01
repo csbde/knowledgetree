@@ -11,70 +11,56 @@
     
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-ie-icons.css" type="text/css" />
 
+    <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js"> </script>
+    <script type="text/javascript" src="{$rootUrl}/resources/js/login_loader.js"> </script>
 </head>
-<body onload="document.getElementById('username').focus()">
-
-    <div id="{if $config->get("ui/poweredByDisabled") == '0'}loginbox_skin{else}loginbox{/if}" {if ($disclaimer)} class="hasDisclaimer" {/if}>
-
-        <div id="formbox">
-
-	    <form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
-	        <input type="hidden" name="action" value="login" />
-		<input type="hidden" name="cookieverify" value="{$cookietest}" />
-		<input type="hidden" name="redirect" value="{$redirect|escape}" />
-		{if $config->get("ui/mainLogo") != ''}
-			<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class="logoimage"/><br />
-		{else}
-			<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="{$appname}" class="logoimage" height="50" width="252"/><br />
-		{/if}
-            
-	        {if ($errorMessage == null)}
-		    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
-		{else}
-		    <div class="ktError"><p>{$errorMessage}</p></div>
-		{/if}
-            
-	        <label for="username">{i18n}Username{/i18n}</label>
-		<input type="text" id="username" name="username"/>
-		
-		<label for="password">{i18n}Password{/i18n}</label>
-		<input type="password" id="password" name="password"/>
-
-		<label for="language">{i18n}Language{/i18n}</label>
-		<select id="language" name="language">
-		{foreach from=$languages key=sLang item=sLanguageName}
-		    <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
-		{/foreach}
-		</select>
-            
-	        <div class="form_actions">
-                    <input type="submit" value="{i18n}login{/i18n}" />
-		</div>
-            </form>
+<body>
+	<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if}>
+	    <div id="{if $config->get("ui/poweredByDisabled") == '0'}loginbox_skin{else}loginbox{/if}" {if ($disclaimer)} class="hasDisclaimer" {/if}>
+	        <div id="formbox">
+		    	<form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
+		        	<input type="hidden" name="action" value="login" />
+					<input type="hidden" name="cookieverify" value="{$cookietest}" />
+					<input type="hidden" name="redirect" value="{$redirect|escape}" />
+					{if $config->get("ui/mainLogo") != ''}
+						<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class="logoimage"/><br />
+					{else}
+						<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="{$appname}" class="logoimage" height="50" width="252"/><br />
+					{/if}
+			        {if ($errorMessage == null)}
+					    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
+					{else}
+					    <div class="ktError"><p>{$errorMessage}</p></div>
+					{/if}
+		        	<label for="username">{i18n}Username{/i18n}</label>
+					<input type="text" id="username" name="username"/>
+					<label for="password">{i18n}Password{/i18n}</label>
+					<input type="password" id="password" name="password"/>
+	
+					<label for="language">{i18n}Language{/i18n}</label>
+					<select id="language" name="language">
+					{foreach from=$languages key=sLang item=sLanguageName}
+					    <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
+					{/foreach}
+					</select>
+				    <div class="form_actions">
+			        	<input type="submit" value="{i18n}login{/i18n}" />
+					</div>
+	    		</form>
+			</div>
+	        {if ($disclaimer)}
+	        <div id="disclaimerbox">
+		    	<p>{$disclaimer}</p>
+			</div>
+			{/if}
+			<p class="descriptiveText version">
+				{i18n arg_appname="$appname"}#appname# Version{/i18n}<br />{$versionName}<br/>
+				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
+			</p>
+	        <div id="bottomspacer"></div>
+	        <div class="floatClear"></div>
+	    </div>
 	</div>
-        {if ($disclaimer)}
-        <div id="disclaimerbox">
-	    <p>{$disclaimer}</p>
-	</div>
-	{/if}
-
-	<span class="descriptiveText version">
-	{i18n arg_appname="$appname"}#appname# Version{/i18n}<br />{$versionName}<br/>
-	{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
-	</span>
-        <div id="bottomspacer"></div>
-        <div id="loginboxTopLeft"></div>
-        <div id="loginboxTopMiddle"></div>
-        <div id="loginboxTopRight"></div>
-        <div id="loginboxBottomLeft"></div>
-        <div id="loginboxBottomMiddle"></div>
-        <div id="loginboxBottomRight"></div>
-        <div id="loginboxLeftTop"></div>
-        <div id="loginboxRightTop"></div>
-        <div id="loginboxLeftBottom"></div>
-        <div id="loginboxRightBottom"></div>
-        <div class="floatClear"></div>
-    </div>
 
 
 

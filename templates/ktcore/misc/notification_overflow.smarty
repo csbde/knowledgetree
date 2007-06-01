@@ -13,5 +13,5 @@
 <p>{i18n arg_batch=$batch_html}Page: #batch#{/i18n}</p>
 
 {else}
-<div class="ktInfo"><p>{i18n}No items require your attention{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No items require your attention{/i18n}</span></div>
 {/if}

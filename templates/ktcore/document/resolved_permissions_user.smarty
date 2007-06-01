@@ -9,7 +9,7 @@ document due to membership of a group, or fulfilling a specific role on
 this document.{/i18n}</p> 
 
 {if (empty($users)) }
-<div class="ktInfo"><p>{i18n}No users have permissions on this item.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No users have permissions on this item.{/i18n}</span></div>
 {else}
 
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">

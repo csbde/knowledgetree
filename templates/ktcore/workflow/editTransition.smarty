@@ -54,7 +54,7 @@ requirement.{/i18n}</p>
     <p class="descriptiveText">{i18n}Items which control whether a given user can perform this transition
     on a specific document. <strong>All of these must allow the user to perform the transition.</strong>{/i18n}</p>
     {if empty($aGuardTriggers)}
-    <div class="ktInfo"><p>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</p></div>    
+    <div class="ktInfoMessage"><span>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</span></div>    
     {else}
     
     <table class="kt_collection narrow" cellspacing="0">
@@ -83,7 +83,7 @@ requirement.{/i18n}</p>
 
     <p class="descriptiveText">{i18n}Actions which are performed when the document follows the transition.{/i18n}</p>    
     {if empty($aActionTriggers)}
-    <div class="ktInfo"><p>{i18n}No actions are performed when this transition occurs.{/i18n}</p></div>    
+    <div class="ktInfoMessage"><span>{i18n}No actions are performed when this transition occurs.{/i18n}</span></div>    
     {else}
     
     <table class="kt_collection narrow" cellspacing="0">

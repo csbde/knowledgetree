@@ -30,7 +30,7 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 </table>
 
 {else}
-<div class="ktInfo"><p>{i18n}No help files have been customised.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No help files have been customised.{/i18n}</span></div>
 
 { /if }
 

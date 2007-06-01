@@ -13,15 +13,15 @@ assigned are shown.{/i18n}</p>
 
 
 {if $iFolderId != 1}
-<div class="ktInfo">
+<div class="ktInfoMessage">
 { if $inherited }
-<p>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n}
+<span>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n}
 {if $inheritable}
 <a class="ktActionLink ktDelete"
    kt:deleteMessage="{i18n}Are you sure you wish to override the permissions?{/i18n}"
    href="{addQS}action=edit&fFolderId={$oFolder->getId()}&override=1{/addQS}">{i18n}Override permissions{/i18n}</a>
 {/if}
-</p>
+</span>
 { else }
 <p>{i18n}This folder defines its own permissions.{/i18n}</p>
 { /if }
@@ -29,7 +29,7 @@ assigned are shown.{/i18n}</p>
 { /if }
 
 {if (empty($roles) && empty($groups) && empty($users)) }
-<div class="ktInfo"><p>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</span></div>
 {else}
 
 <table class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">

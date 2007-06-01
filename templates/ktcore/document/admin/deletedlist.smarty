@@ -67,5 +67,5 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
 </form>
 
 {else}
-<div class="ktInfo"><p>{i18n}No documents are marked as deleted.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No documents are marked as deleted.{/i18n}</span></div>
 {/if}

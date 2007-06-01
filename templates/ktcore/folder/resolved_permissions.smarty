@@ -5,7 +5,7 @@ this specific folder.  Only the roles or groups which have permissions
 assigned are shown.{/i18n}</p> 
 
 {if (empty($roles) && empty($groups) && empty($users)) }
-<div class="ktInfo"><p>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</span></div>
 {else}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">

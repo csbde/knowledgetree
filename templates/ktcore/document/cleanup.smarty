@@ -34,5 +34,5 @@ which you should investigate.{/i18n}</p>
 {/if}
 
 {else}
-<div class="ktInfo"><p>{i18n}No problems found - database is consistent with the contents of the repository.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No problems found - database is consistent with the contents of the repository.{/i18n}</span></div>
 {/if}
