@@ -1024,6 +1024,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		DBUtil::commit();
+		
+		$tempfilename=addslashes($tempfilename);
+		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
+		$result = DBUtil::runQuery($sql);		
+		if (PEAR::isError($result))
+		{
+			return $result;
+		}		
+		
 	}
 	
 	/**
