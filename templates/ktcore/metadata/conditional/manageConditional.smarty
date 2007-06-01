@@ -25,9 +25,9 @@ the issues identified below.{/i18n}</span>
 {/if}
 
 {if $sIncomplete}
-<div class="ktError">
-<p>{i18n}This error prevents this fieldset from being set
-to complete{/i18n}: {$sIncomplete|escape}</p>
+<div class="ktErrorMessage">
+<span>{i18n}This error prevents this fieldset from being set
+to complete{/i18n}: {$sIncomplete|escape}</span>
 </div>
 {/if}
 {/if}

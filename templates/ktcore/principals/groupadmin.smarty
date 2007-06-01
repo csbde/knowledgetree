@@ -72,7 +72,7 @@ href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old
 </table>
 
 {else}
-<div class="ktError"><p>{i18n}No results for your search.{/i18n}</p></div>
+<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
 
 {/if}
 {/if}

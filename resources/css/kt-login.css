@@ -128,20 +128,14 @@
 }
 
 /* block level. */
-.ktError {
-	background: #ffdd80 url(../../resources/graphics/error_toprepeat.png) top left repeat-x;
+.ktErrorMessage {
+	background-color: #ffdd80;
     border: 1px solid #FFC21E;
     margin: 20px auto;
 }
 
-.ktError p {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktError span {
-    margin-left: 20px;
+.ktErrorMessage span {
+    margin-left: 0px;
     padding-left: 25px;
     background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
 }

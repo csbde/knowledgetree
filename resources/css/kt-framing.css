@@ -806,6 +806,18 @@ a.main_nav_item {
     margin: 20px auto;
 }
 
+.ktError p {
+    margin-left: 20px;
+    padding-left: 25px;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+}
+
+.ktError span {
+    margin-left: 20px;
+    padding-left: 25px;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+}
+
 .ktErrorMessage {
 	background-color: #ffdd80;
     border: 1px solid #FFC21E;
@@ -819,18 +831,6 @@ a.main_nav_item {
 }
 
 .ktErrorMessage span {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktError p {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktError span {
     margin-left: 20px;
     padding-left: 25px;
     background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
