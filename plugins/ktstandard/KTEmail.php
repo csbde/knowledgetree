@@ -138,7 +138,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     global $default;
     $oSendingUser = User::get($_SESSION['userID']);
 
-    $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'.s"), $oSendingUser->getName(), $sDocumentName);
+    $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
     $sMessage .= "\n\n";
 	if (strlen($sComment) > 0) {
 		$sMessage .= '<br><br>' . _kt('Comments:') . '<br>' . $sComment;

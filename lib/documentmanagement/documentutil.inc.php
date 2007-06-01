@@ -295,7 +295,7 @@ class KTDocumentUtil {
 
     // {{{ saveMetadata
     function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
-        $table = document_fields_link;
+        $table = 'document_fields_link';
         $bNoValidate = KTUtil::arrayGet($aOptions, 'novalidate', false);
         if ($bNoValidate !== true) {
             $res = KTDocumentUtil::validateMetadata($oDocument, $aMetadata);
