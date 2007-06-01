@@ -1,5 +1,7 @@
 <?php
 /*
+ * $Id$
+ *
  * Document Link Type management
  *
  * The contents of this file are subject to the KnowledgeTree Public
@@ -26,11 +28,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision$
- * @author Brad Shuttleworth <brad@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package documentmanagement
  */
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
