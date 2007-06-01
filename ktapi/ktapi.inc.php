@@ -1,5 +1,4 @@
 <?
-
 /**
  *
  * Implements a cleaner wrapper API for KnowledgeTree.
