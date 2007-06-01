@@ -7,10 +7,10 @@
 {capture assign=to}
 <strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()}</strong> ({$comparison_document->getMetadataVersion()})
 {/capture}
-<div class="ktInfo"><p>
+<div class="ktInfoMessage"><span>
 {i18n arg_from=$from arg_to=$to}showing comparison between versions #from# and #to#.  {/i18n}
 <a href="{addQS context=$context}action=main{/addQS}">{i18n}View current version{/i18n}</a>.
-</p></div>
+</span></div>
 
 {if ($document_data.is_manufactured)}
 <p class="descriptiveText"><strong class="ktInlineError">{i18n}Please

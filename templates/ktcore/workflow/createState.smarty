@@ -63,7 +63,7 @@ this state.{/i18n}</p>
 
 
 {else}
-<div class="ktInfo"<p>{i18n}No actions are controlled by this workflow.{/i18n}</p></div>
+<div class="ktInfoMessage"<span>{i18n}No actions are controlled by this workflow.{/i18n}</span></div>
 {/if}
 </div>
 

@@ -40,8 +40,8 @@ are available to users whose permissions would normally allow them when the docu
 in that state.  Unchecked items are not available to any users.{/i18n}</p>
 
 {if (empty($aActionsSelected))}
-<div class="ktInfo"><p>{i18n}No actions are controlled by this workflow.  All actions
-will be available at all states.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No actions are controlled by this workflow.  All actions
+will be available at all states.{/i18n}</span></div>
 {else}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="updateActionAvailability" />

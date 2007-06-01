@@ -5,7 +5,7 @@
 <br />    
     
 {if empty($aActionTriggers)}
-  <div class="ktInfo"><p>{i18n}This transition has no actions associated with it..{/i18n}</p></div>    
+  <div class="ktInfoMessage"><span>{i18n}This transition has no actions associated with it..{/i18n}</span></div>    
 {else}
     
 <table class="kt_collection narrow" cellspacing="0">

@@ -21,8 +21,8 @@ while the workflow has no documents or document-versions assigned to the workflo
 </fieldset>
 
 {if (empty($workflow_info.transitions))}
-<div class="ktInfo"><p>{i18n}This workflow does not define any transitions.  Use the "Create a new transition" link above
-to add new transitions.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}This workflow does not define any transitions.  Use the "Create a new transition" link above
+to add new transitions.{/i18n}</span></div>
 {else}
 <h3>{i18n}Transition Availability{/i18n}</h3>
 

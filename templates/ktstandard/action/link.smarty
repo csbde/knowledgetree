@@ -14,7 +14,7 @@
 </div>
 </form>
 {else}
-<div class="ktInfo"><p>
-{i18n}No link types are defined. Please ask the administrator to add them.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>
+{i18n}No link types are defined. Please ask the administrator to add them.{/i18n}</span></div>
 
 {/if}

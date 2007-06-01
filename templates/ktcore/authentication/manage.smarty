@@ -12,13 +12,13 @@ specify additional sources of authentication data.{/i18n}</p>
 ktInline">{i18n}Add authentication source{/i18n}</a><a href="{addQS}action=addSource{/addQS}">{i18n}Add a new
 authentication source{/i18n}</a>.</p>
 {else}
-<div class="ktInfo"><p>{i18n}Only the standard database authentication is currently available.
+<div class="ktInfoMessage"><span>{i18n}Only the standard database authentication is currently available.
 If you need to use a different authentication type (e.g. LDAP) you will need to 
-ensure that the Plugin is enabled.{/i18n}<p></div>
+ensure that the Plugin is enabled.{/i18n}<span></div>
 {/if}
 
 {if empty($sources)}
-<div class="ktInfo"><p>{i18n}No additional authentication sources have been defined.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No additional authentication sources have been defined.{/i18n}</span></div>
 {else}
 <table class="listing">
 <thead>

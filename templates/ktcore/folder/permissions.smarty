@@ -6,7 +6,7 @@
 {* check if there are roles etc *}
 
 {if ((empty($roles) && empty($groups)))}
-    <div class="ktInfo"><p>{i18n}No roles or groups have been defined.  Permissions can only be allocated to roles and groups.{/i18n}</p></div>
+    <div class="ktInfoMessage"><span>{i18n}No roles or groups have been defined.  Permissions can only be allocated to roles and groups.{/i18n}</span></div>
 {else}
 
 {* otherwise continue *}
@@ -15,11 +15,11 @@
 </p>
 
 {if ($can_inherit)}
-<div class="ktInfo">
-<p>{i18n}This folder defines its own permissions.{/i18n}
+<div class="ktInfoMessage">
+<span>{i18n}This folder defines its own permissions.{/i18n}
 <a class="ktActionLink ktDelete"
    kt:deleteMessage="{i18n}Are you sure you wish to reinstate inherited permissions?{/i18n}"
-   href="{addQS context=$context}action=inheritPermissions{/addQS}">{i18n}Inherit permissions{/i18n}</a>
+   href="{addQS context=$context}action=inheritPermissions{/addQS}">{i18n}Inherit permissions{/i18n}</a></span>
 </div>
 {/if}
 

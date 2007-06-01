@@ -1,7 +1,7 @@
 <h2>{i18n}Confirm Restore{/i18n}</h2>
 
-<div class="ktInfo"><p><strong>{i18n}Note{/i18n}:</strong> {i18n}please
-confirm that you want to restore these documents.{/i18n}</p></div>
+<div class="ktInfoMessage"><span><strong>{i18n}Note{/i18n}:</strong> {i18n}please
+confirm that you want to restore these documents.{/i18n}</span></div>
 
 {if (!empty($documents))}
 
@@ -33,5 +33,5 @@ confirm that you want to restore these documents.{/i18n}</p></div>
 </form>
 
 {else}
-<div class="ktInfo"><p>{i18n}No documents were selected.{/i18n}</p></div>
+<div class="ktInfoMessage"><span>{i18n}No documents were selected.{/i18n}</span></div>
 {/if}

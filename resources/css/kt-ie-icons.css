@@ -1,15 +1,8 @@
-.ktInfo p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) center left no-repeat; }
-.ktError p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
 .ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
 .ktBlock {
-	background-color: white;
-	border: 1px solid #ccc;
-	padding-left: 0em;
-}
-
-.ktInfo, .ktError {
-	padding: 0.1em 1em;
-	margin: 0.5em 0 0.5em 0em;
+	background: #ffffff url(../../resources/graphics/dashlet_toprepeat.gif) top left repeat-x;
+    border: 1px solid #C5C5C5;
+    margin: 20px auto;
 }
 
 .ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.gif); }
@@ -23,7 +16,6 @@
 .ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.gif); }
 .ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); }
 .ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); }
-.ktBlock {margin: 0.5em 0;}
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
 .contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
@@ -51,11 +43,6 @@
 
 #pageBody {
     height: 800px;
-}
-
-/* IE does not know what 100% is!! */
-#copyrightbarBg {
-    width: 101%;
 }
 
 .floatClear
@@ -184,10 +171,6 @@
 
 .dashboard_block_rightrepeat_bottom {
     display: none;
-}
-
-.dashboard_block_handle { 
-    margin: 0.2em -0.5em 0.5em 1em;
 }
 
 .ktBlock .dashboard_block_body

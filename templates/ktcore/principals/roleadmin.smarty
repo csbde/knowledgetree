@@ -61,7 +61,7 @@
      {/foreach}
      {else}
      <tr>
-        <td class="ktInfo" colspan="3"><p>{i18n}There are currently no roles created within the system.{/i18n}</td>
+        <td class="ktInfoMessage" colspan="3"><span>{i18n}There are currently no roles created within the system.{/i18n}</td>
      </tr>   
      {/if}
 </tbody>
