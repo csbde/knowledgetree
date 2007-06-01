@@ -1,6 +1,6 @@
 {if !$aFolderSubscriptions && !$aDocumentSubscriptions}
-<div class="ktError">
-<p>{i18n}You have no subscriptions{/i18n}</p>
+<div class="ktErrorMessage">
+<span>{i18n}You have no subscriptions{/i18n}</span>
 </div>
 {else}
 

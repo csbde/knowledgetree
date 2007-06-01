@@ -9,7 +9,7 @@ which you should investigate.{/i18n}</p>
 <p class="descriptiveText">{i18n}All paths are relative to your Documents directory.{/i18n}</p>
 
 {if $aFilesToRemove or $aRepoDocumentProblems}
-<div class="ktError"><p>{i18n}Warning:  Database is inconsistent with the contents of the repository.{/i18n}</p></div>
+<div class="ktErrorMessage"><span>{i18n}Warning:  Database is inconsistent with the contents of the repository.{/i18n}</span></div>
 
 
 {if $aRepoDocumentProblems}
