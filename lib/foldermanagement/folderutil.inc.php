@@ -31,7 +31,7 @@
  */
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php"); 
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php'); 
 
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
@@ -97,7 +97,7 @@ class KTFolderUtil {
 
     function move($oFolder, $oNewParentFolder, $oUser, $sReason=null) {
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
-            return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
+            return PEAR::raiseError(_kt('Folder with the same name already exists in the new parent folder'));
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
@@ -106,13 +106,13 @@ class KTFolderUtil {
         if (empty($iOriginalParentFolderId)) {
             // If we have no parent, then we're the root.  If we're the
             // root - how do we move inside something?
-            return PEAR::raiseError(_kt("Folder has no parent"));
+            return PEAR::raiseError(_kt('Folder has no parent'));
         }
         $oOriginalParentFolder = Folder::get($iOriginalParentFolderId);
         if (PEAR::isError($oOriginalParentFolder)) {
             // If we have no parent, then we're the root.  If we're the
             // root - how do we move inside something?
-            return PEAR::raiseError(_kt("Folder parent does not exist"));
+            return PEAR::raiseError(_kt('Folder parent does not exist'));
         }
         $iOriginalParentPermissionObjectId = $oOriginalParentFolder->getPermissionObjectId();
         $iTargetPermissionObjectId = $oFolder->getPermissionObjectId();
@@ -126,11 +126,11 @@ class KTFolderUtil {
 
 
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
-        $table = "folders";
+        $table = 'folders';
         
         if ($oNewParentFolder->getId() == 1) {
             $sNewParentFolderPath = $oNewParentFolder->getName();
-            $sNewParentFolderIds = "";
+            $sNewParentFolderIds = '';
         } else {
             $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
             $sNewParentFolderIds = sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID());
@@ -175,7 +175,7 @@ class KTFolderUtil {
             return $res;
         }
 
-        $table = "documents";
+        $table = 'documents';
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)), parent_folder_ids = CONCAT(?, SUBSTRING(parent_folder_ids FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
             sprintf("%s", $sNewParentFolderPath),
@@ -194,9 +194,9 @@ class KTFolderUtil {
             return $res;
         }
 
-        $sComment = sprintf("Folder moved from %s to %s", $sOldPath, $sNewParentFolderPath);
+        $sComment = sprintf(_kt("Folder moved from %s to %s"), $sOldPath, $sNewParentFolderPath);
         if($sReason !== null) {
-            $sComment .= sprintf(" (reason: %s)", $sReason);
+            $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
         }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(

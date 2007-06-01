@@ -44,15 +44,15 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
 
     function do_main() {
         $this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
-        $this->oPage->setBreadcrumbDetails(_kt("list checked out documents"));
+        $this->oPage->setBreadcrumbDetails(_kt('list checked out documents'));
         
-        $aDocuments = Document::getList("is_checked_out = 1");
+        $aDocuments = Document::getList('is_checked_out = 1');
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/checkoutlisting');       
         $oTemplate->setData(array(
-            "context" => $this,
-            "documents" => $aDocuments,
+            'context' => $this,
+            'documents' => $aDocuments,
         ));
         return $oTemplate;        
     }
@@ -60,7 +60,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
 
     function do_confirm() {
         $this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
-        $this->oPage->setBreadcrumbDetails(_kt("confirm forced check-in"));
+        $this->oPage->setBreadcrumbDetails(_kt('confirm forced check-in'));
         
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
@@ -82,9 +82,9 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/force_checkin_confirm');       
         $oTemplate->setData(array(
-            "context" => $this,
-            "document" => $oDocument,
-            "checkout_user" => $oUser,
+            'context' => $this,
+            'document' => $oDocument,
+            'checkout_user' => $oUser,
         ));
         return $oTemplate;                
         
