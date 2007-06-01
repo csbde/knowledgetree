@@ -69,20 +69,22 @@ window.onload = function()
     	errorMessage.applyCornersToAll();
 	    errorMessages[v].style.margin="0 0 26px 0";
     }
-    
-    //portlets
-	    var portlets = getElementsByClass("portlet");
-	    for(var t = 0; t < portlets.length; t++){
-	    	var portletBlock = new curvyCorners(settings_dashlets, portlets[t]);
-	    	portletBlock.applyCornersToAll();
-		    portlets[t].style.margin="0 0 26px 0";
-	    }
-    
-    //portlets
-	    var exp_portlets = getElementsByClass("portlet expanded");
-	    for(var u = 0; u < exp_portlets.length; u++){
-	    	var exp_portletBlock = new curvyCorners(settings_dashlets, exp_portlets[u]);
-	    	exp_portletBlock.applyCornersToAll();
-		    exp_portlets[u].style.margin="0 0 26px 0";
-	    }
+
+    if(getElementsByClass("noportlets").length != '1'){
+	    //portlets
+		    var portlets = getElementsByClass("portlet");
+		    for(var t = 0; t < portlets.length; t++){
+		    	var portletBlock = new curvyCorners(settings_dashlets, portlets[t]);
+		    	portletBlock.applyCornersToAll();
+			    portlets[t].style.margin="0 0 26px 0";
+		    }
+	    
+	    //portlets
+		    var exp_portlets = getElementsByClass("portlet expanded");
+		    for(var u = 0; u < exp_portlets.length; u++){
+		    	var exp_portletBlock = new curvyCorners(settings_dashlets, exp_portlets[u]);
+		    	exp_portletBlock.applyCornersToAll();
+			    exp_portlets[u].style.margin="0 0 26px 0";
+		    }
+	}
   }
