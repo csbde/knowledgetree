@@ -33,10 +33,6 @@
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- *
- *
- * @version $Revision: 5268 $
- * @author Brad Shuttleworth, Jam Warehouse (Pty) Ltd, South Africa
  */
 
 //require_once(KT_LIB_DIR . '/workflow/workflowtriggerinstance');

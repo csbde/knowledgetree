@@ -38,7 +38,6 @@
  *    "document" => $oDocument
  *    "document_id" => $iDocumentId
  *
- *  author: Brad Shuttleworth <brad@jamwarehouse.com>
  */
  
 // boilerplate

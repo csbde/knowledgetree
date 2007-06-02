@@ -35,7 +35,6 @@
  * To use this, instantiate a SubscriptionEvent, and call the
  * appropriate "event" method.
  *
- * @author Brad Shuttleworth <brad@jamwarehouse.com>
  */
 
 require_once(KT_LIB_DIR . "/database/dbutil.inc");

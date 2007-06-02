@@ -33,7 +33,6 @@
  *
  *  Very simple wrapper that establishes the absolutely basic API.
  *
- *  author: Brad Shuttleworth <brad@jamwarehouse.com>
  */
  
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
