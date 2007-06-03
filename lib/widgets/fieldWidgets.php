@@ -33,8 +33,6 @@
  *
  * Useful (common) widgets to handle creating, editing, extending items, etc.
  *
- * Author: Brad Shuttleworth (brad@jamwarehouse.com) 
- * Copyright (c) 2005 the Jam Warehouse Software (Pty) Ltd. 
  */
  
 require_once(KT_LIB_DIR . "/templating/templating.inc.php"); 

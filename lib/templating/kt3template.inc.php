@@ -37,7 +37,6 @@
  *
  * For the meaning of each of the variables and functions, see inline.
  *
- * @author: Brad Shuttleworth <brad@jamwarehouse.com>
  */
  
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
