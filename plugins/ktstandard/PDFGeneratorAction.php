@@ -88,9 +88,9 @@ class PDFGeneratorAction extends KTDocumentAction {
                     array('ktcore.widgets.selection', array(
                             'label' => _kt("Type of conversion"),
                             'description' => _kt('The following are the types of conversions you can perform on this document.'),
-                            'important_description' => _kt('QA NOTE: Permissions checks are required here...'),
+                            //'important_description' => _kt('QA NOTE: Permissions checks are required here...'),
                             'name' => 'convert_type',
-                            'vocab' => array('Download as PDF', 'Duplicate as PDF', 'Replace as PDF'),
+                            'vocab' => array('Download as PDF'),
                             'simple_select' => true,
                             'required' => true,
                             )),
@@ -217,8 +217,13 @@ class PDFGeneratorAction extends KTDocumentAction {
                 header("Content-Disposition: attachment; filename=\"" . $sUrlEncodedFileName . ".pdf\"");
                 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
                 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-                header("Cache-Control: must-revalidate");
+                // HTTP/1.1
+                header("Cache-Control: no-store, no-cache, must-revalidate");
+                header("Cache-Control: post-check=0, pre-check=0", false);
 
+                // HTTP/1.0
+                header("Pragma: no-cache");
+                
                 // Get a filelike object and send it to the browser
                 $oFile = new KTFSFileLike($sTempFilename);
                 KTFileLikeUtil::send_contents($oFile);
