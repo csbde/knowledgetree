@@ -90,6 +90,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                             'description' => _kt('The following are the types of conversions you can perform on this document.'),
                             //'important_description' => _kt('QA NOTE: Permissions checks are required here...'),
                             'name' => 'convert_type',
+                            //'vocab' => array('Download as PDF', 'Duplicate as PDF', 'Replace as PDF'),
                             'vocab' => array('Download as PDF'),
                             'simple_select' => true,
                             'required' => true,
