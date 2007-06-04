@@ -223,7 +223,7 @@ class KTAddDocumentTrigger {
         $tagString = '';
         // add tags
         if ($sTags) {
-			foreach($aMeta[metadata] as $aMetaData){
+			foreach($aMeta['metadata'] as $aMetaData){
 				$oProxy = $aMetaData[0];
 				if($oProxy->iId == $sTags){
 					$tagString = $aMetaData[1];
