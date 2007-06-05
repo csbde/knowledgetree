@@ -130,12 +130,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
        
         $this->HAVE_GRAPHVIZ = false;
-        $dotCommand = KTUtil::findCommand("ui/dot", 'dot');
+/*        $dotCommand = KTUtil::findCommand("ui/dot", 'dot');
         if (!empty($dotCommand)) {
             $this->HAVE_GRAPHVIZ = true;
             $this->dotCommand = $dotCommand;
         }
-
+*/
     }
 
     function do_main() {
