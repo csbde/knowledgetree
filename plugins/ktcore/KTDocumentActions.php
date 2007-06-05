@@ -1341,7 +1341,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oUser =& User::get($_SESSION['userID']);
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
 
-        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
+        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
 
         $bHasPerm = false;
         if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
