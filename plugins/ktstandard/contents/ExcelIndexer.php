@@ -61,16 +61,16 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
         $reader = new Spreadsheet_Excel_Reader();
         $reader->setOutputEncoding('UTF-8');
         $reader->read($sFilename);
-
+        
         $t = fopen($sTempFilename, "w");
         foreach ($reader->sheets as $aSheet) {
-            for ($i = 1; $i <= $aSheet['numRows']; $i++) {
-                for ($j = 1; $j <= $aSheet['numCols']; $j++) {
-                    fwrite($t, $aSheet['cells'][$i][$j] . " ");
-                }
-                fwrite($t, "\n");
-            }
-            fwrite($t, "\n\n\n");
+        	for ($i = 1; $i <= $aSheet['numRows'] && $i <= 1000; $i++) {
+        		for ($j = 1; $j <= $aSheet['numCols'] && $j <= 1000; $j++) {
+        			fwrite($t, $aSheet['cells'][$i][$j] . " ");
+        		}
+        		fwrite($t, "\n");
+        	}
+        	fwrite($t, "\n\n\n");
         }
         fclose($t);
         return file_get_contents($sTempFilename);
