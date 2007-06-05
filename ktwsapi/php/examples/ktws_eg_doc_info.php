@@ -29,6 +29,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Demonstrates using an active session and getting document info and metadata.
+ */
+
 require_once('../ktwsapi.inc.php');
 
 $ktapi = new KTWSAPI(KTWebService_WSDL);

@@ -29,6 +29,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Demonstrates how to create an anonymous session.
+ */
+
 require_once('../ktwsapi.inc.php');
 
 $ktapi = new KTWSAPI(KTWebService_WSDL);

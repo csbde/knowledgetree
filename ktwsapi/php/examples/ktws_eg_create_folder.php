@@ -29,6 +29,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Demonstrates creating a folder in an active session.
+ */
+
 require_once('../ktwsapi.inc.php');
 
 $ktapi = new KTWSAPI(KTWebService_WSDL);
