@@ -50,6 +50,7 @@ body
     border: 1px solid #BBBBBB;
     padding: 20px;
     min-height: 800px;
+    min-width: 600px;
     height: auto;
     background-image: url(../../resources/graphics/page_bg.png);
     background-repeat: repeat-x;
@@ -61,6 +62,9 @@ body
    margin-right:15px;
 }
 
+#wrapper {
+	min-width: 750px;
+}
 /* ------------------ logobar ------------------ */
 
 #logobar
@@ -1278,11 +1282,12 @@ hr {
 .ktBlock .dashboard_block_body
 { 
     z-index:99;
-    margin: 8px 0 10px 0;
+    margin: 8px 5px 10px 5px;
     background-color:#FFFFFF;
     padding-left: 15px;
     padding-right: 15px;
     padding-bottom: 5px;
+    overflow: auto;
 }
 
 .ktError .dashboard_block_body
@@ -1290,6 +1295,7 @@ hr {
     z-index:99;
     margin-top: -8px;
     background-color: #ffdd80;
+    overflow: auto;
 }
 
 .ktInfo .dashboard_block_body
@@ -1297,6 +1303,7 @@ hr {
     z-index:99;
     margin-top: -8px;
     background-color: #DEDEDE;
+    overflow: auto;
 }
 
 .dashboard_block .dashboard_block_body  .edit_action 

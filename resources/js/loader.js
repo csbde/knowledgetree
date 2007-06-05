@@ -26,64 +26,64 @@ window.onload = function()
     pageBody.style.backgroundPosition="bottom left";
     
     // footer
-    var copyrightBar = document.getElementById("copyrightbarBorder");
-    var footerBlock = new curvyCorners(settings, copyrightBar);
+    var footer = document.getElementById("copyrightbarBorder");
+    var footerBlock = new curvyCorners(settings, footer);
     footerBlock.applyCornersToAll();
     
     // standard dashlets
+    var dashBlock = new curvyCorners(settings_dashlets, "ktBlock");
+    dashBlock.applyCornersToAll();
     var dashboardBlocks = getElementsByClass("ktBlock");
     for(var t = 0; t < dashboardBlocks.length; t++){
-    	var dashBlock = new curvyCorners(settings_dashlets, dashboardBlocks[t]);
-    	dashBlock.applyCornersToAll();
 	    dashboardBlocks[t].style.margin="0 0 26px 0";
     }
     
     //info dashlets
+    var infoBlock = new curvyCorners(settings_dashlets, "ktInfo");
+    infoBlock.applyCornersToAll();
     var infodashlets = getElementsByClass("ktInfo");
     for(var q = 0; q < infodashlets.length; q++){
-    	var infoBlock = new curvyCorners(settings_dashlets, infodashlets[q]);
-    	infoBlock.applyCornersToAll();
 	    infodashlets[q].style.margin="0 0 26px 0";
     }
     
     //info message popups
+    var infoMessage = new curvyCorners(settings_dashlets, "ktInfoMessage");
+    infoMessage.applyCornersToAll();
     var infoMessages = getElementsByClass("ktInfoMessage");
     for(var s = 0; s < infoMessages.length; s++){
-    	var infoMessage = new curvyCorners(settings_dashlets, infoMessages[s]);
-    	infoMessage.applyCornersToAll();
 	    infoMessages[s].style.margin="0 0 26px 0";
     }
     
     //error message dashlets
+    var errorBlock = new curvyCorners(settings_dashlets, "ktError");
+    errorBlock.applyCornersToAll();
     var errordashlets = getElementsByClass("ktError");
     for(var r = 0; r < errordashlets.length; r++){
-    	var errorBlock = new curvyCorners(settings_dashlets, errordashlets[r]);
-    	errorBlock.applyCornersToAll();
 	    errordashlets[r].style.margin="0 0 26px 0";
     }
     
     //error message popups
+    var errorMessage = new curvyCorners(settings_dashlets, "ktErrorMessage");
+    errorMessage.applyCornersToAll();
     var errorMessages = getElementsByClass("ktErrorMessage");
     for(var v = 0; v < errorMessages.length; v++){
-    	var errorMessage = new curvyCorners(settings_dashlets, errorMessages[v]);
-    	errorMessage.applyCornersToAll();
 	    errorMessages[v].style.margin="0 0 26px 0";
     }
 
     if(getElementsByClass("noportlets").length != '1'){
 	    //portlets
+	    	var portletBlock = new curvyCorners(settings_dashlets, "portlet");
+		    portletBlock.applyCornersToAll();
 		    var portlets = getElementsByClass("portlet");
 		    for(var t = 0; t < portlets.length; t++){
-		    	var portletBlock = new curvyCorners(settings_dashlets, portlets[t]);
-		    	portletBlock.applyCornersToAll();
 			    portlets[t].style.margin="0 0 26px 0";
 		    }
 	    
 	    //portlets
+	    	var exp_portletBlock = new curvyCorners(settings_dashlets, "portlet expanded");
+		    exp_portletBlock.applyCornersToAll();
 		    var exp_portlets = getElementsByClass("portlet expanded");
 		    for(var u = 0; u < exp_portlets.length; u++){
-		    	var exp_portletBlock = new curvyCorners(settings_dashlets, exp_portlets[u]);
-		    	exp_portletBlock.applyCornersToAll();
 			    exp_portlets[u].style.margin="0 0 26px 0";
 		    }
 	}

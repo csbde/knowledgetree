@@ -61,6 +61,7 @@
     <![endif]-->
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if}>
+<div id="wrapper">
 <input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
     <div id="pageBody">
         <div id="bodyPad">
@@ -215,6 +216,7 @@
 			</tr>
 		</table>
         <div class="floatClear"></div>
-    </div>    
+    </div>
+</div> 
 </body>
 </html>
