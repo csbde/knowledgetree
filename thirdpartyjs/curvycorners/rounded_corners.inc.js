@@ -34,12 +34,12 @@
   *  MA 02111-1307 USA                                           *
   *                                                              *
   ****************************************************************/
-var mycount=0;
-var myobj='';
+
   // Browser detection
   var isIE     = navigator.userAgent.toLowerCase().indexOf("msie") > -1;
   var isMoz    = document.implementation && document.implementation.createDocument;
   var isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari')!=-1)&&(navigator.userAgent.toLowerCase().indexOf('mac')!=-1))?true:false;
+  var masterCorners    = new Array();
 
   /*
   Usage:
@@ -90,7 +90,7 @@ var myobj='';
 
       this.objects = curvyCornersCol;
 
-      // Applys the curvyCorners to all objects
+      // Applies the curvyCorners to all objects
       this.applyCornersToAll = function()
       {
           for(var x = 0, k = this.objects.length; x < k; x++)
@@ -108,7 +108,7 @@ var myobj='';
       this.settings         = arguments[0];
       this.topContainer     = null;
       this.bottomContainer  = null;
-      this.masterCorners    = new Array();
+      
       this.contentDIV       = null;
 
       // Get box formatting details
@@ -295,15 +295,22 @@ var myobj='';
                       The pixel bars will then be repositioned to form the new corner type.
                       All new corners start as a bottom right corner.
                       */
-                      //if(this.masterCorners[this.settings[cc].radius])
-                      //{
-                          // Create clone of the master corner
-                          //if(){
-	                          //var newCorner = this.masterCorners[this.settings[cc].radius].cloneNode(true);
-	                      //}
-                      //}
-                      //else
-                      {
+                      //alert(masterCorners["boxId: "+ cc]+ cc);
+                      /*if(cc == "tr"){
+                      	  if(masterCorners[this.settings[cc].radius])
+                      	  	var newCorner = masterCorners[this.settings["tr"].radius].cloneNode(true);
+                      	  //alert("cloning tr");
+                      }else if(cc == "br"){
+                          if(masterCorners[this.settings[cc].radius])
+                      	  	var newCorner = masterCorners[this.settings["br"].radius].cloneNode(true);
+                      	  //alert("cloning br");
+                      }*/
+                      
+                      if(masterCorners[this.settings[cc].radius] && cc == "tl"){
+                      	  var newCorner = masterCorners[this.settings["tr"].radius].cloneNode(true);
+                      }else if(masterCorners[this.settings[cc].radius] && cc == "bl"){
+                      	  var newCorner = masterCorners[this.settings["br"].radius].cloneNode(true);
+                      }else{
                           // Yes, we need to create a new corner
                           var newCorner = document.createElement("DIV");
                           newCorner.style.height = this.settings[cc].radius + "px";
@@ -422,7 +429,7 @@ var myobj='';
                           // ---------------------------------------------------- END
 
                           // We now need to store the current corner in the masterConers array
-                          this.masterCorners[this.settings[cc].radius] = newCorner.cloneNode(true);
+                          masterCorners[this.settings[cc].radius] = newCorner.cloneNode(true);
                       }
 
                       /*
