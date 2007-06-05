@@ -29,6 +29,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * This is the object model for the KnowledgeTree WebService.
+ */
+
 // TODO: add more validation based on information already returned. this can prevent all validation being done server side and minimise a little traffic possibly...
 // TODO: caching so that requests don't have to be returned.
 // TODO: possibly add a subscriber model, where updates can be propogated through to a cache/model on the client side.

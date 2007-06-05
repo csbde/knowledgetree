@@ -29,6 +29,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * This is a sample of how to add a document to the repository.
+ */
+
 require_once('../ktwsapi.inc.php');
 
 $ktapi = new KTWSAPI(KTWebService_WSDL);
