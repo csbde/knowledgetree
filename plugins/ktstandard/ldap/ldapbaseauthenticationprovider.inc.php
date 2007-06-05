@@ -618,7 +618,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
 
         $this->oLdap =& Net_LDAP::connect($config);
         if (PEAR::isError($this->oLdap)) {
-            return $oLdap;
+            return $this->oLdap;
         }
     }
 
@@ -637,11 +637,11 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'tls' => $this->bTls,
             'port'=> $this->iLdapPort
         );
-        $oLdap =& Net_LDAP::connect($config);
-        if (PEAR::isError($oLdap)) {
-            return $oLdap;
+        $this->oLdap =& Net_LDAP::connect($config);
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
         }
-        $res = $oLdap->reBind($dn, $sPassword);
+        $res = $this->oLdap->reBind($dn, $sPassword);
         return $res;
     }
 
@@ -665,11 +665,11 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'tls' => $this->bTls,
             'port'=> $this->iLdapPort
         );
-        $oLdap =& Net_LDAP::connect($config);
-        if (PEAR::isError($oLdap)) {
-            return $oLdap;
+        $this->oLdap =& Net_LDAP::connect($config);
+        if (PEAR::isError($this->oLdap)) {
+            return $this->oLdap;
         }
-        $res = $oLdap->reBind($dn, $sPassword);
+        $res = $this->oLdap->reBind($dn, $sPassword);
         if ($res === true) {
             return $dn;
         }
