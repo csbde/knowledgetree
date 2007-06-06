@@ -378,6 +378,12 @@ class KTWebService
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );      
 
+          //  checkin_base64_document
+         $this->__dispatch_map['checkin_base64_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','base64' =>'string', 'major_update'=>'boolean' ), 
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+              'alias' => 'checkin_small_document'
+            );      
             
          // add_document
          $this->__dispatch_map['add_document'] =
@@ -390,7 +396,16 @@ class KTWebService
             array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','base64' =>'string' ), 
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
             );  
-    
+
+         // add_base64_document
+         $this->__dispatch_map['add_base64_document'] =
+            array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','base64' =>'string' ), 
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+             'alias' => 'add_small_document'
+
+            );  
+            
+            
          // get_document_detail_by_name
          $this->__dispatch_map['get_document_detail_by_name'] =
             array('in' => array('session_id' => 'string', 'document_name' => 'string', 'what'=>'string' ), 
@@ -409,6 +424,12 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );   
             
+          // checkout_base64_document
+           $this->__dispatch_map['checkout_base64_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string','download' => 'boolean'), 
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+              'alias' => 'checkout_small_document'
+            );   
             
             // undo_document_checkout
             $this->__dispatch_map['undo_document_checkout'] =
@@ -428,7 +449,13 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );                      
 
-            
+            // download_base64_document
+            $this->__dispatch_map['download_base64_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int' ), 
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+              'alias' => 'download_small_document'
+            ); 
+                
             // delete_document 
 			$this->__dispatch_map['delete_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason'=>'string'), 
