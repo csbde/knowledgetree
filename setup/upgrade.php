@@ -32,6 +32,7 @@
 $GLOBALS["checkup"] = true;
 session_start();
 require_once('../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
@@ -177,8 +178,6 @@ $action = trim($_REQUEST["go"]);
 switch ($action)
 {
 	case 'UpgradeConfirm':
-		upgradeConfirm();
-		break;
 	case 'UpgradePreview':
 		UpgradePreview();
 		break;
@@ -209,9 +208,90 @@ switch ($action)
 	case 'RestoreDone':		 
 		restoreDone();
 		break;		
-	default:		
-		welcome();
+	case 'Login':
+		login();
 		break;
+	case 'LoginProcess':
+		loginProcess();
+		break;
+	default:		
+		if (!isset($_SESSION['setup_user']))
+			login();
+		else
+			welcome();
+		break;
+}
+
+function login()
+{
+?>
+<P>
+The database upgrade wizard completes the upgrade process on an existing KnowledgeTree installation. It applies
+any upgrades to the database that may be required.
+<P>
+Only administrator users may access the upgrade wizard.
+<P>
+
+<form method=post action="?go=LoginProcess">
+<table>
+<tr><td>Username<td><input name=username>
+<tr><td>Password<td><input name=password type="password">
+<tr><td colspan=2 align=center><input type=submit value="login">
+</table>
+</form>
+<?	
+}
+
+function loginProcess()
+{
+	$username=$_REQUEST['username'];
+	$password=$_REQUEST['password'];
+	
+	$oUser = User::getByUserName($username);
+	
+	if (PEAR::isError($oUser))
+	{
+		session_unset();
+		loginFailed(_kt('Could not identify user'));
+		return;
+	}
+	
+	$is_admin=false;
+	$groups = GroupUtil::listGroupsForUser($oUser);
+	foreach($groups as $group)
+	{
+		if ($group->getSysAdmin())
+		{
+			$is_admin=true;
+			break;
+		}
+	}
+	
+	if (!$is_admin)
+	{
+		session_unset();
+		loginFailed(_kt('Could not identify administrator'));
+		return;
+	}
+		
+	$authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
+	
+	if (!$authenticated)
+	{
+		session_unset();
+		loginFailed(_kt('Could not authenticate user'));
+		return;
+	}
+		
+	$_SESSION['setup_user'] = $oUser;
+		
+	welcome();	
+}
+
+function loginFailed($message)
+{
+	print "<font color=red>$message</font>";
+	login();
 }
 
 function resolveMysqlDir()
@@ -336,11 +416,16 @@ function create_restore_stmt($targetfile)
 
 function title($title)
 {
+	if (!isset($_SESSION['setup_user']))
+	{
+		print "<script>document.location='?go=Login'</script>";
+	}
 	print "<h1>$title</h1>";
 }
 
 function resolveTempDir()
 {
+ 
 	if (OS_UNIX)
 	{
 		$dir='/tmp/kt-db-backup'; 
@@ -349,6 +434,9 @@ function resolveTempDir()
 	{
 		$dir='c:/kt-db-backup'; 
 	}
+	
+	$dir = $oKTConfig->get('backups/backupDirectory',$dir);
+	
 	if (!is_dir($dir))
 	{
 			mkdir($dir);
@@ -374,8 +462,8 @@ function upgradeConfirm()
 We are about to start the upgrade process.  
 <P>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to preview available upgrades" onclick="javascript:do_start('UpgradePreview')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradePreview')"> 
 
 <?
 	
@@ -425,14 +513,14 @@ You can continue to do the backup manually using the following process:
 Press <i>continue to backup</i> to attempt the command(s) above.
 <P>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
 
 <?
 if ($dir != '')
 {
 ?>
 
-<input type=button value="continue to backup" onclick="javascript:do_start('Backup')"> 
+<input type=button value="next" onclick="javascript:do_start('Backup')"> 
 
 
 <?
@@ -501,7 +589,7 @@ function restoreSelect()
    ?>
 
    <p>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
    <?
 
 }
@@ -577,8 +665,8 @@ Press <i>continue to restore</i> to attempt the command(s) above.
 }
 ?>
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup to restore" onclick="javascript:do_start('RestoreSelect')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup" onclick="javascript:do_start('RestoreSelect')"> 
 
 <?
 if ($dir != '')
@@ -593,7 +681,7 @@ function restore()
 	}
 }
 </script>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to restore" onclick="javascript:restore()"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:restore()"> 
 
 
 <?
@@ -666,12 +754,12 @@ We appologise for the inconvenience.
 ?>
 <br>				
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 <?
 	if ($status)
 	{
 		?>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:do_start('UpgradeConfirm')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm')"> 
 	
 <?	
 	}
@@ -718,7 +806,7 @@ We appologise for the inconvenience.
 
 <br>				
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 
 <?	
 	
@@ -758,7 +846,7 @@ function backup()
 		ob_flush();
 		flush();
 ?>
-		The back is now underway. Please wait till it completes.
+		The backup is now underway. Please wait till it completes.
 <?
 
 		ob_flush();
@@ -798,7 +886,7 @@ function backup()
 <P>
 	The <i>mysqldump</i> utility was not found in the <?=$dir?> subdirectory.
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 <?		
 	}
 
@@ -870,7 +958,7 @@ function restore()
 <P>
 	The <i>mysql</i> utility was not found in the <?=$dir?> subdirectory.
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 <?		
 	}
 
@@ -884,20 +972,21 @@ function welcome()
 	set_state(1);
 ?>
 <br>
-Welcome to the <?php echo APP_NAME;?> Database Upgrade Utility.<P> If you have just applied an upgrade stack installer or have updated
+Welcome to the <?php echo APP_NAME;?> Database Upgrade Wizard.<P> If you have just updated
 your <?php echo APP_NAME;?> code base, you will need to complete the upgrade process in order to ensure your system is fully operational with the new version.
 <P>
+You will not be able to log into <?php echo APP_NAME;?> until your the database upgrade process is completed.
+<P>
 <font color=orange>!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
-
 <P>
 If you have already done this, you may skip this step can continue directly to the upgade.
 <P>
  
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="document.location='..';"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup" onclick="javascript:do_start('BackupConfirm');"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="continue to upgrade" onclick="javascript:do_start('UpgradeConfirm');"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore" onclick="javascript:do_start('RestoreConfirm');"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="cancel" onclick="document.location='..';"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup now" onclick="javascript:do_start('BackupConfirm');"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm');"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');"> 
 
 
 <?
@@ -920,8 +1009,8 @@ function UpgradePreview()
 	?>
 	<br> 
  
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="upgrade" onclick="javascript:do_start('Upgrade')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('Upgrade')"> 
 	<?
 
 }
@@ -954,8 +1043,8 @@ function Upgrade()
 ?>
 <p>
 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="home" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="return to <?php echo APP_NAME;?>" onclick="javascript:document.location='..';"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';"> 
 <?	 
 }
 
