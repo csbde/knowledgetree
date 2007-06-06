@@ -419,9 +419,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function get_detail()
 	{
 		$detail = array(
-			'id'=>$this->folderid,
+			'id'=>(int) $this->folderid,
 			'folder_name'=>$this->get_folder_name(),
-			'parent_id'=>$this->get_parent_folder_id(),
+			'parent_id'=>(int) $this->get_parent_folder_id(),
 			'full_path'=>$this->get_full_path(),
 		);
 		
@@ -430,7 +430,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	
 	function get_parent_folder_id()
 	{
-		return $this->folder->getParentID();
+		return (int) $this->folder->getParentID();
 	}
 	
 	function get_folder_name()
@@ -446,7 +446,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get_folderid()
 	{
-		return $this->folderid;
+		return (int) $this->folderid;
 	}
 	
 	/**
