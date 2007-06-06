@@ -37,11 +37,10 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
 require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
-
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
-
 require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class SimpleSearchTitleColumn extends TitleColumn {
     function setSearch($sSearch) {
@@ -143,7 +142,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $aErrorOptions = array(
             "message" => _kt("Please provide a search term"),
         );
-        $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
+        $searchable_text = sanitize(KTUtil::arrayGet($_REQUEST, "fSearchableText"));
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
 
 

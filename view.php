@@ -35,6 +35,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // document related includes
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
@@ -94,12 +95,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     function do_main() {
         // fix legacy, broken items.
         if (KTUtil::arrayGet($_REQUEST, "fDocumentID", true) !== true) {
-            $_REQUEST["fDocumentId"] = KTUtil::arrayGet($_REQUEST, "fDocumentID");
+            $_REQUEST["fDocumentId"] = sanitize(KTUtil::arrayGet($_REQUEST, "fDocumentID"));
             unset($_REQUEST["fDocumentID"]);
         }
 
         $document_data = array();
-        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        $document_id = sanitize(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
@@ -250,7 +251,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     function do_viewComparison() {
     
         $document_data = array();
-        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        $document_id = sanitize(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
@@ -258,7 +259,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     
         $document_data["document_id"] = $document_id;
     
-        $base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
+        $base_version = sanitize(KTUtil::arrayGet($_REQUEST, 'fBaseVersion'));
     
         // try get the document.
         $oDocument =& Document::get($document_id, $base_version);
@@ -283,7 +284,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
         $this->oPage->setBreadcrumbDetails(_kt("compare versions"));
     
-        $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
+        $comparison_version = sanitize(KTUtil::arrayGet($_REQUEST, 'fComparisonVersion'));
         if ($comparison_version=== null) {
             $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id)));
             return $this->do_error();

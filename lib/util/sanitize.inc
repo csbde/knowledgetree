@@ -44,7 +44,9 @@ function sanitize($string) {
 	}
 
 	// This might be a little too aggressive
-	$pattern = "([^[:alpha:]|^_\.\ \:-])";
+	//$pattern = "([^[:alpha:]|^_\.\ \:-])";
+	// Allow numeric characters
+	$pattern = "([^[:alnum:]|^_\.\ \:-])";
 	return ereg_replace($pattern, '', $string);
 }
 
