@@ -30,15 +30,13 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
-
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
-
 require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
-
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
@@ -282,8 +280,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         );
         
         $aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
-        $sTitle = $extra_d['document_name'];
-
+        $sTitle = sanitize($extra_d['document_name']);
+        
         $iFolderId = $this->oFolder->getId();
         $aOptions = array(
             'contents' => new KTFSFileLike($aFile['tmp_name']),
