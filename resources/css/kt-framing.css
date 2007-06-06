@@ -240,7 +240,6 @@ a.main_nav_item {
 
 #portletbar .portlet {
     margin: 0 0 1.5em 0;
-    /*background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;*/
     background: #ffffff url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
     border: 1px solid #B7B7B7;
     padding: 0 0 0 0;
@@ -280,8 +279,8 @@ a.main_nav_item {
 #portletbar .portlet h4
 {
 	margin: 0;
-    padding-top: 0.35em;
-    padding-bottom: 0.7em;
+    padding-top: 0;
+    padding-bottom: 0.4em;
     padding-left: 30px;
     background: url(../graphics/plus.gif) 10px 45% no-repeat;
     text-align: left;
@@ -295,8 +294,8 @@ a.main_nav_item {
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: #eee;
-    padding-top: 0.35em;
-    padding-bottom: 0.50em;
+    padding-top: 0;
+    padding-bottom: 0.4em;
     padding-left: 30px;
     text-align: left;
     background: url(../graphics/minus.gif) 10px 45% no-repeat;

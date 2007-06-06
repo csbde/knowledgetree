@@ -3,20 +3,8 @@
     background-image: url(download.png); 
 }
 
-#pageBodyBg {
+#pageBody {
     background: url(page_bg.png) bottom left repeat-x;
-}
-
-#bodyBottomLeft {
-    background: url(page_border_bottomleft.gif) bottom left no-repeat;
-}
-
-#bodyBottomRepeat {
-    background: url(page_border_bottomrepeat.gif) bottom left repeat-x;
-}
-
-#bodyBottomRight {
-    background: url(page_border_bottomright.gif) bottom right no-repeat;
 }
 
 #navbar
@@ -40,16 +28,19 @@
     background: url(menu_divider.png) top left no-repeat;
 }
 
-.dashboard_block_topleft {
-    background: url(dashlet_topleft.png) top left no-repeat;
+.ktBlock {
+	background: #ffffff url(dashlet_toprepeat.png) top left repeat-x;
+    border: 1px solid #C5C5C5;
 }
 
-.dashboard_block_toprepeat {
-    background: white url(dashlet_toprepeat.png) top left repeat-x;
+.ktInfo {
+    background: #DEDEDE url(../../resources/graphics/info_toprepeat.png) top left repeat-x;
+    border: 1px solid #C5C5C5;
 }
 
-.dashboard_block_topright {
-    background: url(dashlet_topright.png) top right no-repeat;
+.ktError {
+	background: #ffdd80 url(../../resources/graphics/error_toprepeat.png) top left repeat-x;
+    border: 1px solid #FFC21E;
 }
 
 #portletbar .portlet.expanded h4
@@ -57,28 +48,12 @@
     background: url(minus.gif) 10px 45% no-repeat;
 }
 
-#portletbar .portlet.expanded .portletTopRepeat {
-    background: url(portlet_bg.png) top left repeat-x;
-}
-
 #portletbar .portlet.expanded {
-    background: url(portlet_corner_topleft.png) top left no-repeat;
-}
-
-#portletbar .portlet.expanded .portletTopRight {
-    background: url(portlet_corner_topright.png) top right no-repeat;
-}
-
-#portletbar .portlet .portletTopRepeat {
-    background: url(portlet_bg_collapsed.png) top left repeat-x;
+    background: #ffffff url(portlet_bg.png) top left repeat-x;
 }
 
 #portletbar .portlet {
-    background: url(portlet_corner_topleft_collapsed.png) top left no-repeat;
-}
-
-#portletbar .portlet .portletTopRight {
-    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
+    background: #ffffff url(portlet_bg_collapsed.png) top left repeat-x;
 }
 
 .collapsible.expanded h4
@@ -105,16 +80,11 @@
     background-image: url(download.png);
 }
 
-#copyrightbarBg {
-    background: url(footer_bg.png) top left repeat-x;
-}
-
-#copyrightbarLeft{
-    background: url(footer_left.png) top left no-repeat;
-}
-
-#copyrightbarRight{
-    background: url(footer_right.png) top right no-repeat;
+#copyrightbarBorder {
+    margin-top: 40px;
+    margin-bottom: 50px;
+    border: 1px solid #BBBBBB;
+    background-color: #D1D1D1;
 }
 
 /* Font colour definitions */
