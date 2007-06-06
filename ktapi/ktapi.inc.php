@@ -1864,8 +1864,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$username='n/a';
 		}
 		$detail['updated_by'] = $username;
-		$detail['document_id'] = $document->getId();
-		$detail['folder_id'] = $document->getFolderID();
+		$detail['document_id'] = (int) $document->getId();
+		$detail['folder_id'] = (int) $document->getFolderID();
 
 		$workflowid = $document->getWorkflowId();
 		if (is_numeric($workflowid))
