@@ -432,6 +432,35 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+
+        // inherit parent permissions
+        $oParentAllocation = RoleAllocation::getAllocationsForFolderAndRole($this->oFolder->getParentID(), $role_id);
+        if (!is_null($oParentAllocation) && !PEAR::isError($oParentAllocation))
+        {
+        	$oPD = $oParentAllocation->getPermissionDescriptor();
+
+        	$aAllowed = $oPD->getAllowed();
+        	$userids=$aAllowed['user'];
+        	$groupids=$aAllowed['group'];
+
+        	// now lets update for the new allocation
+        	$oPD = $oRoleAllocation->getPermissionDescriptor();
+
+        	$aAllowed = $oPD->getAllowed();
+
+        	$aAllowed['user'] = $userids;
+        	$aAllowed['group'] = $groupids;
+
+        	$oRoleAllocation->setAllowed($aAllowed);
+        	$res = $oRoleAllocation->update();
+        	
+        	if (PEAR::isError($res) || ($res == false)) 
+        	{
+				$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
+			}
+        }
+        
+        // regenerate permissions
         
 		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
 
