@@ -40,9 +40,9 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
-
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentEditAction
 class KTDocumentEditAction extends KTDocumentAction {
@@ -191,7 +191,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         if ($this->oDocument->getDocumentTypeId() != $doctypeid) {
             $this->oDocument->setDocumentTypeId($doctypeid);
         }
-        $this->oDocument->setName($data['document_title']);
+        $this->oDocument->setName(sanitize($data['document_title']));
         $res = $this->oDocument->update();
         if (PEAR::isError($res)) {
             $oForm->handleError(sprintf(_kt("Unexpected failure to update document title: %s"), $res->getMessage()));

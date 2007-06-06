@@ -30,13 +30,12 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
-
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
-
 require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTFolderRenameAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.rename';
@@ -88,8 +87,7 @@ class KTFolderRenameAction extends KTFolderAction {
             }
         }
 
-        $res = KTFolderUtil::rename($this->oFolder, $sFolderName, $this->oUser);
-
+        $res = KTDocumentUtil::rename($this->oDocument, sanitize($sFilename), $this->oUser);
         if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));

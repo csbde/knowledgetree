@@ -32,7 +32,7 @@
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/discussions/DiscussionThread.inc');
 require_once(KT_LIB_DIR . '/discussions/DiscussionComment.inc');
-
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 define('DISCUSSION_OPEN', 0);
 define('DISCUSSION_CONCLUSION', 1);
@@ -177,8 +177,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => $sSubject,
-            'body' => KTUtil::formatPlainText($sBody),
+            'subject' => sanitize($sSubject),
+            'body' => sanitize(KTUtil::formatPlainText($sBody)),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -306,8 +306,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => $sSubject,
-            'body' => KTUtil::formatPlainText($sBody),
+            'subject' => sanitize($sSubject),
+            'body' => sanitize(KTUtil::formatPlainText($sBody)),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -387,7 +387,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	}
 	
 	$aErrorOptions['message'] = _kt("No reason provided");
-	$sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
+	$sReason = sanitize($this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions));
 	
 	if($iStateId > $oThread->getState()) {
 	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';
