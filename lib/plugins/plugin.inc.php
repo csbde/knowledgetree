@@ -364,7 +364,7 @@ class KTPlugin {
     }
 
     function stripKtDir($sFilename) {
-        if (strpos($sFilename, KT_DIR) === 0) {
+        if (strpos($sFilename, KT_DIR) === 0 ||strpos($sFilename, realpath(KT_DIR)) === 0) {
             return substr($sFilename, strlen(KT_DIR) + 1);
         }
         return $sFilename;
