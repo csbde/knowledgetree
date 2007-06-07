@@ -434,7 +434,7 @@ function resolveTempDir()
 	{
 		$dir='c:/kt-db-backup'; 
 	}
-	
+	$oKTConfig =& KTConfig::getSingleton();
 	$dir = $oKTConfig->get('backups/backupDirectory',$dir);
 	
 	if (!is_dir($dir))
