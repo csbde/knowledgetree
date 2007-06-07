@@ -87,12 +87,21 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
                 'required' => false,
                 'name' => 'transitions',
             )),                        
+            array('ktcore.widgets.hidden',array(
+                'required' => false,
+                'name' => 'fWizardKey',
+                'value' =>  KTUtil::randomString()
+            )),                        
         ));
         
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
                 'test' => 'workflow_name',
                 'output' => 'workflow_name',                
+            )),
+            array('ktcore.validators.string', array(
+                'test' => 'fWizardKey',
+                'output' => 'fWizardKey',                
             )),
             array('ktcore.validators.string', array(
                 'test' => 'states',
@@ -122,6 +131,14 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
     }
     
     function do_process_step1() {
+    	
+    	 $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+    	if (!empty($fWizardKey))
+    	{
+    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
+    		 exit;
+    	}
+    	
         $oForm =& $this->form_step1();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -191,7 +208,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         } 
         
         // store the data for a while.
-        $fWizardKey = KTUtil::randomString();
+        
         $wiz_data = (array) $_SESSION['_wiz_data'];
         $wiz_data[$fWizardKey] = $data;
         $_SESSION['_wiz_data'] =& $wiz_data;
@@ -200,11 +217,16 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             return $this->finalise();   // finish and go.
         }
         
-        $this->successRedirectTo("step2",_kt("Initial data stored."), sprintf('fWizardKey=%s', $fWizardKey));
+        $this->successRedirectTo("step2",_kt("Initial data stored."));
     }
     
     function do_step2() {
-        $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+    	 $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+    	if (!empty($fWizardKey))
+    	{
+    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
+    		 exit;
+    	}
         $wiz_data = (array) $_SESSION['_wiz_data'][$fWizardKey];
 
         if (empty($wiz_data)) {
@@ -218,6 +240,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         
         $oTemplate->setData(array(
             'context' => $this,
+            'fWizardKey'=>$fWizardKey,
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],            
@@ -227,6 +250,11 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
     
     function do_process_step2() {
         $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+        if (!empty($fWizardKey))
+    	{
+    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
+    		 exit;
+    	}
         $wiz_data = $_SESSION['_wiz_data'][$fWizardKey];
         if (empty($wiz_data)) {
             $this->errorRedirectToMain(_kt("Unable to locate stored data.  Please try again."));
@@ -272,6 +300,11 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
     
     function finalise() {
         $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+        if (!empty($fWizardKey))
+    	{
+    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
+    		 exit;
+    	}
         $wiz_data = $_SESSION['_wiz_data'][$fWizardKey];
         
         // gather all our data.  we're sure this is all good and healthy.
