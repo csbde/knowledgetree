@@ -217,7 +217,11 @@ class KTDocumentEditAction extends KTDocumentAction {
         }
         
         $this->commitTransaction();
-           
+
+        // create the document transaction record
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document metadata updated'), 'ktcore.transactions.update');
+        $oDocumentTransaction->create();
+        
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument->getId()));
         exit(0);
     } 
