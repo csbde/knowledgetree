@@ -37,6 +37,11 @@ class KTCoreStringWidget extends KTWidget {
     var $sTemplate = 'ktcore/forms/widgets/string';
 }
 
+class KTCoreHiddenWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.hidden';
+    var $sTemplate = 'ktcore/forms/widgets/hidden';
+}
+
 class KTCoreFileWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.file';
     var $sTemplate = 'ktcore/forms/widgets/file';
