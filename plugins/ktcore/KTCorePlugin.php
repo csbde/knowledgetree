@@ -138,6 +138,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
         
         // widgets
+        $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
         $this->registerWidget('KTCoreStringWidget', 'ktcore.widgets.string', 'KTWidgets.php');
         $this->registerWidget('KTCoreSelectionWidget', 'ktcore.widgets.selection', 'KTWidgets.php');        
         $this->registerWidget('KTCoreEntitySelectionWidget', 'ktcore.widgets.entityselection', 'KTWidgets.php');
