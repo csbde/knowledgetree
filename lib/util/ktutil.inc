@@ -467,22 +467,36 @@ class KTUtil {
 
     // {{{ findCommand
     function findCommand($sConfigVar, $sDefault = null) {
-        $oKTConfig =& KTConfig::getSingleton();
-        $sCommand = $oKTConfig->get($sConfigVar, $sDefault);
-        if (empty($sCommand)) {
-            return false;
-        }
-        if (file_exists($sCommand)) {
-            return $sCommand;
-        }
-        $sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
-        $paths = split(PATH_SEPARATOR, $sExecSearchPath);
-        foreach ($paths as $path) {
-            if (file_exists($path . '/' . $sCommand)) {
-                return $path . '/' . $sCommand;
-            }
-        }
-        return false;
+    	$oKTConfig =& KTConfig::getSingleton();
+    	$sCommand = $oKTConfig->get($sConfigVar, $sDefault);
+    	if (empty($sCommand)) {
+    		return false;
+    	}
+    	if (file_exists($sCommand)) {
+    		return $sCommand;
+    	}
+    	if (file_exists($sCommand . ".exe")) {
+    		return $sCommand . ".exe";
+    	}
+
+    	$sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
+    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../common/";
+    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../bin/xpdf/";
+    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../bin/antiword/";
+    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../bin/zip/";
+    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../bin/unzip/";
+
+    	$paths = split(PATH_SEPARATOR, $sExecSearchPath);
+    	foreach ($paths as $path) {
+
+    		if (file_exists($path . '/' . $sCommand)) {
+    			return $path . '/' . $sCommand;
+    		}
+    		if (file_exists($path . '/' . $sCommand . ".exe")) {
+    			return $path . '/' . $sCommand . ".exe";
+    		}
+    	}
+    	return false;
     }
     // }}}
 
