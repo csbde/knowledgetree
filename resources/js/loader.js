@@ -50,9 +50,6 @@ window.onload = function()
     var infoMessage = new curvyCorners(settings_dashlets, "ktInfoMessage");
     infoMessage.applyCornersToAll();
     var infoMessages = getElementsByClass("ktInfoMessage");
-    for(var s = 0; s < infoMessages.length; s++){
-	    infoMessages[s].style.margin="0 0 26px 0";
-    }
     
     //error message dashlets
     var errorBlock = new curvyCorners(settings_dashlets, "ktError");
@@ -66,9 +63,6 @@ window.onload = function()
     var errorMessage = new curvyCorners(settings_dashlets, "ktErrorMessage");
     errorMessage.applyCornersToAll();
     var errorMessages = getElementsByClass("ktErrorMessage");
-    for(var v = 0; v < errorMessages.length; v++){
-	    errorMessages[v].style.margin="0 0 26px 0";
-    }
 
     if(getElementsByClass("noportlets").length != '1'){
 	    //portlets
