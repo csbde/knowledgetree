@@ -229,9 +229,11 @@ class KTAddDocumentTrigger {
         		{
         		 
 				$oProxy = $aMetaData[0];
-				if($oProxy->iId == $sTags){
+				if($oProxy->iId == $sTags)
+				{
 					$tagString = $aMetaData[1];
 				}
+        		}
 			}
 			if($tagString != ''){
 	        	$words_table = KTUtil::getTableName('tag_words');
@@ -343,10 +345,12 @@ class KTEditDocumentTrigger {
         		foreach($aMeta as $aMetaData)
         		{
         			$oProxy = $aMetaData[0];
-        			if($oProxy->iId == $sTags){
+        			if($oProxy->iId == $sTags)
+        			{
         				$tagString = $aMetaData[1];
         				break;
-				}
+					}
+        		}
 			}
 			if($tagString != ''){
 	        	$words_table = KTUtil::getTableName('tag_words');
