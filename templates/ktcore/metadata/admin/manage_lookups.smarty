@@ -37,7 +37,7 @@ that are possible for a given lookup:{/i18n}</p>
       {foreach from=$lookups item=oLookup}
         <tr>
             <td><input type="checkbox" name="metadata[]" value="{$oLookup->getId()}" /></td>
-            <td>{$oLookup->getName()|escape}</td>
+            <td>{$oLookup->getName()}</td>
             <td class="centered">{if (!$oLookup->getDisabled())}<span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>{else}<span class="ktAction ktDenied">{i18n}No{/i18n}</span>{/if}</td>
             <td class="centered">{if ($oLookup->getIsStuck())}<span>{i18n}Yes{/i18n}</span>{else}&nbsp;{/if}</td>
         </tr>

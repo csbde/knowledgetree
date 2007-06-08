@@ -1,4 +1,4 @@
-<h2>{i18n}Edit Field{/i18n}: {$oField->getName()|escape}</h2>
+<h2>{i18n}Edit Field{/i18n}: {$oField->getName()}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
@@ -9,15 +9,15 @@
 <table class="prettysw" cellpadding="0" cellspacing="0">
   <tr>
     <th>{i18n}Name{/i18n}</th>
-    <td><input type="textbox" name="name" value="{$oField->getName()|escape}"></td>
+    <td><input type="textbox" name="name" value="{$oField->getName()}"></td>
   </tr>
   <tr>
     <th>{i18n}Description{/i18n}</th>
-    <td><textarea name="description">{$oField->getDescription()|escape}</textarea></td>
+    <td><textarea name="description">{$oField->getDescription()}</textarea></td>
   </tr>  
   <tr>
     <th>{i18n}Type{/i18n}</th>
-    <td>{$oField->getType()|escape}</td>
+    <td>{$oField->getType()}</td>
   </tr>
   <tr>
     <th>{i18n}Required{/i18n}</th>
@@ -71,7 +71,7 @@
 <ul>
 {foreach from=$aEnabledMetadata item=oMetaData}
   <li><label><input type="checkbox" name="metadata[]"
-value="{$oMetaData->getId()}">{$oMetaData->getName()|escape} 
+value="{$oMetaData->getId()}">{$oMetaData->getName()} 
 { if $oMetaData->getIsStuck() }
 <span class="helpText">({i18n}stuck, will never be disabled when synchronising
 from another source{/i18n})</span>
@@ -98,7 +98,7 @@ from another source{/i18n})</span>
 <ul>
 {foreach from=$aDisabledMetadata item=oMetaData}
   <li><label><input type="checkbox" name="metadata[]"
-value="{$oMetaData->getId()}">{$oMetaData->getName()|escape} 
+value="{$oMetaData->getId()}">{$oMetaData->getName()} 
 { if $oMetaData->getIsStuck() }
 <span class="helpText">({i18n}stuck, will never be enabled when synchronising
 from another source{/i18n})</span>

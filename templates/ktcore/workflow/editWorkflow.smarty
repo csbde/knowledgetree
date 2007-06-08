@@ -1,6 +1,6 @@
 {$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
 
-<h2>{i18n}Workflow Overview{/i18n}: {$oWorkflow->getName()|escape}</h2>
+<h2>{i18n}Workflow Overview{/i18n}: {$oWorkflow->getName()}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
