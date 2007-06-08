@@ -50,4 +50,75 @@ function sanitize($string) {
 	return ereg_replace($pattern, '', $string);
 }
 
+function sanitizeForSQL($string, $min='', $max='') {
+    
+    $string = trim($string);
+	if(get_magic_quotes_gpc()) $string = stripslashes($string);
+    
+    $len = strlen($string);
+    if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
+    
+    if(function_exists("mysql_real_escape_string")) {
+        return mysql_real_escape_string($string);
+    } else {
+        return addslashes($string);
+    }
+}
+
+function sanitizeForSQLtoHTML($string, $min='', $max='') {
+    
+	return stripslashes(trim($string));
+    
+}
+
+function sanitizeForHTML($string, $min='', $max='')
+{
+    $string = trim($string);
+	if(get_magic_quotes_gpc()) $string = stripslashes($string);
+
+    $len = strlen($string);
+    if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
+    
+    if(function_exists("htmlspecialchars")) {
+    	return htmlspecialchars($string);
+    } else {
+    	$pattern[0] = '/\&/';
+    	$pattern[1] = '/</';
+    	$pattern[2] = "/>/";
+    	$pattern[3] = '/\n/';
+    	$pattern[4] = '/"/';
+    	$pattern[5] = "/'/";
+    	$pattern[6] = "/%/";
+    	$pattern[7] = '/\( /';
+    	$pattern[8] = '/\)/';
+    	$pattern[9] = '/\+/';
+    	$pattern[10] = '/-/';
+    	$replacement[0] = '&amp;';
+    	$replacement[1] = '&lt;';
+    	$replacement[2] = '&gt;';
+    	$replacement[3] = '<br>';
+    	$replacement[4] = '&quot;';
+    	$replacement[5] = '&#39;';
+    	$replacement[6] = '&#37;';
+    	$replacement[7] = '&#40;';
+    	$replacement[8] = '&#41;';
+    	$replacement[9] = '&#43;';
+    	$replacement[10] = '&#45;';
+    	return preg_replace( $pattern, $replacement, $string);
+    }
+}
+
+function sanitizeForSYSTEM($string, $min='', $max='')
+{
+    $string = trim($string);
+	if(get_magic_quotes_gpc()) $string = stripslashes($string);
+
+    $len = strlen($string);
+    if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
+    
+    $pattern = '/( ;|\||`|>|<|&|^|"|'."\n|\r|'".'|{|}|[|]|\)|\( )/i'; 
+    $string = preg_replace( $pattern, '', $string);
+    return '"'.preg_replace( '/\$/', '\\\$', $string).'"';
+}
+
 ?>

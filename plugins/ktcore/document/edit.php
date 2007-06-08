@@ -96,7 +96,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                 'description' => sprintf(_kt("The document title is used as the main name of a document throughout %s&trade;."), APP_NAME),
                 'name' => 'document_title',
                 'required' => true,
-                'value' => $this->oDocument->getName(),
+                'value' => sanitizeForHTML($this->oDocument->getName()),
             )),
         );
         $validators = array(
@@ -191,7 +191,8 @@ class KTDocumentEditAction extends KTDocumentAction {
         if ($this->oDocument->getDocumentTypeId() != $doctypeid) {
             $this->oDocument->setDocumentTypeId($doctypeid);
         }
-        $this->oDocument->setName(sanitize($data['document_title']));
+        $this->oDocument->setName(($data['document_title']));
+
         $res = $this->oDocument->update();
         if (PEAR::isError($res)) {
             $oForm->handleError(sprintf(_kt("Unexpected failure to update document title: %s"), $res->getMessage()));

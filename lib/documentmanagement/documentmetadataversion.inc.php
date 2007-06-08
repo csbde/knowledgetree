@@ -95,8 +95,8 @@ class KTDocumentMetadataVersion extends KTEntity {
     function setContentVersion($iNewValue) { $this->iContentVersion = $iNewValue; }
     function getDocumentTypeId() { return $this->iDocumentTypeId; }
     function setDocumentTypeId($iNewValue) { $this->iDocumentTypeId = $iNewValue; }
-    function getName() { return $this->sName; }
-    function setName($sNewValue) { $this->sName = $sNewValue; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
     function getDescription() { return $this->sDescription; }
     function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
     function getStatusId() { return $this->iStatusId; }

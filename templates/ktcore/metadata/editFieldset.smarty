@@ -1,9 +1,9 @@
-<h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()|escape}</h2>
+<h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()}</h2>
 
 {if $sIncomplete}
 <div class="ktErrorMessage">
 <span><strong>{i18n}Incomplete{/i18n}: </strong>{i18n}This conditional fieldset cannot be used{/i18n}: <br />
-{$sIncomplete|escape}</span>
+{$sIncomplete}</span>
 </div>
 {/if}
 
@@ -66,7 +66,7 @@ field can depend on the user's selections for the others.{/i18n}
 {if $sIncomplete}
 <div class="ktError">
 <p>{i18n}This error prevents this fieldset from being set
-to complete{/i18n}: {$sIncomplete|escape}</p>
+to complete{/i18n}: {$sIncomplete}</p>
 </div> <br />
 {/if}
 
@@ -145,7 +145,7 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
   <tr>
       <td><input type="checkbox" name="fields[]" value="{$oField->getId()}" /></td>
       <td class="title">
-{$oField->getName()|escape}
+{$oField->getName()}
 </td>
 <td>
 <a href="{addQS}action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>

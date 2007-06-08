@@ -3,7 +3,7 @@
 {assign var="aLookups" value=$aFieldInfo.values}
 
 <div class="field ">
-      <label for="condi-field-{$iFieldId}">{$oField->getName()|escape}</label>
+      <label for="condi-field-{$iFieldId}">{$oField->getName()}</label>
       <p class="descriptiveText">FIXME</p>
             <p class="errorMessage"></p>
 
