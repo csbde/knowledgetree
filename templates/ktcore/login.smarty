@@ -21,7 +21,7 @@
 		    	<form action="{$smarty.server.PHP_SELF}" method="POST" name="login">
 		        	<input type="hidden" name="action" value="login" />
 					<input type="hidden" name="cookieverify" value="{$cookietest}" />
-					<input type="hidden" name="redirect" value="{$redirect|escape}" />
+					<input type="hidden" name="redirect" value="{$redirect}" />
 					{if $config->get("ui/mainLogo") != ''}
 						<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class="logoimage"/><br />
 					{else}

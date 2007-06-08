@@ -20,7 +20,7 @@ td.false { background-color: #ffaaaa; text-align: centre }
 {/literal}{/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 
-<h2>{i18n}State{/i18n}: {$oState->getName()|escape}</h2>
+<h2>{i18n}State{/i18n}: {$oState->getName()}</h2>
 
 <p class="descriptiveText">{i18n}As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
@@ -106,7 +106,7 @@ with a specific <strong>role</strong> (e.g. Manager) or part of a specific group
   <li><a
 href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}{/addQS}"
 title="Transition
-{$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
+{$oTransition->getId()}">{$oTransition->getName()}</a></li>
 {/foreach}
 </ul>
 

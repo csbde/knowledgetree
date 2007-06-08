@@ -1,5 +1,5 @@
 <behaviourList>
 {foreach from=$aBehaviours item=oBehaviour}
-    <behaviour value="{$oBehaviour->getId()}" label="{$oBehaviour->getName()|escape}" />
+    <behaviour value="{$oBehaviour->getId()}" label="{$oBehaviour->getName()}" />
 {/foreach}
 </behaviourList>

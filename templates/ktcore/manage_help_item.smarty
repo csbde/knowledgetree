@@ -13,9 +13,9 @@ tinyMCE.init({
 <input type="hidden" name="id" value="{$help->getId()}">
 <input type="hidden" name="action" value="updateReplacement">
 <h2>{i18n}Title{/i18n}</h2>
-<input type="text" name="title" value="{$help->getTitle()|escape}" />
+<input type="text" name="title" value="{$help->getTitle()}" />
 <h2>{i18n}Help content{/i18n}</h2>
-<textarea cols="60" rows="20" name="description">{$help->getDescription()|escape}</textarea>
+<textarea cols="60" rows="20" name="description">{$help->getDescription()}</textarea>
 <br />
 <input type="submit" name="submit" value="{i18n}Update{/i18n}" />
 </form>

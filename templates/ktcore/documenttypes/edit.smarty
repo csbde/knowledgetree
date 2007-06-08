@@ -3,7 +3,7 @@
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="editobject">
 <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
-<input type="textbox" name="name" value="{$oDocumentType->getName()|escape}">
+<input type="textbox" name="name" value="{$oDocumentType->getName()}">
 <input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </form>
 

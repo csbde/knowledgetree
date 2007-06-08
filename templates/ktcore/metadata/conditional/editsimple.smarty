@@ -96,7 +96,7 @@ refresh the page.{/i18n}</p>
      <div class="lookup_items">
          <select class="item_list" size="5">
   {foreach from=$oField->getEnabledValues() item=oMetaData}
-				<option value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</option>
+				<option value="{$oMetaData->getId()}">{$oMetaData->getName()}</option>
   {/foreach}
            </select>
 

@@ -132,9 +132,9 @@
                     {if ($page->breadcrumbs !== false)}
                         {foreach item=aCrumb from=$page->breadcrumbs name=bc}
                             {if ($aCrumb.url) }
-                                <a href="{$aCrumb.url}">{$aCrumb.label|escape}</a> 
+                                <a href="{$aCrumb.url}">{$aCrumb.label}</a> 
                             {else}
-                                <span>{$aCrumb.label|escape|truncate:40:"...":true}</span> 
+                                <span>{$aCrumb.label|mb_truncate:40:"...":true}</span> 
                             {/if}
                             {if (!$smarty.foreach.bc.last)}
                                 &raquo;

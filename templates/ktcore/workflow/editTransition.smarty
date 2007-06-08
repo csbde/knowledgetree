@@ -1,4 +1,4 @@
-<h2>{i18n}Transition{/i18n}: {$oTransition->getName()|escape}</h2>
+<h2>{i18n}Transition{/i18n}: {$oTransition->getName()}</h2>
 
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">

@@ -27,7 +27,7 @@ the issues identified below.{/i18n}</span>
 {if $sIncomplete}
 <div class="ktErrorMessage">
 <span>{i18n}This error prevents this fieldset from being set
-to complete{/i18n}: {$sIncomplete|escape}</span>
+to complete{/i18n}: {$sIncomplete}</span>
 </div>
 {/if}
 {/if}
@@ -127,9 +127,9 @@ $this->assign("oParentField", DocumentField::get($this->_tpl_vars['aRow']['paren
 $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_field_id']));
 {/php}
   <li>
-    {$oParentField->getName()|escape}
+    {$oParentField->getName()}
 <span class="descriptiveText">{i18n}controls the values available in{/i18n}</span> 
-    {$oChildField->getName()|escape}
+    {$oChildField->getName()}
 </li>
 {/foreach}
 </ul>
