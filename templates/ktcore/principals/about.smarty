@@ -80,35 +80,19 @@ Call Sales: +1 415 670-9759
 
 <p><strong>Third Party Software</strong></p>
 <table border="0" cellpadding="10">
-	<tr>
-		<td><div style="background-color:#339900; width:104px;"><img src="{$rootUrl}/resources/graphics/thirdparty/pear.gif"/></div></td>
-		<td>Pear</td>
+	<tr align="center">
+		<td><a href="http://pear.php.net/"><div style="background-color:#339900; width:104px;"><img src="{$rootUrl}/resources/graphics/thirdparty/pear.gif" border="0"/></div></a></td>
+		<td><a href="http://phpmailer.sourceforge.net/"><img src="{$rootUrl}/resources/graphics/thirdparty/phpmailer.gif" border="0"/></a></td>
+		<td><a href="http://smarty.php.net/"><img src="{$rootUrl}/resources/graphics/thirdparty/smarty.gif" border="0"/></a></td>
 	</tr>
-	<tr>
-		<td><img src="{$rootUrl}/resources/graphics/thirdparty/phpmailer.gif"/></td>
-		<td>PHP Mailer</td>
+	<tr align="center">
+		<td><a href="http://sourceforge.net/projects/jscalendar">JSCalendar</a></td>
+		<td><a href="http://mochikit.com/"><img src="{$rootUrl}/resources/graphics/thirdparty/mochikit.gif" border="0"/></a></td>
+		<td><a href="http://tinymce.moxiecode.com/"><img src="{$rootUrl}/resources/graphics/thirdparty/tinymce.gif" border="0"/></a></td>
 	</tr>
-	<tr>
-		<td><img src="{$rootUrl}/resources/graphics/thirdparty/smarty.gif"/></td>
-		<td>Smarty</td>
-	</tr>
-	<tr>
+	<tr align="center">
+		<td><a href="http://developer.yahoo.com/yui/"><img src="{$rootUrl}/resources/graphics/thirdparty/yui.gif" border="0"/></a></td>
 		<td></td>
-		<td>JSCalendar</td>
-	</tr>
-	<tr>
-		<td><img src="{$rootUrl}/resources/graphics/thirdparty/mochikit.gif"/></td>
-		<td>MochiKit</td>
-	</tr>
-	<tr>
-		<td><img src="{$rootUrl}/resources/graphics/thirdparty/tinymce.gif"/></td>
-		<td>TinyMCE</td>
-	</tr>
-	<tr>
-		<td><img src="{$rootUrl}/resources/graphics/thirdparty/yui.gif"/></td>
-		<td>YUI</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
+		<td></td>
 	</tr>
 </table>
