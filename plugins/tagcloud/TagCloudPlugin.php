@@ -223,7 +223,11 @@ class KTAddDocumentTrigger {
         $tagString = '';
         // add tags
         if ($sTags) {
-			foreach($aMeta['metadata'] as $aMetaData){
+        	if (count($aMeta['metadata']) > 0)
+        	{
+        		foreach($aMeta['metadata'] as $aMetaData)
+        		{
+        		 
 				$oProxy = $aMetaData[0];
 				if($oProxy->iId == $sTags){
 					$tagString = $aMetaData[1];
@@ -333,11 +337,15 @@ class KTEditDocumentTrigger {
         }
         $tagString = '';
         if ($sTags) {
-			foreach($aMeta as $aMetaData){
-				$oProxy = $aMetaData[0];
-				if($oProxy->iId == $sTags){
-					$tagString = $aMetaData[1];
-					break;
+        	// it is actually correct using $aMeta. It is different to the add trigger above...
+        	if (count($aMeta) > 0)
+        	{
+        		foreach($aMeta as $aMetaData)
+        		{
+        			$oProxy = $aMetaData[0];
+        			if($oProxy->iId == $sTags){
+        				$tagString = $aMetaData[1];
+        				break;
 				}
 			}
 			if($tagString != ''){
