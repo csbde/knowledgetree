@@ -236,6 +236,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               "canCheckin" => $bCanCheckin,
               "document_id" => $document_id,
               "document" => $oDocument,
+              "documentName" => $oDocument->getName(),
               "document_data" => $document_data,
               "fieldsets" => $fieldsets,
               'viewlet_data' => $viewlet_data,

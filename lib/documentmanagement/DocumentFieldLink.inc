@@ -121,7 +121,7 @@ class DocumentFieldLink extends KTEntity {
 	*
 	*/
 	function getValue() {
-		return $this->sValue;
+		return sanitizeForHTML($this->sValue);
 	}
 	
 	/**
@@ -131,7 +131,7 @@ class DocumentFieldLink extends KTEntity {
 	*
 	*/
 	function setValue($sNewValue) {
-		$this->sValue = $sNewValue;
+		$this->sValue = sanitizeForSQL($sNewValue);
 	}
 
     function _table () {

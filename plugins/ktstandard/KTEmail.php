@@ -141,7 +141,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
     $sMessage .= "\n\n";
 	if (strlen($sComment) > 0) {
-		$sMessage .= '<br><br>' . _kt('Comments:') . '<br>' . $sComment;
+		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
 	}
     $sTitle = sprintf(_kt("Document: %s from %s"), $sDocumentName, $oSendingUser->getName());
 
@@ -202,7 +202,7 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add optional comment
 	if (strlen($sComment) > 0) {
-		$sMessage .= '<br><br>' . _kt('Comments:') . '<br>' . $sComment;
+		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
 	}
 	$sMessage .= '</font>';
 	$sTitle = sprintf(_kt("Link: %s from %s"), $sDocumentName, $oSendingUser->getName());

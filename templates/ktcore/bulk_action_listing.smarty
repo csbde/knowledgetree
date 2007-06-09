@@ -1,6 +1,6 @@
-<h2>{$context->getDisplayName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{$context->getDisplayName()}</h2>
 
-<p class="descriptiveText">{i18n}The following list shows documents and folders in your list which cannot be acted on by this bulk action:{/i18n}</p>
+<p class="descriptiveText">{i18n}The following list shows documents and folders in your list which cannot be acted on by this bulk action{/i18n}:</p>
 
 {if count($failed.folders)}
 <table class="kt_collection">
@@ -53,7 +53,7 @@
 
 
 {if (count($documents)  || count($folders))}
-<p class="descriptiveText">{i18n}The action will be performed on the following documents and folders:{/i18n}</p>
+<p class="descriptiveText">{i18n}The action will be performed on the following documents and folders{/i18n}:</p>
 
 {if (count($folders))}
 <h3>{i18n}Folders{/i18n}</h3>

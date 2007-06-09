@@ -109,7 +109,6 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         $oForm = $this->form_main();
         
-
         $oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,

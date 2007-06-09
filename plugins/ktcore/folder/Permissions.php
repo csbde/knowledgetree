@@ -177,7 +177,6 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'edit' => $bEdit,
             'inheritable' => $bInheritable,
             'inherited' => $sInherited,
-            'foldername' => $this->oFolder->getName(),
             'conditions' => $aConditions,             
         );
         return $oTemplate->render($aTemplateData);
@@ -411,14 +410,14 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		if($bSelected) {
 		    if(count($aPerm))
 		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
-							       'display' => _kt('Group:') . ' ' . $oGroup->getName(),
+							       'display' => _kt('Group') . ': ' . $oGroup->getName(),
 							       'name' => $oGroup->getName(),
 							       'permissions' => $aPerm,
 							       'id' => $oGroup->getId(),
 							       'selected' => true);
 		} else {
 		    $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
-							       'display' => _kt('Group:') . ' ' . $oGroup->getName(),
+							       'display' => _kt('Group') . ': ' . $oGroup->getName(),
 							       'name' => $oGroup->getName(),
 							       'permissions' => $aPerm,
 							       'id' => $oGroup->getId());
@@ -435,14 +434,14 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		if($bSelected) {
 		    if(count($aPerm)) 
 		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
-							      'display' => _kt('Role:') . ' ' . $oRole->getName(),
+							      'display' => _kt('Role') . ': ' . $oRole->getName(),
 							      'name' => $oRole->getName(),
 							      'permissions' => $aPerm,
 							      'id' => $oRole->getId(),
 							      'selected' => true);
 		} else {
 		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
-							      'display' => _kt('Role:') . ' ' . $oRole->getName(),
+							      'display' => _kt('Role') . ': ' . $oRole->getName(),
 							      'name' => $oRole->getName(),
 							      'permissions' => $aPerm,
 							      'id' => $oRole->getId());

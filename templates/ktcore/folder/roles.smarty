@@ -1,4 +1,4 @@
-<h2>{i18n arg_foldername=$foldername}Allocate Roles for "#foldername#"{/i18n}</h2>
+<h2>{i18n}Allocate Roles for{/i18n}: {$folderName}</h2>
 
 <p class="descriptiveText">{i18n}
     In many cases, workflow actions will be assigned to certain <strong>roles</strong>
@@ -6,7 +6,7 @@
     to specific groups in particular areas of the document management system.
 {/i18n}</p>
 
-<div class='ktInfoMessage'><span><strong>{i18n}Warning:{/i18n}</strong> {i18n}Please note that changing
+<div class='ktInfoMessage'><span><strong>{i18n}Warning{/i18n}:</strong> {i18n}Please note that changing
 role allocations may take a some time, depending on the number of folders below this one.{/i18n}</span></div>
 
 <table class="kt_collection narrow" cellspacing="0">
@@ -29,8 +29,8 @@ role allocations may take a some time, depending on the number of folders below 
               <strong>{i18n}inherited from parent folder.{/i18n}</strong><br />
               <span class="descriptiveText">
            {/if}
-           {if ($aRole.users != null)}<strong>{i18n}Users:{/i18n}</strong> {$aRole.users}<br />{/if} 
-           {if ($aRole.groups != null)}<strong>{i18n}Groups:{/i18n}</strong> {$aRole.groups}{/if}
+           {if ($aRole.users != null)}<strong>{i18n}Users{/i18n}:</strong> {$aRole.users}<br />{/if} 
+           {if ($aRole.groups != null)}<strong>{i18n}Groups{/i18n}:</strong> {$aRole.groups}{/if}
            {if ($aRole.allocation_id === null)}
               </span class="descriptiveText">
            {/if}

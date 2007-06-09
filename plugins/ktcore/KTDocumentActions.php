@@ -824,13 +824,13 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
     function do_main() {
         $oForm = $this->form_move();
-        return $oForm->renderPage();
+        return $oForm->renderPage(_kt('Move Document') . ': ' . $this->oDocument->getName());
     }
 
     function form_move() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => sprintf(_kt('Move Document "%s"'), $this->oDocument->getName()),
+            'label' => _kt('Move Document'),
             'submit_label' => _kt('Move'),
             'identifier' => 'ktcore.actions.movedoc',
             'action' => 'move',
@@ -1031,7 +1031,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function form_copyselection() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => sprintf(_kt('Copy Document "%s"'), $this->oDocument->getName()),
+            'label' => _kt('Copy Document'),
             'submit_label' => _kt('Copy'),
             'identifier' => 'ktcore.actions.copydoc',
             'action' => 'copy',
@@ -1118,7 +1118,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Copy'));
         $oForm = $this->form_copyselection();
-        return $oForm->renderPage();
+        return $oForm->renderPage(_kt('Copy Document') . ': ' . $this->oDocument->getName());
     }
 
     function do_copy() {   
@@ -1540,7 +1540,6 @@ class KTOwnershipChangeAction extends KTDocumentAction {
         
         $oTemplate->setData(array(
             'context' => $this,
-            'docname' => $this->oDocument->getName(),
             'form' => $change_form,
         ));     
         return $oTemplate->render();

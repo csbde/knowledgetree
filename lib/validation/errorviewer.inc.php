@@ -132,7 +132,7 @@ $oEVRegistry->register("KTErrorViewer", "PEAR_Error");
 
 class KTDBErrorViewer extends KTErrorViewer {
     function view() {
-        return _kt("Database error:") . " " . $this->oError->getMessage();
+        return _kt("Database error") . ": " . $this->oError->getMessage();
     }
 
     function page() {

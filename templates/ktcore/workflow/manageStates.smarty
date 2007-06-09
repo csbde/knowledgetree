@@ -27,21 +27,21 @@ various different states for documents.{/i18n}</p>
     <li><span class="workflow_element">{i18n}State{/i18n}:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
         {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
-        <li>{i18n}Notified groups & roles:{/i18n}
+        <li>{i18n}Notified groups & roles{/i18n}:
         {$context->getNotificationStringForState($oState)}
         </li>
         
-        <li>{i18n}Controlled Actions available: {/i18n}
+        <li>{i18n}Controlled Actions available{/i18n}:
         {$context->getActionStringForState($oState)}
         </li>
         
-        <li>{i18n}Permissions overridden:{/i18n} {$context->getPermissionStringForState($oState)}</li>
+        <li>{i18n}Permissions overridden{/i18n}: {$context->getPermissionStringForState($oState)}</li>
       
-        <li>{i18n}Transitions available: {/i18n}
+        <li>{i18n}Transitions available{/i18n}:
         {$context->getTransitionFromStringForState($oState)}
         </li>
       
-        <li>{i18n}Transitions to this state: {/i18n}
+        <li>{i18n}Transitions to this state{/i18n}:
         {$context->getTransitionToStringForState($oState)}
         </li>
     </ul>
