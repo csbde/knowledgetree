@@ -60,7 +60,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $oTemplate->setData(array(
             'context' => &$this,
             'fields' => $fields,
-            'sFolderName' => $this->oFolder->getName(),
+            'folderName' => $this->oFolder->getName(),
         ));
         return $oTemplate->render();
     }
@@ -87,7 +87,7 @@ class KTFolderRenameAction extends KTFolderAction {
             }
         }
 
-        $res = KTDocumentUtil::rename($this->oDocument, sanitize($sFilename), $this->oUser);
+        $res = KTFolderUtil::rename($this->oFolder, sanitize($sFolderName), $this->oUser);
         if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
