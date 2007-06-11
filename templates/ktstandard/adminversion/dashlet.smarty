@@ -5,7 +5,9 @@
 }
 
 #up_single, #up_multi { display: none; }
-.up_new_version { font-weight: bold; }
+.up_new_version { font-weight: bold; margin-left: 60px; }
+#footerref { font-weight: bold; margin-left: 50px; }
+
 </style>
 
 {/literal}
@@ -15,9 +17,7 @@
 <script type="text/javascript">var _KT_VERSIONS = {$kt_versions};</script>
 <script type="text/javascript">var _KT_VERSIONS_URL = "{$kt_versions_url}";</script>
 
-<p>
 <span id="up_single">{i18n}The following upgrade is available{/i18n}:</span>
 <span id="up_multi">{i18n}The following upgrades are available{/i18n}:</span>
-<span id="up_upgrades"></span>
-{i18n}Please visit <a href="http://www.knowledgetree.com">www.knowledgetree.com</a> to find out more.{/i18n}
-</p>
+<div id="up_upgrades"></div>
+<div id="footerref">{i18n}Please visit <a href="http://www.knowledgetree.com">www.knowledgetree.com</a> to find out more.{/i18n}</div>
