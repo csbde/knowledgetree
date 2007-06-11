@@ -72,7 +72,15 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
     
     function renderFolderLink($aDataRow) {
-        $outStr = htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
+         as mozilla cannot wrap text without white spaces */
+        if (mb_strlen($aDataRow["folder"]->getName(), 'UTF-8') > 40) { 
+        	mb_internal_encoding("UTF-8");
+            $outStr = htmlentities(mb_substr($aDataRow["folder"]->getName(), 0, 40, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
+        }else{
+            $outStr = htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        }
+
         if($this->link_folders) {
             $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
         }
@@ -80,7 +88,7 @@ class AdvancedTitleColumn extends AdvancedColumn {
     }
 
     function renderDocumentLink($aDataRow) {
-        /* this chack has to be done so that any titles longer than 40 characters is not displayed incorrectly.
+        /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
          as mozilla cannot wrap text without white spaces */
         if (mb_strlen($aDataRow["document"]->getName(), 'UTF-8') > 40) { 
         	mb_internal_encoding("UTF-8");

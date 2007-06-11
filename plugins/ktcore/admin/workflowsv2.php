@@ -2127,19 +2127,19 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         $sNotify = '';
         if (!empty($aUsers)) {
-            $sNotify .= '<em>' . _kt('Users:') . '</em> ';
+            $sNotify .= '<em>' . _kt('Users') . ':</em> ';
             $sNotify .= implode(', ', $aUsers);
         }
         
         if (!empty($aGroups)) {
             if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
-            $sNotify .= '<em>' . _kt('Groups:') . '</em> ';
+            $sNotify .= '<em>' . _kt('Groups') . ':</em> ';
             $sNotify .= implode(', ', $aGroups);
         }
         
         if (!empty($aRoles)) {
             if (!empty($sNotify)) { $sNotify .= ' &mdash; '; }
-            $sNotify .= '<em>' . _kt('Roles:') . '</em> ';
+            $sNotify .= '<em>' . _kt('Roles') . ':</em> ';
             $sNotify .= implode(', ', $aRoles);
         }
         

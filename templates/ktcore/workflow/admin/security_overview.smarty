@@ -6,7 +6,7 @@ way to allocate permissions to a document, since it can override the permissions
 assigned at a folder level.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}There are 3 different ways in which workflows interact
-with the system's security:{/i18n}</p>
+with the system's security{/i18n}:</p>
 
 <ol>
     <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">{i18n}Document Permissions{/i18n}</a> {i18n}(by state){/i18n}</li>

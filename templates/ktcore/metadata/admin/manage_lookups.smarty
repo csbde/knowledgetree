@@ -6,7 +6,7 @@
 <p class="descriptiveText">{i18n}Over time, the lookup values which make sense will 
 change and evolve as your organisation does. You may thus need to change the lookup
 values associated with a given field.  There are a number of different states 
-that are possible for a given lookup:{/i18n}</p>
+that are possible for a given lookup{/i18n}:</p>
 
 <ul class="descriptiveText">
     <li>{i18n}<strong>Enabled</strong>, which means that users cannot specify this

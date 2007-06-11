@@ -150,7 +150,6 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $oReadPermission =& KTPermission::getByName('ktcore.permissions.read');
         $oWritePermission =& KTPermission::getByName('ktcore.permissions.write');
         
-
         $aTemplateData = array(
               'context' => $this,
               'links_from' => DocumentLink::getLinksFromDocument($oDocument->getId()),

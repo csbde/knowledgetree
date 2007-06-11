@@ -50,8 +50,6 @@ class KTFolderTransactionsAction extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt("transactions"));
         $this->oPage->setTitle(_kt('Folder transactions'));
 
-        // $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/transactions');
-
         $folder_data = array();
         $folder_data["folder_id"] = $this->oFolder->getId();
 

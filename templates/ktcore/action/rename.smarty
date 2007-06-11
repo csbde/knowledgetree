@@ -1,4 +1,4 @@
-<h2>{i18n}Rename document{/i18n}</h2>
+<h2>{i18n}Rename document{/i18n}: {$documentName}</h2>
 <p class="descriptiveText">{i18n}This page allows you to rename the file
 name (not the document title) for a document.{/i18n}</p>
 

@@ -20,7 +20,7 @@ td.false { background-color: #ffaaaa; text-align: centre }
 {/literal}{/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 
-<h2>{i18n}State{/i18n}: {$oState->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}State{/i18n}:<br />{$oState->getName()}</h2>
 
 <p class="descriptiveText">{i18n}As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
@@ -198,7 +198,7 @@ documents are in this state.{/i18n}</span></div>
 <tbody>
 { foreach item=oRole from=$aRoles }
 <tr>
-    <td><span class="descriptiveText">{i18n}Role:{/i18n} </span>{$oRole->getName()}</td>
+    <td><span class="descriptiveText">{i18n}Role{/i18n}: </span>{$oRole->getName()}</td>
     { foreach from=$state_permissions item=sPermName }
     <td><input type="checkbox" name="fPermissions[{$sPermName}][role][]" value="{$oRole->getId()}" {if ($context->getRoleHasPermissionInState($oRole, $sPermName, $oState))}checked="true"{/if}/></td>
     { /foreach }
@@ -206,7 +206,7 @@ documents are in this state.{/i18n}</span></div>
 { /foreach }
 { foreach item=oGroup from=$aGroups }
 <tr>
-    <td><span class="descriptiveText">{i18n}Group:{/i18n} </span>{$oGroup->getName()}</td>
+    <td><span class="descriptiveText">{i18n}Group{/i18n}: </span>{$oGroup->getName()}</td>
     { foreach from=$state_permissions item=sPermName }
     <td><input type="checkbox" name="fPermissions[{$sPermName}][group][]" value="{$oGroup->getId()}"{if ($context->getGroupHasPermissionInState($oGroup, $sPermName, $oState))}checked="true"{/if}/></td>
     { /foreach }
