@@ -339,6 +339,8 @@ a.main_nav_item {
     z-index: 1;
     width:auto;
     padding: 0 2em 1em 0;
+    overflow: auto;
+    min-height: 600px;
 }
 
 #content.view.withviewlets {
