@@ -288,7 +288,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         ));
 
         if (PEAR::isError($oUser) || ($oUser == false)) {
-            $this->errorRedirectToMain(_kt("failed to create user."));
+            $this->errorRedirectToMain(_kt("failed to create user") . ": " . $oUser->message);
             exit(0);
         }
 
