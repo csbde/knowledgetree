@@ -143,12 +143,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Add a document"));
-        $this->oPage->setTitle(_kt('Add a document'));
-        
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
-
         $oForm = $this->form_initialdata();
-        return $oForm->render();
+        return $oForm->renderPage(_kt('Add a document to: ') . $this->oFolder->getName());
     }    
     
     function do_processInitialData() {

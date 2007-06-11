@@ -100,7 +100,7 @@ class KTDocumentEditAction extends KTDocumentAction {
             )),
         );
         $validators = array(
-            array('ktcore.validators.string',array(
+            array('ktcore.validators.string', array(
                 'test' => 'document_title',
                 'output' => 'document_title',
             )),

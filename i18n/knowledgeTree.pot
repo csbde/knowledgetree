@@ -1850,7 +1850,7 @@ msgid "Control which users can log in, and are part of which groups and organisa
 msgstr ""
 
 #: i18n/templates.c:3494 i18n/templates.c:3608
-msgid "Controlled Actions available:"
+msgid "Controlled Actions available"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1022 i18n/templates.c:3314
@@ -2285,7 +2285,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: lib/validation/errorviewer.inc.php:130
-msgid "Database error:"
+msgid "Database error"
 msgstr ""
 
 #: i18n/templates.c:146 i18n/templates.c:155 i18n/templates.c:242
@@ -4131,7 +4131,7 @@ msgstr ""
 
 #: i18n/templates.c:3326 i18n/templates.c:4043 i18n/templates.c:4415
 #: i18n/templates.c:4922
-msgid "Group:"
+msgid "Group"
 msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:398
@@ -4159,7 +4159,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1915 i18n/templates.c:4127
 #: i18n/templates.c:4586
-msgid "Groups:"
+msgid "Groups"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1418
@@ -5154,7 +5154,7 @@ msgid "Master field has no values which are assigned to behaviours."
 msgstr ""
 
 #: i18n/templates.c:1331
-msgid "Match <b>#join#</b> of the following:"
+msgid "Match <b>#join#</b> of the following"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:138
@@ -6044,7 +6044,7 @@ msgid "Notifications updated."
 msgstr ""
 
 #: i18n/templates.c:3491 i18n/templates.c:3605
-msgid "Notified groups & roles:"
+msgid "Notified groups & roles"
 msgstr ""
 
 #: i18n/templates.c:5231
@@ -6126,7 +6126,7 @@ msgid "Orphaned Folders Plugin"
 msgstr ""
 
 #: i18n/templates.c:2081
-msgid "Over time, the lookup values which make sense will change and evolve as your organisation does. You may thus need to change the lookup values associated with a given field.  There are a number of different states that are possible for a given lookup:"
+msgid "Over time, the lookup values which make sense will change and evolve as your organisation does. You may thus need to change the lookup values associated with a given field.  There are a number of different states that are possible for a given lookup"
 msgstr ""
 
 #: i18n/templates.c:4130
@@ -6255,7 +6255,7 @@ msgid "Permissions on folder updated"
 msgstr ""
 
 #: i18n/templates.c:3497 i18n/templates.c:3611
-msgid "Permissions overridden:"
+msgid "Permissions overridden"
 msgstr ""
 
 #: plugins/ktcore/folder/Permissions.php:487
@@ -6926,7 +6926,7 @@ msgstr ""
 
 #: i18n/templates.c:3323 i18n/templates.c:4034 i18n/templates.c:4406
 #: i18n/templates.c:4913
-msgid "Role:"
+msgid "Role"
 msgstr ""
 
 #: plugins/ktcore/KTCorePlugin.php:218 i18n/templates.c:3230
@@ -6935,7 +6935,7 @@ msgid "Roles"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1921
-msgid "Roles:"
+msgid "Roles"
 msgstr ""
 
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:707
@@ -7650,7 +7650,7 @@ msgid "The action cannot be performed on any of the selected entities."
 msgstr ""
 
 #: i18n/templates.c:5729
-msgid "The action will be performed on the following documents and folders:"
+msgid "The action will be performed on the following documents and folders"
 msgstr ""
 
 #: plugins/ktcore/folder/BulkUpload.php:68
@@ -7682,7 +7682,7 @@ msgid "The core of a workflow is the <strong>process</strong> that documents in 
 msgstr ""
 
 #: plugins/ktcore/document/Rename.php:74
-msgid "The current file name is shown below:"
+msgid "The current file name is shown below"
 msgstr ""
 
 #: i18n/templates.c:974
@@ -7807,7 +7807,7 @@ msgid "The following files are present in the repository, but do not exist in th
 msgstr ""
 
 #: i18n/templates.c:5708
-msgid "The following list shows documents and folders in your list which cannot be acted on by this bulk action:"
+msgid "The following list shows documents and folders in your list which cannot be acted on by this bulk action"
 msgstr ""
 
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:377
@@ -7821,11 +7821,11 @@ msgid "The following permissions are required: %s"
 msgstr ""
 
 #: i18n/templates.c:1010
-msgid "The following upgrade is available:"
+msgid "The following upgrade is available"
 msgstr ""
 
 #: i18n/templates.c:1013
-msgid "The following upgrades are available:"
+msgid "The following upgrades are available"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:131
@@ -8037,7 +8037,7 @@ msgid "There are #closed# closed threads - use the \"View All\" option below to 
 msgstr ""
 
 #: i18n/templates.c:3962
-msgid "There are 3 different ways in which workflows interact with the system's security:"
+msgid "There are 3 different ways in which workflows interact with the system's security"
 msgstr ""
 
 #: i18n/templates.c:3086
@@ -8136,7 +8136,7 @@ msgid "There was an error updating the thread with the new comment"
 msgstr ""
 
 #: i18n/templates.c:5687
-msgid "These are the results of the bulk action:"
+msgid "These are the results of the bulk action"
 msgstr ""
 
 #: i18n/templates.c:1613
@@ -8418,11 +8418,11 @@ msgid "To add users to this role, select one or more user names in the Available
 msgstr ""
 
 #: i18n/templates.c:704
-msgid "To connect to #appname# via a third-party WebDAV client, please use the following address:"
+msgid "To connect to #appname# via a third-party WebDAV client, please use the following address"
 msgstr ""
 
 #: i18n/templates.c:707
-msgid "To connect with the #appname# Tools for Windows package, use this address:"
+msgid "To connect with the #appname# Tools for Windows package, use this address"
 msgstr ""
 
 #: i18n/templates.c:5504
@@ -8583,7 +8583,7 @@ msgid "Transitions are what drive the workflow of documents. Each step that need
 msgstr ""
 
 #: i18n/templates.c:3500 i18n/templates.c:3614
-msgid "Transitions available:"
+msgid "Transitions available"
 msgstr ""
 
 #: i18n/templates.c:3296
@@ -8595,7 +8595,7 @@ msgid "Transitions to this state"
 msgstr ""
 
 #: i18n/templates.c:3503 i18n/templates.c:3617
-msgid "Transitions to this state:"
+msgid "Transitions to this state"
 msgstr ""
 
 #: lib/documentmanagement/DocumentField.inc:168
@@ -9252,7 +9252,7 @@ msgstr ""
 
 #: i18n/templates.c:4052 i18n/templates.c:4355 i18n/templates.c:4424
 #: i18n/templates.c:4886 i18n/templates.c:4931
-msgid "User:"
+msgid "User"
 msgstr ""
 
 #: i18n/templates.c:443
@@ -9311,7 +9311,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1909 i18n/templates.c:4124
 #: i18n/templates.c:4583
-msgid "Users:"
+msgid "Users"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:983
@@ -9452,7 +9452,7 @@ msgid "Want to know who all has logged in the system over a period of time?  You
 msgstr ""
 
 #: i18n/templates.c:3083 i18n/templates.c:4100
-msgid "Warning:"
+msgid "Warning"
 msgstr ""
 
 #: i18n/templates.c:4838

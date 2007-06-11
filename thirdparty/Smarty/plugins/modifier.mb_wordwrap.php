@@ -20,14 +20,22 @@
  */
 function smarty_modifier_mb_wordwrap($string,$length=80,$break="\n",$cut=false)
 {
-    
-	$newString = "";
-	$index = 0;
-	while(mb_strlen($newString) < mb_strlen($string)){
-		$newString .= mb_strcut($string, $index, $length, "UTF8") . $break;
-		$index += $length;
-	}
-	return $newString;
-	
+    if ($length == 0)
+    return '';
+
+    if (mb_strlen($string) > $length) {
+
+        //if (!$cut) $string = preg_replace('/\s+?(\S+)?$/', '', mb_substr($string, 0, $length+1));
+
+        $newString = "";
+        $index = 0;
+        $breakslen = 0;
+        while(mb_strlen($newString)-$breakslen < mb_strlen($string)){
+            $newString .= mb_strcut($string, $index, $length, "UTF-8") . $break;
+            $index += $length;
+            $breakslen += mb_strlen($break);
+        }
+        return $newString;
+    } else return $string;
 }
 ?>

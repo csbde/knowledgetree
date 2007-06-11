@@ -68,6 +68,7 @@ class RSSFolderLinkAction extends KTFolderAction {
 			'context' => $this,
 			'link' => KTrss::getRssLink($iFId, 'folder'),
 			'linkIcon' => KTrss::getImageLink($iFId, 'folder'),
+			'folderName' => $this->oFolder->getName(),
 		);
       
         return $oTemplate->render($aTemplateData);
