@@ -231,6 +231,8 @@ class KTBulkMoveAction extends KTBulkAction {
         $this->sReason = $_REQUEST['data']['reason'];
         $this->iTargetFolderId = $_REQUEST['data']['fFolderId'];
         $this->oTargetFolder = Folder::get($this->iTargetFolderId);
+        $_REQUEST['fReturnData'] = '';
+        $_REQUEST['fFolderId'] = $this->iTargetFolderId;
         
         // does it exists
         if(PEAR::isError($this->oTargetFolder)) {
