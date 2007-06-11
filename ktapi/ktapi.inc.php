@@ -955,7 +955,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		
 		$folderid = $document->getParentID();
 
-		$ktapi_folder = &KTAPI_Folder::get($ktapi, $folderid);
+		if (!is_null($folderid))
+		{
+			$ktapi_folder = &KTAPI_Folder::get($ktapi, $folderid);
+		}
+		else 
+		{
+			$ktapi_folder = null;
+		}
 		// We don't do any checks on this folder as it could possibly be deleted, and is not required right now.
 
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
@@ -972,7 +979,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
 	{
 		assert(is_a($ktapi,'KTAPI'));
-		assert(is_a($ktapi_folder,'KTAPI_Folder'));
+		assert(is_null($ktapi_folder) || is_a($ktapi_folder,'KTAPI_Folder'));
 		
 		$this->ktapi = &$ktapi;
 		$this->ktapi_folder = &$ktapi_folder;
@@ -2004,7 +2011,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 
 		$result= $storage->expunge($this->document);
 
-		$this->commitTransaction();
+		DBUtil::commit();
 	}
 	
 	/**
@@ -2014,7 +2021,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function restore()
 	{
-		$this->startTransaction();
+		DBUtil::startTransaction();
 		
 		$storage =& KTStorageManagerUtil::getSingleton();
 		
@@ -2042,7 +2049,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$oTransaction = new DocumentTransaction($this->document, 'Restored from deleted state by ' . $user->getName(), 'ktcore.transactions.update');
 		$oTransaction->create();
 
-		$this->commitTransaction();
+		DBUtil::commit();
 	}
 }
 
