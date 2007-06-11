@@ -20,7 +20,7 @@ AdminVersionDashlet.prototype = {
         for(var k in this.currentVersions) {
             if(res[k]!=this.currentVersions[k]) {
                 updates ++;
-                appendChildNodes('up_upgrades', SPAN({'class':'up_new_version'}, k + ': ' + res[k]), BR(null));
+                appendChildNodes('up_upgrades', DIV({'class':'up_new_version'}, k + ': ' + res[k]), BR(null));
             }
         }
 
