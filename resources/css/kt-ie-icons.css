@@ -1,4 +1,14 @@
-.ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
+.floatClear
+{
+    height: 1px !important;
+    margin: 0; border: 0; padding: 0;
+    width: 1px;
+}
+
+.ktHelp {
+	background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; 
+}
+
 .ktBlock {
 	background: #ffffff url(../../resources/graphics/dashlet_toprepeat.gif) top left repeat-x;
     border: 1px solid #C5C5C5;
@@ -32,63 +42,48 @@
     overflow: auto;
 }
 
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.gif); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); }
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif); }
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.gif); }
-.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.gif); }
-.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.gif); }
-.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.gif); }
-.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.gif); }
-.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.gif); }
-.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); }
-.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); }
-.contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
-.contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
-.contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
-.contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
-.contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.gif); }
-.contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
-.contenttype.image { background-image: url(../../resources/mimetypes/image.gif); }
-.contenttype.compressed { background-image: url(../../resources/mimetypes/zip.gif); }
-.contenttype.html { background-image: url(../../resources/mimetypes/html.gif); }
-
-.contenttype.txt,
-.contenttype.text,
-.contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
-.contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
-
-/* IE is woefully unable to */
-#portletbar { width: 200px; }
-#portlet-search-text { width: 150px; }
-/* #content { padding-left: 220px; } */
-
-#content { 
-    float: left;
-    padding: 0 25px 0 0;    
+.ktActionLink.ktDelete, .ktAction.ktDelete { 
+	background-image: url(../../resources/graphics/delete.gif); 
 }
 
-#pageBody {
-    height: 800px;
+.ktActionLink.ktEdit, .ktAction.ktEdit { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); 
 }
 
-.floatClear
-{
-    height: 1px !important;
-    margin: 0; border: 0; padding: 0;
-    width: 1px;
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif); 
 }
 
-#portletbar .portlet {
-    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.gif) top left no-repeat;
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.gif); 
 }
 
-#portletbar .portlet.expanded {
-    background: url(../../resources/graphics/portlet_corner_topleft.gif) top left no-repeat;
+.ktActionLink.ktAdd, .ktAction.ktAdd { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/add.gif); 
 }
 
-#menu_divider {
-    background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
+.ktActionLink.ktDownload, .ktAction.ktDownload { 
+	background-image: url(../../resources/graphics/download.gif); 
+}
+
+.ktActionLink.ktBack, .ktAction.ktBack { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/back.gif); 
+}
+
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { 
+	background-image: url(../../resources/graphics/allowed.gif); 
+}
+
+.ktActionLink.ktDenied, .ktAction.ktDenied { 
+	background-image: url(../../resources/graphics/denied.gif); 
+}
+
+.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); 
+}
+
+.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { 
+	background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); 
 }
 
 #content .dashboard_block .action_rollup 
@@ -106,17 +101,77 @@
     background-image: url(../graphics/bullet_toggle_close.gif);
 }
 
+.contenttype.office { 
+	background-image: url(../../resources/mimetypes/office.gif); 
+}
 
-/* NO CHILD SELECTORS IN IE! */
+.contenttype.word { 
+	background-image: url(../../resources/mimetypes/word.gif); 
+}
 
-.kt_treenodes li.treenode a.pathnode
-{ 
+.contenttype.database { 
+	background-image: url(../../resources/mimetypes/database.gif); 
+}
+
+.contenttype.excel { 
+	background-image: url(../../resources/mimetypes/excel.gif); 
+}
+
+.contenttype.openoffice { 
+	background-image: url(../../resources/mimetypes/openoffice.gif); 
+}
+
+.contenttype.pdf { 
+	background-image: url(../../resources/mimetypes/pdf.gif); 
+}
+
+.contenttype.image { 
+	background-image: url(../../resources/mimetypes/image.gif); 
+}
+
+.contenttype.compressed { 
+	background-image: url(../../resources/mimetypes/zip.gif); 
+}
+.contenttype.html { background-image: url(../../resources/mimetypes/html.gif); }
+
+.contenttype.txt, .contenttype.unspecified_type { 
+	background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); 
+}
+
+.contenttype.folder { 
+	background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); 
+}
+
+#portletbar { 
+	width: 200px; 
+}
+
+#portlet-search-text { 
+	width: 150px; 
+}
+
+#pageBody {
+    height: auto;
+}
+
+#portletbar .portlet {
+    background: url(../../resources/graphics/portlet_bg_collapsed.gif) top left repeat-x;
+}
+
+#portletbar .portlet.expanded {
+    background: url(../../resources/graphics/portlet_bg.gif) top left repeat-x;
+}
+
+#menu_divider {
+    background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
+}
+
+.kt_treenodes li.treenode a.pathnode { 
   padding-left: 15px;
 }
 
 .kt_treenodes li.treenode.active a.pathnode {
-   background: transparent url(../graphics/minus.png) center left no-repeat;
-                                              
+   background: transparent url(../graphics/minus.png) center left no-repeat;                                
 }
 
 .kt_treenodes li.treenode.inactive a.pathnode {
@@ -132,8 +187,6 @@
     display: none;
 }
 
-.ktBlock .dashboard_block_body
-{ 
-    margin: 8px 0 10px 1em;
-    overflow: scroll;
+#navbar {
+    margin-right: 5px;
 }
