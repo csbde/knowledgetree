@@ -7154,7 +7154,7 @@ msgid "Select document types allowed in folder"
 msgstr ""
 
 #: i18n/templates.c:3797 i18n/templates.c:4268
-msgid "Select roles and groups for whom you wish to change permission assignement from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'."
+msgid "Select roles and groups for whom you wish to change permission assignment from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'."
 msgstr ""
 
 #: i18n/templates.c:3446
