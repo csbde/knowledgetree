@@ -36,6 +36,7 @@
  */
 
 //require_once(KT_LIB_DIR . '/workflow/workflowtriggerinstance');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTWorkflowTrigger {
     var $sNamespace = 'ktcore.workflowtriggers.abstractbase';
@@ -72,7 +73,7 @@ class KTWorkflowTrigger {
         );
     }
     
-    function getName() { return $this->sFriendlyName; }    
+    function getName() { return sanitizeForSQLtoHTML($this->sFriendlyName); }    
     function getNamespace() { return $this->sNamespace; }    
     function getConfigId() { return $this->oTriggerInstance->getId(); }    
     

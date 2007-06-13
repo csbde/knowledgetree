@@ -43,6 +43,8 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 
 require_once(KT_LIB_DIR . '/browse/criteriaregistry.php');
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 
 class BrowseCriterion {
     var $sDisplay;
@@ -168,7 +170,7 @@ class BrowseCriterion {
 
 
     function getName() {
-        return $this->sDocumentField;
+        return sanitizeForSQLtoHTML($this->sDocumentField);
     }
 
     function getID() {

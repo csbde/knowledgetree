@@ -30,6 +30,8 @@
  * Contributor( s): ______________________________________
  */
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class DocumentType extends KTEntity {
 	
 	/** primary key value */
@@ -60,8 +62,8 @@ class DocumentType extends KTEntity {
 	}
 	
 	function getID() { return $this->iId; }
-	function getName() { return $this->sName; }
-	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getName() { return sanitizeForSQLtoHTML($this->sName); }
+	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
 	function getDisabled() { return $this->bDisabled; }
     function setDisabled($bNewValue) { $this->bDisabled = ($bNewValue) ? true : false; }
 

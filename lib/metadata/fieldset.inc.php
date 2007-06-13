@@ -31,6 +31,7 @@
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 /**
  * class KTFieldset
@@ -67,10 +68,10 @@ class KTFieldset extends KTEntity {
     var $_bUsePearError = true;
 	
 	function getId() { return $this->iId; }
-	function getName() { return $this->sName; }
-	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
-	function getDescription() { return $this->sDescription; }
-	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getName() { return sanitizeForSQLtoHTML($this->sName); }
+	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
+	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
+	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
 	function getNamespace() { return $this->sNamespace; }
     function setNamespace($sNewValue) {	$this->sNamespace = $sNewValue; }
 	function getMandatory() { return $this->bMandatory; }

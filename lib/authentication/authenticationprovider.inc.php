@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTAuthenticationProvider extends KTStandardDispatcher {
     var $sName;
@@ -77,7 +78,7 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     }
 
     function getName() {
-        return $this->sName;
+        return sanitizeForSQLtoHTML($this->sName);
     }
     function getNamespace() {
         return $this->sNamespace;

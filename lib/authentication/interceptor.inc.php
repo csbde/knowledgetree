@@ -31,6 +31,7 @@
  */
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTInterceptor extends KTStandardDispatcher {
     var $sName;
@@ -48,7 +49,7 @@ class KTInterceptor extends KTStandardDispatcher {
     }
 
     function getName() {
-        return $this->sName;
+        return sanitizeForSQLtoHTML($this->sName);
     }
 
     function getNamespace() {

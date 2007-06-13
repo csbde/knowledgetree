@@ -31,6 +31,7 @@
  */
  
 require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc'); 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
  
 class Group extends KTEntity {
 	
@@ -89,8 +90,8 @@ class Group extends KTEntity {
     function setUnitAdmin($bNewValue) { $this->bIsUnitAdmin = $bNewValue; }
     function getSysAdmin() { return $this->bIsSysAdmin; }
     function setSysAdmin($bNewValue) { $this->bIsSysAdmin = $bNewValue; }
-    function getName() { return $this->sName; }
-    function setName($sNewValue) { $this->sName = $sNewValue; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
     function getUnitId() { return $this->iUnitId; }
     function setUnitId($iNewValue) { $this->iUnitId = $iNewValue; }
     function getAuthenticationDetails() { return $this->sAuthenticationDetails; }

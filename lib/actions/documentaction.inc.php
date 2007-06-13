@@ -33,6 +33,7 @@ require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
@@ -147,17 +148,17 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function getName() {
-        return $this->sName;
+        return sanitizeForSQLtoHTML($this->sName);
     }
 
     function getDisplayName() {
         // Should be overridden by the i18nised display name
         // This is here solely for backwards compatibility
-        return $this->sDisplayName;
+        return sanitizeForSQLtoHTML($this->sDisplayName);
     }
 
     function getDescription() {
-        return $this->sDescription;
+        return sanitizeForSQLtoHTML($this->sDescription);
     }
 
     function customiseInfo($aInfo) {

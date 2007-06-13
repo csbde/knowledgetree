@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTPermission extends KTEntity {
     /** primary key */
@@ -51,12 +52,12 @@ class KTPermission extends KTEntity {
     var $_bUsePearError = true;
 
     function getID() { return $this->iId; }
-    function getName() { return $this->sName; }
-    function getHumanName() { return _kt($this->sHumanName); }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function getHumanName() { return sanitizeForSQLtoHTML($this->sHumanName); }
     function getBuiltIn() { return $this->bBuiltIn; }
     function setID($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
-    function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
+    function setHumanName($sHumanName) { $this->sHumanName = sanitizeForSQL($sHumanName); }
     function setBuiltIn($sBuiltIn) { $this->sBuiltIn = $sBuiltIn; }
 
     function _table () {

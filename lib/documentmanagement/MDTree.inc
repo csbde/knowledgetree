@@ -33,6 +33,7 @@ require_once(KT_LIB_DIR . "/ktentity.inc");
 //require_once("../../../../../config/dmsDefaults.php"); // gak.
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MetaData.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class MDTreeNode extends KTEntity {
     /** boilerplate DB code. */
@@ -55,8 +56,8 @@ class MDTreeNode extends KTEntity {
     function setID($iId) { $this->iId = $iId; }
     function getFieldId() { return $this->iFieldId; }
     function setFieldId($iFieldId) {  $this->iFieldId = $iFieldId; }
-    function getName() { return $this ->sName; }
-    function setName($sName) { $this->sName = $sName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
     function getParentNode() { return $this->iParentNode; }
     function setParentNode($iNode) { $this->iParentNode = $iParentNode; }
 

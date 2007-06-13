@@ -33,6 +33,7 @@
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class DocumentField extends KTEntity {
 	
@@ -72,10 +73,10 @@ class DocumentField extends KTEntity {
 	}
 	
 	function getID() { return $this->iId; }
-	function getName() { return $this->sName; }
-	function setName($sNewValue) { $this->sName = $sNewValue; }
-	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
-	function getDescription() { return $this->sDescription; }	
+	function getName() { return sanitizeForSQLtoHTML($this->sName); }
+	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
+	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
+	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }	
 	function getDataType() { return $this->sDataType; }
     function setDataType($sNewValue) { $this->sDataType = $sNewValue; }
 	function getIsGeneric() { return $this->bIsGeneric; }

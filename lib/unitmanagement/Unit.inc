@@ -28,6 +28,8 @@
  * Contributor( s): ______________________________________
  */
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class Unit extends KTEntity {
     var $_bUsePearError = true;
 
@@ -45,8 +47,8 @@ class Unit extends KTEntity {
         return KTUtil::getTableName('units');
     }
 
-    function getName() { return $this->sName; }
-    function setName($sNewValue) { $this->sName = $sNewValue; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
     function getFolderId() { return $this->iFolderId; }
     function setFolderId($iNewValue) { $this->iFolderId = $iNewValue; }
 
