@@ -33,6 +33,7 @@
  */
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTWorkflow extends KTEntity {
     var $iId = -1;
@@ -52,13 +53,13 @@ class KTWorkflow extends KTEntity {
     var $_bUsePearError = true;
 
     function getID() { return $this->iId; }
-    function getName() { return $this->sName; }
-    function getHumanName() { return $this->sHumanName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function getHumanName() { return sanitizeForSQLtoHTML($this->sHumanName); }
     function getStartStateId() { return $this->iStartStateId; }
     function getIsEnabled() { return ($this->bEnabled == true); }
     function setID($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
-    function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
+    function setHumanName($sHumanName) { $this->sHumanName = sanitizeForSQL($sHumanName); }
     function setStartStateId($iStartStateId) { $this->iStartStateId = $iStartStateId; }
     function setIsEnabled($mValue) { $this->bEnabled = ($mValue == true); }
 

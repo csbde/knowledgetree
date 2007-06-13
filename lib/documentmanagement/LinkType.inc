@@ -31,6 +31,7 @@
  */
 
 require_once(KT_DIR . '/lib/ktentity.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class LinkType extends KTEntity {
     var $sName;
@@ -49,25 +50,25 @@ class LinkType extends KTEntity {
 	}
 	
 	function getDescription() {
-		return $this->sDescription;
+		return sanitizeForSQLtoHTML($this->sDescription);
 	}
 	
 	function setDescription($sNewValue) {
-		$this->sDescription = $sNewValue;
+		$this->sDescription = sanitizeForSQL($sNewValue);
 	}
 	
 	function getName() {
-		return $this->sName;
+		return sanitizeForSQLtoHTML($this->sName);
 	}
 	
 	function setName($sNewValue) {
-		$this->sName = $sNewValue;
+		$this->sName = sanitizeForSQL($sNewValue);
 	}
 	
     function _fieldValues () {
         return array(
-            'name' => $this->sName,
-            'description' => $this->sDescription,
+            'name' => sanitizeForSQLtoHTML($this->sName),
+            'description' => sanitizeForSQLtoHTML($this->sDescription),
         );
     }
     

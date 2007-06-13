@@ -30,6 +30,8 @@
  * Contributor( s): ______________________________________
  */
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class DocumentFieldLink extends KTEntity {
 	
 	/** document field link primary key */
@@ -121,7 +123,7 @@ class DocumentFieldLink extends KTEntity {
 	*
 	*/
 	function getValue() {
-		return sanitizeForHTML($this->sValue);
+		return sanitizeForSQLtoHTML($this->sValue);
 	}
 	
 	/**

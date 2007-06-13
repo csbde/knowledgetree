@@ -41,6 +41,8 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class KTBulkAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
@@ -119,15 +121,15 @@ class KTBulkAction extends KTStandardDispatcher {
     }
 
     function getName() {
-        return $this->sName;
+        return sanitizeForSQLtoHTML($this->sName);
     }
 
     function getDisplayName() {
-        return $this->sDisplayName;
+        return sanitizeForSQLtoHTML($this->sDisplayName);
     }
 
     function getDescription() {
-        return $this->sDescription;
+        return sanitizeForSQLtoHTML($this->sDescription);
     }
 
     function customiseInfo($aInfo) {

@@ -882,7 +882,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             $oForm->addWidget(
                 array('ktcore.widgets.string', array(
                     'label' => _kt('Document Title'),
-                    'value' => $this->oDocument->getName(),
+                    'value' => sanitizeForHTML($this->oDocument->getName()),
                     'important_description' => _kt('Please indicate a new title to use to resolve any title conflicts.'),
                     'name' => 'name',
                     'required' => true,
@@ -898,7 +898,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
             $oForm->addWidget(
                 array('ktcore.widgets.string', array(
                     'label' => _kt('Filename'),
-                    'value' => $this->oDocument->getFilename(),
+                    'value' => sanitizeForHTML($this->oDocument->getFilename()),
                     'important_description' => _kt('Please indicate a new filename to use to resolve any conflicts.'),
                     'name' => 'filename',
                     'required' => true,
@@ -1083,7 +1083,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             $oForm->addWidget(
                 array('ktcore.widgets.string', array(
                     'label' => _kt('Document Title'),
-                    'value' => $this->oDocument->getName(),
+                    'value' => sanitizeForHTML($this->oDocument->getName()),
                     'important_description' => _kt('Please indicate a new title to use to resolve any title conflicts.'),
                     'name' => 'name',
                     'required' => true,
@@ -1099,7 +1099,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             $oForm->addWidget(
                 array('ktcore.widgets.string', array(
                     'label' => _kt('Filename'),
-                    'value' => $this->oDocument->getFilename(),
+                    'value' => sanitizeForHTML($this->oDocument->getFilename()),
                     'important_description' => _kt('Please indicate a new filename to use to resolve any conflicts.'),
                     'name' => 'filename',
                     'required' => true,

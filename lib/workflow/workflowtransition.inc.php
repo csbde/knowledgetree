@@ -33,6 +33,7 @@
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTWorkflowTransition extends KTEntity {
     var $iId = -1;
@@ -60,8 +61,8 @@ class KTWorkflowTransition extends KTEntity {
     var $_bUsePearError = true;
 
     function getId() { return $this->iId; }
-    function getName() { return $this->sName; }
-    function getHumanName() { return $this->sHumanName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function getHumanName() { return sanitizeForSQLtoHTML($this->sHumanName); }
     function getWorkflowId() { return $this->iWorkflowId; }
     function getTargetStateId() { return $this->iTargetStateId; }
     function getGuardPermissionId() { return $this->iGuardPermissionId; }
@@ -70,8 +71,8 @@ class KTWorkflowTransition extends KTEntity {
     function getGuardConditionId() { return $this->iGuardConditionId; }
 
     function setId($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
-    function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
+    function setHumanName($sHumanName) { $this->sHumanName = sanitizeForSQL($sHumanName); }
     function setWorkflowId($iWorkflowId) { $this->iWorkflowId = $iWorkflowId; }
     function setTargetStateId($iTargetStateId) { $this->iTargetStateId = $iTargetStateId; }
     function setGuardPermissionId($iGuardPermissionId) { $this->iGuardPermissionId = $iGuardPermissionId; }

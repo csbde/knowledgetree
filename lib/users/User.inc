@@ -32,6 +32,7 @@
  
 require_once(KT_LIB_DIR . '/database/dbutil.inc'); 
 require_once(KT_LIB_DIR . '/ktentity.inc'); 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 define('ADMIN_USER_ID', 1);
  
@@ -114,19 +115,19 @@ class User extends KTEntity {
     }
     
 
-    function getUserName() { return $this->sUserName; }
-    function setUserName($sNewValue) { $this->sUserName = $sNewValue; }
-    function getPassword() { return $this->sPassword; }
-    function setPassword($sNewValue) { $this->sPassword = $sNewValue; $this->bPasswordChanged = true; }
+    function getUserName() { return sanitizeForSQLtoHTML($this->sUserName); }
+    function setUserName($sNewValue) { $this->sUserName = sanitizeForSQL($sNewValue); }
+    function getPassword() { return sanitizeForSQLtoHTML($this->sPassword); }
+    function setPassword($sNewValue) { $this->sPassword = sanitizeForSQL($sNewValue); $this->bPasswordChanged = true; }
     function getQuotaMax() { return $this->iQuotaMax; }
     function setQuotaMax($iNewValue) { $this->iQuotaMax = $iNewValue; }
-    function setName($sNewValue) { $this->sName = $sNewValue; }
-    function getName() { return $this->sName; }
+    function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
     function getQuotaCurrent() { return $this->iQuotaCurrent; }
-    function getEmail() { return $this->sEmail; }
-    function setEmail($sNewValue) { $this->sEmail = $sNewValue; }
-    function getMobile() { return $this->sMobile; }
-    function setMobile($sNewValue) { $this->sMobile = $sNewValue; }
+    function getEmail() { return sanitizeForSQLtoHTML($this->sEmail); }
+    function setEmail($sNewValue) { $this->sEmail = sanitizeForSQL($sNewValue); }
+    function getMobile() { return sanitizeForSQLtoHTML($this->sMobile); }
+    function setMobile($sNewValue) { $this->sMobile = sanitizeForSQL($sNewValue); }
     function getEmailNotification() { return $this->bEmailNotification; }
     function setEmailNotification($bNewValue) { $this->bEmailNotification = KTUtil::anyToBool($bNewValue); }
     function getSmsNotification() { return $this->bSmsNotification; }

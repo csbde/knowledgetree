@@ -32,6 +32,7 @@
  
 require_once(KT_LIB_DIR . "/ktentity.inc"); 
 require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
  
 class Role extends KTEntity {
 	
@@ -59,8 +60,8 @@ class Role extends KTEntity {
     var $_bUsePearError = true;
 
 	function getId() { return $this->iId; }
-	function getName() { return $this->sName; }	
-	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getName() { return sanitizeForSQLtoHTML($this->sName); }	
+	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
 	
     function _fieldValues () { return array(
 		'name' => $this->sName,

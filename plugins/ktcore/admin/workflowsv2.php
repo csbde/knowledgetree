@@ -422,7 +422,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'description' => _kt("Each workflow must have a unique name."),   
                 'name' => 'workflow_name',
                 'required' => true,     
-                'value' => $this->oWorkflow->getName(),        
+                'value' => sanitizeForHTML($this->oWorkflow->getName()),        
             )),
             array('ktcore.widgets.entityselection', array(
                 'label' => _kt("Starting State"),
@@ -911,7 +911,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'label' => _kt('State Name'),
                 'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  State names must be unique, and this includes states already in this workflow.'),
                 'required' => true,
-                'value' => $oState->getName(),
+                'value' => sanitizeForHTML($oState->getName()),
             )),
         ));
         
@@ -1002,7 +1002,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'label' => _kt('Transition Name'),
                 'description' => _kt('In order to move between states, users will cause "transitions" to occur.  These transitions represent processes followed, e.g. "review document", "distribute invoice" or "publish".  Transition names must be unique within the workflow (e.g. within this workflow, you can only have one transition called "publish")'),
                 'required' => true,
-                'value' => $oTransition->getName(),
+                'value' => sanitizeForHTML($oTransition->getName()),
             )),
         ));
         

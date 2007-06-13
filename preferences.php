@@ -70,14 +70,14 @@ class PreferencesDispatcher extends KTStandardDispatcher {
                 'description' => _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'),
                 'required' => true,
                 'name' => 'name',
-                'value' => $this->oUser->getName(),
+                'value' => sanitizeForHTML($this->oUser->getName()),
                 'autocomplete' => false)),
             array('ktcore.widgets.string', array(
                 'label' => _kt('Email Address'),
                 'description' => _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'),
                 'required' => false,
                 'name' => 'email_address', 
-                'value' => $this->oUser->getEmail(),                
+                'value' => sanitizeForHTML($this->oUser->getEmail()),                
                 'autocomplete' => false)),           
             array('ktcore.widgets.boolean', array(
                 'label' => _kt('Email Notifications'),
