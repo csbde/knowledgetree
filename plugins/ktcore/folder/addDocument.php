@@ -276,7 +276,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         );
         
         $aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
-        $sTitle = sanitize($extra_d['document_name']);
+        $sTitle = sanitizeForSQL($extra_d['document_name']);
         
         $iFolderId = $this->oFolder->getId();
         $aOptions = array(
