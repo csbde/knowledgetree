@@ -219,14 +219,14 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             array('ktcore.widgets.string',array(
                 'label' => _kt("Field Name"),
                 'name' => 'name',
-                'value' => $oField->getName(),
+                'value' => sanitizeForHTML($oField->getName()),
                 'required' => true,
                 'description' => _kt("Within a given fieldset, each field needs a unique name."),
             )),
             array('ktcore.widgets.text',array(
                 'label' => _kt("Description"),
                 'name' => 'description',
-                'value' => $oField->getDescription(),                
+                'value' => sanitizeForHTML($oField->getDescription()),                
                 'required' => true,
                 'description' => _kt("A good description can be the difference between useful metadata and poor metadata.  At the same time, overly long descriptions are far less valuable than concise ones."),
             )),            

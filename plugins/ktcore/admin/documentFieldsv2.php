@@ -305,14 +305,14 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 'name' => 'name',
                 'required' => true,
                 'description' => _kt("Each fieldset needs a unique name."),
-                'value' => $this->oFieldset->getName(),
+                'value' => sanitizeForHTML($this->oFieldset->getName()),
             )),
             array('ktcore.widgets.text',array(
                 'label' => _kt("Description"),
                 'name' => 'description',
                 'required' => true,
                 'description' => _kt("In order to ensure that the data that users enter is useful, it is essential that you provide a good example."),
-                'value' => $this->oFieldset->getDescription(),                
+                'value' => sanitizeForHTML($this->oFieldset->getDescription()),                
             )),            
         );
        
