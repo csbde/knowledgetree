@@ -279,21 +279,12 @@ class AdvancedUserColumn extends AdvancedColumn {
 
 class CreatorColumn extends AdvancedUserColumn {
     var $document_field_function = "getCreatorID";
-    var $folder_field_function = null;
+    var $folder_field_function = "getCreatorID";
     var $sortable = true; // by default    
     var $namespace = 'ktcore.columns.creator';
     
     function CreatorColumn() {
         $this->label = _kt("Creator"); // abstract.        
-    }
-
-    function addToFolderQuery() {
-        return array(null, null, null);
-    }
-    function addToDocumentQuery() {
-        $sUsersTable = KTUtil::getTableName('users');
-        $sJoinSQL = "LEFT JOIN $sUsersTable AS users_order_join ON (D.creator_id = users_order_join.id)";
-        return array($sJoinSQL, null, "users_order_join.name"); 
     }
 }
 

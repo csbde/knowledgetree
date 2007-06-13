@@ -51,10 +51,10 @@ $password = $config->get('autoexpunge/password','admin');
 $maximum = $config->get('autoexpunge/maximum',50);
 
 $ktapi = new KTAPI();
-$result = $ktapi->start_session($user, $password);
-if (PEAR::isError($result))
+$session = $ktapi->start_session($user, $password);
+if (PEAR::isError($session))
 {
-	print $result->getMessage() . "\n";
+	print $session->getMessage() . "\n";
 	return;
 }
 
@@ -68,6 +68,7 @@ $count = count($rows);
 if ($count == 0)
 {
 	print "Nothing to do.\n";
+	$session->logout();
 	return;
 }
 
@@ -93,4 +94,5 @@ $end_time = time();
 $diff = $end_time - $start_time;
 
 print "\ndone. $diff seconds.\n";
+$session->logout();
 ?>

@@ -510,8 +510,6 @@ You can continue to do the backup manually using the following process:
 <nobr><?=$stmt['display']?>
 </table>
 <P>
-Press <i>continue to backup</i> to attempt the command(s) above.
-<P>
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
 
