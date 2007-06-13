@@ -726,7 +726,7 @@ class KTUtil {
             $aVersions['Development OSS'] = $sVersion;
         } elseif (file_exists($sProfessionalFile)) {
             $sVersion = trim(file_get_contents($sProfessionalFile));
-            $aVersions['Commercial'] = $sVersion;
+            $aVersions['Commercial Edition'] = $sVersion;
         } elseif (file_exists($sOssFile)) {
             $sVersion = trim(file_get_contents($sOssFile));
             $aVersions['OSS'] = $sVersion;
