@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 /**
  * Saved searches allow for common searches to be saved.
@@ -110,14 +111,14 @@ class KTSavedSearch extends KTEntity {
 
     // {{{ getters/setters
     function getId() { return $this->iId; }
-    function getName() { return $this->sName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
     function getNamespace() { return $this->sNamespace; }
     function getIsCondition() { return $this->bIsCondition; }
     function getIsComplete() { return $this->bIsComplete; }
     function getUserId() { return $this->iUserId; }
     function getSearch() { return $this->aSearch; }
     function setId($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
     function setNamespace($sNamespace) { $this->sNamespace = $sNamespace; }
     function setIsCondition($bIsCondition) { $this->bIsCondition = $bIsCondition; }
     function setIsComplete($bIsComplete) { $this->bIsComplete = $bIsComplete; }

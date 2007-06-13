@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentMetadataVersion extends KTEntity {
     var $_bUsePearError = true;

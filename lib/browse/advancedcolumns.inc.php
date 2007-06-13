@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 // more advanced, intelligent columns.
 
 class AdvancedColumn {
@@ -81,7 +83,7 @@ class AdvancedColumn {
     function addToDocumentQuery() { return array(null, null, null); }
     
     function getName() {
-        return $this->label;
+        return sanitizeForSQLtoHTML($this->label);
     }
     
     function getEntryId() {

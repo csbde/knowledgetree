@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTHelpReplacement extends KTEntity {
     /** primary key */
@@ -50,13 +51,13 @@ class KTHelpReplacement extends KTEntity {
     var $_bUsePearError = true;
 
     function getID() { return $this->iId; }
-    function getName() { return $this->sName; }
-    function getDescription() { return $this->sDescription; }
-    function getTitle() { return $this->sTitle; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
+    function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
+    function getTitle() { return sanitizeForSQLtoHTML($this->sTitle); }
     function setID($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
-    function setDescription($sDescription) { $this->sDescription = $sDescription; }
-    function setTitle($sTitle) { $this->sTitle= $sTitle; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
+    function setDescription($sDescription) { $this->sDescription = sanitizeForSQL($sDescription); }
+    function setTitle($sTitle) { $this->sTitle= sanitizeForSQL($sTitle); }
 
     function _table () {
         global $default;

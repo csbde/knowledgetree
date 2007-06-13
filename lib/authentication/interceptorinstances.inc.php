@@ -32,6 +32,7 @@
 
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTInterceptorInstance extends KTEntity {
     var $sName;
@@ -48,10 +49,10 @@ class KTInterceptorInstance extends KTEntity {
 
     var $_bUsePearError = true;
 
-    function getName() { return $this->sName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
     function getInterceptorNamespace() { return $this->sInterceptorNamespace; }
     function getConfig() { return $this->sConfig; }
-    function setName($sName) { $this->sName = $sName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
     function setInterceptorNamespace($mValue) { $this->sInterceptorNamespace = $mValue; }
     function setConfig($sConfig) { $this->sConfig = $sConfig; }
 

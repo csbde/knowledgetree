@@ -31,6 +31,7 @@
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentTransactionType extends KTEntity {
     /** primary key */
@@ -47,10 +48,10 @@ class KTDocumentTransactionType extends KTEntity {
     var $_bUsePearError = true;
 
     function getID() { return $this->iId; }
-    function getName() { return $this->sName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
     function getNamespace() { return $this->sNamespace; }
     function setID($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = $sName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
     function setNamespace($sNamespace) { $this->sNamespace = $sNamespace; }
 
     function _table () {

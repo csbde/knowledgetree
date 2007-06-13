@@ -121,7 +121,7 @@ class DocumentFieldLink extends KTEntity {
 	*
 	*/
 	function getValue() {
-		return sanitizeForHTML($this->sValue);
+		return sanitizeForSQLtoHTML($this->sValue);
 	}
 	
 	/**

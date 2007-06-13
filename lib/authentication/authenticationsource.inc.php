@@ -31,6 +31,7 @@
 
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTAuthenticationSource extends KTEntity {
     var $sName;
@@ -52,13 +53,13 @@ class KTAuthenticationSource extends KTEntity {
 
     var $_bUsePearError = true;
 
-    function getName() { return $this->sName; }
+    function getName() { return sanitizeForSQLtoHTML($this->sName); }
     function getNamespace() { return $this->sNamespace; }
     function getAuthenticationProvider() { return $this->sAuthenticationProvider; }
     function getConfig() { return $this->sConfig; }
     function getIsUserSource() { return $this->bIsUserSource; }
     function getIsGroupSource() { return $this->bIsGroupSource; }
-    function setName($sName) { $this->sName = $sName; }
+    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
     function setNamespace($sNamespace) { $this->sNamespace = $sNamespace; }
     function setAuthenticationProvider($sAuthenticationProvider) { $this->sAuthenticationProvider = $sAuthenticationProvider; }
     function setConfig($sConfig) { $this->sConfig = $sConfig; }
