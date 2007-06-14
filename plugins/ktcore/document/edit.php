@@ -283,7 +283,63 @@ class KTDocumentEditAction extends KTDocumentAction {
             $oForm->handleError();
         }        
         
-        $this->successRedirectToMain(sprintf(_kt("You have selected a new document type: %s.  Please note that this change has <strong>not</strong> yet been saved - please update the metadata below as necessary, and then save the document to make it a permanent change."), $data['type']->getName()), array('new_type' => $data['type']->getId()));
+        $document_type = $data['type'];
+    	
+
+    	$doctypeid = $document_type->getId();
+
+  
+    	DBUtil::startTransaction();
+    	$this->oDocument->setDocumentTypeId($doctypeid);
+    	$res = $this->oDocument->update();
+
+
+    	if (PEAR::isError($res))
+    	{
+    		DBUtil::rollback();
+    		return $res;
+    	}
+    	DBUtil::commit();
+
+    	$fieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument, $doctypeid);
+        
+    	$fs_ids = array();
+    	
+    	$doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
+    	foreach($doctype_fieldsets as $fieldset)
+    	{
+    		$fs_ids[] = $fieldset->getId();
+    	}
+    	$MDPack = array();
+    	foreach ($fieldsets as $oFieldset)
+    	{
+    		if ($oFieldset->getIsGeneric() || in_array($oFieldset->getId(),$fs_ids))
+    		{
+    			//print $oFieldset->getName() . "<br>";
+    			$fields = $oFieldset->getFields();
+    			$values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
+    			foreach ($fields as $oField)
+    			{
+    				$val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+
+    				// FIXME "null" has strange meanings here.
+    				if (!is_null($val))
+    				{
+    					$MDPack[] = array(
+    					$oField,
+    					$val
+    					);
+    				}
+    			}
+    		}
+
+    	}
+    	
+    	 $core_res = KTDocumentUtil::saveMetadata($this->oDocument, $MDPack);
+        
+    	 
+    	
+        $this->successRedirectToMain(sprintf(_kt("You have selected a new document type: %s. "), $data['type']->getName()));
     }
 }
 // }}}
