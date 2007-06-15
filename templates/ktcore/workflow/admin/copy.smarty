@@ -11,7 +11,7 @@
 	<input type="hidden" name="workflowId" value="{$workFlowId}" />
 	<table>
 		<tr>
-			<td>New workflow name: </td>
+			<td>{i18n}New workflow name{/i18n}: </td>
 			<td><input type="text" name="workflowName"></td>
 		</tr>
 		<tr>
