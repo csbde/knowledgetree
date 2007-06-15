@@ -209,7 +209,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'identifier' => 'ktcore.fieldsets.basic.field.edit',
             'label' => _kt("Edit Field"),
             'submit_label' => _kt('Update Field'),
-            'cancel_action' => 'managefield',
+            'cancel_url' => $this->sParentUrl,
             'fail_action' => 'managefield',
             'action' => 'updatefield',
             'context' => $this,            
