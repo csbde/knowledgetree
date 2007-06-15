@@ -42,7 +42,7 @@
 				{if $action.description}title="{$action.description}"{/if}>{$action.name}</a><br>{else}{$action.name}
 	    	{/if}
     	{/if}
-		<br>No internal {if !$feedlist}or external {/if}feeds available.
+		<br>{i18n}No internal{/i18n} {if !$feedlist}{i18n}or external{/i18n} {/if}{i18n}feeds available{/i18n}.
 		<br>
 		<br>
 	{/if}

@@ -12,7 +12,7 @@
                 <th class="date">{i18n}Content Version{/i18n}</th>
                 <th class="compare">{i18n}Compare with Current{/i18n}</th>
                 <th class="compare">{i18n}Compare with Other Version{/i18n}</th>
-				<th class="versiondate">Date Created</th>
+				<th class="versiondate">{i18n}Date Created{/i18n}</th>
             </tr>
         </thead>
         <tbody>

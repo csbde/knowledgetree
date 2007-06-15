@@ -45,7 +45,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
   <tfoot>
   	<tr>
   		<td colspan="4">
-  			<span style="float: left">{$itemcount} items, 10 per page</span>
+  			<span style="float: left">{$itemcount} {i18n}items, 10 per page{/i18n}</span>
   		</td>
   	</tr>
   	<tr>
