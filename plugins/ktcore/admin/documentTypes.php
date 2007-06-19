@@ -39,6 +39,8 @@ require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     var $sHelpPage = 'ktcore/admin/document types.html'; 
@@ -159,6 +161,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'oDocumentType' => $oDocumentType,
+            'sDocTypeName' => sanitizeForHTML($oDocumentType->getName()),
             'aCurrentFieldsets' => $aCurrentFieldsets,
             'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
             'bAvailableFieldsets' => count($vocab) > 0,
