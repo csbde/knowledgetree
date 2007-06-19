@@ -45,7 +45,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$document = &Document::get($documentid);
 		if (is_null($document) || PEAR::isError($document))
 		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_INVALID,$document );
 		}
 		
 		$user = $ktapi->can_user_access_object_requiring_permission($document, KTAPI_PERMISSION_READ);
@@ -135,7 +135,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$result);
 		}
 		DBUtil::commit();
 		
@@ -182,7 +182,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (($res === false) || PEAR::isError($res))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res);
 		}
 		
 		$oDocumentTransaction = & new DocumentTransaction($this->document, $reason, 'ktcore.transactions.force_checkin');
@@ -190,7 +190,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$res = $oDocumentTransaction->create();
 		if (($res === false) || PEAR::isError($res)) {
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res);
 		}
 		DBUtil::commit();
 	}
@@ -219,7 +219,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($res))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
 		}
 
 		DBUtil::commit();
@@ -249,7 +249,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($res))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
 		}
 
 		DBUtil::commit();
@@ -274,7 +274,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         $user = &User::getByUserName($newusername);
         if (is_null($user) || PEAR::isError($user))
         {
-        	return new PEAR_Error('User could not be found');
+        	return new KTAPI_Error('User could not be found',$user);
         }
         
         $newuserid = $user->getId();
@@ -286,14 +286,14 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR ,$res );
         }
         
         $res = KTPermissionUtil::updatePermissionLookup($this->document);
         if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
         
 		$oDocumentTransaction = & new DocumentTransaction($this->document, $reason, 'ktcore.transactions.permissions_change');
@@ -301,7 +301,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$res = $oDocumentTransaction->create();
 		if (($res === false) || PEAR::isError($res)) {
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
 		}
         
 		DBUtil::commit();
@@ -376,7 +376,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($new_document)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$new_document );
         }
         
         $new_document->setName($name);
@@ -387,7 +387,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
 
         DBUtil::commit();
@@ -487,7 +487,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res );
         }
         
         $this->document->setName($name);
@@ -498,7 +498,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
 
         DBUtil::commit();
@@ -523,7 +523,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($res)) 
         {
             DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
         DBUtil::commit(); 
 	}
@@ -553,7 +553,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			if (PEAR::isError($res))
 			{
 				DBUtil::rollback();
-				return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+				return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
 			}
 			DBUtil::commit();
 		}
@@ -583,7 +583,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			if (PEAR::isError($res))
 			{
 				DBUtil::rollback();
-				return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+				return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
 			}
 			DBUtil::commit();
 		}
@@ -610,7 +610,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         $res = $this->document->update();
         if (($res === false) || PEAR::isError($res)) {
            DBUtil::rollback();
-           return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+           return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
         }
         
         $oDocumentTransaction = & new DocumentTransaction($this->document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
@@ -656,7 +656,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$workflow = KTWorkflow::getByName($workflow);
 		if (is_null($workflow) || PEAR::isError($workflow))
 		{
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID, $workflow);
 		}
 		
 		DBUtil::startTransaction();
@@ -664,7 +664,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (is_null($result) || PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID, $result);
 		}
 		DBUtil::commit();
 	}
@@ -693,7 +693,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (is_null($result) || PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID,$result);
 		}
 		DBUtil::commit();
 	}
@@ -722,7 +722,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$transition = &KTWorkflowTransition::getByName($transition);
 		if (is_null($transition) || PEAR::isError($transition))
 		{
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID, $transition);
 		}
 				
 		DBUtil::startTransaction();
@@ -730,7 +730,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (is_null($result) || PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID, $transition);
 		}
 		DBUtil::commit();	
 	}		
@@ -850,12 +850,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 if (is_null($result))
 		 {
 		 	DBUtil::rollback();
-		 	return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+		 	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		 }
 		 if (PEAR::isError($result)) 
 		 {
 		 	DBUtil::rollback();
-		 	return new PEAR_Error(sprintf(_kt("Unexpected validation failure: %s."), $result->getMessage()));	
+		 	return new KTAPI_Error(sprintf(_kt("Unexpected validation failure: %s."), $result->getMessage()));	
 		 }
 		 DBUtil::commit();
 	}
@@ -886,7 +886,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$transitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->document, $user);
 		if (is_null($transitions) || PEAR::isError($transitions))
 		{
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_WORKFLOW_INVALID, $transitions);
 		}
 		foreach($transitions as $transition)
 		{
@@ -1065,7 +1065,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         $transactions = DBUtil::getResultArray(array($sQuery, $aParams));
         if (is_null($transactions) || PEAR::isError($transactions)) 
         {
-        	return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+        	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
         return $transactions;

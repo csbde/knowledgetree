@@ -30,6 +30,7 @@
  *
  */
 
+session_start();
 require_once('../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
@@ -38,7 +39,7 @@ require_once('KTAPIConstants.inc.php');
 require_once('KTAPISession.inc.php');
 require_once('KTAPIFolder.inc.php');
 require_once('KTAPIDocument.inc.php');
-
+		
 class KTAPI_FolderItem
 {
 	/**
@@ -52,6 +53,21 @@ class KTAPI_FolderItem
 	function &can_user_access_object_requiring_permission(&$object, $permission)
 	{	
 		return $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
+	}
+}
+
+class KTAPI_Error extends PEAR_Error
+{
+	function KTAPI_Error($msg, $obj)
+	{
+		if (PEAR::isError($obj))
+		{
+			parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
+		}
+		else 
+		{
+			parent::PEAR_Error($msg);
+		}
 	}
 }
 
@@ -319,7 +335,7 @@ class KTAPI
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
 		
 		$result = array();
@@ -344,7 +360,7 @@ class KTAPI
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
 		return $rows;
 	}	
@@ -363,7 +379,7 @@ class KTAPI
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
 		$results=array();
 		foreach($rows as $row)
@@ -429,7 +445,7 @@ class KTAPI
 		$rows=DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
 		$results=array();
 		foreach($rows as $row)

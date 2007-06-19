@@ -141,9 +141,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param User $user
 	 */
 	function _check_session(&$user)
-	{
-		session_start();
-        
+	{       
         $user_id = $user->getId();
         
         $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id";
@@ -199,7 +197,7 @@ class KTAPI_UserSession extends KTAPI_Session
 		$user =& User::getByUsername($username);
         if (PEAR::isError($user) || ($user === false)) 
         {
-           return new PEAR_Error(_kt("The user '$username' cound not be found."));      
+           return new KTAPI_Error(_kt("The user '$username' cound not be found."),$user);      
         }
 
         if ( empty($password) )
@@ -211,7 +209,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
         if (PEAR::isError($authenticated) || $authenticated === false)
         {
-        	return new PEAR_Error(_kt("The password is invalid."));
+        	return new KTAPI_Error(_kt("The password is invalid."),$authenticated);
         }
         
         if (is_null($ip))
@@ -250,7 +248,7 @@ class KTAPI_UserSession extends KTAPI_Session
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
-			return new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_SESSION_INVALID, $row);
 		}
 		
 		$sessionid = $row['id'];
@@ -259,7 +257,7 @@ class KTAPI_UserSession extends KTAPI_Session
 		$user = &User::get($userid);
 		if (is_null($user) || PEAR::isError($user))
 		{
-			return new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_USER_INVALID, $user);
 		}
 		
 
@@ -300,7 +298,7 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
 		$user =& User::get(-2);
 		if (is_null($user) ||  PEAR::isError($user) || ($user === false) || !$user->isAnonymous())
 		{
-			return new PEAR_Error(_kt("The anonymous user could not be found."));
+			return new KTAPI_Error(_kt("The anonymous user could not be found."), $user);
 		}
 
 		$authenticated = true;
