@@ -5,6 +5,9 @@ require_once('test.php');
 class UnitTests extends GroupTest {
     function UnitTests() {
         $this->GroupTest('Unit tests');
+        $this->addTestFile('api/authentication.php');
+        $this->addTestFile('api/document.php');
+        $this->addTestFile('api/folder.php');
         $this->addTestFile('SQLFile/test_sqlfile.php');
         $this->addTestFile('cache/testCache.php');
         $this->addTestFile('config/testConfig.php');
@@ -29,3 +32,4 @@ if (SimpleReporter::inCli()) {
 }
 $test->run(new HtmlReporter());
 
+?>
