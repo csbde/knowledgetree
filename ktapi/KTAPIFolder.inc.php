@@ -38,7 +38,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$folder = &Folder::get($folderid);
 		if (is_null($folder) || PEAR::isError($folder))
 		{
-			return new PEAR_Error(KTAPI_ERROR_FOLDER_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID,$folder);
 		}
 		
 		$user = $ktapi->can_user_access_object_requiring_permission($folder, KTAPI_PERMISSION_READ);
@@ -144,7 +144,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			$row = DBUtil::getOneResult($sql);
 			if (is_null($row) || PEAR::isError($row))
 			{
-				return new PEAR_Error(KTAPI_ERROR_FOLDER_INVALID);
+				return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID,$row);
 			}
 			$folderid = $row['id'];			
 		}
@@ -187,7 +187,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		
 		if (is_null($ktapi_folder) || PEAR::isError($ktapi_folder))
 		{
-			return new PEAR_Error(KTAPI_ERROR_FOLDER_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID, $ktapi_folder);
 		}
 		
 		//$folder = $ktapi_folder->get_folder();
@@ -196,7 +196,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$document = Document::$function($documentname, $folderid);		
 		if (is_null($document) || PEAR::isError($document))
 		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_INVALID);
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_INVALID, $document);
 		}
 		
 		$user = $this->can_user_access_object_requiring_permission($document, KTAPI_PERMISSION_READ);				
@@ -245,7 +245,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$descriptors=KTPermissionUtil::getPermissionDescriptorsForUser($user);
 		if (is_null($descriptors) || PEAR::isError($descriptors))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': problem with descriptors for user');
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR . ': problem with descriptors for user', $descriptors);
 		}
 		if (count($descriptors == 0))
 		{
@@ -328,7 +328,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$contents = DBUtil::getResultArray($sql);
 		if (is_null($contents) || PEAR::isError($contents))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR , $contents);
 		}
 		
 		$num_items = count($contents);
@@ -397,7 +397,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (!is_a($document,'Document'))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $document->getMessage());
 		}
 		DBUtil::commit();
 		
@@ -434,7 +434,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
 		DBUtil::commit();
 		$folderid = $result->getId();
@@ -466,7 +466,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
 		DBUtil::commit();
 	}
@@ -490,7 +490,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
 		DBUtil::commit();
 	}
@@ -522,7 +522,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
 		DBUtil::commit();
 	}
@@ -555,7 +555,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
 		DBUtil::commit();
 	}
