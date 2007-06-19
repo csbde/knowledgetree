@@ -62,10 +62,10 @@ class DiscussionComment extends KTEntity {
     function setThreadId($iThreadId){ $this->iThreadId = $iThreadId; }
     function getUserId(){ return $this->iUserId; } 
     function setUserId($iNewUserId){ $this->iUserId = $iNewUserId; }
-    function getSubject(){ return $this->sSubject; }
-    function setSubject($sNewSubject){ $this->sSubject = $sNewSubject; }
-    function getBody(){ return $this->sBody; }
-    function setBody($sNewBody){ $this->sBody = $sNewBody; }
+    function getSubject(){ return sanitizeForSQLtoHTML($this->sSubject); }
+    function setSubject($sNewSubject){ $this->sSubject = sanitizeForSQL($sNewSubject); }
+    function getBody(){ return sanitizeForSQLtoHTML($this->sBody); }
+    function setBody($sNewBody){ $this->sBody = sanitizeForSQL($sNewBody); }
     function getDate(){ return $this->dDate; }
     function getInReplyTo(){ return $this->iInReplyTo; }
     function setInReplyTo($sNewCommentId){ $this->iInReplyTo = $sNewCommentId; }
