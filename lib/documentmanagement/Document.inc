@@ -230,7 +230,11 @@ class Document {
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($iMetadataVersionId);
             $this->iCurrentMetadataVersionId = $iMetadataVersionId;
         }
-        if (PEAR::isError($this->_oDocumentMetadataVersion)) { var_dump($this->_oDocumentMetadataVersion); return $this->_oDocumentMetadataVersion; }
+        if (PEAR::isError($this->_oDocumentMetadataVersion)) 
+        { 
+        //	var_dump($this->_oDocumentMetadataVersion); 
+        	return $this->_oDocumentMetadataVersion; 
+        }
         
         $this->_oDocumentContentVersion = KTDocumentContentVersion::get($this->_oDocumentMetadataVersion->getContentVersionId());
         if (PEAR::isError($this->_oDocumentContentVersion)) { return $this->_oDocumentContentVersion; }
