@@ -17,7 +17,7 @@
 // |          Christian Stocker <chregu@bitflux.ch>                       |
 // +----------------------------------------------------------------------+
 //
-// $Id: _parse_lockinfo.php,v 1.2 2004/01/05 12:32:40 hholzgra Exp $
+// $Id$
 //
 
 /**

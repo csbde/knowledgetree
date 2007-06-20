@@ -1,9 +1,9 @@
 <?php
 /**
- * $Id: SmartIRC.php,v 1.54.2.14 2005/05/27 23:40:09 meebey Exp $
- * $Revision: 1.54.2.14 $
- * $Author: meebey $
- * $Date: 2005/05/27 23:40:09 $
+ * $Id$
+ * $Revision$
+ * $Author$
+ * $Date$
  *
  * Net_SmartIRC
  * This is a PHP class for communication with IRC networks,
@@ -46,7 +46,7 @@
 include_once('SmartIRC/defines.php');
 include_once('SmartIRC/irccommands.php');
 include_once('SmartIRC/messagehandler.php');
-define('SMARTIRC_VERSION', '1.0.0 ($Revision: 1.54.2.14 $)');
+define('SMARTIRC_VERSION', '1.0.0 ($Revision$)');
 define('SMARTIRC_VERSIONSTRING', 'Net_SmartIRC '.SMARTIRC_VERSION);
 
 /**

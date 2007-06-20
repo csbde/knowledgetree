@@ -18,7 +18,7 @@
 // | Original author: Gavin Brown <gavin.brown@uk.com>                    |
 // +----------------------------------------------------------------------+
 //
-// $Id: Ident.php,v 1.7 2005/03/07 11:23:26 nepto Exp $
+// $Id$
 //
 // Identification Protocol implementation
 //

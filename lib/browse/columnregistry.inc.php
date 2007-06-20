@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: columnregistry.inc.php 5492 2006-06-04 20:50:43Z bshuttle $
+ * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in

@@ -13,7 +13,7 @@
  * @author      Michael Wallner <mike@php.net>
  * @copyright   2003-2005 The Authors
  * @license     BSD, revised
- * @version     CVS: $Id: Header.php,v 1.32 2005/11/08 19:06:10 mike Exp $
+ * @version     CVS: $Id$
  * @link        http://pear.php.net/package/HTTP_Header
  */
 
@@ -105,7 +105,7 @@ define('HTTP_HEADER_STATUS_SERVER_ERROR',5);
  * @package     HTTP_Header
  * @category    HTTP
  * @access      public
- * @version     $Revision: 1.32 $
+ * @version     $Revision$
  */
 class HTTP_Header extends HTTP
 {

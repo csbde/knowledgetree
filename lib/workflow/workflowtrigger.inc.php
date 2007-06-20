@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: workflowtrigger.inc.php 5268 2006-04-18 13:42:22Z nbm $
+ * $Id$
  *
  * Provides a base class for workflow triggers.  This includes
  * the ability to serialise configuration arrays into the db

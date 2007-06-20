@@ -16,7 +16,7 @@
 // | Authors: Tomas V.V.Cox <cox@idecnet.com>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id: System.php,v 1.36 2004/06/15 16:33:46 pajoye Exp $
+// $Id$
 //
 
 require_once 'PEAR.php';
@@ -48,7 +48,7 @@ $GLOBALS['_System_temp_files'] = array();
 *
 * @package  System
 * @author   Tomas V.V.Cox <cox@idecnet.com>
-* @version  $Revision: 1.36 $
+* @version  $Revision$
 * @access   public
 * @see      http://pear.php.net/manual/
 */

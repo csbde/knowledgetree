@@ -17,7 +17,7 @@
 // |          Guido Haeger <gh-lists@ecora.de>                            |
 // +----------------------------------------------------------------------+
 //
-// $Id: CheckIP.php,v 1.5 2002/08/17 09:41:24 mj Exp $
+// $Id$
 
 /**
 * Class to validate the syntax of IPv4 adresses
