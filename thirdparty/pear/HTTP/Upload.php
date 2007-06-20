@@ -7,7 +7,7 @@
 //
 // **********************************************
 //
-// $Id: Upload.php,v 1.42 2004/08/08 09:37:50 wenz Exp $
+// $Id$
 
 /*
  * Pear File Uploader class. Easy and secure managment of files

@@ -19,7 +19,7 @@
 // |          Kai Schröder <k.schroeder@php.net>                          |
 // +----------------------------------------------------------------------+
 //
-// $Id: Ping.php,v 1.36 2004/02/08 23:17:22 jan Exp $
+// $Id$
 
 require_once "PEAR.php";
 require_once "OS/Guess.php";
@@ -65,7 +65,7 @@ define('NET_PING_RESULT_UNSUPPORTED_BACKEND', 4);
 * ?>
 *
 * @author   Jan Lehnardt <jan@php.net>
-* @version  $Revision: 1.36 $
+* @version  $Revision$
 * @package  Net
 * @access   public
 */
@@ -524,7 +524,7 @@ class Net_Ping
 * Container class for Net_Ping results
 *
 * @author   Jan Lehnardt <jan@php.net>
-* @version  $Revision: 1.36 $
+* @version  $Revision$
 * @package  Net
 * @access   private
 */

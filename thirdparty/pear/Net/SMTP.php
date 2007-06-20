@@ -18,7 +18,7 @@
 // |          Damian Alejandro Fernandez Sosa <damlists@cnba.uba.ar>      |
 // +----------------------------------------------------------------------+
 //
-// $Id: SMTP.php,v 1.54 2005/08/16 03:44:15 jon Exp $
+// $Id$
 
 require_once 'PEAR.php';
 require_once 'Net/Socket.php';

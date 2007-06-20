@@ -16,7 +16,7 @@
 // | Authors: Sebastian Nohn <sebastian@nohn.net>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id: Finger.php,v 1.5 2003/01/04 11:55:46 mj Exp $
+// $Id$
 //
 
 require_once 'PEAR.php';
@@ -27,7 +27,7 @@ require_once 'Net/Socket.php';
  *
  * Provides functions useful for Finger-Queries.
  *
- * @version $Revision: 1.5 $
+ * @version $Revision$
  * @author Sebastian Nohn <sebastian@nohn.net>
  * @package Net
  */

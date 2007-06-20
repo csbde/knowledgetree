@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: workflowtriggerinstance.inc.php 5268 2006-04-18 13:42:22Z nbm $
+ * $Id$
  *
  * Provides both association between a transition and a trigger, and a 
  * way to store the configuration for that instance.

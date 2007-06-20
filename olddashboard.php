@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: dashboard.php 6039 2006-11-03 10:01:51Z bryndivey $
+ * $Id$
  *
  * Main dashboard page -- This page is presented to the user after login.
  * It contains a high level overview of the users subscriptions, checked out 
@@ -33,7 +33,7 @@
  * Contributor( s): ______________________________________
  *
  *
- * @version $Revision: 6039 $
+ * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 

@@ -17,7 +17,7 @@
 // |          Christian Stocker <chregu@bitflux.ch>                       |
 // +----------------------------------------------------------------------+
 //
-// $Id: _parse_propfind.php,v 1.2 2004/01/05 12:33:22 hholzgra Exp $
+// $Id$
 //
 
 /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: KTWorkflowAssociation.php 5336 2006-04-25 12:42:45Z bshuttle $
+ * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in

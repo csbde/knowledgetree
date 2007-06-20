@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: KTWorkflowTriggers.php 5439 2006-05-25 13:20:15Z bryndivey $
+ * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in

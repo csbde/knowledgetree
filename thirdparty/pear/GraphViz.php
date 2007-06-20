@@ -21,7 +21,7 @@
  * @author     Michael Lively Jr. <mlively@ft11.net>
  * @copyright  2001-2006 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: GraphViz.php,v 1.25 2006/05/16 15:49:19 sebastian Exp $
+ * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Image_GraphViz
  * @since      File available since Release 0.1
  */
