@@ -266,7 +266,11 @@ class KTAPI_UserSession extends KTAPI_Session
         $sql = "UPDATE active_sessions SET last_used='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
         
-		$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);		
+        
+        if ($user->isAnonymous())
+			$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);		
+        else
+			$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);		
 		return $session;
 	}
 	
