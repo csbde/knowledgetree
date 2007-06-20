@@ -237,7 +237,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 
+		}
 
 		if ($this->document->getIsCheckedOut())
 		{
@@ -267,7 +267,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 		
+		}		
 		           
         DBUtil::startTransaction();
         
@@ -346,25 +346,25 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$name = $this->document->getName();
-		$clash = KTDocumentUtil::nameExists($target_folder, $name);        
+		$clash = KTDocumentUtil::nameExists($target_folder, $name);
         if ($clash && !is_null($newname)) 
         {        
         	$name = $newname;
         	$clash = KTDocumentUtil::nameExists($target_folder, $name);
-        } 
+        }
         if ($clash) 
         {
         	return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
         }
         
         $filename=$this->document->getFilename();
-        $clash = KTDocumentUtil::fileExists($target_folder, $filename);              
+        $clash = KTDocumentUtil::fileExists($target_folder, $filename);
 
         if ($clash && !is_null($newname)) 
         {
 			$filename = $newfilename;
-            $clash = KTDocumentUtil::fileExists($target_folder, $filename);              
-        } 
+            $clash = KTDocumentUtil::fileExists($target_folder, $filename);
+        }
         if ($clash) 
         {
         	return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
@@ -435,7 +435,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 
+		}
 
 		if ($this->document->getIsCheckedOut())
 		{
@@ -457,25 +457,25 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$name = $this->document->getName();
-		$clash = KTDocumentUtil::nameExists($target_folder, $name);        
+		$clash = KTDocumentUtil::nameExists($target_folder, $name);
         if ($clash && !is_null($newname)) 
         {        
         	$name = $newname;
         	$clash = KTDocumentUtil::nameExists($target_folder, $name);
-        } 
+        }
         if ($clash) 
         {
         	return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the moved document.');
         }
         
         $filename=$this->document->getFilename();
-        $clash = KTDocumentUtil::fileExists($target_folder, $filename);              
+        $clash = KTDocumentUtil::fileExists($target_folder, $filename);
 
         if ($clash && !is_null($newname)) 
         {
 			$filename = $newfilename;
-            $clash = KTDocumentUtil::fileExists($target_folder, $filename);              
-        } 
+            $clash = KTDocumentUtil::fileExists($target_folder, $filename);
+        }
         if ($clash) 
         {
         	return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the moved document.');
@@ -516,7 +516,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 
+		}
 		
 		DBUtil::startTransaction();
 		$res = KTDocumentUtil::rename($this->document, $newname, $user);
@@ -525,7 +525,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
-        DBUtil::commit(); 
+        DBUtil::commit();
 	}
 	
 	/**
@@ -540,7 +540,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 
+		}
 		
 		$doctypeid = KTAPI::get_documenttypeid($documenttype);		 
 		 
@@ -571,7 +571,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		} 
+		}
 		
 		if ($this->document->getName() != $newname)
 		{
@@ -753,7 +753,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 {
 		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 		 	
-		 	$fields = $fieldset->getFields();            
+		 	$fields = $fieldset->getFields();
 		 	$result = array('fieldset' => $fieldset->getName(),
 		 					'description' => $fieldset->getDescription());
 		 	
@@ -761,7 +761,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	 
             foreach ($fields as $field) 
             {                
-                $value = 'n/a';                
+                $value = 'n/a';
                  
 				$fieldvalue = DocumentFieldLink::getByDocumentAndField($this->document, $field);
                 if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue))) 
@@ -777,12 +777,12 @@ class KTAPI_Document extends KTAPI_FolderItem
                     {
                     	$controltype = 'tree';
                     }
-                }  
+                }
                 
                 switch ($controltype)
                 {
                 	case 'lookup':
-                		$selection = KTAPI::get_metadata_lookup($field->getId());                		
+                		$selection = KTAPI::get_metadata_lookup($field->getId());		
                 		break;
                 	case 'tree':
                 		$selection = KTAPI::get_metadata_tree($field->getId());
@@ -807,7 +807,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             $results [] = $result;	
 		 }		 
 		 
-		 return $results; 
+		 return $results;
 	}
 	
 	/**
@@ -817,28 +817,60 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function update_metadata($metadata)
 	{		 
+		global $default;
 		 $packed = array();
 		 
 		 foreach($metadata as $fieldset_metadata)
 		 {
-		 	$fieldsetname=$fieldset_metadata['fieldset'];
+		 	if (is_array($fieldset_metadata))
+		 	{
+		 		$fieldsetname=$fieldset_metadata['fieldset'];
+		 		$fields=$fieldset_metadata['fields'];
+		 	}
+		 	elseif (is_a($fieldset_metadata, 'stdClass'))
+		 	{
+		 		$fieldsetname=$fieldset_metadata->fieldset;
+		 		$fields=$fieldset_metadata->fields;
+		 	}
+		 	else
+		 	{
+		 		$default->log->debug("unexpected fieldset type");
+		 		continue;
+		 	}
+
 		 	$fieldset = KTFieldset::getByName($fieldsetname);
 		 	if (is_null($fieldset) || PEAR::isError($fieldset))
 		 	{
+		 		$default->log->debug("could not resolve fieldset: $fieldsetname");
 		 		// exit graciously
 		 		continue;
 		 	}
 		 	
-		 	foreach($fieldset_metadata['fields'] as $fieldinfo)
+		 	foreach($fields as $fieldinfo)
 		 	{
-		 		$fieldname = $fieldinfo['name'];
+		 		if (is_array($fieldinfo))
+		 		{
+		 			$fieldname = $fieldinfo['name'];
+		 			$value = $fieldinfo['value'];
+		 		}
+		 		elseif (is_a($fieldinfo, 'stdClass'))
+		 		{
+		 			$fieldname = $fieldinfo->name;
+		 			$value = $fieldinfo->value;
+		 		}
+		 		else
+		 		{
+		 			$default->log->debug("unexpected fieldinfo type");
+		 			continue;
+		 		}
+
 		 		$field = DocumentField::getByFieldsetAndName($fieldset, $fieldname);
 		 		if (is_null($field) || PEAR::isError($fieldset))
 		 		{
+		 			$default->log->debug("could not resolve field: $fieldname");
 		 			// exit graciously
 		 			continue;
-		 		}	 		
-		 		$value = $fieldinfo['value'];
+		 		}
 		 		
 		 		$packed[] = array($field, $value);
 		 	}		 	
@@ -890,7 +922,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		foreach($transitions as $transition)
 		{
-			$result[] = $transition->getName(); 
+			$result[] = $transition->getName();
 		}
 		
 		return $result;		 
@@ -1042,7 +1074,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function download($version=null)
 	{		
 		$storage =& KTStorageManagerUtil::getSingleton();
-        $options = array();    
+        $options = array();
 		
 		
         $oDocumentTransaction = & new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
@@ -1091,7 +1123,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$user = User::get($userid);		 
         	
         	$version['user'] = $user->getName();
-        	$version['metadata_version'] = $document->getMetadataVersion(); 
+        	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
         	
             $versions[] = $version;
@@ -1143,7 +1175,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$this->document->setFolderId(1);
 			$folder = Folder::get(1);
-		} 
+		}
 		else 
 		{
 			$this->document->setFolderId($this->document->getRestoreFolderId());
