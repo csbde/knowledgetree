@@ -264,7 +264,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the user.')); }
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
-        if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
+        if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
         // FIXME check for non-clashing usernames.
 
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
