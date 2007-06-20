@@ -68,15 +68,19 @@ class KTFolderUtil {
     }
 
     function add ($oParentFolder, $sFolderName, $oUser) {
-        $oFolder = KTFolderUtil::_add($oParentFolder, $sFolderName, $oUser);
+    	
+    	
+    	$folderid=$oParentFolder->getId();
+        // check for conflicts first
+        if (Folder::folderExistsName($sFolderName,$folderid)) {
+            return PEAR::raiseError(sprintf(_kt('The folder %s already exists.'), $sFolderName));
+        }
+    	
+    	$oFolder = KTFolderUtil::_add($oParentFolder, $sFolderName, $oUser);
         if (PEAR::isError($oFolder)) {
             return $oFolder;
         }
         
-        // check for conflicts first
-        if (Folder::folderExistsName(KTUtil::getId($oParentFolder), $sFolderName)) {
-            return PEAR::raiseError(sprintf(_kt('The folder %s already exists.'), $sFolderName));
-        }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $oFolder->getId(),
