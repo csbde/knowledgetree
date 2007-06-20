@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: KTWebDAVDashletPlugin.php 6609 2007-05-30 14:40:10Z kevin_fourie $
+ * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in

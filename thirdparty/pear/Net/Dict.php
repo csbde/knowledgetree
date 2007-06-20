@@ -20,7 +20,7 @@
 // | Authors: Chandrashekhar Bhosle <cnb@php.net>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id: Dict.php,v 1.3 2002/10/06 04:55:33 cnb Exp $
+// $Id$
 
 // }}}
 // {{{ includes

@@ -16,7 +16,7 @@
 // | Authors: Shane Caraveo <Shane@Caraveo.com>                           |
 // +----------------------------------------------------------------------+
 //
-// $Id: example_server.php,v 1.5 2005/03/10 23:16:40 yunosh Exp $
+// $Id$
 //
 
 // first, include the SOAP/Server class

@@ -17,7 +17,7 @@
 // |                                                                      |
 // +----------------------------------------------------------------------+
 //
-// $Id: Geo.php,v 1.7 2004/02/18 22:59:20 lsmith Exp $
+// $Id$
 
 require_once 'PEAR.php';
 require_once 'Cache/Function.php';

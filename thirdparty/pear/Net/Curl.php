@@ -18,7 +18,7 @@
  * @author     Joe Stump <joe@joestump.net> 
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Revision: 1.11 $
+ * @version    CVS: $Revision$
  * @link       http://pear.php.net/package/Net_Curl
  */
 

@@ -18,7 +18,7 @@
 // | Author: Seamus Venasse <seamus.venasse@polaris.ca>                   |
 // +----------------------------------------------------------------------+
 //
-// $Id: Whois.php,v 1.11 2003/01/04 11:55:54 mj Exp $
+// $Id$
 //
 // Whois Class
 //

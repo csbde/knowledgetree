@@ -11,7 +11,7 @@
  * @author     Michael Wallner <mike@php.net>
  * @copyright  2003-2005 Michael Wallner
  * @license    BSD, revisewd
- * @version    CVS: $Id: Archive.php,v 1.4 2005/11/13 19:18:55 mike Exp $
+ * @version    CVS: $Id$
  * @link       http://pear.php.net/package/HTTP_Download
  */
 
@@ -31,7 +31,7 @@ require_once 'System.php';
  * Helper class for sending Archives.
  *
  * @access   public
- * @version  $Revision: 1.4 $
+ * @version  $Revision$
  */
 class HTTP_Download_Archive
 {

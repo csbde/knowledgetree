@@ -16,7 +16,7 @@
 // | Author: Alexey Borzov <avb@php.net>                                  |
 // +----------------------------------------------------------------------+
 //
-// $Id: Client.php,v 1.4 2004/03/23 13:35:37 avb Exp $
+// $Id$
 
 require_once 'HTTP/Request.php';
 require_once 'HTTP/Client/CookieManager.php';
@@ -29,7 +29,7 @@ require_once 'HTTP/Client/CookieManager.php';
  * 
  * @package HTTP_Client
  * @author Alexey Borzov <avb@php.net>
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 class HTTP_Client
 {

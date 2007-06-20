@@ -16,14 +16,14 @@
 // | Author: Alexey Borzov <avb@php.net>                                  |
 // +----------------------------------------------------------------------+
 //
-// $Id: CookieManager.php,v 1.3 2004/04/10 10:04:52 avb Exp $
+// $Id$
 
 /**
  * This class is used to store cookies and pass them between HTTP requests.
  * 
  * @package HTTP_Client
  * @author  Alexey Borzov <avb@php.net>
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 class HTTP_Client_CookieManager
 {

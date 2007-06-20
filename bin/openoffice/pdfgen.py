@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 #
-# $Id: view.php 6203 2007-02-08 10:41:00Z kevin_fourie $
+# $Id$
 #
 # The contents of this file are subject to the KnowledgeTree Public
 # License Version 1.1.2 ("License"); You may not use this file except in

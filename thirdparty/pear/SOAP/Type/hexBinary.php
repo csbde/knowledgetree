@@ -17,7 +17,7 @@
 // | Authors: Dietrich Ayala <dietrich@ganx4.com> Original Author         |
 // +----------------------------------------------------------------------+
 //
-// $Id: hexBinary.php,v 1.6 2005/03/10 23:16:39 yunosh Exp $
+// $Id$
 //
 class SOAP_Type_hexBinary
 {

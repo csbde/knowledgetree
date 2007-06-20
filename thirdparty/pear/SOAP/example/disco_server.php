@@ -16,7 +16,7 @@
 // | Author: Dmitri Vinogradov <dimitri@vinogradov.de>                    |
 // +----------------------------------------------------------------------+
 //
-// $Id: disco_server.php,v 1.5 2005/03/10 23:16:40 yunosh Exp $
+// $Id$
 
 /*
   This example shows how to mark up a server object so that
