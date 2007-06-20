@@ -68,5 +68,6 @@ define('KTAPI_PERMISSION_RENAME_FOLDER',	'ktcore.permissions.folder_rename');
 define('KTAPI_PERMISSION_CHANGE_OWNERSHIP',	'ktcore.permissions.security');
 define('KTAPI_PERMISSION_DOCUMENT_MOVE',	'ktcore.permissions.write');
 define('KTAPI_PERMISSION_WORKFLOW',			'ktcore.permissions.workflow');
+define('KTAPI_PERMISSION_VIEW_FOLDER',		'ktcore.permissions.folder_details');
 
 ?>
