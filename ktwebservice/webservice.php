@@ -126,6 +126,8 @@ class KTWebService
                 'mime_type' => 'string',
                 'mime_icon_path' => 'string',
                 'mime_display' => 'string',        
+                'workflow'=>'string',
+                'workflow_state'=>'string',
                 'items' =>"{urn:$this->namespace}kt_folder_items"     	
          	);
 
@@ -303,6 +305,13 @@ class KTWebService
             array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string'),
                   'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
+
+         // anonymous_login
+         $this->__dispatch_map['anonymous_login'] =
+            array('in' => array('ip' => 'string'),
+                  'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+            
             
          // logout
          $this->__dispatch_map['logout'] =
@@ -586,7 +595,36 @@ class KTWebService
     	}
     	return $kt;
     }
-           
+
+    /**
+     * Creates a new anonymous session.
+     *
+     * @param string $ip
+     * @return kt_response
+     */
+    function anonymous_login($ip=null)
+    {
+    	$response = array(
+    		'status_code'=>KTWS_ERR_AUTHENTICATION_ERROR,
+    		'message'=>'',
+    	);    	
+    	
+    	$kt = &new KTAPI();
+
+    	$session = $kt->start_anonymous_session($ip);
+    	
+    	if (PEAR::isError($session))
+    	{
+    		$response['message'] = $session->getMessage();
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	}
+
+    	$response['status_code'] = KTWS_SUCCESS;
+    	$response['message'] = $session->get_session(); 
+    	
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    }    
+    
     /**
      * Creates a new session for the user.
      *
@@ -672,7 +710,7 @@ class KTWebService
     			'status_code'=>KTWS_ERR_INVALID_FOLDER,
     			'message'=>$folder->getMessage()
     		);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
     	}	
     	
     	$detail = $folder->get_detail();
@@ -810,7 +848,7 @@ class KTWebService
     	}	
     	
     	$listing = $folder->get_listing($depth, $what);
-
+    	
     	$contents = array(
     		'status_code'=>KTWS_SUCCESS,
     		'message'=>'',
