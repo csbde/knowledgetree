@@ -295,10 +295,7 @@ function loginFailed($message)
 }
 
 function resolveMysqlDir()
-{
-	 
-	
-	
+{	
 	// possibly detect existing installations:
 	
 	if (OS_UNIX)
@@ -310,15 +307,18 @@ function resolveMysqlDir()
 	{
 		$dirs = explode(';', $_SERVER['PATH']);	
 		$dirs[] ='c:/Program Files/MySQL/MySQL Server 5.0/bin';
+		$dirs[] = 'c:/program files/ktdms/mysql/bin';
 		$mysqlname ='mysql.exe';
 	}
 	
+	$oKTConfig =& KTConfig::getSingleton();
+	$mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+	$dirs[] = $mysqldir;	
 	
-	
-	if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms'))
+	if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false)
 	{
 		$dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
-	}	
+	}
 	
 	foreach($dirs as $dir)
 	{
@@ -435,7 +435,7 @@ function resolveTempDir()
 		$dir='c:/kt-db-backup'; 
 	}
 	$oKTConfig =& KTConfig::getSingleton();
-	$dir = $oKTConfig->get('backups/backupDirectory',$dir);
+	$dir = $oKTConfig->get('backup/backupDirectory',$dir);
 	
 	if (!is_dir($dir))
 	{
@@ -496,7 +496,7 @@ Your mysql installation has been resolved. Manually, you would do the following:
 	else
 	{
 ?>
-It appears as though you are not using the stack installer, or are using a custom install.
+The mysql backup utility could not be found automatically. Either do a manual backup, or edit the config.ini and update the backup/mysqlDirectory entry.
 <P>
 You can continue to do the backup manually using the following process:
 <P>
@@ -638,7 +638,7 @@ Manually, you would do the following to restore the backup:
 	else
 	{
 ?>
-It appears as though you are not using the stack installer, or are using a custom install.
+The mysql backup utility could not be found automatically. Either do a manual restore, or edit the config.ini and update the backup/mysqlDirectory entry.
 <P>
 You can continue to do the restore manually using the following command(s):
 <P>
@@ -718,7 +718,7 @@ function backupDone()
 			else
 			{
 		?>
-				It appears as though you are not using the stack installer, or are using a custom install.
+			The mysql backup utility could not be found automatically. Please edit the config.ini and update the backup/mysqlDirectory entry.
 				<P>
 				If you need to restore from this backup, you should be able to use the following statements:
 				<P>
@@ -860,6 +860,11 @@ function backup()
 		$_SESSION['backupOutput']=$read;
 		$dir=resolveTempDir();
 		$_SESSION['backupFile'] =   $stmt['target'];
+		
+			if (OS_UNIX)
+			{
+				chmod($stmt['target'],0600);
+			}
 		
 		if (is_file($stmt['target']) && filesize($stmt['target']) > 0)
 		{
