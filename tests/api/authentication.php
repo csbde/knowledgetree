@@ -16,6 +16,11 @@ class APIAuthenticationTestCase extends KTUnitTestCase
 		$this->assertTrue(is_a($session,'KTAPI_UserSession'));
 		$this->assertTrue($session->is_active());
 		
+		$ktapi = new KTAPI();
+		$session = $ktapi->get_active_session($session->session);
+		$this->assertTrue(is_a($session,'KTAPI_UserSession'));
+		
+		
 		$session->logout();
 		$this->assertFalse($session->is_active());
 	}
@@ -27,7 +32,7 @@ class APIAuthenticationTestCase extends KTUnitTestCase
 		$session = $ktapi->start_system_session();
 		$this->assertTrue(is_a($session,'KTAPI_SystemSession'));
 		$this->assertTrue($session->is_active());
-		
+				
 		$session->logout();
 		$this->assertFalse($session->is_active());
 	}
@@ -39,6 +44,11 @@ class APIAuthenticationTestCase extends KTUnitTestCase
 		$session = $ktapi->start_anonymous_session();
 		$this->assertTrue(is_a($session,'KTAPI_AnonymousSession'));
 		$this->assertTrue($session->is_active());
+		
+		$ktapi = new KTAPI();
+		$session = $ktapi->get_active_session($session->session);
+		$this->assertTrue(is_a($session,'KTAPI_AnonymousSession'));
+
 		
 		$session->logout();
 		$this->assertFalse($session->is_active());
