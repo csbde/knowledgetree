@@ -1,7 +1,7 @@
 <?
-
 /**
- *
+ * $Id$
+ * 
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -28,10 +28,6 @@
  * Contributor( s): ______________________________________
  *
  */
-
-require_once('../config/dmsDefaults.php');
-require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
-require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
 // Generic error messages used in the API. There may be some others specific to functionality
 // directly in the code.

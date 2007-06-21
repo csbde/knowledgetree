@@ -1,6 +1,7 @@
 <?
 /**
- *
+ * $Id$
+ * 
  * Implements a cleaner wrapper API for KnowledgeTree.
  *
  * The contents of this file are subject to the KnowledgeTree Public
@@ -31,7 +32,7 @@
  */
 
 session_start();
-require_once(KT_DIR . '/config/dmsDefaults.php');
+require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
