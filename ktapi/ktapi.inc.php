@@ -1,6 +1,7 @@
 <?
 /**
- *
+ * $Id$
+ * 
  * Implements a cleaner wrapper API for KnowledgeTree.
  *
  * The contents of this file are subject to the KnowledgeTree Public
