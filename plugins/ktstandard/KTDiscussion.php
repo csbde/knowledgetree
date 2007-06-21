@@ -177,8 +177,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => sanitize($sSubject),
-            'body' => sanitize(KTUtil::formatPlainText($sBody)),
+            'subject' => sanitizeForSQL($sSubject),
+            'body' => sanitizeForSQL(KTUtil::formatPlainText($sBody)),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -306,8 +306,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => sanitize($sSubject),
-            'body' => sanitize(KTUtil::formatPlainText($sBody)),
+            'subject' => sanitizeForSQL($sSubject),
+            'body' => sanitizeForSQL(KTUtil::formatPlainText($sBody)),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -387,7 +387,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	}
 	
 	$aErrorOptions['message'] = _kt("No reason provided");
-	$sReason = sanitize($this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions));
+	$sReason = sanitizeForSQL($this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions));
 	
 	if($iStateId > $oThread->getState()) {
 	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';

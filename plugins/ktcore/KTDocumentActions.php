@@ -182,6 +182,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         $QS = array(
             'action' => 'viewComparison',
             'fDocumentId' => $this->oDocument->getId(),
+            'fBaseVersion' => $_REQUEST['fBaseVersion'],
             'fComparisonVersion' => $_REQUEST['fComparisonVersion'],
         );
         
