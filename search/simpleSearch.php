@@ -142,7 +142,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
         $aErrorOptions = array(
             "message" => _kt("Please provide a search term"),
         );
-        $searchable_text = sanitize(KTUtil::arrayGet($_REQUEST, "fSearchableText"));
+        $searchable_text = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, "fSearchableText"));
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
 
 
