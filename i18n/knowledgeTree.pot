@@ -10551,7 +10551,7 @@ msgid "the user who did the check-out is not currently available to check it bac
 msgstr ""
 
 #: i18n/templates.c:1061 i18n/templates.c:1067 i18n/templates.c:1088
-msgid "this cannot not change between versions"
+msgid "this cannot change between versions"
 msgstr ""
 
 #: i18n/templates.c:1022
