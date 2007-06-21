@@ -31,14 +31,16 @@
  */
 
 session_start();
-require_once('../config/dmsDefaults.php');
+require_once(KT_DIR . '/config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
-require_once('KTAPIConstants.inc.php');
-require_once('KTAPISession.inc.php');
-require_once('KTAPIFolder.inc.php');
-require_once('KTAPIDocument.inc.php');
+define('KTAPI_DIR',KT_DIR . '/ktapi');
+
+require_once(KTAPI_DIR .'/KTAPIConstants.inc.php');
+require_once(KTAPI_DIR .'/KTAPISession.inc.php');
+require_once(KTAPI_DIR .'/KTAPIFolder.inc.php');
+require_once(KTAPI_DIR .'/KTAPIDocument.inc.php');
 		
 class KTAPI_FolderItem
 {
