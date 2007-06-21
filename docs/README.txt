@@ -1,14 +1,58 @@
-=====================================================
- Knowledgetree Documentation, Support and Community
-=====================================================
+=====================================
+ Welcome to the KnowledgeTree family
+=====================================
 
-* You can access all the KnowledgeTree documentation online at:
+Thank you for downloading KnowledgeTree!
+ 
 
-- http://docs.knowledgetree.com
+For further information and documents please refer to the following resources: 
 
 
-* To learn more about KnowledgeTree and the KnowledgeTree community you can start at:
+KnowledgeTree User and Developer Documentation:
+-----------------------------------------------
 
-- http://www.knowledgetree.com/products/opensource/welcome/
+    http://docs.knowledgetree.com
 
-where you will find many community resources including forums, wikis, irq, etc.
+
+Forums:
+-------
+
+    http://forums.knowledgetree.com
+
+
+Community Wiki:
+---------------
+
+    http://wiki.knowledgetree.com
+
+
+Community forge:
+----------------
+
+    http://forge.knowledgetree.com
+
+
+Blogs:
+------
+
+    http://people.knowledgetree.com
+
+
+Partners:
+---------
+
+    http://www.knowledgetree.com/Partners 
+
+
+
+* Should you have any questions please contact us on:
+
+    support@knowledgetree.com 
+  
+             or 
+
+    sales@knowledgetree.com 
+
+
+Kind Regards
+The KnowledgeTree Team
