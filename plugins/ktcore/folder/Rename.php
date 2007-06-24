@@ -87,7 +87,7 @@ class KTFolderRenameAction extends KTFolderAction {
             }
         }
 
-        $res = KTFolderUtil::rename($this->oFolder, sanitizeForSQL($sFolderName), $this->oUser);
+        $res = KTFolderUtil::rename($this->oFolder, $sFolderName, $this->oUser);
         if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
