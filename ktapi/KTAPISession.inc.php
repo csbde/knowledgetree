@@ -1,12 +1,12 @@
 <?
 /**
  * $Id$
- * 
+ *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -29,26 +29,26 @@
  *
  */
 
-class KTAPI_Session 
+class KTAPI_Session
 {
 	var $ktapi;
 	var $user = null;
 	var $session = '';
 	var $sessionid = -1;
 	var $active;
-	
+
 	function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi,'KTAPI'));
 		assert(!is_null($user));
-		assert(is_a($user,'User'));		
-		
+		assert(is_a($user,'User'));
+
 		$this->ktapi=&$ktapi;
 		$this->user=&$user;
 		$this->active = false;
 	}
-	
+
 	/**
 	 * return the session string
 	 *
@@ -58,17 +58,17 @@ class KTAPI_Session
 	{
 		die('get_session() should be overloaded!');
 	}
-	
+
 	/**
-	 * Return the session id 
-	 * 
+	 * Return the session id
+	 *
 	 * @return int
 	 */
 	function get_sessionid()
 	{
 		die('get_sessionid() should be overloaded!');
 	}
-	
+
 	/**
 	 * Return the user
 	 *
@@ -78,29 +78,28 @@ class KTAPI_Session
 	{
 		 return $this->user;
 	}
-	
+
 	function logout()
 	{
 		$this->active=false;
 		// don't need to do anything really
 	}
-	
+
 	function is_active()
 	{
 		return $this->active;
 	}
-	
+
 }
 
-
-class KTAPI_UserSession extends KTAPI_Session 
+class KTAPI_UserSession extends KTAPI_Session
 {
 	var $ip = null;
-	
+
 	function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
 	{
 		parent::KTAPI_Session($ktapi, $user);
-				
+
 		$this->ktapi 	= &$ktapi;
 		$this->user 	= &$user;
 		$this->session 	= $session;
@@ -109,10 +108,10 @@ class KTAPI_UserSession extends KTAPI_Session
 
 		// TODO: get documenttransaction to not look at the session variable!
 		$_SESSION["userID"] = $user->getId();
-		$_SESSION["sessionID"] = $this->sessionid;	
-		$this->active = true;		
+		$_SESSION["sessionID"] = $this->sessionid;
+		$this->active = true;
 	}
-	
+
 	/**
 	 * This returns the session string
 	 *
@@ -122,7 +121,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	{
 		return $this->session;
 	}
-	
+
 	/**
 	 * This returns the sessionid in the database.
 	 *
@@ -132,7 +131,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	{
 		return $this->sessionid;
 	}
-			
+
 	/**
 	 * This resolves the user's ip
 	 *
@@ -141,38 +140,38 @@ class KTAPI_UserSession extends KTAPI_Session
 	 */
 	function resolveIP()
 	{
-		if (getenv("REMOTE_ADDR")) 
+		if (getenv("REMOTE_ADDR"))
 		{
         	$ip = getenv("REMOTE_ADDR");
-        } 
-        elseif (getenv("HTTP_X_FORWARDED_FOR")) 
+        }
+        elseif (getenv("HTTP_X_FORWARDED_FOR"))
         {
         	$forwardedip = getenv("HTTP_X_FORWARDED_FOR");
             list($ip,$ip2,$ip3,$ip4)= split (",", $forwardedip);
-        } 
-        elseif (getenv("HTTP_CLIENT_IP")) 
+        }
+        elseif (getenv("HTTP_CLIENT_IP"))
         {
             $ip = getenv("HTTP_CLIENT_IP");
         }
-        
+
         if ($ip == '')
         {
         	$ip = '127.0.0.1';
         }
-        
+
         return $ip;
 	}
-	
+
 	/**
 	 *
 	 * @access protected
-	 * @static 
+	 * @static
 	 * @param User $user
 	 */
 	function _check_session(&$user)
-	{       
+	{
         $user_id = $user->getId();
-        
+
         $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id";
 		$row = DBUtil::getOneResult($sql);
         if (PEAR::isError($row))
@@ -182,14 +181,14 @@ class KTAPI_UserSession extends KTAPI_Session
         if (is_null($row))
         {
         	return new PEAR_Error('No record found for user?');
-        }  
+        }
         if ($row['over_limit'] == 1)
         {
 			return new PEAR_Error('Session limit exceeded. Logout of any active sessions.');
         }
-        
+
         $session = session_id();
-        
+
         $sessionid = DBUtil::autoInsert('active_sessions',
         	array(
         		'user_id' => $user_id,
@@ -201,32 +200,32 @@ class KTAPI_UserSession extends KTAPI_Session
         {
         	return $sessionid;
         }
-        
+
         return array($session,$sessionid);
 	}
-	
-	
+
+
 	/**
 	 * This returns a session object based on authentication credentials.
 	 *
 	 * @access public
-	 * @static 
+	 * @static
 	 * @param string $username
 	 * @param string $password
 	 * @return KTAPI_Session
 	 */
 	function &start_session(&$ktapi, $username, $password, $ip=null)
-	{		
+	{
 		$this->active=false;
-		if ( empty($username) ) 
+		if ( empty($username) )
 		{
 			return new PEAR_Error(_kt('The username is empty.'));
 		}
 
 		$user =& User::getByUsername($username);
-        if (PEAR::isError($user) || ($user === false)) 
+        if (PEAR::isError($user) || ($user === false))
         {
-           return new KTAPI_Error(_kt("The user '$username' cound not be found."),$user);      
+           return new KTAPI_Error(_kt("The user '$username' cound not be found."),$user);
         }
 
         if ( empty($password) )
@@ -240,24 +239,24 @@ class KTAPI_UserSession extends KTAPI_Session
         {
         	return new KTAPI_Error(_kt("The password is invalid."),$authenticated);
         }
-        
+
         if (is_null($ip))
         {
         	$ip = '127.0.0.1';
         	//$ip = KTAPI_Session::resolveIP();
         }
-        
+
         list($session,$sessionid) = KTAPI_UserSession::_check_session($user);
         if (PEAR::isError($sessionid))
         {
         	return $sessionid;
         }
-                
-		$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);		
-		 
+
+		$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
+
 		return $session;
-	}	
-	
+	}
+
 	/**
 	 * This returns an active session.
 	 *
@@ -267,42 +266,42 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @return KTAPI_Session
 	 */
 	function &get_active_session(&$ktapi, $session, $ip)
-	{        		
+	{
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
 		if (!empty($ip))
 		{
 			$sql .= " AND ip='$ip'";
-		}		
-		
+		}
+
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_SESSION_INVALID, $row);
 		}
-		
+
 		$sessionid = $row['id'];
 		$userid = $row['user_id'];
-		
+
 		$user = &User::get($userid);
 		if (is_null($user) || PEAR::isError($user))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_USER_INVALID, $user);
 		}
-		
 
-		
+
+
         $now=date('Y-m-d H:i:s');
         $sql = "UPDATE active_sessions SET last_used='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
-        
-        
+
+
         if ($user->isAnonymous())
-			$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);		
+			$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
         else
-			$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);		
+			$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 		return $session;
 	}
-	
+
 	/**
 	 * This closes the current session.
 	 *
@@ -315,19 +314,19 @@ class KTAPI_UserSession extends KTAPI_Session
 		{
 			return $result;
 		}
-			
+
 		$this->user 		= null;
 		$this->session 		= '';
 		$this->sessionid 	= -1;
 		$this->active=false;
 	}
-	
+
 }
 
-class KTAPI_AnonymousSession extends KTAPI_UserSession 
+class KTAPI_AnonymousSession extends KTAPI_UserSession
 {
 	function &start_session(&$ktapi, $ip=null)
-	{		
+	{
 		$user =& User::get(-2);
 		if (is_null($user) ||  PEAR::isError($user) || ($user === false) || !$user->isAnonymous())
 		{
@@ -355,16 +354,14 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
         {
         	return $sessionid;
         }
-                
-		$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);		
-		
+
+		$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
+
 		return $session;
 	}
 }
 
-
-
-class KTAPI_SystemSession extends KTAPI_Session 
+class KTAPI_SystemSession extends KTAPI_Session
 {
 	function KTAPI_SystemSession(&$ktapi, &$user)
 	{
