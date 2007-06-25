@@ -1,12 +1,12 @@
 <?
 /**
  * $Id$
- * 
+ *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -31,8 +31,8 @@
 
 // Generic error messages used in the API. There may be some others specific to functionality
 // directly in the code.
-// TODO: Check that they are all relevant. 
- 
+// TODO: Check that they are all relevant.
+
 define('KTAPI_ERROR_SESSION_INVALID', 			'The session could not be resolved.');
 define('KTAPI_ERROR_PERMISSION_INVALID', 		'The permission could not be resolved.');
 define('KTAPI_ERROR_FOLDER_INVALID', 			'The folder could not be resolved.');
@@ -46,6 +46,7 @@ define('KTAPI_ERROR_DOCUMENT_CHECKED_OUT', 		'The document is checked out.');
 define('KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT', 	'The document is not checked out.');
 define('KTAPI_ERROR_WORKFLOW_INVALID', 			'The workflow could not be resolved.');
 define('KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS', 	'The workflow is not in progress.');
+define('KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID','The link type could not be resolved.');
 
 // Mapping of permissions to actions.
 // TODO: Check that they are all correct.
@@ -53,7 +54,7 @@ define('KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS', 	'The workflow is not in progress
 // As the permissions are currently associated with actions which are quite closely linked
 // to the web interface, it is not the nicest way to do things. They should be associated at
 // a lower level, such as in the api. probably, better, would be at some stage to assocate
-// the permissions to the action/transaction in the database so administrators can really customise 
+// the permissions to the action/transaction in the database so administrators can really customise
 // as required.
 
 define('KTAPI_PERMISSION_DELETE',			'ktcore.permissions.delete');

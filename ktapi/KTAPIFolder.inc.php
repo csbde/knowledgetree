@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -30,7 +30,7 @@
  */
 
 class KTAPI_Folder extends KTAPI_FolderItem
-{	
+{
 	/**
 	 * This is a reference to a base Folder object.
 	 *
@@ -38,7 +38,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @var Folder
 	 */
 	var $folder;
-	
+
 	/**
 	 * This is the id of the folder on the database.
 	 *
@@ -60,25 +60,25 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
 		assert(is_numeric($folderid));
-		
+
 		$folderid += 0;
-		
+
 		$folder = &Folder::get($folderid);
 		if (is_null($folder) || PEAR::isError($folder))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID,$folder);
 		}
-		
+
 		$user = $ktapi->can_user_access_object_requiring_permission($folder, KTAPI_PERMISSION_READ);
-		
+
 		if (is_null($user) || PEAR::isError($user))
 		{
 			return $user;
 		}
 
-		return new KTAPI_Folder($ktapi, $folder);	
-	}	
-	
+		return new KTAPI_Folder($ktapi, $folder);
+	}
+
 	/**
 	 * This is the constructor for the KTAPI_Folder.
 	 *
@@ -90,27 +90,27 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function KTAPI_Folder(&$ktapi, &$folder)
 	{
 		$this->ktapi = &$ktapi;
-		$this->folder = &$folder;	
+		$this->folder = &$folder;
 		$this->folderid = $folder->getId();
 	}
-	
+
 	/**
 	 * This returns a reference to the internal folder object.
 	 *
 	 * @access protected
 	 * @return Folder
-	 */	
+	 */
 	function &get_folder()
 	{
 		return $this->folder;
 	}
-	
-		
+
+
 	/**
 	 * This returns detailed information on the document.
 	 *
 	 * @return array
-	 */	
+	 */
 	function get_detail()
 	{
 		$detail = array(
@@ -119,21 +119,21 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			'parent_id'=>(int) $this->get_parent_folder_id(),
 			'full_path'=>$this->get_full_path(),
 		);
-		
+
 		return $detail;
 	}
-	
+
 	function get_parent_folder_id()
 	{
 		return (int) $this->folder->getParentID();
 	}
-	
+
 	function get_folder_name()
 	{
 		return $this->folder->getFolderName($this->folderid);
 	}
-	
-	
+
+
 	/**
 	 * This returns the folderid.
 	 *
@@ -143,14 +143,14 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		return (int) $this->folderid;
 	}
-	
+
 	/**
 	 * This can resolve a folder relative to the current directy by name
 	 *
 	 * @access public
 	 * @param string $foldername
 	 * @return KTAPI_Folder
-	 */	
+	 */
 	function &get_folder_by_name($foldername)
 	{
 		$foldername=trim($foldername);
@@ -158,9 +158,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return new PEAR_Error('A valid folder name must be specified.');
 		}
-		
+
 		$split = explode('/', $foldername);
-		
+
 		$folderid=$this->folderid;
 		foreach($split as $foldername)
 		{
@@ -174,19 +174,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			{
 				return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID,$row);
 			}
-			$folderid = $row['id'];			
+			$folderid = $row['id'];
 		}
-		
-		return KTAPI_Folder::get($this->ktapi, $folderid);		
+
+		return KTAPI_Folder::get($this->ktapi, $folderid);
 	}
-		
+
 	function get_full_path()
 	{
 		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
-		
+
 		return $path;
 	}
-	
+
 	/**
 	 * This gets a document by filename or name.
 	 *
@@ -194,7 +194,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @param string $function
 	 * @return KTAPI_Document
-	 */	
+	 */
 	function &_get_document_by_name($documentname, $function='getByNameAndFolder')
 	{
 		$documentname=trim($documentname);
@@ -202,68 +202,68 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return new PEAR_Error('A valid document name must be specified.');
 		}
-		
+
 		$foldername = dirname($documentname);
 		$documentname = basename($documentname);
-		
+
 		$ktapi_folder = $this;
-		
+
 		if (!empty($foldername) && ($foldername != '.'))
 		{
 			$ktapi_folder = $this->get_folder_by_name($foldername);
 		}
-		
+
 		if (is_null($ktapi_folder) || PEAR::isError($ktapi_folder))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID, $ktapi_folder);
 		}
-		
+
 		//$folder = $ktapi_folder->get_folder();
 		$folderid = $ktapi_folder->folderid;
-		
-		$document = Document::$function($documentname, $folderid);		
+
+		$document = Document::$function($documentname, $folderid);
 		if (is_null($document) || PEAR::isError($document))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_INVALID, $document);
 		}
-		
-		$user = $this->can_user_access_object_requiring_permission($document, KTAPI_PERMISSION_READ);				
+
+		$user = $this->can_user_access_object_requiring_permission($document, KTAPI_PERMISSION_READ);
 		if (PEAR::isError($user))
 		{
 			return $user;
 		}
-		 
+
 		return new KTAPI_Document($this->ktapi, $ktapi_folder, $document);
 	}
-	
+
 	/**
 	 * This can resolve a document relative to the current directy by name.
 	 *
 	 * @access public
 	 * @param string $documentname
 	 * @return KTAPI_Document
-	 */	
+	 */
 	function &get_document_by_name($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByNameAndFolder');
 	}
-	
+
 	/**
 	 * This can resolve a document relative to the current directy by filename .
 	 *
 	 * @access public
 	 * @param string $documentname
 	 * @return KTAPI_Document
-	 */	
+	 */
 	function &get_document_by_filename($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByFilenameAndFolder');
-	}	
-	
+	}
+
 	function _resolve_user($userid)
 	{
 		$user=null;
-		 
+
 		if (!is_null($userid))
 		{
 			$user=User::get($userid);
@@ -274,24 +274,24 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		return $user;
 	}
-	
-	
+
+
 	function get_listing($depth=1, $what='DF')
-	{		
-		if ($depth < 1) 
+	{
+		if ($depth < 1)
 		{
 			return array();
 		}
-		
+
 		$what = strtoupper($what);
-		$read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);		
+		$read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
 		$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-		 
-		
+
+
 		$user = $this->ktapi->get_user();
 
 		$contents = array();
-		
+
 		if (strpos($what,'F') !== false)
 		{
 			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
@@ -369,7 +369,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					$mimeinfo=$mime_cache[$mimetypeid];
 
 					$workflow = KTWorkflowUtil::getWorkflowForDocument($document);
-					
+
 					if (!is_null($workflow) && !PEAR::isError($workflow))
 					{
 						$workflow=$workflow->getHumanName();
@@ -384,13 +384,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							$state='n/a';
 						}
 					}
-					else 
+					else
 					{
 						$workflow='n/a';
 						$state='n/a';
 					}
-					
-					 
+
+
 					$contents[] = array(
 						'id' => (int) $document->getId(),
 						'item_type'=>'D',
@@ -414,10 +414,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			}
 
 		}
-			
-		return $contents;		
+
+		return $contents;
 	}
-		
+
 	/**
 	 * This adds a document to the current folder.
 	 *
@@ -427,20 +427,20 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documenttype This is the name or id of the document type. It first looks by name, then by id.
 	 * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
 	 * @return KTAPI_Document
-	 */	
+	 */
 	function &add_document($title, $filename, $documenttype, $tempfilename)
 	{
 		if (!is_file($tempfilename))
 		{
 			return new PEAR_Error('File does not exist.');
 		}
-		
-		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_WRITE);		
+
+		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_WRITE);
 		if (PEAR::isError($user))
 		{
 			return $user;
 		}
-		
+
 		$filename = basename($filename);
 		$documenttypeid = KTAPI::get_documenttypeid($documenttype);
 
@@ -449,7 +449,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			'novalidate' => true,
 			'documenttype' => DocumentType::get($documenttypeid),
 			'description' => $title,
-			'metadata'=>array(),			 
+			'metadata'=>array(),
 			'cleanup_initial_file' => true
 		);
 
@@ -462,10 +462,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $document->getMessage());
 		}
 		DBUtil::commit();
-		
+
 		$tempfilename=addslashes($tempfilename);
 		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
-		$result = DBUtil::runQuery($sql);		
+		$result = DBUtil::runQuery($sql);
 		if (PEAR::isError($result))
 		{
 			return $result;
@@ -473,26 +473,26 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		return new KTAPI_Document($this->ktapi, $this, $document);
 	}
-	
+
 	/**
 	 * This adds a subfolder folder to the current folder.
 	 *
 	 * @access public
 	 * @param string $foldername
 	 * @return KTAPI_Folder
-	 */	
+	 */
 	function &add_folder($foldername)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_ADD_FOLDER);
-		
+
 		if (PEAR::isError($user))
 		{
 			return $user;
-		}		
-		
+		}
+
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::add($this->folder, $foldername, $user);
-		
+
 		if (PEAR::isError($result))
 		{
 			DBUtil::rollback();
@@ -500,10 +500,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 		$folderid = $result->getId();
-		
+
 		return $this->ktapi->get_folder_by_id($folderid);
 	}
-	
+
 	/**
 	 * This deletes the current folder.
 	 *
@@ -515,13 +515,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (PEAR::isError($user))
 		{
 			return $user;
-		}	
-		
+		}
+
 		if ($this->folderid == 1)
 		{
 			return new PEAR_Error('Cannot delete root folder!');
-		}		
-		
+		}
+
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::delete($this->folder, $user, $reason);
 
@@ -539,13 +539,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $newname
 	 */
 	function rename($newname)
-	{		
+	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_RENAME_FOLDER);
 		if (PEAR::isError($user))
 		{
 			return $user;
-		}	
-		
+		}
+
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::rename($this->folder, $newname, $user);
 
@@ -556,7 +556,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 	}
-	
+
 	/**
 	 * This moves the folder to another location.
 	 *
@@ -567,12 +567,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
-		
+
 		$user = $this->ktapi->get_user();
-			
+
 		$target_folder = $ktapi_target_folder->get_folder();
 
-		$result = $this->can_user_access_object_requiring_permission($target_folder, KTAPI_PERMISSION_WRITE);		
+		$result = $this->can_user_access_object_requiring_permission($target_folder, KTAPI_PERMISSION_WRITE);
 		if (PEAR::isError($result))
 		{
 			return $result;
@@ -588,7 +588,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 	}
-	
+
 	/**
 	 * This copies a folder to another location.
 	 *
@@ -599,18 +599,18 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
-		
+
 		$user = $this->ktapi->get_user();
-		
+
 		$target_folder = $ktapi_target_folder->get_folder();
 
 		$result =$this->can_user_access_object_requiring_permission($target_folder, KTAPI_PERMISSION_WRITE);
-		
+
 		if (PEAR::isError($result))
 		{
 			return $result;
-		}		
-		
+		}
+
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::copy($this->folder, $target_folder, $user, $reason);
 
@@ -621,7 +621,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 	}
-		
+
 	/**
 	 * This returns all permissions linked to the folder.
 	 *
@@ -630,7 +630,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get_permissions()
 	{
-		return new PEAR_Error('TODO');		
+		return new PEAR_Error('TODO');
 	}
 
 	/**
@@ -641,7 +641,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get_transaction_history()
 	{
-		return new PEAR_Error('TODO');		
+		return new PEAR_Error('TODO');
 	}
 }
 
