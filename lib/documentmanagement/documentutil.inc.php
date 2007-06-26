@@ -3,7 +3,7 @@
  * $Id$
  *
  * Document-handling utility functions
- * 
+ *
  * Simplifies and canonicalises operations such as adding, updating, and
  * deleting documents from the repository.
  *
@@ -11,7 +11,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -22,9 +22,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -45,7 +45,7 @@ require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
-require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php'); 
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
@@ -76,8 +76,8 @@ class KTDocumentUtil {
         $oDocument->setCheckedOutUserID(-1);
         if ($aOptions['major_update']) {
             $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
-            $oDocument->setMinorVersionNumber('0');    
-        } else {    
+            $oDocument->setMinorVersionNumber('0');
+        } else {
             $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
         $oDocument->setFileSize($iFileSize);
@@ -92,10 +92,10 @@ class KTDocumentUtil {
         	$default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
             }
         }
-	
+
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
-        $oDocument->setMimeTypeId($iMimeTypeId);	
+        $oDocument->setMimeTypeId($iMimeTypeId);
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
@@ -108,7 +108,7 @@ class KTDocumentUtil {
         // create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckInComment, 'ktcore.transactions.check_in');
         $oDocumentTransaction->create();
-        
+
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
         foreach ($aTriggers as $aTrigger) {
@@ -121,7 +121,7 @@ class KTDocumentUtil {
                 return $ret;
             }
         }
-        
+
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
@@ -132,14 +132,14 @@ class KTDocumentUtil {
             $oTrigger->setDocument($oDocument);
             $oTrigger->transform();
         }
-        
+
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
-        
+
         KTDocumentUtil::updateSearchableText($oDocument);
-        
+
         return true;
     }
 
@@ -147,9 +147,9 @@ class KTDocumentUtil {
         if ($oDocument->getIsCheckedOut()) {
             return PEAR::raiseError(_kt('Already checked out.'));
         }
-        
+
         // FIXME at the moment errors this _does not_ rollback.
-        
+
         $oDocument->setIsCheckedOut(true);
         $oDocument->setCheckedOutUserID($oUser->getId());
         if (!$oDocument->update()) { return PEAR::raiseError(_kt('There was a problem checking out the document.')); }
@@ -176,13 +176,13 @@ class KTDocumentUtil {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckOutDocument($oDocument, $oFolder);
-    
+
         return true;
     }
 
     function &_add($oFolder, $sFilename, $oUser, $aOptions) {
         global $default;
-        
+
         $oContents = KTUtil::arrayGet($aOptions, 'contents');
         $aMetadata = KTUtil::arrayGet($aOptions, 'metadata', null, false);
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
@@ -274,17 +274,17 @@ class KTDocumentUtil {
                     $aFieldValues[$oField->getId()] = $v;
                 }
             }
-            
+
             if ($isRealConditional) {
                 $res = KTMetadataUtil::getNext($oFieldset, $aFieldValues);
                 if ($res) {
                     foreach ($res as $aMDSet) {
                         if ($aMDSet['field']->getIsMandatory()) {
-                            $aFailed['fieldset'][$oFieldset->getId()] = 1;                        
+                            $aFailed['fieldset'][$oFieldset->getId()] = 1;
                         }
                     }
-                }             
-            }                        
+                }
+            }
         }
         if (!empty($aFailed)) {
             return new KTMetadataValidationError($aFailed);
@@ -304,7 +304,7 @@ class KTDocumentUtil {
             return $res;
         }
         $aMetadata = empty($res)?array():$res;
-        
+
         $iMetadataVersionId = $oDocument->getMetadataVersionId();
         $res = DBUtil::runQuery(array("DELETE FROM $table WHERE metadata_version_id = ?", array($iMetadataVersionId)));
         if (PEAR::isError($res)) {
@@ -341,7 +341,7 @@ class KTDocumentUtil {
             $aRow['metadata_version_id'] = $iNewMetadataVersion;
             DBUtil::autoInsert($sTable, $aRow);
         }
-        
+
     }
 
     // {{{ setIncomplete
@@ -428,7 +428,7 @@ class KTDocumentUtil {
         if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
 	    $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
 	    if (PEAR::isError($oDoc)) {
-                return PEAR::raiseError(_kt('Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));			
+                return PEAR::raiseError(_kt('Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));
 	    } else {
 		if ($oDoc->getStatusID() != LIVE) {
 		    $sError = _kt('Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename.');
@@ -444,7 +444,7 @@ class KTDocumentUtil {
         if (KTDocumentUtil::nameExists($oFolder, $sName)) {
 	    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
 	    if (PEAR::isError($oDoc)) {
-                return PEAR::raiseError(_kt('Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));			
+                return PEAR::raiseError(_kt('Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));
 	    } else {
 		if ($oDoc->getStatusID != LIVE) {
                     return PEAR::raiseError(_kt('Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename.'));
@@ -452,7 +452,7 @@ class KTDocumentUtil {
 		    return PEAR::raiseError(_kt('Document with that title already exists in this folder.'));
 		}
 	    }
-	    
+
         }
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
@@ -508,10 +508,10 @@ class KTDocumentUtil {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
-        
+
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('add', 'postValidate');
-                
+
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
@@ -521,7 +521,7 @@ class KTDocumentUtil {
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
-            
+
         }
         KTDocumentUtil::updateSearchableText($oDocument, true);
 
@@ -555,16 +555,16 @@ class KTDocumentUtil {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $oKTConfig =& KTConfig::getSingleton();
-        $sBasedir = $oKTConfig->get('urls/tmpDirectory');        
-        
+        $sBasedir = $oKTConfig->get('urls/tmpDirectory');
+
         $sFilename = tempnam($sBasedir, 'kt_storecontents');
         $oOutputFile = new KTFSFileLike($sFilename);
         $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
-        if (($res === false)) { 
+        if (($res === false)) {
             return PEAR::raiseError(_kt("Couldn't store contents, and no reason given."));
         } else if (PEAR::isError($res)) {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
-        }        
+        }
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
@@ -576,11 +576,11 @@ class KTDocumentUtil {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
         }
         KTDocumentUtil::setComplete($oDocument, 'contents');
-        
+
         if ($aOptions['cleanup_initial_file']) {
-            unlink($oContents->sFilename);
+            @unlink($oContents->sFilename);
         }
-        
+
         return true;
     }
     // }}}
@@ -644,48 +644,48 @@ class KTDocumentUtil {
         return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
     // }}}
-    
+
     // {{{ delete
     function delete($oDocument, $sReason, $iDestFolderId = null) {
         $oDocument =& KTUtil::getObject('Document', $oDocument);
-        if (is_null($iDestFolderId)) { 
-            $iDestFolderId = $oDocument->getFolderID(); 
+        if (is_null($iDestFolderId)) {
+            $iDestFolderId = $oDocument->getFolderID();
         }
         $oStorageManager =& KTStorageManagerUtil::getSingleton();
-        
+
         global $default;
-        
-        if (count(trim($sReason)) == 0) { 
-            return PEAR::raiseError(_kt('Deletion requires a reason')); 
+
+        if (count(trim($sReason)) == 0) {
+            return PEAR::raiseError(_kt('Deletion requires a reason'));
         }
-        
-        if (PEAR::isError($oDocument) || ($oDocument == false)) { 
-            return PEAR::raiseError(_kt('Invalid document object.')); 
+
+        if (PEAR::isError($oDocument) || ($oDocument == false)) {
+            return PEAR::raiseError(_kt('Invalid document object.'));
         }
-        
-        if ($oDocument->getIsCheckedOut() == true) { 
-            return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName())); 
+
+        if ($oDocument->getIsCheckedOut() == true) {
+            return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName()));
         }
-        
+
         // IF we're deleted ...
-        if ($oDocument->getStatusID() == DELETED) { 
-            return true; 
+        if ($oDocument->getStatusID() == DELETED) {
+            return true;
         }
-        
+
         $oOrigFolder = Folder::get($oDocument->getFolderId());
 
         DBUtil::startTransaction();
-        
+
         // flip the status id
         $oDocument->setStatusID(DELETED);
-        
+
         // $iDestFolderId is DEPRECATED.
-        $oDocument->setFolderID(null); 
+        $oDocument->setFolderID(null);
         $oDocument->setRestoreFolderId($oOrigFolder->getId());
         $oDocument->setRestoreFolderPath(Folder::generateFolderIDs($oOrigFolder->getId()));
-        
+
         $res = $oDocument->update();
-        
+
         if (PEAR::isError($res) || ($res == false)) {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('There was a problem deleting the document from the database.'));
@@ -699,35 +699,35 @@ class KTDocumentUtil {
                 $oDocument->getFileName() . ' from folder ' .
                 Folder::getFolderPath($oDocument->getFolderID()) .
                 ' id=' . $oDocument->getFolderID());
-            
+
             // we use a _real_ transaction here ...
-            
+
             DBUtil::rollback();
-            
+
             /*
             //reverse the document deletion
             $oDocument->setStatusID(LIVE);
             $oDocument->update();
             */
-            
+
             return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
         }
-        
+
         $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
-        
+
         $oDocument->setFolderID(1);
-        
+
         DBUtil::commit();
 
-	
+
 	// we weren't doing notifications on this one
         $oSubscriptionEvent = new SubscriptionEvent();
         $oSubscriptionEvent->RemoveDocument($oDocument, $oOrigFolder);
 
-        
+
         // document is now deleted:  triggers are best-effort.
-        
+
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('delete', 'postValidate');
         foreach ($aTriggers as $aTrigger) {
@@ -743,11 +743,11 @@ class KTDocumentUtil {
                 return $ret;
             }
         }
-        
-        
+
+
     }
     // }}}
-    
+
     function reindexDocument($oDocument) {
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
@@ -780,7 +780,7 @@ class KTDocumentUtil {
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
         //print_r($oDocument);
-        
+
         // grab the "source "data
         $sTable = KTUtil::getTableName('documents');
         $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
@@ -793,7 +793,7 @@ class KTDocumentUtil {
         if (PEAR::isError($id)) { return $id; }
         // we still have a bogus md_version, but integrity holds, so fix it now.
         $oCore = KTDocumentCore::get($id);
-        
+
         $sTable = KTUtil::getTableName('document_metadata_version');
         $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
         $aParams = array($oDocument->getMetadataVersionId());
@@ -804,7 +804,7 @@ class KTDocumentUtil {
         if (PEAR::isError($id)) { return $id; }
         $oCore->setMetadataVersionId($id);
         $oMDV = KTDocumentMetadataVersion::get($id);
-        
+
         $sTable = KTUtil::getTableName('document_content_version');
         $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
         $aParams = array($oDocument->_oDocumentContentVersion->getId());
@@ -814,24 +814,24 @@ class KTDocumentUtil {
         $id = DBUtil::autoInsert($sTable, $aContentRow);
         if (PEAR::isError($id)) { return $id; }
         $oMDV->setContentVersionId($id);
-        
+
         $res = $oCore->update();
         if (PEAR::isError($res)) { return $res; }
         $res = $oMDV->update();
         if (PEAR::isError($res)) { return $res; }
-        
+
         // now, we have a semi-sane document object. get it.
         $oNewDocument = Document::get($oCore->getId());
-        
+
         //print '--------------------------------- AFTER';
         //print_r($oDocument);
 		//print '======';
         //print_r($oNewDocument);
-        
+
         // copy the metadata from old to new.
         $res = KTDocumentUtil::copyMetadata($oNewDocument, $oDocument->getMetadataVersionId());
         if (PEAR::isError($res)) { return $res; }
-        
+
         // finally, copy the actual file.
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $res = $oStorage->copy($oDocument, $oNewDocument);
@@ -844,7 +844,7 @@ class KTDocumentUtil {
         if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
             $oNewDocument->setPermissionObjectId($oDestinationFolder->getPermissionObjectId());
         }
-        
+
         $res = $oNewDocument->update();
         if (PEAR::isError($res)) { return $res; }
 
@@ -859,19 +859,19 @@ class KTDocumentUtil {
         DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
         KTDocumentUtil::updateSearchableText($oNewDocument);
         KTPermissionUtil::updatePermissionLookup($oNewDocument);
-        
+
         if (is_null($sReason)) {
             $sReason = '';
         }
-        
-        
+
+
         $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt("Copied to folder \"%s\". %s"), $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
-        $oDocumentTransaction->create();        
+        $oDocumentTransaction->create();
 
         $oSrcFolder = Folder::get($oDocument->getFolderID());
         $oDocumentTransaction = & new DocumentTransaction($oNewDocument, sprintf(_kt("Copied from original in folder \"%s\". %s"), $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
-        $oDocumentTransaction->create();        
-        
+        $oDocumentTransaction->create();
+
         return $oNewDocument;
     }
 
@@ -906,19 +906,19 @@ class KTDocumentUtil {
         // create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
-        
+
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->ModifyDocument($oDocument, $oFolder);
-        
-        return true;    
+
+        return true;
     }
-    
+
     function move($oDocument, $oToFolder, $oUser = null, $sReason = null) {
-        
-        $oFolder = $oToFolder; // alias.        
-        
+
+        $oFolder = $oToFolder; // alias.
+
         $oOriginalFolder = Folder::get($oDocument->getFolderId());
         $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
         $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
@@ -949,13 +949,13 @@ class KTDocumentUtil {
 
         $sMoveMessage = sprintf(_kt("Moved from %s/%s to %s/%s. %s"),
             $oOriginalFolder->getFullPath(),
-            $oOriginalFolder->getName(),        
+            $oOriginalFolder->getName(),
             $oFolder->getFullPath(),
             $oFolder->getName(),
             $sReason);
 
         // create the document transaction record
-        
+
         $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
         $oDocumentTransaction->create();
 
@@ -975,8 +975,8 @@ class KTDocumentUtil {
             if (PEAR::isError($ret)) {
                 return $ret;
             }
-        }        
-        
+        }
+
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
 
