@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -98,8 +98,8 @@ class KTUtil {
     }
 
     function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
-        if (!is_array($aArray)) { 
-            $aArray = (array) $aArray; 
+        if (!is_array($aArray)) {
+            $aArray = (array) $aArray;
         }
         if (empty($aArray)) {
             return $mDefault;
@@ -141,7 +141,7 @@ class KTUtil {
                         $aNewParams[] = $oParam;
                     }
                 }
-                $aParams = array_merge($aParams, $aNewParams); 
+                $aParams = array_merge($aParams, $aNewParams);
             } else {
                 return PEAR::raiseError(_kt("Weird WhereClause passed"));
             }
@@ -254,7 +254,7 @@ class KTUtil {
             }
         }
         if ($bMove) {
-            rmdir($sSrc);
+            @rmdir($sSrc);
         }
     }
     // }}}
@@ -264,7 +264,7 @@ class KTUtil {
         return KTUtil::copyDirectory($sSrc, $sDst, true);
     }
     // }}}
-    
+
     // {{{ deleteDirectory
     function deleteDirectory($sPath) {
         if (OS_UNIX) {
@@ -288,11 +288,11 @@ class KTUtil {
                 KTUtil::deleteDirectory($sFullFilename);
                 continue;
             }
-            chmod($sFullFilename, 0666);
-            unlink($sFullFilename);
+            @chmod($sFullFilename, 0666);
+            @unlink($sFullFilename);
         }
         closedir($hPath);
-        rmdir($sPath);
+        @rmdir($sPath);
     }
     // }}}
 
@@ -339,7 +339,7 @@ class KTUtil {
         }
     }
     // }}}
-    
+
     // {{{ copyFile
     function copyFile ($sSrc, $sDst) {
         // Only 4.3.3 and above allow us to use rename across partitions
@@ -365,7 +365,7 @@ class KTUtil {
             }
         }
     }
-    // }}}    
+    // }}}
 
     // {{{ getTableName
     /**
@@ -501,7 +501,7 @@ class KTUtil {
     // }}}
 
     // now accepts strings OR arrays!
-    // {{{ addQueryString     
+    // {{{ addQueryString
     function addQueryString($url, $qs) {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
         $oUrl = new Net_URL($url);
@@ -516,7 +516,7 @@ class KTUtil {
         $host = $oKTConfig->get("KnowledgeTree/serverName");
         $host = explode(':', $host);
         $oUrl->host = $host[0];
-        
+
 	if(!is_array($qs)) {
 	    $aQs = $oUrl->_parseRawQuerystring($qs);
 	} else {
@@ -535,7 +535,7 @@ class KTUtil {
         $KTConfig =& KTConfig::getSingleton();
         $root = $KTConfig->get("KnowledgeTree/rootUrl");
         $url = generateLink($base);
-        
+
         if (!empty($subpath)) {
             $hasPathInfo = $KTConfig->get("KnowledgeTree/pathInfoSupport");
             if ($hasPathInfo) {
@@ -544,7 +544,7 @@ class KTUtil {
                 $url = KTUtil::addQueryString($url, "kt_path_info=" . $subpath);
             }
         }
-        
+
         return KTUtil::addQueryString($url, $qs);
     }
     // }}}
@@ -610,19 +610,19 @@ class KTUtil {
             }
             $i += 1;
         }
-        
+
 	$oStopwords =& KTStopwords::getSingleton();
 
         $words = array();
         foreach ($word_parts as $part) {
             $w = (array) explode(' ', $part);
-            foreach ($w as $potential) { 
-		if (strlen($potential) >= $iMinWord && !$oStopwords->isStopword($potential)) { 
-		    $words[] = $potential; 
+            foreach ($w as $potential) {
+		if (strlen($potential) >= $iMinWord && !$oStopwords->isStopword($potential)) {
+		    $words[] = $potential;
 		}
 	    }
-        }	
-        
+        }
+
         return array(
             'words' => $words,
             'phrases' => $phrases,
@@ -630,7 +630,7 @@ class KTUtil {
     }
 
     function phraseQuote($sQuery) {
-	foreach(KTUtil::phraseSplit($sQuery) as $k => $v) { 
+	foreach(KTUtil::phraseSplit($sQuery) as $k => $v) {
 	    $t = array();
 	    foreach ($v as $part) {
 		$t[] = sprintf('+"%s"', $part);
@@ -657,7 +657,7 @@ class KTUtil {
         }
         return null;
     }
-    
+
     function getSystemSetting($name, $default = null) {
         // XXX make this use a cache layer?
         $sTable = KTUtil::getTableName('system_settings');
@@ -666,15 +666,15 @@ class KTUtil {
             array($name),
         );
         $res = DBUtil::getOneResultKey($aQuery, 'value');
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return PEAR::raiseError(sprintf(_kt('Unable to retrieve system setting %s: %s'), $name, $res->getMessage()));
         }
-        
+
         if (is_null($res)) { return $default; }
-        
+
         return $res;
     }
-    
+
     function setSystemSetting($name, $value) {
         // we either need to insert or update:
         $sTable = KTUtil::getTableName('system_settings');
@@ -752,7 +752,7 @@ class KTUtil {
         $aRet = array();
         foreach ($aEntities as $oEnt) {
             $meth = array(&$oEnt, $sIdFunc);
-            $id = call_user_func($meth);  
+            $id = call_user_func($meth);
             $aRet[$id] = $oEnt;
         }
         return $aRet;
