@@ -1060,11 +1060,6 @@ class KTWebService
     		'message'=>''
     	);
 
-    	/* TODO: REMOVE ME*/
-    	$response['message'] = 'DEBUG ME PLEASE. WHY AM I NOT WORKING!';
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
-		/* REMOVE TILL HERE */
-
     	$src_folder = &$kt->get_folder_by_id($source_id);
     	if (PEAR::isError($src_folder))
     	{
@@ -1113,11 +1108,6 @@ class KTWebService
     		'status_code'=>KTWS_ERR_INVALID_FOLDER,
     		'message'=>''
     	);
-
-    	/* TODO: REMOVE ME*/
-    	$response['message'] = 'DEBUG ME PLEASE. WHY AM I NOT WORKING!';
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
-		/* REMOVE TILL HERE */
 
     	$src_folder = &$kt->get_folder_by_id($source_id);
     	if (PEAR::isError($src_folder))
