@@ -80,8 +80,8 @@ class KTBulkImportManager {
             return $aFolderPaths;
         }
         foreach ($aFolderPaths as $sFolderPath) {
-            if (Folder::folderExistsName(basename($sFolderPath), KTUtil::getId($oFolder))) {
-                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), $sFolderPath, $oFolder->getName());
+            if (Folder::folderExistsName(utf8_encode(basename($sFolderPath)), KTUtil::getId($oFolder))) {
+                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), utf8_encode($sFolderPath), $oFolder->getName());
                 $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple($sFolderPath) . '"');
                 if (PEAR::isError($aOptions)) { 
                     return $aOptions;
@@ -92,7 +92,7 @@ class KTBulkImportManager {
                     $oThisFolder = $aOptions[0];
                 }
             } else {
-                $oThisFolder = KTFolderUtil::add($oFolder, basename($sFolderPath), $this->oUser);
+                $oThisFolder = KTFolderUtil::add($oFolder, utf8_encode(basename($sFolderPath)), $this->oUser);
             }
             if (PEAR::isError($oThisFolder)) {
                 return $oThisFolder;
@@ -110,13 +110,13 @@ class KTBulkImportManager {
             return $aInfo;
         }
         // need to check both of these.
-        if (KTDocumentUtil::nameExists($oFolder, basename($sPath))) {
-            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), basename($sPath), $oFolder->getName());
-            $oDocument =& Document::getByNameAndFolder(basename($sPath), KTUtil::getId($oFolder));
+        if (KTDocumentUtil::nameExists($oFolder, utf8_encode(basename($sPath)))) {
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
+            $oDocument =& Document::getByNameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
             return $oDocument;            
-        } else if (KTDocumentUtil::fileExists($oFolder, basename($sPath))) {
-            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), basename($sPath), $oFolder->getName());
-            $oDocument =& Document::getByFilenameAndFolder(basename($sPath), KTUtil::getId($oFolder));
+        } else if (KTDocumentUtil::fileExists($oFolder, utf8_encode(basename($sPath)))) {
+            $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
+            $oDocument =& Document::getByFilenameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
             return $oDocument;
         }
         // else
@@ -126,7 +126,7 @@ class KTBulkImportManager {
             'metadata' => $this->aMetadata,
             'documenttype' => $this->oDocumentType,
         );
-        $oDocument =& KTDocumentUtil::add($oFolder, basename($sPath), $this->oUser, $aOptions);
+        $oDocument =& KTDocumentUtil::add($oFolder, utf8_encode(basename($sPath)), $this->oUser, $aOptions);
         return $oDocument;
     }
 }
