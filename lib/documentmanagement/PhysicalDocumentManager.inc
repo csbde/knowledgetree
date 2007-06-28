@@ -9,7 +9,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -20,9 +20,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -69,7 +69,7 @@ class PhysicalDocumentManager {
         	return false;
             }
 	}
-    
+
     /**
 	 * Stream a particular version of a document to a client over http
 	 *
@@ -98,7 +98,7 @@ class PhysicalDocumentManager {
                 return false;
             }
         }
-    
+
 	/**
  	 * Move a document to a new folder
 	 *
@@ -106,17 +106,17 @@ class PhysicalDocumentManager {
 	 */
 	function moveDocument($sOldDocumentPath, $oDocument, $oFolder) {
 		global $default;
-		
+
 		// current document path
 		$sCurrentPath = $sOldDocumentPath;
-		
+
 		// the destination path
 		$sDestinationFolderPath = Folder::getFolderPath($oFolder->getID()) . $oDocument->getFileName();
 
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
-		
+
 		$sql = $default->db;
         $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
         $aParams = array($oDocument->getID(), CHECKOUT);
@@ -130,16 +130,16 @@ class PhysicalDocumentManager {
 					// move it to the new folder
 					$default->log->info("PhysicalDocumentManager::moveDocument moving $sSourcePath to $sDestinationPath");
 					if (!PhysicalDocumentManager::move($sSourcePath, $sDestinationPath)) {
-						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors					
+						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
 						$default->log->error("PhysicalDocumentManager::moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
 					}
             	}
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::moveDocument error looking up document versions, id=" . $oDocument->getID());
-        }	
+        }
 
-		// now move the current version		
+		// now move the current version
 		if (PhysicalDocumentManager::move($sCurrentPath, $sDestinationFolderPath)) {
 			return true;
 		} else {
@@ -147,7 +147,7 @@ class PhysicalDocumentManager {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Move a file
 	 *
@@ -160,17 +160,17 @@ class PhysicalDocumentManager {
 			//copy the file	to the new destination
 			if (copy($sOldDocumentPath, $sNewDocumentPath)) {
 				//delete the old one
-				unlink($sOldDocumentPath);
+				@unlink($sOldDocumentPath);
 				return true;
 			} else {
 				return false;
 			}
 		} else {
 			return false;
-		}		
+		}
 	}
-	
-	
+
+
 	/**
 	 * Deletes a document- moves it to the Deleted/ folder
 	 *
@@ -180,13 +180,13 @@ class PhysicalDocumentManager {
 		global $default;
 		// current document path
 		$sCurrentPath = $oDocument->getPath();
-		
+
 		// check if the deleted folder exists and create it if not
 		$sDeletedPrefix = $default->documentRoot . "/Deleted";
 		if (!file_exists($sDeletedPrefix)) {
             mkdir($sDeletedPrefix, 0755);
         }
-		
+
 		// move the file to the deleted folder, prefixed by its document id
 		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
 
@@ -196,8 +196,8 @@ class PhysicalDocumentManager {
 		$sql = $default->db;
         $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_namespace = ?";/*ok*/
         $aParams = array($oDocument->getID(), 'ktcore.transactions.check_out');
-		$result = $sql->query(array($sQuery, $aParams));		
-		
+		$result = $sql->query(array($sQuery, $aParams));
+
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -214,11 +214,11 @@ class PhysicalDocumentManager {
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::delete error looking up document versions, id=" . $oDocument->getID());
-        }	
-		
+        }
 
-		
-		// now move the current version		
+
+
+		// now move the current version
 		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
 			return true;
 		} else {
@@ -231,12 +231,12 @@ class PhysicalDocumentManager {
 	 * Completely remove a document from the Deleted/ folder
 	 *
 	 * return boolean true on successful move, false otherwhise
-	 */	
+	 */
 	function expunge($oDocument) {
 		global $default;
 		// deleted document path
 		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
-		
+
 		// find all the previous versions of this document and delete them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
@@ -252,7 +252,7 @@ class PhysicalDocumentManager {
 					// zap it
 					$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
 					if (file_exists($sExpungePath)) {
-						if (!unlink($sExpungePath)) {
+						if (!@unlink($sExpungePath)) {
 							$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
 							// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
 						}
@@ -263,12 +263,12 @@ class PhysicalDocumentManager {
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
-        }	
+        }
 
 		if (file_exists($sDeletedPrefix)) {
 			// now delete the current version
-			if (unlink($sDeletedPrefix)) {
-				$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
+			if (@unlink($sDeletedPrefix)) {
+				$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");
 				return true;
 			} else {
 				$default->log->info("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
@@ -283,25 +283,25 @@ class PhysicalDocumentManager {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Restore a document from the Deleted/ folder to the specified folder
 	 *
 	 * return boolean true on successful move, false otherwhise
-	 */	
+	 */
 	function restore($oDocument) {
 		global $default;
-		
+
 		// deleted document path (includes previous versions)
 		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
-				
+
 		// NEW FOLDER REALLY NEEDS TO BE /
-		if (is_null($oDocument->getFolderID())) { 
+		if (is_null($oDocument->getFolderID())) {
 		    $oDocument->setFolderID(1);
 		}
 		//var_dump($oDocument->getFolderID());
 		$sRestorePath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
-		
+
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
@@ -326,17 +326,17 @@ class PhysicalDocumentManager {
         } else {
         	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
         }
-		
-		// now move the current version		
+
+		// now move the current version
 		if (PhysicalDocumentManager::move($sDeletedPath, $sRestorePath)) {
 			return true;
 		} else {
 			$default->log->error("PhysicalDocumentManager::restore couldn't move $sDeletedPath to $sRestorePath, documentID=" . $oDocument->getID());
 			return false;
-		}		
+		}
 	}
-	
-	
+
+
 	/**
 	* View a document using an inline viewer
 	*
@@ -348,7 +348,7 @@ class PhysicalDocumentManager {
 	*/
 	function inlineViewPhysicalDocument($iDocumentID) {
             //get the document
-            $oDocument = & Document::get($iDocumentID);		
+            $oDocument = & Document::get($iDocumentID);
             //get the path to the document on the server
             $sDocumentFileSystemPath = $oDocument->getPath();
             if (file_exists($sDocumentFileSystemPath)) {
@@ -365,7 +365,7 @@ class PhysicalDocumentManager {
                 return false;
             }
 	}
-	
+
 	/**
 	* Get the uploaded file information and place it into a document object
 	*
@@ -375,9 +375,9 @@ class PhysicalDocumentManager {
 	* @return Document Document object containing uploaded file information
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
-		//get the uploaded document information and put it into a document object		
+		//get the uploaded document information and put it into a document object
 		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], KTMime::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
-		return $oDocument;	
+		return $oDocument;
 	}
 }
 

@@ -340,19 +340,33 @@ function create_backup_stmt($targetfile=null)
 	$adminPwd = $oKTConfig->get('db/dbAdminPass');
 	$dbHost = $oKTConfig->get('db/dbHost');
 	$dbName = $oKTConfig->get('db/dbName');
+	
 	$dbPort = trim($oKTConfig->get('db/dbPort'));
-	if ($dbPort=='' || $dbPort=='default') $dbPort = get_cfg_var('mysql.default_port');
-
+	if (empty($dbPort) || $dbPort=='default') $dbPort = get_cfg_var('mysql.default_port');
+	if (empty($dbPort)) $dbPort='3306';
+	$dbSocket = trim($oKTConfig->get('db/dbSocket'));
+	if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
+	if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
+	
 	$date=date('Y-m-d-H-i-s');
 
 	$dir=resolveMysqlDir();
-	
+	 
 	$info['dir']=$dir;
 
 	$prefix='';
 	if (OS_UNIX)
 	{
-		$prefix= "./";
+		$prefix .= "./";
+	}
+	
+	if (@stat($dbSocket) !== false)
+	{
+		$mechanism="--socket=\"$dbSocket\"";
+	}
+	else 
+	{
+		$mechanism="--port=\"$dbPort\"";
 	}
 	
 	$tmpdir=resolveTempDir();
@@ -362,13 +376,12 @@ function create_backup_stmt($targetfile=null)
 		$targetfile="$tmpdir/kt-backup-$date.sql";
 	}
 	
-	
-	$stmt = $prefix . "mysqldump --user=\"$adminUser\" -p --port=$dbPort \"$dbName\" > \"$targetfile\"";
+	$stmt = $prefix . "mysqldump --user=\"$adminUser\" -p $mechanism \"$dbName\" > \"$targetfile\"";
 	$info['display']=$stmt;
 	$info['target']=$targetfile;
 
 	 
-	$stmt  = $prefix. "mysqldump --user=\"$adminUser\" --password=\"$adminPwd\" --port=$dbPort \"$dbName\" > \"$targetfile\"";
+	$stmt  = $prefix. "mysqldump --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" > \"$targetfile\"";
 	$info['cmd']=$stmt;
 	return $info;
 }
@@ -383,8 +396,11 @@ function create_restore_stmt($targetfile)
 	$dbName = $oKTConfig->get('db/dbName');
 	$dbPort = trim($oKTConfig->get('db/dbPort'));
 	if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
+	if (empty($dbPort)) $dbPort='3306';
+	$dbSocket = trim($oKTConfig->get('db/dbSocket'));
+	if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
+	if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
 
-	 
 	$dir=resolveMysqlDir();
 	 
 	$info['dir']=$dir;
@@ -394,22 +410,30 @@ function create_restore_stmt($targetfile)
 	{
 		$prefix .= "./";
 	}
-	 
+	  
+	if (@stat($dbSocket) !== false)
+	{
+		$mechanism="--socket=\"$dbSocket\"";
+	}
+	else 
+	{
+		$mechanism="--port=\"$dbPort\"";
+	}
 	
 	$tmpdir=resolveTempDir();
 	
-	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p --port=$dbPort drop  \"$dbName\"<br>";
-	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p --port=$dbPort create  \"$dbName\"<br>";
+	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br>";
+	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br>";
 	
 	
-	$stmt .= $prefix ."mysql --user=\"$adminUser\" -p --port=$dbPort \"$dbName\" < \"$targetfile\"\n";
+	$stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
 	$info['display']=$stmt;
 
 	 
-	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" --port=$dbPort drop  \"$dbName\"\n";
-	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" --port=$dbPort create  \"$dbName\"\n";
+	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
+	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
 	 
-	$stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" --port=$dbPort \"$dbName\" < \"$targetfile\"";
+	$stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
 	$info['cmd']=$stmt;
 	return $info;
 }
@@ -608,13 +632,12 @@ document.location='?go=RestoreConfirm';
 
 function restoreConfirm()
 {
-	if (!isset($_SESSION['backupFile']) || !is_file($_SESSION['backupFile']))
+	if (!isset($_SESSION['backupFile']) || !is_file($_SESSION['backupFile']) || filesize($_SESSION['backupFile']) == 0)
 	{
 		restoreSelect();
 		exit;
 	}
-	
-	
+		
 	title('Confirm Restore');
 	$status = $_SESSION['backupStatus'];
 	$filename=$_SESSION['backupFile'];	
@@ -908,7 +931,7 @@ function restore()
 	$stmt=create_restore_stmt($filename);
 	$dir=$stmt['dir'];
 
-
+	
 	
 	
 	if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
