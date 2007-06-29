@@ -51,6 +51,11 @@ class KTBaseIndexerTrigger {
      */
     var $command = '';          // Something like "catdoc"
 
+    /**
+     * Output of the command
+     */
+    var $aCommandOutput = array();
+
 
     /**
      * Any options to send to the command before the input file.
@@ -141,7 +146,8 @@ class KTBaseIndexerTrigger {
         } else {
             $cmdline[] = $sTempFilename;
         }
-        KTUtil::pexec($cmdline, $aOptions);
+        $aRet = KTUtil::pexec($cmdline, $aOptions);
+        $this->aCommandOutput = $aRet['out'];
         $contents = file_get_contents($sTempFilename);
 
         return $contents;

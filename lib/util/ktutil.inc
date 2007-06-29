@@ -180,29 +180,32 @@ class KTUtil {
      * Portably execute a command on any of the supported platforms.
      */
     function pexec($aCmd, $aOptions = null) {
-        if (is_array($aCmd)) {
-            $sCmd = KTUtil::safeShellString($aCmd);
-        } else {
-            $sCmd = $aCmd;
-        }
-        $sAppend = KTUtil::arrayGet($aOptions, 'append');
-        if ($sAppend) {
-            $sCmd .= " >> " . escapeshellarg($sAppend);
-        }
-        if (OS_WINDOWS) {
-            $sCmd = "start /b \"kt\" " . $sCmd;
-        }
-        $sPopen = KTUtil::arrayGet($aOptions, 'popen');
-        if ($sPopen) {
-            return popen($sCmd, $sPopen);
-        }
+    	if (is_array($aCmd)) {
+    		$sCmd = KTUtil::safeShellString($aCmd);
+    	} else {
+    		$sCmd = $aCmd;
+    	}
+    	$sAppend = KTUtil::arrayGet($aOptions, 'append');
+    	if ($sAppend) {
+    		$sCmd .= " >> " . escapeshellarg($sAppend);
+    	}
+    	if (OS_WINDOWS) {
+    		$sCmd = "start /b \"kt\" " . $sCmd;
+    	}
+    	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
+    	if ($sPopen) {
+    		return popen($sCmd, $sPopen);
+    	}
 
-	// for exec, check return code...
-	$aOutput = array();
-	$iRet = '';
+    	// for exec, check return code and output...
+    	$aRet = array();
+    	$aOutput = array();
+    	$iRet = '';
 
-        exec($sCmd, $aOutput, $iRet);
-	return $iRet;
+    	exec($sCmd, $aOutput, $iRet);
+    	$aRet['ret'] = $iRet;
+    	$aRet['out'] = $aOutput;
+    	return $aRet;
     }
     // }}}
 
