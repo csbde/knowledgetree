@@ -259,7 +259,8 @@ class KTrss{
     function arrayToXML($aItems){
     	// Build path to host
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
-    	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	global $default;
+    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
     	$feed = "<?xml version=\"1.0\"?>\n";
     	$feed .= "<rss version=\"2.0\">\n".
     			 "<channel>\n" .
@@ -371,7 +372,8 @@ class KTrss{
     function errorToXML($sError){
     	// Build path to host
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
-    	$hostPath = "http://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	global $default;
+    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
     	$feed = "<?xml version=\"1.0\"?>\n";
     	$feed .= "<rss version=\"2.0\">\n".
     			 "<channel>\n" .
@@ -495,7 +497,8 @@ class KTrss{
 	// get icon link for rss
 	function getRssLinkIcon(){
     	// built server path
-        $sHostPath = "http://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/";
+        global $default;
+    	$sHostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/";
         
         // create image
         $icon = "<img src='".$sHostPath."resources/graphics/rss.gif' alt='RSS' border=0/>";
@@ -513,7 +516,8 @@ class KTrss{
         }
         
         // built server path
-        $sHostPath = "http://".$_SERVER['HTTP_HOST'];
+        global $default;
+        $sHostPath = "http" . ($default->sslEnabled ? "s" : "") . "://" . $_SERVER['HTTP_HOST'];
         
         // build link
     	$sLink = $sHostPath.KTBrowseUtil::buildBaseUrl('rss').$sItemParameter.'='.$iItemId;
@@ -540,17 +544,19 @@ class KTrss{
 	
 	// get mime information for a document
     function getMimeTypeInfo($iUserId, $iDocumentId){
+        global $default;
     	$mimeinfo['typeId'] = KTrss::getDocumentMimeTypeId($iUserId, $iDocumentId); // mime type id
 		$mimeinfo['typeName'] = KTMime::getMimeTypeName($mimeinfo['typeId']); // mime type name
 		$mimeinfo['typeFName'] = KTMime::getFriendlyNameForString($mimeinfo['typeName']); // mime type friendly name
-		$mimeinfo['typeIcon'] = "http://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/resources/mimetypes/".KTMime::getIconPath($mimeinfo['typeId']).".png"; //icon path
+		$mimeinfo['typeIcon'] = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/resources/mimetypes/".KTMime::getIconPath($mimeinfo['typeId']).".png"; //icon path
 		
 		return $mimeinfo;
     }
     
     // get the default folder icon
     function getFolderIcon(){
-    	return $mimeinfo['typeIcon'] = "http://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png"; //icon path
+    	global $default;
+    	return $mimeinfo['typeIcon'] = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png"; //icon path
     }
     
     // get a document information
