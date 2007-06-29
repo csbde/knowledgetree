@@ -5,7 +5,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -16,9 +16,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -46,12 +46,18 @@ class KTCriteriaRegistry {
         foreach($aFields as $oField) {
             $sNamespace = $oField->getNamespace();
             $oFieldset =& KTFieldset::get($oField->getParentFieldset());
-            if(is_null($oFieldset->userinfo)){continue;}
+            if ($oFieldset->getName() == 'Tag Cloud')
+            {
+                continue;
+            }
+
+            //if(is_null($oFieldset->userinfo)){continue;}
             $aInitialize = array(sprintf("%s: %s", $oFieldset->getName(), $oField->getName()), 'id', 'id', $oField->getId(), $sNamespace);
             $this->registerCriterion('GenericMetadataCriterion', $sNamespace, null, $aInitialize);
         }
+
         $this->_bGenericRegistered = true;
-    }    
+    }
 
     function registerCriterion($sClassName, $sNamespace = null, $sFilename = null, $aInitialize = null) {
         $this->_aCriteriaDetails[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
@@ -77,7 +83,7 @@ class KTCriteriaRegistry {
         $sClassName = $aDetails[0];
         $oCriterion =& new $sClassName();
 
-    
+
     if(is_array($aDetails[3])) {
         call_user_func_array(array(&$oCriterion, 'initialize'), $aDetails[3]);
     }
