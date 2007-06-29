@@ -223,7 +223,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                 header("Cache-Control: post-check=0, pre-check=0", false);
 
                 // HTTP/1.0
-                header("Pragma: no-cache");
+                // header("Pragma: no-cache"); // Don't send this header! It breaks IE.
                 
                 // Get a filelike object and send it to the browser
                 $oFile = new KTFSFileLike($sTempFilename);
