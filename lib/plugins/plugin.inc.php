@@ -184,7 +184,7 @@ class KTPlugin {
 
 
     function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
-        $this->_fixFilename($sFilename);
+        $sFilename = $this->_fixFilename($sFilename);
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
     }
 
