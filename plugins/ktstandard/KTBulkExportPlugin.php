@@ -182,7 +182,8 @@ class KTBulkExportAction extends KTFolderAction {
         $sOldPath = getcwd();
         chdir($this->sTmpPath);
         $aOptions = array('popen' => 'r');
-        $fh = KTUtil::pexec($aCmd, $aOptions);
+        $aRet = KTUtil::pexec($aCmd, $aOptions);
+        $fh = $aRet['ret'];
         $last_beat = time();
         while(!feof($fh)) {
             if ($i % 1000 == 0) {

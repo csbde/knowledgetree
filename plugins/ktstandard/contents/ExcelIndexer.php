@@ -45,15 +45,18 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
     // see BaseIndexer for how the extraction works.
     //
     function extract_contents($sFilename, $sTempFilename) {
-        if (!OS_WINDOWS) {
-	    putenv('LANG=en_US.UTF-8');
-            $res = parent::extract_contents($sFilename, $sTempFilename);
-            if (!empty($res)) {
-                return $res;
-            }
-        }
+    	if (!OS_WINDOWS) {
+    		putenv('LANG=en_US.UTF-8');
+    		$res = parent::extract_contents($sFilename, $sTempFilename);
+    		if(strstr($this->aCommandOutput[0], "encrypted")) {
+    			return "";
+    		}
+    		if (!empty($res)) {
+    			return $res;
+    		}
+    	}
 
-        return $this->_fallbackExcelReader($sFilename, $sTempFilename);
+    	return $this->_fallbackExcelReader($sFilename, $sTempFilename);
     }
 
     function _fallbackExcelReader($sFilename, $sTempFilename) {
