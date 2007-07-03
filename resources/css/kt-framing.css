@@ -1721,7 +1721,7 @@ hr {
 
 #document-views {
     position: absolute;
-    top: 0;
+    top: 200px;
     right: 0;
     width: 19em;
     z-index: 2;
