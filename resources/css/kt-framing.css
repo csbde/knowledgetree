@@ -1928,6 +1928,7 @@ hr {
     z-index:99;
     margin: 8px 0 10px 0;
     background-color:#FFFFFF;
+    overflow: auto;
 }
 
 .ktError .dashboard_block_body
@@ -1935,6 +1936,7 @@ hr {
     z-index:99;
     margin: 0;
     background-color: #ffdd80;
+    overflow: auto;
 }
 
 .ktInfo .dashboard_block_body
@@ -1942,6 +1944,7 @@ hr {
     z-index:99;
     margin: 0;
     background-color: #DEDEDE;
+    overflow: auto;
 }
 
 .dashboard_block .dashboard_block_body  .edit_action 
