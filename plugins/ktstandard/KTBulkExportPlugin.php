@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -42,7 +42,7 @@ class KTBulkExportPlugin extends KTPlugin {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Bulk Export Plugin');
         return $res;
-    }        
+    }
 
     function setup() {
         $this->registerAction('folderaction', 'KTBulkExportAction', 'ktstandard.bulkexport.action');
@@ -105,7 +105,7 @@ class KTBulkExportAction extends KTFolderAction {
         $aQuery = $this->buildQuery();
         $this->oValidator->notError($aQuery);
         $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
-        
+
         $this->startTransaction();
 
         $oKTConfig =& KTConfig::getSingleton();
@@ -138,17 +138,17 @@ class KTBulkExportAction extends KTFolderAction {
         $aReplaceValues = array_values($aReplace);
         foreach ($aDocumentIds as $iId) {
             $oDocument = Document::get($iId);
-            
+
             if ($bNoisy) {
                 $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
-                $oDocumentTransaction->create();     
+                $oDocumentTransaction->create();
             }
-            
+
             $sParentFolder = sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath());
             $newDir = $this->sTmpPath;
             $sFullPath = $this->_convertEncoding($oDocument->getFullPath(), true);
-            foreach (split('/', $sFullPath) as $dirPart) { 
-                $newDir = sprintf("%s/%s", $newDir, $dirPart); 
+            foreach (split('/', $sFullPath) as $dirPart) {
+                $newDir = sprintf("%s/%s", $newDir, $dirPart);
                 if (!file_exists($newDir)) {
                     mkdir($newDir, 0700);
                 }
@@ -181,9 +181,10 @@ class KTBulkExportAction extends KTFolderAction {
         );
         $sOldPath = getcwd();
         chdir($this->sTmpPath);
+        // Note that the popen means that pexec will return a file descriptor
         $aOptions = array('popen' => 'r');
-        $aRet = KTUtil::pexec($aCmd, $aOptions);
-        $fh = $aRet['ret'];
+        $fh = KTUtil::pexec($aCmd, $aOptions);
+
         $last_beat = time();
         while(!feof($fh)) {
             if ($i % 1000 == 0) {
@@ -221,8 +222,8 @@ class KTBulkExportAction extends KTFolderAction {
                 callLater(1, kt_bulkexport_redirect);
 
                 </script>', $url);
-                
-        $this->commitTransaction(); 
+
+        $this->commitTransaction();
         exit(0);
     }
 
@@ -277,13 +278,13 @@ class KTBulkExportAction extends KTFolderAction {
         $aData = KTUtil::arrayGet($_SESSION['bulkexport'], $sCode);
         $this->oValidator->notEmpty($aData);
         $sZipFile = $aData['file'];
-        
+
         if (!file_exists($sZipFile)) {
             $this->addErrorMessage(_kt('The ZIP can only be downloaded once - if you cancel the download, you will need to reload the Bulk Export page.'));
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
             exit(0);
-        }        
-        
+        }
+
         header("Content-Type: application/zip");
         header("Content-Length: ". filesize($sZipFile));
         header("Content-Disposition: attachment; filename=\"" . $this->oFolder->getName() . ".zip" . "\"");

@@ -239,28 +239,192 @@ a.main_nav_item {
 .noportlets #portletbar { display: none; }
 
 #portletbar .portlet {
+    position: relative;
     margin: 0 0 1.5em 0;
-    background: #ffffff url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
-    border: 1px solid #B7B7B7;
+    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
+    border: 0;
     z-index: 2;
+}
+
+#portletbar .portlet .portletTopRepeat {
+    position: absolute;
+    background: url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
+    top: 0;
+    left: 30px;
+    height: 30px;
+    width: 80%;
+    z-index: -1;  
+    border:0;
+}
+
+#portletbar .portlet .portletTopRight {
+    position: absolute;
+    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
+    top: 0;
+    right: 0px;
+    height: 30px;
+    width: 60%;
+    z-index: -1; 
+    border: 0;
 }
 
 #portletbar .portlet.expanded {
+    position: relative;
     margin: 0 0 1.5em 0;       
     padding: 0 0 0 0;
-    border: 1px solid #B7B7B7;
-    background: #ffffff url(../../resources/graphics/portlet_bg.png) top left repeat-x;
+    background: url(../../resources/graphics/portlet_corner_topleft.png) top left no-repeat;
+    border: 0;
     z-index: 2;
 }
 
+#portletbar .portlet.expanded .portletTopRepeat {
+    position: absolute;
+    background: url(../../resources/graphics/portlet_bg.png) top left repeat-x;
+    top: 0px;
+    left: 30px;
+    height: 28px;
+    width: 80%;
+    z-index: -1;  
+    border: 0;
+}
+
+#portletbar .portlet.expanded .portletTopRight {
+    position: absolute;
+    background: url(../../resources/graphics/portlet_corner_topright.png) top right no-repeat;
+    top: 0;
+    right: 0px;
+    height: 28px;
+    width: 60%;
+    z-index: -1; 
+    border: 0;
+}
+
 #portletbar .portlet .portletbody {
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     padding: 0 0 1em 0;
     margin-right: 1px;
     background-color: white;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
     width: 99%;
     height: 100%;                             
 }
+
+/* Attempt to contain side portlet containers in MORE containers*/
+/*
+#portletbar .portlet.expanded .portletBodyDoubleTop {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    top:0px;
+    right:0px;
+    border: 1px solid red;
+}
+
+#portletbar .portlet.expanded .portletBodyDoubleMiddle {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    top:0px;
+    right:0px;
+    border: 1px solid blue;
+}
+
+#portletbar .portlet.expanded .portletBodyDoubleBottom {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    bottom:0px;
+    right:0px;
+    border: 1px solid red;
+}*/
+
+/* Bottom Portlet borders */
+/*
+#portletbar .portlet .portletbodyBottomLeft {
+    position: absolute;                                           
+    bottom: 0px;
+    left: 0px;
+    width: 10px;
+    height: 10px;
+    background: url(../../resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
+}
+
+#portletbar .portlet .portletbodyBottomRight {
+    position: absolute;                                                
+    bottom: 0px;
+    right: 0px;
+    width: 10px;
+    height: 10px;
+    background: url(../../resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
+}
+
+#portletbar .portlet .portletbodyBottom {
+    position: absolute;                                                
+    bottom: 0px;
+    left: 5px;
+    height: 3px;
+    width: 95%;
+    background: url(../../resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
+}*/
+
+/* Right-hand side portlet borders */
+/*
+#portletbar .portlet .portletbodyRightTop {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    top: 0px;
+    right: 0px;
+    width: 5px;
+    height: 76px;
+}
+
+#portletbar .portlet .portletbodyRightBottom {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    bottom: 0px;
+    right: 0px;
+    width: 5px;
+    height: 80px;
+}
+
+
+#portletbar .portlet .portletbodyRightMiddleTop {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    top: 50%;
+    right: 0px;
+    width: 5px;
+    height: 36px;
+}
+
+#portletbar .portlet .portletbodyRightMiddleBottom {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    bottom: 50%;
+    right: 0px;
+    width: 5px;
+    height: 63px;
+}
+
+#portletbar .portlet .portletbodyRightQuartTop {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    top: 15%;
+    right: 0px;
+    width: 5px;
+    height: 60px;
+}
+
+#portletbar .portlet .portletbodyRightQuartBottom {
+    position: absolute;                                                
+    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    bottom: 25%;
+    right: 0px;
+    width: 5px;
+    height: 68px;
+}*/
 
 #portletbar .portlet a {
 	color: #344a6a;
@@ -278,9 +442,8 @@ a.main_nav_item {
 
 #portletbar .portlet h4
 {
-	margin: 0;
-    padding-top: 0;
-    padding-bottom: 0.4em;
+    padding-top: 0.35em;
+    padding-bottom: 0.7em;
     padding-left: 30px;
     background: url(../graphics/plus.gif) 10px 45% no-repeat;
     text-align: left;
@@ -294,8 +457,8 @@ a.main_nav_item {
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: #eee;
-    padding-top: 0;
-    padding-bottom: 0.4em;
+    padding-top: 0.35em;
+    padding-bottom: 0.50em;
     padding-left: 30px;
     text-align: left;
     background: url(../graphics/minus.gif) 10px 45% no-repeat;
@@ -310,6 +473,57 @@ a.main_nav_item {
 #portletbar .portlet.expanded .portletbody {
     display: block;
 }
+
+#portletbar .portlet .portletbodyRightTop {
+    display: none;
+}
+
+#portletbar .portlet .portletbodyRightBottom {
+    display: none;
+}
+
+#portletbar .portlet .portletbodyRightMiddleTop {
+    display: none;
+}
+
+#portletbar .portlet .portletbodyRightMiddleBottom {
+    display: none;
+}
+
+#portletbar .portlet .portletbodyRightQuartTop {
+    display: none;
+}
+
+#portletbar .portlet .portletbodyRightQuartBottom {
+    display: none;
+}
+
+
+#portletbar .portlet.expanded .portletbodyRightTop {
+    display: block;
+}
+
+#portletbar .portlet.expanded .portletbodyRightBottom {
+    display: block;
+}
+
+
+#portletbar .portlet.expanded .portletbodyRightMiddleTop {
+    display: block;
+}
+
+#portletbar .portlet.expanded .portletbodyRightMiddleBottom {
+    display: block;
+}
+
+#portletbar .portlet.expanded .portletbodyRightQuartTop {
+    display: block;
+}
+
+#portletbar .portlet.expanded .portletbodyRightQuartBottom {
+    display: block;
+}
+
 
 #portletbar .portlet .actionlist
 {
@@ -538,7 +752,6 @@ a.main_nav_item {
 {
     font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
     padding-bottom: 0.25em;
-    margin-top: 0;
     border-width: 0 0 0 0;
     border-style: solid;
     border-color: #eee;
@@ -806,85 +1019,37 @@ a.main_nav_item {
 
 /* block level. */
 .ktError {
-	background: #ffdd80 url(../../resources/graphics/error_toprepeat.png) top left repeat-x;
-    border: 1px solid #FFC21E;
-    margin: 20px auto;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
 .ktError p {
-    margin-left: 20px;
     padding-left: 25px;
     background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktError span {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktErrorMessage {
-	background-color: #ffdd80;
-    border: 1px solid #FFC21E;
-    margin: 20px auto;
-}
-
-.ktErrorMessage p {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
-}
-
-.ktErrorMessage span {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    margin-top: 20px;
 }
 
 /* block level. */
 .ktInfo {
-    background: #DEDEDE url(../../resources/graphics/info_toprepeat.png) top left repeat-x;
-    border: 1px solid #C5C5C5;
-    margin: 20px auto;
-}
-
-.ktInfoMessage{
-    background-color: #DEDEDE;
-    border: 1px solid #C5C5C5;
-    margin: 20px auto;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
 .ktInfo p {
-	margin-left: 20px;
     padding-left: 25px;
     background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    margin-top: 20px;
 }
 
-.ktInfoMessage p {
-	margin-left: 20px;
-    padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
-}
-
-.ktInfo span {
-	margin-left: 20px;
-    padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
-}
-
-.ktInfoMessage span {
-	margin-left: 20px;
-    padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
-}
 
 .ktBlock {
-	background: #ffffff url(../../resources/graphics/dashlet_toprepeat.png) top left repeat-x;
-    border: 1px solid #C5C5C5;
-    margin: 20px auto;
+	position: relative;
+    padding: 0.1em 1em;
+    margin: 1em 0 0 0.5em;
 }
 
-.ktBlock, .ktInfo, .ktError, .ktInfoMessage, .ktErrorMessage{
+
+.ktInfo, .ktError {
 	position: relative;
 }
 
@@ -1030,8 +1195,6 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding-bottom: 2em;
     height: 100%;
     min-height: 5em;
-    padding-left: 20px;
-    padding-top: 25px;
 /*     background-color: #dfd; */
 }
 
@@ -1043,8 +1206,133 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     padding-bottom: 2em;
     height: 100%;
     min-height: 5em;
-    padding-top: 25px;
 /*     background-color: #ddf; */
+}
+
+.dashboard_block_topleft {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/dashlet_topleft.png) top left no-repeat;
+    z-index:-1;
+}
+
+.dashboard_block_toprepeat {
+    position: absolute;
+    width: 90%;
+    height: 36px;
+    top: 0px;
+    left: 30px;
+    background: white url(../graphics/dashlet_toprepeat.png) top left repeat-x;
+    z-index:-1;
+}
+
+.dashboard_block_topright {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/dashlet_topright.png) top right no-repeat;
+    z-index:-1;
+}
+
+.dashboard_block_leftrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.dashboard_block_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.dashboard_block_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    left: 0px;
+    background: url(../graphics/dashlet_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
+}
+
+.dashboard_block_bottomrepeat {
+    position: absolute;
+    width: 92%;
+    height: 13px;
+    bottom: 0px;
+    left: 30px;
+    background: white url(../graphics/dashlet_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.dashboard_block_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+    background: url(../graphics/dashlet_bottomright.png) bottom right no-repeat;
+    z-index:-1;
+}
+
+.dashboard_block_rightrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: white url(../graphics/dashlet_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.dashboard_block_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .dashboard_block_leftrepeat_bottom
+{ 
+    display: none;
 }
 
 .dashboard_block {
@@ -1054,6 +1342,361 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .dashboard_block_empty{
 	border:none;
 }
+
+.error_dashlet_topleft {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/error_topleft.png) top left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_topleft_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/error_topleft_small.png) top left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_toprepeat {
+    position: absolute;
+    width: 95%;
+    height: 55px;
+    top: 0px;
+    left: 13px;
+    background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_toprepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    top: 0px;
+    left: 13px;
+    background: #ffdd80 url(../graphics/error_toprepeat.png) bottom left repeat-x;
+    z-index:-1;
+    border-top: 1px solid #FFC21E;
+}
+
+.error_dashlet_topright {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/error_topright.png) top right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_topright_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/error_topright_small.png) top right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_leftrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    left: 0px;
+    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.error_dashlet_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.error_dashlet_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    bottom: 0px;
+    left: 0px;
+    background: url(../graphics/error_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_bottomrepeat {
+    position: absolute;
+    width: 95%;
+    height: 30px;
+    bottom: 0px;
+    left: 10x;
+    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_bottomrepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    bottom: 0px;
+    left: 10x;
+    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.error_dashlet_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+    background: url(../graphics/error_bottomright.png) bottom right no-repeat;
+    z-index:-1;
+}
+
+.error_dashlet_rightrepeat_top {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.error_dashlet_rightrepeat_bottom {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: #ffdd80 url(../graphics/error_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.error_dashlet_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_toprepeat
+{ 
+    height: 38px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_bottomrepeat
+{ 
+    height: 20px;
+}
+
+.dashboard_block.rolled-up .error_dashlet_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_leftrepeat_bottom
+{ 
+    display: none;
+}
+
+.info_dashlet_topleft {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/info_topleft.png) top left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_topleft_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    left: 0px;
+    background: url(../graphics/info_topleft_small.png) top left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_toprepeat {
+    position: absolute;
+    width: 95%;
+    height: 55px;
+    top: 0px;
+    left: 13px;
+    background: #DEDEDE url(../graphics/info_toprepeat.png) top left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_toprepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    top: 0px;
+    left: 13px;
+    background: #DEDEDE url(../graphics/info_toprepeat.png) bottom left repeat-x;
+    z-index:-1;
+    border-top: 1px solid #C5C5C5;
+}
+
+.info_dashlet_topright {
+    position: absolute;
+    width: 35px;
+    height: 36px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/info_topright.png) top right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_topright_small {
+    position: absolute;
+    width: 35px;
+    height: 22px;
+    top: 0px;
+    right: 0px;
+    background: url(../graphics/info_topright_small.png) top right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_leftrepeat_top {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    top: 5px;
+    left: 0px;
+    background: #DEDEDE url(../graphics/info_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.info_dashlet_leftrepeat_bottom {
+    position: absolute;
+    width: 13px;
+    height: 50%;
+    bottom: 10px;
+    left: 0px;
+    background: #DEDEDE url(../graphics/info_leftrepeat.png) top left repeat-y;
+    z-index:-1;
+}
+
+.info_dashlet_bottomleft {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    bottom: 0px;
+    left: 0px;
+    background: url(../graphics/info_bottomleft.png) bottom left no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_bottomrepeat {
+    position: absolute;
+    width: 95%;
+    height: 30px;
+    bottom: 0px;
+    left: 10x;
+    background: #DEDEDE url(../graphics/info_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_bottomrepeat_small {
+    position: absolute;
+    width: 97%;
+    height: 21px;
+    bottom: 0px;
+    left: 10x;
+    background: #DEDEDE url(../graphics/info_bottomrepeat.png) bottom left repeat-x;
+    z-index:-1;
+}
+
+.info_dashlet_bottomright {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0px;
+    right: 0px;
+    background: url(../graphics/info_bottomright.png) bottom right no-repeat;
+    z-index:-1;
+}
+
+.info_dashlet_rightrepeat_top {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #DEDEDE url(../graphics/info_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.info_dashlet_rightrepeat_bottom {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    bottom: 10px;
+    right: 0px;
+    background: #DEDEDE url(../graphics/info_rightrepeat.png) bottom right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.info_dashlet_rightrepeat_top {
+    min-height: 70px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_toprepeat
+{ 
+    height: 38px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_bottomrepeat
+{ 
+    height: 20px;
+}
+
+.dashboard_block.rolled-up .info_dashlet_rightrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_rightrepeat_bottom
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_leftrepeat_top
+{ 
+    display: none;
+}
+
+.dashboard_block.rolled-up .info_dashlet_leftrepeat_bottom
+{ 
+    display: none;
+}
+
 
 #copyrightbarBorder {
     margin-top: 40px;
@@ -1078,7 +1721,7 @@ hr {
 
 #document-views {
     position: absolute;
-    top: 0;
+    top: 200px;
     right: 0;
     width: 19em;
     z-index: 2;
@@ -1263,15 +1906,15 @@ hr {
 { 
     position: absolute;
 	top: 0px;
-	right: 8px;
+	right: 10px;
     text-align: right;
-    margin: -2px 0 0 0;
+    margin: 0.2em 0em 0 0;
 }
 
 .dashboard_block_handle
 {
     cursor: pointer;
-    margin: -2px -0.5em 0.5em 0.5em;
+    margin: 0.2em -0.5em 0.5em 0;
     font-size:small;
 }
 
@@ -1283,18 +1926,15 @@ hr {
 .ktBlock .dashboard_block_body
 { 
     z-index:99;
-    margin: 8px 5px 10px 5px;
+    margin: 8px 0 10px 0;
     background-color:#FFFFFF;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 5px;
     overflow: auto;
 }
 
 .ktError .dashboard_block_body
 {
     z-index:99;
-    margin-top: -8px;
+    margin: 0;
     background-color: #ffdd80;
     overflow: auto;
 }
@@ -1302,7 +1942,7 @@ hr {
 .ktInfo .dashboard_block_body
 {
     z-index:99;
-    margin-top: -8px;
+    margin: 0;
     background-color: #DEDEDE;
     overflow: auto;
 }
