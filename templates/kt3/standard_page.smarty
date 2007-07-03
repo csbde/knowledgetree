@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<html> 
 <head>
     <title>{$page->title}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title}{/if} | {$page->systemName}</title>
     
@@ -152,18 +152,20 @@
         		<tr align="left" align="left">
 	        		<td valign="top">
 			            <div id="portletbar">
-			                {foreach item=oPortlet from=$page->portlets}
-			                    {assign var=portlet_output value=$oPortlet->render() }
-			                    {if $portlet_output}
-			                        <div class="portlet{if $oPortlet->getActive()} expanded{/if}" id="portlet{if $oPortlet->getActive()} expanded{/if}">
-			                            <h4 onclick="toggleElementClass('expanded', this.parentNode)">{$oPortlet->getTitle()}</h4>
-			                            <div class="portletbody">
-			                                {$portlet_output}
-			                            </div>
-			                        </div>
-			                    {/if}
-			                {/foreach}
-			                <div class="floatClear"></div>
+                {foreach item=oPortlet from=$page->portlets}
+                    {assign var=portlet_output value=$oPortlet->render() }
+                    {if $portlet_output}
+                        <div class="portlet {if $oPortlet->getActive()}expanded{/if}">
+                            <h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
+                            <div class="portletTopRepeat"></div>
+                            <div class="portletTopRight"></div>
+                            <div class="portletbody">
+                                {$portlet_output}
+                            </div>
+                        </div>
+                    {/if}
+                {/foreach}
+                <div class="floatClear"></div>
 			            </div>
 		            </td>
 		            <td valign="top" width="100%">
@@ -175,22 +177,40 @@
 			                {/if}
 			
 			                <!-- any status / error messages get added here. -->
-			                {if (!empty($page->errStack))}
-			                    <div class="ktErrorMessage">
-			                        {foreach item=sError from=$page->errStack}
-			                            <span>{$sError}</span>
-			                        {/foreach}
-			                    </div>
-			                {/if}
-			
-			                {if (!empty($page->infoStack))}
-			                    <div class="ktInfoMessage">
-			                        {foreach item=sInfo from=$page->infoStack}
-			                            <span>{$sInfo}</span>
-			                        {/foreach}
-			                    </div>
-			                {/if}
-			                <!-- and finally, the content. -->
+                {if (!empty($page->errStack))}
+                    <div class="ktError">
+				    	<div class="error_dashlet_rightrepeat_bottom"></div>
+				    	<div class="error_dashlet_leftrepeat_bottom"></div>
+                        {foreach item=sError from=$page->errStack}
+                            <p>{$sError}</p>
+                        {/foreach}
+                        <div class="error_dashlet_topleft_small"></div>
+			            <div class="error_dashlet_toprepeat_small"></div>
+			        	<div class="error_dashlet_topright_small"></div>
+			        	
+			        	<div class="error_dashlet_bottomleft"></div>
+			            <div class="error_dashlet_bottomrepeat_small"></div>
+			        	<div class="error_dashlet_bottomright"></div>
+                    </div>
+                {/if}
+
+                {if (!empty($page->infoStack))}
+                    <div class="ktInfo">
+                    	<div class="info_dashlet_rightrepeat_bottom"></div>
+				    	<div class="info_dashlet_leftrepeat_bottom"></div>
+                        {foreach item=sInfo from=$page->infoStack}
+                            <p>{$sInfo}</p>
+                        {/foreach}
+                        <div class="info_dashlet_topleft_small"></div>
+			            <div class="info_dashlet_toprepeat_small"></div>
+			        	<div class="info_dashlet_topright_small"></div>
+			        	
+			        	<div class="info_dashlet_bottomleft"></div>
+			            <div class="info_dashlet_bottomrepeat_small"></div>
+			        	<div class="info_dashlet_bottomright"></div>
+                    </div>
+                {/if}
+                <!-- and finally, the content. -->
 			                {$page->contents}
 			                <div class="floatClear"></div>
 				    	</div>
