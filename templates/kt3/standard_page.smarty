@@ -149,23 +149,23 @@
         </div>
         <div id="kt-wrapper">
         	<table width="100%">
-        		<tr align="left" align="left">
+        		<tr align="left">
 	        		<td valign="top">
 			            <div id="portletbar">
-                {foreach item=oPortlet from=$page->portlets}
-                    {assign var=portlet_output value=$oPortlet->render() }
-                    {if $portlet_output}
-                        <div class="portlet {if $oPortlet->getActive()}expanded{/if}">
-                            <h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
-                            <div class="portletTopRepeat"></div>
-                            <div class="portletTopRight"></div>
-                            <div class="portletbody">
-                                {$portlet_output}
-                            </div>
-                        </div>
-                    {/if}
-                {/foreach}
-                <div class="floatClear"></div>
+		                {foreach item=oPortlet from=$page->portlets}
+		                    {assign var=portlet_output value=$oPortlet->render() }
+		                    {if $portlet_output}
+		                        <div class="portlet {if $oPortlet->getActive()}expanded{/if}">
+		                            <h4 onclick="toggleElementClass('expanded',this.parentNode)">{$oPortlet->getTitle()}</h4>
+		                            <div class="portletTopRepeat"></div>
+		                            <div class="portletTopRight"></div>
+		                            <div class="portletbody">
+		                                {$portlet_output}
+		                            </div>
+		                        </div>
+		                        <div class="floatClear"></div>
+		                    {/if}
+		                {/foreach}
 			            </div>
 		            </td>
 		            <td valign="top" width="100%">
