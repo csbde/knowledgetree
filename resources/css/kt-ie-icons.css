@@ -1,3 +1,75 @@
+.ktInfo p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) center left no-repeat; }
+.ktError p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
+.ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
+.ktBlock {
+	background-color: white;
+	border: 1px solid #ccc;
+	padding-left: 0em;
+}
+
+.ktInfo, .ktError {
+	padding: 0.1em 1em;
+	margin: 0.5em 0 0.5em 0em;
+}
+
+.ktError {
+	background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+	border: 1px solid #ffdd80;
+}
+
+.ktInfo {
+	background: #DEDEDE url(../graphics/info_toprepeat.png) top left repeat-x;
+	border: 1px solid #DEDEDE;
+}
+
+.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.gif); }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif); }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.gif); }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.gif); }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.gif); }
+.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.gif); }
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.gif); }
+.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.gif); }
+.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); }
+.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); }
+.ktBlock {margin: 0.5em 0;}
+.contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
+.contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
+.contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
+.contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
+.contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.gif); }
+.contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
+.contenttype.image { background-image: url(../../resources/mimetypes/image.gif); }
+.contenttype.compressed { background-image: url(../../resources/mimetypes/zip.gif); }
+.contenttype.html { background-image: url(../../resources/mimetypes/html.gif); }
+
+.contenttype.txt,
+.contenttype.text,
+.contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
+.contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
+
+/* IE is woefully unable to */
+#portletbar { 
+	width: 200px;
+}
+#portlet-search-text { width: 150px; }
+/* #content { padding-left: 220px; } */
+
+#content { 
+    float: left;
+    padding: 0 25px 0 0;    
+}
+
+#pageBody {
+    height: auto;
+}
+
+/* IE does not know what 100% is!! */
+#copyrightbarBg {
+    width: 101%;
+}
+
 .floatClear
 {
     height: 1px !important;
@@ -5,85 +77,57 @@
     width: 1px;
 }
 
-.ktHelp {
-	background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; 
+#portletbar .portlet {
+    background: url(../../resources/graphics/portlet_bg_collapsed.gif) top left repeat-x;
+    margin: 0 0 0 0;
 }
 
-.ktBlock {
-	background: #ffffff url(../../resources/graphics/dashlet_toprepeat.gif) top left repeat-x;
-    border: 1px solid #C5C5C5;
-    margin: 20px auto;
+#portletbar .portlet.expanded {
+    background: url(../../resources/graphics/portlet_bg.gif) top left repeat-x;
+    border: 1px solid #ccc;
+    margin: 0 0 0 0;
 }
 
-/* block level. */
-.ktError {
-	background: #ffdd80 url(../../resources/graphics/error_toprepeat.gif) top left repeat-x;
-    border: 1px solid #FFC21E;
-    margin: 20px auto;
+#portletbar .portlet .portletTopRight {
+    display: none;
 }
 
-.ktError p {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: transparent url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
+#portletbar .portlet.expanded .portletTopRight {
+    display: none;
 }
 
-.ktError span {
-    margin-left: 20px;
-    padding-left: 25px;
-    background: transparent url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
+#portletbar .portlet .portletbodyBottomLeft {
+    display: none;
 }
 
-.ktError .dashboard_block_body
-{
-    z-index:99;
-    margin-top: -8px;
-    background-color: #ffdd80;
-    overflow: auto;
+#portletbar .portlet.expanded .portletbodyBottomLeft {
+    display: none;
 }
 
-.ktActionLink.ktDelete, .ktAction.ktDelete { 
-	background-image: url(../../resources/graphics/delete.gif); 
+#portletbar .portlet .portletbodyBottomRight {
+    display: none;
 }
 
-.ktActionLink.ktEdit, .ktAction.ktEdit { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.gif); 
+#portletbar .portlet.expanded .portletbodyBottomRight {
+    display: none;
 }
 
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.gif); 
+#portletbar .portlet .portletTopRepeat {
+    display: none;
 }
 
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.gif); 
+#portletbar .portlet.expanded .portletTopRepeat {
+    display: none;
 }
 
-.ktActionLink.ktAdd, .ktAction.ktAdd { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/add.gif); 
+#portletbar .portlet.expanded .portletbody {
+    background: none;
+    border: none;
+    background-color: white;
 }
 
-.ktActionLink.ktDownload, .ktAction.ktDownload { 
-	background-image: url(../../resources/graphics/download.gif); 
-}
-
-.ktActionLink.ktBack, .ktAction.ktBack { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/back.gif); 
-}
-
-.ktActionLink.ktAllowed, .ktAction.ktAllowed { 
-	background-image: url(../../resources/graphics/allowed.gif); 
-}
-
-.ktActionLink.ktDenied, .ktAction.ktDenied { 
-	background-image: url(../../resources/graphics/denied.gif); 
-}
-
-.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); 
-}
-
-.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { 
-	background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); 
+#menu_divider {
+    background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
 }
 
 #content .dashboard_block .action_rollup 
@@ -101,77 +145,17 @@
     background-image: url(../graphics/bullet_toggle_close.gif);
 }
 
-.contenttype.office { 
-	background-image: url(../../resources/mimetypes/office.gif); 
-}
 
-.contenttype.word { 
-	background-image: url(../../resources/mimetypes/word.gif); 
-}
+/* NO CHILD SELECTORS IN IE! */
 
-.contenttype.database { 
-	background-image: url(../../resources/mimetypes/database.gif); 
-}
-
-.contenttype.excel { 
-	background-image: url(../../resources/mimetypes/excel.gif); 
-}
-
-.contenttype.openoffice { 
-	background-image: url(../../resources/mimetypes/openoffice.gif); 
-}
-
-.contenttype.pdf { 
-	background-image: url(../../resources/mimetypes/pdf.gif); 
-}
-
-.contenttype.image { 
-	background-image: url(../../resources/mimetypes/image.gif); 
-}
-
-.contenttype.compressed { 
-	background-image: url(../../resources/mimetypes/zip.gif); 
-}
-.contenttype.html { background-image: url(../../resources/mimetypes/html.gif); }
-
-.contenttype.txt, .contenttype.unspecified_type { 
-	background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); 
-}
-
-.contenttype.folder { 
-	background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); 
-}
-
-#portletbar { 
-	width: 200px; 
-}
-
-#portlet-search-text { 
-	width: 150px; 
-}
-
-#pageBody {
-    height: auto;
-}
-
-#portletbar .portlet {
-    background: url(../../resources/graphics/portlet_bg_collapsed.gif) top left repeat-x;
-}
-
-#portletbar .portlet.expanded {
-    background: url(../../resources/graphics/portlet_bg.gif) top left repeat-x;
-}
-
-#menu_divider {
-    background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
-}
-
-.kt_treenodes li.treenode a.pathnode { 
+.kt_treenodes li.treenode a.pathnode
+{ 
   padding-left: 15px;
 }
 
 .kt_treenodes li.treenode.active a.pathnode {
-   background: transparent url(../graphics/minus.png) center left no-repeat;                                
+   background: transparent url(../graphics/minus.png) center left no-repeat;
+                                              
 }
 
 .kt_treenodes li.treenode.inactive a.pathnode {
@@ -187,6 +171,213 @@
     display: none;
 }
 
-#navbar {
-    margin-right: 5px;
+
+.dashboard_block_topleft {
+    background: white url(../graphics/dashlet_toprepeat.gif) top left repeat-x;
+}
+
+.dashboard_block_toprepeat {
+	width: 95%;
+    background: white url(../graphics/dashlet_toprepeat.gif) top left repeat-x;
+}
+
+.dashboard_block_topright {
+    background: white url(../graphics/dashlet_toprepeat.gif) top right repeat-x;
+    margin-right: 1px;
+}
+
+.dashboard_block_leftrepeat_top {
+    display: none;
+}
+
+.dashboard_block_leftrepeat_bottom {
+    display: none;
+}
+
+.dashboard_block_bottomleft {
+    display: none;
+}
+
+.dashboard_block_bottomrepeat {
+	display: none;
+}
+
+.dashboard_block_bottomright {
+    display: none;
+}
+
+.dashboard_block_rightrepeat_top {
+    display: none;
+}
+
+.dashboard_block_rightrepeat_bottom {
+    display: none;
+}
+
+.dashboard_block_handle { 
+    margin: 0.2em -0.5em 0.5em 1em;
+}
+
+.ktBlock .dashboard_block_body
+{ 
+    margin: 8px 0 10px 1em;
+}
+
+.error_dashlet_topleft {
+    display: none;
+}
+
+.error_dashlet_topleft_small {
+    display: none;
+}
+
+.error_dashlet_toprepeat {
+    display: none;
+}
+
+.error_dashlet_toprepeat_small {
+    display: none;
+}
+
+.error_dashlet_topright {
+    display: none;
+}
+
+.error_dashlet_topright_small {
+    display: none;
+}
+
+.error_dashlet_leftrepeat_top {
+    display: none;
+}
+
+.error_dashlet_leftrepeat_bottom {
+    display: none;
+}
+
+.error_dashlet_bottomleft {
+    display: none;
+}
+
+.error_dashlet_bottomrepeat {
+    display: none;
+}
+
+.error_dashlet_bottomrepeat_small {
+    display: none;
+}
+
+.error_dashlet_bottomright {
+    display: none;
+}
+
+.error_dashlet_rightrepeat_top {
+    display: none;
+}
+
+.error_dashlet_rightrepeat_bottom {
+    display: none;
+}
+
+.error_dashlet_rightrepeat_top {
+    display: none;
+}
+
+.info_dashlet_topleft {
+    display: none;
+}
+
+.info_dashlet_topleft_small {
+    display: none;
+}
+
+.info_dashlet_toprepeat {
+    display: none;
+}
+
+.info_dashlet_toprepeat_small {
+    display: none;
+}
+
+.info_dashlet_topright {
+    display: none;
+}
+
+.info_dashlet_topright_small {
+    display: none;
+}
+
+.info_dashlet_leftrepeat_top {
+    display: none;
+}
+
+.info_dashlet_leftrepeat_bottom {
+    display: none;
+}
+
+.info_dashlet_bottomleft {
+    display: none;
+}
+
+.info_dashlet_bottomrepeat {
+    display: none;
+}
+
+.info_dashlet_bottomrepeat_small {
+    display: none;
+}
+
+.info_dashlet_bottomright {
+    display: none;
+}
+
+.info_dashlet_rightrepeat_top {
+    display: none;
+}
+
+.info_dashlet_rightrepeat_bottom {
+    display: none;
+}
+
+.info_dashlet_rightrepeat_top {
+    display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_toprepeat
+{ 
+    height: 38px;
+}
+
+#loginbox.hasDisclaimer #loginboxTopMiddle {
+    position: absolute;
+    background: url(../graphics/login_border_repeat.png) top left repeat-x;
+    top:0;
+    left:35px;
+    width: 520px;
+    height: 3px; 
+}
+
+#loginbox.hasDisclaimer #loginboxBottomMiddle {
+    position: absolute;
+    background: url(../graphics/login_border_bottom.png) bottom left repeat-x;
+    bottom: 0;
+    left: 35px;
+    width: 520px;
+    height: 3px;
+}
+
+#loginbox.hasDisclaimer #loginboxLeftTop {
+    height: 260px;
+}
+
+#loginbox.hasDisclaimer #loginboxLeftBottom {
+    height: 260px;
+}
+
+#loginbox.hasDisclaimer #loginboxRightTop {
+    height: 260px;
+}
+
+#loginbox.hasDisclaimer #loginboxRightBottom {
+    height: 260px;
 }

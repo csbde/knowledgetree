@@ -10,15 +10,20 @@ window.onload = function()
     }
     
     var browser = $T.getBrowserAgent();
-    
-	// pageBody
-    var pageBody = document.getElementById("pageBody");
-    var pageBlock = new curvyCorners(settings, pageBody);
-    pageBlock.applyCornersToAll();
-    pageBody.style.backgroundPosition="bottom left";
-    
-    // footer
-    var footer = document.getElementById("copyrightbarBorder");
-    var footerBlock = new curvyCorners(settings, footer);
-    footerBlock.applyCornersToAll();
+	
+	if(browser.msie && browser.version == '6.0'){
+		var pageBody = document.getElementById("pageBody");
+		pageBody.style.backgroundPosition="bottom left";
+	}else{
+		// pageBody
+	    var pageBody = document.getElementById("pageBody");
+	    var pageBlock = new curvyCorners(settings, pageBody);
+	    pageBlock.applyCornersToAll();
+	    pageBody.style.backgroundPosition="bottom left";
+	    
+	    // footer
+	    var footer = document.getElementById("copyrightbarBorder");
+	    var footerBlock = new curvyCorners(settings, footer);
+	    footerBlock.applyCornersToAll();
+	}
   }
