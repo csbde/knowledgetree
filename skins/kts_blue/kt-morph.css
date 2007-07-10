@@ -28,38 +28,57 @@
     background: url(menu_divider.png) top left no-repeat;
 }
 
-.ktBlock {
-	background: #ffffff url(dashlet_toprepeat.png) top left repeat-x;
-    border: 1px solid #C5C5C5;
+/* Dashlets */
+
+.dashboard_block_topleft {
+    background: url(dashlet_topleft.png) top left no-repeat;
 }
 
-.ktInfo {
-    background: #DEDEDE url(../../resources/graphics/info_toprepeat.png) top left repeat-x;
-    border: 1px solid #C5C5C5;
+.dashboard_block_toprepeat {
+    background: white url(dashlet_toprepeat.png) top left repeat-x;
 }
 
-.ktError {
-	background: #ffdd80 url(../../resources/graphics/error_toprepeat.png) top left repeat-x;
-    border: 1px solid #FFC21E;
+.dashboard_block_topright {
+    background: url(dashlet_topright.png) top right no-repeat;
 }
+
+/* Portlets */
 
 #portletbar .portlet.expanded h4
 {
     background: url(minus.gif) 10px 45% no-repeat;
 }
 
+#portletbar .portlet.expanded .portletTopRepeat {
+    background: url(portlet_bg.png) top left repeat-x;
+}
+
 #portletbar .portlet.expanded {
-    background: #ffffff url(portlet_bg.png) top left repeat-x;
+    background: url(portlet_corner_topleft.png) top left no-repeat;
+}
+
+#portletbar .portlet.expanded .portletTopRight {
+    background: url(portlet_corner_topright.png) top right no-repeat;
+}
+
+#portletbar .portlet .portletTopRepeat {
+    background: url(portlet_bg_collapsed.png) top left repeat-x;
 }
 
 #portletbar .portlet {
-    background: #ffffff url(portlet_bg_collapsed.png) top left repeat-x;
+    background: url(portlet_corner_topleft_collapsed.png) top left no-repeat;
+}
+
+#portletbar .portlet .portletTopRight {
+    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
 }
 
 .collapsible.expanded h4
 {
     background: url(minus.gif) 10px 50% no-repeat;
 }
+
+/* Content */
 
 #content .dashboard_block .action_rollup 
 { 

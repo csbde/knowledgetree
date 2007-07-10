@@ -28,33 +28,57 @@
     background: url(menu_divider.gif) top left no-repeat;
 }
 
-.ktBlock {
-	background: #ffffff url(dashlet_toprepeat.gif) top left repeat-x;
-    border: 1px solid #C5C5C5;
+/* Dashlets */
+
+.dashboard_block_topleft {
+    background: white url(dashlet_toprepeat.gif) top left repeat-x;
 }
 
-.ktInfo {
-    background: #DEDEDE url(../../resources/graphics/info_toprepeat.gif) top left repeat-x;
-    border: 1px solid #C5C5C5;
+.dashboard_block_toprepeat {
+    background: white url(dashlet_toprepeat.gif) top left repeat-x;
 }
 
-.ktError {
-	background: #ffdd80 url(../../resources/graphics/error_toprepeat.gif) top left repeat-x;
-    border: 1px solid #FFC21E;
+.dashboard_block_topright {
+    background: white url(dashlet_toprepeat.gif) top left repeat-x;
 }
+
+/* Portlets */
 
 #portletbar .portlet.expanded h4
 {
     background: url(minus.gif) 10px 45% no-repeat;
 }
 
-#portletbar .portlet.expanded {
-    background: #ffffff url(portlet_bg.gif) top left repeat-x;
+#portletbar .portlet.expanded .portletTopRepeat {
+    background: url(portlet_bg.gif) top left repeat-x;
 }
 
-#portletbar .portlet {
-    background: #ffffff url(portlet_bg_collapsed.gif) top left repeat-x;
+#portletbar .portlet.expanded {
+    background: url(portlet_corner_topleft.gif) top left no-repeat;
 }
+
+#portletbar .portlet.expanded .portletTopRight {
+    background: url(portlet_corner_topright.gif) top right no-repeat;
+}
+
+#portletbar .portlet.portletTopRepeat {
+    background: url(portlet_bg_collapsed.gif) top left repeat-x;
+}
+
+#portletbar.portlet {
+    background: url(portlet_corner_topleft_collapsed.gif) top left no-repeat;
+}
+
+#portletbar .portlet.portletTopRight {
+    background: url(portlet_corner_topright_collapsed.gif) top right no-repeat;
+}
+
+.collapsible.expanded h4
+{
+    background: url(minus.gif) 10px 50% no-repeat;
+}
+
+/* Content */
 
 .collapsible.expanded h4
 {
