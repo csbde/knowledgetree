@@ -226,7 +226,7 @@ function login()
 {
 ?>
 <P>
-The database upgrade wizard completes the upgrade process on an existing KnowledgeTree installation. It applies
+The database upgrade wizard completes the upgrade process on an existing <?php echo APP_NAME;?> installation. It applies
 any upgrades to the database that may be required.
 <P>
 Only administrator users may access the upgrade wizard.
