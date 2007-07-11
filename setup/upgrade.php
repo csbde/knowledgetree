@@ -520,7 +520,7 @@ Your mysql installation has been resolved. Manually, you would do the following:
 	else
 	{
 ?>
-The mysql backup utility could not be found automatically. Either do a manual backup, or edit the config.ini and update the backup/mysqlDirectory entry.
+The mysql backup utility could not be found automatically. Either do a manual backup, or edit the config.ini and update the backup/mysql Directory entry.
 <P>
 You can continue to do the backup manually using the following process:
 <P>
@@ -661,7 +661,7 @@ Manually, you would do the following to restore the backup:
 	else
 	{
 ?>
-The mysql backup utility could not be found automatically. Either do a manual restore, or edit the config.ini and update the backup/mysqlDirectory entry.
+The mysql backup utility could not be found automatically. Either do a manual restore, or edit the config.ini and update the backup/mysql Directory entry.
 <P>
 You can continue to do the restore manually using the following command(s):
 <P>
@@ -741,7 +741,7 @@ function backupDone()
 			else
 			{
 		?>
-			The mysql backup utility could not be found automatically. Please edit the config.ini and update the backup/mysqlDirectory entry.
+			The mysql backup utility could not be found automatically. Please edit the config.ini and update the backup/mysql Directory entry.
 				<P>
 				If you need to restore from this backup, you should be able to use the following statements:
 				<P>
