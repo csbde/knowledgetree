@@ -1005,7 +1005,7 @@ You will not be able to log into <?php echo APP_NAME;?> until your the database 
 <P>
 <font color=orange>!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
 <P>
-If you have already done this, you may skip this step can continue directly to the upgade.
+If you have already done this, you may skip this step can continue directly to the upgrade.
 <P>
  
  
