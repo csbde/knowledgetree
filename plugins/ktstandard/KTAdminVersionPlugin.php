@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id:$
+ * $Id$
  *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
@@ -85,7 +85,7 @@ class AdminVersionPlugin extends KTPlugin {
     }
 
     function setup() {
-        if (function_exists('curl_init') || (!OS_WINDOWS)) {
+        if (APP_NAME == "KnowledgeTree" && (function_exists('curl_init') || (!OS_WINDOWS))) {
             $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
             $this->registerPage('versions', 'AdminVersionPage');
         }
