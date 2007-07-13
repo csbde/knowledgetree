@@ -2,7 +2,7 @@
 {if (!empty($documents))}
 <dl>
 {foreach item=oDocument from=$documents}
-  <dt>{$oDocument->getName()} | <a href="{$context->getDocumentLink($oDocument)}">{i18n}View Document{/i18n}</a></dt>
+  <dt>{$oDocument->getName()|sanitize} | <a href="{$context->getDocumentLink($oDocument)}">{i18n}View Document{/i18n}</a></dt>
 {/foreach}
 </ul>
 {else}
