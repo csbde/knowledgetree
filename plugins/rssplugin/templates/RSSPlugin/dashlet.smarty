@@ -9,13 +9,13 @@
 		{/if}
 		{if $feedlist}
 		{section name=feed loop=$feedlist}
-		<option value='{$feedlist[feed].url}'>{$feedlist[feed].title}</option>
+		<option value='{$feedlist[feed].url}'>{$feedlist[feed].title|sanitize}</option>
 		{/section}
 		{/if}
 	</select>
 	{if ($action.url)}<a href="{$action.url}"
-{if $action.description}title="{$action.description}"{/if}
-     >{$action.name}</a>{else}{$action.name}{/if}
+{if $action.description}title="{$action.description|sanitize}"{/if}
+     >{$action.name}</a>{else}{$action.name|sanitize}{/if}
 	</form>
 	{/if}
 </div>
@@ -26,7 +26,7 @@
 		<table width='90%'>
 		    {section name=i start=0 loop=$itemcount}
 			<tr>
-				<td><strong><a href='{$internalrss.items[i].link}'>{$internalrss.items[i].title}</a><strong></td>
+				<td><strong><a href='{$internalrss.items[i].link}'>{$internalrss.items[i].title|sanitize}</a><strong></td>
 			</tr>
 			<tr>
 				<td>{$internalrss.items[i].description}</td>
