@@ -1,4 +1,4 @@
-<h2>{i18n arg_foldername=$foldername}Folder permissions for "#foldername#"{/i18n}</h2>
+<h2>Folder permissions for "{$foldername|sanitize}"</h2>
 
 
 
@@ -31,9 +31,9 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <div class="field">
-  
+
   <p class="descriptiveText">{i18n}Select roles and groups for whom you wish to change permission assignment from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'.{/i18n}</p>
-      
+
 <table>
 
 <thead>
@@ -55,11 +55,11 @@
     </td>
 
     <td>
-    
+
     <input type="button" id="entities_add" value="&raquo;" />
     <br /><br/>
     <input type="button" id="entities_remove" value="&laquo;" />
-    
+
     </td>
 
     <td style="vertical-align: top">
@@ -74,7 +74,7 @@
 
   <input name="entities_items_added" id="entities_items_added" type="hidden" />
   <input name="entities_items_removed" id="entities_items_removed" type="hidden" />
-  
+
   <input type="hidden" name="kt_core_fieldsets_expect[entities]" value ="1" />
 </div>
 
