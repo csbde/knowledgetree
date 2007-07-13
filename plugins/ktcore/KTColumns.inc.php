@@ -1,12 +1,12 @@
 <?php
 /**
  * $Id$
- *    
+ *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -41,40 +41,40 @@ class AdvancedTitleColumn extends AdvancedColumn {
     var $link_folders = true;
     var $link_documents = true;
 
-    function setOptions($aOptions) {        
+    function setOptions($aOptions) {
         $this->link_folders = KTUtil::arrayGet($aOptions, 'link_folders', $this->link_folders, false);
-        $this->link_documents = KTUtil::arrayGet($aOptions, 'link_documents', $this->link_documents, false);        
+        $this->link_documents = KTUtil::arrayGet($aOptions, 'link_documents', $this->link_documents, false);
         parent::setOptions($aOptions);
     }
-    
+
     function AdvancedTitleColumn() {
         $this->label = _kt("Title");
-    }    
-       
-    // what is used for sorting 
+    }
+
+    // what is used for sorting
     // query addition is:
     //    [0] => join claus
     //    [1] => join params
-    //    [2] => ORDER 
-    
-    function addToFolderQuery() { 
-        return array(null, 
-            null, 
+    //    [2] => ORDER
+
+    function addToFolderQuery() {
+        return array(null,
+            null,
             "F.name",
-        ); 
+        );
     }
-    function addToDocumentQuery() { 
-            return array(null, 
-            null, 
+    function addToDocumentQuery() {
+            return array(null,
+            null,
             "DM.name"
-        ); 
+        );
     }
 
-    
+
     function renderFolderLink($aDataRow) {
         /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
          as mozilla cannot wrap text without white spaces */
-        if (mb_strlen($aDataRow["folder"]->getName(), 'UTF-8') > 40) { 
+        if (mb_strlen($aDataRow["folder"]->getName(), 'UTF-8') > 40) {
         	mb_internal_encoding("UTF-8");
             $outStr = htmlentities(mb_substr($aDataRow["folder"]->getName(), 0, 40, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
         }else{
@@ -90,15 +90,15 @@ class AdvancedTitleColumn extends AdvancedColumn {
     function renderDocumentLink($aDataRow) {
         /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
          as mozilla cannot wrap text without white spaces */
-        if (mb_strlen($aDataRow["document"]->getName(), 'UTF-8') > 40) { 
+        if (mb_strlen($aDataRow["document"]->getName(), 'UTF-8') > 40) {
         	mb_internal_encoding("UTF-8");
             $outStr = htmlentities(mb_substr($aDataRow["document"]->getName(), 0, 40, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
         }else{
             $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
         }
-        
+
         if($this->link_documents) {
-            $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">' . 
+            $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . htmlentities($aDataRow["document"]->getFilename(), ENT_QUOTES, 'UTF-8').'">' .
                 $outStr . '</a>';
         }
         return $outStr;
@@ -116,7 +116,7 @@ class AdvancedTitleColumn extends AdvancedColumn {
     function buildFolderLink($aDataRow) {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
             $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
-	    $params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()), 
+	    $params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()),
 				     array('fFolderId' => $aDataRow['folder']->getId()));
 
             if (empty($dest)) {
@@ -129,9 +129,9 @@ class AdvancedTitleColumn extends AdvancedColumn {
             return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
         }
     }
-    
+
     // use inline, since its just too heavy to even _think_ about using smarty.
-    function renderData($aDataRow) {     
+    function renderData($aDataRow) {
        if ($aDataRow["type"] == "folder") {
            $contenttype = 'folder';
            $link = $this->renderFolderLink($aDataRow);
@@ -143,11 +143,11 @@ class AdvancedTitleColumn extends AdvancedColumn {
            return sprintf('<span class="contenttype %s">%s (%s)</span>', $contenttype, $link, $size);
         }
     }
-    
+
     function prettySize($size) {
         $finalSize = $size;
         $label = 'b';
-        
+
         if ($finalSize > 1000) { $label='Kb'; $finalSize = floor($finalSize/1000); }
         if ($finalSize > 1000) { $label='Mb'; $finalSize = floor($finalSize/1000); }
         return $finalSize . $label;
@@ -159,7 +159,7 @@ class AdvancedTitleColumn extends AdvancedColumn {
     }
 }
 
-/* 
+/*
  * Column to handle dates
  */
 
@@ -168,17 +168,17 @@ class AdvancedDateColumn extends AdvancedColumn {
 
     var $document_field_function;
     var $folder_field_function;
-    var $sortable = true;    
+    var $sortable = true;
     var $document_sort_column;
     var $folder_sort_column;
     var $namespace = 'ktcore.columns.genericdate';
-    
+
     function AdvancedDateColumn() {
         $this->label = _kt('Generic Date Function');
     }
 
     // use inline, since its just too heavy to even _think_ about using smarty.
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         $outStr = '';
         if (($aDataRow["type"] == "folder") && (!is_null($this->folder_field_function))) {
             $res = call_user_func(array($aDataRow["folder"],  $this->folder_field_function));
@@ -186,7 +186,7 @@ class AdvancedDateColumn extends AdvancedColumn {
 
             // now reformat this into something "pretty"
             return date("Y-m-d H:i", $dColumnDate);
- 
+
         } else if (($aDataRow["type"] == "document") && (!is_null($this->document_field_function))) {
             $res = call_user_func(array($aDataRow["document"],  $this->document_field_function));
             $dColumnDate = strtotime($res);
@@ -210,11 +210,11 @@ class AdvancedDateColumn extends AdvancedColumn {
 class CreationDateColumn extends AdvancedDateColumn {
     var $document_field_function = 'getCreatedDateTime';
     var $folder_field_function = null;
-    
+
     var $document_sort_column = "D.created";
     var $folder_sort_column = null;
     var $namespace = 'ktcore.columns.creationdate';
-    
+
     function CreationDateColumn() {
         $this->label = _kt('Created');
     }
@@ -223,11 +223,11 @@ class CreationDateColumn extends AdvancedDateColumn {
 class ModificationDateColumn extends AdvancedDateColumn {
     var $document_field_function = 'getLastModifiedDate';
     var $folder_field_function = null;
-    
+
     var $document_sort_column = "D.modified";
     var $folder_sort_column = null;
     var $namespace = 'ktcore.columns.modificationdate';
-    
+
     function ModificationDateColumn() {
         $this->label = _kt('Modified');
     }
@@ -236,25 +236,25 @@ class ModificationDateColumn extends AdvancedDateColumn {
 class AdvancedUserColumn extends AdvancedColumn {
     var $document_field_function;
     var $folder_field_function;
-    var $sortable = false; // by default    
+    var $sortable = false; // by default
     var $document_sort_column;
     var $folder_sort_column;
     var $namespace = 'ktcore.columns.genericuser';
-    
+
     function AdvancedUserColumn() {
-        $this->label = null; // abstract.        
+        $this->label = null; // abstract.
     }
-    
+
     // use inline, since its just too heavy to even _think_ about using smarty.
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         $iUserId = null;
         if (($aDataRow["type"] == "folder") && (!is_null($this->folder_field_function))) {
             if (method_exists($aDataRow['folder'], $this->folder_field_function)) {
-                $iUserId = call_user_func(array($aDataRow['folder'], $this->folder_field_function)); 
+                $iUserId = call_user_func(array($aDataRow['folder'], $this->folder_field_function));
             }
         } else if (($aDataRow["type"] == "document") && (!is_null($this->document_field_function))) {
             if (method_exists($aDataRow['document'], $this->document_field_function)) {
-                $iUserId = call_user_func(array($aDataRow['document'], $this->document_field_function)); 
+                $iUserId = call_user_func(array($aDataRow['document'], $this->document_field_function));
             }
         }
         if (is_null($iUserId)) {
@@ -271,7 +271,7 @@ class AdvancedUserColumn extends AdvancedColumn {
     function addToFolderQuery() {
         return array(null, null, null);
     }
-    
+
     function addToDocumentQuery() {
         return array(null, null, null);
     }
@@ -280,20 +280,20 @@ class AdvancedUserColumn extends AdvancedColumn {
 class CreatorColumn extends AdvancedUserColumn {
     var $document_field_function = "getCreatorID";
     var $folder_field_function = "getCreatorID";
-    var $sortable = true; // by default    
+    var $sortable = true; // by default
     var $namespace = 'ktcore.columns.creator';
-    
+
     function CreatorColumn() {
-        $this->label = _kt("Creator"); // abstract.        
+        $this->label = _kt("Creator"); // abstract.
     }
 }
 
 class AdvancedSelectionColumn extends AdvancedColumn {
     var $rangename = null;
     var $show_folders = true;
-    var $show_documents = true;   
-    
-    var $namespace = "ktcore.columns.selection"; 
+    var $show_documents = true;
+
+    var $namespace = "ktcore.columns.selection";
 
     function AdvancedSelectionColumn() {
         $this->label = '';
@@ -302,40 +302,40 @@ class AdvancedSelectionColumn extends AdvancedColumn {
     function setOptions($aOptions) {
         AdvancedColumn::setOptions($aOptions);
         $this->rangename = KTUtil::arrayGet($this->aOptions, 'rangename', $this->rangename);
-        $this->show_folders = KTUtil::arrayGet($this->aOptions, 'show_folders', $this->show_folders, false);        
-        $this->show_documents = KTUtil::arrayGet($this->aOptions, 'show_documents', $this->show_documents, false);                
+        $this->show_folders = KTUtil::arrayGet($this->aOptions, 'show_folders', $this->show_folders, false);
+        $this->show_documents = KTUtil::arrayGet($this->aOptions, 'show_documents', $this->show_documents, false);
     }
 
-    function renderHeader($sReturnURL) { 
+    function renderHeader($sReturnURL) {
         global $main;
         $main->requireJSResource("resources/js/toggleselect.js");
-        
+
         return sprintf('<input type="checkbox" title="toggle all" onclick="toggleSelectFor(this, \'%s\')" />', $this->rangename);
-        
+
     }
-    
+
     // only include the _f or _d IF WE HAVE THE OTHER TYPE.
-    function renderData($aDataRow) { 
-        $localname = $this->rangename;
-        
-        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+    function renderData($aDataRow) {
+        $localname = htmlentities($this->rangename,ENT_QUOTES,'UTF-8');
+
+        if (($aDataRow["type"] === "folder") && ($this->show_folders)) {
             if ($this->show_documents) {
-                $localname .= "_f[]"; 
+                $localname .= "_f[]";
             }
-            $v = $aDataRow["folderid"]; 
-        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            $v = $aDataRow["folderid"];
+        } else if (($aDataRow["type"] === "document") && $this->show_documents) {
             if ($this->show_folders) {
-                $localname .= "_d[]"; 
+                $localname .= "_d[]";
             }
-            $v = $aDataRow["docid"]; 
-        } else { 
-            return '&nbsp;'; 
+            $v = $aDataRow["docid"];
+        } else {
+            return '&nbsp;';
         }
-        
+
         return sprintf('<input type="checkbox" name="%s" onclick="activateRow(this)" value="%s"/>', $localname, $v);
     }
-    
-    
+
+
     // no label, but we do have a title
     function getName() {
         return _kt("Multiple Selection");
@@ -350,36 +350,36 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
         parent::AdvancedSelectionColumn();
         $this->label = null;
     }
-    
+
     function renderHeader() {
-        return '&nbsp;';    
+        return '&nbsp;';
     }
-    
+
     // only include the _f or _d IF WE HAVE THE OTHER TYPE.
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         $localname = $this->rangename;
-        
-        if (($aDataRow["type"] === "folder") && ($this->show_folders)) { 
+
+        if (($aDataRow["type"] === "folder") && ($this->show_folders)) {
             if ($this->show_documents) {
-                $localname .= "_f"; 
+                $localname .= "_f";
             }
-            $v = $aDataRow["folderid"]; 
-        } else if (($aDataRow["type"] === "document") && $this->show_documents) { 
+            $v = $aDataRow["folderid"];
+        } else if (($aDataRow["type"] === "document") && $this->show_documents) {
             if ($this->show_folders) {
-                $localname .= "_d"; 
+                $localname .= "_d";
             }
-            $v = $aDataRow["docid"]; 
-        } else { 
-            return '&nbsp;'; 
+            $v = $aDataRow["docid"];
+        } else {
+            return '&nbsp;';
         }
-        
+
         return '<input type="radio" name="' . $localname . '" value="' . $v . '"/>';
     }
 
     // no label, but we do have a title
     function getName() {
         return _kt("Single Selection");
-    }    
+    }
 }
 
 
@@ -389,16 +389,16 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
 
     function AdvancedWorkflowColumn() {
         $this->label = _kt("Workflow State");
-        $this->sortable = false;        
+        $this->sortable = false;
     }
-    
+
     // use inline, since its just too heavy to even _think_ about using smarty.
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         // only _ever_ show this for documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow["type"] === "folder") {
             return '&nbsp;';
         }
-        
+
         $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($aDataRow['document']);
         $oState = KTWorkflowUtil::getWorkflowStateForDocument($aDataRow['document']);
         if (($oState == null) || ($oWorkflow == null)) {
@@ -415,21 +415,21 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
 class AdvancedDownloadColumn extends AdvancedColumn {
 
     var $namespace = 'ktcore.columns.download';
-    
+
     function AdvancedDownloadColumn() {
         $this->label = null;
     }
 
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         // only _ever_ show this for documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow["type"] === "folder") {
             return '&nbsp;';
         }
-    
+
         $link = KTUtil::ktLink('action.php','ktcore.actions.document.view', 'fDocumentId=' . $aDataRow['document']->getId());
         return sprintf('<a href="%s" class="ktAction ktDownload" title="%s">%s</a>', $link, _kt('Download Document'), _kt('Download Document'));
     }
-    
+
     function getName() { return _kt('Download'); }
 }
 
@@ -437,17 +437,17 @@ class AdvancedDownloadColumn extends AdvancedColumn {
 class DocumentIDColumn extends AdvancedColumn {
     var $bSortable = false;
     var $namespace = 'ktcore.columns.docid';
-    
+
     function DocumentIDColumn() {
         $this->label = _kt("Document ID");
     }
 
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         // only _ever_ show this for documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow["type"] === "folder") {
             return '&nbsp;';
         }
-    
+
         return htmlentities($aDataRow['document']->getId(), ENT_NOQUOTES, 'UTF-8');
     }
 }
@@ -455,21 +455,21 @@ class DocumentIDColumn extends AdvancedColumn {
 class ContainingFolderColumn extends AdvancedColumn {
 
     var $namespace = 'ktcore.columns.containing_folder';
-    
+
     function ContainingFolderColumn() {
         $this->label = _kt("View Folder");
     }
 
-    function renderData($aDataRow) { 
+    function renderData($aDataRow) {
         // only _ever_ show this for documents.
-        if ($aDataRow["type"] === "folder") { 
+        if ($aDataRow["type"] === "folder") {
             return '&nbsp;';
         }
-    
+
         $link = KTBrowseUtil::getUrlForFolder($aDataRow['document']->getFolderId());
         return sprintf('<a href="%s" class="ktAction ktMoveUp" title="%s">%s</a>', $link, _kt('View Folder'), _kt('View Folder'));
     }
-    
+
     function getName() { return _kt('Opening Containing Folder'); }
 }
 
