@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Transaction History{/i18n}:<br />{$document->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Transaction History{/i18n}:<br />{$document->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 
@@ -20,10 +20,10 @@
                 <td class="username">{$aTransactionRow.user_name}</td>
                 <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>
-                <td class="contentversion">{$aTransactionRow.version}</td>                
-                <td class="comment">{$aTransactionRow.comment}</td>
+                <td class="contentversion">{$aTransactionRow.version}</td>
+                <td class="comment">{$aTransactionRow.comment|sanitize}</td>
             </tr>
             {/foreach}
         </tbody>
-        
+
     </table>
