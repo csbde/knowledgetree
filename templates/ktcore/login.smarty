@@ -3,12 +3,12 @@
 <html>
 <head>
     <title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>
-    
+
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
     <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
-    
+    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-ie-icons.css" type="text/css" />
 
     <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js"> </script>
@@ -30,13 +30,13 @@
 			        {if ($errorMessage == null)}
 					    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
 					{else}
-					    <div class="ktErrorMessage"><span>{$errorMessage}</span></div>
+					    <div class="ktErrorMessage"><span>{$errorMessage|sanitize}</span></div>
 					{/if}
 		        	<label for="username">{i18n}Username{/i18n}</label>
 					<input type="text" id="username" name="username"/>
 					<label for="password">{i18n}Password{/i18n}</label>
 					<input type="password" id="password" name="password"/>
-	
+
 					<label for="language">{i18n}Language{/i18n}</label>
 					<select id="language" name="language">
 					{foreach from=$languages key=sLang item=sLanguageName}
@@ -55,7 +55,7 @@
 			{/if}
 			<p class="descriptiveText version">
 				{i18n arg_appname="$appname"}#appname# Version{/i18n}<br />{$versionName}<br/>
-				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n} 
+				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
 			</p>
 	        <div id="bottomspacer"></div>
 	        <div class="floatClear"></div>
