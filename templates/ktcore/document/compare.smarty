@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Version Comparison{/i18n}:<br />{$context->oDocument->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Version Comparison{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
 
 {capture assign=from}
 <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> ({$document->getMetadataVersion()})
@@ -24,7 +24,7 @@ note{/i18n}:</strong> {i18n arg_version=$to arg_appname="$appname"}the informati
 #version# comes from an older version of #appname# and may be
 incorrect.{/i18n}
 {/if}
-  
+
 {foreach item=oFieldset from=$fieldsets}
 {$oFieldset->renderComparison($document_data, $comparison_data)}
 {/foreach}
