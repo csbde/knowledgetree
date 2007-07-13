@@ -1,22 +1,22 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Resolved permissions per user{/i18n}: {$context->oFolder->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Resolved permissions per user{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page shows the permissions that
 individual users have on this folder.  Only the users which have permissions
-assigned are shown.{/i18n}</p> 
+assigned are shown.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}Users may have permissions on this
 folder due to membership of a group, or fulfilling a specific role on
-this folder.{/i18n}</p> 
+this folder.{/i18n}</p>
 
 {if (empty($users)) }
 <div class="ktInfoMessage"><span>{i18n}No users have permissions on this item.{/i18n}</span></div>
 {else}
 
 {if $edit}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a> 
-| <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a> 
+{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a>
+| <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a>
 {else}
-{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a> 
+{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a>
 {/if}
 
 <table   class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">
