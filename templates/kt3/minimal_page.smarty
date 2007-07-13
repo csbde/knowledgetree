@@ -3,12 +3,12 @@
 <html>
 <head>
     <title>{$page->title} | {$page->systemName}</title>
-    
+
     <!-- CSS Files. -->
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
-    
+
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
        <style>
@@ -56,7 +56,7 @@
         FIXME:  page does not set user.
         {/if}
         &middot;
-        
+
 
         {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
          {if ($aMenuItem.active == 1)}
@@ -76,20 +76,20 @@
 <span class="additional">{i18n}You are here{/i18n}: </span>
 {if ($page->breadcrumbSection !== false)}
    {if ($page->breadcrumbSection.url) }
-        <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a> 
+        <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a>
    {else}
-        <span  class="primary">{$page->breadcrumbSection.label}</span> 
+        <span  class="primary">{$page->breadcrumbSection.label}</span>
    {/if}
 {/if}
 {if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
-&raquo; 
+&raquo;
 {/if}
 {if ($page->breadcrumbs !== false)}
   {foreach item=aCrumb from=$page->breadcrumbs name=bc}
      {if ($aCrumb.url) }
-        <a href="{$aCrumb.url}">{$aCrumb.label}</a> 
+        <a href="{$aCrumb.url}">{$aCrumb.label|sanitize}</a>
      {else}
-        <span>{$aCrumb.label}</span> 
+        <span>{$aCrumb.label|sanitize}</span>
      {/if}
      {if (!$smarty.foreach.bc.last)}
         &raquo;
@@ -97,7 +97,7 @@
   {/foreach}
 {/if}
 {if ($page->breadcrumbDetails !== false)}
-<span class="additional">({$page->breadcrumbDetails})</span> 
+<span class="additional">({$page->breadcrumbDetails})</span>
 {/if}
 </div>
 
