@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Details{/i18n}:<br />{$context->oDocument->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Details{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
 
 {if ($document->getIsCheckedOut() == 1)}
 {capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
@@ -9,18 +9,18 @@
 {else}
 {if ($canCheckin)}
 <div class="ktInfoMessage">
-<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you 
+<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
 have sufficient priviledges to cancel their checkout.{/i18n}</span>
 </div>
 {else}
 <div class="ktInfoMessage">
-	<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make 
+	<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
 changes until that user checks it in.  If you have urgent modifications to make, please
 contact your #appname# Administrator.{/i18n}</span>
 </div>
 {/if}
 {/if}
-{/if}    
+{/if}
 
 {if ($document->getImmutable() == true)}
 <div class="ktInfoMessage">
