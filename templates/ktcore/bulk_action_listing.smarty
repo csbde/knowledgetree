@@ -17,8 +17,8 @@
 <tbody>
 {foreach from=$failed.folders item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0}</td>
-        <td>{$item.1}</td>
+        <td>{$item.0|sanitize}</td>
+        <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
 </tbody>
@@ -43,8 +43,8 @@
 
 {foreach from=$failed.documents item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0}</td>
-        <td>{$item.1}</td>
+        <td>{$item.0|sanitize}</td>
+        <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
 </tbody>
@@ -59,7 +59,7 @@
 <h3>{i18n}Folders{/i18n}</h3>
 <ul>
 {foreach from=$folders item=folder}
-<li>{$folder}</li>
+<li>{$folder|sanitize}</li>
 {/foreach}
 </ul>
 {/if}
@@ -68,7 +68,7 @@
 <h3>{i18n}Documents{/i18n}</h3>
 <ul>
 {foreach from=$documents item=document}
-<li>{$document}</li>
+<li>{$document|sanitize}</li>
 {/foreach}
 </ul>
 {/if}
