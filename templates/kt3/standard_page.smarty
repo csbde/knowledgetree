@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html> 
+<html>
 <head>
     <title>{$page->title}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title}{/if} | {$page->systemName}</title>
-    
+
     <!-- CSS Files. -->
-    
+
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
@@ -14,17 +14,17 @@
 	<link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
 	{/foreach}
     {/if}
-    
+
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
            media="print" />
 
     <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon"> 
+    <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
 
 {if $refreshTimeout}
        <meta http-equiv="refresh" content="{$refreshTimeout}" />
 {/if}
-    
+
     <!-- evil CSS workarounds - inspired by Plone's approach -->
     <!-- Internet Explorer CSS Fixes -->
     <!--[if lt IE 7]>
@@ -37,7 +37,7 @@
     	{/foreach}
 	    {/if}
     <![endif]-->
-    
+
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
        <style>
@@ -89,7 +89,7 @@
 	                                {/if}
 	                                    <li><div id="menu_divider"></div></li>
 	                            {/foreach}
-	        					
+
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                                {if ($page->user)}
@@ -121,20 +121,20 @@
                     <span class="additional">{i18n}You are here{/i18n}: </span>
                     {if ($page->breadcrumbSection !== false)}
                         {if ($page->breadcrumbSection.url) }
-                            <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a> 
+                            <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
                         {else}
-                            <span  class="primary">{$page->breadcrumbSection.label}</span> 
+                            <span  class="primary">{$page->breadcrumbSection.label|sanitize}</span>
                         {/if}
                     {/if}
                     {if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
-                        &raquo; 
+                        &raquo;
                     {/if}
                     {if ($page->breadcrumbs !== false)}
                         {foreach item=aCrumb from=$page->breadcrumbs name=bc}
                             {if ($aCrumb.url) }
-                                <a href="{$aCrumb.url}">{$aCrumb.label}</a> 
+                                <a href="{$aCrumb.url}">{$aCrumb.label|sanitize}</a>
                             {else}
-                                <span>{$aCrumb.label|mb_truncate:40:"...":true}</span> 
+                                <span>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
                             {/if}
                             {if (!$smarty.foreach.bc.last)}
                                 &raquo;
@@ -142,7 +142,7 @@
                         {/foreach}
                     {/if}
                     {if ($page->breadcrumbDetails !== false)}
-                        <span class="additional">({$page->breadcrumbDetails})</span> 
+                        <span class="additional">({$page->breadcrumbDetails})</span>
                     {/if}
                 </div>
             {/if}
@@ -175,7 +175,7 @@
 			                        {if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
 			                    </h1>
 			                {/if}
-			
+
 			                <!-- any status / error messages get added here. -->
                 {if (!empty($page->errStack))}
                     <div class="ktError">
@@ -187,7 +187,7 @@
                         <div class="error_dashlet_topleft_small"></div>
 			            <div class="error_dashlet_toprepeat_small"></div>
 			        	<div class="error_dashlet_topright_small"></div>
-			        	
+
 			        	<div class="error_dashlet_bottomleft"></div>
 			            <div class="error_dashlet_bottomrepeat_small"></div>
 			        	<div class="error_dashlet_bottomright"></div>
@@ -204,7 +204,7 @@
                         <div class="info_dashlet_topleft_small"></div>
 			            <div class="info_dashlet_toprepeat_small"></div>
 			        	<div class="info_dashlet_topright_small"></div>
-			        	
+
 			        	<div class="info_dashlet_bottomleft"></div>
 			            <div class="info_dashlet_bottomrepeat_small"></div>
 			        	<div class="info_dashlet_bottomright"></div>
@@ -237,6 +237,6 @@
 		</table>
         <div class="floatClear"></div>
     </div>
-</div> 
+</div>
 </body>
 </html>
