@@ -14,14 +14,14 @@ confirm that you want to restore these documents.{/i18n}</span></div>
     <tr>
 
       <th>{i18n}Document Name{/i18n}</th>
-      <th>{i18n}Restore To{/i18n}</th>      
+      <th>{i18n}Restore To{/i18n}</th>
     </tr>
   </thead>
   <tbody>
     {foreach item=oDoc from=$documents}
     <tr>
-      <td>{$oDoc->getName()}<input type="hidden" name="selected_docs[]" value="{$oDoc->getId()}" /></td>
-      <td>{$context->getRestoreLocationFor($oDoc)}</td>      
+      <td>{$oDoc->getName()|sanitize}<input type="hidden" name="selected_docs[]" value="{$oDoc->getId()}" /></td>
+      <td>{$context->getRestoreLocationFor($oDoc)}</td>
     </tr>
     {/foreach}
   </tbody>
