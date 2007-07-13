@@ -8,9 +8,9 @@
     <table class="metadatatable" cellspacing="0" cellpadding="5">
     <tr class="even first">
         <th>{i18n}Document Filename{/i18n}</th>
-        <td>{$filename|wordwrap:40:"\n":true} ({$context->_sizeHelper($document->getSize())})</td>
+        <td>{$filename|wordwrap:40:"\n":true|sanitize} ({$context->_sizeHelper($document->getSize())})</td>
     </tr>
-    
+
     <tr class="odd">
         <th>{i18n}File is a{/i18n}</th>
         <td>{$context->_mimeHelper($document->getMimeTypeID())}</td>
@@ -20,7 +20,7 @@
         <th>{i18n}Document Version{/i18n}</th>
         <td>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</td>
     </tr>
-        
+
     <tr class="odd">
         <th>{i18n}Created by{/i18n}</th>
         <td>{$creator} ({$creation_date})</td>

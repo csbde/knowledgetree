@@ -7,17 +7,17 @@
         {i18n arg_name=$name}This is the data assigned to the
 <strong>#name#</strong> aspect of this document.{/i18n}
     </p>
-    
+
     <table class="metadatatable versioned" cellspacing="0" cellpadding="5">
       {foreach item=aFieldPair from=$fieldset_values name=fields}
     <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
         <th>{$aFieldPair.field->getName()}</th>
         <td class="current {if ($aFieldPair.current_value != $aFieldPair.previous_value)}different{/if}">
-            {if ($aFieldPair.current_value !== null)}{$aFieldPair.current_value}
+            {if ($aFieldPair.current_value !== null)}{$aFieldPair.current_value|sanitize}
             {else}<span class="descriptiveText">{i18n}no value in this version{/i18n}</span>{/if}</td>
         <td class="previous {if ($aFieldPair.current_value != $aFieldPair.previous_value)}different{/if}">
-            {if ($aFieldPair.previous_value !== null)}{$aFieldPair.previous_value}
-            {else}<span class="descriptiveText">{i18n}no value in this version{/i18n}</span>{/if}</td>            
+            {if ($aFieldPair.previous_value !== null)}{$aFieldPair.previous_value|sanitize}
+            {else}<span class="descriptiveText">{i18n}no value in this version{/i18n}</span>{/if}</td>
     </tr>
       {/foreach}
     </table>
