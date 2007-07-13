@@ -20,7 +20,7 @@ state.{/i18n}</span></div>
   <tbody>
     {foreach item=oDoc from=$documents}
     <tr>
-      <td>{$oDoc->getName()}<input type="hidden" name="selected_docs[]" value="{$oDoc->getId()}" /></td>
+      <td>{$oDoc->getName()|sanitize}<input type="hidden" name="selected_docs[]" value="{$oDoc->getId()}" /></td>
       <td class="descriptiveText">{$oDoc->getDisplayPath()}</td>
     </tr>
     {/foreach}
