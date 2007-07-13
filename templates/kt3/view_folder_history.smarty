@@ -19,9 +19,9 @@
                 <td class="username">{$aTransactionRow.user_name}</td>
                 <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>
-                <td class="comment">{$aTransactionRow.comment}</td>
+                <td class="comment">{$aTransactionRow.comment|sanitize}</td>
             </tr>
             {/foreach}
         </tbody>
-        
+
     </table>
