@@ -7,20 +7,20 @@
 
     <table class="metadatatable versioned" cellspacing="0" cellpadding="5">
 
-{capture assign="oldval"}{$comparison_title}{/capture}
-{capture assign="newval"}{$title}{/capture}    
+{capture assign="oldval"}{$comparison_title|sanitize}{/capture}
+{capture assign="newval"}{$title|sanitize}{/capture}
     <tr class="odd first">
         <th>{i18n}Document Title{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
-    
-{capture assign="oldval"}{$comparison_filename} ({$context->_sizeHelper($comparison_document->getSize())}){/capture}
-{capture assign="newval"}{$filename} ({$context->_sizeHelper($document->getSize())}){/capture}
+
+{capture assign="oldval"}{$comparison_filename|sanitize} ({$context->_sizeHelper($comparison_document->getSize())}){/capture}
+{capture assign="newval"}{$filename|sanitize} ({$context->_sizeHelper($document->getSize())}){/capture}
     <tr class="even">
         <th>{i18n}Document Filename{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
 
 {capture assign="oldval"}{$context->_mimeHelper($comparison_document->getMimeTypeID())}{/capture}
@@ -28,17 +28,17 @@
     <tr class="odd">
         <th>{i18n}File is a{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
-        
+
 {capture assign="oldval"}{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()}{/capture}
 {capture assign="newval"}{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}{/capture}
     <tr class="even">
         <th>{i18n}Document Version{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
-        
+
     <tr class="odd">
         <th>{i18n}Created by{/i18n}</th>
         <td colspan="2">{$creator} ({$creation_date}) <span class="descriptiveText">({i18n}this cannot change between versions{/i18n})</td>
@@ -54,15 +54,15 @@
     <tr class="odd">
         <th>{i18n}Last update by{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
 
 {capture assign="oldval"}{$comparison_document_type}{/capture}
-{capture assign="newval"}{$document_type}{/capture}    
+{capture assign="newval"}{$document_type}{/capture}
     <tr class="even">
         <th>{i18n}Document Type{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
 
 {capture assign="oldval"}{if $comparison_workflow_state}
@@ -78,7 +78,7 @@
     <tr class="odd">
         <th>{i18n}Workflow status{/i18n}</th>
         <td class="current {if ($oldval != $newval)}different{/if}">{$newval}</td>
-        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>        
+        <td class="previous {if ($oldval != $newval)}different{/if}">{$oldval}</td>
     </tr>
 
     <tr class="even">

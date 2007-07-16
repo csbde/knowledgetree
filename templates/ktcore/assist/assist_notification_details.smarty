@@ -6,9 +6,9 @@
 
 <dl>
 <dt>{i18n}Subject{/i18n}</dt>
-<dd>{$subject}</dd>
+<dd>{$subject|sanitize}</dd>
 <dt>{i18n}Details{/i18n}</dt>
-<dd>{$details} </dd>
+<dd>{$details|sanitize} </dd>
 </dl>
 
     <div class="actionoptions">

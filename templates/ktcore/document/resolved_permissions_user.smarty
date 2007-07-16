@@ -1,12 +1,12 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Resolved permissions per user{/i18n}:<br />{$context->oDocument->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Resolved permissions per user{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page shows the permissions that
 individual users have on this document.  Only the users which have permissions
-assigned are shown.{/i18n}</p> 
+assigned are shown.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}Users may have permissions on this
 document due to membership of a group, or fulfilling a specific role on
-this document.{/i18n}</p> 
+this document.{/i18n}</p>
 
 {if (empty($users)) }
 <div class="ktInfoMessage"><span>{i18n}No users have permissions on this item.{/i18n}</span></div>

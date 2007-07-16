@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Links{/i18n}:<br />{$context->oDocument->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Document Links{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}The current links to and from this document are displayed below.{/i18n}</p>
 
@@ -12,15 +12,15 @@
             <th>{i18n}Relationship{/i18n}</th>
         </tr>
     </thead>
-    
+
     <tbody>
 
 
 
 
 
-{if $links_from || $links_to}    
-    
+{if $links_from || $links_to}
+
 {foreach from=$links_from item=link}
 
 {assign var="type" value=$link->getLinkType()}
@@ -35,12 +35,12 @@
             {/if}
             </td>
 
-            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
+            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
             <td>{$type->getName()}</td>
             <td>{i18n}Linked <b>from</b> this document{/i18n}</td>
         </tr>
-        
-{/foreach}      
+
+{/foreach}
 
 {foreach from=$links_to item=link}
 
@@ -55,13 +55,13 @@
                 &nbsp;
             {/if}
             </td>
-            
-            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()}</a></td> 
+
+            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
             <td>{$type->getName()}</td>
             <td>{i18n}Links <b>to</b> this document{/i18n}</td>
         </tr>
-        
-{/foreach}      
+
+{/foreach}
 
 
 {else}

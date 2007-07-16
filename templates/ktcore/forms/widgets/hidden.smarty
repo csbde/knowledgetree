@@ -1,1 +1,1 @@
-  <input type="hidden" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value}"{/if}/>
+  <input type="hidden" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value|sanitize_input}"{/if}/>

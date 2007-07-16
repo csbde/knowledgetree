@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -42,76 +42,76 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentmetadataversion.inc.php')
 
 class Document {
     var $iId;
-    
+
     var $_oDocumentCore = null;
     var $_oDocumentContentVersion = null;
     var $_oDocumentMetadataVersion = null;
-    
+
     var $iCurrentMetadataVersionId = null;
 
     // {{{ getters/setters
 
     // locally stored info.
-    
+
     function getId() { return $this->iId; }
-    
+
     // Document Core
-    
+
     function getFolderID() { return $this->_oDocumentCore->getFolderId(); }
     function setFolderID($iNewValue) { $this->_oDocumentCore->setFolderId($iNewValue); }
 
     function getFullPath() { return $this->_oDocumentCore->getFullPath(); }
-    
+
     function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
     function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
-    
+
     function getOwnerID() { return $this->_oDocumentCore->getOwnerId(); }
     function setOwnerID($iNewValue) { $this->_oDocumentCore->setOwnerId($iNewValue); }
-    
+
     function getLastModifiedDate() { return $this->_oDocumentCore->getLastModifiedDate(); }
     function setLastModifiedDate($dNewValue) { $this->_oDocumentCore->setLastModifiedDate($dNewValue); }
-    
+
     function getCreatedDateTime() { return $this->_oDocumentCore->getCreatedDateTime(); }
-    
+
     function getIsCheckedOut() { return $this->_oDocumentCore->getIsCheckedOut(); }
     function setIsCheckedOut($bNewValue) { $this->_oDocumentCore->setIsCheckedOut(KTUtil::anyToBool($bNewValue)); }
-    
+
     function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
     function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
-    
+
     function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
     function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
-    
+
     function getPermissionLookupID() { return $this->_oDocumentCore->getPermissionLookupId(); }
     function setPermissionLookupID($iNewValue) { $this->_oDocumentCore->setPermissionLookupId($iNewValue); }
-        
+
     function getModifiedUserId() { return $this->_oDocumentCore->getModifiedUserId(); }
     function setModifiedUserId($iNewValue) { $this->_oDocumentCore->setModifiedUserId($iNewValue); }
 
     function getImmutable() { return $this->_oDocumentCore->getImmutable(); }
     function setImmutable($mValue) { $this->_oDocumentCore->setImmutable($mValue); }
-    
+
     function getRestoreFolderId() { return $this->_oDocumentCore->getRestoreFolderId(); }
-    function setRestoreFolderId($iValue) { $this->_oDocumentCore->setRestoreFolderId($iValue); }    
+    function setRestoreFolderId($iValue) { $this->_oDocumentCore->setRestoreFolderId($iValue); }
 
     function getRestoreFolderPath() { return $this->_oDocumentCore->getRestoreFolderPath(); }
-    function setRestoreFolderPath($sValue) { $this->_oDocumentCore->setRestoreFolderPath($sValue); }    
-    
-    
+    function setRestoreFolderPath($sValue) { $this->_oDocumentCore->setRestoreFolderPath($sValue); }
+
+
     // Document Metadata Items
-    
+
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
     function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
-    
+
     function getName() { return $this->_oDocumentMetadataVersion->getName(); }
     function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
 
     function getDescription() { return $this->_oDocumentMetadataVersion->getDescription(); }
     function setDescription($sNewValue) { $this->_oDocumentMetadataVersion->setDescription($sNewValue); }
-    
+
     function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
     function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
-    
+
     function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
     function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->getMetadataVersion($iNewValue); }
 
@@ -120,7 +120,7 @@ class Document {
 
     function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
     function setContentVersionId($iNewValue) { $this->_oDocumentMetadataVersion->setContentVersionId($iNewValue); }
-    
+
     function getVersionCreated() { return $this->_oDocumentMetadataVersion->getVersionCreated(); }
     function getVersionCreatorId() { return $this->_oDocumentMetadataVersion->getVersionCreatorId(); }
 
@@ -129,29 +129,29 @@ class Document {
     function getWorkflowStateId() { return $this->_oDocumentMetadataVersion->getWorkflowStateId(); }
     function setWorkflowStateId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowStateId($mValue); }
 
-    // Document Content Version   
-    
+    // Document Content Version
+
     function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
     function setFileName($sNewValue) { $this->_oDocumentContentVersion->setFileName($sNewValue); }
-    
+
     function getFileSize() { return $this->_oDocumentContentVersion->getSize(); }
     function setFileSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
-    
+
     function getSize() { return $this->_oDocumentContentVersion->getSize(); }
     function setSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
-    
+
     function getMimeTypeID() { return $this->_oDocumentContentVersion->getMimeTypeId(); }
     function setMimeTypeID($iNewValue) { $this->_oDocumentContentVersion->setMimeTypeId($iNewValue); }
-    
+
     function getMajorVersionNumber() { return $this->_oDocumentContentVersion->getMajorVersionNumber(); }
     function setMajorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMajorVersionNumber($iNewValue); }
-    
+
     function getMinorVersionNumber() { return $this->_oDocumentContentVersion->getMinorVersionNumber(); }
     function setMinorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMinorVersionNumber($iNewValue); }
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
-    
+
     // }}}
 
     // {{{ getParentID
@@ -190,10 +190,10 @@ class Document {
     function update($bPathMove = false) {
         $res = $this->_oDocumentCore->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
-        
+
         $res = $this->_oDocumentContentVersion->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
-        
+
         $res = $this->_oDocumentMetadataVersion->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
 
@@ -209,7 +209,7 @@ class Document {
         $iId = (int)$iId;
         $oDocument = new Document();
         $res = $oDocument->load($iId, $iMetadataVersion);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         }
         return $oDocument;
@@ -221,21 +221,21 @@ class Document {
         $this->iId = $iId;
         $this->_oDocumentCore = KTDocumentCore::get($iId);
         if (PEAR::isError($this->_oDocumentCore)) { return $this->_oDocumentCore; }
-        
+
         // FIXME add error $res if MDV > $_oDC->getMDV
-        if (is_null($iMetadataVersionId)) { 
-            $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId()); 
+        if (is_null($iMetadataVersionId)) {
+            $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId());
             $this->iCurrentMetadataVersionId = $this->_oDocumentCore->getMetadataVersionId();
         } else {
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($iMetadataVersionId);
             $this->iCurrentMetadataVersionId = $iMetadataVersionId;
         }
-        if (PEAR::isError($this->_oDocumentMetadataVersion)) 
-        { 
-        //	var_dump($this->_oDocumentMetadataVersion); 
-        	return $this->_oDocumentMetadataVersion; 
+        if (PEAR::isError($this->_oDocumentMetadataVersion))
+        {
+        //	var_dump($this->_oDocumentMetadataVersion);
+        	return $this->_oDocumentMetadataVersion;
         }
-        
+
         $this->_oDocumentContentVersion = KTDocumentContentVersion::get($this->_oDocumentMetadataVersion->getContentVersionId());
         if (PEAR::isError($this->_oDocumentContentVersion)) { return $this->_oDocumentContentVersion; }
     }
@@ -278,7 +278,7 @@ class Document {
         $sFolderPath = Folder::getFolderDisplayPath($this->getFolderID());
         // #3425 for consistency
         return ($bDisplayIcon ? $this->getIcon() : "") .
-           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " &raquo; " . $this->getName();
+           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " &raquo; " . sanitizeForHTML($this->getName());
     }
     // }}}
 
@@ -308,7 +308,7 @@ class Document {
         return true;
     }
     // }}}
-    
+
     function &getByFilenameAndFolder($sFileName, $iFolderID) {
         $sD = KTUtil::getTableName('documents');
         $sDM = KTUtil::getTableName('document_metadata_version');
@@ -319,7 +319,7 @@ class Document {
             WHERE DC.filename = ? AND D.folder_id = ?";
         $aParams = array($sFileName, $iFolderID);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-        return Document::get($id);   
+        return Document::get($id);
     }
 
     // {{{ nameExists
@@ -359,7 +359,7 @@ class Document {
             WHERE DM.name = ? AND D.folder_id = ?";
         $aParams = array($sName, $iFolderID);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-        return Document::get($id);   
+        return Document::get($id);
     }
 
     // {{{ getDocumentDisplayPath
@@ -384,7 +384,7 @@ class Document {
         // FIXME this appears to be deprecated, or at least should be
         $sTable = KTUtil::getTableName('document_text');
         $sQuery = "DELETE FROM $sTable WHERE document_id = ?";
-        $aParams = array($iDocumentID);        
+        $aParams = array($iDocumentID);
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         return $res;
     }
@@ -397,7 +397,7 @@ class Document {
             'permission_lookup_id' => $iLookupID,
             'status_id' => LIVE,
         ), array('multi' => true, 'ids' => true));
-        
+
         $aList = array();
         foreach ($aIds as $iId) {
             $aList[] = Document::get($iId);
@@ -418,7 +418,7 @@ class Document {
 
         $aParams = array($iStateId);
         $aIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'document_id');
-        
+
         $aList = array();
         foreach ($aIds as $iId) {
             $aList[] = Document::get($iId);
@@ -442,19 +442,19 @@ class Document {
         */
         $oDocument = new Document();
         $aOptions = array_change_key_case($aOptions);
-        
-        
+
+
         $aCoreKeys = array(
             "CreatorId",
             "Created",
             "ModifiedUserId",
             "Modified",
-            "FolderId", 
+            "FolderId",
             "StatusId",
-            "RestoreFolderId",            
+            "RestoreFolderId",
             "RestoreFolderPath",
         );
-        
+
         $aCore = array();
         foreach ($aCoreKeys as $sKey) {
             $sKey = strtolower($sKey);
@@ -463,7 +463,7 @@ class Document {
                 $aCore[$sKey] = $sValue;
             }
         }
-        
+
         $aMetadataVersionKeys = array(
             "MetadataVersion",
             "ContentVersionId",
@@ -474,7 +474,7 @@ class Document {
             "VersionCreated",
             "VersionCreatorId",
         );
-        
+
         $aMetadataVersion = array();
         foreach ($aMetadataVersionKeys as $sKey) {
             $sKey = strtolower($sKey);
@@ -484,7 +484,7 @@ class Document {
             }
         }
         $aMetadataVersion['VersionCreatorId'] = $aCore['creatorid'];
-        
+
         $aContentKeys = array(
             "Filename",
             "Size",
@@ -493,7 +493,7 @@ class Document {
             "MinorVersion",
             "StoragePath",
         );
-        
+
         $aContentVersion = array();
         foreach ($aContentKeys as $sKey) {
             $sKey = strtolower($sKey);
@@ -501,8 +501,8 @@ class Document {
             if (!is_null($sValue)) {
                 $aContentVersion[$sKey] = $sValue;
             }
-        }        
-        
+        }
+
         $oDocument->_oDocumentCore = KTDocumentCore::createFromArray($aCore);
         if (PEAR::isError($oDocument->_oDocumentCore)) {
             return $oDocument->_oDocumentCore;
@@ -592,11 +592,11 @@ class Document {
     // }}}
 
     function clearAllCaches() {
-        
+
         KTEntityUtil::clearAllCaches('KTDocumentCore');
         KTEntityUtil::clearAllCaches('KTDocumentContentVersion');
         KTEntityUtil::clearAllCaches('KTDocumentMetadataVersion');
-        
+
         return KTEntityUtil::clearAllCaches('Document');
     }
 
@@ -606,7 +606,7 @@ class Document {
 
         $sQuery = sprintf("SELECT comment FROM %s
                            WHERE transaction_namespace = ? AND document_id = ?
-                           ORDER BY datetime DESC", 
+                           ORDER BY datetime DESC",
 			  $sDocumentTransactionTable, $sDocumentMetadataTable);
 
 	$aParams = array($sTransactionNamespace, $this->getId());
@@ -628,10 +628,10 @@ class Document {
 	$aComment = explode(':', $sComment);
 	return trim($aComment[1]);
     }
-    
 
 
 
-	
+
+
 }
 ?>

@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{$context->getDisplayName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{$context->getDisplayName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}These are the results of the bulk action{/i18n}:</p>
 
@@ -17,8 +17,8 @@
 <tbody>
 {foreach from=$list.folders item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0}</td>
-        <td>{$item.1}</td>
+        <td>{$item.0|sanitize}</td>
+        <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
 </tbody>
@@ -42,8 +42,8 @@
 
 {foreach from=$list.documents item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0}</td>
-        <td>{$item.1}</td>
+        <td>{$item.0|sanitize}</td>
+        <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
 </tbody>

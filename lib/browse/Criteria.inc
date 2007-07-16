@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -92,7 +92,7 @@ class BrowseCriterion {
     }
 
     function parameterDisplay($aData) {
-	return sprintf("%s %s", $this->baseParameterDisplay(), $aData[$this->getWidgetBase()]);
+	return sprintf("%s %s", $this->baseParameterDisplay(), htmlentities($aData[$this->getWidgetBase()],ENT_QUOTES, 'UTF-8'));
     }
 
     function folderQuery ($iParentID, $sSortDirection) {
@@ -144,7 +144,7 @@ class BrowseCriterion {
             // $sSortField = $this->getSortField();
             $documentQuery .= "ORDER BY " . $this->getSortField() . " " . $sSortDirection;
         }
-        
+
         return array($documentQuery, $aParams);
     }
 
@@ -176,7 +176,7 @@ class BrowseCriterion {
     function getID() {
         return $this->iID;
     }
-    
+
     function getNameSpace() {
 	return $this->sNamespace;
     }
@@ -203,10 +203,10 @@ class BrowseCriterion {
             return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
         }
     }
-    
+
     function getNotWidget($aPreValue=null) {
         if (!$this->bHandleNot) { return ''; }
-        
+
         // not perfect, but acceptable.
         $form_name = $this->getWidgetBase() . '_not';
         $pos_select = '';
@@ -229,7 +229,7 @@ class BrowseCriterion {
             $is_string = _kt('is');
         } else {
             $not_string = _kt('does not contain');
-            $is_string = _kt('contains');        
+            $is_string = _kt('contains');
         }
         $widget = sprintf('<select name="%s"><option value="0"%s>%s</option><option value="1"%s>%s</option></select>&nbsp;', $form_name, $pos_select, $is_string, $neg_select, $not_string);
         return $widget;
@@ -254,14 +254,14 @@ class BrowseCriterion {
         // handle the boolean "not" stuff UNLESS our caller is doing so already.
         if ($handle_not) {
             $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-            
+
             if (is_null($want_invert) || ($want_invert == "0")) { // use explicit "0" check
                 return $val;
             } else {
                 $val[0] = '(NOT (' . $val[0] . '))';
             }
         }
-        
+
         return $val;
     }
 
@@ -276,7 +276,7 @@ class NameCriterion extends BrowseCriterion {
     var $bString = true;
     var $sSearchTable = "DC";
     var $bContains = true;
-    
+
     var $sDocumentField = 'filename';
     var $sSortField = 'filename';
     var $sNamespace = 'ktcore.criteria.name';
@@ -343,7 +343,7 @@ class TitleCriterion extends BrowseCriterion {
     function TitleCriterion() {
         $this->sDisplay = _kt('Document Title');
     }
-    
+
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
     }
@@ -370,7 +370,7 @@ class CreatorCriterion extends BrowseCriterion {
     function CreatorCriterion() {
         $this->sDisplay = _kt('Creator');
     }
-    
+
     function documentDisplay ($oDocument) {
         $oCreator = User::get($oDocument->getCreatorID());
         if ($oCreator) {
@@ -388,7 +388,7 @@ class CreatorCriterion extends BrowseCriterion {
 	$oUser =& User::get($aData[$this->getWidgetBase()]);
 	if(PEAR::isError($oUser)) {
 	    return $sBase . 'unknown user';
-	} 
+	}
 	return $sBase . $oUser->getName();
     }
 
@@ -434,7 +434,7 @@ class DateCreatedCriterion extends BrowseCriterion {
 
 	if($sStart) {
 	    $sDisp .= _kt('after ') .$sStart;
-	} 
+	}
 	if($sStart && $sEnd) {
 	    $sDisp .= _kt(' and ');
 	}
@@ -449,9 +449,9 @@ class DateCreatedCriterion extends BrowseCriterion {
     }
     function searchWidget ($aRequest, $aPreValue = null) {
         global $default;
-        
+
         // IMPORTANT:  this requires the presence of kt3-calendar.js
-        
+
         $sStartWidget = $this->getWidgetBase() . "_start";
         $sEndWidget = $this->getWidgetBase() . "_end";
         /* // legacy code.
@@ -480,8 +480,8 @@ class DateCreatedCriterion extends BrowseCriterion {
         } else {
             $sEnd = $aRequest[$this->getWidgetBase() . "_end"];
         }
-        
-        
+
+
         $val = null;
         if ($sStart && $sEnd) {
             $val = array($this->getSearchTable() . "." . $this->getSearchField() . " BETWEEN ? AND ?", array($sStart, $sEnd));
@@ -491,17 +491,17 @@ class DateCreatedCriterion extends BrowseCriterion {
             $val = array($this->getSearchTable() . "." . $this->getSearchField() . " < ?", array($sEnd));
         } else {
            return null;
-        }  
-        
+        }
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
-        
+
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $val;
         } else {
             $val[0] = '(NOT (' . $val[0] . '))';
         }
-        
+
         // finally
         return $val;
     }
@@ -636,15 +636,15 @@ class GenericMetadataCriterion extends BrowseCriterion {
         $p = parent::searchSQL($aRequest, false); // handle not ourselves.
         $p[0] = join(' AND ', array($p[0], "$this->sSearchTable.document_field_id = ?"));
         $p[1] = array_merge($p[1], array($this->iID));
-        
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }        
-        
+        }
+
         return $p;
     }
 
@@ -671,9 +671,9 @@ class GeneralMetadataCriterion extends BrowseCriterion {
     {
     	$this->sDisplay = _kt('General Metadata');
     }
-    
+
     function documentDisplay ($oDocument) {
-       
+
         return 'General Metadata';
     }
 
@@ -682,11 +682,11 @@ class GeneralMetadataCriterion extends BrowseCriterion {
         return $this->aLookup['field'];
     }
 
-    
+
     function searchSQL ($aRequest) {
-        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR DM.name LIKE '%!%'  )", 
-        array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));       
-        
+        $val = array('('.$this->getSearchTable() . "." .  $this->getSearchField() . " LIKE '%!%' OR DM.name LIKE '%!%'  )",
+        array(DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]),DBUtil::escapeSimple($aRequest[$this->getWidgetBase()])));
+
         return $val;
     }
 
@@ -736,7 +736,7 @@ class SizeCriterion extends BrowseCriterion {
     function SizeCriterion() {
 	$this->sDisplay = _kt('File Size');
     }
-    
+
     function documentDisplay ($oDocument) {
         return $oDocument->getFileSize();
     }
@@ -747,7 +747,7 @@ class SizeCriterion extends BrowseCriterion {
 
     function parameterDisplay($aData) {
 	$sBase = $this->getWidgetBase();
-	return sprintf("%s %s %s %s", $this->baseParameterDisplay(), $this->aCmps[$aData[$sBase.'_not']], $aData[$sBase.'_num'], $this->aTypes[$aData[$sBase.'_type']]);
+	return sprintf("%s %s %s %s", $this->baseParameterDisplay(), $this->aCmps[$aData[$sBase.'_not']], htmlentities($aData[$sBase.'_num'],ENT_QUOTES,'UTF-8'), $this->aTypes[$aData[$sBase.'_type']]);
     }
 
     function searchWidget ($aRequest, $aPreValue = null) {
@@ -763,7 +763,7 @@ class SizeCriterion extends BrowseCriterion {
 
 	// build number
 	$sNumInput = sprintf('<input type="text" name="%s" value="%s"/>', $sNumWidget, KTUtil::arrayGet($aPreValue, $sNumWidget, ''));
-	       
+
 
 	// build type selection widget
 	$sTypeSelect = '<select name="'.$sTypeWidget.'">';
@@ -802,8 +802,8 @@ class ContentCriterion extends BrowseCriterion {
 
     function ContentCriterion() {
 	$this->sDisplay = _kt('Document Text');
-    }    
-    
+    }
+
     function documentDisplay ($oDocument) {
         return "Document Text";
     }
@@ -812,7 +812,7 @@ class ContentCriterion extends BrowseCriterion {
     }
     function getSearchField () {
         return "document_text";
-    } 
+    }
 
     function searchSQL ($aRequest) {
         $oKTConfig =& KTConfig::getSingleton();
@@ -840,8 +840,8 @@ class ContentCriterion extends BrowseCriterion {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }        
-        
+        }
+
         return $p;
     }
 
@@ -859,8 +859,8 @@ class WorkflowStateCriterion extends BrowseCriterion {
 
     function WorkflowStateCriterion() {
 	$this->sDisplay = _kt('Workflow State');
-    }    
-    
+    }
+
     function documentDisplay ($oDocument) {
         $oState =& KTWorkflowState::getByDocument($oDocument);
         if ($oState) {
@@ -894,14 +894,14 @@ class WorkflowStateCriterion extends BrowseCriterion {
         $p = array();
         $p[0] = "DM.workflow_state_id = ?";
         $p[1] = $aRequest[$this->getWidgetBase()];
-        
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }        
+        }
         return $p;
     }
 
@@ -920,7 +920,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
         foreach ($aStates as $oState) {
             $oWorkflow =& KTWorkflow::get($oState->getWorkflowId());
             $sSelStr = '';
-            if ($preval == $oState->getId()) { $sSelStr = ' selected="true"'; }            
+            if ($preval == $oState->getId()) { $sSelStr = ' selected="true"'; }
             $sRet .= "<option value=\"" . $oState->getId() . "\"" . $sSelStr . ">" . $oWorkflow->getName() . " - " . $oState->getName() . "</option>\n";
         }
         $sRet .= "</select>\n";
@@ -937,9 +937,9 @@ class DiscussionTextCriterion extends BrowseCriterion {
 
     function DiscussionTextCriterion() {
 	$this->sDisplay = _kt('Discussion Threads');
-    }    
-    
-    
+    }
+
+
     function documentDisplay ($oDocument) {
         return "Discussion Threads";
     }
@@ -959,15 +959,15 @@ class DiscussionTextCriterion extends BrowseCriterion {
         $p = array();
         $p[0] = "MATCH(DDCT.body) AGAINST (? $boolean_mode)";
 	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
-        
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }       
-        
+        }
+
         return $p;
     }
 
@@ -989,8 +989,8 @@ class SearchableTextCriterion extends BrowseCriterion {
 
     function SearchableTextCriterion() {
 	$this->sDisplay = _kt('Simple Search Text');
-    }        
-    
+    }
+
     function documentDisplay ($oDocument) {
         return "Simple search text";
     }
@@ -1000,7 +1000,7 @@ class SearchableTextCriterion extends BrowseCriterion {
 
     function getSearchField () {
         return "document_text";
-    } 
+    }
 
     function searchSQL ($aRequest) {
         $oKTConfig =& KTConfig::getSingleton();
@@ -1015,11 +1015,11 @@ class SearchableTextCriterion extends BrowseCriterion {
         } else {
             $boolean_mode = "";
         }
-		
+
 		$p = array();
 		$temp = str_replace('%', '', $aRequest[$this->getWidgetBase()]);
 		$keywords = explode(' ', $temp);
-		
+
 		for($i=0; $i<count($keywords); $i++){
 			if($keywords[$i] == ' ' or $keywords[$i] == ''){
 				continue;
@@ -1036,7 +1036,7 @@ class SearchableTextCriterion extends BrowseCriterion {
 					continue;
 				}
 				$keywords[$i] = '%'.$keywords[$i].'%';
-			}			
+			}
 			$p[0] = "DST.document_text LIKE ? AND DST.document_text LIKE ? ";
 			$p[1] = $keywords;
 		}else{
@@ -1050,8 +1050,8 @@ class SearchableTextCriterion extends BrowseCriterion {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }                
-        
+        }
+
         return $p;
     }
 
@@ -1071,8 +1071,8 @@ class TransactionTextCriterion extends BrowseCriterion {
 
     function TransactionTextCriterion() {
 	$this->sDisplay = _kt('Transaction Text');
-    }        
-    
+    }
+
     function documentDisplay ($oDocument) {
         return "Transaction text";
     }
@@ -1092,15 +1092,15 @@ class TransactionTextCriterion extends BrowseCriterion {
         $p = array();
         $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
 	$p[1] = KTUtil::phraseQuote($aRequest[$this->getWidgetBase()]);
-        
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }       
-        
+        }
+
         return $p;
     }
 
@@ -1118,11 +1118,11 @@ class TagCloudCriterion extends BrowseCriterion {
     var $sSortField = 'tag';
     var $sNamespace = 'ktcore.criteria.tagcloud';
     var $sSearchTable = "TWS" ;
-    
+
     function TagCloudCriterion() {
 	$this->sDisplay = _kt('Tag Cloud');
-    }        
-    
+    }
+
     function documentDisplay ($oDocument) {
         return "Tag Cloud";
     }
@@ -1132,16 +1132,16 @@ class TagCloudCriterion extends BrowseCriterion {
 
     function searchSQL ($aRequest) {
          $p = parent::searchSQL($aRequest, false); // handle not ourselves.
-                
+
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $p;
         } else {
             $p[0] = '(NOT (' . $p[0] . '))';
-        }        
-        
-        return $p;   	
+        }
+
+        return $p;
     }
 
     function searchJoinSQL () {
@@ -1163,14 +1163,14 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
 
     function DateCreatedDeltaCriterion() {
 	$this->sDisplay = _kt('Date Created Delta');
-    }        
+    }
 
-    function parameterDisplay($aData) {	
+    function parameterDisplay($aData) {
 	$sNum = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_num');
 	$sType = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_type');
 	return sprintf('%s %s %s', $this->baseParameterDisplay(), $sNum, $this->aTypes[$sType]);
     }
-    
+
     function searchWidget ($aRequest, $aPreValue = null) {
         $sNumWidget = $this->getWidgetBase() . '_num';
         $sTypeWidget = $this->getWidgetBase() . '_type';
@@ -1196,7 +1196,7 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
 	$sType = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_type');
 
 	$val = array($this->getSearchTable() . "." . $this->getSearchField() . " > SUBDATE(NOW(), INTERVAL ? {$sType})", array($sNum));
-        
+
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');
         if (is_null($want_invert) || ($want_invert == "0")) {
             return $val;
@@ -1215,8 +1215,8 @@ class DateModifiedDeltaCriterion extends DateCreatedDeltaCriterion {
 
     function DateModifiedDeltaCriterion() {
 	$this->sDisplay = _kt('Date Modified Delta');
-    }        
-    
+    }
+
     function documentDisplay ($oDocument) {
         return $oDocument->getLastModifiedDate();
     }

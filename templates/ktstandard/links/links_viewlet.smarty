@@ -3,7 +3,7 @@
     <h3>{i18n}Links from this document{/i18n}</h3>
     <ul>
     {foreach from=$links_from item=info}
-      <li class="descriptiveText">{i18n}from{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name}</a> ({$info.type})</li>
+      <li class="descriptiveText">{i18n}from{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
     {/foreach}
     </ul>
     {/if}
@@ -12,9 +12,9 @@
     <h3>{i18n}Links to this document{/i18n}</h3>
     <ul>
     {foreach from=$links_to item=info}
-      <li class="descriptiveText">{i18n}to{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name}</a> ({$info.type})</li>
+      <li class="descriptiveText">{i18n}to{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
     {/foreach}
     </ul>
     {/if}
-    
+
 </div>

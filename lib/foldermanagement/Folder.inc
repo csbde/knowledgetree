@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -35,7 +35,7 @@ require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class Folder extends KTEntity {
-	
+
 	/** folder primary key */
 	var $iId;
 	/** folder name */
@@ -45,7 +45,7 @@ class Folder extends KTEntity {
 	/** folder parent primary key */
 	var $iParentID;
 	/** primary key of user who created folder */
-	var $iCreatorID;	
+	var $iCreatorID;
 	/** public status of folder */
 	var $bIsPublic = false;
 	/** comma deliminated string of parent ids */
@@ -74,12 +74,12 @@ class Folder extends KTEntity {
         'bRestrictDocumentTypes' => 'restrict_document_types',
     );
     // }}}
-	
+
 	function getID() { return $this->iId; }
 	function getName() { return sanitizeForSQLtoHTML($this->sName); }
 	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
-	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); } 
-	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); } 
+	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
+	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
 	function getParentID() { return $this->iParentID; }
 	function setParentID($iNewValue) { $this->iParentID = $iNewValue; }
 	function getCreatorID() { return $this->iCreatorID; }
@@ -111,7 +111,7 @@ class Folder extends KTEntity {
 
         /**
          * Returns a comma delimited string containing the parent folder ids, strips leading /
-         * 
+         *
          * @return String	comma delimited string containing the parent folder ids
          */
         function generateFolderIDs($iFolderId) {
@@ -136,13 +136,13 @@ class Folder extends KTEntity {
             }
             return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
         }
-	
+
 	/**
 	 * Recursively generates forward slash deliminated string giving full path of document
 	 * from file system root url
 	 */
 	function generateFullFolderPath($iFolderId) {
-		//if the folder is not the root folder 
+		//if the folder is not the root folder
 		if ($iFolderId == 0) {
             return;
         }
@@ -167,13 +167,13 @@ class Folder extends KTEntity {
         }
         return sprintf('%s/%s', $res, $oFolder->getName());
 	}
-	
+
 	/**
 	 * Returns a forward slash deliminated string giving full path of document, strips leading /
-	 */	
+	 */
 	function generateFolderPath($iFolderID) {
 		$sPath = Folder::generateFullFolderPath($iFolderID);
-		return $sPath;			
+		return $sPath;
 	}
 
     function _fieldValues () {
@@ -197,7 +197,7 @@ class Folder extends KTEntity {
         global $default;
         return $default->folders_table;
     }
-	
+
 	/**
 	* Update the current folder values in the database
 	*
@@ -206,7 +206,7 @@ class Folder extends KTEntity {
 	function update($bPathChange = false) {
         $res = parent::update();
         if ($res === true) {
-            if ($bPathChange) {				
+            if ($bPathChange) {
                 // XXX: TransactionCheckPoint
                 $this->updateChildPaths($this->iId);
                 $this->updateDocumentPaths($this->iId);
@@ -214,15 +214,15 @@ class Folder extends KTEntity {
         }
         return $res;
 	}
-	
+
 	function renameFolder($sOldPath) {
 		PhysicalFolderManagement::renameFolder($sOldPath, $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName);
 	}
-	
+
 	/**
 	* When a folder is renamed, we must update
 	* the paths of the children in the database
-	* 
+	*
 	*/
 	function updateChildPaths($iId) {
 		global $default;
@@ -230,7 +230,7 @@ class Folder extends KTEntity {
         $sql = $default->db;
 		$aFolders =& Folder::getByParentId($iId);
 		foreach ($aFolders as $oFolder) {
-			$oFolder->update(true);		
+			$oFolder->update(true);
 		}
 		return;
 	}
@@ -256,7 +256,7 @@ class Folder extends KTEntity {
         }
         return true;
     }
-	
+
     /**
      * Returns the documents in this folder
      */
@@ -270,7 +270,7 @@ class Folder extends KTEntity {
 		}
 		return implode(',', $res);
     }
-	
+
     function &get($iFolderID) {
         return KTEntityUtil::get('Folder', $iFolderID);
     }
@@ -288,7 +288,7 @@ class Folder extends KTEntity {
         }
         return ($res != 0); // handle pre-existing duplicates gracefully.
 	}
-	
+
 	/**
     * Static function
     * Get a list of Documents
@@ -304,13 +304,13 @@ class Folder extends KTEntity {
 	/**
 	* Static function.
 	* Get the full path for a folder
-	* 
-	* @param 	Primary key of folder to generate path for	
+	*
+	* @param 	Primary key of folder to generate path for
 	*
 	* @return String full path of folder
 	*/
 	function getFolderPath($iFolderID) {
-		global $default;		
+		global $default;
 		$oFolder = Folder::get($iFolderID);
 		$sPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName() . "/";
 		return $sPath;
@@ -319,18 +319,18 @@ class Folder extends KTEntity {
 	/**
      * Static function.
      * Get the full path for a folder as an array
-     * 
-     * @param int primary key of folder to generate path for	
+     *
+     * @param int primary key of folder to generate path for
      *
      * @return array full path of folder as an array of folderIDs
      */
     function getFolderPathNamesAsArray($iFolderID) {
 		global $default;
 		$oFolder = Folder::get($iFolderID);
-		$aPathArray = array();		
+		$aPathArray = array();
 		if ($oFolder) {
 			if (strlen($oFolder->getFullPath()) > 0) {
-				if (strlen($oFolder->getFullPath()) > 1) {				
+				if (strlen($oFolder->getFullPath()) > 1) {
 					$aPathArray = explode("/",$oFolder->getFullPath());
 				} else {
 					$aPathArray = array($oFolder->getFullPath());
@@ -348,17 +348,17 @@ class Folder extends KTEntity {
         return Folder::getFolderPathNamesAsArray($this->getID());
     }
     // }}}
-	
+
 	/**
      * Static function.
      * Get the full path for a folder as an array
-     * 
-     * @param int primary key of folder to generate path for	
+     *
+     * @param int primary key of folder to generate path for
      *
      * @return array full path of folder as an array of folderIDs
      */
     function getFolderPathAsArray($iFolderID) {
-		global $default;		
+		global $default;
 		$oFolder = Folder::get($iFolderID);
         if ($oFolder === false) {
             return false;
@@ -366,36 +366,41 @@ class Folder extends KTEntity {
 		if (strlen($oFolder->getParentFolderIDs()) > 0) {
             if ($oFolder->iParentID == 0) {
                 $aPathArray = array();
-            } else if (strlen($oFolder->getParentFolderIDs()) > 1) {				
+            } else if (strlen($oFolder->getParentFolderIDs()) > 1) {
 				$aPathArray = explode(",",$oFolder->getParentFolderIDs());
 			} else {
 				$aPathArray = array($oFolder->getParentFolderIDs());
 			}
 			$aPathArray[count($aPathArray)] = $oFolder->getID();
-		} else {			
+		} else {
 			$aPathArray = array($oFolder->getID());
-		}		
+		}
 		return $aPathArray;
     }
-	
+
 	/**
 	* Static function.
 	* Get the path for a folder that will be displated to the user
-	* 
-	* @param 	Primary key of folder to generate path for	
+	*
+	* @param 	Primary key of folder to generate path for
 	*
 	* @return String full path of folder
 	*/
 	function getFolderDisplayPath($iFolderID) {
 		global $default;
         $aPathNamesArray = Folder::getFolderPathNamesAsArray($iFolderID);
+
+        foreach($aPathNamesArray as $k=>$v)
+        {
+            $aPathNamesArray[$k] = sanitizeForHTML($v);
+        }
         if (count($aPathNamesArray) > 0) {
         	return implode(" &raquo; ", $aPathNamesArray);
         } else {
         	return "";
         }
 	}
-	
+
 	/**
 	* Static function
 	* Get the primary key of the parent folder
@@ -404,14 +409,14 @@ class Folder extends KTEntity {
 	*
 	* @return integer primary key of parent folder
 	*/
-	function getParentFolderID($iFolderID) {		
+	function getParentFolderID($iFolderID) {
 		if ($iFolderID != 0) {
 		    $oFolder = Folder::get($iFolderID);
 			return $oFolder->getParentFolderID();
 		}
 		return 0;
 	}
-	
+
 	/**
 	* Static function
 	* Checks if a given folder already exists using the folder name
@@ -431,7 +436,7 @@ class Folder extends KTEntity {
 		}
 		return false;
 	}
-	
+
 	/**
 	* Checks if a given folder already exists using the folder name
 	*
@@ -441,13 +446,13 @@ class Folder extends KTEntity {
 	*/
 	function folderExistsID($iFolderID) {
 		$oFolder = Folder::get($iFolderID);
-		if (PEAR::isError($oFolder)) { 
+		if (PEAR::isError($oFolder)) {
 		    return false; // no such folder, or bad ID
 		} else {
 		    return true;
 		}
 	}
-	
+
 	/**
 	* Get the folder name using the primary key
 	*
@@ -463,15 +468,15 @@ class Folder extends KTEntity {
 		    return $oFolder->getName();
 		}
 	}
-	
-	
+
+
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(
             'parent_id' => $iParentID,
             'permission_lookup_id' => $iLookupID,
         ), array('multi' => true));
     }
-	
+
 	function getByParentId($iParentID) {
 	    return KTEntityUtil::getByDict('Folder', array(
             'parent_id' => $iParentID,

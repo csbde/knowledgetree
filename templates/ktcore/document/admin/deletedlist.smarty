@@ -7,7 +7,7 @@
 
 <h2>{i18n}Deleted Documents{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view 
+<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view
 but still available for restoration.  Since "soft deletes" consume system resources, it
 is possible to <strong>expunge</strong> these documents.  Alternatively, you
 can <strong>restore</strong> them as necessary.{/i18n}</p>
@@ -30,12 +30,12 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
       <th>{i18n}Last Modification{/i18n}</th>
       <th>{i18n}Deletion Comment{/i18n}</th>
     </tr>
-  </thead>  
+  </thead>
   <tbody id="output">
     {foreach item=oDoc from=$documents}
     <tr>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
-      <td>{$oDoc->getName()}</td>
+      <td>{$oDoc->getName()|sanitize}</td>
 {*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}
       <td>{$oDoc->getLastModifiedDate()}</td>
       <td>{$oDoc->getLastDeletionComment()}</td>
