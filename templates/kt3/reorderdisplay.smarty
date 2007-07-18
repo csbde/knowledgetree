@@ -16,7 +16,7 @@
             <td>
                 <input type="hidden" class="reorder-field" name="position[]" value="{$iPosition}" />
                 <input type="hidden" name="id[]" value="{$aItem.id}" />
-                {$aItem.title}
+                {$aItem.title|sanitize}
             </td>
             <td><a href="#" class="reorder-up ktAction ktMoveUp">&nbsp;</a></td>
             <td><a href="#" class="reorder-down ktAction ktMoveDown">&nbsp;</a></td>
