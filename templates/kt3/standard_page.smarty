@@ -182,7 +182,7 @@
 				    	<div class="error_dashlet_rightrepeat_bottom"></div>
 				    	<div class="error_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sError from=$page->errStack}
-                            <p>{$sError}</p>
+                            <p>{$sError|sanitize}</p>
                         {/foreach}
                         <div class="error_dashlet_topleft_small"></div>
 			            <div class="error_dashlet_toprepeat_small"></div>
@@ -199,7 +199,7 @@
                     	<div class="info_dashlet_rightrepeat_bottom"></div>
 				    	<div class="info_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sInfo from=$page->infoStack}
-                            <p>{$sInfo}</p>
+                            <p>{$sInfo|sanitize}</p>
                         {/foreach}
                         <div class="info_dashlet_topleft_small"></div>
 			            <div class="info_dashlet_toprepeat_small"></div>
