@@ -1,12 +1,12 @@
-<dt class="actionitem subscription">{$info.title}</dt>
+<dt class="actionitem subscription">{$info.title|sanitize}</dt>
 <dd class="actionmessage">
 <!-- could break this up. -->
-    {if ($info.has_actor)} 
-    {$info.actor_name} {i18n}has added to the discussion around document{/i18n} "{$info.object_name}".	
-	{else}	
-    The discussion around document "{$info.object_name}" has been updated.	
+    {if ($info.has_actor)}
+    {$info.actor_name} {i18n}has added to the discussion around document{/i18n} "{$info.object_name|sanitize}".
+	{else}
+    The discussion around document "{$info.object_name|sanitize}" has been updated.
 	{/if}
-    <div class="actionoptions">    
+    <div class="actionoptions">
         {if !$is_broken}
         <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Document{/i18n}</a>
         {else}
