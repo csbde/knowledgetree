@@ -1,6 +1,6 @@
 {$context->oPage->requireCSSResource('resources/css/workflow-admin.css')}
 
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Workflow Overview{/i18n}:<br />{$oWorkflow->getName()}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Workflow Overview{/i18n}:<br />{$oWorkflow->getName()|sanitize}</h2>
 
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -34,17 +34,17 @@ or use the "Workflow" menu on the left to create new ones.{/i18n}</p>
         <li>{i18n}Notified groups & roles{/i18n}:
         {$context->getNotificationStringForState($oState)}
         </li>
-        
+
         <li>{i18n}Controlled Actions available{/i18n}:
         {$context->getActionStringForState($oState)}
         </li>
-        
+
         <li>{i18n}Permissions overridden{/i18n}: {$context->getPermissionStringForState($oState)}</li>
-      
+
         <li>{i18n}Transitions available{/i18n}:
         {$context->getTransitionFromStringForState($oState)}
         </li>
-      
+
         <li>{i18n}Transitions to this state{/i18n}:
         {$context->getTransitionToStringForState($oState)}
         </li>
