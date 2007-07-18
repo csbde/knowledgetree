@@ -5,11 +5,11 @@
 <h3>{i18n}Document Details{/i18n}</h3>
 <dl class="metadata">
    <dt>{i18n}Document Name{/i18n}</dt>
-   <dd>{$document->getName()}</dd>
-   
+   <dd>{$document->getName()|sanitize}</dd>
+
    <dt>{i18n}Location{/i18n}</dt>
    <dd>{$document->getDisplayPath()}</dd>
-   
+
    <dt>{i18n}Checked out by{/i18n}</dt>
    {if ($checkout_user !== null)}
    <dd>
