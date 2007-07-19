@@ -44,7 +44,7 @@
   <input type="hidden" name="sListCode" value="{$code}" />
   <input type="hidden" name="action" value="bulkaction" />
   <input type="hidden" name="fReturnAction" value="{$returnaction}" />
-  <input type="hidden" name="fReturnData" value="{$returndata}" />
+  <input type="hidden" name="fReturnData" value="{$returndata|sanitize}" />
 
   {foreach from=$bulkactions item=bulkaction}
       <input type="submit" name="submit[{$bulkaction->getName()}]" value="{$bulkaction->getDisplayName()}" />
