@@ -1,5 +1,5 @@
 <p class="descriptiveText">
-    {i18n arg_name=$document_name arg_state=$state_name arg_user=$actor->getName()}A
+    {i18n arg_name=$document_name|sanitize arg_state=$state_name arg_user=$actor->getName()}A
     user, <b>#user#</b>, has requested help on the document <b>#name#</b>, and you are
     the owner or an admin of this document.{/i18n}
 </p>
