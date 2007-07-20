@@ -31,7 +31,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 <tbody>
 {foreach item=oSearch from=$saved_searches}
     <tr>
-        <td>{$oSearch->getName()}</td>
+        <td>{$oSearch->getName()|sanitize}</td>
 	{capture assign=iUserId}{$oSearch->getUserId()}{/capture}
 	<td>{if ($iUserId === '')}Global{else}{$context->_getUserName($iUserId)}{/if}</td>
         <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
