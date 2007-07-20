@@ -3521,12 +3521,9 @@ msgstr ""
 #: plugins/network/extendedtransactioninfo/ExtendedTransactionInfoPlugin.php:45
 #: plugins/network/extendedtransactioninfo/ExtendedTransactionInfoPlugin.php:54
 #: i18n/templates.c:476
-msgid "Extended Transaction Information"
-msgstr ""
-
 #: plugins/network/extendedtransactioninfo/adminReports.php:12
 #: plugins/network/extendedtransactioninfo/standardReports.php:23
-msgid "Extended Transation Information"
+msgid "Extended Transaction Information"
 msgstr ""
 
 #: i18n/templates.c:2240
