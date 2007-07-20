@@ -100,7 +100,7 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/workflow/folderconfigure');
         $fields = array();
         
-        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL');
+        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1');
         $aVocab = array();
         $aVocab[] = _kt('No automatic workflow.');
         foreach ($aWorkflows as $oWorkflow) {
