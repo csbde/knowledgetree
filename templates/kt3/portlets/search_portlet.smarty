@@ -9,7 +9,7 @@
 <ul class="actionlist">
 {foreach item=oSearch from=$saved_searches}
 <li>
-{if ($oSearch->getUserId())}<a class="ktInline ktAction ktDelete" href="{"booleanSearch"|generateControllerUrl}&qs[action]=deleteSearch&qs[fSavedSearchId]={$oSearch->getId()}&qs[fFolderId]={$folder_id}&qs[fDocumentId]={$document_id}">{i18n}Delete{/i18n}</a>{/if}<a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()}</a>
+{if ($oSearch->getUserId())}<a class="ktInline ktAction ktDelete" href="{"booleanSearch"|generateControllerUrl}&qs[action]=deleteSearch&qs[fSavedSearchId]={$oSearch->getId()}&qs[fFolderId]={$folder_id}&qs[fDocumentId]={$document_id}">{i18n}Delete{/i18n}</a>{/if}<a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{$oSearch->getName()|sanitize}</a>
 </li>
 {/foreach}
 </ul>
