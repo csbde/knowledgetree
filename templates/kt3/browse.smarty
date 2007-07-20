@@ -73,7 +73,7 @@
 <legend>{i18n}Save this search{/i18n}</legend>
 <p class="descriptiveText">{i18n}To save this search permanently, so that you can run it again at any time, fill in a name below and click 'Save'.{/i18n}</p>
 <input type="hidden" name="action" value="saveSearch" />
-<input type="hidden" name="boolean_search" value="{$boolean_search}" />
+<input type="hidden" name="boolean_search" value="{$boolean_search|sanitize}" />
 {foreach item=oWidget from=$save_fields}
     {$oWidget->render()}
 {/foreach}
