@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{$page->title}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title}{/if} | {$page->systemName}</title>
+    <title>{$page->title|sanitize}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title|sanitize}{/if} | {$page->systemName}</title>
 
     <!-- CSS Files. -->
 

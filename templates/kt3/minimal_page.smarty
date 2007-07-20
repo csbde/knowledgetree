@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{$page->title} | {$page->systemName}</title>
+    <title>{$page->title|sanitize} | {$page->systemName}</title>
 
     <!-- CSS Files. -->
     {foreach item=sResourceURL from=$page->getCSSResources()}
