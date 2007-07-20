@@ -4,7 +4,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -15,9 +15,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -26,7 +26,7 @@
  * Contributor( s): ______________________________________
  *
  */
- 
+
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
@@ -55,12 +55,12 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 			$searchable_text = KTUtil::arrayGet($_REQUEST, 'tag');
 			// set breadcrumbs
             $this->aBreadcrumbs[] = array('url' => 'dashboard.php', 'name' => _kt('Dashboard'));
-			$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'].'&tag='.$searchable_text, 'name' => _kt('Tag Cloud Search'));
+			$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'].'&tag='.htmlentities($searchable_text,ENT_QUOTES,'UTF-8'), 'name' => _kt('Tag Cloud Search'));
             // set page title
             $sTitle =  _kt('Search Results');
-            
-            $this->oPage->setBreadcrumbDetails($sTitle);                            
-			
+
+            $this->oPage->setBreadcrumbDetails($sTitle);
+
         	// build criteria set
             $aCriteriaSet = array(
             	'join'=>'AND',
@@ -79,17 +79,17 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             		)
             	)
             );
-            
-		
+
+
         $this->browseType = 'Folder';
         $sSearch = md5(serialize($aCriteriaSet));
         $_SESSION['boolean_search'][$sSearch] = $aCriteriaSet;
 
-        $collection = new AdvancedCollection;       
+        $collection = new AdvancedCollection;
         $oColumnRegistry = KTColumnRegistry::getSingleton();
         $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
-        $collection->addColumns($aColumns);	
-        
+        $collection->addColumns($aColumns);
+
         // set a view option
         $aTitleOptions = array(
             'documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',
@@ -100,13 +100,13 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'show_folders' => true,
             'show_documents' => true,
         ));
-        
+
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-        
+
         $aOptions['return_url'] = KTUtil::addQueryString('dashboard.php', false);
         $aOptions['empty_message'] = _kt('No documents or folders match this query.');
         $aOptions['is_browse'] = true;
-                
+
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BooleanSearchQuery($aCriteriaSet));
 
@@ -125,7 +125,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         );
         return $oTemplate->render($aTemplateData);
-	
+
 	}
 }
 ?>
