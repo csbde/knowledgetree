@@ -186,7 +186,7 @@ class KTrss{
         if ($aDocumentList) {
             foreach($aDocumentList as $documentElement){
 		        $document_id = $documentElement['id'];
-		        $aDocumentTransactions = array_merge($aDocumentTransactions, KTrss::getDocumentTransactions($document_id));
+		        $aDocumentTransactions = kt_array_merge($aDocumentTransactions, KTrss::getDocumentTransactions($document_id));
 	    	}
         }
         if ($aDocumentTransactions){
@@ -220,8 +220,8 @@ class KTrss{
     // get information for folder
     function getOneFolder($iFolderId){
     	$aFData = KTrss::getFolderData($iFolderId);
-        $aFTransactions = array_merge(KTrss::getChildrenFolderTransactions($iFolderId), KTrss::getFolderTransactions($iFolderId));
-        $aFTransactions = array_merge($aFTransactions, KTrss::getChildrenDocumentTransactions($iFolderId));
+        $aFTransactions = kt_array_merge(KTrss::getChildrenFolderTransactions($iFolderId), KTrss::getFolderTransactions($iFolderId));
+        $aFTransactions = kt_array_merge($aFTransactions, KTrss::getChildrenDocumentTransactions($iFolderId));
 
         $code = 'if (strtotime($a[datetime]) == strtotime($b[datetime])){
 	        return 0;
@@ -255,6 +255,17 @@ class KTrss{
         }
     }
 
+    function rss_sanitize($str, $do_amp=true)
+    {
+
+        $result = str_replace("\\\"","\"",str_replace('\\\'','\'',htmlentities($str,ENT_NOQUOTES, 'UTF-8')));
+        if ($do_amp)
+        {
+            $result = str_replace('&','&amp;',$result);
+        }
+        return $result;
+    }
+
     // Takes in an array as a parameter and returns rss2.0 compatible xml
     function arrayToXML($aItems){
     	// Build path to host
@@ -282,7 +293,7 @@ class KTrss{
 	    		$sTypeSelect = 'document.transactionhistory&amp;fDocumentId';
 	    	}
 	    	$feed .= "<item>\n" .
-	    	         	"<title>".htmlentities($aItems[0][0][name],ENT_QUOTES, 'UTF-8')."</title>\n" .
+	    	         	"<title>".KTrss::rss_sanitize($aItems[0][0][name],false)."</title>\n" .
 	    	         	"<link>".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$aItems[0][0]['id']."</link>\n" .
 	    	         	"<description>\n" .
 	    	         	"&lt;table border='0' width='90%'&gt;\n".
@@ -298,7 +309,7 @@ class KTrss{
 									"&lt;hr&gt;\n".
 									"&lt;table width='95%'&gt;\n".
 										"&lt;tr&gt;\n".
-											"&lt;td&gt;Filename: ".str_replace('&','&amp;',htmlentities($aItems[0][0][filename],ENT_QUOTES, 'UTF-8'))."&lt;/td&gt;\n".
+											"&lt;td&gt;Filename: ".KTrss::rss_sanitize($aItems[0][0][filename] )."&lt;/td&gt;\n".
 											"&lt;td&gt;\n".
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n".
@@ -326,11 +337,11 @@ class KTrss{
 										foreach($aItems[1] as $item){
 										$feed .= "&lt;tr&gt;\n".
 											"&lt;td&gt;".$item[type]." name:&lt;/td&gt;\n".
-											"&lt;td&gt;".str_replace('&','&amp;',htmlentities($item[name],ENT_QUOTES, 'UTF-8'))."&lt;/td&gt;\n".
+											"&lt;td&gt;".KTrss::rss_sanitize($item[name] )."&lt;/td&gt;\n".
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n".
 											"&lt;td&gt;Path:&lt;/td&gt;\n".
-											"&lt;td&gt;".str_replace('&','&amp;',htmlentities($item[fullpath],ENT_QUOTES, 'UTF-8'))."&lt;/td&gt;\n".
+											"&lt;td&gt;".KTrss::rss_sanitize($item[fullpath] )."&lt;/td&gt;\n".
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n".
 											"&lt;td&gt;Transaction:&lt;/td&gt;\n".
@@ -338,7 +349,7 @@ class KTrss{
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n".
 											"&lt;td&gt;Comment:&lt;/td&gt;\n".
-											"&lt;td&gt;".str_replace('&','&amp;',htmlentities($item[comment],ENT_QUOTES, 'UTF-8'))."&lt;/td&gt;\n".
+											"&lt;td&gt;".KTrss::rss_sanitize($item[comment] )."&lt;/td&gt;\n".
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n";if($item[version]){
 											$feed .= "&lt;td&gt;Version:&lt;/td&gt;\n".

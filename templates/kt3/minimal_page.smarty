@@ -76,9 +76,9 @@
 <span class="additional">{i18n}You are here{/i18n}: </span>
 {if ($page->breadcrumbSection !== false)}
    {if ($page->breadcrumbSection.url) }
-        <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a>
+        <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
    {else}
-        <span  class="primary">{$page->breadcrumbSection.label}</span>
+        <span  class="primary">{$page->breadcrumbSection.label|sanitize}</span>
    {/if}
 {/if}
 {if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
@@ -97,7 +97,7 @@
   {/foreach}
 {/if}
 {if ($page->breadcrumbDetails !== false)}
-<span class="additional">({$page->breadcrumbDetails})</span>
+<span class="additional">({$page->breadcrumbDetails|sanitize})</span>
 {/if}
 </div>
 

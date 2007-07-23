@@ -142,7 +142,7 @@
                         {/foreach}
                     {/if}
                     {if ($page->breadcrumbDetails !== false)}
-                        <span class="additional">({$page->breadcrumbDetails})</span>
+                        <span class="additional">({$page->breadcrumbDetails|sanitize})</span>
                     {/if}
                 </div>
             {/if}
