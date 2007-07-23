@@ -387,6 +387,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             return false;
         }
 
+        $sUser = iconv('ISO-8859-1', 'UTF-8', $sUser);
+        $sPass = iconv('ISO-8859-1', 'UTF-8', $sPass);
         $oUser =& User::getByUsername($sUser);
         if (PEAR::isError($oUser) || ($oUser === false)) {
             $this->ktwebdavLog('User not found: ' . $sUser . '.', 'error');
