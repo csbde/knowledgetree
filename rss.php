@@ -1,12 +1,12 @@
 <?php
 /**
  * $Id$
- *    
+ *
  * The contents of this file are subject to the KnowledgeTree Public
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -67,23 +67,23 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 } else {
 	$user = DBAuthenticator::getUser($_SERVER['PHP_AUTH_USER'], array('id'=>'id',));
 	$id =  $user[$_SERVER['PHP_AUTH_USER']]['id'];
-	
-	
+
+
 	if(KTUtil::arrayGet($_REQUEST, 'docId')){ // if a docId parameter is passed
 		// get document id from http request object
 		$iDocumentId = KTUtil::arrayGet($_REQUEST, 'docId');
-		
+
 		if(KTrss::validateDocumentPermissions($id, $iDocumentId)){ // if document passes validation check
 			// get document info
 			$aDocumentInfo[] = KTrss::getOneDocument($iDocumentId, $id);
-			
-			if($aDocumentInfo){			
+
+			if($aDocumentInfo){
 				// create rss xml for document
 				$documentFeed = KTrss::arrayToXML($aDocumentInfo);
 			}else{
 				// create rss xml for the error
 				$error = KTrss::errorToXML(_kt('This document has returned a empty response'));
-			}	
+			}
 		}else{
 			// create rss xml for error
 			$error = KTrss::errorToXML(_kt('You are either not authorised to view details on this document or it does not exist.' .
@@ -101,7 +101,7 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 		if(KTrss::validateFolderPermissions($id, $iFolderId)){ // if folder passes validation check
 			// get folder info
 			$aFolderInfo[] = KTrss::getOneFolder($iFolderId);
-			
+
 			if($aFolderInfo){
 				// create rss xml for folder
 				$folderFeed = KTrss::arrayToXML($aFolderInfo);
@@ -121,7 +121,7 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 		}
    	}else{ // else do normal rss parsing
    		// get full list of subscribed documents and folders
-	   	$aFullList = array_merge(KTrss::getDocuments($id), KTrss::getFolders($id));
+	   	$aFullList = kt_array_merge(KTrss::getDocuments($id), KTrss::getFolders($id));
 	   	$internalFeed = KTrss::arrayToXML($aFullList);
 	   	echo $internalFeed;
    	}
