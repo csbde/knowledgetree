@@ -9,7 +9,7 @@
 		{/if}
 		{if $feedlist}
 		{section name=feed loop=$feedlist}
-		<option value='{$feedlist[feed].url}'>{$feedlist[feed].title|sanitize}</option>
+		<option value='{$feedlist[feed].url|sanitize}'>{$feedlist[feed].title|sanitize}</option>
 		{/section}
 		{/if}
 	</select>
