@@ -3,7 +3,7 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-{capture assign=sLocation}action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason}{/capture}
+{capture assign=sLocation}action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape:'url'}{/capture}
 
 {capture assign=sJavascript}
 function doCheckout () {ldelim}
