@@ -16,7 +16,7 @@ assigned are shown.{/i18n}</p>
 <p>
 <div class="ktInfoMessage">
 { if $inherited }
-<span>{i18n arg_permission_source=$inherited}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n}
+<span>{i18n arg_permission_source=$inherited|sanitize}This folder <strong>inherits</strong> its permissions from #permission_source#.{/i18n}
 {if $inheritable}
 <a class="ktActionLink ktDelete"
    kt:deleteMessage="{i18n}Are you sure you wish to override the permissions?{/i18n}"
