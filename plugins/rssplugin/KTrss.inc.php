@@ -93,9 +93,9 @@ class KTrss{
 
     // Get list of folder subscriptions
     function getFolderList($iUserId){
-    	$sQuery = "SELECT folder_id as id, is_tree as tree FROM folder_subscriptions WHERE user_id = ?";
+        $sQuery = "SELECT folder_id as id FROM folder_subscriptions WHERE user_id = ?";
         $aParams = array($iUserId);
-        $aFolderList = DBUtil::getResultArray(array($sQuery, $aParams));
+        $aFolderList = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id'); 
 
         if (PEAR::isError($aFolderList)) {
             // XXX: log error
