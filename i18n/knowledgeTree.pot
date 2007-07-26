@@ -135,7 +135,7 @@ msgstr ""
 
 #: plugins/ktcore/folder/BulkImport.php:63
 #: plugins/ktcore/folder/BulkUpload.php:70
-msgid "&lt;Please select a document type&gt;"
+msgid "- Please select a document type -"
 msgstr ""
 
 #: i18n/templates.c:947
