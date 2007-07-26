@@ -608,7 +608,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 		}
         
         $msg = '';
-        if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added to groups') . ': ' . implode(', ', $groupsAdded) . '. <br />'; }
+        if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added to groups') . ': ' . implode(', ', $groupsAdded) . '.'; }
         if (!empty($groupsRemoved)) { $msg .= ' ' . _kt('Removed from groups') . ': ' . implode(', ',$groupsRemoved) . '.'; }
 
         if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
