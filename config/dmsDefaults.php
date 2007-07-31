@@ -122,7 +122,7 @@ class KTInit {
         $default->phpErrorLog =& Log::factory('composite');
 
         if ($default->phpErrorLogFile) {
-            $fileLog =& Log::factory('file', $oKTConfig->get('urls/logDirectory') . '/php_error_log', 'KT');
+            $fileLog =& Log::factory('file', $oKTConfig->get('urls/logDirectory') . '/php_error_log', 'KT', array(), $logLevel); 
             $default->phpErrorLog->addChild($fileLog);
         }
 
