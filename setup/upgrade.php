@@ -246,46 +246,39 @@ function loginProcess()
 {
 	$username=$_REQUEST['username'];
 	$password=$_REQUEST['password'];
-	
-	$oUser = User::getByUserName($username);
-	
-	if (PEAR::isError($oUser))
-	{
-		session_unset();
-		loginFailed(_kt('Could not identify user'));
-		return;
-	}
-	
-	$is_admin=false;
-	$groups = GroupUtil::listGroupsForUser($oUser);
-	foreach($groups as $group)
-	{
-		if ($group->getSysAdmin())
-		{
-			$is_admin=true;
-			break;
-		}
-	}
-	
-	if (!$is_admin)
-	{
-		session_unset();
-		loginFailed(_kt('Could not identify administrator'));
-		return;
-	}
 		
-	$authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
+	$authenticated = checkPassword($username, $password);
 	
 	if (!$authenticated)
 	{
 		session_unset();
-		loginFailed(_kt('Could not authenticate user'));
+		loginFailed(_kt('Could not authenticate administrative user'));
 		return;
 	}
 		
-	$_SESSION['setup_user'] = $oUser;
+	$_SESSION['setup_user'] = $username;
 		
 	welcome();	
+}
+
+function checkPassword($username, $password) {
+	global $default;
+
+	$sTable = KTUtil::getTableName('users');
+	$sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";
+	$aParams = array($username, md5($password));
+	$res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
+	if (PEAR::isError($res)) { return false; }
+	else {
+		$sTable = KTUtil::getTableName('users_groups_link');
+		$sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE user_id = ? AND group_id = 1";
+		$aParams = array($res);
+		$res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
+		if (PEAR::isError($res)) { return false; }
+		else {
+			return ($res == 1);
+		}
+	}
 }
 
 function loginFailed($message)
