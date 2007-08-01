@@ -1418,7 +1418,7 @@ class KTWebService
 		}
 
 		// write to the temporary file
-		$fp=fopen($tempfilename, 'wt');
+		$fp=fopen($tempfilename, 'wb');
 		if ($fp === false)
 		{
 			$response=array(
@@ -1552,7 +1552,7 @@ class KTWebService
     	}
 
 		// write to the temporary file
-		$fp=fopen($tempfilename, 'wt');
+		$fp=fopen($tempfilename, 'wb');
 		if ($fp === false)
 		{
 			$response=array(
@@ -1678,7 +1678,7 @@ class KTWebService
     		$oStorage =& KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp=fopen($filename,'rt');
+    		$fp=fopen($filename,'rb');
     		if ($fp === false)
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
@@ -1824,7 +1824,7 @@ class KTWebService
     		$oStorage =& KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp=fopen($filename,'rt');
+    		$fp=fopen($filename,'rb');
     		if ($fp === false)
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
