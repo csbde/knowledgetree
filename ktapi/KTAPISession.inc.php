@@ -175,7 +175,7 @@ class KTAPI_UserSession extends KTAPI_Session
         Session::removeStaleSessions();
 
         $config = &KTConfig::getSingleton();
-		$validateSession = $config->get('webservice/validateSessionCount', true);
+		$validateSession = $config->get('webservice/validateSessionCount', false);
 
 		if ($validateSession)
 		{
