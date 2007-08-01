@@ -443,6 +443,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$filename = basename($filename);
 		$documenttypeid = KTAPI::get_documenttypeid($documenttype);
+		if (PEAR::isError($documenttypeid))
+		{
+		    return new PEAR_Error('The document type could not be resolved or is disabled: ' . $documenttype);
+		}
+
 
 		$options = array(
 			'contents' => new KTFSFileLike($tempfilename),
