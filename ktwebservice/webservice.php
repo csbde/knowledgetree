@@ -2394,7 +2394,14 @@ class KTWebService
      */
     function _encode_metadata_response($response, $name='return')
     {
-    	$response['metadata'] = KTWebService::_encode_metadata_fieldsets($response['metadata']);
+        if (empty($response['metadata']))
+        {
+    	    $response['metadata'] = array();
+        }
+    	else
+    	{
+            $response['metadata'] = KTWebService::_encode_metadata_fieldsets($response['metadata']);
+    	}
 
     	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_response", $response);
 
