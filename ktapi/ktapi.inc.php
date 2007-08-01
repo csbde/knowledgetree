@@ -384,14 +384,14 @@ class KTAPI
 	{
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
-    	if (PEAR::isError($typeid))
+    	if (is_null($typeid) || PEAR::isError($typeid))
     	{
     		$response['message'] = $typeid->getMessage();
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
     	}
 
     	$doctype_ids = KTFieldset::getForDocumentType($typeid, array('ids' => false));
-    	if (PEAR::isError($doctype_ids))
+    	if (is_null($doctype_ids) || PEAR::isError($doctype_ids))
     	{
     		$response['message'] = $generic_ids->getMessage();
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
@@ -399,7 +399,7 @@ class KTAPI
 
 		// first get generic ids
     	$generic_ids = KTFieldset::getGenericFieldsets(array('ids' => false));
-    	if (PEAR::isError($generic_ids))
+    	if (is_null($generic_ids) || PEAR::isError($generic_ids))
     	{
     		$response['message'] = $generic_ids->getMessage();
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);

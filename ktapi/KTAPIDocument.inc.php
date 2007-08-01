@@ -873,6 +873,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		 $doctypeid = $this->document->getDocumentTypeID();
 		 $fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($this->document, $doctypeid);
+		 if (is_null($fieldsets) || PEAR::isError($fieldsets))
+		 {
+		     return array();
+		 }
 
 		 $results = array();
 
