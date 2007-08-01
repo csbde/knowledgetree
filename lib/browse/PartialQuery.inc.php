@@ -306,8 +306,11 @@ class SimpleSearchQuery extends PartialQuery {
 		if(count($keywords) > 1){
 			for($i=0; $i<count($keywords); $i++){
 				$keywords[$i] = '%'.$keywords[$i].'%';
-			}			
-			$aPotentialWhereString = 'FST.folder_text LIKE ? AND FST.folder_text LIKE ? ';
+				if($i > 0){
+					$aPotentialWhereString .= ' AND ';
+				}
+				$aPotentialWhereString .= 'FST.folder_text LIKE ?';
+			}
 		}else{
 			$aPotentialWhereString = 'FST.folder_text LIKE ? ';
 		}
@@ -339,7 +342,8 @@ class SimpleSearchQuery extends PartialQuery {
         	$aParams = array($this->searchable_text);
         }
         
-        $aParams = kt_array_merge($aPermissionParams, $aParams);   
+        $aParams = kt_array_merge($aPermissionParams, $aParams);
+          
         return array($sQuery, $aParams);
     }
     
