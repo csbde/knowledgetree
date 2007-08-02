@@ -148,7 +148,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             $oUrlEncodedFileName = $oDocument->getFileName( );
             $browser = $_SERVER['HTTP_USER_AGENT'];
             if ( strpos( strtoupper( $browser), 'MSIE') !== false) {
-                $oUrlEncodedFileName = rawurlencode( $oUrlEncodedFileName);
+                $oUrlEncodedFileName = htmlentities($oUrlEncodedFileName, ENT_QUOTES, 'UTF-8');
             }
             //set the correct headers
             header("Content-Type: " . $mimetype);
