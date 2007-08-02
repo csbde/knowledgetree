@@ -360,11 +360,11 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
         
         if (!$this->oWorkflow->getIsEnabled()) {
-            $this->addInfoMessage(sprintf(_kt("This workflow is currently marked as disabled.  No new documents can be assigned to this workflow until it is enabled.  To change this, please <a href=\"%s\">edit</a> the workflow's base properties."), KTUtil::addQueryString($_SERVER['PHP_SELF'], $this->meldPersistQuery("","editcore"))));
+            $this->addInfoMessage(_kt("This workflow is currently marked as disabled.  No new documents can be assigned to this workflow until it is enabled.  To change this, please edit the workflow's base properties."));
         }
 
         if ($this->oWorkflow->getStartStateId() == false) {
-            $this->addErrorMessage(sprintf(_kt("No start state is specified for this workflow.  No new documents can be assigned to this workflow until one is assigned. To change this, please <a href=\"%s\">edit</a> the workflow's base properties."), KTUtil::addQueryString($_SERVER['PHP_SELF'], $this->meldPersistQuery("","editcore"))));
+            $this->addErrorMessage(_kt("No start state is specified for this workflow.  No new documents can be assigned to this workflow until one is assigned. To change this, please edit the workflow's base properties."));
         }
         
         // for the basic view
