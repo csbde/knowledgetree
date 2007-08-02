@@ -172,20 +172,29 @@ class KTAPI_UserSession extends KTAPI_Session
 	{
         $user_id = $user->getId();
 
-        $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id";
-		$row = DBUtil::getOneResult($sql);
-        if (PEAR::isError($row))
-        {
-        	return $row;
-        }
-        if (is_null($row))
-        {
-        	return new PEAR_Error('No record found for user?');
-        }
-        if ($row['over_limit'] == 1)
-        {
-			return new PEAR_Error('Session limit exceeded. Logout of any active sessions.');
-        }
+        Session::removeStaleSessions();
+
+        $config = &KTConfig::getSingleton();
+		$validateSession = $config->get('webservice/validateSessionCount', false);
+
+		if ($validateSession)
+		{
+		    $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id";
+		    $row = DBUtil::getOneResult($sql);
+
+		    if (PEAR::isError($row))
+		    {
+		        return $row;
+		    }
+		    if (is_null($row))
+		    {
+		        return new PEAR_Error('No record found for user?');
+		    }
+		    if ($row['over_limit']+0 == 1)
+		    {
+		        return new PEAR_Error('Session limit exceeded. Logout of any active sessions.');
+		    }
+		}
 
         $session = session_id();
 
@@ -246,11 +255,14 @@ class KTAPI_UserSession extends KTAPI_Session
         	//$ip = KTAPI_Session::resolveIP();
         }
 
-        list($session,$sessionid) = KTAPI_UserSession::_check_session($user);
-        if (PEAR::isError($sessionid))
+        $result = KTAPI_UserSession::_check_session($user);
+
+        if (PEAR::isError($result))
         {
         	return $sessionid;
         }
+
+        list($session,$sessionid) = $result;
 
 		$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 
