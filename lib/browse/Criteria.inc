@@ -1036,8 +1036,11 @@ class SearchableTextCriterion extends BrowseCriterion {
 					continue;
 				}
 				$keywords[$i] = '%'.$keywords[$i].'%';
+				if($i > 0){
+					$p[0] .= ' AND ';
+				}
+				$p[0] .= "DST.document_text LIKE ?";
 			}
-			$p[0] = "DST.document_text LIKE ? AND DST.document_text LIKE ? ";
 			$p[1] = $keywords;
 		}else{
 			$p[0] = "DST.document_text LIKE ? ";

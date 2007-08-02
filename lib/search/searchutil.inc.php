@@ -56,7 +56,7 @@ class KTSearchUtil {
             $type = KTUtil::arrayGet($dataset, "type");
             $sql = KTUtil::arrayGet($dataset, "sql");
             if (!empty($type)) {
-		$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
+				$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
                 $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
                 if (PEAR::isError($oCriterion)) {
                     return PEAR::raiseError(_kt('Invalid criteria specified.'));
@@ -75,6 +75,7 @@ class KTSearchUtil {
         foreach ($criteria_set as $oCriterionPair) {
             $oCriterion = $oCriterionPair[0];
             $aReq = $oCriterionPair[1];
+            
             if (is_object($oCriterion)) {
                 $res = $oCriterion->searchSQL($aReq);
                 if (!is_null($res)) {
@@ -136,6 +137,7 @@ class KTSearchUtil {
          * subgroups at the top level, even though we most often only
          * have a single "subgroup".
          */
+        
         foreach ($aCriteriaSet["subgroup"] as $k => $aOneCriteriaSet) {
             /*
              * Each subgroup will either have values or it will have
@@ -144,15 +146,15 @@ class KTSearchUtil {
             $aValues = KTUtil::arrayGet($aOneCriteriaSet, "values");
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
-		$res = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
-		if(PEAR::isError($res)) {
-		    return $res;
-		}
-                list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
-                $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
-                $aParams = kt_array_merge($aParams, $aThisParams);
-                $tabs = str_repeat("\t", ($iRecurseLevel + 2));
-                $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
+				$res = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
+				if(PEAR::isError($res)) {
+		    		return $res;
+				}
+	            list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
+	            $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
+	            $aParams = kt_array_merge($aParams, $aThisParams);
+	            $tabs = str_repeat("\t", ($iRecurseLevel + 2));
+	            $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
             } else if (!empty($aSubgroup)) {
                 /*
                  * Recurse if we have a criteria set with subgroups.
@@ -170,6 +172,7 @@ class KTSearchUtil {
         $sJoinSQL = join(" ", $aJoinSQL);
         $tabs = str_repeat("\t", $iRecurseLevel + 1);
         $sSearchString = "\n$tabs(" . join("\n$tabs\t" . $aCriteriaSet['join'] . " ", $aSearchStrings) .  "\n$tabs)";
+        
         return array($sSearchString, $aParams, $sJoinSQL);
     }
     // }}}
@@ -260,12 +263,14 @@ class KTSearchUtil {
         }
 
 	$res = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
+
 	if(PEAR::isError($res)) return $res;
         list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = $res;
-
+      
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
         $res = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
+ 		
         if (PEAR::isError($res)) {        // only occurs if the group has no permissions.
             return $res;
         } else {
@@ -278,6 +283,7 @@ class KTSearchUtil {
          * trailing ANDs.
          */
         $aPotentialWhere = array($sPermissionString, 'SL.name = ?', "($sSQLSearchString)");
+        
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
@@ -287,6 +293,7 @@ class KTSearchUtil {
                 continue;
             }
             $aWhere[] = $sWhere;
+            
         }
         $sWhere = "";
         if ($aWhere) {
@@ -320,7 +327,6 @@ class KTSearchUtil {
         $aParams = kt_array_merge($aParams, $aPermissionParams);
         $aParams[] = $sToSearch;
         $aParams = kt_array_merge($aParams, $aCritParams);
-
         return array($sQuery, $aParams);
     }
     // }}}
