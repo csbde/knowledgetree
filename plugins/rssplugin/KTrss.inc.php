@@ -293,7 +293,7 @@ class KTrss{
 	    		$sTypeSelect = 'document.transactionhistory&amp;fDocumentId';
 	    	}
 	    	$feed .= "<item>\n" .
-	    	         	"<title>".KTrss::rss_sanitize($aItems[0][0][name],false)."</title>\n" .
+	    	         	"<title>".htmlentities(KTrss::rss_sanitize($aItems[0][0][name],false), ENT_QUOTES, 'UTF-8')."</title>\n" .
 	    	         	"<link>".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$aItems[0][0]['id']."</link>\n" .
 	    	         	"<description>\n" .
 	    	         	"&lt;table border='0' width='90%'&gt;\n".
@@ -309,7 +309,7 @@ class KTrss{
 									"&lt;hr&gt;\n".
 									"&lt;table width='95%'&gt;\n".
 										"&lt;tr&gt;\n".
-											"&lt;td&gt;Filename: ".KTrss::rss_sanitize($aItems[0][0][filename] )."&lt;/td&gt;\n".
+											"&lt;td&gt;Filename: ".KTrss::rss_sanitize($aItems[0][0][filename])."&lt;/td&gt;\n".
 											"&lt;td&gt;\n".
 										"&lt;/tr&gt;\n".
 										"&lt;tr&gt;\n".
