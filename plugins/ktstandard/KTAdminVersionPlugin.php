@@ -33,7 +33,7 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php'); 
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
 
-define('KT_VERSION_URL', 'http://www.knowledgetree.com/kt_versions');
+define('KT_VERSION_URL', 'http://version.knowledgetree.com/kt_versions');
 
 class AdminVersionDashlet extends KTBaseDashlet {
     var $oUser;
