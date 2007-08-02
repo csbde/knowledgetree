@@ -8389,6 +8389,11 @@ msgstr ""
 msgid "This workflow is currently marked as disabled.  No new documents can be assigned to this workflow until it is enabled.  To change this, please <a href=\"%s\">edit</a> the workflow's base properties."
 msgstr ""
 
+#: plugins/ktcore/admin/workflowsv2.php:144
+#, php-format
+msgid "This workflow is currently marked as disabled.  No new documents can be assigned to this workflow until it is enabled.  To change this, please edit the workflow's base properties."
+msgstr ""
+
 #: i18n/templates.c:893
 msgid "Thread closed"
 msgstr ""
