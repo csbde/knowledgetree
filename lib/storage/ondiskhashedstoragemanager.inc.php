@@ -144,25 +144,25 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
 
         if (file_exists($sPath)) {
-
             $oUrlEncodedFileName = $oDocument->getFileName( );
             $browser = $_SERVER['HTTP_USER_AGENT'];
             if ( strpos( strtoupper( $browser), 'MSIE') !== false) {
-                $oUrlEncodedFileName = htmlentities($oUrlEncodedFileName, ENT_QUOTES, 'UTF-8');
+                $oUrlEncodedFileName = htmlspecialchars($oUrlEncodedFileName, ENT_QUOTES, 'UTF-8');
             }
             //set the correct headers
             header("Content-Type: " . $mimetype);
             header("Content-Length: ". $oDocument->getFileSize());
-            header("Content-Disposition: attachment; filename=\"" . $oUrlEncodedFileName . "\"");
+            header('Content-Disposition: attachment; filename="' . $oUrlEncodedFileName . '"');
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             // HTTP/1.1
-            header("Cache-Control: no-store, no-cache, must-revalidate");
-            header("Cache-Control: post-check=0, pre-check=0", false);
-
+            if ( strpos( strtoupper( $browser), 'MSIE') == false) {
+            	header("Cache-Control: no-store, no-cache, must-revalidate");
+            	header("Cache-Control: post-check=0, pre-check=0", false);
+            }
             // HTTP/1.0
-            // header("Pragma: no-cache"); // Don't send this header! It breaks IE.
-
+            //header("Pragma: no-cache"); // Don't send this header! It breaks IE.
+            
             $oFile = new KTFSFileLike($sPath);
             KTFileLikeUtil::send_contents($oFile);
         } else {
