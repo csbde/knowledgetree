@@ -21,7 +21,7 @@
 <tbody>
 {section name=feed loop=$feedlist}
     <tr>
-        <td>{$feedlist[feed].title}</td>
+        <td>{$feedlist[feed].title|sanitize}</td>
 		<td><a href="{addQS}action=editFeed&feed_id={$feedlist[feed].id}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 		<td><a href="{addQS}action=deleteFeed&feed_id={$feedlist[feed].id}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
     </tr>
