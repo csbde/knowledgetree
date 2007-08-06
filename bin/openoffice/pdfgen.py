@@ -33,6 +33,11 @@ import uno
 import sys
 from com.sun.star.beans import PropertyValue
 
+NoConnectException = uno.getClass("com.sun.star.connection.NoConnectException")
+IllegalArgumentException = uno.getClass("com.sun.star.lang.IllegalArgumentException")
+RuntimeException = uno.getClass("com.sun.star.uno.RuntimeException")
+IOException = uno.getClass("com.sun.star.io.IOException")
+
 url_original = uno.systemPathToFileUrl(sys.argv[1])
 url_save = uno.systemPathToFileUrl(sys.argv[2])
 
@@ -68,7 +73,7 @@ except IOException, e:
     sys.stderr.write("URL couldn't be found or was corrupt (" + e.Message + ")\n")
     sys.exit(1)
 except IllegalArgumentException, e:
-    sys.stderr.write("Given parameters doesn't conform to the specification ( " + e.Message + ")\n")
+    sys.stderr.write("Given parameters don't conform to the specification ( " + e.Message + ")\n")
     sys.exit(1)
 except RuntimeException, e:
     sys.stderr.write("An unknown error occured: " + e.Message + "\n")
