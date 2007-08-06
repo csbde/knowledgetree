@@ -33,7 +33,7 @@ import uno
 import sys
 from com.sun.star.beans import PropertyValue
 
-NoConnectionException = uno.getClass("com.sun.star.connection.NoConnectException")
+NoConnectException = uno.getClass("com.sun.star.connection.NoConnectException")
 IllegalArgumentException = uno.getClass("com.sun.star.lang.IllegalArgumentException")
 RuntimeException = uno.getClass("com.sun.star.uno.RuntimeException")
 IOException = uno.getClass("com.sun.star.io.IOException")
