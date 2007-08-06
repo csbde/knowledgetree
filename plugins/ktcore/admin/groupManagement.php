@@ -362,7 +362,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     }        
         
         $msg = '';
-        if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . implode(', ', $usersAdded) . '. <br />'; }
+        if (!empty($usersAdded)) { $msg .= ' ' . _kt('Added') . ': ' . implode(', ', $usersAdded) . '. '; }
         if (!empty($usersRemoved)) { $msg .= ' ' . _kt('Removed') . ': ' . implode(', ',$usersRemoved) . '.'; }
     
         if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
@@ -517,7 +517,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
         
         $msg = '';
-        if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added') . ': ' . implode(', ', $groupsAdded) . '. <br />'; }
+        if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added') . ': ' . implode(', ', $groupsAdded) . '. '; }
         if (!empty($groupsRemoved)) { $msg .= ' '. _kt('Removed'). ': ' . implode(', ',$groupsRemoved) . '.'; }
         
         $this->commitTransaction();
