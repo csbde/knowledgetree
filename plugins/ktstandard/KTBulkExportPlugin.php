@@ -144,20 +144,20 @@ class KTBulkExportAction extends KTFolderAction {
                 $oDocumentTransaction->create();
             }
 
-            $sParentFolder = sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath());
+            $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath()))));
             $newDir = $this->sTmpPath;
-            $sFullPath = $this->_convertEncoding($oDocument->getFullPath(), true);
+            $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
             foreach (split('/', $sFullPath) as $dirPart) {
                 $newDir = sprintf("%s/%s", $newDir, $dirPart);
                 if (!file_exists($newDir)) {
                     mkdir($newDir, 0700);
                 }
             }
-            $sOrigFile = $oStorage->temporaryFile($oDocument);
-            $sFilename = sprintf("%s/%s", $sParentFolder, $oDocument->getFileName());
+            $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $oStorage->temporaryFile($oDocument))));
+            $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
             $sFilename = $this->_convertEncoding($sFilename, true);
             copy($sOrigFile, $sFilename);
-            $sPath = sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName());
+            $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
             $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
             $sPath = $this->_convertEncoding($sPath, true);
             $aPaths[] = $sPath;
@@ -165,6 +165,7 @@ class KTBulkExportAction extends KTFolderAction {
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $aPaths));
         $sZipFile = sprintf("%s/%s.zip", $this->sTmpPath, $this->oFolder->getName());
+        $sZipFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $sZipFile)));
         $_SESSION['bulkexport'] = KTUtil::arrayGet($_SESSION, 'bulkexport', array());
         $sExportCode = KTUtil::randomString();
         $_SESSION['bulkexport'][$sExportCode] = array(
