@@ -5,7 +5,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -16,9 +16,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -50,7 +50,7 @@ class KTDocumentEditAction extends KTDocumentAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $_bMutator = true;
-    var $sIconClass = 'edit_metadata';    
+    var $sIconClass = 'edit_metadata';
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -62,11 +62,11 @@ class KTDocumentEditAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Edit Metadata');
     }
-    
+
     function predispatch() {
         $this->persistParams(array('new_type'));
     }
-    
+
     function form_edit() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -78,10 +78,10 @@ class KTDocumentEditAction extends KTDocumentAction {
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
         ));
-    
-        
+
+
         $oFReg =& KTFieldsetRegistry::getSingleton();
-        
+
         $doctypeid = $this->oDocument->getDocumentTypeID();
         if ($_REQUEST['new_type']) {
             $oTestType = DocumentType::get($_REQUEST['new_type']);
@@ -89,7 +89,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                 $doctypeid = $oTestType->getId();
             }
         }
-        
+
         $widgets = array(
             array('ktcore.widgets.string', array(
                 'label' => _kt("Document Title"),
@@ -106,46 +106,46 @@ class KTDocumentEditAction extends KTDocumentAction {
             )),
         );
         $fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($this->oDocument, $doctypeid);
-        
+
         foreach ($fieldsets as $oFieldset) {
             $widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
-            $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));                
+            $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
         }
 
         $oForm->setWidgets($widgets);
-        $oForm->setValidators($validators);                
-    
+        $oForm->setValidators($validators);
+
         return $oForm;
     }
-    
-    function do_main() {   
-        $this->oPage->setBreadcrumbDetails(_kt("Edit Metadata"));    
-        
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails(_kt("Edit Metadata"));
+
         $oTemplate = $this->oValidator->validateTemplate('ktcore/document/edit');
-        
+
         $doctypeid = $this->oDocument->getDocumentTypeID();
         $type = DocumentType::get($doctypeid);
-        
-        
+
+
         $oForm = $this->form_edit();
-        
+
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $oForm,
             'document' => $this->oDocument,
             'type_name' => $type->getName(),
-        ));    
+        ));
         return $oTemplate->render();
     }
-    
+
     function do_update() {
         $oForm = $this->form_edit();
-        
+
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
             return $oForm->handleError();
         }
-        
+
         $data = $res['results'];
 
         // we need to format these in MDPack format
@@ -154,7 +154,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         //  array(
         //      array($oField, $sValue),
         //      array($oField, $sValue),
-        //      array($oField, $sValue),                
+        //      array($oField, $sValue),
         //  );
         //
         // we do this the "easy" way.
@@ -165,27 +165,27 @@ class KTDocumentEditAction extends KTDocumentAction {
                 $doctypeid = $oTestType->getId();
             }
         }
-                
-        
+
+
         $fieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument, $doctypeid);
-        
+
         $MDPack = array();
         foreach ($fieldsets as $oFieldset) {
             $fields = $oFieldset->getFields();
             $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
             foreach ($fields as $oField) {
-                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());        
-                
+                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+
                 // FIXME "null" has strange meanings here.
-                if (!is_null($val)) {    
+                if (!is_null($val)) {
                     $MDPack[] = array(
                         $oField,
                         $val
                     );
                 }
-                
+
             }
-        } 
+        }
 
         $this->startTransaction();
         if ($this->oDocument->getDocumentTypeId() != $doctypeid) {
@@ -205,7 +205,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         // post-triggers.
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
-                
+
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
@@ -216,16 +216,16 @@ class KTDocumentEditAction extends KTDocumentAction {
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
-        
+
         $this->commitTransaction();
 
         // create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document metadata updated'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
-        
+
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument->getId()));
         exit(0);
-    } 
+    }
 
     function form_changetype() {
         $oForm = new KTForm;
@@ -238,11 +238,11 @@ class KTDocumentEditAction extends KTDocumentAction {
             'cancel_action' => 'main',
             'action' => 'trytype',
         ));
-        
+
         $type = DocumentType::get($this->oDocument->getDocumentTypeId());
         $current_type_name = $type->getName();
         $oFolder = Folder::get($this->oDocument->getFolderID());
-        
+
         $oForm->setWidgets(array(
             array('ktcore.widgets.entityselection',array(
                 'label' => _kt("New Document Type"),
@@ -256,7 +256,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                 'name' => 'type'
             )),
         ));
-        
+
         $oForm->setValidators(array(
             array('ktcore.validators.entity', array(
                 'test' => 'type',
@@ -264,31 +264,31 @@ class KTDocumentEditAction extends KTDocumentAction {
                 'class' => 'DocumentType',
             )),
         ));
-        
+
         return $oForm;
     }
 
     function do_selecttype() {
         $oForm = $this->form_changetype();
         return $oForm->renderPage(_kt("Change Document Type"));
-    }   
-    
+    }
+
     function do_trytype() {
         $oForm = $this->form_changetype();
         $res = $oForm->validate();
         $data = $res['results'];
         $errors = $res['errors'];
-        
+
         if (!empty($errors)) {
             $oForm->handleError();
-        }        
-        
+        }
+
         $document_type = $data['type'];
-    	
+
 
     	$doctypeid = $document_type->getId();
 
-  
+
     	DBUtil::startTransaction();
     	$this->oDocument->setDocumentTypeId($doctypeid);
     	$res = $this->oDocument->update();
@@ -302,9 +302,9 @@ class KTDocumentEditAction extends KTDocumentAction {
     	DBUtil::commit();
 
     	$fieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument, $doctypeid);
-        
+
     	$fs_ids = array();
-    	
+
     	$doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
     	foreach($doctype_fieldsets as $fieldset)
     	{
@@ -334,11 +334,23 @@ class KTDocumentEditAction extends KTDocumentAction {
     		}
 
     	}
-    	
+
     	 $core_res = KTDocumentUtil::saveMetadata($this->oDocument, $MDPack);
-        
-    	 
-    	
+
+    	 $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+                "aOptions" => $MDPack,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+        }
+
         $this->successRedirectToMain(sprintf(_kt("You have selected a new document type: %s. "), $data['type']->getName()));
     }
 }
