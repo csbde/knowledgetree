@@ -67,7 +67,8 @@ class TagCloudDashlet extends KTBaseDashlet {
 		$oTemplate = $oTemplating->loadTemplate('TagCloud/dashlet');
 
 		$aTags = & $this->get_relevant_tags();
-		$aTags = & $this->get_tag_weightings($aTags);
+		if($aTags)
+			$aTags = & $this->get_tag_weightings($aTags);
 
 		$oRegistry =& KTPluginRegistry::getSingleton();
 		$oPlugin =& $oRegistry->getPlugin('ktcore.tagcloud.plugin');
@@ -120,7 +121,10 @@ class TagCloudDashlet extends KTBaseDashlet {
      */
     function & get_relevant_tags()
 	{
-
+		$aUserPermissions = KTSearchUtil::permissionToSQL($this->oUser, null);
+		if(PEAR::isError($aUserPermissions)) {
+            return false;
+        }
 		list($where, $params, $joins) = KTSearchUtil::permissionToSQL($this->oUser, null);
 
 
