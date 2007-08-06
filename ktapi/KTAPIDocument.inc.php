@@ -682,7 +682,27 @@ class KTAPI_Document extends KTAPI_FolderItem
 				DBUtil::rollback();
 				return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
 			}
-			DBUtil::commit();
+
+
+			$metadata = $this->get_packed_metadata();
+
+		    $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+
+            foreach ($aTriggers as $aTrigger)
+            {
+                $sTrigger = $aTrigger[0];
+                $oTrigger = new $sTrigger;
+                $aInfo = array(
+                    "document" => $this->document,
+                    "aOptions" => $packed,
+                );
+                $oTrigger->setInfo($aInfo);
+                $ret = $oTrigger->postValidate();
+            }
+
+            DBUtil::commit();
+
 		}
 	}
 
@@ -941,14 +961,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 return $results;
 	}
 
-	/**
-	 * This updates the metadata on the file. This includes the 'title'.
-	 *
-	 * @param array This is an array containing the metadata to be associated with the file.
-	 */
-	function update_metadata($metadata)
+	function get_packed_metadata($metadata=null)
 	{
 		global $default;
+
+		if (is_null($metadata))
+		{
+		    $metadata = $this->get_metadata();
+		}
+
 		 $packed = array();
 
 		 foreach($metadata as $fieldset_metadata)
@@ -1007,6 +1028,19 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	}
 		 }
 
+		 return $packed;
+	}
+
+	/**
+	 * This updates the metadata on the file. This includes the 'title'.
+	 *
+	 * @param array This is an array containing the metadata to be associated with the file.
+	 */
+	function update_metadata($metadata)
+	{
+		global $default;
+		 $packed = $this->get_packed_metadata($metadata);
+
 		 DBUtil::startTransaction();
 		 $result = KTDocumentUtil::saveMetadata($this->document, $packed);
 
@@ -1021,6 +1055,22 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	return new KTAPI_Error(sprintf(_kt("Unexpected validation failure: %s."), $result->getMessage()));
 		 }
 		 DBUtil::commit();
+
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->document,
+                "aOptions" => $packed,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+        }
+
 	}
 
 
@@ -1328,4 +1378,5 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::commit();
 	}
 }
+
 ?>
