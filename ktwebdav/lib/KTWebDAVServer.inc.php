@@ -7,7 +7,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -18,9 +18,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -333,11 +333,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
     /**
      * check authentication if check is implemented
-     * 
+     *
      * @param  void
      * @return bool  true if authentication succeded or not necessary
      */
-    function _check_auth() 
+    function _check_auth()
     {
         $this->ktwebdavLog('Entering _check_auth...', 'info', true);
 
@@ -489,7 +489,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     $this->ktwebdavLog("Folder Details permissions GRANTED for user ". $_SESSION["userID"] ." on folder " . $oChildFolder->getName(), 'info', true);
                     $files["files"][] = $this->_fileinfoForFolder($oChildFolder, $folder_path . $oChildFolder->getName());
                 }
-                else 
+                else
                 {
                     $this->ktwebdavLog("Folder Details permissions DENIED for ". $_SESSION["userID"] ." on folder " . $oChildFolder->getName(), 'info', true);
                 }
@@ -1592,9 +1592,12 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     $movestat = $this->_MOVEFolder($options, $iFolderID);
 
                 } else {
-                    // Source is a document
-                    $movestat = $this->_MOVEDocument($options, $iFolderID, $iDocumentID);
-
+                	 // Source is a document
+                	if ($this->canCopyMoveRenameDocument($iDocumentID)) {
+						$movestat = $this->_MOVEDocument($options, $iFolderID, $iDocumentID);
+					} else {
+						return "Cannot MOVE document because it is checked out by another user.";
+					}
                 }
 
                 $this->ktwebdavLog("Final movestat result is: " . $movestat, 'info', true);
@@ -1890,7 +1893,12 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 } else {
                     // Source is a document
                     $this->ktwebdavLog("Source is a Document.", 'info', true);
-                    $copystat = $this->_COPYDocument($options, $iFolderID, $iDocumentID, $dest_folder_id);
+
+					if ($this->canCopyMoveRenameDocument($iDocumentID)) {
+						$copystat = $this->_COPYDocument($options, $iFolderID, $iDocumentID, $dest_folder_id);
+					} else {
+						return "Cannot COPY document because it is checked out by another user.";
+					}
 
                 }
 
@@ -2103,10 +2111,72 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             return $result;
         }
 
+
+		/**
+         * canCopyMoveRenameDocument() helper
+         * checks if document is checked out; if not, returns true
+         * if checked out, cheks if checked out by same user; if yes, returns true;
+         * else returns false
+         *
+         * @return bool  true or false
+         */
+        function canCopyMoveRenameDocument($iDocumentID)
+        {
+        	$this->ktwebdavLog("Entering canCopyMoveRenameDocument ", 'info', true);
+
+            $oDocument =& Document::get($iDocumentID);
+
+			if (is_null($oDocument) || ($oDocument === false) || PEAR::isError($oDocument)) {
+				$this->ktwebdavLog("Document invalid ". print_r($oDocument, true), 'info', true);
+				return false;
+			}
+
+			if($oDocument->getIsCheckedOut()) {
+				$info = array();
+				$info["props"][] = $this->mkprop($sNameSpace, 'CheckedOut', $oDocument->getCheckedOutUserID());
+				//$this->ktwebdavLog("getIsCheckedOut ". print_r($info,true), 'info', true);
+
+				$oCOUser = User::get( $oDocument->getCheckedOutUserID() );
+
+				if (PEAR::isError($oCOUser) || is_null($oCOUser) || ($oCOUser === false)) {
+					$couser_id = '0';
+				} else {
+					$couser_id = $oCOUser->getID();
+				}
+
+				//$this->ktwebdavLog("getCheckedOutUserID " .$couser_id, 'info', true);
+
+				$oUser =& User::get($this->userID);
+
+				//$this->ktwebdavLog("this UserID " .$oUser->getID(), 'info', true);
+
+				if (PEAR::isError($oUser) || is_null($oUser) || ($oUser === false)) {
+						$this->ktwebdavLog("User invalid ". print_r($oUser, true), 'info', true);
+						return false;
+					} else {
+						$ouser_id = $oUser->getID();
+					}
+
+				//$this->ktwebdavLog("that UserID " .$oCOUser->getID(), 'info', true);
+
+				if ($couser_id != $ouser_id) {
+					$this->ktwebdavLog("Document checked out by another user $couser_id != $ouser_id", 'info', true);
+					return false;
+				} else {
+					$this->ktwebdavLog("Document checked out by this user", 'info', true);
+					return true;
+				}
+			} else {
+				//not checked out
+				$this->ktwebdavLog("Document not checked out by any user", 'info', true);
+				return true;
+			}
+        }
+
         /**
          * checkSafeMode() helper
          *
-         * @return string  true or false
+         * @return bool  true or false
          */
         function checkSafeMode()
         {
