@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -44,18 +44,20 @@ class KTWorkflowAssociationPlugin extends KTPlugin {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Workflow Association Plugin');
         return $res;
-    }    
+    }
 
     function setup() {
         $this->registerTrigger('add', 'postValidate', 'KTWADAddTrigger',
-            'ktstandard.triggers.workflowassociation.addDocument');    
+            'ktstandard.triggers.workflowassociation.addDocument');
         $this->registerTrigger('moveDocument', 'postValidate', 'KTWADMoveTrigger',
             'ktstandard.triggers.workflowassociation.moveDocument');
+        $this->registerTrigger('copyDocument', 'postValidate', 'KTWADCopyTrigger',
+            'ktstandard.triggers.workflowassociation.copyDocument');
         $this->registerTrigger('edit', 'postValidate', 'KTWADEditTrigger',
             'ktstandard.triggers.workflowassociation.editDocument');
-        $this->registerAdminPage('workflow_allocation', 'WorkflowAllocationSelection', 
-            'documents', _kt('Automatic Workflow Assignments'), 
-            _kt('Configure how documents are allocated to workflows.'), 'workflow/adminpage.php');        
+        $this->registerAdminPage('workflow_allocation', 'WorkflowAllocationSelection',
+            'documents', _kt('Automatic Workflow Assignments'),
+            _kt('Configure how documents are allocated to workflows.'), 'workflow/adminpage.php');
             $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
     }
 }
@@ -68,36 +70,36 @@ class KTWorkflowAssociationDelegator {
     function KTWorkflowAssociationDelegator() {
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('workflow', 'objectModification');
-        
+
         // if we have _some_ triggers.
         if (!empty($aTriggers)) {
             $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
             $sQuery .= ' WHERE event_ns = ?';
             $aParams = array('ktstandard.workflowassociation.handler');
             $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
-        
+
             if (PEAR::isError($res)) { $this->_handler = new KTWorkflowAssociationHandler(); }
-            
+
             if (array_key_exists($res, $aTriggers)) {
                 $this->_handler = new $aTriggers[$res][0];
             }
             else {
-                $this->_handler = new KTWorkflowAssociationHandler();                 
+                $this->_handler = new KTWorkflowAssociationHandler();
             }
         }
         else {
-            $this->_handler = new KTWorkflowAssociationHandler(); 
+            $this->_handler = new KTWorkflowAssociationHandler();
         }
     }
-    
+
     function applyWorkflow($oWorkflow) {
         return true;
     }
-    
+
     function setInfo($aOptions) {
         $this->_document = $aOptions['document'];
     }
-     
+
     function postValidate() {
         return KTWorkflowUtil::getWorkflowForDocument($this->_document);
     }
@@ -107,12 +109,12 @@ class KTWorkflowAssociationDelegator {
 class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->addTrigger($this->_document);
-        
+
         // catch disabled workflows.
         if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
-            return ;          
+            return ;
         }
-        
+
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
@@ -121,12 +123,12 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
 class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->editTrigger($this->_document);
-        
+
         // catch disabled workflows.
         if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
-            return ;          
+            return ;
         }
-                
+
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
@@ -135,22 +137,37 @@ class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
 class KTWADMoveTrigger extends KTWorkflowAssociationDelegator {
     function postValidate() {
         $oWorkflow = $this->_handler->moveTrigger($this->_document);
-        
+
         // catch disabled workflows.
         if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
-            return ;          
+            return ;
         }
-                
+
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
 }
 
-// "base class" for fallback.  should be subclassed and cross-referenced, otherwise 
+// Move
+class KTWADCopyTrigger extends KTWorkflowAssociationDelegator {
+    function postValidate() {
+        $oWorkflow = $this->_handler->copyTrigger($this->_document);
+
+        // catch disabled workflows.
+        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
+            return ;
+        }
+
+        $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
+    }
+}
+
+// "base class" for fallback.  should be subclassed and cross-referenced, otherwise
 // has no impact when called.
 class KTWorkflowAssociationHandler {
     function addTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function editTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function moveTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
+    function copyTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
 }
 
 
