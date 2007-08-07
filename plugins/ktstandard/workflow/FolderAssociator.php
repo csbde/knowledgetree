@@ -74,6 +74,10 @@ class FolderWorkflowAssociator extends KTWorkflowAssociationHandler {
        return $this->getWorkflowForDoc($oDocument);
     }
 
+    function copyTrigger($oDocument) {
+       return $this->getWorkflowForDoc($oDocument);
+    }
+
     function getWorkflowForDoc($oDocument) {
 
         $sQuery = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('folder_workflow_map');
