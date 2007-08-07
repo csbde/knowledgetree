@@ -1191,7 +1191,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'document' => $oNewDocument,
+                'document' => $oNewDoc,
                 'old_folder' => $this->oDocumentFolder,
                 'new_folder' => $data['browse'],
             );
