@@ -73,6 +73,11 @@ class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
        return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
     }
 
+    function copyTrigger($oDocument) {
+       return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
+    }
+
+
     function getWorkflowForType($iDocTypeId, $oDocument) {
         if (is_null($iDocTypeId)) { return null; }
 
