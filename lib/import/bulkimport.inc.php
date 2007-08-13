@@ -81,8 +81,8 @@ class KTBulkImportManager {
         }
         foreach ($aFolderPaths as $sFolderPath) {
             if (Folder::folderExistsName(utf8_encode(basename($sFolderPath)), KTUtil::getId($oFolder))) {
-                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), utf8_encode($sFolderPath), $oFolder->getName());
-                $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple($sFolderPath) . '"');
+                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), utf8_encode(basename($sFolderPath)), $oFolder->getName());
+                $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple(utf8_encode(basename($sFolderPath))) . '"');
                 if (PEAR::isError($aOptions)) { 
                     return $aOptions;
                 }
