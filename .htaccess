@@ -21,7 +21,7 @@
 # The default .htaccess settings ensure that no workarounds occur in the
 # PHP code, leading to better performance and robustness.
 #
-<IfModule mod_php4.c>
+<IfModule mod_php5.c>
 php_value default_mimetype text/html
 php_value auto_prepend_file none
 php_value auto_append_file none
@@ -66,7 +66,7 @@ Options +SymLinksIfOwnerMatch
 # size for testing and most usage patterns, as increased sizes may allow
 # malicious users to use up resources.
 #
-<IfModule mod_php4.c>
+<IfModule mod_php5.c>
 php_value upload_max_filesize -1
 php_value post_max_size 2000M
 php_value memory_limit -1
