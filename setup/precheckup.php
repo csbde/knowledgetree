@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -202,9 +202,28 @@ function can_extension_loaded($ext, $message = "") {
     return '<b><font color="orange">Unavailable</font></b>';
 }
 
-$phpversion4 = phpversion() < '4' ? '<b><font color="red">No</font></b> <small>(You need at least PHP 4)</small>' : '<b><font color="green">Yes</font></b>';
-$phpversion43 = phpversion() < '4.3' ? '<b><font color="orange">No</font></b> <small>(PHP 4.3 is recommended)</small>' : '<b><font color="green">Yes</font></b>';
-$phpversion5 = phpversion() >= '5' ? '<b><font color="red">No</font></b> <small>('.APP_NAME.' does not yet work with PHP5)</small>' : '<b><font color="green">Yes</font></b>';
+$phpversion = phpversion();
+//$phpversion = '5.1'; // for debug
+
+$phpversion5 = version_compare($phpversion, '5.0.0', '>=');
+$phpversion522 = version_compare($phpversion, '5.2.2', '>=');
+$phpversion6 = version_compare($phpversion, '6.0.0', '<');
+
+if($phpversion5 == 1){
+    $phpversion5text = '<b><font color="green">Yes</font></b>';
+} else {
+    $phpversion5text = '<b><font color="red">No</font></b> <small>(You have PHP version '. $phpversion .' - '.APP_NAME.' does not work with versions less than PHP5 anymore)</small>';
+}
+if($phpversion522 == 1){
+    $phpversion522text = '<b><font color="green">Yes</font></b>';
+} else {
+    $phpversion522text = '<b><font color="red">No</font></b> <small>(You have PHP version '. $phpversion .' - PHP 5.2.2 or above is recommended)</small>';
+}
+if($phpversion6 == 1){
+    $phpversion6text = '<b><font color="green">Yes</font></b>';
+} else {
+    $phpversion6text = '<b><font color="red">No</font></b> <small>(You have PHP version '. $phpversion .' - '.APP_NAME.' does not work with versions greater than PHP5 yet)</small>';
+}
 
 function running_user() {
     if (substr(PHP_OS, 0, 3) == "WIN") {
@@ -271,16 +290,16 @@ PHP you are running, and which modules are available.</p>
 <table width="100%">
   <tbody>
     <tr>
-      <th>PHP version 4.0 or above</th>
-      <td><?php echo $phpversion4?></td>
+      <th>PHP version 5 or above</th>
+      <td><?php echo $phpversion5text?></td>
     </tr>
     <tr>
-      <th>PHP version 4.3 or above</th>
-      <td><?php echo $phpversion43?></td>
+      <th>PHP version 5.2.2 or above</th>
+      <td><?php echo $phpversion522text?></td>
     </tr>
     <tr>
-      <th>PHP version below 5</th>
-      <td><?php echo $phpversion5?></td>
+      <th>PHP version below 6</th>
+      <td><?php echo $phpversion6text?></td>
     </tr>
     <tr>
       <th>Session support</th>
@@ -398,6 +417,6 @@ if (is_null($username)) {
 <h2>Post-installation checkup</h2>
 
 <p>Once you have installed, check the <a href="postcheckup.php">Post-installation checkup</a>.</p>
-  
+
   </body>
 </html>
