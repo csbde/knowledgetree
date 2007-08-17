@@ -85,7 +85,7 @@ class AdminVersionPlugin extends KTPlugin {
     }
 
     function setup() {
-        if (APP_NAME == "KnowledgeTree" && (function_exists('curl_init') || (!OS_WINDOWS))) {
+        if (APP_NAME == "KnowledgeTree" && (function_exists('curl_init'))) {
             $this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'KTAdminVersionPlugin.php');
             $this->registerPage('versions', 'AdminVersionPage');
         }

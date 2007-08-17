@@ -10705,3 +10705,8 @@ msgstr ""
 #: plugins\network\extendedtransactioninfo\templates\extendedtransactioninfo\dashlet.smarty:2
 msgid "There are no recent items."
 msgstr ""
+
+#: templates\ktstandard\adminversion\dashlet.smarty:24
+msgid "We have further information on the Knowledge Tree website."
+msgstr ""
+
