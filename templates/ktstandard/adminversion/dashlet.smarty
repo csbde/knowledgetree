@@ -20,5 +20,5 @@
 <span id="up_single">{i18n}The following upgrade is available{/i18n}:</span>
 <span id="up_multi">{i18n}The following upgrades are available{/i18n}:</span>
 <div id="up_upgrades"></div>
-<div id="footerref">{i18n}We have further information on the Knowledge Tree website.{/i18n}</div>
+<div id="footerref">{i18n}We have further information on our website.{/i18n}</div>
 <div id="footerref">{i18n}Please visit <a href="http://www.knowledgetree.com">www.knowledgetree.com</a> to find out more.{/i18n}</div>
