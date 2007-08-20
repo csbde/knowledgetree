@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -43,18 +43,18 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
-    var $sHelpPage = 'ktcore/admin/document types.html'; 
+    var $sHelpPage = 'ktcore/admin/document types.html';
 
    // Breadcrumbs base - added to in methods
     function do_main () {
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
-        
+
         $this->oPage->setBreadcrumbDetails(_kt('view types'));
-    
+
         $addFields = array();
         $addFields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
-    
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
         $oTemplate->setData(array(
@@ -67,7 +67,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     function do_new() {
         $sName = $this->oValidator->validateEntityName('DocumentType', $_REQUEST['name'], array("redirect_to" => array("main")));
-        
+
         $oDocumentType =& DocumentType::createFromArray(array(
             'name' => $sName,
         ));
@@ -91,56 +91,62 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_kt('Document type could not be deleted'));
             exit(0);
         }
-        
+
         $this->successRedirectToMain(_kt('Document type deleted'));
         exit(0);
     }
 
     function do_disable() {
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
-        
+
+        // The system default document type (ID 1) cannot be disabled
+        if ($oDocumentType->getId() == '1') {
+            $this->errorRedirectTo('main', _kt('The system default document type can not be disabled. You may, however, rename it.'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            exit(0);
+        }
+
         $oDocumentType->setDisabled(true);
         $res = $oDocumentType->update();
-        
+
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('main', _kt('Could not disable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        
+
         $this->successRedirectToMain(_kt('Document type disabled'));
         exit(0);
     }
 
     function do_enable() {
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
-        
+
         $oDocumentType->setDisabled(false);
         $res = $oDocumentType->update();
-        
+
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('main', _kt('Could not enable document type'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        
+
         $this->successRedirectToMain(_kt('Document type enabled'));
         exit(0);
     }
 
     function do_edit() {
-        
+
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/edit');
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
-        
-        
+
+
         $aCurrentFieldsets =& KTFieldset::getForDocumentType($oDocumentType);
         $aCurrentFieldsetIds = array_map(array("KTUtil", "getId"), $aCurrentFieldsets);
         $aAvailableFieldsets =& KTFieldset::getNonGenericFieldsets();
         $aAvailableFieldsetIds =& array_map(array("KTUtil", "getId"), $aAvailableFieldsets);
         $aAvailableFieldsetIds = array_diff($aAvailableFieldsetIds, $aCurrentFieldsetIds);
-        
+
         $vocab = array();
         foreach ($aAvailableFieldsetIds as $iFieldsetId) {
             $oFieldset = KTFieldset::get($iFieldsetId);
@@ -152,12 +158,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aOptions['size'] = 5;
         $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _kt('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
-        
+
         $this->aBreadcrumbs[] = array(
             'name' => $oDocumentType->getName(),
-        );        
+        );
         $this->oPage->setBreadcrumbDetails(_kt('edit'));
-        
+
         $oTemplate->setData(array(
             'context' => $this,
             'oDocumentType' => $oDocumentType,
@@ -170,9 +176,9 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         return $oTemplate;
     }
 
-    function do_editobject() {    
+    function do_editobject() {
         $iDocumentTypeId = (int)$_REQUEST['fDocumentTypeId'];
-        $oDocumentType =& DocumentType::get($iDocumentTypeId);        
+        $oDocumentType =& DocumentType::get($iDocumentTypeId);
 
         $aErrorOptions = array(
             'redirect_to' => array('edit', sprintf('fDocumentTypeId=%d', $iDocumentTypeId)),
@@ -182,7 +188,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
         $oDocumentType->setName($sName);
         $res = $oDocumentType->update();
-        
+
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _kt('Could not save document type changes'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
@@ -206,12 +212,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
     function do_addfieldsets() {
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
         $aFieldsetId = $_REQUEST['fieldsetid'];
-        
+
         if(!count($aFieldsetId)) {
             $this->errorRedirectTo('edit', _kt('You must select at least one fieldset'), 'fDocumentTypeId=' . $oDocumentType->getId());
             exit(0);
         }
-        
+
         $res = KTMetadataUtil::addSetsToDocumentType($oDocumentType, $aFieldsetId);
         if (PEAR::isError($res)) {
             var_dump($res);
@@ -224,17 +230,17 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     function getFieldsetsForType($oType) {
         $aCurrentFieldsets = KTFieldset::getForDocumentType($oType);
-        if (empty($aCurrentFieldsets)) { 
+        if (empty($aCurrentFieldsets)) {
             return _kt('No fieldsets');
-        } 
-        
+        }
+
         $aNames = array();
         foreach ($aCurrentFieldsets as $oFieldset) {
-            if (!PEAR::isError($oFieldset)) { 
+            if (!PEAR::isError($oFieldset)) {
                 $aNames[] = $oFieldset->getName();
             }
         }
-        
+
         return implode(', ', $aNames);
     }
 }

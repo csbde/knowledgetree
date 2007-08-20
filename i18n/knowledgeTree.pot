@@ -10641,11 +10641,11 @@ msgstr ""
 msgid "Browse by..."
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:126 
+#: plugins/ktstandard/KTEmail.php:126
 msgid "Your colleague, %s, wishes you to view the attached document entitled '%s'."
 msgstr ""
 
-#: plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty:8 
+#: plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty:8
 msgid "You have no orphaned folders."
 msgstr ""
 
@@ -10710,3 +10710,6 @@ msgstr ""
 msgid "We have further information on the Knowledge Tree website."
 msgstr ""
 
+#: plugins\ktcore\admin\documentTypes.php:103
+msgid "The system default document type can not be disabled. You may, however, rename it."
+msgstr ""
