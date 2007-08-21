@@ -111,7 +111,7 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
         $oWorkflow = $this->_handler->addTrigger($this->_document);
 
         // catch disabled workflows.
-        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null))) {
+        if (!is_null($oWorkflow) && (PEAR::isError($oWorkflow) || ($oWorkflow->getStartStateId() === null) || !($oWorkflow->getIsEnabled()))) {
             return ;
         }
 
