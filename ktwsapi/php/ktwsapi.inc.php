@@ -1,10 +1,10 @@
-<?
+<?php
 /**
  * Copyright (c) 2007, The Jam Warehouse Software (Pty) Ltd.
  *
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
  *    i) Redistributions of source code must retain the above copyright notice,
@@ -12,8 +12,8 @@
  *   ii) Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *  iii) Neither the name of the The Jam Warehouse Software (Pty) Ltd nor the 
- *       names of its contributors may be used to endorse or promote products 
+ *  iii) Neither the name of the The Jam Warehouse Software (Pty) Ltd nor the
+ *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -49,9 +49,9 @@ define('KTWSAPI_ERR_SESSION_NOT_STARTED','An active session has not been started
 class KTWSAPI_FolderItem
 {
 	var $ktapi;
-	
+
 	var $parent_id;
-	
+
 	/**
 	 * Upload a file to KT. Returns a temp filename on the server.
 	 *
@@ -66,73 +66,73 @@ class KTWSAPI_FolderItem
 		{
 			return new PEAR_Error('CURL library not included.');
 		}
-		
+
 		if (!is_file($filename) || !is_readable($filename))
 		{
-			return new PEAR_Error('Could not access file to upload.');			
+			return new PEAR_Error('Could not access file to upload.');
 		}
-		
+
 		if (is_null($document_id))
 		{
 			$uploadname="upload_document";
 		}
-		else 
+		else
 		{
 			$uploadname="upload_$document_id";
-			
+
 		}
-		
+
 		$session_id = $this->ktapi->session;
-		
+
 		$ch = curl_init();
-		$fp = fopen ($filename, 'r');		 
+		$fp = fopen ($filename, 'r');
 		curl_setopt($ch, CURLOPT_URL, KTUploadURL);
 		curl_setopt($ch, CURLOPT_POST, 1);
-		
+
 		$post_fields = array(
 			'session_id'=>$session_id,
 			'action'=>$action,
 			'document_id'=>$document_id,
 			$uploadname=>'@' . $filename
-		
+
 		);
-		
+
 		$str = serialize($post_fields);
-		
+
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);		
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$response = curl_exec ($ch);
 		curl_close ($ch);
-		
+
 		if ($response == '')
 		{
 			return new PEAR_Error('No response from server.');
 		}
-		
+
 		$fields=explode('&',$response);
 		$status_code=-1;
 		$msg='*not set*';
 		$upload_status='';
-		
+
 
 		foreach($fields as $field)
 		{
 			list($fieldname, $value) = explode('=', $field);
-			
+
 			$$fieldname = $value;
 		}
-		
+
 		if ($status_code == 0)
 		{
 			$upload_status= unserialize(urldecode($upload_status));
-			
+
 			if ($upload_status[$uploadname]['size'] == filesize($filename))
 			{
 				return $upload_status[$uploadname]['tmp_name'];
 			}
 		}
 		return new PEAR_Error('Could not upload file.');
-		
+
 	}
 
 	/**
@@ -146,27 +146,27 @@ class KTWSAPI_FolderItem
 	function _download_file($url, $localpath, $filename)
 	{
 		$localfilename = $localpath . '/' . $filename;
-		
+
 		$fp = fopen($localfilename,'wb');
 		if ($fp == null)
 		{
 			return new PEAR_Error('Could not create local file');
 		}
-		
+
 	    $ch = curl_init();
-           
+
     	curl_setopt($ch, CURLOPT_FILE, $fp);
 	    curl_setopt($ch, CURLOPT_HEADER, 0);
-    	curl_setopt($ch, CURLOPT_URL, $url); 
-		
+    	curl_setopt($ch, CURLOPT_URL, $url);
+
     	$response = curl_exec($ch);
     	curl_close($ch);
-    	
+
     	fclose($fp);
-    	
-    	return $response;		
+
+    	return $response;
 	}
-	
+
 	/**
 	 * Returns a reference to the parent folder.
 	 *
@@ -177,7 +177,7 @@ class KTWSAPI_FolderItem
 		$parent = &KTAPI::get_folder_by_id($this->parent_id);
 		return $parent;
 	}
-	
+
 }
 
 class KTWSAPI_Folder extends KTWSAPI_FolderItem
@@ -185,7 +185,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	var $folder_name;
 	var $full_path;
 	var $folder_id;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -199,9 +199,9 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		$this->folder_id = $kt_folder_detail->id+0;
 		$this->folder_name = $kt_folder_detail->folder_name;
 		$this->parent_id = $kt_folder_detail->parent_id+0;
-		$this->full_path = $kt_folder_detail->full_path;		
+		$this->full_path = $kt_folder_detail->full_path;
 	}
-	
+
 	/**
 	 * Returns a reference to a KTWSAPI_Folder
 	 *
@@ -214,22 +214,22 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTWSAPI'));
 		assert(is_numeric($folderid));
-		
+
 		$folderid += 0;
-		
+
 		$kt_folder_detail = $ktapi->soapclient->get_folder_detail($ktapi->session, $folderid);
 		if (SOAP_Client::isError($kt_folder_detail))
 		{
 			return $kt_folder_detail;
 		}
-		
+
 		if ($kt_folder_detail->status_code != 0)
 		{
 			return new PEAR_Error($kt_folder_detail->message);
 		}
-		
-		$folder = & new KTWSAPI_Folder($ktapi, $kt_folder_detail);		
-		
+
+		$folder = & new KTWSAPI_Folder($ktapi, $kt_folder_detail);
+
 		return $folder;
 	}
 
@@ -242,7 +242,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	{
 		return $this->parent_id;
 	}
-	
+
 	/**
 	 * Returns the folder name.
 	 *
@@ -251,8 +251,8 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	function get_folder_name()
 	{
 		return $this->folder_name;
-	}	
-	
+	}
+
 	/**
 	 * Returns the current folder id.
 	 *
@@ -261,7 +261,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	function get_folderid()
 	{
 		return $this->folder_id;
-	}	
+	}
 
 	/**
 	 * Returns the foldre based on foldername.
@@ -280,23 +280,23 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			$path = substr($path,12);
 		}
-		
+
 		$kt_folder_detail = $this->ktapi->soapclient->get_folder_detail_by_name($this->ktapi->session, $path);
-		
+
 		if (SOAP_Client::isError($kt_folder_detail))
 		{
 			return $kt_folder_detail;
 		}
-		
+
 		if ($kt_folder_detail->status_code != 0)
 		{
 			return new PEAR_Error($kt_folder_detail->message);
 		}
-		
-		$folder= & new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);	
-		return $folder;		
+
+		$folder= & new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);
+		return $folder;
 	}
-		
+
 	/**
 	 * Returns the full folder path.
 	 *
@@ -305,8 +305,8 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	function get_full_path()
 	{
 		return $this->full_path;
-	}	
-	
+	}
+
 	/**
 	 * Returns the contents of a folder.
 	 *
@@ -321,15 +321,15 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			return $kt_folder_contents;
 		}
-		
+
 		if ($kt_folder_contents->status_code != 0)
 		{
 			return new PEAR_Error($kt_folder_contents->message);
 		}
-		
-		return $kt_folder_contents->items;		
+
+		return $kt_folder_contents->items;
 	}
-	
+
 	/**
 	 * Returns a document based on title.
 	 *
@@ -338,7 +338,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function &get_document_by_name($title)
 	{
-		$path = $this->full_path . '/' . $title;		
+		$path = $this->full_path . '/' . $title;
 		if (substr($path,0,13) == '/Root Folder/')
 		{
 			$path = substr($path,13);
@@ -347,21 +347,21 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			$path = substr($path,12);
 		}
-				
+
 		$kt_document_detail = $this->ktapi->soapclient->get_document_detail_by_name($this->ktapi->session, $path, 'T');
-		
+
 		if (SOAP_Client::isError($kt_document_detail))
 		{
 			return $kt_document_detail;
 		}
-		
+
 		if ($kt_document_detail->status_code != 0)
 		{
 			return new PEAR_Error($kt_document_detail->message);
 		}
-		
+
 		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
-		
+
 		return $document;
 	}
 
@@ -373,7 +373,7 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	 */
 	function &get_document_by_filename($filename)
 	{
-		$path = $this->full_path . '/' . $filename;		
+		$path = $this->full_path . '/' . $filename;
 		if (substr($path,0,13) == '/Root Folder/')
 		{
 			$path = substr($path,13);
@@ -382,24 +382,24 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			$path = substr($path,12);
 		}
-				
+
 		$kt_document_detail = $this->ktapi->soapclient->get_document_detail_by_name($this->ktapi->session, $path, 'F');
-		
+
 		if (SOAP_Client::isError($kt_document_detail))
 		{
 			return $kt_document_detail;
 		}
-		
+
 		if ($kt_document_detail->status_code != 0)
 		{
 			return new PEAR_Error($kt_document_detail->message);
 		}
-		
+
 		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
 		return $document;
 	}
-	
-	
+
+
 	/**
 	 * Adds a sub folder.
 	 *
@@ -413,17 +413,17 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			return $kt_folder_detail;
 		}
-		
+
 		if ($kt_folder_detail->status_code != 0)
 		{
 			return new PEAR_Error($kt_folder_detail->message);
 		}
-		
+
 		$folder = &new KTWSAPI_Folder($this->ktapi, $kt_folder_detail);
-		
+
 		return $folder;
 	}
-	
+
 	/**
 	 * Deletes the current folder.
 	 *
@@ -438,15 +438,15 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			return $kt_response;
 		}
-		
+
 		if ($kt_response->status_code != 0)
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Renames the current folder.
 	 *
@@ -460,15 +460,15 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			return $kt_response;
 		}
-		
+
 		if ($kt_response->status_code != 0)
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Moves a folder to another location.
 	 *
@@ -480,18 +480,18 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	{
 		assert(!is_null($ktwsapi_target_folder));
 		assert(is_a($ktwsapi_target_folder,'KTWSAPI_Folder'));
-		
+
 		$kt_response = $this->ktapi->soapclient->move_folder($this->ktapi->session, $this->folder_id,$ktwsapi_target_folder->get_folderid());
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
 		}
-		
+
 		if ($kt_response->status_code != 0)
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
 
@@ -506,23 +506,23 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	{
 		assert(!is_null($ktwsapi_target_folder));
 		assert(is_a($ktwsapi_target_folder,'KTWSAPI_Folder'));
-		
+
 		$targetid=$ktwsapi_target_folder->get_folderid();
-		
+
 		$kt_response = $this->ktapi->soapclient->copy_folder($this->ktapi->session, $this->folder_id,$targetid, $reason);
 		if (SOAP_Client::isError($kt_response))
 		{
 			return $kt_response;
 		}
-		
+
 		if ($kt_response->status_code != 0)
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Adds a document to the current folder.
 	 *
@@ -535,15 +535,15 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 	{
 		if (empty($title))
 		{
-			$title=basename($filename);	
-		}		
-		$basename=basename($filename);	
-		
+			$title=basename($filename);
+		}
+		$basename=basename($filename);
+
 		if (empty($documenttype))
 		{
 			$documenttype='Default';
 		}
-		
+
 		// First step - upload file
 		$tempfilename = $this->_upload_file($filename,'A');
 		if (PEAR::isError($tempfilename))
@@ -562,13 +562,13 @@ class KTWSAPI_Folder extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_document_detail->message);
 		}
-		
+
 		$document = & new KTWSAPI_Document($this->ktapi, $kt_document_detail);
 		return $document;
 	}
 }
 
-class KTWSAPI_Document extends KTWSAPI_FolderItem 
+class KTWSAPI_Document extends KTWSAPI_FolderItem
 {
 	var $document_id;
 	var $title;
@@ -583,7 +583,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	var $workflow_state;
 	var $checkout_by;
 	var $full_path;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -609,7 +609,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		$this->checkout_by = $kt_document_detail->checkout_by;
 		$this->full_path = $kt_document_detail->full_path;
 	}
-	
+
 	/**
 	 * Returns a reference to a document.
 	 *
@@ -618,12 +618,12 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	 * @param boolean $loadinfo
 	 * @return KTWSAPI_Document
 	 */
-	function &get(&$ktapi, $documentid, $loadinfo=true)	
+	function &get(&$ktapi, $documentid, $loadinfo=true)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTWSAPI'));
 		assert(is_numeric($documentid));
-		
+
 		if ($loadinfo)
 		{
 			$kt_document_detail = $ktapi->soapclient->get_document_detail($ktapi->session, $documentid);
@@ -635,19 +635,19 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 			if ($kt_document_detail->status_code != 0)
 			{
 				return new PEAR_Error($kt_document_detail->message);
-			}			
+			}
 		}
-		else 
+		else
 		{
 			$kt_document_detail = array(
-				'document_id'=>$documentid,			
+				'document_id'=>$documentid,
 			);
 		}
-		
-		$document=& new KTWSAPI_Document($ktapi, $kt_document_detail);	
-		return $document;	
+
+		$document=& new KTWSAPI_Document($ktapi, $kt_document_detail);
+		return $document;
 	}
-	
+
 	/**
 	 * Checks in a document.
 	 *
@@ -658,14 +658,14 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	 */
 	function checkin($filename, $reason, $major_update )
 	{
-		$basename=basename($filename);		 
-		
+		$basename=basename($filename);
+
 		$tempfilename = $this->_upload_file($filename,'C', $this->document_id);
 		if (PEAR::isError($tempfilename))
 		{
 			return new PEAR_Error($tempfilename->message);
 		}
-		
+
 		$kt_response = $this->ktapi->soapclient->checkin_document($this->ktapi->session, $this->document_id, $basename, $reason, $tempfilename, $major_update );
 		if (SOAP_Client::isError($kt_response))
 		{
@@ -676,10 +676,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
-		return true;    
+
+		return true;
 	}
-	
+
 	/**
 	 * Checks out a document.
 	 *
@@ -688,12 +688,12 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	 * @return true
 	 */
 	function checkout($reason, $localpath=null)
-	{		
+	{
 		if (is_null($localpath))
 		{
 			$localpath = $this->ktapi->get_download_path();
 		}
-		
+
 		if (!is_dir($localpath))
 		{
 			return new PEAR_Error('local path does not exist');
@@ -702,7 +702,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error('local path is not writable');
 		}
-		
+
 		$kt_response = $this->ktapi->soapclient->checkout_document($this->ktapi->session, $this->document_id, $reason);
 		if (SOAP_Client::isError($kt_response))
 		{
@@ -713,18 +713,18 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		$url = $kt_response->message;
-		
+
 		$response = $this->_download_file($url, $localpath, $this->filename);
 		if (PEAR::isError($response))
 		{
 			return new PEAR_Error($kt_response->message);
-		}    	
-		
-		return true;  
+		}
+
+		return true;
 	}
-	
+
 	/**
 	 * Undo a document checkout
 	 *
@@ -743,7 +743,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
 
@@ -755,12 +755,12 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	 * @return true
 	 */
 	function download($version=null, $localpath=null)
-	{		
+	{
 		if (is_null($localpath))
 		{
 			$localpath = $this->ktapi->get_download_path();
 		}
-		
+
 		if (!is_dir($localpath))
 		{
 			return new PEAR_Error('local path does not exist');
@@ -769,7 +769,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error('local path is not writable');
 		}
-		
+
 		$kt_response = $this->ktapi->soapclient->download_document($this->ktapi->session, $this->document_id);
 		if (SOAP_Client::isError($kt_response))
 		{
@@ -780,18 +780,18 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		$url = $kt_response->message;
-		
+
 		$response = $this->_download_file($url, $localpath, $this->filename);
 		if (PEAR::isError($response))
 		{
 			return new PEAR_Error($kt_response->message);
-		}    	
-		
-		return true;  
+		}
+
+		return true;
 	}
-	
+
 	/**
 	 * Deletes the current document.
 	 *
@@ -810,17 +810,17 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Changes the owner of the document.
 	 *
 	 * @param string $username
 	 * @param string $reason
 	 * @return true
-	 */ 
+	 */
 	function change_owner($username, $reason)
 	{
 		$kt_response = $this->ktapi->soapclient->change_document_owner($this->ktapi->session, $this->document_id, $username, $reason);
@@ -833,18 +833,18 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Copies the document to the specified folder.
 	 *
-	 * @param KTWSAPI_Folder $folder 
+	 * @param KTWSAPI_Folder $folder
 	 * @param string $reason
 	 * @param string $newtitle
 	 * @param string $newfilename
-	 */	
+	 */
 	function copy(&$folder,$reason,$newtitle='',$newfilename='')
 	{
 		assert(is_a($folder,'KTWSAPI_Folder'));
@@ -861,10 +861,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Moves the current folder to the specified folder.
 	 *
@@ -878,7 +878,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 	{
 		assert(is_a($folder,'KTWSAPI_Folder'));
 		assert(!is_null($folder));
-		
+
 		$folder_id = $folder->folderid;
 		$kt_response = $this->ktapi->soapclient->move_document($this->ktapi->session, $this->document_id, $folder_id, $reason, $newtitle, $newfilename);
 		if (SOAP_Client::isError($kt_response))
@@ -890,7 +890,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
 
@@ -912,10 +912,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Renames the title of the current document.
 	 *
@@ -934,10 +934,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Renames the filename of the current document.
 	 *
@@ -956,10 +956,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Starts a workflow on the current document.
 	 *
@@ -978,7 +978,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
     }
 
@@ -986,7 +986,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
      * Removes the workflow process from the current document.
      *
      * @return true
-     */    
+     */
     function delete_workflow()
     {
 		$kt_response = $this->ktapi->soapclient->delete_document_workflow($this->ktapi->session, $this->document_id);
@@ -999,10 +999,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
     }
-    
+
     /**
      * Performs a transition on the current document.
      *
@@ -1022,10 +1022,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
     }
-    
+
     /**
      * Returns metadata on the document.
      *
@@ -1043,7 +1043,7 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_metadata_response->message);
 		}
-		
+
 		return $kt_metadata_response;
     }
 
@@ -1065,10 +1065,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_response->message);
 		}
-		
+
 		return true;
-    }    
-    
+    }
+
     /**
      * Returns the transaction history on the current document.
      *
@@ -1086,10 +1086,10 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_document_transaction_history_response->message);
 		}
-		
+
 		return $kt_document_transaction_history_response->history;
 	}
-	
+
 	/**
 	 * Returns the version history on the current document.
 	 *
@@ -1107,9 +1107,9 @@ class KTWSAPI_Document extends KTWSAPI_FolderItem
 		{
 			return new PEAR_Error($kt_document_version_history_response->message);
 		}
-		
+
 		return $kt_document_version_history_response->history;
-	}    
+	}
 }
 
 class KTWSAPI
@@ -1124,7 +1124,7 @@ class KTWSAPI
 	var $timeout;
 	var $session;
 	var $download_path;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1138,9 +1138,9 @@ class KTWSAPI
 		$this->timeout = $timeout;
 		$this->soapclient = $this->wsdl->getProxy();
 		$this->soapclient->setOpt('timeout', $this->timeout);
-		$this->download_path =  'c:/temp';		
+		$this->download_path =  'c:/temp';
 	}
-	
+
 	/**
 	 * This returns the default location where documents are downloaded in download() and checkout().
 	 *
@@ -1150,7 +1150,7 @@ class KTWSAPI
 	{
 		return $this->download_path;
 	}
-	
+
 	/**
 	 * Allows the default location for downloaded documents to be changed.
 	 *
@@ -1163,15 +1163,15 @@ class KTWSAPI
 		{
 			return new PEAR_Error('local path is not writable');
 		}
-		
+
 		if (!is_writable($download_path))
 		{
 			return new PEAR_Error('local path is not writable');
-		}		
+		}
 		$this->download_path = $download_path;
 		return true;
 	}
-	
+
 	/**
 	 * Starts an anonymous session.
 	 *
@@ -1182,7 +1182,7 @@ class KTWSAPI
 	{
 		return $this->start_session('anonymous','',$ip);
 	}
-	
+
 	/**
 	 * Starts a user session.
 	 *
@@ -1202,19 +1202,19 @@ class KTWSAPI
 		{
 			return $kt_response;
 		}
-		
+
 		if ($kt_response->status_code == 0)
 		{
 			$this->session = $kt_response->message;
 		}
-		else 
+		else
 		{
 			return new PEAR_Error($kt_response->message);
-		}	
-		
+		}
+
 		return $this->session;
 	}
-	
+
 	/**
 	 * Sets an active session.
 	 *
@@ -1227,12 +1227,12 @@ class KTWSAPI
 		if (!is_null($this->session))
 		{
 			return new PEAR_Error(KTWSAPI_ERR_SESSION_IN_USE);
-		}		
+		}
 		$this->session = $session;
-		
+
 		return $session;
 	}
-	
+
 	/**
 	 * Closes an active session.
 	 *
@@ -1243,10 +1243,10 @@ class KTWSAPI
 		if (is_null($this->session))
 		{
 			return new PEAR_Error(KTWSAPI_ERR_SESSION_NOT_STARTED);
-		}		
-		
+		}
+
 		$kt_response = $this->soapclient->logout($this->session);
-		
+
 		if ($kt_response->status_code != 0)
 		{
 			return new PEAR_Error($kt_response->message);
@@ -1255,7 +1255,7 @@ class KTWSAPI
 
 		return true;
 	}
-	
+
 	/**
 	 * Returns a reference to the root folder.
 	 *
@@ -1265,22 +1265,22 @@ class KTWSAPI
 	{
 		return $this->get_folder_by_id(1);
 	}
-	
+
 	/**
 	 * Returns a reference to a folder based on id.
 	 *
 	 * @return KTWSAPI_Folder
-	 */	
+	 */
 	function &get_folder_by_id($folderid)
 	{
 		if (is_null($this->session))
 		{
-			return new PEAR_Error('A session is not active');			
+			return new PEAR_Error('A session is not active');
 		}
-				
+
 		return KTWSAPI_Folder::get($this, $folderid);
-	}	
-	
+	}
+
 	/**
 	 * Returns a reference to a document based on id.
 	 *
@@ -1291,11 +1291,11 @@ class KTWSAPI
 	{
 		if (is_null($this->session))
 		{
-			return new PEAR_Error('A session is not active');			
+			return new PEAR_Error('A session is not active');
 		}
-				
+
 		return KTWSAPI_Document::get($this, $documentid);
-	}	
+	}
 }
 
 ?>
