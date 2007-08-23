@@ -420,19 +420,19 @@ class KTWebService
           //  checkin_document
          $this->__dispatch_map['checkin_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','tempfilename' =>'string', 'major_update'=>'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
             );
 
           //  checkin_small_document
          $this->__dispatch_map['checkin_small_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','base64' =>'string', 'major_update'=>'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
             );
 
           //  checkin_base64_document
          $this->__dispatch_map['checkin_base64_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','base64' =>'string', 'major_update'=>'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
               'alias' => 'checkin_small_document'
             );
 
