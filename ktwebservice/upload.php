@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  *
@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -59,8 +59,8 @@ if (!in_array($action,array('C','A')))
 
 
 $session_id = $_POST['session_id'];
- 
- 
+
+
 
 if (count($_FILES) == 0)
 {
@@ -83,7 +83,7 @@ if ($action == 'C')
 //require_once('../config/dmsDefaults.php');
 require_once('../ktapi/ktapi.inc.php');
 require_once('KTUploadManager.inc.php');
- 
+
 
 $ktapi = new KTAPI();
 
@@ -107,10 +107,10 @@ foreach($_FILES as $key =>$file)
 {
 	$filename=$file['name'];
 	$tempfile=$file['tmp_name'];
-	 
+
 	$error=$file['error'];
 	if ($error == UPLOAD_ERR_OK)
-	{		
+	{
 		$result = $upload_manager->uploaded($filename, $tempfile, $action);
 		if (PEAR::isError($result))
 		{
@@ -120,7 +120,7 @@ foreach($_FILES as $key =>$file)
 		{
 			$file['tmp_name'] = $result;
 			$added[$key]=$file;
-		} 
+		}
 	}
 }
 
