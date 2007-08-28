@@ -32,7 +32,7 @@ require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 
  class AdminVersionPlugin extends KTPlugin
  {
-	var $sNamespace = 'ktcore.adminversion.plugin';
+	var $sNamespace = 'ktstandard.adminversion.plugin';
 	var $autoRegister = true;
  	 	
  	function AdminVersionPlugin($sFilename = null) {
@@ -45,7 +45,7 @@ require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
     
     function setup() {
     	
-		$this->registerDashlet('AdminVersionDashlet', 'ktcore.adminversion.dashlet', 'AdminVersionDashlet.php');
+		$this->registerDashlet('AdminVersionDashlet', 'ktstandard.adminversion.dashlet', 'AdminVersionDashlet.php');
 		$this->registerPage('versions', 'AdminVersionPage', 'AdminVersionPage.php');
 		
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
@@ -54,6 +54,6 @@ require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
     }
  }
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('AdminVersionPlugin', 'ktcore.adminversion.plugin', __FILE__);
+$oPluginRegistry->registerPlugin('AdminVersionPlugin', 'ktstandard.adminversion.plugin', __FILE__);
 
 ?>
