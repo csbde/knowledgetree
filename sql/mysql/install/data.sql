@@ -746,7 +746,7 @@ INSERT INTO `plugins` VALUES (50,'ktcore.tagcloud.plugin','plugins/tagcloud/TagC
 INSERT INTO `plugins` VALUES (51,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin');
 INSERT INTO `plugins` VALUES (52,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support');
 INSERT INTO `plugins` VALUES (53,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality');
-INSERT INTO `plugins` VALUES (54,'ktstandard.adminversion.plugin','plugins/ktstandard/KTAdminVersionPlugin.php',0,0,NULL,0,'Admin Version Plugin');
+INSERT INTO `plugins` VALUES (54,'ktstandard.adminversion.plugin','plugins/ktstandard/AdminVersionPlugin/AdminVersionPlugin.php',0,0,NULL,0,'Admin Version Plugin');
 INSERT INTO `plugins` VALUES (55,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin');
 INSERT INTO `plugins` VALUES (56,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin');
 INSERT INTO `plugins` VALUES (57,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin');
@@ -981,6 +981,8 @@ INSERT INTO `upgrades` VALUES (133, 'sql*3.3.2*0*3.3.2/tagclouds.sql', 'Database
 INSERT INTO `upgrades` VALUES (134, 'upgrade*3.3.2*99*upgrade3.3.2', 'Upgrade from version 3.3.1 to 3.3.2', '2007-02-23 11:55:09', 1, 'upgrade*3.3.2*99*upgrade3.3.2');
 INSERT INTO `upgrades` VALUES (135, 'sql*3.4.0*0*3.4.0/upload_download.sql', 'Upgrade to version 3.4.0: Upload download', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
 INSERT INTO `upgrades` VALUES (136, 'upgrade*3.4.0*99*upgrade3.4.0', 'Upgrade from version 3.3.2 to 3.4.0', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
+INSERT INTO `upgrades` VALUES (137, 'sql*3.5.0*0*3.5.0/admin_version_path_update.sql', 'Update Admin Version Plugin Path', '2007-08-28 00:00:00', 1, 'upgrade*3.5.0*99*upgrade3.5.0');
+INSERT INTO `upgrades` VALUES (138, 'upgrade*3.5.0*99*upgrade3.5.0', 'Upgrade from version 3.4.0 to 3.5.0', '2007-08-28 00:00:00', 1, 'upgrade*3.5.0*99*upgrade3.5.0');
 
 -- 
 -- Dumping data for table `user_history`
@@ -1455,7 +1457,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (136);
+INSERT INTO `zseq_upgrades` VALUES (138);
 
 -- 
 -- Dumping data for table `zseq_user_history`
