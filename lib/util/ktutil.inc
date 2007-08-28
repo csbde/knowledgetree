@@ -96,6 +96,13 @@ class KTUtil {
         }
         return $sString;
     }
+    
+    //this function fudges the strlen. It returns a ? when the character is a multi-byte character.
+	//str len is therefore measured correctly.
+	//http://www.phpwact.org/php/i18n/charsets
+	function utf8_strlen($string){
+    	return strlen(utf8_decode($str));
+	}  
 
     function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (!is_array($aArray)) {
