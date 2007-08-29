@@ -575,6 +575,12 @@ class KTAPI
 		}
 		return $results;
 	}
+	
+	function get_dms_defaults()
+	{
+		global $default;
+		return $default;
+	}
 
 }
 

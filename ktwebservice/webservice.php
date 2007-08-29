@@ -323,6 +323,19 @@ class KTWebService
             	'document_types' => "{urn:$this->namespace}kt_document_types_array"
             );
 
+        $this->__typedef["{urn:$this->namespace}kt_server_settings"] =
+			array(
+            	'explorer_metadata_capture' => 'boolean',
+            	'office_metadata_capture' => 'boolean'
+            );
+
+	$this->__typedef["{urn:$this->namespace}kt_server_settings_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'settings' => "{urn:$this->namespace}kt_server_settings"
+            );
+
          /* methods */
 
          // login
@@ -615,10 +628,17 @@ class KTWebService
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
             );
+	    
          // get_document_link_types
          $this->__dispatch_map['get_document_link_types'] =
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
+            );
+
+         // get_server_settings
+         $this->__dispatch_map['get_server_settings'] =
+            array('in' => array('session_id'=>'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_server_settings_response" ),
             );
 
 
@@ -2952,6 +2972,31 @@ class KTWebService
     	$response['status_code'] = KTWS_SUCCESS;
 
     	return $response;
+	}
+
+	/**
+	 * Retrieves the server settings for this server
+	 *
+	 * @param string $session_id
+	 * @return kt_server_settings_response
+	 */
+	function get_server_settings($session_id)
+	{
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+		{
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+		}
+		
+		$dms_defaults = $kt->get_dms_defaults();
+		$response['settings'] = array(
+						'explorer_metadata_capture' => $dms_defaults->explorerMetadataCapture,
+						'office_metadata_capture' => $dms_defaults->officeMetadataCapture
+						);
+		$response['message'] = 'Knowledgetree server settings retrieval succeeded.';
+		$response['status_code'] = KTWS_SUCCESS;
+
+		return $response;
 	}
 
     /**
