@@ -135,6 +135,7 @@ msgstr ""
 
 #: plugins/ktcore/folder/BulkImport.php:63
 #: plugins/ktcore/folder/BulkUpload.php:70
+#: plugins/ktcore/folder/addDocument.php:105
 msgid "- Please select a document type -"
 msgstr ""
 
@@ -148,10 +149,6 @@ msgstr ""
 
 #: i18n/templates.c:3692
 msgid "(e.g. which transitions lead to which states)"
-msgstr ""
-
-#: plugins/ktcore/folder/addDocument.php:105
-msgid "- Please select a document type -"
 msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:277
@@ -4074,6 +4071,8 @@ msgstr ""
 
 #: i18n/templates.c:1334 i18n/templates.c:4064 i18n/templates.c:4298
 #: i18n/templates.c:4316
+#: i18n/templates.c:3326 i18n/templates.c:4043 i18n/templates.c:4415
+#: i18n/templates.c:4922
 msgid "Group"
 msgstr ""
 
@@ -4126,15 +4125,12 @@ msgstr ""
 msgid "Group's name"
 msgstr ""
 
-#: i18n/templates.c:3326 i18n/templates.c:4043 i18n/templates.c:4415
-#: i18n/templates.c:4922
-msgid "Group"
-msgstr ""
-
 #: plugins/ktcore/admin/groupManagement.php:398
 #: plugins/ktcore/admin/userManagement.php:343
 #: plugins/ktstandard/KTEmail.php:273 i18n/templates.c:3233
 #: i18n/templates.c:3269
+#: plugins/ktcore/admin/workflowsv2.php:1915 i18n/templates.c:4127
+#: i18n/templates.c:4586
 msgid "Groups"
 msgstr ""
 
@@ -4152,11 +4148,6 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:639
 msgid "Groups without units cannot be Unit Administrators."
-msgstr ""
-
-#: plugins/ktcore/admin/workflowsv2.php:1915 i18n/templates.c:4127
-#: i18n/templates.c:4586
-msgid "Groups"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:1418
@@ -6873,6 +6864,8 @@ msgid "Return to where you came from."
 msgstr ""
 
 #: i18n/templates.c:4106 i18n/templates.c:4577
+#: i18n/templates.c:3323 i18n/templates.c:4034 i18n/templates.c:4406
+#: i18n/templates.c:4913
 msgid "Role"
 msgstr ""
 
@@ -6916,21 +6909,8 @@ msgstr ""
 msgid "Role now uses parent."
 msgstr ""
 
-#: i18n/templates.c:3320 i18n/templates.c:4031 i18n/templates.c:4403
-#: i18n/templates.c:4910
-msgid "Role or Group"
-msgstr ""
-
-#: i18n/templates.c:3323 i18n/templates.c:4034 i18n/templates.c:4406
-#: i18n/templates.c:4913
-msgid "Role"
-msgstr ""
-
 #: plugins/ktcore/KTCorePlugin.php:218 i18n/templates.c:3230
 #: i18n/templates.c:3266
-msgid "Roles"
-msgstr ""
-
 #: plugins/ktcore/admin/workflowsv2.php:1921
 msgid "Roles"
 msgstr ""
@@ -7719,9 +7699,6 @@ msgid "The document must match condition \"<strong>%s</strong>\"."
 msgstr ""
 
 #: lib/widgets/fieldsetDisplay.inc.php:335
-msgid "The document title is used as the main name of a document throughout %s&trade;."
-msgstr ""
-
 #: plugins/ktcore/document/edit.php:91
 #: plugins/ktcore/folder/addDocument.php:95
 msgid "The document title is used as the main name of a document throughout %s&trade;."
@@ -8593,9 +8570,6 @@ msgid "Transitions from this state"
 msgstr ""
 
 #: i18n/templates.c:3290
-msgid "Transitions to this state"
-msgstr ""
-
 #: i18n/templates.c:3503 i18n/templates.c:3617
 msgid "Transitions to this state"
 msgstr ""
@@ -9176,6 +9150,8 @@ msgstr ""
 #: i18n/templates.c:1385 i18n/templates.c:2966 i18n/templates.c:4352
 #: i18n/templates.c:4883 i18n/templates.c:4949 i18n/templates.c:5003
 #: i18n/templates.c:5027
+#: i18n/templates.c:4052 i18n/templates.c:4355 i18n/templates.c:4424
+#: i18n/templates.c:4886 i18n/templates.c:4931
 msgid "User"
 msgstr ""
 
@@ -9252,11 +9228,6 @@ msgstr ""
 msgid "User's name"
 msgstr ""
 
-#: i18n/templates.c:4052 i18n/templates.c:4355 i18n/templates.c:4424
-#: i18n/templates.c:4886 i18n/templates.c:4931
-msgid "User"
-msgstr ""
-
 #: i18n/templates.c:443
 msgid "User: #username# &lt;br /&gt;           Action: #action# &lt;br /&gt;           #reason#"
 msgstr ""
@@ -9276,6 +9247,8 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:254
 #: plugins/ktstandard/KTEmail.php:280
+#: plugins/ktcore/admin/workflowsv2.php:1909 i18n/templates.c:4124
+#: i18n/templates.c:4583
 msgid "Users"
 msgstr ""
 
@@ -9309,11 +9282,6 @@ msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:681
 msgid "Users updated"
-msgstr ""
-
-#: plugins/ktcore/admin/workflowsv2.php:1909 i18n/templates.c:4124
-#: i18n/templates.c:4583
-msgid "Users"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:983
@@ -10666,6 +10634,8 @@ msgid "Add Dashlets"
 msgstr ""
 
 #: resources/js/permissions.js:106
+#: i18n/templates.c:3320 i18n/templates.c:4031 i18n/templates.c:4403
+#: i18n/templates.c:4910
 msgid "Role or Group"
 msgstr ""
 
@@ -10674,9 +10644,6 @@ msgid "Available Transitions"
 msgstr ""
 
 #: about.php:39
-msgid "About"
-msgstr ""
-
 #: lib/templating/kt3template.inc.php:356
 msgid "About"
 msgstr ""
