@@ -450,6 +450,10 @@ class KTInit {
             $oKTConfig->setdefaultns('webservice', 'uploadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
+	    
+            $oKTConfig->setdefaultns('KTtoolsSettings', 'explorerMetadataCapture', true);
+            $oKTConfig->setdefaultns('KTtoolsSettings', 'officeMetadataCapture', true);
+
             
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * $Id$
  *
@@ -574,6 +574,12 @@ class KTAPI
 			$results[] = $row['name'];
 		}
 		return $results;
+	}
+	
+	function get_dms_defaults()
+	{
+		global $default;
+		return $default;
 	}
 
 }
