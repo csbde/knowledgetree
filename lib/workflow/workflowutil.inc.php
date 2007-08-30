@@ -385,9 +385,11 @@ class KTWorkflowUtil {
         if (is_null($oWorkflow)) {
             return true;
         }
-        if (!in_array($sName, KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow))) {
-            return true;
-        }
+        // FIXME: The workflow_actions table that the method below uses is always empty!
+        //        It seems the new method was never followed though to completion.
+        //if (!in_array($sName, KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow))) {
+        //    return true;
+        //}
         $oState =& KTWorkflowState::getByDocument($oDocument);
         if (in_array($sName, KTWorkflowUtil::getDisabledActionsForState($oState))) {
             return false;
