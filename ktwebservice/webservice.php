@@ -323,17 +323,26 @@ class KTWebService
             	'document_types' => "{urn:$this->namespace}kt_document_types_array"
             );
 
-        $this->__typedef["{urn:$this->namespace}kt_server_settings"] =
+           $this->__typedef["{urn:$this->namespace}kt_client_policy"] =			
+				array(
+					'name' => 'string',
+					'value' => 'string',
+					'type' => 'string',
+			);
+			
+           $this->__typedef["{urn:$this->namespace}kt_client_policies_array"] =	
 			array(
-            	'explorer_metadata_capture' => 'boolean',
-            	'office_metadata_capture' => 'boolean'
-            );
+				array(
+					 'policies' => "{urn:$this->namespace}kt_client_policy"
+				)
+			);
+			
 
-	$this->__typedef["{urn:$this->namespace}kt_server_settings_response"] =
+	$this->__typedef["{urn:$this->namespace}kt_client_policies_response"] =
 			array(
             	'status_code' => 'int',
             	'message' => 'string',
-            	'settings' => "{urn:$this->namespace}kt_server_settings"
+            	'policies' => "{urn:$this->namespace}kt_client_policies_array"
             );
 
          /* methods */
@@ -635,10 +644,10 @@ class KTWebService
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
             );
 
-         // get_server_settings
-         $this->__dispatch_map['get_server_settings'] =
+         // get_client_policies
+         $this->__dispatch_map['get_client_policies'] =
             array('in' => array('session_id'=>'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_server_settings_response" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_client_policies_response" ),
             );
 
 
@@ -2974,29 +2983,49 @@ class KTWebService
     	return $response;
 	}
 
+	function _encode_client_policies($policies)
+        {
+    	$encoded=array();
+    	foreach($policies as $policy)
+    	{
+    		$encoded[] = new SOAP_Value('policy',"{urn:$this->namespace}kt_client_policy", $policy);
+    	}
+    	if (empty($encoded))
+    	{
+    		$encoded=null;
+    	}
+    	return new SOAP_Value('policies',"{urn:$this->namespace}kt_client_policies_array", $encoded);
+    }
+
 	/**
-	 * Retrieves the server settings for this server
+	 * Retrieves the server policies for this server
 	 *
 	 * @param string $session_id
-	 * @return kt_server_settings_response
+	 * @return kt_client_policies_response
 	 */
-	function get_server_settings($session_id)
+	function get_client_policies($session_id)
 	{
-		$kt = &$this->get_ktapi($session_id );
-		if (is_array($kt))
-		{
-			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
-		}
+		$config = KTConfig::getSingleton();
 		
-		$dms_defaults = $kt->get_dms_defaults();
-		$response['settings'] = array(
-						'explorer_metadata_capture' => $dms_defaults->explorerMetadataCapture,
-						'office_metadata_capture' => $dms_defaults->officeMetadataCapture
-						);
-		$response['message'] = 'Knowledgetree server settings retrieval succeeded.';
+		$policies = array(
+					array(
+						'name'=>'explorer_metadata_capture',
+						'value'=>strtolower((string) $config->get('clientToolPolicies/explorerMetadataCapture')),
+						'type'=>'boolean'
+					),
+					array(
+						'name'=>'office_metadata_capture',
+						'value'=>strtolower((string) $config->get('clientToolPolicies/officeMetadataCapture')),
+						'type'=>'boolean'
+					),
+				);
+		
+		
+		$response['policies'] = $this->_encode_client_policies($policies);
+		$response['message'] = 'Knowledgetree client policies retrieval succeeded.';
 		$response['status_code'] = KTWS_SUCCESS;
 
-		return $response;
+		return new SOAP_Value('return',"{urn:$this->namespace}kt_client_policies_response", $response);
 	}
 
     /**

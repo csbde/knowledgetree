@@ -451,8 +451,8 @@ class KTInit {
             $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
 	    
-            $oKTConfig->setdefaultns('KTtoolsSettings', 'explorerMetadataCapture', true);
-            $oKTConfig->setdefaultns('KTtoolsSettings', 'officeMetadataCapture', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'explorerMetadataCapture', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'officeMetadataCapture', true);
 
             
             $res = $this->readConfig();
