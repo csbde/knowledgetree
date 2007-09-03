@@ -57,6 +57,21 @@ define('KTWS_ERR_INVALID_DEPTH',			25);
 define('KTWS_ERR_PROBLEM',					98);
 define('KTWS_ERR_DB_PROBLEM',				99);
 
+
+	function bool2str($bool)
+	{
+		if (is_bool($bool))
+		{
+			return $bool?'true':'false';
+		}
+		if (is_numeric($bool))
+		{
+			return ($bool+0)?'true':'false';
+		}		
+		// assume str
+		return (strtolower($bool) == 'true')?'true':'false';
+	}
+
 class KTWebService
 {
 	/**
@@ -3009,14 +3024,14 @@ class KTWebService
 		
 		$policies = array(
 					array(
-						'name'=>'explorer_metadata_capture',
-						'value'=>strtolower((string) $config->get('clientToolPolicies/explorerMetadataCapture')),
-						'type'=>'boolean'
+						'name' => 'explorer_metadata_capture',
+						'value' => bool2str($config->get('clientToolPolicies/explorerMetadataCapture')),
+						'type' => 'boolean'
 					),
 					array(
-						'name'=>'office_metadata_capture',
-						'value'=>strtolower((string) $config->get('clientToolPolicies/officeMetadataCapture')),
-						'type'=>'boolean'
+						'name' => 'office_metadata_capture',
+						'value' => bool2str($config->get('clientToolPolicies/officeMetadataCapture')),
+						'type' => 'boolean'
 					),
 				);
 		
