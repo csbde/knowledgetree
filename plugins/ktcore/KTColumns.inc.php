@@ -420,6 +420,10 @@ class AdvancedDownloadColumn extends AdvancedColumn {
         $this->label = null;
     }
 
+    function renderHeader($sReturnURL) {
+        return '&nbsp;';
+    }
+
     function renderData($aDataRow) {
         // only _ever_ show this for documents.
         if ($aDataRow["type"] === "folder") {
