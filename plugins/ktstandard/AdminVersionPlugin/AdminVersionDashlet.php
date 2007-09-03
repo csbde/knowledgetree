@@ -41,6 +41,11 @@ class AdminVersionDashlet extends KTBaseDashlet {
 	}
 	*/
 	
+	function is_active($oUser) {
+		$this->oUser = $oUser;
+		return Permission::userIsSystemAdministrator($oUser);
+	}
+	
 	function render() {
 		global $main;
         $main->requireJSResource("plugins/ktstandard/AdminVersionPlugin/js/update.js");
