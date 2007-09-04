@@ -265,7 +265,11 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the user.')); }
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
         if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
-        // FIXME check for non-clashing usernames.
+        
+        $dupUser =& User::getByUserName($username);
+        if(!PEAR::isError($dupUser)) {
+            $this->errorRedirectToMain(_kt("A user with that username already exists"));
+        }
 
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
@@ -286,7 +290,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             "authenticationdetails2" => $samaccountname,
             "password" => "",
         ));
-
+        
         if (PEAR::isError($oUser) || ($oUser == false)) {
             $this->errorRedirectToMain(_kt("failed to create user") . ": " . $oUser->message);
             exit(0);
