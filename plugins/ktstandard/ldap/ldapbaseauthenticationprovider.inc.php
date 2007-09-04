@@ -235,9 +235,16 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         );
         $this->oValidator->notError($aResults);
 
+        $sUserName = $aResults[$this->aAttributes[1]];
+        // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
+        // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
+        if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
+            $sUserName = strtolower($aResults[$this->aAttributes[2]]);
+        }
+
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
-        $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'ldap_username', $aResults[$this->aAttributes[1]], $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'ldap_username', $sUserName, $this->oPage, true);
         $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $aResults[$this->aAttributes[0]], $this->oPage, true);
         $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $aResults[$this->aAttributes[4]], $this->oPage, false);
         $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', true, $this->oPage, false);
@@ -307,13 +314,28 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $oAuthenticator = $this->getAuthenticator($oSource);
         $aNames = array();
+        
         foreach ($aIds as $sId) {
             $aResults = $oAuthenticator->getUser($sId);
             $dn = $sId;
             $sUserName = $aResults[$this->aAttributes[1]];
+            // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
+            // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
+            if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
+                $sUserName = strtolower($aResults[$this->aAttributes[2]]);
+            }
             $sName = $aResults[$this->aAttributes[0]];
             $sEmailAddress = $aResults[$this->aAttributes[4]];
             $sMobileNumber = $aResults[$this->aAttributes[5]];
+
+            // If the user already exists append some text so the admin can see the duplicates.
+            $appending = true;
+            while($appending) {
+                if(!PEAR::isError(User::getByUserName($sUserName))) {
+                    $sUserName = $sUserName . "_DUPLICATE";
+                    $appending = true;
+                } else $appending = false;
+            }
 
             $oUser = User::createFromArray(array(
                 "Username" => $sUserName,
