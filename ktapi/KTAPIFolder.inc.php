@@ -584,7 +584,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 
 		DBUtil::startTransaction();
-		$result = KTFolderUtil::copy($this->folder, $target_folder, $user, $reason);
+		$result = KTFolderUtil::move($this->folder, $target_folder, $user, $reason);
 
 		if (PEAR::isError($result))
 		{
