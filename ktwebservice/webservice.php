@@ -305,7 +305,7 @@ class KTWebService
 
     	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
          	array(
-         		'user'=>'int',
+         		'user'=>'string',
          		'metadata_version'=>'string',
          		'content_version'=>'string',
          		);
@@ -2902,7 +2902,7 @@ class KTWebService
     	$links = $document->get_linked_documents();
     	$response['links'] = $links;
 
-		return $response;
+		return new SOAP_Value('return',"{urn:$this->namespace}kt_linked_document_response", $response);
 	}
 
 	/**
@@ -2948,7 +2948,7 @@ class KTWebService
 
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return $response;
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
 	}
 
 	/**
@@ -2995,7 +2995,7 @@ class KTWebService
 
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return $response;
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
 	}
 
 	function _encode_client_policies($policies)
