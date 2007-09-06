@@ -143,12 +143,12 @@ class KTUtil {
                 $aNewParams = array();
                 foreach ($oSomething[1] as $oParam) {
                     if (is_array($oParam)) {
-                        $aNewParams = array_merge($aNewParams, $oParam);
+                        $aNewParams = kt_array_merge($aNewParams, $oParam);
                     } else {
                         $aNewParams[] = $oParam;
                     }
                 }
-                $aParams = array_merge($aParams, $aNewParams);
+                $aParams = kt_array_merge($aParams, $aNewParams);
             } else {
                 return PEAR::raiseError(_kt("Weird WhereClause passed"));
             }
@@ -429,7 +429,7 @@ class KTUtil {
         if (!is_array($aAddOptions)) {
             $aAddOptions = array();
         }
-        return array_merge($aStartOptions, $aAddOptions);
+        return kt_array_merge($aStartOptions, $aAddOptions);
     }
     // }}}
 

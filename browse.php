@@ -138,7 +138,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 }
             }
 
-            $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
+            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
             $this->oFolder =& $oFolder;
 
 

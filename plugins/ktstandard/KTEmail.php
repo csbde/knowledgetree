@@ -58,7 +58,7 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = '', $bAttachDocumen
 		    $default->log->info('sendingEmail to group ' . $oDestGroup->getName());
 		    // for each group, retrieve all the users
 		    foreach($aDestinationGroups as $oGroup){
-		    	$aUsers = array_merge($aUsers, $oGroup->getUsers());
+		    	$aUsers = kt_array_merge($aUsers, $oGroup->getUsers());
 		    }
 
 		    // FIXME: this should send one email with multiple To: users
@@ -370,7 +370,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 		$aGroups = GroupUtil::listGroupsForUser($this->oUser);
 		$aMembers = array();
 		foreach ($aGroups as $oGroup) {
-		    $aMembers = array_merge($aMembers, $oGroup->getMembers());
+		    $aMembers = kt_array_merge($aMembers, $oGroup->getMembers());
 		}
 		$aUsers = array();
 		$aUserIds = array();

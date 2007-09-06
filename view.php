@@ -142,7 +142,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         );
 
         $this->oDocument =& $oDocument;
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
         $this->oPage->setBreadcrumbDetails(_kt("document details"));
         $this->addPortlets("Document Details");
 
@@ -282,7 +282,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 "folderaction" => "browse",
             );
     
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
         $this->oPage->setBreadcrumbDetails(_kt("compare versions"));
     
         $comparison_version = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fComparisonVersion'));
