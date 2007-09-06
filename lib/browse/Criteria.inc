@@ -635,7 +635,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
     function searchSQL ($aRequest) {
         $p = parent::searchSQL($aRequest, false); // handle not ourselves.
         $p[0] = join(' AND ', array($p[0], "$this->sSearchTable.document_field_id = ?"));
-        $p[1] = array_merge($p[1], array($this->iID));
+        $p[1] = kt_array_merge($p[1], array($this->iID));
 
         // handle the boolean "not" stuff.
         $want_invert = KTUtil::arrayGet($aRequest, $this->getWidgetBase() . '_not');

@@ -68,7 +68,7 @@ class KTrss{
     	$folders=KTrss::getFolders($iUserId);
     	if (is_null($documents)) $documents=array();
     	if (is_null($folders)) $folders=array();
-    	$aFullList = array_merge($documents,$folders );
+    	$aFullList = kt_array_merge($documents,$folders );
     	if($aFullList){
     		$internalFeed = KTrss::arrayToXML($aFullList);
     		$response = rss2arrayBlock($internalFeed);
@@ -163,7 +163,7 @@ class KTrss{
         if ($aFolderList) {
             foreach($aFolderList as $folderElement){
 		        $folder_id = $folderElement['id'];
-		        $aFolderTransactions = array_merge($aFolderTransactions, KTrss::getFolderTransactions($folder_id));
+		        $aFolderTransactions = kt_array_merge($aFolderTransactions, KTrss::getFolderTransactions($folder_id));
 	    	}
         }
         if ($aFolderTransactions){

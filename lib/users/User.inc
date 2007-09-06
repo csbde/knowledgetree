@@ -192,7 +192,7 @@ class User extends KTEntity {
 
     	if (!isset($dashlets->left)) $dashlets->left = array();
     	if (!isset($dashlets->right)) $dashlets->right = array();
-    	$mergedlist = array_merge($dashlets->left,$dashlets->right);
+    	$mergedlist = kt_array_merge($dashlets->left,$dashlets->right);
     	
     	
     	$knownlist = array();
