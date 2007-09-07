@@ -49,7 +49,7 @@ class RSSDocumentLinkAction extends KTDocumentAction {
         
         // get document id
         if(!isset($oDocument)){
-        	return null;
+        	return _kt('RSS');
         }
         $iFId = $oDocument->getID();
         
