@@ -69,6 +69,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                     return _kt('Generate PDF') . "&nbsp;<a href=\"" . KTUtil::ktLink( 'action.php', 'ktstandard.pdf.generate', array( "fDocumentId" => $this->oDocument->getId(), "action" => "pdfdownload") ) . "\" <img src='resources/mimetypes/pdf.png' alt='PDF' border=0/></a>";
                 }
             }
+            return _kt('Generate PDF');
         }
         return '';
     }
