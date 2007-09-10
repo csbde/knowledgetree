@@ -105,19 +105,31 @@ class KTBulkExportAction extends KTFolderAction {
         $aQuery = $this->buildQuery();
         $this->oValidator->notError($aQuery);
         $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
+        
+        /* Modified 07/09/2007 by megan_w */
+        // Get all the folders within the current folder
+        $sCurrentFolderId = $this->oFolder->getId();
+        $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}' OR
+        parent_folder_ids LIKE '{$sCurrentFolderId},%' OR
+        parent_folder_ids LIKE '%,{$sCurrentFolderId},%' OR
+        parent_folder_ids LIKE '%,{$sCurrentFolderId}'";
 
+        $aFolderList = $this->oFolder->getList($sWhereClause);
+        /* End modified */
+        
         $this->startTransaction();
 
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
         $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
 
-        if (empty($aDocumentIds)) {
+        // Redirect if there are no documents and no folders to export
+        if (empty($aDocumentIds) && empty($aFolderList)) {
             $this->addErrorMessage(_kt("No documents found to export"));
             redirect(KTBrowseUtil::getUrlForFolder($oFolder));
             exit(0);
         }
-
+        
         $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js');
         $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js');
         $this->oPage->template = "kt3/minimal_page";
@@ -136,32 +148,55 @@ class KTBulkExportAction extends KTFolderAction {
         );
         $aReplaceKeys = array_keys($aReplace);
         $aReplaceValues = array_values($aReplace);
-        foreach ($aDocumentIds as $iId) {
-            $oDocument = Document::get($iId);
-
-            if ($bNoisy) {
-                $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
-                $oDocumentTransaction->create();
+        if(!empty($aDocumentIds)){
+            foreach ($aDocumentIds as $iId) {
+                $oDocument = Document::get($iId);
+    
+                if ($bNoisy) {
+                    $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
+                    $oDocumentTransaction->create();
+                }
+    
+                $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath()))));
+                $newDir = $this->sTmpPath;
+                $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
+                foreach (split('/', $sFullPath) as $dirPart) {
+                    $newDir = sprintf("%s/%s", $newDir, $dirPart);
+                    if (!file_exists($newDir)) {
+                        mkdir($newDir, 0700);
+                    }
+                }
+                $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $oStorage->temporaryFile($oDocument))));
+                $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
+                $sFilename = $this->_convertEncoding($sFilename, true);
+                copy($sOrigFile, $sFilename);
+                $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
+                $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
+                $sPath = $this->_convertEncoding($sPath, true);
+                $aPaths[] = $sPath;
             }
-
-            $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $sTmpPath, $oDocument->getFullPath()))));
+        }
+        
+        /* Modified 07/09/2007 by megan_w */
+        // Export the folder structure to ensure the export of empty directories
+        foreach($aFolderList as $k => $oFolderItem){
+            $sFolderPath = $oFolderItem->getFullPath().'/'.$oFolderItem->getName().'/';
+            $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $sTmpPath, $sFolderPath))));
             $newDir = $this->sTmpPath;
-            $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
+            $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sFolderPath, true))));
             foreach (split('/', $sFullPath) as $dirPart) {
                 $newDir = sprintf("%s/%s", $newDir, $dirPart);
                 if (!file_exists($newDir)) {
                     mkdir($newDir, 0700);
                 }
             }
-            $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $oStorage->temporaryFile($oDocument))));
-            $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
-            $sFilename = $this->_convertEncoding($sFilename, true);
-            copy($sOrigFile, $sFilename);
-            $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
+            $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s", $sFolderPath))));
             $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
             $sPath = $this->_convertEncoding($sPath, true);
             $aPaths[] = $sPath;
         }
+        /* End modified */
+        
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $aPaths));
         $sZipFile = sprintf("%s/%s.zip", $this->sTmpPath, $this->oFolder->getName());
