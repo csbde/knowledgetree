@@ -240,14 +240,14 @@ class PDFGeneratorAction extends KTDocumentAction {
 
             } else {
                 // Set the error messsage and redirect to view document
-                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>' . $res));
+                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. ' . $res));
                 redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
                 exit(0);  
             }
 
         } else {
             // Set the error messsage and redirect to view document
-            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>The path to the document did not exist.'));
+            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. The path to the document did not exist.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
             exit(0);  
         }
