@@ -1,0 +1,68 @@
+<h2>{i18n}Task Scheduler Management{/i18n}</h2>
+
+{* Display the list of tasks *}
+
+{if $aList}
+<table class="kt_collection" cellspacing = "0" cellpadding = "4">
+
+{if $aHeadings}
+<thead>
+    <tr>
+        {foreach from=$aHeadings item=head}
+            <th>
+                {$head}
+            </th>
+        {/foreach}
+    </tr>
+</thead>
+{/if}
+
+{foreach from=$aList item=task}
+
+    <tr class="{cycle name=rows values=",odd"}">
+        <td width='2%'>
+            {$i++} 
+        </td>
+        <td>
+            {$task->getTask()} 
+        </td>
+        <td id="tblCol">
+            <div id="div{$task->getId()}">
+                {$task->getFrequency()} 
+            </div>
+        </td>
+        <td>
+            <div id="runDiv{$task->getId()}">
+                {$task->getRunTime()}
+            </div>
+        </td>
+        <td>
+            {$task->getPrevious()} 
+        </td>
+        <td>
+            {$task->getRunDuration()}
+        </td>
+        <td>
+            {$task->getAlterFreqLink()}
+        </td>
+    </tr>
+
+{/foreach}
+</table>
+
+<div id="formDiv" style="display: none; visibility: hidden;">
+    <form name="changefreq" id="changefreq" method="post" action="{$sUrl}">
+        
+        <select name="frequency" id="frequency">
+            {html_options values=$aFrequencies output=$aFrequencies}
+        </select>
+        <input type="hidden" name="fId" id="fId" value="">
+        <input type="button" name="save" id="save" onclick="javascript: saveFreq('{$sUrl}');" value="Save">
+    </form>
+</div>
+
+{/if}
+
+<p>
+    {$sClear}
+</p>
