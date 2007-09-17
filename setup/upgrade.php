@@ -172,7 +172,7 @@ function do_start(action)
 	document.location='?go=' + action;
 }
 </script>
-<?
+<?php
 
 $action = trim($_REQUEST["go"]);
 switch ($action)
@@ -239,7 +239,7 @@ Only administrator users may access the upgrade wizard.
 <tr><td colspan=2 align=center><input type=submit value="login">
 </table>
 </form>
-<?	
+<?php	
 }
 
 function loginProcess()
@@ -472,7 +472,7 @@ function upgradeConfirm()
 <font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font>
 <p>
 <br>
-<?
+<?php
 	}
 ?>
 <p>
@@ -482,7 +482,7 @@ We are about to start the upgrade process.
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradePreview')"> 
 
-<?
+<?php
 	
 }
 
@@ -506,9 +506,9 @@ Your mysql installation has been resolved. Manually, you would do the following:
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<nobr>cd "<?=$dir?>"</nobr>
+<nobr>cd "<?php=$dir?>"</nobr>
 <br>
-<?	
+<?php	
 	}
 	else
 	{
@@ -520,17 +520,17 @@ You can continue to do the backup manually using the following process:
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?
+<?php
 
 	}
 ?>
-<nobr><?=$stmt['display']?>
+<nobr><?php=$stmt['display']?>
 </table>
 <P>
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
 
-<?
+<?php
 if ($dir != '')
 {
 ?>
@@ -538,7 +538,7 @@ if ($dir != '')
 <input type=button value="next" onclick="javascript:do_start('Backup')"> 
 
 
-<?
+<?php
 }
 }
 
@@ -565,8 +565,8 @@ function restoreSelect()
     if (count($files) == 0)
     {
  ?>
- 	There don't seem to be any backups to restore from the <i>"<?=$dir?>"</i> directory.
- <?
+ 	There don't seem to be any backups to restore from the <i>"<?php=$dir?>"</i> directory.
+ <?php
     }
     else 
     {
@@ -585,27 +585,27 @@ function restoreSelect()
 			<td>Filename
 			<td>File Size
 			<td>Action
-<?
+<?php
 	$i=0;
 	foreach($files as $file)
 	{
 		$color=((($i++)%2)==0)?'white':'lightgrey';		
 ?>
-		<tr bgcolor="<?=$color?>">
-			<td><?=$file?>
-			<td><?=filesize($dir . '/'.$file)?>
-			<td><input type=button value="restore" onclick="javascript:selectRestore('<?=$file?>')">
-<?		
+		<tr bgcolor="<?php=$color?>">
+			<td><?php=$file?>
+			<td><?php=filesize($dir . '/'.$file)?>
+			<td><input type=button value="restore" onclick="javascript:selectRestore('<?php=$file?>')">
+<?php		
 	}
 ?>
  	</table>
- <?   	
+ <?php   	
     }
    ?>
 
    <p>
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-   <?
+   <?php
 
 }
 
@@ -619,7 +619,7 @@ function restoreSelected()
 <script>
 document.location='?go=RestoreConfirm';
 </script>
-<?
+<?php
 
 }
 
@@ -647,9 +647,9 @@ Manually, you would do the following to restore the backup:
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<nobr>cd "<?=$dir?>"</nobr>
+<nobr>cd "<?php=$dir?>"</nobr>
 <br>
-<?	
+<?php	
 	}
 	else
 	{
@@ -661,28 +661,28 @@ You can continue to do the restore manually using the following command(s):
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?
+<?php
 
 	}
 ?>
-<nobr><?=$stmt['display']?>
+<nobr><?php=$stmt['display']?>
 </table>
 <P>
-<?
+<?php
 if ($dir != '')
 {
 ?>
 Press <i>continue to restore</i> to attempt the command(s) above.
 
 <P>
-<?
+<?php
 }
 ?>
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup" onclick="javascript:do_start('RestoreSelect')"> 
 
-<?
+<?php
 if ($dir != '')
 {
 ?>
@@ -698,7 +698,7 @@ function restore()
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:restore()"> 
 
 
-<?
+<?php
 }
 }
 
@@ -715,10 +715,10 @@ function backupDone()
 	{
 		$stmt=create_restore_stmt($filename);
 ?>
-		The backup file <nobr><I>"<?=$filename?>"</i></nobr> has been created.
+		The backup file <nobr><I>"<?php=$filename?>"</i></nobr> has been created.
 		<P> It appears as though the <font color=green>backup has been successful</font>.
 		<P>
-		<?
+		<?php
 			if ($stmt['dir'] != '')
 			{
 		?>
@@ -727,9 +727,9 @@ function backupDone()
 				<table bgcolor="lightgrey">
 				<tr>
 					<td>
-						<nobr>cd <?=$stmt['dir']?></nobr>
+						<nobr>cd <?php=$stmt['dir']?></nobr>
 						<br>
-		<?	
+		<?php	
 			}
 			else
 			{
@@ -741,13 +741,13 @@ function backupDone()
 				<table bgcolor="lightgrey">
 				<tr>
 					<td>
-		<?
+		<?php
 			}
 		?>
-						<nobr><?=$stmt['display']?>
+						<nobr><?php=$stmt['display']?>
 				</table>
 			
-<?
+<?php
 	}
 	else 
 	{
@@ -760,22 +760,22 @@ We appologise for the inconvenience.
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?=$_SESSION['backupOutput']?>
+<?php=$_SESSION['backupOutput']?>
 </table>
-<?
+<?php
 		
 	}
 ?>
 <br>				
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-<?
+<?php
 	if ($status)
 	{
 		?>
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm')"> 
 	
-<?	
+<?php	
 	}
 }
 function restoreDone()
@@ -790,14 +790,14 @@ function restoreDone()
 	{
 		 
 ?>
-		The restore of <nobr><I>"<?=$filename?>"</i></nobr> has been completed. 
+		The restore of <nobr><I>"<?php=$filename?>"</i></nobr> has been completed. 
 		<P>
 		It appears as though the <font color=green>restore has been successful</font>.
 		<P>
 
 
 				
-<?
+<?php
 	}
 	else 
 	{
@@ -811,9 +811,9 @@ We appologise for the inconvenience.
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?=$_SESSION['restoreOutput']?>
+<?php=$_SESSION['restoreOutput']?>
 </table>
-<?
+<?php
 		
 	}
 ?>
@@ -822,7 +822,7 @@ We appologise for the inconvenience.
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 
-<?	
+<?php	
 	
 }
 
@@ -836,9 +836,9 @@ function check_state($value, $state='Home')
 	{
 		?>
 			<script>
-			document.location="?go=<?=$state?>";
+			document.location="?go=<?php=$state?>";
 			</script>
-			<?
+			<?php
 			exit;
 	}
 }
@@ -861,7 +861,7 @@ function backup()
 		flush();
 ?>
 		The backup is now underway. Please wait till it completes.
-<?
+<?php
 
 		ob_flush();
 		flush();
@@ -895,7 +895,7 @@ function backup()
 			<script>
 			document.location="?go=BackupDone";
 			</script>
-<?	
+<?php	
 		
 		 
 	}
@@ -903,10 +903,10 @@ function backup()
 	{
 ?>
 <P>
-	The <i>mysqldump</i> utility was not found in the <?=$dir?> subdirectory.
+	The <i>mysqldump</i> utility was not found in the <?php=$dir?> subdirectory.
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-<?		
+<?php		
 	}
 
 
@@ -932,7 +932,7 @@ function restore()
 		 
 ?>
 		The restore is now underway. Please wait till it completes.
-<?
+<?php
 		print "\n";
 
 		 
@@ -967,7 +967,7 @@ function restore()
 			<script>
 			document.location="?go=RestoreDone";
 			</script>
-<?	
+<?php	
 		
 		 
 	}
@@ -975,10 +975,10 @@ function restore()
 	{
 ?>
 <P>
-	The <i>mysql</i> utility was not found in the <?=$dir?> subdirectory.
+	The <i>mysql</i> utility was not found in the <?php=$dir?> subdirectory.
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-<?		
+<?php		
 	}
 
 
@@ -1008,7 +1008,7 @@ If you have already done this, you may skip this step can continue directly to t
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');"> 
 
 
-<?
+<?php
 
 
 }
@@ -1020,9 +1020,9 @@ function UpgradePreview()
 	global $default;
 ?>
         <p>The table below describes the upgrades that need to occur to
-        upgrade your <?php echo APP_NAME;?> installation to <strong><?=$default->systemVersion?></strong>.
+        upgrade your <?php echo APP_NAME;?> installation to <strong><?php echo $default->systemVersion;?></strong>.
         Click on the button below the table to perform the upgrades.</p>
-  <?
+  <?php
         $upgradeTable = generateUpgradeTable();
 	print $upgradeTable;
 	?>
@@ -1030,7 +1030,7 @@ function UpgradePreview()
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('Upgrade')"> 
-	<?
+	<?php
 
 }
 
@@ -1041,15 +1041,15 @@ function Upgrade()
 	global $default;
 ?>
         <p>The table below describes the upgrades that have occurred to
-        upgrade your <?php echo APP_NAME;?> installation to <strong><?=$default->systemVersion?></strong>.
+        upgrade your <?php echo APP_NAME;?> installation to <strong><?php echo $default->systemVersion;?></strong>.
  
-  <?
+  <?php
 	$res = performAllUpgrades();
 	if (PEAR::isError($res)) 
 	{
 ?>
 <font color="red">Upgrade failed.</font>
-<?
+<?php
 	} 
 	else 
 	{
@@ -1057,14 +1057,14 @@ function Upgrade()
 ?>
 <p>
 <font color="green">Upgrade succeeded.</font>
-<?
+<?php
 	}
 ?>
 <p>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';"> 
-<?	 
+<?php	 
 }
 
 ?>
