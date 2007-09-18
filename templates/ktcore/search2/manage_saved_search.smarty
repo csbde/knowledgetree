@@ -1,0 +1,59 @@
+<h2>{i18n}Manage Saved Searches{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}Saved searches are searches which are particular to your location
+For example, you could define a search which returns all documents in a particular workflow state,
+or all documents which are considered "common" within your organisation (leave policy,
+newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
+
+
+<p class="descriptiveText">{i18n}Create a new saved search using{/i18n} <a href="{addQS}action=guiBuilder{/addQS}">Advanced Query Builder</a> or
+<a href="{addQS}action=queryBuilder{/addQS}">Advanced Query Search</a>.
+</p>
+
+
+{if $saved}
+<h2>{i18n}Existing Searches{/i18n}</h2>
+
+<table class="listing">
+<thead>
+    <tr>
+        <th>{i18n}Search Name{/i18n}</th>
+        <th>{i18n}User{/i18n}</th>
+        <th>{i18n}Edit{/i18n}</th>
+        <th>{i18n}Delete{/i18n}</th>
+        <th>{i18n}Share With All{/i18n}</th>
+        <th>{i18n}View Results{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+{foreach item=oSearch from=$saved}
+    <tr>
+        <td>{$oSearch.name|sanitize}</td>
+		<td>{if $oSearch.username}{$oSearch.username|sanitize}{else}{i18n}All users{/i18n}{/if}</td>
+        <td>{if ($oSearch.editable || $sysadmin)}<a href="{addQS}action=queryBuilder&fSavedSearchId={$oSearch.id}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>{/if}</td>
+        <td>{if ($oSearch.editable || $sysadmin)}<a href="{addQS}action=delete&fSavedSearchId={$oSearch.id}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>{/if}</td>
+		<td>{if !$oSearch.shared}
+				{if $sysadmin}
+				<a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=yes{/addQS}" class="ktAction ktDenied">{i18n}Share{/i18n}</a>
+				{else}
+				<span class="ktAction ktDenied" >{i18n}Not Shared{/i18n}</span>
+				{/if}
+			{else}
+				{if $sysadmin}
+				<a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=no{/addQS}" class="ktAction ktAllowed">{i18n}Don't Share{/i18n}</a>
+				{else}
+				<span class="ktAction ktAllowed" >{i18n}Shared{/i18n}</span>
+				{/if}
+			{/if}
+		</td>
+
+        <td>
+
+        <a class="ktAction ktBack" href="{addQS}action=processSaved&fSavedSearchId={$oSearch.id}{/addQS}">{i18n}Run Search{/i18n}</a></td>
+    </tr>
+{/foreach}
+</tbody>
+</table>
+{else}
+<div class="ktInfoMessage"><span>{i18n}No Saved Searches have been defined.{/i18n}</span></div>
+{/if}

@@ -1,0 +1,93 @@
+
+
+{$context->oPage->requireCSSResource("thirdpartyjs/yui/treeview/assets/tree.css")}
+
+
+
+{$context->oPage->requireJSResource("thirdpartyjs/yui/yahoo/yahoo-min.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/yui/event/event-min.js")}
+
+
+{$context->oPage->requireJSResource("thirdpartyjs/yui/treeview/treeview-min.js")}
+<fieldset>
+<legend>Tree Browser</legend>
+
+You can use the tree browser to explore the KnowledgeTree folder hierarchy.
+<P>
+Clicking on the name of the folder will redirect you to the folder browser. <br>Toggling the plus (+) and minux (-) will expand and collapse the
+selected folder respectively.
+
+<div class="yui-skin-sam">
+<div id="treeDiv1"></div>
+</div>
+</fieldset>
+{literal}
+<script>
+
+var tree = new YAHOO.widget.TreeView("treeDiv1");
+tree.setDynamicLoad(loadDataForNode);
+var root = tree.getRoot();
+
+var rootObj = { label: "Root Folder", id:1, href:"{/literal}{$rootUrl}{literal}/browse.php?fFolderId=1" } ;
+var rootNode = new YAHOO.widget.TextNode(rootObj, root, true);
+var folder_busy = false;
+var folder_id;
+var folder_node;
+loadNode(1, rootNode);
+
+
+var folder_gotNoStatus = function callBack(o)
+{
+	alert('There is a problem communicating with the server.' +  o.responseText);
+}
+
+var folder_gotFolderStatus = function callBack(o)
+{
+	if (o.responseText != '{}')
+	{
+		var resp = eval('(' + o.responseText + ')');
+		if (resp.status == 0)
+		{
+			for(i=0;i<resp.folders.length;i++)
+			{
+				var nodeObj = { label: resp.folders[i].name, id: resp.folders[i].id, href:"{/literal}{$rootUrl}{literal}/browse.php?fFolderId=" + resp.folders[i].id };
+				var node = new YAHOO.widget.TextNode(nodeObj, folder_node, true);
+
+			}
+			folder_node.expand();
+		}
+		else
+		{
+			alert('There is a problem getting the folders. \n\n' + resp.message );
+		}
+	}
+	folder_busy = false;
+}
+
+var folderCallback =
+{
+	success:folder_gotFolderStatus,
+	failure:folder_gotNoStatus
+}
+
+function loadNode(folder_id, node)
+{
+
+	folder_node = node;
+	folder_id= node.data.id;
+	folder_busy = true;
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/treeNodes.php?folderid=' + folder_id;
+	YAHOO.util.Connect.asyncRequest('GET',url, folderCallback);
+}
+
+function loadDataForNode(node, onCompleteCallback)
+{
+
+	loadNode(node.data.id, node)
+	onCompleteCallback();
+}
+
+
+tree.draw();
+</script>
+{/literal}
