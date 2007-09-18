@@ -1,0 +1,259 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
+
+{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
+<div class="collapsible">
+<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Search Expression{/i18n}</h4>
+<div class="collapsiblebody">
+
+<fieldset>
+
+<legend>Search Expression</legend>
+{$txtQuery}<br>
+{if empty($iSavedID)}
+Use the <a href="{addQS}action=queryBuilder{/addQS}">Advanced Query Search</a> to extend this query.
+{else}
+To edit the search expression, use the <a href="{addQS}action=queryBuilder&fSavedSearchId={$iSavedID}{/addQS}">Advanced Query Search</a>.
+{/if}
+</fieldset>
+<br/>
+{if !empty($iSavedID)}
+<fieldset>
+
+<legend>Saved Search</legend>
+This is the saved search: {$txtSavedName}. <br/>
+To delete this saved search or edit other saved search expressions, <a href="{addQS}action=manage{/addQS}">Manage Saved Searches</a>.
+</fieldset>
+{else}
+
+{literal}
+<script>
+var savesearch_gotStatus = function callBack(o)
+{
+	if (o.responseText != '{}')
+	{
+		var resp = eval('(' + o.responseText + ')');
+
+		if (resp.status == 0)
+		{
+			parseSuccess = true;
+
+			alert('The search expression has been saved.');
+		}
+		else
+		{
+			 alert('There is a problem saving the expression expression. \n\n' + resp.message );
+		}
+	}
+}
+var savesearch_gotNoStatus = function callBack(o)
+{
+	alert('There is a problem communicating with the server.' +  o.responseText);
+}
+
+var saveSearchCallback =
+{
+	success:savesearch_gotStatus,
+	failure:savesearch_gotNoStatus
+}
+function saveSearch()
+{
+	var txtName = document.getElementById('txtSaveName');
+	if (txtName.value == '')
+	{
+		alert('Please enter a name for the search expression');
+		txtName.focus();
+		return;
+	}
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?txtName='+ txtName.value +'&txtQuery={/literal}{$txtQuery|escape:'quotes'}{literal}';
+	//alert(url);
+	YAHOO.util.Connect.asyncRequest('GET',url, saveSearchCallback);
+}
+
+function onSelectAll()
+{
+	var cbSelectAll = document.getElementById('cbSelectAll');
+
+
+	for(var i={/literal}{$firstRec}{literal};i<{/literal}{$lastRec}{literal};i++)
+	{
+		var cb = document.getElementById('cb' + i);
+
+		cb.checked = cbSelectAll.checked;
+	}
+
+}
+
+function onShowAll(showall)
+{
+	url = "{/literal}{addQS}{literal}action=searchResults&pageOffset={/literal}{$pageOffset}{literal}&showAll=" + showall + "{/literal}{/addQS}{literal}";
+
+	document.location = url;
+}
+
+</script>
+{/literal}
+
+<fieldset>
+<legend>You can save this search:</legend>
+
+<input id=txtSaveName>
+<input type=button value="Save" onclick="saveSearch()">
+<!-- <input type=button value="Subscribe" onclick="alert('saved search subscriptions can notify you when you search matches a given criteria. if found, automatically unsubsubscribed.')">
+-->
+</fieldset>
+
+{/if}
+
+</div>
+</div>
+<fieldset>
+
+<legend>Search Results</legend>
+
+{if $numResults == 0}
+
+There are no search results matching your search query.
+
+<p>
+Use the <a href="{addQS}action=queryBuilder{/addQS}">Advanced Query Search</a> to extend this query.
+
+{else}
+
+
+<form method=post action="/action.php">
+<table border=0 cellpadding="1" cellspacing="1" width="800px" align=center>
+{assign var=cbid value=0}
+{foreach item=document from=$results}
+{if $document->IsLive}
+
+<tr><td>
+<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr><a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title}</b></a>
+{if $document->Title != $document->Filename}
+		&nbsp;&nbsp;
+		<font style=" color: green "> - {$document->Filename}</font>
+{/if}
+{if !$document->IsAvailable}
+		&nbsp;&nbsp;
+		<font style=" color: red "><B> * NOT AVAILABLE * </B></font>
+{/if}
+
+
+
+
+
+</td><td align=right><font style=" color: orange ">Version: {$document->Version}</font></td>
+</tr>
+
+<tr><td colspan=2>{$document->Text}</td></tr>
+<tr><td><font style=" color: green ">{$document->FullPath}/{$document->Title} - {$document->Filesize}</font></td>
+<td align=right><nobr>
+
+		<font style="color: orange ">Document ID: {$document->DocumentID}</font>
+		&nbsp;&nbsp;
+		<font style=" color: green ">Rank: {$document->Rank}</font>
+</td>
+{assign var=workflow value=$document->Workflow}
+{if $workflow != '' || $this->Document->IsCheckedOut}
+<tr><td>
+{if $workflow != ''}
+		<font style="color: orange ">Workflow: {$workflow}</font>
+	{/if}
+</td>
+<td align=right><nobr>
+	{if $document->CheckedOutUser != ''}
+		<font style="color: brown ">Checked out by: {$document->CheckedOutUser}</font>
+	{/if}
+
+</td>
+{/if}
+<tr><td colspan=2><br></br></td></tr>
+</tr>
+
+{assign var=cbid value=$cbid+1}
+{/if}
+{/foreach}
+
+
+<tr><td>
+
+
+<input type="checkbox" id="cbSelectAll" onclick="onSelectAll()">Select All
+{if $showAll}
+<input type="checkbox"  onclick="onShowAll('false')" checked >Show All
+{else}
+<input type="checkbox"  onclick="onShowAll('true')"  >Show All
+{/if}
+
+
+
+
+<br>
+  <input type="hidden" name="fFolderId" value="1" />
+  <input type="hidden" name="sListCode" value="" />
+  <input type="hidden" name="action" value="bulkaction" />
+  <input type="hidden" name="fReturnAction" value="search2" />
+  <input type="hidden" name="fReturnData" value="1" />
+
+  {foreach from=$bulkactions item=bulkaction}
+      <input type="submit" name="submit[{$bulkaction->getName()}]" value="{$bulkaction->getDisplayName()}" />
+  {/foreach}
+
+
+
+
+
+</table>
+
+
+</form>
+
+
+
+
+
+
+
+
+
+{/if}
+
+
+</fieldset>
+
+{if $endMovement - $startMovement > 1}
+<br>
+<br>
+<table align="center">
+
+
+<tr>
+{foreach item=move from=$pageMovement}
+
+{if $move == $startMovement}
+		<td><a href="search2.php?action=searchResults&pageOffset={$move}">{if $startMovement > 1}&lt;{/if}<img src="{$rootUrl}/search2/images/kn.png" border=0></a></td>
+{/if}
+		<td><a href="search2.php?action=searchResults&pageOffset={$move}">{if $move == $pageOffset}<img src="{$rootUrl}/search2/images/o-red.png" border=0>{else}<img src="{$rootUrl}/search2/images/o-yellow.png" border=0>{/if}</a></a></td>
+{if $move == $endMovement}
+		<td><a href="search2.php?action=searchResults&pageOffset={$move}"><img src="{$rootUrl}/search2/images/wledgetree.png" border=0>{if $endMovement < $maxPages}&gt;{/if}</a></td>
+{/if}
+{/foreach}
+</tr>
+
+<tr>
+{foreach item=move from=$pageMovement}
+{if $move == $startMovement}
+	<td></td>
+{/if}
+		<td><a href="search2.php?action=searchResults&pageOffset={$move}">{$move}</a></td>
+
+{if $move == $endMovement}
+	<td></td>
+{/if}
+{/foreach}
+
+
+
+</tr>
+</table>
+{/if}
