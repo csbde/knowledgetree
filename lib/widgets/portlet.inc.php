@@ -115,7 +115,7 @@ class KTActionPortlet extends KTPortlet {
         foreach ($actions as $action) {
             $aInfo = $action->getInfo();
 
-            if ($aInfo !== null) {
+            if ($aInfo !== null && !empty($aInfo['name'])) {
                 if ($aInfo["ns"] == $currentaction) {
                     unset($aInfo["url"]);
                     $aInfo['active'] = true;
@@ -124,6 +124,8 @@ class KTActionPortlet extends KTPortlet {
             }
         }
         ksort($this->actions);
+        
+        //echo '<pre>'; print_r($this->actions);
     }
     
     function render() {
