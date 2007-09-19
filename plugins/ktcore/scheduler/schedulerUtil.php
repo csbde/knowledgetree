@@ -208,6 +208,20 @@ class schedulerUtil extends KTUtil
     }
     
     /**
+    * Update the run time of a task
+    */
+    function updateRunTime($id, $iNextTime) {
+        $oScheduler = schedulerEntity::get($id);
+        
+        if (PEAR::isError($oScheduler)){
+            return _kt('Object can\'t be created');
+        }
+        
+        $oScheduler->setRunTime($iNextTime);
+        $oScheduler->update();
+    }
+    
+    /**
     * Get all completed tasks and delete
     */
     function cleanUpTasks() {

@@ -156,5 +156,15 @@ class schedulerEntity extends KTEntity
         $sLink = "<a href='#' onclick='javascript: showFrequencyDiv({$sId});'>"._kt('Alter frequency')."</a>";
         return $sLink;
     }
+    
+    /**
+    * Run the task on the next iteration
+    */
+    function getRunNowLink() {
+        $sId = $this->getId();
+        $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateRunTime');
+        $sLink = "<a href='#' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'>"._kt('Run on next iteration')."</a>";
+        return $sLink;
+    }
 }
 ?>
