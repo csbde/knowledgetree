@@ -92,5 +92,15 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         schedulerUtil::updateTask($id, $sFreq);
         return $sFreq;
     }
+    
+    /**
+    * Update the runtime to run on the next iteration
+    */
+    function do_updateRunTime() {
+        $id = schedulerUtil::arrayGet($_REQUEST, 'fId');
+        $iNextTime = time();
+        schedulerUtil::updateRunTime($id, $iNextTime);
+        return $iNextTime;
+    }
 }
 ?>
