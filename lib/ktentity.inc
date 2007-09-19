@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -82,7 +82,7 @@ class KTEntity {
             }
         }
         $GLOBALS['_STOPCACHING'][$sClassName]++;
-        
+
     }
 
     function clearCachedGroups() {
@@ -137,7 +137,10 @@ class KTEntity {
     function update() {
         $group = sprintf("%s/%s", get_class($this), 'id');
         $oCache =& KTCache::getSingleton();
-        $oCache->remove($group, $this->iId);
+        if ($oCache->get($group, $this->iId) != array(false, false)) {
+        	$oCache->remove($group, $this->iId);
+        }
+
         $this->clearCachedGroups();
 
         if ($this->iId > 0) {
@@ -209,23 +212,23 @@ class KTEntity {
         list($bCached, $mCached) = $oCache->get($group, $iId);
         if ($bCached && EVIL_CACHE_GRIND) {
             $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
-            
+
             $table = $this->_table();
             $select = $this->_getSqlSelection();
             $sQuery = "SELECT $select FROM $table WHERE id = ?";
             $aParams = array($iId);
-            
+
             $res = DBUtil::getResultArray(array($sQuery, $aParams));
             // we _have_ a cache:  error is a disaster
             if (PEAR::isError($res) || (count($res) === 0) || (count($res) > 1)) {
                 $oCache->alertFailure($sClassName, array('<strong>SERIOUS FAILURE:</strong> real object is an error, cache claims "valid".'));
                 return $res;
             }
-            
+
             // now compare the sub-values.
             $aFailures = array();
             $sEntClass = get_class($this);
-            
+
             foreach ($res as $sKey => $aVal) {
                 if ($mCached[$sKey] != $res[$sKey]) {
                     $id = $aVal['id'];
@@ -237,33 +240,33 @@ class KTEntity {
                     // $aFailures[] = $sKey;
                 }
             }
-            
+
             if (!empty($aFailures)) {
                 $oCache->alertFailure($sClassName, $aFailures);
             }
-            
+
             $res = $mCached;
         } else if ($bCached) {
             global $default;
             $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
             $res = $mCached;
             /* */
-        } else {        
+        } else {
             $default->log->debug(sprintf("No object cache for class %s, id %d", $sClassName, $iId));
             $table = $this->_table();
             $select = $this->_getSqlSelection();
             $sQuery = "SELECT $select FROM $table WHERE id = ?";
             $aParams = array($iId);
-            
+
             $res = DBUtil::getResultArray(array($sQuery, $aParams));
-            
+
             if (PEAR::isError($res)) {
                return $res;
             }
             if (count($res) === 0) {
                 return PEAR::raiseError(_kt("No such ID: ") . $iId);
             }
-            
+
             if (count($res) > 1) {
                 return PEAR::raiseError(_kt("Multiple matches for ID: ") . $iId);
             }
@@ -313,15 +316,15 @@ class KTEntity {
         // If the element isn't in the case array, the method doesn't
         // exist.
         $sClassName = get_class($this);
-        
+
         $aCache = KTUtil::arrayGet($GLOBALS['_LCASECACHE'], $sClassName);
-        
+
         $sLowerElement = strtolower($sElement);
         if ($aCache) {
             $r = KTUtil::arrayGet($aCache['fieldnames'], $sLowerElement);
             if ($r) { return $r; }
         }
-        
+
         $array = array_keys($this->_aFieldToSelect);
 
         if (!$aCache) {
@@ -337,14 +340,14 @@ class KTEntity {
         }
 
         //var_dump($case);
-        
+
         if (!$aCache) {
             $aCache = array();
             $aCache['fieldnames'] = $case;
         }
-        
+
         $GLOBALS['_LCASECACHE'][$sClassName] =& $aCache;
-        
+
         if (array_key_exists($sLowerElement, $case)) {
             return $case[$sLowerElement];
         }
@@ -382,7 +385,7 @@ class KTEntity {
         }
         return true;
     }
-    
+
     function _ktentityOptions() {
         return array(
             'orderby' => 'id',
@@ -401,10 +404,10 @@ class KTEntityUtil {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
-        
+
         $aBaseOpts = call_user_func(array($sClassName, "_ktentityOptions"));
         $aOptions = KTUtil::meldOptions($aBaseOpts, $aOptions);
-        
+
         $bIDs = false;
         $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
         $sIDField = 'id';
@@ -414,11 +417,11 @@ class KTEntityUtil {
             $aWhereClause = array($aWhereClause, array());
         }
 
-        
+
         if (!$cache) { // && EVIL_CACHE_GRIND) {
             $cache = 'auto';
         }
-        
+
         if (isset($GLOBALS['_STOPCACHING'][$sClassName])) {
             if ($GLOBALS['_STOPCACHING'][$sClassName] > 5) {
                 $cache = false;
@@ -447,16 +450,16 @@ class KTEntityUtil {
 
             if ($iOffset) {
                 $aWhereClause[0] .= " LIMIT ?, ?";
-                $aWhereClause[1][] = $iOffset; 
-                $aWhereClause[1][] = $iLimit; 
+                $aWhereClause[1][] = $iOffset;
+                $aWhereClause[1][] = $iLimit;
             } else {
                 $aWhereClause[0] .= " LIMIT ?";
-                $aWhereClause[1][] = $iLimit; 
+                $aWhereClause[1][] = $iLimit;
             }
         }
-        
+
         $fullselect = KTUtil::arrayGet($aOptions, 'fullselect', false);
-        
+
         if ($cache) {
             if ($cache === 'auto') {
                 $vals = serialize($aWhereClause);
@@ -477,7 +480,7 @@ class KTEntityUtil {
         } else {
             $bCached = false;
         }
-        
+
         if ($cache && !$bCached) {
             global $default;
             $default->log->debug(sprintf("No list cache for class %s, %s: %s", $sClassName, $cache, $vals));
@@ -519,7 +522,7 @@ class KTEntityUtil {
                 $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
             }
             // compare mcached == $aIds
-            
+
             if ($aIDs != $mCached) {
                 /*
                 print "==================\n\n\n\n\n";
@@ -668,7 +671,7 @@ class KTEntityUtil {
         }
         return $oObject;
         /* */
-        // XXX Object cache currently causes hard-to-trace inconsistencies in data. 
+        // XXX Object cache currently causes hard-to-trace inconsistencies in data.
         // $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
         // if ($oObject) { return $oObject; }
         $oObject =& new $sClassName;
@@ -676,7 +679,7 @@ class KTEntityUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
-        // XXX Object cache currently causes hard-to-trace inconsistencies in data. 
+        // XXX Object cache currently causes hard-to-trace inconsistencies in data.
         //$GLOBALS['_OBJECTCACHE'][$sClassName][$iId] =& $oObject;
         return $oObject;
         /* */
@@ -891,7 +894,7 @@ class KTEntityUtil {
         $oCache->clear(sprintf("%s/id", $sClassName));
         unset($GLOBALS['_OBJECTCACHE'][$sClassName]);
     }
-    
+
 }
 
 class KTEntityNoObjects extends PEAR_Error {
