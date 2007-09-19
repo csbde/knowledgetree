@@ -26,10 +26,10 @@
         <td>
             {$task->getTask()} 
         </td>
-        <td id="tblCol">
+        <td id="tblCol"><a href="#" onclick="javascript: showFrequencyDiv('{$task->getId()}');">
             <div id="div{$task->getId()}">
-                {$task->getFrequency()} 
-            </div>
+               {$task->getFrequency()}
+            </div></a>
         </td>
         <td>
             <div id="runDiv{$task->getId()}">
@@ -37,13 +37,16 @@
             </div>
         </td>
         <td>
-            {$task->getPrevious()} 
+            <div id="prevDiv{$task->getId()}" style="display:none; visibility:hidden;">
+                <input type="hidden" name="prev{$task->getId()}" id="prev{$task->getId()}" value="{$task->getPrevious()}" />
+            </div>
+            {$task->getPrevious(TRUE)}
         </td>
         <td>
             {$task->getRunDuration()}
         </td>
         <td>
-            {$task->getAlterFreqLink()}
+            {$task->getAlterFreqLink()} {$task->getRunNowLink()}
         </td>
     </tr>
 
@@ -56,8 +59,8 @@
         <select name="frequency" id="frequency">
             {html_options values=$aFrequencies output=$aFrequencies}
         </select>
-        <input type="hidden" name="fId" id="fId" value="">
-        <input type="button" name="save" id="save" onclick="javascript: saveFreq('{$sUrl}');" value="Save">
+        <input type="hidden" name="fId" id="fId" value="" />
+        <input type="button" name="save" id="save" onclick='javascript: saveFreq("{$sUrl}");' value="Save" />
     </form>
 </div>
 
