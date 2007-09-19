@@ -31,7 +31,6 @@
 
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once('background.php');
-require_once('schedulerTestEntity.php');
 require_once('schedulerEntity.php');
 
 class schedulerUtil extends KTUtil
@@ -157,7 +156,7 @@ class schedulerUtil extends KTUtil
         
         switch($sFreq){
             case 'monthly':
-                $iDays = date('t');
+                $iDays = date('t', $iTime);
                 $iDiff = (60*60)*24*$iDays;
                 break;
             case 'weekly':
@@ -199,7 +198,12 @@ class schedulerUtil extends KTUtil
             return _kt('Object can\'t be created');
         }
         
+        // Recalculate the next run time, use the previous run time as the start time. 
+        $iPrevious = $oScheduler->getPrevious();
+        $iNextTime = schedulerUtil::calculateRunTime($sFreq, $iPrevious);
+        
         $oScheduler->setFrequency($sFreq);
+        $oScheduler->setRunTime($iNextTime);
         $oScheduler->update();
     }
     

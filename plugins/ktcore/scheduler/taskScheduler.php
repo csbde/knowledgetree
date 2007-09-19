@@ -32,7 +32,6 @@
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once('schedulerEntity.php');
-require_once('schedulerTestEntity.php');
 require_once('schedulerUtil.php');
 
 class manageSchedulerDispatcher extends KTAdminDispatcher
@@ -81,6 +80,7 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
     */
     function do_clearTasks() {
         schedulerUtil::cleanUpTasks();
+        return 'DONE';
     }
     
     /**

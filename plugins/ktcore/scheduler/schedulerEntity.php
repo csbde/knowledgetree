@@ -79,7 +79,13 @@ class schedulerEntity extends KTEntity
     function getIsComplete() { return $this->bIs_complete; }
     function getFrequency() { return $this->iFrequency; }
     function getRunTime() { return date('Y-m-d H:i', $this->iRun_time); }
-    function getPrevious() { return date('Y-m-d H:i', $this->iPrevious_run_time); }
+    
+    function getPrevious($bFormat = FALSE) { 
+        if($bFormat){
+            return date('Y-m-d H:i', $this->iPrevious_run_time);
+        }
+        return $this->iPrevious_run_time;
+    }
     
     function getRunDuration() { 
         $time = (!empty($this->iRun_duration)) ? $this->iRun_duration.'s' : '';
