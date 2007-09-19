@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -56,7 +56,7 @@ class KTMime {
           $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE LOWER(filetypes) = ?", array($sExtension)));
           if (PEAR::isError($res)) {
               ; // pass ?!
-          } 
+          }
           if (count($res) != 0) {
               return $res[0]['id'];
           }
@@ -67,7 +67,7 @@ class KTMime {
             $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE mimetypes = ?", array($sMimeType)));
             if (PEAR::isError($res)) {
                 ; // pass ?!
-            } 
+            }
             if (count($res) != 0) {
                 return $res[0]['id'];
             }
@@ -88,7 +88,7 @@ class KTMime {
         $sQuery = "SELECT id FROM " . $sTable . " WHERE mimetypes = 'application/octet-stream'";
         $aQuery = array($sQuery, array());
         $res = DBUtil::getResultArray($aQuery);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         } else {
             return $res[0]['id'];
@@ -100,30 +100,30 @@ class KTMime {
         $sQuery = "SELECT mimetypes FROM " . $sTable . " WHERE id = ?";
         $aQuery = array($sQuery, array($iMimeTypeID));
         $res = DBUtil::getResultArray($aQuery);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         } else if (count($res) != 0){
             return $res[0]['mimetypes'];
         }
         return "application/octet-stream";
     }
-    
+
     function getFriendlyNameForString($sMimeType) {
         $sTable = KTUtil::getTableName('mimetypes');
         $sQuery = "SELECT friendly_name, filetypes FROM " . $sTable . " WHERE mimetypes = ?";
         $aQuery = array($sQuery, array($sMimeType));
         $res = DBUtil::getResultArray($aQuery);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         } else if (count($res) != 0){
             $friendly_name = $res[0]['friendly_name'];
-            if (!empty($friendly_name)) { 
+            if (!empty($friendly_name)) {
                 return _kt($friendly_name);
             } else {
-                return sprintf(_kt('%s File'), strtoupper($res[0]['filetypes']));             
+                return sprintf(_kt('%s File'), strtoupper($res[0]['filetypes']));
             }
         }
-        
+
         return _kt('Unknown Type');
     }
 
@@ -137,7 +137,9 @@ class KTMime {
     */
     function getMimeTypeFromFile($sFileName) {
         if (extension_loaded('fileinfo')) {
-            $res = finfo_open(FILEINFO_MIME);
+        	$oKTConfig =& KTConfig::getSingleton();
+        	$magicDatabase = $oKTConfig->get('magicDatabase', '/usr/share/file/magic');
+        	$res = finfo_open(FILEINFO_MIME, $magicDatabase);
             $sType = finfo_file($res, $sFileName);
         }
 
