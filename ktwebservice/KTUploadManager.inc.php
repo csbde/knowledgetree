@@ -72,8 +72,11 @@ class KTUploadManager
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis');
 
-		$tempfile = str_replace('/','\\',$tempfile);
-		$newtempfile = str_replace('\\','/',realpath($this->temp_dir) . '/' .  $this->userid  . '-'. $now_str);
+		$newtempfile = realpath($this->temp_dir) . '/' . $this->userid . '-'. $now_str;
+		if (DIRECTORY_SEPARATOR == '\\') {
+			$tempfile = str_replace('/','\\',$tempfile);
+			$newtempfile = str_replace('\\','/',$newtempfile);
+		}
 
 		DBUtil::startTransaction();
 		$id = DBUtil::autoInsert('uploaded_files',
