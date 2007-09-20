@@ -34,6 +34,7 @@ its details, or use the enable/disable buttons to change its availability state.
       <th>{i18n}Associated Fieldsets{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Disable/Enable{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
     </tr>
   </thead>
   
@@ -53,7 +54,8 @@ its details, or use the enable/disable buttons to change its availability state.
 {foreach from=$aFieldsets item=oFieldset name=fieldsets}
 
     {capture assign=fsid}{$oFieldset->getId()}{/capture}
-<a href="{ktLink base="admin.php" subpath="/documents/fieldmanagement2" query="action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
+<a title="{i18n}Edit fieldset.{/i18n}"
+href="{ktLink base="admin.php" subpath="/documents/fieldmanagement2" query="action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
 
 {/foreach}
 
@@ -64,17 +66,29 @@ its details, or use the enable/disable buttons to change its availability state.
 
 
 <td style="text-align:center">
-    <a class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
+    <a title="{i18n}Edit document type.{/i18n}" 
+    class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
 </td>
 
 <td style="text-align:center">
 {if $oDocumentType->getDisabled()}
-    <a class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
+    <a title="{i18n}Enable document type.{/i18n}" 
+    class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
-    <a class="ktAction ktDelete" 
+    <a title="{i18n}Disable document type.{/i18n}"class="ktAction ktDelete" 
     kt:deleteMessage="{i18n}Are you sure you wish to disable this document type?{/i18n}" 
     href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
+</td>
+
+<td style="text-align:center">
+    {if $oDocumentType->checkDelete($associated_types, $oDocumentType->getId())}
+        <a title="{i18n}Delete document type.{/i18n}" class="ktAction ktDelete" 
+        kt:deleteMessage="{i18n}Are you sure you wish to delete this document type? It will be permanently removed from the system.{/i18n}" 
+        href="{addQS}action=delete&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
+    {else}
+        <span title="{i18n}Document type cannot be deleted{/i18n}" class="ktAction ktDenied"></span> 
+    {/if}
 </td>
 
 </tr>

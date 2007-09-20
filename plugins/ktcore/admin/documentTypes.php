@@ -55,11 +55,18 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $addFields = array();
         $addFields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
 
+        // Get document types
+        $aDocumentTypes = DocumentType::getList();
+        
+        // Get document type ids associated with documents - allow delete on those not associated
+        $aAssocDocs = DocumentType::getAssociatedTypes();
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
         $oTemplate->setData(array(
              'context' => $this,
-            'document_types' => DocumentType::getList(),
+            'document_types' => $aDocumentTypes,
+            'associated_types' => $aAssocDocs,
             'add_fields' => $addFields,
         ));
         return $oTemplate;
