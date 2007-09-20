@@ -529,11 +529,12 @@ class KTInit {
 // }}}
 
 $KTInit = new KTInit();
-
+$KTInit->prependPath(KT_DIR . '/thirdparty/ZendFramework/library');
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 $KTInit->prependPath(KT_DIR . '/thirdparty/simpletest');
 $KTInit->prependPath(KT_DIR . '/ktapi');
+$KTInit->prependPath(KT_DIR . '/search2');
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions
@@ -545,6 +546,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 $KTInit->initConfig();
 $KTInit->setupI18n();
