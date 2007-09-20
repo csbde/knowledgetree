@@ -52,18 +52,27 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
             return "";
         }
         
-        foreach ($aTransitions as $oTransition) {
-        	if(is_null($oTransition) || PEAR::isError($oTransition)){
-            	continue;
+        // Check if the document has been checked out
+        $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
+        if($bIsCheckedOut){
+            // If document is checked out, don't link into the workflow.
+            $aDisplayTransitions = array();
+        }else{
+            foreach ($aTransitions as $oTransition) {
+            	if(is_null($oTransition) || PEAR::isError($oTransition)){
+                	continue;
+                }
+                
+                $aDisplayTransitions[] = array(
+                    'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array("fDocumentId" => $this->oDocument->getId(), "action" => "quicktransition", "fTransitionId" => $oTransition->getId())),
+                    'name' => $oTransition->getName(),
+                );
             }
-            $aDisplayTransitions[] = array(
-                'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array("fDocumentId" => $this->oDocument->getId(), "action" => "quicktransition", "fTransitionId" => $oTransition->getId())),
-                'name' => $oTransition->getName(),
-            );
         }
         
         $oTemplate->setData(array(
             'context' => $this,
+            'bIsCheckedOut' => $bIsCheckedOut,
             'transitions' => $aDisplayTransitions,
             'state_name' => $oWorkflowState->getName(),
         ));        
