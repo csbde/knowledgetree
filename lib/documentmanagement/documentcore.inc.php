@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -62,7 +62,7 @@ class KTDocumentCore extends KTEntity {
     var $iPermissionObjectId;
     /** The fully looked-up permission information for this document */
     var $iPermissionLookupId;
-    
+
     /** The most recent metadata version for the object */
     var $iMetadataVersionId;
 
@@ -70,16 +70,18 @@ class KTDocumentCore extends KTEntity {
 
     var $bIsCheckedOut;
     var $iCheckedOutUserId;
-    
+
     var $iRestoreFolderId;
     var $sRestoreFolderPath;
+
+    var $dCheckedOut;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
 
         // transaction-related
         "iCreatorId" => 'creator_id',
-        
+
         "dCreated" => 'created',
         "iModifiedUserId" => 'modified_user_id',
         "dModified" => 'modified',
@@ -101,10 +103,12 @@ class KTDocumentCore extends KTEntity {
         "iPermissionObjectId" => 'permission_object_id',
         "iPermissionLookupId" => 'permission_lookup_id',
         "iOwnerId" => 'owner_id',
-        
+
         // restore-related
         'iRestoreFolderId' => 'restore_folder_id',
         'sRestoreFolderPath' => 'restore_folder_path',
+
+        'dCheckedOut'=>'checkedout'
     );
 
     function KTDocument() {
@@ -114,12 +118,14 @@ class KTDocumentCore extends KTEntity {
     function getCreatorId() { return $this->iCreatorId; }
     function setCreatorId($iNewValue) { $this->iCreatorId = $iNewValue; }
     function getOwnerId() { return $this->iOwnerId; }
-    function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }    
+    function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }
     function getCreatedDateTime() { return $this->dCreated; }
     function getModifiedUserId() { return $this->iModifiedUserId; }
     function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
     function getLastModifiedDate() { return $this->dModified; }
     function setLastModifiedDate($dNewValue) { $this->dModified = $dNewValue; }
+    function getCheckedOutDate() { return $this->dCheckedOut; }
+    function setCheckedOutDate($dNewValue) { $this->dCheckedOut = $dNewValue; }
 
     function getFolderId() { return $this->iFolderId; }
     function setFolderId($iNewValue) { $this->iFolderId = $iNewValue; }
@@ -127,31 +133,34 @@ class KTDocumentCore extends KTEntity {
     function getStatusId() { return $this->iStatusId; }
     function setStatusId($iNewValue) { $this->iStatusId = $iNewValue; }
     function getIsCheckedOut() { return $this->bIsCheckedOut; }
-    function setIsCheckedOut($bNewValue) { $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue); }
+    function setIsCheckedOut($bNewValue) { $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue);
+    	$date = $bNewValue?date('Y-m-d H:i:s'):null;
+   		$this->setCheckedOutDate($date);
+     }
     function getCheckedOutUserId() { return $this->iCheckedOutUserId; }
-    function setCheckedOutUserId($iNewValue) { $this->iCheckedOutUserId = $iNewValue; }
+    function setCheckedOutUserId($iNewValue) { if ($iNewValue < 0) $iNewValue = null; $this->iCheckedOutUserId = $iNewValue; }
 
     function getPermissionObjectId() { return $this->iPermissionObjectId; }
     function setPermissionObjectId($iNewValue) { $this->iPermissionObjectId = $iNewValue; }
     function getPermissionLookupId() { return $this->iPermissionLookupId; }
     function setPermissionLookupId($iNewValue) { $this->iPermissionLookupId = $iNewValue; }
-    
+
     function getMetadataVersionId() { return $this->iMetadataVersionId; }
     function setMetadataVersionId($iNewValue) { $this->iMetadataVersionId = $iNewValue; }
-    
+
     function getMetadataVersion() { return $this->iMetadataVersion; }
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
-    
+
     function getFullPath() { return $this->sFullPath; }
 
     function getImmutable() { return $this->bImmutable; }
     function setImmutable($mValue) { $this->bImmutable = $mValue; }
-    
+
     function getRestoreFolderId() { return $this->iRestoreFolderId; }
-    function setRestoreFolderId($iValue) { $this->iRestoreFolderId = $iValue; }    
+    function setRestoreFolderId($iValue) { $this->iRestoreFolderId = $iValue; }
 
     function getRestoreFolderPath() { return $this->sRestoreFolderPath; }
-    function setRestoreFolderPath($sValue) { $this->sRestoreFolderPath = $sValue; }    
+    function setRestoreFolderPath($sValue) { $this->sRestoreFolderPath = $sValue; }
     // }}}
 
     // {{{ getParentId
@@ -243,14 +252,14 @@ class KTDocumentCore extends KTEntity {
         $oFolder = Folder::get($this->getFolderId());
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();
         $res = parent::create();
-        
+
         return $res;
     }
     // }}}
 
     // {{{ update
     function update($bPathMove = false) {
-        //var_dump($this); exit(0);    
+        //var_dump($this); exit(0);
         $res = parent::update();
 
         if (($res === true) && ($bPathMove === true)) {
