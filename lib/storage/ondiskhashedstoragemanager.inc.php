@@ -288,7 +288,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * return boolean true on successful expunge
      */
     function expunge($oDocument) {
-        $oConfig =& KTConfig::getSingleton();
+    	parent::expunge($oDocument);
+    	$oConfig =& KTConfig::getSingleton();
         $sCurrentPath = $this->getPath($oDocument);
 
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
