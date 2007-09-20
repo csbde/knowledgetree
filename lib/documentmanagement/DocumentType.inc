@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -33,7 +33,7 @@
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class DocumentType extends KTEntity {
-	
+
 	/** primary key value */
 	var $iId;
 	/** document type name */
@@ -46,7 +46,7 @@ class DocumentType extends KTEntity {
         'sName' => 'name',
 		'bDisabled' => 'disabled'
     );
-	
+
 	/**
 	* Default constructor
 	*
@@ -60,7 +60,7 @@ class DocumentType extends KTEntity {
 		$this->sName = $sNewName;
 		$this->bDisabled = false;
 	}
-	
+
 	function getID() { return $this->iId; }
 	function getName() { return sanitizeForSQLtoHTML($this->sName); }
 	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
@@ -75,7 +75,7 @@ class DocumentType extends KTEntity {
     }
 
     function _table () { return KTUtil::getTableName('document_types'); }
-	
+
 	function delete() {
         if ($this->isUsed()) {
             return PEAR::raiseError(_kt('Document type still in use'));
@@ -98,7 +98,7 @@ class DocumentType extends KTEntity {
         return false;
     }
 
-    /* 
+    /*
     Get the fieldsets associated with this document type.
     Simplifies listing associated fieldsets in doctypes displays.
     */
@@ -106,7 +106,7 @@ class DocumentType extends KTEntity {
     function &getFieldsets() {
 	return KTFieldset::getForDocumentType($this);
     }
-	
+
 	/**
 	* Get the document types associated with a document
 	*/
@@ -114,17 +114,17 @@ class DocumentType extends KTEntity {
         $sTable = KTUtil::getTableName('document_metadata_version');
         $sQuery = "SELECT DISTINCT(document_type_id) FROM {$sTable}";
         $aDocTypes = DBUtil::getResultArray($sQuery);
-        
+
         $aTypes = array();
         if(!empty($aDocTypes)){
             foreach($aDocTypes as $type){
                 $aTypes[] = $type['document_type_id'];
             }
         }
-        
+
         return $aTypes;
 	}
-	
+
 	/**
 	* Check if a type is associated with any documents
 	*/
@@ -135,7 +135,7 @@ class DocumentType extends KTEntity {
             return TRUE;
         }
 	}
-	
+
 	/**
  	 * Static- Get a list document types;
 	 *
@@ -148,7 +148,7 @@ class DocumentType extends KTEntity {
 	    $aOptions = array('orderby' => 'name');
 	    return KTEntityUtil::getList2('DocumentType', $sWhereClause, $aOptions);
 	}
-	
+
 	/* alternative for use in creation:  delegate for user and location */
 	function &getListForUserAndFolder($oUser, $oFolder) {
 	    $src =& KTDocumentTypeManager::getSingleton();
@@ -158,10 +158,10 @@ class DocumentType extends KTEntity {
     function &createFromArray($aArray) {
         return KTEntityUtil::createFromArray('DocumentType', $aArray);
     }
-    
+
     function &get($iId) { return KTEntityUtil::get('DocumentType', $iId); }
-	
-	
+
+
 
 }
 
@@ -176,7 +176,7 @@ class DocumentType extends KTEntity {
 * @return User user object
 */
 function & documenttypeCreateFromArray($aParameters) {
-	$oDocType = & new DocumentType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	$oDocType = new DocumentType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oDocType;
 }
 
@@ -184,11 +184,11 @@ function & documenttypeCreateFromArray($aParameters) {
 class DemoDelegation {
     var $handler_ns = 'brad.oddhandler';
 	var $handler_name = null;
-	
+
 	function DemoDelegation() {
 	    $this->handler_name = _kt('Demo Delegator');
 	}
-	
+
     function &getListForUserAndFolder($oUser, $oFolder) {
 	    $list =&  DocumentType::getList();
 		$finallist = array();
@@ -213,7 +213,7 @@ class KTDocumentTypeManager {
         }
         return $GLOBALS['oKTDocumentTypeManager'];
     }
-		
+
 	function &getListForUserAndFolder($oUser, $oFolder) {
 	    $this->checkActiveHandler();
 	    if (is_null($this->_active_handler)) {
@@ -222,7 +222,7 @@ class KTDocumentTypeManager {
 		} else {
 		    $l = (array) $this->_active_handler->getListForUserAndFolder($oUser, $oFolder);
 		}
-		
+
         $final = array();
         foreach ($l as $oType) {
             if (PEAR::isError($oType) || ($oType->getDisabled())) {
@@ -232,12 +232,12 @@ class KTDocumentTypeManager {
         }
         return $final;
 	}
-	
+
 	function checkActiveHandler() {
 	    if ($this->_checked) { return ; }
 	    // not perfect - see workflow-delegator for explanation.
 		$res = KTUtil::getSystemSetting('documenttypehandler');
-		
+
 		if (empty($res) || PEAR::isError($res)) { // just fail silently - don't degrade the system
 		    $this->_active_handler = null;
 		} else {
@@ -245,10 +245,10 @@ class KTDocumentTypeManager {
 			$this->_active_handler = KTUtil::arrayGet($this->_handlers, $ns);
 		}
 		$this->_checked = true;
-		
+
 		return ;
 	}
-	
+
 	function registerHandler($oHandler) {
 	    $this->_handlers[$oHandler->handler_ns] = $oHandler;
 	}

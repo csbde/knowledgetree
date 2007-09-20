@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  *
  * Represents a document link as per the database document_link table.
@@ -9,7 +9,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -20,9 +20,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -32,7 +32,7 @@
  *
  *
  * @author Bryn Divey, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.documentmanagement 
+ * @package lib.documentmanagement
  */
 class DocumentLink extends KTEntity {
 
@@ -40,7 +40,7 @@ class DocumentLink extends KTEntity {
 	var $iId;
 	/** primary key of user responsible for creating document */
 	var $iParentDocumentId;
-	/** document title name */	
+	/** document title name */
 	var $iChildDocumentId;
     /** type of link */
     var $iLinkTypeId;
@@ -82,14 +82,14 @@ class DocumentLink extends KTEntity {
 	/**
 	* Helper getters
 	*/
-	
+
 	/**
 	* get parent document
 	*/
 	function & getParentDocument() {
 	    return Document::get($this->getParentDocumentId());
     }
-	
+
 	/**
 	* get child document
 	*/
@@ -97,7 +97,7 @@ class DocumentLink extends KTEntity {
 	    $oDocument = Document::get($this->getChildDocumentId());
 		return $oDocument;
     }
-	
+
 	/**
 	* get link type
 	*/
@@ -124,12 +124,12 @@ class DocumentLink extends KTEntity {
 	// static boilerplate
 	function & get($iDocumentLinkID) {
 		global $default;
-		
+
 		$sql = $default->db;
 		$result = $sql->query(array("SELECT * FROM $default->document_link_table WHERE id = ?", $iDocumentLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
-				$oDocumentLink = & new DocumentLink($sql->f("parent_document_id"), $sql->f("child_document_id"), $sql->f("link_type_id"));
+				$oDocumentLink = new DocumentLink($sql->f("parent_document_id"), $sql->f("child_document_id"), $sql->f("link_type_id"));
 				$oDocumentLink->iId = $sql->f("id");
 				return $oDocumentLink;
 			}
@@ -155,7 +155,7 @@ class DocumentLink extends KTEntity {
     function getLinksFromDocument($iDocumentId) {
         return KTEntityUtil::getList2('DocumentLink', sprintf("parent_document_id = %d", $iDocumentId));
     }
-	
+
     /**
      * Static function
      * Get a list of DocumentLinks where iDocumentId is the child

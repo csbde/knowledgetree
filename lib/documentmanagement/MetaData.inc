@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -33,7 +33,7 @@
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class MetaData extends KTEntity {
-	
+
 	/** primary key value */
 	var $iId = -1;
 	//document field id
@@ -58,7 +58,7 @@ class MetaData extends KTEntity {
         'bDisabled' => 'disabled',
         'bIsStuck' => 'is_stuck',
     );
-	
+
 	/**
 	* Default constructor
 	*
@@ -72,7 +72,7 @@ class MetaData extends KTEntity {
 		$this->sName = $sNewName;
 		$this->iTreeParent = $iNewParent;
 	}
-	
+
 	function getID() { return $this->iId; }
 	function getName() { return sanitizeForSQLtoHTML($this->sName); }
 	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
@@ -89,23 +89,23 @@ class MetaData extends KTEntity {
         global $default;
         return $default->metadata_table;
     }
-	
+
 	function & get($iId) {
         return KTEntityUtil::get('MetaData', $iId);
 	}
-	
+
     // FIXME this function makes no sense.
 	function setMetaDataID($iDocFieldId, $sMetaDataName)
 	 {
 	    $sTable = KTUtil::getTableName('metadata');
 	    $sQuery = "SELECT id FROM $sTable WHERE document_field_id = ? and name = ?";
-        $aParams = array($iDocFieldId, $sMetaDataName); 
+        $aParams = array($iDocFieldId, $sMetaDataName);
 	    $res = DBUtil::getResultArray(array($sQuery, $aParams));
-	    
+
 	    if (PEAR::isError($res)) {
 	        return false; // return $res;
-	    } 
-	    
+	    }
+
 	    if (count($res) != 0) {
 	        $this->iId = $id;
 	        return $res[0]['id'];
@@ -144,7 +144,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
-			'orderby' => 'name ASC',			
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -159,7 +159,7 @@ class MetaData extends KTEntity {
             'disabled' => false,
         ), array(
             'multi' => 'true',
-			'orderby' => 'name ASC',			
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -170,7 +170,7 @@ class MetaData extends KTEntity {
             'disabled' => true,
         ), array(
             'multi' => true,
-			'orderby' => 'name ASC',			
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -183,7 +183,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
-			'orderby' => 'name ASC',			
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -196,7 +196,7 @@ class MetaData extends KTEntity {
             'multi' => 'true',
             'ids' => true,
             'idfield' => 'name',
-			'orderby' => 'name ASC',			
+			'orderby' => 'name ASC',
         ));
     }
 
@@ -223,7 +223,7 @@ class MetaData extends KTEntity {
 * @return User user object
 */
 function & metadataCreateFromArray($aParameters) {
-	$oMetaData = & new MetaData($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	$oMetaData = new MetaData($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oMetaData;
 }
 
