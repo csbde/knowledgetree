@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -59,7 +59,7 @@ class KTPluginResourceRegistry {
 }
 
 class KTPluginUtil {
-    function loadPlugins () {
+    static function loadPlugins () {
         $sPluginCache = KT_DIR . '/var/plugin-cache';
         if (file_exists($sPluginCache)) {
             require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
@@ -214,7 +214,7 @@ class KTPluginUtil {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         return $oRegistry->isRegistered($path);
     }
-    
+
     function registerResource($path) {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         $oRegistry->registerResource($path);
@@ -243,21 +243,21 @@ class KTPluginUtil {
     }
 
     // utility function to detect if the plugin is loaded and active.
-    function pluginIsActive($sNamespace) {
-		
-	    
-		
+    static function pluginIsActive($sNamespace) {
+
+
+
 		$oReg =& KTPluginRegistry::getSingleton();
 		$plugin = $oReg->getPlugin($sNamespace);
-		
-		
-		
+
+
+
 		if (is_null($plugin) || PEAR::isError($plugin)) { return false; }  // no such plugin
 		else { // check if its active
 			$ent = KTPluginEntity::getByNamespace($sNamespace);
 
 			if (PEAR::isError($ent)) { return false; }
-			
+
 			// we now can ask
 			return (!$ent->getDisabled());
 		}
