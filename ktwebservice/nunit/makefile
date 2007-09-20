@@ -1,7 +1,7 @@
-RESULTS=authentication.result folder.result document.result 
+RESULTS=authentication.result folder.result document.result  query.result
 PROXY=KTproxy.cs
 WSDL=ktdms.wsdl
-WSDL_URL=http://ktdms.search/ktwebservice/index.php?wsdl
+WSDL_URL=http://ktdms.trunk/ktwebservice/index.php?wsdl
 
 all:  ${RESULTS}
 	 
