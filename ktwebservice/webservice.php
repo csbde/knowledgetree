@@ -913,18 +913,7 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $kt);
     	}
 
-    	$root = &$kt->get_root_folder();
-    	if (PEAR::isError($root))
-    	{
-    		$response=array(
-    			'status_code'=>KTWS_ERR_INVALID_FOLDER,
-    			'message'=>$root->getMessage()
-    		);
-    		$this->debug("get_folder_detail_by_name - cannot get root - "  . $root->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
-    	}
-
-    	$folder = &$root->get_folder_by_name($folder_name);
+    	$folder = &$kt->get_folder_by_name($folder_name);
     	if (PEAR::isError($folder))
     	{
     		$response=array(
