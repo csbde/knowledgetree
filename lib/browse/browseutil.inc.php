@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -37,9 +37,9 @@ class KTBrowseUtil {
     function folderOrDocument($sPath, $bAction = false) {
         $sFileName = basename($sPath);
         $sFolderPath = dirname($sPath);
-        
+
         $aFolderInfo = KTBrowseUtil::_folderOrDocument($sFolderPath);
-        
+
         if ($aFolderInfo === false) {
             return $aFolderInfo;
         }
@@ -67,18 +67,18 @@ class KTBrowseUtil {
 
         $sQuery = sprintf('SELECT d.id FROM %s AS d' .
         ' LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)' .
-        ' WHERE d.folder_id = ? AND dc.filename = ?', 
+        ' WHERE d.folder_id = ? AND dc.filename = ?',
         KTUtil::getTableName(documents),
         KTUtil::getTableName('document_metadata_version'),
         KTUtil::getTableName('document_content_version'));
         $aParams = array($iFolderID, $sFileName);
         $iDocumentID = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-    
+
         if (PEAR::isError($iDocumentID)) {
             // XXX: log error
             return false;
         }
-        
+
         if ($iDocumentID) {
             return array($iFolderID, $iDocumentID, null);
         }
@@ -99,7 +99,7 @@ class KTBrowseUtil {
         $sFolderPath = dirname($sPath);
 
         $aFolderNames = split('/', $sFolderPath);
-        
+
         $iFolderID = 0;
 
         $aRemaining = $aFolderNames;
@@ -126,23 +126,23 @@ class KTBrowseUtil {
 
         $sQuery = sprintf('SELECT d.id FROM %s AS d' .
         ' LEFT JOIN %s AS dm ON (d.metadata_version_id = dm.id) LEFT JOIN %s AS dc ON (dm.content_version_id = dc.id)' .
-        ' WHERE d.folder_id = ? AND dc.filename = ?', 
+        ' WHERE d.folder_id = ? AND dc.filename = ?',
         KTUtil::getTableName(documents),
         KTUtil::getTableName('document_metadata_version'),
         KTUtil::getTableName('document_content_version'));
         $aParams = array($iFolderID, $sFileName);
         $iDocumentID = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-        
+
         if (PEAR::isError($iDocumentID)) {
             // XXX: log error
             return false;
         }
-        
+
         if ($iDocumentID === null) {
             $sQuery = 'SELECT id FROM folders WHERE parent_id = ? AND name = ?';
             $aParams = array($iFolderID, $sFileName);
             $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-            
+
             if (PEAR::isError($id)) {
                 // XXX: log error
                 return false;
@@ -165,7 +165,7 @@ class KTBrowseUtil {
     function breadcrumbsForFolder($oFolder, $aOptions = null) {
         $oFolder =& KTUtil::getObject('Folder', $oFolder);
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
-	
+
 	if(PEAR::isError($oFolder)) {
 	    $url = KTUtil::addQueryStringSelf('fFolderId=1');
 	    if(!empty($sAction)) {
@@ -178,7 +178,7 @@ class KTBrowseUtil {
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
         $bFolderBrowseBase = KTUtil::arrayGet($aOptions, 'folderbase', '');
         $aBreadcrumbs = array();
-        
+
         // skip root.
         $folder_path_names = array_slice($oFolder->getPathArray(), 1);
         $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
@@ -193,7 +193,7 @@ class KTBrowseUtil {
         }
         $aBreadcrumbs[] = array('url' => $url, 'name' => _kt('Folders'));
         $oUser = User::get($_SESSION['userID']);
-        
+
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
@@ -337,7 +337,9 @@ class KTBrowseUtil {
     function getBooleanSearchBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('search/booleanSearch');
     }
-
+    function getSearchResultURL() {
+        return KTBrowseUtil::buildBaseUrl('search2');
+    }
     // {{{ inAdminMode
     /**
      * Determines whether the user is in administrator mode, including
@@ -348,7 +350,7 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SESSION, 'adminmode', false) !== true) {
             return false;
         }
-        
+
         if (Permission::userIsSystemAdministrator($oUser)) {
             return true;
         }
@@ -366,13 +368,13 @@ class KTBrowseUtil {
      */
     function getBrowseableFolders($oUser) {
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-        
-        
+
+
         if (empty($aPermissionDescriptors)) {
             return array();
         }
         $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
-        
+
         $sFoldersTable = KTUtil::getTableName('folders');
         $sPLTable = KTUtil::getTableName('permission_lookups');
         $sPLATable = KTUtil::getTableName('permission_lookup_assignments');
