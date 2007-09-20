@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -36,7 +36,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 class LinkType extends KTEntity {
     var $sName;
     var $sDescription;
-	
+
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
@@ -48,35 +48,35 @@ class LinkType extends KTEntity {
 		$this->sName = $sName;
 		$this->sDescription = $sDescription;
 	}
-	
+
 	function getDescription() {
 		return sanitizeForSQLtoHTML($this->sDescription);
 	}
-	
+
 	function setDescription($sNewValue) {
 		$this->sDescription = sanitizeForSQL($sNewValue);
 	}
-	
+
 	function getName() {
 		return sanitizeForSQLtoHTML($this->sName);
 	}
-	
+
 	function setName($sNewValue) {
 		$this->sName = sanitizeForSQL($sNewValue);
 	}
-	
+
     function _fieldValues () {
         return array(
             'name' => sanitizeForSQLtoHTML($this->sName),
             'description' => sanitizeForSQLtoHTML($this->sDescription),
         );
     }
-    
+
     function _table () {
         global $default;
         return $default->document_link_types_table;
     }
-	
+
     function getList($sWhereClause = null) {
             return KTEntityUtil::getList(LinkType::_table(), 'LinkType', $sWhereClause);
     }
@@ -93,7 +93,7 @@ class LinkType extends KTEntity {
             // XXX: No such key exception type
             return $res;
         }
-        $oLinkType =& new LinkType($res['name'], $res['description']);
+        $oLinkType =new LinkType($res['name'], $res['description']);
         $oLinkType->iId = $res['id'];
         return $oLinkType;
     }
@@ -107,7 +107,7 @@ class LinkType extends KTEntity {
 }
 
 function &linktypecreateFromArray($aParameters) {
-    $oLinkType = & new LinkType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+    $oLinkType = new LinkType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
     return $oLinkType;
 }
 

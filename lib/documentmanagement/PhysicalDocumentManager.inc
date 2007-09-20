@@ -376,7 +376,7 @@ class PhysicalDocumentManager {
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object
-		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], KTMime::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
+		$oDocument = new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], KTMime::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;
 	}
 }
