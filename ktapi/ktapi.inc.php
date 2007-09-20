@@ -293,6 +293,11 @@ class KTAPI
 		return KTAPI_Folder::get($this, $folderid);
 	}
 
+	function &get_folder_by_name($foldername)
+	{
+		return KTAPI_Folder::_get_folder_by_name($foldername, 1);
+	}
+
 	/**
 	 * This returns a refererence to a document based on document id.
 	 *
@@ -575,7 +580,7 @@ class KTAPI
 		}
 		return $results;
 	}
-	
+
 
 }
 

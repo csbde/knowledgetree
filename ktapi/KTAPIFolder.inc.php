@@ -144,14 +144,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return (int) $this->folderid;
 	}
 
-	/**
-	 * This can resolve a folder relative to the current directy by name
-	 *
-	 * @access public
-	 * @param string $foldername
-	 * @return KTAPI_Folder
-	 */
-	function &get_folder_by_name($foldername)
+	function &_get_folder_by_name($foldername, $folderid)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -161,7 +154,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$split = explode('/', $foldername);
 
-		$folderid=$this->folderid;
 		foreach($split as $foldername)
 		{
 			if (empty($foldername))
@@ -178,6 +170,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 
 		return KTAPI_Folder::get($this->ktapi, $folderid);
+	}
+
+
+	/**
+	 * This can resolve a folder relative to the current directy by name
+	 *
+	 * @access public
+	 * @param string $foldername
+	 * @return KTAPI_Folder
+	 */
+	function &get_folder_by_name($foldername)
+	{
+		return KTAPI_Folder::_get_folder_by_name($foldername, $this->folderid);
 	}
 
 	function get_full_path()
