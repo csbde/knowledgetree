@@ -79,6 +79,9 @@ class Document {
     function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
     function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
 
+	function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
+    function setCheckedOutDate($dNewValue) { $this->_oDocumentCore->setCheckedOutDate($dNewValue); }
+
     function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
     function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
 
@@ -381,6 +384,10 @@ class Document {
      * Deletes content from document data tables
      */
     function cleanupDocumentData($iDocumentID) {
+        // NEW SEARCH
+
+        return;
+
         // FIXME this appears to be deprecated, or at least should be
         $sTable = KTUtil::getTableName('document_text');
         $sQuery = "DELETE FROM $sTable WHERE document_id = ?";
