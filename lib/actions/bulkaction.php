@@ -325,13 +325,17 @@ class KTBulkAction extends KTStandardDispatcher {
         		$sReturnData = KTUtil::arrayGet($_REQUEST, 'fFolderId');
         	}
             $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
-        } else if($sReturnAction == 'simpleSearch') {
+        } elseif($sReturnAction == 'simpleSearch') {
             $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
             $extraargs = array('fSearchableText'=>$sReturnData);
-        } else if($sReturnAction == 'booleanSearch') {
+        } elseif($sReturnAction == 'booleanSearch') {
             $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
             $sAction = 'performSearch';
             $extraargs = array('boolean_search_id'=>$sReturnData);
+        }
+        elseif($sReturnAction == 'search2') {
+            $sTargetUrl = KTBrowseUtil::getSearchResultURL();
+            $sAction = 'searchResults';
         }
 
         $oForm = new KTForm;
