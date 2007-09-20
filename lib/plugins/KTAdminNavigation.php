@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -36,12 +36,15 @@ class KTAdminNavigationRegistry {
     var $aCategorisation = array();
     var $aCategories = array();
 
-    function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAdminNavigationRegistry')) {
-            $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'] = new KTAdminNavigationRegistry;
-        }
-        return $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'];
-    }
+
+	static function &getSingleton () {
+		static $singleton=null;
+		if (is_null($singleton))
+		{
+ 			$singleton = new KTAdminNavigationRegistry();
+		}
+		return $singleton;
+	}
 
     // name is the suburl below admin
     // namespace, class, category, title, description
@@ -52,18 +55,18 @@ class KTAdminNavigationRegistry {
             "name" => $sName,
             "class" => $sClass,
             "title" => $sTitle,
-            "description"=> $sDescription, 
-            "filepath" => $sDispatcherFilePath, 
+            "description"=> $sDescription,
+            "filepath" => $sDispatcherFilePath,
             "url" => $sURL,
-            "fullname" => $sFullname);     
+            "fullname" => $sFullname);
         $this->aResources[$sFullname] = $aInfo;
         // is this a toplevel item?
         if ($sCategory != null) {
-            if (!array_key_exists($sCategory, $this->aCategories)) { 
-                $this->registerCategory($sCategory, $sCategory, ''); 
+            if (!array_key_exists($sCategory, $this->aCategories)) {
+                $this->registerCategory($sCategory, $sCategory, '');
             }
             $this->aCategorisation[$sCategory][] = $aInfo;
-        } 
+        }
     }
 
     function isRegistered($sName) {
@@ -72,32 +75,32 @@ class KTAdminNavigationRegistry {
         }
         return false;
     }
-    
+
     function registerCategory($sName, $sTitle, $sDescription) {
         $this->aCategories[$sName] = array("title" => $sTitle, "description" => $sDescription, "name" => $sName);
     }
     function getCategories() { return $this->aCategories; }
     function getCategory($sCategory) { return $this->aCategories[$sCategory]; }
     function getItemsForCategory($sCategory) { return $this->aCategorisation[$sCategory]; }
-    
+
     function getDispatcher($sName) {
         // FIXME this probably needs to use require_once mojo.
         $aInfo = $this->aResources[$sName];
         if ($aInfo["filepath"] !== null) { require_once($aInfo["filepath"]); }
-        if ($aInfo["url"] !== null) { 
+        if ($aInfo["url"] !== null) {
            return new RedirectingDispatcher($aInfo["url"]);
         }
-        return new $aInfo["class"]; 
+        return new $aInfo["class"];
     }
 }
 
 class RedirectingDispatcher {
     var $url = '';
- 
+
     function RedirectingDispatcher($sURL) {
         $this->url = $sURL;
     }
-    
+
     function dispatch() {
         redirect($this->url);
     }
