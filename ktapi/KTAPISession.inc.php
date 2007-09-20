@@ -304,7 +304,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
 
         $now=date('Y-m-d H:i:s');
-        $sql = "UPDATE active_sessions SET last_used='$now' WHERE id=$sessionid";
+        $sql = "UPDATE active_sessions SET lastused='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
 
 
