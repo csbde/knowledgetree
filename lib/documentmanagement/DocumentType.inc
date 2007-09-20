@@ -84,9 +84,9 @@ class DocumentType extends KTEntity {
 	}
 
     function isUsed() {
-        $sTable = KTUtil::getTableName('documents');
+        $sTable = KTUtil::getTableName('document_metadata_version');
         $res = DBUtil::getOneResultKey(array(
-            "SELECT COUNT(id) AS cnt FROM documents WHERE document_type_id = ?",
+            "SELECT COUNT(id) AS cnt FROM {$sTable} WHERE document_type_id = ?",
             array($this->getId()),
         ), 'cnt');
         if (PEAR::isError($res)) {
@@ -106,6 +106,35 @@ class DocumentType extends KTEntity {
     function &getFieldsets() {
 	return KTFieldset::getForDocumentType($this);
     }
+	
+	/**
+	* Get the document types associated with a document
+	*/
+	function &getAssociatedTypes() {
+        $sTable = KTUtil::getTableName('document_metadata_version');
+        $sQuery = "SELECT DISTINCT(document_type_id) FROM {$sTable}";
+        $aDocTypes = DBUtil::getResultArray($sQuery);
+        
+        $aTypes = array();
+        if(!empty($aDocTypes)){
+            foreach($aDocTypes as $type){
+                $aTypes[] = $type['document_type_id'];
+            }
+        }
+        
+        return $aTypes;
+	}
+	
+	/**
+	* Check if a type is associated with any documents
+	*/
+	function checkDelete($aAssocDocs, $sId) {
+        if(in_array($sId, $aAssocDocs)){
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+	}
 	
 	/**
  	 * Static- Get a list document types;
