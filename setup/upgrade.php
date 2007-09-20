@@ -506,7 +506,7 @@ Your mysql installation has been resolved. Manually, you would do the following:
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<nobr>cd "<?php=$dir?>"</nobr>
+<nobr>cd "<?php echo $dir;?>"</nobr>
 <br>
 <?php	
 	}
@@ -524,7 +524,7 @@ You can continue to do the backup manually using the following process:
 
 	}
 ?>
-<nobr><?php=$stmt['display']?>
+<nobr><?php echo $stmt['display'];?>
 </table>
 <P>
  
@@ -565,7 +565,7 @@ function restoreSelect()
     if (count($files) == 0)
     {
  ?>
- 	There don't seem to be any backups to restore from the <i>"<?php=$dir?>"</i> directory.
+ 	There don't seem to be any backups to restore from the <i>"<?php echo $dir;?>"</i> directory.
  <?php
     }
     else 
@@ -591,10 +591,10 @@ function restoreSelect()
 	{
 		$color=((($i++)%2)==0)?'white':'lightgrey';		
 ?>
-		<tr bgcolor="<?php=$color?>">
-			<td><?php=$file?>
-			<td><?php=filesize($dir . '/'.$file)?>
-			<td><input type=button value="restore" onclick="javascript:selectRestore('<?php=$file?>')">
+		<tr bgcolor="<?php echo $color;?>">
+			<td><?php echo $file;?>
+			<td><?php echo filesize($dir . '/'.$file);?>
+			<td><input type=button value="restore" onclick="javascript:selectRestore('<?php echo $file;?>')">
 <?php		
 	}
 ?>
@@ -647,7 +647,7 @@ Manually, you would do the following to restore the backup:
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<nobr>cd "<?php=$dir?>"</nobr>
+<nobr>cd "<?php echo $dir;?>"</nobr>
 <br>
 <?php	
 	}
@@ -665,7 +665,7 @@ You can continue to do the restore manually using the following command(s):
 
 	}
 ?>
-<nobr><?php=$stmt['display']?>
+<nobr><?php echo $stmt['display'];?>
 </table>
 <P>
 <?php
@@ -715,7 +715,7 @@ function backupDone()
 	{
 		$stmt=create_restore_stmt($filename);
 ?>
-		The backup file <nobr><I>"<?php=$filename?>"</i></nobr> has been created.
+		The backup file <nobr><I>"<?php echo $filename;?>"</i></nobr> has been created.
 		<P> It appears as though the <font color=green>backup has been successful</font>.
 		<P>
 		<?php
@@ -727,7 +727,7 @@ function backupDone()
 				<table bgcolor="lightgrey">
 				<tr>
 					<td>
-						<nobr>cd <?php=$stmt['dir']?></nobr>
+						<nobr>cd <?php echo $stmt['dir'];?></nobr>
 						<br>
 		<?php	
 			}
@@ -744,7 +744,7 @@ function backupDone()
 		<?php
 			}
 		?>
-						<nobr><?php=$stmt['display']?>
+						<nobr><?php echo $stmt['display'];?>
 				</table>
 			
 <?php
@@ -760,7 +760,7 @@ We appologise for the inconvenience.
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?php=$_SESSION['backupOutput']?>
+<?php echo $_SESSION['backupOutput'];?>
 </table>
 <?php
 		
@@ -790,7 +790,7 @@ function restoreDone()
 	{
 		 
 ?>
-		The restore of <nobr><I>"<?php=$filename?>"</i></nobr> has been completed. 
+		The restore of <nobr><I>"<?php echo $filename;?>"</i></nobr> has been completed. 
 		<P>
 		It appears as though the <font color=green>restore has been successful</font>.
 		<P>
@@ -811,7 +811,7 @@ We appologise for the inconvenience.
 <table bgcolor="lightgrey">
 <tr>
 <td>
-<?php=$_SESSION['restoreOutput']?>
+<?php echo $_SESSION['restoreOutput'];?>
 </table>
 <?php
 		
@@ -836,7 +836,7 @@ function check_state($value, $state='Home')
 	{
 		?>
 			<script>
-			document.location="?go=<?php=$state?>";
+			document.location="?go=<?php echo $state;?>";
 			</script>
 			<?php
 			exit;
@@ -903,7 +903,7 @@ function backup()
 	{
 ?>
 <P>
-	The <i>mysqldump</i> utility was not found in the <?php=$dir?> subdirectory.
+	The <i>mysqldump</i> utility was not found in the <?php echo $dir;?> subdirectory.
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 <?php		
@@ -975,7 +975,7 @@ function restore()
 	{
 ?>
 <P>
-	The <i>mysql</i> utility was not found in the <?php=$dir?> subdirectory.
+	The <i>mysql</i> utility was not found in the <?php echo $dir;?> subdirectory.
  
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
 <?php		
