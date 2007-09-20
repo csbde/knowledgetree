@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -40,14 +40,14 @@ class KTFolderAction extends KTStandardDispatcher {
 
     var $_sShowPermission = 'ktcore.permissions.folder_details';
     var $_sDisablePermission;
-    var $sHelpPage = 'ktcore/browse.html';    
-    
+    var $sHelpPage = 'ktcore/browse.html';
+
     var $_bAdminAlwaysAvailable = false;
 
     var $sSection = 'browse';
 
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
-        parent::KTStandardDispatcher();    
+        parent::KTStandardDispatcher();
         $this->oFolder =& $oFolder;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
@@ -80,7 +80,7 @@ class KTFolderAction extends KTStandardDispatcher {
                 return true;
             }
         }
-        
+
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
     }
 
@@ -131,9 +131,9 @@ class KTFolderAction extends KTStandardDispatcher {
 
     function check() {
         $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
-        
+
         if (!$this->_show()) { return false; }
-        
+
         $aOptions = array(
             'final' => false,
             'documentaction' => 'viewDocument',
@@ -143,15 +143,15 @@ class KTFolderAction extends KTStandardDispatcher {
             KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
 
         $portlet = new KTActionPortlet(sprintf(_kt('About this folder')));
-        $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);        
+        $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
         $portlet->setActions($aActions,$this->sName);
-        $this->oPage->addPortlet($portlet);            
+        $this->oPage->addPortlet($portlet);
 
         $portlet = new KTActionPortlet(sprintf(_kt('Actions on this folder')));
-        $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);        
+        $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
         $portlet->setActions($aActions,$this->sName);
-        $this->oPage->addPortlet($portlet);            
-            
+        $this->oPage->addPortlet($portlet);
+
         if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $this->oFolder)) {
             $this->oPage->setSecondaryTitle($this->oFolder->getName());
         } else {
@@ -161,7 +161,7 @@ class KTFolderAction extends KTStandardDispatcher {
                 $this->oPage->setSecondaryTitle('...');
             }
         }
-        
+
         return true;
     }
 
@@ -179,7 +179,7 @@ class KTFolderActionUtil {
     function getFolderInfoActions() {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions('folderinfo');
-    }   
+    }
     function &getFolderActionsForFolder($oFolder, $oUser) {
         $aObjects = array();
         foreach (KTFolderActionUtil::getFolderActions() as $aAction) {
@@ -189,7 +189,7 @@ class KTFolderActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
+            $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
         }
         return $aObjects;
     }
@@ -202,10 +202,10 @@ class KTFolderActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
+            $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
         }
         return $aObjects;
-    }    
+    }
 }
 
 ?>

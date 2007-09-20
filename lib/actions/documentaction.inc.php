@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -42,13 +42,13 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $_sShowPermission = 'ktcore.permissions.read';
     var $_sDisablePermission;
     var $bAllowInAdminMode = false;
-    var $sHelpPage = 'ktcore/browse.html';    
+    var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
 
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
-    
+
     var $sIconClass;
 
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
@@ -58,7 +58,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-        
+
         $this->persistParams('fDocumentId');
 
         parent::KTStandardDispatcher();
@@ -87,7 +87,7 @@ class KTDocumentAction extends KTStandardDispatcher {
                 return false;
             }
         }
-        
+
         if ($this->_bAdminAlwaysAvailable) {
             if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
                 return true;
@@ -105,13 +105,13 @@ class KTDocumentAction extends KTStandardDispatcher {
         }
         // be nasty in archive/delete status.
         $status = $this->oDocument->getStatusID();
-        if (($status == DELETED) || ($status == ARCHIVED)) { return false; } 
+        if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
         if ($this->bAllowInAdminMode) {
             // check if this user is in admin mode
-            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {             
-                return true; 
-            }        
-        }        
+            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+                return true;
+            }
+        }
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
     }
 
@@ -142,7 +142,7 @@ class KTDocumentAction extends KTStandardDispatcher {
             'url' => $url,
             'icon_class' => $this->sIconClass,
         );
-        
+
         $aInfo = $this->customiseInfo($aInfo);
         return $aInfo;
     }
@@ -169,7 +169,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
     if (!$this->_show()) { return false; }
-        
+
         $aOptions = array('final' => false,
               'documentaction' => 'viewDocument',
               'folderaction' => 'browse',
@@ -180,15 +180,15 @@ class KTDocumentAction extends KTStandardDispatcher {
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Document info')));
 	    $oPortlet->setActions($actions, $this->sName);
-	    $this->oPage->addPortlet($oPortlet);              
+	    $this->oPage->addPortlet($oPortlet);
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
         $oPortlet = new KTActionPortlet(sprintf(_kt('Document actions')));
 	    $oPortlet->setActions($actions, $this->sName);
-	    $this->oPage->addPortlet($oPortlet);              
-	
-	    $this->oPage->setSecondaryTitle($this->oDocument->getName());            
-            
+	    $this->oPage->addPortlet($oPortlet);
+
+	    $this->oPage->setSecondaryTitle($this->oDocument->getName());
+
         return true;
     }
 
@@ -212,7 +212,7 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[] = new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
@@ -228,7 +228,7 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[] = new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
@@ -245,7 +245,7 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[] = new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
