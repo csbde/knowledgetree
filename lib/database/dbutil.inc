@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -33,7 +33,7 @@
 require_once ('PEAR.php');
 
 class DBUtil {
-    function &getDB($db = null) {
+    static function &getDB($db = null) {
         global $default;
         if (is_null($db)) {
             $db =& $default->_db;
@@ -47,7 +47,7 @@ class DBUtil {
         return $db;
     }
 
-    function &runQuery($query, $db = null) {
+    static function &runQuery($query, $db = null) {
         global $default;
         $aParams = null;
 
@@ -55,7 +55,7 @@ class DBUtil {
 
         if (is_array($query)) {
             $sQuery = $query[0];
-            $aParams = $query[1];
+            $aParams = (count($query) > 1)?$query[1]:array();
         } else {
             $sQuery = $query;
         }
@@ -63,13 +63,17 @@ class DBUtil {
         if ($default->queryLog) {
             $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         }
+        if (PEAR::isError($res))
+        {
+        	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);
+        }
         return $res;
     }
 
-    function getOneResult($query, $db = null) {
+    static function getOneResult($query, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
-            DBUtil::logQueryError($query, $result);
+            // logging by runQuery
             return $result;
         }
         $aRow = $result->fetchRow();
@@ -77,18 +81,19 @@ class DBUtil {
         return $aRow;
     }
 
-    function getOneResultKey($query, $key, $db = null) {
+    static function getOneResultKey($query, $key, $db = null) {
         $aRow = DBUtil::getOneResult($query, $db);
         if (PEAR::isError($aRow)) {
+            // logging by runQuery
             return $aRow;
         }
         return $aRow[$key];
     }
 
-    function getResultArray($query, $db = null) {
+    static function getResultArray($query, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
-            DBUtil::logQueryError($query, $result);
+            // logging by runQuery
             return $result;
         }
 
@@ -100,10 +105,10 @@ class DBUtil {
         return $aReturn;
     }
 
-    function getResultArrayKey($query, $key, $db = null) {
+    static function getResultArrayKey($query, $key, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
-            DBUtil::logQueryError($query, $result);
+            // logging by runQuery
             return $result;
         }
 
@@ -117,8 +122,8 @@ class DBUtil {
 
     function logQueryError($query, $result) {
         global $default;
-        $default->log->error($result->toString());
-        $default->queryLog->error($result->toString());
+        $default->log->error('Problem Query: ' . $query);
+        $default->log->error('Problem: ' . $result->getMessage());
     }
 
     function nextId($seqname, $ondemand = false, $db = null) {
@@ -161,6 +166,7 @@ class DBUtil {
             return $aFieldValues['id'];
         }
         if (PEAR::isError($res)) {
+        	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);
             return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
@@ -176,7 +182,8 @@ class DBUtil {
             return $res;
         }
         if (PEAR::isError($res)) {
-            return $res;
+        	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);
+        	return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
     }
@@ -206,7 +213,7 @@ class DBUtil {
         return PEAR::raiseError(_kt('Unknown return value for whereUpdate'));
     }
 
-    function &lastQuery($db = null) {
+    static function &lastQuery($db = null) {
         $db =& DBUtil::getDB();
         return $db->last_query;
     }
@@ -219,7 +226,7 @@ class DBUtil {
         $aParams = array($iId);
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
-    
+
     function deReference($sTable, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
