@@ -75,11 +75,10 @@ class KTCorePlugin extends KTPlugin {
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
 
-
+        // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
         $this->registerNotificationHandler('KTSubscriptionNotification', 'ktcore/subscriptions', KT_LIB_DIR . '/dashboard/Notification.inc.php');
         $this->registerNotificationHandler('KTWorkflowNotification', 'ktcore/workflow', KT_LIB_DIR . '/dashboard/Notification.inc.php');
-
 
         // Permissions
         $this->registerAction('documentinfo', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions', 'KTPermissions.php');
@@ -89,7 +88,9 @@ class KTCorePlugin extends KTPlugin {
         // Bulk Actions
         $this->registerAction('bulkaction', 'KTBulkDeleteAction', 'ktcore.actions.bulk.delete', 'KTBulkActions.php');
         $this->registerAction('bulkaction', 'KTBulkMoveAction', 'ktcore.actions.bulk.move', 'KTBulkActions.php');
-
+        $this->registerAction('bulkaction', 'KTBulkCopyAction', 'ktcore.actions.bulk.copy', 'KTBulkActions.php');
+        $this->registerAction('bulkaction', 'KTBulkArchiveAction', 'ktcore.actions.bulk.archive', 'KTBulkActions.php');
+        $this->registerAction('bulkaction', 'KTBrowseBulkExportAction', 'ktcore.actions.bulk.export', 'KTBulkActions.php');
 
         // Dashlets
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
