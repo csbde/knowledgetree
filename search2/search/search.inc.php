@@ -188,6 +188,10 @@ class SearchHelper
         		$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";
         		$options = $field['options'];
         		$oo = 0;
+        		if (!is_array($options))
+        		{
+        			$options = array();
+        		}
         		foreach($options as $option)
         		{
         			if ($oo++ > 0) $fieldset_str .= ',';
