@@ -7,7 +7,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -18,9 +18,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -43,22 +43,22 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = true;
     var $bIsAction = false;
-    
+
     function PermissionGuardTrigger() {
         $this->sFriendlyName = _kt('Permission Restrictions');
         $this->sDescription = _kt('Prevents users who do not have the specified permission from using this transition.');
     }
-    
+
     // override the allow transition hook.
     function allowTransition($oDocument, $oUser) {
         if (!$this->isLoaded()) {
             return true;
         }
-        // the actual permissions are stored in the array.  
+        // the actual permissions are stored in the array.
         if (!is_null($this->aConfig['perms']))
         {
         	foreach ($this->aConfig['perms'] as $sPermName) {
@@ -74,13 +74,13 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         }
         return true;
     }
-    
+
     function displayConfiguration($args) {
         // permissions
         $aPermissions = KTPermission::getList();
         $aKeyPermissions = array();
         foreach ($aPermissions as $oPermission) { $aKeyPermissions[$oPermission->getName()] = $oPermission; }
-        
+
         $current_perms = array();
         $this->aConfig['perms'] = KTUtil::arrayGet($this->aConfig, 'perms', array());
         foreach ($this->aConfig['perms'] as $sPermName) {
@@ -92,12 +92,12 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
 		$aTemplateData = array(
               'context' => $this,
               'perms' => $aKeyPermissions,
-              'current_perms' => $current_perms, 
+              'current_perms' => $current_perms,
               'args' => $args,
 		);
-		return $oTemplate->render($aTemplateData);    
+		return $oTemplate->render($aTemplateData);
     }
-    
+
     function saveConfiguration() {
         $perms = KTUtil::arrayGet($_REQUEST, 'trigger_perms', array());
         if (!is_array($perms)) {
@@ -110,23 +110,23 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
                 $aFinalPerms[] = $sPermName;
             }
         }
-        
+
         $config = array();
         $config['perms'] = $aFinalPerms;
-        
+
         $this->oTriggerInstance->setConfig($config);
         $res = $this->oTriggerInstance->update();
-        
+
         return $res;
     }
-    
+
     function getConfigDescription() {
         if (!$this->isLoaded()) {
             return _kt('This trigger has no configuration.');
         }
         // the actual permissions are stored in the array.
-        $perms = array();  
-        if (empty($this->aConfig) || is_null($this->aConfig['perms'])) { 
+        $perms = array();
+        if (empty($this->aConfig) || is_null($this->aConfig['perms'])) {
              return _kt('No permissions are required to perform this transition');
         }
         foreach ($this->aConfig['perms'] as $sPermName) {
@@ -138,10 +138,10 @@ class PermissionGuardTrigger extends KTWorkflowTrigger {
         if (empty($perms)) {
             return _kt('No permissions are required to perform this transition');
         }
-        
+
         $perm_string = implode(', ', $perms);
         return sprintf(_kt('The following permissions are required: %s'), $perm_string);
-    }    
+    }
 }
 
 
@@ -151,16 +151,16 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = true;
     var $bIsAction = false;
-    
+
     function RoleGuardTrigger() {
         $this->sFriendlyName = _kt('Role Restrictions');
         $this->sDescription = _kt('Prevents users who do not have the specified role from using this transition.');
     }
-    
+
     // override the allow transition hook.
     function allowTransition($oDocument, $oUser) {
         if (!$this->isLoaded()) {
@@ -171,25 +171,25 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
         $oRole = Role::get($this->aConfig['role_id']);
         if (PEAR::isError($oRole)) {
             return true; // fail safe for cases where the role is deleted.
-        }        
+        }
 
         $bHaveRole = true;
         if ($iRoleId) {
             $bHaveRole = false;
-            // handle the magic roles            
+            // handle the magic roles
             if ($iRoleId == -3) {
-                // everyone:  just accept                                    
-                $bHaveRole = true; 
+                // everyone:  just accept
+                $bHaveRole = true;
             } else if (($iRoleId == -4) && !$oUser->isAnonymous()) {
                 // authenticated
                 $bHaveRole = true;
             } else {
-                $bHaveRole = true;            
+                $bHaveRole = true;
                 $oRoleAllocation = DocumentRoleAllocation::getAllocationsForDocumentAndRole($oDocument->getId(), $iRoleId);
                 if ($oRoleAllocation == null) {   // no role allocation on the doc - check the folder.
                     $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getParentID(), $iRoleId);
                 }
-                // if that's -also- null                        
+                // if that's -also- null
                 if ($oRoleAllocation == null) {   // no role allocation, no fulfillment.
                     $bHaveRole = false;
                 } else if (!$oRoleAllocation->hasMember($oUser)) {
@@ -197,10 +197,10 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
                 }
             }
         }
-        
+
         return $bHaveRole;
     }
-    
+
     function displayConfiguration($args) {
         // permissions
         $aKeyedRoles = array();
@@ -215,9 +215,9 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
               'current_role' => KTUtil::arrayGet($this->aConfig, 'role_id'),
               'args' => $args,
 		);
-		return $oTemplate->render($aTemplateData);    
+		return $oTemplate->render($aTemplateData);
     }
-    
+
     function saveConfiguration() {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
         $oRole = Role::get($role_id);
@@ -229,20 +229,20 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
 
         $config = array();
         $config['role_id'] = $role_id;
-        
+
         $this->oTriggerInstance->setConfig($config);
         $res = $this->oTriggerInstance->update();
-        
+
         return $res;
     }
-    
+
     function getConfigDescription() {
         if (!$this->isLoaded()) {
             return _kt('This trigger has no configuration.');
         }
         // the actual permissions are stored in the array.
-        $perms = array();  
-        if (empty($this->aConfig) || is_null($this->aConfig['role_id'])) { 
+        $perms = array();
+        if (empty($this->aConfig) || is_null($this->aConfig['role_id'])) {
              return _kt('No role is required to perform this transition');
         }
         $oRole = Role::get($this->aConfig['role_id']);
@@ -251,7 +251,7 @@ class RoleGuardTrigger extends KTWorkflowTrigger {
         } else {
             return sprintf(_kt('The user will require the <strong>%s</strong> role.'), htmlentities($oRole->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
-    }    
+    }
 }
 
 
@@ -261,16 +261,16 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = true;
     var $bIsAction = false;
-    
+
     function GroupGuardTrigger() {
         $this->sFriendlyName = _kt('Group Restrictions');
         $this->sDescription = _kt('Prevents users who are not members of the specified group from using this transition.');
     }
-    
+
     // override the allow transition hook.
     function allowTransition($oDocument, $oUser) {
         if (!$this->isLoaded()) {
@@ -281,7 +281,7 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
         $oGroup = Group::get($this->aConfig['group_id']);
         if (PEAR::isError($oGroup)) {
             return true; // fail safe for cases where the role is deleted.
-        }        
+        }
         $res = GroupUtil::getMembershipReason($oUser, $oGroup);
         if (PEAR::isError($res) || empty($res)) { // broken setup, or no reason
             return false;
@@ -289,7 +289,7 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
             return true;
         }
     }
-    
+
     function displayConfiguration($args) {
         // permissions
         $aKeyedGroups = array();
@@ -304,9 +304,9 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
               'current_group' => KTUtil::arrayGet($this->aConfig, 'group_id'),
               'args' => $args,
 		);
-		return $oTemplate->render($aTemplateData);    
+		return $oTemplate->render($aTemplateData);
     }
-    
+
     function saveConfiguration() {
         $group_id = KTUtil::arrayGet($_REQUEST, 'group_id', null);
         $oGroup = Group::get($group_id);
@@ -318,20 +318,20 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
 
         $config = array();
         $config['group_id'] = $group_id;
-        
+
         $this->oTriggerInstance->setConfig($config);
         $res = $this->oTriggerInstance->update();
-        
+
         return $res;
     }
-    
+
     function getConfigDescription() {
         if (!$this->isLoaded()) {
             return _kt('This trigger has no configuration.');
         }
         // the actual permissions are stored in the array.
-        $perms = array();  
-        if (empty($this->aConfig) || is_null($this->aConfig['group_id'])) { 
+        $perms = array();
+        if (empty($this->aConfig) || is_null($this->aConfig['group_id'])) {
              return _kt('No group is required to perform this transition');
         }
         $oGroup = Group::get($this->aConfig['group_id']);
@@ -340,7 +340,7 @@ class GroupGuardTrigger extends KTWorkflowTrigger {
         } else {
             return sprintf(_kt('The user must be a member of the group "<strong>%s</strong>".'), htmlentities($oGroup->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
-    }    
+    }
 }
 
 
@@ -350,16 +350,16 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = true;
     var $bIsAction = false;
-    
+
     function ConditionGuardTrigger() {
         $this->sFriendlyName = _kt('Conditional Restrictions');
         $this->sDescription = _kt('Prevents this transition from occuring if the condition specified is not met for the document.');
     }
-    
+
     // override the allow transition hook.
     function allowTransition($oDocument, $oUser) {
         if (!$this->isLoaded()) {
@@ -370,10 +370,10 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
         $oCondition = KTSavedSearch::get($this->aConfig['condition_id']);
         if (PEAR::isError($oCondition)) {
             return true; // fail safe for cases where the role is deleted.
-        }        
+        }
         return KTSearchUtil::testConditionOnDocument($iConditionId, $oDocument);
     }
-    
+
     function displayConfiguration($args) {
         // permissions
         $aKeyedConditions = array();
@@ -388,9 +388,9 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
               'current_condition' => KTUtil::arrayGet($this->aConfig, 'condition_id'),
               'args' => $args,
 		);
-		return $oTemplate->render($aTemplateData);    
+		return $oTemplate->render($aTemplateData);
     }
-    
+
     function saveConfiguration() {
         $condition_id = KTUtil::arrayGet($_REQUEST, 'condition_id', null);
         $oCondition = KTSavedSearch::get($condition_id);
@@ -402,20 +402,20 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
 
         $config = array();
         $config['condition_id'] = $condition_id;
-        
+
         $this->oTriggerInstance->setConfig($config);
         $res = $this->oTriggerInstance->update();
-        
+
         return $res;
     }
-    
+
     function getConfigDescription() {
         if (!$this->isLoaded()) {
             return _kt('This trigger has no configuration.');
         }
         // the actual permissions are stored in the array.
-        $perms = array();  
-        if (empty($this->aConfig) || is_null($this->aConfig['condition_id'])) { 
+        $perms = array();
+        if (empty($this->aConfig) || is_null($this->aConfig['condition_id'])) {
              return _kt('No condition must be fulfilled before this transition becomes available.');
         }
         $oCondition = KTSavedSearch::get($this->aConfig['condition_id']);
@@ -424,90 +424,103 @@ class ConditionGuardTrigger extends KTWorkflowTrigger {
         } else {
             return sprintf(_kt('The document must match condition "<strong>%s</strong>".'), htmlentities($oCondition->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
-    }    
+    }
 }
 
 
-class CopyActionTrigger extends KTWorkflowTrigger {
-    var $sNamespace = 'ktcore.workflowtriggers.copyaction';
+class BaseCopyActionTrigger extends KTWorkflowTrigger {
+    var $sNamespace;
     var $sFriendlyName;
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = false;
     var $bIsAction = true;
-    
-    function CopyActionTrigger() {
-        $this->sFriendlyName = _kt('Moves Document');
-        $this->sDescription = _kt('Moves the document to another folder.');
+
+    var $isCopy;
+
+    function BaseCopyActionTrigger($namespace, $friendlyName, $description, $isCopy) {
+    	$this->sNamespace = $namespace;
+    	$this->sFriendlyName = $friendlyName;
+    	$this->sDescription = $description;
+    	$this->isCopy = $isCopy;
     }
-   
+
     // perform more expensive checks -before- performTransition.
     function precheckTransition($oDocument, $oUser) {
         $iFolderId = KTUtil::arrayGet($this->aConfig, 'folder_id');
         $oFolder = Folder::get($iFolderId);
-        if (PEAR::isError($oFolder)) { 
-            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.')); 
+        if (PEAR::isError($oFolder)) {
+        	if ($this->isCopy)
+            	return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist.  Cancelling the transition - please contact a system administrator.'));
+            else
+	            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.'));
         }
-        
+
         return true;
     }
-    
+
     function performTransition($oDocument, $oUser) {
-    
+
         $iFolderId = KTUtil::arrayGet($this->aConfig, 'folder_id');
         $oToFolder = Folder::get($iFolderId);
-        if (PEAR::isError($oFolder)) { 
-            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.')); 
+        if (PEAR::isError($oFolder)) {
+        	if ($this->isCopy)
+	            return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist.  Cancelling the transition - please contact a system administrator.'));
+            else
+            	return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.'));
         }
-        
-        return KTDocumentUtil::move($oDocument, $oToFolder, $oUser);
+
+        if ($this->isCopy)
+        	return KTDocumentUtil::copy($oDocument, $oToFolder);
+        else
+	        return KTDocumentUtil::move($oDocument, $oToFolder, $oUser);
     }
-        
+
     function displayConfiguration($args) {
         $oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/workflowtriggers/moveaction');
-		
+
         require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
         require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
-		
-        $collection = new AdvancedCollection;       
+
+        $collection = new AdvancedCollection;
         $oColumnRegistry = KTColumnRegistry::getSingleton();
         $aColumns = array();
         $aColumns[] = $oColumnRegistry->getColumn('ktcore.columns.singleselection');
-        $aColumns[] = $oColumnRegistry->getColumn('ktcore.columns.title');    
-        
-        $collection->addColumns($aColumns);	
-        
+        $aColumns[] = $oColumnRegistry->getColumn('ktcore.columns.title');
+
+        $collection->addColumns($aColumns);
+
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-        
-        
+
+
         $qsFrag = array();
         foreach ($args as $k => $v) {
-            if ($k == 'action') { $v = 'editactiontrigger'; } // horrible hack - we really need iframe embedding. 
+            if ($k == 'action') { $v = 'editactiontrigger'; } // horrible hack - we really need iframe embedding.
             $qsFrag[] = sprintf('%s=%s',urlencode($k), urlencode($v));
         }
         $qs = implode('&',$qsFrag);
-        $aOptions['result_url'] = KTUtil::addQueryStringSelf($qs);                
+        $aOptions['result_url'] = KTUtil::addQueryStringSelf($qs);
         $aOptions['show_documents'] = false;
-        
-        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));        
-        
+
+        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));
+
         $collection->setOptions($aOptions);
-        $collection->setQueryObject(new BrowseQuery($fFolderId, $this->oUser));    
+        $collection->setQueryObject(new BrowseQuery($fFolderId, $this->oUser));
         $collection->setColumnOptions('ktcore.columns.singleselection', array(
             'rangename' => 'folder_id',
             'show_folders' => true,
             'show_documents' => false,
-        ));	
-        
+        ));
+
         $collection->setColumnOptions('ktcore.columns.title', array(
             'direct_folder' => false,
             'folder_link' => $aOptions['result_url'],
-        ));			
-		
+        ));
+
 		$oFolder = Folder::get($fFolderId);
         $aBreadcrumbs = array();
         $folder_path_names = $oFolder->getPathArray();
@@ -523,21 +536,21 @@ class CopyActionTrigger extends KTWorkflowTrigger {
             $qsFrag2 = $qsFrag;
             $qsFrag2[] = sprintf('fFolderId=%d', $id);
             $qs2 = implode('&',$qsFrag2);
-            $url = KTUtil::addQueryStringSelf($qs2);              
+            $url = KTUtil::addQueryStringSelf($qs2);
             $aBreadcrumbs[] = sprintf('<a href="%s">%s</a>', $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
         }
-		
-        $sBreadcrumbs = implode(' &raquo; ', $aBreadcrumbs);		
-		
+
+        $sBreadcrumbs = implode(' &raquo; ', $aBreadcrumbs);
+
 		$aTemplateData = array(
               'context' => $this,
               'breadcrumbs' => $sBreadcrumbs,
               'collection' => $collection,
               'args' => $args,
 		);
-		return $oTemplate->render($aTemplateData);    
+		return $oTemplate->render($aTemplateData);
     }
-    
+
     function saveConfiguration() {
         $folder_id = KTUtil::arrayGet($_REQUEST, 'folder_id', null);
         $oFolder = Folder::get($folder_id);
@@ -548,29 +561,62 @@ class CopyActionTrigger extends KTWorkflowTrigger {
 
         $config = array();
         $config['folder_id'] = $folder_id;
-        
+
         $this->oTriggerInstance->setConfig($config);
         $res = $this->oTriggerInstance->update();
-        
+
         return $res;
     }
-    
+
     function getConfigDescription() {
         if (!$this->isLoaded()) {
             return _kt('This trigger has no configuration.');
         }
         // the actual permissions are stored in the array.
-        $perms = array();  
-        if (empty($this->aConfig) || is_null($this->aConfig['folder_id'])) { 
+        $perms = array();
+        if (empty($this->aConfig) || is_null($this->aConfig['folder_id'])) {
              return _kt('<strong>This transition cannot be performed:  no folder has been selected.</strong>');
         }
         $oFolder = Folder::get($this->aConfig['folder_id']);
         if (PEAR::isError($oFolder)) {
             return _kt('<strong>The folder required for this trigger has been deleted, so the transition cannot be performed.</strong>');
         } else {
-            return sprintf(_kt('The document will be moved to folder "<a href="%s">%s</a>".'), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
+        	if ($this->isCopy)
+	            return sprintf(_kt('The document will be copied to folder "<a href="%s">%s</a>".'), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
+            else
+    	        return sprintf(_kt('The document will be moved to folder "<a href="%s">%s</a>".'), KTBrowseUtil::getUrlForFolder($oFolder), htmlentities($oFolder->getName(), ENT_NOQUOTES, 'UTF-8'));
         }
-    }    
+    }
+}
+
+
+// This is actually the move!
+class CopyActionTrigger extends BaseCopyActionTrigger
+{
+	function CopyActionTrigger()
+	{
+		parent::BaseCopyActionTrigger(
+			'ktcore.workflowtriggers.copyaction',
+			_kt('Moves Document'),
+			_kt('Moves the document to another folder.'),
+			false
+		);
+	}
+}
+
+// This is actually the copy! Note that we keep this naming issue
+// so that there are no complications with the upgrade path!
+class MoveActionTrigger extends BaseCopyActionTrigger
+{
+	function MoveActionTrigger()
+	{
+		parent::BaseCopyActionTrigger(
+			'ktcore.workflowtriggers.moveaction',
+			_kt('Copies Document'),
+			_kt('Copies the document to another folder.'),
+			true
+		);
+	}
 }
 
 
@@ -580,27 +626,27 @@ class CheckoutGuardTrigger extends KTWorkflowTrigger {
     var $sDescription;
     var $oTriggerInstance;
     var $aConfig = array();
-    
+
     // generic requirements - both can be true
     var $bIsGuard = true;
     var $bIsAction = false;
-    
+
     var $bIsConfigurable = false;
-    
+
     function CheckoutGuardTrigger() {
         $this->sFriendlyName = _kt('Checkout Guard');
         $this->sDescription = _kt('Prevents a transition from being followed if the document is checked out..');
     }
-    
+
     // override the allow transition hook.
     function allowTransition($oDocument, $oUser) {
         return (!$oDocument->getIsCheckedOut());
     }
-    
-    
+
+
     function getConfigDescription() {
         return _kt('This transition cannot be performed while the document is checked out.');
-    }    
+    }
 }
 
 
