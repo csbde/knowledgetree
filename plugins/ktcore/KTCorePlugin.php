@@ -104,12 +104,12 @@ class KTCorePlugin extends KTPlugin {
         $this->registerPortlet(array('browse'),
                 'KTAdminModePortlet', 'ktcore.portlets.admin_mode',
                 'KTPortlets.php');
-        $this->registerPortlet(array('browse', 'dashboard'),
+        /* NEW SEARCH $this->registerPortlet(array('browse', 'dashboard'),
                 'KTSearchPortlet', 'ktcore.portlets.search',
                 'KTPortlets.php');
         $this->registerPortlet(array('browse'),
                 'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
-                'KTPortlets.php');
+                'KTPortlets.php'); */
 
         $this->registerPortlet(array('administration'),
                 'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
@@ -182,11 +182,11 @@ class KTCorePlugin extends KTPlugin {
         $this->registerCriterion('DocumentTypeCriterion', 'ktcore.criteria.documenttype', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedCriterion', 'ktcore.criteria.datemodified', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('SizeCriterion', 'ktcore.criteria.size', KT_LIB_DIR . '/browse/Criteria.inc');
-        $this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
+        // NEW SEARCH $this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('WorkflowStateCriterion', 'ktcore.criteria.workflowstate', KT_LIB_DIR . '/browse/Criteria.inc');
-        $this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
-        $this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
-        $this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+        // NEW SEARCH $this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
+        // NEW SEARCH $this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
+        // NEW SEARCH $this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('GeneralMetadataCriterion', 'ktcore.criteria.generalmetadata', KT_LIB_DIR . '/browse/Criteria.inc');
@@ -268,10 +268,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
             _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
             'admin/manageHelp.php', null);
-        $this->registerAdminPage('savedsearch', 'KTSavedSearchDispatcher', 'misc',
+        /* NEW SEARCH $this->registerAdminPage('savedsearch', 'KTSavedSearchDispatcher', 'misc',
             _kt('Saved searches'),
             _kt('Manage saved searches - searches available by default to all users.'),
-            'admin/savedSearch.php', null);
+            'admin/savedSearch.php', null); */
         $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'misc',
             _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
