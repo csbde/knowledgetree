@@ -5,6 +5,7 @@ require_once('search/SearchCommandParser.php');
 require_once('search/SearchCommandLexer.php');
 require_once('search/fieldRegistry.inc.php');
 require_once('search/expr.inc.php');
+require_once(KT_LIB_DIR . '/security/Permission.inc');
 
 function rank_compare($a, $b)
 {
