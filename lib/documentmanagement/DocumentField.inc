@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,16 +19,16 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- */ 
+ */
 
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
@@ -36,7 +36,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class DocumentField extends KTEntity {
-	
+
     /** primary key value */
     var $iId = -1;
     var $sName;
@@ -60,7 +60,7 @@ class DocumentField extends KTEntity {
         'bIsMandatory' => 'is_mandatory',
     );
 
-    // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.	
+    // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.
 	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null) {
 
 		$this->iId = -1;
@@ -71,12 +71,12 @@ class DocumentField extends KTEntity {
 		$this->iParentFieldset = $iParentFieldset;
 		$this->bHasLookupTree = $bHasLookupTree;
 	}
-	
+
 	function getID() { return $this->iId; }
 	function getName() { return sanitizeForSQLtoHTML($this->sName); }
 	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
 	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
-	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }	
+	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
 	function getDataType() { return $this->sDataType; }
     function setDataType($sNewValue) { $this->sDataType = $sNewValue; }
 	function getIsGeneric() { return $this->bIsGeneric; }
@@ -112,7 +112,7 @@ class DocumentField extends KTEntity {
 
     function &getList($sWhereClause = null) {
 	return KTEntityUtil::getList2('DocumentField', $sWhereClause);
-    }	
+    }
 
     function &createFromArray($aOptions) {
         return KTEntityUtil::createFromArray('DocumentField', $aOptions);
@@ -138,12 +138,12 @@ class DocumentField extends KTEntity {
             'name' => $sName,
         ));
     }
-	
+
     function &get($iId) {
         return KTEntityUtil::get('DocumentField', $iId);
     }
 
-	// FIXME: add a data type class!	
+	// FIXME: add a data type class!
 	/* Static function.  Given a documenttype...will find all fields belongin to it
 	*
 	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
@@ -193,20 +193,20 @@ class DocumentField extends KTEntity {
     function hasChildren() {
         return (boolean)KTMetadataUtil::getChildFieldIds($this);
     }
-    
+
     function getTypeDescription() {
         $aDescriptors = array();
         // type
         $aDescriptors[] = $this->getType();
-        
+
         // required
         if ($this->getIsMandatory()) {
-            $aDescriptors[] = _kt("Required");    
+            $aDescriptors[] = _kt("Required");
         } else {
-            $aDescriptors[] = _kt("Not Required");    
+            $aDescriptors[] = _kt("Not Required");
         }
-        
-        return implode(', ', $aDescriptors);        
+
+        return implode(', ', $aDescriptors);
     }
 
     function getNamespace() {
@@ -218,7 +218,7 @@ class DocumentField extends KTEntity {
         }
         return $sFS . '.' . $this->getName();
     }
-    
+
 }
 
 /**
@@ -231,7 +231,7 @@ class DocumentField extends KTEntity {
 * @return User user object
 */
 function & documentfieldCreateFromArray($aParameters) {
-	$oDocField = & new DocumentField($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	$oDocField = new DocumentField($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oDocField;
 }
 
