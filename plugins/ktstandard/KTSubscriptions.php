@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -44,12 +44,12 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
     var $autoRegister = true;
-    
+
     function KTSubscriptionPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Subscription Plugin');
         return $res;
-    }        
+    }
 
     function setup() {
         $this->registerPortlet('browse', 'KTSubscriptionPortlet',
@@ -61,7 +61,7 @@ class KTSubscriptionPlugin extends KTPlugin {
         $this->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger',
             'ktstandard.triggers.subscription.checkout');
         $this->registerTrigger('edit', 'postValidate', 'KTEditSubscriptionTrigger',
-            'ktstandard.triggers.subscription.checkout');            
+            'ktstandard.triggers.subscription.checkout');
         $this->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger',
             'ktstandard.triggers.subscription.delete');
         $this->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger',
@@ -69,7 +69,7 @@ class KTSubscriptionPlugin extends KTPlugin {
         $this->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger',
             'ktstandard.triggers.subscription.archive');
         $this->registerTrigger('discussion', 'postValidate', 'KTDiscussionSubscriptionTrigger',
-            'ktstandard.triggers.subscription.archive');          
+            'ktstandard.triggers.subscription.archive');
         $this->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction',
             'ktstandard.subscription.foldersubscription');
         $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
@@ -103,7 +103,7 @@ class KTSubscriptionPortlet extends KTPortlet {
                     // require_once(KT_DIR .
                     // Or something...
                 }
-                $oObject =& new $sClassName($this->oDispatcher->oDocument, $this->oDispatcher->oUser);
+                $oObject =new $sClassName($this->oDispatcher->oDocument, $this->oDispatcher->oUser);
                 $this->actions[] = $oObject->getInfo();
             }
         }
@@ -117,7 +117,7 @@ class KTSubscriptionPortlet extends KTPortlet {
                     // require_once(KT_DIR .
                     // Or something...
                 }
-                $oObject =& new $sClassName($this->oDispatcher->oFolder, $this->oDispatcher->oUser);
+                $oObject =new $sClassName($this->oDispatcher->oFolder, $this->oDispatcher->oUser);
                 $this->actions[] = $oObject->getInfo();
             }
         }
@@ -257,7 +257,7 @@ class KTDeleteSubscriptionTrigger {
         $oDocument =& $this->aInfo["document"];
 
         // fire subscription alerts for the deleted document
-        
+
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
@@ -279,7 +279,7 @@ class KTDocumentMoveSubscriptionTrigger {
         $oOldFolder =& $this->aInfo["old_folder"];
         $oNewFolder =& $this->aInfo["new_folder"];
 
-        
+
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
@@ -318,7 +318,7 @@ class KTDiscussionSubscriptionTrigger {
         $oDocument =& $this->aInfo["document"];
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
-        
+
         $oSubscriptionEvent->DiscussDocument($oDocument, $oFolder);
     }
 }
