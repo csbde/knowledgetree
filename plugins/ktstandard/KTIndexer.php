@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -33,14 +33,20 @@ class KTIndexerPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.indexer.plugin";
     var $autoRegister = true;
     var $sFriendlyName = null;
-    
+
     function KTIndexerPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Full-text Content Indexing');
         return $res;
-    }      
+    }
 
     function setup() {
+
+        // NEW SEARCH
+
+        //debugger_start_debug();
+
+        /*
         $this->registerTrigger('content', 'transform', 'KTWordIndexerTrigger',
                 'ktstandard.indexer.triggers.word', 'contents/WordIndexer.php');
         $this->registerTrigger('content', 'transform', 'KTRtfIndexerTrigger',
@@ -61,6 +67,7 @@ class KTIndexerPlugin extends KTPlugin {
                 'ktstandard.indexer.triggers.opendocument', 'contents/OpenDocumentIndexer.php');
         $this->registerTrigger('content', 'transform', 'KTXmlHtmlIndexerTrigger',
                 'ktstandard.indexer.triggers.xml', 'contents/XmlHtmlIndexer.php');
+        */
     }
 }
 
