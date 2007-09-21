@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -43,7 +43,7 @@ class KTCorePlugin extends KTPlugin {
         $this->sFriendlyName = _kt('Core Application Functionality');
         return $res;
     }
-    
+
     function setup() {
         $this->registerAction('documentinfo', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentinfo', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
@@ -60,7 +60,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentinfo', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow', 'KTDocumentActions.php');
-        $this->registerAction('folderinfo', 'KTFolderViewAction', 'ktcore.actions.folder.view', 'KTFolderActions.php');        
+        $this->registerAction('folderinfo', 'KTFolderViewAction', 'ktcore.actions.folder.view', 'KTFolderActions.php');
         $this->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument', 'folder/addDocument.php');
         $this->registerAction('folderaction', 'KTFolderAddFolderAction', 'ktcore.actions.folder.addFolder', 'KTFolderActions.php');
         $this->registerAction('folderaction', 'KTFolderRenameAction', 'ktcore.actions.folder.rename', 'folder/Rename.php');
@@ -73,7 +73,7 @@ class KTCorePlugin extends KTPlugin {
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
         // Viewlets
-        $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');        
+        $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
 
 
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
@@ -113,63 +113,64 @@ class KTCorePlugin extends KTPlugin {
         $this->registerPortlet(array('administration'),
                 'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
                 'KTPortlets.php');
-                
+
         $this->registerColumn(_kt('Title'), 'ktcore.columns.title', 'AdvancedTitleColumn', 'KTColumns.inc.php');
-        $this->registerColumn(_kt('Selection'), 'ktcore.columns.selection', 'AdvancedSelectionColumn', 'KTColumns.inc.php');        
-        $this->registerColumn(_kt('Single Selection'), 'ktcore.columns.singleselection', 'AdvancedSingleSelectionColumn', 'KTColumns.inc.php');        
-        $this->registerColumn(_kt('Workflow State'), 'ktcore.columns.workflow_state', 'AdvancedWorkflowColumn', 'KTColumns.inc.php');        
-        $this->registerColumn(_kt('Creation Date'), 'ktcore.columns.creationdate', 'CreationDateColumn', 'KTColumns.inc.php');        
-        $this->registerColumn(_kt('Modification Date'), 'ktcore.columns.modificationdate', 'ModificationDateColumn', 'KTColumns.inc.php');                                        
-        $this->registerColumn(_kt('Creator'), 'ktcore.columns.creator', 'CreatorColumn', 'KTColumns.inc.php');                                                
-        $this->registerColumn(_kt('Download File'), 'ktcore.columns.download', 'AdvancedDownloadColumn', 'KTColumns.inc.php');                                                        
-        $this->registerColumn(_kt('Document ID'), 'ktcore.columns.docid', 'DocumentIDColumn', 'KTColumns.inc.php');                                                                
-        $this->registerColumn(_kt('Open Containing Folder'), 'ktcore.columns.containing_folder', 'ContainingFolderColumn', 'KTColumns.inc.php');                
-        
+        $this->registerColumn(_kt('Selection'), 'ktcore.columns.selection', 'AdvancedSelectionColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Single Selection'), 'ktcore.columns.singleselection', 'AdvancedSingleSelectionColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Workflow State'), 'ktcore.columns.workflow_state', 'AdvancedWorkflowColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Creation Date'), 'ktcore.columns.creationdate', 'CreationDateColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Modification Date'), 'ktcore.columns.modificationdate', 'ModificationDateColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Creator'), 'ktcore.columns.creator', 'CreatorColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Download File'), 'ktcore.columns.download', 'AdvancedDownloadColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Document ID'), 'ktcore.columns.docid', 'DocumentIDColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Open Containing Folder'), 'ktcore.columns.containing_folder', 'ContainingFolderColumn', 'KTColumns.inc.php');
+
         $this->registerView(_kt('Browse Documents'), 'ktcore.views.browse');
-        $this->registerView(_kt('Search'), 'ktcore.views.search');        
+        $this->registerView(_kt('Search'), 'ktcore.views.search');
 
         // workflow triggers
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.permissionguard', 'PermissionGuardTrigger', 'KTWorkflowTriggers.inc.php');
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.roleguard', 'RoleGuardTrigger', 'KTWorkflowTriggers.inc.php');
-        $this->registerWorkflowTrigger('ktcore.workflowtriggers.groupguard', 'GroupGuardTrigger', 'KTWorkflowTriggers.inc.php');        
-        $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');        
-        $this->registerWorkflowTrigger('ktcore.workflowtriggers.checkoutguard', 'CheckoutGuardTrigger', 'KTWorkflowTriggers.inc.php');        
-        
-        $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');        
-        
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.groupguard', 'GroupGuardTrigger', 'KTWorkflowTriggers.inc.php');
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.conditionguard', 'ConditionGuardTrigger', 'KTWorkflowTriggers.inc.php');
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.checkoutguard', 'CheckoutGuardTrigger', 'KTWorkflowTriggers.inc.php');
+
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');
+        $this->registerWorkflowTrigger('ktcore.workflowtriggers.moveaction', 'MoveActionTrigger', 'KTWorkflowTriggers.inc.php');
+
         // widgets
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
         $this->registerWidget('KTCoreStringWidget', 'ktcore.widgets.string', 'KTWidgets.php');
-        $this->registerWidget('KTCoreSelectionWidget', 'ktcore.widgets.selection', 'KTWidgets.php');        
+        $this->registerWidget('KTCoreSelectionWidget', 'ktcore.widgets.selection', 'KTWidgets.php');
         $this->registerWidget('KTCoreEntitySelectionWidget', 'ktcore.widgets.entityselection', 'KTWidgets.php');
-        $this->registerWidget('KTCoreBooleanWidget', 'ktcore.widgets.boolean', 'KTWidgets.php');        
-        $this->registerWidget('KTCorePasswordWidget', 'ktcore.widgets.password', 'KTWidgets.php');                
+        $this->registerWidget('KTCoreBooleanWidget', 'ktcore.widgets.boolean', 'KTWidgets.php');
+        $this->registerWidget('KTCorePasswordWidget', 'ktcore.widgets.password', 'KTWidgets.php');
         $this->registerWidget('KTCoreTextWidget', 'ktcore.widgets.text', 'KTWidgets.php');
-        $this->registerWidget('KTCoreReasonWidget', 'ktcore.widgets.reason', 'KTWidgets.php');                                  
-        $this->registerWidget('KTCoreFileWidget', 'ktcore.widgets.file', 'KTWidgets.php');                     
-        $this->registerWidget('KTCoreFieldsetWidget', 'ktcore.widgets.fieldset', 'KTWidgets.php');                     
+        $this->registerWidget('KTCoreReasonWidget', 'ktcore.widgets.reason', 'KTWidgets.php');
+        $this->registerWidget('KTCoreFileWidget', 'ktcore.widgets.file', 'KTWidgets.php');
+        $this->registerWidget('KTCoreFieldsetWidget', 'ktcore.widgets.fieldset', 'KTWidgets.php');
         $this->registerWidget('KTCoreTransparentFieldsetWidget', 'ktcore.widgets.transparentfieldset', 'KTWidgets.php');
         $this->registerWidget('KTCoreCollectionWidget', 'ktcore.widgets.collection', 'KTWidgets.php');
         $this->registerWidget('KTCoreTreeMetadataWidget', 'ktcore.widgets.treemetadata', 'KTWidgets.php');
-        $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');        
-        $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');        
-                
+        $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');
+        $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');
+
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
-        
+
         // validators
         $this->registerValidator('KTStringValidator', 'ktcore.validators.string', 'KTValidators.php');
         $this->registerValidator('KTEntityValidator', 'ktcore.validators.entity', 'KTValidators.php');
         $this->registerValidator('KTRequiredValidator', 'ktcore.validators.required', 'KTValidators.php');
-        $this->registerValidator('KTEmailValidator', 'ktcore.validators.emailaddress', 'KTValidators.php');        
-        $this->registerValidator('KTBooleanValidator', 'ktcore.validators.boolean', 'KTValidators.php');                
-        $this->registerValidator('KTPasswordValidator', 'ktcore.validators.password', 'KTValidators.php');            
-        $this->registerValidator('KTMembershipValidator', 'ktcore.validators.membership', 'KTValidators.php');                
-        $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');                
-        $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');                        
-        $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');                   
-        $this->registerValidator('KTArrayValidator', 'ktcore.validators.array', 'KTValidators.php');           
+        $this->registerValidator('KTEmailValidator', 'ktcore.validators.emailaddress', 'KTValidators.php');
+        $this->registerValidator('KTBooleanValidator', 'ktcore.validators.boolean', 'KTValidators.php');
+        $this->registerValidator('KTPasswordValidator', 'ktcore.validators.password', 'KTValidators.php');
+        $this->registerValidator('KTMembershipValidator', 'ktcore.validators.membership', 'KTValidators.php');
+        $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');
+        $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');
+        $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');
+        $this->registerValidator('KTArrayValidator', 'ktcore.validators.array', 'KTValidators.php');
 
         // criterion
         $this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');
@@ -188,7 +189,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('GeneralMetadataCriterion', 'ktcore.criteria.generalmetadata', KT_LIB_DIR . '/browse/Criteria.inc');
-        
+
 
         $this->setupAdmin();
     }
@@ -248,7 +249,7 @@ class KTCorePlugin extends KTPlugin {
         }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
-            'admin/workflowsv2.php', null);            
+            'admin/workflowsv2.php', null);
 
         // storage
         $this->registerAdminPage('checkout', 'KTCheckoutAdminDispatcher', 'storage',
@@ -281,8 +282,8 @@ class KTCorePlugin extends KTPlugin {
             'admin/manageCleanup.php', null);
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'misc',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
-            'admin/manageViews.php', null);            
-            
+            'admin/manageViews.php', null);
+
         // plugins
 
     }
