@@ -54,7 +54,19 @@ class LoginPageDispatcher extends KTDispatcher {
                 ; // that's ok - we want to login.
             }
             else {
-                exit(redirect(generateControllerLink('dashboard')));
+                // User is already logged in - get the redirect
+                $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+
+                $cookietest = KTUtil::randomString();
+                setcookie("CookieTestCookie", $cookietest, 0);
+
+                $this->redirectTo('checkCookie', array(
+                    'cookieVerify' => $cookietest,
+                    'redirect' => $redirect,
+                ));
+                exit(0);
+                // The old way -> doesn't take the redirect into account
+                //exit(redirect(generateControllerLink('dashboard')));
             }
         }
         return true;
