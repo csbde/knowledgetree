@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,16 +19,16 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
  * Contributor( s): ______________________________________
- */ 
+ */
 
 class Session {
     var $_bNotEmpty = true;
@@ -42,7 +42,7 @@ class Session {
     function create(&$oUser) {
         $iUserId = $oUser->getId();
         global $default;
-        
+
         session_start();
 
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
@@ -54,23 +54,23 @@ class Session {
                 }
             }
         }
-        
+
         if ($oUser->getDisabled()) {
             return PEAR::raiseError(_kt("Your account has been disabled.  Please contact the system administrator for assistance."));
         }
-        
+
         // bind user id to session
         $_SESSION["userID"] = $iUserId;
         $_SESSION["KTErrorMessage"] = array();
-        
+
         // use the PHP generated session id
         $sessionID = session_id();
 
         // retrieve client ip
         $ip = $this->getClientIP();
 
-        $default->log->debug("Session::create() new session for $iUserId, from $ip, sessionID=$sessionID");
-        
+        if (KTLOG_CACHE) $default->log->debug("Session::create() new session for $iUserId, from $ip, sessionID=$sessionID");
+
         // insert session information into db
         $aParams = array(
             'session_id' => $sessionID,
@@ -100,10 +100,10 @@ class Session {
 
         $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($oUser);
         $oProvider->login($oUser);
-        
+
         return $sessionID;
     }
-    
+
     /**
      * Destroys the current session.
      */
@@ -113,7 +113,7 @@ class Session {
         session_start();
         $sSessionID = session_id();
         $iUserId = $_SESSION["userID"];
-        
+
         // remove the session information from the database
 
 		$sTable = KTUtil::getTableName('sessions');
@@ -132,9 +132,9 @@ class Session {
 		unset($_SESSION['userID']);
 		unset($_SESSION['sessionStatus']);
         session_unset();
-        session_destroy();	
+        session_destroy();
     }
-    
+
     /**
      * Removes any stale sessions for the specified userID
      *
@@ -198,7 +198,7 @@ class Session {
 
         // this should be an existing session, so check the db
         $aRows = DBUtil::getResultArray(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));
-				
+
         $numrows = count($aRows);
 
         // FIXME: if there aren't more rows that the max sessions for this user
@@ -209,16 +209,16 @@ class Session {
             return false;
         }
 
-        $default->log->debug("Session::verify found session in db");
+        if (KTLOG_CACHE) $default->log->debug("Session::verify found session in db");
         $aRow = $aRows[0];
 
         $iUserID = $aRow["user_id"];
-		
-        $oKTConfig = KTConfig::getSingleton();	
+
+        $oKTConfig = KTConfig::getSingleton();
         $allowAnon = $oKTConfig->get('session/allowAnonymousLogin', false);
-		
+
         $ANON = -2;
-        if ((!$allowAnon) && ($iUserID == $ANON)) { 
+        if ((!$allowAnon) && ($iUserID == $ANON)) {
             Session::destroy();   // delete the anonymous session - config.ini has changed under this session.
             return PEAR::raiseError(_kt("Anonymous logins are no longer allowed by the system administrator.  Please login."));
         }
@@ -229,7 +229,7 @@ class Session {
         if ($ipTracking && ($ip != trim($aRow["ip"]))) {
             return PEAR::raiseError(_kt("You are coming from a different IP address than the session requires"));
         }
-        
+
         if (empty($_SESSION['userID'])) {
             Session::removeStaleSessions();
 
@@ -263,10 +263,10 @@ class Session {
         }
 
         Session::removeStaleSessions();
-        
+
         return false;
     }
-    
+
     /**
      * Retrieves and returns the IP address of the current user
      */
