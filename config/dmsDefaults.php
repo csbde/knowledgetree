@@ -551,6 +551,8 @@ require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 $KTInit->initConfig();
 $KTInit->setupI18n();
 
+define('KTLOG_CACHE',false);
+
 if ($GLOBALS['kt_test']) {
     $KTInit->initTesting();
 }
