@@ -90,8 +90,156 @@
 	                                    <li><div id="menu_divider"></div></li>
 	                            {/foreach}
 
+	                            {literal}
+	                            <script>
+
+	                            function search()
+	                            {
+									var sc = document.getElementById('searchCriteria');
+	                            	var val = sc.value;
+
+	                            	if (val == "Enter search criteria")
+	                            	{
+	                            		alert('Please enter some search criteria');
+	                            		return;
+	                            	}
+	                            	var sq = document.getElementById('txtQuery');
+
+									var so = document.getElementById('searchOptions');
+
+									if (so.value == 's')
+									{
+	                            		sq.value = '(GeneralText contains "' + val + '")';
+									}
+									else
+									{
+	                            		sq.value = '(Metadata contains "' + val + '")';
+									}
+
+	                            	var frm = document.getElementById('frmQuickSearch');
+	                            	frm.submit();
+
+	                            }
+	                            function processSearchEnter(event)
+	                            {
+									var sc = document.getElementById('searchCriteria');
+									if(event && event.which)
+									{
+										characterCode = event.which;
+									}
+									else
+									{
+										characterCode = event.keyCode;
+									}
+
+									if (characterCode.toString() == '13')
+										search();
+
+	                            	if (sc.value == "Enter search criteria")
+	                            	{
+	                            		sc.value = '';
+	                            	}
+
+									return true;
+	                            }
+	                            function searchGotFocus()
+	                            {
+									var sc = document.getElementById('searchCriteria');
+									if (sc.value == "Enter search criteria")
+	                            	{
+	                            		sc.value = "";
+	                            	}
+	                            }
+	                            function searchLostFocus()
+	                            {
+									var sc = document.getElementById('searchCriteria');
+									if (sc.value == "")
+	                            	{
+	                            		sc.value = "Enter search criteria";
+	                            	}
+	                            }
+
+
+	                            function updateSelect(el, idx, value, name)
+	                            {
+	                            	var elOptNew = new Option(name, value);
+
+	                            	var elOptOld = el.options[idx];
+	                            	try
+	                            	{
+	                            		el.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+	                            	}
+	                            	catch(ex)
+	                            	{
+	                            		el.add(elOptNew, idx); // IE only
+	                            	}
+	                            	el.remove(idx+1);
+	                            }
+
+	                            function searchOptionSelect()
+	                            {
+									var so = document.getElementById('searchOptions');
+									switch(so.value)
+									{
+										case '':
+											break
+										case 's':
+											updateSelect(so, 1, 's', "general *");
+											updateSelect(so, 2, 'm', "metadata");
+											break
+										case 'm':
+											updateSelect(so, 1, 's', "general");
+											updateSelect(so, 2, 'm', "metadata *");
+											break;
+										case 'A':
+											document.location="search2.php?action=guiBuilder";
+											break;
+										case 'Q':
+											document.location="search2.php?action=queryBuilder";
+											break;
+										case 'M':
+											document.location="search2.php?action=metadata";
+											break;
+										case 'S':
+											document.location="search2.php?action=manage";
+											break;
+										case 'T':
+											document.location="search2.php?action=tree";
+											break;
+										default:
+											document.location="search2.php?action=processSaved&fSavedSearchId=" + so.value + "";
+											break;
+									}
+	                            }
+	                            </script>
+								{/literal}
 	                            <!-- user menu -->
 	                            <li class="pref">
+	                            	<div style="position: absolute;">
+	                            	<input id=searchCriteria value="Enter search criteria" style="width:160px; font-size:12px; position:relative; left: -260px; z-index: 11"
+	                            		 onblur="searchLostFocus()"  onkeypress="return processSearchEnter(event)" >
+	                            	<input type=button value=search  style="width:60px; font-size:12px; position:relative; left: -240px;" onclick="search()">
+	                            	<select id=searchOptions style="width:180px; font-size:12px; position:absolute; left: -260px; z-index: 10" onchange="searchOptionSelect()">
+	                            		<option value="s">--- quick search ---
+	                            		<option value="s" selected>* general
+	                            		<option value="m">metadata
+	                            		<option value="s">--- query builders ---
+	                            		<option value="A">Query Builder</option>
+	                            		<option value="M">Metadata Query Builder</option>
+	                            		<option value="Q">Advanced Query Builder</option>
+	                            		<option value="s">--- miscellaneous ---
+	                            		<option value="T">Tree Browser</option>
+	                            		<option value="S">Manage Saved Searches
+	                            		{if count($savedSearches) > 0}
+	                            			<option value="s">--- saved searches ---
+	                            			{foreach item=searchitem from=$savedSearches}
+	                            			<option value="{$searchitem.id}">{$searchitem.name}
+	                            			{/foreach}
+	                            		{/if}
+	                            	</select>
+	                            	<form id=frmQuickSearch method=post action="search2.php?action=process">
+	                            	<input id=txtQuery name=txtQuery type=hidden></form>
+	                            	</div>
 	                                {if ($page->user)}
 	                                    <span class="ktLoggedInUser">{$page->user->getName()}</span>
 	                                {/if}
