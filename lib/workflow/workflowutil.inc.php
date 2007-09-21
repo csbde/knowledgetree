@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -123,11 +123,11 @@ class KTWorkflowUtil {
     /* WILL NOT RESET THE WORKFLOW if changing to the -same- workflow */
     function changeWorkflowOnDocument($oWorkflow, $oDocument) {
         $oDocument =& KTUtil::getObject('Document', $oDocument);
-            
-            
+
+
         // fix for 1049: workflows reset on document move.
         // this was the original purpose of "changeWorkflowOnDocument".
-        if (is_null($oWorkflow)) { 
+        if (is_null($oWorkflow)) {
             if ($oDocument->getWorkflowId() == null) {
                 return true; // no definition.
             }
@@ -135,8 +135,8 @@ class KTWorkflowUtil {
             if ($oDocument->getWorkflowId() == $oWorkflow->getId()) {
                 return true; // bail out, essentially.
             }
-        }    
-    
+        }
+
         return KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
     }
     // {{{ startWorkflowOnDocument
@@ -169,7 +169,7 @@ class KTWorkflowUtil {
             $oDocument->setWorkflowId($iWorkflowId);
             $oDocument->setWorkflowStateId($iStartStateId);
             $sTransactionComments = sprintf(_kt("Workflow \"%s\" started."), $oWorkflow->getHumanName());
-	        
+
         } else {
             $oDocument->setWorkflowId(null);
             $oDocument->setWorkflowStateId(null);
@@ -180,20 +180,20 @@ class KTWorkflowUtil {
         if (PEAR::isError($res)) { return $res; }
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
 
 
         // FIXME does this function as expected?
-		
+
         KTPermissionUtil::updatePermissionLookup($oDocument);
-        
+
         if (isset($iStartStateId)) {
             $oTargetState = KTWorkflowState::get($iStartStateId);
-            KTWorkflowUtil::informUsersForState($oTargetState, 
+            KTWorkflowUtil::informUsersForState($oTargetState,
                 KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, '');
         }
-        
+
         return $res;
     }
     // }}}
@@ -287,7 +287,7 @@ class KTWorkflowUtil {
         }
 
         if(!is_array($aActions)) return;
-        
+
         $aOptions = array('noid' => true);
         foreach ($aActions as $sAction) {
             $res = DBUtil::autoInsert($sTable, array(
@@ -316,7 +316,7 @@ class KTWorkflowUtil {
         }
 
         if(!is_array($aActions)) return;
-        
+
         $aOptions = array('noid' => true);
         foreach ($aActions as $sAction) {
             $res = DBUtil::autoInsert($sTable, array(
@@ -328,7 +328,7 @@ class KTWorkflowUtil {
             }
         }
         return;
-    }      
+    }
 
     // {{{ getEnabledActionsForState
     /**
@@ -405,7 +405,7 @@ class KTWorkflowUtil {
      */
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
-        
+
         if (is_a($oDocument, 'KTDocumentCore')) {
             $oDocument = $oDocument->getId();
         }
@@ -435,7 +435,7 @@ class KTWorkflowUtil {
      * returning null if there is no workflow assigned.
      */
     function getWorkflowStateForDocument ($oDocument, $aOptions = null) {
-     
+
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
 
         if (is_a($oDocument, 'KTDocumentCore')) {
@@ -478,9 +478,9 @@ class KTWorkflowUtil {
         $aTransitions = KTWorkflowUtil::getTransitionsFrom($oState);
         $aEnabledTransitions = array();
         foreach ($aTransitions as $oTransition) {
-            
+
             // keeping this around to make coding the replacements easier.
-            
+
             /*
             $iPermissionId = $oTransition->getGuardPermissionId();
             if ($iPermissionId) {
@@ -500,11 +500,11 @@ class KTWorkflowUtil {
             $iRoleId = $oTransition->getGuardRoleId();
             if ($iRoleId) {
                 $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $iRoleId);
-                
+
                 if ($oRoleAllocation == null) {   // no role allocation, no fulfillment.
                     continue;
                 }
-                
+
                 if (!$oRoleAllocation->hasMember($oUser)) {
                     continue;
                 }
@@ -517,7 +517,7 @@ class KTWorkflowUtil {
                 }
             }
             */
-            
+
             $aGuardTriggers = KTWorkflowUtil::getGuardTriggersForTransition($oTransition);
             if (PEAR::isError($aGuardTriggers)) {
                 return $aGuardTriggers; // error out?
@@ -555,7 +555,7 @@ class KTWorkflowUtil {
             return $oWorkflow;
         }
         $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
-        
+
         // walk the action triggers.
         $aActionTriggers = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
         if (PEAR::isError($aActionTriggers)) {
@@ -586,11 +586,11 @@ class KTWorkflowUtil {
 
         // create the document transaction record
         $sTransactionComments = sprintf(_kt("Workflow state changed from %s to %s"), $sSourceState, $sTargetState);
-        
+
         if ($sComments) {
             $sTransactionComments .= _kt("; Reason given was: ") . $sComments;
         }
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
 
         // walk the action triggers.
@@ -611,13 +611,13 @@ class KTWorkflowUtil {
     // {{{ informUsersForState
     function informUsersForState($oState, $aInformed, $oDocument, $oUser, $sComments) {
         // say no to duplicates.
-        
+
         KTWorkflowNotification::clearNotificationsForDocument($oDocument);
 
         $aUsers = array();
         $aGroups = array();
         $aRoles = array();
-        
+
         foreach (KTUtil::arrayGet($aInformed,'user',array()) as $iUserId) {
             $oU = User::get($iUserId);
             if (PEAR::isError($oU) || ($oU == false)) {
@@ -626,7 +626,7 @@ class KTWorkflowUtil {
                 $aUsers[$oU->getId()] = $oU;
             }
         }
-        
+
         foreach (KTUtil::arrayGet($aInformed,'group',array()) as $iGroupId) {
             $oG = Group::get($iGroupId);
             if (PEAR::isError($oG) || ($oG == false)) {
@@ -635,7 +635,7 @@ class KTWorkflowUtil {
                 $aGroups[$oG->getId()] = $oG;
             }
         }
-        
+
         foreach (KTUtil::arrayGet($aInformed,'role',array()) as $iRoleId) {
             $oR = Role::get($iRoleId);
             if (PEAR::isError($oR) || ($oR == false)) {
@@ -644,9 +644,9 @@ class KTWorkflowUtil {
                 $aRoles[] = $oR;
             }
         }
-        
-        
-        
+
+
+
         // FIXME extract this into a util - I see us using this again and again.
         // start with roles ... roles _only_ ever contain groups.
         foreach ($aRoles as $oRole) {
@@ -662,11 +662,11 @@ class KTWorkflowUtil {
                 $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $oRole->getId());
             }
             if (is_null($oRoleAllocation) || PEAR::isError($oRoleAllocation)) {
-		continue; 
+		continue;
 	    }
 	    $aRoleUsers = $oRoleAllocation->getUsers();
             $aRoleGroups = $oRoleAllocation->getGroups();
-            
+
             foreach ($aRoleUsers as $id => $oU) {
                 $aUsers[$id] = $oU;
             }
@@ -674,27 +674,27 @@ class KTWorkflowUtil {
                 $aGroups[$id] = $oGroup;
             }
         }
-        
-        
-        
+
+
+
         // we now have a (potentially overlapping) set of groups, which may
         // have subgroups.
         //
         // what we need to do _now_ is build a canonical set of groups, and then
         // generate the singular user-base.
-        
+
         $aGroupMembershipSet = GroupUtil::buildGroupArray();
         $aAllIds = array_keys($aGroups);
         foreach ($aGroups as $id => $oGroup) {
             $aAllIds = kt_array_merge($aGroupMembershipSet[$id], $aAllIds);
         }
-        
+
         foreach ($aAllIds as $id) {
             if (!array_key_exists($id, $aGroups)) {
                 $aGroups[$id] = Group::get($id);
             }
         }
-        
+
         // now, merge this (again) into the user-set.
         foreach ($aGroups as $oGroup) {
             $aNewUsers = $oGroup->getMembers();
@@ -705,9 +705,9 @@ class KTWorkflowUtil {
                 }
             }
         }
-        
-        
-        // and done.  
+
+
+        // and done.
         foreach ($aUsers as $oU) {
 		    if (!PEAR::isError($oU)) {
                 KTWorkflowNotification::newNotificationForDocument($oDocument, $oU, $oState, $oUser, $sComments);
@@ -750,7 +750,7 @@ class KTWorkflowUtil {
         return KTPermissionUtil::getAllowedForDescriptor($iDescriptorId);
     }
     // }}}
-    
+
     // retrieves the triggers for a given transition in their WorkflowTrigger form.
     function getTriggersForTransition($oTransition) {
         $oKTWorkflowTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
@@ -766,106 +766,106 @@ class KTWorkflowUtil {
         }
         return $aTriggers;
     }
-    
+
     function getGuardTriggersForTransition($oTransition) {
         $aTriggers = KTWorkflowUtil::getTriggersForTransition($oTransition);
-        if (PEAR::isError($aTriggers)) { 
-            return $aTriggers; 
+        if (PEAR::isError($aTriggers)) {
+            return $aTriggers;
         }
         $aGuards = array();
         foreach ($aTriggers as $oTrigger) {
             $aInfo = $oTrigger->getInfo();
-            if ($aInfo['guard']) { 
+            if ($aInfo['guard']) {
                 $aGuards[] = $oTrigger;
             }
         }
         return $aGuards;
     }
-    
+
     function getActionTriggersForTransition($oTransition) {
         $aTriggers = KTWorkflowUtil::getTriggersForTransition($oTransition);
-        if (PEAR::isError($aTriggers)) { 
-            return $aTriggers; 
+        if (PEAR::isError($aTriggers)) {
+            return $aTriggers;
         }
         $aGuards = array();
         foreach ($aTriggers as $oTrigger) {
             $aInfo = $oTrigger->getInfo();
-            if ($aInfo['action']) { 
+            if ($aInfo['action']) {
                 $aGuards[] = $oTrigger;
             }
         }
         return $aGuards;
     }
-    
+
 
     function replaceState($oState, $oReplacement) {
         $state_id = KTUtil::getId($oState);
         $replacement_id = KTUtil::getId($oReplacement);
-                
+
         // we need to convert:
         //   - documents
         //   - transitions
         // before we do a delete.
-        $doc = KTUtil::getTableName('document_metadata_version');        
+        $doc = KTUtil::getTableName('document_metadata_version');
         $aDocQuery = array(
             "UPDATE $doc SET workflow_state_id = ? WHERE workflow_state_id = ?",
             array($replacement_id, $state_id),
-        ); 
+        );
         $res = DBUtil::runQuery($aDocQuery);
         if (PEAR::isError($res)) { return $res; }
-        
+
         $wf = KTUtil::getTableName('workflow_transitions');
         $aTransitionQuery = array(
             "UPDATE $wf SET target_state_id = ? WHERE workflow_state_id = ?",
             array($replacement_id, $state_id),
-        ); 
-        $res = DBUtil::runQuery($aTransitionQuery);        
+        );
+        $res = DBUtil::runQuery($aTransitionQuery);
         if (PEAR::isError($res)) { return $res; }
-        
+
         $wf = KTUtil::getTableName('workflow_state_transitions');
         $aTransitionQuery = array(
             "DELETE FROM $wf WHERE state_id = ?",
             array($state_id),
-        ); 
-        $res = DBUtil::runQuery($aTransitionQuery);          
+        );
+        $res = DBUtil::runQuery($aTransitionQuery);
         if (PEAR::isError($res)) { return $res; }
-        
+
         Document::clearAllCaches();
-        KTWorkflowTransitions::clearAllCaches();        
+        KTWorkflowTransitions::clearAllCaches();
     }
-}    
+}
 
 class KTWorkflowTriggerRegistry {
     var $triggers;
-    
+
     function KTWorkflowTriggerRegistry() {
         $this->triggers = array();
-    }    
-    
-    // {{{ getSingleton
-    function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTWorkflowTriggerRegistry')) {
-            $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'] = new KTWorkflowTriggerRegistry;
-        }
-        return $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'];
     }
-    // }}}
-    
+
+    static function &getSingleton () {
+		static $singleton=null;
+    	if (is_null($singleton))
+    	{
+    		$singleton = new KTWorkflowTriggerRegistry();
+    	}
+    	return $singleton;
+    }
+
     function registerWorkflowTrigger($sNamespace, $sClassname, $sPath) {
         $this->triggers[$sNamespace] = array('class' => $sClassname, 'path' => $sPath);
     }
-    
+
     function getWorkflowTrigger($sNamespace) {
         $aInfo = KTUtil::arrayGet($this->triggers, $sNamespace, null);
         if (is_null($aInfo)) {
             return PEAR::raiseError(sprintf(_kt("Unable to find workflow trigger: %s"), $sNamespace));
-        }    
-        
+        }
+
         require_once($aInfo['path']);
 
         return new $aInfo['class'];
     }
-    
+
     // get a keyed list of workflow triggers
 
     function listWorkflowTriggers() {
@@ -877,5 +877,5 @@ class KTWorkflowTriggerRegistry {
         // FIXME do we want to order this alphabetically?
         return $triggerlist;
     }
-}    
+}
 
