@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -255,7 +255,7 @@ class GroupUtil {
         }
         list($bCached, $mCached) = $oCache->get($group, $oUser->getId());
         if ($bCached) {
-            $default->log->debug(sprintf("Using group cache for _listGroupIDsForUserExpand %d", $iUserId));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Using group cache for _listGroupIDsForUserExpand %d", $iUserId));
             return $mCached;
         }
         $aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::buildGroupArray());
@@ -340,7 +340,7 @@ class GroupUtil {
                 }
                 $aExpandedGroups[$k] = $v;
             }
-            
+
             $iNum = 0;
             foreach ($aExpandedGroups as $k => $v) {
                 $iNum += count($v);
@@ -349,21 +349,21 @@ class GroupUtil {
         return $aExpandedGroups;
     }
     // }}}
-    
+
     // {{{ getMembershipReason
     function getMembershipReason($oUser, $oGroup) {
         $aGroupArray = GroupUtil::buildGroupArray();
-        
+
         // short circuit
-        
+
         if ($oGroup->hasMember($oUser)) { return sprintf(_kt('%s is a direct member.'), $oUser->getName()); }
-        
-        
+
+
         $aSubgroups = (array) $aGroupArray[$oGroup->getId()];
-        if (empty($aSubgroups)) { 
-            return null; // not a member, no subgroups. 
+        if (empty($aSubgroups)) {
+            return null; // not a member, no subgroups.
         }
-        
+
         $sTable = KTUtil::getTableName('users_groups');
         $sQuery = 'SELECT group_id FROM ' . $sTable . ' WHERE user_id = ? AND group_id IN (' . DBUtil::paramArray($aSubgroups) . ')';
         $aParams = array($oUser->getId());
@@ -375,16 +375,16 @@ class GroupUtil {
         } else if (is_null($res)) {
             return null; // not a member
         } // else {
-        
+
         $oSubgroup = Group::get($res['group_id']);
         if (PEAR::isError($oSubgroup)) { return $oSubgroup; }
-        
+
         return sprintf(_kt('%s is a member of %s'), $oUser->getName(), $oSubgroup->getName()); // could be error, but errors are caught.
-        
+
         // }
     }
     // }}}
-    
+
     function clearGroupCacheForUser($oUser) {
         $oCache =& KTCache::getSingleton();
         if (PEAR::isError($oUser)) { return $oUser; }
