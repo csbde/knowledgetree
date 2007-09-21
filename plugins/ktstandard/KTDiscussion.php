@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -47,7 +47,7 @@ class KTDiscussionPlugin extends KTPlugin {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Document Discussions Plugin');
         return $res;
-    }            
+    }
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
@@ -83,14 +83,14 @@ class KTDiscussionThreadListRenderer {
 
 class KTCommentListRenderer {
     var $bCycle = false;
-    
+
     function render($context, $oComment, $oThread) {
         $this->oComment = $oComment;
         $this->bCycle = !$this->bCycle;
 
         $oTemplate = $context->oValidator->validateTemplate('ktstandard/action/discussion_comment_list_item');
         $oCreator = User::get($oComment->getUserId());
-        
+
         $oTemplate->setData(array(
             'comment' => $oComment,
             'state'   => $oThread->getState(),
@@ -115,7 +115,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 			     DISCUSSION_CLOSED => _kt('Closed'));
         parent::KTDocumentAction($oDocument, $oUser, $oPlugin);
     }
-    
+
 
     function getDisplayName() {
         return _kt('Discussion');
@@ -185,7 +185,10 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
         $oThread->setFirstCommentId($oComment->getId());
         $oThread->setLastCommentId($oComment->getId());
-        
+
+        // NEW SEARCH
+
+        /*
         // add to searchable_text.
         $sTable = KTUtil::getTableName('comment_searchable_text');
         $aSearch = array(
@@ -195,12 +198,12 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         );
         DBUtil::autoInsert($sTable,
             $aSearch,
-            array('noid' => true));
-        
+            array('noid' => true));*/
+
         $res = $oThread->update();
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
-        
+
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('discussion', 'postValidate');
         foreach ($aTriggers as $aTrigger) {
@@ -208,14 +211,14 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             $oTrigger = new $sTrigger;
             $aInfo = array(
                 "document" => $this->oDocument,
-                "comment" => $oComment,                
+                "comment" => $oComment,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
             if (PEAR::isError($ret)) {
                 $this->oValidator->notError($res, $aErrorOptions);
             }
-        }        
+        }
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
@@ -231,7 +234,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         if (PEAR::isError($oThread) || empty($oThread)) {
             return null;
         }
-        
+
         $iCommentId = $oThread->getFirstCommentId();
         $oComment = DiscussionComment::get($iCommentId);
 
@@ -244,9 +247,9 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'name' => $oComment->getSubject(),
         );
         $this->oPage->setBreadcrumbDetails(_kt("viewing comments"));
-        
+
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/discussion_thread');
-        
+
         // Fields for new thread creation
         $replyFields = array();
         $replyFields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
@@ -261,7 +264,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	    $closeFields[] = new KTLookupWidget(_kt("State"), _kt("Select the state to move this discussion into"), "state", "", $this->oPage, true, null, null, $aOptions);
 	    $closeFields[] = new KTTextWidget(_kt("Reason"), _kt("Describe the reason for the state change, or the conclusion reached through discussion"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
         }
-        
+
         // increment views
         $oThread->incrementNumberOfViews();
         $oThread->update();
@@ -273,7 +276,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'thread' => $oThread,
             'commentrenderer' => new KTCommentListRenderer(),
         );
-        
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -317,7 +320,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oThread->incrementNumberOfReplies();
 
         $res = $oThread->update();
-        
+
         // add to searchable_text.
         $sTable = KTUtil::getTableName('comment_searchable_text');
         $aSearch = array(
@@ -328,7 +331,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         DBUtil::autoInsert($sTable,
             $aSearch,
             array('noid' => true));
-        
+
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
 
@@ -346,7 +349,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             if (PEAR::isError($ret)) {
                 $this->oValidator->notError($res, $aErrorOptions);
             }
-        }  
+        }
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
@@ -359,7 +362,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
         );
-        
+
         $iThreadId = KTUtil::arrayGet($_REQUEST, 'fThreadId');
         $oThread = DiscussionThread::get($iThreadId);
         $this->oValidator->notError($oThread, $aErrorOptions);
@@ -370,7 +373,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.workflow');
 	$sRedirectTo = implode('&', $aErrorOptions['redirect_to']);
-        
+
         if (PEAR::isError($oPermission)) {
             $this->errorRedirectTo($sRedirectTo, _kt("Error getting permission"));
 	    exit(0);
@@ -382,13 +385,13 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
 	$iStateId = KTUtil::arrayGet($_REQUEST, 'state');
 	if(!in_array($iStateId, $this->aTransitions[$oThread->getState()])) {
-	    $this->errorRedirectTo($sRedirectTo, _kt("Invalid transition"));	
+	    $this->errorRedirectTo($sRedirectTo, _kt("Invalid transition"));
 	    exit(0);
 	}
-	
+
 	$aErrorOptions['message'] = _kt("No reason provided");
 	$sReason = sanitizeForSQL($this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions));
-	
+
 	if($iStateId > $oThread->getState()) {
 	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';
 	} else {
@@ -401,15 +404,15 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oThread->setState($iStateId);
 	if($iStateId == DISCUSSION_CLOSED) {
 	    $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
-	} else if($iStateId == DISCUSSION_CONCLUSION) {	
+	} else if($iStateId == DISCUSSION_CONCLUSION) {
 	    $oThread->setCloseReason($sReason);
 	}
 
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sReason, $sTransactionNamespace);
+        $oDocumentTransaction = new DocumentTransaction($this->oDocument, $sReason, $sTransactionNamespace);
         $oDocumentTransaction->create();
 
         $res = $oThread->update();
-        
+
         $aErrorOptions['message'] = _kt("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
 
