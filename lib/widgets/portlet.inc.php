@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -34,7 +34,7 @@
  *  Very simple wrapper that establishes the absolutely basic API.
  *
  */
- 
+
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
 
@@ -43,28 +43,28 @@ class KTPortlet {
     var $sTitle;
     var $oPlugin;
     var $bActive = false;
-        
+
     function KTPortlet($title='') {
         $this->sTitle = $title;
     }
 
     function setPlugin(&$oPlugin) {
         global $default;
-        $default->log->debug('portlet regging plugin: ' . $oPlugin->sNamespace);
+        if (KTLOG_CACHE) $default->log->debug('portlet regging plugin: ' . $oPlugin->sNamespace);
         $this->oPlugin =& $oPlugin;
     }
-    
+
     // this should multiplex i18n_title
     function getTitle() { return $this->sTitle; }
-    
+
     function render() {
         return '<p class="ktError">Warning:  Abstract Portlet created.</p>';
     }
 
     function setDispatcher(&$oDispatcher) {
-        $this->oDispatcher =& $oDispatcher; 
+        $this->oDispatcher =& $oDispatcher;
     }
-    
+
     function getActive() {
         return $this->bActive;
     }
@@ -82,32 +82,32 @@ class KTNavPortlet extends KTPortlet {
     function setOldNavItems($aNavLinks) {
 
         $this->navItems = array_map(array(&$this, "_oldNavZip"), $aNavLinks["descriptions"], $aNavLinks["links"]);
-        
+
     }
-    
+
     // legacy support helper
     function _oldNavZip($d, $u) {
         $aZip = array(
-            "label" => $d, 
+            "label" => $d,
             "url" => $u,
         );
         return $aZip;
     }
-    
+
     function render() {
-        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/nav_portlet");
         $aTemplateData = array(
             "context" => $this,
         );
 
-        return $oTemplate->render($aTemplateData);        
+        return $oTemplate->render($aTemplateData);
     }
 }
 
 class KTActionPortlet extends KTPortlet {
     var $actions = array();
-    
+
     var $bActive = true;
 
     // current action is the one we are currently on.
@@ -124,21 +124,21 @@ class KTActionPortlet extends KTPortlet {
             }
         }
         ksort($this->actions);
-        
+
         //echo '<pre>'; print_r($this->actions);
     }
-    
+
     function render() {
         if (empty($this->actions)) {
             return null;
         }
-        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
         $aTemplateData = array(
             "context" => $this,
         );
 
-        return $oTemplate->render($aTemplateData);     
+        return $oTemplate->render($aTemplateData);
     }
 }
 
