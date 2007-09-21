@@ -104,7 +104,7 @@ class KTUtil {
     	return strlen(utf8_decode($str));
 	}  
 
-    function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
+    static function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (!is_array($aArray)) {
             $aArray = (array) $aArray;
         }
@@ -132,7 +132,7 @@ class KTUtil {
      *
      * Return null in case of an empty array.
      */
-    function whereToString($aWhere) {
+    static function whereToString($aWhere) {
         $aStrings = array();
         $aParams = array();
         foreach ($aWhere as $oSomething) {
@@ -143,12 +143,12 @@ class KTUtil {
                 $aNewParams = array();
                 foreach ($oSomething[1] as $oParam) {
                     if (is_array($oParam)) {
-                        $aNewParams = kt_array_merge($aNewParams, $oParam);
+                        $aNewParams = array_merge($aNewParams, $oParam);
                     } else {
                         $aNewParams[] = $oParam;
                     }
                 }
-                $aParams = kt_array_merge($aParams, $aNewParams);
+                $aParams = array_merge($aParams, $aNewParams);
             } else {
                 return PEAR::raiseError(_kt("Weird WhereClause passed"));
             }
@@ -382,7 +382,7 @@ class KTUtil {
      * The one true way to get the correct name for a table whilst
      * respecting the administrator's choice of table naming.
      */
-    function getTableName($sTable) {
+    static function getTableName($sTable) {
         $sDefaultsTable = $sTable . "_table";
         if (isset($GLOBALS['default']->$sDefaultsTable)) {
             return $GLOBALS['default']->$sDefaultsTable;
@@ -422,14 +422,14 @@ class KTUtil {
     // }}}
 
     // {{{ meldOptions
-    function meldOptions($aStartOptions, $aAddOptions) {
+    static function meldOptions($aStartOptions, $aAddOptions) {
         if (!is_array($aStartOptions)) {
             $aStartOptions = array();
         }
         if (!is_array($aAddOptions)) {
             $aAddOptions = array();
         }
-        return kt_array_merge($aStartOptions, $aAddOptions);
+        return array_merge($aStartOptions, $aAddOptions);
     }
     // }}}
 
@@ -512,7 +512,7 @@ class KTUtil {
 
     // now accepts strings OR arrays!
     // {{{ addQueryString
-    function addQueryString($url, $qs) {
+    static function addQueryString($url, $qs) {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
         $oUrl = new Net_URL($url);
 
@@ -560,13 +560,13 @@ class KTUtil {
     // }}}
 
     // {{{ addQueryStringSelf
-    function addQueryStringSelf($qs) {
+    static function addQueryStringSelf($qs) {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);
     }
     // }}}
 
     // {{{ isAbsolutePath
-    function isAbsolutePath($sPath) {
+    static function isAbsolutePath($sPath) {
         if (substr($sPath, 0, 1) == '/') {
             return true;
         }
@@ -650,7 +650,7 @@ class KTUtil {
 	return  implode(' ',$q_set);
     }
 
-    function running_user() {
+    static function running_user() {
         if (substr(PHP_OS, 0, 3) == "WIN") {
             return null;
         }
