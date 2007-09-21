@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -53,12 +53,12 @@ class KTDispatcher {
     var $bTransactionStarted = false;
     var $oValidator = null;
     var $sParentUrl = null; // it is handy for subdispatched items to have an "exit" url, for cancels, etc.
-    
+
     var $aPersistParams = array();
 
     function KTDispatcher() {
-        $this->oValidator =& new KTDispatcherValidation($this);
-        $this->oRedirector =& new KTDispatchStandardRedirector($this);
+        $this->oValidator =new KTDispatcherValidation($this);
+        $this->oRedirector =new KTDispatchStandardRedirector($this);
     }
 
     function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null, $parent_url = null) {
@@ -68,11 +68,11 @@ class KTDispatcher {
         if ($action_prefix) {
             $this->action_prefix = $action_prefix;
         }
-        
+
         if (!is_null($orig_dispatcher)) {
             $this->persistParams($orig_dispatcher->aPersistParams);
-            $this->persistParams(array($orig_dispatcher->event_var));            
-            $core = array('aBreadcrumbs', 
+            $this->persistParams(array($orig_dispatcher->event_var));
+            $core = array('aBreadcrumbs',
                 'bTransactionStarted',
                 'oUser',
                 'session',
@@ -82,10 +82,10 @@ class KTDispatcher {
                 if(isset($orig_dispatcher->$k)) {
                     $this->$k = $orig_dispatcher->$k;
                 }
-            }            
+            }
         }
-        $this->event_var = $event_var;        
-   
+        $this->event_var = $event_var;
+
         return $this->dispatch();
     }
 
@@ -126,14 +126,14 @@ class KTDispatcher {
 
         $ret = $this->$method();
         $this->handleOutput($ret);
-        
+
         if ($this->bTransactionStarted) {
             $this->commitTransaction();
         }
     }
 
     function subDispatch(&$oOrigDispatcher) {
-        $core = array('aBreadcrumbs', 
+        $core = array('aBreadcrumbs',
             'bTransactionStarted',
             'oUser',
             'session',
@@ -185,14 +185,14 @@ class KTDispatcher {
         }
         $this->redirectTo($event, $sQuery);
     }
-    
+
     function errorRedirectToParent($error_message) {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
 
         $_SESSION['KTErrorMessage'][] = $error_message;
-        redirect($this->sParentUrl); 
+        redirect($this->sParentUrl);
         exit(0);
     }
 
@@ -203,14 +203,14 @@ class KTDispatcher {
         if (!empty($info_message)) {
             $_SESSION['KTInfoMessage'][] = $info_message;
         }
-        redirect($this->sParentUrl); 
+        redirect($this->sParentUrl);
         exit(0);
-    }    
+    }
 
     function redirectTo($event, $sQuery = "") {
         // meld persistant options
         $sQuery = $this->meldPersistQuery($sQuery, $event);
-        
+
         $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
@@ -231,14 +231,14 @@ class KTDispatcher {
     function handleOutput($sOutput) {
         print $sOutput;
     }
-    
+
     /* persist the following parameters between requests (via redirect), unless a value is passed in. */
     function persistParams($aParamKeys) {
         $this->aPersistParams = kt_array_merge($this->aPersistParams, $aParamKeys);
     }
-    
-    function meldPersistQuery($sQuery = "", $event = "", $asArray = false) {    
-    
+
+    function meldPersistQuery($sQuery = "", $event = "", $asArray = false) {
+
         if (is_array($sQuery)) {
             $aQuery = $sQuery;
         } else {
@@ -248,11 +248,11 @@ class KTDispatcher {
             } else {
                 $aQuery = array();
             }
-        }                    
+        }
         // now try to grab each persisted entry
-        // don't overwrite the existing values, if added. 
+        // don't overwrite the existing values, if added.
 
-        if (is_array($this->aPersistParams)) {        
+        if (is_array($this->aPersistParams)) {
             foreach ($this->aPersistParams as $k) {
                 if (!array_key_exists($k, $aQuery)) {
                     $v = KTUtil::arrayGet($_REQUEST, $k);
@@ -260,10 +260,10 @@ class KTDispatcher {
                         $aQuery[$k] = $v;
                     }
                 }
-                // handle the case where action is passed in already. 
-            }        
+                // handle the case where action is passed in already.
+            }
         }
-        // if it isn't already set        
+        // if it isn't already set
         if ((!array_key_exists($this->event_var, $aQuery)) && (!empty($event))) {
             $aQuery[$this->event_var] = urlencode($event);
         }
@@ -291,26 +291,26 @@ class KTStandardDispatcher extends KTDispatcher {
     var $oPage = false;
     var $sHelpPage = null;
     var $bJSONMode = false;
-    
+
     function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
-            $GLOBALS['main'] =& new KTPage;
+            $GLOBALS['main'] =new KTPage;
         }
         $this->oPage =& $GLOBALS['main'];
         parent::KTDispatcher();
     }
 
     function permissionDenied () {
-        // handle anonymous specially. 
+        // handle anonymous specially.
         if ($this->oUser->getId() == -2) {
             redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
-        }    
-    
+        }
+
 	global $default;
-	     
+
 	$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
 	$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
-		
+
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
 	$this->oPage->hideSection();
@@ -324,11 +324,11 @@ class KTStandardDispatcher extends KTDispatcher {
 	if ($oKTConfig->get('allowAnonymousLogin', false)) {
 	    // anonymous logins are now allowed.
 	    // the anonymous user is -1.
-	    // 
+	    //
 	    // we short-circuit the login mechanisms, setup the session, and go.
-			
+
 	    $oUser =& User::get(-2);
-	    if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) { 
+	    if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) {
 		; // do nothing - the database integrity would break if we log the user in now.
 	    } else {
 		$session = new Session();
@@ -339,7 +339,7 @@ class KTStandardDispatcher extends KTDispatcher {
                 }
             }
         }
-    
+
         $sErrorMessage = "";
         if (PEAR::isError($this->sessionStatus)) {
             $sErrorMessage = $this->sessionStatus->getMessage();
@@ -348,8 +348,8 @@ class KTStandardDispatcher extends KTDispatcher {
 	// check if we're in JSON mode - in which case, throw error
 	// but JSON mode only gets set later, so gonna have to check action
 	if(KTUtil::arrayGet($_REQUEST, 'action', '') == 'json') { //$this->bJSONMode) {
-	    $this->handleOutputJSON(array('error'=>true, 
-					  'type'=>'kt.not_logged_in', 
+	    $this->handleOutputJSON(array('error'=>true,
+					  'type'=>'kt.not_logged_in',
 					  'alert'=>true,
 					  'message'=>_kt('Your session has expired, please log in again.')));
 	    exit(0);
@@ -410,8 +410,8 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function addInfoMessage($sMessage) { $_SESSION['KTInfoMessage'][] = $sMessage; }
-	
-    function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }	
+
+    function addErrorMessage($sMessage) { $_SESSION['KTErrorMessage'][] = $sMessage; }
 
     function errorPage($errorMessage, $oException = null) {
         if ($this->bTransactionStarted) {
@@ -442,7 +442,7 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->setPageContents($data);
         $this->oPage->setUser($this->oUser);
 	$this->oPage->setHelp($this->sHelpPage);
-		
+
 	// handle errors that were set using KTErrorMessage.
 	$errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
 	if (!empty($errors)) {
@@ -454,7 +454,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
 	// handle notices that were set using KTInfoMessage.
 	$info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
-	
+
 	if (!empty($info)) {
             foreach ($info as $sInfo) {
 		$this->oPage->addInfo($sInfo);
@@ -480,17 +480,17 @@ class KTStandardDispatcher extends KTDispatcher {
 	print $oJSON->encode($data);
 	exit(0);
     }
-	
+
     function do_json() {
 	$this->bJSONMode = true;
-	$this->redispatch('json_action', 'json');	
+	$this->redispatch('json_action', 'json');
     }
 
     function json_main() {
 	return array('type'=>'error', 'value'=>'Not implemented');
     }
 
-	
+
 
 }
 
