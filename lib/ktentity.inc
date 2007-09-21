@@ -77,7 +77,7 @@ class KTEntity {
             global $default;
             foreach ($aSuffixes as $sSuffix) {
                 $group = sprintf("%s/%s%s", $sClassName, $group_base, $sSuffix);
-                $default->log->debug("Clearing cached group: $group");
+                if (KTLOG_CACHE) $default->log->debug("Clearing cached group: $group");
                 $oCache->clear($group);
             }
         }
@@ -117,7 +117,7 @@ class KTEntity {
 
     function newCopy() {
         $sClass = get_class($this);
-        $oObject =& new $sClass;
+        $oObject =new $sClass;
         foreach (array_keys($this->_aFieldToSelect) as $k) {
             $oObject->$k = $this->$k;
         }
@@ -211,7 +211,7 @@ class KTEntity {
         $group = sprintf("%s/%s", $sClassName , 'id');
         list($bCached, $mCached) = $oCache->get($group, $iId);
         if ($bCached && EVIL_CACHE_GRIND) {
-            $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
+            if (KTLOG_CACHE) $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
 
             $table = $this->_table();
             $select = $this->_getSqlSelection();
@@ -248,11 +248,11 @@ class KTEntity {
             $res = $mCached;
         } else if ($bCached) {
             global $default;
-            $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
             $res = $mCached;
             /* */
         } else {
-            $default->log->debug(sprintf("No object cache for class %s, id %d", $sClassName, $iId));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("No object cache for class %s, id %d", $sClassName, $iId));
             $table = $this->_table();
             $select = $this->_getSqlSelection();
             $sQuery = "SELECT $select FROM $table WHERE id = ?";
@@ -468,7 +468,7 @@ class KTEntityUtil {
             } else {
                 $vals = serialize($aWhereClause);
             }
-            $default->log->debug(sprintf("Trying list cache for class %s, %s: %s", $sClassName, $cache, $vals));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Trying list cache for class %s, %s: %s", $sClassName, $cache, $vals));
 
             $oCache =& KTCache::getSingleton();
             $suffix = '';
@@ -483,7 +483,7 @@ class KTEntityUtil {
 
         if ($cache && !$bCached) {
             global $default;
-            $default->log->debug(sprintf("No list cache for class %s, %s: %s", $sClassName, $cache, $vals));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("No list cache for class %s, %s: %s", $sClassName, $cache, $vals));
         }
         if ($bCached && EVIL_CACHE_GRIND) {
             if (!empty($fullselect)) {
@@ -533,7 +533,7 @@ class KTEntityUtil {
                 $oCache->alertFailure($group, array('Stored IDS != Cache IDS'));
             }
         } else if ($bCached) {
-            $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
             $aIDs = $mCached;
         /* */
         } else {
@@ -579,7 +579,7 @@ class KTEntityUtil {
         }
 
         if ($cache && !$bCached) {
-            $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
             $oCache->set($group, $vals, $aIDs);
         }
 
@@ -636,7 +636,7 @@ class KTEntityUtil {
     }
 
     function &loadFromArray ($sClassName, $aArray, $aOptions = null) {
-        $oObject =& new $ClassName;
+        $oObject =new $ClassName;
         $ret = $oObject->loadFromArray($aArray);
         if (PEAR::isError($ret)) {
             return $ret;
@@ -647,7 +647,7 @@ class KTEntityUtil {
     function &loadFromArrayMulti($sClassName, $aMultiArray, $aOptions = null) {
         $aRet = array();
         foreach ($aMultiArray as $aArray) {
-            $oObject =& new $sClassName;
+            $oObject =new $sClassName;
             $ret = $oObject->loadFromArray($aArray);
             if (PEAR::isError($ret)) {
                 return $ret;
@@ -657,14 +657,14 @@ class KTEntityUtil {
         return $aRet;
     }
 
-    function &get($sClassName, $iId) {
+    static function &get($sClassName, $iId) {
         if (!is_numeric($iId)) {
             return PEAR::raiseError(_kt('Non-numeric identifier'));
         }
         $iId = (int)$iId;
         /* */
         $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
-        $oObject =& new $sProxyClass($iId);
+        $oObject =new $sProxyClass($iId);
         $res = $oObject->getId();
         if (PEAR::isError($res)) {
             return $res;
@@ -674,7 +674,7 @@ class KTEntityUtil {
         // XXX Object cache currently causes hard-to-trace inconsistencies in data.
         // $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
         // if ($oObject) { return $oObject; }
-        $oObject =& new $sClassName;
+        $oObject =new $sClassName;
         $res = $oObject->load($iId);
         if (PEAR::isError($res)) {
             return $res;
@@ -685,7 +685,7 @@ class KTEntityUtil {
         /* */
     }
 
-    function _getProxyClass($sClassName) {
+    static function _getProxyClass($sClassName) {
         $sProxyClassName = sprintf("%sProxy", $sClassName);
         if (!class_exists($sProxyClassName)) {
             KTEntityUtil::_proxyCreate($sClassName, $sProxyClassName);
@@ -693,7 +693,7 @@ class KTEntityUtil {
         return $sProxyClassName;
     }
 
-    function _proxyCreate($sClassName, $sProxyClassName) {
+    static function _proxyCreate($sClassName, $sProxyClassName) {
         /*
         $code = KTEntityUtil::_proxyBuild($sClassName, $sProxyClassName);
         return eval($code);
@@ -746,7 +746,7 @@ class KTEntityUtil {
             $oObject =& $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId];
             return $oObject;
         }
-        $oObject =& new %s;
+        $oObject =new %s;
         $res = $oObject->load($this->iId);
         if (PEAR::isError($res)) {
             return $res;
@@ -796,7 +796,7 @@ class KTEntityUtil {
         return $gen;
     }
 
-    function _getBy_equals($sField, $aValue) {
+    static function _getBy_equals($sField, $aValue) {
         $aParam = $aValue['value'];
         if (!is_array($aParam)) {
             return array("$sField = ?", array($aParam));
@@ -805,7 +805,7 @@ class KTEntityUtil {
         return array("$sField IN ($sParam)", array($aParam));
     }
 
-    function _getBy_nequals($sField, $aValue) {
+    static function _getBy_nequals($sField, $aValue) {
         $aParam = $aValue['value'];
         if (!is_array($aParam)) {
             return array("$sField \!= ?", array($aParam));
@@ -814,22 +814,22 @@ class KTEntityUtil {
         return array("$sField NOT IN ($sParam)", array($aParam));
     }
 
-    function _getBy_after($sField, $aValue) {
+    static function _getBy_after($sField, $aValue) {
         $aParam = $aValue['value'];
         return array("$sField > ?", array($aParam));
     }
 
-    function _getBy_before($sField, $aValue) {
+    static function _getBy_before($sField, $aValue) {
         $aParam = $aValue['value'];
         return array("$sField < ?", array($aParam));
     }
 
-    function _getBy_between($sField, $aValue) {
+    static function _getBy_between($sField, $aValue) {
         $aParam = $aValue['value'];
         return array("$sField BETWEEN ? AND ?", $aParam);
     }
 
-    function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
+    static function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
         $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
         if ($bMulti) {
             $bNoneOk = true;
