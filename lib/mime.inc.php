@@ -42,39 +42,42 @@ class KTMime {
      * @return int mime type primary key if found, else default mime type primary key (text/plain)
      */
     function getMimeTypeID($sMimeType, $sFileName) {
-        $sTable = KTUtil::getTableName('mimetypes');
-        $bOfficeDocument = false;
+    	global $default;
+    	$sTable = KTUtil::getTableName('mimetypes');
+    	$lookupExtension = false;
 
-        // application/msword seems to be set by all Office documents
-        if ($sMimeType == "application/msword") {
-            $bOfficeDocument = true;
-        }
+    	if (in_array($sMimeType, array('application/x-zip','application/octet-stream', 'application/msword', 'text/plain')))
+    	{
+    		$lookupExtension = true;
+    	}
 
-        if ($bOfficeDocument || (!$sMimeType)) {
-          // check by file extension
-          $sExtension = KTMime::stripAllButExtension($sFileName);
-          $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE LOWER(filetypes) = ?", array($sExtension)));
-          if (PEAR::isError($res)) {
-              ; // pass ?!
-          }
-          if (count($res) != 0) {
-              return $res[0]['id'];
-          }
-        }
+    	if ($lookupExtension || empty($sMimeType))
+    	{
+    		// check by file extension
+    		$sExtension = KTMime::stripAllButExtension($sFileName);
+    		$res = DBUtil::getOneResultKey(array("SELECT id FROM " . $sTable . " WHERE LOWER(filetypes) = ?", array($sExtension)),'id');
+    		if (PEAR::isError($res) || empty($res))
+    		{
+    			; // pass ?!
+    		}
+    		else {
+    			return $res;
+    		}
+    	}
 
-        // get the mime type id
-        if (isset($sMimeType)) {
-            $res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE mimetypes = ?", array($sMimeType)));
-            if (PEAR::isError($res)) {
-                ; // pass ?!
-            }
-            if (count($res) != 0) {
-                return $res[0]['id'];
-            }
-        }
+    	// get the mime type id
+    	if (isset($sMimeType)) {
+    		$res = DBUtil::getResultArray(array("SELECT id FROM " . $sTable . " WHERE mimetypes = ?", array($sMimeType)));
+    		if (PEAR::isError($res)) {
+    			; // pass ?!
+    		}
+    		if (count($res) != 0) {
+    			return $res[0]['id'];
+    		}
+    	}
 
-        //otherwise return the default mime type
-        return KTMime::getDefaultMimeTypeID();
+    	//otherwise return the default mime type
+    	return KTMime::getDefaultMimeTypeID();
     }
 
     /**
