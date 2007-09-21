@@ -295,7 +295,7 @@ class KTInit {
         }
         if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
             require_once(KT_LIB_DIR . '/dispatcher.inc.php');
-            $oDispatcher =& new KTErrorDispatcher($oError);
+            $oDispatcher =new KTErrorDispatcher($oError);
             $oDispatcher->dispatch();
         } else {
             print $oError->toString() . "\n";
@@ -305,7 +305,7 @@ class KTInit {
     // }}}
 
     // {{{ handlePHPError()
-    function handlePHPError($code, $message, $file, $line) {
+    static function handlePHPError($code, $message, $file, $line) {
         global $default;
 
         /* Map the PHP error to a Log priority. */
@@ -446,11 +446,27 @@ class KTInit {
             $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
             $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
 
+            $oKTConfig->setdefaultns('search', 'searchBasePath', '${fileSystemRoot}/search2');
+            $oKTConfig->setdefaultns('search', 'fieldsPath', '${searchBasePath}/search/fields');
+            $oKTConfig->setdefaultns('search', 'resultsPerPage', 25);
+            $oKTConfig->setdefaultns('search', 'dateFormat', 'Y-m-d');
+
+            $oKTConfig->setdefaultns('indexer', 'coreClass', 'PHPLuceneIndexer');
+            $oKTConfig->setdefaultns('indexer', 'batchDocuments', 20);
+            $oKTConfig->setdefaultns('indexer', 'indexingBasePath', '${searchBasePath}/indexing');
+            $oKTConfig->setdefaultns('indexer', 'luceneDirectory', '${varDirectory}/indexes');
+            $oKTConfig->setdefaultns('indexer', 'extractorPath', '${indexingBasePath}/extractors');
+            $oKTConfig->setdefaultns('indexer', 'extractorHookPath', '${indexingBasePath}/extractorHooks');
+
+            $oKTConfig->setdefaultns('openoffice', 'host', 'localhost');
+            $oKTConfig->setdefaultns('openoffice', 'port', 8100);
+
             $oKTConfig->setdefaultns('webservice', 'uploadDirectory', '${varDirectory}/uploads');
             $oKTConfig->setdefaultns('webservice', 'downloadUrl', '${rootUrl}/ktwebservice/download.php');
             $oKTConfig->setdefaultns('webservice', 'uploadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
+            $oKTConfig->setdefaultns('webservice', 'debug', false);
 
             $oKTConfig->setdefaultns('clientToolPolicies', 'explorerMetadataCapture', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'officeMetadataCapture', true);
@@ -605,6 +621,6 @@ if ($checkup !== true) {
 }
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
-$GLOBALS['main'] =& new KTPage();
+$GLOBALS['main'] =new KTPage();
 
 ?>
