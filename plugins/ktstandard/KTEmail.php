@@ -40,7 +40,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 /**
  * Sends emails to the selected groups
  */
-function sendGroupEmails($aGroupIDs, $oDocument, $sComment = '', $bAttachDocument, &$aEmailErrors) {
+function sendGroupEmails($aGroupIDs, &$aUserEmails, &$aEmailErrors) {
 	global $default;
 
     // loop through groups
@@ -62,20 +62,22 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = '', $bAttachDocumen
 		    }
 
 		    // FIXME: this should send one email with multiple To: users
+		    // The FIX (26-09-2007): create an array of users to email
 		    for ($j=0; $j<count($aUsers); $j++) {
 	    		$default->log->info('sendingEmail to group-member ' . $aUsers[$j]->getName() . ' with email ' . $aUsers[$j]->getEmail());
 			    // the user has an email address and has email notification enabled
 				if (strlen($aUsers[$j]->getEmail())>0 && $aUsers[$j]->getEmailNotification()) {
 					//if the to address is valid, send the mail
 					if (validateEmailAddress($aUsers[$j]->getEmail())) {
-						sendEmail($aUsers[$j]->getEmail(), $aUsers[$j]->getName(), $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument, $aEmailErrors);
+					   // use the email address as the index to ensure the user is only sent 1 email
+					   $aUserEmails[$aUsers[$j]->getEmail()] = $aUsers[$j]->getName();
 					} else {
 						$default->log->error('email validation failed for ' . $aUsers[$j]->getEmail());
 					}
 				} else {
 				$default->log->info('either ' . $aUsers[$j]->getUserName() . ' has no email address, or notification is not enabled');
 				}
-		    }
+		    }		    
     	} else {
     		$default->log->info('filtered group id=' . $aGroupIDs[$i]);
     	}
@@ -85,7 +87,7 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = '', $bAttachDocumen
 /**
  * Sends emails to the selected users
  */
-function sendUserEmails($aUserIDs, $oDocument, $sComment = '', $bAttachDocument, &$aEmailErrors) {
+function sendUserEmails($aUserIDs, &$aUserEmails, &$aEmailErrors) {
 	global $default;
 
     // loop through users
@@ -97,7 +99,8 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = '', $bAttachDocument,
 			if (strlen($oDestUser->getEmail())>0 && $oDestUser->getEmailNotification()) {
 				//if the to address is valid, send the mail
 				if (validateEmailAddress($oDestUser->getEmail())) {
-					sendEmail($oDestUser->getEmail(), $oDestUser->getName(), $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument, $aEmailErrors);
+				    // use the email address as the index to ensure the user is only sent 1 email
+				    $aUserEmails[$oDestUser->getEmail()] = $oDestUser->getName();
 				}
 			} else {
 				$default->log->info('either ' . $oDestUser->getUserName() . ' has no email address, or notification is not enabled');
@@ -111,14 +114,15 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = '', $bAttachDocument,
 /**
  * Sends emails to the manually entered email addresses
  */
-function sendManualEmails($aEmailAddresses, $oDocument, $sComment = '', $bAttachDocument, &$aEmailErrors) {
+function sendManualEmails($aEmailAddresses, &$aUserEmails, &$aEmailErrors) {
 	global $default;
 
     // loop through users
     foreach ($aEmailAddresses as $sEmailAddress) {
         $default->log->info('sendingEmail to address ' .  $sEmailAddress);
         if (validateEmailAddress($sEmailAddress)) {
-            sendEmail($sEmailAddress, $sEmailAddress, $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument, $aEmailErrors);
+            // use the email address as the index to ensure the user is only sent 1 email
+            $aUserEmails[$sEmailAddress] = $sEmailAddress;
         }
     }
 }
@@ -126,16 +130,18 @@ function sendManualEmails($aEmailAddresses, $oDocument, $sComment = '', $bAttach
 /**
  * Constructs the email message text and sends the message
  */
-function sendEmail($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, $bAttachDocument = false, &$aEmailErrors) {
+function sendEmail($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, $bAttachDocument = false, &$aEmailErrors) {
     if ($bAttachDocument !== true) {
-        return sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, $aEmailErrors);
+        return sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, $aEmailErrors);
     } else {
-        return sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, $aEmailErrors);
+        return sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, $aEmailErrors);
     }
 }
 
-function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
+function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
     global $default;
+    // Get the email list as a string for the logs
+    $sDestEmails = implode(',', $aDestEmailAddress);
     $oSendingUser = User::get($_SESSION['userID']);
 
     $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
@@ -161,7 +167,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     $sDocumentPath = $oStorage->temporaryFile($oDocument);
 
     $sDocumentFileName = $oDocument->getFileName();
-    $res = $oEmail->sendAttachment($sDestEmailAddress, $sTitle, $sMessage, $sDocumentPath, $sDocumentFileName);
+    $res = $oEmail->sendAttachment($aDestEmailAddress, $sTitle, $sMessage, $sDocumentPath, $sDocumentFileName);
 
     // Tell the storage we don't need the temporary file anymore.
     $oStorage->freeTemporaryFile($sDocumentPath);
@@ -171,15 +177,15 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
         $aEmailErrors[] = $res->getMessage();
         return $res;
     } else if ($res === false) {
-        $default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");
-        $aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
-        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmailAddress));
+        $default->log->error("Error sending email ($sTitle) to $sDestEmails");
+        $aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmails";
+        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmails));
     } else {
-        $default->log->info("Send email ($sTitle) to $sDestEmailAddress");
+        $default->log->info("Send email ($sTitle) to $sDestEmails");
     }
 
     // emailed link transaction
-	$oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document copy emailed to %s"), $sDestEmailAddress), 'ktcore.transactions.email_attachement');
+	$oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document copy emailed to %s"), $sDestEmails), 'ktcore.transactions.email_attachement');
     if ($oDocumentTransaction->create()) {
         $default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
     } else {
@@ -187,14 +193,18 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     }
 }
 
-function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
+function sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
     global $default;
+    // Get the email list as a string for the logs
+    $sDestEmails = implode(',', $aDestEmailAddress);
     $oSendingUser = User::get($_SESSION['userID']);
 
 	$sMessage = '<font face="arial" size="2">';
+    /*
     if ($sDestUserName) {
         $sMessage .= $sDestUserName . ',<br><br>';
     }
+    */
 	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
 	$sMessage .= " \n";
 	$sMessage .= _kt('Click on the hyperlink below to view it.');
@@ -217,24 +227,24 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
     }
     $oEmail = new Email($sEmail, $sEmailFrom);
 
-    $res = $oEmail->send($sDestEmailAddress, $sTitle, $sMessage);
+    $res = $oEmail->send($aDestEmailAddress, $sTitle, $sMessage);
     if (PEAR::isError($res)) {
         $default->log->error($res->getMessage());
         $aEmailErrors[] = $res->getMessage();
         return $res;
     } else if ($res === false) {
-		$default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");
-		$aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
-        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmailAddress));
+		$default->log->error("Error sending email ($sTitle) to $sDestEmails");
+		$aEmailErrors[] = "Error sending email ($sTitle) to $sDestEmails";
+        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $sTitle, $sDestEmails));
     } else {
-		$default->log->info("Send email ($sTitle) to $sDestEmailAddress");
+		$default->log->info("Send email ($sTitle) to $sDestEmails");
 	}
 
 	// emailed link transaction
 	// need a document to do this.
 	$oDocument =& Document::get($iDocumentID);
 
-    $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document link emailed to %s"), $sDestEmailAddress), 'ktcore.transactions.email_link');
+    $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document link emailed to %s"), $sDestEmails), 'ktcore.transactions.email_link');
 
     if ($oDocumentTransaction->create()) {
 		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
@@ -435,14 +445,25 @@ class KTDocumentEmailAction extends KTDocumentAction {
         }
 
         $aEmailErrors = array();
+        $aUserEmails = array();
 
         // send group emails
-        sendGroupEmails($aGroupIDs, $this->oDocument, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
+        sendGroupEmails($aGroupIDs, $aUserEmails, $aEmailErrors);
         // send user emails
-        sendUserEmails($aUserIDs, $this->oDocument, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
+        sendUserEmails($aUserIDs, $aUserEmails, $aEmailErrors);
         // send manual email addresses
-        sendManualEmails($aEmailAddresses, $this->oDocument, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
-
+        sendManualEmails($aEmailAddresses, $aUserEmails, $aEmailErrors);
+        
+        // get list of email addresses and send
+        if(!empty($aUserEmails)){
+            // email addresses are in the keys -> extract the keys
+            $aListEmails = array_keys($aUserEmails);
+            
+            $iDocumentID = $this->oDocument->getID();
+            $sDocumentName = $this->oDocument->getName();
+            sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, &$aEmailErrors);
+        }
+                
         if (count($aEmailErrors)) {
             $_SESSION['KTErrorMessage'][] = join('<br />\n', $aEmailErrors);
         }
