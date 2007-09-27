@@ -1,5 +1,5 @@
 --
--- $Id:$
+-- $Id$
 --    
 -- The contents of this file are subject to the KnowledgeTree Public
 -- License Version 1.1.2 ("License"); You may not use this file except in
@@ -2210,7 +2210,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=145 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=146 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_user_history`
