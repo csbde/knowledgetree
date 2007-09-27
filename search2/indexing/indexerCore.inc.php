@@ -42,6 +42,7 @@ class MatchResult
 			default:
 				throw new Exception("Unknown property '$property' to get on MatchResult");
 		}
+		return true; // should not be reached
 	}
 
 	private function loadDocumentInfo()
@@ -142,6 +143,7 @@ class MatchResult
 			default:
 				throw new Exception("Unknown property '$property' to get on MatchResult");
 		}
+		return ''; // Should not be reached
 	}
 
 	protected function __set($property, $value)
@@ -543,6 +545,7 @@ abstract class Indexer
 
     	Indexer::clearoutDeleted();
 
+    	$date = date('Y-m-d H:j:s');
     	// identify the indexers that must run
         // mysql specific limit!
         $sql = "SELECT
@@ -554,7 +557,7 @@ abstract class Indexer
 					INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
  				WHERE
- 					iff.processdate IS NULL AND dmv.status_id=1
+ 					(iff.processdate IS NULL or iff.processdate < cast(cast('$date' as date) -1 as date)) AND dmv.status_id=1
 				ORDER BY indexdate
  					LIMIT $max";
         $result = DBUtil::getResultArray($sql);
@@ -578,7 +581,7 @@ abstract class Indexer
 		}
 
 		// mark the documents as being processed
-		$date = date('Y-m-d H:j:s');
+
         $ids=implode(',',$ids);
         $sql = "UPDATE index_files SET processdate='$date' WHERE document_id in ($ids)";
         DBUtil::runQuery($sql);
@@ -640,6 +643,7 @@ abstract class Indexer
 				}
 
         		$document = Document::get($docId);
+        		$version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
         		$sourceFile = $storageManager->temporaryFile($document);
 
         		if (empty($sourceFile) || !is_file($sourceFile))
@@ -655,7 +659,7 @@ abstract class Indexer
         			$result = @copy($sourceFile, $intermediate);
         			if ($result === false)
         			{
-        				$default->log->error("Could not create intermediate file from document $docid");
+        				$default->log->error("Could not create intermediate file from document $docId");
         				// problem. lets try again later. probably permission related. log the issue.
         				continue;
         			}
@@ -685,7 +689,7 @@ abstract class Indexer
 					$title = $document->getName();
         			if ($indexDiscussion)
         			{
-        				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title);
+        				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
 
         				if (!$indexStatus) $default->log->error("Problem indexing document $docId");
 
@@ -699,7 +703,7 @@ abstract class Indexer
         				}
 						else
 						{
-							$indexStatus = $this->indexDocument($docId, $targetFile, $title);
+							$indexStatus = $this->indexDocument($docId, $targetFile, $title, $version);
 
 							if (!$indexStatus) $default->log->error("Problem indexing document $docId");
 
@@ -744,7 +748,7 @@ abstract class Indexer
      * @param int $docId
      * @param string $textFile
      */
-    protected abstract function indexDocument($docId, $textFile, $title='');
+    protected abstract function indexDocument($docId, $textFile, $title, $version);
 
     /**
      * Index a discussion. The base class must override this function.
@@ -848,18 +852,17 @@ abstract class Indexer
 				require_once($this->extractorPath . '/' . $file);
 				$class = substr($file, 0, -8);
 
-				if (class_exists($class))
+				if (!class_exists($class))
 				{
+					// if the class does not exist, we can't do anything.
 					continue;
 				}
 
 				$extractor = new $class;
-				if (!($class instanceof DocumentExtractor))
+				if ($extractor instanceof DocumentExtractor)
 				{
-					continue;
+					$extractor->registerMimeTypes();
 				}
-
-				$extractor->registerMimeTypes();
 			}
         }
         closedir($dir);
@@ -871,9 +874,9 @@ abstract class Indexer
      * @param int $docId
      * @param string $textFile
      */
-    protected function indexDocumentAndDiscussion($docId, $textFile, $title='')
+    protected function indexDocumentAndDiscussion($docId, $textFile, $title, $version)
     {
-    	$this->indexDocument($docId, $textFile, $title);
+    	$this->indexDocument($docId, $textFile, $title, $version);
     	$this->indexDiscussion($docId);
     }
 
