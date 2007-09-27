@@ -60,8 +60,8 @@ class KTPluginResourceRegistry {
 
 class KTPluginUtil {
     static function loadPlugins () {
-        $sPluginCache = KT_DIR . '/var/plugin-cache';
-        if (file_exists($sPluginCache)) {
+
+        if (session_is_registered('__KT_PLUGIN_CACHE')) {
             require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
             require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
             require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
@@ -76,7 +76,7 @@ class KTPluginUtil {
             require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
             require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
             require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
-            $GLOBALS['_KT_PLUGIN'] = unserialize(file_get_contents($sPluginCache));
+            $GLOBALS['_KT_PLUGIN'] = $_SESSION['__KT_PLUGIN_CACHE'];
             $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPlugins = array();
             return;
         }
@@ -121,7 +121,7 @@ class KTPluginUtil {
                 $oPlugin->load();
             }
         }
-        // file_put_contents($sPluginCache, serialize($GLOBALS['_KT_PLUGIN']));
+        $_SESSION['__KT_PLUGIN_CACHE'] = $GLOBALS['_KT_PLUGIN'];
     }
 
     function registerPlugins () {
@@ -164,8 +164,7 @@ class KTPluginUtil {
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
 
-        $sPluginCache = KT_DIR . '/var/plugin-cache';
-        @unlink($sPluginCache);
+        session_unset('__KT_PLUGIN_CACHE');
     }
 
     function _deleteSmartyFiles() {
