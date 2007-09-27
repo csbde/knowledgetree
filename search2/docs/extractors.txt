@@ -1,6 +1,8 @@
 SEARCH2 - HOWTO WRITE AN EXTRACTOR
 ==================================
 
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
+
 All extractors are located in the search2/indexing/extractors folder.
 
 Naming Convention

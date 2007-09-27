@@ -1,7 +1,7 @@
 SEARCH2 User Guide
 ==================
 
-TODO: put this on the wiki.
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
 
 The new search engine provides for more complicated search expressions than were possible in the past.
 

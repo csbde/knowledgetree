@@ -1,7 +1,7 @@
 SEARCH2 ARCHITECTURE
 ====================
 
-TODO: put this on the wiki.
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
 
 Introduction
 ------------
