@@ -856,38 +856,46 @@ class TextQueryBuilder implements QueryBuilder
 	{
 		$offset=stripos($this->text, $word);
 
-		if ($offset == false)
+		if ($offset === false)
 		{
 			return array(false, false);
 		}
 
-		$text = substr($this->text, 0 , $offset);
-
-		$lastsentence = strrpos($text, '.');
-		if (!$lastsentence) $lastsentence=0;
-
-		if ($offset - $lastsentence  >  $maxlen)
+		if ($offset == 0)
 		{
-			$lastsentence = $offset - $maxlen;
+			$startOffset = 0;
 		}
-
-		$text = substr($this->text, $lastsentence, $offset - $lastsentence);
-
-		$wordoffset= strlen($text)-1;
-		$words = $maxwords;
-		while ($words > 0)
+		else
 		{
-			$text = substr($text, 0, $wordoffset);
-			$foundoffset = strrpos($text, ' ');
-			if ($foundoffset === false)
+			$text = substr($this->text, 0 , $offset);
+
+			$lastsentence = strrpos($text, '.');
+			if ($lastsentence === false) $lastsentence=0;
+
+			if ($offset - $lastsentence  >  $maxlen)
 			{
-				break;
+				$lastsentence = $offset - $maxlen;
 			}
-			$wordoffset = $foundoffset;
-			$words--;
+
+			$text = substr($this->text, $lastsentence, $offset - $lastsentence);
+
+			$wordoffset= strlen($text)-1;
+			$words = $maxwords;
+			while ($words > 0)
+			{
+				$text = substr($text, 0, $wordoffset);
+				$foundoffset = strrpos($text, ' ');
+				if ($foundoffset === false)
+				{
+					break;
+				}
+				$wordoffset = $foundoffset;
+				$words--;
+			}
+			$startOffset = $lastsentence + $wordoffset;
 		}
 
-		$startOffset = $lastsentence + $wordoffset;
+
 
 		$nextsentence = strpos($this->text, '.', $offset);
 
