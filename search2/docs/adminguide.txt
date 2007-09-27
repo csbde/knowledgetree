@@ -1,7 +1,7 @@
 SEARCH2 Administrator Guide
 ===========================
 
-TODO: put this on the wiki.
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
 
 Configuration
 -------------
@@ -45,6 +45,12 @@ Migration
 
 Migrating to the new server requires that the content of the full text tables are extracted and inserted into the Lucene indexes.
 This is done using the search2/indexing/bin/migrate.php script. (this feature can be heavy - care should be taken when implementing)
+
+Registering new extractors
+--------------------------
+
+If a new extractor has been added to the search2/indexing/extractors folder, the search2/indexing/bin/registerTypes.php script must be run to associate them with
+the correct mime types. Note that old associations will not be overwritten.
 
 Search Results Ranking
 ----------------------
