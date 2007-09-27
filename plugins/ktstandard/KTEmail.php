@@ -77,7 +77,7 @@ function sendGroupEmails($aGroupIDs, &$aUserEmails, &$aEmailErrors) {
 				} else {
 				$default->log->info('either ' . $aUsers[$j]->getUserName() . ' has no email address, or notification is not enabled');
 				}
-		    }		    
+		    }
     	} else {
     		$default->log->info('filtered group id=' . $aGroupIDs[$i]);
     	}
@@ -453,17 +453,17 @@ class KTDocumentEmailAction extends KTDocumentAction {
         sendUserEmails($aUserIDs, $aUserEmails, $aEmailErrors);
         // send manual email addresses
         sendManualEmails($aEmailAddresses, $aUserEmails, $aEmailErrors);
-        
+
         // get list of email addresses and send
         if(!empty($aUserEmails)){
             // email addresses are in the keys -> extract the keys
             $aListEmails = array_keys($aUserEmails);
-            
+
             $iDocumentID = $this->oDocument->getID();
             $sDocumentName = $this->oDocument->getName();
-            sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, &$aEmailErrors);
+            sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
         }
-                
+
         if (count($aEmailErrors)) {
             $_SESSION['KTErrorMessage'][] = join('<br />\n', $aEmailErrors);
         }
