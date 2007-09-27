@@ -30,7 +30,7 @@ class PHPLuceneIndexer extends Indexer
 	{
 		$config =& KTConfig::getSingleton();
 		$indexPath = $config->get('indexer/luceneDirectory');
-		$lucene = new Zend_Search_Lucene($indexPath, true);
+		new Zend_Search_Lucene($indexPath, true);
 	}
 
 
@@ -41,13 +41,14 @@ class PHPLuceneIndexer extends Indexer
 	 * @param string $content
 	 * @param string $discussion
 	 */
-	private function addDocument($docid, $content, $discussion, $title='')
+	private function addDocument($docid, $content, $discussion, $title, $version)
 	{
 		$doc = new Zend_Search_Lucene_Document();
 		$doc->addField(Zend_Search_Lucene_Field::Text('DocumentID', PHPLuceneIndexer::longToString($docid)));
 		$doc->addField(Zend_Search_Lucene_Field::Text('Content', $content, 'UTF-8'));
 		$doc->addField(Zend_Search_Lucene_Field::Text('Discussion', $discussion, 'UTF-8'));
 		$doc->addField(Zend_Search_Lucene_Field::Text('Title', $title, 'UTF-8'));
+		$doc->addField(Zend_Search_Lucene_Field::Text('Version', $version, 'UTF-8'));
 		$this->lucene->addDocument($doc);
 	}
 
@@ -58,7 +59,7 @@ class PHPLuceneIndexer extends Indexer
 	 * @param string $textfile
 	 * @return boolean
 	 */
-    protected function indexDocument($docid, $textfile, $title='')
+    protected function indexDocument($docid, $textfile, $title, $version)
     {
     	global $default;
 
@@ -68,9 +69,9 @@ class PHPLuceneIndexer extends Indexer
     		return false;
     	}
 
-    	list($content, $discussion) = $this->deleteDocument($docid);
+    	list($content, $discussion, $title2, $version2) = $this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), $discussion, $title);
+    	$this->addDocument($docid, file_get_contents($textfile), $discussion, $title, $version);
 
 		return true;
     }
@@ -82,7 +83,7 @@ class PHPLuceneIndexer extends Indexer
      * @param string $textfile
      * @return boolean
      */
-    protected function indexDocumentAndDiscussion($docid, $textfile, $title='')
+    protected function indexDocumentAndDiscussion($docid, $textfile, $title, $version)
     {
 		global $default;
 
@@ -94,7 +95,7 @@ class PHPLuceneIndexer extends Indexer
 
     	$this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), Indexer::getDiscussionText($docid), $title);
+    	$this->addDocument($docid, file_get_contents($textfile), Indexer::getDiscussionText($docid), $title, $version);
 
     	return true;
     }
@@ -107,9 +108,9 @@ class PHPLuceneIndexer extends Indexer
      */
     protected function indexDiscussion($docid)
     {
-		list($content, $discussion, $title) = $this->deleteDocument($docid);
+		list($content, $discussion, $title, $version) = $this->deleteDocument($docid);
 
-		$this->addDocument($docid, $content, Indexer::getDiscussionText($docid), $title);
+		$this->addDocument($docid, $content, Indexer::getDiscussionText($docid), $title, $version);
 
 		return true;
     }
@@ -142,11 +143,11 @@ class PHPLuceneIndexer extends Indexer
     		$content = $hit->Content;
     		$discussion = $hit->Discussion;
     		$title = $hit->Title;
-    		$title='';
+    		$version = $hit->Version;
 
     		$this->lucene->delete($hit);
     	}
-    	return array($content, $discussion, $title);
+    	return array($content, $discussion, $title, $version);
     }
 
     /**
