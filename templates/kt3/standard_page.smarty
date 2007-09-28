@@ -91,21 +91,23 @@
 	                            {/foreach}
 
 	                            {literal}
-	                            <script>
+	                            <script language="javascript">
 
 	                            function search()
 	                            {
 									var sc = document.getElementById('searchCriteria');
 	                            	var val = sc.value;
 
-	                            	if (val == "Enter search criteria")
+	                            	if (val == "{/literal}{i18n}Enter search criteria{/i18n}{literal}")
 	                            	{
-	                            		alert('Please enter some search criteria');
+	                            		alert('{/literal}{i18n}Please enter some search criteria{/i18n}{literal}');
 	                            		return;
 	                            	}
 	                            	var sq = document.getElementById('txtQuery');
 
 									var so = document.getElementById('searchOptions');
+
+									val = val.replace(/\"/g, "'");
 
 									if (so.value == 's')
 									{
@@ -116,9 +118,10 @@
 	                            		sq.value = '(Metadata contains "' + val + '")';
 									}
 
-	                            	var frm = document.getElementById('frmQuickSearch');
+									alert(sq.value);
+									return;
+									var frm = document.getElementById('frmQuickSearch');
 	                            	frm.submit();
-
 	                            }
 	                            function processSearchEnter(event)
 	                            {
@@ -135,7 +138,7 @@
 									if (characterCode.toString() == '13')
 										search();
 
-	                            	if (sc.value == "Enter search criteria")
+	                            	if (sc.value == "{/literal}{i18n}Enter search criteria{/i18n}{literal}")
 	                            	{
 	                            		sc.value = '';
 	                            	}
@@ -145,7 +148,7 @@
 	                            function searchGotFocus()
 	                            {
 									var sc = document.getElementById('searchCriteria');
-									if (sc.value == "Enter search criteria")
+									if (sc.value == "{/literal}{i18n}Enter search criteria{/i18n}{literal}")
 	                            	{
 	                            		sc.value = "";
 	                            	}
@@ -155,7 +158,7 @@
 									var sc = document.getElementById('searchCriteria');
 									if (sc.value == "")
 	                            	{
-	                            		sc.value = "Enter search criteria";
+	                            		sc.value = "{/literal}{i18n}Enter search criteria{/i18n}{literal}";
 	                            	}
 	                            }
 
@@ -194,18 +197,6 @@
 										case 'A':
 											document.location="search2.php?action=guiBuilder";
 											break;
-										case 'Q':
-											document.location="search2.php?action=queryBuilder";
-											break;
-										case 'M':
-											document.location="search2.php?action=metadata";
-											break;
-										case 'S':
-											document.location="search2.php?action=manage";
-											break;
-										case 'T':
-											document.location="search2.php?action=tree";
-											break;
 										default:
 											document.location="search2.php?action=processSaved&fSavedSearchId=" + so.value + "";
 											break;
@@ -216,20 +207,14 @@
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                            	<div style="position: absolute;">
-	                            	<input id=searchCriteria value="Enter search criteria" style="width:160px; font-size:12px; position:relative; left: -260px; z-index: 11"
-	                            		 onblur="searchLostFocus()"  onkeypress="return processSearchEnter(event)" >
-	                            	<input type=button value=search  style="width:60px; font-size:12px; position:relative; left: -240px;" onclick="search()">
-	                            	<select id=searchOptions style="width:180px; font-size:12px; position:absolute; left: -260px; z-index: 10" onchange="searchOptionSelect()">
+	                            	<input id=searchCriteria value="Enter search criteria" style="width:129px; font-size:12px; position:relative; top: -2px; left: -180px; z-index: 11"
+	                            		onfocus="searchGotFocus()" onblur="searchLostFocus()"  onkeypress="return processSearchEnter(event)" >
+	                            	<img onclick="search()" src="resources/tango-icons/system-search.png" border="0" style="position: relative; left: -183px; top: 3px;  z-index: 11" />
+	                            	<select id=searchOptions style="width:170px; font-size:12px; position:absolute; left: -180px; z-index: 10" onchange="searchOptionSelect()">
 	                            		<option value="s">--- quick search ---
-	                            		<option value="s" selected>* general
+	                            		<option value="s" selected>* content and metadata
 	                            		<option value="m">metadata
-	                            		<option value="s">--- query builders ---
-	                            		<option value="A">Query Builder</option>
-	                            		<option value="M">Metadata Query Builder</option>
-	                            		<option value="Q">Advanced Query Builder</option>
-	                            		<option value="s">--- miscellaneous ---
-	                            		<option value="T">Tree Browser</option>
-	                            		<option value="S">Manage Saved Searches
+	                            		<option value="A">Advanced Search
 	                            		{if count($savedSearches) > 0}
 	                            			<option value="s">--- saved searches ---
 	                            			{foreach item=searchitem from=$savedSearches}
