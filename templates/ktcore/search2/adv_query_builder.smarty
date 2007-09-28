@@ -558,6 +558,8 @@ function addWorkflowStateField(groupid)
 
 	fid = addField(groupid, 'Workflow State', 'WorkflowState', 'STRINGMATCH');
 	$('field' + groupid + '_' + fid + 'start').value = statename;
+
+	$('groupop' + groupid).selectedIndex = 0;
 }
 
 
@@ -766,20 +768,29 @@ function butSearchClick()
 	<legend>{i18n}Metadata Query{/i18n}</legend>
 
 
-	{i18n}Return items which match{/i18n} <select id="allop">
-								<option value="AND">{i18n}all{/i18n}
-								<option value="OR" SELECTED>{i18n}any{/i18n}
-							 </select>   {i18n}of the criteria groups specified.{/i18n}
+{capture assign=options}
+<select id="allop">
+<option value="AND">{i18n}all{/i18n}
+<option value="OR" SELECTED>{i18n}any{/i18n}
+</select>
+{/capture}
+
+
+{i18n arg_options=$options}Return items which match #options# of the criteria groups specified.{/i18n}
 
 <div id="groupwrapping">
 <div id="groupwrapper0">
 	<fieldset>
     	<legend>{i18n}Criteria Group{/i18n}</legend>
 
-        {i18n}Return items which match{/i18n} <select id="groupop0">
-									<option value="AND">{i18n}all{/i18n}
-									<option value="OR" SELECTED>{i18n}any{/i18n}
-								 </select> {i18n}of the criteria specified below.{/i18n}
+    	{capture assign=options}
+    		<select id="groupop0">
+				<option value="AND">{i18n}all{/i18n}
+				<option value="OR" SELECTED>{i18n}any{/i18n}
+			</select>
+    	{/capture}
+
+        {i18n arg_options=$options}Return items which match #options# of the criteria specified below.{/i18n}
 		<br>
 
 		<div id="criteria0">
