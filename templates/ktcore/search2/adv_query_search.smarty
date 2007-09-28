@@ -1,13 +1,8 @@
 <h2>{i18n}Advanced Query Builder{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}
-The advanced query search allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.
+<p class="descriptiveText">
+{i18n}The advanced query search allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.{/i18n}
 <P>
-
-
-{/i18n}</p>
-
-
 <div>
 <table>
 <tr>
@@ -32,7 +27,7 @@ var gotSearchParseStatus = function callBack(o)
 			parseSuccess = true;
 			if (actionAfterParse == 'none')
 			{
-				alert('The expression parsed successfully.');
+				alert('{/literal}{i18n}The expression parsed successfully.{/i18n}{literal}');
 			}
 			else if (actionAfterParse == 'search')
 			{
@@ -49,18 +44,18 @@ var gotSearchParseStatus = function callBack(o)
 			}
 			else if (actionAfterParse == 'saveCompleted')
 			{
-				alert('The search has been saved successfully.');
+				alert('{/literal}{i18n}The search has been saved successfully.{/i18n}{literal}');
 			}
 		}
 		else
 		{
 			if (actionAfterParse == 'none' || actionAfterParse == 'save')
 			{
-				alert('There is a problem with the expression. \n\n' + resp.message );
+				alert('{/literal}{i18n}There is a problem with the expression.{/i18n}{literal}\n\n' + resp.message );
 			}
 			else  if (actionAfterParse == 'saveCompleted')
 			{
-				alert('There is a problem saving the expression. \n\n' + resp.message );
+				alert('{/literal}{i18n}There is a problem saving the expression.{/i18n}{literal}\n\n' + resp.message );
 			}
 			parseSuccess = false;
 		}
@@ -68,7 +63,7 @@ var gotSearchParseStatus = function callBack(o)
 }
 var gotNoStatus = function callBack(o)
 {
-	alert('There is a problem communicating with the server.' +  o.responseText);
+	alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
 }
 
 var searchCallback =
@@ -80,7 +75,7 @@ function startParsing()
 {
 	if (!parseSuccess)
 	{
-		alert('There has been a parsing problem. Please check the search expression.');
+		alert('{/literal}{i18n}There has been a parsing problem. Please check the search expression.{/i18n}{literal}');
 		return;
 	}
 	var txtQuery = document.getElementById('txtAdvQuery');
@@ -150,7 +145,7 @@ expr ::= field BETWEEN value AND value<br/>
 expr ::= field DOES [ NOT ] CONTAIN value<br/>
 expr ::= field IS [ NOT ] LIKE value<br/>
 
-value ::= "search text here"
+value ::= "{i18n}search text here{/i18n}"
 
 </fieldset>
 <p class="descriptiveText">
@@ -185,9 +180,6 @@ sq.value += word + ' ';
 </fieldset>
 </p>
 
-
-<p class="descriptiveText">{i18n}{/i18n}</p>
-<p class="descriptiveText">{i18n}{/i18n}</p>
 </td>
 </tr>
 </table>
