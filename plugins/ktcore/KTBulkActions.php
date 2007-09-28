@@ -442,7 +442,7 @@ class KTBulkArchiveAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Document')) {
+        if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
                 return PEAR::raiseError(_kt('Document cannot be archived'));
         }
         return parent::check_entity($oEntity);
@@ -480,17 +480,73 @@ class KTBulkArchiveAction extends KTBulkAction {
 
         	$document = $oEntity;
 
-		$document->setStatusID(ARCHIVED);
-        $res = $document->update();
-        if (($res === false) || PEAR::isError($res)) {
-           DBUtil::rollback();
-           return false;
-        }
-
-        $oDocumentTransaction = & new DocumentTransaction($document, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
-        $oDocumentTransaction->create();
-
-        DBUtil::commit();
+            $document->setStatusID(ARCHIVED);
+            $res = $document->update();
+            if (($res === false) || PEAR::isError($res)) {
+               DBUtil::rollback();
+               return false;
+            }
+    
+            $oDocumentTransaction = & new DocumentTransaction($document, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
+            $oDocumentTransaction->create();
+    
+            DBUtil::commit();
+            return true;
+        }else if(is_a($oEntity, 'Folder')) {
+        	DBUtil::startTransaction();
+            
+            $aDocuments = array();
+            $aChildFolders = array();
+            $oFolder = $oEntity;
+            
+            // Get folder id
+            $sFolderId = $oFolder->getID();
+            
+            // Get documents in folder
+            $sDocuments = $oFolder->getDocumentIDs($sFolderId);
+            $aDocuments = explode(',', $sDocuments);
+            
+            // Get all the folders within the folder
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aChildFolders = $this->oFolder->getList($sWhereClause);
+                        
+            // Loop through folders and get documents
+            if(!empty($aChildFolders)){
+                foreach($aChildFolders as $oChild){
+                    $sChildId = $oChild->getID();
+                    $sChildDocs = $oChild->getDocumentIDs($sChildId);
+                    if (PEAR::isError($res)) {
+                       DBUtil::rollback();
+                       return false;
+                    }
+                        
+                    if(!empty($sChildDocs)){
+                        $aChildDocs = explode(',', $sChildDocs);
+                        $aDocuments = array_merge($aDocuments, $aChildDocs);
+                    }
+                }
+            }
+            
+            // Archive all documents
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocumentId){
+                    $oDocument = Document::get($sDocumentId);
+                    
+                    $oDocument->setStatusID(ARCHIVED);
+                    $res = $oDocument->update();
+                    if (($res === false) || PEAR::isError($res)) {
+                       DBUtil::rollback();
+                       return false;
+                    }
+                    
+                    $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
+                    $oDocumentTransaction->create();
+                }
+            }
+            DBUtil::commit();
             return true;
         }
     }
@@ -508,7 +564,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
 
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Document')) {
+        if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
                 return PEAR::raiseError(_kt('Document cannot be exported'));
         }
         return parent::check_entity($oEntity);
@@ -584,17 +640,17 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     }
 
     function perform_action($oEntity) {
-        if(is_a($oEntity, 'Document')) {
-
-		$aReplace = array(
+        $aReplace = array(
             "[" => "[[]",
             " " => "[ ]",
             "*" => "[*]",
             "?" => "[?]",
         );
-
+    
         $aReplaceKeys = array_keys($aReplace);
         $aReplaceValues = array_values($aReplace);
+            
+        if(is_a($oEntity, 'Document')) {
 
 			$oDocument = $oEntity;
 
@@ -622,6 +678,79 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             $this->aPaths[] = $sPath;
 
 
+        }else if(is_a($oEntity, 'Folder')) {
+            $aDocuments = array();
+            $oFolder = $oEntity;
+            $sFolderId = $oFolder->getId();
+            $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
+            
+            if(!empty($sFolderDocs)){
+                $aDocuments = explode(',', $sFolderDocs);
+            }
+                
+            // Get all the folders within the current folder
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aFolderList = $this->oFolder->getList($sWhereClause);
+            
+            // Export the folder structure to ensure the export of empty directories
+            foreach($aFolderList as $k => $oFolderItem){
+                // Get documents for each folder
+                $sFolderItemId = $oFolderItem->getID();
+                $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
+                        
+                if(!empty($sFolderItemDocs)){
+                    $aFolderDocs = explode(',', $sFolderItemDocs);
+                    $aDocuments = array_merge($aDocuments, $aFolderDocs);
+                }
+                
+                $sFolderPath = $oFolderItem->getFullPath().'/'.$oFolderItem->getName().'/';
+                $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sFolderPath))));
+                $newDir = $this->sTmpPath;
+                $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sFolderPath, true))));
+                foreach (split('/', $sFullPath) as $dirPart) {
+                    $newDir = sprintf("%s/%s", $newDir, $dirPart);
+                    if (!file_exists($newDir)) {
+                        mkdir($newDir, 0700);
+                    }
+                }
+                $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s", $sFolderPath))));
+                $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
+                $sPath = $this->_convertEncoding($sPath, true);
+                $this->aPaths[] = $sPath;
+            }
+            
+            // Add all documents to the export
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocumentId){
+                    $oDocument = Document::get($sDocumentId);
+                    
+                    if ($this->bNoisy) {
+                        $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
+                        $oDocumentTransaction->create();
+                    }
+        
+                    $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $oDocument->getFullPath()))));
+                    $newDir = $this->sTmpPath;
+                    $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
+                    foreach (split('/', $sFullPath) as $dirPart) {
+                        $newDir = sprintf("%s/%s", $newDir, $dirPart);
+                        if (!file_exists($newDir)) {
+                            mkdir($newDir, 0700);
+                        }
+                    }
+                    $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->oStorage->temporaryFile($oDocument))));
+                    $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
+                    $sFilename = $this->_convertEncoding($sFilename, true);
+                    copy($sOrigFile, $sFilename);
+                    $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
+                    $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
+                    $sPath = $this->_convertEncoding($sPath, true);
+                    $this->aPaths[] = $sPath;
+                }
+            }                    
         }
         return true;
     }
