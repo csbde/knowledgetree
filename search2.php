@@ -7,6 +7,7 @@ require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+require_once(KT_LIB_DIR . "/actions/bulkaction.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
 
 
