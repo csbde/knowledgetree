@@ -118,8 +118,6 @@
 	                            		sq.value = '(Metadata contains "' + val + '")';
 									}
 
-									alert(sq.value);
-									return;
 									var frm = document.getElementById('frmQuickSearch');
 	                            	frm.submit();
 	                            }
@@ -207,9 +205,9 @@
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                            	<div style="position: absolute;">
-	                            	<input id=searchCriteria value="Enter search criteria" style="width:129px; font-size:12px; position:relative; top: -2px; left: -180px; z-index: 11"
+	                            	<input id=searchCriteria value="{i18n}Enter search criteria{/i18n}" style="width:129px; font-size:12px; position:relative; top: -2px; left: -180px; z-index: 11"
 	                            		onfocus="searchGotFocus()" onblur="searchLostFocus()"  onkeypress="return processSearchEnter(event)" >
-	                            	<img onclick="search()" src="resources/tango-icons/system-search.png" border="0" style="position: relative; left: -183px; top: 3px;  z-index: 11" />
+	                            	<img onclick="search()" src="resources/tango-icons/system-search.png" border="0" style="position: relative; left: -183px; top: 4px;  z-index: 11" />
 	                            	<select id=searchOptions style="width:170px; font-size:12px; position:absolute; left: -180px; z-index: 10" onchange="searchOptionSelect()">
 	                            		<option value="s">--- quick search ---
 	                            		<option value="s" selected>* content and metadata
