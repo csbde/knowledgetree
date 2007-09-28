@@ -487,12 +487,20 @@ class KTFolderUtil {
         $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
         unset($aRow['id']);
         $aRow['parent_id'] = $oDestFolder->getId();
+        $aRow['parent_folder_ids'] = sprintf('%s,%s', $oDestFolder->getParentFolderIDs(), $oDestFolder->getId());
+        $aRow['full_path'] = sprintf('%s/%s', $oDestFolder->getFullPath(), $oDestFolder->getName());
+        
         $id = DBUtil::autoInsert($sTable, $aRow);
         if (PEAR::isError($id)) {
             DBUtil::rollback();
             return $id;
         }
-        $aFolderMap[$oSrcFolder->getId()] = $id;
+        $sSrcFolderId = $oSrcFolder->getId();
+        $aFolderMap[$sSrcFolderId]['parent_id'] = $id;
+        $aFolderMap[$sSrcFolderId]['parent_folder_ids'] = $aRow['parent_folder_ids'];
+        $aFolderMap[$sSrcFolderId]['full_path'] = $aRow['full_path'];
+        $aFolderMap[$sSrcFolderId]['name'] = $aRow['name'];
+        
         $oNewBaseFolder = Folder::get($id);
         $res = $oStorage->createFolder($oNewBaseFolder);
         if (PEAR::isError($res)) {
@@ -509,9 +517,11 @@ class KTFolderUtil {
             $aParams = array($iFolderId);
             $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
             unset($aRow['id']);
-
             // since we are nested, we will have solved the parent first.
-            $aRow['parent_id'] = $aFolderMap[$aRow['parent_id']];
+            $sPrevParentId = $aRow['parent_id'];
+            $aRow['parent_id'] = $aFolderMap[$aRow['parent_id']]['parent_id'];
+            $aRow['parent_folder_ids'] = sprintf('%s,%s', $aFolderMap[$sPrevParentId]['parent_folder_ids'], $aRow['parent_id']);
+            $aRow['full_path'] = sprintf('%s/%s', $aFolderMap[$sPrevParentId]['full_path'], $aFolderMap[$sPrevParentId]['name']);
 
             $id = DBUtil::autoInsert($sTable, $aRow);
             if (PEAR::isError($id)) {
@@ -519,7 +529,10 @@ class KTFolderUtil {
                 DBUtil::rollback();
                 return $id;
             }
-            $aFolderMap[$iFolderId] = $id;
+            $aFolderMap[$iFolderId]['parent_id'] = $id;
+            $aFolderMap[$iFolderId]['parent_folder_ids'] = $aRow['parent_folder_ids'];
+            $aFolderMap[$iFolderId]['full_path'] = $aRow['full_path'];
+            $aFolderMap[$iFolderId]['name'] = $aRow['name'];
 
             $oNewFolder = Folder::get($id);
             $res = $oStorage->createFolder($oNewFolder);
@@ -533,13 +546,10 @@ class KTFolderUtil {
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
             $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
-
-
-        // var_dump($aFolderMap);
-
+        
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
-            $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]);
+            $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]['parent_id']);
             //            var_dump($oDocument->getFolderID());
             $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
             if (PEAR::isError($res) || ($res === false)) {
