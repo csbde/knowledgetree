@@ -78,8 +78,8 @@ function createUserList(groupid, fid)
 	var html = "<table><tr><td width=\"140\">";
 
 	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</SELECT>"
 
 	html += "<td>"
@@ -101,8 +101,8 @@ function createDocTypes(groupid, fid)
 	var html = "<table><tr><td width=\"140\">";
 
 	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</SELECT>"
 
 	html += "<td>"
@@ -124,8 +124,8 @@ function createMimeTypes(groupid, fid)
 	var html = "<table><tr><td width=\"140\">";
 
 	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</SELECT>"
 
 	html += "<td>"
@@ -181,11 +181,11 @@ function createRange(groupid, fid, type)
 	switch(type)
 	{
 		case 'DATE':
-			html += "<option value=\"\>=\">after";
-			html += "<option value=\"between\">between";
-			html += "<option value=\"<=\">before";
-			html += "<option value=\"is\">on";
-			html += "<option value=\"is not\">not on";
+			html += "<option value=\"\>=\">{/literal}{i81n}after{/i81n}{literal}";
+			html += "<option value=\"between\">{/literal}{i81n}between{/i81n}{literal}";
+			html += "<option value=\"<=\">{/literal}{i81n}before{/i81n}{literal}";
+			html += "<option value=\"is\">{/literal}{i81n}on{/i81n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i81n}not on{/i81n}{literal}";
 			break;
 		default:
 			html += "<option value=\"is\">=";
@@ -194,7 +194,7 @@ function createRange(groupid, fid, type)
 			html += "<option value=\"\>=\">\>=";
 			html += "<option value=\"\<\">\<";
 			html += "<option value=\"\<=\">\<=";
-			html += "<option value=\"between\">between";
+			html += "<option value=\"between\">{/literal}{i81n}between{/i81n}{literal}";
 			break;
 	}
 	html += "</SELECT>";
@@ -316,10 +316,10 @@ function createFilesize(groupid, fid)
 	html += "<td valign=top width=\"50px\"><div id=\"field"+ groupid + '_' + fid +"input\"></div>";
 	html += "<td>";
 	html += "<SELECT  id=\"field" + groupid + "_" + fid + "factor\" onchange=\"onFilesizeChange( " + groupid + "," + fid + ")\">";
-	html += "<option>bytes";
-	html += "<option>kilobytes";
-	html += "<option>megabytes";
-	html += "<option>gigabytes";
+	html += "<option>{/literal}{i81n}bytes{/i81n}{literal}";
+	html += "<option>{/literal}{i81n}kilobytes{/i81n}{literal}";
+	html += "<option>{/literal}{i81n}megabytes{/i81n}{literal}";
+	html += "<option>{/literal}{i81n}gigabytes{/i81n}{literal}";
 	html += "</SELECT>";
 	html += "<input style=\"display: none\" value=\"1\" id=\"field" + groupid + "_" + fid + "start\">";
 	html += "<td width=\"100%\">&nbsp;";
@@ -333,17 +333,17 @@ function createDateDiff(groupid, fid)
 	var html = "<table><tr><td width=\"140\"";
 
 	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</SELECT>"
 
 
 	html += "<td valign=top width=\"50px\"><div id=\"field"+ groupid + '_' + fid +"input\"></div>";
 	html += "<td>";
 	html += "<SELECT  id=\"field" + groupid + "_" + fid + "period\" onchange=\"onDateDiffChange( " + groupid + "," + fid + ")\">";
-	html += "<option>days";
-	html += "<option>months";
-	html += "<option>years";
+	html += "<option>{/literal}{i81n}days{/i81n}{literal}";
+	html += "<option>{/literal}{i81n}months{/i81n}{literal}";
+	html += "<option>{/literal}{i81n}years{/i81n}{literal}";
 	html += "</SELECT>";
 	html += "<td>ago"
 	html += "<input style=\"display: none\" value=\"1\" id=\"field" + groupid + "_" + fid + "start\">";
@@ -358,8 +358,8 @@ function createSelect(groupid, fid, options)
 	var html = "<table><tr><td width=\"140\">";
 
 	html += "<select id=\"field"+ groupid + "_" + fid +"op\" style=\"width: 140px\">";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</select>&nbsp;&nbsp;";
 
 	html += "<td valign=top>";
@@ -384,22 +384,22 @@ function createText(groupid, fid, type)
 	{
 		case 'STRINGMATCH':
 			readonly = 'readonly';
-			html += "<option value=\"is\">is";
-			html += "<option value=\"is not\">is not";
+			html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 			break;
 		case 'STRING':
-			html += "<option value=\"is\">is";
-			html += "<option value=\"is not\">is not";
-			html += "<option value=\"contains\">contains";
-			html += "<option value=\"does not contain\">does not contain";
-			html += "<option value=\"is like\">like";
-			html += "<option value=\"is not like\">not like";
-			html += "<option value=\"starts with\">starts with";
-			html += "<option value=\"ends with\">ends with";
+			html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
+			html += "<option value=\"contains\">{/literal}{i81n}contains{/i81n}{literal}";
+			html += "<option value=\"does not contain\">{/literal}{i81n}does not contain{/i81n}{literal}";
+			html += "<option value=\"is like\">{/literal}{i81n}like{/i81n}{literal}";
+			html += "<option value=\"is not like\">{/literal}{i81n}not like{/i81n}{literal}";
+			html += "<option value=\"starts with\">{/literal}{i81n}starts with{/i81n}{literal}";
+			html += "<option value=\"ends with\">{/literal}{i81n}ends with{/i81n}{literal}";
 			break;
 		case 'FULLTEXT':
-			html += "<option value=\"contains\">contains";
-			html += "<option value=\"does not contain\">does not contain";
+			html += "<option value=\"contains\">{/literal}{i81n}contains{/i81n}{literal}";
+			html += "<option value=\"does not contain\">{/literal}{i81n}does not contain{/i81n}{literal}";
 			break;
 	}
 
@@ -416,12 +416,12 @@ function createText(groupid, fid, type)
 function createBool(groupid, fid)
 {
 	var html = "<select style=\"width: 140px\" id=\"field"+ groupid + "_" + fid +"op\"\>";
-	html += "<option value=\"is\">is";
-	html += "<option value=\"is not\">is not";
+	html += "<option value=\"is\">{/literal}{i81n}is{/i81n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i81n}is not{/i81n}{literal}";
 	html += "</select>&nbsp;&nbsp;";
 	html += "<select id=\"field"+ groupid + "_" + fid +"start\"\>";
-	html += "<option value=\"true\">True";
-	html += "<option value=\"false\">False";
+	html += "<option value=\"true\">{/literal}{i81n}True{/i81n}{literal}";
+	html += "<option value=\"false\">{/literal}{i81n}False{/i81n}{literal}";
 	html += "</select>&nbsp;&nbsp;";
 
 	return html;
@@ -747,7 +747,7 @@ function butSearchClick()
 	var expr = buildExpression();
 	if (expr == '')
 	{
-		alert('Please select some search criteria');
+		alert('{/literal}{i81n}Please select some search criteria{/i81n}{literal}');
 		return;
 	}
 
@@ -766,20 +766,20 @@ function butSearchClick()
 	<legend>{i18n}Metadata Query{/i18n}</legend>
 
 
-	Return items which match <select id="allop">
-								<option value="AND">all
-								<option value="OR" SELECTED>any
-							 </select>   of the criteria groups specified.
+	{i18n}Return items which match{/i18n} <select id="allop">
+								<option value="AND">{i18n}all{/i18n}
+								<option value="OR" SELECTED>{i18n}any{/i18n}
+							 </select>   {i18n}of the criteria groups specified.{/i18n}
 
 <div id="groupwrapping">
 <div id="groupwrapper0">
 	<fieldset>
     	<legend>{i18n}Criteria Group{/i18n}</legend>
 
-        Return items which match <select id="groupop0">
-									<option value="AND">all
-									<option value="OR" SELECTED>any
-								 </select> of the criteria specified below.
+        {i18n}Return items which match{/i18n} <select id="groupop0">
+									<option value="AND">{i18n}all{/i18n}
+									<option value="OR" SELECTED>{i18n}any{/i18n}
+								 </select> {i18n}of the criteria specified below.{/i18n}
 		<br>
 
 		<div id="criteria0">
@@ -789,9 +789,9 @@ function butSearchClick()
 			<tr>
 				<td width="50%" valign="top">
 					<br>
-					<div id="criteria_nofields0" style="color: brown">No fields have been selected for the criteria group.
+					<div id="criteria_nofields0" style="color: brown">{i81n}No fields have been selected for the criteria group.{i81n}
 					<p>
-					<input type=button value="Remove Criteria Group" onclick="removeCriteriaGroup(0)" id="removeCriteriaGroup0" style="display: none">
+					<input type=button value="{i81n}Remove Criteria Group{/i81n}" onclick="removeCriteriaGroup(0)" id="removeCriteriaGroup0" style="display: none">
 					</div>
 					<div id="criteria_fields0">
 
@@ -802,26 +802,26 @@ function butSearchClick()
 					<tr>
 						<td valign=top>
 							<select id="selector0" style="width: 200px" onchange="selectorChange(0)">
-								<option value="0">Available Fields
-								<option value="1">Available Fieldsets
-								<option value="2">Available Workflows
+								<option value="0">{i81n}Available Fields{/i81n}
+								<option value="1">{i81n}Available Fieldsets{/i81n}
+								<option value="2">{i81n}Available Workflows{/i81n}
 							</select>
 							<br>
 							<div>
 							<select id="fields0" size="5" style="width: 200px; height: 100px; display: block" onclick="fieldChange(0)">
-							<option value="" selected>--- Select a field ---
+							<option value="" selected>--- {i81n}Select a field{/i81n} ---
 							{foreach from=$metainfo.fields item=field}
 								<option>{$field.display}
 							{/foreach}
 							</select>
 							<select id="fieldsets0" size="5" style="width: 200px;   height: 100px; display: none" onclick="fieldsetsChange(0)">
-							<option value="" selected>--- Select a fieldset ---
+							<option value="" selected>--- {i81n}Select a fieldset{/i81n} ---
 							{foreach from=$metainfo.fieldsets item=fieldset}
 								<option>{$fieldset.name}
 							{/foreach}
 							</select>
 							<select id="workflows0" size="5" style="width: 200px;   height: 100px; display: none" onclick="workflowsChange(0)" >
-							<option value="" selected>--- Select a workflow ---
+							<option value="" selected>--- {i81n}Select a workflow{/i81n} ---
 							{foreach from=$metainfo.workflows item=workflow}
 								<option>{$workflow.name}
 							{/foreach}
@@ -844,7 +844,7 @@ function butSearchClick()
 						</td>
 					<tr>
 						<td colspan=5>
-							Click on a field above to add it to the criteria group.
+							{i81n}Click on a field above to add it to the criteria group.{/i81n}
 						</td>
 					</tr>
 					</table>
@@ -857,8 +857,8 @@ function butSearchClick()
 </div>
 </div>
 <div id="">
-<input type=button value="Add another set of criteria" onclick="addCriteriaSet()">
-<input type=button value="Search" onclick="butSearchClick()">
+<input type=button value="{/literal}{i81n}Add another set of criteria{/i81n}{literal}" onclick="addCriteriaSet()">
+<input type=button value="{/literal}{i81n}Search{/i81n}{literal}" onclick="butSearchClick()">
 </div>
 
 
