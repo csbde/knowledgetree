@@ -1540,11 +1540,11 @@ class OpExpr extends Expr
     		else
     		{
     			$join = new OpExpr($doctext, $op, new ValueExpr($text[$i]));
-    			$right = new OpExpr($join, ExprOp::OP_OR, $right);
+    			$right = new OpExpr($join, ExprOp::OP_AND, $right);
     		}
     	}
 
-    	$op = ExprOp::OP_OR;
+    	$op = ExprOp::OP_AND;
     }
 
 
