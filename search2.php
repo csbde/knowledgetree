@@ -62,7 +62,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     	}
     	catch(Exception $e)
     	{
-    		$this->errorRedirectTo('guiBuilder', _kt('Could not process query.' . $e->getMessage()));
+    		$this->errorRedirectTo('guiBuilder', _kt('Could not process query.') . $e->getMessage());
     	}
     }
 
@@ -156,11 +156,7 @@ class SearchDispatcher extends KTStandardDispatcher {
 		$config = KTConfig::getSingleton();
 		$resultsPerPage = ($showall)?$numRecs:$config->get('search/resultsPerPage', SearchDispatcher::RESULTS_PER_PAGE);
 
-
-
         $maxPageMove = SearchDispatcher::MAX_PAGE_MOVEMENT;
-
-
 
         $pageOffset = 1;
         if (isset($_GET['pageOffset']))
@@ -168,13 +164,11 @@ class SearchDispatcher extends KTStandardDispatcher {
         	$pageOffset = $_GET['pageOffset'];
         }
 
-
         $maxPages = ceil($numRecs / $resultsPerPage) ;
         if ($pageOffset <= 0 || $pageOffset > $maxPages)
         {
         	$pageOffset = 1;
         }
-
 
          $firstRec = ($pageOffset-1) * $resultsPerPage;
          $lastRec = $firstRec + $resultsPerPage;
@@ -184,8 +178,6 @@ class SearchDispatcher extends KTStandardDispatcher {
          }
 
         $display = array_slice($results,$firstRec ,$resultsPerPage);
-
-
 
         $startOffset = $pageOffset - $maxPageMove;
         if ($startOffset < 1)
@@ -198,16 +190,11 @@ class SearchDispatcher extends KTStandardDispatcher {
         	$endOffset = $maxPages;
         }
 
-
-
 		$pageMovement = array();
 		for($i=$startOffset;$i<=$endOffset;$i++)
 		{
 			$pageMovement[] = $i;
 		}
-
-
-
 
 		 $aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
@@ -316,8 +303,8 @@ class SearchDispatcher extends KTStandardDispatcher {
 
 	function do_guiBuilder()
 	{
-		$this->oPage->setBreadcrumbDetails(_kt("Query Builder"));
-        $this->oPage->title = _kt("Query Builder");
+		$this->oPage->setBreadcrumbDetails(_kt("Advanced Search"));
+        $this->oPage->title = _kt("Advanced Search");
 
 		$result = array();
 
@@ -348,8 +335,8 @@ class SearchDispatcher extends KTStandardDispatcher {
 
 	function do_queryBuilder()
 	{
-		$this->oPage->setBreadcrumbDetails(_kt("Advanced Query Builder"));
-        $this->oPage->title = _kt("Advanced Query Builder");
+		$this->oPage->setBreadcrumbDetails(_kt("Query Editor"));
+        $this->oPage->title = _kt("Query Editor");
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/adv_query_search");
 
@@ -377,40 +364,6 @@ class SearchDispatcher extends KTStandardDispatcher {
               'txtQuery'=>$expr,
               'iSavedSearchId'=>$this->savedSearchId
 
-        );
-        return $oTemplate->render($aTemplateData);
-	}
-
-	function do_metadata()
-	{
-		$this->oPage->setBreadcrumbDetails(_kt("Metadata Query Builder"));
-        $this->oPage->title = _kt("Metadata Query Builder");
-
-		$result = array();
-
-		$result['fieldsets'] = SearchHelper::getFieldsets();
-		$result['fieldset_str'] = SearchHelper::getJSfieldsetStruct($result['fieldsets']);
-
-		$result['users_str'] = SearchHelper::getJSusersStruct();
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/search2/metadata_search");
-        $aTemplateData = array(
-              "context" => $this,
-              'metainfo'=> $result
-        );
-        return $oTemplate->render($aTemplateData);
-	}
-
-	function do_tree()
-	{
-		$this->oPage->setBreadcrumbDetails(_kt("Tree Browser"));
-        $this->oPage->title = _kt("Tree Browser");
-
-		$oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/search2/tree");
-        $aTemplateData = array(
-              "context" => $this
         );
         return $oTemplate->render($aTemplateData);
 	}
