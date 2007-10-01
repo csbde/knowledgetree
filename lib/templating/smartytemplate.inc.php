@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -65,10 +65,10 @@ class KTSmartyTemplate extends KTTemplate {
             for ($i = 0; $i < $iLen; $i++) {
                 $sKey = $aKeys[$i];
                 $smarty->assign_by_ref($sKey, $this->aDict[$sKey]);
-            }            
+            }
         }
         $KTConfig =& KTConfig::getSingleton();
-        
+
         // needed for a very, very few places.
         $isSSL = $KTConfig->get("KnowledgeTree/sslEnabled");
         $hostname = $KTConfig->get("KnowledgeTree/serverName");
@@ -76,7 +76,27 @@ class KTSmartyTemplate extends KTTemplate {
         $absroot .= ($isSSL) ? 's://' : '://';
         $absroot .= $hostname;
         $absroot .= $KTConfig->get("KnowledgeTree/rootUrl");
-        
+
+        if (isset($_SESSION['search2_quick']))
+        {
+        	$search2_quick = $_SESSION['search2_quick'];
+        	$search2_general = $_SESSION['search2_general'];
+        	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
+        	if ($search2_quickQuery == '')
+        	{
+        		$search2_quickQuery = _kt('Enter search criteria');
+        	}
+        }
+        else
+        {
+			$search2_quick=1;
+			$search2_general=1;
+			$search2_quickQuery = _kt('Enter search criteria');
+        }
+
+        $smarty->assign('search2_quick', $search2_quick);
+        $smarty->assign('search2_general', $search2_general);
+        $smarty->assign('search2_quickQuery', $search2_quickQuery);
         $smarty->assign("config", $KTConfig);
         $smarty->assign("appname", $KTConfig->get("ui/appName", "KnowledgeTree"));
         $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
@@ -141,7 +161,7 @@ class KTSmartyTemplate extends KTTemplate {
         $context = KTUtil::arrayGet($params, 'context');
         if (!is_null($context)) {
             $content = $context->meldPersistQuery($content);
-        }    
+        }
         if (empty($content)) {
             return;
         }
@@ -260,13 +280,13 @@ class KTSmartyTemplate extends KTTemplate {
     }
 
     // $context is a dispatcher or null
-    // if non-null, it will try persist that dispatcher's persist-vars. 
+    // if non-null, it will try persist that dispatcher's persist-vars.
     function addQueryString($url, $qs) {
         return KTUtil::addQueryString($url, $qs);
     }
 
-    
-    /* 
+
+    /*
      * ktLink generates a fully prepared link for KT.
      *
      * It takes into account kt_path_info requirements,
@@ -306,9 +326,9 @@ class KTSmartyTemplate extends KTTemplate {
 	return implode('/', $aCrumbs);
     }
 
-	    
-	
-	
+
+
+
 }
 
 ?>
