@@ -22,6 +22,9 @@ require_once('Search2Triggers.php');
 		$this->registerTrigger('edit', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.edit', 'Search2Triggers.php');
 		$this->registerTrigger('add', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.add', 'Search2Triggers.php');
 		$this->registerTrigger('discussion', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.discussion', 'Search2Triggers.php');
+		$this->registerPortlet(array('browse', 'dashboard'),
+                'Search2Portlet', 'ktcore.search2.portlet',
+                'Search2Portlet.php');
     }
  }
 
