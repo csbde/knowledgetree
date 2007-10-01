@@ -3,7 +3,7 @@
 {$context->oPage->requireJSResource("thirdpartyjs/extjs/adapter/ext/ext-base.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/extjs/ext-all.js")}
 
-<h2>{i18n}Query Builder{/i18n}</h2>
+<h2>{i18n}Advanced Search{/i18n}</h2>
 
 {literal}
 <style>
