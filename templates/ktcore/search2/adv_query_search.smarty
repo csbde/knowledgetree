@@ -1,7 +1,7 @@
-<h2>{i18n}Advanced Query Builder{/i18n}</h2>
+<h2>{i18n}Query Editor{/i18n}</h2>
 
 <p class="descriptiveText">
-{i18n}The advanced query search allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.{/i18n}
+{i18n}The query editor allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.{/i18n}
 <P>
 <div>
 <table>
