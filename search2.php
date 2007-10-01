@@ -78,6 +78,19 @@ class SearchDispatcher extends KTStandardDispatcher {
     	}
     	$query = $_REQUEST['txtQuery'];
 
+    	$_SESSION['search2_quick'] = 0;
+    	$_SESSION['search2_general'] = 0;
+    	if (isset($_REQUEST['cbQuickQuery']) && $_REQUEST['cbQuickQuery'] +0 == 1)
+    	{
+    		$_SESSION['search2_quick'] = 1;
+    		preg_match('/["][^"]*["]/', $query, $out);
+    		$_SESSION['search2_quickQuery'] = substr($out[0],1,-1);
+    	}
+    	if (isset($_REQUEST['cbQuickGeneral']) && $_REQUEST['cbQuickGeneral'] +0 == 1)
+    	{
+    		$_SESSION['search2_general'] = 1;
+    	}
+
 		session_unregister('search2_savedid');
 
     	$this->processQuery($query);
