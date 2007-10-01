@@ -44,7 +44,7 @@ var gotSearchParseStatus = function callBack(o)
 			}
 			else if (actionAfterParse == 'saveCompleted')
 			{
-				alert('{/literal}{i18n}The search has been saved successfully.{/i18n}{literal}');
+				$('saved').style.display='block';
 			}
 		}
 		else
@@ -80,7 +80,6 @@ function startParsing()
 	}
 	var txtQuery = document.getElementById('txtAdvQuery');
 	url='{/literal}{$rootUrl}{literal}/search2/ajax/parseExpr.php?txtQuery='+txtQuery.value;
-	//alert(url);
 	YAHOO.util.Connect.asyncRequest('GET',url, searchCallback);
 }
 function butParseClick()
@@ -107,13 +106,13 @@ function butSaveClick()
 }
 function txtQueryChange(el)
 {
-
+	$('saved').style.display='none';
 }
 </script>
 {/literal}
 <legend>{i18n}Advanced Query{/i18n}</legend>
 <form  id=frmQuery name=frmQuery method="POST" action="{addQS}action=process{/addQS}">
-<textarea id="txtAdvQuery" name="txtQuery" cols=50 rows=10 onchange="txtQueryChange(this)">{$txtQuery}</textarea>
+<textarea id="txtAdvQuery" name="txtQuery" cols=50 rows=10 onkeypress="txtQueryChange(this)">{$txtQuery}</textarea>
 <br/>
 <input type="button" id="butSearch" value="{i18n}Search{/i18n}" onclick="butSearchClick()"/>
 <input type="button" value="{i18n}Parse{/i18n}" onclick="butParseClick(true)"/>
@@ -126,7 +125,11 @@ function txtQueryChange(el)
 <fieldset>
 <legend>{i18n}Save{/i18n}</legend>
 {i18n}You are currently editing the saved search:{/i18n}{$edtSaveQueryName}<br/>
- <input type="button" align="right" value="{i18n}Save{/i18n}" onclick="butSaveClick()"/></td>
+	<table>
+ 	<tr><td><input type="button" align="right" value="{i18n}Save{/i18n}" onclick="butSaveClick()"/>
+ 	<td><div id="saved" style="display: none"><font color=brown>{i18n}Saved{/i18n}</font></div>
+ </table>
+ </td>
 </div>
 </fieldset>
 {/if}
@@ -137,7 +140,7 @@ function txtQueryChange(el)
 
 <legend>{i18n}Grammar{/i18n}</legend>
 {i18n}Expressions may be built up using the following grammar:{/i18n}<br/>
-expr ::= expr {literal}{ AND | OR }{/literal} expr<br/>
+expr ::= expr {literal}{{/literal} AND | OR {literal}}{/literal} expr<br/>
 expr ::= NOT expr<br/>
 expr ::= (expr)<br/>
 expr ::= expr {literal}{ < | <= | = | > | >= | CONTAINS |STARTS WITH | ENDS WITH }{/literal} value<br/>
