@@ -977,6 +977,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
+        $sReason = $data['reason'];
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1184,8 +1185,8 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
+        $sReason = $data['reason'];
         $extra_errors = array();
-
 
         if (!is_null($data['browse'])) {
             $bNameClash = KTDocumentUtil::nameExists($data['browse'], $this->oDocument->getName());
