@@ -86,18 +86,31 @@ class KTFolderAddDocumentAction extends KTFolderAction {
                 $aTypes[] = $oDocumentType;
             }
         }        
+        
+        // Onchange gets the name of the file and inserts it as the document title.
+        $sFileOnchange = "javascript: 
+            var arrPath=this.value.split('/'); 
+            if(arrPath.length == 1){
+                var arrPath=this.value.split('\\\');
+            }
+            var name=arrPath[arrPath.length-1]; 
+            var title=name.split('.'); 
+            document.getElementById('document_name').value=title[0];";
+        
         $oForm->setWidgets(array(
             array('ktcore.widgets.file',array(
                 'label' => _kt('File'),
                 'description' => _kt('The contents of the document to be added to the document management system.'),
                 'name' => 'file',
                 'required' => true,
+                'onchange' => $sFileOnchange,
             )),
             array('ktcore.widgets.string',array(
                 'label' => _kt('Document Title'),
                 'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s&trade;.'), APP_NAME),
                 'name' => 'document_name',
                 'required' => true,
+                'id' => 'document_name',
             )),
             array('ktcore.widgets.entityselection',array(
                 'label' => _kt('Document Type'),
