@@ -284,6 +284,36 @@ class PhysicalDocumentManager {
 		}
 	}
 
+    /**
+    * Delete a single version of a document
+    *
+    * return boolean true on successful delete, false otherwise
+    */
+    function deleteVersion($oVersion) {
+        global $default;
+        $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+	    $sFullPath = $default->documentRoot.'/'.$oContentVersion->getStoragePath();
+	   
+	    if (file_exists($sFullPath)) {
+            if(@unlink($sFullPath)){
+                $default->log->info("PhysicalDocumentManager::deleteVersion  unlinked $sFullPath");
+                return true;
+            }else{
+				$default->log->info("PhysicalDocumentManager::deleteVersion couldn't unlink $sFullPath");
+				if (file_exists($sFullPath)) {
+					return false;
+				} else {
+					return true;
+				}
+            }
+	    }else{
+			$default->log->info("PhysicalDocumentManager::deleteVersion can't rm $sFullPath because it doesn't exist");
+			return true;
+	    }
+    }
+
 	/**
 	 * Restore a document from the Deleted/ folder to the specified folder
 	 *

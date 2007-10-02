@@ -279,7 +279,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_transaction_types_lookup` WRITE;
 /*!40000 ALTER TABLE `document_transaction_types_lookup` DISABLE KEYS */;
-INSERT INTO `document_transaction_types_lookup` VALUES (1,'Create','ktcore.transactions.create'),(2,'Update','ktcore.transactions.update'),(3,'Delete','ktcore.transactions.delete'),(4,'Rename','ktcore.transactions.rename'),(5,'Move','ktcore.transactions.move'),(6,'Download','ktcore.transactions.download'),(7,'Check In','ktcore.transactions.check_in'),(8,'Check Out','ktcore.transactions.check_out'),(9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),(10,'View','ktcore.transactions.view'),(11,'Expunge','ktcore.transactions.expunge'),(12,'Force CheckIn','ktcore.transactions.force_checkin'),(13,'Email Link','ktcore.transactions.email_link'),(14,'Collaboration Step Approve','ktcore.transactions.collaboration_step_approve'),(15,'Email Attachment','ktcore.transactions.email_attachment'),(16,'Workflow state transition','ktcore.transactions.workflow_state_transition'),(17,'Permissions changed','ktcore.transactions.permissions_change'),(18,'Role allocations changed','ktcore.transactions.role_allocations_change'),(19,'Bulk Export','ktstandard.transactions.bulk_export'),(20,'Copy','ktcore.transactions.copy');
+INSERT INTO `document_transaction_types_lookup` VALUES (1,'Create','ktcore.transactions.create'),(2,'Update','ktcore.transactions.update'),(3,'Delete','ktcore.transactions.delete'),(4,'Rename','ktcore.transactions.rename'),(5,'Move','ktcore.transactions.move'),(6,'Download','ktcore.transactions.download'),(7,'Check In','ktcore.transactions.check_in'),(8,'Check Out','ktcore.transactions.check_out'),(9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),(10,'View','ktcore.transactions.view'),(11,'Expunge','ktcore.transactions.expunge'),(12,'Force CheckIn','ktcore.transactions.force_checkin'),(13,'Email Link','ktcore.transactions.email_link'),(14,'Collaboration Step Approve','ktcore.transactions.collaboration_step_approve'),(15,'Email Attachment','ktcore.transactions.email_attachment'),(16,'Workflow state transition','ktcore.transactions.workflow_state_transition'),(17,'Permissions changed','ktcore.transactions.permissions_change'),(18,'Role allocations changed','ktcore.transactions.role_allocations_change'),(19,'Bulk Export','ktstandard.transactions.bulk_export'),(20,'Copy','ktcore.transactions.copy'),(21,'Delete Version','ktcore.transactions.delete_version');
 /*!40000 ALTER TABLE `document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -786,7 +786,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `status_lookup` WRITE;
 /*!40000 ALTER TABLE `status_lookup` DISABLE KEYS */;
-INSERT INTO `status_lookup` VALUES (1,'Live'),(2,'Published'),(3,'Deleted'),(4,'Archived'),(5,'Incomplete');
+INSERT INTO `status_lookup` VALUES (1,'Live'),(2,'Published'),(3,'Deleted'),(4,'Archived'),(5,'Incomplete'),(6,'Version Deleted');
 /*!40000 ALTER TABLE `status_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 

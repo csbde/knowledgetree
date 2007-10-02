@@ -34,6 +34,7 @@ DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
 DEFINE("STATUS_INCOMPLETE", 5);
+DEFINE("VERSION_DELETED", 6);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
@@ -114,6 +115,9 @@ class Document {
 
     function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
     function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
+
+    function getMetadataStatusID() { return $this->_oDocumentMetadataVersion->getStatusId(); }
+    function setMetadataStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); }
 
     function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
     function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->getMetadataVersion($iNewValue); }

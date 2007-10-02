@@ -302,6 +302,25 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return true;
     }
 
+	/**
+	 * Completely remove a document version
+	 *
+	 * return boolean true on successful delete
+	 */
+	function deleteVersion($oVersion) {
+	    $oConfig =& KTConfig::getSingleton();
+	    $sDocumentRoot = $oConfig->get('urls/documentRoot');
+	    $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+	    $sPath = $oContentVersion->getStoragePath();
+	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
+	    if (file_exists($sFullPath)) {
+            unlink($sFullPath);
+	    }
+	    return true;
+	}
+
     function restore($oDocument) {
         // Storage doesn't care if the document is deleted or restored
         return true;

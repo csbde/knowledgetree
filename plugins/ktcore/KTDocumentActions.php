@@ -114,6 +114,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     }
 
     function do_main() {
+        $show_version = KTUtil::arrayGet($_REQUEST, 'show');
+        $showall = (isset($show_version) && ($show_version == 'all')) ? true : false;
 
         $this->oPage->setSecondaryTitle($this->oDocument->getName());
         $this->oPage->setBreadcrumbDetails(_kt('Version History'));
@@ -121,7 +123,12 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
         $aVersions = array();
         foreach ($aMetadataVersions as $oVersion) {
-            $aVersions[] = Document::get($this->oDocument->getId(), $oVersion->getId());
+             $version = Document::get($this->oDocument->getId(), $oVersion->getId());
+             if($showall){
+                $aVersions[] = $version;
+             }else if($version->getMetadataStatusID() != VERSION_DELETED){
+                $aVersions[] = $version;
+             }
         }
 
         // render pass.
@@ -134,12 +141,24 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $oAction->setDocument($this->oDocument);
 
+        // create delete action if user is sys admin or folder admin
+        $bShowDelete = false;
+        require_once(KT_LIB_DIR . '/security/Permission.inc');
+        $oUser =& User::get($_SESSION['userID']);
+        $iFolderId = $this->oDocument->getFolderId();
+        if (Permission::userIsSystemAdministrator($oUser) || Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
+            // Check if admin mode is enabled
+            $bShowDelete = KTUtil::arrayGet($_SESSION, 'adminmode', false);
+        }
+
         $aTemplateData = array(
               'context' => $this,
               'document_id' => $this->oDocument->getId(),
               'document' => $this->oDocument,
               'versions' => $aVersions,
               'downloadaction' => $oAction,
+              'showdelete' => $bShowDelete,
+              'showall' => $showall,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -195,11 +214,49 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
     }
 
-
     function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
+    }
+    
+    function do_confirmdeleteVersion() {
+        $this->oPage->setSecondaryTitle($this->oDocument->getName());
+        $this->oPage->setBreadcrumbDetails(_kt('Delete document version'));
+        
+        // Display the version name and number
+        $iVersionId = $_REQUEST['version'];
+        $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/delete_version');
+        $aTemplateData = array(
+            'context' => $this,
+            'fDocumentId' => $this->oDocument->getId(),
+            'oVersion' => $oVersion,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_deleteVersion() {
+        $iVersionId = $_REQUEST['versionid'];
+        $sReason = $_REQUEST['reason'];
+        $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
+        
+        $res = KTDocumentUtil::deleteVersion($this->oDocument, $iVersionId, $sReason);
+        
+        if(PEAR::isError($res)){
+            $this->addErrorMessage($res->getMessage());
+            redirect(KTDocumentAction::getURL());
+            exit(0);
+        }
+        
+        // Record the transaction
+        $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document version deleted'), 'ktcore.transactions.delete_version', $aOptions);
+        $oDocumentTransaction->create();
+        
+        redirect(KTDocumentAction::getURL());
     }
 }
 // }}}
@@ -225,7 +282,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
-            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());;
+            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
             $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
         } else {
             $res = $oStorage->download($this->oDocument);

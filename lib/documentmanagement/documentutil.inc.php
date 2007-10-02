@@ -1013,7 +1013,67 @@ class KTDocumentUtil {
 
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
+    
+    /**
+    * Delete a selected version of the document.
+    */
+    function deleteVersion($oDocument, $iVersionID, $sReason){
+        
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
+        
+        $oStorageManager =& KTStorageManagerUtil::getSingleton();
 
+        global $default;
+
+        if (empty($sReason)) {
+            return PEAR::raiseError(_kt('Deletion requires a reason'));
+        }
+
+        if (PEAR::isError($oDocument) || ($oDocument == false)) {
+            return PEAR::raiseError(_kt('Invalid document object.'));
+        }
+
+        if (PEAR::isError($oVersion) || ($oVersion == false)) {
+            return PEAR::raiseError(_kt('Invalid document version object.'));
+        }
+        
+        $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+        if (PEAR::isError($oContentVersion) || ($oContentVersion == false)) {
+            DBUtil::rollback();
+            return PEAR::raiseError(_kt('Invalid document content version object.'));
+        }
+
+        DBUtil::startTransaction();
+        
+        // now delete the document version
+        $res = $oStorageManager->deleteVersion($oVersion);
+        if (PEAR::isError($res) || ($res == false)) {
+            //could not delete the document version from the file system
+            $default->log->error('Deletion: Filesystem error deleting the metadata version ' .
+                $oVersion->getMetadataVersion() . ' of the document ' .
+                $oDocument->getFileName() . ' from folder ' .
+                Folder::getFolderPath($oDocument->getFolderID()) .
+                ' id=' . $oDocument->getFolderID());
+
+            // we use a _real_ transaction here ...
+
+            DBUtil::rollback();
+
+            return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
+        }
+        
+        // change status for the metadata version
+        $oVersion->setStatusId(VERSION_DELETED);
+        $oVersion->update();
+        
+        // set the storage path to empty
+//        $oContentVersion->setStoragePath('');
+
+        DBUtil::commit();
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {
