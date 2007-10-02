@@ -59,10 +59,74 @@ class KTPluginResourceRegistry {
 }
 
 class KTPluginUtil {
+	const CACHE_FILENAME = 'kt_plugins.cache';
+
+	/**
+	 * Store the plugin cache in the cache directory.
+	 *
+	 */
+	static function savePluginCache()
+	{
+		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($GLOBALS['_KT_PLUGIN']));
+
+		if (!$written)
+		{
+			global $default;
+
+			$default->log->warn('savePluginCache - The cache did not write anything.');
+
+			// try unlink a zero size file - just in case
+			@unlink($cacheFile);
+		}
+	}
+
+	/**
+	 * Remove the plugin cache.
+	 *
+	 */
+	static function removePluginCache()
+	{
+		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		@unlink($cacheFile);
+	}
+
+	/**
+	 * Reads the plugin cache file. This must still be unserialised.
+	 *
+	 * @return mixed Returns false on failure, or the serialised cache.
+	 */
+	static function readPluginCache()
+	{
+		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		if (!is_file($cacheFile))
+		{
+			return false;
+		}
+
+		$cache = file_get_contents($cacheFile);
+
+		// we check for an empty cache in case there was a problem. We rather try and reload everything otherwise.
+		if (strlen($cache) == 0)
+		{
+			return false;
+		}
+		return $cache;
+	}
+
     static function loadPlugins () {
 
-        if (session_is_registered('__KT_PLUGIN_CACHE')) {
-            require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
+    	$cache = KTPluginUtil::readPluginCache();
+        if ($cache !== false) {
+            require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
             require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
             require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
             require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
@@ -76,8 +140,21 @@ class KTPluginUtil {
             require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
             require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
             require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
-            $GLOBALS['_KT_PLUGIN'] = $_SESSION['__KT_PLUGIN_CACHE'];
-            $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPlugins = array();
+
+            // unserialize - step 1 - get _aPluginDetails so we can include all we need
+            $GLOBALS['_KT_PLUGIN'] = unserialize($cache);
+
+            foreach($GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPluginDetails as $detail)
+            {
+            	$classname = $detail[0];
+            	$inc = $detail[2];
+            	if (!class_exists($classname))
+            	{
+            		require_once($inc);
+            	}
+            }
+            // unserialize - step 2 - so we don't have incomplete classes
+			$GLOBALS['_KT_PLUGIN'] = unserialize($cache);
             return;
         }
         $GLOBALS['_KT_PLUGIN'] = array();
@@ -121,9 +198,13 @@ class KTPluginUtil {
                 $oPlugin->load();
             }
         }
-        $_SESSION['__KT_PLUGIN_CACHE'] = $GLOBALS['_KT_PLUGIN'];
+        KTPluginUtil::savePluginCache();
     }
 
+    /**
+     * This loads the plugins in the plugins folder. It searches for files ending with 'Plugin.php'.
+     * This is called by the 'Re-read plugins' action in the web interface.
+     */
     function registerPlugins () {
         KTPluginUtil::_deleteSmartyFiles();
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
@@ -164,7 +245,7 @@ class KTPluginUtil {
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
 
-        session_unset('__KT_PLUGIN_CACHE');
+        KTPluginUtil::removePluginCache();
     }
 
     function _deleteSmartyFiles() {
