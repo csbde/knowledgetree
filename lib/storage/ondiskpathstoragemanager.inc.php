@@ -399,6 +399,25 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }
         return true;
 	}
+	
+	/**
+	 * Completely remove a document version
+	 *
+	 * return boolean true on successful delete
+	 */
+	function deleteVersion($oVersion) {
+	    $oConfig =& KTConfig::getSingleton();
+	    $sDocumentRoot = $oConfig->get('urls/documentRoot');
+	    $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+	    $sPath = $oContentVersion->getStoragePath();
+	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
+	    if (file_exists($sFullPath)) {
+            unlink($sFullPath);
+	    }
+	    return true;
+	}
 
 	/**
 	 * Restore a document from the Deleted/ folder to the specified folder

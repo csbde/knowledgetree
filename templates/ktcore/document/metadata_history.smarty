@@ -13,6 +13,9 @@
                 <th class="compare">{i18n}Compare with Current{/i18n}</th>
                 <th class="compare">{i18n}Compare with Other Version{/i18n}</th>
 				<th class="versiondate">{i18n}Date Created{/i18n}</th>
+				{if $showdelete}
+				    <th class="deleteversion">{i18n}Delete Version{/i18n}</th>
+				{/if}
             </tr>
         </thead>
         <tbody>
@@ -22,24 +25,57 @@
                 <td class="date">{$oVersion->getMetadataVersion()}</td>
 {capture assign=version}{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}{/capture}
 {capture assign=versionid}{$oVersion->getContentVersionId()}{/capture}
-                <td class="date"><a href="{$downloadaction->getURL()}&version={$versionid}">{$version}</a></td>
+                <td class="date">
+                    {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
+                        <a href="{$downloadaction->getURL()}&version={$versionid}">{$version}</a>
+                    {else}
+                        {$version}
+                    {/if}
+                </td>
                 <td class="compare">
                 {if ($document->getMetadataVersion() == $oVersion->getMetadataVersion())}
                    <strong>{i18n}current version{/i18n}</strong>
                 {else}
-                   <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with current{/i18n}</a></td>
+                    {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
+                        <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with current{/i18n}</a></td>
+                    {else}
+                        &mdash;
+                    {/if}
                 {/if}
                 </td>
                 <td>
                 {if (count($versions) == 1)}
                 &mdash;
                 {else}
-                <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
+                    {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
+                        <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
+                    {else}
+                        &mdash;
+                    {/if}
                 {/if}
                 </td>
                 <td class="versiondate">{$oVersion->getVersionCreated()}</td>
+                {if $showdelete}
+                    <td class="deleteversion">
+                        {if ($document->getMetadataVersion() != $oVersion->getMetadataVersion())}
+                            {if ($oVersion->getMetadataStatusID() == VERSION_DELETED)}
+                                <strong>{i18n}Version deleted{/i18n}</strong>
+                            {else}
+                                <a href="{addQS}action=confirmdeleteVersion&fDocumentId={$document->getId()}&version={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}delete version{/i18n}</a>
+                            {/if}
+                        {else}
+                            &nbsp;
+                        {/if}
+                    </td>
+                {/if}
             </tr>
             {/foreach}
         </tbody>
 
     </table>
+    
+{if ($showdelete && !$showall)}
+    <p>
+    <a href="{addQS}fDocumentId={$document->getId()}&show=all{/addQS}">{i18n}Show deleted versions{/i18n}</a>
+    </p>
+{/if}

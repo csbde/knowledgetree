@@ -125,6 +125,10 @@ class KTStorageManager {
         $indexer->deleteDocument($documentid);
     }
 
+    function deleteVersion(&$oVersion) {
+        return PEAR::raiseError(_kt("Not implemented"));
+    }
+    
     /**
      * Performs any storage changes necessary to account for the
      * document (previously marked as deleted) being restored.

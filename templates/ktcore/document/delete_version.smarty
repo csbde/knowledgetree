@@ -1,0 +1,26 @@
+<h3>{i18n}Delete Document Version{/i18n}</h3>
+
+<span class="descriptiveText">{i18n}On deleting a document version the version history will remain but the document will be <b>permanently</b> deleted.{/i18n}</span>
+<p>{i18n}The following document version has been selected for deletion:{/i18n} </p>
+
+<table>
+<tr>
+<td>Document Version: </td><td>{$oVersion->getName()}</td>
+</tr><tr>
+<td>Metadata version: </td><td>{$oVersion->getMetadataVersion()}</td>
+</tr><tr>
+<td>Content version: </td><td>{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}</td>
+</tr><tr>
+<td>Date created: </td><td>{$oVersion->getVersionCreated()}</td>
+</tr></table>
+
+<p>
+<form action="{$smarty.server.PHP_SELF}" method="POST" />
+<input type="hidden" name="action" value="deleteVersion" />
+<input type="hidden" name="fDocumentId" value="{$fDocumentId}" />
+<input type="hidden" name="versionid" value="{$oVersion->getCurrentMetadataVersionId()}" />
+<b>Reason:</b>
+<br /><textarea rows="10" cols="50" name="reason"></textarea>
+<br /><input type="submit" value="continue" />
+</form>
+</p>
