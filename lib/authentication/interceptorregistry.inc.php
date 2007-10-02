@@ -44,12 +44,10 @@ class KTInterceptorRegistry {
     var $_aInterceptorsInfo = array();
 
     static function &getSingleton () {
-		static $singleton=null;
-		if (is_null($singleton))
-		{
-			$singleton = new KTInterceptorRegistry();
+		if  (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'],  'oKTInterceptorRegistry'))  {
+        	$GLOBALS['_KT_PLUGIN']['oKTInterceptorRegistry']  =  new  KTInterceptorRegistry;
 		}
-		return $singleton;
+		return  $GLOBALS['_KT_PLUGIN']['oKTInterceptorRegistry'];
     }
 
     function registerInterceptor($class, $nsname, $path = '', $sPlugin = null) {

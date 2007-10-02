@@ -34,12 +34,10 @@ class KTCriteriaRegistry {
     var $_bGenericRegistered = false;
 
     static function &getSingleton () {
-		static $singleton=null;
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTCriteriaRegistry();
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_CRITERIA'], 'oKTCriteriaRegistry'))  {
+			$GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'] = new KTCriteriaRegistry;
+		}
+		return $GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'];
     }
 
 

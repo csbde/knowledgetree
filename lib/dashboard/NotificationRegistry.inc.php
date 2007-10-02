@@ -35,12 +35,10 @@ class KTNotificationRegistry {
     var $notification_instances = array();
 
     static function &getSingleton () {
-		static $singleton=null;
-		if (is_null($singleton))
-		{
-			$singleton = new KTNotificationRegistry();
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTNotificationRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'] = new KTNotificationRegistry;
 		}
-		return $singleton;
+		return $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'];
     }
 
 

@@ -122,13 +122,10 @@ class KTTemplating {
 
     // {{{ getSingleton
     static function &getSingleton () {
-    	static $singleton = null;
-
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTTemplating();
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTTemplating')) {
+			$GLOBALS['_KT_PLUGIN']['oKTTemplating'] = new KTTemplating;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTTemplating'];
     }
     // }}}
 

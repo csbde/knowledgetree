@@ -55,12 +55,10 @@ class KTAuthenticationProviderRegistry {
     var $_aAuthenticationProviders = array();
 
     static function &getSingleton () {
-		static $singleton=null;
-		if (is_null($singleton))
-		{
-			$singleton = new KTAuthenticationProviderRegistry();
-		}
-		return $singleton;
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAuthenticationProviderRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTAuthenticationProviderRegistry'] = new KTAuthenticationProviderRegistry;
+        }
+        return $GLOBALS['_KT_PLUGIN']['oKTAuthenticationProviderRegistry'];
     }
 
 

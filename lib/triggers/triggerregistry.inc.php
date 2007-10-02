@@ -33,12 +33,10 @@ class KTTriggerRegistry {
     var $triggers = array();
     // {{{ getSingleton
     static function &getSingleton () {
-		static $singleton=null;
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTTriggerRegistry();
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTTriggerRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTTriggerRegistry'] = new KTTriggerRegistry;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTTriggerRegistry'];
     }
     // }}}
 

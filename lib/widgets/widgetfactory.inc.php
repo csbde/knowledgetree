@@ -39,12 +39,10 @@ class KTWidgetFactory {
     var $widgets = array();
 
     static function &getSingleton () {
-		static $singleton=null;
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTWidgetFactory();
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTWidgetFactory')) {
+			$GLOBALS['_KT_PLUGIN']['oKTWidgetFactory'] = new KTWidgetFactory;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTWidgetFactory'];
     }
 
     function registerWidget($sClassname, $sNamespace,  $sFilename = null) {
