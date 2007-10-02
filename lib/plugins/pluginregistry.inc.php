@@ -34,12 +34,10 @@ class KTPluginRegistry {
     var $_aPlugins = array();
 
     static function &getSingleton() {
-    	static $singleton = null;
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTPluginRegistry;
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTPluginRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTPluginRegistry'] = new KTPluginRegistry;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry'];
    	}
 
     function registerPlugin($sClassName, $sNamespace, $sFilename = null) {

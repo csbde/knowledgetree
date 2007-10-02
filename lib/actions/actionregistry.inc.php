@@ -33,12 +33,11 @@ class KTActionRegistry {
     var $actions = array();
 
     static function &getSingleton () {
-		static $singleton=null;
-		if (is_null($singleton))
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTActionRegistry'))
 		{
-			$singleton = new KTActionRegistry();
+			$GLOBALS['_KT_PLUGIN']['oKTActionRegistry'] = new KTActionRegistry;
 		}
-		return $singleton;
+		return $GLOBALS['_KT_PLUGIN']['oKTActionRegistry'];
     }
 
     function registerAction($slot, $name, $nsname, $path = '', $sPlugin = null) {

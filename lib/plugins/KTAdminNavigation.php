@@ -38,12 +38,10 @@ class KTAdminNavigationRegistry {
 
 
 	static function &getSingleton () {
-		static $singleton=null;
-		if (is_null($singleton))
-		{
- 			$singleton = new KTAdminNavigationRegistry();
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAdminNavigationRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'] = new KTAdminNavigationRegistry;
 		}
-		return $singleton;
+		return $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'];
 	}
 
     // name is the suburl below admin

@@ -843,12 +843,10 @@ class KTWorkflowTriggerRegistry {
     }
 
     static function &getSingleton () {
-		static $singleton=null;
-    	if (is_null($singleton))
-    	{
-    		$singleton = new KTWorkflowTriggerRegistry();
-    	}
-    	return $singleton;
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTWorkflowTriggerRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'] = new KTWorkflowTriggerRegistry;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'];
     }
 
     function registerWorkflowTrigger($sNamespace, $sClassname, $sPath) {
