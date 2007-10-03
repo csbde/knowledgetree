@@ -311,7 +311,7 @@ abstract class Indexer
 			$default->log->error("resolveExtractor: cannot resolve $type");
 			return $class;
 		}
-		if ($this->debug) $default->log->debug("resolveExtractor: Resolved '$class' from mime type '$type'.");
+		if ($this->debug) $default->log->debug(sprintf(_kt("resolveExtractor: Resolved '%s' from mime type '%s'."), $class, $type));
 		return $class;
 	}
 
@@ -758,11 +758,17 @@ abstract class Indexer
     protected abstract function indexDiscussion($docId);
 
     /**
+     * Diagnose the indexer. e.g. Check that the indexing server is running.
+     *
+     */
+	public abstract function diagnose();
+
+    /**
      * Diagnose the extractors.
      *
      * @return array
      */
-    public function diagnose()
+    public function diagnoseExtractors()
     {
 		$diagnosis = $this->_diagnose($this->extractorPath, 'DocumentExtractor', 'Extractor.inc.php');
 		$diagnosis = array_merge($diagnosis, $this->_diagnose($this->hookPath, 'Hook', 'Hook.inc.php'));
@@ -789,7 +795,7 @@ abstract class Indexer
 		{
 			if (substr($file,$extlen) != $extension)
 			{
-				$default->log->error("diagnose: '$file' does not have extension '$extension'.");
+				$default->log->error(sprintf(_kt("diagnose: '%s' does not have extension '%s'."), $file, $extension));
 				continue;
 			}
 
@@ -798,21 +804,21 @@ abstract class Indexer
 			$class = substr($file, 0, -8);
 			if (!class_exists($class))
 			{
-				$default->log->error("diagnose: class '$class' does not exist.");
+				$default->log->error(sprintf(_kt("diagnose: class '%s' does not exist."), $class));
 				continue;
 			}
 
 			$extractor = new $class();
 			if (!is_a($extractor, $baseclass))
 			{
-				$default->log->error("diagnose(): '$class' is not of type DocumentExtractor");
+				$default->log->error(sprintf(_kt("diagnose(): '%s' is not of type DocumentExtractor"), $class));
 				continue;
 			}
 
 			$types = $extractor->getSupportedMimeTypes();
 			if (empty($types))
 			{
-				if ($this->debug) $default->log->debug("diagnose: class '$class' does not support any types.");
+				if ($this->debug) $default->log->debug(sprintf(_kt("diagnose: class '%s' does not support any types."), $class));
 				continue;
 			}
 

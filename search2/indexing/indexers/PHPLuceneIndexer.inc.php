@@ -14,12 +14,21 @@ class PHPLuceneIndexer extends Indexer
 	 *
 	 * @param boolean $create Optional. If true, the lucene index will be recreated.
 	 */
-	public function __construct()
+	public function __construct($catchException=false)
 	{
 		parent::__construct();
 		$config =& KTConfig::getSingleton();
 		$indexPath = $config->get('indexer/luceneDirectory');
-		$this->lucene = new Zend_Search_Lucene($indexPath, false);
+		try
+		{
+			$this->lucene = new Zend_Search_Lucene($indexPath, false);
+		}
+		catch(Exception $ex)
+		{
+			$this->lucene = null;
+			if (!$catchException)
+				throw $ex;
+		}
 	}
 
 	/**
@@ -65,7 +74,7 @@ class PHPLuceneIndexer extends Indexer
 
     	if (!is_file($textfile))
     	{
-    		$default->log->error("Attempting to index $docid $textfile but it is not available.");
+    		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;
     	}
 
@@ -89,7 +98,7 @@ class PHPLuceneIndexer extends Indexer
 
     	if (!is_file($textfile))
     	{
-    		$default->log->error("Attempting to index $docid $textfile but it is not available.");
+    		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;
     	}
 
@@ -179,6 +188,15 @@ class PHPLuceneIndexer extends Indexer
             }
         }
         return $results;
+    }
+
+    public function diagnose()
+    {
+    	if ($this->lucene == null)
+    	{
+    		return _kt("The lucene index has not been initialised correctly. Please review the documentation on how to setup the indexing.");
+    	}
+ 		return null;
     }
 }
 ?>
