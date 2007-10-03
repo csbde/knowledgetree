@@ -65,12 +65,18 @@ class KTPluginUtil {
 	 * Store the plugin cache in the cache directory.
 	 *
 	 */
-	static function savePluginCache()
+	static function savePluginCache($array)
 	{
 		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
+
 		$cacheDir = $config->get('cache/cacheDirectory');
 
-		$written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($GLOBALS['_KT_PLUGIN']));
+		$written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($array));
 
 		if (!$written)
 		{
@@ -90,6 +96,11 @@ class KTPluginUtil {
 	static function removePluginCache()
 	{
 		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
 		$cacheDir = $config->get('cache/cacheDirectory');
 
 		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
@@ -104,6 +115,11 @@ class KTPluginUtil {
 	static function readPluginCache()
 	{
 		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
 		$cacheDir = $config->get('cache/cacheDirectory');
 
 		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
@@ -119,46 +135,27 @@ class KTPluginUtil {
 		{
 			return false;
 		}
-		return $cache;
+		if (!class_exists('KTPluginEntityProxy')) {
+            KTEntityUtil::_proxyCreate('KTPluginEntity', 'KTPluginEntityProxy');
+        }
+
+		return unserialize($cache);
 	}
 
     static function loadPlugins () {
 
-    	$cache = KTPluginUtil::readPluginCache();
-        if ($cache !== false) {
-            require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-            require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
-            require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
-            require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-            require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
-            require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
-            require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
-            require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
-            require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
-            require_once(KT_LIB_DIR . "/help/help.inc.php");
-            require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
-            require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
-            require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
-            require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
-
-            // unserialize - step 1 - get _aPluginDetails so we can include all we need
-            $GLOBALS['_KT_PLUGIN'] = unserialize($cache);
-
-            foreach($GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPluginDetails as $detail)
-            {
-            	$classname = $detail[0];
-            	$inc = $detail[2];
-            	if (!class_exists($classname))
-            	{
-            		require_once($inc);
-            	}
-            }
-            // unserialize - step 2 - so we don't have incomplete classes
-			$GLOBALS['_KT_PLUGIN'] = unserialize($cache);
-            return;
-        }
         $GLOBALS['_KT_PLUGIN'] = array();
-        $aPlugins = KTPluginEntity::getList("disabled=0");
+        $cache = KTPluginUtil::readPluginCache();
+        if ($cache === false)
+        {
+        	$aPlugins = KTPluginEntity::getList("disabled=0");
+        	KTPluginUtil::savePluginCache($aPlugins);
+        }
+        else
+        {
+        	$aPlugins = $cache;
+        }
+
         if (count($aPlugins) === 0) {
             KTPluginUtil::registerPlugins();
         }
@@ -198,7 +195,6 @@ class KTPluginUtil {
                 $oPlugin->load();
             }
         }
-        KTPluginUtil::savePluginCache();
     }
 
     /**
