@@ -4,7 +4,7 @@ class AnyMetadataField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('id', 'document_fields_link', 'Any Metadata');
+        parent::__construct('id', 'document_fields_link', _kt('Any Metadata'));
         $this->setAlias('Metadata');
     }
 

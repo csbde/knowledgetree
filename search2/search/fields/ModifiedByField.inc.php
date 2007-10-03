@@ -4,7 +4,7 @@ class ModifiedByField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('modified_user_id', 'documents', 'Modified By');
+        parent::__construct('modified_user_id', 'documents', _kt('Modified By'));
         $this->setAlias('ModifiedBy');
 		$this->joinTo('users', 'id');
 		$this->matchField('name');

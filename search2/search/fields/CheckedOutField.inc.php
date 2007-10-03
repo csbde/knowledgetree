@@ -4,7 +4,7 @@ class CheckedOutField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('checkedout', 'documents', 'Checked Out');
+        parent::__construct('checkedout', 'documents', _kt('Checked Out'));
         $this->setAlias('CheckedOut');
     }
 

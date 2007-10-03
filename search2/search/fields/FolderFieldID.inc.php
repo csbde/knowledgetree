@@ -4,7 +4,7 @@ class FolderIDField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('folder_id', 'documents', 'Folder ID');
+        parent::__construct('folder_id', 'documents', _kt('Folder ID'));
         $this->setAlias('FolderID');
     }
 

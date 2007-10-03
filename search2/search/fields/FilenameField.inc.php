@@ -4,7 +4,7 @@ class FilenameField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('filename', 'document_content_version', 'Filename');
+        parent::__construct('filename', 'document_content_version', _kt('Filename'));
         $this->setAlias('Filename');
     }
 

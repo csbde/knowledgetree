@@ -5,7 +5,7 @@ class DocumentTextField extends SearchableText
 {
     public function __construct()
     {
-        parent::__construct('Content', 'Document Text');
+        parent::__construct('Content', _kt('Document Text'));
         $this->setAlias('DocumentText');
     }
 

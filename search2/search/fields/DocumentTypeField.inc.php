@@ -4,7 +4,7 @@ class DocumentTypeField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('document_type_id', 'document_metadata_version', 'Document Type');
+        parent::__construct('document_type_id', 'document_metadata_version', _kt('Document Type'));
         $this->setAlias('DocumentType');
         $this->joinTo('document_types_lookup', 'id');
 		$this->matchField('name');

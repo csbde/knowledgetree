@@ -4,7 +4,7 @@ class CreatedField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('created', 'documents', 'Created');
+        parent::__construct('created', 'documents', _kt('Created'));
         $this->setAlias('Created');
     }
 

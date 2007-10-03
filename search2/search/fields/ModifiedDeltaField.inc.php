@@ -6,7 +6,7 @@ class ModifiedDeltaField extends DBFieldExpr
 
     public function __construct()
     {
-        parent::__construct('modified', 'documents', 'Modified Delta');
+        parent::__construct('modified', 'documents', _kt('Modified Delta'));
         $this->setAlias('ModifiedDelta');
         $this->isValueQuoted(false);
     }

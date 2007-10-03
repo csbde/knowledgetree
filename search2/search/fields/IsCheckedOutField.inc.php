@@ -4,7 +4,7 @@ class IsCheckedOutField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('is_checked_out', 'documents','Is Checked Out');
+        parent::__construct('is_checked_out', 'documents', _kt('Is Checked Out'));
         $this->setAlias('IsCheckedOut');
         $this->isValueQuoted(false);
     }

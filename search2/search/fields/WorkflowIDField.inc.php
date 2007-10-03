@@ -4,7 +4,7 @@ class WorkflowIDField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('workflow_id', 'document_metadata_version', 'Workflow ID');
+        parent::__construct('workflow_id', 'document_metadata_version', _kt('Workflow ID'));
         $this->setAlias('WorkflowID');
     }
 

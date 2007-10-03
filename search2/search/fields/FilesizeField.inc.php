@@ -4,7 +4,7 @@ class FilesizeField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('size', 'document_content_version', 'Filesize');
+        parent::__construct('size', 'document_content_version', _kt('Filesize'));
         $this->setAlias('Filesize');
     }
 

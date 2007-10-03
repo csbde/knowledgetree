@@ -4,7 +4,7 @@ class TitleField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('name', 'document_metadata_version', 'Title');
+        parent::__construct('name', 'document_metadata_version', _kt('Title'));
         $this->setAlias('Title');
     }
 

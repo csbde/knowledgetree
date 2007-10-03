@@ -4,7 +4,7 @@ class TagField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('tag', 'tag_words', 'Tag');
+        parent::__construct('tag', 'tag_words', _kt('Tag'));
         $this->setAlias('Tag');
     }
 
