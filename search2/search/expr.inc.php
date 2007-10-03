@@ -1256,11 +1256,6 @@ class SQLQueryBuilder implements QueryBuilder
 			$query = $this->getSQLEvalExpr($expr);
 		}
 
-		if ($expr->not())
-		{
-			$query = "NOT $query";
-		}
-
 		return $query;
 	}
 
