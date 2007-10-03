@@ -197,10 +197,7 @@ function onShowAll(showall)
   		<input type="hidden" name="fReturnAction" value="search2" />
   		<input type="hidden" name="fReturnData" value="1" />
 
-
-
   		{foreach from=$bulkactions item=bulkaction}
-  		{$bulkaction}
       		<input type="submit" name="submit[{$bulkaction->getName()}]" value="{$bulkaction->getDisplayName()}" />
 		{/foreach}
 </table>
