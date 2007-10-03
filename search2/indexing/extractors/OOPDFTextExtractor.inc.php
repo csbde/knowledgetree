@@ -19,7 +19,7 @@ class OOPDFTextExtractor extends CompositeExtractor
 	public function getDisplayName()
 	{
 		// we provide this so diagnose doesn't fail
-		throw new Exception('This should be overriden');
+		throw new Exception(_kt('This should be overriden'));
 	}
 
 }
