@@ -88,7 +88,7 @@ class SearchCommandLexer
                 }
                 else
                 {
-                	throw new Exception('Unexpected token: ' . $this->lookahead);
+                	throw new Exception(sprintf(_kt('Unexpected token: %s'), $this->lookahead));
                 }
             	break;
             case '<':
