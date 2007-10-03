@@ -138,7 +138,7 @@ class Expr
      */
     public function __toString()
     {
-        throw new Exception('Not yet implemented in ' . get_class($this));
+        throw new Exception(sprintf(_kt('Not yet implemented in %s'), get_class($this)));
     }
 
     /**
@@ -556,35 +556,48 @@ class ValueExpr extends Expr
         {
             case ExprOp::CONTAINS:
                 $sql = "$fieldname LIKE '%$val%'";
+                if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::STARTS_WITH:
                 $sql = "$fieldname LIKE '$val%'";
+                if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::ENDS_WITH:
                 $sql = "$fieldname LIKE '%$val'";
+                if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::IS:
-                $sql = "$fieldname = $quote$val$quote";
+            	if ($not)
+                	$sql = "$fieldname != $quote$val$quote";
+                else
+                	$sql = "$fieldname = $quote$val$quote";
                 break;
             case ExprOp::GREATER_THAN :
-                $sql = "$fieldname > $quote$val$quote";
+            	if ($not)
+                	$sql = "$fieldname <= $quote$val$quote";
+                else
+                	$sql = "$fieldname > $quote$val$quote";
                 break;
             case ExprOp::GREATER_THAN_EQUAL  :
-                $sql = "$fieldname >= $quote$val$quote";
+            	if ($not)
+                	$sql = "$fieldname < $quote$val$quote";
+                else
+                	$sql = "$fieldname >= $quote$val$quote";
                 break;
             case ExprOp::LESS_THAN  :
-                $sql = "$fieldname < $quote$val$quote";
+            	if ($not)
+                	$sql = "$fieldname >= $quote$val$quote";
+                else
+                	$sql = "$fieldname < $quote$val$quote";
                 break;
             case ExprOp::LESS_THAN_EQUAL :
-                $sql = "$fieldname <= $quote$val$quote";
+            	if ($not)
+	                $sql = "$fieldname > $quote$val$quote";
+	            else
+                	$sql = "$fieldname <= $quote$val$quote";
                 break;
             default:
-                throw new Exception('Unknown op: ' . $op);
-        }
-
-        if ($not)
-        {
-            $sql = "not ($sql)";
+                throw new Exception(sprintf(_kt('Unknown op: %s'), $op));
         }
 
         return $sql;
@@ -741,7 +754,7 @@ class BetweenValueExpr extends ValueExpr
     {
         if ($op != ExprOp::BETWEEN)
         {
-            throw new Exception('Unexpected operator: ' . $op);
+            throw new Exception(sprintf(_kt('Unexpected operator: %s'), $op));
         }
 
 		$quote = '';
