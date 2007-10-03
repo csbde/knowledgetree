@@ -106,10 +106,10 @@ class KTCorePlugin extends KTPlugin {
                 'KTPortlets.php');
         /* NEW SEARCH $this->registerPortlet(array('browse', 'dashboard'),
                 'KTSearchPortlet', 'ktcore.portlets.search',
-                'KTPortlets.php');
+                'KTPortlets.php');*/
         $this->registerPortlet(array('browse'),
                 'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
-                'KTPortlets.php'); */
+                'KTPortlets.php');
 
         $this->registerPortlet(array('administration'),
                 'KTAdminSectionNavigation', 'ktcore.portlets.adminnavigation',
