@@ -12,7 +12,7 @@
  */
 
 session_start();
-print "Registering Extractor mapping to Mime types...\n";
+print _kt("Registering Extractor mapping to Mime types") . "...\n";
 
 require_once(realpath('../../../config/dmsDefaults.php'));
 
@@ -21,7 +21,7 @@ $indexer = $config->get('indexer/coreClass');
 
 if ($indexer != 'PHPLuceneIndexer')
 {
-	print "This script only works with the PHPLuceneIndexer.\n";
+	print _kt("This script only works with the PHPLuceneIndexer.") . "\n";
 	exit;
 }
 
@@ -36,7 +36,7 @@ if ($argc > 0)
 		{
 			case 'clear':
 				$clear=true;
-				print "* Clearing mime type associations\n";
+				print "* " . _kt("Clearing mime type associations.") . "\n";
 				break;
 			case 'help':
 				print "Usage: registerTypes.php [clear]\n";
@@ -52,5 +52,5 @@ if ($argc > 0)
 $indexer = Indexer::get();
 $indexer->registerTypes($clear);
 
-print "Done.\n";
+print _kt("Done.") . "\n";
 ?>
