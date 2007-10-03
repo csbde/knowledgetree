@@ -149,5 +149,22 @@ class JavaXMLRPCLuceneIndexer extends Indexer
         return $results;
     }
 
+    public function diagnose()
+    {
+    	$config =& KTConfig::getSingleton();
+
+		$ooHost = $config->get('openoffice/host', 'localhost');
+		$ooPort = $config->get('openoffice/port', 8100);
+		$connection = @fsockopen($ooHost, $ooPort,$errno, $errstr, 2);
+		if (false === $connection)
+		{
+			return _kt('Cannot connect to openoffice host');
+		}
+		fclose($connection);
+
+		return null;
+    }
+
+
 }
 ?>
