@@ -3387,7 +3387,7 @@ class KTWebService
 
     	if (isset($_SERVER['REQUEST_METHOD'])  && $_SERVER['REQUEST_METHOD']=='POST')
     	{
-    		$server->service($HTTP_RAW_POST_DATA);
+    		$server->service(file_get_contents("php://input"));
     	}
     	else
     	{
