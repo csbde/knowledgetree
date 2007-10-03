@@ -4,7 +4,7 @@ class PDFExtractor extends ApplicationExtractor
 {
 	public function __construct()
 	{
-		parent::__construct('extractors','pdftotext','pdftotext','PDF Text Extractor','-nopgbrk -enc UTF-8 {source} {target}');
+		parent::__construct('extractors','pdftotext','pdftotext',_kt('PDF Text Extractor'),'-nopgbrk -enc UTF-8 {source} {target}');
 	}
 
 	public function getSupportedMimeTypes()
