@@ -112,7 +112,7 @@ expr(A)         ::= terminal(B) IS notop(C) value(D).
 	A=$expr;
 }
 
-expr(A)         ::= terminal(B) DOES notop(C) CONTAIN value(D).
+expr(A)         ::= terminal(B) DOES notop(C) CONTAINS value(D).
 {
 	$expr = new OpExpr(B, ExprOp::CONTAINS, D);
 	$expr->not(C);
