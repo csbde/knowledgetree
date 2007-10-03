@@ -313,7 +313,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 	 */
 	protected function getCommandLine()
 	{
-		throw new Exception('getCommandLine is not implemented');
+		throw new Exception(_kt('getCommandLine is not implemented'));
 	}
 
 	/**
@@ -423,7 +423,7 @@ abstract class ApplicationExtractor extends ExternalDocumentExtractor
 	{
 		if (false === $this->application)
 		{
-			return _kt("Cannot locate binary for $this->displayname ($this->command).");
+			return sprintf(_kt("Cannot locate binary for %s (%s)."), $this->displayname, $this->command);
 		}
 
 		return null;
