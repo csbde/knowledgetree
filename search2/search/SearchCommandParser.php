@@ -149,13 +149,13 @@ class SearchCommandParser#line 102 "SearchCommandParser.php"
     const PAR_OPEN                       = 14;
     const PAR_CLOSE                      = 15;
     const DOES                           = 16;
-    const COLON                          = 17;
-    const SQUARE_OPEN                    = 18;
-    const SQUARE_CLOSE                   = 19;
-    const TERMINAL                       = 20;
-    const VALUE                          = 21;
-    const COMMA                          = 22;
-    const CONTAINS                       = 23;
+    const CONTAINS                       = 17;
+    const COLON                          = 18;
+    const SQUARE_OPEN                    = 19;
+    const SQUARE_CLOSE                   = 20;
+    const TERMINAL                       = 21;
+    const VALUE                          = 22;
+    const COMMA                          = 23;
     const WITH                           = 24;
     const IS_NOT                         = 25;
     const YY_NO_ACTION = 84;
@@ -214,70 +214,70 @@ class SearchCommandParser#line 102 "SearchCommandParser.php"
 */
     const YY_SZ_ACTTAB = 70;
 static public $yy_action = array(
- /*     0 */    52,   15,    8,    7,    4,   23,   22,   37,   34,   54,
- /*    10 */    33,    3,    5,   16,    9,    2,   21,   83,    1,   13,
- /*    20 */    50,   32,   36,    3,    5,   44,   17,   26,   47,    1,
- /*    30 */    19,   39,    1,   41,   14,   46,   20,    1,   45,   38,
- /*    40 */     1,    6,   35,   10,   42,   27,   31,   12,    5,   24,
- /*    50 */    18,   53,   28,   52,   63,   63,   63,   30,   63,   63,
- /*    60 */    63,   49,   48,   29,   40,   43,   51,   63,   11,   25,
+ /*     0 */    52,   15,    3,    5,   39,   23,   22,   37,   34,   54,
+ /*    10 */    33,   47,    4,   16,   50,    9,   44,   21,   83,    1,
+ /*    20 */     8,    7,   36,    2,    3,    5,    6,   17,   13,   26,
+ /*    30 */    32,    1,   35,   27,   19,   41,    1,   46,   14,    1,
+ /*    40 */    20,   38,   45,    5,    1,   10,   12,   31,   42,   24,
+ /*    50 */    53,   18,   28,   30,   52,   63,   49,   63,   63,   63,
+ /*    60 */    63,   48,   29,   40,   63,   43,   51,   63,   11,   25,
     );
     static public $yy_lookahead = array(
- /*     0 */     3,    4,    6,    7,    3,    8,    9,   10,   11,   12,
- /*    10 */    13,    1,    2,   16,   17,   14,   27,   28,   29,   18,
- /*    20 */    23,   20,   25,    1,    2,   15,   14,   27,   33,   29,
- /*    30 */    27,   24,   29,   21,   30,   27,   32,   29,   27,   24,
- /*    40 */    29,    2,   19,   18,   15,   21,   19,    5,    2,   33,
- /*    50 */    22,   31,   31,    3,   34,   34,   34,   31,   34,   34,
- /*    60 */    34,   31,   31,   31,   31,   31,   31,   34,   32,   32,
+ /*     0 */     3,    4,    1,    2,   24,    8,    9,   10,   11,   12,
+ /*    10 */    13,   33,    3,   16,   17,   18,   15,   27,   28,   29,
+ /*    20 */     6,    7,   25,   14,    1,    2,    2,   14,   19,   27,
+ /*    30 */    21,   29,   20,   22,   27,   22,   29,   27,   30,   29,
+ /*    40 */    32,   24,   27,    2,   29,   19,   17,   20,   15,   33,
+ /*    50 */    31,   23,   31,   31,    3,   34,   31,   34,   34,   34,
+ /*    60 */    34,   31,   31,   31,   34,   31,   31,   34,   32,   32,
 );
-    const YY_SHIFT_USE_DFLT = -5;
+    const YY_SHIFT_USE_DFLT = -21;
     const YY_SHIFT_MAX = 31;
     static public $yy_shift_ofst = array(
- /*     0 */     1,   -3,    1,    1,    1,    1,   12,   12,   12,   12,
- /*    10 */    12,   12,   12,   12,   12,   50,   50,   24,   24,   10,
- /*    20 */    -4,   22,   15,    7,   29,   42,   46,   28,   27,   39,
- /*    30 */    23,   25,
+ /*     0 */     9,   -3,    9,    9,    9,    9,   13,   13,   13,   13,
+ /*    10 */    13,   13,   13,   13,   13,   51,   51,   11,   11,    1,
+ /*    20 */    14,   23,   17,  -20,   33,   29,   41,   28,   27,   24,
+ /*    30 */    12,   26,
 );
-    const YY_REDUCE_USE_DFLT = -12;
+    const YY_REDUCE_USE_DFLT = -23;
     const YY_REDUCE_MAX = 18;
     static public $yy_reduce_ofst = array(
- /*     0 */   -11,    4,    3,    0,    8,   11,   31,   32,   33,   30,
- /*    10 */    26,   20,   35,   21,   34,   36,   37,   16,   -5,
+ /*     0 */   -10,    8,    7,    2,   10,   15,   30,   31,   32,   25,
+ /*    10 */    22,   19,   35,   21,   34,   36,   37,   16,  -22,
 );
     static public $yyExpectedTokens = array(
-        /* 0 */ array(3, 14, 18, 20, ),
-        /* 1 */ array(3, 4, 8, 9, 10, 11, 12, 13, 16, 17, 23, 25, ),
-        /* 2 */ array(3, 14, 18, 20, ),
-        /* 3 */ array(3, 14, 18, 20, ),
-        /* 4 */ array(3, 14, 18, 20, ),
-        /* 5 */ array(3, 14, 18, 20, ),
-        /* 6 */ array(14, 21, ),
-        /* 7 */ array(14, 21, ),
-        /* 8 */ array(14, 21, ),
-        /* 9 */ array(14, 21, ),
-        /* 10 */ array(14, 21, ),
-        /* 11 */ array(14, 21, ),
-        /* 12 */ array(14, 21, ),
-        /* 13 */ array(14, 21, ),
-        /* 14 */ array(14, 21, ),
+        /* 0 */ array(3, 14, 19, 21, ),
+        /* 1 */ array(3, 4, 8, 9, 10, 11, 12, 13, 16, 17, 18, 25, ),
+        /* 2 */ array(3, 14, 19, 21, ),
+        /* 3 */ array(3, 14, 19, 21, ),
+        /* 4 */ array(3, 14, 19, 21, ),
+        /* 5 */ array(3, 14, 19, 21, ),
+        /* 6 */ array(14, 22, ),
+        /* 7 */ array(14, 22, ),
+        /* 8 */ array(14, 22, ),
+        /* 9 */ array(14, 22, ),
+        /* 10 */ array(14, 22, ),
+        /* 11 */ array(14, 22, ),
+        /* 12 */ array(14, 22, ),
+        /* 13 */ array(14, 22, ),
+        /* 14 */ array(14, 22, ),
         /* 15 */ array(3, ),
         /* 16 */ array(3, ),
-        /* 17 */ array(21, ),
-        /* 18 */ array(21, ),
+        /* 17 */ array(22, ),
+        /* 18 */ array(22, ),
         /* 19 */ array(1, 2, 15, ),
         /* 20 */ array(6, 7, ),
         /* 21 */ array(1, 2, ),
         /* 22 */ array(24, ),
         /* 23 */ array(24, ),
         /* 24 */ array(15, ),
-        /* 25 */ array(5, ),
+        /* 25 */ array(17, ),
         /* 26 */ array(2, ),
-        /* 27 */ array(22, ),
-        /* 28 */ array(19, ),
+        /* 27 */ array(23, ),
+        /* 28 */ array(20, ),
         /* 29 */ array(2, ),
-        /* 30 */ array(19, ),
-        /* 31 */ array(18, ),
+        /* 30 */ array(20, ),
+        /* 31 */ array(19, ),
         /* 32 */ array(),
         /* 33 */ array(),
         /* 34 */ array(),
@@ -415,8 +415,8 @@ static public $yy_action = array(
   'IS',            'CONTAIN',       'LIKE',          'BETWEEN',     
   'START',         'END',           'GT',            'LE',          
   'LT',            'GE',            'PAR_OPEN',      'PAR_CLOSE',   
-  'DOES',          'COLON',         'SQUARE_OPEN',   'SQUARE_CLOSE',
-  'TERMINAL',      'VALUE',         'COMMA',         'CONTAINS',    
+  'DOES',          'CONTAINS',      'COLON',         'SQUARE_OPEN', 
+  'SQUARE_CLOSE',  'TERMINAL',      'VALUE',         'COMMA',       
   'WITH',          'IS_NOT',        'error',         'expr',        
   'cmdline',       'terminal',      'operator',      'value',       
   'notop',         'valuelist',   
@@ -436,7 +436,7 @@ static public $yy_action = array(
  /*   6 */ "expr ::= terminal notop BETWEEN value OPAND value",
  /*   7 */ "expr ::= terminal notop LIKE value",
  /*   8 */ "expr ::= terminal IS notop value",
- /*   9 */ "expr ::= terminal DOES notop CONTAIN value",
+ /*   9 */ "expr ::= terminal DOES notop CONTAINS value",
  /*  10 */ "expr ::= terminal COLON value",
  /*  11 */ "notop ::=",
  /*  12 */ "notop ::= NOT",
