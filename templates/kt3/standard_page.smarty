@@ -209,6 +209,27 @@
 								{/literal}
 	                            <!-- user menu -->
 	                            <li class="pref">
+	                                {if ($page->user)}
+	                                    <span class="ktLoggedInUser">{$page->user->getName()}</span>
+	                                {/if}
+	                                {if !empty($page->userMenu)}
+	                                    &middot;
+	                                {/if}
+	                                {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
+	                                    {if ($aMenuItem.active == 1)}
+	                                        <a style='border: 4px solid red;' href="{$aMenuItem.url}">{$aMenuItem.label}</a>
+	                                    {else}
+	                                        <a href="{$aMenuItem.url}">{$aMenuItem.label}</a>
+	                                    {/if}
+	                                    {if !$smarty.foreach.prefmenu.last}
+	                                        &middot;
+	                                    {/if}
+	                                {/foreach}
+	                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" border="0" align="top" /></a>{/if}
+	                            </li>
+
+
+	                            <li class="pref">
 	                            	<div style="position: absolute;">
 	                            	<input id=searchCriteria value="{$search2_quickQuery|sanitize}" style="width:129px; font-size:12px; position:relative; top: -2px; left: -180px; z-index: 11"
 	                            		onfocus="searchGotFocus('searchCriteria')" onblur="searchLostFocus('searchCriteria')"  onkeypress="return processSearchEnter(event,'searchCriteria')" >
@@ -232,24 +253,8 @@
 	                            	<input type=hidden name="cbQuickQuery" id="cbQuickQuery" value="1">
 	                            	<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1"></form>
 	                            	</div>
-	                                {if ($page->user)}
-	                                    <span class="ktLoggedInUser">{$page->user->getName()}</span>
-	                                {/if}
-	                                {if !empty($page->userMenu)}
-	                                    &middot;
-	                                {/if}
-	                                {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
-	                                    {if ($aMenuItem.active == 1)}
-	                                        <a style='border: 4px solid red;' href="{$aMenuItem.url}">{$aMenuItem.label}</a>
-	                                    {else}
-	                                        <a href="{$aMenuItem.url}">{$aMenuItem.label}</a>
-	                                    {/if}
-	                                    {if !$smarty.foreach.prefmenu.last}
-	                                        &middot;
-	                                    {/if}
-	                                {/foreach}
-	                                {if ($page->getHelpURL() != null)}&nbsp;&nbsp;&nbsp;&nbsp;<span class="fahrner"><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" border="0" align="top" /></a>{/if}
-	                            </li>
+	                            	</li>
+
 	                        </ul>
 	                    </div>
 	                    <div id="navbarLeft"></div>
