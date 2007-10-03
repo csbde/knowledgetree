@@ -252,7 +252,7 @@ class SearchHelper
 
 		if (!Permission::userHasFolderReadPermission($folder))
 		{
-			return new PEAR_Error('no permission to read folder');
+			return new PEAR_Error(_kt('no permission to read folder'));
 		}
 
 		$sql = "SELECT id, name FROM folders WHERE parent_id=$folderID ORDER BY name";
@@ -304,7 +304,7 @@ class SearchHelper
 		}
 		if (count($rs) == 0)
 		{
-			return new PEAR_Error('Fieldset was not found');
+			return new PEAR_Error(_kt('Fieldset was not found'));
 		}
 
 		$result=array();
@@ -450,7 +450,7 @@ function parseExpression($expr_str)
             {
                 $use_internal=true;
                 $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-                throw new Exception("Parsing problem near '$lexer->value' in '$expr_str' of expression.");
+                throw new Exception(sprintf(_kt("Parsing problem near '%s' in '%s' of expression."),$lexer->value,$expr_str));
             }
         }
 
@@ -461,7 +461,7 @@ function parseExpression($expr_str)
         {
             $use_internal=true;
             $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-            throw new Exception("There is a problem parsing the expression '$expr_str'");
+            throw new Exception(sprintf(_kt("There is a problem parsing the expression '%s'"),$expr_str));
         }
 
     }
@@ -476,7 +476,7 @@ function parseExpression($expr_str)
             throw $e;
         }
         $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-        throw new Exception("Parsing problem near '$lexer->value' of expression '$expr_str'.");
+        throw new Exception(sprintf(_kt("Parsing problem near '%s' of expression '%s'."), $lexer->value, $expr_str));
     }
 
     return $parser->getExprResult();
