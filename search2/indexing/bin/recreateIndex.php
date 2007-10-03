@@ -10,7 +10,7 @@
  */
 
 session_start();
-print "Recreate Lucene index...\n";
+print _kt("Recreate Lucene index") . "...\n";
 
 $sure=false;
 $indexall = false;
@@ -34,7 +34,7 @@ if ($argc > 0)
 }
 if (!$sure)
 {
-	print "* Are you sure you want to do this? Add 'positive' as a parameter to continue.\n";
+	print "* " . _kt("Are you sure you want to do this? Add 'positive' as a parameter to continue.") . "\n";
 	exit;
 }
 
@@ -46,7 +46,7 @@ $indexer = $config->get('indexer/coreClass');
 
 if ($indexer != 'PHPLuceneIndexer')
 {
-	print "This script only works with the PHPLuceneIndexer.\n";
+	print _kt("This script only works with the PHPLuceneIndexer.") . "\n";
 	exit;
 }
 
@@ -56,15 +56,15 @@ require_once('indexing/indexers/PHPLuceneIndexer.inc.php');
 
 
 PHPLuceneIndexer::createIndex();
-print "\n* The lucene index has been recreated.\n";
+print "\n* " . _kt("The lucene index has been recreated.") . "\n";
 
 if ($indexall)
 {
 	PHPLuceneIndexer::indexAll();
-	print "\n* All documents are scheduled for indexing.\n";
+	print "\n* " . _kt("All documents are scheduled for indexing.") . "\n";
 }
 
-print "Done.\n";
+print _kt("Done.") . "\n";
 
 
 ?>

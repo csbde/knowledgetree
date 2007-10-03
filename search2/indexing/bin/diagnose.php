@@ -9,14 +9,14 @@
 require_once(realpath('../../../config/dmsDefaults.php'));
 require_once('indexing/indexerCore.inc.php');
 
-print "Diagnosing the text extractors...\n";
+print _kt("Diagnosing the text extractors") . "...\n";
 
 $indexer = Indexer::get();
-$diagnoses = $indexer->diagnose();
+$diagnoses = $indexer->diagnoseExtractors();
 
 if (count($diagnoses) == 0)
 {
-	print "There don't appear to be any problems.\n";
+	print _kt("There don't appear to be any problems.") ." \n";
 }
 else
 {
@@ -25,11 +25,11 @@ else
 		$name = $value['name'];
 		$diagnosis = $value['diagnosis'];
 
-		print "\nExtractor: $name ($key)\n";
+		print "\n" . _kt('Extractor:') ." $name ($key)\n";
 		print "* $diagnosis\n";
 	}
 }
 
-print "\nDone.\n";
+print "\n" . _kt("Done.") . "\n";
 
 ?>
