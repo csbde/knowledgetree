@@ -4,7 +4,7 @@ class WorkflowStateField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('workflow_state_id', 'document_metadata_version', 'Workflow State');
+        parent::__construct('workflow_state_id', 'document_metadata_version', _kt('Workflow State'));
         $this->setAlias('WorkflowState');
         $this->joinTo('workflow_states', 'id');
 		$this->matchField('name');

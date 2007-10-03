@@ -4,7 +4,7 @@ class IsImmutableField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('immutable', 'documents', 'Is Immutable');
+        parent::__construct('immutable', 'documents', _kt('Is Immutable'));
         $this->setAlias('IsImmutable');
         $this->isValueQuoted(false);
     }

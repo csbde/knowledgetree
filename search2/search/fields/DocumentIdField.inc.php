@@ -4,7 +4,7 @@ class DocumentIdField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('id', 'documents', 'Document ID');
+        parent::__construct('id', 'documents', _kt('Document ID'));
         $this->setAlias('DocumentId');
     }
 

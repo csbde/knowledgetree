@@ -6,7 +6,7 @@ class CheckedOutDeltaField extends DBFieldExpr
 
     public function __construct()
     {
-        parent::__construct('checkedout', 'documents', 'Checked Out Delta');
+        parent::__construct('checkedout', 'documents', _kt('Checked Out Delta'));
         $this->setAlias('CheckedoutDelta');
         $this->isValueQuoted(false);
     }

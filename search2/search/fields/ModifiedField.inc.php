@@ -4,7 +4,7 @@ class ModifiedField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('modified', 'documents', 'Modified');
+        parent::__construct('modified', 'documents', _kt('Modified'));
         $this->setAlias('Modified');
     }
 

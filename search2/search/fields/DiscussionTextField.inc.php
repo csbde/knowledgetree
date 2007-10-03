@@ -5,7 +5,7 @@ class DiscussionTextField extends SearchableText
 {
     public function __construct()
     {
-        parent::__construct('Discussion', 'Discussion Text');
+        parent::__construct('Discussion', _kt('Discussion Text'));
         $this->setAlias('DiscussionText');
     }
 

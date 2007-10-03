@@ -4,7 +4,7 @@ class CreatedByField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('creator_id', 'documents','Created By');
+        parent::__construct('creator_id', 'documents',_kt('Created By'));
         $this->setAlias('CreatedBy');
 		$this->joinTo('users', 'id');
 		$this->matchField('name');

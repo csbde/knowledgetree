@@ -4,7 +4,7 @@ class GeneralTextField extends SearchableText
 {
     public function __construct()
     {
-        parent::__construct('General', 'General Text');
+        parent::__construct('General', _kt('General Text'));
         $this->setAlias('GeneralText');
     }
 

@@ -4,7 +4,7 @@ class MimeTypeField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('mime_id', 'document_content_version', 'Mime Type');
+        parent::__construct('mime_id', 'document_content_version', _kt('Mime Type'));
         $this->setAlias('MimeType');
         $this->joinTo('mime_types', 'id');
 		$this->matchField('mimetypes');
