@@ -185,7 +185,7 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
     }
 
     // emailed link transaction
-	$oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document copy emailed to %s"), $sDestEmails), 'ktcore.transactions.email_attachement');
+	$oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document copy emailed to %s. "), $sDestEmails).$sComment, 'ktcore.transactions.email_attachment');
     if ($oDocumentTransaction->create()) {
         $default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
     } else {
@@ -244,7 +244,7 @@ function sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $s
 	// need a document to do this.
 	$oDocument =& Document::get($iDocumentID);
 
-    $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document link emailed to %s"), $sDestEmails), 'ktcore.transactions.email_link');
+    $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document link emailed to %s. "), $sDestEmails).$sComment, 'ktcore.transactions.email_link');
 
     if ($oDocumentTransaction->create()) {
 		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
