@@ -3379,8 +3379,6 @@ class KTWebService
      */
     function run()
     {
-    	global $HTTP_RAW_POST_DATA;
-
     	$server = new SOAP_Server();
 
     	$server->addObjectMap($this, 'http://schemas.xmlsoap.org/soap/envelope/');
