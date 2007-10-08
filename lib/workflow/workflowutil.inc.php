@@ -816,7 +816,7 @@ class KTWorkflowUtil {
 
         $wf = KTUtil::getTableName('workflow_transitions');
         $aTransitionQuery = array(
-            "UPDATE $wf SET target_state_id = ? WHERE workflow_state_id = ?",
+            "UPDATE $wf SET target_state_id = ? WHERE target_state_id = ?",
             array($replacement_id, $state_id),
         );
         $res = DBUtil::runQuery($aTransitionQuery);
