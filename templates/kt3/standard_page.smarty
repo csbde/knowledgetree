@@ -141,7 +141,7 @@
 	                            		sc.value = '';
 	                            	}
 
-									return true;test2
+									return true;
 	                            }
 	                            function searchGotFocus(elname)
 	                            {
