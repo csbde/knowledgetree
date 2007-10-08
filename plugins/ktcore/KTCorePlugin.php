@@ -91,6 +91,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('bulkaction', 'KTBulkCopyAction', 'ktcore.actions.bulk.copy', 'KTBulkActions.php');
         $this->registerAction('bulkaction', 'KTBulkArchiveAction', 'ktcore.actions.bulk.archive', 'KTBulkActions.php');
         $this->registerAction('bulkaction', 'KTBrowseBulkExportAction', 'ktcore.actions.bulk.export', 'KTBulkActions.php');
+        $this->registerAction('bulkaction', 'KTBrowseBulkCheckoutAction', 'ktcore.actions.bulk.checkout', 'KTBulkActions.php');
 
         // Dashlets
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
