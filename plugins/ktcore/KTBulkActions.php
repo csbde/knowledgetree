@@ -31,6 +31,7 @@
 
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_LIB_DIR . '/foldermanagement/compressionArchiveUtil.inc.php');
 
 
 class KTBulkDeleteAction extends KTBulkAction {
@@ -486,33 +487,33 @@ class KTBulkArchiveAction extends KTBulkAction {
                DBUtil::rollback();
                return false;
             }
-    
+
             $oDocumentTransaction = & new DocumentTransaction($document, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
             $oDocumentTransaction->create();
-    
+
             DBUtil::commit();
             return true;
         }else if(is_a($oEntity, 'Folder')) {
         	DBUtil::startTransaction();
-            
+
             $aDocuments = array();
             $aChildFolders = array();
             $oFolder = $oEntity;
-            
+
             // Get folder id
             $sFolderId = $oFolder->getID();
-            
+
             // Get documents in folder
             $sDocuments = $oFolder->getDocumentIDs($sFolderId);
             $aDocuments = explode(',', $sDocuments);
-            
+
             // Get all the folders within the folder
             $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
             parent_folder_ids LIKE '{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
-                        
+
             // Loop through folders and get documents
             if(!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
@@ -522,26 +523,26 @@ class KTBulkArchiveAction extends KTBulkAction {
                        DBUtil::rollback();
                        return false;
                     }
-                        
+
                     if(!empty($sChildDocs)){
                         $aChildDocs = explode(',', $sChildDocs);
                         $aDocuments = array_merge($aDocuments, $aChildDocs);
                     }
                 }
             }
-            
+
             // Archive all documents
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
-                    
+
                     $oDocument->setStatusID(ARCHIVED);
                     $res = $oDocument->update();
                     if (($res === false) || PEAR::isError($res)) {
                        DBUtil::rollback();
                        return false;
                     }
-                    
+
                     $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
                     $oDocumentTransaction->create();
                 }
@@ -573,47 +574,29 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
     function do_performaction() {
 
-        $oKTConfig =& KTConfig::getSingleton();
-        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
-    	$this->sTmpPath= $sTmpPath = tempnam($sBasedir, 'kt_export');
+        $folderName = $this->oFolder->getName();
+        $this->oZip = new ZipFolder($folderName);
+        $res = $this->oZip->checkConvertEncoding();
 
-		$this->oStorage =& KTStorageManagerUtil::getSingleton();
+        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
 
-		unlink($sTmpPath);
-        mkdir($sTmpPath, 0700);
+        if(PEAR::isError($res)){
+            $this->addErrorMessage($res->getMessage());
+            return $sReturn;
+        }
 
         $this->startTransaction();
+        $oKTConfig =& KTConfig::getSingleton();
         $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
 
-        $this->sTmpPath = $sTmpPath;
-        $this->aPaths = array();
-
         $result = parent::do_performaction();
+        $sExportCode = $this->oZip->createZipFile();
 
-
-        $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
-        file_put_contents($sManifest, join("\n", $this->aPaths));
-        $sZipFile = sprintf("%s/%s.zip", $this->sTmpPath, $this->oFolder->getName());
-        $sZipFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $sZipFile)));
-        $_SESSION['bulkexport'] = KTUtil::arrayGet($_SESSION, 'bulkexport', array());
-        $sExportCode = KTUtil::randomString();
-        $_SESSION['bulkexport'][$sExportCode] = array(
-            'file' => $sZipFile,
-            'dir' => $this->sTmpPath,
-        );
-        $sZipCommand = KTUtil::findCommand("export/zip", "zip");
-        $aCmd = array(
-            $sZipCommand,
-            "-r",
-            $sZipFile,
-            ".",
-            "-i@MANIFEST",
-        );
-        $sOldPath = getcwd();
-        chdir($this->sTmpPath);
-        // Note that the popen means that pexec will return a file descriptor
-
-        $fh = KTUtil::pexec($aCmd);
+        if(PEAR::isError($sExportCode)){
+            $this->addErrorMessage($sExportCode->getMessage());
+            return $sReturn;
+        }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
             'folderid' => $this->oFolder->getId(),
@@ -624,32 +607,25 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         ));
 
         $this->commitTransaction();
-
-
-		header("Content-Type: application/zip");
-        header("Content-Length: ". filesize($sZipFile));
-        header("Content-Disposition: attachment; filename=\"" . $this->oFolder->getName() . ".zip" . "\"");
-        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: must-revalidate");
-        readfile($sZipFile);
-        $sTmpDir = $aData['dir'];
-        KTUtil::deleteDirectory($sTmpDir);
-
-        return $result;
+        
+        $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
+        $str = sprintf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
+        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $str .= sprintf('<p>' . _kt('Once downloaded, return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
+        //$str .= sprintf("</div></div></body></html>\n");
+        $str .= sprintf('<script language="JavaScript">
+                function kt_bulkexport_redirect() {
+                document.location.href = "%s";
+                }
+                callLater(1, kt_bulkexport_redirect);
+    
+                </script>', $url);
+                
+        return $str;
     }
 
     function perform_action($oEntity) {
-        $aReplace = array(
-            "[" => "[[]",
-            " " => "[ ]",
-            "*" => "[*]",
-            "?" => "[?]",
-        );
-    
-        $aReplaceKeys = array_keys($aReplace);
-        $aReplaceValues = array_values($aReplace);
-            
+
         if(is_a($oEntity, 'Document')) {
 
 			$oDocument = $oEntity;
@@ -658,113 +634,316 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                 $oDocumentTransaction->create();
             }
-
-            $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $oDocument->getFullPath()))));
-            $newDir = $this->sTmpPath;
-            $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
-            foreach (split('/', $sFullPath) as $dirPart) {
-                $newDir = sprintf("%s/%s", $newDir, $dirPart);
-                if (!file_exists($newDir)) {
-                    mkdir($newDir, 0700);
-                }
-            }
-            $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->oStorage->temporaryFile($oDocument))));
-            $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
-            $sFilename = $this->_convertEncoding($sFilename, true);
-            copy($sOrigFile, $sFilename);
-            $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
-            $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
-            $sPath = $this->_convertEncoding($sPath, true);
-            $this->aPaths[] = $sPath;
-
+            $this->oZip->addDocumentToZip($oDocument);
 
         }else if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
             $oFolder = $oEntity;
             $sFolderId = $oFolder->getId();
             $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
-            
+
             if(!empty($sFolderDocs)){
                 $aDocuments = explode(',', $sFolderDocs);
             }
-                
+
             // Get all the folders within the current folder
             $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
             parent_folder_ids LIKE '{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
-            
+
             // Export the folder structure to ensure the export of empty directories
-            foreach($aFolderList as $k => $oFolderItem){
-                // Get documents for each folder
-                $sFolderItemId = $oFolderItem->getID();
-                $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
-                        
-                if(!empty($sFolderItemDocs)){
-                    $aFolderDocs = explode(',', $sFolderItemDocs);
-                    $aDocuments = array_merge($aDocuments, $aFolderDocs);
-                }
-                
-                $sFolderPath = $oFolderItem->getFullPath().'/'.$oFolderItem->getName().'/';
-                $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sFolderPath))));
-                $newDir = $this->sTmpPath;
-                $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sFolderPath, true))));
-                foreach (split('/', $sFullPath) as $dirPart) {
-                    $newDir = sprintf("%s/%s", $newDir, $dirPart);
-                    if (!file_exists($newDir)) {
-                        mkdir($newDir, 0700);
+            if(!empty($aFolderList)){
+                foreach($aFolderList as $k => $oFolderItem){
+                    // Get documents for each folder
+                    $sFolderItemId = $oFolderItem->getID();
+                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
+
+                    if(!empty($sFolderItemDocs)){
+                        $aFolderDocs = explode(',', $sFolderItemDocs);
+                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
                     }
+                    $this->oZip->addFolderToZip($oFolderItem);
                 }
-                $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s", $sFolderPath))));
-                $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
-                $sPath = $this->_convertEncoding($sPath, true);
-                $this->aPaths[] = $sPath;
             }
-            
+
             // Add all documents to the export
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
-                    
+
                     if ($this->bNoisy) {
                         $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                         $oDocumentTransaction->create();
                     }
-        
-                    $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $oDocument->getFullPath()))));
-                    $newDir = $this->sTmpPath;
-                    $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
-                    foreach (split('/', $sFullPath) as $dirPart) {
-                        $newDir = sprintf("%s/%s", $newDir, $dirPart);
-                        if (!file_exists($newDir)) {
-                            mkdir($newDir, 0700);
-                        }
-                    }
-                    $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->oStorage->temporaryFile($oDocument))));
-                    $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
-                    $sFilename = $this->_convertEncoding($sFilename, true);
-                    copy($sOrigFile, $sFilename);
-                    $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
-                    $sPath = str_replace($aReplaceKeys, $aReplaceValues, $sPath);
-                    $sPath = $this->_convertEncoding($sPath, true);
-                    $this->aPaths[] = $sPath;
+                    $this->oZip->addDocumentToZip($oDocument);
                 }
-            }                    
+            }
         }
         return true;
     }
 
-    function _convertEncoding($sMystring, $bEncode) {
-    	if (strcasecmp($this->sOutputEncoding, "UTF-8") === 0) {
-    		return $sMystring;
-    	}
-    	if ($bEncode) {
-    		return iconv("UTF-8", $this->sOutputEncoding, $sMystring);
-    	} else {
-    		return iconv($this->sOutputEncoding, "UTF-8", $sMystring);
-    	}
+    function do_downloadZipFile() {
+        $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
+        
+        $folderName = $this->oFolder->getName();
+        $this->oZip = new ZipFolder($folderName);
+        
+        $res = $this->oZip->downloadZipFile($sCode);
+        
+        if(PEAR::isError($res)){
+            $this->addErrorMessage($res->getMessage());
+            redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
+        }
+        exit(0);
+    }
+}
+
+class KTBrowseBulkCheckoutAction extends KTBulkAction {
+    var $sName = 'ktcore.actions.bulk.checkout';
+    var $_sPermission = 'ktcore.permissions.write';
+    var $_bMutator = true;
+
+    function getDisplayName() {
+        return _kt('Checkout');
     }
 
+    function check_entity($oEntity) {
+        if(is_a($oEntity, 'Document')) {
+            if ($oEntity->getIsCheckedOut()) {
+                return PEAR::raiseError(_kt('Document is already checked out'));
+            }
+        }else if(!is_a($oEntity, 'Folder')) {
+                return PEAR::raiseError(_kt('Document cannot be checked out'));
+        }
+        return parent::check_entity($oEntity);
+    }
+
+    function form_collectinfo() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'identifier' => 'ktcore.actions.bulk.checkout.form',
+            'label' => _kt('Checkout Items'),
+            'submit_label' => _kt('Checkout'),
+            'action' => 'performaction',
+            'fail_action' => 'collectinfo',
+            'cancel_action' => 'main',
+            'context' => $this,
+        ));
+
+        $oForm-> setWidgets(array(
+            array('ktcore.widgets.reason',array(
+                'name' => 'reason',
+                'label' => _kt('Reason'),
+                'description' => _kt('Please specify why you are checking out these documents. It will assist other users in understanding why you have locked these files.'),
+                'value' => null,
+                'required' => true,
+                )),
+            array('ktcore.widgets.boolean', array(
+                'label' => _kt('Download Files'),
+                'description' => _kt('Indicate whether you would like to download these file as part of the checkout.'),
+                'name' => 'download_file',
+                'value' => true,
+            )),
+        ));
+
+        $oForm->setValidators(array(
+            array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'max_length' => 250,
+                'output' => 'reason',
+            )),
+            array('ktcore.validators.boolean', array(
+                'test' => 'download_file',
+                'output' => 'download_file',
+            )),
+        ));
+
+        return $oForm;
+    }
+
+    // info collection step
+    function do_collectinfo() {
+        $this->store_lists();
+        $this->get_lists();
+      	$oTemplating =& KTTemplating::getSingleton();
+      	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+        return $oTemplate->render(array('context' => $this,
+                                        'form' => $this->form_collectinfo()));
+    }
+
+    function do_performaction() {
+        // Get reason for checkout & check if docs must be downloaded
+        $this->store_lists();
+        $this->get_lists();
+
+        $oForm = $this->form_collectinfo();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            $oForm->handleError();
+        }
+
+        $this->sReason = $_REQUEST['data']['reason'];
+        $this->bDownload = $_REQUEST['data']['download_file'];
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
+        
+        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
+
+        $this->startTransaction();
+
+        // if files are to be downloaded - create the temp directory for the bulk export
+        if($this->bDownload){
+            $folderName = $this->oFolder->getName();
+            $this->oZip = new ZipFolder($folderName);
+            $res = $this->oZip->checkConvertEncoding();
+                        
+            if(PEAR::isError($res)){
+                $this->addErrorMessage($res->getMessage());
+                return $sReturn;
+            }
+        }
+
+
+        $result = parent::do_performaction();
+
+        if(PEAR::isError($result)){
+            $this->addErrorMessage($result->getMessage());
+            return $sReturn;
+        }
+
+        if($this->bDownload){
+            $sExportCode = $this->oZip->createZipFile();
+
+            if(PEAR::isError($sExportCode)){
+                $this->addErrorMessage($sExportCode->getMessage());
+                return $sReturn;
+            }
+        }
+
+        $this->commitTransaction();
+
+        if($this->bDownload){
+        
+            $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
+            $str = sprintf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
+            $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+            $str .= sprintf('<p>' . _kt('Once downloaded, return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
+            $str .= sprintf("</div></div></body></html>\n");
+            $str .= sprintf('<script language="JavaScript">
+                    function kt_bulkexport_redirect() {
+                        document.location.href = "%s";
+                    }
+                    callLater(1, kt_bulkexport_redirect);
+    
+                    </script>', $url);
+                    
+            return $str;
+        }
+        return $result;
+    }
+
+    function perform_action($oEntity) {
+        // checkout document
+        $sReason = $this->sReason;
+
+        if(is_a($oEntity, 'Document')) {
+            $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser);
+
+            if(PEAR::isError($res)) {
+                return PEAR::raiseError($oEntity->getName().': '.$res->getMessage());
+            }
+            if($this->bDownload){
+                if ($this->bNoisy) {
+                    $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
+                    $oDocumentTransaction->create();
+                }
+                $this->oZip->addDocumentToZip($oEntity);
+            }
+
+        }else if(is_a($oEntity, 'Folder')) {
+            // get documents and subfolders
+            $aDocuments = array();
+            $oFolder = $oEntity;
+
+            $sFolderId = $oFolder->getId();
+            $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
+
+            // get documents directly in the folder
+            if(!empty($sFolderDocs)){
+                $aDocuments = explode(',', $sFolderDocs);
+            }
+
+            // Get all the folders within the current folder
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aFolderList = $this->oFolder->getList($sWhereClause);
+
+            // Get the documents within the folder
+            if(!empty($aFolderList)){
+                foreach($aFolderList as $k => $oFolderItem){
+                    // Get documents for each folder
+                    $sFolderItemId = $oFolderItem->getID();
+                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
+
+                    if(!empty($sFolderItemDocs)){
+                        $aFolderDocs = explode(',', $sFolderItemDocs);
+                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
+                    }
+
+                    // Add the folder to the zip file
+                    if($this->bDownload){
+                        $this->oZip->addFolderToZip($oFolderItem);
+                    }
+                }
+            }
+
+            // Checkout each document within the folder structure
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocId){
+                    $oDocument = Document::get($sDocId);
+                    if(PEAR::isError($oDocument)) {
+                        return PEAR::raiseError(_kt('Folder documents cannot be checked out'));
+                    }
+
+                    $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser);
+                    if(PEAR::isError($res)) {
+                        return PEAR::raiseError($oDocument->getName().': '.$res->getMessage());
+                    }
+
+                    // Add document to the zip file
+                    if($this->bDownload){
+                        if ($this->bNoisy) {
+                            $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
+                            $oDocumentTransaction->create();
+                        }
+                        $this->oZip->addDocumentToZip($oDocument);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    function do_downloadZipFile() {
+        $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
+        
+        $folderName = $this->oFolder->getName();
+        $this->oZip = new ZipFolder($folderName);
+        
+        $res = $this->oZip->downloadZipFile($sCode);
+        
+        if(PEAR::isError($res)){
+            $this->addErrorMessage($res->getMessage());
+            redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
+        }
+        exit(0);
+    }
 }
+
 ?>
