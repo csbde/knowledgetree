@@ -1,5 +1,21 @@
 <h2>{i18n}User Management{/i18n}</h2>
-
+{literal}
+<script type="text/javascript">
+	function updateUser(updateAction)
+	{
+		var hiddenBox = document.getElementById("update_value");
+		hiddenBox.value = updateAction;
+		document.editUserForm.submit();
+	}
+	function confirmDelete ()
+	{
+		if(confirm("Are you sure you want to delete?"))
+		{
+			updateUser('delete');
+		}
+	}
+</script>
+{/literal}
 
 {if $can_add}
 <fieldset> <legend>{i18n}Add new users{/i18n}</legend> <p
@@ -69,16 +85,16 @@ very slow if you have many users).{/i18n}</p>
    {if (!empty($search_results))}
 
 <br />
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form name="editUserForm" action="{$smarty.server.PHP_SELF}" method="post">
 <table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 <thead>
    <tr>
+   	   <th>&nbsp;</th>
       <th>{i18n}Name{/i18n}</th>
       <th>{i18n}Username{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Enabled{/i18n}</th>
-      <th>{i18n}Enable{/i18n}</th>
-      <th>{i18n}Disable{/i18n}</th>
+       
       <th>{i18n}Group Memberships{/i18n}</th>
       <th>{i18n}Current Groups{/i18n}</th>
    </tr>
@@ -86,39 +102,42 @@ very slow if you have many users).{/i18n}</p>
 <tbody>
    <!-- do we want to batch here? -->
      {foreach item=oUser from=$search_results}
-     <tr class="{cycle values=odd,even}">
-        <td>{$oUser->getName()}</td>
-        <td>{$oUser->getUsername()}</td>
-        <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td class="centered">
-        {if ($oUser->getDisabled())}
-            <span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</a>        
-        {else}
-            <span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</a>
-        {/if}
-        </td>
-
-        <td class="centered">
-        {if ($oUser->getDisabled() && $oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="enable_user[{$oUser->getId()}]" value="1" />
-        {else}&mdash;{/if}
-        </td>
-        
-        <td class="centered">
-        {if (!$oUser->getDisabled() && $oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="disable_user[{$oUser->getId()}]" value="1" />
-        {else}&mdash;{/if}
-        </td>
-        
-
-        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>  
-        <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
-     </tr>   
+     {if ($oUser->getDisabled() != 2)}
+	     <tr class="{cycle values=odd,even}">
+	        <td class="centered">
+		{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
+		{else}&mdash;{/if}
+		</td>
+	        <td class="centered">
+		{$oUser->getName()}</td>
+	        <td>{$oUser->getUsername()}</td>
+	        <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+	        <td class="centered">
+	        {if ($oUser->getDisabled() == 1)}
+	            <span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</a>        
+	        {else}
+	            <span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</a>
+	        {/if}
+	        </td>
+	
+	        
+	        
+	
+	        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>  
+	        <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
+	     </tr>
+     {/if}   
      {/foreach}
 
 </tbody>
 </table>
 <div class="form_actions">
 <input type="hidden" name="action" value="change_enabled" />
-<input type="submit" value="{i18n}Apply Changes{/i18n}" />
+<input type="hidden" name="update_value" id="update_value" value="" />
+<input type="button" value="{i18n}Enable{/i18n}" id="enableButton" onclick="updateUser('enable');">
+<input type="button" value="{i18n}Disable{/i18n}" id="disableButton" onclick="updateUser('disable');">
+<input type="button" value="{i18n}Delete{/i18n}" id="deleteButton" onclick="confirmDelete();">
+
 </div>
 </form>
 {else}
