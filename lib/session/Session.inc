@@ -55,7 +55,7 @@ class Session {
             }
         }
 
-        if ($oUser->getDisabled()) {
+        if ($oUser->getDisabled() == 1) {
             return PEAR::raiseError(_kt("Your account has been disabled.  Please contact the system administrator for assistance."));
         }
 

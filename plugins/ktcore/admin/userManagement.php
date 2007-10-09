@@ -645,6 +645,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     // change enabled / disabled status of users
     function do_change_enabled() {
+        
         $this->startTransaction();
         $iLicenses = 0;
         $bRequireLicenses = false;
@@ -655,33 +656,56 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
         // admin and anonymous are automatically ignored here.
         $iEnabledUsers = User::getNumberEnabledUsers();
- 
-        foreach(KTUtil::arrayGet($_REQUEST, 'disable_user', array()) as $sUserId => $v) {
-            $oUser = User::get((int)$sUserId);
-            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }                
-            $oUser->disable();
-            $res = $oUser->update();
-            if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
-            $iEnabledUsers--;
-        }
-
-        foreach(KTUtil::arrayGet($_REQUEST, 'enable_user', array()) as $sUserId => $v) {
-            // check that we haven't hit max user limit
-            if($bRequireLicenses && $iEnabledUsers >= $iLicenses) { 
-                // if so, add to error messages, but commit transaction (break this loop)
-                $_SESSION['KTErrorMessage'][] = _kt('You may only have ') . $iLicenses . _kt(' users enabled at one time.');
-                break;
-            }
-
-            // else enable user
-            $oUser = User::get((int)$sUserId);
-            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }               
-            $oUser->enable();
-            $res = $oUser->update();
-            if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
-            $iEnabledUsers++;
-        }
-
+ 		
+ 		if($_REQUEST['update_value'] == 'enable')
+ 		{
+	        foreach(KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $sUserId => $v) {
+	            // check that we haven't hit max user limit
+	            if($bRequireLicenses && $iEnabledUsers >= $iLicenses) { 
+	                // if so, add to error messages, but commit transaction (break this loop)
+	                $_SESSION['KTErrorMessage'][] = _kt('You may only have ') . $iLicenses . _kt(' users enabled at one time.');
+	                break;
+	            }
+	
+	            // else enable user
+	            $oUser = User::get((int)$sUserId);
+	            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }               
+	            $oUser->enable();
+	            $res = $oUser->update();
+	            if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+	            $iEnabledUsers++;
+	        }
+ 		}
+ 		
+ 		if($_REQUEST['update_value'] == 'disable')
+ 		{
+	        //echo 'got into disable';
+	        //exit;
+	        
+	        foreach(KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $sUserId => $v) {
+	            $oUser = User::get((int)$sUserId);
+	            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }                
+	            $oUser->disable();
+	            $res = $oUser->update();
+	            if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+	            $iEnabledUsers--;
+	        }
+ 		}
+ 		
+ 		if($_REQUEST['update_value'] == 'delete')
+ 		{
+ 			//echo 'Delete called';
+ 			
+ 			foreach(KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $sUserId => $v) {
+	            $oUser = User::get((int)$sUserId);
+	            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }                
+	            $oUser->delete();
+	            $res = $oUser->update();
+	            if(PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+	            $iEnabledUsers--;
+	        }
+ 		}
+ 		
         $this->commitTransaction();
         $this->successRedirectToMain(_kt('Users updated'));
 
