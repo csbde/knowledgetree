@@ -1,0 +1,84 @@
+SEARCH2 Administrator Guide
+===========================
+
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
+
+Configuration
+-------------
+
+[search]
+; The number of results per page
+; defaults to 25
+resultsPerPage = default
+
+; The date format used when making queries using widgets
+; defaults to Y-m-d .... NOTE Future development
+dateFormat = default
+
+[indexer]
+; The core indexing class
+coreClass=PHPLuceneIndexer
+
+; The number of documents to be indexed in a cron session
+; defaults to 20
+batchDocuments = default
+
+; The location of the lucene indexes
+luceneDirectory=${varDirectory}/indexes
+
+; The url for the Java Lucene Server. This should match up the the Lucene Server configuration.
+; Defaults to http://localhost:8875
+javaLuceneURL = default
+
+Setting up the Lucene Directory
+-------------------------------
+
+If using the Java Lucene Server, simply start the server. Ensure that it is configured correctly. Some more information is available
+in ktroot/bin/luceneserver/README.TXT
+
+Edit the config.ini and ensure that the 'javaLuceneURL' field is correct.
+
+If using the PHP Lucene Server, you need to run the search2/indexing/bin/recreateIndex.php.
+
+Migration
+---------
+
+Migrating to the new server requires that the content of the full text tables are extracted and inserted into the Lucene indexes.
+This is done using the search2/indexing/bin/migrate.php script. (this feature can be heavy - care should be taken when implementing)
+
+Registering new extractors
+--------------------------
+
+If a new extractor has been added to the search2/indexing/extractors folder, the search2/indexing/bin/registerTypes.php script must be run to associate them with
+the correct mime types. Note that old associations will not be overwritten.
+
+Search Results Ranking
+----------------------
+
+Review the 'search_ranking' table to find the weightings associated with matching subexpressions. These may be modified to improve the
+relevance of search results according to your needs.
+
+Status
+------
+
+TODO:
+The lucene indexers should provide some statistics on the lucene index. It should provide some general information on the index, but a diagnostics
+function should be available to ensure that the correct version of the documents are indexed and possibly reschedule indexing if there is a mismatch for
+some reason. (this feature could be heavy on the system - care should be taken when implementing)
+
+Background Tasks
+----------------
+search2/indexing/bin/cronIndexer.php - task to batch index files.
+search2/indexing/bin/optimise.php    - task to optimise the lucene index.
+
+The indexing script should be run frequently - say every 5 minutes. The config.ini allows for the number of documents to be indexed to be configured. This
+defaults to 20. If the frequency is shortened, you may want to decrease the number of documents that will be indexed so that there is no serious load that can
+impact on the performance of the system.
+
+The lucene index requires optimisation to ensure that performance is optimal. This could be run once a day around midnight, or weekly depending on frequency
+of updates to the index.
+
+HOWTO - how to run a php script from the command line
+-----------------------------------------------------
+
+php -Cq script.php

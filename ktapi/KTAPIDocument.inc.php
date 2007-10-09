@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * $Id$
  *
@@ -1302,8 +1302,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         	$userid = $document->getModifiedUserId();
 			$user = User::get($userid);
+			if (PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
+			else
+			{
+				$username = 'Unknown';
+			}
 
-        	$version['user'] = $user->getName();
+        	$version['user'] = $username;
         	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
 

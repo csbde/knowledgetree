@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -29,12 +29,12 @@
  * All Rights Reserved.
  * Contributor( s): ______________________________________
  */
- 
-require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc'); 
+
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
- 
+
 class Group extends KTEntity {
-	
+
 	/** primary key of current object */
 	var $iId;
 	/** group name */
@@ -48,7 +48,7 @@ class Group extends KTEntity {
     var $sAuthenticationDetails = null;
     var $sAuthenticationDetails2 = null;
     var $iAuthenticationSourceId = null;
-	
+
 	function Group($sNewName = null, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -71,14 +71,14 @@ class Group extends KTEntity {
         global $default;
         return $default->groups_table;
     }
-    
+
     // STATIC
     function _ktentityOptions() {
         return array(
             'orderby' => 'name',
         );
     }
-    
+
     // }}}
 
     // {{{ getters/setters
@@ -102,7 +102,7 @@ class Group extends KTEntity {
     function setAuthenticationSourceId($mValue) { $this->iAuthenticationSourceId = $mValue; }
     // }}}
 
-		
+
 	/**
 	 * Checks if this group has users mapped to it or not
 	 */
@@ -117,11 +117,11 @@ class Group extends KTEntity {
         	return false;
         }
 	}
-	
+
 	/**
 	* Static function.
-	* Given a groups primary key it will create a 
-	* Group object and populate it with the 
+	* Given a groups primary key it will create a
+	* Group object and populate it with the
 	* corresponding database values
 	*
 	* @return Group populated Group object on successful query, false otherwise and set $_SESSION["errorMessage"]
@@ -146,22 +146,22 @@ class Group extends KTEntity {
         }
         return KTEntityUtil::getList2('Group', $sWhereClause, $aOptions);
 	}
-	
+
 	function &getByName($sName) {
 	    $dict = array(
 	        'name' => $sName,
 	    );
 	    return KTEntityUtil::getByDict('Group', $dict);
 	}
-	
+
 	/**
 	 * Returns an array of Users in this group.
 	 */
 	function &getUsers() {
 	    // legacy api.
-		return $this->getMembers();		
+		return $this->getMembers();
 	}
-	
+
     function &getMembers() {
         global $default;
         require_once(KT_LIB_DIR . '/users/User.inc');
@@ -256,9 +256,9 @@ class Group extends KTEntity {
         if (PEAR::isError($res)) {
             return $res;
         }
-		
+
 		GroupUtil::clearGroupCacheForUser($oUser);
-		
+
         return true;
     }
     // }}}
@@ -392,7 +392,7 @@ class Group extends KTEntity {
 * @return User user object
 */
 function & groupCreateFromArray($aParameters) {
-	$oGroup = & new Group($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	$oGroup = new Group($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oGroup;
 }
 

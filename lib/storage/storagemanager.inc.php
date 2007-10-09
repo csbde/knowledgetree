@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -34,6 +34,7 @@
  * The Document Manager may only use setDiskPath on the oDocument
  * object, and should not update the document object.
  */
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 class KTStorageManager {
     /**
@@ -72,7 +73,7 @@ class KTStorageManager {
 
     /**
      * Performs any storage changes necessary to account for a changed
-     * repository path. 
+     * repository path.
      *
      * The info arrays must contain the following information:
      *      "names" => an array of the names of the folders in the path
@@ -93,7 +94,7 @@ class KTStorageManager {
     function moveFolder ($oFolder, $oDestFolder) {
         return PEAR::raiseError(_kt("Not implemented"));
     }
-    
+
     function renameFolder($oFolder, $sNewName) {
         return PEAR::raiseError(_kt("Not implemented"));
     }
@@ -103,7 +104,7 @@ class KTStorageManager {
      * document object.
      */
      function copy ($oSrcDocument, &$oNewDocument) {
-        return PEAR::raiseError(_kt("Not implemented"));   
+        return PEAR::raiseError(_kt("Not implemented"));
      }
 
     /**
@@ -119,9 +120,15 @@ class KTStorageManager {
      * storage.
      */
     function expunge (&$oDocument) {
-        return PEAR::raiseError(_kt("Not implemented"));
+		$documentid = $oDocument->getId();
+    	$indexer = Indexer::get();
+        $indexer->deleteDocument($documentid);
     }
 
+    function deleteVersion(&$oVersion) {
+        return PEAR::raiseError(_kt("Not implemented"));
+    }
+    
     /**
      * Performs any storage changes necessary to account for the
      * document (previously marked as deleted) being restored.
@@ -145,24 +152,30 @@ class KTStorageManager {
     function createFolder($sFolderPath) {
         return PEAR::raiseError(_kt("Not implemented"));
     }
-    
+
     function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
         return PEAR::raiseError(_kt("Not implemented"));
     }
 }
 
 class KTStorageManagerUtil {
-    function &getSingleton() {
-        $oConfig =& KTConfig::getSingleton();
-        $sDefaultManager = 'KTOnDiskHashedStorageManager';
-        $klass = $oConfig->get('storage/manager', $sDefaultManager);
-        if (!class_exists($klass)) {
-            $klass = $sDefaultManager;
-        }
-        if (!KTUtil::arrayGet($GLOBALS, 'KTStorageManager')) {
-            $GLOBALS['KTStorageManager'] =& new $klass;
-        }
-        return $GLOBALS['KTStorageManager'];
+    static function &getSingleton() {
+
+
+    	static $singleton = null;
+
+    	if (is_null($singleton))
+    	{
+    		$oConfig =& KTConfig::getSingleton();
+        	$sDefaultManager = 'KTOnDiskHashedStorageManager';
+        	$klass = $oConfig->get('storage/manager', $sDefaultManager);
+        	if (!class_exists($klass)) {
+            	$klass = $sDefaultManager;
+        	}
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
     }
 }
 

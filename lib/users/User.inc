@@ -192,7 +192,7 @@ class User extends KTEntity {
 
     	if (!isset($dashlets->left)) $dashlets->left = array();
     	if (!isset($dashlets->right)) $dashlets->right = array();
-    	$mergedlist = array_merge($dashlets->left,$dashlets->right);
+    	$mergedlist = kt_array_merge($dashlets->left,$dashlets->right);
     	
     	
     	$knownlist = array();
@@ -285,7 +285,8 @@ class User extends KTEntity {
     function getList($sWhereClause = null, $aOptions = null) {
 	    if(!is_array($aOptions)) $aOptions = array($aOptions);
 		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
-		
+		//if disabled = 2 then the user is deleted
+		$sWhereClause = 'disabled != \'2\'';
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
@@ -388,7 +389,7 @@ class User extends KTEntity {
     function isAnonymous() { return $this->iId == -2; }
 
     function disable() {
-        $this->setDisabled(true);
+        $this->setDisabled(1);
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
@@ -398,7 +399,7 @@ class User extends KTEntity {
     }
     
     function enable() {
-        $this->setDisabled(false);
+        $this->setDisabled(0);
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
@@ -416,5 +417,36 @@ class User extends KTEntity {
             }
         }
         return parent::create();
+    }
+    
+    function delete()
+    {
+    	$this->setDisabled(2);
+    	$this->setEmailNotification(false);
+    	//change username
+    	$tempUsername = $this->getUsername();
+    	$this->getUserID($tempUsername);
+    	$tempUserID = $this->iId;
+    	$DeletedUsername = 'kt_deleted_'.$tempUsername.'_'.$tempUserID;
+    	$this->setUsername($DeletedUsername);
+    	
+    	//nullify all authentication_xxx fields
+    	$this->setAuthenticationSourceId(null);
+	    $this->setAuthenticationDetails(null);
+	    $this->setAuthenticationDetails2(null);
+		$this->setAuthenticationDetailsInt1(null);
+	    $this->setAuthenticationDetailsInt2(null);
+		$this->setAuthenticationDetailsDate1(null);
+	    $this->setAuthenticationDetailsDate2(null);
+		$this->setAuthenticationDetailsBool1(null);
+	    $this->setAuthenticationDetailsBool2(null);
+    	
+        $this->update();
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            BaobabKeyUtil::allocateUser($this);
+        }
+        return;
+    
     }
 }

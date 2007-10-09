@@ -974,7 +974,7 @@ msgid "As a safety precaution, it is useful to limit the number of times a given
 msgstr ""
 
 #: i18n/templates.c:2276
-msgid "As an example, if you are creating a tree of the   countries in the world, the actual countries would be <strong>keywords</strong>   (e.g. South Africa, England, Pakistan, India).  The highest group of categories   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by   subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-saharan Africa,   Austalasia."
+msgid "As an example, if you are creating a tree of the   countries in the world, the actual countries would be <strong>keywords</strong>   (e.g. South Africa, England, Pakistan, India, etc.).  The highest group of categories   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by   subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-Saharan Africa,   Australasia."
 msgstr ""
 
 #: i18n/templates.c:3215 i18n/templates.c:3251 i18n/templates.c:3467
@@ -4370,7 +4370,7 @@ msgid "In order to move between states, users will cause \"transitions\" to occu
 msgstr ""
 
 #: i18n/templates.c:2273
-msgid "In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the toplevel items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the toplevel items."
+msgid "In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the top-level items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the top-level items."
 msgstr ""
 
 #: i18n/templates.c:3872

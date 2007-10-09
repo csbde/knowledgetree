@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -59,29 +59,103 @@ class KTPluginResourceRegistry {
 }
 
 class KTPluginUtil {
-    function loadPlugins () {
-        $sPluginCache = KT_DIR . '/var/plugin-cache';
-        if (file_exists($sPluginCache)) {
-            require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
-            require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
-            require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
-            require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-            require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
-            require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
-            require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
-            require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
-            require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
-            require_once(KT_LIB_DIR . "/help/help.inc.php");
-            require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
-            require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
-            require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
-            require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
-            $GLOBALS['_KT_PLUGIN'] = unserialize(file_get_contents($sPluginCache));
-            $GLOBALS['_KT_PLUGIN']['oKTPluginRegistry']->_aPlugins = array();
-            return;
+	const CACHE_FILENAME = 'kt_plugins.cache';
+
+	/**
+	 * Store the plugin cache in the cache directory.
+	 *
+	 */
+	static function savePluginCache($array)
+	{
+		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
+
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($array));
+
+		if (!$written)
+		{
+			global $default;
+
+			$default->log->warn('savePluginCache - The cache did not write anything.');
+
+			// try unlink a zero size file - just in case
+			@unlink($cacheFile);
+		}
+	}
+
+	/**
+	 * Remove the plugin cache.
+	 *
+	 */
+	static function removePluginCache()
+	{
+		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		@unlink($cacheFile);
+	}
+
+	/**
+	 * Reads the plugin cache file. This must still be unserialised.
+	 *
+	 * @return mixed Returns false on failure, or the serialised cache.
+	 */
+	static function readPluginCache()
+	{
+		$config = KTConfig::getSingleton();
+		$cachePlugins = $config->get('cache/cachePlugins', false);
+		if (!$cachePlugins)
+		{
+			return false;
+		}
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		if (!is_file($cacheFile))
+		{
+			return false;
+		}
+
+		$cache = file_get_contents($cacheFile);
+
+		// we check for an empty cache in case there was a problem. We rather try and reload everything otherwise.
+		if (strlen($cache) == 0)
+		{
+			return false;
+		}
+		if (!class_exists('KTPluginEntityProxy')) {
+            KTEntityUtil::_proxyCreate('KTPluginEntity', 'KTPluginEntityProxy');
         }
+
+		return unserialize($cache);
+	}
+
+    static function loadPlugins () {
+
         $GLOBALS['_KT_PLUGIN'] = array();
-        $aPlugins = KTPluginEntity::getList("disabled=0");
+        $cache = KTPluginUtil::readPluginCache();
+        if ($cache === false)
+        {
+        	$aPlugins = KTPluginEntity::getList("disabled=0");
+        	KTPluginUtil::savePluginCache($aPlugins);
+        }
+        else
+        {
+        	$aPlugins = $cache;
+        }
+
         if (count($aPlugins) === 0) {
             KTPluginUtil::registerPlugins();
         }
@@ -121,9 +195,12 @@ class KTPluginUtil {
                 $oPlugin->load();
             }
         }
-        // file_put_contents($sPluginCache, serialize($GLOBALS['_KT_PLUGIN']));
     }
 
+    /**
+     * This loads the plugins in the plugins folder. It searches for files ending with 'Plugin.php'.
+     * This is called by the 'Re-read plugins' action in the web interface.
+     */
     function registerPlugins () {
         KTPluginUtil::_deleteSmartyFiles();
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
@@ -164,8 +241,7 @@ class KTPluginUtil {
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
 
-        $sPluginCache = KT_DIR . '/var/plugin-cache';
-        @unlink($sPluginCache);
+        KTPluginUtil::removePluginCache();
     }
 
     function _deleteSmartyFiles() {
@@ -214,7 +290,7 @@ class KTPluginUtil {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         return $oRegistry->isRegistered($path);
     }
-    
+
     function registerResource($path) {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         $oRegistry->registerResource($path);
@@ -243,21 +319,21 @@ class KTPluginUtil {
     }
 
     // utility function to detect if the plugin is loaded and active.
-    function pluginIsActive($sNamespace) {
-		
-	    
-		
+    static function pluginIsActive($sNamespace) {
+
+
+
 		$oReg =& KTPluginRegistry::getSingleton();
 		$plugin = $oReg->getPlugin($sNamespace);
-		
-		
-		
+
+
+
 		if (is_null($plugin) || PEAR::isError($plugin)) { return false; }  // no such plugin
 		else { // check if its active
 			$ent = KTPluginEntity::getByNamespace($sNamespace);
 
 			if (PEAR::isError($ent)) { return false; }
-			
+
 			// we now can ask
 			return (!$ent->getDisabled());
 		}

@@ -29,6 +29,8 @@
  */
 
 require_once(KT_LIB_DIR . "/validation/basevalidator.inc.php");
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
+
 
 class KTStringValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.string';
@@ -36,7 +38,9 @@ class KTStringValidator extends KTValidator {
     var $iMinLength;
     var $iMaxLength;
     var $sMinLengthWarning;
-    var $sMaxLengthWarning;    
+    var $sMaxLengthWarning; 
+    
+     
     
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -67,7 +71,7 @@ class KTStringValidator extends KTValidator {
             $val = trim($val);
         }
         
-        $l = strlen($val);
+        $l = KTUtil::utf8_strlen($val);
         if ($l < $this->iMinLength) {
             $errors[$this->sBasename] = $this->sMinLengthWarning;
         } else if ($l > $this->iMaxLength) {

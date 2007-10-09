@@ -1,0 +1,190 @@
+<h2>{i18n}Query Editor{/i18n}</h2>
+
+<p class="descriptiveText">
+{i18n}The query editor allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.{/i18n}
+<P>
+<div>
+<table>
+<tr>
+<td valign=top>
+<fieldset>
+{if $txtQuery == ''}
+{assign var=txtQuery value="Title contains \"something\" or \nMetadata contains \"else\""}
+{/if}
+{literal}
+<script>
+var parseSuccess = true;
+var actionAfterParse = 'none';
+var gotSearchParseStatus = function callBack(o)
+{
+	if (o.responseText != '{}')
+	{
+		var resp = eval('(' + o.responseText + ')');
+		var butSearch = document.getElementById('butSearch');
+
+		if (resp.status == 0)
+		{
+			parseSuccess = true;
+			if (actionAfterParse == 'none')
+			{
+				alert('{/literal}{i18n}The expression parsed successfully.{/i18n}{literal}');
+			}
+			else if (actionAfterParse == 'search')
+			{
+				var frmQuery = document.getElementById('frmQuery');
+				frmQuery.submit();
+			}
+			else if (actionAfterParse == 'save')
+			{
+				actionAfterParse = 'saveCompleted';
+				var txtQuery = document.getElementById('txtAdvQuery');
+				url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?iSavedId={/literal}{$iSavedSearchId}{literal}&txtQuery='+txtQuery.value;
+				//alert(url);
+				YAHOO.util.Connect.asyncRequest('GET',url, searchCallback);
+			}
+			else if (actionAfterParse == 'saveCompleted')
+			{
+				$('saved').style.display='block';
+			}
+		}
+		else
+		{
+			if (actionAfterParse == 'none' || actionAfterParse == 'save')
+			{
+				alert('{/literal}{i18n}There is a problem with the expression.{/i18n}{literal}\n\n' + resp.message );
+			}
+			else  if (actionAfterParse == 'saveCompleted')
+			{
+				alert('{/literal}{i18n}There is a problem saving the expression.{/i18n}{literal}\n\n' + resp.message );
+			}
+			parseSuccess = false;
+		}
+	}
+}
+var gotNoStatus = function callBack(o)
+{
+	alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
+}
+
+var searchCallback =
+{
+	success:gotSearchParseStatus,
+	failure:gotNoStatus
+}
+function startParsing()
+{
+	if (!parseSuccess)
+	{
+		alert('{/literal}{i18n}There has been a parsing problem. Please check the search expression.{/i18n}{literal}');
+		return;
+	}
+	var txtQuery = document.getElementById('txtAdvQuery');
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/parseExpr.php?txtQuery='+txtQuery.value;
+	YAHOO.util.Connect.asyncRequest('GET',url, searchCallback);
+}
+function butParseClick()
+{
+	actionAfterParse = 'none';
+	parseSuccess = true;
+	startParsing();
+}
+function butClearClick()
+{
+	var txtQuery = document.getElementById('txtAdvQuery');
+	txtQuery.value = '';
+}
+function butSearchClick()
+{
+	actionAfterParse = 'search';
+	startParsing();
+}
+
+function butSaveClick()
+{
+	actionAfterParse = 'save';
+	startParsing();
+}
+function txtQueryChange(el)
+{
+	$('saved').style.display='none';
+}
+</script>
+{/literal}
+<legend>{i18n}Advanced Query{/i18n}</legend>
+<form  id=frmQuery name=frmQuery method="POST" action="{addQS}action=process{/addQS}">
+<textarea id="txtAdvQuery" name="txtQuery" cols=50 rows=10 onkeypress="txtQueryChange(this)">{$txtQuery}</textarea>
+<br/>
+<input type="button" id="butSearch" value="{i18n}Search{/i18n}" onclick="butSearchClick()"/>
+<input type="button" value="{i18n}Parse{/i18n}" onclick="butParseClick(true)"/>
+<input type="reset"  value="{i18n}Reset{/i18n}" />
+<input type="button" value="{i18n}Clear{/i18n}" onclick="butClearClick()"/>
+</form>
+</div>
+</fieldset>
+{if $bSave}
+<fieldset>
+<legend>{i18n}Save{/i18n}</legend>
+{i18n}You are currently editing the saved search:{/i18n}{$edtSaveQueryName}<br/>
+	<table>
+ 	<tr><td><input type="button" align="right" value="{i18n}Save{/i18n}" onclick="butSaveClick()"/>
+ 	<td><div id="saved" style="display: none"><font color=brown>{i18n}Saved{/i18n}</font></div>
+ </table>
+ </td>
+</div>
+</fieldset>
+{/if}
+</td>
+<td valign=top>
+
+<fieldset>
+
+<legend>{i18n}Grammar{/i18n}</legend>
+{i18n}Expressions may be built up using the following grammar:{/i18n}<br/>
+expr ::= expr {literal}{{/literal} AND | OR {literal}}{/literal} expr<br/>
+expr ::= NOT expr<br/>
+expr ::= (expr)<br/>
+expr ::= expr {literal}{ < | <= | = | > | >= | CONTAINS |STARTS WITH | ENDS WITH }{/literal} value<br/>
+expr ::= field BETWEEN value AND value<br/>
+expr ::= field DOES [ NOT ] CONTAIN value<br/>
+expr ::= field IS [ NOT ] LIKE value<br/>
+
+value ::= "{i18n}search text here{/i18n}"
+
+</fieldset>
+<p class="descriptiveText">
+{literal}
+<script>
+
+function wordclicked(word)
+{
+var sq = document.getElementById('txtAdvQuery');
+if (sq.value != '') sq.value += ' ';
+sq.value += word + ' ';
+
+}
+</script>
+{/literal}
+
+<fieldset>
+<legend>{i18n}Fields{/i18n}</legend>
+{i18n}The following fields may be used in expressions:{/i18n}
+{assign var=i value=0}
+{foreach item=alias from=$aliases}
+{if (substr($alias,0,2) != '["')}
+{if $i>0}, {/if}
+
+{if (($i % 8) == 0)}<br>{/if}
+<span onclick="wordclicked('{$alias|escape}')">{$alias}</span>
+{assign var=i value=$i+1}
+{/if}
+
+
+{/foreach}
+</fieldset>
+</p>
+
+</td>
+</tr>
+</table>
+
+

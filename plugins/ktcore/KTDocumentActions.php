@@ -114,6 +114,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     }
 
     function do_main() {
+        $show_version = KTUtil::arrayGet($_REQUEST, 'show');
+        $showall = (isset($show_version) && ($show_version == 'all')) ? true : false;
 
         $this->oPage->setSecondaryTitle($this->oDocument->getName());
         $this->oPage->setBreadcrumbDetails(_kt('Version History'));
@@ -121,7 +123,12 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
         $aVersions = array();
         foreach ($aMetadataVersions as $oVersion) {
-            $aVersions[] = Document::get($this->oDocument->getId(), $oVersion->getId());
+             $version = Document::get($this->oDocument->getId(), $oVersion->getId());
+             if($showall){
+                $aVersions[] = $version;
+             }else if($version->getMetadataStatusID() != VERSION_DELETED){
+                $aVersions[] = $version;
+             }
         }
 
         // render pass.
@@ -134,12 +141,24 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $oAction->setDocument($this->oDocument);
 
+        // create delete action if user is sys admin or folder admin
+        $bShowDelete = false;
+        require_once(KT_LIB_DIR . '/security/Permission.inc');
+        $oUser =& User::get($_SESSION['userID']);
+        $iFolderId = $this->oDocument->getFolderId();
+        if (Permission::userIsSystemAdministrator($oUser) || Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
+            // Check if admin mode is enabled
+            $bShowDelete = KTUtil::arrayGet($_SESSION, 'adminmode', false);
+        }
+
         $aTemplateData = array(
               'context' => $this,
               'document_id' => $this->oDocument->getId(),
               'document' => $this->oDocument,
               'versions' => $aVersions,
               'downloadaction' => $oAction,
+              'showdelete' => $bShowDelete,
+              'showall' => $showall,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -195,11 +214,49 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
     }
 
-
     function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
+    }
+    
+    function do_confirmdeleteVersion() {
+        $this->oPage->setSecondaryTitle($this->oDocument->getName());
+        $this->oPage->setBreadcrumbDetails(_kt('Delete document version'));
+        
+        // Display the version name and number
+        $iVersionId = $_REQUEST['version'];
+        $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/delete_version');
+        $aTemplateData = array(
+            'context' => $this,
+            'fDocumentId' => $this->oDocument->getId(),
+            'oVersion' => $oVersion,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_deleteVersion() {
+        $iVersionId = $_REQUEST['versionid'];
+        $sReason = $_REQUEST['reason'];
+        $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
+        
+        $res = KTDocumentUtil::deleteVersion($this->oDocument, $iVersionId, $sReason);
+        
+        if(PEAR::isError($res)){
+            $this->addErrorMessage($res->getMessage());
+            redirect(KTDocumentAction::getURL());
+            exit(0);
+        }
+        
+        // Record the transaction
+        $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document version deleted'), 'ktcore.transactions.delete_version', $aOptions);
+        $oDocumentTransaction->create();
+        
+        redirect(KTDocumentAction::getURL());
     }
 }
 // }}}
@@ -225,7 +282,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
-            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());;
+            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
             $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
         } else {
             $res = $oStorage->download($this->oDocument);
@@ -920,6 +977,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
+        $sReason = $data['reason'];
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1127,8 +1185,8 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
+        $sReason = $data['reason'];
         $extra_errors = array();
-
 
         if (!is_null($data['browse'])) {
             $bNameClash = KTDocumentUtil::nameExists($data['browse'], $this->oDocument->getName());
@@ -1330,6 +1388,13 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Workflow');
     }
+    
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+        return parent::getInfo();
+    }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('workflow'));
@@ -1340,35 +1405,48 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
 
         $oUser =& User::get($_SESSION['userID']);
-        $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+        
+        // If the document is checked out - set transitions and workflows to empty and set checkedout to true
+        $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
+        if ($bIsCheckedOut){
+            $aTransitions = array();
+            $aWorkflows = array();
+            $transition_fields = array();
+            $bHasPerm = FALSE;
+            
+        }else{
+            $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
 
-        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
-
-        $bHasPerm = false;
-        if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
-            $bHasPerm = true;
-        }
-
-        $fieldErrors = null;
-
-        $transition_fields = array();
-        if ($aTransitions) {
-            $aVocab = array();
-            foreach ($aTransitions as $oTransition) {
-            	if(is_null($oTransition) || PEAR::isError($oTransition)){
-            		continue;
-            	}
-
-                $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+            $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
+    
+            $bHasPerm = false;
+            if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
+                $bHasPerm = true;
             }
-            $fieldOptions = array('vocab' => $aVocab);
-            $transition_fields[] = new KTLookupWidget(_kt('Transition to perform'), _kt('The transition listed will cause the document to change from its current state to the listed destination state.'), 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
-            $transition_fields[] = new KTTextWidget(
-                _kt('Reason for transition'), _kt('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'),
-                'fComments', '',
-                $this->oPage, true, null, null,
-                array('cols' => 80, 'rows' => 4));
+    
+            $fieldErrors = null;
+    
+            $transition_fields = array();
+            
+            if ($aTransitions) {
+                $aVocab = array();
+                foreach ($aTransitions as $oTransition) {
+                	if(is_null($oTransition) || PEAR::isError($oTransition)){
+                		continue;
+                	}
+    
+                    $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+                }
+                $fieldOptions = array('vocab' => $aVocab);
+                $transition_fields[] = new KTLookupWidget(_kt('Transition to perform'), _kt('The transition listed will cause the document to change from its current state to the listed destination state.'), 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+                $transition_fields[] = new KTTextWidget(
+                    _kt('Reason for transition'), _kt('Describe why this document qualifies to be changed from its current state to the destination state of the transition chosen.'),
+                    'fComments', '',
+                    $this->oPage, true, null, null,
+                    array('cols' => 80, 'rows' => 4));
+            }
         }
+        
         $aTemplateData = array(
             'oDocument' => $oDocument,
             'oWorkflow' => $oWorkflow,
@@ -1377,6 +1455,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             'aWorkflows' => $aWorkflows,
             'transition_fields' => $transition_fields,
             'bHasPerm' => $bHasPerm,
+            'bIsCheckedOut' => $bIsCheckedOut,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -1424,30 +1503,35 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     function form_quicktransition() {
 
         $oForm = new KTForm;
-        $oForm->setOptions(array(
-            'identifier' => 'ktcore.workflow.quicktransition',
-            'label' => _kt('Perform Quick Transition'),
-            'submit_label' => _kt('Perform Transition'),
-            'context' => $this,
-            'action' => 'performquicktransition',
-            'fail_action' => 'quicktransition',
-            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-        ));
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Specify your reason for performing this action.'),
-                'important_description' => _kt('Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
-                'name' => 'reason',
-            )),
-        ));
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'max_length' => 250,
-                'output' => 'reason',
-            )),
-        ));
+        
+        if($this->oDocument->getIsCheckedOut()){
+            $this->addErrorMessage(_kt('The workflow cannot be changed while the document is checked out.'));
+        }else{
+            $oForm->setOptions(array(
+                'identifier' => 'ktcore.workflow.quicktransition',
+                'label' => _kt('Perform Quick Transition'),
+                'submit_label' => _kt('Perform Transition'),
+                'context' => $this,
+                'action' => 'performquicktransition',
+                'fail_action' => 'quicktransition',
+                'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            ));
+            $oForm->setWidgets(array(
+                array('ktcore.widgets.reason', array(
+                    'label' => _kt('Reason'),
+                    'description' => _kt('Specify your reason for performing this action.'),
+                    'important_description' => _kt('Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                    'name' => 'reason',
+                )),
+            ));
+            $oForm->setValidators(array(
+                array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'max_length' => 250,
+                    'output' => 'reason',
+                )),
+            ));
+        }
 
         return $oForm;
     }

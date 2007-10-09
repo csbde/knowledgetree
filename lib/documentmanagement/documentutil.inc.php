@@ -106,7 +106,7 @@ class KTDocumentUtil {
         }
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckInComment, 'ktcore.transactions.check_in');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $sCheckInComment, 'ktcore.transactions.check_in');
         $oDocumentTransaction->create();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
@@ -122,6 +122,11 @@ class KTDocumentUtil {
             }
         }
 
+        // NEW SEARCH
+
+        Indexer::index($oDocument);
+
+        /*
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
@@ -132,6 +137,7 @@ class KTDocumentUtil {
             $oTrigger->setDocument($oDocument);
             $oTrigger->transform();
         }
+        */
 
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
@@ -169,7 +175,7 @@ class KTDocumentUtil {
             }
         }
 
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
 
         // fire subscription alerts for the checked in document
@@ -479,6 +485,10 @@ class KTDocumentUtil {
             }
         }
 
+        // NEW SEARCH
+
+        Indexer::index($oDocument);
+        /*
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Transforming file')));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
@@ -491,12 +501,12 @@ class KTDocumentUtil {
             $oTrigger->setDocument($oDocument);
             // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $sTrigger)));
             $oTrigger->transform();
-        }
+        }*/
 
         // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document created'), 'ktcore.transactions.create', $aOptions);
+        $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document created'), 'ktcore.transactions.create', $aOptions);
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res)) {
             $oDocument->delete();
@@ -587,6 +597,11 @@ class KTDocumentUtil {
 
     // {{{ updateTransactionText
     function updateTransactionText($oDocument) {
+
+        // NEW SEARCH
+
+        return;
+
         $iDocumentId = KTUtil::getId($oDocument);
         $aTransactions = DocumentTransaction::getByDocument($iDocumentId);
         foreach ($aTransactions as $oTransaction) {
@@ -609,6 +624,10 @@ class KTDocumentUtil {
 
     // {{{ updateSearchableText
     function updateSearchableText($oDocument, $bOverride = false) {
+
+        // NEW SEARCH
+        return;
+
         if (isset($GLOBALS['_IN_ADD']) && empty($bOverride)) {
             return;
         }
@@ -713,7 +732,7 @@ class KTDocumentUtil {
             return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
         }
 
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
 
         $oDocument->setFolderID(1);
@@ -749,6 +768,14 @@ class KTDocumentUtil {
     // }}}
 
     function reindexDocument($oDocument) {
+
+        // NEW SEARCH
+
+        Indexer::index($oDocument);
+
+        return;
+
+        /*
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
@@ -760,7 +787,7 @@ class KTDocumentUtil {
             $oTrigger->setDocument($oDocument);
             $oTrigger->transform();
         }
-        KTDocumentUtil::updateSearchableText($oDocument);
+        KTDocumentUtil::updateSearchableText($oDocument);*/
     }
 
 
@@ -848,6 +875,11 @@ class KTDocumentUtil {
         $res = $oNewDocument->update();
         if (PEAR::isError($res)) { return $res; }
 
+        // NEW SEARCH
+
+
+        /*
+
         $sTable = KTUtil::getTableName('document_text');
         $aQuery = array("SELECT document_text FROM $sTable WHERE document_id = ?", array($oDocument->getId()));
         $sData = DBUtil::getOneResultKey($aQuery, 'document_text');
@@ -857,6 +889,8 @@ class KTDocumentUtil {
             'document_text' => $contents,
         );
         DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
+
+        */
         KTDocumentUtil::updateSearchableText($oNewDocument);
         KTPermissionUtil::updatePermissionLookup($oNewDocument);
 
@@ -865,11 +899,11 @@ class KTDocumentUtil {
         }
 
 
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt("Copied to folder \"%s\". %s"), $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Copied to folder \"%s\". %s"), $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();
 
         $oSrcFolder = Folder::get($oDocument->getFolderID());
-        $oDocumentTransaction = & new DocumentTransaction($oNewDocument, sprintf(_kt("Copied from original in folder \"%s\". %s"), $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
+        $oDocumentTransaction = new DocumentTransaction($oNewDocument, sprintf(_kt("Copied from original in folder \"%s\". %s"), $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();
 
         return $oNewDocument;
@@ -904,7 +938,7 @@ class KTDocumentUtil {
         }
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
         // fire subscription alerts for the checked in document
@@ -956,7 +990,7 @@ class KTDocumentUtil {
 
         // create the document transaction record
 
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
         $oDocumentTransaction->create();
 
 
@@ -979,7 +1013,67 @@ class KTDocumentUtil {
 
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
+    
+    /**
+    * Delete a selected version of the document.
+    */
+    function deleteVersion($oDocument, $iVersionID, $sReason){
+        
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
+        
+        $oStorageManager =& KTStorageManagerUtil::getSingleton();
 
+        global $default;
+
+        if (empty($sReason)) {
+            return PEAR::raiseError(_kt('Deletion requires a reason'));
+        }
+
+        if (PEAR::isError($oDocument) || ($oDocument == false)) {
+            return PEAR::raiseError(_kt('Invalid document object.'));
+        }
+
+        if (PEAR::isError($oVersion) || ($oVersion == false)) {
+            return PEAR::raiseError(_kt('Invalid document version object.'));
+        }
+        
+        $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+        if (PEAR::isError($oContentVersion) || ($oContentVersion == false)) {
+            DBUtil::rollback();
+            return PEAR::raiseError(_kt('Invalid document content version object.'));
+        }
+
+        DBUtil::startTransaction();
+        
+        // now delete the document version
+        $res = $oStorageManager->deleteVersion($oVersion);
+        if (PEAR::isError($res) || ($res == false)) {
+            //could not delete the document version from the file system
+            $default->log->error('Deletion: Filesystem error deleting the metadata version ' .
+                $oVersion->getMetadataVersion() . ' of the document ' .
+                $oDocument->getFileName() . ' from folder ' .
+                Folder::getFolderPath($oDocument->getFolderID()) .
+                ' id=' . $oDocument->getFolderID());
+
+            // we use a _real_ transaction here ...
+
+            DBUtil::rollback();
+
+            return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
+        }
+        
+        // change status for the metadata version
+        $oVersion->setStatusId(VERSION_DELETED);
+        $oVersion->update();
+        
+        // set the storage path to empty
+//        $oContentVersion->setStoragePath('');
+
+        DBUtil::commit();
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {

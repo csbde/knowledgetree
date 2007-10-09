@@ -1,7 +1,7 @@
 <?php
 /**
  * $Id$
- *  
+ *
  * This page handles logging a user into the dms.
  * This page displays the login form, and performs the business logic login processing.
  *
@@ -9,7 +9,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -20,9 +20,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -54,7 +54,19 @@ class LoginPageDispatcher extends KTDispatcher {
                 ; // that's ok - we want to login.
             }
             else {
-                exit(redirect(generateControllerLink('dashboard')));
+                // User is already logged in - get the redirect
+                $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+
+                $cookietest = KTUtil::randomString();
+                setcookie("CookieTestCookie", $cookietest, 0);
+
+                $this->redirectTo('checkCookie', array(
+                    'cookieVerify' => $cookietest,
+                    'redirect' => $redirect,
+                ));
+                exit(0);
+                // The old way -> doesn't take the redirect into account
+                //exit(redirect(generateControllerLink('dashboard')));
             }
         }
         return true;
@@ -86,7 +98,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
         // DEPRECATED initialise page-level authorisation array
-        $_SESSION["pageAccess"] = NULL; 
+        $_SESSION["pageAccess"] = NULL;
 
         $cookietest = KTUtil::randomString();
         setcookie("CookieTestCookie", $cookietest, 0);
@@ -122,10 +134,10 @@ class LoginPageDispatcher extends KTDispatcher {
 
 
         KTInterceptorRegistry::checkInterceptorsForTakeOver();
-    
+
         $this->check(); // bounce here, potentially.
         header('Content-type: text/html; charset=UTF-8');
-        
+
         $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
@@ -157,21 +169,21 @@ class LoginPageDispatcher extends KTDispatcher {
               'selected_language' => $sLanguageSelect,
 	      'disclaimer' => $sDisclaimer,
         );
-        return $oTemplate->render($aTemplateData);        
+        return $oTemplate->render($aTemplateData);
     }
-    
+
     function simpleRedirectToMain($errorMessage, $url, $params) {
         $params[] = 'errorMessage='. urlencode($errorMessage);
         $url .= '?' . join('&', $params);
         redirect($url);
         exit(0);
     }
-    
+
     function do_login() {
         $aExtra = array();
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
         if (is_a($oUser, 'User')) {
-            $this->performLogin($oUser);
+            $res = $this->performLogin($oUser);
             if ($res) {
                 $oUser = array($res);
             }
@@ -194,23 +206,23 @@ class LoginPageDispatcher extends KTDispatcher {
             $language = $default->defaultLanguage;
         }
         setcookie("kt_language", $language, 2147483647, '/');
-        
+
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
-        
+
         $url = $_SERVER["PHP_SELF"];
         $queryParams = array();
-        
+
         if ($redirect !== null) {
             $queryParams[] = 'redirect=' . urlencode($redirect);
         }
-        
+
         $username = KTUtil::arrayGet($_REQUEST,'username');
         $password = KTUtil::arrayGet($_REQUEST,'password');
-        
+
         if (empty($username)) {
             $this->simpleRedirectToMain(_kt('Please enter your username.'), $url, $queryParams);
         }
-        
+
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
             if (is_a($oUser, 'ktentitynoobjects')) {
@@ -237,7 +249,7 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         $res = $this->performLogin($oUser);
-        
+
         if ($res) {
             $this->simpleRedirectToMain($res->getMessage(), $url, $queryParams);
             exit(0);
@@ -284,13 +296,13 @@ class LoginPageDispatcher extends KTDispatcher {
         if ($redirect !== null) {
             $queryParams[] = 'redirect='. urlencode($redirect);
         }
-        
+
         if ($cookieTest !== $cookieVerify) {
             Session::destroy();
             $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $queryParams);
             exit(0);
         }
-        
+
         // check for a location to forward to
         if ($redirect !== null) {
             $url = $redirect;

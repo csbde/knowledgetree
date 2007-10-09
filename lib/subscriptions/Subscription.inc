@@ -4,7 +4,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -15,9 +15,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -66,7 +66,7 @@ class Subscription extends KTEntity {
     /**
     * Creates a new subscription object
     *
-    * @param integer the user ID    
+    * @param integer the user ID
     * @param integer the external ID
     * @param integer the subscription type
     * @param bool whether alerted or not
@@ -157,7 +157,7 @@ class Subscription extends KTEntity {
             return Folder::getFolderDisplayPath($this->iExternalID);
         }
     }
-    
+
     /**
      * Returns the link to view the subscription content
      */
@@ -180,14 +180,14 @@ class Subscription extends KTEntity {
             return generateControllerUrl("browse", "fBrowseType=folder&fFolderId=$this->iExternalID");
         }
     }
-    
+
     function isValid() {
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
             return !PEAR::isError(Document::get($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
             return !PEAR::isError(Folder::get($this->iExternalID));
         }
-    }    
+    }
 
     function getAlertLink() {
         global $default;
@@ -200,7 +200,7 @@ class Subscription extends KTEntity {
             return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"" . imgSrc("widgets/subsc.gif") . "\" border=\"0\"/>&nbsp;" . Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
-    
+
     function getSubscriptionTypeName() {
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
             return "document";
@@ -220,7 +220,7 @@ class Subscription extends KTEntity {
     function _table () {
         return $this->sTableName;
     }
-    
+
     /**
     * Static function.
     * Given a subscription primary key will create a subscription object and populate it with the corresponding
@@ -235,21 +235,21 @@ class Subscription extends KTEntity {
         $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE id = ?";/*ok*/
         $aParams = array($iSubscriptionID);
         $res = DBUtil::getOneResult(array($sQuery, $aParams));
-        
+
         if (PEAR::isError($res)) {
             return false; // return $res;
         }
-        
+
         if (empty($res)) {
             return false; // return PEAR::raiseError(_kt('No such Subscription ID'))
         }
 
-        $oSubscription = & new Subscription($res["user_id"],
+        $oSubscription = new Subscription($res["user_id"],
                                             $res[Subscription::getIdFieldName($iSubscriptionType)],
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
         $oSubscription->iId = $iSubscriptionID;
-        return $oSubscription;        
+        return $oSubscription;
     }
 
     /**
@@ -257,9 +257,9 @@ class Subscription extends KTEntity {
     * Given a subscription's values will create a subscription object and populate it with the corresponding
     * primary key
     *
-    * @param integer the user ID    
+    * @param integer the user ID
     * @param integer the external ID
-    * @param integer the type of subscription    
+    * @param integer the type of subscription
     * @return object subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
     */
     function getByIDs($iUserID, $iExternalID, $iSubscriptionType) {
@@ -270,12 +270,12 @@ class Subscription extends KTEntity {
         if (PEAR::isError($res)) {
             return false; // return $res;
         }
-        
+
         if (empty($res)) {
             return false; // return PEAR::raiseError(_kt('No such Subscription ID'))
         }
 
-        $oSubscription = & new Subscription($res["user_id"],
+        $oSubscription = new Subscription($res["user_id"],
                                             $res[Subscription::getIdFieldName($iSubscriptionType)],
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
@@ -286,7 +286,7 @@ class Subscription extends KTEntity {
     /**
     * Checks if a given subscription already exists using the external and user ids
     *
-    * @param integer the user ID    
+    * @param integer the user ID
     * @param integer the external ID
     * @param integer the subscription type
     * @return true if the document subscription exists, false otherwise
@@ -294,9 +294,9 @@ class Subscription extends KTEntity {
     function exists($iUserID, $iExternalID, $iSubscriptionType) {
         $sQuery = "SELECT count(*) AS `subcount` FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";
         $aParams = array($iExternalID, $iUserID);
-        
+
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'subcount');
-        
+
         if (PEAR::isError($res)) {
             return false;
         } else {

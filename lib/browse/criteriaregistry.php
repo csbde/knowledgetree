@@ -33,13 +33,13 @@ class KTCriteriaRegistry {
     var $_aCriteriaDetails = array();
     var $_bGenericRegistered = false;
 
-    function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS['_KT_CRITERIA'], 'oKTCriteriaRegistry')) {
-            $GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'] = new KTCriteriaRegistry;
-        // $GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry']->_buildGenericCriteria();
-        }
-        return $GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'];
+    static function &getSingleton () {
+		if (!KTUtil::arrayGet($GLOBALS['_KT_CRITERIA'], 'oKTCriteriaRegistry'))  {
+			$GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'] = new KTCriteriaRegistry;
+		}
+		return $GLOBALS['_KT_CRITERIA']['oKTCriteriaRegistry'];
     }
+
 
     function _buildGenericCriteria() {
         $aFields =& DocumentField::getList();
@@ -81,7 +81,7 @@ class KTCriteriaRegistry {
             require_once($sFilename);
         }
         $sClassName = $aDetails[0];
-        $oCriterion =& new $sClassName();
+        $oCriterion =new $sClassName();
 
 
     if(is_array($aDetails[3])) {

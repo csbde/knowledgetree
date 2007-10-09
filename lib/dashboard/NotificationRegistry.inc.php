@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -33,15 +33,14 @@ class KTNotificationRegistry {
     var $notification_types = array();
     var $notification_types_path = array();
     var $notification_instances = array();
-    // {{{ getSingleton
-    function &getSingleton () {
-        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTNotificationRegistry')) {
-            $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'] = new KTNotificationRegistry;
-        }
-        return $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'];
-        
+
+    static function &getSingleton () {
+		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTNotificationRegistry')) {
+			$GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'] = new KTNotificationRegistry;
+		}
+		return $GLOBALS['_KT_PLUGIN']['oKTNotificationRegistry'];
     }
-    // }}}
+
 
     // pass in:
     //   nsname (e.g. ktcore/subscription)
@@ -52,7 +51,7 @@ class KTNotificationRegistry {
     }
 
     // FIXME insert into notification instances {PERF}
-    
+
     function getHandler($nsname) {
         if (!array_key_exists($nsname, $this->notification_types)) {
             return null;

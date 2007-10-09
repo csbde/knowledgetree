@@ -166,7 +166,7 @@ class RoleAllocation extends KTEntity {
 		$aFullUsers = array();
 		foreach ($aUsers as $iUserId) {
 		    $oUser = User::get($iUserId);
-			if (!(PEAR::isError($oUser) || ($oUser == false))) {
+			if (!(PEAR::isError($oUser) || ($oUser == false) || ($oUser->getDisabled() == 1))) {
 			    $aFullUsers[$iUserId] = $oUser;
 			}
 		}

@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -50,12 +50,12 @@ class SiteMap {
      * Whether to use the database to store the sitemap or not
      */
     var $bUseDB;
-    
+
      /**
      * Whether to the user accessing the page is a Sysadmin
      */
     var $isSysAdmin;
-    
+
      /**
      * * Whether to the user accessing the page is a Unitadmin
      */
@@ -78,7 +78,7 @@ class SiteMap {
     /**
      * Sets the database flag
      *
-     * @param boolean whether to use the database to store the sitemap or not     
+     * @param boolean whether to use the database to store the sitemap or not
      */
     function setUseDB($bUseDB) {
         $this->bUseDB = $bUseDB;
@@ -111,12 +111,12 @@ class SiteMap {
                     "order" => $iOrder);
         }
     }
-	
+
 	function addSectionColour($sSectionName, $sHtmlElement, $sColour) {
-		$this->aSectionColours[$sSectionName][$sHtmlElement] = $sColour;		
+		$this->aSectionColours[$sSectionName][$sHtmlElement] = $sColour;
 	}
-	
-	function getSectionColour($sSectionName, $sHtmlElement) {		
+
+	function getSectionColour($sSectionName, $sHtmlElement) {
 		return $this->aSectionColours[$sSectionName][$sHtmlElement];
 	}
 
@@ -127,7 +127,7 @@ class SiteMap {
      * @param string the corresponding page for this action
      * @param string the section this page falls under
      * @param int    the minimum access needed to access this page
-     * @param string description of the page for link presentation     
+     * @param string description of the page for link presentation
      */
     function addDefaultPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true, $iOrder = 0) {
         if (!$this->bUseDB) {
@@ -153,7 +153,7 @@ class SiteMap {
     /**
      * Returns controller links for a section.
      * Checks whether to use the db or not and calls the appropriate method
-     * 
+     *
      * @param string the section to return links for
      */
     function getSectionLinks($sSectionName, $bSortLinks = true) {
@@ -195,7 +195,7 @@ class SiteMap {
                         if (strlen($sql->f("link_text")) > 0) {
                             $results["descriptions"][] = $sql->f("link_text");
                             // if fFolderID is set and fFolderID is in the page string
-                            // append folderID to the controller link                            
+                            // append folderID to the controller link
                             $results["links"][] = isset($iFolderID) ? generateControllerLink($sql->f("action"), "fFolderID=$iFolderID") : generateControllerLink($sql->f("action"), "");
                         }
                     }
@@ -244,11 +244,11 @@ class SiteMap {
                                 ($pages[$action]["enabled"]) && (!$pages[$action]["default"])) {
                             if (!$bSortLinks) {
 	                            $results["descriptions"][$pages[$action]["order"]] = $pages[$action]["description"];
-	                            
+
 	                            $results["links"][$pages[$action]["order"]] = isset($iFolderID) ? generateControllerLink($action, "fFolderID=$iFolderID") : generateControllerLink($action, "");
                             } else {
 	                            $results["descriptions"][] = $pages[$action]["description"];
-	                            
+
 	                            $results["links"][] = isset($iFolderID) ? generateControllerLink($action, "fFolderID=$iFolderID") : generateControllerLink($action, "");
                             }
                         }
@@ -258,9 +258,9 @@ class SiteMap {
             // now check if we have anything in the results array before returning it
             if (count($results) > 0) {
             	if ($bSortLinks) {
-	            	// alpha sort the results 
-	            	array_multisort ($results["descriptions"], SORT_ASC,
-	            	 				 $results["links"], SORT_ASC); 
+	            	// alpha sort the results
+	            	sort($results["descriptions"], SORT_ASC);
+	            	sort($results["links"], SORT_ASC);
 					reset ($results);
             	}
                 return $results;
@@ -272,7 +272,7 @@ class SiteMap {
             return false;
         }
     }
-    
+
     /**
      * Returns the link text for a page
      *
@@ -298,12 +298,12 @@ class SiteMap {
                     }
                 }
             }
-        }    	
+        }
     }
-    
+
     /**
      * Returns the page mapped to the (action, groupName) pair.
-     * Checks whether to use the db or not and calls the appropriate method     
+     * Checks whether to use the db or not and calls the appropriate method
      *
      * @param string the action to lookup pages for
      * @return string the page to redirect to, or false if the user doesn't have access to the page
@@ -358,13 +358,13 @@ class SiteMap {
 
         // for each section
         foreach ($this->aSiteMap as $section => $valArr) {
-            //$default->log->debug("Sitemap::getPage section=$section");
+            if (KTLOG_CACHE) $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredAccess => $pageArr) {
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
-                        $default->log->debug("Sitemap::getPageArray calling hasPermission current requiredAccess=$requiredAccess, action=$ackshin");
+                        if (KTLOG_CACHE) $default->log->debug("Sitemap::getPageArray calling hasPermission current requiredAccess=$requiredAccess, action=$ackshin");
                         if ($this->hasPermission($requiredAccess)) {
                             if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
                                 return str_replace('.php', '', $page["page"]);
@@ -383,7 +383,7 @@ class SiteMap {
 
     /**
      * Returns the section name of the supplied page
-     * Checks whether to use the db or not and calls the appropriate method     
+     * Checks whether to use the db or not and calls the appropriate method
      *
      * @param string the page to lookup the section for
      */
@@ -443,7 +443,7 @@ class SiteMap {
 
     /**
      * Returns the default action for the supplied section
-     * Checks whether to use the db or not and calls the appropriate method     
+     * Checks whether to use the db or not and calls the appropriate method
      *
      * @param string the section name to return the default action for
      * @return string the controller action for the default page for this section
@@ -503,7 +503,7 @@ class SiteMap {
             $results = array();
             // need to loop through all (groupName, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
-            	$default->log->debug("Sitemap::getDefaultActionArray calling hasPermission current requiredAccess=$requiredAccess");
+            	if (KTLOG_CACHE) $default->log->debug("Sitemap::getDefaultActionArray calling hasPermission current requiredAccess=$requiredAccess");
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageArray) {
                         if ($pageArray["default"] && $pageArray["enabled"]) {
@@ -570,21 +570,21 @@ class SiteMap {
      */
     function getActionFromPageArray($sPage) {
         global $default;
-       // $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
+        if (KTLOG_CACHE) $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
         // for each section
         if (!strpos($sPage, '.php')) {
             $sPage .= '.php';
         }
         foreach ($this->aSiteMap as $section => $valArr) {
-            //$default->log->debug("Sitemap::getActionFromPage section=$section");
+            if (KTLOG_CACHE) $default->log->debug("Sitemap::getActionFromPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredAccess => $pageArr) {
-                //$default->log->debug("Sitemap::getActionFromPage access=$requiredAccess");
+                if (KTLOG_CACHE) $default->log->debug("Sitemap::getActionFromPage access=$requiredAccess");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
-                    //$default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
+                    if (KTLOG_CACHE) $default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
                     if ($sPage == $page["page"]) {
-                        //$default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
+                        if (KTLOG_CACHE) $default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
                         return $action;
                     }
                 }
@@ -613,13 +613,13 @@ class SiteMap {
         if (!$this->bUseDB) {
             // clear section table
             if ($sql->query("DELETE from $default->site_sections_table")) {
-                $default->log->debug("Sitemap::syncWithDB removed sections");
+                if (KTLOG_CACHE) $default->log->debug("Sitemap::syncWithDB removed sections");
             } else {
                 $default->log->error("Sitemap::syncWithDB remove sections failed");
             }
             // clear sitemap table
             if ($sql->query("DELETE from $default->sitemap_table")) {
-                $default->log->debug("Sitemap::syncWithDB removed sitemap");
+                if (KTLOG_CACHE) $default->log->debug("Sitemap::syncWithDB removed sitemap");
             } else {
                 $default->log->error("Sitemap::syncWithDB remove sitemap failed");
             }
@@ -629,15 +629,15 @@ class SiteMap {
                 $aFieldValue = array(
                     'name' => $section,
                 );
-                $id =& DBUtil::autoInsert($default->site_sections_table, $aFieldValues);
+                $id = DBUtil::autoInsert($default->site_sections_table, $aFieldValues);
 
-                // $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
+                if (KTLOG_CACHE) $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
 
                 if (PEAR::isError($id)) {
                     $default->log->error("Sitemap::syncWithDB add section $section failed");
                 } else {
                     $sectionID = $id;
-                    $default->log->debug("Sitemap::syncWithDB added section $section; $sectionID");
+                    if (KTLOG_CACHE) $default->log->debug("Sitemap::syncWithDB added section $section; $sectionID");
                 }
 
                 // for each group, page array combination
@@ -653,11 +653,11 @@ class SiteMap {
                             is_default => $page["default"],
                             is_enabled => $page["enabled"],
                         );
-                        $id =& DBUtil::autoInsert($default->sitemap_table, $aFieldValues);
+                        $id = DBUtil::autoInsert($default->sitemap_table, $aFieldValues);
                         if (PEAR::isError($id)) {
-                            $default->log->debug("Sitemap::syncWithDB sitemap insert failed ($sSiteMapSql)");
+                            $default->log->error("Sitemap::syncWithDB sitemap insert failed ($sSiteMapSql)");
                         } else {
-                            $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
+                            if (KTLOG_CACHE) $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
                         }
                     }
                 }

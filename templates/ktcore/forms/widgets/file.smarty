@@ -1,1 +1,2 @@
-      <input type="file" name="{$name}" {if $has_id}id="{$id}"{/if} {if $options.width}size="{$options.width}"{/if}/>
+      <input type="file" name="{$name}" {if $has_id}id="{$id}"{/if} {if $options.width}size="{$options.width}"{/if} 
+      {if $options.onchange}onchange="{$options.onchange}" {/if} />

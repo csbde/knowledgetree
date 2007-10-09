@@ -31,50 +31,52 @@
 
 class UpgradeFunctions {
     var $upgrades = array(
-        "2.0.0" => array("setPermissionFolder"),
-        "2.0.6" => array("addTemplateMimeTypes"),
-        "2.0.8" => array("setPermissionObject"),
-        "2.99.1" => array("createFieldSets"),
-        "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
-        "2.99.8" => array("fixUnits"),
-        "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
-        "3.0.1.3" => array('addTransactionTypes3013'),
-        "3.0.1.4" => array('createWorkflowPermission'),
-        "3.0.2" => array("fixDocumentRoleAllocation"),
-        "3.0.3.2" => array("createFolderDetailsPermission"),
-        "3.0.3.3" => array("generateWorkflowTriggers"),
-        "3.0.3.7" => array("rebuildAllPermissions"),        
-        "3.1.5" => array("upgradeSavedSearches"),
-        "3.1.6.3" => array("cleanupGroupMembership"),    	
-    );
+            "2.0.0" => array("setPermissionFolder"),
+            "2.0.6" => array("addTemplateMimeTypes"),
+            "2.0.8" => array("setPermissionObject"),
+            "2.99.1" => array("createFieldSets"),
+            "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
+            "2.99.8" => array("fixUnits"),
+            "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
+            "3.0.1.3" => array('addTransactionTypes3013'),
+            "3.0.1.4" => array('createWorkflowPermission'),
+            "3.0.2" => array("fixDocumentRoleAllocation"),
+            "3.0.3.2" => array("createFolderDetailsPermission"),
+            "3.0.3.3" => array("generateWorkflowTriggers"),
+            "3.0.3.7" => array("rebuildAllPermissions"),        
+            "3.1.5" => array("upgradeSavedSearches"),
+            "3.1.6.3" => array("cleanupGroupMembership"),    	
+            "3.5.0" => array("cleanupOldKTAdminVersionNotifier"),    	
+            );
 
     var $descriptions = array(
-        "rebuildSearchPermissions" => "Rebuild search permissions with updated algorithm",
-        "setPermissionFolder" => "Set permission folder for each folder for simplified permissions management",
-        "addTemplateMimeTypes" => "Add MIME types for Excel and Word templates",
-        "setPermissionObject" => "Set the permission object in charge of a document or folder",
-        "createFieldSets" => "Create a fieldset for each field without one",
-        "normaliseDocuments" => "Normalise the documents table",
-        "createLdapAuthenticationProvider" => "Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)",
-        'createSecurityDeletePermissions' => 'Create the Core: Manage Security and Core: Delete permissions',
-        'addTransactionTypes3013' => 'Add new folder transaction types',
-        'createWorkflowPermission' => 'Create the Core: Manage Workflow',
-        'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
-        'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
-        'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
-        'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.',
-        'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
-        'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
-    );
+            "rebuildSearchPermissions" => "Rebuild search permissions with updated algorithm",
+            "setPermissionFolder" => "Set permission folder for each folder for simplified permissions management",
+            "addTemplateMimeTypes" => "Add MIME types for Excel and Word templates",
+            "setPermissionObject" => "Set the permission object in charge of a document or folder",
+            "createFieldSets" => "Create a fieldset for each field without one",
+            "normaliseDocuments" => "Normalise the documents table",
+            "createLdapAuthenticationProvider" => "Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)",
+            'createSecurityDeletePermissions' => 'Create the Core: Manage Security and Core: Delete permissions',
+            'addTransactionTypes3013' => 'Add new folder transaction types',
+            'createWorkflowPermission' => 'Create the Core: Manage Workflow',
+            'fixDocumentRoleAllocation' => 'Fix the document role allocation upgrade from 3.0.1',
+            'createFolderDetailsPermission' => 'Create the Core: Folder Details permission',
+            'generateWorkflowTriggers' => 'Migrate old in-transition guards to triggers',
+            'rebuildAllPermissions' => 'Rebuild all permissions to ensure correct functioning of permission-definitions.',
+            'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
+            'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
+            'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
+            );
     var $phases = array(
-        "setPermissionFolder" => 1,
-        "setPermissionObject" => 1,
-        "createFieldSets" => 1,
-        "normaliseDocuments" => 1,
-        "fixUnits" => 1,
-        'applyDiscussionUpgrade' => -1,
-        'fixDocumentRoleAllocation' => -1,
-    );
+            "setPermissionFolder" => 1,
+            "setPermissionObject" => 1,
+            "createFieldSets" => 1,
+            "normaliseDocuments" => 1,
+            "fixUnits" => 1,
+            'applyDiscussionUpgrade' => -1,
+            'fixDocumentRoleAllocation' => -1,
+            );
 
     // {{{ _setPermissionFolder
     function _setPermissionFolder($iFolderId) {
@@ -94,7 +96,7 @@ class UpgradeFunctions {
                 $aParentQuery = array('SELECT parent_id FROM folders WHERE id = ? LIMIT 1', $iInheritedFolderId);
                 $iParentId = DBUtil::getOneResultKey($aParentQuery, 'parent_id');
                 $iInheritedFolderId = $iParentId;
-                
+
                 if ($iInheritedFolderId === false) {
                     return;
                 }
@@ -107,9 +109,9 @@ class UpgradeFunctions {
                 $iPermissionFolderID = DBUtil::getOneResultKey($aQuery, 'permission_folder_id');
                 if (!empty($iPermissionFolderID)) {
                     $aQuery = array(
-                        "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-                        array($iPermissionFolderID, $iFolderId)
-                    );
+                            "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
+                            array($iPermissionFolderID, $iFolderId)
+                            );
                     DBUtil::runQuery($aQuery);
                     return;
                 }
@@ -118,9 +120,9 @@ class UpgradeFunctions {
                 $default->log->debug('Found direct permissions on folder ' . $iInheritedFolderId);
                 $iPermissionFolderID = $iInheritedFolderId;
                 $aQuery = array(
-                    "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-                    array($iPermissionFolderID, $iFolderId)
-                );
+                        "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
+                        array($iPermissionFolderID, $iFolderId)
+                        );
                 DBUtil::runQuery($aQuery);
                 return;
             }
@@ -130,9 +132,9 @@ class UpgradeFunctions {
         // 0, which can never exist, for non-existent.  null for not set yet (database upgrade).
         $iPermissionFolderID = 0;
         $aQuery = array(
-            "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
-            array($iPermissionFolderID, $iFolderId)
-        );
+                "UPDATE folders SET permission_folder_id = ? WHERE id = ?",
+                array($iPermissionFolderID, $iFolderId)
+                );
         DBUtil::runQuery($aQuery);
     }
     // }}}
@@ -163,17 +165,17 @@ class UpgradeFunctions {
                 $table);
 
         $newTypes = array(
-            array(
-                'filetypes' => 'xlt',
-                'mimetypes' => 'application/vnd.ms-excel',
-                'icon_path' => 'icons/excel.gif',
-            ),
-            array(
-                'filetypes' => 'dot',
-                'mimetypes' => 'application/msword',
-                'icon_path' => 'icons/word.gif',
-            ),
-        );
+                array(
+                    'filetypes' => 'xlt',
+                    'mimetypes' => 'application/vnd.ms-excel',
+                    'icon_path' => 'icons/excel.gif',
+                    ),
+                array(
+                    'filetypes' => 'dot',
+                    'mimetypes' => 'application/msword',
+                    'icon_path' => 'icons/word.gif',
+                    ),
+                );
         foreach ($newTypes as $types) {
             $res = DBUtil::getOneResultKey(array($query, $types['filetypes']), 'id');
             if (PEAR::isError($res)) {
@@ -217,7 +219,7 @@ class UpgradeFunctions {
         KTPermissionUtil::setPermissionForID($oPermission, $oPO, $aAllowed);
     }
     // }}}
-    
+
     // {{{ _setAddFolder
     function _setAddFolder($iID, $oPO) {
         require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
@@ -305,13 +307,13 @@ class UpgradeFunctions {
             $bIsGeneric = $aField['is_generic'];
             $sFieldsetsTable = KTUtil::getTableName('fieldsets');
             $iFieldsetId = DBUtil::autoInsert($sFieldsetsTable, array(
-                'name' => $sName,
-                'namespace' => $sNamespace,
-                'mandatory' => false,
-                'is_conditional' => false,
-                'master_field' => $iFieldId,
-                'is_generic' => $bIsGeneric,
-            ));
+                        'name' => $sName,
+                        'namespace' => $sNamespace,
+                        'mandatory' => false,
+                        'is_conditional' => false,
+                        'master_field' => $iFieldId,
+                        'is_generic' => $bIsGeneric,
+                        ));
             if (PEAR::isError($iFieldsetId)) {
                 return $iFieldsetId;
             }
@@ -325,16 +327,16 @@ class UpgradeFunctions {
 
             $sTable = KTUtil::getTableName('document_type_fields');
             $aQuery = array(
-                "SELECT document_type_id FROM $sTable WHERE field_id = ?",
-                array($iFieldId)
-            );
+                    "SELECT document_type_id FROM $sTable WHERE field_id = ?",
+                    array($iFieldId)
+                    );
             $aDocumentTypeIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
             $sTable = KTUtil::getTableName('document_type_fieldsets');
             foreach ($aDocumentTypeIds as $iDocumentTypeId) {
                 $res = DBUtil::autoInsert($sTable, array(
-                    'document_type_id' => $iDocumentTypeId,
-                    'fieldset_id' => $iFieldsetId,
-                ));
+                            'document_type_id' => $iDocumentTypeId,
+                            'fieldset_id' => $iFieldsetId,
+                            ));
                 if (PEAR::isError($res)) {
                     return $res;
                 }
@@ -368,7 +370,7 @@ class UpgradeFunctions {
                 $iMinor = $aVersionSplit[1];
                 $sStoragePath = $aRow['storage_path'] . "-" . $sVersion;
                 $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $sStoragePath);
-                
+
                 if ($sCurrentVersion == $sVersion) {
                     continue;
                 }
@@ -380,16 +382,41 @@ class UpgradeFunctions {
                 }
 
                 $aContentInfo = array(
-                    'document_id' => $aRow['id'],
-                    'filename' => $aRow['filename'],
-                    'size' => $iFileSize,
-                    'mime_id' => $aRow['mime_id'],
-                    'major_version' => $iMajor,
-                    'minor_version' => $iMinor,
-                    'storage_path' => $sStoragePath,
-                );
+                        'document_id' => $aRow['id'],
+                        'filename' => $aRow['filename'],
+                        'size' => $iFileSize,
+                        'mime_id' => $aRow['mime_id'],
+                        'major_version' => $iMajor,
+                        'minor_version' => $iMinor,
+                        'storage_path' => $sStoragePath,
+                        );
                 $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
                 $aMetadataInfo = array(
+                        'document_id' => $aRow['id'],
+                        'content_version_id' => $iContentId,
+                        'document_type_id' => $aRow['document_type_id'],
+                        'name' => $aRow['name'],
+                        'description' => $aRow['description'],
+                        'status_id' => $aRow['status_id'],
+                        'metadata_version' => $iMetadataVersion,
+                        'version_created' => $sDate,
+                        'version_creator_id' => $iUserId,
+                        );
+                $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
+                $aMetadataVersionIds[] = $iMetadataId;
+                $iMetadataVersion++;
+            }
+            $aContentInfo = array(
+                    'document_id' => $aRow['id'],
+                    'filename' => $aRow['filename'],
+                    'size' => $aRow['size'],
+                    'mime_id' => $aRow['mime_id'],
+                    'major_version' => $aRow['major_version'],
+                    'minor_version' => $aRow['minor_version'],
+                    'storage_path' => $aRow['storage_path'],
+                    );
+            $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
+            $aMetadataInfo = array(
                     'document_id' => $aRow['id'],
                     'content_version_id' => $iContentId,
                     'document_type_id' => $aRow['document_type_id'],
@@ -397,34 +424,9 @@ class UpgradeFunctions {
                     'description' => $aRow['description'],
                     'status_id' => $aRow['status_id'],
                     'metadata_version' => $iMetadataVersion,
-                    'version_created' => $sDate,
-                    'version_creator_id' => $iUserId,
-                );
-                $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
-                $aMetadataVersionIds[] = $iMetadataId;
-                $iMetadataVersion++;
-            }
-            $aContentInfo = array(
-                'document_id' => $aRow['id'],
-                'filename' => $aRow['filename'],
-                'size' => $aRow['size'],
-                'mime_id' => $aRow['mime_id'],
-                'major_version' => $aRow['major_version'],
-                'minor_version' => $aRow['minor_version'],
-                'storage_path' => $aRow['storage_path'],
-            );
-            $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
-            $aMetadataInfo = array(
-                'document_id' => $aRow['id'],
-                'content_version_id' => $iContentId,
-                'document_type_id' => $aRow['document_type_id'],
-                'name' => $aRow['name'],
-                'description' => $aRow['description'],
-                'status_id' => $aRow['status_id'],
-                'metadata_version' => $iMetadataVersion,
-                'version_created' => $aRow['modified'],
-                'version_creator_id' => $aRow['modified_user_id'],
-            );
+                    'version_created' => $aRow['modified'],
+                    'version_creator_id' => $aRow['modified_user_id'],
+                    );
             $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
             $aMetadataVersionIds[] = $iMetadataId;
             if (PEAR::isError($iMetadataId)) {
@@ -444,7 +446,7 @@ class UpgradeFunctions {
             DBUtil::runQuery(array("DELETE FROM $sDFLTable WHERE metadata_version_id IS NULL AND document_id = ?", array($aRow['id'])));
         }
         DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=1");
-        
+
     }
     // }}}
 
@@ -465,9 +467,9 @@ class UpgradeFunctions {
         // print "Discussion is not applied!<br />\n";
 
         $f = array(
-            'descriptor' => 'sql*2.99.7*0*2.99.7/discussion.sql',
-            'result' => true,
-        );
+                'descriptor' => 'sql*2.99.7*0*2.99.7/discussion.sql',
+                'result' => true,
+                );
         $res = DBUtil::autoInsert($sUpgradesTable, $f);
         return;
     }
@@ -521,13 +523,13 @@ class UpgradeFunctions {
         $sName = "Autocreated by upgrade";
         $sNamespace = KTUtil::nameToLocalNamespace("authenticationsources", $sName);
         $aConfig = array(
-            'searchattributes' => split(',', 'cn,mail,sAMAccountName'),
-            'objectclasses' => split(',', 'user,inetOrgPerson,posixAccount'),
-            'servername' => $old_default->ldapServer,
-            'basedn' => $old_default->ldapRootDn,
-            'searchuser' => $old_default->ldapSearchUser,
-            'searchpassword' => $old_default->ldapSearchPassword,
-        );
+                'searchattributes' => split(',', 'cn,mail,sAMAccountName'),
+                'objectclasses' => split(',', 'user,inetOrgPerson,posixAccount'),
+                'servername' => $old_default->ldapServer,
+                'basedn' => $old_default->ldapRootDn,
+                'searchuser' => $old_default->ldapSearchUser,
+                'searchpassword' => $old_default->ldapSearchPassword,
+                );
         if ($old_default->ldapServerType == "ActiveDirectory") {
             $sProvider = "ktstandard.authentication.adprovider" ;
         } else {
@@ -536,11 +538,11 @@ class UpgradeFunctions {
 
         require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
         $oSource = KTAuthenticationSource::createFromArray(array(
-            'name' => $sName,
-            'namespace' => $sNamespace,
-            'config' => serialize($aConfig),
-            'authenticationprovider' => $sProvider,
-        ));
+                    'name' => $sName,
+                    'namespace' => $sNamespace,
+                    'config' => serialize($aConfig),
+                    'authenticationprovider' => $sProvider,
+                    ));
 
         if (PEAR::isError($oSource)) {
             return $oSource;
@@ -558,10 +560,10 @@ class UpgradeFunctions {
     function createSecurityDeletePermissions() {
         $sPermissionsTable = KTUtil::getTableName('permissions');
         $aPermissionInfo = array(
-            'human_name' => 'Core: Manage security',
-            'name' => 'ktcore.permissions.security',
-            'built_in' => true,
-        );
+                'human_name' => 'Core: Manage security',
+                'name' => 'ktcore.permissions.security',
+                'built_in' => true,
+                );
         $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
         if (PEAR::isError($res)) {
             return $res;
@@ -569,10 +571,10 @@ class UpgradeFunctions {
         $iSecurityPermissionId = $res;
 
         $aPermissionInfo = array(
-            'human_name' => 'Core: Delete',
-            'name' => 'ktcore.permissions.delete',
-            'built_in' => true,
-        );
+                'human_name' => 'Core: Delete',
+                'name' => 'ktcore.permissions.delete',
+                'built_in' => true,
+                );
         $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
         if (PEAR::isError($res)) {
             return $res;
@@ -604,14 +606,14 @@ class UpgradeFunctions {
     function addTransactionTypes3013() {
         $sTable = KTUtil::getTableName('transaction_types');
         $aTypes = array(
-            'ktcore.transactions.permissions_change' => 'Permissions changed',
-            'ktcore.transactions.role_allocations_change' => 'Role allocations changed',
-        );
+                'ktcore.transactions.permissions_change' => 'Permissions changed',
+                'ktcore.transactions.role_allocations_change' => 'Role allocations changed',
+                );
         foreach ($aTypes as $sNamespace => $sName) {
             $res = DBUtil::autoInsert($sTable, array(
-                'namespace' => $sNamespace,
-                'name' => $sName,
-            ));
+                        'namespace' => $sNamespace,
+                        'name' => $sName,
+                        ));
         }
     }
     // }}}
@@ -620,10 +622,10 @@ class UpgradeFunctions {
     function createWorkflowPermission() {
         $sPermissionsTable = KTUtil::getTableName('permissions');
         $aPermissionInfo = array(
-            'human_name' => 'Core: Manage workflow',
-            'name' => 'ktcore.permissions.workflow',
-            'built_in' => true,
-        );
+                'human_name' => 'Core: Manage workflow',
+                'name' => 'ktcore.permissions.workflow',
+                'built_in' => true,
+                );
         $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
         if (PEAR::isError($res)) {
             return $res;
@@ -654,9 +656,9 @@ class UpgradeFunctions {
         $sUpgradesTable = KTUtil::getTableName('upgrades');
 
         $f = array(
-            'descriptor' => 'sql*3.0.2*0*3.0.2/document_role_allocations.sql',
-            'result' => true,
-        );
+                'descriptor' => 'sql*3.0.2*0*3.0.2/document_role_allocations.sql',
+                'result' => true,
+                );
         $res = DBUtil::autoInsert($sUpgradesTable, $f);
         return;
     }
@@ -669,13 +671,13 @@ class UpgradeFunctions {
         if ($bExists) {
             return;
         }
-       
+
         DBUtil::startTransaction();
         $aPermissionInfo = array(
-            'human_name' => 'Core: Folder Details',
-            'name' => 'ktcore.permissions.folder_details',
-            'built_in' => true,
-        );
+                'human_name' => 'Core: Folder Details',
+                'name' => 'ktcore.permissions.folder_details',
+                'built_in' => true,
+                );
         $res = DBUtil::autoInsert($sPermissionsTable, $aPermissionInfo);
         if (PEAR::isError($res)) {
             return $res;
@@ -700,140 +702,147 @@ class UpgradeFunctions {
         DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
         DBUtil::commit();
     }
-    // }}}
-    
-    
+    //  }}} 
+
+    // {{{ generateWorkflowTriggers 
     function generateWorkflowTriggers() {
-    
+
         require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');    
-    
+
         // get all the transitions, and add a trigger to the util with the appropriate settings.    
         $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
         $aTransitions = KTWorkflowTransition::getList();
         foreach ($aTransitions as $oTransition) {
-            
+
             // guard perm
             $iGuardPerm = $oTransition->getGuardPermissionId();
             if (!is_null($iGuardPerm)) {
-            
+
                 $sNamespace = 'ktcore.workflowtriggers.permissionguard';            
                 $oPerm = KTPermission::get($iGuardPerm);
                 $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
-                    'transitionid' => KTUtil::getId($oTransition),
-                    'namespace' =>  $sNamespace,
-                    'config' => array('perms' => array($oPerm->getName())),
-                ));           
-                           
+                            'transitionid' => KTUtil::getId($oTransition),
+                            'namespace' =>  $sNamespace,
+                            'config' => array('perms' => array($oPerm->getName())),
+                            ));           
+
             }
             // guard group
             $iGuardGroup = $oTransition->getGuardGroupId();
             if (!is_null($iGuardGroup)) {
-            
+
                 $sNamespace = 'ktcore.workflowtriggers.groupguard';            
                 $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
-                    'transitionid' => KTUtil::getId($oTransition),
-                    'namespace' =>  $sNamespace,
-                    'config' => array('group_id' => $iGuardGroup),
-                ));          
-                              
+                            'transitionid' => KTUtil::getId($oTransition),
+                            'namespace' =>  $sNamespace,
+                            'config' => array('group_id' => $iGuardGroup),
+                            ));          
+
             }            
             // guard role    
             $iGuardRole = $oTransition->getGuardRoleId();
             if (!is_null($iGuardRole)) {
-            
+
                 $sNamespace = 'ktcore.workflowtriggers.roleguard';            
                 $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
-                    'transitionid' => KTUtil::getId($oTransition),
-                    'namespace' =>  $sNamespace,
-                    'config' => array('role_id' => $iGuardRole),
-                ));                        
-                 
+                            'transitionid' => KTUtil::getId($oTransition),
+                            'namespace' =>  $sNamespace,
+                            'config' => array('role_id' => $iGuardRole),
+                            ));                        
+
             }
             // guard condition
             $iGuardCondition = $oTransition->getGuardConditionId();
             if (!is_null($iGuardCondition)) {
-            
+
                 $sNamespace = 'ktcore.workflowtriggers.conditionguard';            
                 $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
-                    'transitionid' => KTUtil::getId($oTransition),
-                    'namespace' =>  $sNamespace,
-                    'config' => array('condition_id' => $iGuardCondition),
-                ));                     
+                            'transitionid' => KTUtil::getId($oTransition),
+                            'namespace' =>  $sNamespace,
+                            'config' => array('condition_id' => $iGuardCondition),
+                            ));                     
 
             }            
         }
-    
+
     }
-    
+    //  }}}
+
+    // {{{ rebuildAllPermissions
     function rebuildAllPermissions() {
         $oRootFolder = Folder::get(1);
         KTPermissionUtil::updatePermissionLookupRecursive($oRootFolder);
     }
+    // }}}
 
-
+    // {{{ _upgradeSavedSearch
     function _upgradeSavedSearch($aSearch) {
-	$aMapping = array('-1' =>  'ktcore.criteria.name',
-			  '-6' =>  'ktcore.criteria.id',
-			  '-2' =>  'ktcore.criteria.title',
-			  '-3' =>  'ktcore.criteria.creator',
-			  '-4' =>  'ktcore.criteria.datecreated',
-			  '-5' =>  'ktcore.criteria.documenttype',
-			  '-7' =>  'ktcore.criteria.datemodified',
-			  '-8' =>  'ktcore.criteria.size',
-			  '-9' =>  'ktcore.criteria.content',
-			  '-10' =>  'ktcore.criteria.workflowstate',
-			  '-13' =>  'ktcore.criteria.discussiontext',
-			  '-12' =>  'ktcore.criteria.searchabletext',
-			  '-11' =>  'ktcore.criteria.transactiontext');
+        $aMapping = array('-1' =>  'ktcore.criteria.name',
+                '-6' =>  'ktcore.criteria.id',
+                '-2' =>  'ktcore.criteria.title',
+                '-3' =>  'ktcore.criteria.creator',
+                '-4' =>  'ktcore.criteria.datecreated',
+                '-5' =>  'ktcore.criteria.documenttype',
+                '-7' =>  'ktcore.criteria.datemodified',
+                '-8' =>  'ktcore.criteria.size',
+                '-9' =>  'ktcore.criteria.content',
+                '-10' =>  'ktcore.criteria.workflowstate',
+                '-13' =>  'ktcore.criteria.discussiontext',
+                '-12' =>  'ktcore.criteria.searchabletext',
+                '-11' =>  'ktcore.criteria.transactiontext');
 
-	$aFieldsets =& KTFieldset::getList('disabled != true');
-	foreach($aFieldsets as $oFieldset) {
-	    $aFields =& DocumentField::getByFieldset($oFieldset);
-	    foreach($aFields as $oField) {
-		$sNamespace = $oFieldset->getNamespace() . '.' . $oField->getName();
-		$sId = (string) $oField->getId();
-		$aMapping[$sId] = $sNamespace;
-	    }
-	}
+        $aFieldsets =& KTFieldset::getList('disabled != true');
+        foreach($aFieldsets as $oFieldset) {
+            $aFields =& DocumentField::getByFieldset($oFieldset);
+            foreach($aFields as $oField) {
+                $sNamespace = $oFieldset->getNamespace() . '.' . $oField->getName();
+                $sId = (string) $oField->getId();
+                $aMapping[$sId] = $sNamespace;
+            }
+        }
 
-	foreach(array_keys($aSearch['subgroup']) as $sgkey) {
-	    $sg =& $aSearch['subgroup'][$sgkey];
-	    foreach(array_keys($sg['values']) as $vkey) {
-		$item =& $sg['values'][$vkey];
-		$type = $item['type'];
-		$toreplace = 'bmd' . ((int)$type < 0 ? '_' : '') . abs((int)$type);
-		$item['type'] = $aMapping[$type];
-		$nData = array();
-		foreach($item['data'] as $k=>$v) {
-		    $k = str_replace($toreplace, $aMapping[$type], $k);
-		    $nData[$k] = $v;
-		}
-		$item['data'] = $nData;
-	    }
-	}
-	return $aSearch;
+        foreach(array_keys($aSearch['subgroup']) as $sgkey) {
+            $sg =& $aSearch['subgroup'][$sgkey];
+            foreach(array_keys($sg['values']) as $vkey) {
+                $item =& $sg['values'][$vkey];
+                $type = $item['type'];
+                $toreplace = 'bmd' . ((int)$type < 0 ? '_' : '') . abs((int)$type);
+                $item['type'] = $aMapping[$type];
+                $nData = array();
+                foreach($item['data'] as $k=>$v) {
+                    $k = str_replace($toreplace, $aMapping[$type], $k);
+                    $nData[$k] = $v;
+                }
+                $item['data'] = $nData;
+            }
+        }
+        return $aSearch;
     }
+    // }}}
 
+    // {{{ upgradeSavedSearches
     function upgradeSavedSearches() {
-	foreach(KTSavedSearch::getSearches() as $oS) {
+        foreach(KTSavedSearch::getSearches() as $oS) {
             $sS = $oS->getSearch();
-	    $aSearch = UpgradeFunctions::_upgradeSavedSearch($sS);
-	    $oS->setSearch($aSearch);
-	    $oS->update();
-	}
+            $aSearch = UpgradeFunctions::_upgradeSavedSearch($sS);
+            $oS->setSearch($aSearch);
+            $oS->update();
+        }
     }
-    
+    // }}}
+
+    // {{{ cleanupGroupMembership
     function cleanupGroupMembership() {
         // 4 cases.
         $child_query = 'select L.id as link_id FROM groups_groups_link as L left outer join groups_lookup as G on (L.member_group_id = G.id) WHERE G.id IS NULL';
         $parent_query = 'select L.id as link_id FROM groups_groups_link as L left outer join groups_lookup as G on (L.parent_group_id = G.id) WHERE G.id IS NULL';
         $group_query = 'select L.id as link_id FROM users_groups_link as L left outer join groups_lookup as G on (L.group_id = G.id) WHERE G.id IS NULL';
         $user_query = 'select L.id as link_id FROM users_groups_link as L left outer join users as U on (L.user_id = U.id) WHERE U.id IS NULL';
-        
+
         $bad_group_links = array();
         $res = DBUtil::getResultArrayKey(array($child_query, null), 'link_id');
         if (PEAR::isError($res)) {
@@ -841,14 +850,14 @@ class UpgradeFunctions {
         } else {
             $bad_group_links = $res;
         }
-        
+
         $res = DBUtil::getResultArrayKey(array($parent_query, null), 'link_id');
         if (PEAR::isError($res)) {
             return $res;
         } else {
             $bad_group_links = kt_array_merge($bad_group_links, $res);
         }       
-        
+
         foreach ($bad_group_links as $link_id) {
             $res = DBUtil::runQuery(array("DELETE FROM groups_groups_link WHERE id = ?", $link_id));
             if (PEAR::isError($res)) {
@@ -880,6 +889,18 @@ class UpgradeFunctions {
         return true;
 
     }    
+    // }}}
+
+    // {{{  cleanupOldKTAdminVersionNotifier
+    function cleanupOldKTAdminVersionNotifier() {
+        global $default;
+        $oldFile = KT_DIR . "/plugins/ktstandard/KTAdminVersionPlugin.php";
+
+        if(file_exists($oldFile)) return unlink($oldFile);
+
+        return true;
+    }    
+    // }}}
 }
 
 ?>

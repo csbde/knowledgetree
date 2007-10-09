@@ -261,12 +261,11 @@ class Folder extends KTEntity {
      * Returns the documents in this folder
      */
     function getDocumentIDs($iFolderID) {
-		// FIXME appears to be deprecated.
 		$sTable = KTUtil::getTableName('documents');
-		$aQuery = array('SELECT id FROM $sTable WHERE folder_id = ?', array($iFolderId));
+		$aQuery = array("SELECT id FROM {$sTable} WHERE folder_id = ?", array($iFolderID));
 		$res = DBUtil::getResultArrayKey($aQuery,'id');
 		if (PEAR::isError($res)) {
-		    return ''; // return $res;
+		    return $res;
 		}
 		return implode(',', $res);
     }

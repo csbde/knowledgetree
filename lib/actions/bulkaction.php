@@ -7,7 +7,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -18,9 +18,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -49,7 +49,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
     var $_sDisablePermission;
     var $bAllowInAdminMode = false;
-    var $sHelpPage = 'ktcore/browse.html';    
+    var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
 
@@ -71,7 +71,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-        
+
         $this->persistParams('fEntityListCode');
         parent::KTStandardDispatcher();
     }
@@ -115,7 +115,7 @@ class KTBulkAction extends KTStandardDispatcher {
             'url' => $url,
             'icon_class' => $this->sIconClass,
         );
-        
+
         $aInfo = $this->customiseInfo($aInfo);
         return $aInfo;
     }
@@ -159,7 +159,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $this->oFolder = Folder::get($iFolderId);
         //$this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
-        
+
         $aOptions = array(
             'final' => false,
             'documentaction' => 'viewDocument',
@@ -172,7 +172,7 @@ class KTBulkAction extends KTStandardDispatcher {
         return true;
     }
 
-    
+
     // check the entire entity list. this needn't be overrided at any point
     function check_entities() {
         $aFailed = array('documents' => array(), 'folders' => array());
@@ -184,7 +184,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
         foreach($this->oEntityList->getDocumentIds() as $iId) {
             $oDocument =& Document::get($iId);
-            
+
             if(PEAR::isError($oDocument)) {
                 $aFailed['documents'][] = array($iId, _kt('No such document'));
             } else {
@@ -207,10 +207,10 @@ class KTBulkAction extends KTStandardDispatcher {
 
         foreach($this->oEntityList->getFolderIds() as $iId) {
             $oFolder =& Folder::get($iId);
-            
+
             if(PEAR::isError($oFolder)) {
                 $aFailed['folders'][] = array($iId, _kt('No such folder'));
-            } else {                
+            } else {
                 $res = $this->check_entity($oFolder);
 
                 if(PEAR::isError($res)) {
@@ -221,7 +221,7 @@ class KTBulkAction extends KTStandardDispatcher {
                     $aSucceeded['folders'][] = $oFolder->getId();
                 }
             }
-        }        
+        }
         $this->oActiveEntityList = new KTEntityList($aSucceeded['documents'], $aSucceeded['folders']);
         $this->aFailed = $aFailed;
 
@@ -242,7 +242,7 @@ class KTBulkAction extends KTStandardDispatcher {
             }
 
             $res = $this->perform_action($oDocument);
-            
+
             if(PEAR::isError($res)) {
                 $this->aActionResults['documents'][] = array($sName, $res->getMessage());
             } else {
@@ -259,12 +259,12 @@ class KTBulkAction extends KTStandardDispatcher {
             }
 
             $res = $this->perform_action($oFolder);
-            
+
             if(PEAR::isError($res)) {
                 $this->aActionResults['folders'][] = array($sName, $res->getMessage());
             } else {
                 $this->aActionResults['folders'][] = array($sName, _kt('Success'));
-            }            
+            }
         }
     }
 
@@ -284,7 +284,7 @@ class KTBulkAction extends KTStandardDispatcher {
     function store_lists() {
         $this->persistParams(array('fListCode', 'fActiveListCode', 'fFolderId', 'fReturnData', 'fReturnAction'));
     }
-        
+
 
 
 
@@ -302,7 +302,7 @@ class KTBulkAction extends KTStandardDispatcher {
             'action' => 'collectinfo',
             'fail_action' => 'main',
             'noframe' => true,
-            'extraargs' => array('fListCode' => $sListCode, 
+            'extraargs' => array('fListCode' => $sListCode,
                                  'fActiveListCode' => $sActiveListCode,
                                  'fFolderId' => $this->oFolder->getId(),
                                  'fReturnAction' => KTUtil::arrayGet($_REQUEST, 'fReturnAction'),
@@ -323,15 +323,19 @@ class KTBulkAction extends KTStandardDispatcher {
         	if ($sReturnData == '')
         	{
         		$sReturnData = KTUtil::arrayGet($_REQUEST, 'fFolderId');
-        	}        	 
+        	}
             $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
-        } else if($sReturnAction == 'simpleSearch') {
+        } elseif($sReturnAction == 'simpleSearch') {
             $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
             $extraargs = array('fSearchableText'=>$sReturnData);
-        } else if($sReturnAction == 'booleanSearch') {
+        } elseif($sReturnAction == 'booleanSearch') {
             $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
             $sAction = 'performSearch';
             $extraargs = array('boolean_search_id'=>$sReturnData);
+        }
+        elseif($sReturnAction == 'search2') {
+            $sTargetUrl = KTBrowseUtil::getSearchResultURL();
+            $sAction = 'searchResults';
         }
 
         $oForm = new KTForm;
@@ -356,13 +360,13 @@ class KTBulkAction extends KTStandardDispatcher {
         $this->oEntityList = new KTEntityList($aDocuments, $aFolders);
 
         // gives us $this->aFailed
-        $iActiveCount = $this->check_entities();        
+        $iActiveCount = $this->check_entities();
 
 	$oTemplating =& KTTemplating::getSingleton();
 	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_listing');
-        
-        $this->store_lists();            
-            
+
+        $this->store_lists();
+
         return $oTemplate->render(array('context' => $this,
                                         'form' => $this->form_listing(),
                                         'failed' => $this->aFailed,
@@ -411,7 +415,7 @@ class KTBulkAction extends KTStandardDispatcher {
     // parent implementation
     function check_entity($oEntity) {
         $oPermission =& KTPermission::getByName($this->_sPermission);
-        if(PEAR::isError($oPermission)) { 
+        if(PEAR::isError($oPermission)) {
             return true;
         }
 
@@ -419,7 +423,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
         // TODO: check if this is appropriate
         //       should probably store the 'equivalent' action (ie. document.delete)
-        //       and check that, rather than add a new list of actions to the workflow 
+        //       and check that, rather than add a new list of actions to the workflow
         //       section
         if(is_a($oEntity, 'Document')) {
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, $this->sName)) {
@@ -430,14 +434,14 @@ class KTBulkAction extends KTStandardDispatcher {
                 return PEAR::raiseError(_kt('Document is archived or deleted'));
             }
         }
-        
+
         // admin check
         if($this->bAllowInAdminMode) {
             if(KTBrowseUtil::inAdminMode($this->oUser, null)) {
                 return true;
             }
         }
-        
+
         if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oEntity)) {
             return PEAR::raiseError(_kt('You do not have the required permissions'));
         }
@@ -452,7 +456,7 @@ class KTBulkDocumentAction extends KTBulkAction {
     function check_entity($oEntity) {
         if(!is_a($oEntity, 'Document')) {
             return false;
-        } 
+        }
         return parent::check_entity($oEntity);
     }
 }
@@ -461,7 +465,7 @@ class KTBulkFolderAction extends KTBulkAction {
     function check_entity($oEntity) {
         if(!is_a($oEntity, 'Folder')) {
             return false;
-        } 
+        }
         return parent::check_entity($oEntity);
     }
 }
@@ -486,7 +490,7 @@ class KTBulkActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName(null, null, $oPlugin);
+            $aObjects[] = new $sClassName(null, null, $oPlugin);
         }
         return $aObjects;
     }
@@ -503,7 +507,7 @@ class KTBulkActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] =& new $sClassName(null, $oUser, $oPlugin);
+            $aObjects[] = new $sClassName(null, $oUser, $oPlugin);
         }
         return $aObjects;
     }

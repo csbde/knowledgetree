@@ -67,7 +67,9 @@ function sanitizeForSQL($string, $min='', $max='') {
 
 function sanitizeForSQLtoHTML($string, $min='', $max='') {
     
-	return stripslashes(trim($string));
+    $string = str_ireplace("\r", '', $string);
+    $string = str_ireplace("\n", '', $string);
+    return stripslashes(trim($string));
     
 }
 

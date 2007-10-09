@@ -1,0 +1,74 @@
+SEARCH2 ARCHITECTURE
+====================
+
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
+
+Introduction
+------------
+
+Locating documents easily should be one of the most important features of the DMS. Implementing the new search must be flexible
+to accomodate KnowledgeTree's metadata and document content.
+
+The previous search was implemented using mysql's full text indexes, but it was found to be rather limiting from the perspective
+of returning useful results. We decided to adapt a known search library - Lucene - to remedy the situation.
+
+The complexity of integrating Lucene with the KnowledgeTree is that the data is now seperated between a database and an external source.
+
+KnowledgeTree needs to provide a mechanism where the two an be queried easily. The idea was to provide a mechanism to create an
+expression which could be used. The expression can be evaluated and the subexpressions can be identified that should run on lucene and those
+that should run on the metadata in the database, with the results finally being merged.
+
+New Database Requirements
+-------------------------
+
+In order to further improve the user experience, the indexing of documents is to be scheduled as a background task. When documents
+are added/checked-into KnowledgeTre, a reference to the document is added to a 'pending' index queue. The background task will process
+items in the 'pending' index queue.
+
+The index queue is maintained by the 'index_files' table. It has a 'what' field that identifies what should be indexed. Possible values
+are: 'C' = Content, 'D' = Discussion, 'A' = Content and Discussion
+
+The 'search_ranking' table is used to associate weightings with different fields. The weights are used when subexpressions match on various fields
+and when results from the database and Lucene must be merged.
+
+The 'search_saved' table stores the expressions. The 'type' field describes what the saved search would be used for. The features will be used
+in future versions. The types defined include; 'S' = Saved Search, 'C' = Conditional Permission, 'W' = Workflow Guard, 'B' = Subscription
+
+The 'search_saved_events' table tracks events so that the subscribed search functionality can run in the background.
+
+Folder Structure
+----------------
+
+The core search functionality is located in the ktroot/search2 folder. This is further comprised of an 'indexing' folder and a 'search' folder.
+The 'indexing' folder contains the core functionality regarding indexing using Lucene - using the Java Lucene server or the PHP Lucene Server.
+The 'search' folder contains the core search functionality that deals with evaluating a search expression, breaking it up into parts for Lucene
+and the database, ranking and merging results.
+
+search2/indexing/bin				- various scripts that can be run from the command line.
+search2/indexing/extractors			- text extractors used to extract text from various files.
+search2/indexing/extractorHooks		- hooking mechanisms around extraction process.
+search2/indexing/indexers			- the location of the actual indexers that could be used. Only one may be used in an installation.
+search2/indexing/lib				- libraries that may be required that are specific to Lucene.
+search2/indexing/test				- some basic test scripts.
+
+
+search2/search						- the primary location of search functionality.
+search2/search/bin					- various scripts that can be run from the command line.
+search2/search/fields				- the of fields that can be used in expressions.
+search2/search/test					- some basic test scripts.
+
+bin/luceneserver					- the location of the Java Lucene Server.
+
+Additional Search Requirements
+------------------------------
+
+The search2 expression engine is built using a 'compiler' tool called phplemon, which is part of the PEAR PHP_ParserGenerator project.
+See http://pear.php.net/package/PHP_ParserGenerator for more details.
+
+Lucene is an Apache project - http://lucene.apache.org. The 'main' project is Java based, but it has also been ported to PHP and incorporated
+into the ZendFramework. See http://framework.zend.com for more details.
+
+search2/indexing/PHPLuceneIndexer.inc.php contains the code to interface to the PHP ZendFramework.
+
+search2/indexing/JavaXMLRPCLuceneIndexer.inc.php contains the code to interface with the Java Lucene Server. The Java Lucene Server
+must be running for this to work.

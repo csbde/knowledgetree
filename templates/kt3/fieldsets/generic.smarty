@@ -42,13 +42,17 @@
     </tr>
 
     <tr class="odd">
-        <th>{i18n}Workflow status{/i18n}</th>
+        <th>{i18n}Workflow{/i18n}</th>
         <td>
-{if $workflow_state}
-{$workflow_state->getName()}
-{else}
-{i18n}No workflow{/i18n}
-{/if}</td>
+        {if $workflow}
+            {$workflow->getName()}:
+            {if $workflow_state}
+                {$workflow_state->getName()}
+            {/if}
+        {else}
+            {i18n}No workflow{/i18n}
+        {/if}
+        </td>
     </tr>
 
     <tr class="even">

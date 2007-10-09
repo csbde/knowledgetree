@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  *
@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -37,16 +37,16 @@ class KTUploadManager
 	var $age;
 	var $temp_dir;
 	var $session;
-	
- 
+
+
 	function KTUploadManager()
 	{
-		$config = KTConfig::getSingleton();		 
-		
+		$config = KTConfig::getSingleton();
+
 		$this->age = $config->get('webservice/uploadExpiry',60);
 		$this->temp_dir= $config->get('webservice/uploadDirectory');
-	} 
-	
+	}
+
 	/**
 	 * Sets the current session.
 	 *
@@ -56,7 +56,7 @@ class KTUploadManager
 	{
 		$user = &$session->get_user();
 		$this->userid=$user->getId();
-		$this->session = $session->get_session();		
+		$this->session = $session->get_session();
 	}
 
 	/**
@@ -71,10 +71,13 @@ class KTUploadManager
 		$filename=basename($filename);
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis');
-		
-		$tempfile = str_replace('/','\\',$tempfile);
-		$newtempfile = str_replace('\\','/',realpath($this->temp_dir) . '/' .  $this->userid  . '-'. $now_str);
-		
+
+		$newtempfile = realpath($this->temp_dir) . '/' . $this->userid . '-'. $now_str;
+		if (DIRECTORY_SEPARATOR == '\\') {
+			$tempfile = str_replace('/','\\',$tempfile);
+			$newtempfile = str_replace('\\','/',$newtempfile);
+		}
+
 		DBUtil::startTransaction();
 		$id = DBUtil::autoInsert('uploaded_files',
 			array(
@@ -83,11 +86,11 @@ class KTUploadManager
 				'userid'=>$this->userid,
 				'uploaddate'=>$now,
 				'action'=>$action,
-			//	'related_uploadid'=>$relatedid				
+			//	'related_uploadid'=>$relatedid
 				),
-				array('noid'=>true)	
+				array('noid'=>true)
 			);
-			
+
 		if (PEAR::isError($id))
 		{
 			DBUtil::rollback();
@@ -106,7 +109,7 @@ class KTUploadManager
 
 		return $newtempfile;
 	}
-	
+
 	/**
 	 * This is a list of all all managed files.
 	 *
@@ -122,7 +125,7 @@ class KTUploadManager
 		$result = DBUtil::getResultArray($sql);
 		return $result;
 	}
-	
+
 	function imported_file($action, $filename, $documentid)
 	{
 		DBUtil::startTransaction();
@@ -134,7 +137,7 @@ class KTUploadManager
 			DBUtil::rollback();
 			return false;
 		}
-				
+
 		$sql = "INSERT INTO index_files(document_id, user_id) VALUES($documentid, $this->userid)";
 		DBUtil::runQuery($sql);
 		if (PEAR::isError($rs))
@@ -142,11 +145,11 @@ class KTUploadManager
 			DBUtil::rollback();
 			return false;
 		}
-		
+
 		DBUtil::commit();
 		return true;
 	}
-	
+
 	/**
 	 * This will remove any temporary files that have not been dealt with in the correct timeframe.
 	 *
@@ -155,22 +158,22 @@ class KTUploadManager
 	{
 		list($year,$mon,$day,$hour, $min) = explode(':', date('Y:m:d:H:i'));
 		$expirydate = date('Y-m-d H:i:s', mktime($hour, $min - $this->age, 0, $mon, $day, $year));
-		
+
 		$sql = "SELECT tempfilename FROM uploaded_files WHERE uploaddate<'$expirydate'";
 		$rows = DBUtil::getResultArray($sql);
-		
+
 		foreach($rows as $record)
 		{
 			$tempfilename=addslashes($record['tempfilename']);
-			
+
 			$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
 			$rs = DBUtil::runQuery($sql);
 			if (PEAR::isError($rs))
 			{
-				continue;	
+				continue;
 			}
-			
-			@unlink($tempfilename);		
+
+			@unlink($tempfilename);
 		}
 	}
 }

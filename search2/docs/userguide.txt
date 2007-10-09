@@ -1,0 +1,50 @@
+SEARCH2 User Guide
+==================
+
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
+
+The new search engine provides for more complicated search expressions than were possible in the past.
+
+Expression Language
+-------------------
+
+The core of the search engine is the 'expression language'.
+
+Expressions may be built up using the following grammar:
+expr ::= expr { AND | OR } expr
+expr ::= NOT expr
+expr ::= (expr)
+expr ::= expr { < | <= | = | > | >= | CONTAINS |STARTS WITH | ENDS WITH } value
+expr ::= field BETWEEN value AND value
+expr ::= field DOES [ NOT ] CONTAIN value
+expr ::= field IS [ NOT ] LIKE value
+value ::= "search text here"
+
+A field may be one of the following:
+CheckedOut , CheckedOutBy , CheckedoutDelta , Created , CreatedBy , CreatedDelta , DiscussionText , DocumentId ,
+DocumentText , DocumentType , Filename , Filesize , Folder , GeneralText , IsCheckedOut , IsImmutable ,
+Metadata , MimeType , Modified , ModifiedBy , ModifiedDelta , Tag , Title , Workflow ,
+WorkflowID , WorkflowState , WorkflowStateID
+
+A 'field' may also refer to metadata using the following syntax:
+["fieldset name"]["field name"]
+
+Note that 'values' must be contained within "double quotes".
+
+User Interface Features
+-----------------------
+
+A) Quick Search widget
+
+This appears on the main navigation bar. Text entered into this widget will be searched according to two options:
+1) metadata only
+2) filename, title, metadata and document content
+
+B) Text Extractor Diagnostics Plugin
+
+This is available via the dashboard to the administrator.
+The results may also be obtained by running the search2/indexing/bin/diagnose.php script.
+
+C) Search Portlet
+
+When browsing through the repository, the search portlet will be available to the right. It will provide a few extra options regarding search.

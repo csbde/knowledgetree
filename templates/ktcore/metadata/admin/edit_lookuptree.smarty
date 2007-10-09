@@ -23,10 +23,10 @@ are immediately stored, so when you are done simply navigate back to the field m
   
   <p class="descriptiveText">{i18n}As an example, if you are creating a tree of the
   countries in the world, the actual countries would be <strong>keywords</strong> 
-  (e.g. South Africa, England, Pakistan, India).  The highest group of categories 
+  (e.g. South Africa, England, Pakistan, India, etc.).  The highest group of categories 
   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by 
-  subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-saharan Africa, 
-  Austalasia.{/i18n}</p>
+  subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-Saharan Africa, 
+  Australasia.{/i18n}</p>
   
   {foreach from=$args item=v key=k}
    <input type="hidden" name="{$k}" value="{$v}" />

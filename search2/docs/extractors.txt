@@ -1,0 +1,89 @@
+SEARCH2 - HOWTO WRITE AN EXTRACTOR
+==================================
+
+Note: The most up-to-date version of this can be found on the wiki at http://wiki.knowledgetree.com/Search2
+
+All extractors are located in the search2/indexing/extractors folder.
+
+Naming Convention
+-----------------
+
+The extractor must be a class descendant from DocumentExtractor and must be suffixed with the text 'Extractor'. The filename for the class
+should have the same name as the class, but with the extension '.inc.php'.
+
+Example
+-------
+
+The simplest extractor is the following:
+
+class SomeExtractor extends DocumentExtractor
+{
+	public function getDisplayName()
+	{
+		return _kt('Some Extractor');
+	}
+
+	public function getSupportedMimeTypes()
+	{
+		return array('text/plain','text/csv');
+	}
+
+	public function extractTextContent()
+	{
+		$content = file_get_contents($this->sourcefile);
+		if (false === $content)
+		{
+			return false;
+		}
+
+		$result = file_put_contents($this->targetfile, $this->filter($content));
+
+		return false !== $result;
+	}
+
+	public function diagnose()
+	{
+		return null;
+	}
+}
+
+The filename is 'SomeExtractor.inc.php'.
+
+Note that the DocumentExtractor class has some attributes that can be referenced:
+1) sourcefile - the source filename from which the text must be extracted
+2) targetfile - the target filename where the text that is extracted should be saved.
+
+The class requires 4 methods:
+1) getDisplayName() - provides the system with a friendly name for the extractor which will be displayed to users.
+2) getSupportedMimeTypes() - tells the system what mime types the extractor supports.
+3) extractTextContent() - the function that does the work. It must read from sourcefile and write to targetfile.
+4) diagnose() - it must return null if there are no problems. Otherwise, it should return a string with an error/informational message.
+
+Writing an extractor based on a command line application
+--------------------------------------------------------
+
+To illustrate how this can be done, the PDFExtractor is displayed:
+
+class PDFExtractor extends ApplicationExtractor
+{
+	public function __construct()
+	{
+		parent::__construct('extractors','pdftotext','pdftotext','PDF Text Extractor','-nopgbrk -enc UTF-8 {source} {target}');
+	}
+
+	public function getSupportedMimeTypes()
+	{
+		return array('application/pdf');
+	}
+}
+
+Note that the constructor takes the parameters:
+
+function __construct($section, $appname, $command, $displayname, $params)
+
+The application path is resolved from $section/$appname in the config.ini. If it is not found in the config.ini, the $command is
+used by default. If you rely on $command, it should be accessible via the PATH environment variable.
+
+$displayname is the friendly name that will be displayed in the dashboard.
+
+Note that $params should contain {source} and {target} placeholders. These will be replaced by the system.

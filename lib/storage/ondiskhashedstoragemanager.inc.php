@@ -60,7 +60,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
             //remove the temporary file
-            @unlink($sTmpFilePath);
+            //@unlink($sTmpFilePath);
             if (file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
@@ -74,7 +74,10 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     function writeToFile($sTmpFilePath, $sDocumentFileSystemPath) {
         // Make it easy to write compressed/encrypted storage
 
-        return copy($sTmpFilePath, $sDocumentFileSystemPath);
+        if (is_uploaded_file($sTmpFilePath))
+            return move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
+        else
+            return rename($sTmpFilePath, $sDocumentFileSystemPath);
     }
 
     function getPath(&$oDocument) {
@@ -162,9 +165,11 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             }
             // HTTP/1.0
             //header("Pragma: no-cache"); // Don't send this header! It breaks IE.
-            
-            $oFile = new KTFSFileLike($sPath);
-            KTFileLikeUtil::send_contents($oFile);
+
+
+            readfile($sPath);
+            //$oFile = new KTFSFileLike($sPath);
+            //KTFileLikeUtil::send_contents($oFile);
         } else {
             return false;
         }
@@ -201,8 +206,10 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
             header("Cache-Control: must-revalidate");
-            $oFile = new KTFSFileLike($sPath);
-            KTFileLikeUtil::send_contents($oFile);
+
+            readfile($sPath);
+            //$oFile = new KTFSFileLike($sPath);
+            //KTFileLikeUtil::send_contents($oFile);
         } else {
             return false;
         }
@@ -223,9 +230,9 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         global $default;
         if (file_exists($sOldDocumentPath)) {
             //copy the file    to the new destination
-            if (copy($sOldDocumentPath, $sNewDocumentPath)) {
+            if (rename($sOldDocumentPath, $sNewDocumentPath)) {
                 //delete the old one
-                @unlink($sOldDocumentPath);
+                //@unlink($sOldDocumentPath);
                 return true;
             } else {
                 return false;
@@ -281,7 +288,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * return boolean true on successful expunge
      */
     function expunge($oDocument) {
-        $oConfig =& KTConfig::getSingleton();
+    	parent::expunge($oDocument);
+    	$oConfig =& KTConfig::getSingleton();
         $sCurrentPath = $this->getPath($oDocument);
 
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
@@ -293,6 +301,25 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
         return true;
     }
+
+	/**
+	 * Completely remove a document version
+	 *
+	 * return boolean true on successful delete
+	 */
+	function deleteVersion($oVersion) {
+	    $oConfig =& KTConfig::getSingleton();
+	    $sDocumentRoot = $oConfig->get('urls/documentRoot');
+	    $iContentId = $oVersion->getContentVersionId();
+        $oContentVersion = KTDocumentContentVersion::get($iContentId);
+        
+	    $sPath = $oContentVersion->getStoragePath();
+	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
+	    if (file_exists($sFullPath)) {
+            unlink($sFullPath);
+	    }
+	    return true;
+	}
 
     function restore($oDocument) {
         // Storage doesn't care if the document is deleted or restored

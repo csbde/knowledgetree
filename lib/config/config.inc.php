@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -56,30 +56,30 @@ class KTConfig {
         print "----- Cache\n";
         var_dump($config_cache);
         */
-        
+
         return true;
     }
-    
+
     function createCache($filename) {
         $config_cache = array();
         $config_cache['flat'] = $this->flat;
         $config_cache['flatns'] = $this->flatns;
         $config_cache['expanded'] = $this->expanded;
         $config_cache['expanding'] = $this->expanding;
-        
+
         file_put_contents($filename, serialize($config_cache));
-        
-        
+
+
     }
 
     function loadFile($filename, $bDefault = false) {
         $c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
-        
+
         if (PEAR::isError($root)) {
-            return $root;    
-        }        
-        
+            return $root;
+        }
+
         $this->aFileRoot[$filename] =& $root;
 
         $conf =& $root->toArray();
@@ -144,11 +144,14 @@ class KTConfig {
         return $oDefault;
     }
 
-    function &getSingleton() {
-        if (!KTUtil::arrayGet($GLOBALS, 'KTConfig')) {
-            $GLOBALS['KTConfig'] =& new KTConfig;
-        }
-        return $GLOBALS['KTConfig'];
+    static function &getSingleton() {
+    	static $singleton = null;
+
+    	if (is_null($singleton))
+    	{
+    		$singleton = new KTConfig();
+    	}
+    	return $singleton;
     }
 }
 

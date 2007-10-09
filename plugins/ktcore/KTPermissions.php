@@ -556,8 +556,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $this->oPage->requireJSStandalone($initJS);
 
         $aInitialUsers = $oRoleAllocation->getUsers();
-        $aAllUsers = User::getList();
-
+        $aAllUsers = User::getList('id > 0 AND disabled = 0');
 
         // FIXME this is massively non-performant for large userbases..
         $aRoleUsers = array();

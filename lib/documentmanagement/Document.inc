@@ -34,6 +34,7 @@ DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
 DEFINE("STATUS_INCOMPLETE", 5);
+DEFINE("VERSION_DELETED", 6);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
@@ -79,6 +80,9 @@ class Document {
     function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
     function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
 
+	function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
+    function setCheckedOutDate($dNewValue) { $this->_oDocumentCore->setCheckedOutDate($dNewValue); }
+
     function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
     function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
 
@@ -111,6 +115,9 @@ class Document {
 
     function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
     function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
+
+    function getMetadataStatusID() { return $this->_oDocumentMetadataVersion->getStatusId(); }
+    function setMetadataStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); }
 
     function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
     function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->getMetadataVersion($iNewValue); }
@@ -381,6 +388,10 @@ class Document {
      * Deletes content from document data tables
      */
     function cleanupDocumentData($iDocumentID) {
+        // NEW SEARCH
+
+        return;
+
         // FIXME this appears to be deprecated, or at least should be
         $sTable = KTUtil::getTableName('document_text');
         $sQuery = "DELETE FROM $sTable WHERE document_id = ?";

@@ -1,80 +1,86 @@
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Workflow for{/i18n}:<br />{$oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">
-{i18n}Workflow is a description of a document's lifecycle.  It is made up of
-workflow states, which describe where in the lifecycle the document is,
-and workflow transitions, which describe the next steps within the
-lifecycle of the document.{/i18n}
+    {i18n}Workflow is a description of a document's lifecycle.  It is made up of
+    workflow states, which describe where in the lifecycle the document is,
+    and workflow transitions, which describe the next steps within the
+    lifecycle of the document.{/i18n}
 </p>
 
 {if !$oWorkflow}
-<h3>{i18n}No workflow{/i18n}</h3>
-
-<p>{i18n}Document has no assigned workflow.{/i18n}</p>
+    <h3>{i18n}No workflow{/i18n}</h3>
+    
+    <p>{i18n}Document has no assigned workflow.{/i18n}</p>
 
 {else}
+    
+    <h3>{i18n}Current workflow settings{/i18n}</h3>
+    
+    <dl class="metadata">
+        <dt>{i18n}Workflow{/i18n}</dt><dd>{$oWorkflow->getName()}</dd>
+        <dt>{i18n}State{/i18n}</dt><dd>{$oState->getName()}</dd>
+    </dl>
 
-<h3>{i18n}Current workflow settings{/i18n}</h3>
-
-<dl class="metadata">
-<dt>{i18n}Workflow{/i18n}</dt><dd>{$oWorkflow->getName()}</dd>
-<dt>{i18n}State{/i18n}</dt><dd>{$oState->getName()}</dd>
-</dl>
-
-{if $aTransitions}
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="performTransition" />
-<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-<fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
-{foreach from=$transition_fields item=oWidget }
-  {$oWidget->render()}
-{/foreach}
-<div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Perform Transition{/i18n}" />
-</div>
-</fieldset>
-</form>
-{/if}
+    {if $aTransitions}
+        <form action="{$smarty.server.PHP_SELF}" method="POST">
+            <input type="hidden" name="action" value="performTransition" />
+            <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+            <fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
+            {foreach from=$transition_fields item=oWidget }
+                {$oWidget->render()}
+            {/foreach}
+            <div class="form_actions">
+            <input type="submit" name="submit" value="{i18n}Perform Transition{/i18n}" />
+            </div>
+            </fieldset>
+        </form>
+    {/if}
 {/if}
 
 <fieldset>
-{if !$oWorkflow}
-  <legend>{i18n}Start workflow on document{/i18n}</legend>
-  {assign var=none value=""}
+{if $bIsCheckedOut}
+    <div class="ktInfoMessage">
+        <span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
+    </div>
 {else}
-  <legend>{i18n}Change workflow on document{/i18n}</legend>
-  {assign var=none value=true}
-{/if}
-{if $aWorkflows}
-{if $bHasPerm}
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="startWorkflow" />
-<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-
-<p class="descriptiveText">{i18n}Please note that changing the workflow on a document will start the workflow
-at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
-
-{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
-<div class="form_actions">
-{if !$oWorkflow}
-<input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
-{else}
-<input type="submit" name="submit" value="{i18n}Change Workflow{/i18n}" />
-{/if}
-</div>
-</form>
-{else}
-<div class="ktInfoMessage">
-<span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
-</div>
-{/if}
-{else}
-<h3>{i18n}No defined workflows{/i18n}</h3>
-<div class="ktInfoMessage">
-<span>{i18n}There are no defined workflows which can be started on this
-document.  An administrator can create workflows to map the lifecycle of
-a document.  Contact your administrator to discuss
-workflows.{/i18n}</span>
-</div>
+    {if !$oWorkflow}
+      <legend>{i18n}Start workflow on document{/i18n}</legend>
+      {assign var=none value=""}
+    {else}
+      <legend>{i18n}Change workflow on document{/i18n}</legend>
+      {assign var=none value=true}
+    {/if}
+    {if $aWorkflows}
+        {if $bHasPerm}
+            <form action="{$smarty.server.PHP_SELF}" method="POST">
+                <input type="hidden" name="action" value="startWorkflow" />
+                <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+                
+                <p class="descriptiveText">{i18n}Please note that changing the workflow on a document will start the workflow
+                at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
+                
+                {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+                <div class="form_actions">
+                    {if !$oWorkflow}
+                        <input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
+                    {else}
+                        <input type="submit" name="submit" value="{i18n}Change Workflow{/i18n}" />
+                    {/if}
+                </div>
+            </form>
+        {else}
+            <div class="ktInfoMessage">
+            <span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
+            </div>
+        {/if}
+    {else}
+        <h3>{i18n}No defined workflows{/i18n}</h3>
+            <div class="ktInfoMessage">
+                <span>{i18n}There are no defined workflows which can be started on this
+                document.  An administrator can create workflows to map the lifecycle of
+                a document.  Contact your administrator to discuss
+                workflows.{/i18n}</span>
+            </div>
+    {/if}
 {/if}
 </fieldset>
