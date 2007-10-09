@@ -1162,8 +1162,8 @@ CREATE TABLE `scheduler_tasks` (
   `is_background` tinyint(4) NOT NULL default '0',
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25) default NULL,
-  `run_time` int(11) default NULL,
-  `previous_run_time` int(11) default NULL,
+  `run_time` datetime,
+  `previous_run_time` datetime,
   `run_duration` float default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

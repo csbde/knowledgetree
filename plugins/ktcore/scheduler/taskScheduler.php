@@ -59,7 +59,7 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         
         // Get all tasks
         $aList = SchedulerEntity::getTaskList();
-        $aHeadings = array('', _kt('Task'), _kt('Frequency'), _kt('Next run time'), _kt('Previous run time'), _kt('Time to complete'), '');
+        $aHeadings = array('', _kt('Task'), _kt('Frequency'), _kt('Next run time'), _kt('Previous run time'), _kt('Time taken to complete'), '');
         
         $aFrequencies = array('monthly', 'weekly', 'daily', 'hourly', 'half_hourly', 'quarter_hourly', '10mins', '5mins');
         
