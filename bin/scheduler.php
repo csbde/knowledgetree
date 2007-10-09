@@ -79,12 +79,12 @@ function calculateRunTime($sFreq, $iTime) {
 function updateTask($sTable, $aFieldValues, $iId) {
     DBUtil::autoUpdate($sTable, $aFieldValues, $iId);
 }
-    
+
 // Get the list of tasks due to be run from the database
 function getTaskList($sTable) {
-    $now = time();
+    $now = date('Y-m-d H:i:s'); //time();
     $query = "SELECT * FROM {$sTable} 
-        WHERE is_complete = 0 AND run_time < {$now}";
+        WHERE is_complete = 0 AND run_time < '{$now}'";
     
     $result = DBUtil::getResultArray($query);
     
@@ -142,9 +142,9 @@ if(!empty($aList)){
             $aUpdate['is_complete'] = '1';
         }else{
             $iNextTime = calculateRunTime($sFreq, $iTime);
-            $aUpdate['run_time'] = $iNextTime;
+            $aUpdate['run_time'] = date('Y-m-d H:i:s', $iNextTime);
         }
-        $aUpdate['previous_run_time'] = $iTime;
+        $aUpdate['previous_run_time'] = date('Y-m-d H:i:s', $iTime);
         $aUpdate['run_duration'] = $iDuration;
         
         updateTask($sTable, $aUpdate, $item['id']);

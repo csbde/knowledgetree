@@ -2,7 +2,13 @@
 
 {* Display the list of tasks *}
 
-{if $aList}
+<p>
+<span class="descriptiveText">
+    {i18n}The scheduler runs document indexing and various house keeping tasks, etc in the background.
+    {/i18n}
+</span>
+</p>
+
 <table class="kt_collection" cellspacing = "0" cellpadding = "4">
 
 {if $aHeadings}
@@ -17,6 +23,7 @@
 </thead>
 {/if}
 
+{if $aList}
 {foreach from=$aList item=task}
 
     <tr class="{cycle name=rows values=",odd"}">
@@ -46,11 +53,19 @@
             {$task->getRunDuration()}
         </td>
         <td>
-            {$task->getAlterFreqLink()} {$task->getRunNowLink()}
+            {$task->getAlterFreqLink()}&nbsp;&nbsp;{$task->getRunNowLink()}
         </td>
     </tr>
 
 {/foreach}
+
+{else}
+    <tr>
+        <td class="descriptiveText" colspan="7">
+            {i18n}No tasks have been scheduled{/i18n}
+        </td>
+    </tr>
+{/if}
 </table>
 
 <div id="formDiv" style="display: none; visibility: hidden;">
@@ -63,8 +78,6 @@
         <input type="button" name="save" id="save" onclick='javascript: saveFreq("{$sUrl}");' value="Save" />
     </form>
 </div>
-
-{/if}
 
 <p>
     {$sClear}

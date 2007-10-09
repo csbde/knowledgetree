@@ -78,13 +78,13 @@ class schedulerEntity extends KTEntity
     function getIsBackground() { return $this->bIs_background; }
     function getIsComplete() { return $this->bIs_complete; }
     function getFrequency() { return $this->iFrequency; }
-    function getRunTime() { return date('Y-m-d H:i', $this->iRun_time); }
+    function getRunTime() { return $this->iRun_time; }
     
     function getPrevious($bFormat = FALSE) { 
         if($bFormat){
-            return date('Y-m-d H:i', $this->iPrevious_run_time);
+            return $this->iPrevious_run_time;
         }
-        return $this->iPrevious_run_time;
+        return strtotime($this->iPrevious_run_time);
     }
     
     function getRunDuration() { 
@@ -99,8 +99,8 @@ class schedulerEntity extends KTEntity
     function setIsBackground($sValue) { return $this->bIs_background = $sValue; }
     function setIsComplete($sValue) { return $this->bIs_complete = $sValue; }
     function setFrequency($sValue) { return $this->iFrequency = $sValue; }
-    function setRunTime($sValue) { return $this->iRun_time = $sValue; }
-    function setPrevious($sValue) { return $this->iPrevious_run_time = $sValue; }
+    function setRunTime($sValue) { return $this->iRun_time = date('Y-m-d H:i', $sValue); }
+    function setPrevious($sValue) { return $this->iPrevious_run_time = date('Y-m-d H:i', $sValue); }
     function setRunDuration($sValue) { return $this->iRun_duration = $sValue; }
     
     function get($iId) {
@@ -120,6 +120,24 @@ class schedulerEntity extends KTEntity
     function getTaskList($completed = '0') {
         $aOptions = array('multi' => true);
         return KTEntityUtil::getBy('schedulerEntity', 'is_complete', $completed, $aOptions);
+    }
+    
+    function getLastRunTime($date) {
+        $aOptions = array('multi' => true, 'orderby' => 'previous_run_time DESC');
+        $aFields = array('previous_run_time');
+        $aValues = array();
+        $aValues[] = array('type' => 'before', 'value' => $date);
+        
+        return KTEntityUtil::getBy('schedulerEntity', $aFields, $aValues, $aOptions);
+    }
+    
+    function getNextRunTime($date) {
+        $aOptions = array('multi' => true, 'orderby' => 'run_time ASC');
+        $aFields = array('run_time');
+        $aValues = array();
+        $aValues[] = array('type' => 'after', 'value' => $date);
+        
+        return KTEntityUtil::getBy('schedulerEntity', $aFields, $aValues, $aOptions);
     }
     
     // STATIC

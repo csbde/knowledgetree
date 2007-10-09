@@ -83,6 +83,10 @@ class schedulerUtil extends KTUtil
         // Convert parameter array to a string => param=value|param2=value2|param3=value3
         $sParams = schedulerUtil::convertParams($aParams);
         
+        // Convert run times to date time format for DB storage
+        $dNextTime = date('Y-m-d H:i:s', $iNextTime);
+        $dStartTime = date('Y-m-d H:i:s', $iStartTime);
+        
         // Insert task into DB / task list
         $aTask = array();
         $aTask['task'] = $sTask;
@@ -92,8 +96,8 @@ class schedulerUtil extends KTUtil
         $aTask['is_background'] = '0';
         $aTask['is_complete'] = '0';
         $aTask['frequency'] = $sFreq;
-        $aTask['run_time'] = $iNextTime;
-        $aTask['previous_run_time'] = $iStartTime;
+        $aTask['run_time'] = $dNextTime;
+        $aTask['previous_run_time'] = $dStartTime;
         $aTask['run_duration'] = '0';
         
         $oEntity = schedulerEntity::createFromArray($aTask);
@@ -121,7 +125,7 @@ class schedulerUtil extends KTUtil
         $aTask['frequency'] = 'once';
         $aTask['is_background'] = '1';
         $aTask['is_complete'] = '0';
-        $aTask['run_time'] = time();
+        $aTask['run_time'] = date('Y-m-d H:i:s');
         $aTask['run_duration'] = '0';
         
         $oEntity = schedulerEntity::createFromArray($aTask);
@@ -219,6 +223,38 @@ class schedulerUtil extends KTUtil
         
         $oScheduler->setRunTime($iNextTime);
         $oScheduler->update();
+    }
+    
+    /**
+    * Check the last run time of the scheduler
+    */
+    function checkLastRunTime() {
+        $now = date('Y-m-d H:i:s');
+        $sLastRunTime = ''; $sNextRunTime = '';
+        
+        // Get the last time the scheduler was run
+        $aList = schedulerEntity::getLastRunTime($now);
+        
+        if(PEAR::isError($aList)){
+            return _kt('Tasks can\'t be retrieved');
+        }
+        
+        if(!empty($aList)){
+            $sLastRunTime = $aList[0]->getPrevious(TRUE);
+        }
+        
+        // Get the next date when it should be / have been executed
+        $aList2 = schedulerEntity::getNextRunTime('');
+        
+        if(PEAR::isError($aList2)){
+            return _kt('Tasks can\'t be retrieved');
+        }
+        
+        if(!empty($aList2)){
+            $sNextRunTime = $aList2[0]->getRunTime();
+        }
+        
+        return array('lastruntime' => $sLastRunTime, 'nextruntime' => $sNextRunTime);
     }
     
     /**
