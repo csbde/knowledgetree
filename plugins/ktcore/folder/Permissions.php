@@ -132,7 +132,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         // from a folder.
         if ($oInherited->getId() !== $this->oFolder->getId()) {
             $iInheritedFolderId = $oInherited->getId();
-            $sInherited = join(' &raquo; ', $oInherited->getPathArray());
+            $sInherited = join(' > ', $oInherited->getPathArray());
         }
         // only allow inheritance if not inherited, -and- folders is editable
         $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());        
