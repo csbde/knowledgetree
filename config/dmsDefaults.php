@@ -27,7 +27,7 @@
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
  * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
  * All Rights Reserved.
- * Contributor( s): ______________________________________
+ * Contributor( s): Guenter Roeck______________________________________
  *
  */
 
@@ -347,6 +347,10 @@ class KTInit {
             $i = strpos($urlpath, '/');
             if ($i === false) {
                 break;
+            }
+            if ($rootUrl)
+            {
+            	$rootUrl .= '/';
             }
             $rootUrl .= substr($urlpath, 0, $i);
             $urlpath = substr($urlpath, $i + 1);
