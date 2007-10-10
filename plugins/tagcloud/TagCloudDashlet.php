@@ -127,14 +127,12 @@ class TagCloudDashlet extends KTBaseDashlet {
         }
 		list($where, $params, $joins) = KTSearchUtil::permissionToSQL($this->oUser, null);
 
-
 		$sql = "
     		SELECT 
     			TW.tag, count(*) as freq 
     		FROM 
     			document_tags DT INNER JOIN tag_words TW ON DT.tag_id=TW.id
     		WHERE DT.document_id in (SELECT D.id FROM documents D $joins WHERE $where) GROUP BY TW.tag";
-
 
 		$tags = DBUtil::getResultArray(
 		array($sql,$params)
