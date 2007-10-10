@@ -1242,25 +1242,6 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         $this->commitTransaction();
 
-        // FIXME do we need to refactor all trigger usage into the util function?
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('copyDocument', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                'document' => $oNewDoc,
-                'old_folder' => $this->oDocumentFolder,
-                'new_folder' => $data['browse'],
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-        }
-
-        //$aOptions = array('user' => $oUser);
-        //$oDocumentTransaction = & new DocumentTransaction($oNewDoc, 'Document copied from old version.', 'ktcore.transactions.create', $aOptions);
-        //$res = $oDocumentTransaction->create();
-
         $_SESSION['KTInfoMessage'][] = _kt('Document copied.');
 
         controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
