@@ -898,13 +898,30 @@ class KTDocumentUtil {
             $sReason = '';
         }
 
-
         $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Copied to folder \"%s\". %s"), $oDestinationFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();
 
         $oSrcFolder = Folder::get($oDocument->getFolderID());
         $oDocumentTransaction = new DocumentTransaction($oNewDocument, sprintf(_kt("Copied from original in folder \"%s\". %s"), $oSrcFolder->getName(), $sReason), 'ktcore.transactions.copy');
         $oDocumentTransaction->create();
+
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('copyDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $oNewDocument,
+                'old_folder' => $oSrcFolder,
+                'new_folder' => $oDestinationFolder,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
 
         return $oNewDocument;
     }
@@ -1013,15 +1030,15 @@ class KTDocumentUtil {
 
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
-    
+
     /**
     * Delete a selected version of the document.
     */
     function deleteVersion($oDocument, $iVersionID, $sReason){
-        
+
         $oDocument =& KTUtil::getObject('Document', $oDocument);
         $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
-        
+
         $oStorageManager =& KTStorageManagerUtil::getSingleton();
 
         global $default;
@@ -1037,17 +1054,17 @@ class KTDocumentUtil {
         if (PEAR::isError($oVersion) || ($oVersion == false)) {
             return PEAR::raiseError(_kt('Invalid document version object.'));
         }
-        
+
         $iContentId = $oVersion->getContentVersionId();
         $oContentVersion = KTDocumentContentVersion::get($iContentId);
-        
+
         if (PEAR::isError($oContentVersion) || ($oContentVersion == false)) {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('Invalid document content version object.'));
         }
 
         DBUtil::startTransaction();
-        
+
         // now delete the document version
         $res = $oStorageManager->deleteVersion($oVersion);
         if (PEAR::isError($res) || ($res == false)) {
@@ -1064,11 +1081,11 @@ class KTDocumentUtil {
 
             return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
         }
-        
+
         // change status for the metadata version
         $oVersion->setStatusId(VERSION_DELETED);
         $oVersion->update();
-        
+
         // set the storage path to empty
 //        $oContentVersion->setStoragePath('');
 
