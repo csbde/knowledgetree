@@ -353,7 +353,7 @@ class SiteMap {
     function getPageArray($action) {
         global $default;
 
-        $default->log->info("SiteMap::getPage: checking ($action, " . (isset($_SESSION["userID"]) ? $_SESSION["userID"] : "") . ")");
+        if (KTLOG_CACHE) $default->log->info("SiteMap::getPage: checking ($action, " . (isset($_SESSION["userID"]) ? $_SESSION["userID"] : "") . ")");
         $groupIDs = array();
 
         // for each section
@@ -377,7 +377,7 @@ class SiteMap {
         }
         // if the function hasn't returned already then the current
         // user does not have access to the action
-        $default->log->info("Sitemap::getPage: access denied for ($action, " . $_SESSION["userID"] . ")");
+        if (KTLOG_CACHE) $default->log->info("Sitemap::getPage: access denied for ($action, " . $_SESSION["userID"] . ")");
         return false;
     }
 
