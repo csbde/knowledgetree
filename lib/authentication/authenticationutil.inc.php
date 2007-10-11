@@ -36,6 +36,10 @@ require_once(KT_LIB_DIR .  '/authentication/authenticationproviderregistry.inc.p
 class KTAuthenticationUtil {
     function checkPassword ($oUser, $sPassword) {
         $oUser =& KTUtil::getObject('User', $oUser);
+        if ($oUser->getDisabled() == 2)
+        {
+        	return false;
+        }
         $oAuthenticator =& KTAuthenticationUtil::getAuthenticatorForUser($oUser);
         return $oAuthenticator->checkPassword($oUser, $sPassword);
     }
