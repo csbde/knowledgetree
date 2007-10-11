@@ -103,7 +103,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
 
-        $aOptions['return_url'] = KTUtil::addQueryString('dashboard.php', false);
+        //$aOptions['return_url'] = KTUtil::addQueryString('dashboard.php', false);
+		$aOptions['return_url'] = KTUtil::addQueryString('TagCloudRedirection&tag='. $searchable_text, false );
         $aOptions['empty_message'] = _kt('No documents or folders match this query.');
         $aOptions['is_browse'] = true;
 

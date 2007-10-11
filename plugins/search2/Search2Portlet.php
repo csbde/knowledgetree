@@ -6,6 +6,7 @@ class Search2Portlet extends KTPortlet
     function Search2Portlet()
     {
         parent::KTPortlet(_kt("Search"));
+        $this->bActive = true;
     }
 
     function render()
