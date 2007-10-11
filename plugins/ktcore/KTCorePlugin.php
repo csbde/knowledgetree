@@ -56,6 +56,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCopyAction', 'ktcore.actions.document.copy', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentRenameAction', 'ktcore.actions.document.rename', 'document/Rename.php');
+        $this->registerAction('documentaction', 'DocumentIndexAction', 'ktcore.search2.index.action', KT_DIR . '/plugins/search2/DocumentIndexAction.php');
         $this->registerAction('documentinfo', 'KTDocumentTransactionHistoryAction', 'ktcore.actions.document.transactionhistory', 'KTDocumentActions.php');
         $this->registerAction('documentinfo', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive', 'KTDocumentActions.php');
@@ -97,17 +98,22 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
         $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
-        $this->registerDashlet('KTIndexerStatusDashlet', 'ktcore.dashlet.indexer_status', 'KTDashlets.php');
         $this->registerDashlet('KTMailServerDashlet', 'ktcore.dashlet.mail_server', 'KTDashlets.php');
+        $this->registerDashlet('ExternalResourceStatusDashlet', 'ktcore.dashlet.resource_status', KT_DIR . '/plugins/search2/ExternalDashlet.php');
+        $this->registerDashlet('LuceneMigrationDashlet', 'ktcore.dashlet.lucene_migration', KT_DIR . '/plugins/search2/MigrationDashlet.php');
+        $this->registerDashlet('IndexingStatusDashlet', 'ktcore.dashlet.indexing_status', KT_DIR . '/plugins/search2/IndexingStatusDashlet.php');
+        $this->registerDashlet('LuceneStatisticsDashlet', 'ktcore.dashlet.indexing_statss', KT_DIR . '/plugins/search2/LuceneStatisticsDashlet.php');
 
         $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+
+		$this->registerPortlet(array('browse', 'dashboard'),
+                'Search2Portlet', 'ktcore.search2.portlet',
+                KT_DIR . '/plugins/search2/Search2Portlet.php');
 
         $this->registerPortlet(array('browse'),
                 'KTAdminModePortlet', 'ktcore.portlets.admin_mode',
                 'KTPortlets.php');
-        /* NEW SEARCH $this->registerPortlet(array('browse', 'dashboard'),
-                'KTSearchPortlet', 'ktcore.portlets.search',
-                'KTPortlets.php');*/
+
         $this->registerPortlet(array('browse'),
                 'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
                 'KTPortlets.php');
@@ -139,6 +145,11 @@ class KTCorePlugin extends KTPlugin {
 
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.copyaction', 'CopyActionTrigger', 'KTWorkflowTriggers.inc.php');
         $this->registerWorkflowTrigger('ktcore.workflowtriggers.moveaction', 'MoveActionTrigger', 'KTWorkflowTriggers.inc.php');
+
+		// search triggers
+        $this->registerTrigger('edit', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.edit', KT_DIR . '/plugins/search2/Search2Triggers.php');
+		$this->registerTrigger('add', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.add', KT_DIR . '/plugins/search2/Search2Triggers.php');
+		$this->registerTrigger('discussion', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.discussion', KT_DIR . '/plugins/search2/Search2Triggers.php');
 
         // widgets
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
@@ -183,11 +194,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerCriterion('DocumentTypeCriterion', 'ktcore.criteria.documenttype', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedCriterion', 'ktcore.criteria.datemodified', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('SizeCriterion', 'ktcore.criteria.size', KT_LIB_DIR . '/browse/Criteria.inc');
-        // NEW SEARCH $this->registerCriterion('ContentCriterion', 'ktcore.criteria.content', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('WorkflowStateCriterion', 'ktcore.criteria.workflowstate', KT_LIB_DIR . '/browse/Criteria.inc');
-        // NEW SEARCH $this->registerCriterion('DiscussionTextCriterion', 'ktcore.criteria.discussiontext', KT_LIB_DIR . '/browse/Criteria.inc');
-        // NEW SEARCH $this->registerCriterion('SearchableTextCriterion', 'ktcore.criteria.searchabletext', KT_LIB_DIR . '/browse/Criteria.inc');
-        // NEW SEARCH $this->registerCriterion('TransactionTextCriterion', 'ktcore.criteria.transactiontext', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateCreatedDeltaCriterion', 'ktcore.criteria.datecreateddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('DateModifiedDeltaCriterion', 'ktcore.criteria.datemodifieddelta', KT_LIB_DIR . '/browse/Criteria.inc');
         $this->registerCriterion('GeneralMetadataCriterion', 'ktcore.criteria.generalmetadata', KT_LIB_DIR . '/browse/Criteria.inc');
@@ -265,14 +272,12 @@ class KTCorePlugin extends KTPlugin {
             _kt('Restore or Expunge Deleted Documents'), _kt('Restore previously deleted documents, or permanently expunge them.'),
             'admin/deletedDocuments.php', null);
 
+
+
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
             _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
             'admin/manageHelp.php', null);
-        /* NEW SEARCH $this->registerAdminPage('savedsearch', 'KTSavedSearchDispatcher', 'misc',
-            _kt('Saved searches'),
-            _kt('Manage saved searches - searches available by default to all users.'),
-            'admin/savedSearch.php', null); */
         $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'misc',
             _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
