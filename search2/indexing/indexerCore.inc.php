@@ -791,8 +791,13 @@ abstract class Indexer
     	$diagnoses = array();
     	$dir = opendir($path);
     	$extlen = - strlen($extension);
+
 		while (($file = readdir($dir)) !== false)
 		{
+			if (substr($file,0,1) == '.')
+			{
+				continue;
+			}
 			if (substr($file,$extlen) != $extension)
 			{
 				$default->log->error(sprintf(_kt("diagnose: '%s' does not have extension '%s'."), $file, $extension));
