@@ -187,12 +187,12 @@ class Session {
         $version = KTUtil::getSystemSetting('databaseVersion');
 
         if ($default->systemVersion != $version) {
-            $default->log->info("Session::verify : Database not upgraded");
+            if (KTLOG_CACHE) $default->log->info("Session::verify : Database not upgraded");
             return PEAR::raiseError(sprintf(_kt('Incompatible database version (%s, expected version %s) - contact the administrator'), $version, $default->systemVersion));
         }
 
         if (empty($sessionID)) {
-            $default->log->info("Session::verify session not in db");
+            if (KTLOG_CACHE) $default->log->info("Session::verify session not in db");
             return PEAR::raiseError(_kt('You need to login to access this page'));
         }
 
@@ -204,7 +204,7 @@ class Session {
         // FIXME: if there aren't more rows that the max sessions for this user
         if ($numrows < 1) {
             // the session doesn't exist in the db
-            $default->log->info("Session::verify sessionID=$sessionID, not in db");
+            if (KTLOG_CACHE)   $default->log->info("Session::verify sessionID=$sessionID, not in db");
             return PEAR::raiseError(_kt('You need to login to access this page'));
             return false;
         }
