@@ -19,7 +19,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
 		parent::__construct();
 
 		$config =& KTConfig::getSingleton();
-		$javaServerUrl = $config->get('indexer/JavaLuceneURL', 'http://localhost:8875');
+		$javaServerUrl = $config->get('indexer/javaLuceneURL');
 		$this->lucene = new XmlRpcLucene($javaServerUrl);
 	}
 
@@ -99,6 +99,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
      */
     public function optimise()
     {
+    	parent::optimise();
     	$this->lucene->optimize();
     }
 
@@ -149,22 +150,57 @@ class JavaXMLRPCLuceneIndexer extends Indexer
         return $results;
     }
 
+    /**
+     * Diagnose the indexer. e.g. Check that the indexing server is running.
+     *
+     */
     public function diagnose()
     {
-    	$config =& KTConfig::getSingleton();
+		$config =& KTConfig::getSingleton();
 
-		$ooHost = $config->get('openoffice/host', 'localhost');
-		$ooPort = $config->get('openoffice/port', 8100);
-		$connection = @fsockopen($ooHost, $ooPort,$errno, $errstr, 2);
+		$javaLuceneURL = $config->get('indexer/javaLuceneURL');
+
+		list($protocol, $host, $port) = explode(':', $javaLuceneURL);
+		if (empty($port)) $port == 8875;
+		if (substr($host, 0, 2) == '//') $host = substr($host, 2);
+
+		$connection = @fsockopen($host, $port, $errno, $errstr, 2);
 		if (false === $connection)
 		{
-			return _kt('Cannot connect to openoffice host');
+			$indexer = $this->getDisplayName();
+			return sprintf(_kt("Cannot connect to the %s on '%s'.\nPlease consult the Administrator Guide for more information on configuring the %s."), $indexer, $javaLuceneURL, $indexer);
 		}
 		fclose($connection);
 
 		return null;
+
     }
 
+    /**
+     * Returns the name of the indexer.
+     *
+     * @return string
+     */
+	public function getDisplayName()
+	{
+		return _kt('Lucene Indexing Server');
+	}
+
+
+    /**
+     * Returns the number of non-deleted documents in the index.
+     *
+     * @return int
+     */
+    public function getDocumentsInIndex()
+    {
+    	$stats = $this->lucene->getStatistics();
+    	if ($stats === false || !is_object($stats))
+    	{
+    		return _kt('Not Available');
+    	}
+    	return $stats->countDocuments;
+    }
 
 }
 ?>
