@@ -66,6 +66,19 @@ class SearchDispatcher extends KTStandardDispatcher {
     	}
     }
 
+    function do_refreshLuceneStats()
+    {
+    	session_unregister('LuceneStats');
+    	redirect('/dashboard.php');
+    }
+
+    function do_refreshDashboardStatus()
+    {
+    	session_unregister('ExternalResourceStatus');
+    	session_unregister('IndexingStatus');
+    	redirect('/dashboard.php');
+    }
+
     /**
      * Processes a query sent by HTTP POST in searchQuery.
      *
