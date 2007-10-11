@@ -940,12 +940,28 @@ abstract class Indexer
 
     /**
      * Possibly we can optimise indexes. This method must be overriden.
+     * The new function must call the parent!
      *
      */
     public function optimise()
     {
-    	// do nothing
+    	KTUtil::setSystemSetting('luceneOptimisationDate', time());
     }
+
+    /**
+     * Returns the name of the indexer.
+     *
+     * @return string
+     */
+    public abstract function getDisplayName();
+
+
+    /**
+     * Returns the number of non-deleted documents in the index.
+     *
+     * @return int
+     */
+    public abstract function getDocumentsInIndex();
 }
 
 ?>
