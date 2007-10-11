@@ -30,7 +30,7 @@
 --
 -- Host: localhost    Database: dms_clean
 -- ------------------------------------------------------
--- Server version	5.0.37
+-- Server version	5.0.41-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -53,8 +53,10 @@ CREATE TABLE `active_sessions` (
   `session_id` char(255) default NULL,
   `lastused` datetime default NULL,
   `ip` char(30) default NULL,
-  UNIQUE KEY `id` (`id`),
-  KEY `session_id_idx` (`session_id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `session_id` (`session_id`),
+  CONSTRAINT `active_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -67,7 +69,13 @@ CREATE TABLE `archive_restoration_request` (
   `request_user_id` int(11) NOT NULL default '0',
   `admin_user_id` int(11) NOT NULL default '0',
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `document_id` (`document_id`),
+  KEY `request_user_id` (`request_user_id`),
+  KEY `admin_user_id` (`admin_user_id`),
+  CONSTRAINT `archive_restoration_request_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `archive_restoration_request_ibfk_2` FOREIGN KEY (`request_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `archive_restoration_request_ibfk_3` FOREIGN KEY (`admin_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -80,7 +88,11 @@ CREATE TABLE `archiving_settings` (
   `expiration_date` date default NULL,
   `document_transaction_id` int(11) default NULL,
   `time_period_id` int(11) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `archiving_type_id` (`archiving_type_id`),
+  KEY `time_period_id` (`time_period_id`),
+  CONSTRAINT `archiving_settings_ibfk_1` FOREIGN KEY (`archiving_type_id`) REFERENCES `archiving_type_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `archiving_settings_ibfk_2` FOREIGN KEY (`time_period_id`) REFERENCES `time_period` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -90,7 +102,7 @@ CREATE TABLE `archiving_settings` (
 CREATE TABLE `archiving_type_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -132,8 +144,9 @@ CREATE TABLE `comment_searchable_text` (
   `comment_id` int(11) NOT NULL default '0',
   `body` mediumtext,
   `document_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`comment_id`),
-  FULLTEXT KEY `comment_search_text` (`body`)
+  PRIMARY KEY  (`comment_id`),
+  KEY `document_id` (`document_id`),
+  FULLTEXT KEY `body` (`body`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -144,9 +157,10 @@ CREATE TABLE `dashlet_disables` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
   `dashlet_namespace` varchar(255) NOT NULL default '',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
-  KEY `dashlet_namespace` (`dashlet_namespace`)
+  KEY `dashlet_namespace` (`dashlet_namespace`),
+  CONSTRAINT `dashlet_disables_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -156,7 +170,7 @@ CREATE TABLE `dashlet_disables` (
 CREATE TABLE `data_types` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -171,7 +185,13 @@ CREATE TABLE `discussion_comments` (
   `subject` mediumtext,
   `body` mediumtext,
   `date` datetime default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `thread_id` (`thread_id`),
+  KEY `user_id` (`user_id`),
+  KEY `in_reply_to` (`in_reply_to`),
+  CONSTRAINT `discussion_comments_ibfk_1` FOREIGN KEY (`thread_id`) REFERENCES `discussion_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discussion_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discussion_comments_ibfk_3` FOREIGN KEY (`in_reply_to`) REFERENCES `discussion_comments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -189,7 +209,15 @@ CREATE TABLE `discussion_threads` (
   `close_reason` mediumtext NOT NULL,
   `close_metadata_version` int(11) NOT NULL default '0',
   `state` int(1) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `document_id` (`document_id`),
+  KEY `first_comment_id` (`first_comment_id`),
+  KEY `last_comment_id` (`last_comment_id`),
+  KEY `creator_id` (`creator_id`),
+  CONSTRAINT `discussion_threads_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discussion_threads_ibfk_2` FOREIGN KEY (`first_comment_id`) REFERENCES `discussion_comments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discussion_threads_ibfk_3` FOREIGN KEY (`last_comment_id`) REFERENCES `discussion_comments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discussion_threads_ibfk_4` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -200,7 +228,11 @@ CREATE TABLE `document_archiving_link` (
   `id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   `archiving_settings_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `document_id` (`document_id`),
+  KEY `archiving_settings_id` (`archiving_settings_id`),
+  CONSTRAINT `document_archiving_link_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_archiving_link_ibfk_2` FOREIGN KEY (`archiving_settings_id`) REFERENCES `archiving_settings` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -212,13 +244,16 @@ CREATE TABLE `document_content_version` (
   `document_id` int(11) NOT NULL default '0',
   `filename` mediumtext NOT NULL,
   `size` bigint(20) NOT NULL default '0',
-  `mime_id` int(11) NOT NULL default '0',
+  `mime_id` int(11) default '9',
   `major_version` int(11) NOT NULL default '0',
   `minor_version` int(11) NOT NULL default '0',
   `storage_path` varchar(250) default NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
+  KEY `document_id` (`document_id`),
+  KEY `mime_id` (`mime_id`),
   KEY `storage_path` (`storage_path`),
-  KEY `document_id` (`document_id`)
+  CONSTRAINT `document_content_version_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_content_version_ibfk_2` FOREIGN KEY (`mime_id`) REFERENCES `mime_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -235,9 +270,9 @@ CREATE TABLE `document_fields` (
   `parent_fieldset` int(11) default NULL,
   `is_mandatory` tinyint(4) NOT NULL default '0',
   `description` mediumtext NOT NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   KEY `parent_fieldset` (`parent_fieldset`),
-  CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE
+  CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -249,10 +284,11 @@ CREATE TABLE `document_fields_link` (
   `document_field_id` int(11) NOT NULL default '0',
   `value` char(255) NOT NULL default '',
   `metadata_version_id` int(11) default NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   KEY `document_field_id` (`document_field_id`),
   KEY `metadata_version_id` (`metadata_version_id`),
-  CONSTRAINT `document_fields_link_ibfk_2` FOREIGN KEY (`document_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE
+  CONSTRAINT `document_fields_link_ibfk_1` FOREIGN KEY (`document_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_fields_link_ibfk_2` FOREIGN KEY (`metadata_version_id`) REFERENCES `document_metadata_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -275,7 +311,13 @@ CREATE TABLE `document_link` (
   `parent_document_id` int(11) NOT NULL default '0',
   `child_document_id` int(11) NOT NULL default '0',
   `link_type_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `parent_document_id` (`parent_document_id`),
+  KEY `child_document_id` (`child_document_id`),
+  KEY `link_type_id` (`link_type_id`),
+  CONSTRAINT `document_link_ibfk_1` FOREIGN KEY (`parent_document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_link_ibfk_2` FOREIGN KEY (`child_document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_link_ibfk_3` FOREIGN KEY (`link_type_id`) REFERENCES `document_link_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -287,7 +329,7 @@ CREATE TABLE `document_link_types` (
   `name` char(100) NOT NULL default '',
   `reverse_name` char(100) NOT NULL default '',
   `description` char(255) NOT NULL default '',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -307,21 +349,22 @@ CREATE TABLE `document_metadata_version` (
   `version_creator_id` int(11) NOT NULL default '0',
   `workflow_id` int(11) default NULL,
   `workflow_state_id` int(11) default NULL,
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_document_type_id` (`document_type_id`),
-  KEY `fk_status_id` (`status_id`),
+  PRIMARY KEY  (`id`),
+  KEY `document_type_id` (`document_type_id`),
+  KEY `status_id` (`status_id`),
   KEY `document_id` (`document_id`),
-  KEY `version_created` (`version_created`),
   KEY `version_creator_id` (`version_creator_id`),
   KEY `content_version_id` (`content_version_id`),
   KEY `workflow_id` (`workflow_id`),
   KEY `workflow_state_id` (`workflow_state_id`),
-  CONSTRAINT `document_metadata_version_ibfk_4` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`),
-  CONSTRAINT `document_metadata_version_ibfk_6` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`),
-  CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `document_metadata_version_ibfk_8` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
-  CONSTRAINT `document_metadata_version_ibfk_9` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`)
+  KEY `version_created` (`version_created`),
+  CONSTRAINT `document_metadata_version_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_3` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_4` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`content_version_id`) REFERENCES `document_content_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_6` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -333,8 +376,12 @@ CREATE TABLE `document_role_allocations` (
   `document_id` int(11) NOT NULL default '0',
   `role_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `document_id` (`document_id`)
+  PRIMARY KEY  (`id`),
+  KEY `role_id` (`role_id`),
+  KEY `permission_descriptor_id` (`permission_descriptor_id`),
+  KEY `document_id_role_id` (`document_id`,`role_id`),
+  CONSTRAINT `document_role_allocations_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_role_allocations_ibfk_2` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -344,7 +391,7 @@ CREATE TABLE `document_role_allocations` (
 CREATE TABLE `document_searchable_text` (
   `document_id` int(11) default NULL,
   `document_text` longtext,
-  KEY `document_text_document_id_indx` (`document_id`),
+  KEY `document_id` (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -357,7 +404,11 @@ CREATE TABLE `document_subscriptions` (
   `user_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `document_id` (`document_id`),
+  CONSTRAINT `document_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_subscriptions_ibfk_2` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -368,9 +419,9 @@ CREATE TABLE `document_tags` (
   `document_id` int(10) NOT NULL,
   `tag_id` int(10) NOT NULL,
   PRIMARY KEY  (`document_id`,`tag_id`),
-  KEY `fk_document_tags_tag_id` (`tag_id`),
-  CONSTRAINT `fk_document_tags_document_id` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_document_tags_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag_words` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `tag_id` (`tag_id`),
+  CONSTRAINT `document_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag_words` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_tags_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -378,9 +429,9 @@ CREATE TABLE `document_tags` (
 --
 
 CREATE TABLE `document_text` (
-  `document_id` int(11) default NULL,
+  `document_id` int(11) NOT NULL default '0',
   `document_text` longtext,
-  KEY `document_text_document_id_indx` (`document_id`),
+  PRIMARY KEY  (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -389,9 +440,9 @@ CREATE TABLE `document_text` (
 --
 
 CREATE TABLE `document_transaction_text` (
-  `document_id` int(11) default NULL,
+  `document_id` int(11) NOT NULL default '0',
   `document_text` mediumtext,
-  KEY `document_text_document_id_indx` (`document_id`),
+  PRIMARY KEY  (`document_id`),
   FULLTEXT KEY `document_text` (`document_text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -403,8 +454,8 @@ CREATE TABLE `document_transaction_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `namespace` varchar(250) NOT NULL default '',
-  UNIQUE KEY `id` (`id`),
-  KEY `namespace` (`namespace`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `namespace` (`namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -413,9 +464,9 @@ CREATE TABLE `document_transaction_types_lookup` (
 
 CREATE TABLE `document_transactions` (
   `id` int(11) NOT NULL default '0',
-  `document_id` int(11) NOT NULL default '0',
+  `document_id` int(11) default NULL,
   `version` char(50) default NULL,
-  `user_id` int(11) NOT NULL default '0',
+  `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   `ip` char(30) default NULL,
   `filename` char(255) NOT NULL default '',
@@ -423,10 +474,12 @@ CREATE TABLE `document_transactions` (
   `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_document_id` (`document_id`),
-  KEY `fk_user_id` (`user_id`),
-  KEY `session_id` (`session_id`)
+  PRIMARY KEY  (`id`),
+  KEY `document_id` (`document_id`),
+  KEY `user_id` (`user_id`),
+  KEY `session_id` (`session_id`),
+  CONSTRAINT `document_transactions_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `document_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -438,7 +491,11 @@ CREATE TABLE `document_type_fields_link` (
   `document_type_id` int(11) NOT NULL default '0',
   `field_id` int(11) NOT NULL default '0',
   `is_mandatory` tinyint(1) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `document_type_id` (`document_type_id`),
+  KEY `field_id` (`field_id`),
+  CONSTRAINT `document_type_fields_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_type_fields_link_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -449,11 +506,11 @@ CREATE TABLE `document_type_fieldsets_link` (
   `id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
   `fieldset_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   KEY `document_type_id` (`document_type_id`),
   KEY `fieldset_id` (`fieldset_id`),
-  CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE
+  CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -464,9 +521,8 @@ CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
   `disabled` tinyint(4) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `disabled` (`disabled`)
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -475,7 +531,7 @@ CREATE TABLE `document_types_lookup` (
 
 CREATE TABLE `documents` (
   `id` int(11) NOT NULL default '0',
-  `creator_id` int(11) NOT NULL default '0',
+  `creator_id` int(11) default NULL,
   `modified` datetime NOT NULL default '0000-00-00 00:00:00',
   `folder_id` int(11) default NULL,
   `is_checked_out` tinyint(1) NOT NULL default '0',
@@ -487,23 +543,31 @@ CREATE TABLE `documents` (
   `permission_object_id` int(11) default NULL,
   `permission_lookup_id` int(11) default NULL,
   `metadata_version` int(11) NOT NULL default '0',
-  `modified_user_id` int(11) NOT NULL default '0',
+  `modified_user_id` int(11) default NULL,
   `metadata_version_id` int(11) default NULL,
-  `owner_id` int(11) NOT NULL default '0',
+  `owner_id` int(11) default NULL,
   `immutable` tinyint(1) NOT NULL default '0',
   `restore_folder_id` int(11) default NULL,
   `restore_folder_path` text,
   `checkedout` datetime default NULL,
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_creator_id` (`creator_id`),
-  KEY `fk_folder_id` (`folder_id`),
-  KEY `fk_checked_out_user_id` (`checked_out_user_id`),
-  KEY `fk_status_id` (`status_id`),
-  KEY `created` (`created`),
+  PRIMARY KEY  (`id`),
+  KEY `creator_id` (`creator_id`),
+  KEY `folder_id` (`folder_id`),
+  KEY `checked_out_user_id` (`checked_out_user_id`),
+  KEY `status_id` (`status_id`),
   KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_lookup_id` (`permission_lookup_id`),
   KEY `modified_user_id` (`modified_user_id`),
-  KEY `metadata_version_id` (`metadata_version_id`)
+  KEY `metadata_version_id` (`metadata_version_id`),
+  KEY `created` (`created`),
+  CONSTRAINT `documents_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `documents_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `documents_ibfk_3` FOREIGN KEY (`checked_out_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `documents_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `documents_ibfk_5` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `documents_ibfk_6` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `documents_ibfk_7` FOREIGN KEY (`modified_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `documents_ibfk_8` FOREIGN KEY (`metadata_version_id`) REFERENCES `document_metadata_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -511,14 +575,15 @@ CREATE TABLE `documents` (
 --
 
 CREATE TABLE `download_files` (
-  `document_id` int(10) unsigned NOT NULL,
+  `document_id` int(11) NOT NULL,
   `session` varchar(100) NOT NULL,
   `download_date` timestamp NULL default CURRENT_TIMESTAMP,
   `downloaded` int(10) unsigned NOT NULL default '0',
   `filesize` int(10) unsigned NOT NULL,
   `content_version` int(10) unsigned NOT NULL,
   `hash` varchar(100) NOT NULL,
-  PRIMARY KEY  (`document_id`,`session`)
+  PRIMARY KEY  (`document_id`,`session`),
+  CONSTRAINT `download_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -529,12 +594,12 @@ CREATE TABLE `field_behaviour_options` (
   `behaviour_id` int(11) NOT NULL default '0',
   `field_id` int(11) NOT NULL default '0',
   `instance_id` int(11) NOT NULL default '0',
-  KEY `behaviour_id` (`behaviour_id`),
   KEY `field_id` (`field_id`),
   KEY `instance_id` (`instance_id`),
-  CONSTRAINT `field_behaviour_options_ibfk_1` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_behaviour_options_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_behaviour_options_ibfk_3` FOREIGN KEY (`instance_id`) REFERENCES `field_value_instances` (`id`) ON DELETE CASCADE
+  KEY `behaviour_id_field_id` (`behaviour_id`,`field_id`),
+  CONSTRAINT `field_behaviour_options_ibfk_1` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_behaviour_options_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_behaviour_options_ibfk_3` FOREIGN KEY (`instance_id`) REFERENCES `field_value_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -549,7 +614,7 @@ CREATE TABLE `field_behaviours` (
   PRIMARY KEY  (`id`),
   KEY `field_id` (`field_id`),
   KEY `name` (`name`),
-  CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE
+  CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -560,12 +625,12 @@ CREATE TABLE `field_orders` (
   `parent_field_id` int(11) NOT NULL default '0',
   `child_field_id` int(11) NOT NULL default '0',
   `fieldset_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `child_field` (`child_field_id`),
-  KEY `parent_field` (`parent_field_id`),
+  UNIQUE KEY `child_field_id` (`child_field_id`),
+  KEY `parent_field_id` (`parent_field_id`),
   KEY `fieldset_id` (`fieldset_id`),
-  CONSTRAINT `field_orders_ibfk_1` FOREIGN KEY (`parent_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE
+  CONSTRAINT `field_orders_ibfk_1` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`parent_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -578,12 +643,12 @@ CREATE TABLE `field_value_instances` (
   `field_value_id` int(11) NOT NULL default '0',
   `behaviour_id` int(11) default '0',
   PRIMARY KEY  (`id`),
-  KEY `field_id` (`field_id`),
   KEY `field_value_id` (`field_value_id`),
   KEY `behaviour_id` (`behaviour_id`),
-  CONSTRAINT `field_value_instances_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_value_instances_ibfk_2` FOREIGN KEY (`field_value_id`) REFERENCES `metadata_lookup` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `field_value_instances_ibfk_3` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE
+  KEY `field_id` (`field_id`),
+  CONSTRAINT `field_value_instances_ibfk_1` FOREIGN KEY (`field_value_id`) REFERENCES `metadata_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_value_instances_ibfk_2` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `field_value_instances_ibfk_3` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -603,12 +668,25 @@ CREATE TABLE `fieldsets` (
   `is_system` tinyint(1) unsigned NOT NULL default '0',
   `description` mediumtext NOT NULL,
   `disabled` tinyint(4) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
+  KEY `master_field` (`master_field`),
   KEY `is_generic` (`is_generic`),
   KEY `is_complete` (`is_complete`),
   KEY `is_system` (`is_system`),
-  KEY `master_field` (`master_field`),
-  CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE SET NULL
+  CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `folder_descendants`
+--
+
+CREATE TABLE `folder_descendants` (
+  `parent_id` int(11) NOT NULL,
+  `folder_id` int(11) NOT NULL,
+  KEY `parent_id` (`parent_id`),
+  KEY `folder_id` (`folder_id`),
+  CONSTRAINT `folder_descendants_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folder_descendants_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -619,9 +697,11 @@ CREATE TABLE `folder_doctypes_link` (
   `id` int(11) NOT NULL default '0',
   `folder_id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_folder_id` (`folder_id`),
-  KEY `fk_document_type_id` (`document_type_id`)
+  PRIMARY KEY  (`id`),
+  KEY `folder_id` (`folder_id`),
+  KEY `document_type_id` (`document_type_id`),
+  CONSTRAINT `folder_doctypes_link_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folder_doctypes_link_ibfk_2` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -632,7 +712,6 @@ CREATE TABLE `folder_searchable_text` (
   `folder_id` int(11) NOT NULL default '0',
   `folder_text` mediumtext,
   PRIMARY KEY  (`folder_id`),
-  KEY `folder_searchable_text_folder_indx` (`folder_id`),
   FULLTEXT KEY `folder_text` (`folder_text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -645,7 +724,11 @@ CREATE TABLE `folder_subscriptions` (
   `user_id` int(11) NOT NULL default '0',
   `folder_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `folder_id` (`folder_id`),
+  CONSTRAINT `folder_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folder_subscriptions_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -654,20 +737,20 @@ CREATE TABLE `folder_subscriptions` (
 
 CREATE TABLE `folder_transactions` (
   `id` int(11) NOT NULL default '0',
-  `folder_id` int(11) NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
+  `folder_id` int(11) default NULL,
+  `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   `ip` char(30) default NULL,
   `comment` char(255) NOT NULL default '',
   `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   KEY `folder_id` (`folder_id`),
   KEY `user_id` (`user_id`),
   KEY `session_id` (`session_id`),
-  CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -678,7 +761,9 @@ CREATE TABLE `folder_workflow_map` (
   `folder_id` int(11) NOT NULL default '0',
   `workflow_id` int(11) default NULL,
   PRIMARY KEY  (`folder_id`),
-  UNIQUE KEY `folder_id` (`folder_id`)
+  KEY `workflow_id` (`workflow_id`),
+  CONSTRAINT `folder_workflow_map_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folder_workflow_map_ibfk_2` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -697,12 +782,16 @@ CREATE TABLE `folders` (
   `permission_object_id` int(11) default NULL,
   `permission_lookup_id` int(11) default NULL,
   `restrict_document_types` tinyint(1) NOT NULL default '0',
-  `owner_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_parent_id` (`parent_id`),
-  KEY `fk_creator_id` (`creator_id`),
+  `owner_id` int(11) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `creator_id` (`creator_id`),
   KEY `permission_object_id` (`permission_object_id`),
-  KEY `permission_lookup_id` (`permission_lookup_id`)
+  KEY `permission_lookup_id` (`permission_lookup_id`),
+  KEY `parent_id_name` (`parent_id`,`name`),
+  CONSTRAINT `folders_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folders_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folders_ibfk_3` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folders_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -718,7 +807,11 @@ CREATE TABLE `folders_users_roles_link` (
   `done` tinyint(1) default NULL,
   `active` tinyint(1) default NULL,
   `dependant_documents_created` tinyint(1) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `document_id` (`document_id`),
+  CONSTRAINT `folders_users_roles_link_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `folders_users_roles_link_ibfk_2` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -730,10 +823,10 @@ CREATE TABLE `groups_groups_link` (
   `parent_group_id` int(11) NOT NULL default '0',
   `member_group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `groups_groups_link_ibfk_1` (`parent_group_id`),
-  KEY `groups_groups_link_ibfk_2` (`member_group_id`),
-  CONSTRAINT `groups_groups_link_ibfk_1` FOREIGN KEY (`parent_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `groups_groups_link_ibfk_2` FOREIGN KEY (`member_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE
+  KEY `parent_group_id` (`parent_group_id`),
+  KEY `member_group_id` (`member_group_id`),
+  CONSTRAINT `groups_groups_link_ibfk_1` FOREIGN KEY (`parent_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `groups_groups_link_ibfk_2` FOREIGN KEY (`member_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -749,12 +842,11 @@ CREATE TABLE `groups_lookup` (
   `authentication_details_s2` varchar(255) default NULL,
   `authentication_details_s1` varchar(255) default NULL,
   `authentication_source_id` int(11) default NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `unit_id` (`unit_id`),
-  KEY `authentication_details_s1` (`authentication_details_s1`),
-  KEY `authentication_source_id` (`authentication_source_id`),
-  CONSTRAINT `groups_lookup_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `units_lookup` (`id`)
+  KEY `authentication_source_id_authentication_details_s1` (`authentication_source_id`,`authentication_details_s1`),
+  CONSTRAINT `groups_lookup_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `units_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -765,7 +857,7 @@ CREATE TABLE `help` (
   `id` int(11) NOT NULL default '0',
   `fSection` varchar(100) NOT NULL default '',
   `help_info` mediumtext NOT NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -785,12 +877,15 @@ CREATE TABLE `help_replacement` (
 --
 
 CREATE TABLE `index_files` (
-  `document_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
+  `document_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `indexdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `processdate` datetime default NULL,
   `what` char(1) default NULL,
-  PRIMARY KEY  (`document_id`)
+  PRIMARY KEY  (`document_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `index_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `index_files_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -815,7 +910,7 @@ CREATE TABLE `links` (
   `name` char(100) NOT NULL default '',
   `url` char(100) NOT NULL default '',
   `rank` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -829,9 +924,10 @@ CREATE TABLE `metadata_lookup` (
   `treeorg_parent` int(11) default NULL,
   `disabled` tinyint(3) unsigned NOT NULL default '0',
   `is_stuck` tinyint(1) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
+  KEY `document_field_id` (`document_field_id`),
   KEY `disabled` (`disabled`),
-  KEY `is_stuck` (`is_stuck`)
+  CONSTRAINT `metadata_lookup_ibfk_1` FOREIGN KEY (`document_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -843,9 +939,10 @@ CREATE TABLE `metadata_lookup_tree` (
   `document_field_id` int(11) NOT NULL default '0',
   `name` char(255) default NULL,
   `metadata_lookup_tree_parent` int(11) default NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
+  KEY `document_field_id` (`document_field_id`),
   KEY `metadata_lookup_tree_parent` (`metadata_lookup_tree_parent`),
-  KEY `document_field_id` (`document_field_id`)
+  CONSTRAINT `metadata_lookup_tree_ibfk_1` FOREIGN KEY (`document_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -871,7 +968,11 @@ CREATE TABLE `mime_types` (
   `friendly_name` char(255) default '',
   `extractor` varchar(100) default NULL,
   `mime_document_id` int(11) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `mime_document_id` (`mime_document_id`),
+  KEY `filetypes` (`filetypes`),
+  KEY `mimetypes` (`mimetypes`),
+  CONSTRAINT `mime_types_ibfk_1` FOREIGN KEY (`mime_document_id`) REFERENCES `mime_documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -887,7 +988,9 @@ CREATE TABLE `news` (
   `image_size` int(11) default NULL,
   `image_mime_type_id` int(11) default NULL,
   `active` tinyint(1) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `image_mime_type_id` (`image_mime_type_id`),
+  CONSTRAINT `news_ibfk_1` FOREIGN KEY (`image_mime_type_id`) REFERENCES `mime_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -905,9 +1008,10 @@ CREATE TABLE `notifications` (
   `data_str_1` varchar(255) default NULL,
   `data_str_2` varchar(255) default NULL,
   `data_text_1` text,
-  UNIQUE KEY `id` (`id`),
-  KEY `type` (`type`),
-  KEY `user_id` (`user_id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `data_int_1` (`data_int_1`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -917,7 +1021,7 @@ CREATE TABLE `notifications` (
 CREATE TABLE `organisations_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) NOT NULL default '',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -931,13 +1035,12 @@ CREATE TABLE `permission_assignments` (
   `permission_object_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `permission_and_object` (`permission_id`,`permission_object_id`),
+  UNIQUE KEY `permission_object_id_permission_id` (`permission_object_id`,`permission_id`),
   KEY `permission_id` (`permission_id`),
-  KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
-  CONSTRAINT `permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -947,11 +1050,10 @@ CREATE TABLE `permission_assignments` (
 CREATE TABLE `permission_descriptor_groups` (
   `descriptor_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `descriptor_id` (`descriptor_id`,`group_id`),
-  KEY `descriptor_id_2` (`descriptor_id`),
+  PRIMARY KEY  (`descriptor_id`,`group_id`),
   KEY `group_id` (`group_id`),
-  CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -961,11 +1063,10 @@ CREATE TABLE `permission_descriptor_groups` (
 CREATE TABLE `permission_descriptor_roles` (
   `descriptor_id` int(11) NOT NULL default '0',
   `role_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `descriptor_id` (`descriptor_id`,`role_id`),
-  KEY `descriptor_id_2` (`descriptor_id`),
+  PRIMARY KEY  (`descriptor_id`,`role_id`),
   KEY `role_id` (`role_id`),
-  CONSTRAINT `permission_descriptor_roles_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_descriptor_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_descriptor_roles_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_descriptor_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -975,11 +1076,10 @@ CREATE TABLE `permission_descriptor_roles` (
 CREATE TABLE `permission_descriptor_users` (
   `descriptor_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `descriptor_id` (`descriptor_id`,`user_id`),
-  KEY `descriptor_id_2` (`descriptor_id`),
+  PRIMARY KEY  (`descriptor_id`,`user_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `permission_descriptor_users_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_descriptor_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_descriptor_users_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_descriptor_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -991,8 +1091,7 @@ CREATE TABLE `permission_descriptors` (
   `descriptor` varchar(32) NOT NULL default '',
   `descriptor_text` mediumtext NOT NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `descriptor_2` (`descriptor`),
-  KEY `descriptor` (`descriptor`)
+  UNIQUE KEY `descriptor` (`descriptor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1002,10 +1101,10 @@ CREATE TABLE `permission_descriptors` (
 CREATE TABLE `permission_dynamic_assignments` (
   `dynamic_condition_id` int(11) NOT NULL default '0',
   `permission_id` int(11) NOT NULL default '0',
-  KEY `dynamic_conditiond_id` (`dynamic_condition_id`),
+  KEY `dynamic_condition_id` (`dynamic_condition_id`),
   KEY `permission_id` (`permission_id`),
-  CONSTRAINT `permission_dynamic_assignments_ibfk_2` FOREIGN KEY (`dynamic_condition_id`) REFERENCES `permission_dynamic_conditions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_dynamic_assignments_ibfk_3` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_dynamic_assignments_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_dynamic_assignments_ibfk_1` FOREIGN KEY (`dynamic_condition_id`) REFERENCES `permission_dynamic_conditions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1021,9 +1120,9 @@ CREATE TABLE `permission_dynamic_conditions` (
   KEY `permission_object_id` (`permission_object_id`),
   KEY `group_id` (`group_id`),
   KEY `condition_id` (`condition_id`),
-  CONSTRAINT `permission_dynamic_conditions_ibfk_1` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_dynamic_conditions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_dynamic_conditions_ibfk_3` FOREIGN KEY (`condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_dynamic_conditions_ibfk_1` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_dynamic_conditions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_dynamic_conditions_ibfk_3` FOREIGN KEY (`condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1036,13 +1135,12 @@ CREATE TABLE `permission_lookup_assignments` (
   `permission_lookup_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `permission_and_lookup` (`permission_id`,`permission_lookup_id`),
+  UNIQUE KEY `permission_lookup_id_permission_id` (`permission_lookup_id`,`permission_id`),
   KEY `permission_id` (`permission_id`),
-  KEY `permission_lookup_id` (`permission_lookup_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
-  CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE
+  CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1085,8 +1183,10 @@ CREATE TABLE `plugin_rss` (
   `user_id` int(11) NOT NULL,
   `url` varchar(200) NOT NULL,
   `title` varchar(20) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `plugin_rss_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `plugins`
@@ -1102,7 +1202,8 @@ CREATE TABLE `plugins` (
   `unavailable` tinyint(1) NOT NULL default '0',
   `friendly_name` varchar(255) default '',
   PRIMARY KEY  (`id`),
-  KEY `name` (`namespace`)
+  UNIQUE KEY `namespace` (`namespace`),
+  KEY `disabled` (`disabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1114,8 +1215,13 @@ CREATE TABLE `role_allocations` (
   `folder_id` int(11) NOT NULL default '0',
   `role_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `folder_id` (`folder_id`)
+  PRIMARY KEY  (`id`),
+  KEY `folder_id` (`folder_id`),
+  KEY `role_id` (`role_id`),
+  KEY `permission_descriptor_id` (`permission_descriptor_id`),
+  CONSTRAINT `role_allocations_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `role_allocations_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `role_allocations_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1125,7 +1231,7 @@ CREATE TABLE `role_allocations` (
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1142,9 +1248,7 @@ CREATE TABLE `saved_searches` (
   `user_id` int(10) default NULL,
   `search` mediumtext NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `namespace` (`namespace`),
-  KEY `is_condition` (`is_condition`),
-  KEY `is_complete` (`is_complete`),
+  UNIQUE KEY `namespace` (`namespace`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1162,9 +1266,10 @@ CREATE TABLE `scheduler_tasks` (
   `is_background` tinyint(4) NOT NULL default '0',
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25) default NULL,
-  `run_time` datetime,
-  `previous_run_time` datetime,
-  `run_duration` float default NULL
+  `run_time` datetime default NULL,
+  `previous_run_time` datetime default NULL,
+  `run_duration` float default NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1174,8 +1279,10 @@ CREATE TABLE `scheduler_tasks` (
 CREATE TABLE `search_document_user_link` (
   `document_id` int(11) default NULL,
   `user_id` int(11) default NULL,
-  KEY `fk_user_id` (`user_id`),
-  KEY `fk_document_ids` (`document_id`)
+  KEY `document_id` (`document_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `search_document_user_link_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `search_document_user_link_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1201,7 +1308,9 @@ CREATE TABLE `search_saved` (
   `user_id` int(11) NOT NULL,
   `type` enum('S','C','W','B') NOT NULL default 'S' COMMENT 'S=saved search, C=permission, w=workflow, B=subscription',
   `shared` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `search_saved_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1209,7 +1318,9 @@ CREATE TABLE `search_saved` (
 --
 
 CREATE TABLE `search_saved_events` (
-  `document_id` int(11) NOT NULL
+  `document_id` int(11) NOT NULL,
+  PRIMARY KEY  (`document_id`),
+  CONSTRAINT `search_saved_events_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1219,7 +1330,7 @@ CREATE TABLE `search_saved_events` (
 CREATE TABLE `status_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1230,7 +1341,8 @@ CREATE TABLE `system_settings` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
   `value` text NOT NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1251,7 +1363,9 @@ CREATE TABLE `time_period` (
   `id` int(11) NOT NULL default '0',
   `time_unit_id` int(11) default NULL,
   `units` int(11) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `time_unit_id` (`time_unit_id`),
+  CONSTRAINT `time_period_ibfk_1` FOREIGN KEY (`time_unit_id`) REFERENCES `time_unit_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1261,7 +1375,7 @@ CREATE TABLE `time_period` (
 CREATE TABLE `time_unit_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) default NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1271,8 +1385,7 @@ CREATE TABLE `time_unit_lookup` (
 CREATE TABLE `trigger_selection` (
   `event_ns` varchar(255) NOT NULL default '',
   `selection_ns` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`event_ns`),
-  UNIQUE KEY `event_ns` (`event_ns`)
+  PRIMARY KEY  (`event_ns`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1281,9 +1394,11 @@ CREATE TABLE `trigger_selection` (
 
 CREATE TABLE `type_workflow_map` (
   `document_type_id` int(11) NOT NULL default '0',
-  `workflow_id` int(10) unsigned default NULL,
+  `workflow_id` int(11) default NULL,
   PRIMARY KEY  (`document_type_id`),
-  UNIQUE KEY `document_type_id` (`document_type_id`)
+  KEY `workflow_id` (`workflow_id`),
+  CONSTRAINT `type_workflow_map_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `type_workflow_map_ibfk_2` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1294,9 +1409,10 @@ CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL default '0',
   `name` char(100) NOT NULL default '',
   `folder_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `folder_id` (`folder_id`)
+  UNIQUE KEY `folder_id` (`folder_id`),
+  CONSTRAINT `units_lookup_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1307,9 +1423,11 @@ CREATE TABLE `units_organisations_link` (
   `id` int(11) NOT NULL default '0',
   `unit_id` int(11) NOT NULL default '0',
   `organisation_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_unit_id` (`unit_id`),
-  KEY `fk_organisation_id` (`organisation_id`)
+  PRIMARY KEY  (`id`),
+  KEY `unit_id` (`unit_id`),
+  KEY `organisation_id` (`organisation_id`),
+  CONSTRAINT `units_organisations_link_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `units_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `units_organisations_link_ibfk_2` FOREIGN KEY (`organisation_id`) REFERENCES `organisations_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1338,7 +1456,12 @@ CREATE TABLE `uploaded_files` (
   `userid` int(11) NOT NULL,
   `uploaddate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `action` char(1) NOT NULL COMMENT 'A = Add, C = Checkin',
-  `document_id` int(11) default NULL
+  `document_id` int(11) default NULL,
+  PRIMARY KEY  (`tempfilename`),
+  KEY `userid` (`userid`),
+  KEY `document_id` (`document_id`),
+  CONSTRAINT `uploaded_files_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `uploaded_files_ibfk_2` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1357,8 +1480,9 @@ CREATE TABLE `user_history` (
   KEY `action_namespace` (`action_namespace`),
   KEY `datetime` (`datetime`),
   KEY `session_id` (`session_id`),
-  CONSTRAINT `user_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `user_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `users`
@@ -1388,14 +1512,12 @@ CREATE TABLE `users` (
   `authentication_details_b2` tinyint(1) default NULL,
   `last_login` datetime default NULL,
   `disabled` tinyint(1) NOT NULL,
-  UNIQUE KEY `id` (`id`),
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
-  KEY `authentication_source` (`authentication_source_id`),
-  KEY `authentication_details_b1` (`authentication_details_b1`),
-  KEY `authentication_details_b2` (`authentication_details_b2`),
+  KEY `authentication_source_id` (`authentication_source_id`),
   KEY `last_login` (`last_login`),
   KEY `disabled` (`disabled`),
-  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`authentication_source_id`) REFERENCES `authentication_sources` (`id`) ON DELETE SET NULL
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`authentication_source_id`) REFERENCES `authentication_sources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1406,11 +1528,11 @@ CREATE TABLE `users_groups_link` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `fk_user_id` (`user_id`),
-  KEY `fk_group_id` (`group_id`),
-  CONSTRAINT `users_groups_link_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `users_groups_link_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `users_groups_link_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `users_groups_link_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1420,8 +1542,7 @@ CREATE TABLE `users_groups_link` (
 CREATE TABLE `workflow_actions` (
   `workflow_id` int(11) NOT NULL default '0',
   `action_name` char(255) NOT NULL default '',
-  KEY `workflow_id` (`workflow_id`),
-  KEY `action_name` (`action_name`)
+  PRIMARY KEY  (`workflow_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1434,7 +1555,10 @@ CREATE TABLE `workflow_documents` (
   `state_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`document_id`),
   KEY `workflow_id` (`workflow_id`),
-  KEY `state_id` (`state_id`)
+  KEY `state_id` (`state_id`),
+  CONSTRAINT `workflow_documents_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_documents_ibfk_2` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_documents_ibfk_3` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1445,7 +1569,7 @@ CREATE TABLE `workflow_state_actions` (
   `state_id` int(11) NOT NULL default '0',
   `action_name` char(255) NOT NULL default '0',
   KEY `state_id` (`state_id`),
-  KEY `action_name` (`action_name`)
+  CONSTRAINT `workflow_state_actions_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1456,7 +1580,7 @@ CREATE TABLE `workflow_state_disabled_actions` (
   `state_id` int(11) NOT NULL default '0',
   `action_name` char(255) NOT NULL default '0',
   KEY `state_id` (`state_id`),
-  KEY `action_name` (`action_name`)
+  CONSTRAINT `workflow_state_disabled_actions_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1472,8 +1596,9 @@ CREATE TABLE `workflow_state_permission_assignments` (
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
   KEY `workflow_state_id` (`workflow_state_id`),
-  CONSTRAINT `workflow_state_permission_assignments_ibfk_7` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `workflow_state_permission_assignments_ibfk_8` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE
+  CONSTRAINT `workflow_state_permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_state_permission_assignments_ibfk_2` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_state_permission_assignments_ibfk_3` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1482,7 +1607,11 @@ CREATE TABLE `workflow_state_permission_assignments` (
 
 CREATE TABLE `workflow_state_transitions` (
   `state_id` int(11) NOT NULL default '0',
-  `transition_id` int(11) NOT NULL default '0'
+  `transition_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`state_id`,`transition_id`),
+  KEY `transition_id` (`transition_id`),
+  CONSTRAINT `workflow_state_transitions_ibfk_2` FOREIGN KEY (`transition_id`) REFERENCES `workflow_transitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_state_transitions_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1501,8 +1630,8 @@ CREATE TABLE `workflow_states` (
   KEY `workflow_id` (`workflow_id`),
   KEY `name` (`name`),
   KEY `inform_descriptor_id` (`inform_descriptor_id`),
-  CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
-  CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL
+  CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1520,20 +1649,19 @@ CREATE TABLE `workflow_transitions` (
   `guard_role_id` int(11) default '0',
   `guard_condition_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `workflow_id_2` (`workflow_id`,`name`),
-  KEY `workflow_id` (`workflow_id`),
-  KEY `name` (`name`),
+  UNIQUE KEY `workflow_id_name` (`workflow_id`,`name`),
   KEY `target_state_id` (`target_state_id`),
-  KEY `guard_permission_id` (`guard_permission_id`),
-  KEY `guard_condition` (`guard_condition_id`),
+  KEY `guard_condition_id` (`guard_condition_id`),
   KEY `guard_group_id` (`guard_group_id`),
   KEY `guard_role_id` (`guard_role_id`),
-  CONSTRAINT `workflow_transitions_ibfk_45` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `workflow_transitions_ibfk_46` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `workflow_transitions_ibfk_47` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `workflow_transitions_ibfk_48` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `workflow_transitions_ibfk_49` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `workflow_transitions_ibfk_50` FOREIGN KEY (`guard_condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE SET NULL
+  KEY `name` (`name`),
+  KEY `guard_permission_id` (`guard_permission_id`),
+  CONSTRAINT `workflow_transitions_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_transitions_ibfk_2` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_transitions_ibfk_3` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_transitions_ibfk_4` FOREIGN KEY (`guard_condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_transitions_ibfk_5` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `workflow_transitions_ibfk_6` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1547,7 +1675,8 @@ CREATE TABLE `workflow_trigger_instances` (
   `config_array` text,
   PRIMARY KEY  (`id`),
   KEY `workflow_transition_id` (`workflow_transition_id`),
-  KEY `namespace` (`namespace`)
+  KEY `namespace` (`namespace`),
+  CONSTRAINT `workflow_trigger_instances_ibfk_1` FOREIGN KEY (`workflow_transition_id`) REFERENCES `workflow_transitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1563,7 +1692,7 @@ CREATE TABLE `workflows` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `start_state_id` (`start_state_id`),
-  CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`)
+  CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -2094,7 +2223,9 @@ CREATE TABLE `zseq_plugin_rss` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=72 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
+
+
 
 --
 -- Table structure for table `zseq_role_allocations`
@@ -2210,7 +2341,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=146 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=150 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_user_history`
@@ -2302,4 +2433,4 @@ CREATE TABLE `zseq_workflows` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-09-25 21:55:41
+-- Dump completed on 2007-10-11 15:46:20
