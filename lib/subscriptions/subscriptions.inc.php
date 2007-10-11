@@ -684,7 +684,7 @@ class SubscriptionEvent {
 	// based on the old SubscriptionEngine::retrieveSubscribers.
     function _getSubscribers($iObjectId, $iSubType) {
 	    global $default;        // for the logging.
-		$default->log->debug("_getSubscribers(id=$iObjectId, type=$iSubType); table=" .Subscription::getTableName($iSubType). "; id=" .Subscription::getIdFieldName($iSubType));
+		if (KTLOG_CACHE) $default->log->debug("_getSubscribers(id=$iObjectId, type=$iSubType); table=" .Subscription::getTableName($iSubType). "; id=" .Subscription::getIdFieldName($iSubType));
 
         $aUsers = array();
         $sQuery = "SELECT user_id FROM " . Subscription::getTableName($iSubType) .  " WHERE " . Subscription::getIdFieldName($iSubType) .  " = ?";
@@ -708,7 +708,7 @@ class SubscriptionEvent {
 			}
 		}
 
-		$default->log->debug('retrieveSubscribers found count=' . count($aUsers));
+		if (KTLOG_CACHE) $default->log->debug('retrieveSubscribers found count=' . count($aUsers));
         return $aUsers;
     }
 }
