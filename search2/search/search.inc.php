@@ -28,6 +28,22 @@ function search_alias_compare($a, $b)
 
 class SearchHelper
 {
+	public static function checkOpenOfficeAvailablity()
+	{
+		$config =& KTConfig::getSingleton();
+		$ooHost = $config->get('openoffice/host', 'localhost');
+		$ooPort = $config->get('openoffice/port', 8100);
+
+		$connection = @fsockopen($ooHost, $ooPort,$errno, $errstr, 2);
+		if (false === $connection)
+		{
+			return  sprintf(_kt("Cannot connect to Open Office Server on host '%s:%s'.\nPlease consult the Administrator Guide for more information on configuring Open Office Server."), $ooHost, $ooPort);
+		}
+		fclose($connection);
+
+		return null;
+	}
+
 	public static function getSavedSearchEvents()
 	{
 		// TODO
