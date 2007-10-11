@@ -5,6 +5,6 @@ alter table `index_files` change `user_id`  `user_id`  int NOT NULL;
 alter table `type_workflow_map` change `workflow_id`  `workflow_id` int  NULL;
 alter table document_content_version change mime_id mime_id int null default 9;
 alter table documents change owner_id owner_id int null;
-alter table documents change parent_id parent_id int null;
+alter table folders change parent_id parent_id int null;
 update documents set owner_id=null where owner_id=0;
 update folders set parent_id=null where parent_id=0;
