@@ -131,7 +131,18 @@ class PHPLuceneIndexer extends Indexer
      */
     public function optimise()
     {
+    	parent::optimise();
     	$this->lucene->optimize();
+    }
+
+    /**
+     * Returns the number of non-deleted documents in the index.
+     *
+     * @return int
+     */
+    public function getDocumentsInIndex()
+    {
+    	return $this->lucene->numDocs();
     }
 
     /**
@@ -190,13 +201,28 @@ class PHPLuceneIndexer extends Indexer
         return $results;
     }
 
+    /**
+     * Diagnose the indexer. e.g. Check that the indexing server is running.
+     *
+     */
     public function diagnose()
     {
     	if ($this->lucene == null)
     	{
-    		return _kt("The lucene index has not been initialised correctly. Please review the documentation on how to setup the indexing.");
+    		$indexer = $this->getDisplayName();
+    		return sprintf(_kt("The %s has not been initialised correctly. Please review the documentation on how to setup the indexing."),$indexer);
     	}
  		return null;
     }
+
+    /**
+     * Returns the name of the indexer.
+     *
+     * @return string
+     */
+	public function getDisplayName()
+	{
+		return _kt('Lucene PHP Indexer');
+	}
 }
 ?>

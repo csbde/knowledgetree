@@ -63,6 +63,20 @@ class KTTriggerRegistry {
         if (empty($ret)) {
             return array();
         }
+
+        foreach($ret as $trigger)
+        {
+        	if (!class_exists($trigger[0]))
+        	{
+        		require_once($trigger[1]);
+        		if (!class_exists($trigger[0]))
+        		{
+        			global $default;
+        			$defailt->log->error(sprintf(_kt('Cannot locate trigger class \'%s\' for action \'%s\' slot \'%s\'.'), $trigger[0], $action, $slot));
+        		}
+        	}
+        }
+
         return $ret;
     }
     // }}}

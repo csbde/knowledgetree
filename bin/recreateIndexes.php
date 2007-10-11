@@ -145,6 +145,9 @@ class IndexRecreator
 		$this->addForeignKey('discussion_comments', 'in_reply_to', 'discussion_comments', 'id');
 
 		$this->addForeignKey('discussion_threads', 'document_id', 'documents', 'id');
+		$this->addForeignKey('discussion_threads', 'first_comment_id', 'discussion_comments', 'id');
+		$this->addForeignKey('discussion_threads', 'last_comment_id', 'discussion_comments', 'id');
+		$this->addForeignKey('discussion_threads', 'creator_id', 'users', 'id');
 
 		$this->addForeignKey('document_archiving_link', 'document_id', 'documents', 'id');
 		$this->addForeignKey('document_archiving_link', 'archiving_settings_id', 'archiving_settings', 'id');
@@ -185,9 +188,6 @@ class IndexRecreator
 
 		$this->addForeignKey('document_transaction_text','document_id','documents','id');
 
-		$this->addForeignKey('document_transactions','document_id','documents','id', 'SET NULL', 'SET NULL');
-		$this->addForeignKey('document_transactions','user_id','users','id', 'SET NULL', 'SET NULL');
-
 		$this->addForeignKey('document_type_fields_link','document_type_id', 'document_types_lookup','id');
 		$this->addForeignKey('document_type_fields_link','field_id','document_fields','id');
 
@@ -221,6 +221,9 @@ class IndexRecreator
 
 		$this->addForeignKey('fieldsets','master_field','document_fields','id');
 
+		$this->addForeignKey('folder_descendants','parent_id','folders','id');
+		$this->addForeignKey('folder_descendants','folder_id','folders','id');
+
 		$this->addForeignKey('folder_doctypes_link','folder_id','folders','id');
 		$this->addForeignKey('folder_doctypes_link','document_type_id','document_types_lookup','id');
 
@@ -229,16 +232,13 @@ class IndexRecreator
 		$this->addForeignKey('folder_subscriptions','user_id','users','id');
 		$this->addForeignKey('folder_subscriptions','folder_id','folders','id');
 
-		$this->addForeignKey('folder_transactions','folder_id','folders','id', 'SET NULL', 'SET NULL');
-		$this->addForeignKey('folder_transactions','user_id','users','id', 'SET NULL', 'SET NULL');
-
 		$this->addForeignKey('folder_workflow_map','folder_id', 'folders','id');
 		$this->addForeignKey('folder_workflow_map','workflow_id', 'workflows','id');
 
 		$this->addForeignKey('folders','creator_id','users','id');
 		$this->addForeignKey('folders','permission_object_id','permission_objects','id');
 		$this->addForeignKey('folders','permission_lookup_id','permission_lookups','id');
-//		$this->addForeignKey('folders','parent_id','folders','id'); // cant do this because of root that is 0... need to make it null!
+		$this->addForeignKey('folders','parent_id','folders','id');
 
 		$this->addForeignKey('folders_users_roles_link','user_id','users','id');
 		$this->addForeignKey('folders_users_roles_link','document_id','documents','id');
@@ -318,6 +318,12 @@ class IndexRecreator
 
 		$this->addForeignKey('user_history','user_id','users','id');
 
+		$this->addForeignKey('user_history_documents','document_id','documents','id');
+		$this->addForeignKey('user_history_documents','user_id','users','id');
+
+		$this->addForeignKey('user_history_folders','folder_id','folders','id');
+		$this->addForeignKey('user_history_folders','user_id','users','id');
+
 		$this->addForeignKey('users','authentication_source_id','authentication_sources','id');
 
 		$this->addForeignKey('users_groups_link', 'user_id','users','id');
@@ -386,6 +392,7 @@ class IndexRecreator
 		$this->addIndex('document_transaction_types_lookup','namespace', 'UNIQUE');
 
 		$this->addIndex('document_transactions','session_id');
+		$this->addIndex('document_transactions','document_id');
 
 		$this->addIndex('document_types_lookup','name');
 		//$this->addIndex('document_types_lookup','disabled'); ? used
@@ -400,14 +407,17 @@ class IndexRecreator
 		$this->addIndex('fieldsets','is_complete');
 		$this->addIndex('fieldsets','is_system');
 
+		$this->addIndex('field_orders','child_field_id', 'UNIQUE');
+
 		$this->addIndex('folder_searchable_text','folder_text' ,'FULLTEXT');
 
+		$this->addIndex('folder_transactions','folder_id');
 		$this->addIndex('folder_transactions','session_id');
 
-		$this->addIndex('folders','name');
+//		$this->addIndex('folders','name');
 		$this->addIndex('folders', array('parent_id','name'));
 
-		$this->addIndex('groups_lookup','name');
+		$this->addIndex('groups_lookup','name', 'UNIQUE');
 		$this->addIndex('groups_lookup', array('authentication_source_id','authentication_details_s1'));
 
 		$this->addIndex('interceptor_instances','interceptor_namespace'); // unique?
@@ -417,7 +427,7 @@ class IndexRecreator
 
 		$this->addIndex('metadata_lookup_tree','metadata_lookup_tree_parent');
 
-		$this->addIndex('mime_types','filetypes'); // should be unique...
+		$this->addIndex('mime_types','filetypes');
 		$this->addIndex('mime_types','mimetypes');
 
 		$this->addIndex('notifications','data_int_1'); // document id seems to be stored in this. used by clearnotifications.
@@ -437,9 +447,9 @@ class IndexRecreator
 		//$this->dropIndex('permission_descriptor_users','descriptor_id'); // in primary
 		$this->addIndex('permission_descriptor_users','user_id');
 
-		$this->addIndex('permission_descriptors','descriptor');
+		$this->addIndex('permission_descriptors','descriptor','UNIQUE');
 
-		$this->addIndex('permission_lookup_assignments', array('permission_lookup_id', 'permission_id'));
+		$this->addIndex('permission_lookup_assignments', array('permission_lookup_id', 'permission_id'), 'UNIQUE');
 		//$this->dropIndex('permission_lookup_assignments','permission_lookup_id'); // in composite
 
 		$this->addIndex('permissions','name', 'UNIQUE');
@@ -455,7 +465,7 @@ class IndexRecreator
 		$this->addIndex('system_settings','name', 'UNIQUE');
 
 		$this->addIndex('units_lookup','name' ,'UNIQUE');
-		$this->dropIndex('units_lookup','folder_id');
+//		$this->dropIndex('units_lookup','folder_id');
 		$this->addIndex('units_lookup','folder_id' ,'UNIQUE');
 
 		$this->addIndex('upgrades','descriptor');
@@ -488,7 +498,7 @@ class IndexRecreator
 
 		$this->addIndex('workflow_trigger_instances','namespace');
 
-		$this->addIndex('workflows','name');
+		$this->addIndex('workflows','name', 'UNIQUE');
 
 
 	}
@@ -518,6 +528,9 @@ class IndexRecreator
 
 	function addForeignKey($table, $field, $othertable, $otherfield, $ondelete='cascade', $onupdate='cascade')
 	{
+		if (!in_array($table, $this->tables)) continue;
+		if (!in_array($othertable, $this->tables)) continue;
+
 		$sql = "alter table $table add foreign key ($field) references $othertable ($otherfield) ";
 		if ($ondelete != '')
 			$sql .= " on delete $ondelete";
@@ -555,7 +568,6 @@ class IndexRecreator
 		$this->addPrimaryKey('document_text', 'document_id');
 		$this->addPrimaryKey('document_transaction_types_lookup', 'id');
 		$this->addPrimaryKey('document_transaction_text', 'document_id');
-		$this->addPrimaryKey('document_transaction_types_lookup','id');
 		$this->addPrimaryKey('document_transactions','id');
 		$this->addPrimaryKey('document_type_fields_link','id');
 		$this->addPrimaryKey('document_type_fieldsets_link','id');
@@ -576,6 +588,7 @@ class IndexRecreator
 		$this->addPrimaryKey('groups_lookup','id');
 		$this->addPrimaryKey('help','id');
 		$this->addPrimaryKey('help_replacement','id');
+		$this->addPrimaryKey('index_files','document_id');
 		$this->addPrimaryKey('interceptor_instances','id');
 		$this->addPrimaryKey('links','id');
 		$this->addPrimaryKey('metadata_lookup','id');
@@ -625,6 +638,7 @@ class IndexRecreator
 		$this->addPrimaryKey('workflow_documents','document_id');
 		$this->addPrimaryKey('workflow_state_permission_assignments','id');
 		$this->addPrimaryKey('workflow_states','id');
+		$this->addPrimaryKey('workflow_state_transitions',array('state_id','transition_id'));
 		$this->addPrimaryKey('workflow_transitions','id');
 		$this->addPrimaryKey('workflow_trigger_instances','id');
 		$this->addPrimaryKey('workflows','id');
@@ -652,6 +666,7 @@ class IndexRecreator
 	{
 		$result = DBUtil::getResultArray("show tables");
 		$tables=array();
+		$this->tables = array();
 
 		foreach($result as $table)
 		{
@@ -664,6 +679,7 @@ class IndexRecreator
 			}
 
 			$stmt = DBUtil::getResultArray("show create table $tablename");
+			$this->tables[] = $tablename;
 
 			$keys = array_keys($stmt[0]);
 
