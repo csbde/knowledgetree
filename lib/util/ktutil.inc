@@ -33,6 +33,45 @@
 require_once(KT_LIB_DIR . '/util/KTStopwords.php');
 
 class KTUtil {
+
+	const MIN_IN_SECS = 60;
+	const HOUR_IN_SECS = 3600;
+	const DAY_IN_SECS = 86400;
+
+	static function computePeriodToDate($start, $suffix = null, $returnArray=false)
+	{
+		if (is_null($suffix))
+		{
+			$suffix = _kt('ago');
+		}
+		$diff = time() - $start;
+
+		$days = floor($diff / KTUtil::DAY_IN_SECS);
+		$hours = floor(($diff - $days * KTUtil::DAY_IN_SECS) / KTUtil::HOUR_IN_SECS);
+		$mins = floor(($diff - $days * KTUtil::DAY_IN_SECS - $hours * KTUtil::HOUR_IN_SECS) / KTUtil::MIN_IN_SECS);
+		$secs = $diff % KTUtil::MIN_IN_SECS;
+
+		$str = '';
+		if ($days > 0) $str .= sprintf(_kt(' %d day(s)'), $days);
+		if ($hours > 0) $str .= sprintf(_kt(' %d hour(s)'), $hours);
+		if ($mins > 0) $str .= sprintf(_kt(' %d minute(s)'), $mins);
+		if ($secs > 0) $str .= sprintf(_kt(' %d second(s)'), $secs);
+
+		$str .= " $suffix";
+
+		if ($returnArray)
+		{
+			return array(
+					'str'=>$str,
+					'days'=>$days,
+					'mins'=>$mins,
+					'secs'=>$secs
+				);
+		}
+
+		return $str;
+	}
+
     function extractGPC () {
         foreach (func_get_args() as $var) {
             if (array_key_exists($var, $_REQUEST)) {
@@ -96,13 +135,13 @@ class KTUtil {
         }
         return $sString;
     }
-    
+
     //this function fudges the strlen. It returns a ? when the character is a multi-byte character.
 	//str len is therefore measured correctly.
 	//http://www.phpwact.org/php/i18n/charsets
 	function utf8_strlen($string){
     	return strlen(utf8_decode($str));
-	}  
+	}
 
     static function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (!is_array($aArray)) {
@@ -668,7 +707,7 @@ class KTUtil {
         return null;
     }
 
-    function getSystemSetting($name, $default = null) {
+    static function getSystemSetting($name, $default = null) {
         // XXX make this use a cache layer?
         $sTable = KTUtil::getTableName('system_settings');
         $aQuery = array(
