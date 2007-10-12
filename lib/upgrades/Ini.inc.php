@@ -40,7 +40,7 @@ class Ini {
     var $lineNum = 0;
     var $exists = '';
 
-    function Ini($iniFile = '../../../config.ini') {
+    function Ini($iniFile = '../../config.ini') {
        $this->iniFile = $iniFile;
        $this->read($iniFile); 
     }
@@ -159,7 +159,7 @@ class Ini {
 /*
 // USAGE EXAMPLE
 
-if(file_exists('../../../config.ini')) {
+if(file_exists('../../config.ini')) {
 
     $ini = new Ini();
     $ini->addItem('Section1', 'NewItem1', 'Some Text1', 'Item1 Comment', 'Section1 Comment');

@@ -29,6 +29,8 @@
  *
  */
 
+require_once(KT_LIB_DIR . '/upgrades/Ini.inc.php');
+
 class UpgradeFunctions {
     var $upgrades = array(
             '2.0.0' => array('setPermissionFolder'),
@@ -46,7 +48,7 @@ class UpgradeFunctions {
             '3.0.3.7' => array('rebuildAllPermissions'),
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
-            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping'),
+            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35'),
             );
 
     var $descriptions = array(
@@ -67,7 +69,8 @@ class UpgradeFunctions {
             'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
             'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
-            'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types'
+            'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types',
+            'updateConfigFile35' => 'Update the config.ini file for 3.5',
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -903,12 +906,83 @@ class UpgradeFunctions {
     }
     // }}}
 
+    // {{{ registerExtractorMapping
     function registerExtractorMapping()
     {
     	$indexer = Indexer::get();
     	$indexer->registerTypes();
     }
+    // }}}
+    
+    // {{{ updateConfigFile35
+    function updateConfigFile35()
+    {
+        if(file_exists('../../config.ini')) {
 
+            $ini = new Ini();
+            
+            // Webservices Section
+            $ini->addItem('webservice', 'uploadDirectory', '${varDirectory}/uploads');
+            $ini->addItem('webservice', 'downloadUrl', '${rootUrl}/ktwebservice/download.php');
+            $ini->addItem('webservice', 'uploadExpiry', '30');
+            $ini->addItem('webservice', 'downloadExpiry', '30');
+            $ini->addItem('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
+            $ini->addItem('webservice', 'validateSessionCount', 'false');
+           
+            // externalBinary Section
+            $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
+            $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
+            $ini->addItem('externalBinary', 'catppt', 'catppt');
+            $ini->addItem('externalBinary', 'pstotext', 'pstotext');
+            $ini->addItem('externalBinary', 'catdoc', 'catdoc');
+            $ini->addItem('externalBinary', 'antiword', 'antiword.exe');
+
+            // search Section
+            $ini->addItem('search', 'resultsPerPage', 'default', "The number of results per page\r\n; defaults to 25");
+            $ini->addItem('search', 'dateFormat', 'default', "The date format used when making queries using widgets\r\n; defaults to Y-m-d");
+
+            // indexer Section
+            $ini->addItem('indexer', 'coreClass', 'JavaXMLRPCLuceneIndexer', "The core indexing class\r\n;coreClass=PHPLuceneIndexer");
+            $ini->addItem('indexer', 'batchDocuments', 'default', "The number of documents to be indexed in a cron session\r\n; defaults to 20");
+            $ini->addItem('indexer', 'luceneDirectory', '${varDirectory}/indexes', "The location of the lucene indexes");
+
+            // openoffice Section
+            $ini->addItem('openoffice', 'host', 'default', "The host on which open office is installed\r\n; defaults to localhost");
+            $ini->addItem('openoffice', 'port', 'default', "The port on which open office is listening\r\n; defaults to 8100");
+
+            // user_prefs Section
+            $ini->addItem('user_prefs', 'passwordLength', '6', "The minimum password length on password-setting\r\n; could be moved into DB-auth-config");
+            $ini->addItem('user_prefs', 'restrictAdminPasswords', 'default', "Apply the minimum password length to admin while creating / editing accounts?\r\n; default is set to "false" meaning that admins can create users with shorter passwords.");
+            $ini->addItem('user_prefs', 'restrictPreferences', 'false', "Restrict users from accessing their preferences menus?");
+
+            // builtinauth Section
+            $ini->addItem('builtinauth', 'password_change_interval', '30', "This would force users that use the built-in authentication provider\r\n; to have to change their passwords every 30 days." ,"This is configuration for the built-in authentication provider");
+
+            // cache Section
+            $ini->addItem('cache', 'cacheEnabled', 'true', '', "Enable/disable the cache and set the cache location");
+            $ini->addItem('cache', 'cacheDirectory', '${varDirectory}/cache');
+
+            // KTWebDAVSettings Section
+            $ini->addItem('KTWebDAVSettings', 'debug', 'off', '_LOTS_ of debug info will be logged if the following is "on"', 'This section is for KTWebDAV only');
+            $ini->addItem('KTWebDAVSettings', 'safemode', 'on', 'To allow write access to WebDAV clients set safe mode to "off" below');
+
+            // BaobabSettings Section
+            $ini->addItem('BaobabSettings', 'debug', 'off', '_LOTS_ of debug info will be logged if the following is "on"', 'This section is for Boabab only');
+            $ini->addItem('BaobabSettings', 'safemode', 'on', 'To allow write access to WebDAV clients set safe mode to "off" below');
+
+            // backup Section
+            $ini->addItem('backup', '', '', "Identify location of kt-backup for database backups\r\n;backupDirectory=c:/kt-backups\r\n;backupDirectory=/tmp/kt-backups");
+            $ini->addItem('backup', '', '', "Identify the location of the mysql.exe and mysqldump.exe\r\n;mysqlDirectory=c:/program files/ktdms/mysql/bin");
+
+            // clientToolPolicies Section
+            $ini->addItem('clientToolPolicies', 'explorerMetadataCapture', 'true', "These two settings control whether or not the client is prompted for metadata when a\r\n;document is added to knowledgetree via KTtools. They default to true.");
+            $ini->addItem('clientToolPolicies', 'officeMetadataCapture', 'true');
+
+            $ini->write();
+
+        }
+    }
+    // }}}
 }
 
 ?>
