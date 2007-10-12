@@ -952,7 +952,7 @@ class UpgradeFunctions {
 
             // user_prefs Section
             $ini->addItem('user_prefs', 'passwordLength', '6', "The minimum password length on password-setting\r\n; could be moved into DB-auth-config");
-            $ini->addItem('user_prefs', 'restrictAdminPasswords', 'default', "Apply the minimum password length to admin while creating / editing accounts?\r\n; default is set to "false" meaning that admins can create users with shorter passwords.");
+            $ini->addItem('user_prefs', 'restrictAdminPasswords', 'default', "Apply the minimum password length to admin while creating / editing accounts?\r\n; default is set to \"false\" meaning that admins can create users with shorter passwords.");
             $ini->addItem('user_prefs', 'restrictPreferences', 'false', "Restrict users from accessing their preferences menus?");
 
             // builtinauth Section
@@ -971,8 +971,8 @@ class UpgradeFunctions {
             $ini->addItem('BaobabSettings', 'safemode', 'on', 'To allow write access to WebDAV clients set safe mode to "off" below');
 
             // backup Section
-            $ini->addItem('backup', '', '', "Identify location of kt-backup for database backups\r\n;backupDirectory=c:/kt-backups\r\n;backupDirectory=/tmp/kt-backups");
-            $ini->addItem('backup', '', '', "Identify the location of the mysql.exe and mysqldump.exe\r\n;mysqlDirectory=c:/program files/ktdms/mysql/bin");
+            $ini->addItem('backup', 'backupDirectory', 'default', "Identify location of kt-backup for database backups\r\n;backupDirectory = c:/kt-backups\r\n;backupDirectory = /tmp/kt-backups");
+            $ini->addItem('backup', 'mysqlDirectory', 'default', "Identify the location of the mysql.exe and mysqldump.exe\r\n;mysqlDirectory = c:/program files/ktdms/mysql/bin");
 
             // clientToolPolicies Section
             $ini->addItem('clientToolPolicies', 'explorerMetadataCapture', 'true', "These two settings control whether or not the client is prompted for metadata when a\r\n;document is added to knowledgetree via KTtools. They default to true.");
