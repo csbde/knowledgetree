@@ -12,21 +12,14 @@
  */
 
 session_start();
-print _kt("Registering Extractor mapping to Mime types") . "...\n";
-
 require_once(realpath('../../../config/dmsDefaults.php'));
+
+print _kt("Registering Extractor mapping to Mime types") . "...\n";
 
 $config = KTConfig::getSingleton();
 $indexer = $config->get('indexer/coreClass');
 
-if ($indexer != 'PHPLuceneIndexer')
-{
-	print _kt("This script only works with the PHPLuceneIndexer.") . "\n";
-	exit;
-}
-
 require_once('indexing/indexerCore.inc.php');
-
 $clear=false;
 if ($argc > 0)
 {
