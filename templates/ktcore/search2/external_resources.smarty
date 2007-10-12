@@ -1,0 +1,11 @@
+<h1>{i18n}External Resource Dependency Status{/i18n}</h1>
+<P>
+{i18n}The following resources are used by KnowledgeTree and are impacting on the normal operations of the system:{/i18n}
+<table width="100%">
+<tr><th width="150">{i18n}Resource{/i18n}</th><th>{i18n}Status{/i18n}</th></tr>
+{foreach from=$resources item=resource}
+<tr><td valign=top><I>{$resource.name}</td><td>{$resource.status}</td>
+<tr ><td colspan=2><hr></tr>
+{/foreach}
+<tr><td colspan=2 align=right><a href="/search2.php?action=refreshDashboardStatus" align=right>{i18n}Refresh{/i18n}</a></tr>
+</table>

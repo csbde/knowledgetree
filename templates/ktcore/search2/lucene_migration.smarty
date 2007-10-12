@@ -1,0 +1,20 @@
+<P>
+Migration to using the new search requires text to be moved from the database full text indexes into the Lucene indexes. This may take some time depending
+on the size of the repository. For this reason, the process is a background task.
+<P>
+
+<table>
+<tr><td>Documents processed in a single migration run:</td><td>20</td></tr>
+<tr><td>Frequency at which migration batch task runs:</td><td>every 5 minutes</td></tr>
+<tr><td>Total documents to migrate:</td><td>1500</td></tr>
+<tr><td>Migration process started on:</td><td>2007-01-10 15:13</td></tr>
+<tr><td>Migration process has taken:</td><td>15 hours 10 minutes</td></tr>
+<tr><td>Total documents migrated:</td><td>1500</td></tr>
+<tr><td>Total documents to be migrated:</td><td>1500</td></tr>
+<tr><td>Estimated completion time:</td><td>2007-01-10 15:13</td></tr>
+<tr><td>Estimated migration time remaining:</td><td>15 hours 10 minutes</td></tr>
+</table>
+<B>Note:</b> <i>Search results will not be accurate until the migration process is complete.</i>
+<br>This dashlet will disappear when the migration process is complete.
+
+<br>

@@ -1,0 +1,40 @@
+{if !empty($indexerDiagnosis)}
+{i18n arg_name=$indexerName}The #name# is not functioning correctly. This could be because:{/i18n}
+<ul>
+<li>{i18n}The indexer is not configured correctly.{/i18n}
+<li>{i18n}The component on which the indexer depends is not available.{/i18n}
+</ul>
+{$indexerDiagnosis}
+<br>
+{/if}
+{if count($extractorDiagnosis) > 0}
+<br>
+<b>{i18n}Text Extractor Status{/i18n}</b>
+<br>
+{i18n}KnowledgeTree has detected some issues with some of the text extractors used to index document text:{/i18n}
+<br>
+<table width="100%">
+	<tr><td colspan=2><hr></td></tr>
+{foreach from=$extractorDiagnosis item=diagnosis}
+	<tr>
+		<td colspan=2><i>{$diagnosis.problem}</i></td>
+	</tr>
+	<tr>
+		<td valign="top" width="100"><nobr>{i18n}Text extractor(s)s affected:{/i18n}</td>
+		<td align="left" valign=top><ul style="top: -30px">
+			{foreach from=$diagnosis.indexers item=indexer}
+				<li><i>{$indexer}</i></li>
+			{/foreach}
+			</ul>
+		</td>
+	</tr>
+	<tr><td colspan=2><hr></td></tr>
+{/foreach}
+</table>
+{/if}
+<br>
+<B>{i18n}Note:{/i18n}</b> {i18n}Indexing will not continue until all issues have been resolved.{/i18n}
+<table width="100%">
+<tr>
+<td align=right><a href="/search2.php?action=refreshDashboardStatus">Refresh</a>
+</table>

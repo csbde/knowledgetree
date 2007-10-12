@@ -1,0 +1,26 @@
+<P>
+This dashlet provides some basic statistics on the Lucene index.
+<P>
+
+<table>
+<tr><td>Last optimisation date:</td><td>{$stats.optimisationDate}</td></tr>
+<tr><td>Period since last optimisation:</td><td>{$stats.optimisationPeriod}</td></tr>
+<tr><td>Last indexing date:</td><td>{$stats.indexingDate}</td></tr>
+<tr><td>Period since last indexing:</td><td>{$stats.indexingPeriod}</td></tr>
+<tr><td>Total documents in repository:</td><td>{$stats.docsInRepository}</td></tr>
+<tr><td>Documents in index:</td><td>{$stats.docsInIndex}</td></tr>
+<tr><td>Documents in indexing queue:</td><td>{$stats.docsInQueue}</td></tr>
+<tr><td>Indexing coverage:</td><td>{$stats.indexingCoverage}</td></tr>
+<tr><td>Queue coverage:</td><td>{$stats.queueCoverage}</td></tr>
+</table>
+<b>Notes:</b><br>
+<table>
+<tr><td valign=top>*<td>Not all documents contain text. This will explain why the indexing coverage percentage my vary.
+<tr><td valign=top>*<td>The queue coverage indicates how many documents are in the queue in relation to the repository size.
+{if $stats.noOptimisation}
+<tr><td valign=top>*<td><i>To get the best performance out of Lucene, the indexes must be optimised periodically. This is managed by a background task.
+{/if}
+</table>
+<table width="100%">
+<tr><td colspan=2 align=right><a href="/search2.php?action=refreshLuceneStats" align=right>Refresh</a></tr>
+</table>
