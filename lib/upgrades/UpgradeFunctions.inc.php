@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -31,22 +31,22 @@
 
 class UpgradeFunctions {
     var $upgrades = array(
-            "2.0.0" => array("setPermissionFolder"),
-            "2.0.6" => array("addTemplateMimeTypes"),
-            "2.0.8" => array("setPermissionObject"),
-            "2.99.1" => array("createFieldSets"),
-            "2.99.7" => array("normaliseDocuments", "applyDiscussionUpgrade"),
-            "2.99.8" => array("fixUnits"),
-            "2.99.9" => array("createLdapAuthenticationProvider", "createSecurityDeletePermissions"),
-            "3.0.1.3" => array('addTransactionTypes3013'),
-            "3.0.1.4" => array('createWorkflowPermission'),
-            "3.0.2" => array("fixDocumentRoleAllocation"),
-            "3.0.3.2" => array("createFolderDetailsPermission"),
-            "3.0.3.3" => array("generateWorkflowTriggers"),
-            "3.0.3.7" => array("rebuildAllPermissions"),        
-            "3.1.5" => array("upgradeSavedSearches"),
-            "3.1.6.3" => array("cleanupGroupMembership"),    	
-            "3.5.0" => array("cleanupOldKTAdminVersionNotifier"),    	
+            '2.0.0' => array('setPermissionFolder'),
+            '2.0.6' => array('addTemplateMimeTypes'),
+            '2.0.8' => array('setPermissionObject'),
+            '2.99.1' => array('createFieldSets'),
+            '2.99.7' => array('normaliseDocuments', 'applyDiscussionUpgrade'),
+            '2.99.8' => array('fixUnits'),
+            '2.99.9' => array('createLdapAuthenticationProvider', 'createSecurityDeletePermissions'),
+            '3.0.1.3' => array('addTransactionTypes3013'),
+            '3.0.1.4' => array('createWorkflowPermission'),
+            '3.0.2' => array('fixDocumentRoleAllocation'),
+            '3.0.3.2' => array('createFolderDetailsPermission'),
+            '3.0.3.3' => array('generateWorkflowTriggers'),
+            '3.0.3.7' => array('rebuildAllPermissions'),
+            '3.1.5' => array('upgradeSavedSearches'),
+            '3.1.6.3' => array('cleanupGroupMembership'),
+            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping'),
             );
 
     var $descriptions = array(
@@ -67,6 +67,7 @@ class UpgradeFunctions {
             'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
             'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
+            'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -702,14 +703,14 @@ class UpgradeFunctions {
         DBUtil::runQuery("UPDATE $sFolderTable SET permission_lookup_id = NULL");
         DBUtil::commit();
     }
-    //  }}} 
+    //  }}}
 
-    // {{{ generateWorkflowTriggers 
+    // {{{ generateWorkflowTriggers
     function generateWorkflowTriggers() {
 
-        require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');    
+        require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
-        // get all the transitions, and add a trigger to the util with the appropriate settings.    
+        // get all the transitions, and add a trigger to the util with the appropriate settings.
         $KTWFTriggerReg =& KTWorkflowTriggerRegistry::getSingleton();
         $aTransitions = KTWorkflowTransition::getList();
         foreach ($aTransitions as $oTransition) {
@@ -718,55 +719,55 @@ class UpgradeFunctions {
             $iGuardPerm = $oTransition->getGuardPermissionId();
             if (!is_null($iGuardPerm)) {
 
-                $sNamespace = 'ktcore.workflowtriggers.permissionguard';            
+                $sNamespace = 'ktcore.workflowtriggers.permissionguard';
                 $oPerm = KTPermission::get($iGuardPerm);
-                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
                             'transitionid' => KTUtil::getId($oTransition),
                             'namespace' =>  $sNamespace,
                             'config' => array('perms' => array($oPerm->getName())),
-                            ));           
+                            ));
 
             }
             // guard group
             $iGuardGroup = $oTransition->getGuardGroupId();
             if (!is_null($iGuardGroup)) {
 
-                $sNamespace = 'ktcore.workflowtriggers.groupguard';            
-                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $sNamespace = 'ktcore.workflowtriggers.groupguard';
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
                             'transitionid' => KTUtil::getId($oTransition),
                             'namespace' =>  $sNamespace,
                             'config' => array('group_id' => $iGuardGroup),
-                            ));          
+                            ));
 
-            }            
-            // guard role    
+            }
+            // guard role
             $iGuardRole = $oTransition->getGuardRoleId();
             if (!is_null($iGuardRole)) {
 
-                $sNamespace = 'ktcore.workflowtriggers.roleguard';            
-                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $sNamespace = 'ktcore.workflowtriggers.roleguard';
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
                             'transitionid' => KTUtil::getId($oTransition),
                             'namespace' =>  $sNamespace,
                             'config' => array('role_id' => $iGuardRole),
-                            ));                        
+                            ));
 
             }
             // guard condition
             $iGuardCondition = $oTransition->getGuardConditionId();
             if (!is_null($iGuardCondition)) {
 
-                $sNamespace = 'ktcore.workflowtriggers.conditionguard';            
-                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);        
+                $sNamespace = 'ktcore.workflowtriggers.conditionguard';
+                $oTrigger = $KTWFTriggerReg->getWorkflowTrigger($sNamespace);
                 $oTriggerConfig = KTWorkflowTriggerInstance::createFromArray(array(
                             'transitionid' => KTUtil::getId($oTransition),
                             'namespace' =>  $sNamespace,
                             'config' => array('condition_id' => $iGuardCondition),
-                            ));                     
+                            ));
 
-            }            
+            }
         }
 
     }
@@ -856,13 +857,13 @@ class UpgradeFunctions {
             return $res;
         } else {
             $bad_group_links = kt_array_merge($bad_group_links, $res);
-        }       
+        }
 
         foreach ($bad_group_links as $link_id) {
             $res = DBUtil::runQuery(array("DELETE FROM groups_groups_link WHERE id = ?", $link_id));
             if (PEAR::isError($res)) {
                 return $res;
-            }    
+            }
         }
 
         $res = DBUtil::getResultArrayKey(array($group_query, null), 'link_id');
@@ -875,7 +876,7 @@ class UpgradeFunctions {
         $res = DBUtil::getResultArrayKey(array($user_query, null), 'link_id');
         if (PEAR::isError($res)) {
             return $res;
-        } else {    
+        } else {
             $bad_user_links = kt_array_merge($bad_user_links, $res);
         }
 
@@ -883,12 +884,12 @@ class UpgradeFunctions {
             $res = DBUtil::runQuery(array("DELETE FROM users_groups_link WHERE id = ?", $link_id));
             if (PEAR::isError($res)) {
                 return $res;
-            }    
+            }
         }
 
         return true;
 
-    }    
+    }
     // }}}
 
     // {{{  cleanupOldKTAdminVersionNotifier
@@ -899,8 +900,15 @@ class UpgradeFunctions {
         if(file_exists($oldFile)) return unlink($oldFile);
 
         return true;
-    }    
+    }
     // }}}
+
+    function registerExtractorMapping()
+    {
+    	$indexer = Indexer::get();
+    	$indexer->registerTypes();
+    }
+
 }
 
 ?>
