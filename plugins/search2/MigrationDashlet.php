@@ -44,6 +44,14 @@ class LuceneMigrationDashlet extends KTBaseDashlet
 	    	return false;
 	    }
 
+	    $sql = "select count(*) as no from document_text";
+	    $no = DBUtil::getOneResultKey($sql,'no');
+		if ($no == 0)
+		{
+			return false;
+		}
+		$this->migratingDocuments = $no;
+
 	    return true;
 	}
 
@@ -52,8 +60,44 @@ class LuceneMigrationDashlet extends KTBaseDashlet
 	    $oTemplating =& KTTemplating::getSingleton();
 	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/lucene_migration');
 
+	    $config = KTConfig::getSingleton();
+	    $batchDocuments = $config->get('indexer/batchMigrateDocuments');
+
+
+		$migratedDocuments = KTUtil::getSystemSetting('migratedDocuments',0);
+	    $migratingDocuments = $this->migratingDocuments;
+
+	    $migrationStart = KTUtil::getSystemSetting('migrationStarted');
+	    if (is_null($migrationStart))
+	    {
+			$migrationStartString = _kt('Not started');
+			$migrationPeriod = _kt('N/A');
+			$estimatedTime = _kt('Unknown');
+			$estimatedPeriod = $estimatedTime;
+	    }
+	    else
+	    {
+			$migrationStartString = date('Y-m-d H:i:s', $migrationStart);
+			$migrationTime = KTUtil::getSystemSetting('migrationTime',0);
+			$migrationPeriod = KTUtil::computePeriod($migrationTime, '');
+			$timePerDocument = $migrationTime / $migratedDocuments;
+			$estimatedPeriod = $timePerDocument * $migratingDocuments;
+			$estimatedTime = date('Y-m-d H:i:s', $migrationStart + $estimatedPeriod);
+			$estimatedPeriod = KTUtil::computePeriod($estimatedPeriod, '');
+	    }
+
+
+
 	    $aTemplateData = array(
-	    		'context' => $this
+	    		'context' => $this,
+	    		'batchDocuments'=>$batchDocuments,
+	    		'batchPeriod'=>'Periodically',
+	    		'migrationStart'=>$migrationStartString,
+	    		'migrationPeriod'=>$migrationPeriod,
+	    		'migratedDocuments'=>$migratedDocuments,
+	    		'migratingDocuments'=>$migratingDocuments,
+	    		'estimatedTime'=>$estimatedTime,
+	    		'estimatedPeriod'=>$estimatedPeriod
 			);
 
         return $oTemplate->render($aTemplateData);
