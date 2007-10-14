@@ -1,0 +1,44 @@
+<table border=0 cellspacing="0" cellpadding="0" width="100%">
+    <tr>
+        <td width="250"><B>{i18n}Disk Mount{/i18n}</td>
+		<td align="center"><B>{i18n}Size{/i18n}</td>
+		<td align="center"><B>{i18n}Used{/i18n}</td>
+		<td align="center"><B>{i18n}Available{/i18n}</td>
+		<td align="center"><B>{i18n}Usage{/i18n}</td>
+
+    </tr>
+	<tr><td colspan=5><hr></tr>
+{assign var=orange value=0}
+{assign var=red value=0}
+{section name=usage loop=$usages}
+
+{if $usages[usage].colour == 'orange'}
+    {assign var=orange value=1}
+{/if}
+{if $usages[usage].colour == 'red'}
+    {assign var=red value=1}
+{/if}
+    <tr bgcolor="{$usages[usage].colour}">
+        <td>{$usages[usage].mounted}</td>
+		<td align=right>{$usages[usage].size}&nbsp;&nbsp;</td>
+		<td align=right>{$usages[usage].used}&nbsp;&nbsp;</td>
+		<td align=right>{$usages[usage].available}&nbsp;&nbsp;</td>
+		<td align=right>{$usages[usage].usage}&nbsp;&nbsp;</td>
+
+    </tr>
+{/section}
+	<tr><td colspan=5><hr></tr>
+</table>
+<table width="100%">
+<tr>
+{if $orange==1 || $red==1}
+<td ><nobr><b>{i18n}Free Space{/i18n}</td>
+{/if}
+{if $orange==1}
+<td  bgcolor=orange><nobr> &lt; {$warnPercent} %</td>
+{/if}
+{if $red==1}
+<td bgcolor=red><nobr> &lt; {$urgentPercent} %</td>
+{/if}
+<td width="100%" align="right"><a href="{$dispatcherURL}?action=refreshDiskUsage">{i18n}refresh{/i18n}</a></td>
+</table>
