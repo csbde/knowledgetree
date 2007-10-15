@@ -13,7 +13,7 @@
 <tr><td>{i18n}Indexing coverage:{/i18n}</td><td>{$stats.indexingCoverage}</td></tr>
 <tr><td>{i18n}Queue coverage:{/i18n}</td><td>{$stats.queueCoverage}</td></tr>
 </table>
-<b>{i18n}Notes:</b><br>
+<b>{i18n}Notes:{/i18n}</b><br>
 <table>
 <tr><td valign=top>*<td>{i18n}Not all documents contain text. This will explain why the indexing coverage percentage my vary.{/i18n}
 <tr><td valign=top>*<td>{i18n}The queue coverage indicates how many documents are in the queue in relation to the repository size.{/i18n}
