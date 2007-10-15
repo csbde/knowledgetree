@@ -48,7 +48,7 @@ class UpgradeFunctions {
             '3.0.3.7' => array('rebuildAllPermissions'),
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
-            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35'),
+            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35', 'registerIndexingTask', 'registerMigrationTask'),
             );
 
     var $descriptions = array(
@@ -71,6 +71,8 @@ class UpgradeFunctions {
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
             'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types',
             'updateConfigFile35' => 'Update the config.ini file for 3.5',
+            'registerIndexingTask'=>'Register the indexing task that indexes documents in the background',
+            'registerMigrationTask'=>'Register migration task that migrates old indexes into the new Lucene indexes',
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -913,14 +915,14 @@ class UpgradeFunctions {
     	$indexer->registerTypes();
     }
     // }}}
-    
+
     // {{{ updateConfigFile35
     function updateConfigFile35()
     {
         if(file_exists('../../config.ini')) {
 
             $ini = new Ini();
-            
+
             // Webservices Section
             $ini->addItem('webservice', 'uploadDirectory', '${varDirectory}/uploads');
             $ini->addItem('webservice', 'downloadUrl', '${rootUrl}/ktwebservice/download.php');
@@ -928,7 +930,7 @@ class UpgradeFunctions {
             $ini->addItem('webservice', 'downloadExpiry', '30');
             $ini->addItem('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
             $ini->addItem('webservice', 'validateSessionCount', 'false');
-           
+
             // externalBinary Section
             $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
             $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
@@ -983,6 +985,24 @@ class UpgradeFunctions {
         }
     }
     // }}}
+
+    function registerIndexingTask()
+    {
+		$oScheduler = new scheduler('Indexing');
+		$oScheduler->setScriptPath(KT_DIR . '/search2/indexing/bin/cronIndexer.php');
+		$oScheduler->setFrequency('5mins');
+		$oScheduler->setFirstRunTime(date('Y-m-d H:00:00'));
+		$oScheduler->registerTask();
+    }
+
+    function registerMigrationTask()
+    {
+		$oScheduler = new scheduler('Index Migration');
+		$oScheduler->setScriptPath(KT_DIR . '/search2/indexing/bin/cronMigration.php');
+		$oScheduler->setFrequency('5mins');
+		$oScheduler->setFirstRunTime(date('Y-m-d H:00:00'));
+		$oScheduler->registerTask();
+    }
 }
 
 ?>

@@ -37,14 +37,16 @@ class KTUtil {
 	const MIN_IN_SECS = 60;
 	const HOUR_IN_SECS = 3600;
 	const DAY_IN_SECS = 86400;
+	const KB = 1024;
+	const MB = 1048576;
+	const GB = 1073741824;
 
-	static function computePeriodToDate($start, $suffix = null, $returnArray=false)
+	static function computePeriod($diff, $suffix = null, $returnArray=false)
 	{
 		if (is_null($suffix))
 		{
 			$suffix = _kt('ago');
 		}
-		$diff = time() - $start;
 
 		$days = floor($diff / KTUtil::DAY_IN_SECS);
 		$hours = floor(($diff - $days * KTUtil::DAY_IN_SECS) / KTUtil::HOUR_IN_SECS);
@@ -70,6 +72,33 @@ class KTUtil {
 		}
 
 		return $str;
+	}
+
+	static function computePeriodToDate($start, $suffix = null, $returnArray=false)
+	{
+		return KTUtil::computePeriodToDate(time() - $start, $suffix, $returnArray);
+	}
+
+	static function filesizeToString($filesize)
+	{
+		$filesize = (int) $filesize;
+
+		if ($filesize >= KTutil::GB)
+		{
+			return number_format($filesize /  KTutil::GB, 2, '.',',') . _kt('GB');
+		}
+		elseif ($filesize >= KTutil::MB)
+		{
+			return number_format($filesize /  KTutil::MB, 2, '.',',') . _kt('MB');
+		}
+		elseif ($filesize >= KTutil::KB)
+		{
+			return number_format($filesize /  KTutil::KB, 2, '.',',') . _kt('KB');
+		}
+		else
+		{
+			return $filesize . _kt('b');
+		}
 	}
 
     function extractGPC () {

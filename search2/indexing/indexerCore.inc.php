@@ -525,6 +525,55 @@ abstract class Indexer
 		}
     }
 
+    private function doesDiagnosticsPass($simple=false)
+    {
+		global $default;
+
+    	$config =& KTConfig::getSingleton();
+		// create a index log lock file in case there are errors, and we don't need to log them forever!
+    	// this function will create the lockfile if an error is detected. It will be removed as soon
+    	// as the problems with the indexer are removed.
+    	$lockFile = $config->get('cache/cacheDirectory') . '/index.log.lock';
+
+    	$diagnosis = $this->diagnose();
+    	if (!is_null($diagnosis))
+    	{
+			if (!is_file($lockFile))
+			{
+				$default->log->error(_kt('Indexer problem: ') . $diagnosis);
+			}
+			touch($lockFile);
+    		return false;
+    	}
+
+    	if ($simple)
+    	{
+    		return true;
+    	}
+
+    	$diagnosis = $this->diagnoseExtractors();
+    	if (!empty($diagnosis))
+    	{
+    		if (!is_file($lockFile))
+			{
+	    		foreach($diagnosis as $diag)
+	    		{
+    				$default->log->error(sprintf(_kt('%s problem: %s'), $diag['name'],$diag['diagnosis']));
+    			}
+			}
+			touch($lockFile);
+    		return false;
+    	}
+
+    	if (is_file($lockFile))
+    	{
+    		$default->log->info(_kt('Issues with the indexer have been resolved!'));
+    		unlink($lockFile);
+    	}
+
+    	return true;
+    }
+
     /**
      * The main function that may be called repeatedly to index documents.
      *
@@ -534,8 +583,12 @@ abstract class Indexer
     {
     	global $default;
 
-		$config =& KTConfig::getSingleton();
+    	if (!$this->doesDiagnosticsPass())
+    	{
+    		return;
+    	}
 
+    	$config =& KTConfig::getSingleton();
     	if (is_null($max))
     	{
 			$max = $config->get('indexer/batchDocuments',20);
@@ -600,17 +653,28 @@ abstract class Indexer
         	$indexDocument = in_array($docinfo['what'], array('A','C'));
         	$indexDiscussion = in_array($docinfo['what'], array('A','D'));
 
-        	if ($this->debug) $default->log->debug("Indexing docid: $docId extension: '$extension' mimetype: '$mimeType' extractor: '$extractorClass'");
+        	if ($this->debug)
+        	{
+        		$default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
+        	}
 
         	if (empty($extractorClass))
         	{
-	        	if ($this->debug) $default->log->debug("No extractor for docid: $docId");
+	        	if ($this->debug)
+	        	{
+	        		$default->log->debug(sprintf(_kt("No extractor for docid: %d"),$docId));
+	        	}
 
         		Indexer::unqueueDocument($docId);
         		continue;
         	}
 
-        	if ($this->debug) print "Processing document $docId.\n";
+        	if ($this->debug)
+        	{
+        		$default->log->info(sprintf(_kt("Processing document %d.\n"),$docId));
+        	}
+
+        	$removeFromQueue = true;
         	if ($indexDocument)
         	{
         		if (array_key_exists($extractorClass, $extractorCache))
@@ -623,7 +687,7 @@ abstract class Indexer
 
         			if (!class_exists($extractorClass))
         			{
-        				$default->log->error("indexDocuments: extractor '$extractorClass' does not exist.");
+        				$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' does not exist."),$extractorClass));
 						continue;
         			}
 
@@ -632,13 +696,13 @@ abstract class Indexer
 
         		if (is_null($extractor))
         		{
-        			$default->log->error("indexDocuments: extractor '$extractorClass' not resolved - it is null.");
+        			$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' not resolved - it is null."),$extractorClass));
         			continue;
         		}
 
 				if (!($extractor instanceof DocumentExtractor))
 				{
-        			$default->log->error("indexDocuments: extractor '$extractorClass' is not a document extractor class.");
+        			$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' is not a document extractor class."),$extractorClass));
 					continue;
 				}
 
@@ -648,7 +712,7 @@ abstract class Indexer
 
         		if (empty($sourceFile) || !is_file($sourceFile))
         		{
-        			$default->log->error("indexDocuments: source file '$sourceFile' for document $docId does not exist.");
+        			$default->log->error(sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId));
         			Indexer::unqueueDocument($docId);
         			continue;
         		}
@@ -659,14 +723,14 @@ abstract class Indexer
         			$result = @copy($sourceFile, $intermediate);
         			if ($result === false)
         			{
-        				$default->log->error("Could not create intermediate file from document $docId");
+        				$default->log->error(sprintf(_kt("Could not create intermediate file from document %d"),$docId));
         				// problem. lets try again later. probably permission related. log the issue.
         				continue;
         			}
         			$sourceFile = $intermediate;
         		}
 
-        		$targetFile = tempnam($tempPath, 'ktindexer') . '.txt';
+        		$targetFile = tempnam($tempPath, 'ktindexer');
 
         		$extractor->setSourceFile($sourceFile);
         		$extractor->setMimeType($mimeType);
@@ -675,7 +739,10 @@ abstract class Indexer
         		$extractor->setDocument($document);
         		$extractor->setIndexingStatus(null);
         		$extractor->setExtractionStatus(null);
-        		if ($this->debug) $default->log->debug("Extra Info docid: $docId Source File: '$sourceFile' Target File: '$targetFile'");
+        		if ($this->debug)
+        		{
+        			$default->log->debug(sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile));
+        		}
 
         		$this->executeHook($extractor, 'pre_extract');
 				$this->executeHook($extractor, 'pre_extract', $mimeType);
@@ -691,7 +758,10 @@ abstract class Indexer
         			{
         				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
 
-        				if (!$indexStatus) $default->log->error("Problem indexing document $docId");
+        				if (!$indexStatus)
+        				{
+        					$default->log->error(sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId));
+        				}
 
         				$extractor->setIndexingStatus($indexStatus);
         			}
@@ -699,13 +769,16 @@ abstract class Indexer
         			{
         				if (!$this->filterText($targetFile))
         				{
-        					$default->log->error("Problem filtering document $docId");
+        					$default->log->error(sprintf(_kt("Problem filtering document %d"),$docId));
         				}
 						else
 						{
 							$indexStatus = $this->indexDocument($docId, $targetFile, $title, $version);
 
-							if (!$indexStatus) $default->log->error("Problem indexing document $docId");
+							if (!$indexStatus)
+							{
+								$default->log->error(sprintf(_kt("Problem indexing document %d - indexDocument"),$docId));
+							}
 
         					$extractor->setIndexingStatus($indexStatus);
 						}
@@ -717,7 +790,7 @@ abstract class Indexer
         		else
         		{
         			$extractor->setExtractionStatus(false);
-        			$default->log->error("Could not extract contents from document $docId");
+        			$default->log->error(sprintf(_kt("Could not extract contents from document %d"),$docId));
         		}
 
 				$this->executeHook($extractor, 'post_extract', $mimeType);
@@ -729,17 +802,147 @@ abstract class Indexer
         		}
 
         		@unlink($targetFile);
+        		$removeFromQueue = $indexStatus;
         	}
         	else
         	{
 				$this->indexDiscussion($docId);
         	}
 
-			Indexer::unqueueDocument($docId);
-			if ($this->debug) $default->log->debug("Done indexing docid: $docId");
+        	if ($removeFromQueue)
+        	{
+        		Indexer::unqueueDocument($docId);
+        	}
+			if ($this->debug)
+			{
+				$default->log->debug(sprintf(_kt("Done indexing docid: %d"),$docId));
+			}
 
         }
-        if ($this->debug) print "Done.\n";
+        if ($this->debug)
+        {
+        	$default->log->debug(_kt("Done."));
+        }
+    }
+
+    public function migrateDocuments($max=null)
+    {
+    	if (!$this->doesDiagnosticsPass(true))
+    	{
+    		return;
+    	}
+
+    	$config =& KTConfig::getSingleton();
+    	if (is_null($max))
+    	{
+			$max = $config->get('indexer/batchMigrateDocument',500);
+    	}
+
+		global $default;
+
+    	$lockFile = $config->get('cache/cacheDirectory') . '/migration.lock';
+    	if (is_file($lockFile))
+    	{
+    		$default->log->info(_kt('migrateDocuments: migration lockfile detected. exiting.'));
+    		return;
+    	}
+    	touch($lockFile);
+    	$default->log->info(_kt('migrateDocuments: starting!'));
+
+    	$startTime = KTUtil::getSystemSetting('migrationStarted');
+    	if (is_null($startTime))
+    	{
+    		KTUtil::setSystemSetting('migrationStarted', time());
+    	}
+
+    	$maxLoops = 5;
+
+    	$max = floor($max / $maxLoops);
+
+		$start =KTUtil::getBenchmarkTime();
+		$noDocs = false;
+		$numDocs = 0;
+
+    	for($loop=0;$loop<$maxLoops;$loop++)
+    	{
+
+    		$sql = "SELECT
+        			document_id, document_text
+				FROM
+					document_text
+				ORDER BY document_id
+ 					LIMIT $max";
+    		$result = DBUtil::getResultArray($sql);
+    		if (PEAR::isError($result))
+    		{
+    			break;
+    		}
+
+    		$docs = count($result);
+    		if ($docs == 0)
+    		{
+    			$noDocs = true;
+    			break;
+    		}
+    		$numDocs += $docs;
+
+    		foreach($result as $docinfo)
+    		{
+    			$docId = $docinfo['document_id'];
+
+    			$document = Document::get($docId);
+    			if (PEAR::isError($document) || is_null($document))
+    			{
+    				$sql = "DELETE FROM document_text WHERE document_id=$docId";
+    				DBUtil::runQuery($sql);
+    				$default->log->error(sprintf(_kt('migrateDocuments: Could not get document %d\'s document! Removing content!',$docId)));
+    				continue;
+    			}
+
+    			$version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
+
+    			$targetFile = tempnam($tempPath, 'ktindexer');
+
+    			if (file_put_contents($targetFile, $docinfo['document_text']) === false)
+    			{
+    				$default->log->error(sprintf(_kt('migrateDocuments: Cannot write to \'%s\' for document id %d'), $targetFile, $docId));
+    				continue;
+    			}
+    			// free memory asap ;)
+    			unset($docinfo['document_text']);
+
+    			$title = $document->getName();
+
+    			$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
+
+    			if ($indexStatus)
+    			{
+    				$sql = "DELETE FROM document_text WHERE document_id=$docId";
+    				DBUtil::runQuery($sql);
+    			}
+    			else
+    			{
+    				$default->log->error(sprintf(_kt("migrateDocuments: Problem indexing document %d"), $docId));
+    			}
+
+    			@unlink($targetFile);
+    		}
+    	}
+
+    	@unlink($lockFile);
+
+    	$time = KTUtil::getBenchmarkTime() - $start;
+
+    	KTUtil::setSystemSetting('migrationTime', KTUtil::getSystemSetting('migrationTime',0) + $time);
+    	KTUtil::setSystemSetting('migratedDocuments', KTUtil::getSystemSetting('migratedDocuments',0) + $numDocs);
+
+    	$default->log->info(sprintf(_kt('migrateDocuments: done in %d seconds!'), $time));
+    	if ($noDocs)
+    	{
+	    	$default->log->info(_kt('migrateDocuments: Completed!'));
+	    	KTUtil::setSystemSetting('migrationComplete', true);
+    	}
+
     }
 
     /**
