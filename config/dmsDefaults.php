@@ -31,6 +31,14 @@
  *
  */
 
+if (defined('DMS_DEFAULTS_INCLUDED'))
+{
+	return;
+}
+
+define('DMS_DEFAULTS_INCLUDED',1);
+
+
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -457,10 +465,12 @@ class KTInit {
 
             $oKTConfig->setdefaultns('indexer', 'coreClass', 'PHPLuceneIndexer');
             $oKTConfig->setdefaultns('indexer', 'batchDocuments', 20);
+            $oKTConfig->setdefaultns('indexer', 'batchMigrateDocuments', 500);
             $oKTConfig->setdefaultns('indexer', 'indexingBasePath', '${searchBasePath}/indexing');
             $oKTConfig->setdefaultns('indexer', 'luceneDirectory', '${varDirectory}/indexes');
             $oKTConfig->setdefaultns('indexer', 'extractorPath', '${indexingBasePath}/extractors');
             $oKTConfig->setdefaultns('indexer', 'extractorHookPath', '${indexingBasePath}/extractorHooks');
+			$oKTConfig->setdefaultns('indexer', 'javaLuceneURL', 'http://localhost:8875');
 
             $oKTConfig->setdefaultns('openoffice', 'host', 'localhost');
             $oKTConfig->setdefaultns('openoffice', 'port', 8100);
