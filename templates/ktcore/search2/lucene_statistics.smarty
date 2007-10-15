@@ -1,26 +1,26 @@
 <P>
-This dashlet provides some basic statistics on the Lucene index.
+{i18n}This dashlet provides some basic statistics on the Lucene index.{/i18n}
 <P>
 
 <table>
-<tr><td>Last optimisation date:</td><td>{$stats.optimisationDate}</td></tr>
-<tr><td>Period since last optimisation:</td><td>{$stats.optimisationPeriod}</td></tr>
-<tr><td>Last indexing date:</td><td>{$stats.indexingDate}</td></tr>
-<tr><td>Period since last indexing:</td><td>{$stats.indexingPeriod}</td></tr>
-<tr><td>Total documents in repository:</td><td>{$stats.docsInRepository}</td></tr>
-<tr><td>Documents in index:</td><td>{$stats.docsInIndex}</td></tr>
-<tr><td>Documents in indexing queue:</td><td>{$stats.docsInQueue}</td></tr>
-<tr><td>Indexing coverage:</td><td>{$stats.indexingCoverage}</td></tr>
-<tr><td>Queue coverage:</td><td>{$stats.queueCoverage}</td></tr>
+<tr><td>{i18n}Last optimisation date:{/i18n}</td><td>{$stats.optimisationDate}</td></tr>
+<tr><td>{i18n}Period since last optimisation:{/i18n}</td><td>{$stats.optimisationPeriod}</td></tr>
+<tr><td>{i18n}Last indexing date:{/i18n}</td><td>{$stats.indexingDate}</td></tr>
+<tr><td>{i18n}Period since last indexing:{/i18n}</td><td>{$stats.indexingPeriod}</td></tr>
+<tr><td>{i18n}Total documents in repository:{/i18n}</td><td>{$stats.docsInRepository}</td></tr>
+<tr><td>{i18n}Documents in index:{/i18n}</td><td>{$stats.docsInIndex}</td></tr>
+<tr><td>{i18n}Documents in indexing queue:{/i18n}</td><td>{$stats.docsInQueue}</td></tr>
+<tr><td>{i18n}Indexing coverage:{/i18n}</td><td>{$stats.indexingCoverage}</td></tr>
+<tr><td>{i18n}Queue coverage:{/i18n}</td><td>{$stats.queueCoverage}</td></tr>
 </table>
-<b>Notes:</b><br>
+<b>{i18n}Notes:</b><br>
 <table>
-<tr><td valign=top>*<td>Not all documents contain text. This will explain why the indexing coverage percentage my vary.
-<tr><td valign=top>*<td>The queue coverage indicates how many documents are in the queue in relation to the repository size.
+<tr><td valign=top>*<td>{i18n}Not all documents contain text. This will explain why the indexing coverage percentage my vary.{/i18n}
+<tr><td valign=top>*<td>{i18n}The queue coverage indicates how many documents are in the queue in relation to the repository size.{/i18n}
 {if $stats.noOptimisation}
-<tr><td valign=top>*<td><i>To get the best performance out of Lucene, the indexes must be optimised periodically. This is managed by a background task.
+<tr><td valign=top>*<td><i>{i18n}To get the best performance out of Lucene, the indexes must be optimised periodically. This is managed by a background task.{/i18n}
 {/if}
 </table>
 <table width="100%">
-<tr><td colspan=2 align=right><a href="/search2.php?action=refreshLuceneStats" align=right>Refresh</a></tr>
+<tr><td colspan=2 align=right><a href="/search2.php?action=refreshLuceneStats" align=right>{i18n}Refresh{/i18n}</a></tr>
 </table>
