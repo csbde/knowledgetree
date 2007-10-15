@@ -48,7 +48,7 @@ class UpgradeFunctions {
             '3.0.3.7' => array('rebuildAllPermissions'),
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
-            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35', 'registerIndexingTask', 'registerMigrationTask'),
+            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35', 'registerIndexingTasks'),
             );
 
     var $descriptions = array(
@@ -71,8 +71,7 @@ class UpgradeFunctions {
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
             'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types',
             'updateConfigFile35' => 'Update the config.ini file for 3.5',
-            'registerIndexingTask'=>'Register the indexing task that indexes documents in the background',
-            'registerMigrationTask'=>'Register migration task that migrates old indexes into the new Lucene indexes',
+            'registerIndexingTasks'=>'Register the required indexing background tasks'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -986,21 +985,27 @@ class UpgradeFunctions {
     }
     // }}}
 
-    function registerIndexingTask()
+    /**
+     * Registers the functions that are required by the indexing sub-system.
+     *
+     */
+    function registerIndexingTasks()
     {
-		$oScheduler = new scheduler('Indexing');
-		$oScheduler->setScriptPath(KT_DIR . '/search2/indexing/bin/cronIndexer.php');
-		$oScheduler->setFrequency('5mins');
-		$oScheduler->setFirstRunTime(date('Y-m-d H:00:00'));
-		$oScheduler->registerTask();
-    }
+    	$ext = OS_WINDOWS?'bat':'sh';
 
-    function registerMigrationTask()
-    {
-		$oScheduler = new scheduler('Index Migration');
-		$oScheduler->setScriptPath(KT_DIR . '/search2/indexing/bin/cronMigration.php');
+		$oScheduler = new scheduler('Indexing');
+		$oScheduler->setScriptPath(KT_DIR . '/bin/indexingTask.' . $ext);
 		$oScheduler->setFrequency('5mins');
-		$oScheduler->setFirstRunTime(date('Y-m-d H:00:00'));
+		$oScheduler->registerTask();
+
+		$oScheduler = new scheduler('Index Migration');
+		$oScheduler->setScriptPath(KT_DIR . '/bin/indexMigrationTask.' . $ext);
+		$oScheduler->setFrequency('5mins');
+		$oScheduler->registerTask();
+
+		$oScheduler = new scheduler('Index Optimisation');
+		$oScheduler->setScriptPath(KT_DIR . '/bin/optimizeIndexes.' . $ext);
+		$oScheduler->setFrequency('weekly');
 		$oScheduler->registerTask();
     }
 }
