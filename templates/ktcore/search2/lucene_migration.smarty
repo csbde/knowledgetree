@@ -1,18 +1,18 @@
 <P>
-Migration to using the new search requires text to be moved from the database full text indexes into the Lucene indexes. This may take some time depending
-on the size of the repository. For this reason, the process is a background task.
+{i18n}Migration to using the new search requires text to be moved from the database full text indexes into the Lucene indexes. This may take some time depending
+on the size of the repository. For this reason, the process is a background task.{/i18n}
 <P>
 
 <table>
-<tr><td>Documents processed in a single migration run:</td><td>{$batchDocuments}</td></tr>
-<tr><td>Frequency at which migration batch task runs:</td><td>{$batchPeriod}</td></tr>
-<tr><td>Migration process started on:</td><td>{$migrationStart}</td></tr>
-<tr><td>Migration process has taken:</td><td>{$migrationPeriod}</td></tr>
-<tr><td>Total documents migrated:</td><td>{$migratedDocuments}</td></tr>
-<tr><td>Total documents to be migrated:</td><td>{$migratingDocuments}</td></tr>
-<tr><td>Estimated completion time:</td><td>{$estimatedTime}</td></tr>
-<tr><td>Estimated migration time remaining:</td><td>{$estimatedPeriod}</td></tr>
+<tr><td>{i18n}Documents processed in a single migration run:{/i18n}</td><td>{$batchDocuments}</td></tr>
+<tr><td>{i18n}Frequency at which migration batch task runs:{/i18n}</td><td>{$batchPeriod}</td></tr>
+<tr><td>{i18n}Migration process started on:{/i18n}</td><td>{$migrationStart}</td></tr>
+<tr><td>{i18n}Migration process has taken:{/i18n}</td><td>{$migrationPeriod}</td></tr>
+<tr><td>{i18n}Total documents migrated:{/i18n}</td><td>{$migratedDocuments}</td></tr>
+<tr><td>{i18n}Total documents to be migrated:{/i18n}</td><td>{$migratingDocuments}</td></tr>
+<tr><td>{i18n}Estimated completion time:{/i18n}</td><td>{$estimatedTime}</td></tr>
+<tr><td>{i18n}Estimated migration time remaining:{/i18n}</td><td>{$estimatedPeriod}</td></tr>
 </table>
-<B>Note:</b> <i>Search results will not be accurate until the migration process is complete.</i>
-<br>This dashlet will disappear when the migration process is complete.
+<B>{i18n}Note:</b> <i>Search results will not be accurate until the migration process is complete.{/i18n}</i>
+<br>{i18n}This dashlet will disappear when the migration process is complete.{/i18n}
 <br>
