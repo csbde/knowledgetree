@@ -30,6 +30,7 @@
  */
 
 require_once(KT_LIB_DIR . '/upgrades/Ini.inc.php');
+require_once(KT_DIR . '/plugins/ktcore/scheduler/scheduler.php');
 
 class UpgradeFunctions {
     var $upgrades = array(
