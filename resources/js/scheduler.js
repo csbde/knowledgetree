@@ -55,6 +55,7 @@ var saveFreq = function(sUrl) {
     var freqForm = document.getElementById('changefreq');
     var fSelect = document.getElementById('frequency');
     var freq = fSelect.options[fSelect.selectedIndex].value;
+    var freqLabel = fSelect.options[fSelect.selectedIndex].label;
     
     //<!-- Work out new runtime using the frequency -->
     var prevNum = new Number(prevInput);
@@ -63,7 +64,7 @@ var saveFreq = function(sUrl) {
     
     var callback = {
         success: function(o) {
-            freqDiv.innerHTML = freq;
+            freqDiv.innerHTML = freqLabel;
             runDiv.innerHTML = displayDate;
         }
     }

@@ -1259,17 +1259,16 @@ CREATE TABLE `saved_searches` (
 
 CREATE TABLE `scheduler_tasks` (
   `id` int(11) NOT NULL default '0',
-  `task` varchar(50) default NULL,
+  `task` varchar(50) NOT NULL default '',
   `script_url` varchar(255) default NULL,
   `script_params` varchar(255) default NULL,
-  `on_completion` varchar(255) default NULL,
-  `is_background` tinyint(4) NOT NULL default '0',
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25) default NULL,
   `run_time` datetime default NULL,
   `previous_run_time` datetime default NULL,
   `run_duration` float default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `task` (`task`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

@@ -41,8 +41,6 @@ class schedulerEntity extends KTEntity
     var $sTask;
     var $sScript_url;
     var $sScript_params;
-    var $sOn_completion;
-    var $bIs_background;
     var $bIs_complete;
     var $iFrequency;
     var $iRun_time;
@@ -54,15 +52,13 @@ class schedulerEntity extends KTEntity
        'sTask' => 'task',
        'sScript_url' => 'script_url',
        'sScript_params' => 'script_params',
-       'bIs_background' => 'is_background',
        'bIs_complete' => 'is_complete',
-       'sOn_completion' => 'on_completion',
        'iFrequency' => 'frequency',
        'iRun_time' => 'run_time',
        'iPrevious_run_time' => 'previous_run_time',
        'iRun_duration' => 'run_duration'
    );
-
+   
    function _table () {
        return KTUtil::getTableName('scheduler_tasks');
    }
@@ -74,10 +70,23 @@ class schedulerEntity extends KTEntity
     function getTask() { return $this->sTask; }
     function getUrl() { return $this->sScript_url; }
     function getParams() { return $this->sScript_params; }
-    function getOnCompletion() { return $this->sOn_completion; }
-    function getIsBackground() { return $this->bIs_background; }
     function getIsComplete() { return $this->bIs_complete; }
     function getFrequency() { return $this->iFrequency; }
+    
+    function getFrequencyByLang() { 
+         $aFrequencies = array(
+              'monthly' => _kt('monthly'), 
+              'weekly' => _kt('weekly'), 
+              'daily' => _kt('daily'), 
+              'hourly' => _kt('hourly'),
+              'half_hourly' => _kt('every half hour'),
+              'quarter_hourly' => _kt('every quarter hour'),
+              '10mins' => _kt('every 10 minutes'),
+              '5mins' => _kt('every 5 minutes'),
+         );
+        return $aFrequencies[$this->iFrequency]; 
+    }
+    
     function getRunTime() { return $this->iRun_time; }
     
     function getPrevious($bFormat = FALSE) { 
@@ -95,8 +104,6 @@ class schedulerEntity extends KTEntity
     function setTask($sValue) { return $this->sTask = $sValue; }
     function setUrl($sValue) { return $this->sScript_url = $sValue; }
     function setParams($sValue) { return $this->sScript_params = $sValue; }
-    function setOnCompletion($sValue) { return $this->sOn_completion = $sValue; }
-    function setIsBackground($sValue) { return $this->bIs_background = $sValue; }
     function setIsComplete($sValue) { return $this->bIs_complete = $sValue; }
     function setFrequency($sValue) { return $this->iFrequency = $sValue; }
     function setRunTime($sValue) { return $this->iRun_time = date('Y-m-d H:i', $sValue); }
@@ -151,15 +158,8 @@ class schedulerEntity extends KTEntity
     }
 
     // STATIC
-    function &getByNamespace($sName) {
-        $aOptions = array('fullselect' => false, 'cache' => 'getByNamespace');
-        return KTEntityUtil::getBy('schedulerEntity', 'namespace', $sName, $aOptions);
-    }
-
-    // STATIC
-    function &getAvailable() {
-        $aOptions = array('multi' => true);
-        return KTEntityUtil::getBy('schedulerEntity', 'unavailable', false, $aOptions);
+    function &getByTaskName($sName) {
+        return KTEntityUtil::getBy('schedulerEntity', 'task', $sName);
     }
     
     function clearAllCaches() {
