@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -34,15 +34,15 @@ class DiscussionThread extends KTEntity{
     var $_bUsePearError = true;
 
 	var $iDocumentId;
-	var $iFirstCommentId = -1;
-	var $iLastCommentId = -1;
+	var $iFirstCommentId = null;
+	var $iLastCommentId = null;
 	var $iNumberOfViews = 0;
 	var $iNumberOfReplies = 0;
 	var $iState = 0;
 	var $iCloseMetadataVersion = 0;
 	var $sCloseReason = "";
 	var $iCreatorId;
-		
+
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'iDocumentId' => 'document_id',
@@ -55,7 +55,7 @@ class DiscussionThread extends KTEntity{
 		'sCloseReason' => 'close_reason',
         'iCreatorId' => 'creator_id',
     );
-	
+
     /**
      * DiscussionThread Constructor
      */
@@ -82,21 +82,21 @@ class DiscussionThread extends KTEntity{
     function incrementNumberOfViews() { $this->iNumberOfViews += 1; }
     function getNumberOfReplies(){ return $this->iNumberOfReplies; }
     function incrementNumberOfReplies(){ $this->iNumberOfReplies += 1; }
-    function setNumberOfReplies($iValue){ $this->iNumberOfReplies = $iValue; }    
+    function setNumberOfReplies($iValue){ $this->iNumberOfReplies = $iValue; }
     function getState(){ return $this->iState; }
     function setState($iValue){ $this->iState = $iValue; }
     function getCloseMetadataVersion(){ return $this->iCloseMetadataVersion; }
     function setCloseMetadataVersion($iValue){ $this->iCloseMetadataVersion = $iValue; }
     function getCloseReason(){ return $this->sCloseReason; }
     function setCloseReason($sValue){ $this->sCloseReason = $sValue; }
-	
-	
+
+
     /**
      * Get a All commentId's seperated by a comma ","
 	 */
     function getAllCommentId() {
     	global $default;
-    	
+
     	$sql = $default->db;
         $aQuery = array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ? ORDER BY id",/*ok*/
             $this->iDocumentId);
@@ -104,28 +104,28 @@ class DiscussionThread extends KTEntity{
         if ($result) {
         	$sql->next_record();
         	$iThreadId = $sql->f("id");
-        
+
             $aQuery = array("SELECT id FROM $default->discussion_comments_table WHERE thread_id = ? ORDER BY date DESC",/*ok*/
                 $iThreadId);
 	        $result = $sql->query($aQuery);
-	        
-	        if ($result) {           
+
+	        if ($result) {
 	            while ($sql->next_record()) {
 	                if ($sql->f("id") > 0) {
-	                	$sAllCommentId .= $sql->f("id") . ",";                		
+	                	$sAllCommentId .= $sql->f("id") . ",";
 	                } else {
-	                	//Id not valid 
-	                }                
+	                	//Id not valid
+	                }
 	            }
-	            return $sAllCommentId ;            
+	            return $sAllCommentId ;
 	        }
 	        return false;
         } else {
          // No Thread for document
          return false;
-        }    	
-    }    
-    
+        }
+    }
+
     /**
      * Static function
      * Get a list of DiscussionThreads
@@ -137,15 +137,15 @@ class DiscussionThread extends KTEntity{
     function getList($sWhereClause = null) {
         return KTEntityUtil::getList(DiscussionThread::_table(), 'DiscussionThread', $sWhereClause);
     }
-	     
+
     function getThreadIdforDoc($iDocumentId){
-    	global $default;	
+    	global $default;
 		$sql = $default->db;
         $result = $sql->query(array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ?", $iDocumentId));/*ok*/
-        if ($result) {        
+        if ($result) {
             if ($sql->next_record()) {
                 if ($sql->f("id") > 0) {
-                	return $sql->f("id");	
+                	return $sql->f("id");
                 } else {
                 	return "false";
                 }
@@ -154,8 +154,8 @@ class DiscussionThread extends KTEntity{
         }
         return false;
     }
-    
-    
+
+
     function &get($iId) {
         return KTEntityUtil::get('DiscussionThread', $iId);
     }
