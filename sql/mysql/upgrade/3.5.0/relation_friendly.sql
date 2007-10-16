@@ -19,3 +19,5 @@ alter table folder_transactions change user_id user_id int null;
 alter table folders change parent_id parent_id int null;
 update documents set owner_id=null where owner_id=0;
 update folders set parent_id=null where parent_id=0;
+alter table discussion_threads change first_comment_id first_comment_id int null;
+alter table discussion_threads change last_comment_id last_comment_id int null;
