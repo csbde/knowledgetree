@@ -3,13 +3,13 @@ CREATE TABLE `scheduler_tasks` (
   `task` varchar(50),
   `script_url` varchar(255),
   `script_params` varchar(255),
-  `on_completion` varchar(255),
-  `is_background` tinyint(4) NOT NULL default '0',
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25),
   `run_time` datetime,
   `previous_run_time` datetime,
-  `run_duration` float
+  `run_duration` float,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `task` (`task`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `zseq_scheduler_tasks` (

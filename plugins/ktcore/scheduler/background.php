@@ -40,14 +40,14 @@
 * $bg->setCallbackFunction($bg, 'callBackFunc');
 *
 */
-class background
+class Background
 {
     var $connection = FALSE;
     var $address = '';
     var $subject = 'Task completed';
     var $message = '';
     
-    function background() {
+    function Background() {
     }
     
     /**
