@@ -994,19 +994,29 @@ class UpgradeFunctions {
     {
     	$ext = OS_WINDOWS?'bat':'sh';
 
-		$oScheduler = new scheduler('Indexing');
+    	$year = date('Y');
+    	$mon = date('m');
+    	$day = date('d');
+    	$hour = date('H');
+    	$min = date('i');
+    	$min = floor( $min / 5) * 5;
+
+		$oScheduler = new Scheduler('Indexing');
 		$oScheduler->setScriptPath(KT_DIR . '/bin/indexingTask.' . $ext);
 		$oScheduler->setFrequency('5mins');
+		$oScheduler->setFirstRunTime(date('Y-m-d H:i',mktime($hour, $min, 0, $mon, $day, $year)));
 		$oScheduler->registerTask();
 
-		$oScheduler = new scheduler('Index Migration');
+		$oScheduler = new Scheduler('Index Migration');
 		$oScheduler->setScriptPath(KT_DIR . '/bin/indexMigrationTask.' . $ext);
 		$oScheduler->setFrequency('5mins');
+		$oScheduler->setFirstRunTime(date('Y-m-d H:i',mktime($hour, $min, 0, $mon, $day, $year)));
 		$oScheduler->registerTask();
 
-		$oScheduler = new scheduler('Index Optimisation');
+		$oScheduler = new Scheduler('Index Optimisation');
 		$oScheduler->setScriptPath(KT_DIR . '/bin/optimizeIndexes.' . $ext);
 		$oScheduler->setFrequency('weekly');
+		$oScheduler->setFirstRunTime(date('Y-m-d 00:00'));
 		$oScheduler->registerTask();
     }
 }

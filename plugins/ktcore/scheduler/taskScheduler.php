@@ -61,7 +61,17 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         $aList = SchedulerEntity::getTaskList();
         $aHeadings = array('', _kt('Task'), _kt('Frequency'), _kt('Next run time'), _kt('Previous run time'), _kt('Time taken to complete'), '');
         
-        $aFrequencies = array('monthly', 'weekly', 'daily', 'hourly', 'half_hourly', 'quarter_hourly', '10mins', '5mins');
+        //$aFrequencies = array('monthly', 'weekly', 'daily', 'hourly', 'half_hourly', 'quarter_hourly', '10mins', '5mins');
+        $aFrequencies = array(
+            'monthly' => _kt('monthly'), 
+            'weekly' => _kt('weekly'), 
+            'daily' => _kt('daily'), 
+            'hourly' => _kt('hourly'),
+            'half_hourly' => _kt('every half hour'),
+            'quarter_hourly' => _kt('every quarter hour'),
+            '10mins' => _kt('every 10 minutes'),
+            '5mins' => _kt('every 5 minutes'),
+        );
         
         $aTemplateData = array( 
               'context' => $this, 

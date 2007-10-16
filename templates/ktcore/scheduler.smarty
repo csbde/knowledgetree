@@ -35,7 +35,7 @@
         </td>
         <td id="tblCol"><a href="#" onclick="javascript: showFrequencyDiv('{$task->getId()}');">
             <div id="div{$task->getId()}">
-               {$task->getFrequency()}
+               {$task->getFrequencyByLang()}
             </div></a>
         </td>
         <td>
@@ -72,10 +72,10 @@
     <form name="changefreq" id="changefreq" method="post" action="{$sUrl}">
         
         <select name="frequency" id="frequency">
-            {html_options values=$aFrequencies output=$aFrequencies}
+            {html_options options=$aFrequencies}
         </select>
         <input type="hidden" name="fId" id="fId" value="" />
-        <input type="button" name="save" id="save" onclick='javascript: saveFreq("{$sUrl}");' value="Save" />
+        <input type="button" name="save" id="save" onclick='javascript: saveFreq("{$sUrl}");' value="{i18n}Save{/i18n}" />
     </form>
 </div>
 

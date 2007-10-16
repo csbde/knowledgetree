@@ -40,7 +40,7 @@ class schedulerUtil extends KTUtil
     * Create a task
     * Parameters must be passed as an associative array => array('param1' => 'value1')
     */
-    function createTask($sTask, $sScript, $aParams, $sOnCompletion, $sFreq, $iStartTime = NULL){
+    function createTask($sTask, $sScript, $aParams, $sFreq, $iStartTime = NULL){
         // Path to scripts
         $ktPath = '/var/tasks/';
         $path = KT_DIR.$ktPath;
@@ -64,18 +64,16 @@ class schedulerUtil extends KTUtil
         fclose($fp);
         
         // Register task in the schedule
-        schedulerUtil::registerTask($sTask, $ktPath.$sFileName, $sParams, $sOnCompletion, $sFreq, $iStartTime);
+        schedulerUtil::registerTask($sTask, $ktPath.$sFileName, $sParams, $sFreq, $iStartTime);
     }
 
     
     /**
     * Method to register a task in the schedule
     */
-    function registerTask($sTask, $sUrl, $aParams, $sOnCompletion, $sFreq, $iStartTime = NULL) {
+    function registerTask($sTask, $sUrl, $aParams, $sFreq, $iStartTime = NULL) {
         // Run task on next iteration if no start time given
-        if(is_null($iStartTime) || empty($iStartTime)){
-            $iStartTime = time();
-        }
+        $iStartTime = (!empty($iStartTime)) ? strtotime($iStartTime) : time();
         
         // Calculate the next run time - get frequency
         $iNextTime = schedulerUtil::calculateRunTime($sFreq, $iStartTime);
@@ -92,7 +90,6 @@ class schedulerUtil extends KTUtil
         $aTask['task'] = $sTask;
         $aTask['script_url'] = $sUrl;
         $aTask['script_params'] = $sParams;
-        $aTask['on_completion'] = $sOnCompletion;
         $aTask['is_background'] = '0';
         $aTask['is_complete'] = '0';
         $aTask['frequency'] = $sFreq;
@@ -111,7 +108,7 @@ class schedulerUtil extends KTUtil
     /**
     * Method to register a background task to be run immediately
     */
-    function registerBackgroundTask($sTask, $sUrl, $aParams, $sOnCompletion) {
+    function registerBackgroundTask($sTask, $sUrl, $aParams) {
         
         // Convert parameter array to a string => param=value|param2=value2|param3=value3
         $sParams = schedulerUtil::convertParams($aParams);
@@ -121,9 +118,7 @@ class schedulerUtil extends KTUtil
         $aTask['task'] = $sTask;
         $aTask['script_url'] = $sUrl;
         $aTask['script_params'] = $sParams;
-        $aTask['on_completion'] = $sOnCompletion;
         $aTask['frequency'] = 'once';
-        $aTask['is_background'] = '1';
         $aTask['is_complete'] = '0';
         $aTask['run_time'] = date('Y-m-d H:i:s');
         $aTask['run_duration'] = '0';
@@ -137,14 +132,14 @@ class schedulerUtil extends KTUtil
     
     /**
     * Convert parameter array to a string
-    * For example: param=value|param2=value2|param3=value3
     */
     function convertParams($aParams) {
         if(is_array($aParams)){
             $sParams = '';
             foreach($aParams as $key => $value){
-                $sParams .= !empty($sParams) ? '|' : '';
-                $sParams .= $key.'='.$value;
+                //$sParams .= !empty($sParams) ? '|' : '';
+                //$sParams .= $key.'='.$value;
+                $sParams .= "{$key} {$value} ";
             }
         }else{
             $sParams = $aParams;
@@ -255,6 +250,21 @@ class schedulerUtil extends KTUtil
         }
         
         return array('lastruntime' => $sLastRunTime, 'nextruntime' => $sNextRunTime);
+    }
+    
+    /**
+    * Delete task by name
+    */
+    function deleteByName($sName) {
+        // Get task by name
+        $oTask = schedulerEntity::getByTaskName($sName);
+        
+        if(PEAR::isError($oTask)){
+            return $oTask;
+        }
+        
+        // Delete
+        return $oTask->delete();
     }
     
     /**

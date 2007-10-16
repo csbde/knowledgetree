@@ -34,7 +34,7 @@ require_once('schedulerUtil.php');
 /**
 * Class to add new tasks to the scheduler
 */
-class scheduler
+class Scheduler
 {
     var $sName = 'Task';
     var $sPath = '/var/tasks/';
@@ -45,7 +45,7 @@ class scheduler
     /**
     * Constructor function - set the name of the task
     */
-    function scheduler($sName) {
+    function Scheduler($sName) {
         $this->sName = $sName;
         $this->sFreq = 'daily';
         $this->iStartTime = time();
@@ -83,11 +83,11 @@ class scheduler
     
     /**
     * Set the time at which the task should first be run or if it is a once off, the time to run it. 
-    * Time should be in unix timestamp format.
+    * Time should be in datetime format.
     * By default the time is set to now. 
     */
     function setFirstRunTime($iTime) {
-        $this->iStartTime = !empty($iTime) ? $iTime : time();
+        $this->iStartTime = !empty($iTime) ? $iTime : date('Y-m-d H:i:s');
     }
     
     /**
@@ -125,7 +125,7 @@ class scheduler
     * Register the task in the scheduler
     */
     function registerTask(){
-        schedulerUtil::registerTask($this->sName, $this->sPath, $this->aParams, '', $this->sFreq, $this->iStartTime);
+        schedulerUtil::registerTask($this->sName, $this->sPath, $this->aParams, $this->sFreq, $this->iStartTime);
     }
 }
 ?>
