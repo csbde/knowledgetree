@@ -107,7 +107,8 @@ if(!empty($aList)){
     foreach($aList as $item){
         $aUpdate = array();
         $iEnd = 0; $iStart = 0; $iDuration = 0;
-        $sFreq = ''; $sParameters = '';
+        $sFreq = ''; $sParameters = ''; 
+        $retval = TRUE;
         
         // Set up start variables
         $sTask = $item['task'];
@@ -119,25 +120,31 @@ if(!empty($aList)){
         $iTime = time();
         $iStart = explode(' ', microtime());
         
-        // Set up parameters for use by the script
+        /* Set up parameters for use by the script
         $aParams = explode('|', $sParameters);
         
         foreach($aParams as $param){
             $aParam = explode('=', $param);
             if(!empty($aParam)){
                 $$aParam[0] = $aParam[1];
+                $sParamList .= "{$aParam[0]} {$aParam[1]} ";
             }
         }
+        */
+        
+        // Run the script as php
+        //include(KT_DIR . $sTaskUrl);
         
         // Run the script
-        include(KT_DIR . $sTaskUrl);
+        $file = KT_DIR . escapeshellcmd($sTaskUrl);
+        system("{$file} {$sParameters} >> /dev/null", $retval);
         
         // On completion - reset run time
         $iEnd = explode(' ', microtime());
         $iDuration = ($iEnd[1] + $iEnd[0]) - ($iStart[1] + $iStart[0]);
         $iDuration = round($iDuration, 3);
         
-        if($sFreq == 'once' || empty($sFreq)){
+        if(($sFreq == 'once' || empty($sFreq)) && $retval !== FALSE){
             // Set is_complete to true
             $aUpdate['is_complete'] = '1';
         }else{
