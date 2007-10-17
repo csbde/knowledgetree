@@ -132,7 +132,15 @@ class KTFolderAddDocumentAction extends KTFolderAction {
                 'test' => 'file',
                 'output' => 'file',
             )),
+            array('ktcore.validators.fileillegalchar', array(
+                'test' => 'file',
+                'output' => 'file',
+            )),
             array('ktcore.validators.string', array(
+                'test' => 'document_name',
+                'output' => 'document_name',
+            )),
+            array('ktcore.validators.illegal_char', array(
                 'test' => 'document_name',
                 'output' => 'document_name',
             )),

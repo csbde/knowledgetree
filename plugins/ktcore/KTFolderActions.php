@@ -96,7 +96,12 @@ class KTFolderAddFolderAction extends KTFolderAction {
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
                 'test' => 'name',
-                'output' => 'name')),
+                'output' => 'name',
+            )),
+            array('ktcore.validators.illegal_char', array(
+                'test' => 'name',
+                'output' => 'name',
+            )),
         ));
         
         return $oForm;

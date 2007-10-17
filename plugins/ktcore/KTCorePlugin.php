@@ -174,6 +174,7 @@ class KTCorePlugin extends KTPlugin {
 
         // validators
         $this->registerValidator('KTStringValidator', 'ktcore.validators.string', 'KTValidators.php');
+        $this->registerValidator('KTIllegalCharValidator', 'ktcore.validators.illegal_char', 'KTValidators.php');
         $this->registerValidator('KTEntityValidator', 'ktcore.validators.entity', 'KTValidators.php');
         $this->registerValidator('KTRequiredValidator', 'ktcore.validators.required', 'KTValidators.php');
         $this->registerValidator('KTEmailValidator', 'ktcore.validators.emailaddress', 'KTValidators.php');
@@ -183,6 +184,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerValidator('KTFieldsetValidator', 'ktcore.validators.fieldset', 'KTValidators.php');
         $this->registerValidator('KTFileValidator', 'ktcore.validators.file', 'KTValidators.php');
         $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');
+        $this->registerValidator('KTFileIllegalCharValidator', 'ktcore.validators.fileillegalchar', 'KTValidators.php');
         $this->registerValidator('KTArrayValidator', 'ktcore.validators.array', 'KTValidators.php');
 
         // criterion
