@@ -55,7 +55,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/rename');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('New folder name'), _kt('The name to which the current folder should be renamed.'), 'foldername', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New folder name'), _kt('The name to which the current folder should be renamed.'), 'foldername', $this->oFolder->getName(), $this->oPage, true);
         
         $oTemplate->setData(array(
             'context' => &$this,
@@ -72,6 +72,7 @@ class KTFolderRenameAction extends KTFolderAction {
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'foldername');
         $aErrorOptions['defaultmessage'] = _kt("No folder name given");
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
+        $sFolderName = $this->oValidator->validateIllegalCharacters($sFolderName, $aErrorOptions);
         $sOldFolderName = $this->oFolder->getName();
 
         if ($this->oFolder->getId() != 1) {

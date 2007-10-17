@@ -146,6 +146,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         if (empty($aConfig)) {
             $aConfig = array('serverport'=>389);
         }
+        
         $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
         $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         $fields = array();
@@ -210,6 +211,44 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         }
         $oSource->setConfig(serialize($aConfig));
         $res = $oSource->update();
+        
+        //force a commit here to keep any data entered into the fields
+        //when redirected to the do_editSourceProvider function above the $oSource object will
+        //now contain the information entered by the user.
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+        
+        $aErrorOptions = array(
+            'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $oSource->getId())),
+        );
+        $aErrorOptions['message'] = _kt("No server name provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'servername');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        $aErrorOptions['message'] = _kt("No Base DN provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'basedn');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        $aErrorOptions['message'] = _kt("No Search User provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchuser');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        $aErrorOptions['message'] = _kt("No Search Password provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchpassword');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        $aErrorOptions['message'] = _kt("No Search Attributes provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchattributes_nls');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        $aErrorOptions['message'] = _kt("No Object Classes provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'objectclasses_nls');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+        
+        
+        
+        
         $this->successRedirectTo('viewsource', _kt("Configuration updated"), 'source_id=' . $oSource->getId());
     }
     // }}}

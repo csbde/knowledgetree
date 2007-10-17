@@ -89,6 +89,53 @@ class KTStringValidator extends KTValidator {
     }
 }
 
+class KTIllegalCharValidator extends KTValidator {
+    var $sNamespace = 'ktcore.validators.illegal_char';
+    var $sWarning;
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        $sChars =  "\/*<>|%+':\"?";
+        $sWarning = sprintf(_kt('The value you have entered is invalid. The following characters are not allowed: %s'), $sChars);
+        $this->sWarning = KTUtil::arrayGet($aOptions, 'illegal_character_warning', $sWarning);
+            
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
+    }
+    
+    function validate($data) {
+        $results = array();
+        $errors = array();
+        
+        // very simple if we're required and not present, fail
+        // otherwise, its ok.
+        $val = KTUtil::arrayGet($data, $this->sInputVariable);
+        
+        if ($this->bTrim) {
+            $val = trim($val);
+        }
+
+        // illegal characters: \/ *<>|%+':"?
+        $pattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
+        // "'^[^:]+:(?:[0-9a-z\.\?&-_=\+\/]+[\.]{1})*(?:[0-9a-z\.\?&-_=\+\/]+\.)[a-z]{2,3}.*$'i"
+        if(preg_match($pattern, $val)){
+            $errors[$this->sBasename] = $this->sWarning;
+        }
+
+        if ($this->bProduceOutput) {
+            $results[$this->sOutputVariable] = $val;
+        }
+        
+        return array(
+            'errors' => $errors,
+            'results' => $results,
+        );
+    }
+}
+
 class KTEntityValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.entity';
     
@@ -424,6 +471,52 @@ class KTFileValidator extends KTValidator {
         }
         return array(
             'errors' => array(),
+            'results' => $results,
+        );
+    }
+}
+
+class KTFileIllegalCharValidator extends KTValidator {
+    var $sNamespace = 'ktcore.validators.fileillegalchar';
+    var $sWarning;
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        $sChars =  "\/*<>|%+':\"?";
+        $sWarning = sprintf(_kt('The name of the document selected is invalid. The following characters are not allowed: %s'), $sChars);
+        $this->sWarning = KTUtil::arrayGet($aOptions, 'file_illegal_character_warning', $sWarning);
+            
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
+    }
+    
+    function validate($data) {
+        $results = array();
+        $errors = array();
+        
+        $aFile = (array) KTUtil::arrayGet($data, $this->sInputVariable);
+        
+        // Get the file name
+        $val = $aFile['name'];
+        if ($this->bTrim) {
+            $val = trim($val);
+        }
+
+        // illegal characters: \/ *<>|%+':"?
+        $pattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
+        if(preg_match($pattern, $val)){
+            $errors[$this->sBasename] = $this->sWarning;
+        }
+
+        if ($this->bProduceOutput) {
+            $results[$this->sOutputVariable] = $aFile;
+        }
+        
+        return array(
+            'errors' => $errors,
             'results' => $results,
         );
     }

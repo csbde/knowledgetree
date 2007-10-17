@@ -13,7 +13,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
 
 
-{i18n arg_options=$options}Create a new saved search using #options.{/i18n}
+{i18n arg_options=$options}Create a new saved search using #options#.{/i18n}
 </p>
 
 
