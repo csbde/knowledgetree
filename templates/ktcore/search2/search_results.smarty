@@ -4,7 +4,6 @@
 <div class="collapsible">
 <h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Search Expression{/i18n}</h4>
 <div class="collapsiblebody">
-
 <fieldset>
 	<legend>{i18n}Search Expression{/i18n}</legend>
 	{$txtQuery}
@@ -99,6 +98,8 @@ function onShowAll(showall)
 
 </script>
 {/literal}
+</div>
+</div>
 {if empty($iSavedID)}
 <div id="saveSearch">
 <fieldset>
@@ -108,8 +109,8 @@ function onShowAll(showall)
 </fieldset>
 </div>
 {/if}
-</div>
-</div>
+
+
 <fieldset>
 
 <legend>{i18n}Search Results{/i18n}</legend>
@@ -132,8 +133,6 @@ function onShowAll(showall)
 	{assign var=cbid value=0}
 
 	{foreach item=document from=$results}
-
-	{if $document->IsLive}
 		<tr><td>
 		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr><a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title}</b></a>
 		{if $document->Title != $document->Filename}
@@ -150,36 +149,35 @@ function onShowAll(showall)
 			<font style=" color: orange ">{i18n}Version:{/i18n} {$document->Version}</font></td>
 		</tr>
 		<tr><td colspan=2>{$document->Text}</td></tr>
-		<tr><td><font style=" color: green ">{$document->FullPath}/{$document->Title} - {$document->Filesize}</font></td>
+		<tr><td><font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$document->FolderId}">{$document->FullPath}</a>/{$document->Title} - {$document->Filesize}</font></td>
 			<td align=right><nobr>
 				<font style="color: orange ">
-				{i18n}Created By:{/i18n} Conrad Vermeulen
-				{i18n}on{/i18n} 2007-09-28
+				{i18n}Created By:{/i18n} {$document->CreatedBy}
+				{i18n}on{/i18n} {$document->DateCreated}
 				</font>
 			</td>
-		{assign var=workflow value=$document->Workflow}
-		{if $workflow != '' || $this->Document->IsCheckedOut}
+
+
 		<tr><td>
 			{if $workflow != ''}
-				<font style="color: orange ">{i18n}Workflow:{/i18n} {$workflow}</font>
+				<font style="color: orange ">{i18n}Workflow:{/i18n} $document->Workflow}</font>
 			{/if}
 			</td>
 			<td align=right><nobr>
 				<font style="color: brown ">
 				{if $document->CheckedOutUser != ''}
-					{i18n}Checked out by:{/i18n} {$document->CheckedOutUser}
-					{i18n}on{/i18n} 2007-09-28
+					<b>{i18n}Checked out by:{/i18n} {$document->CheckedOutUser}
+					{i18n}on{/i18n} {$document->DateCheckedOut}</b>
 				{else}
-					{i18n}Modified by:{/i18n} Conrad Vermeulen
-					{i18n}on{/i18n} 2007-09-28
+					{i18n}Modified by:{/i18n} {$document->ModifiedBy}
+					{i18n}on{/i18n} {$document->DateModified}
 				{/if}
 				</font>
 			</td>
-		{/if}
+
 		<tr><td colspan=2><br></br></td></tr></tr>
 
 		{assign var=cbid value=$cbid+1}
-	{/if}
 	{/foreach}
 
 	<tr><td>
@@ -197,9 +195,11 @@ function onShowAll(showall)
   		<input type="hidden" name="fReturnAction" value="search2" />
   		<input type="hidden" name="fReturnData" value="1" />
 
+  		<nobr>
   		{foreach from=$bulkactions item=bulkaction}
       		<input type="submit" name="submit[{$bulkaction->getName()}]" value="{$bulkaction->getDisplayName()}" />
 		{/foreach}
+  		</nobr>
 </table>
 </form>
 
