@@ -45,7 +45,7 @@ try:
     ### Get Service Manager
     context = uno.getComponentContext()
     resolver = context.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", context)
-    ctx = resolver.resolve("uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext")
+    ctx = resolver.resolve("uno:socket,host=localhost,port=8100;urp;StarOffice.ComponentContext")
     smgr = ctx.ServiceManager
 
     ### Load document
