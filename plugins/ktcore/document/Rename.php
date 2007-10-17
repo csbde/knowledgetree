@@ -77,7 +77,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
         $fields = array();
 
         $fields[] = new KTStaticTextWidget(_kt('Current file name'), _kt('The current file name is shown below:'), 'oldfilename', $this->oDocument->getFileName(), $this->oPage, false);
-        $fields[] = new KTStringWidget(_kt('New file name'), _kt('The name to which the current file should be renamed.'), 'filename', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New file name'), _kt('The name to which the current file should be renamed.'), 'filename', $this->oDocument->getFileName(), $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -95,6 +95,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
             'max_str_len' => 255,
         );
         $this->oValidator->validateString($sFilename, $aOptions);
+        $this->oValidator->validateIllegalCharacters($sFilename, $aOptions);
         
         $res = KTDocumentUtil::rename($this->oDocument, $sFilename, $this->oUser);
         if (PEAR::isError($res)) {

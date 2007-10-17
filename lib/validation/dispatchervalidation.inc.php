@@ -225,6 +225,26 @@ class KTDispatcherValidation {
         return $sString;
     }
 
+    function validateIllegalCharacters($sString, $aOptions = null) {
+        $sString = trim($sString);
+        if (empty($sString)) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions,
+                    'message', _kt("An empty string was given"));
+            $this->handleError($aOptions);
+        }
+        
+        // illegal characters: /\ <>|%+':"?* 
+        $pattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
+        if(preg_match($pattern, $sString)){
+            $sChars =  "\/<>|%+*':\"?";
+            $sMessage = sprintf(_kt('The value you have entered is invalid. The following characters are not allowed: %s'), $sChars);
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'illegal_character_message', $sMessage);
+	        $this->handleError($aOptions);
+        }
+
+        return $sString;
+    }
+
     // validate a STRING to an integer
     function validateInteger($sInteger, $aOptions = null) {
         $sInteger = trim($sInteger);
