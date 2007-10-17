@@ -229,6 +229,11 @@ class SearchHelper
 
 	public static function getSavedSearches($userID)
 	{
+		if (empty($default->db))
+		{
+			return array();
+		}
+
 		$sql = "SELECT id, name FROM search_saved WHERE type='S'";
 
 		// if we are not the system admin, then we get only ours or shared searches
