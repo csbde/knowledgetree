@@ -10,6 +10,8 @@
  */
 
 session_start();
+require_once(realpath('../../../config/dmsDefaults.php'));
+
 print _kt("Recreate Lucene index") . "...\n";
 
 $sure=false;
@@ -39,7 +41,6 @@ if (!$sure)
 }
 
 
-require_once(realpath('../../../config/dmsDefaults.php'));
 
 $config = KTConfig::getSingleton();
 $indexer = $config->get('indexer/coreClass');
