@@ -195,16 +195,26 @@ class KTWebService
         $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
          	array(
 				'document_id' => 'int',
-				'title' => 'string',
-				'rank' => 'float',
+				'relevance' => 'float',
         		'text' => 'string',
-        		'filesize' => 'int',
+				'title' => 'string',
         		'fullpath' => 'string',
+        		'filesize' => 'int',
         		'version' => 'string',
         		'filename' => 'string',
-        		'checked_out_user' => 'string',
-        		'is_available' => 'boolean',
-        		'workflow' => 'string'
+        		'folder_id' => 'int',
+        		'workflow' => 'string',
+        		'workflow_state' => 'string',
+        		'mime_type' => 'string',
+        		'owner' => 'string',
+        		'created_by' => 'string',
+        		'created_date' => 'string',
+        		'modified_by' => 'string',
+        		'modified_date' => 'string',
+        		'checked_out_by' => 'string',
+        		'checked_out_date' => 'string',
+        		'is_immutable' => 'bool',
+        		'status' => 'string',
          	);
 
     	$this->__typedef["{urn:$this->namespace}kt_search_results"] =
@@ -3334,26 +3344,34 @@ class KTWebService
     		$results = array();
     		foreach($rs as $hit)
     		{
-    			if ($hit->IsLive)
-    			{
-
-    				$item = array(
+    			 $item = array(
 						'document_id' => (int) $hit->DocumentID,
 						'title' => (string) $hit->Title,
-						'rank' => (float) $hit->Rank,
+						'relevance' => (float) $hit->Rank,
         				'text' => (string)  $noText?'':$hit->Text,
         				'filesize' => (int) $hit->Filesize,
         				'fullpath' => (string) $hit->FullPath,
         				'version' => (string) $hit->Version,
         				'filename' => (string) $hit->Filename,
-        				'checked_out_user' => (string) $hit->CheckedOutUser,
+        				'checked_out_by' => (string) $hit->CheckedOutUser,
+        				'checked_out_date' => (string) $hit->DateCheckedOut,
         				'is_available' => (bool) $hit->IsAvailable,
-        				'workflow' => (string) $hit->Workflow
+        				'workflow' => (string) $hit->Workflow,
+        				'workflow_state' => (string) $hit->WorkflowState,
+        				'folder_id' => (int) $hit->FolderId,
+        				'mime_type' => (string) $hit->MimeType,
+						'modified_by' => (string) $hit->ModifiedBy,
+						'modified_date' => (string) $hit->DateModified,
+						'created_by' => (string) $hit->CreatedBy,
+						'created_date' => (string) $hit->DateCreated,
+						'owner' => (string) $hit->Owner,
+						'is_immutable'=> (bool) $hit->Immutable,
+						'status' => (string) $hit->Status
     				);
 
     				$item = new SOAP_Value('item',"{urn:$this->namespace}kt_search_result_item", $item);
     				$results[] = $item;
-    			}
+
     		}
 
     		$response['message'] = '';
