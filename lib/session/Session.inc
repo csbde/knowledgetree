@@ -45,10 +45,12 @@ class Session {
 
         session_start();
 
+
+        // Don't need to lock a user out the web interface if KT Tools exists and has no license.
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             if (!$oUser->isAnonymous()) {
                 require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
-                $res = BaobabKeyUtil::isBaobabUser($oUser);
+                $res = BaobabKeyUtil::isValidUser($oUser);
                 if (PEAR::isError($res)) {
                     return $res;
                 }
