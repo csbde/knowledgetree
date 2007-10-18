@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -29,13 +29,13 @@
  * All Rights Reserved.
  * Contributor( s): ______________________________________
  */
- 
-require_once(KT_LIB_DIR . '/database/dbutil.inc'); 
-require_once(KT_LIB_DIR . '/ktentity.inc'); 
+
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
+require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 define('ADMIN_USER_ID', 1);
- 
+
 class User extends KTEntity {
     /** user's login name */
     var $sUserName;
@@ -106,14 +106,14 @@ class User extends KTEntity {
     function _table() {
         return KTUtil::getTableName("users");
     }
-    
+
     // STATIC
     function _ktentityOptions() {
         return array(
             'orderby' => 'name',
         );
     }
-    
+
 
     function getUserName() { return sanitizeForSQLtoHTML($this->sUserName); }
     function setUserName($sNewValue) { $this->sUserName = sanitizeForSQL($sNewValue); }
@@ -169,11 +169,11 @@ class User extends KTEntity {
         return 'dashboard-state-' . $this->getId();
     }
 
-    function getDashboardState() {         
+    function getDashboardState() {
         return KTUtil::getSystemSetting($this->_getDashboardStateKey());
     }
 
-    function setDashboardState($mValue) { 
+    function setDashboardState($mValue) {
         KTUtil::setSystemSetting($this->_getDashboardStateKey(), $mValue);
     }
 
@@ -182,9 +182,9 @@ class User extends KTEntity {
     	require_once(KT_DIR . "/thirdparty/pear/JSON.php");
 
     	$dashletRegistry = & KTDashletRegistry::getSingleton();
-    	
+
     	$aDashlets = $dashletRegistry->getDashlets($this);
-    	
+
     	$oJSON = new Services_JSON();
 
     	$state = $this->getDashboardState();
@@ -193,18 +193,18 @@ class User extends KTEntity {
     	if (!isset($dashlets->left)) $dashlets->left = array();
     	if (!isset($dashlets->right)) $dashlets->right = array();
     	$mergedlist = kt_array_merge($dashlets->left,$dashlets->right);
-    	
-    	
+
+
     	$knownlist = array();
     	foreach($mergedlist as $dashlet)
     	{
     		array_push($knownlist,$dashlet->id);
     	}
     	$update=false;
-    	
+
     	//if (!isset($dashlets->left)) $dashlets->left=array();
     	//if (!isset($dashlets->right)) $dashlets->right=array();
-    	
+
     	$column=1;
     	foreach($aDashlets as $dashlet)
     	{
@@ -215,7 +215,7 @@ class User extends KTEntity {
     			$obj = new stdClass();
     			$obj->id=$class;
     			$obj->state=0;
-    			
+
     			if ($column == 0)
     				array_push($dashlets->left,$obj);
 				else
@@ -223,19 +223,19 @@ class User extends KTEntity {
     			$update=true;
     		}
     	}
-    	
+
     	if ($update)
     	{
     		$state = $oJSON->encode($dashlets);
 	    	$this->setDashboardState($state);
     	}
     }
-    
-    
+
+
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
     }
-	
+
 	/**
 	* update the datastore, without overwriting the password.
 	*
@@ -244,25 +244,25 @@ class User extends KTEntity {
 	function doLimitedUpdate() {
 		$sQuery = 'UPDATE ' . $this->_table() . ' SET ';
 		$aParams = array();
-		
+
 		$blacklist = array(
 			"sPassword" => 1,
 		);
-		
+
 		$aParts = array(); // quick workaround to make the join less hurtful.
-		
+
 		foreach ($this->_aFieldToSelect as $attr => $column) {
 			if (!array_key_exists($attr, $blacklist)) {
 				$val = $this->$attr;
 				$aParts[] = $column . ' = ?';
-				$aParams[] = $val;  
-			} 
+				$aParams[] = $val;
+			}
 		}
 		$sQuery .= join(', ', $aParts);
-		
+
 		$sQuery .= ' WHERE id = ? ';
 		$aParams[] = $this->getId();
-		
+
 		$res = DBUtil::runQuery(array($sQuery, $aParams));
 
         $group = sprintf("%s/%s", get_class($this), 'id');
@@ -272,8 +272,8 @@ class User extends KTEntity {
 
 		return $res;
 	}
-	
-	
+
+
     /**
     * Static function
     * Get a list of users
@@ -329,7 +329,7 @@ class User extends KTEntity {
 
         $this->iId = $id;
     }
-    
+
     /** Static function
     * Gets the user's default top level folder for the current user
     */
@@ -343,7 +343,7 @@ class User extends KTEntity {
         $oUnit =& Unit::get($iUnitId);
         return $oUnit->getFolderId();
     }
-	
+
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
 	function &getByUserName($sUserName, $aOptions = null) {
         return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
@@ -385,7 +385,7 @@ class User extends KTEntity {
         $aParams = array(false);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
-	
+
     function isAnonymous() { return $this->iId == -2; }
 
     function disable() {
@@ -397,7 +397,7 @@ class User extends KTEntity {
         }
         return;
     }
-    
+
     function enable() {
         $this->setDisabled(0);
         $this->update();
@@ -406,7 +406,7 @@ class User extends KTEntity {
             BaobabKeyUtil::allocateUser($this);
         }
         return;
-    }    
+    }
 
     function create() {
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
@@ -418,7 +418,7 @@ class User extends KTEntity {
         }
         return parent::create();
     }
-    
+
     function delete()
     {
     	$this->setDisabled(2);
@@ -429,7 +429,7 @@ class User extends KTEntity {
     	$tempUserID = $this->iId;
     	$DeletedUsername = 'kt_deleted_'.$tempUsername.'_'.$tempUserID;
     	$this->setUsername($DeletedUsername);
-    	
+
     	//nullify all authentication_xxx fields
     	$this->setAuthenticationSourceId(null);
 	    $this->setAuthenticationDetails(null);
@@ -440,13 +440,13 @@ class User extends KTEntity {
 	    $this->setAuthenticationDetailsDate2(null);
 		$this->setAuthenticationDetailsBool1(null);
 	    $this->setAuthenticationDetailsBool2(null);
-    	
+
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
-            BaobabKeyUtil::allocateUser($this);
+            BaobabKeyUtil::deallocateUser($this);
         }
         return;
-    
+
     }
 }
