@@ -43,7 +43,7 @@ XVFB_STATUS=""
 SOFFICE_PATH="$INSTALL_PATH/openoffice/program"
 SOFFICE_PIDFILE=$INSTALL_PATH/openoffice/soffice.bin.pid
 SOFFICE_PID=""
-SOFFICE_PORT="8001"
+SOFFICE_PORT="8100"
 SOFFICEBIN=$INSTALL_PATH/openoffice/program/soffice.bin
 SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
