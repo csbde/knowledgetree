@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once 'Zend/Search/Lucene.php';
 
@@ -179,6 +179,8 @@ class PHPLuceneIndexer extends Indexer
     public function query($query)
     {
         $results = array();
+        $queryDiscussion = stripos($query,'discussion') !== false;
+        $queryContent = stripos($query,'content') !== false;
         $query = Zend_Search_Lucene_Search_QueryParser::parse($query);
 
         $hits  = $this->lucene->find($query);
@@ -187,15 +189,30 @@ class PHPLuceneIndexer extends Indexer
             $document = $hit->getDocument();
 
             $document_id = PHPLuceneIndexer::stringToLong($document->DocumentID);
-            $content =  $document->Content ;
-            $discussion =  $document->Discussion ;
+
+            $coreText = '';
+            if ($queryContent)
+            {
+            	$coreText .= $document->Content;
+            }
+            if ($queryDiscussion)
+            {
+            	$coreText .= $document->Discussion;
+            }
+
+            $content = $query->highlightMatches($coreText);
+
             $title = $document->Title;
             $score = $hit->score;
 
             // avoid adding duplicates. If it is in already, it has higher priority.
             if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Score)
             {
-                $results[$document_id] = new QueryResultItem($document_id,  $score, $title,  $content, $discussion);
+                $item = new QueryResultItem($document_id,  $score, $title,  $content);
+                if ($item->CanBeReadByUser)
+                {
+                	$results[$document_id] = $item;
+                }
             }
         }
         return $results;
