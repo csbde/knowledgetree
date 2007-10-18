@@ -9,6 +9,7 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_LIB_DIR . "/actions/bulkaction.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 
 
 class SearchDispatcher extends KTStandardDispatcher {
@@ -161,6 +162,10 @@ class SearchDispatcher extends KTStandardDispatcher {
 
     	$oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/search_results");
+
+       KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
+       KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
+       KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
 
         $results = unserialize($_SESSION['search2_results']);
 
