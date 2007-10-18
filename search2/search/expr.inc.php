@@ -847,16 +847,7 @@ class TextQueryBuilder implements QueryBuilder
 		$init = $result->Rank;
 		$score=0;
 		$ranker = RankManager::get();
-		$discussion = $result->Discussion;
-		if (!empty($discussion))
-		{
-			$score += $init *$ranker->scoreField('Discussion', 'S');
-		}
-		else
-		{
-			$score += $init *$ranker->scoreField('DocumentText', 'S');
-
-		}
+		$score += $init *$ranker->scoreField('DocumentText', 'S');
 		return $score;
 	}
 
@@ -865,142 +856,11 @@ class TextQueryBuilder implements QueryBuilder
 		$this->query = $query;
 	}
 
-	private function extractText($word, $maxwords=40, $maxlen=512)
+	function getResultText($result)
 	{
-		$offset=stripos($this->text, $word);
-
-		if ($offset === false)
-		{
-			return array(false, false);
-		}
-
-		if ($offset == 0)
-		{
-			$startOffset = 0;
-		}
-		else
-		{
-			$text = substr($this->text, 0 , $offset);
-
-			$lastsentence = strrpos($text, '.');
-			if ($lastsentence === false) $lastsentence=0;
-
-			if ($offset - $lastsentence  >  $maxlen)
-			{
-				$lastsentence = $offset - $maxlen;
-			}
-
-			$text = substr($this->text, $lastsentence, $offset - $lastsentence);
-
-			$wordoffset= strlen($text)-1;
-			$words = $maxwords;
-			while ($words > 0)
-			{
-				$text = substr($text, 0, $wordoffset);
-				$foundoffset = strrpos($text, ' ');
-				if ($foundoffset === false)
-				{
-					break;
-				}
-				$wordoffset = $foundoffset;
-				$words--;
-			}
-			$startOffset = $lastsentence + $wordoffset;
-		}
-
-
-
-		$nextsentence = strpos($this->text, '.', $offset);
-
-		$words = $maxwords;
-		$endOffset = $offset;
-		while ($words > 0)
-		{
-				$foundoffset = strpos($this->text, ' ', $endOffset+1);
-				if ($foundoffset === false)
-				{
-					break;
-				}
-				if ($endOffset > $offset + $maxlen)
-				{
-					break;
-				}
-				if ($endOffset > $nextsentence)
-				{
-					$endOffset = $nextsentence-1;
-					break;
-				}
-				$endOffset = $foundoffset;
-
-				$words--;
-		}
-
-		return array($startOffset, substr($this->text, $startOffset, $endOffset - $startOffset + 1));
+		// not require!
+		return '';
 	}
-
-
-	public function getResultText($result)
-	{
-		$this->text = substr($result->Text,0,40960);
-		$words = array();
-		$sentences = array();
-
-		preg_match_all('("[^"]*")',$this->query, $matches,PREG_OFFSET_CAPTURE);
-
-		foreach($matches[0] as $word)
-		{
-			list($word,$offset) = $word;
-			$word = substr($word,1,-1);
-			$wordlen = strlen($word);
-			$res = $this->extractText($word);
-			list($sentenceOffset,$sentence) = $res;
-
-			if ($sentenceOffset === false)
-			{
-				continue;
-			}
-
-			if (array_key_exists($sentenceOffset, $sentences))
-			{
-				$sentences[$sentenceOffset]['score']++;
-			}
-			else
-			{
-				$sentences[$sentenceOffset] = array(
-					'sentence'=>$sentence,
-					'score'=>1
-				);
-			}
-
-			$sentence = $sentences[$sentenceOffset]['sentence'];
-
-			preg_match_all("@$word@i",$sentence, $swords,PREG_OFFSET_CAPTURE);
-			foreach($swords[0] as $wordx)
-			{
-				list($wordx,$offset) = $wordx;
-
-				$sentence = substr($sentence,0, $offset) . '<b>' . substr($sentence, $offset, $wordlen) . '</b>' . substr($sentence, $offset + $wordlen);
-			}
-
-			$sentences[$sentenceOffset]['sentence']	= $sentence;
-
-			$words[$word] = array(
-				'sentence'=>$sentenceOffset
-			);
-		}
-
-		ksort($sentences);
-		$result = '';
-
-		foreach($sentences as $o=>$i)
-		{
-			if (!empty($result)) $result .= '&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;';
-			$result .= $i['sentence'];
-		}
-
-		return $result;
-	}
-
 }
 
 class SQLQueryBuilder implements QueryBuilder
@@ -1226,7 +1086,10 @@ class SQLQueryBuilder implements QueryBuilder
 
 	private function resolveMetadataOffset($expr)
 	{
-		assert($expr->left()->isMetadataField() );
+		if (!$expr->left()->isMetadataField())
+		{
+			throw new Exception(_kt('Metadata field expected'));
+		}
 
 		$offset=0;
 		foreach($this->metadata as $item)
@@ -2039,7 +1902,7 @@ class OpExpr extends Expr
     		$rank = $exprbuilder->getRanking($item);
     		if (!array_key_exists($document_id, $results) || $rank > $results[$document_id]->Rank)
     		{
-    			$results[$document_id] = new MatchResult($document_id, $rank, $item['title'], $exprbuilder->getResultText($item));
+    			$results[$document_id] = new QueryResultItem($document_id, $rank, $item['title'], $exprbuilder->getResultText($item));
     		}
     	}
 
@@ -2069,7 +1932,7 @@ class OpExpr extends Expr
     	{
     		$item->Rank = $exprbuilder->getRanking($item);
     		$exprbuilder->setQuery($query);
-    		$item->Text = $exprbuilder->getResultText($item);
+    		//$item->Text = $exprbuilder->getResultText($item); ?? wipe - done at indexer level
     	}
 
     	return $results;
@@ -2156,11 +2019,7 @@ class OpExpr extends Expr
 		$permResults = array();
 		foreach($result as $idx=>$item)
 		{
-			$doc = Document::get($item->DocumentID);
-			if (Permission::userHasDocumentReadPermission($doc))
-			{
-				$permResults[$idx] = $item;
-			}
+			$permResults[$idx] = $item;
 		}
 
 		return $permResults;
@@ -2189,10 +2048,6 @@ class OpExpr extends Expr
         $left->toViz($str, $phase);
         $right->toViz($str, $phase);
     }
-
 }
-
-
-
 
 ?>

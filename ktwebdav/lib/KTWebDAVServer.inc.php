@@ -1105,8 +1105,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     continue;
                 }
                 // FIXME: Direct database access
-                $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
-                $aParams = array($iFolderID, $sFolderName);
+                if($iFolderID == 0){
+                    $sQuery = "SELECT id FROM folders WHERE parent_id is null AND name = ?";
+                    $aParams = array($sFolderName);
+                }else{
+                    $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
+                    $aParams = array($iFolderID, $sFolderName);
+                }
                 $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
                 if (PEAR::isError($id)) {
                     $this->ktwebdavLog("A DB error occurred in _folderOrDocument", 'info', true);

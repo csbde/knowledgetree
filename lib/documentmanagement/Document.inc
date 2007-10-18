@@ -640,6 +640,25 @@ class Document {
 	return trim($aComment[1]);
     }
 
+	static function getStatusString($statusid)
+	{
+		$statuses = array(
+			1=>_kt('Live'),
+			2=>_kt('Published'),
+			3=>_kt('Deleted'),
+			4=>_kt('Archived'),
+			5=>_kt('Incomplete'),
+			6=>_kt('Version Deleted')
+		);
+
+		if (array_key_exists($statusid, $statuses))
+		{
+			return $statuses[$statusid];
+		}
+
+		return _kt('Unknown State');
+	}
+
 
 
 
