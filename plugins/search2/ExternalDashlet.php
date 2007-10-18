@@ -97,7 +97,7 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
 
 	function is_active($oUser)
 	{
-	    if (!Permission::userIsSystemAdministrator($oUser))
+	    if (!Permission::userIsSystemAdministrator($oUser->getId()))
 	    {
 	    	return false;
 	    }
