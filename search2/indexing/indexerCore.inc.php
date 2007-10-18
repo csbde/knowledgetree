@@ -3,7 +3,7 @@
 require_once('indexing/extractorCore.inc.php');
 
 
-class MatchResult
+class QueryResultItem
 {
 	protected $document_id;
 	protected $title;
@@ -13,15 +13,27 @@ class MatchResult
 	protected $fullpath;
 	protected $live;
 	protected $version;
+	protected $mimeType;
 	protected $filename;
 	protected $thumbnail; // TODO: if not null, gui can display a thumbnail
 	protected $viewer; // TODO: if not null, a viewer can be used to view the document
 	protected $document;
-	protected $checkoutuser;
-	protected $workflowstate;
+	protected $checkedOutUser;
+	protected $dateCheckedout;
+	protected $workflowState;
 	protected $workflow;
+	protected $modifiedBy;
+	protected $dateModified;
+	protected $createdBy;
+	protected $dateCreated;
+	protected $owner;
+	protected $immutable;
+	protected $deleted;
+	protected $status;
+	protected $folderId;
 
-	public function __construct($document_id, $rank, $title, $text)
+
+	public function __construct($document_id, $rank=null, $title=null, $text=null)
 	{
 		$this->document_id=$document_id;
 		$this->rank= $rank;
@@ -48,17 +60,25 @@ class MatchResult
 	private function loadDocumentInfo()
 	{
 		$sql = "SELECT
-					f.full_path, f.name, dcv.size as filesize, dcv.major_version,
-					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate
+					f.folder_id, f.full_path, f.name, dcv.size as filesize, dcv.major_version,
+					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
+					mt.mimetypes as mimetype, md.mime_doc as mimedoc, d.checkedout, mbu.name as modifiedbyuser, d.modified,
+					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created
 
 				FROM
 					documents d
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id = dmv.id
 					INNER JOIN document_content_version dcv ON dmv.content_version_id = dcv.id
+					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
 					LEFT JOIN folders f ON f.id=d.folder_id
 					LEFT JOIN users cou ON d.checked_out_user_id=cou.id
 					LEFT JOIN workflows w ON dmv.workflow_id=w.id
 					LEFT JOIN workflow_states ws ON dmv.workflow_state_id = ws.id
+					LEFT JOIN mime_documents md ON mt.mime_document_id = md.id
+					LEFT JOIN users mbu ON d.modified_user_id=mbu.id
+					LEFT JOIN users cbu ON d.creator_id=cbu.id
+					LEFT JOIN users ou ON d.owner_id=ou.id
+
 				WHERE
 					d.id=$this->document_id";
 
@@ -81,65 +101,86 @@ class MatchResult
 			if (substr($this->fullpath,0,1) == '/') $this->fullpath = substr($this->fullpath,1);
 		}
 
-
-		$this->filesize = $result['filesize'] + 0;
-
-		if ($this->filesize > 1024 * 1024 * 1024)
-		{
-			$this->filesize = floor($this->filesize / (1024 * 1024 * 1024)) . 'g';
-		}
-		elseif ($this->filesize > 1024 * 1024)
-		{
-			$this->filesize = floor($this->filesize / (1024 * 1024)) . 'm';
-		}
-		elseif ($this->filesize > 1024)
-		{
-			$this->filesize = floor($this->filesize / (1024)) . 'k';
-		}
-		else
-		{
-			$this->filesize .= 'b';
-		}
+		$this->filesize = KTUtil::filesizeToString($result['filesize']);
 
 		$this->version = $result['major_version'] . '.' . $result['minor_version'];
 		$this->filename=$result['filename'];
-		$this->checkoutuser = $result['checkoutuser'];
+		$this->checkedOutUser = $result['checkoutuser'];
 		$this->workflow = $result['workflow'];
-		$this->workflowstate = $result['workflowstate'];
+		$this->workflowState = $result['workflowstate'];
+
+
+		$this->mimeType = $result['mimetype'];
+		$this->dateCheckedout = $result['checkedout'];
+
+		$this->modifiedBy = $result['modifiedbyuser'];
+		$this->dateModified = $result['modified'];
+		$this->createdBy = $result['createdbyuser'];
+		$this->dateCreated = $result['created'];
+
+		$this->owner = $result['owneruser'];
+		$this->immutable = ($result['immutable'] + 0)?_kt('Immutable'):'';
+		$this->status = Document::getStatusString($result['status_id']);
+		$this->folderId = $result['folder_id'];
 
 	}
-
-
 
 	protected function __get($property)
 	{
 		switch($property)
 		{
-			case 'DocumentID': return $this->document_id;
-			case 'Rank': return $this->rank;
-			case 'Text': return $this->text;
-			case 'Title': return $this->title;
-			case 'FullPath': return $this->fullpath;
-			case 'IsLive': return $this->live;
-			case 'Filesize': return $this->filesize;
-			case 'Version': return $this->version;
-			case 'Filename': return $this->filename;
+			case null: return '';
+			case 'DocumentID': return  (int) $this->document_id;
+			case 'Relevance':
+			case 'Rank': return (float) $this->rank;
+			case 'Text': return (string) $this->text;
+			case 'Title': return (string) $this->title;
+			case 'FullPath': return (string)  $this->fullpath;
+			case 'IsLive': return (bool) $this->live;
+			case 'Filesize': return (int) $this->filesize;
+			case 'Version': return (string) $this->version;
+			case 'Filename': return (int)$this->filename;
+			case 'FolderId': return (int)$this->folderId;
 			case 'Document':
 					if (is_null($this->document))
+					{
 						$this->document = Document::get($this->document_id);
+					}
 					return $this->document;
 			case 'IsAvailable':
 				return $this->Document->isLive();
-
 			case 'CheckedOutUser':
-				return  $this->checkoutuser;
+				return  (string) $this->checkedOutUser;
+			case 'WorkflowOnly':
+				return (string)$this->workflow;
+			case 'WorkflowStateOnly':
+				return (string)$this->workflowState;
 			case 'Workflow':
 				if (is_null($this->workflow))
 				{
 					return '';
 				}
-				return "$this->workflow - $this->workflowstate";
-			case null: break;
+				return "$this->workflow - $this->workflowState";
+			case 'MimeType':
+				return (string) $this->mimeType;
+			case 'DateCheckedOut':
+				return (string) $this->dateCheckedout;
+			case 'ModifiedBy':
+				return (string) $this->modifiedBy;
+			case 'DateModified':
+				return (string) $this->dateModified;
+			case 'CreatedBy':
+				return (string) $this->createdBy;
+			case 'DateCreated':
+				return (string) $this->dateCreated;
+			case 'Owner':
+				return (string) $this->owner;
+			case 'Immutable':
+				return (bool) $this->immutable;
+			case 'Status':
+				return $this->status;
+			case 'CanBeReadByUser':
+				return (bool) $this->live && (Permission::userHasDocumentReadPermission($this->Document) || Permission::adminIsInAdminMode());
 			default:
 				throw new Exception("Unknown property '$property' to get on MatchResult");
 		}
@@ -151,6 +192,7 @@ class MatchResult
 		switch($property)
 		{
 			case 'Rank': $this->rank = number_format($value,2,'.',','); break;
+			case 'Title': $this->title = $value; break;
 			case 'Text': $this->text = $value; break;
 			default:
 				throw new Exception("Unknown property '$property' to set on MatchResult");
@@ -164,35 +206,6 @@ function MatchResultCompare($a, $b)
         return 0;
     }
     return ($a->Rank < $b->Rank) ? -1 : 1;
-}
-
-class QueryResultItem extends MatchResult
-{
-    protected $discussion;
-
-    public function __construct($document_id, $rank, $title, $text, $discussion)
-    {
-    	parent::__construct($document_id, $rank, $title, $text);
-    	$this->discussion=$discussion;
-    }
-
-	protected function __isset($property)
-	{
-		switch($property)
-		{
-			case 'Discussion': return isset($this->discussion);
-			default: return parent::__isset($property);
-		}
-	}
-
-    protected function __get($property)
-    {
-    	switch($property)
-    	{
-    		case 'Discussion': return $this->discussion;
-    		default: return parent::__get($property);
-    	}
-    }
 }
 
 abstract class Indexer
