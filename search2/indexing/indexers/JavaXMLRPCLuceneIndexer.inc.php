@@ -100,7 +100,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     public function optimise()
     {
     	parent::optimise();
-    	$this->lucene->optimize();
+    	$this->lucene->optimise();
     }
 
     /**
@@ -128,18 +128,20 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     	{
     		foreach ($hits as $hit)
     		{
-
-
     			$document_id 	= $hit->DocumentID;
-    			$content 		= $hit->Text;
-    			$discussion 	= $hit->Title; //TODO: fix to be discussion. lucen server is not returning discussion text as well..
-    			$title 			= $hit->Title;
-    			$score 			= $hit->Rank;
 
     			// avoid adding duplicates. If it is in already, it has higher priority.
     			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Score)
     			{
-    				$results[$document_id] = new QueryResultItem($document_id,  $score, $title,  $content, $discussion);
+    				$item = new QueryResultItem($document_id);
+    				$item->Title = $hit->Title;
+    				$item->Text = $hit->Content;
+    				$item->Rank = $hit->Rank;
+
+    				if ($item->CanBeReadByUser)
+    				{
+    					$results[$document_id] = $item;
+    				}
     			}
     		}
     	}
