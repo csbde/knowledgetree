@@ -3,7 +3,26 @@ require_once('xmlrpc.inc');
 
 class XmlRpcLucene
 {
+	/**
+	 * Reference to the xmlrpc client
+	 *
+	 * @var xmlrpc_client
+	 */
 	var $client;
+
+	/**
+	 * Identifier for the KT instance
+	 *
+	 * @var string
+	 */
+	var $ktid;
+
+	/**
+	 * Identifier for the lucene server
+	 *
+	 * @var string
+	 */
+	var $authToken;
 
 	/**
 	 * The constructoor for the lucene XMLRPC client.
@@ -16,6 +35,10 @@ class XmlRpcLucene
 		$this->client=new xmlrpc_client("$url/xmlrpc");
 		$this->client->request_charset_encoding = 'UTF-8';
 		$GLOBALS['xmlrpc_internalencoding'] = 'UTF-8';
+
+		$config = KTConfig::getSingleton();
+		$this->authToken = $config->get('indexer/luceneAuthToken','');
+		$this->ktid = $config->get('indexer/luceneID','');
 	}
 
 	/**
@@ -48,7 +71,11 @@ class XmlRpcLucene
 	 */
 	function optimise()
 	{
-		$function=new xmlrpcmsg('indexer.optimise', array());
+		$function=new xmlrpcmsg('indexer.optimise',
+			array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken)
+			));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
@@ -73,6 +100,8 @@ class XmlRpcLucene
 	{
 		$function=new xmlrpcmsg('indexer.addDocument',
 			array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken),
 				php_xmlrpc_encode((int) $documentid),
 				php_xmlrpc_encode((string) $contentFile),
 				php_xmlrpc_encode((string) $discussion),
@@ -97,7 +126,10 @@ class XmlRpcLucene
 	 */
 	function deleteDocument($documentid)
 	{
-		$function=new xmlrpcmsg('indexer.deleteDocument',array(php_xmlrpc_encode((int) $documentid)));
+		$function=new xmlrpcmsg('indexer.deleteDocument',array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken),
+				php_xmlrpc_encode((int) $documentid)));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
@@ -116,7 +148,10 @@ class XmlRpcLucene
 	 */
 	function documentExists($documentid)
 	{
-		$function=new xmlrpcmsg('indexer.documentExists',array(php_xmlrpc_encode((int) $documentid)));
+		$function=new xmlrpcmsg('indexer.documentExists',array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken),
+				php_xmlrpc_encode((int) $documentid)));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
@@ -134,7 +169,9 @@ class XmlRpcLucene
 	 */
 	function getStatistics()
 	{
-		$function=new xmlrpcmsg('indexer.getStatistics',array());
+		$function=new xmlrpcmsg('indexer.getStatistics',array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken)));
 
 
 		$result=&$this->client->send($function);
@@ -159,7 +196,10 @@ class XmlRpcLucene
 	 */
 	function query($query)
 	{
-		$function=new xmlrpcmsg('indexer.query',array(php_xmlrpc_encode((string) $query)));
+		$function=new xmlrpcmsg('indexer.query',array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken),
+				php_xmlrpc_encode((string) $query)));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
@@ -182,8 +222,10 @@ class XmlRpcLucene
 	function updateDiscussion($docid, $discussion)
 	{
 		$function=new xmlrpcmsg('indexer.updateDiscussion',array(
-					php_xmlrpc_encode((int) $docid),
-					php_xmlrpc_encode((string) $discussion)));
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken),
+				php_xmlrpc_encode((int) $docid),
+				php_xmlrpc_encode((string) $discussion)));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
@@ -196,7 +238,9 @@ class XmlRpcLucene
 
 	function shutdown()
 	{
-		$function=new xmlrpcmsg('indexer.shutdown',array());
+		$function=new xmlrpcmsg('indexer.shutdown',array(
+				php_xmlrpc_encode((string) $this->ktid),
+				php_xmlrpc_encode((string) $this->authToken)));
 
 		$result=&$this->client->send($function);
 		if($result->faultCode())
