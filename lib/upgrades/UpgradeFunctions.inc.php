@@ -946,7 +946,9 @@ class UpgradeFunctions {
             // indexer Section
             $ini->addItem('indexer', 'coreClass', 'JavaXMLRPCLuceneIndexer', "The core indexing class\r\n;coreClass=PHPLuceneIndexer");
             $ini->addItem('indexer', 'batchDocuments', 'default', "The number of documents to be indexed in a cron session\r\n; defaults to 20");
+            $ini->addItem('indexer', 'batchMigrateDocuments', 'default', "The number of documents to be migrated in a cron session\r\n; defaults to 500");
             $ini->addItem('indexer', 'luceneDirectory', '${varDirectory}/indexes', "The location of the lucene indexes");
+            $ini->addItem('indexer', 'javaLuceneURL', 'default', "The url for the Java Lucene Server. This should match up with the Lucene Server configuration.\r\n; defaults to http://localhost:8875");
 
             // openoffice Section
             $ini->addItem('openoffice', 'host', 'default', "The host on which open office is installed\r\n; defaults to localhost");
@@ -963,6 +965,7 @@ class UpgradeFunctions {
             // cache Section
             $ini->addItem('cache', 'cacheEnabled', 'true', '', "Enable/disable the cache and set the cache location");
             $ini->addItem('cache', 'cacheDirectory', '${varDirectory}/cache');
+            $ini->addItem('cache', 'cachePlugins', 'true');
 
             // KTWebDAVSettings Section
             $ini->addItem('KTWebDAVSettings', 'debug', 'off', '_LOTS_ of debug info will be logged if the following is "on"', 'This section is for KTWebDAV only');
@@ -979,6 +982,10 @@ class UpgradeFunctions {
             // clientToolPolicies Section
             $ini->addItem('clientToolPolicies', 'explorerMetadataCapture', 'true', "These two settings control whether or not the client is prompted for metadata when a\r\n;document is added to knowledgetree via KTtools. They default to true.");
             $ini->addItem('clientToolPolicies', 'officeMetadataCapture', 'true');
+            
+            // DiskUsage Section
+            $ini->addItem('DiskUsage', 'warningThreshold', '10', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in ORANGE", "settings for the Disk Usage dashlet");
+            $ini->addItem('DiskUsage', 'urgentThreshold', '5', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in RED");
 
             $ini->write();
 
@@ -986,6 +993,7 @@ class UpgradeFunctions {
     }
     // }}}
 
+    // {{{ registerIndexingTasks
     /**
      * Registers the functions that are required by the indexing sub-system.
      *
@@ -1019,6 +1027,7 @@ class UpgradeFunctions {
 		$oScheduler->setFirstRunTime(date('Y-m-d 00:00'));
 		$oScheduler->registerTask();
     }
+    // }}}
 }
 
 ?>
