@@ -7,7 +7,9 @@
 # Copyright (C) 2007 Mirko Nasato <mirko@artofsolving.com>
 # Licensed under the GNU LGPL v2.1 - http://www.gnu.org/licenses/lgpl.html
 #
-DEFAULT_OPENOFFICE_PORT = 8100
+# Modified by Kevin Fourie <kevin@knowledgetree.com> - 2007-10-18
+
+#DEFAULT_OPENOFFICE_PORT = 8100
 
 import uno
 from os.path import abspath, splitext
@@ -78,11 +80,11 @@ def _unoProps(**args):
 
 class DocumentConverter:
     
-    def __init__(self, port=DEFAULT_OPENOFFICE_PORT):
+    def __init__(self, host=argv[3], port=argv[4]):
         localContext = uno.getComponentContext()
         resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
         try:
-            context = resolver.resolve("uno:socket,host=localhost,port=%s;urp;StarOffice.ComponentContext" % port)
+            context = resolver.resolve("uno:socket,host=%s,port=%s;urp;StarOffice.ComponentContext" % (host, port))
         except NoConnectException:
             raise DocumentConversionException, "failed to connect to OpenOffice.org on port %s" % port
         self.desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
@@ -127,7 +129,7 @@ if __name__ == "__main__":
     from sys import argv, exit
     
     if len(argv) < 3:
-        print "USAGE: " + argv[0] + " <input-file> <output-file>"
+        print "USAGE: " + argv[0] + " <input-file> <output-file> <host> <port>"
         exit(255)
 
     try:
