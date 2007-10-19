@@ -9,8 +9,22 @@ class PSExtractor extends ApplicationExtractor
 
 	public function getSupportedMimeTypes()
 	{
+		if (OS_WINDOWS)
+		{
+			return array();
+		}
 		return array('application/postscript');
 	}
+
+	public function diagnose()
+	{
+		if (OS_WINDOWS)
+		{
+			return null;
+		}
+		return parent::diagnose();
+	}
+
 }
 
 ?>
