@@ -115,6 +115,16 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     }
 
     /**
+     * Shut down the java server
+     *
+     */
+    public function shutdown()
+    {
+    	$this->lucene->shutdown();
+    }
+
+
+    /**
      * Enter description here...
      *
      * @param string $query

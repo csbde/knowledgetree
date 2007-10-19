@@ -625,7 +625,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         
         $to = (array) KTUtil::arrayGet($_REQUEST, 'fTo');
         $from = (array) KTUtil::arrayGet($_REQUEST, 'fFrom');
-        
+
         // we do not trust any of this data.
         $states = KTWorkflowState::getByWorkflow($this->oWorkflow);
         $states = KTUtil::keyArray($states);
@@ -656,8 +656,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                     $source_state_ids[] = $oState->getId();
                 }                
             }
-
-            $res = KTWorkflowAdminUtil::saveTransitionSources($oTransition, $source_state_ids);
+			
+			$aFromTransitionID = array_keys($_REQUEST['fFrom']);
+			//run through all transitions to change
+			foreach ($aFromTransitionID as $iCurrentId)
+			{
+            	if($oTransition->getId() == $iCurrentId)
+            	{
+            		$res = KTWorkflowAdminUtil::saveTransitionSources($oTransition, $source_state_ids);
+            	}
+			}
             if (PEAR::isError($res)) {
                 $this->errorRedirectTo('basic', sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));                              
             }
