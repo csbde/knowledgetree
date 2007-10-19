@@ -11,6 +11,7 @@ RETVAL=0
 PID=""
 ERROR=0
 SERVER=all
+USEXVFB=0
 VDISPLAY="99"
 INSTALL_PATH=@@BITROCK_INSTALLDIR@@
 JAVABIN=$INSTALL_PATH/j2re/bin/java
@@ -45,7 +46,11 @@ SOFFICE_PIDFILE=$INSTALL_PATH/openoffice/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=$INSTALL_PATH/openoffice/program/soffice.bin
-SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+if [ $USEXVFB -eq 1 ]; then
+    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+else
+    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+fi
 SOFFICE_STATUS=""
 
 # Lucene
@@ -283,6 +288,7 @@ stop_apache() {
 }
 
 start_xvfb() {
+if [ $USEXVFB -eq 1 ]; then
     is_xvfb_running
     RUNNING=$?
 
@@ -298,10 +304,12 @@ start_xvfb() {
             echo "$0 $ARG: xvfb could not be started"
             ERROR=3
         fi
+    fi
 fi
 }
 
 stop_xvfb() {
+if [ $USEXVFB -eq 1 ]; then
     NO_EXIT_ON_ERROR=$1
     is_xvfb_running
     RUNNING=$?
@@ -321,6 +329,7 @@ stop_xvfb() {
 	    echo "$0 $ARG: Xvfb could not be stopped"
 	    ERROR=4
 	fi
+fi
 }
 
 start_soffice() {
@@ -399,7 +408,9 @@ stop_lucene() {
         fi
 	fi
     get_lucene_pid
-	if killall $JAVABIN ; then
+    cd $INSTALL_PATH/knowledgeTree/search2/indexing/bin
+    $INSTALL_PATH/php/bin/php shutdown.php positive  >/dev/null 2>&1 &
+    if [ $? -eq 0 ]; then
 	    echo "$0 $ARG: lucene stopped"
 	else
 	    echo "$0 $ARG: lucene could not be stopped"
