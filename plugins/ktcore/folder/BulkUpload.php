@@ -46,7 +46,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _kt('Bulk upload');
+        return _kt('Bulk Upload');
     }
 
     function check() {
@@ -70,7 +70,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkUpload');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget(_kt('Archive file'), _kt('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_kt('Archive file'), _kt('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true, "file");
 
         $aVocab = array('' => _kt('- Please select a document type -'));
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
@@ -126,10 +126,10 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
-        $aErrorOptions['message'] = _kt("Bulk upload failed");
+        $aErrorOptions['message'] = _kt("Bulk Upload failed");
         $this->oValidator->notError($res, $aErrorOptions);
 
-        $this->addInfoMessage(_kt("Bulk upload successful"));
+        $this->addInfoMessage(_kt("Bulk Upload successful"));
         $this->commitTransaction();
         controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
         exit(0);
