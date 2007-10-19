@@ -32,13 +32,13 @@ class QueryResultItem
 	protected $status;
 	protected $folderId;
 
-
 	public function __construct($document_id, $rank=null, $title=null, $text=null)
 	{
-		$this->document_id=$document_id;
+		$this->document_id=(int) $document_id;
 		$this->rank= $rank;
 		$this->title=$title;
 		$this->text = $text;
+		$this->live = true;
 		$this->loadDocumentInfo();
 	}
 
@@ -57,14 +57,13 @@ class QueryResultItem
 		return true; // should not be reached
 	}
 
-	private function loadDocumentInfo()
+	public function loadDocumentInfo()
 	{
 		$sql = "SELECT
-					f.folder_id, f.full_path, f.name, dcv.size as filesize, dcv.major_version,
+					d.folder_id, f.full_path, f.name, dcv.size as filesize, dcv.major_version,
 					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
 					mt.mimetypes as mimetype, md.mime_doc as mimedoc, d.checkedout, mbu.name as modifiedbyuser, d.modified,
 					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created
-
 				FROM
 					documents d
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id = dmv.id
@@ -78,7 +77,6 @@ class QueryResultItem
 					LEFT JOIN users mbu ON d.modified_user_id=mbu.id
 					LEFT JOIN users cbu ON d.creator_id=cbu.id
 					LEFT JOIN users ou ON d.owner_id=ou.id
-
 				WHERE
 					d.id=$this->document_id";
 
@@ -87,10 +85,9 @@ class QueryResultItem
 		if (PEAR::isError($result) || empty($result))
 		{
 			$this->live = false;
-			return;
+			throw new Exception('QueryResultItem::loadDocumentInfo failed');
 		}
 
-		$this->live = true;
 		if (is_null($result['name']))
 		{
 			$this->fullpath = '(orphaned)';
@@ -137,7 +134,7 @@ class QueryResultItem
 			case 'Title': return (string) $this->title;
 			case 'FullPath': return (string)  $this->fullpath;
 			case 'IsLive': return (bool) $this->live;
-			case 'Filesize': return (int) $this->filesize;
+			case 'Filesize': return $this->filesize;
 			case 'Version': return (string) $this->version;
 			case 'Filename': return (int)$this->filename;
 			case 'FolderId': return (int)$this->folderId;
@@ -180,7 +177,13 @@ class QueryResultItem
 			case 'Status':
 				return $this->status;
 			case 'CanBeReadByUser':
-				return (bool) $this->live && (Permission::userHasDocumentReadPermission($this->Document) || Permission::adminIsInAdminMode());
+				if (!$this->live)
+					return false;
+				if (Permission::userHasDocumentReadPermission($this->Document))
+					return true;
+				if (Permission::adminIsInAdminMode())
+					return true;
+				return false;
 			default:
 				throw new Exception("Unknown property '$property' to get on MatchResult");
 		}
@@ -1167,6 +1170,15 @@ abstract class Indexer
     public function optimise()
     {
     	KTUtil::setSystemSetting('luceneOptimisationDate', time());
+    }
+
+    /**
+     * Shuts down the indexer
+     *
+     */
+    public function shutdown()
+    {
+    	// do nothing generally
     }
 
     /**
