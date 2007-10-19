@@ -7,7 +7,6 @@ $username = '';
 $password = '';
 $expr = '';
 
-print _kt('Command line search') . "...\n";
 
 $output = 'simple';
 $verbose = false;
@@ -30,24 +29,38 @@ if ($argc > 0)
 			case 'output':
 				switch(strtolower($value))
 				{
-					case 'xml': $output = 'simple'; break;
+					case 'xml': $output = 'xml'; break;
 					case 'csv': $output = 'csv'; break;
 					default:
 						$output = 'simple';
 				}
+				break;
 			case 'user':
 				$username = $value;
-				print "* User = $value\n";
+				if ($verbose) print "* User = $value\n";
 				break;
 			case 'pass':
 				$password = $value;
-				print "* User = $value\n";
+				if ($verbose) print "* User = $value\n";
 				break;
 			case 'help':
-				print "Usage: search.php [verbose] user=username pass=password [output=simple|xml|csv] 'expression'\n";
+				print "Usage: search.php [verbose] user=username pass=password [output=simple|xml|csv] 'search criteria'\n";
 				exit;
 		}
 	}
+}
+
+
+if ($verbose) print _kt('Command line search') . "...\n";
+
+if (empty($username))
+{
+	die(_kt("Please specify a username!"));
+}
+
+if (empty($expr))
+{
+	die(_kt("Please specify search criteria!"));
 }
 
 $ktapi = new KTAPI();
@@ -64,13 +77,34 @@ try
 
     $result = $expr->evaluate();
 
+	switch ($output)
+	{
+		case 'simple':
+			foreach($result as $item)
+    		{
+    			print 'Document ID: ' . $item->DocumentID . ' Title:' . $item->Title . ' Relevance:' . $item->Rank . "\n";
+    		}
+    		break;
+		case 'csv':
+   			print "DocumentId,Title,Relevance\n";
+			foreach($result as $item)
+    		{
+    			print $item->DocumentID . ',' . $item->Title . ',' . $item->Rank . "\n";
+    		}
+    		break;
+		case 'xml':
+			print "<result>\n";
+			foreach($result as $item)
+    		{
+    			print "\t<item id=\"$item->DocumentID\" title=\"$item->Title\" relevance=\"$item->Rank\"/>\n";
+    		}
+			print "</result>\n";
+	}
 
-    foreach($result as $item)
-    {
-    	print $item->DocumentID . ' ' . $item->Title . ' ' . $item->Rank . "\n";
-    }
-
-    print _kt("Done.") . "\n";
+	if ($verbose)
+	{
+		print _kt("Done.") . "\n";
+	}
 
 }
 catch(Exception $e)
