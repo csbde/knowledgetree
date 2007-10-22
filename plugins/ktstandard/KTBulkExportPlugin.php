@@ -32,6 +32,7 @@
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/compressionArchiveUtil.inc.php');
@@ -90,6 +91,7 @@ class KTBulkExportAction extends KTFolderAction {
 
         $oKTConfig =& KTConfig::getSingleton();
         $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
+        $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
 
         // Redirect if there are no documents and no folders to export
         if (empty($aDocumentIds) && empty($aFolderList)) {
@@ -110,6 +112,13 @@ class KTBulkExportAction extends KTFolderAction {
                 if ($bNoisy) {
                     $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                     $oDocumentTransaction->create();
+                }
+
+                // fire subscription alerts for the downloaded document
+                if($bNotifications){
+                    $oSubscriptionEvent = new SubscriptionEvent();
+                    $oFolder = Folder::get($oDocument->getFolderID());
+                    $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                 }
 
                 $this->oZip->addDocumentToZip($oDocument);
