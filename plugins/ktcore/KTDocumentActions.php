@@ -296,6 +296,16 @@ class KTDocumentViewAction extends KTDocumentAction {
 
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
+
+        // fire subscription alerts for the downloaded document
+        $oKTConfig =& KTConfig::getSingleton();
+        $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
+        if($bNotifications){
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($this->oDocument->getFolderID());
+            $oSubscriptionEvent->DownloadDocument($this->oDocument, $oFolder);
+        }
+
         exit(0);
     }
 }
@@ -1319,33 +1329,12 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         $sReason = $data['reason'];
 
-        $this->startTransaction();
-        $this->oDocument->setStatusID(ARCHIVED);
-        $res = $this->oDocument->update();
-        if (PEAR::isError($res) || ($res === false)) {
-            $_SESSION['KTErrorMessage'][] = _kt('There was a database error while trying to archive this file');
+        $res = KTDocumentUtil::archive($this->oDocument, $sReason);
+        
+        if(PEAR::isError($res)){
+            $_SESSION['KTErrorMessage'][] = $res->getMessage();
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
-        }
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
-        $oDocumentTransaction->create();
-
-        $this->commitTransaction();
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                'document' => $this->oDocument,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-            if (PEAR::isError($ret)) {
-                $this->oDocument->delete();
-                return $ret;
-            }
         }
 
         $_SESSION['KTInfoMessage'][] = _kt('Document archived.');
