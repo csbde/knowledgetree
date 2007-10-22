@@ -2,22 +2,25 @@
 
 class OOTextExtractor extends ExternalDocumentExtractor
 {
-	private $converter;
-	private $javaPath;
+	private $python;
+	private $documentConverter;
 	private $ooHost;
 	private $ooPort;
-	private $targetMimeType;
 
 	public function __construct($targetMimeType='plain/text')
 	{
 		parent::__construct();
 		$config =& KTConfig::getSingleton();
 
-		$this->converter = KTUtil::findCommand('extractors/jodconverter', 'jodconverter');
-		$this->javaPath = KTUtil::findCommand('extractors/java', 'java');
-		$this->ooHost = $config->get('openoffice/host', 'localhost');
-		$this->ooPort = $config->get('openoffice/port', 8100);
-		$this->targetMimeType = $targetMimeType;
+		$this->python = KTUtil::findCommand('externalBinary/python');
+		$this->ooHost = $config->get('openoffice/host');
+		$this->ooPort = $config->get('openoffice/port');
+
+		$this->documentConverter = KT_DIR . '/bin/openoffice/DocumentConverter.py';
+		if (!is_file($this->documentConverter))
+		{
+			$this->documentConverter = false;
+		}
 	}
 
 	public function getDisplayName()
@@ -28,53 +31,74 @@ class OOTextExtractor extends ExternalDocumentExtractor
 	public function getSupportedMimeTypes()
 	{
 		return array(
-       		'text/rtf',
-       		'application/vnd.oasis.opendocument.text',
-       		'application/vnd.oasis.opendocument.text-template',
-       		'application/vnd.oasis.opendocument.text-web',
-       		'application/vnd.oasis.opendocument.text-master',
-       		'application/vnd.sun.xml.writer',
-       		'application/vnd.sun.xml.writer.template',
-       		'application/vnd.sun.xml.writer.global',
+
 		);
 	}
 
 	public function needsIntermediateSourceFile()
 	{
 		// we need the intermediate file because it
-		// has the correct extension. jodconverter uses the extension to determine mimetype
+		// has the correct extension. documentConverter uses the extension to determine mimetype
 		return true;
 	}
 
 	protected function getCommandLine()
 	{
-		$cmdline = "$this->javaPath -jar $this->converter $this->sourcefile $this->mimetype $this->targetfile $this->targetMimeType $this->ooHost $this->ooPort";
+		$sourcefile = escapeshellcmd($this->sourcefile);
+		unlink($this->targetfile);
+		$this->targetfile .= '.html';
+		$targetfile = escapeshellcmd($this->targetfile);
+
+		$escape = OS_WINDOWS?'"':'\'';
+
+		$cmdline = "{$this->python} {$escape}{$this->documentConverter}{$escape} {$escape}{$this->sourcefile}{$escape} {$escape}{$this->targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
 		return $cmdline;
 	}
 
+	protected function filter($text)
+	{
+		 $text = preg_replace ("@(</?[^>]*>)+@", '', $text);
+
+		 do
+		 {
+			 $old = $text;
+
+			 $text= preg_replace("@([\r\n])[\s]+@",'\1', $text);
+
+			 $text = preg_replace('@\ \ @',' ', $text);
+			 $text = preg_replace("@\n\n@","\n", $text);
+		 }
+		 while ($old != $text);
+
+		 return $text;
+	}
+
+	public function extractTextContent()
+	{
+		if (false === parent::extractTextContent())
+		{
+			return false;
+		}
+
+		$content = file_get_contents($this->targetfile);
+		return file_put_contents($this->targetfile, $this->filter($content));
+
+	}
+
+
 	public function diagnose()
 	{
-		if (false === $this->converter)
+		if (false === $this->python)
 		{
-			return _kt('Cannot locate jodconverter');
+			return _kt('Cannot locate python');
 		}
 
-		if (false === $this->javaPath)
+		if (false === $this->documentConverter)
 		{
-			return _kt('Cannot locate java');
+			return _kt('Cannot locate DocumentConverter.py');
 		}
 
-
-
-		$connection = @fsockopen($this->ooHost, $this->ooPort,$errno, $errstr,5 );
-		if (false === $connection)
-		{
-			return _kt('Cannot connect to openoffice host');
-		}
-		fclose($connection);
-
-
-		return null;
+		return SearchHelper::checkOpenOfficeAvailablity();
 	}
 }
 
