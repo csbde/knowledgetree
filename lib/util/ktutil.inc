@@ -557,6 +557,12 @@ class KTUtil {
     		return $sCommand . ".exe";
     	}
 
+    	$result = KTUtil::checkForStackCommand($sConfigVar);
+    	if (!empty($result))
+    	{
+    		return $result;
+    	}
+
     	$sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
     	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../common/";
     	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . "/../bin/xpdf/";
@@ -577,6 +583,47 @@ class KTUtil {
     	return false;
     }
     // }}}
+
+    function checkForStackCommand($configCommand)
+    {
+    	$config = KTConfig::getSingleton();
+    	$stackPath = realpath(KT_DIR . '/..');
+
+    	switch ($configCommand)
+    	{
+    		case 'externalBinary/php':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/php/php.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/php/bin/php';
+    			}
+    			break;
+    		case 'externalBinary/python':
+    			if (OS_WINDOWS)
+				{
+					$script = $stackPath . '/openoffice/openoffice/program/python.bat';
+				}
+				else
+				{
+					$script = $stackPath . '/openoffice/program/python';
+				}
+				break;
+    		case 'externalBinary/java':
+				$script = $stackPath . '/j2re/bin/java';
+    			break;
+    		default:
+    			return null;
+    	}
+    	if (is_file($script))
+		{
+			return $script;
+		}
+    	return false;
+    }
+
 
     // now accepts strings OR arrays!
     // {{{ addQueryString
