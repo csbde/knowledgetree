@@ -32,6 +32,7 @@
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/compressionArchiveUtil.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 
 
 class KTBulkDeleteAction extends KTBulkAction {
@@ -477,25 +478,14 @@ class KTBulkArchiveAction extends KTBulkAction {
 
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
-        	DBUtil::startTransaction();
-
-        	$document = $oEntity;
-
-            $document->setStatusID(ARCHIVED);
-            $res = $document->update();
-            if (($res === false) || PEAR::isError($res)) {
-               DBUtil::rollback();
-               return false;
+        	
+            $res = KTDocumentUtil::archive($oEntity, $this->sReason);
+            
+            if(PEAR::isError($res)){
+                return $res;
             }
-
-            $oDocumentTransaction = & new DocumentTransaction($document, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
-            $oDocumentTransaction->create();
-
-            DBUtil::commit();
             return true;
         }else if(is_a($oEntity, 'Folder')) {
-        	DBUtil::startTransaction();
-
             $aDocuments = array();
             $aChildFolders = array();
             $oFolder = $oEntity;
@@ -520,7 +510,6 @@ class KTBulkArchiveAction extends KTBulkAction {
                     $sChildId = $oChild->getID();
                     $sChildDocs = $oChild->getDocumentIDs($sChildId);
                     if (PEAR::isError($res)) {
-                       DBUtil::rollback();
                        return false;
                     }
 
@@ -535,19 +524,14 @@ class KTBulkArchiveAction extends KTBulkAction {
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
-
-                    $oDocument->setStatusID(ARCHIVED);
-                    $res = $oDocument->update();
-                    if (($res === false) || PEAR::isError($res)) {
-                       DBUtil::rollback();
-                       return false;
+                    
+                    $res = KTDocumentUtil::archive($oEntity, $this->sReason);
+                    
+                    if(PEAR::isError($res)){
+                        return $res;
                     }
-
-                    $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'),  $this->sReason), 'ktcore.transactions.update');
-                    $oDocumentTransaction->create();
                 }
             }
-            DBUtil::commit();
             return true;
         }
     }
@@ -557,7 +541,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     var $sName = 'ktcore.actions.bulk.export';
     var $_sPermission = 'ktcore.permissions.read';
     var $_bMutator = true;
-
+    var $bNotifications = true;
+    
     function getDisplayName() {
         return _kt('Export');
     }
@@ -589,6 +574,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->startTransaction();
         $oKTConfig =& KTConfig::getSingleton();
         $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
+        
+        $this->bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
 
         $result = parent::do_performaction();
         $sExportCode = $this->oZip->createZipFile();
@@ -634,6 +621,14 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                 $oDocumentTransaction->create();
             }
+            
+            // fire subscription alerts for the downloaded document - if global config is set
+            if($this->bNotifications){
+                $oSubscriptionEvent = new SubscriptionEvent();
+                $oFolder = Folder::get($oDocument->getFolderID());
+                $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
+            }
+                    
             $this->oZip->addDocumentToZip($oDocument);
 
         }else if(is_a($oEntity, 'Folder')) {
@@ -677,6 +672,14 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                         $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                         $oDocumentTransaction->create();
                     }
+
+                    // fire subscription alerts for the downloaded document
+                    if($this->bNotifications){
+                        $oSubscriptionEvent = new SubscriptionEvent();
+                        $oFolder = Folder::get($oDocument->getFolderID());
+                        $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
+                    }
+
                     $this->oZip->addDocumentToZip($oDocument);
                 }
             }

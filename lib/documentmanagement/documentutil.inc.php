@@ -178,11 +178,50 @@ class KTDocumentUtil {
         $oDocumentTransaction = new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
 
-        // fire subscription alerts for the checked in document
+        // fire subscription alerts for the downloaded document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckOutDocument($oDocument, $oFolder);
 
+        return true;
+    }
+    
+    function archive($oDocument, $sReason) {
+        
+        $this->startTransaction();
+        $oDocument->setStatusID(ARCHIVED);
+        $res = $oDocument->update();
+        
+        if (PEAR::isError($res) || ($res === false)) {
+            return PEAR::raiseError(_kt('There was a database error while trying to archive this file'));
+        }
+        
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
+        $oDocumentTransaction->create();
+
+        $this->commitTransaction();
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $oDocument->delete();
+                return $ret;
+            }
+        }
+        
+        // fire subscription alerts for the archived document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+        
         return true;
     }
 
@@ -922,6 +961,11 @@ class KTDocumentUtil {
                 return $ret;
             }
         }
+        
+        // fire subscription alerts for the copied document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->MoveDocument($oDocument, $oDestinationFolder, $oSrcFolder, 'CopiedDocument');
 
         return $oNewDocument;
     }
@@ -1027,6 +1071,10 @@ class KTDocumentUtil {
                 return $ret;
             }
         }
+        
+        // fire subscription alerts for the moved document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oSubscriptionEvent->MoveDocument($oDocument, $oFolder, $oOriginalFolder);
 
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
