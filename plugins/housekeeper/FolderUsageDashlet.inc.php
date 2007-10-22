@@ -1,28 +1,32 @@
 <?php
 
 /**
+ * $Id
  *
- * Copyright (c) 2007 Jam Warehouse http://www.jamwarehouse.com
+ * The contents of this file are subject to the KnowledgeTree Public
+ * License Version 1.1.2 ("License"); You may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.knowledgetree.com/KPL
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; using version 2 of the License.
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * See the License for the specific language governing rights and
+ * limitations under the License.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * All copies of the Covered Code must include on each user interface screen:
+ *    (i) the "Powered by KnowledgeTree" logo and
+ *    (ii) the KnowledgeTree copyright notice
+ * in the same form as they appear in the distribution.  See the License for
+ * requirements.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * The Original Code is: KnowledgeTree Open Source
  *
- * -------------------------------------------------------------------------
- *
- * You can contact the copyright owner regarding licensing via the contact
- * details that can be found on the KnowledgeTree web site:
- *
- *         http://www.knowledgetree.com/
+ * The Initial Developer of the Original Code is The Jam Warehouse Software
+ * (Pty) Ltd, trading as KnowledgeTree.
+ * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
+ * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
+ * All Rights Reserved.
+ * Contributor( s): ______________________________________
  */
 
 class FolderUsageDashlet extends KTBaseDashlet
@@ -31,7 +35,7 @@ class FolderUsageDashlet extends KTBaseDashlet
 
 	function FolderUsageDashlet()
 	{
-		$this->sTitle = _kt('System Folder Usage');
+		$this->sTitle = _kt('System Folder Utilization');
 		$this->sClass = "ktInfo";
 	}
 
