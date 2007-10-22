@@ -167,7 +167,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         // Load KTWebDAV config
         if (!$this->initConfig()) {
-            $this->ktwebdavLog('Could not load configiration.', 'error');
+            $this->ktwebdavLog('Could not load configuration.', 'error');
             exit(0);
         }
 
@@ -437,6 +437,22 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         $path = $options["path"];
 
+        // Fix for Mac Clients
+        // Mac adds DS_Store files when folders are added and ._filename files when files are added
+        // The PUT function doesn't add these files to the dms but PROPFIND still looks for the .DS_Store file,
+        // and returns an error if not found. We emulate its existence by returning a positive result.
+        if($this->dav_client == 'MC' || $this->dav_client == 'MG'){
+            // Remove filename from path
+            $aPath = explode('/', $path);
+            $fileName = $aPath[count($aPath)-1];
+            
+            if(strtolower($fileName) == '.ds_store'){
+            $this->ktwebdavLog("Using a Mac client. Filename is .DS_Store so we emulate a positive result.", 'info', true);
+                // ignore
+                return true;
+            }
+        }
+
         list($iFolderID, $iDocumentID) = $this->_folderOrDocument($path);
         $this->ktwebdavLog("Folder/Doc is " . print_r(array($iFolderID, $iDocumentID), true), 'info', true);
 
@@ -664,7 +680,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             } else {
                 $options["depth"] = "infinity";
             }
-
+            
             // analyze request payload
             $propinfo = new _parse_propfind("php://input");
             if (!$propinfo->success) {
@@ -798,8 +814,22 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                 echo " <D:response $ns_defs>\n";
 
-                $href = htmlspecialchars($this->_slashify($this->_mergePathes($_SERVER['SCRIPT_NAME'], $path)));
-
+                $tempHref = $this->_mergePathes($_SERVER['SCRIPT_NAME'], $path);
+                
+                // Ensure collections end in a slash
+                if(isset($file['props'])){
+                    foreach($file['props'] as $v){
+                        if($v['name'] == 'resourcetype'){
+                            if($v['val'] == 'collection'){
+                                $tempHref = $this->_slashify($tempHref);
+                                continue;
+                            }
+                        }
+                    }
+                }
+                
+                $href = htmlspecialchars($tempHref);
+                
                 echo "  <D:href>$href</D:href>\n";
 
                 $this->ktwebdavLog("\nfile is: " . print_r($file, true), 'info', true);
@@ -1101,7 +1131,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             while (count($aRemaining)) {
                 $sFolderName = $aRemaining[0];
                 $aRemaining = array_slice($aRemaining, 1);
-                if ($sFolderName == '') {
+                if (empty($sFolderName)) {
                     continue;
                 }
                 // FIXME: Direct database access
@@ -1187,6 +1217,29 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $this->ktwebdavLog("dav_client is: " .  $this->dav_client, 'info', true);
 
                 $path = $options["path"];
+                
+                // Fix for Mac
+                // Mac adds DS_Store files when folders are added and ._filename files when files are added
+                // we want to ignore them.
+                if($this->dav_client == 'MC' || $this->dav_client == 'MG'){
+                    // Remove filename from path
+                    $aPath = explode('/', $path);
+                    $fileName = $aPath[count($aPath)-1];
+                    
+                    if(strtolower($fileName) == '.ds_store'){
+                        $this->ktwebdavLog("Using a mac client. Ignore the .DS_Store files created with every folder.", 'info', true);
+                        // ignore
+                        return "204 No Content";
+                    }
+                    
+                    if($fileName[0] == '.' && $fileName[1] == '_'){
+                        $fileName = substr($fileName, 2);
+                        $this->ktwebdavLog("Using a mac client. Ignore the ._filename files created with every file.", 'info', true);
+                        // ignore
+                        return "204 No Content";
+                    }
+                }
+                    
 
                 $res = $this->_folderOrDocument($path);
                 list($iFolderID, $iDocumentID) = $res;
@@ -1623,6 +1676,18 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         function _MOVEDocument($options, $iFolderID, $iDocumentID) {
 
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
+            
+            // Fix for Mac
+            if($this->dav_client == 'MG'){
+                $this->ktwebdavLog("Remove ktwebdav from destination path: ".$options['dest'], 'info', true);
+                if(!(strpos($options['dest'], 'ktwebdav/ktwebdav.php/') === FALSE)){
+                    $options['dest'] = substr($options['dest'], 22);
+                }
+                if($options['dest'][0] != '/'){
+                   $options['dest'] = '/'.$options['dest'];
+                } 
+            }
+            
             $this->ktwebdavLog("Entering _MOVEDocument. options are " . print_r($options, true), 'info', true);
             global $default;
             $new = true;
@@ -1643,7 +1708,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 //	return "412 Precondition Failed - This is a Rename. Overwrite needs to be TRUE.";
                 //}
                 $this->ktwebdavLog("Got an oDocument of " . print_r($oDocument, true), 'info', true);
-                $this->ktwebdavLog("Got an new name of " . basename($dest_path), 'info', true);
+                $this->ktwebdavLog("Got a new name of " . basename($dest_path), 'info', true);
 
                 // Check if the user has permissions to write this document
                 $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2194,8 +2259,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Mac Finder
-            if (stristr($userAgentValue,"Macintosh")) {
+            if (stristr($userAgentValue,"Macintosh") || stristr($userAgentValue,"Darwin")) {
                 $this->dav_client = "MC";
+                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
+            }
+            // Mac Goliath
+            if (stristr($userAgentValue,"Goliath")) {
+                $this->dav_client = "MG";
                 $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Konqueror
@@ -2225,6 +2295,20 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if ($this->dav_client == 'MC') {
 
                 $this->ktwebdavLog("This is Mac Finder type client which only supports SafeMode.", 'info', true);
+                return false;
+
+            }
+            // Mac Goliath
+            if ($this->dav_client == 'MG' && $this->safeMode == 'off') {
+
+                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode off.", 'info', true);
+                return true;
+
+            }
+            // Mac Goliath
+            if ($this->dav_client == 'MG' && $this->safeMode != 'off') {
+
+                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode on.", 'info', true);
                 return false;
 
             }

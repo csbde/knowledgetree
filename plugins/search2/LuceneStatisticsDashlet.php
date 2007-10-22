@@ -34,12 +34,12 @@ class LuceneStatisticsDashlet extends KTBaseDashlet
 {
     function LuceneStatisticsDashlet()
     {
-        $this->sTitle = _kt('Lucene Statistics');
+        $this->sTitle = _kt('Document Indexer Statistics');
     }
 
 	function is_active($oUser)
 	{
-	    return Permission::userIsSystemAdministrator($oUser);
+	    return Permission::userIsSystemAdministrator();
 	}
 
 	function render()

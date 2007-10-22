@@ -117,24 +117,49 @@ if(!empty($aList)){
         $sFreq = $item['frequency'];
         $sParameters = $item['script_params'];
         
-        $iTime = time();
-        $iStart = explode(' ', microtime());
-        
-        /* Set up parameters for use by the script
-        $aParams = explode('|', $sParameters);
-        
-        foreach($aParams as $param){
-            $aParam = explode('=', $param);
-            if(!empty($aParam)){
-                $$aParam[0] = $aParam[1];
-                $sParamList .= "{$aParam[0]} {$aParam[1]} ";
+        // Check if script is windows or *nix compatible
+        $extArr = explode('.', $sTaskUrl);
+        $ext = array_pop($extArr);
+        $script = implode('.', $extArr);
+        if(OS_WINDOWS){
+            switch($ext){
+                case 'sh':
+                    $sTaskUrl = $script.'.bat';
+                    break;
+                case 'bin':
+                    $sTaskUrl = $script.'.exe';
+                    break;
+            }
+        }else{
+            switch($ext){
+                case 'bat':
+                    if(file_exists(KT_DIR . $script.'.sh')){
+                        $sTaskUrl = $script.'.sh';
+                        break;
+                    }
+                    // File doesn't exist - log error
+                    $default->log->error("Scheduler: Task script can't be found at ".KT_DIR."{$script}.sh");
+                    continue;
+                    break;
+                case 'exe':
+                    if(file_exists(KT_DIR . $script)){
+                        $sTaskUrl = $script;
+                        break;
+                    }
+                    if(file_exists(KT_DIR . $script.'.bin')){
+                        $sTaskUrl = $script.'.bin';
+                        break;
+                    }
+                    // File doesn't exist - log error
+                    $default->log->error("Scheduler: Task script can't be found at ".KT_DIR."{$script} or ".KT_DIR."{$script}.bin");
+                    continue;
+                    break;
             }
         }
-        */
-        
-        // Run the script as php
-        //include(KT_DIR . $sTaskUrl);
-        
+                
+        $iTime = time();
+        $iStart = explode(' ', microtime());
+                
         // Run the script
         $file = KT_DIR . escapeshellcmd($sTaskUrl);
         system("{$file} {$sParameters} >> /dev/null", $retval);
