@@ -77,6 +77,7 @@ class IndexRecreator
 	var $primary;
 	var $globalstart;
 	var $start;
+	var $tables;
 
 	function microtimeFloat()
 	{
@@ -257,7 +258,11 @@ class IndexRecreator
 		$this->addForeignKey('metadata_lookup_tree','document_field_id', 'document_fields','id');
 //		$this->addForeignKey('metadata_lookup_tree','metadata_lookup_tree_parent', '??','id');
 
-		$this->addForeignKey('mime_types','mime_document_id','mime_documents','id');
+		$this->addForeignKey('mime_types','mime_document_id','mime_documents','id', 'set null', 'set null');
+		$this->addForeignKey('mime_types','extractor_id','mime_extractors','id', 'set null', 'set null');
+
+		$this->addForeignKey('mime_document_mapping','mime_type_id','mime_types','id');
+		$this->addForeignKey('mime_document_mapping','mime_document_id','mime_documents','id');
 
 		$this->addForeignKey('news','image_mime_type_id','mime_types','id');
 
@@ -398,6 +403,13 @@ class IndexRecreator
 		//$this->addIndex('document_types_lookup','disabled'); ? used
 
 		$this->addIndex('documents','created');
+		$this->addIndex('documents','modified');
+		$this->addIndex('documents','full_path','','(255)');
+ 		$this->addIndex('documents','immutable');
+		$this->addIndex('documents','checkedout');
+
+		$this->addIndex('document_content_version','filename','','(255)');
+		$this->addIndex('document_content_version','size');
 
 		$this->addIndex('field_behaviour_options',array('behaviour_id','field_id'));
 
@@ -516,20 +528,22 @@ class IndexRecreator
 		$this->_exec($sql);
 	}
 
-	function addIndex($table, $fields, $type='')
+	function addIndex($table, $fields, $type='', $extra='')
 	{
+		if (!in_array($table, $this->tables)) return;
+
 		if (!is_array($fields)) $fields = array($fields);
 		$index = implode('_', $fields);
 		//$index = str_replace('_id','',$index);
 		$fields = implode(',',$fields);
-		$sql = "alter table $table add $type index $index ($fields) ";
+		$sql = "alter table $table add $type index $index ($fields$extra) ";
 		$this->_exec($sql);
 	}
 
 	function addForeignKey($table, $field, $othertable, $otherfield, $ondelete='cascade', $onupdate='cascade')
 	{
-		if (!in_array($table, $this->tables)) continue;
-		if (!in_array($othertable, $this->tables)) continue;
+		if (!in_array($table, $this->tables)) return;
+		if (!in_array($othertable, $this->tables)) return;
 
 		$sql = "alter table $table add foreign key ($field) references $othertable ($otherfield) ";
 		if ($ondelete != '')
@@ -594,6 +608,8 @@ class IndexRecreator
 		$this->addPrimaryKey('metadata_lookup','id');
 		$this->addPrimaryKey('metadata_lookup_tree','id');
 		$this->addPrimaryKey('mime_documents','id');
+		$this->addPrimaryKey('mime_extractors','id');
+		$this->addPrimaryKey('mime_extractors',array('mime_type_id','mime_document_id'));
 		$this->addPrimaryKey('mime_types','id');
 		$this->addPrimaryKey('news','id');
 		$this->addPrimaryKey('notifications','id');
@@ -646,6 +662,7 @@ class IndexRecreator
 
 	function addPrimaryKey($table, $primarykey)
 	{
+		if (!in_array($table, $this->tables)) return;
 		if (is_array($primarykey))
 		{
 			$primarykey = implode(',', $primarykey);
