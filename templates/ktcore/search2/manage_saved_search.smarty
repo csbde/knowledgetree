@@ -1,14 +1,14 @@
-<h2>{i18n}Manage Saved Searches{/i18n}</h2>
+<h2>{i18n}Manage Saved Search Criteria{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Saved searches are searches which are particular to your location
-For example, you could define a search which returns all documents in a particular workflow state,
+<p class="descriptiveText">{i18n}Saved search criteria are criteria that are particular to your location.
+For example, you could define criteria that returns all documents in a particular workflow state,
 or all documents which are considered "common" within your organisation (leave policy,
 newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
 
 <p class="descriptiveText">
 {capture assign=options}
-<a href="{addQS}action=guiBuilder{/addQS}">{i18n}Advanced Search{/i18n}</a> {i18n}or{/i18n} <a href="{addQS}action=queryBuilder{/addQS}">{i18n}Query Editor{/i18n}</a>
+<a href="{addQS}action=guiBuilder{/addQS}">{i18n}Advanced Search{/i18n}</a> {i18n}or{/i18n} <a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Critiera Editor{/i18n}</a>
 {/capture}
 
 
@@ -18,12 +18,12 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
 
 {if $saved}
-<h2>{i18n}Existing Searches{/i18n}</h2>
+<h2>{i18n}Existing Saved Search Criteria{/i18n}</h2>
 
 <table class="listing">
 <thead>
     <tr>
-        <th>{i18n}Search Name{/i18n}</th>
+        <th>{i18n}Name{/i18n}</th>
         <th>{i18n}User{/i18n}</th>
         <th>{i18n}Edit{/i18n}</th>
         <th>{i18n}Delete{/i18n}</th>

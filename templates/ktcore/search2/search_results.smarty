@@ -2,35 +2,35 @@
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 
 <div class="collapsible">
-<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Search Expression{/i18n}</h4>
+<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Search Criteria{/i18n}</h4>
 <div class="collapsiblebody">
 <fieldset>
-	<legend>{i18n}Search Expression{/i18n}</legend>
+	<legend>{i18n}Search Criteria{/i18n}</legend>
 	{$txtQuery}
 	<br>
 {if empty($iSavedID)}
 	{capture assign=options}
-    	<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Query Editor{/i18n}</a>
+    	<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Critieria Editor{/i18n}</a>
     {/capture}
-	{i18n arg_options=$options}Use the #options# to extend this query.{/i18n}
+	{i18n arg_options=$options}Use the #options# to extend your search criteria.{/i18n}
 {/if}
 {if !empty($iSavedID)}
 	{capture assign=options}
     	<a href="{addQS}action=queryBuilder&fSavedSearchId={$iSavedID}{/addQS}">Query Editor</a>
     {/capture}
-	{i18n arg_options=$options}To edit the search expression, use the #options#.{/i18n}
+	{i18n arg_options=$options}To edit the search criteria, use the #options#.{/i18n}
 {/if}
-	<font color=brown><div id="savedSearch" style="display: none">{i18n}The search has been saved.{/i18n}</div></font>
+	<font color=brown><div id="savedSearch" style="display: none">{i18n}The search criteria has been saved.{/i18n}</div></font>
 </fieldset>
 <br>
 {if !empty($iSavedID)}
 <fieldset>
 	<legend>{i18n}Saved Search{/i18n}</legend>
-	{i18n}This is the saved search:{/i18n} {$txtSavedName}. <br/>
+	{i18n}This is the saved search criteria:{/i18n} {$txtSavedName}. <br/>
 	{capture assign=options}
-    	<a href="{addQS}action=manage{/addQS}">{i18n}Manage Saved Searches{/i18n}</a>
+    	<a href="{addQS}action=manage{/addQS}">{i18n}Manage Saved Search Criteria{/i18n}</a>
     {/capture}
-	{i18n arg_options=$options}To delete this saved search or edit other saved search expressions, #options#.{/i18n}
+	{i18n arg_options=$options}To delete this saved search criteria or to edit other saved search criteria, #options#.{/i18n}
 </fieldset>
 {/if}
 {literal}
@@ -117,11 +117,11 @@ function onShowAll(showall)
 
 {if $numResults == 0}
 
-	{i18n}There are no search results matching your search query.{/i18n}
+	{i18n}There are no search results matching your search criteria.{/i18n}
 
 	<p>
 	{capture assign=options}
-		<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Query Editor{/i18n}</a>
+		<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Criteria Editor{/i18n}</a>
 	{/capture}
 
 	{i18n arg_options=$options}Use the #options# to extend this query.{/i18n}

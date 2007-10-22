@@ -3,7 +3,6 @@
 {$context->oPage->requireJSResource("thirdpartyjs/extjs/adapter/ext/ext-base.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/extjs/ext-all.js")}
 
-<h2>{i18n}Advanced Search{/i18n}</h2>
 
 {literal}
 <style>
@@ -765,7 +764,7 @@ function butSearchClick()
 {/literal}
 
 <fieldset>
-	<legend>{i18n}Metadata Query{/i18n}</legend>
+	<legend>{i18n}Advanced Search{/i18n}</legend>
 
 
 {capture assign=options}
@@ -800,7 +799,7 @@ function butSearchClick()
 			<tr>
 				<td width="50%" valign="top">
 					<br>
-					<div id="criteria_nofields0" style="color: brown">{i18n}No fields have been selected for the criteria group.{/i18n}
+					<div id="criteria_nofields0" style="color: brown">{i18n}No criteria have been selected for the criteria group.{/i18n}
 					<p>
 					<input type=button value="{i18n}Remove Criteria Group{/i18n}" onclick="removeCriteriaGroup(0)" id="removeCriteriaGroup0" style="display: none">
 					</div>
@@ -813,14 +812,14 @@ function butSearchClick()
 					<tr>
 						<td valign=top>
 							<select id="selector0" style="width: 200px" onchange="selectorChange(0)">
-								<option value="0">{i18n}Available Fields{/i18n}
+								<option value="0">{i18n}Available Criteria{/i18n}
 								<option value="1">{i18n}Available Fieldsets{/i18n}
 								<option value="2">{i18n}Available Workflows{/i18n}
 							</select>
 							<br>
 							<div>
 							<select id="fields0" size="5" style="width: 200px; height: 100px; display: block" onclick="fieldChange(0)">
-							<option value="" selected>--- {i18n}Select a field{/i18n} ---
+							<option value="" selected>--- {i18n}Select some criteria{/i18n} ---
 							{foreach from=$metainfo.fields item=field}
 								<option>{$field.display}
 							{/foreach}
