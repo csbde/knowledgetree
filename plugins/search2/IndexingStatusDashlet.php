@@ -36,7 +36,7 @@ class IndexingStatusDashlet extends KTBaseDashlet
 
     function IndexingStatusDashlet()
     {
-        $this->sTitle = _kt('document Indexer Status');
+        $this->sTitle = _kt('Document Indexer Status');
         $this->sClass = 'ktError';
     }
 
