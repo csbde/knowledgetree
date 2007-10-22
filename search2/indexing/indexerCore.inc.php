@@ -330,7 +330,11 @@ abstract class Indexer
 	public function clearExtractors()
 	{
 		global $default;
-		$sql = "update mime_types set extractor=null";
+
+		$sql = "update mime_types set extractor_id=null";
+		DBUtil::runQuery($sql);
+
+		$sql = "delete from mime_extractors";
 		DBUtil::runQuery($sql);
 
 		$default->log->debug('clearExtractors');
@@ -616,6 +620,43 @@ abstract class Indexer
     }
 
     /**
+     * This does the initial mime type association between mime types and text extractors
+     *
+     */
+    public function checkForRegisteredTypes()
+    {
+    	global $default;
+
+    	// we are only doing this once!
+    	$initRegistered = KTUtil::getSystemSetting('mimeTypesRegistered', false);
+    	if ($initRegistered)
+    	{
+    		return;
+    	}
+    	$default->log->info('checkForRegisteredTypes: start');
+
+    	$this->registerTypes(true);
+
+
+    	$disable = array(
+    		OS_WINDOWS=>array('PSExtractor'),
+    		OS_UNIX => array()
+
+    	);
+
+		foreach($disable[OS_WINDOWS] as $extractor)
+		{
+    		$sql = "UPDATE mime_extractors SET active=0 WHERE name='$extractor'";
+    		DBUtil::runQuery($sql);
+    		$default->log->info("checkForRegisteredTypes: disabled '$extractor'");
+    	}
+
+    	$default->log->info('checkForRegisteredTypes: done');
+    	KTUtil::setSystemSetting('mimeTypesRegistered', true);
+    }
+
+
+    /**
      * The main function that may be called repeatedly to index documents.
      *
      * @param int $max Default 20
@@ -623,6 +664,8 @@ abstract class Indexer
     public function indexDocuments($max=null)
     {
     	global $default;
+
+    	$this->checkForRegisteredTypes();
 
     	$default->log->info('indexDocuments: start');
     	if (!$this->doesDiagnosticsPass())
