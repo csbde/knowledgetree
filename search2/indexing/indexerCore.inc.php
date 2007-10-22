@@ -798,6 +798,9 @@ abstract class Indexer
 
         		if ($extractor->extractTextContent())
         		{
+        			// the extractor may need to create another target file
+        			$targetFile = $extractor->getTargetFile();
+
         			$extractor->setExtractionStatus(true);
         			$this->executeHook($extractor, 'pre_index');
 					$this->executeHook($extractor, 'pre_index', $mimeType);
