@@ -1,8 +1,8 @@
 <?php
 
-require_once('OOPDFTextExtractor.inc.php');
+require_once('OOTextExtractor.inc.php');
 
-class OOSpreadsheetExtractor extends OOPDFTextExtractor
+class OOSpreadsheetExtractor extends OOTextExtractor
 {
 	public function getDisplayName()
 	{
