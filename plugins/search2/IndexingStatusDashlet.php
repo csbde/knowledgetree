@@ -36,7 +36,7 @@ class IndexingStatusDashlet extends KTBaseDashlet
 
     function IndexingStatusDashlet()
     {
-        $this->sTitle = _kt('Indexing Status');
+        $this->sTitle = _kt('document Indexer Status');
         $this->sClass = 'ktError';
     }
 
@@ -84,6 +84,11 @@ class IndexingStatusDashlet extends KTBaseDashlet
 	    	$_SESSION['IndexingStatus']['indexerName'] = $this->indexerName;
 	    	$_SESSION['IndexingStatus']['indexerDiagnosis'] = $this->indexerDiagnosis;
 	    	$_SESSION['IndexingStatus']['extractorDiagnosis'] = $this->extractorDiagnosis;
+		}
+
+		if (is_null($this->indexerDiagnosis) && empty($this->extractorDiagnosis))
+		{
+			return false;
 		}
 
 
