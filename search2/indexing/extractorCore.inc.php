@@ -510,15 +510,17 @@ abstract class CompositeExtractor extends DocumentExtractor
 	public function extractTextContent()
 	{
 		$intermediateFile = $this->targetfile . '.' . $this->targetExtension;
+		touch($intermediateFile);
 
 		$this->sourceExtractor->setSourceFile($this->sourcefile);
 		$this->sourceExtractor->setTargetFile($intermediateFile);
 		$this->sourceExtractor->setMimeType($this->mimetype);
 		$this->sourceExtractor->setExtension($this->extension);
-		if ($this->sourceExtractor->extractTextContent())
+		if (!$this->sourceExtractor->extractTextContent())
 		{
 			return false;
 		}
+		$intermediateFile = $this->sourceExtractor->getTargetFile();
 
 		$this->targetExtractor->setSourceFile($intermediateFile);
 		$this->targetExtractor->setTargetFile($this->targetfile);
