@@ -94,56 +94,54 @@ class SubscriptionEvent {
 
 	    // only useful for folder subscriptions.
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
-		foreach ($aUsers as $oSubscriber) {
-
-		    // notification object first.
-		    $aNotificationOptions = array();
-		    $aNotificationOptions['target_user'] = $oSubscriber->getID();
-		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oAddedFolder->getName();
-		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
-		    $aNotificationOptions['object_id'] = $oAddedFolder->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "AddFolder";
-			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-
-			// now the email content.
-			// FIXME this needs to be handled entirely within notifications from now on.
-			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
-			    $emailContent = $content->getEmailAlertContent($oNotification);
-				$emailSubject = $content->getEmailAlertSubject($oNotification);
-				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
-				$oEmail->send();
-			}
-		}
+    		foreach ($aUsers as $oSubscriber) {
+    
+    		    // notification object first.
+    		    $aNotificationOptions = array();
+    		    $aNotificationOptions['target_user'] = $oSubscriber->getID();
+    		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+    		    $aNotificationOptions['target_name'] = $oAddedFolder->getName();
+    		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+    		    $aNotificationOptions['object_id'] = $oAddedFolder->getId();  // parent folder_id, in this case.
+    		    $aNotificationOptions['event_type'] = "AddFolder";
+    			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+    
+    			// now the email content.
+    			// FIXME this needs to be handled entirely within notifications from now on.
+    			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+    			    $emailContent = $content->getEmailAlertContent($oNotification);
+    				$emailSubject = $content->getEmailAlertSubject($oNotification);
+    				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+    				$oEmail->send();
+    			}
+    		}
     }
     function AddDocument ($oAddedDocument, $oParentFolder) {
         $content = new SubscriptionContent(); // needed for i18n
 	    // two parts to this:
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
-		foreach ($aUsers as $oSubscriber) {
-
-		    // notification object first.
-			$aNotificationOptions = array();
-			$aNotificationOptions['target_user'] = $oSubscriber->getID();
-		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null - is this valid?
-		    $aNotificationOptions['target_name'] = $oAddedDocument->getName();
-		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
-		    $aNotificationOptions['object_id'] = $oAddedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "AddDocument";
-
-			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-
-			// now the email content.
-			// FIXME this needs to be handled entirely within notifications from now on.
-			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
-			    $emailContent = $content->getEmailAlertContent($oNotification);
-				$emailSubject = $content->getEmailAlertSubject($oNotification);
-				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
-				$oEmail->send();
-			}
-		}
+    		foreach ($aUsers as $oSubscriber) {
+    
+    		    // notification object first.
+    			$aNotificationOptions = array();
+    			$aNotificationOptions['target_user'] = $oSubscriber->getID();
+    		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null - is this valid?
+    		    $aNotificationOptions['target_name'] = $oAddedDocument->getName();
+    		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+    		    $aNotificationOptions['object_id'] = $oAddedDocument->getId();  // parent folder_id, in this case.
+    		    $aNotificationOptions['event_type'] = "AddDocument";
+    
+    			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+    
+    			// now the email content.
+    			// FIXME this needs to be handled entirely within notifications from now on.
+    			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+    			    $emailContent = $content->getEmailAlertContent($oNotification);
+    				$emailSubject = $content->getEmailAlertSubject($oNotification);
+    				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+    				$oEmail->send();
+    			}
+    		}
     }
     function RemoveFolder($oRemovedFolder, $oParentFolder) {
         $content = new SubscriptionContent(); // needed for i18n
@@ -153,7 +151,6 @@ class SubscriptionEvent {
 
 		// we need to start with the latter, so we don't "lose" any.
 		$aUsers = $this->_getSubscribers($oRemovedFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -184,7 +181,6 @@ class SubscriptionEvent {
 
 		// now handle (for those who haven't been alerted) users watching the folder.
 		$aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -216,7 +212,6 @@ class SubscriptionEvent {
 
 		// we need to start with the latter, so we don't "lose" any.
 		$aUsers = $this->_getSubscribers($oRemovedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -247,7 +242,6 @@ class SubscriptionEvent {
 
 		// now handle (for those who haven't been alerted) users watching the folder.
 		$aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -275,7 +269,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -300,7 +293,6 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -328,7 +320,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -352,7 +343,6 @@ class SubscriptionEvent {
 		}
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -380,7 +370,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -405,7 +394,7 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
+        
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -433,60 +422,58 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
-		foreach ($aUsers as $oSubscriber) {
-
-		    // notification object first.
-			$aNotificationOptions = array();
-			$aNotificationOptions['target_user'] = $oSubscriber->getID();
-		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
-		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckOutDocument";
-			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-
-			// now the email content.
-			// FIXME this needs to be handled entirely within notifications from now on.
-			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
-			    $emailContent = $content->getEmailAlertContent($oNotification);
-				$emailSubject = $content->getEmailAlertSubject($oNotification);
-				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
-				$oEmail->send();
-			}
-		}
+        
+					foreach ($aUsers as $oSubscriber) {
+			
+					    // notification object first.
+						$aNotificationOptions = array();
+						$aNotificationOptions['target_user'] = $oSubscriber->getID();
+					    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+					    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+					    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+					    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
+					    $aNotificationOptions['event_type'] = "CheckOutDocument";
+						$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+			
+						// now the email content.
+						// FIXME this needs to be handled entirely within notifications from now on.
+						if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+						    $emailContent = $content->getEmailAlertContent($oNotification);
+							$emailSubject = $content->getEmailAlertSubject($oNotification);
+							$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+							$oEmail->send();
+						}
+					}
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
-		foreach ($aUsers as $oSubscriber) {
-
-		    // notification object first.
-			$aNotificationOptions = array();
-			$aNotificationOptions['target_user'] = $oSubscriber->getID();
-		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
-		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
-		    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
-		    $aNotificationOptions['event_type'] = "CheckOutDocument";
-			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-
-			// now the email content.
-			// FIXME this needs to be handled entirely within notifications from now on.
-			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
-			    $emailContent = $content->getEmailAlertContent($oNotification);
-				$emailSubject = $content->getEmailAlertSubject($oNotification);
-				$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
-				$oEmail->send();
-			}
-		}
+				foreach ($aUsers as $oSubscriber) {
+		
+				    // notification object first.
+					$aNotificationOptions = array();
+					$aNotificationOptions['target_user'] = $oSubscriber->getID();
+				    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+				    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+				    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
+				    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
+				    $aNotificationOptions['event_type'] = "CheckOutDocument";
+					$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+		
+					// now the email content.
+					// FIXME this needs to be handled entirely within notifications from now on.
+					if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
+					    $emailContent = $content->getEmailAlertContent($oNotification);
+						$emailSubject = $content->getEmailAlertSubject($oNotification);
+						$oEmail = new EmailAlert($oSubscriber->getEmail(), $emailSubject, $emailContent);
+						$oEmail->send();
+					}
+				}
     }
 
     function MoveDocument($oMovedDocument, $oToFolder, $oFromFolder, $moveOrCopy = "MovedDocument")  {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oMovedDocument->getId(), $this->subscriptionTypes["Document"]);
-	    $aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 
       	foreach ($aUsers as $oSubscriber) {
       	    // notification object first.
@@ -511,7 +498,7 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oFromFolder->getId(), $this->subscriptionTypes["Folder"]);
-      	$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
+        
       	foreach ($aUsers as $oSubscriber) {
       
       	    // notification object first.
@@ -535,7 +522,6 @@ class SubscriptionEvent {
       	}
 
         $aUsers = $this->_getSubscribers($oToFolder->getId(), $this->subscriptionTypes["Folder"]);
-      	$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
       	foreach ($aUsers as $oSubscriber) {
       
       	    // notification object first.
@@ -563,7 +549,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -588,7 +573,6 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -616,7 +600,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -641,7 +624,6 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -669,7 +651,6 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oDocument->getId(), $this->subscriptionTypes["Document"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -694,7 +675,6 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -747,6 +727,9 @@ class SubscriptionEvent {
         $aParams = array($iObjectId);
 
 		$aNewUsers = DBUtil::getResultArrayKey(array($sQuery, $aParams), "user_id");
+
+		// Remove alerted users
+		$aNewUsers = $this->_pruneAlertedUsers($aNewUsers);
 
 		// notionally less efficient than the old code.  if its a big issue, can easily
 		// be refactored.
