@@ -124,10 +124,22 @@ abstract class DocumentExtractor
 		}
 		$classname=get_class($this);
 
+		$sql = "select id as extractor_id from mime_extractors WHERE name='$classname'";
+		$rs = DBUtil::getResultArray($sql);
+		if (count($rs) == 0)
+		{
+			$extractor_id = DBUtil::autoInsert('mime_extractors', array('name'=>$classname, 'active'=>1));
+		}
+		else
+		{
+			$extractor_id = $rs[0]['extractor_id'];
+		}
+
+
 		foreach($types as $type)
 		{
-			$sql = "update mime_types set extractor='$classname'  where mimetypes='$type' and extractor is null";
-			DBUtil::runQuery($sql);
+			$sql = "update mime_types set extractor_id=$extractor_id where mimetypes='$type' and extractor_id is null";
+			$rs = DBUtil::runQuery($sql);
 		}
 	}
 
