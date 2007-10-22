@@ -42,7 +42,7 @@ class IndexingStatusDashlet extends KTBaseDashlet
 
 	function is_active($oUser)
 	{
-	    if (!Permission::userIsSystemAdministrator($oUser))
+	    if (!Permission::userIsSystemAdministrator())
 	    {
 	    	return false;
 	    }
@@ -86,11 +86,10 @@ class IndexingStatusDashlet extends KTBaseDashlet
 	    	$_SESSION['IndexingStatus']['extractorDiagnosis'] = $this->extractorDiagnosis;
 		}
 
-		if (is_null($this->indexerDiagnosis) && empty($this->extractorDiagnosis))
+		if (empty($this->indexerDiagnosis) && empty($this->extractorDiagnosis))
 		{
 			return false;
 		}
-
 
 	    return true;
 	}
