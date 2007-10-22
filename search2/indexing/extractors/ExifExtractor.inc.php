@@ -27,6 +27,11 @@ class ExifExtractor extends DocumentExtractor
 					// no point indexing numeric content. it will be ignored anyways!
 					continue;
 				}
+				if ($key =='FILE' && in_array($name, array('MimeType', 'SectionsFound')))
+				{
+					continue;
+				}
+
 				$content .= "$val\n";
 			}
 		}

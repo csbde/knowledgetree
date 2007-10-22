@@ -80,7 +80,7 @@ def _unoProps(**args):
 
 class DocumentConverter:
     
-    def __init__(self, host=argv[3], port=argv[4]):
+    def __init__(self, host, port):
         localContext = uno.getComponentContext()
         resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
         try:
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         exit(255)
 
     try:
-        converter = DocumentConverter()    
+        converter = DocumentConverter(argv[3],argv[4])    
         converter.convert(argv[1], argv[2])
     except DocumentConversionException, exception:
         print "ERROR! " + str(exception)
