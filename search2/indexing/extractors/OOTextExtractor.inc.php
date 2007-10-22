@@ -2,14 +2,16 @@
 
 class OOTextExtractor extends ExternalDocumentExtractor
 {
-	private $python;
-	private $documentConverter;
-	private $ooHost;
-	private $ooPort;
+	protected $python;
+	protected $documentConverter;
+	protected $ooHost;
+	protected $ooPort;
+	protected $targetExtension;
 
-	public function __construct($targetMimeType='plain/text')
+	public function __construct($targetExtension='html')
 	{
 		parent::__construct();
+		$this->targetExtension = $targetExtension;
 		$config =& KTConfig::getSingleton();
 
 		$this->python = KTUtil::findCommand('externalBinary/python');
@@ -46,12 +48,12 @@ class OOTextExtractor extends ExternalDocumentExtractor
 	{
 		$sourcefile = escapeshellcmd($this->sourcefile);
 		unlink($this->targetfile);
-		$this->targetfile .= '.html';
+		$this->targetfile .= '.' . $this->targetExtension;
 		$targetfile = escapeshellcmd($this->targetfile);
 
 		$escape = OS_WINDOWS?'"':'\'';
 
-		$cmdline = "{$this->python} {$escape}{$this->documentConverter}{$escape} {$escape}{$this->sourcefile}{$escape} {$escape}{$this->targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
+		$cmdline = "{$this->python} {$escape}{$this->documentConverter}{$escape} {$escape}{$sourcefile}{$escape} {$escape}{$targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
 		return $cmdline;
 	}
 
@@ -80,6 +82,10 @@ class OOTextExtractor extends ExternalDocumentExtractor
 			return false;
 		}
 
+		if ($this->targetExtension != 'html')
+		{
+			return true;
+		}
 		$content = file_get_contents($this->targetfile);
 		return file_put_contents($this->targetfile, $this->filter($content));
 
