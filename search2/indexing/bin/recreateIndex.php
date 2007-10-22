@@ -14,6 +14,15 @@ require_once(realpath('../../../config/dmsDefaults.php'));
 
 print _kt("Recreate Lucene index") . "...\n";
 
+$config = KTConfig::getSingleton();
+$indexer = $config->get('indexer/coreClass');
+
+if ($indexer != 'PHPLuceneIndexer')
+{
+	print _kt("This script only works with the PHPLuceneIndexer.") . "\n";
+	exit;
+}
+
 $sure=false;
 $indexall = false;
 if ($argc > 0)
@@ -42,14 +51,7 @@ if (!$sure)
 
 
 
-$config = KTConfig::getSingleton();
-$indexer = $config->get('indexer/coreClass');
 
-if ($indexer != 'PHPLuceneIndexer')
-{
-	print _kt("This script only works with the PHPLuceneIndexer.") . "\n";
-	exit;
-}
 
 require_once('indexing/indexerCore.inc.php');
 require_once('indexing/indexers/PHPLuceneIndexer.inc.php');
