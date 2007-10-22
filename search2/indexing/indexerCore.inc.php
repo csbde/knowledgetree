@@ -252,6 +252,8 @@ abstract class Indexer
 	 */
 	private $hookPath;
 
+	private $enabledExtractors;
+
 	/**
 	 * Initialise the indexer
 	 *
@@ -267,6 +269,29 @@ abstract class Indexer
 
 		$this->extractorPath = $config->get('indexer/extractorPath', 'extractors');
 		$this->hookPath = $config->get('indexer/extractorHookPath','extractorHooks');
+
+
+		$this->loadExtractorStatus();
+	}
+
+	/**
+	 * Get the list if enabled extractors
+	 *
+	 */
+	private function loadExtractorStatus()
+	{
+		$sql = "SELECT id, name FROM mime_extractors WHERE active=1";
+		$rs = DBUtil::getResultArray($sql);
+		$this->enabledExtractors = array();
+		foreach($rs as $item)
+		{
+			$this->enabledExtractors[] = $item['name'];
+		}
+	}
+
+	private function isExtractorEnabled($extractor)
+	{
+		return in_array($extractor, $this->enabledExtractors);
 	}
 
 	/**
@@ -599,6 +624,7 @@ abstract class Indexer
     {
     	global $default;
 
+    	$default->log->info('indexDocuments: start');
     	if (!$this->doesDiagnosticsPass())
     	{
     		return;
@@ -618,13 +644,14 @@ abstract class Indexer
     	// identify the indexers that must run
         // mysql specific limit!
         $sql = "SELECT
-        			iff.document_id, mt.filetypes, mt.mimetypes, mt.extractor, iff.what
+        			iff.document_id, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what
 				FROM
 					index_files iff
 					INNER JOIN documents d ON iff.document_id=d.id
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
 					INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+					INNER JOIN mime_extractors me ON mt.extractor_id=me.id
  				WHERE
  					(iff.processdate IS NULL or iff.processdate < cast(cast('$date' as date) -1 as date)) AND dmv.status_id=1
 				ORDER BY indexdate
@@ -673,6 +700,12 @@ abstract class Indexer
         	{
         		$default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
         	}
+
+        	if (!$this->isExtractorEnabled($extractorClass))
+			{
+				$default->log->info(sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass));
+				continue;
+			}
 
         	if (empty($extractorClass))
         	{
@@ -835,10 +868,7 @@ abstract class Indexer
 			}
 
         }
-        if ($this->debug)
-        {
-        	$default->log->debug(_kt("Done."));
-        }
+        $default->log->info('indexDocuments: done');
     }
 
     public function migrateDocuments($max=null)
@@ -1029,6 +1059,12 @@ abstract class Indexer
 			if (!class_exists($class))
 			{
 				$default->log->error(sprintf(_kt("diagnose: class '%s' does not exist."), $class));
+				continue;
+			}
+
+			if (!$this->isExtractorEnabled($class))
+			{
+				$default->log->info(sprintf(_kt("diagnose: extractor '%s' is disabled."), $class));
 				continue;
 			}
 
