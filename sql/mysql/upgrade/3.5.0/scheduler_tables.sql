@@ -1,7 +1,7 @@
 CREATE TABLE `scheduler_tasks` (
   `id` int(11) NOT NULL default '0',
-  `task` varchar(50),
-  `script_url` varchar(255),
+  `task` varchar(50) NOT NULL,
+  `script_url` varchar(255) NOT NULL,
   `script_params` varchar(255),
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25),
