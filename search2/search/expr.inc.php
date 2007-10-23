@@ -554,6 +554,10 @@ class ValueExpr extends Expr
 
         switch($op)
         {
+            case ExprOp::LIKE:
+                $sql = "$fieldname LIKE '$val'";
+                if ($not) $sql = "not ($sql)";
+                break;
             case ExprOp::CONTAINS:
                 $sql = "$fieldname LIKE '%$val%'";
                 if ($not) $sql = "not ($sql)";
