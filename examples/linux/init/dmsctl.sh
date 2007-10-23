@@ -11,6 +11,7 @@ RETVAL=0
 PID=""
 ERROR=0
 SERVER=all
+USEXVFB=0
 VDISPLAY="99"
 INSTALL_PATH=@@BITROCK_INSTALLDIR@@
 JAVABIN=$INSTALL_PATH/j2re/bin/java
@@ -45,7 +46,11 @@ SOFFICE_PIDFILE=$INSTALL_PATH/openoffice/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=$INSTALL_PATH/openoffice/program/soffice.bin
-SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+if [ $USEXVFB -eq 1 ]; then
+    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+else
+    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=localhost,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+fi
 SOFFICE_STATUS=""
 
 # Lucene
@@ -53,6 +58,14 @@ LUCENE_PIDFILE=$INSTALL_PATH/knowledgeTree/bin/luceneserver/lucene.pid
 LUCENE_PID=""
 LUCENE="$JAVABIN -jar ktlucene.jar"
 LUCENE_STATUS=""
+
+# Scheduler
+SCHEDULER_PATH="$INSTALL_PATH/knowledgeTree/bin/"
+SCHEDULER_PIDFILE=$INSTALL_PATH/knowledgeTree/bin/scheduler.pid
+SCHEDULER_PID=""
+SCHEDULERBIN="$INSTALL_PATH/knowledgeTree/bin/taskrunner.sh"
+SCHEDULER="$SCHEDULERBIN"
+SCHEDULER_STATUS=""
 
 get_pid() {
     PID=""
@@ -114,6 +127,16 @@ get_lucene_pid() {
     fi
     if [ $PID -gt 0 ]; then
         LUCENE_PID=$PID
+    fi
+}
+
+get_scheduler_pid() {
+    get_pid $SCHEDULER_PIDFILE
+    if [ ! $PID ]; then
+        return 
+    fi
+    if [ $PID -gt 0 ]; then
+        SCHEDULER_PID=$PID
     fi
 }
 
@@ -183,6 +206,18 @@ is_lucene_running() {
         LUCENE_STATUS="lucene not running"
     else
         LUCENE_STATUS="lucene already running"
+    fi
+    return $RUNNING
+}
+
+is_scheduler_running() {
+    get_scheduler_pid
+    is_service_running $SCHEDULER_PID
+    RUNNING=$?
+    if [ $RUNNING -eq 0 ]; then
+        SCHEDULER_STATUS="scheduler not running"
+    else
+        SCHEDULER_STATUS="scheduler already running"
     fi
     return $RUNNING
 }
@@ -283,6 +318,7 @@ stop_apache() {
 }
 
 start_xvfb() {
+if [ $USEXVFB -eq 1 ]; then
     is_xvfb_running
     RUNNING=$?
 
@@ -298,10 +334,12 @@ start_xvfb() {
             echo "$0 $ARG: xvfb could not be started"
             ERROR=3
         fi
+    fi
 fi
 }
 
 stop_xvfb() {
+if [ $USEXVFB -eq 1 ]; then
     NO_EXIT_ON_ERROR=$1
     is_xvfb_running
     RUNNING=$?
@@ -321,6 +359,7 @@ stop_xvfb() {
 	    echo "$0 $ARG: Xvfb could not be stopped"
 	    ERROR=4
 	fi
+fi
 }
 
 start_soffice() {
@@ -399,7 +438,9 @@ stop_lucene() {
         fi
 	fi
     get_lucene_pid
-	if killall $JAVABIN ; then
+    cd $INSTALL_PATH/knowledgeTree/search2/indexing/bin
+    $INSTALL_PATH/php/bin/php shutdown.php positive  >/dev/null 2>&1 &
+    if [ $? -eq 0 ]; then
 	    echo "$0 $ARG: lucene stopped"
 	else
 	    echo "$0 $ARG: lucene could not be stopped"
@@ -407,11 +448,55 @@ stop_lucene() {
 	fi
 }
 
+start_scheduler() {
+    is_scheduler_running
+    RUNNING=$?
+
+    if [ $RUNNING -eq 1 ]; then
+        echo "$0 $ARG: scheduler (pid $SCHEDULER_PID) already running"
+    else
+        $SCHEDULER  >/dev/null 2>&1 &
+        if [ $? -eq 0 ]; then
+            echo "$0 $ARG: scheduler started"
+            ps ax | grep $SCHEDULERBIN | awk {'print $1'} > $SCHEDULER_PIDFILE
+            sleep 2
+        else
+            echo "$0 $ARG: scheduler could not be started"
+            ERROR=3
+        fi
+    fi
+}
+
+stop_xvfb() {
+if [ $USEXVFB -eq 1 ]; then
+    NO_EXIT_ON_ERROR=$1
+    is_xvfb_running
+    RUNNING=$?
+
+    if [ $RUNNING -eq 0 ]; then
+        echo "$0 $ARG: $XVFB_STATUS"
+        if [ "x$NO_EXIT_ON_ERROR" != "xno_exit" ]; then
+            exit
+        else
+            return
+        fi
+	fi
+    get_xvfb_pid
+	if killall $XVFBBIN ; then
+	    echo "$0 $ARG: Xvfb stopped"
+	else
+	    echo "$0 $ARG: Xvfb could not be stopped"
+	    ERROR=4
+	fi
+fi
+}
+
 help() {
 	echo "usage: $0 help"
 	echo "       $0 (start|stop|restart)"
 	echo "       $0 (start|stop|restart) apache"
 	echo "       $0 (start|stop|restart) mysql"
+	echo "       $0 (start|stop|restart) scheduler"
 	echo "       $0 (start|stop|restart) soffice"
 	echo "       $0 (start|stop|restart) lucene"
 	echo "       $0 (start|stop|restart) xvfb"
@@ -427,14 +512,14 @@ exit 0
 }
 
 noserver() {
-       echo -e "ERROR: $1 is not a valid server. Please, select 'mysql', 'apache', 'soffice', 'lucene' or 'xvfb'\n"
+       echo -e "ERROR: $1 is not a valid server. Please, select 'mysql', 'apache', 'scheduler', 'soffice', 'lucene' or 'xvfb'\n"
        help
 }
 
 [ $# -lt 1 ] && help
 
 if [ ! -z ${2} ]; then
-       [ "${2}" != "mysql" ] && [ "${2}" != "apache" ] && [ "${2}" != "soffice" ] && [ "${2}" != "lucene" ] && [ "${2}" != "xvfb" ] && noserver $2
+       [ "${2}" != "mysql" ] && [ "${2}" != "apache" ] && [ "${2}" != "scheduler" ] && [ "${2}" != "soffice" ] && [ "${2}" != "lucene" ] && [ "${2}" != "xvfb" ] && noserver $2
        SERVER=$2
 fi
        
@@ -457,11 +542,13 @@ case $1 in
                        sleep 2
                        start_soffice
                        start_lucene
+                       start_scheduler
                fi
                ;;
        stop)   if [ "${SERVER}" != "all" ]; then
                        stop_${2}
                else
+                       stop_scheduler "no_exit"
                        stop_lucene "no_exit"
                        stop_soffice "no_exit"
                        stop_xvfb "no_exit"
@@ -474,6 +561,7 @@ case $1 in
                                sleep 2
                                start_${2}
                        else
+                               stop_scheduler "no_exit"
                                stop_lucene "no_exit"
                                stop_soffice "no_exit"
                                stop_xvfb "no_exit"
@@ -485,6 +573,7 @@ case $1 in
                                sleep 2
                                start_soffice
                                start_lucene
+                               start_scheduler
                        fi
                ;;
 esac
