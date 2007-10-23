@@ -175,10 +175,11 @@ if(!empty($aList)){
         $iStart = explode(' ', microtime());
 
         // Run the script
-        $file =escapeshellcmd($sTaskUrl);
+        $file = KT_DIR . $sTaskUrl;
 
         $cmd = "\"$file\" {$sParameters}";
 
+        $start = KTUtil::getBenchmarkTime();
         if (OS_WINDOWS)
 		{
 			$cmd = str_replace( '/','\\',$cmd);
@@ -195,6 +196,11 @@ if(!empty($aList)){
 			$default->log->info("Scheduler - Command: $cmd");
 			$default->log->info("Scheduler - Output: $res");
 			$default->log->info("Scheduler - Background tasks should not produce output. Please review why this is producing output.");
+		}
+		else
+		{
+			$time = number_format(KTUtil::getBenchmarkTime() - $start,2,'.',',');
+			$default->log->debug("Scheduler - Task: {$sTask} completed in {$diff}s.");
 		}
 
 
