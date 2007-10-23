@@ -126,7 +126,6 @@ class KTPage {
 	$aJS[] = 'thirdpartyjs/MochiKit/DragAndDrop.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/Sortable.js';
 	$aJS[] = 'thirdpartyjs/MochiKit/Style.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
         */
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
@@ -138,11 +137,6 @@ class KTPage {
 
 
 
-        //$aJS[] = 'thirdpartyjs/MochiKit/Iter.js';
-        //$aJS[] = 'thirdpartyjs/MochiKit/DOM.js';
-        //$aJS[] = 'thirdpartyjs/MochiKit/Logging.js';
-        //$aJS[] = 'thirdpartyjs/MochiKit/Async.js';
-        //$aJS[] = 'thirdpartyjs/MochiKit/Signal.js';
         //$aJS[] = 'thirdpartyjs/MochiKit/.js';
         //$aJS[] = 'resources/js/translate.js';
 
@@ -402,6 +396,7 @@ class KTPage {
         			"page" => $this,
 			       	"systemversion" => $default->systemVersion,
 			       	"versionname" => $default->versionName,
+					'smallVersion' => substr($default->versionName, 0, 3),
 			       	'savedSearches'=> $savedSearches);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;

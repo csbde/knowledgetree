@@ -54,9 +54,17 @@
 			</div>
 			{/if}
 			<p class="descriptiveText version">
-				{i18n arg_appname="$appname"}#appname# Version{/i18n}<br />{$versionName}<br/>
-				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
+				{i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
+				{i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
+				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a>{/i18n}<br><br>
+				{if ($smallVersion == 'OSS')}
+					{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
+				{else}
+					{i18n}All rights reserved.{/i18n}<br>
+				{/if} 
 			</p>
+			
+			
 	        <div id="bottomspacer"></div>
 	        <div class="floatClear"></div>
 	    </div>

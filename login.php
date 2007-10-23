@@ -173,7 +173,8 @@ class LoginPageDispatcher extends KTDispatcher {
               'versionName' => $default->versionName,
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
-	      'disclaimer' => $sDisclaimer,
+	      	  'disclaimer' => $sDisclaimer,
+			  'smallVersion' => substr($default->versionName, 0, 3),
         );
         return $oTemplate->render($aTemplateData);
     }
