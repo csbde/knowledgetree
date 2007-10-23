@@ -1646,6 +1646,10 @@ class OpExpr extends Expr
 
         if (is_null($this->parent))
         {
+        	if ($this->not())
+        	{
+            	 $expr = "NOT $expr";
+        	}
             return $expr;
         }
 
