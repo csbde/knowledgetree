@@ -55,7 +55,7 @@ class UpgradeFunctions {
             '3.0.3.7' => array('rebuildAllPermissions'),
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
-            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'registerExtractorMapping', 'updateConfigFile35', 'registerIndexingTasks'),
+            '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             );
 
     var $descriptions = array(
@@ -76,7 +76,6 @@ class UpgradeFunctions {
             'upgradeSavedSearches' => 'Upgrade saved searches to use namespaces instead of integer ids',
             'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
-            'registerExtractorMapping' => 'Register document text extractors with the appropriate mime types',
             'updateConfigFile35' => 'Update the config.ini file for 3.5',
             'registerIndexingTasks'=>'Register the required indexing background tasks'
             );
@@ -914,14 +913,6 @@ class UpgradeFunctions {
     }
     // }}}
 
-    // {{{ registerExtractorMapping
-    function registerExtractorMapping()
-    {
-    	$indexer = Indexer::get();
-    	$indexer->registerTypes();
-    }
-    // }}}
-
     // {{{ updateConfigFile35
     function updateConfigFile35()
     {
@@ -1011,7 +1002,7 @@ class UpgradeFunctions {
             // clientToolPolicies Section
             $ini->addItem('clientToolPolicies', 'explorerMetadataCapture', 'true', "These two settings control whether or not the client is prompted for metadata when a\r\n;document is added to knowledgetree via KTtools. They default to true.");
             $ini->addItem('clientToolPolicies', 'officeMetadataCapture', 'true');
-            
+
             // DiskUsage Section
             $ini->addItem('DiskUsage', 'warningThreshold', '10', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in ORANGE", "settings for the Disk Usage dashlet");
             $ini->addItem('DiskUsage', 'urgentThreshold', '5', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in RED");
