@@ -33,7 +33,7 @@
 --
 -- MySQL dump 10.11
 --
--- Host: localhost    Database: dms_clean
+-- Host: localhost    Database: ktdms
 -- ------------------------------------------------------
 -- Server version	5.0.41-log
 
@@ -257,6 +257,8 @@ CREATE TABLE `document_content_version` (
   KEY `document_id` (`document_id`),
   KEY `mime_id` (`mime_id`),
   KEY `storage_path` (`storage_path`),
+  KEY `filename` (`filename`(255)),
+  KEY `size` (`size`),
   CONSTRAINT `document_content_version_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `document_content_version_ibfk_2` FOREIGN KEY (`mime_id`) REFERENCES `mime_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -480,11 +482,8 @@ CREATE TABLE `document_transactions` (
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `document_id` (`document_id`),
-  KEY `user_id` (`user_id`),
   KEY `session_id` (`session_id`),
-  CONSTRAINT `document_transactions_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
-  CONSTRAINT `document_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
+  KEY `document_id` (`document_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -565,6 +564,10 @@ CREATE TABLE `documents` (
   KEY `modified_user_id` (`modified_user_id`),
   KEY `metadata_version_id` (`metadata_version_id`),
   KEY `created` (`created`),
+  KEY `modified` (`modified`),
+  KEY `full_path` (`full_path`(255)),
+  KEY `immutable` (`immutable`),
+  KEY `checkedout` (`checkedout`),
   CONSTRAINT `documents_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `documents_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `documents_ibfk_3` FOREIGN KEY (`checked_out_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
@@ -752,10 +755,7 @@ CREATE TABLE `folder_transactions` (
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `folder_id` (`folder_id`),
-  KEY `user_id` (`user_id`),
-  KEY `session_id` (`session_id`),
-  CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
-  CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
+  KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -951,6 +951,19 @@ CREATE TABLE `metadata_lookup_tree` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `mime_document_mapping`
+--
+
+CREATE TABLE `mime_document_mapping` (
+  `mime_document_id` int(11) NOT NULL,
+  `mime_type_id` int(11) NOT NULL,
+  PRIMARY KEY  (`mime_type_id`,`mime_document_id`),
+  KEY `mime_document_id` (`mime_document_id`),
+  CONSTRAINT `mime_document_mapping_ibfk_2` FOREIGN KEY (`mime_document_id`) REFERENCES `mime_documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `mime_document_mapping_ibfk_1` FOREIGN KEY (`mime_type_id`) REFERENCES `mime_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `mime_documents`
 --
 
@@ -958,6 +971,17 @@ CREATE TABLE `mime_documents` (
   `id` int(11) NOT NULL,
   `mime_doc` varchar(100) default NULL,
   `icon_path` varchar(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `mime_extractors`
+--
+
+CREATE TABLE `mime_extractors` (
+  `id` mediumint(9) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `active` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -971,13 +995,15 @@ CREATE TABLE `mime_types` (
   `mimetypes` char(100) NOT NULL default '',
   `icon_path` char(255) default NULL,
   `friendly_name` char(255) default '',
-  `extractor` varchar(100) default NULL,
+  `extractor_id` mediumint(9) default NULL,
   `mime_document_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `mime_document_id` (`mime_document_id`),
+  KEY `extractor_id` (`extractor_id`),
   KEY `filetypes` (`filetypes`),
   KEY `mimetypes` (`mimetypes`),
-  CONSTRAINT `mime_types_ibfk_1` FOREIGN KEY (`mime_document_id`) REFERENCES `mime_documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `mime_types_ibfk_1` FOREIGN KEY (`mime_document_id`) REFERENCES `mime_documents` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `mime_types_ibfk_2` FOREIGN KEY (`extractor_id`) REFERENCES `mime_extractors` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1264,8 +1290,8 @@ CREATE TABLE `saved_searches` (
 
 CREATE TABLE `scheduler_tasks` (
   `id` int(11) NOT NULL default '0',
-  `task` varchar(50) NOT NULL default '',
-  `script_url` varchar(255) default NULL,
+  `task` varchar(50) NOT NULL,
+  `script_url` varchar(255) NOT NULL,
   `script_params` varchar(255) default NULL,
   `is_complete` tinyint(4) NOT NULL default '0',
   `frequency` varchar(25) default NULL,
@@ -1486,7 +1512,6 @@ CREATE TABLE `user_history` (
   KEY `session_id` (`session_id`),
   CONSTRAINT `user_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 --
 -- Table structure for table `users`
@@ -2113,6 +2138,14 @@ CREATE TABLE `zseq_mime_documents` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `zseq_mime_extractors`
+--
+
+CREATE TABLE `zseq_mime_extractors` (
+  `id` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `zseq_mime_types`
 --
 
@@ -2229,8 +2262,6 @@ CREATE TABLE `zseq_plugins` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
 
-
-
 --
 -- Table structure for table `zseq_role_allocations`
 --
@@ -2345,7 +2376,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=150 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=154 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_user_history`
@@ -2437,4 +2468,4 @@ CREATE TABLE `zseq_workflows` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-10-11 15:46:20
+-- Dump completed on 2007-10-23 13:43:23
