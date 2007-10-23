@@ -794,6 +794,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `scheduler_tasks` DISABLE KEYS */;
+INSERT INTO `scheduler_tasks` VALUES (1,'Indexing','/knowledgetree/ktdms.trunk/bin/indexingTask.sh','',0,'1min',NULL,NULL,0),(2,'Index Migration','/knowledgetree/ktdms.trunk/bin/indexMigrationTask.sh','',0,'5mins',NULL,NULL,0),(3,'Index Optimisation','/knowledgetree/ktdms.trunk/bin/optimizeIndexes.sh','',0,'weekly',NULL,NULL,0);
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1691,6 +1692,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
+INSERT INTO `zseq_scheduler_tasks` VALUES (3);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
