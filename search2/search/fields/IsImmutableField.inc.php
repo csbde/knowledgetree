@@ -11,22 +11,7 @@ class IsImmutableField extends DBFieldExpr
 
 	public function modifyValue($value)
     {
-    	if (is_numeric($value))
-    	{
-    		$value = ($value+0)?1:0;
-    	}
-    	else
-    	{
-    		switch(strtolower($value))
-    		{
-    			case 'true':
-    			case 'yes':
-    				$value=1;
-    				break;
-    			default:
-    				$value=0;
-    		}
-    	}
+    	$value = KTUtil::anyToBool($value, false)?1:0;
     	return $value;
     }
 
