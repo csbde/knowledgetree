@@ -2,6 +2,8 @@
 
 /**
  *
+ * $Id:$
+ *
  * KTUploadManager manages files in the uploaded_files table.
  *
  * KnowledgeTree Open Source Edition

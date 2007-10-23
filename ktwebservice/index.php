@@ -2,6 +2,8 @@
 
 /**
  *
+ * $Id:$
+ *
  * A wrapper for webservice.php
  *
  * KnowledgeTree Open Source Edition

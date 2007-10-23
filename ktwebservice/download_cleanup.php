@@ -2,6 +2,8 @@
 
 /**
  *
+ * $Id:$
+ *
  * Cleans up the download_files table.
  *
  * KnowledgeTree Open Source Edition
