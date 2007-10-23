@@ -102,6 +102,7 @@ class DiskUsageDashlet extends KTBaseDashlet
 			$usage=array();
 			foreach($result as $line)
 			{
+				if (empty($line)) continue;
 				preg_match('/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%\s+(.*)/', $line, $matches);
 				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
