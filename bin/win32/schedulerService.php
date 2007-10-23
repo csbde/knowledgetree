@@ -12,7 +12,15 @@ global $default;
 
 $config = KTConfig::getSingleton();
 $schedulerInterval = $config->get('KnowledgeTree/schedulerInterval',10); // interval in seconds
-$phpPath = $config->get('externalBinary/php','php');
+//$phpPath = $config->get('externalBinary/php','php'); // TODO - fix me
+
+// Change to knowledgeTree/bin folder
+
+$dir = realpath(dirname(__FILE__) . '/..');
+chdir($dir);
+
+// Setup php binary path
+$phpPath = realpath('../../php/php.exe');
 
 if (!is_file($phpPath))
 {
@@ -31,12 +39,7 @@ while (1) {
         default: win32_set_service_status(WIN32_ERROR_CALL_NOT_IMPLEMENTED); // Add more cases to handle other service calls
     }
 
-    // Change to knowledgeTree/bin folder
-    $dir = realpath(dirname(__FILE__) . '/..');
-    chdir($dir);
 
-    // Setup php binary path
-    $phpPath = realpath('../../php/php.exe');
 
 
     // Run the scheduler script
