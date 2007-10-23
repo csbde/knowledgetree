@@ -480,6 +480,8 @@ class IndexRecreator
 		$this->addIndex('roles','name','UNIQUE');
 		$this->addIndex('saved_searches','namespace','UNIQUE');
 
+		$this->addIndex('scheduler_tasks','task', 'UNIQUE');
+
 		$this->addIndex('system_settings','name', 'UNIQUE');
 
 		$this->addIndex('units_lookup','name' ,'UNIQUE');
