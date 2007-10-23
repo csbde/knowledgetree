@@ -1,6 +1,8 @@
 <?php
 
 /*
+ * $Id:$
+ *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited

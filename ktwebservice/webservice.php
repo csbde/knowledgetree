@@ -2,6 +2,8 @@
 
 /**
  *
+ * $Id:$
+ *
  * This implements the KnowledgeTree Web Service in SOAP.
  *
  * KnowledgeTree Open Source Edition

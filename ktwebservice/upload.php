@@ -2,6 +2,8 @@
 
 /**
  *
+ * $Id:$
+ *
  * This uploads a file onto the file server. A web service method can later move the file to the correct location.
  *
  * KnowledgeTree Open Source Edition
