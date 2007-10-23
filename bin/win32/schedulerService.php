@@ -6,6 +6,20 @@ $myservicename = 'ktscheduler';
 if (!win32_start_service_ctrl_dispatcher($myservicename)) die('Could not connect to service :'.$myservicename);
 win32_set_service_status(WIN32_SERVICE_RUNNING);
 
+require_once('../../config/dmsDefaults.php');
+
+global $default;
+
+$config = KTConfig::getSingleton();
+$schedulerInterval = $config->get('KnowledgeTree/schedulerInterval',10); // interval in seconds
+$phpPath = $config->get('externalBinary/php','php');
+
+if (!is_file($phpPath))
+{
+	$default->log->error("Scheduler: php not found: $phpPath");
+	exit;
+}
+
 // Main Scheduler Service Loop
 while (1) {
 
@@ -23,15 +37,20 @@ while (1) {
 
     // Setup php binary path
     $phpPath = realpath('../../php/php.exe');
-    if (!is_file($phpPath))
-    {
-        die('Cannot find php.exe');
-    }
-	
-    // Run the scheduler script
-    system("$phpPath scheduler.php");
 
-    sleep(10); // Run every 10 seconds
+
+    // Run the scheduler script
+
+    $cmd = "\"$phpPath\" scheduler.php";
+
+	$cmd = str_replace( '/','\\',$cmd);
+	$res = `"$cmd" 2>&1`;
+	if (!empty($res))
+	{
+		$default->log->error('Scheduler: unexpected output - ' .$res);
+	}
+
+    sleep($schedulerInterval);
 
 }
 win32_set_service_status(WIN32_SERVICE_STOPPED);
