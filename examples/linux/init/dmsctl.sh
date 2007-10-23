@@ -467,28 +467,26 @@ start_scheduler() {
     fi
 }
 
-stop_xvfb() {
-if [ $USEXVFB -eq 1 ]; then
+stop_scheduler() {
     NO_EXIT_ON_ERROR=$1
-    is_xvfb_running
+    is_scheduler_running
     RUNNING=$?
 
     if [ $RUNNING -eq 0 ]; then
-        echo "$0 $ARG: $XVFB_STATUS"
+        echo "$0 $ARG: $SCHEDULER_STATUS"
         if [ "x$NO_EXIT_ON_ERROR" != "xno_exit" ]; then
             exit
         else
             return
         fi
 	fi
-    get_xvfb_pid
-	if killall $XVFBBIN ; then
-	    echo "$0 $ARG: Xvfb stopped"
+    get_scheduler_pid
+	if killall $SCHEDULERBIN ; then
+	    echo "$0 $ARG: schedulerstopped"
 	else
-	    echo "$0 $ARG: Xvfb could not be stopped"
+	    echo "$0 $ARG: scheduler could not be stopped"
 	    ERROR=4
 	fi
-fi
 }
 
 help() {
