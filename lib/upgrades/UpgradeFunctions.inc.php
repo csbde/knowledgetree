@@ -938,12 +938,30 @@ class UpgradeFunctions {
             $ini->addItem('webservice', 'validateSessionCount', 'false');
 
             // externalBinary Section
-            $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
-            $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
-            $ini->addItem('externalBinary', 'catppt', 'catppt');
-            $ini->addItem('externalBinary', 'pstotext', 'pstotext');
-            $ini->addItem('externalBinary', 'catdoc', 'catdoc');
-            $ini->addItem('externalBinary', 'antiword', 'antiword.exe');
+            if(OS_WINDOWS){
+                $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
+                $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
+                $ini->addItem('externalBinary', 'catppt', 'catppt');
+                $ini->addItem('externalBinary', 'pstotext', 'pstotext');
+                $ini->addItem('externalBinary', 'catdoc', 'catdoc');
+                $ini->addItem('externalBinary', 'antiword', 'antiword.exe');
+                $ini->addItem('externalBinary', 'python', 'python.bat');
+                $ini->addItem('externalBinary', 'java', 'java.exe');
+                $ini->addItem('externalBinary', 'php', 'php.exe');
+                $ini->addItem('externalBinary', 'df', 'df.exe');
+
+            } else {
+                $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
+                $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
+                $ini->addItem('externalBinary', 'catppt', 'catppt');
+                $ini->addItem('externalBinary', 'pstotext', 'pstotext');
+                $ini->addItem('externalBinary', 'catdoc', 'catdoc');
+                $ini->addItem('externalBinary', 'antiword', 'antiword.exe');
+                $ini->addItem('externalBinary', 'python', 'python');
+                $ini->addItem('externalBinary', 'java', 'java');
+                $ini->addItem('externalBinary', 'php', 'php');
+                $ini->addItem('externalBinary', 'df', 'df');
+            }
 
             // search Section
             $ini->addItem('search', 'resultsPerPage', 'default', "The number of results per page\r\n; defaults to 25");
@@ -969,7 +987,12 @@ class UpgradeFunctions {
             $ini->addItem('builtinauth', 'password_change_interval', '30', "This would force users that use the built-in authentication provider\r\n; to have to change their passwords every 30 days." ,"This is configuration for the built-in authentication provider");
 
             // cache Section
-            $ini->addItem('cache', 'cacheEnabled', 'true', '', "Enable/disable the cache and set the cache location");
+            if(OS_WINDOWS){
+                $ini->addItem('cache', 'cacheEnabled', 'false', '', "Enable/disable the cache and set the cache location");
+            } else {
+                $ini->addItem('cache', 'cacheEnabled', 'true', '', "Enable/disable the cache and set the cache location");
+            }
+
             $ini->addItem('cache', 'cacheDirectory', '${varDirectory}/cache');
             $ini->addItem('cache', 'cachePlugins', 'true');
 
