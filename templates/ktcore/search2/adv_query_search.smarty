@@ -1,7 +1,14 @@
-<h2>{i18n}Query Editor{/i18n}</h2>
+<h2>{i18n}Search Criteria Editor{/i18n}</h2>
 
 <p class="descriptiveText">
-{i18n}The query editor allows you to utilise the full power of the KnowledgeTree search engine by entering comprehensive expressions.{/i18n}
+{i18n}The search criteria editor allows you to utilise the full power of the KnowledgeTree search engine by allowing you to perform more complicated searches by using the free text criteria format.{/i18n}
+
+{capture assign=options}
+<a href="{$rootUrl}/search2.php?action=guiBuilder">Advanced Search</a>
+{/capture}
+<p>
+{i18n arg_options=$options}The #options# may also be used to perform searches.{/i18n}
+
 <P>
 <div>
 <table>
@@ -111,6 +118,8 @@ function txtQueryChange(el)
 </script>
 {/literal}
 <legend>{i18n}Advanced Query{/i18n}</legend>
+
+
 <form  id=frmQuery name=frmQuery method="POST" action="{addQS}action=process{/addQS}">
 <textarea id="txtAdvQuery" name="txtQuery" cols=50 rows=10 onkeypress="txtQueryChange(this)">{$txtQuery}</textarea>
 <br/>
@@ -139,11 +148,11 @@ function txtQueryChange(el)
 <fieldset>
 
 <legend>{i18n}Grammar{/i18n}</legend>
-{i18n}Expressions may be built up using the following grammar:{/i18n}<br/>
+{i18n}Criteria may be built up using the following grammar:{/i18n}<br/>
 expr ::= expr {literal}{{/literal} AND | OR {literal}}{/literal} expr<br/>
 expr ::= NOT expr<br/>
 expr ::= (expr)<br/>
-expr ::= expr {literal}{ < | <= | = | > | >= | CONTAINS |STARTS WITH | ENDS WITH }{/literal} value<br/>
+expr ::= field {literal}{ < | <= | = | > | >= | CONTAINS |STARTS WITH | ENDS WITH }{/literal} value<br/>
 expr ::= field BETWEEN value AND value<br/>
 expr ::= field DOES [ NOT ] CONTAIN value<br/>
 expr ::= field IS [ NOT ] LIKE value<br/>
@@ -167,12 +176,11 @@ sq.value += word + ' ';
 
 <fieldset>
 <legend>{i18n}Fields{/i18n}</legend>
-{i18n}The following fields may be used in expressions:{/i18n}
+{i18n}The following fields may be used in search criteria:{/i18n}
 {assign var=i value=0}
 {foreach item=alias from=$aliases}
 {if (substr($alias,0,2) != '["')}
 {if $i>0}, {/if}
-
 {if (($i % 8) == 0)}<br>{/if}
 <span onclick="wordclicked('{$alias|escape}')">{$alias}</span>
 {assign var=i value=$i+1}

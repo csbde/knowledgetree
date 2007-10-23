@@ -1,5 +1,5 @@
 <P>
-{i18n}Migration to using the new search requires text to be moved from the database full text indexes into the Lucene indexes. This may take some time depending
+{i18n}Migration to using the new search requires text to be moved from the database full text indexes into the Document Indexer Service. This may take some time depending
 on the size of the repository. For this reason, the process is a background task.{/i18n}
 <P>
 
