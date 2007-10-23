@@ -46,7 +46,7 @@ if (!is_file($phpPath))
 while (1) {
 
     // Run the scheduler script
-    system("$phpPath scheduler.php");
+    shell_exec("$phpPath scheduler.php");
 
     sleep(10); // Run every 10 seconds
 
