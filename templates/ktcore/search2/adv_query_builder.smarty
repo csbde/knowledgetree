@@ -766,7 +766,12 @@ function butSearchClick()
 <fieldset>
 	<legend>{i18n}Advanced Search{/i18n}</legend>
 
+{capture assign=options}
+<a href="{$rootUrl}/search2.php?action=queryBuilder">Search Criteria Editor</a>
+{/capture}
 
+{i18n arg_options=$options}The #options# may also be used to create more complex search criteria expressions.{/i18n}
+<br><br>
 {capture assign=options}
 <select id="allop">
 <option value="AND">{i18n}all{/i18n}
