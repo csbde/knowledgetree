@@ -77,8 +77,6 @@ class HouseKeeperPlugin extends KTPlugin
         		'canClean'=>true
         	));
 
-        if (!OS_WINDOWS)
-        {
         	$this->folders[] =
         	array(
         		'name'=>_kt('System Temporary Folder'),
@@ -86,7 +84,6 @@ class HouseKeeperPlugin extends KTPlugin
         		'pattern'=>'(sess_.+)?(.+\.log$)?',
         		'canClean'=>true
         	);
-        }
 
         $this->folders[] =
         	array(
@@ -97,7 +94,7 @@ class HouseKeeperPlugin extends KTPlugin
         	);
         $this->folders[] =
         	array(
-        		'name'=>_kt('KnowledgeTree Lucene Indexes'),
+        		'name'=>_kt('KnowledgeTree Document Index'),
         		'folder'=>$luceneDir,
         		'pattern'=>'',
         		'canClean'=>false
