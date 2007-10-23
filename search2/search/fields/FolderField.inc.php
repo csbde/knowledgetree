@@ -4,10 +4,8 @@ class FolderField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('folder_id', 'documents', _kt('Folder'));
+        parent::__construct('full_path', 'documents', _kt('Folder'));
         $this->setAlias('Folder');
-        $this->joinTo('folders', 'id');
-		$this->matchField('full_path');
     }
 
     public function getInputRequirements()
