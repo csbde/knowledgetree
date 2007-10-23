@@ -195,7 +195,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
      */
 	public function getDisplayName()
 	{
-		return _kt('Lucene Indexing Server');
+		return _kt('Document Indexer Service');
 	}
 
 

@@ -239,7 +239,7 @@ class PHPLuceneIndexer extends Indexer
      */
 	public function getDisplayName()
 	{
-		return _kt('Lucene PHP Indexer');
+		return _kt('Document Indexer Library');
 	}
 }
 ?>
