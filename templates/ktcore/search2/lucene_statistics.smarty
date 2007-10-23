@@ -1,5 +1,5 @@
 <P>
-{i18n}This dashlet provides some basic statistics on the Lucene index.{/i18n}
+{i18n}This dashlet provides some basic statistics from the KnowledgeTree Document Indexer.{/i18n}
 <P>
 
 <table>
@@ -18,7 +18,7 @@
 <tr><td valign=top>*<td>{i18n}Not all documents contain text. This will explain why the indexing coverage percentage my vary.{/i18n}
 <tr><td valign=top>*<td>{i18n}The queue coverage indicates how many documents are in the queue in relation to the repository size.{/i18n}
 {if $stats.noOptimisation}
-<tr><td valign=top>*<td><i>{i18n}To get the best performance out of Lucene, the indexes must be optimised periodically. This is managed by a background task.{/i18n}
+<tr><td valign=top>*<td><i>{i18n}To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task.{/i18n}
 {/if}
 </table>
 <table width="100%">
