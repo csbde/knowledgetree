@@ -26,4 +26,15 @@ window.onload = function()
 	    var footerBlock = new curvyCorners(settings, footer);
 	    footerBlock.applyCornersToAll();
 	}
+	Loader();
   }
+  
+  window.onsubmit = function(){
+  	var myElem = document.getElementById("modalDiv");
+	myElem.style.display = "block";
+  }
+  function Loader()
+{ 
+	var myElem = document.getElementById("modalDiv");
+	myElem.style.display = "none";
+}
