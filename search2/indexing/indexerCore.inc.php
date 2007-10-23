@@ -489,7 +489,7 @@ abstract class Indexer
     		$content = preg_replace($src, $tgt, $content);
     	} while ($content != $orig);
 
-    	return file_put_contents($filename, $content);
+    	return file_put_contents($filename, $content) !== false;
     }
 
     /**

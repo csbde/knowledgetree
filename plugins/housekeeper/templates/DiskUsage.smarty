@@ -1,6 +1,6 @@
 <table border=0 cellspacing="0" cellpadding="0" width="100%">
     <tr>
-        <td width="250"><B>{i18n}Disk Mount{/i18n}</td>
+        <td width="250"><B>{i18n}Mount{/i18n}</td>
 		<td align="center"><B>{i18n}Size{/i18n}</td>
 		<td align="center"><B>{i18n}Used{/i18n}</td>
 		<td align="center"><B>{i18n}Available{/i18n}</td>
