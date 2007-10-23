@@ -175,7 +175,7 @@ if(!empty($aList)){
         $iStart = explode(' ', microtime());
 
         // Run the script
-        $file = KT_DIR . $sTaskUrl;
+        $file = realpath(KT_DIR . '/' . $sTaskUrl);
 
         $cmd = "\"$file\" {$sParameters}";
 
