@@ -95,6 +95,7 @@ class QueryResultItem
 
 	public function loadDocumentInfo()
 	{
+		global $default;
 		$sql = "SELECT
 					d.folder_id, f.full_path, f.name, dcv.size as filesize, dcv.major_version,
 					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
@@ -121,7 +122,16 @@ class QueryResultItem
 		if (PEAR::isError($result) || empty($result))
 		{
 			$this->live = false;
-			throw new Exception('QueryResultItem::loadDocumentInfo failed');
+			if (PEAR::isError($result))
+			{
+				throw new Exception('Database exception! There appears to be an error in the system: ' .$result->getMessage());
+			}
+
+			$default->log->error('QueryResultItem: $result is null');
+			$msg = 'The database did not have a record matching the result from the document indexer. This may occur if there is an inconsistency between the document indexer and the repository. The indexer needs to be repaired. Please consult the administrator guide as to how to repair your indexer.';
+			$default->log->error('QueryResultItem: ' . $msg);
+			// TODO: repair process where we scan documents in index, and delete those for which there is nothing in the repository
+			throw new Exception(_kt($msg));
 		}
 
 		if (is_null($result['name']))
