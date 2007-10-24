@@ -714,14 +714,14 @@ abstract class Indexer
     	global $default;
     	$config =& KTConfig::getSingleton();
 
-    	$indexLockFile = $config->get('cache/cacheDirectory') . '/main.index.lock';
+    	/*$indexLockFile = $config->get('cache/cacheDirectory') . '/main.index.lock';
     	if (is_file($indexLockFile))
     	{
 			$default->log->info('indexDocuments: main.index.lock seems to exist. it could be that the indexing is still underway.');
 			$default->log->info('indexDocuments: Remove "' . $indexLockFile . '" if the indexing is not running or extend the frequency at which the background task runs!');
 			return;
     	}
-    	touch($indexLockFile);
+    	touch($indexLockFile);*/
 
 
     	$this->checkForRegisteredTypes();
@@ -729,7 +729,7 @@ abstract class Indexer
     	$default->log->info('indexDocuments: start');
     	if (!$this->doesDiagnosticsPass())
     	{
-    		unlink($indexLockFile);
+    		//unlink($indexLockFile);
     		return;
     	}
 
@@ -761,14 +761,14 @@ abstract class Indexer
         $result = DBUtil::getResultArray($sql);
         if (PEAR::isError($result))
         {
-        	unlink($indexLockFile);
+        	//unlink($indexLockFile);
         	return;
         }
 
         // bail if no work to do
         if (count($result) == 0)
         {
-        	unlink($indexLockFile);
+        	//unlink($indexLockFile);
             return;
         }
 
@@ -976,7 +976,7 @@ abstract class Indexer
 
         }
         $default->log->info('indexDocuments: done');
-        unlink($indexLockFile);
+        //unlink($indexLockFile);
     }
 
     public function migrateDocuments($max=null)
