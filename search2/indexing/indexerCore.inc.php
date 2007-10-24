@@ -635,13 +635,15 @@ abstract class Indexer
     	}
     	$default->log->info('checkForRegisteredTypes: start');
 
-    	$this->registerTypes(true);
+    	$date = date('Y-m-d H:i');
+    	$sql = "UPDATE scheduler_tasks SET run_time='$date'";
+    	DBUtil::runQuery($sql);
 
+    	$this->registerTypes(true);
 
     	$disable = array(
     		OS_WINDOWS=>array('PSExtractor'),
     		OS_UNIX => array()
-
     	);
 
 		foreach($disable[OS_WINDOWS] as $extractor)
