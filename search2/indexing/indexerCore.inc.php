@@ -635,13 +635,15 @@ abstract class Indexer
     	}
     	$default->log->info('checkForRegisteredTypes: start');
 
-    	$this->registerTypes(true);
+    	$date = date('Y-m-d H:i');
+    	$sql = "UPDATE scheduler_tasks SET run_time='$date'";
+    	DBUtil::runQuery($sql);
 
+    	$this->registerTypes(true);
 
     	$disable = array(
     		OS_WINDOWS=>array('PSExtractor'),
     		OS_UNIX => array()
-
     	);
 
 		foreach($disable[OS_WINDOWS] as $extractor)
@@ -664,16 +666,27 @@ abstract class Indexer
     public function indexDocuments($max=null)
     {
     	global $default;
+    	$config =& KTConfig::getSingleton();
+
+    	$indexLockFile = $config->get('cache/cacheDirectory') . '/main.index.lock';
+    	if (is_file($indexLockFile))
+    	{
+			$default->log->info('indexDocuments: main.index.lock seems to exist. it could be that the indexing is still underway.');
+			$default->log->info('indexDocuments: Remove "' . $indexLockFile . '" if the indexing is not running or extend the frequency at which the background task runs!');
+			return;
+    	}
+    	touch($indexLockFile);
+
 
     	$this->checkForRegisteredTypes();
 
     	$default->log->info('indexDocuments: start');
     	if (!$this->doesDiagnosticsPass())
     	{
+    		unlink($indexLockFile);
     		return;
     	}
 
-    	$config =& KTConfig::getSingleton();
     	if (is_null($max))
     	{
 			$max = $config->get('indexer/batchDocuments',20);
@@ -702,12 +715,14 @@ abstract class Indexer
         $result = DBUtil::getResultArray($sql);
         if (PEAR::isError($result))
         {
+        	unlink($indexLockFile);
         	return;
         }
 
         // bail if no work to do
         if (count($result) == 0)
         {
+        	unlink($indexLockFile);
             return;
         }
 
@@ -915,6 +930,7 @@ abstract class Indexer
 
         }
         $default->log->info('indexDocuments: done');
+        unlink($indexLockFile);
     }
 
     public function migrateDocuments($max=null)

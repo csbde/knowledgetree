@@ -8,10 +8,12 @@
 &nbsp;<span><a href="{$sAdmin}">Administration page</a></span>
 
 <p>
+{if !$lasttime}
 {if $isDue}
     <span class="">{i18n  arg_time=$timedif}The tasks were scheduled to be run #time# ago.{/i18n}</span>
 {else}
     <span class="">{i18n  arg_time=$timedif}The tasks are scheduled to be run in #time#.{/i18n}</span>
+{/if}
 {/if}
 </p>
 
@@ -42,7 +44,7 @@
     {i18n}Please ensure that the scheduler is listed in your cron jobs. The line to be added to the crontab to implement the cron job is: {/i18n}
     <ul><li>*/5 * * * * {$sPath} > /dev/null</li></ul>
     </p>
-    
+
     <p>
     <strong><span onclick="{$onClick}">
         <img id="scheduler_icon" src="{$sImg}"/>
