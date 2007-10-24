@@ -7,32 +7,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): Guenter Roeck______________________________________
  *
  */
@@ -318,30 +318,36 @@ class KTInit {
     }
     // }}}
 
+    static protected $handlerMapping = array(
+    		E_WARNING=>PEAR_LOG_WARNING,
+    		E_USER_WARNING=>PEAR_LOG_WARNING,
+        	E_NOTICE=>PEAR_LOG_NOTICE,
+        	E_USER_NOTICE=>PEAR_LOG_NOTICE,
+			E_ERROR=>PEAR_LOG_ERR,
+			E_USER_ERROR=>PEAR_LOG_ERR,
+    );
+
     // {{{ handlePHPError()
     static function handlePHPError($code, $message, $file, $line) {
         global $default;
 
-        /* Map the PHP error to a Log priority. */
-        switch ($code) {
-        case E_WARNING:
-        case E_USER_WARNING:
-            $priority = PEAR_LOG_WARNING;
-            break;
-        case E_NOTICE:
-        case E_USER_NOTICE:
-            $priority = PEAR_LOG_NOTICE;
-            break;
-        case E_ERROR:
-        case E_USER_ERROR:
-            $priority = PEAR_LOG_ERR;
-            break;
-        default:
-            $priority = PEAR_LOG_INFO;
+        if (array_key_exists($code, KTInit::$handlerMapping))
+        {
+			$priority = KTInit::$handlerMapping[$code];
+        }
+        else
+        {
+        	$priority = PEAR_LOG_INFO;
+        }
+
+        $msg = $message . ' in ' . $file . ' at line ' . $line;
+        if ($priority == PEAR_LOG_ERR)
+        {
+        	$default->log->error($msg);
         }
 
         if (!empty($default->phpErrorLog)) {
-            $default->phpErrorLog->log($message . ' in ' . $file . ' at line ' . $line, $priority);
+            $default->phpErrorLog->log($msg, $priority);
         }
         return false;
     }
