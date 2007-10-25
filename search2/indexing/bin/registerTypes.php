@@ -48,6 +48,7 @@
  */
 
 session_start();
+chdir(dirname(__FILE__));
 require_once(realpath('../../../config/dmsDefaults.php'));
 
 print _kt("Registering Extractor mapping to Mime types") . "...\n";
