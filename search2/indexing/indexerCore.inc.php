@@ -874,7 +874,9 @@ abstract class Indexer
 
         		if ($extractor->needsIntermediateSourceFile())
         		{
-        			$intermediate = $tempPath . '/'. $document->getFileName();
+        			$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
+
+        			$intermediate = $tempPath . '/'. $docId . '.' . $extension;
         			$result = @copy($sourceFile, $intermediate);
         			if ($result === false)
         			{
