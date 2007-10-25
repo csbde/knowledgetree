@@ -60,10 +60,10 @@ LUCENE="$JAVABIN -jar ktlucene.jar"
 LUCENE_STATUS=""
 
 # Scheduler
-SCHEDULER_PATH="$INSTALL_PATH/knowledgeTree/bin/"
-SCHEDULER_PIDFILE=$INSTALL_PATH/knowledgeTree/bin/scheduler.pid
+SCHEDULER_PATH="$INSTALL_PATH/bin/"
+SCHEDULER_PIDFILE=$INSTALL_PATH/bin/scheduler.pid
 SCHEDULER_PID=""
-SCHEDULERBIN="$INSTALL_PATH/knowledgeTree/bin/taskrunner.sh"
+SCHEDULERBIN="$INSTALL_PATH/bin/schedulerTask.sh"
 SCHEDULER="$SCHEDULERBIN"
 SCHEDULER_STATUS=""
 
@@ -353,7 +353,7 @@ if [ $USEXVFB -eq 1 ]; then
         fi
 	fi
     get_xvfb_pid
-	if killall $XVFBBIN ; then
+	if kill $XVFB_PID ; then
 	    echo "$0 $ARG: Xvfb stopped"
 	else
 	    echo "$0 $ARG: Xvfb could not be stopped"
@@ -455,6 +455,7 @@ start_scheduler() {
     if [ $RUNNING -eq 1 ]; then
         echo "$0 $ARG: scheduler (pid $SCHEDULER_PID) already running"
     else
+        cd $SCHEDULER_PATH
         $SCHEDULER  >/dev/null 2>&1 &
         if [ $? -eq 0 ]; then
             echo "$0 $ARG: scheduler started"
@@ -481,7 +482,7 @@ stop_scheduler() {
         fi
 	fi
     get_scheduler_pid
-	if killall $SCHEDULERBIN ; then
+	if kill $SCHEDULER_PID ; then
 	    echo "$0 $ARG: schedulerstopped"
 	else
 	    echo "$0 $ARG: scheduler could not be stopped"
