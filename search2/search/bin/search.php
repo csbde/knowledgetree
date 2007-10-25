@@ -36,6 +36,7 @@
  *
  */
 
+chdir(dirname(__FILE__));
 require_once(realpath('../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
