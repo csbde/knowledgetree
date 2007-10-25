@@ -45,7 +45,12 @@ class PlainTextExtractor extends TextExtractor
 
 	public function getSupportedMimeTypes()
 	{
-		return array('text/plain','text/csv');
+		return array(
+			'text/plain',
+			'text/csv',
+			'text/tab-separated-values',
+			'text/css'
+			);
 	}
 
 }
