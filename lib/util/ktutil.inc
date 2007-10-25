@@ -82,7 +82,7 @@ class KTUtil {
 
 	static function computePeriodToDate($start, $suffix = null, $returnArray=false)
 	{
-		return KTUtil::computePeriodToDate(time() - $start, $suffix, $returnArray);
+		return KTUtil::computePeriod(time() - $start, $suffix, $returnArray);
 	}
 
 	static function filesizeToString($filesize)
