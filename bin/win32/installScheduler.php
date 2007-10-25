@@ -8,6 +8,6 @@ win32_create_service(array(
             'path' => $scriptPath
             ));
 
-win32_start_service('ktscheduler');
+//win32_start_service('ktscheduler');
 
 ?>
