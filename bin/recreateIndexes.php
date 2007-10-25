@@ -45,6 +45,7 @@
  * It will produce 'errors' when there are issues. Many may be ignored as some do not apply to open source.
  */
 
+chdir(dirname(__FILE__));
 require_once('../config/dmsDefaults.php');
 
 print _kt('Recreate DB Indexes') . "...\n\n";
