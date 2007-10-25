@@ -27,7 +27,7 @@ if (!is_file($phpPath))
 	exit;
 }
 
-$default->log->error("Scheduler Service: starting main loop");
+$default->log->info("Scheduler Service: starting main loop");
 
 $loop = true;
 // Main Scheduler Service Loop
