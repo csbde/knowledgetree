@@ -44,6 +44,7 @@
  */
 
 session_start();
+chdir(dirname(__FILE__));
 require_once(realpath('../../../config/dmsDefaults.php'));
 
 print _kt("Shutdown the Document Indexer") . "...\n";
