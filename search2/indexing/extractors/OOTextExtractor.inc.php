@@ -69,7 +69,13 @@ class OOTextExtractor extends ExternalDocumentExtractor
 	public function getSupportedMimeTypes()
 	{
 		return array(
-
+			'application/msword',
+			'application/vnd.sun.xml.writer',
+			'application/vnd.sun.xml.writer.template',
+			'application/vnd.sun.xml.writer.global',
+			'application/vnd.oasis.opendocument.text',
+			'application/vnd.oasis.opendocument.text-template',
+			'application/vnd.oasis.opendocument.text-master'
 		);
 	}
 

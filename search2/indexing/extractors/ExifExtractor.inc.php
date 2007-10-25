@@ -46,7 +46,8 @@ class ExifExtractor extends DocumentExtractor
 	public function getSupportedMimeTypes()
 	{
 		return array(
-			'image/tiff','image/jpeg'
+			'image/tiff',
+			'image/jpeg'
 		);
 	}
 
