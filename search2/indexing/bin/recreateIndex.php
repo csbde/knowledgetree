@@ -46,6 +46,7 @@
  */
 
 session_start();
+chdir(dirname(__FILE__));
 require_once(realpath('../../../config/dmsDefaults.php'));
 
 print _kt("Recreate Lucene index") . "...\n";

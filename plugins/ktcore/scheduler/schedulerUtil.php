@@ -184,6 +184,12 @@ class schedulerUtil extends KTUtil
             case '5mins':
                 $iDiff = (60*5);
                 break;
+            case '1min':
+                $iDiff = 60;
+                break;
+            case '30secs':
+                $iDiff = 30;
+                break;
             case 'once':
                 $iDiff = 0;
                 break;

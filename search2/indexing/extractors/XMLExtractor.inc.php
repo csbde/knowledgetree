@@ -45,7 +45,12 @@ class XMLExtractor extends TextExtractor
 
 	public function getSupportedMimeTypes()
 	{
-		return array('text/xml','application/xml','text/html','text/enriched');
+		return array(
+				'text/xml',
+				'application/xml',
+				'text/html',
+				'text/enriched'
+			);
 	}
 
 	protected function filter($text)

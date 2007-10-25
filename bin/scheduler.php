@@ -34,7 +34,7 @@
  * Contributor( s): ______________________________________
  *
  */
-
+chdir(dirname(__FILE__));
 require_once('../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 

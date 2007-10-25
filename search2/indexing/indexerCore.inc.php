@@ -692,7 +692,9 @@ abstract class Indexer
     		OS_UNIX => array()
     	);
 
-		foreach($disable[OS_WINDOWS] as $extractor)
+    	$disableForOS = OS_WINDOWS?$disable[OS_WINDOWS]:$disable[OS_UNIX];
+
+		foreach($disableForOS as $extractor)
 		{
     		$sql = "UPDATE mime_extractors SET active=0 WHERE name='$extractor'";
     		DBUtil::runQuery($sql);
@@ -872,7 +874,9 @@ abstract class Indexer
 
         		if ($extractor->needsIntermediateSourceFile())
         		{
-        			$intermediate = $tempPath . '/'. $document->getFileName();
+        			$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
+
+        			$intermediate = $tempPath . '/'. $docId . '.' . $extension;
         			$result = @copy($sourceFile, $intermediate);
         			if ($result === false)
         			{

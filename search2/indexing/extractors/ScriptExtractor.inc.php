@@ -45,7 +45,9 @@ class ScriptExtractor extends TextExtractor
 
 	public function getSupportedMimeTypes()
 	{
-		return array('application/x-shellscript','application/javascript');
+		return array(
+			'application/x-shellscript',
+			'application/javascript');
 	}
 
 }
