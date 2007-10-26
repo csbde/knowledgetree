@@ -755,7 +755,7 @@ abstract class Indexer
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
 					INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
-					INNER JOIN mime_extractors me ON mt.extractor_id=me.id
+					LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
  				WHERE
  					(iff.processdate IS NULL or iff.processdate < cast(cast('$date' as date) -1 as date)) AND dmv.status_id=1
 				ORDER BY indexdate
@@ -807,12 +807,6 @@ abstract class Indexer
         		$default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
         	}
 
-        	if (!$this->isExtractorEnabled($extractorClass))
-			{
-				$default->log->info(sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass));
-				continue;
-			}
-
         	if (empty($extractorClass))
         	{
 	        	if ($this->debug)
@@ -824,9 +818,15 @@ abstract class Indexer
         		continue;
         	}
 
+        	if (!$this->isExtractorEnabled($extractorClass))
+			{
+				$default->log->info(sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass));
+				continue;
+			}
+
         	if ($this->debug)
         	{
-        		$default->log->info(sprintf(_kt("Processing document %d.\n"),$docId));
+        		$default->log->info(sprintf(_kt("Processing docid: %d.\n"),$docId));
         	}
 
         	$removeFromQueue = true;
