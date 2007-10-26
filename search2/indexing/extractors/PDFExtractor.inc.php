@@ -40,7 +40,10 @@ class PDFExtractor extends ApplicationExtractor
 {
 	public function __construct()
 	{
-		parent::__construct('externalBinary','pdftotext','pdftotext',_kt('PDF Text Extractor'),'-nopgbrk -enc UTF-8 \'{source}\' \'{target}\'');
+		$config = KTConfig::getSingleton();
+		$params = $config->get('extractorParameters/pdftotext', '-nopgbrk -enc UTF-8 \'{source}\' \'{target}\'');
+
+		parent::__construct('externalBinary','pdftotext','pdftotext',_kt('PDF Text Extractor'),$params);
 	}
 
 	public function getSupportedMimeTypes()
