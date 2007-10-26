@@ -40,7 +40,10 @@ class PSExtractor extends ApplicationExtractor
 {
 	public function __construct()
 	{
-		parent::__construct('externalBinary','pstotext','pstotext',_kt('PostScript Text Extractor'),'-nopgbrk -enc UTF-8 {source} {target}');
+		$config = KTConfig::getSingleton();
+		$params = $config->get('extractorParameters/pstotext', '\'{source}\' > \'{target}\'');
+
+		parent::__construct('externalBinary','pstotext','pstotext',_kt('PostScript Text Extractor'), $params);
 	}
 
 	public function getSupportedMimeTypes()
@@ -56,6 +59,7 @@ class PSExtractor extends ApplicationExtractor
 	{
 		if (OS_WINDOWS)
 		{
+			// pstotext is not available under windows, so no need to diagnose it
 			return null;
 		}
 		return parent::diagnose();
