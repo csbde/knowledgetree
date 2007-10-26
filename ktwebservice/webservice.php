@@ -2,7 +2,7 @@
 
 /**
  *
- * $Id:$
+ * $Id$
  *
  * This implements the KnowledgeTree Web Service in SOAP.
  *
@@ -3304,6 +3304,36 @@ class KTWebService
 					array(
 						'name' => 'office_metadata_capture',
 						'value' => bool2str($config->get('clientToolPolicies/officeMetadataCapture')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_delete',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsDelete')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_checkin',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCheckin')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_checkout',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCheckout')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_cancelcheckout',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCancelCheckout')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_copyinkt',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCopyInKT')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_moveinkt',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsMoveInKT')),
 						'type' => 'boolean'
 					),
 				);
