@@ -1005,6 +1005,12 @@ class UpgradeFunctions {
             // clientToolPolicies Section
             $ini->addItem('clientToolPolicies', 'explorerMetadataCapture', 'true', "These two settings control whether or not the client is prompted for metadata when a\r\n;document is added to knowledgetree via KTtools. They default to true.");
             $ini->addItem('clientToolPolicies', 'officeMetadataCapture', 'true');
+            $ini->addItem('clientToolPolicies', 'captureReasonsDelete', 'true', "These settings govern whether reasons are asked for in KTtools.");
+            $ini->addItem('clientToolPolicies', 'captureReasonsCheckin', 'true');
+            $ini->addItem('clientToolPolicies', 'captureReasonsCheckout', 'true');
+            $ini->addItem('clientToolPolicies', 'captureReasonsCancelCheckout', 'true');
+            $ini->addItem('clientToolPolicies', 'captureReasonsCopyInKT', 'true');
+            $ini->addItem('clientToolPolicies', 'captureReasonsMoveInKT', 'true');
 
             // DiskUsage Section
             $ini->addItem('DiskUsage', 'warningThreshold', '10', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in ORANGE", "settings for the Disk Usage dashlet");

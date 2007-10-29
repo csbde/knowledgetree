@@ -456,7 +456,7 @@ abstract class ApplicationExtractor extends ExternalDocumentExtractor
 	{
 		$sources = array('{source}','{target}');
 		$target = array($this->sourcefile, $this->targetfile);
-		$cmdline = $this->command . ' ' . str_replace($sources,$target, $this->params);
+		$cmdline = $this->application . ' ' . str_replace($sources,$target, $this->params);
 
 		return $cmdline;
 	}

@@ -496,7 +496,12 @@ class KTInit {
 
             $oKTConfig->setdefaultns('clientToolPolicies', 'explorerMetadataCapture', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'officeMetadataCapture', true);
-
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsDelete', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCheckin', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCheckout', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCancelCheckout', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCopyInKT', true);
+            $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsMoveInKT', true);
 
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
