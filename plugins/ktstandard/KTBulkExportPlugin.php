@@ -106,8 +106,6 @@ class KTBulkExportAction extends KTFolderAction {
             exit(0);
         }
 
-        $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js');
-        $this->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js');
         $this->oPage->template = "kt3/minimal_page";
         $this->handleOutput("");
 
