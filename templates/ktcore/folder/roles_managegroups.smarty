@@ -1,9 +1,6 @@
 <h2>{i18n arg_rolename=$rolename}Allocate Groups to Role: #rolename#{/i18n}</h2>
 
 {$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
 <p class="descriptiveText">{i18n}Groups must be allocated to roles to ensure that the workflow transition this role is supposed to support can be acted upon by a user.{/i18n}</p>
 

@@ -14,7 +14,7 @@ mysqladmin -u root -p -f drop %INPUT%
 ECHO ---- Creating database %INPUT% ----
 mysqladmin -u root -p create %INPUT%
 ECHO ---- Creating structure for database %INPUT% ----
-mysql -u root %INPUT%<structure.sql
+mysql -u root -p %INPUT%<structure.sql
 ECHO ---- Inserting data into database %INPUT% ----
 mysql -u root -p %INPUT%< data.sql
 ECHO ---- Creating user information for database %INPUT% ----

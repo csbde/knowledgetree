@@ -7,12 +7,6 @@
 <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-headings.css" />
 <!--[if lt IE 7]><style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-icons.css);</style><![endif]-->
 
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Base.js"> </script>
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/DOM.js"> </script>
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Logging.js"> </script>
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Async.js"> </script>
-<script type="text/javascript" src="{$rootUrl}/thirdpartyjs/MochiKit/Signal.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/resources/js/kt-utility.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/resources/js/toggleselect.js"> </script>
 <script type="text/javascript" src="{$rootUrl}/presentation/i18nJavascript.php"> </script>

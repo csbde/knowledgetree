@@ -1,9 +1,6 @@
 <h2>{i18n}Allocate User to Role{/i18n}</h2>
 
 {$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
 <p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p> 
 
