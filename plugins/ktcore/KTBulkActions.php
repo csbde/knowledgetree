@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -484,9 +484,9 @@ class KTBulkArchiveAction extends KTBulkAction {
 
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
-        	
+
             $res = KTDocumentUtil::archive($oEntity, $this->sReason);
-            
+
             if(PEAR::isError($res)){
                 return $res;
             }
@@ -530,9 +530,13 @@ class KTBulkArchiveAction extends KTBulkAction {
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
-                    
-                    $res = KTDocumentUtil::archive($oEntity, $this->sReason);
-                    
+
+                    if(PEAR::isError($oDocument)){
+                        return $oDocument;
+                    }
+
+                    $res = KTDocumentUtil::archive($oDocument, $this->sReason);
+
                     if(PEAR::isError($res)){
                         return $res;
                     }
@@ -548,7 +552,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     var $_sPermission = 'ktcore.permissions.read';
     var $_bMutator = true;
     var $bNotifications = true;
-    
+
     function getDisplayName() {
         return _kt('Export');
     }
@@ -580,7 +584,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->startTransaction();
         $oKTConfig =& KTConfig::getSingleton();
         $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
-        
+
         $this->bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
 
         $result = parent::do_performaction();
@@ -600,7 +604,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         ));
 
         $this->commitTransaction();
-        
+
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
         $str = sprintf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
@@ -611,9 +615,9 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 document.location.href = "%s";
                 }
                 callLater(1, kt_bulkexport_redirect);
-    
+
                 </script>', $url);
-                
+
         return $str;
     }
 
@@ -627,14 +631,14 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                 $oDocumentTransaction->create();
             }
-            
+
             // fire subscription alerts for the downloaded document - if global config is set
             if($this->bNotifications){
                 $oSubscriptionEvent = new SubscriptionEvent();
                 $oFolder = Folder::get($oDocument->getFolderID());
                 $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
             }
-                    
+
             $this->oZip->addDocumentToZip($oDocument);
 
         }else if(is_a($oEntity, 'Folder')) {
@@ -695,12 +699,12 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
     function do_downloadZipFile() {
         $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
-        
+
         $folderName = $this->oFolder->getName();
         $this->oZip = new ZipFolder($folderName);
-        
+
         $res = $this->oZip->downloadZipFile($sCode);
-        
+
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
@@ -798,7 +802,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         $oKTConfig =& KTConfig::getSingleton();
         $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
-        
+
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
         $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
 
@@ -809,7 +813,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             $folderName = $this->oFolder->getName();
             $this->oZip = new ZipFolder($folderName);
             $res = $this->oZip->checkConvertEncoding();
-                        
+
             if(PEAR::isError($res)){
                 $this->addErrorMessage($res->getMessage());
                 return $sReturn;
@@ -836,7 +840,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         $this->commitTransaction();
 
         if($this->bDownload){
-        
+
             $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
             $str = sprintf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
             $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
@@ -847,9 +851,9 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         document.location.href = "%s";
                     }
                     callLater(1, kt_bulkexport_redirect);
-    
+
                     </script>', $url);
-                    
+
             return $str;
         }
         return $result;
@@ -938,15 +942,15 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         }
         return true;
     }
-    
+
     function do_downloadZipFile() {
         $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
-        
+
         $folderName = $this->oFolder->getName();
         $this->oZip = new ZipFolder($folderName);
-        
+
         $res = $this->oZip->downloadZipFile($sCode);
-        
+
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
