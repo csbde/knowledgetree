@@ -64,9 +64,6 @@ class JavascriptObserver {
     }
 
     function start() {
-        $this->context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js');
-        $this->context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js');
-        $this->context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js');
         $this->context->oPage->requireJSResource('resources/js/add_document.js');
         $this->context->oRedirector =& $this;
         $this->context->handleOutput('<div id="kt-add-document-target">&nbsp;</div>');

@@ -124,7 +124,7 @@ class KTPage {
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
-        $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
+        $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners_lite.inc.js';
         $aJS[] = 'resources/js/loader.js';
         $aJS[] = 'thirdpartyjs/yui/tools/tools.js';
         
