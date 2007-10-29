@@ -608,8 +608,6 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $renderedTree = $this->_evilTreeRenderer($fieldTree);
 
         $this->oPage->setTitle(_kt('Edit Lookup Tree'));
-
-        //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
         
         if ($current_node == 0) { $category_name = 'Root'; }
         else {

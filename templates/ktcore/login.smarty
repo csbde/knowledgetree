@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-ie-icons.css" type="text/css" />
 
-    <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js"> </script>
+    <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners_lite.inc.js"> </script>
     <script type="text/javascript" src="{$rootUrl}/resources/js/login_loader.js"> </script>
 </head>
 <body>
@@ -45,6 +45,7 @@
 					</select>
 				    <div class="form_actions">
 			        	<input type="submit" value="{i18n}login{/i18n}" />
+			        	<p class="smaller"><a href="#" onclick="showBox();">Forgot Password?</a></p>
 					</div>
 	    		</form>
 			</div>
@@ -54,24 +55,72 @@
 			</div>
 			{/if}
 			<p class="descriptiveText version">
-				{i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
-				{i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
-				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a>{/i18n}<br><br>
-				{if ($smallVersion == 'OSS')}
-					{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
-				{else}
-					{i18n}All rights reserved.{/i18n}<br>
-				{/if} 
+				{i18n}Access to this service is subject to the KnowledgeTreeLive <a href="http://www.knowledgetree.com/about/legal/live">Terms and Conditions</a> of use.{/i18n}<br/>
+				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
 			</p>
-			
-			
 	        <div id="bottomspacer"></div>
 	        <div class="floatClear"></div>
 	    </div>
+	    <div id="forgot_box">
+	    	<form name="forgot_form" action="" method="POST">
+	    	<table width="80%">
+	    		<tr>
+	    			<td><div class="close_box" id="close_box" onclick="hideBox();" onmouseover="glow();" onmouseout="unglow();">Close</div></td>
+	    		</tr>
+	    		<tr>
+	    			<input type="hidden" value="request_password_reset" name="request_password_reset" id="request_password_reset">
+	    			<td>Please note that this feature is only used to reset the ADMIN password. System users should contact admin to reset their password.</td>
+	    		</tr>
+	    		<!--<tr>
+	    			<td><label for="company_name">Company Name</label>
+	    			<input type="text" id="company_name" name="company_name"></input></td>
+	    		</tr>-->
+	 			<tr>
+	 				<td><label for="email">Email Address</label>
+	 				<input type="text" id="email" name="email"></input></td>
+	 			</tr>
+	 			<tr>
+	 				<td class="form_actions"><input type="submit" value="{i18n}submit{/i18n}" /></td>
+	 				<td></td>
+	 			</tr>
+	    	</table>
+	    	</form>
+	    </div>
+	    <div id="reset_box">
+	    	<form name="reset_form" action="" method="POST">
+		    	<table width="80%">
+		    		<tr>
+		    			<input type="hidden" name="perform_password_reset" value="perform_password_reset" id="perform_password_reset">
+		    			<td>Please note that this feature is only used to reset the ADMIN password. System users should contact admin to reset their password.</td>
+		    		</tr>
+		    		<tr>
+		    			<td><label for="full_name">Full Name</label>
+		    			<input type="text" id="full_name" name="full_name"></input></td>
+		    		</tr>
+		 			<tr>
+		 				<td><label for="email">Email Address</label>
+		 				<input type="text" id="email" name="email"></input></td>
+		 			</tr>
+		 			<tr>
+		 				<td><label for="new_password">New password</label>
+		 				<input type="password" id="new_password" name="new_password"></input></td>
+		 			</tr>
+		 			<tr>
+		 				<td><label for="new_password_repeat">Repeat new password</label>
+		 				<input type="password" id="new_password_repeat" name="new_password_repeat"></input></td>
+		 			</tr>
+		 			<tr>
+		 				<td class="form_actions"><input type="submit" value="{i18n}submit{/i18n}" /></td>
+		 				<td></td>
+		 			</tr>
+		    	</table>
+	    	</form>
+	    </div>
+	    {if $reset_password == true}
+	    	<script type="text/javascript">showResetBox();</script>
+	    {else}
+	    	<script type="text/javascript">hideResetBox();</script>
+	    {/if}
 	</div>
-
-
-
-
 </body>
 </html>

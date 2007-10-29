@@ -35,13 +35,6 @@
 {/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 
-<!-- include the mochikit js -->
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
-
 {$context->oPage->requireJSResource("resources/js/taillog.js")}
 {$context->oPage->requireJSResource("resources/js/conditional_complex_edit.js")}
 
