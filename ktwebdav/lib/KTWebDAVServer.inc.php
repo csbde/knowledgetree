@@ -1678,7 +1678,32 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         return "502 bad gateway - No moving to different WebDAV Servers yet";
                         }
                  */
+
                 $source_path = $options["path"];
+
+                // Fix for Mac Goliath
+                // Modified - 30/10/07
+                // Mac adds ._filename files when files are added / copied / moved
+                // we want to ignore them.
+                if($this->dav_client == 'MG'){
+                    // Remove filename from path
+                    $aPath = explode('/', $source_path);
+                    $fileName = $aPath[count($aPath)-1];
+
+//                    if(strtolower($fileName) == '.ds_store'){
+//                        $this->ktwebdavLog("Using a mac client. Ignore the .DS_Store files created with every folder.", 'info', true);
+//                        // ignore
+//                        return "204 No Content";
+//                    }
+
+                    if($fileName[0] == '.' && $fileName[1] == '_'){
+                        $fileName = substr($fileName, 2);
+                        $this->ktwebdavLog("Using a mac client. Ignore the ._filename files created with every file.", 'info', true);
+                        // ignore
+                        return "204 No Content";
+                    }
+                }
+
                 $source_res = $this->_folderOrDocument($source_path);
                 if ($source_res === false) {
                     $this->ktwebdavLog("404 Not found - Document was not found.", 'info', true);
