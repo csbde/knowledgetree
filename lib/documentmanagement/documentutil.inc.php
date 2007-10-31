@@ -1228,7 +1228,7 @@ class KTDocumentUtil {
 class KTMetadataValidationError extends PEAR_Error {
     function KTMetadataValidationError ($aFailed) {
         $this->aFailed = $aFailed;
-        $message = _kt('Validation Failed');
+        $message = _kt('Please be sure to enter information for all the Required fields below');
         parent::PEAR_Error($message);
     }
 }
