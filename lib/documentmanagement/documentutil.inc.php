@@ -255,9 +255,6 @@ class KTDocumentUtil {
             'creatorid' => $oUser->getID(),
             'documenttypeid' => $iDocumentTypeId,
         ));
-        if (PEAR::isError($oDocument)) {
-            return $oDocument;
-        }
 
         if (is_null($oContents)) {
             $res = KTDocumentUtil::setIncomplete($oDocument, 'contents');
@@ -551,34 +548,15 @@ class KTDocumentUtil {
     // {{{ _in_add
     function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
         $aOrigOptions = $aOptions;
-        if (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
-	       $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
-    	    if (PEAR::isError($oDoc)) {
-                    return PEAR::raiseError(_kt('Document with that filename already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));
-    	    } else {
-        		if ($oDoc->getStatusID() != LIVE) {
-        		    $sError = _kt('Document with that filename already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename.');
-        		} else {
-        		    $sError = _kt('Document with that filename already exists in this folder.');
-        		}
-
-        		$sError .= _kt(' Document') . ': ' . $oDoc->getName() . ' (ID:' . $oDoc->getId() . ')';
-        		return PEAR::raiseError($sError);
-    	    }
+        while(KTDocumentUtil::fileExists($oFolder, $sFilename)) {
+          $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
+          $sFilename = KTDocumentUtil::generateNewDocumentFilename($oDoc->getFileName());
         }
         $sName = KTUtil::arrayGet($aOptions, 'description', $sFilename);
-        if (KTDocumentUtil::nameExists($oFolder, $sName)) {
-    	    $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
-    	    if (PEAR::isError($oDoc)) {
-                    return PEAR::raiseError(_kt('Document with that title already exists in this folder, and appears to be invalid.  Please contact the system administrator.'));
-    	    } else {
-        		if ($oDoc->getStatusID != LIVE) {
-                            return PEAR::raiseError(_kt('Document with that title already exists in this folder, but it has been archived or deleted and is still available for restoration.  To prevent it being overwritten, you are not allowed to add a document with the same title or filename.'));
-        		} else {
-        		    return PEAR::raiseError(_kt('Document with that title already exists in this folder.'));
-        		}
-    	    }
-
+        while(KTDocumentUtil::nameExists($oFolder, $sName)) {
+          $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
+          $aOptions['description'] = KTDocumentUtil::generateNewDocumentName($oDoc->getName());
+          $sName = KTDocumentUtil::generateNewDocumentName($oDoc->getName());
         }
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
@@ -660,7 +638,46 @@ class KTDocumentUtil {
         return $oDocument;
     }
     // }}}
-
+	
+	function generateNewDocumentFilename($sDocFilename){
+		if(preg_match("/\([0-9]+\)(\.[^\.]+){1,}$/", $sDocFilename)){
+		  preg_match("/\([0-9]+\)\./", $sDocFilename, $matches);
+		  $new_one = substr($matches[0], 1);
+		  $new_two = explode(')', $new_one);
+		  $new = $new_two[0]+1;
+		  
+		  $pattern[0] = '/\([0-9]+\)\./';
+		  $replacement[0] = ' ('.$new.').';
+		  $sFilename = preg_replace($pattern, $replacement, $sDocFilename);
+		}else{
+		  $matches = explode('.', $sDocFilename);
+		  $prefix = $matches[0].' (2)';
+		  for($i = 1; $i < count($matches); $i++ ){
+		    $suffix .= '.'.$matches[$i];
+		  }
+		  $sFilename = $prefix.$suffix;
+		}
+		
+		return $sFilename;
+	}
+	
+	function generateNewDocumentName($sDocName){		
+		if(preg_match("/\([0-9]+\)$/", $sDocName)){
+		  preg_match("/\([0-9]+\)$/", $sDocName, $matches);
+		  $new_one = substr($matches[0], 1);
+		  $new_two = explode(')', $new_one);
+		  $new = $new_two[0]+1;
+		  
+		  $pattern[0] = '/\([0-9]+\)$/';
+		  $replacement[0] = '('.$new.')';
+		  $sName = preg_replace($pattern, $replacement, $sDocName);
+		}else{
+		  $sName =  $sDocName.' (2)';
+		}
+		
+		return $sName;
+	}
+	
     // {{{ fileExists
     function fileExists($oFolder, $sFilename) {
         return Document::fileExists($sFilename, $oFolder->getID());
