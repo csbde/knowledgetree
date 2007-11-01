@@ -500,10 +500,20 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectTo('addUser', _kt("The passwords you specified do not match."), sprintf("old_search=%s&do_search=1", $old_search));
         }
         
+        if(preg_match('/[\!\$\#\%\^\&\*]/', $username)){
+        	$this->errorRedirectTo('addUser', _kt("You have entered an invalid character in your username."));
+        }
+        
+        if(preg_match('/[\!\$\#\%\^\&\*]/', $name)){
+        	$this->errorRedirectTo('addUser', _kt("You have entered an invalid character in your name."));
+        }
+        
         $dupUser =& User::getByUserName($username);
         if(!PEAR::isError($dupUser)) {
             $this->errorRedirectTo('addUser', _kt("A user with that username already exists"));
         }
+        
+        
         
         $oUser =& User::createFromArray(array(
             "sUsername" => $username,
