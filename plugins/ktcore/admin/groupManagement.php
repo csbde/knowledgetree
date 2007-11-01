@@ -645,6 +645,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
+       
         
         if (is_null($data['unit']) && $data['unitadmin']) {
             $extra_errors['unitadmin'] = _kt("Groups without units cannot be Unit Administrators.");
@@ -654,9 +655,21 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         if (!PEAR::isError($oGroup)) {
             $extra_errors['group_name'][] = _kt("There is already a group with that name.");
         }
+		
+		
+        if(preg_match('/[\!\$\#\%\^\&\*]/', $data['group_name'])){
+        	$extra_errors['group_name'][] = _kt("You have entered an invalid character.");
+        }
+		
+        if ($data['group_name'] == ''){
+        	$extra_errors['group_name'][] = _kt("You have entered an invalid name.");
+        }
+
         
         if (!empty($errors) || !empty($extra_errors)) {
+            
             return $oForm->handleError(null, $extra_errors);
+            
         }
         
         $this->startTransaction();
