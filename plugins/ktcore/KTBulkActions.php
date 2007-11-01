@@ -647,6 +647,9 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             $sFolderId = $oFolder->getId();
             $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
 
+            // Add folder to zip
+            $this->oZip->addFolderToZip($oFolder);
+
             if(!empty($sFolderDocs)){
                 $aDocuments = explode(',', $sFolderDocs);
             }
