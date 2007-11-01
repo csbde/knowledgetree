@@ -779,7 +779,7 @@ gettext("Update");
 gettext("Disclaimers");
 
 /* ./templates/ktstandard/disclaimers/manage_disclaimers.smarty */
-gettext("Please select a disclaimer to customise.");
+gettext("Please select a disclaimer to customize.");
 
 /* ./templates/ktstandard/disclaimers/manage_disclaimers.smarty */
 gettext("Existing disclaimers");
@@ -5510,10 +5510,10 @@ gettext("Create Fieldset");
 gettext("Current help assignments");
 
 /* ./templates/ktcore/manage_help.smarty */
-gettext("To customise a help file, please visit that file via the help system and click on <strong>customise this help file</strong>.");
+gettext("To customize a help file, please visit that file via the help system and click on <strong>customize this help file</strong>.");
 
 /* ./templates/ktcore/manage_help.smarty */
-gettext("Existing customised help pages");
+gettext("Existing customized help pages");
 
 /* ./templates/ktcore/manage_help.smarty */
 gettext("Name");
@@ -5525,7 +5525,7 @@ gettext("Actions");
 gettext("Delete");
 
 /* ./templates/ktcore/manage_help.smarty */
-gettext("No help files have been customised.");
+gettext("No help files have been customized.");
 
 /* ./templates/ktcore/boolean_search_change.smarty */
 gettext("Boolean Search");
