@@ -157,6 +157,10 @@ msgstr ""
 msgid "- Please select a document type -"
 msgstr ""
 
+#: plugins/ktcore/folder/BulkImport.php:113
+msgid "Your documents have been added to this folder and not the folder structure within the upload file because you do not have permission to add any folders."
+msgstr ""
+
 #: i18n/templates.c:947
 msgid "(Closed at metadata version: #ver#)"
 msgstr ""

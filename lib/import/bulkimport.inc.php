@@ -71,6 +71,8 @@ class KTBulkImportManager {
     }
 
     function _importfolder($oFolder, $sPath) {
+        $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
+        
         $aDocPaths = $this->oStorage->listDocuments($sPath);
         if (PEAR::isError($aDocPaths)) {
             return $aDocPaths;
@@ -98,12 +100,26 @@ class KTBulkImportManager {
                     $oThisFolder = $aOptions[0];
                 }
             } else {
-                $oThisFolder = KTFolderUtil::add($oFolder, utf8_encode(basename($sFolderPath)), $this->oUser);
+                
+                if(KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oFolder))
+        		{
+                	$oThisFolder = KTFolderUtil::add($oFolder, utf8_encode(basename($sFolderPath)), $this->oUser);
+        		}
+        		else
+        		{
+        			$oThisFolder = $oFolder;
+        			if(!in_array('Your documents have been added to this folder and not the folder structure within the upload file because you do not have permission to add any folders.',$_SESSION['KTErrorMessage']))
+        			{
+        				$_SESSION['KTErrorMessage'][] = sprintf(_kt('Your documents have been added to this folder and not the folder structure within the upload file because you do not have permission to add any folders.'));
+        			}
+        		}
             }
             if (PEAR::isError($oThisFolder)) {
                 return $oThisFolder;
             }
+
             $res = $this->_importfolder($oThisFolder, $sFolderPath);
+        	
             if (PEAR::isError($res)) {
                 return $res;
             }
@@ -116,7 +132,7 @@ class KTBulkImportManager {
             return $aInfo;
         }
         // need to check both of these.
-        if (KTDocumentUtil::nameExists($oFolder, utf8_encode(basename($sPath)))) {
+        /*if (KTDocumentUtil::nameExists($oFolder, utf8_encode(basename($sPath)))) {
             $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
             $oDocument =& Document::getByNameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
             return $oDocument;            
@@ -124,7 +140,7 @@ class KTBulkImportManager {
             $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
             $oDocument =& Document::getByFilenameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
             return $oDocument;
-        }
+        }*/
         // else
         $aOptions = array(
             // XXX: Multiversion Import
