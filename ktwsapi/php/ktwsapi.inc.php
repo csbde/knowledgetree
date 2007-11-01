@@ -166,7 +166,7 @@ class KTWSAPI_FolderItem
     	}
     	else
     	{
-    		$response = true;
+    		$response  = true;
     	}
     	curl_close($ch);
 
