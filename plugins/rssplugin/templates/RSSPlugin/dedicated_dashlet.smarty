@@ -1,0 +1,18 @@
+{literal}
+
+<style type="text/css">
+#RSSDedicatedDashlet { 
+	display: none;
+}
+</style>
+
+{/literal}
+<div id="rssDedicatedBlock">
+		<br>{i18n}RSS feed unavailable.{/i18n}.
+		<br>
+		<br>
+</div>
+{if $url != ''}
+<script type="text/javascript">var FEED_URL = "{$url}";</script>
+<script type="text/javascript">loadDedicatedFeed({$user});</script>
+{/if}

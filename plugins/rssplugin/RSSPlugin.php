@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -59,6 +59,7 @@ require_once('RSSDocumentLinkAction.php');
 		$this->registerAction('folderaction', 'RSSFolderLinkAction', 'ktcore.rss.plugin.folder.link', $sFilename = null);
 		$this->registerAction('documentaction', 'RSSDocumentLinkAction', 'ktcore.rss.plugin.document.link', $sFilename = null);
 		$this->registerDashlet('RSSDashlet', 'ktcore.rss.feed.dashlet', 'RSSDashlet.php');
+		$this->registerDashlet('RSSDedicatedDashlet', 'ktcore.dedicated.rss.feed.dashlet', 'RSSDedicatedDashlet.php');
 		$this->registerPage('managerssfeeds', 'ManageRSSFeedsDispatcher');
 		
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
