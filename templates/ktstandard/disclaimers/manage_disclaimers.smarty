@@ -1,6 +1,6 @@
 <h2>{i18n}Disclaimers{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Please select a disclaimer to customise.{/i18n}</p>
+<p class="descriptiveText">{i18n}Please select a disclaimer to customize.{/i18n}</p>
 
 <h2>{i18n}Existing disclaimers{/i18n}</h2>
 
