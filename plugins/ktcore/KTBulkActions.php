@@ -725,7 +725,13 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
             if ($oEntity->getIsCheckedOut()) {
-                return PEAR::raiseError(_kt('Document is already checked out'));
+                $checkedOutUser = $oEntity->getCheckedOutUserID();
+                $sUserId = $_SESSION['userID'];
+
+                if($checkedOutUser != $sUserId){
+                    $oCheckedOutUser = User::get($checkedOutUser);
+                    return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
+                }
             }
         }else if(!is_a($oEntity, 'Folder')) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
@@ -921,12 +927,29 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 foreach($aDocuments as $sDocId){
                     $oDocument = Document::get($sDocId);
                     if(PEAR::isError($oDocument)) {
-                        return PEAR::raiseError(_kt('Folder documents cannot be checked out'));
+                        // add message, skip document and continue
+                        $this->addErrorMessage($oDocument->getName().': '.$oDocument->getMessage());
+                        continue;
                     }
 
+                    // Checkout document - if it is already checked out, check the owner.
+                    // If the current user is the owner, then include to the download, otherwise ignore.
                     $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser);
                     if(PEAR::isError($res)) {
-                        return PEAR::raiseError($oDocument->getName().': '.$res->getMessage());
+                        if($oDocument->getIsCheckedOut()){
+                            $checkedOutUser = $oDocument->getCheckedOutUserID();
+                            $sUserId = $_SESSION['userID'];
+
+                            if($checkedOutUser != $sUserId){
+                                $oCheckedOutUser = User::get($checkedOutUser);
+                                $this->addErrorMessage($oDocument->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
+                                continue;
+                            }
+                        }
+                        if($checkedOutUser != $sUserId){
+                            $this->addErrorMessage($oDocument->getName().': '.$res->getMessage());
+                            continue;
+                        }
                     }
 
                     // Add document to the zip file
