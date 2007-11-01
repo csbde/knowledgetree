@@ -1496,7 +1496,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             if (PEAR::isError($res)) { $this->errorRedirectTo('allocatepermissions', _kt('Failed to allocate as specified.')); }             
         }
         
-        KTPermissionUtil::updatePermissionLookupForState($oState);
+        KTPermissionUtil::updatePermissionLookupForState($this->oState);
         
         $this->successRedirectTo('managepermissions', _kt('Permissions Allocated.'));
     }
