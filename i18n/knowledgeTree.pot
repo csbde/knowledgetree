@@ -3470,7 +3470,7 @@ msgid "Existing Searches"
 msgstr ""
 
 #: i18n/templates.c:5507
-msgid "Existing customised help pages"
+msgid "Existing customized help pages"
 msgstr ""
 
 #: i18n/templates.c:785
@@ -5618,7 +5618,7 @@ msgid "No groups or roles are defined in the DMS."
 msgstr ""
 
 #: i18n/templates.c:5519
-msgid "No help files have been customised."
+msgid "No help files have been customized."
 msgstr ""
 
 #: help.php:83 help.php:84
@@ -6401,7 +6401,7 @@ msgid "Please provide a search term"
 msgstr ""
 
 #: i18n/templates.c:782
-msgid "Please select a disclaimer to customise."
+msgid "Please select a disclaimer to customize."
 msgstr ""
 
 #: lib/authentication/builtinauthenticationprovider.inc.php:64
@@ -8423,7 +8423,7 @@ msgid "To connect with the #appname# Tools for Windows package, use this address
 msgstr ""
 
 #: i18n/templates.c:5504
-msgid "To customise a help file, please visit that file via the help system and click on <strong>customise this help file</strong>."
+msgid "To customize a help file, please visit that file via the help system and click on <strong>customize this help file</strong>."
 msgstr ""
 
 #: i18n/templates.c:1715
