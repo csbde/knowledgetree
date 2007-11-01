@@ -45,7 +45,6 @@
 					</select>
 				    <div class="form_actions">
 			        	<input type="submit" value="{i18n}login{/i18n}" />
-			        	<p class="smaller"><a href="#" onclick="showBox();">Forgot Password?</a></p>
 					</div>
 	    		</form>
 			</div>
