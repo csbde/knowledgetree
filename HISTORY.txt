@@ -58,7 +58,7 @@ Improvements
 New Features
 
     * Search queries saveable on per user-basis
-    * The login page can now be customised through-the-web.
+    * The login page can now be customized through-the-web.
     * Admin can now disable the "preferences" dialog for all users.
     * Ensuring that your system is "transaction safe" can now be done 
       through the web interface.

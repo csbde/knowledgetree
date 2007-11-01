@@ -1,10 +1,10 @@
 <h2>{i18n}Current help assignments{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}To customise a help file, please visit that file 
-via the help system and click on <strong>customise this help file</strong>.{/i18n}</p>
+<p class="descriptiveText">{i18n}To customize a help file, please visit that file 
+via the help system and click on <strong>customize this help file</strong>.{/i18n}</p>
 
 { if $helpreplacements }
-<h2>{i18n}Existing customised help pages{/i18n}</h2>
+<h2>{i18n}Existing customized help pages{/i18n}</h2>
 
 <table class="listing" cellspacing="0" cellpadding="0" border="0">
 <thead>
@@ -30,7 +30,7 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 </table>
 
 {else}
-<div class="ktInfoMessage"><span>{i18n}No help files have been customised.{/i18n}</span></div>
+<div class="ktInfoMessage"><span>{i18n}No help files have been customized.{/i18n}</span></div>
 
 { /if }
 

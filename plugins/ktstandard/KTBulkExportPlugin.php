@@ -65,7 +65,7 @@ class KTBulkExportAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.read";
 
     function getDisplayName() {
-        return _kt('Bulk Export');
+        return _kt('Bulk Download');
     }
 
     function do_main() {
