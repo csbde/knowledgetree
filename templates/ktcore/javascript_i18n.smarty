@@ -17,9 +17,9 @@ function _(trans_string) {
 
 
 
-// strings for file: resources/js/add_document.js
+// strings for file: resources/js/DDList.js
 
-// strings for file: resources/js/adminversiondashlet.js
+// strings for file: resources/js/add_document.js
 
 // strings for file: resources/js/browsehelper.js
 
@@ -55,18 +55,30 @@ i18n['of the criteria specified.'] = '{i18n}of the criteria specified.{/i18n}';
 // strings for file: resources/js/constructed_search_postprocess.js
 
 // strings for file: resources/js/dashboard.js
+i18n['Add Dashlet'] = '{i18n}Add Dashlet{/i18n}';
+i18n['Add Dashlets'] = '{i18n}Add Dashlets{/i18n}';
+i18n['close'] = '{i18n}close{/i18n}';
+
+// strings for file: resources/js/expungeList.js
 
 // strings for file: resources/js/help.js
 
 // strings for file: resources/js/jsonlookup.js
 
-// strings for file: resources/js/kt3calendar.js
-
 // strings for file: resources/js/kt-utility.js
 
+// strings for file: resources/js/kt3calendar.js
+
+// strings for file: resources/js/loader.js
+
+// strings for file: resources/js/login_loader.js
+
 // strings for file: resources/js/permissions.js
+i18n['Role or Group'] = '{i18n}Role or Group{/i18n}';
 
 // strings for file: resources/js/reorder.js
+
+// strings for file: resources/js/scheduler.js
 
 // strings for file: resources/js/taillog.js
 
