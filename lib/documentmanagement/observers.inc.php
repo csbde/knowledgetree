@@ -80,8 +80,16 @@ class JavascriptObserver {
             printf('<script language="javascript">kt_add_document_newFile("%s")</script>', $msg->getString());
             return;
         }
-        $message = htmlentities($msg->getString(),ENT_QUOTES,'UTF-8');
+        if (mb_detect_encoding($msg->getString()) != 'UTF-8')
+		{
+			$message = htmlentities($msg->getString(),ENT_QUOTES,'UTF-8');
+		}
+		else
+		{
+			$message = $msg->getString();
+		}
         $message = str_replace('&amp;', '&', $message);
+
         printf('<script language="javascript">kt_add_document_addMessage("%s")</script>', $message);
     }
 
