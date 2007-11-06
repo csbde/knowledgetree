@@ -692,7 +692,7 @@ gettext("Many \"lookup\" fields make sense in a hierachy: countries are part of 
 gettext("Add New Subcategory to <strong>#category#</strong>");
 
 /* ./templates/ktcore/metadata/admin/edit_lookuptree.smarty */
-gettext("In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the toplevel items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the toplevel items.");
+gettext("In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the top-level items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the top-level items.");
 
 /* ./templates/ktcore/metadata/admin/edit_lookuptree.smarty */
 gettext("As an example, if you are creating a tree of the   countries in the world, the actual countries would be <strong>keywords</strong>   (e.g. South Africa, England, Pakistan, India, etc.).  The highest group of categories   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by   subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-Saharan Africa,   Australasia.");

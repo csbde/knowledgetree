@@ -5261,7 +5261,7 @@ msgid "In order to move between states, users will cause \"transitions\" to occu
 msgstr ""
 
 #: i18n/templates.c:695
-msgid "In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the toplevel items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the toplevel items."
+msgid "In order to organise the options into a \"tree\", you   need to add subcategories at each level.  The \"top\" level is called the root, and   holds all the top-level items.  \"Root\" will not be shown to the final user, but   provides a single \"parent\" to the top-level items."
 msgstr ""
 
 #: i18n/templates.c:4337

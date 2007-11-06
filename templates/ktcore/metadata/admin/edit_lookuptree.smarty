@@ -15,8 +15,8 @@ are immediately stored, so when you are done simply navigate back to the field m
   
   <p class="descriptiveText">{i18n}In order to organise the options into a "tree", you 
   need to add subcategories at each level.  The "top" level is called the root, and 
-  holds all the toplevel items.  "Root" will not be shown to the final user, but 
-  provides a single "parent" to the toplevel items.{/i18n}</p>
+  holds all the top-level items.  "Root" will not be shown to the final user, but 
+  provides a single "parent" to the top-level items.{/i18n}</p>
   
   <p class="descriptiveText">{i18n}As an example, if you are creating a tree of the
   countries in the world, the actual countries would be <strong>keywords</strong> 
