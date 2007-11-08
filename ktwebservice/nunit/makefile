@@ -1,14 +1,15 @@
-RESULTS=authentication.result folder.result document.result  query.result
+RESULTS=authentication.result document_detail.result document_links.result document_owner.result document_type.result document_history.result document_rename.result document_workflow.result document_metadata.result folder.result document_add.result document_system_metadata.result document_checkout.result 
+#document_download.result 
 PROXY=KTproxy.cs
 WSDL=ktdms.wsdl
 WSDL_URL=http://ktdms.trunk/ktwebservice/index.php?wsdl
 
 all:  ${RESULTS}
-	 
+
 results: clean-results ${RESULTS}
-		 
-KTproxy.dll: KTproxy.cs
-	mcs -r:System.Web.Services /target:library KTproxy.cs
+
+KTproxy.dll: KTproxy.cs helper.cs
+	mcs -r:System.Web.Services /target:library KTproxy.cs helper.cs
 
 KTproxy.cs: ktdms.wsdl
 	wsdl -out:${PROXY} ${WSDL}
@@ -23,7 +24,7 @@ clean-results:
 	rm -f ${RESULTS}
 
 %.dll: %.cs  KTproxy.dll
-	mcs -r:System.Web.Services -r:nunit.framework /r:KTproxy.dll -debug /target:library -out:$@ $<
+	mcs -r:System.Web.Services  -r:nunit.framework /r:KTproxy.dll -debug /target:library -out:$@ $<
 
 %.result: %.dll
 	nunit-console $<
