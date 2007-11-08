@@ -1,49 +1,51 @@
 <?php
+
 /**
  * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
 
-class KTAPI_Session
+abstract class KTAPI_Session
 {
 	var $ktapi;
 	var $user = null;
 	var $session = '';
 	var $sessionid = -1;
 	var $active;
+	var $origUserId;
 
-	function KTAPI_Session(&$ktapi, &$user)
+	public function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi,'KTAPI'));
@@ -52,6 +54,7 @@ class KTAPI_Session
 
 		$this->ktapi=&$ktapi;
 		$this->user=&$user;
+		$this->origUserId = $_SESSION['userID'];
 		$_SESSION['userID']=$user->getId();
 		$this->active = false;
 	}
@@ -61,19 +64,19 @@ class KTAPI_Session
 	 *
 	 * @return string
 	 */
-	function get_session()
+	public function get_session()
 	{
-		die('get_session() should be overloaded!');
+		return $this->session;
 	}
 
 	/**
-	 * Return the session id
+	 * This returns the sessionid in the database.
 	 *
 	 * @return int
 	 */
-	function get_sessionid()
+	public function get_sessionid()
 	{
-		die('get_sessionid() should be overloaded!');
+		return $this->sessionid;
 	}
 
 	/**
@@ -81,18 +84,19 @@ class KTAPI_Session
 	 *
 	 * @return User
 	 */
-	function &get_user()
+	public function &get_user()
 	{
 		 return $this->user;
 	}
 
-	function logout()
+	public function logout()
 	{
+		$_SESSION['userID'] = $this->origUserId;
 		$this->active=false;
 		// don't need to do anything really
 	}
 
-	function is_active()
+	public function is_active()
 	{
 		return $this->active;
 	}
@@ -103,7 +107,7 @@ class KTAPI_UserSession extends KTAPI_Session
 {
 	var $ip = null;
 
-	function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
+	public function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
 	{
 		parent::KTAPI_Session($ktapi, $user);
 
@@ -119,25 +123,9 @@ class KTAPI_UserSession extends KTAPI_Session
 		$this->active = true;
 	}
 
-	/**
-	 * This returns the session string
-	 *
-	 * @return string
-	 */
-	function get_session()
-	{
-		return $this->session;
-	}
 
-	/**
-	 * This returns the sessionid in the database.
-	 *
-	 * @return int
-	 */
-	function get_sessionid()
-	{
-		return $this->sessionid;
-	}
+
+
 
 	/**
 	 * This resolves the user's ip
@@ -145,7 +133,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @access private
 	 * @return string
 	 */
-	function resolveIP()
+	public function resolveIP()
 	{
 		if (getenv("REMOTE_ADDR"))
 		{
@@ -175,7 +163,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @static
 	 * @param User $user
 	 */
-	function _check_session(&$user)
+	private function _check_session(&$user)
 	{
         $user_id = $user->getId();
 
@@ -230,7 +218,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $password
 	 * @return KTAPI_Session
 	 */
-	function &start_session(&$ktapi, $username, $password, $ip=null)
+	public function &start_session(&$ktapi, $username, $password, $ip=null)
 	{
 		$this->active=false;
 		if ( empty($username) )
@@ -284,7 +272,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $ip
 	 * @return KTAPI_Session
 	 */
-	function &get_active_session(&$ktapi, $session, $ip)
+	public function &get_active_session(&$ktapi, $session, $ip)
 	{
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
 		if (!empty($ip))
@@ -325,7 +313,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * This closes the current session.
 	 *
 	 */
-	function logout()
+	public function logout()
 	{
 		$sql = "DELETE FROM active_sessions WHERE id=$this->sessionid";
 		$result = DBUtil::runQuery($sql);
@@ -344,7 +332,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
 class KTAPI_AnonymousSession extends KTAPI_UserSession
 {
-	function &start_session(&$ktapi, $ip=null)
+	public function &start_session(&$ktapi, $ip=null)
 	{
 		$user =& User::get(-2);
 		if (is_null($user) ||  PEAR::isError($user) || ($user === false) || !$user->isAnonymous())
@@ -382,7 +370,7 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
 
 class KTAPI_SystemSession extends KTAPI_Session
 {
-	function KTAPI_SystemSession(&$ktapi, &$user)
+	public function KTAPI_SystemSession(&$ktapi, &$user)
 	{
 		parent::KTAPI_Session($ktapi, $user);
 		$this->active=true;
