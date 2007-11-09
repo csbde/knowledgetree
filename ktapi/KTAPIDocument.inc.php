@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -56,7 +56,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	var $ktapi_folder;
 
-	function get_documentid()
+	public function get_documentid()
 	{
 		return $this->documentid;
 	}
@@ -70,7 +70,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param int $documentid
 	 * @return KTAPI_Document
 	 */
-	function &get(&$ktapi, $documentid)
+	public static function &get(&$ktapi, $documentid)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -106,7 +106,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
 	}
 
-	function is_deleted()
+	public function is_deleted()
 	{
 		return ($this->document->getStatusID() == 3);
 	}
@@ -119,7 +119,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param Document $document
 	 * @return KTAPI_Document
 	 */
-	function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
+	public function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
 	{
 		assert(is_a($ktapi,'KTAPI'));
 		assert(is_null($ktapi_folder) || is_a($ktapi_folder,'KTAPI_Folder'));
@@ -138,7 +138,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $tempfilename
 	 * @param bool $major_update
 	 */
-	function checkin($filename, $reason, $tempfilename, $major_update=false)
+	public function checkin($filename, $reason, $tempfilename, $major_update=false)
 	{
 		if (!is_file($tempfilename))
 		{
@@ -190,7 +190,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param KTAPI_Document $document
 	 */
-	function link_document($document, $type)
+	public function link_document($document, $type)
 	{
 		$typeid = $this->ktapi->get_link_type_id($type);
 		if (PEAR::isError($typeid))
@@ -211,7 +211,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param KTAPI_Document $document
 	 */
-	function unlink_document($document)
+	public function unlink_document($document)
 	{
 		$sql = "DELETE FROM document_link WHERE parent_document_id=$this->documentid AND child_document_id=$document->documentid";
 		$result = DBUtil::runQuery($sql);
@@ -226,7 +226,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return boolean
 	 */
-	function is_checked_out()
+	public function is_checked_out()
 	{
 		return ($this->document->getIsCheckedOut());
 	}
@@ -236,7 +236,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $reason
 	 */
-	function undo_checkout($reason)
+	public function undo_checkout($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
@@ -271,7 +271,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::commit();
 	}
 
-	function get_linked_documents()
+	public function get_linked_documents()
 	{
 		$sql = "
 		SELECT
@@ -314,13 +314,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			{
 				continue;
 			}
+
+
+
 			$result[] = array(
 					'document_id'=>(int)$row['document_id'],
 					'title'=> $row['title'],
 					'size'=>(int)$row['size'],
-					'workflow'=>$row['workflow'],
-					'workflow_state'=>$row['workflow_state'],
-					'link_type'=>$row['link_type'],
+					'workflow'=>empty($row['workflow'])?'n/a':$row['workflow'],
+					'workflow_state'=>empty($row['workflow_state'])?'n/a':$row['workflow_state'],
+					'link_type'=>empty($row['link_type'])?'unknown':$row['link_type'],
 				);
 		}
 
@@ -333,7 +336,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $reason
 	 */
-	function checkout($reason)
+	public function checkout($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
@@ -363,7 +366,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $reason
 	 */
-	function delete($reason)
+	public function delete($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission( $this->document, KTAPI_PERMISSION_DELETE);
 
@@ -393,7 +396,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $ktapi_newuser
 	 */
-	function change_owner($newusername, $reason='Changing of owner.')
+	public function change_owner($newusername, $reason='Changing of owner.')
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_CHANGE_OWNERSHIP);
 
@@ -448,7 +451,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $newname
 	 * @param string $newfilename
 	 */
-	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
+	public function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -549,7 +552,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $newname
 	 * @param string $newfilename
 	 */
-	function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
+	public function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -642,7 +645,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $newname
 	 */
-	function renameFile($newname)
+	public function renameFile($newname)
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WRITE);
 
@@ -666,7 +669,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $newname
 	 */
-	function change_document_type($documenttype)
+	public function change_document_type($documenttype)
 	{
 		$user = $this->can_user_access_object_requiring_permission( $this->document, KTAPI_PERMISSION_WRITE);
 
@@ -676,6 +679,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$doctypeid = KTAPI::get_documenttypeid($documenttype);
+		if (PEAR::isError($doctypeid))
+		{
+			return $doctypeid;
+		}
 
 		if ($this->document->getDocumentTypeId() != $doctypeid)
 		{
@@ -717,7 +724,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $newname
 	 */
-	function rename($newname)
+	public function rename($newname)
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WRITE);
 
@@ -747,7 +754,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $reason
 	 */
-	function archive($reason)
+	public function archive($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission( $this->document, KTAPI_PERMISSION_WRITE);
 
@@ -790,7 +797,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $workflow
 	 */
-	function start_workflow($workflow)
+	public function start_workflow($workflow)
 	{
 		$user = $this->can_user_access_object_requiring_permission( $this->document, KTAPI_PERMISSION_WORKFLOW);
 
@@ -826,7 +833,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * This deletes the workflow on the document.
 	 *
 	 */
-	function delete_workflow()
+	public function delete_workflow()
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WORKFLOW);
 
@@ -836,7 +843,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$workflowid=$this->document->getWorkflowId();
-		if (!empty($workflowid))
+		if (empty($workflowid))
 		{
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
 		}
@@ -857,7 +864,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $transition
 	 * @param string $reason
 	 */
-	function perform_workflow_transition($transition, $reason)
+	public function perform_workflow_transition($transition, $reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WORKFLOW);
 
@@ -895,7 +902,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return array
 	 */
-	function get_metadata()
+	public function get_metadata()
 	{
 		 $doctypeid = $this->document->getDocumentTypeID();
 		 $fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($this->document, $doctypeid);
@@ -967,7 +974,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 return $results;
 	}
 
-	function get_packed_metadata($metadata=null)
+	public function get_packed_metadata($metadata=null)
 	{
 		global $default;
 
@@ -1042,7 +1049,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param array This is an array containing the metadata to be associated with the file.
 	 */
-	function update_metadata($metadata)
+	public function update_metadata($metadata)
 	{
 		global $default;
 		 $packed = $this->get_packed_metadata($metadata);
@@ -1079,13 +1086,229 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	}
 
+	/**
+	 * This updates the system metadata on the document.
+	 *
+	 * @param array $sysdata
+	 */
+	public function update_sysdata($sysdata)
+	{
+		if (empty($sysdata))
+		{
+			return;
+		}
+		$owner_mapping = array(
+						'created_by'=>'creator_id',
+						'modified_by'=>'modified_user_id',
+						'owner'=>'owner'
+						);
+
+		$documents = array();
+		$document_content = array();
+
+		foreach($sysdata as $rec)
+		{
+			if (is_object($rec))
+			{
+				$name = $rec->name;
+				$value = sanitizeForSQL($rec->value);
+			}
+			elseif(is_array($rec))
+			{
+				$name = $rec['name'];
+				$value = sanitizeForSQL($rec['value']);
+			}
+			else
+			{
+				// just ignore
+				continue;
+			}
+			switch($name)
+			{
+				case 'created_date':
+					$documents['created'] = $value;
+					break;
+				case 'modified_date':
+					$documents['modified'] = $value;
+					break;
+				case 'is_immutable':
+					$documents['immutable'] = KTUtil::strToBool($value, false);
+					break;
+				case 'filename':
+					$document_content['filename'] = $value;
+					break;
+				case 'major_version':
+					$document_content['major_version'] = $value;
+					break;
+				case 'minor_version':
+					$document_content['minor_version'] = $value;
+					break;
+				case 'version':
+					$version = number_format($value + 0,5);
+					list($major_version, $minor_version) = explode('.', $version);
+					$document_content['major_version'] = $major_version;
+					$document_content['minor_version'] = $minor_version;
+					break;
+				case 'mime_type':
+					$value = KTMime::getMimeIdByName($value);
+					if (PEAR::isError($value))
+					{
+						return $value;
+					}
+					$document_content['mime_id'] = $value;
+					break;
+				case 'owner':
+				case 'created_by':
+				case 'modified_by':
+					$sql = "select id from users where name='$value'";
+					$userId = DBUtil::getResultArray($sql);
+					if (PEAR::isError($userId))
+					{
+						return $userId;
+					}
+					if (empty($userId))
+					{
+						$sql = "select id from users where username='$value'";
+						$userId = DBUtil::getResultArray($sql);
+						if (PEAR::isError($value))
+						{
+							return $value;
+						}
+					}
+					if (empty($userId))
+					{
+						// if not found, not much we can do
+						break;
+					}
+					$userId=$userId[0];
+					$userId=$userId['id'];
+
+					$name = $owner_mapping[$name];
+					$documents[$name] = $userId;
+					break;
+				default:
+					return new PEAR_Error('Unexpected field: ' . $name);
+			}
+		}
+
+		if (count($documents) > 0)
+		{
+			$sql = "UPDATE documents SET ";
+			$i=0;
+			foreach($documents as $name=>$value)
+			{
+				if ($i++ > 0) $sql .= ",";
+				$sql .= "$name='$value'";
+			}
+			$sql .= " WHERE id=$this->documentid";
+			$result = DBUtil::runQuery($sql);
+			if (PEAR::isError($result))
+			{
+				return $result;
+			}
+		}
+		if (count($document_content) > 0)
+		{
+			$content_id = $this->document->getContentVersionId();
+			$sql = "UPDATE document_content_version SET ";
+			$i=0;
+			foreach($documents as $name=>$value)
+			{
+				if ($i++ > 0) $sql .= ",";
+				$sql .= "$name='$value'";
+			}
+			$sql .= " WHERE id=$content_id";
+			$result = DBUtil::runQuery($sql);
+			if (PEAR::isError($result))
+			{
+				return $result;
+			}
+		}
+	}
+
+	private function clearCache()
+	{
+		// TODO: we should only clear the cache for the document we are working on
+		// this is a quick fix but not optimal!!
+
+
+		$metadataid = $this->document->getMetadataVersionId();
+		$contentid = $this->document->getContentVersionId();
+
+		$cache = KTCache::getSingleton();
+
+		$cache->remove('KTDocumentMetadataVersion/id', $metadataid);
+		$cache->remove('KTDocumentContentVersion/id', $contentid);
+		$cache->remove('KTDocumentCore/id', $this->documentid);
+		$cache->remove('Document/id', $this->documentid);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentMetadataVersion'][$metadataid]);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentContentVersion'][$contentid]);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentCore'][$this->documentid]);
+
+		$this->document = &Document::get($this->documentid);
+	}
+
+	public function mergeWithLastMetadataVersion()
+	{
+		// keep latest metadata version
+		$metadata_version = $this->document->getMetadataVersion();
+		if ($metadata_version == 0)
+		{
+			return new PEAR_Error('MetadataVersion cannot be merged');
+		}
+
+		$metadata_id = $this->document->getMetadataVersionId();
+
+		// get previous version
+		$sql = "SELECT id, metadata_version FROM document_metadata_version WHERE id<$metadata_id AND document_id=$this->documentid order by id desc";
+		$old = DBUtil::getResultArray($sql);
+		if (is_null($old) || PEAR::isError($old))
+		{
+			return new PEAR_Error('Previous version could not be resolved');
+		}
+		// only interested in the first one
+		$old=$old[0];
+		$old_metadata_id = $old['id'];
+		$old_metadata_version = $old['metadata_version'];
+
+		DBUtil::startTransaction();
+
+		// delete previous metadata version
+
+		$sql = "DELETE FROM document_metadata_version WHERE id=$old_metadata_id";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+
+		// make latest equal to previous
+		$sql = "UPDATE document_metadata_version SET metadata_version=$old_metadata_version WHERE id=$metadata_id";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+		$sql = "UPDATE documents SET metadata_version=$old_metadata_version WHERE id=$this->documentid";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+		DBUtil::commit();
+
+		$this->clearCache();
+	}
 
 	/**
 	 * This returns a workflow transition
 	 *
 	 * @return array
 	 */
-	function get_workflow_transitions()
+	public function get_workflow_transitions()
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WORKFLOW);
 
@@ -1120,7 +1343,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return string
 	 */
-	function get_workflow_state()
+	public function get_workflow_state()
 	{
 		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WORKFLOW);
 
@@ -1154,8 +1377,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return array
 	 */
-	function get_detail()
+	public function get_detail()
 	{
+		// make sure we ge tthe latest
+		$this->clearCache();
+
 		$detail = array();
 		$document = $this->document;
 
@@ -1191,6 +1417,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		$detail['created_by'] = $username;
 		$detail['updated_date'] = $document->getLastModifiedDate();
+		$detail['modified_date'] = $document->getLastModifiedDate();
 
 		$userid = $document->getModifiedUserId();
 		if (is_numeric($userid))
@@ -1202,6 +1429,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$username='n/a';
 		}
+		$detail['modified_by'] = $username;
 		$detail['updated_by'] = $username;
 		$detail['document_id'] = (int) $document->getId();
 		$detail['folder_id'] = (int) $document->getFolderID();
@@ -1230,6 +1458,22 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		$detail['workflow_state']=$workflowstate;
 
+		$userid = $document->getOwnerID();
+
+		if (is_numeric($userid))
+		{
+			$user = User::get($userid);
+			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
+		}
+		else
+		{
+			$username = 'n/a';
+		}
+		$detail['owner'] = $username;
+
+		$detail['is_immutable'] = (bool) $document->getImmutable();
+
+
 		$userid = $document->getCheckedOutUserID();
 
 		if (is_numeric($userid))
@@ -1241,14 +1485,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$username = 'n/a';
 		}
-		$detail['checkout_by'] = $username;
+		$detail['checked_out_by'] = $username;
+
+		$detail['checked_out_date'] = $document->getCheckedOutDate();
+		if (is_null($detail['checked_out_date'])) $detail['checked_out_date'] = 'n/a';
 
 		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
 
 		return $detail;
 	}
 
-	function get_title()
+	public function get_title()
 	{
 		return $this->document->getDescription();
 	}
@@ -1258,7 +1505,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @param string $version
 	 */
-	function download($version=null)
+	public function download($version=null)
 	{
 		$storage =& KTStorageManagerUtil::getSingleton();
         $options = array();
@@ -1273,7 +1520,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return array
 	 */
-	function get_transaction_history()
+	public function get_transaction_history()
 	{
         $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
             'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
@@ -1295,7 +1542,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @return array
 	 */
-	function get_version_history()
+	public function get_version_history()
 	{
 		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
 
@@ -1331,7 +1578,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @access public
 	 */
-	function expunge()
+	public function expunge()
 	{
 		if ($this->document->getStatusID() != 3)
 		{
@@ -1359,7 +1606,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @access public
 	 */
-	function restore()
+	public function restore()
 	{
 		DBUtil::startTransaction();
 
