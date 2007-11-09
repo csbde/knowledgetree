@@ -69,12 +69,15 @@ namespace MonoTests.KnowledgeTree
 
 			if (this._verbose) System.Console.WriteLine("Checking out document : " + filename);
 
-			kt_response response = this._kt.checkout_base64_document(this._session, this._docId, "unit test - going to checkout and then undo", false);
+			kt_document_detail response = this._kt.checkout_base64_document(this._session, this._docId, "unit test - going to checkout and then undo", false);
 			Assert.AreEqual(0, response.status_code);
-
+			Assert.AreEqual("Administrator",response.checked_out_by);
+			Assert.IsTrue(null != response.checked_out_date);
 
 			response = this._kt.undo_document_checkout(this._session, this._docId, "unit test - doing undo");
 			Assert.AreEqual(0, response.status_code);
+			Assert.AreEqual("n/a",response.checked_out_by);
+			Assert.AreEqual("n/a", response.checked_out_date);
 	    	}
 
 		[Test]
@@ -84,14 +87,16 @@ namespace MonoTests.KnowledgeTree
 
 			if (this._verbose) System.Console.WriteLine("Checking out document : " + filename);
 
-			kt_response response = this._kt.checkout_base64_document(this._session, this._docId, "unit test - going to checkout and then checkin", false);
+			kt_document_detail response = this._kt.checkout_base64_document(this._session, this._docId, "unit test - going to checkout and then checkin", false);
 			Assert.AreEqual(0, response.status_code);
+			Assert.AreEqual("Administrator",response.checked_out_by);
+			Assert.IsTrue(null != response.checked_out_date);
 
 
 			kt_document_detail checkin = this._kt.checkin_base64_document(this._session, this._docId, filename, "unit test - doing checkin", Helper.ConvertFileToBase64Encoding(this._filename), false);
 			Assert.AreEqual(0, checkin.status_code);
-
-			//assert - check data checkout
+			Assert.AreEqual("n/a",checkin.checked_out_by); 
+			Assert.AreEqual("n/a", checkin.checked_out_date);
 	    	}
 
 		[Test]
@@ -101,9 +106,10 @@ namespace MonoTests.KnowledgeTree
 
 			if (this._verbose) System.Console.WriteLine("Checking out document : " + filename);
 
-			kt_response response = this._kt.checkout_document(this._session, this._docId, "unit test - going to checkout and then checkin", false);
+			kt_document_detail response = this._kt.checkout_document(this._session, this._docId, "unit test - going to checkout and then checkin", false);
 			Assert.AreEqual(0, response.status_code);
-
+			Assert.AreEqual("Administrator",response.checked_out_by);
+			Assert.IsTrue(null != response.checked_out_date);
 
 			FileUploader uploader = new FileUploader("http://ktdms.trunk/ktwebservice/upload.php");
 
@@ -111,7 +117,9 @@ namespace MonoTests.KnowledgeTree
 			String tempname = uploader.getFilename();
 
 			kt_document_detail checkin = this._kt.checkin_document(this._session, this._docId, filename, "unit test - doing checkin", tempname, false);
-			Assert.AreEqual(0, checkin.status_code);
+			Assert.AreEqual(0, checkin.status_code); 
+			Assert.AreEqual("n/a",checkin.checked_out_by); 
+			Assert.AreEqual("n/a", checkin.checked_out_date);
 	    	}
 
 

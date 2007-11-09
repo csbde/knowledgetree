@@ -121,9 +121,9 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("Administrator", response1.created_by);
 
 			//Assert.IsTrue(response1.updated_date == null);
-			Assert.IsTrue("" != response1.updated_date);
+			Assert.IsTrue("" != response1.modified_date);
 
-			Assert.AreEqual("Administrator", response1.updated_by);
+			Assert.AreEqual("Administrator", response1.modified_by);
 
 			Assert.IsTrue(response1.document_id > 0);
 
@@ -203,10 +203,10 @@ namespace MonoTests.KnowledgeTree
 
 			Assert.AreEqual("Administrator", response1.created_by);
 
-			//Assert.IsTrue(response1.updated_date == null);
-			Assert.IsTrue("" != response1.updated_date);
+			//Assert.IsTrue(response1.modified_date == null);
+			Assert.IsTrue("" != response1.modified_date);
 
-			Assert.AreEqual("Administrator", response1.updated_by);
+			Assert.AreEqual("Administrator", response1.modified_by);
 
 			Assert.IsTrue(response1.document_id > 0);
 
