@@ -160,6 +160,14 @@ class KTWSAPI_FolderItem
     	curl_setopt($ch, CURLOPT_URL, $url);
 
     	$response = curl_exec($ch);
+    	if ($response == false)
+    	{
+    		$response = new PEAR_Error(curl_error($ch));
+    	}
+    	else
+    	{
+    		$response  = true;
+    	}
     	curl_close($ch);
 
     	fclose($fp);

@@ -11,6 +11,9 @@ The unit tests were written for NUnit. NUnit 2.2.0 was used during development.
 
 This framework was developed in Linux using Mono.
 
+The document type 'NewType' must be added to the database for the document_type.cs unit test to run.
+
+
 RUNNING THE TESTS
 -----------------
 
@@ -19,8 +22,6 @@ Edit the makefile to ensure that the WSDL_URL is directed to the correct locatio
 A makefile is provided which can be used as follows:
 
 - make 		// will build and run the tests
-
-- make results 	// will attempt to only build results
 
 - make clean 	// will remove all temporary and binary files
 

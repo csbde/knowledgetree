@@ -145,9 +145,9 @@ class KTBulkExportAction extends KTFolderAction {
         ));
 
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
-        printf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
+        printf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to download the zip file, click <a href="%s">here</a> ') . "</p>\n", $url);
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
-        printf('<p>' . _kt('Once downloaded, return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
+        printf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
         printf("</div></div></body></html>\n");
         printf('<script language="JavaScript">
                 function kt_bulkexport_redirect() {

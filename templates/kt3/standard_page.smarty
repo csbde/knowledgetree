@@ -384,7 +384,7 @@
 				<td align="right">
 					<span>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}</span><br />
 					<span>{i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}</span><br/>
-					<a href="{$rootUrl}"><img src="{$rootUrl}/resources/powered-by-kt.gif" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+					<a href="{$rootUrl}"><img src="{$rootUrl}/resources/powered-by-kt.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
 				</td>
 			</tr>
 		</table>

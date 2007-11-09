@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -546,7 +546,7 @@ class KTrss{
 
     // get rss icon link
     function getImageLink($iItemId, $sItemType){
-    	return "<a href='".KTrss::getRssLink($iItemId, $sItemType)."' target='_blank'>".KTrss::getRssLinkIcon()."</a>";
+    	return "<a title='View RSS Page' href='".KTrss::getRssLink($iItemId, $sItemType)."' target='_blank'>".KTrss::getRssLinkIcon()."</a>";
     }
 
     // get the mime type id for a document
