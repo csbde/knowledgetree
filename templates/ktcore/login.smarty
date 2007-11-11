@@ -54,9 +54,15 @@
 			</div>
 			{/if}
 			<p class="descriptiveText version">
-				{i18n}Access to this service is subject to the KnowledgeTreeLive <a href="http://www.knowledgetree.com/about/legal/live">Terms and Conditions</a> of use.{/i18n}<br/>
-				{i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a> All Rights Reserved{/i18n}
-			</p>
+		    	    {i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
+                    {i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
+                    {i18n}&copy; 2007 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Ltd.</a>{/i18n}<br><br>
+                    {if ($smallVersion == 'OSS')}
+                        {i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
+                    {else}
+                        {i18n}All rights reserved.{/i18n}<br>
+                    {/if} 
+            </p>
 	        <div id="bottomspacer"></div>
 	        <div class="floatClear"></div>
 	    </div>
