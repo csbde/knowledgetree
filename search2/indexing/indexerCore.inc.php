@@ -1343,6 +1343,18 @@ abstract class Indexer
      * @return int
      */
     public abstract function getDocumentsInIndex();
+
+    /**
+     * Returns the path to the index directory
+     *
+     * @return string
+     */
+    public function getIndexDirectory()
+    {
+    	$config = KTConfig::getSingleton();
+    	$directory = $config->get('indexer/luceneDirectory');
+    	return $directory;
+    }
 }
 
 ?>
