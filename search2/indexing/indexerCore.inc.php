@@ -977,8 +977,13 @@ abstract class Indexer
 
     public function migrateDocuments($max=null)
     {
+    	global $default;
+
+    	$default->log->debug(_kt('migrateDocuments: starting'));
+
     	if (!$this->doesDiagnosticsPass(true))
     	{
+    		$default->log->debug(_kt('migrateDocuments: stopping - diagnostics problem. The dashboard will provide more information.'));
     		return;
     	}
 
@@ -988,16 +993,14 @@ abstract class Indexer
 			$max = $config->get('indexer/batchMigrateDocument',500);
     	}
 
-		global $default;
-
     	$lockFile = $config->get('cache/cacheDirectory') . '/migration.lock';
     	if (is_file($lockFile))
     	{
-    		$default->log->info(_kt('migrateDocuments: migration lockfile detected. exiting.'));
+    		$default->log->info(_kt('migrateDocuments: stopping - migration lockfile detected.'));
     		return;
     	}
     	touch($lockFile);
-    	$default->log->info(_kt('migrateDocuments: starting!'));
+    	$default->log->debug(_kt('migrateDocuments: starting!'));
 
     	$startTime = KTUtil::getSystemSetting('migrationStarted');
     	if (is_null($startTime))
@@ -1025,12 +1028,14 @@ abstract class Indexer
     		$result = DBUtil::getResultArray($sql);
     		if (PEAR::isError($result))
     		{
+    			$default->log->info(_kt('migrateDocuments: db error'));
     			break;
     		}
 
     		$docs = count($result);
     		if ($docs == 0)
     		{
+    			$default->log->info(_kt('migrateDocuments: no more documents to migrate'));
     			$noDocs = true;
     			break;
     		}
@@ -1086,13 +1091,12 @@ abstract class Indexer
     	KTUtil::setSystemSetting('migrationTime', KTUtil::getSystemSetting('migrationTime',0) + $time);
     	KTUtil::setSystemSetting('migratedDocuments', KTUtil::getSystemSetting('migratedDocuments',0) + $numDocs);
 
-    	$default->log->info(sprintf(_kt('migrateDocuments: done in %d seconds!'), $time));
+    	$default->log->debug(sprintf(_kt('migrateDocuments: stopping - done in %d seconds!'), $time));
     	if ($noDocs)
     	{
 	    	$default->log->info(_kt('migrateDocuments: Completed!'));
 	    	KTUtil::setSystemSetting('migrationComplete', true);
     	}
-
     }
 
     /**
