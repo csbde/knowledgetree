@@ -44,13 +44,25 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
     var $sHelpPage = 'ktcore/admin/manage permissions.html'; 
     function do_main() {
+        session_start();
         $this->oPage->setTitle(_kt('Manage Permissions'));
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Manage Permissions'));
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('System Name'), _kt('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true);
-        $add_fields[] = new KTStringWidget(_kt('Display Name'), _kt('A short name that is shown to users whenever permissions must be assigned.'), 'human_name', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_kt('System Name'), _kt('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true, 'name');
+        $add_fields[] = new KTStringWidget(_kt('Display Name'), _kt('A short name that is shown to users whenever permissions must be assigned.'), 'human_name', null, $this->oPage, true, 'human_name');
     
+    	if($_SESSION['Permission']['NameValue'])
+        {
+        	$this->sNameVal = $_SESSION['Permission']['NameValue'];
+        	$_SESSION['Permission']['NameValue'] = '';
+        }
+        else if($_SESSION['Permission']['HumanNameValue'])
+        {
+        	$this->sHumanNameVal = $_SESSION['Permission']['HumanNameValue'];
+        	$_SESSION['Permission']['HumanNameValue'] = '';
+        }    
+
         $oTemplating =& KTTemplating::getSingleton();
         $aPermissions =& KTPermission::getList();
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_permissions");
@@ -63,17 +75,75 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
     }
 
     function do_newPermission() {
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $human_name = KTUtil::arrayGet($_REQUEST, 'human_name');
-        if (empty($name) || empty($human_name)) {
-            return $this->errorRedirectToMain(_kt("Both names not given"));
+        session_start();
+        $sName = KTUtil::arrayGet($_REQUEST, 'name');
+        $sHumanName = KTUtil::arrayGet($_REQUEST, 'human_name');
+        $sError = 'An error occured while creating your permission';
+        
+        //Checking that the System Name and Display Name fields aren't empty        
+        if (empty($sName) && !empty($sHumanName))
+        {
+        	$sError = 'An error occured while creating your permission: The System Name was not provided.';
+        	$_SESSION['Permission']['HumanNameValue'] = $sHumanName;
+        	return $this->errorRedirectToMain(_kt($sError));
         }
-        $oPerm = KTPermission::createFromArray(array(
-            'name' => $name,
-            'humanname' => $human_name,
+        else if(!empty($sName) && empty($sHumanName))
+        {
+        	$sError = 'An error occured while creating your permission: The Display Name was not provided.';
+        	$_SESSION['Permission']['NameValue'] = $sName;
+        	return $this->errorRedirectToMain(_kt($sError));
+        }
+        else if (empty($sName) && empty($sHumanName))
+        {
+        	$sError = 'An error occured while creating your permission: The Display Name and System Name weren\'t provided.';
+        	return $this->errorRedirectToMain(_kt($sError));
+        }
+        
+        //Checking that the System Name and Display Name aren't already in the database
+        $aPermissions = KTPermission::getList();
+        //$iNameErrorCount and $iHumanNameErrorCount are used to check whether only one name is duplicated or if two names are duplicated.
+        $iNameErrorCount = 0;
+        $iHumanNameErrorCount = 0;
+        foreach ($aPermissions as $aPermission)
+    	{
+    		if($sName == $aPermission->getName())
+    		{
+    			$iNameErrorCount ++;
+    		}	
+    		if ($sHumanName == $aPermission->getHumanName())
+    		{
+				$iHumanNameErrorCount ++;
+    		}
+    	}
+    	if ($iNameErrorCount > 0 && $iHumanNameErrorCount > 0) 
+    	{
+			$sError = 'An error occured while creating your permission: The Display Name and System Name you have provided both already exist.';
+			return $this->errorRedirectToMain(_kt($sError));
+    	}
+    	else if ($iNameErrorCount > 0 && $iHumanNameErrorCount == 0)
+    	{
+    		if(!empty($sHumanName))
+			{
+				$_SESSION['Permission']['HumanNameValue'] = $sHumanName;		
+			}
+    		$sError = 'An error occured while creating your permission: A permission with the same System Name already exists.';
+			return $this->errorRedirectToMain(_kt($sError));
+		}
+    	else if ($iNameErrorCount == 0 && $iHumanNameErrorCount > 0)
+    	{
+    		if(!empty($sName))
+			{
+				$_SESSION['Permission']['NameValue'] = $sName;		
+			}
+    		$sError = 'An error occured while creating your permission: A permission with the same Display Name already exists.';
+			return $this->errorRedirectToMain(_kt($sError));    		
+    	}
+    	$oPerm = KTPermission::createFromArray(array(
+            'name' => $sName,
+            'humanname' => $sHumanName,
         ));
         if (PEAR::isError($oPerm)) {
-            return $this->errorRedirectToMain(_kt("Error creating permission"));
+            return $this->errorRedirectToMain(_kt($sError));
         }
         return $this->successRedirectToMain(_kt("Permission created"));
     }
