@@ -638,14 +638,14 @@ class KTDocumentUtil {
         return $oDocument;
     }
     // }}}
-	
+
 	function generateNewDocumentFilename($sDocFilename){
 		if(preg_match("/\([0-9]+\)(\.[^\.]+){1,}$/", $sDocFilename)){
 		  preg_match("/\([0-9]+\)\./", $sDocFilename, $matches);
 		  $new_one = substr($matches[0], 1);
 		  $new_two = explode(')', $new_one);
 		  $new = $new_two[0]+1;
-		  
+
 		  $pattern[0] = '/\([0-9]+\)\./';
 		  $replacement[0] = ' ('.$new.').';
 		  $sFilename = preg_replace($pattern, $replacement, $sDocFilename);
@@ -657,27 +657,27 @@ class KTDocumentUtil {
 		  }
 		  $sFilename = $prefix.$suffix;
 		}
-		
+
 		return $sFilename;
 	}
-	
-	function generateNewDocumentName($sDocName){		
+
+	function generateNewDocumentName($sDocName){
 		if(preg_match("/\([0-9]+\)$/", $sDocName)){
 		  preg_match("/\([0-9]+\)$/", $sDocName, $matches);
 		  $new_one = substr($matches[0], 1);
 		  $new_two = explode(')', $new_one);
 		  $new = $new_two[0]+1;
-		  
+
 		  $pattern[0] = '/\([0-9]+\)$/';
 		  $replacement[0] = '('.$new.')';
 		  $sName = preg_replace($pattern, $replacement, $sDocName);
 		}else{
 		  $sName =  $sDocName.' (2)';
 		}
-		
+
 		return $sName;
 	}
-	
+
     // {{{ fileExists
     function fileExists($oFolder, $sFilename) {
         return Document::fileExists($sFilename, $oFolder->getID());
@@ -939,7 +939,7 @@ class KTDocumentUtil {
     }
 
 
-    function copy($oDocument, $oDestinationFolder, $sReason = null) {
+    function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null) {
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -958,23 +958,36 @@ class KTDocumentUtil {
         // we still have a bogus md_version, but integrity holds, so fix it now.
         $oCore = KTDocumentCore::get($id);
 
+        // Get the metadata version for the source document
         $sTable = KTUtil::getTableName('document_metadata_version');
         $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
         $aParams = array($oDocument->getMetadataVersionId());
         $aMDRow = DBUtil::getOneResult(array($sQuery, $aParams));
         unset($aMDRow['id']);
+
+        // Copy the source metadata into the destination document
         $aMDRow['document_id'] = $oCore->getId();
+        if(!empty($sDestinationDocName)){
+            $aMDRow['name'] = $sDestinationDocName;
+            $aMDRow['description'] = $sDestinationDocName;
+        }
         $id = DBUtil::autoInsert($sTable, $aMDRow);
         if (PEAR::isError($id)) { return $id; }
         $oCore->setMetadataVersionId($id);
         $oMDV = KTDocumentMetadataVersion::get($id);
 
+        // Get the content version for the source document
         $sTable = KTUtil::getTableName('document_content_version');
         $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
         $aParams = array($oDocument->_oDocumentContentVersion->getId());
         $aContentRow = DBUtil::getOneResult(array($sQuery, $aParams));
         unset($aContentRow['id']);
+
+        // Copy the source content into the destination document
         $aContentRow['document_id'] = $oCore->getId();
+        if(!empty($sDestinationDocName)){
+            $aContentRow['filename'] = $sDestinationDocName;
+        }
         $id = DBUtil::autoInsert($sTable, $aContentRow);
         if (PEAR::isError($id)) { return $id; }
         $oMDV->setContentVersionId($id);
@@ -996,6 +1009,7 @@ class KTDocumentUtil {
         $res = KTDocumentUtil::copyMetadata($oNewDocument, $oDocument->getMetadataVersionId());
         if (PEAR::isError($res)) { return $res; }
 
+        // Ensure the copied document is not checked out
         $oNewDocument->setIsCheckedOut(false);
         $oNewDocument->setCheckedOutUserID(-1);
 

@@ -7,32 +7,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -414,8 +414,9 @@ class KTFolderUtil {
         return true;
     }
 
-    function copy($oSrcFolder, $oDestFolder, $oUser, $sReason) {
-        if (KTFolderUtil::exists($oDestFolder, $oSrcFolder->getName())) {
+    function copy($oSrcFolder, $oDestFolder, $oUser, $sReason, $sDestFolderName = NULL, $copyAll = true) {
+        $sDestFolderName = (empty($sDestFolderName)) ? $oSrcFolder->getName() : $sDestFolderName;
+        if (KTFolderUtil::exists($oDestFolder, $sDestFolderName)) {
             return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
         //
@@ -437,7 +438,7 @@ class KTFolderUtil {
 
         DBUtil::startTransaction();
 
-        while (!empty($aRemainingFolders)) {
+        while (!empty($aRemainingFolders) && $copyAll) {
             $iFolderId = array_pop($aRemainingFolders);
             $oFolder = Folder::get($iFolderId);
             if (PEAR::isError($oFolder) || ($oFolder == false)) {
@@ -487,15 +488,18 @@ class KTFolderUtil {
 
         $aFolderMap = array();
 
-        $sTable = KTUtil::getTableName('folders');
+        $sTable = 'folders';
         $sGetQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ? ';
         $aParams = array($oSrcFolder->getId());
         $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
         unset($aRow['id']);
+
+        $aRow['name'] = $sDestFolderName;
+        $aRow['description'] = $sDestFolderName;
         $aRow['parent_id'] = $oDestFolder->getId();
         $aRow['parent_folder_ids'] = sprintf('%s,%s', $oDestFolder->getParentFolderIDs(), $oDestFolder->getId());
         $aRow['full_path'] = sprintf('%s/%s', $oDestFolder->getFullPath(), $oDestFolder->getName());
-        
+
         $id = DBUtil::autoInsert($sTable, $aRow);
         if (PEAR::isError($id)) {
             DBUtil::rollback();
@@ -506,7 +510,7 @@ class KTFolderUtil {
         $aFolderMap[$sSrcFolderId]['parent_folder_ids'] = $aRow['parent_folder_ids'];
         $aFolderMap[$sSrcFolderId]['full_path'] = $aRow['full_path'];
         $aFolderMap[$sSrcFolderId]['name'] = $aRow['name'];
-        
+
         $oNewBaseFolder = Folder::get($id);
         $res = $oStorage->createFolder($oNewBaseFolder);
         if (PEAR::isError($res)) {
@@ -517,12 +521,13 @@ class KTFolderUtil {
         $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oSrcFolder->getId())), array('ids' => true));
 
 
-        while (!empty($aRemainingFolders)) {
+        while (!empty($aRemainingFolders) && $copyAll) {
             $iFolderId = array_pop($aRemainingFolders);
 
             $aParams = array($iFolderId);
             $aRow = DBUtil::getOneResult(array($sGetQuery, $aParams));
             unset($aRow['id']);
+
             // since we are nested, we will have solved the parent first.
             $sPrevParentId = $aRow['parent_id'];
             $aRow['parent_id'] = $aFolderMap[$aRow['parent_id']]['parent_id'];
@@ -552,7 +557,7 @@ class KTFolderUtil {
             $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
             $aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
         }
-        
+
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]['parent_id']);
