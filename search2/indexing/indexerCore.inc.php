@@ -37,7 +37,7 @@
  */
 
 require_once('indexing/extractorCore.inc.php');
-
+require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
 class QueryResultItem
 {
@@ -979,11 +979,17 @@ abstract class Indexer
     {
     	global $default;
 
-    	$default->log->debug(_kt('migrateDocuments: starting'));
+    	$default->log->info(_kt('migrateDocuments: starting'));
 
     	if (!$this->doesDiagnosticsPass(true))
     	{
-    		$default->log->debug(_kt('migrateDocuments: stopping - diagnostics problem. The dashboard will provide more information.'));
+    		$default->log->info(_kt('migrateDocuments: stopping - diagnostics problem. The dashboard will provide more information.'));
+    		return;
+    	}
+
+    	if (KTUtil::getSystemSetting('migrationComplete') == 'true')
+    	{
+    		$default->log->info(_kt('migrateDocuments: stopping - migration is complete.'));
     		return;
     	}
 
@@ -1000,7 +1006,6 @@ abstract class Indexer
     		return;
     	}
     	touch($lockFile);
-    	$default->log->debug(_kt('migrateDocuments: starting!'));
 
     	$startTime = KTUtil::getSystemSetting('migrationStarted');
     	if (is_null($startTime))
@@ -1010,7 +1015,7 @@ abstract class Indexer
 
     	$maxLoops = 5;
 
-    	$max = floor($max / $maxLoops);
+    	$max = ceil($max / $maxLoops);
 
 		$start =KTUtil::getBenchmarkTime();
 		$noDocs = false;
@@ -1035,7 +1040,6 @@ abstract class Indexer
     		$docs = count($result);
     		if ($docs == 0)
     		{
-    			$default->log->info(_kt('migrateDocuments: no more documents to migrate'));
     			$noDocs = true;
     			break;
     		}
@@ -1050,7 +1054,7 @@ abstract class Indexer
     			{
     				$sql = "DELETE FROM document_text WHERE document_id=$docId";
     				DBUtil::runQuery($sql);
-    				$default->log->error(sprintf(_kt('migrateDocuments: Could not get document %d\'s document! Removing content!',$docId)));
+    				$default->log->error(sprintf(_kt('migrateDocuments: Could not get document %d\'s document! Removing content!'),$docId));
     				continue;
     			}
 
@@ -1091,11 +1095,13 @@ abstract class Indexer
     	KTUtil::setSystemSetting('migrationTime', KTUtil::getSystemSetting('migrationTime',0) + $time);
     	KTUtil::setSystemSetting('migratedDocuments', KTUtil::getSystemSetting('migratedDocuments',0) + $numDocs);
 
-    	$default->log->debug(sprintf(_kt('migrateDocuments: stopping - done in %d seconds!'), $time));
+    	$default->log->info(sprintf(_kt('migrateDocuments: stopping - done in %d seconds!'), $time));
     	if ($noDocs)
     	{
 	    	$default->log->info(_kt('migrateDocuments: Completed!'));
-	    	KTUtil::setSystemSetting('migrationComplete', true);
+	    	KTUtil::setSystemSetting('migrationComplete', 'true');
+	    	schedulerUtil::deleteByName('Index Migration');
+	    	$default->log->debug(_kt('migrateDocuments: Disabling \'Index Migration\' task by removing scheduler entry.'));
     	}
     }
 
