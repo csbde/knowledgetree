@@ -794,7 +794,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `scheduler_tasks` VALUES (1,'Indexing','../bin/indexingTask.sh','',0,'1min','2007-10-01',NULL,0),(2,'Index Migration','../bin/indexMigrationTask.sh','',0,'5mins','2007-10-01',NULL,0),(3,'Index Optimisation','../bin/optimizeIndexes.sh','',0,'weekly','2007-10-01',NULL,0);
+INSERT INTO `scheduler_tasks` VALUES
+(1,'Indexing','search2/indexing/bin/cronIndexer.php','',0,'1min','2007-10-01',NULL,0),
+(2,'Index Migration','search2/indexing/bin/cronMigration.php','',0,'5mins','2007-10-01',NULL,0),
+(3,'Index Optimisation','search2/indexing/bin/optimise.php','',0,'weekly','2007-10-01',NULL,0);
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
