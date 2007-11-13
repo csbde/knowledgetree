@@ -88,20 +88,20 @@ function calculateRunTime($sFreq, $iTime) {
 }
 
 // Update the task information in the database
-function updateTask($sTable, $aFieldValues, $iId) {
-    DBUtil::autoUpdate($sTable, $aFieldValues, $iId);
+function updateTask($aFieldValues, $iId) {
+    DBUtil::autoUpdate('scheduler_tasks', $aFieldValues, $iId);
 }
 
 // Get the list of tasks due to be run from the database
-function getTaskList($sTable) {
+function getTaskList() {
     $now = date('Y-m-d H:i:s'); //time();
-    $query = "SELECT * FROM {$sTable}
-        WHERE is_complete = 0 AND run_time < '{$now}'";
+
+    $query = "SELECT * FROM scheduler_tasks WHERE is_complete = 0 AND run_time < '{$now}'";
 
     $result = DBUtil::getResultArray($query);
 
     if (PEAR::isError($result)){
-        exit();
+        return false;
     }
     return $result;
 }
@@ -109,16 +109,22 @@ function getTaskList($sTable) {
 
 /* ** Scheduler script ** */
 
-$sTable = 'scheduler_tasks';
-
-// Get task list
-$aList = getTaskList($sTable);
-
 global $default;
 
+$default->log->debug('Scheduler: starting');
+
+// Get task list
+$aList = getTaskList();
+if (empty($aList))
+{
+	$default->log->debug('Scheduler: stopping - nothing to do');
+	return;
+}
+
 // Loop through tasks and run
-if(!empty($aList)){
-    foreach($aList as $item){
+
+    foreach($aList as $item)
+    {
         $aUpdate = array();
         $iEnd = 0; $iStart = 0; $iDuration = 0;
         $sFreq = ''; $sParameters = '';
@@ -132,63 +138,83 @@ if(!empty($aList)){
         $sParameters = $item['script_params'];
 
         // Check if script is windows or *nix compatible
-        $extArr = explode('.', $sTaskUrl);
-        $ext = array_pop($extArr);
-        $script = implode('.', $extArr);
-        if(OS_WINDOWS){
-            switch($ext){
-                case 'sh':
-                    $sTaskUrl = $script.'.bat';
-                    break;
-                case 'bin':
-                    $sTaskUrl = $script.'.exe';
-                    break;
-            }
-        }else{
-            switch($ext){
-                case 'bat':
-                    if(file_exists(KT_DIR . $script.'.sh')){
-                        $sTaskUrl = $script.'.sh';
-                        break;
-                    }
-                    // File doesn't exist - log error
-                    $default->log->error("Scheduler: Task script can't be found at ".KT_DIR."{$script}.sh");
-                    continue;
-                    break;
-                case 'exe':
-                    if(file_exists(KT_DIR . $script)){
-                        $sTaskUrl = $script;
-                        break;
-                    }
-                    if(file_exists(KT_DIR . $script.'.bin')){
-                        $sTaskUrl = $script.'.bin';
-                        break;
-                    }
-                    // File doesn't exist - log error
-                    $default->log->error("Scheduler: Task script can't be found at ".KT_DIR."{$script} or ".KT_DIR."{$script}.bin");
-                    continue;
-                    break;
-            }
+        $ext = pathinfo($sTaskUrl, PATHINFO_EXTENSION);
+        $script = substr($sTaskUrl,0,-strlen($ext)-1);
+
+        if(OS_WINDOWS)
+        {
+        	$mapping = array('sh'=>'bin','bat'=>'exe');
+        	if (array_key_exists($ext, $mapping))
+        	{
+        		$sTaskUrl = $script . '.' . $mapping[$ext];
+        	}
+        }
+        else
+        {
+        	$mapping = array('bat'=>'sh', 'exe'=>'bin');
+
+        	if (array_key_exists($ext, $mapping))
+        	{
+        		switch ($ext)
+        		{
+        			case 'exe':
+        				if (is_executable(KT_DIR . '/' . $script))
+        				{
+        					$sTaskUrl = $script;
+        					break;
+        				}
+        			default:
+        				$sTaskUrl = $script . '.' . $mapping[$ext];
+        		}
+        	}
+
+        	if (!is_executable(KT_DIR . '/' . $script) && $ext != 'php')
+        	{
+        		$default->log->error("Scheduler: The script '{$sTaskUrl}' is not executable.");
+        		continue;
+        	}
+        }
+
+        $file = realpath(KT_DIR . '/' . $sTaskUrl);
+
+        if ($file === false)
+        {
+        	$default->log->error("Scheduler: The script '{$sTaskUrl}' cannot be resolved.");
+            continue;
         }
 
         $iTime = time();
-        $iStart = explode(' ', microtime());
+        $iStart = KTUtil::getBenchmarkTime();
 
         // Run the script
-        $file = realpath(KT_DIR . '/' . $sTaskUrl);
 
         $cmd = "\"$file\" {$sParameters}";
 
-        $start = KTUtil::getBenchmarkTime();
+        if ($ext == 'php')
+        {
+        	$config = KTConfig::getSingleton();
+        	$phpPath = $config->get('externalBinary/php');
+
+        	// being protective as some scripts work on relative paths
+        	$dirname = dirname($file);
+        	chdir($dirname);
+
+        	$cmd = "$phpPath $cmd";
+        }
+
         if (OS_WINDOWS)
 		{
 			$cmd = str_replace( '/','\\',$cmd);
-			$res = `"$cmd" 2>&1`;
+			$res = `$cmd`;
 		}
 		else
 		{
 			 $res = shell_exec($cmd." 2>&1");
 		}
+
+		// On completion - reset run time
+        $iEnd = KTUtil::getBenchmarkTime();
+        $iDuration = number_format($iEnd - $iStart,2);
 
 		if (!empty($res))
 		{
@@ -199,37 +225,26 @@ if(!empty($aList)){
 		}
 		else
 		{
-			$time = number_format(KTUtil::getBenchmarkTime() - $start,2,'.',',');
-			$default->log->debug("Scheduler - Task: {$sTask} completed in {$diff}s.");
+			$default->log->debug("Scheduler - Task: {$sTask} completed in {$iDuration}s.");
 		}
 
-
-        // On completion - reset run time
-        $iEnd = explode(' ', microtime());
-        $iDuration = ($iEnd[1] + $iEnd[0]) - ($iStart[1] + $iStart[0]);
-        $iDuration = round($iDuration, 3);
-
-        if(($sFreq == 'once' || empty($sFreq)) && $retval !== FALSE){
+        if(($sFreq == 'once' || empty($sFreq)) && $retval !== FALSE)
+        {
             // Set is_complete to true
             $aUpdate['is_complete'] = '1';
-        }else{
+        }
+        else
+        {
             $iNextTime = calculateRunTime($sFreq, $iTime);
             $aUpdate['run_time'] = date('Y-m-d H:i:s', $iNextTime);
         }
+
         $aUpdate['previous_run_time'] = date('Y-m-d H:i:s', $iTime);
         $aUpdate['run_duration'] = $iDuration;
 
-        updateTask($sTable, $aUpdate, $item['id']);
-
-        // clear parameters
-        if(!empty($aParams)){
-            foreach($aParams as $param){
-                $aParam = explode('=', $param);
-                $$aParam[0] = '';
-            }
-            $aParam = array();
-            $aParams = array();
-        }
+        updateTask($aUpdate, $item['id']);
     }
-}
+
+$default->log->debug('Scheduler: stopping');
+
 ?>
