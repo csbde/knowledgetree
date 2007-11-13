@@ -104,7 +104,7 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
 
     function checkDF()
     {
-    	$df = KTUtil::findCommand('externalBinary','df');
+    	$df = KTUtil::findCommand('externalBinary/df','df');
 
 		if (false === $df)
 		{
