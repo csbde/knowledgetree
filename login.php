@@ -155,6 +155,10 @@ class LoginPageDispatcher extends KTDispatcher {
         header('Content-type: text/html; charset=UTF-8');
 
         $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
+        session_start();
+        
+        $errorMessageConfirm = $_SESSION['errormessage']['login'];
+        
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
         $oReg =& KTi18nregistry::getSingleton();
@@ -178,6 +182,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $aTemplateData = array(
               "context" => $this,
               'errorMessage' => $errorMessage,
+              'errorMessageConfirm' => $errorMessageConfirm,
               'redirect' => $redirect,
               'systemVersion' => $default->systemVersion,
               'versionName' => $default->versionName,
