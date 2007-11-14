@@ -450,6 +450,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason
 	 * @param string $newname
 	 * @param string $newfilename
+	 * @return KTAPI_Document
 	 */
 	public function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
@@ -536,12 +537,14 @@ class KTAPI_Document extends KTAPI_FolderItem
             $oTrigger = new $sTrigger;
             $aInfo = array(
                 'document' => $new_document,
-                'old_folder' => $this->folder->get_folder(),
+                'old_folder' => $this->ktapi_folder->get_folder(),
                 'new_folder' => $target_folder,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
+
+        return KTAPI_Document::get($this->ktapi, $new_document->getId());
 	}
 
 	/**
