@@ -7,12 +7,9 @@ namespace MonoTests.KnowledgeTree
 
 
 	[TestFixture]
-	public class DocumentLinkTest
+	public class DocumentLinkTest : KTTest
     	{
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
 		private int 			_folderId;
-		private bool			_verbose;
 		private Document		_doc1;
 		private Document		_doc2;
 
@@ -20,21 +17,12 @@ namespace MonoTests.KnowledgeTree
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
 			this._folderId = 1;
-
 
 			this._doc1 = new Document(1, this._session, this._kt, this._verbose, false);
 			this._doc1.createFile(this._folderId);
 			this._doc2 = new Document(2, this._session, this._kt, this._verbose, false);
 			this._doc2.createFile(this._folderId);
-
-
-			this._verbose = true;
-
 		}
 
 		[TearDown]
@@ -42,9 +30,6 @@ namespace MonoTests.KnowledgeTree
 		{
 			this._doc1.deleteFile();
 			this._doc2.deleteFile();
-
-			this._kt.logout(this._session);
-
 		}
 
 		[Test]

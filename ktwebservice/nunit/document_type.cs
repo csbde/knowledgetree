@@ -5,21 +5,14 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class DocumentOwnerTest
+	public class DocumentOwnerTest : KTTest
     	{
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
-		private int 			_folderId;
-		private bool			_verbose;
+ 		private int 			_folderId;
 		private Document		_doc1;
 
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
 			this._folderId = 1;
 
 
@@ -34,9 +27,6 @@ namespace MonoTests.KnowledgeTree
 		public void TearDown()
 		{
 			this._doc1.deleteFile();
-
-			this._kt.logout(this._session);
-
 		}
 
 		[Test]

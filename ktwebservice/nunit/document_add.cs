@@ -5,55 +5,34 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class AddDocumentTest
+	public class AddDocumentTest : KTTest
     	{
 
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
+		 
 		private int 			_docId;
 		private int 			_folderId;
 		private String			_filename;
-		private String			_content;
-		private bool			_verbose;
+		private String			_content; 
 
-		public AddDocumentTest()
-		{
-
-			this._verbose = true;
-
+		public AddDocumentTest() : base()
+		{ 
 			this._folderId = 1;
-		}
-
+		} 
 
 		[SetUp]
 		public void SetUp()
-		{
-			this._kt = new KnowledgeTreeService();
-			//this._kt.Url = "http://ktdms.trunk/ktwebservice/webservice.php";
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
+		{ 
 			this._filename = Helper.isUnix()?"/tmp/kt_unit_test1.txt":"c:\\kt_unit_test1.txt";
 			this._content = "hello world!";
 
-			Helper.writeFile(this._filename, this._content);
-
-
-		}
+			Helper.writeFile(this._filename, this._content); 		}
 
 		[TearDown]
 		public void TearDown()
-		{
-
-			Helper.deleteFile(this._filename);
-
-
-			this._kt.logout(this._session);
-		}
-
-
-
-
+		{ 
+			Helper.deleteFile(this._filename); 
+		} 
+		
 		[Test]
 		public void FindDocumentBeforeAdd()
 		{
@@ -70,8 +49,7 @@ namespace MonoTests.KnowledgeTree
 			{
 				System.Console.WriteLine("document not found. that is ok!");
 			}
-		}
-
+		} 
 
 		[Test]
 		public void FindFolderBeforeAdd()
@@ -89,8 +67,7 @@ namespace MonoTests.KnowledgeTree
 			{
 				if (this._verbose) System.Console.WriteLine("folder not found. that is ok!");
 			}
-		}
-
+		} 
 
 		[Test]
 		public void AddDocument()
@@ -185,7 +162,7 @@ namespace MonoTests.KnowledgeTree
 			String filename = "kt unit test31";
 
 			if (this._verbose) System.Console.WriteLine("Adding document : " + filename);
-			FileUploader uploader = new FileUploader("http://ktdms.trunk/ktwebservice/upload.php");
+			FileUploader uploader = new FileUploader();
 
 			uploader.upload(this._session, this._filename);
 			String tempname = uploader.getFilename();
