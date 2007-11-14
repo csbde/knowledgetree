@@ -1,4 +1,4 @@
-RESULTS=authentication.result document_detail.result document_links.result document_owner.result document_type.result document_history.result document_rename.result document_workflow.result document_metadata.result folder.result document_add.result document_system_metadata.result document_checkout.result 
+RESULTS=authentication.result document_detail.result document_links.result document_owner.result document_type.result document_history.result document_rename.result document_workflow.result document_metadata.result folder.result document_add.result document_system_metadata.result document_checkout.result document_copy.result
 #document_download.result 
 PROXY=KTproxy.cs
 WSDL=ktdms.wsdl
