@@ -451,7 +451,7 @@ abstract class Indexer
         $sql = "INSERT INTO index_files(document_id, user_id, what) VALUES($document_id, $userid, '$what')";
         DBUtil::runQuery($sql);
 
-        if ($this->debug) $default->log->debug("index: Queuing indexing of $document_id");
+        $default->log->debug("index: Queuing indexing of $document_id");
     }
 
 
