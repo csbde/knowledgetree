@@ -7,41 +7,48 @@ namespace MonoTests.KnowledgeTree
 
 
 	[TestFixture]
-	public class DocumentCopyTest
-    	{
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
-		private int 			_folderId;
-		private bool			_verbose;
+	public class DocumentCopyTest : KTTest
+    	{ 
+		private int 			_folderId; 
 		private Document		_doc1; 
 
 
 		[SetUp]
 		public void SetUp()
-		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
-			this._folderId = 1;
-
+		{ 
+			this._folderId = 1; 
 
 			this._doc1 = new Document(1, this._session, this._kt, this._verbose, false);
-			this._doc1.createFile(this._folderId); 
-
-
-			this._verbose = true;
-
+			this._doc1.createFile(this._folderId);  
+			
+			
+			
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
 			this._doc1.deleteFile(); 
-
-			this._kt.logout(this._session);
-
 		}
+			
+		[Test]
+		public void FindDocumentBeforeCopy()
+		{
+			String filename = "Root Folder/test123";
+			if (this._verbose) System.Console.WriteLine("Finding document before add: " + filename);
+			kt_document_detail documentDetail = this._kt.get_document_detail_by_title(this._session, 1, filename, "");
+			if (0 == documentDetail.status_code)
+			{
+				if (this._verbose) System.Console.WriteLine("Found document - deleting");
+				kt_response response = this._kt.delete_document(this._session, documentDetail.document_id, "Delete - cleaning up before add");
+				Assert.AreEqual(0, response.status_code);
+			}
+			else if (this._verbose)
+			{
+				System.Console.WriteLine("document not found. that is ok!");
+			}
+		} 		
+		
 
 		[Test]
 		public void CopyTest()
@@ -54,6 +61,21 @@ namespace MonoTests.KnowledgeTree
 			 
 
 	    	}
+		
+		[Test]
+		public void FindDocumentAfterCopy()
+		{
+			String filename = "Root Folder/test123";
+			if (this._verbose) System.Console.WriteLine("Finding document before add: " + filename);
+			kt_document_detail documentDetail = this._kt.get_document_detail_by_title(this._session, 1, filename, "");
+			Assert.AreEqual(0, documentDetail.status_code); 
+			 
+				if (this._verbose) System.Console.WriteLine("Found document - deleting");
+				kt_response response = this._kt.delete_document(this._session, documentDetail.document_id, "Delete - cleaning up before add");
+				Assert.AreEqual(0, response.status_code);
+			 
+		} 	
+		
 
 
 	}

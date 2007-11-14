@@ -1,22 +1,64 @@
 using System;
 using System.Text;
 using System.Net;
-using System.IO;
+using System.IO; 
+using System.Collections;
 
 namespace MonoTests.KnowledgeTree
 {
+
+	
+
+	[System.Web.Services.WebServiceBinding(Name="KnowledgeTreePort", Namespace="urn:KnowledgeTree")] 
+	public class KTWebService : KnowledgeTreeService
+ 	{
+		public KTWebService() : base()
+		{
+			this.Url = Environment.GetEnvironmentVariable("KT_ROOT_URL") + "/ktwebservice/webservice.php";
+		}
+ 	}
+	
+	public class KTTest
+    	{
+		protected KTWebService 	_kt;
+		protected String 			_session;
+		protected bool	_verbose;
+	
+		public KTTest()
+		{
+			this._kt = new KTWebService();
+			kt_response response = this._kt.login("admin","admin","127.0.0.1");
+			this._session = response.message;
+			this._verbose = false;
+
+		}
+		
+		~KTTest()
+		{
+	   		this._kt.logout(this._session); 
+		}
+	}
+
+	
+
 	public class FileUploader
 	{
 		private String boundary;
 		private String uri;
-		private String filename;
+		public String filename;
 
 
 		public FileUploader(String uri)
 		{
 			this.uri = uri;
+			System.Console.WriteLine("Using upload URL: " + uri);
 			this.boundary = "----" + DateTime.Now.Ticks.ToString("x");
 		}
+		
+		public FileUploader() : this(Environment.GetEnvironmentVariable("KT_ROOT_URL") + "/ktwebservice/upload.php")
+		{
+		}
+		
 
 		public String getFilename()
 		{
@@ -125,6 +167,8 @@ namespace MonoTests.KnowledgeTree
 		}
 
 	}
+	
+	 
 
 	public class Document
 	{

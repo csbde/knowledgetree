@@ -5,24 +5,18 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class CheckoutDocumentTest
-    	{
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
+	public class CheckoutDocumentTest : KTTest
+    	{ 
 		private int 			_docId;
 		private int 			_folderId;
 		private String			_filename;
-		private String			_content;
-		private bool			_verbose;
+		private String			_content; 
 
 
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
+			 
 			this._filename = Helper.isUnix()?"/tmp/kt_unit_test1.txt":"c:\\kt_unit_test1.txt";
 
 			String filename = "kt unit test1";
@@ -31,7 +25,7 @@ namespace MonoTests.KnowledgeTree
 
 			Helper.writeFile(this._filename, this._content);
 
-			this._verbose = false;
+			 
 
 			this._folderId = 1;
 
@@ -56,9 +50,7 @@ namespace MonoTests.KnowledgeTree
 			if (this._verbose && response.status_code != 0)
 			{
 				System.Console.WriteLine("Could not delete file: " + this._filename);
-			}
-
-			this._kt.logout(this._session);
+			} 
 
 		}
 
@@ -111,7 +103,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("Administrator",response.checked_out_by);
 			Assert.IsTrue(null != response.checked_out_date);
 
-			FileUploader uploader = new FileUploader("http://ktdms.trunk/ktwebservice/upload.php");
+			FileUploader uploader = new FileUploader();
 
 			uploader.upload(this._session, this._filename);
 			String tempname = uploader.getFilename();

@@ -14,7 +14,7 @@ namespace MonoTests.KnowledgeTree
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
+			this._kt = new KTWebService();
 		}
 
 		[TearDown]

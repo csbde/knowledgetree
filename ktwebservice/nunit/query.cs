@@ -5,25 +5,18 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class QueryTest
+	public class QueryTest : KTTest
     	{
-
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
+ 
 
 		[SetUp]
 		public void SetUp()
-		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
+		{ 
 		}
 
 		[TearDown]
 		public void TearDown()
-		{
-			this._kt.logout(this._session);
+		{ 
 		}
 
 		[Test]

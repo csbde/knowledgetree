@@ -5,25 +5,17 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class DocumentMetadataTest
+	public class DocumentMetadataTest : KTTest
     	{
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
 		private int 			_docId;
 		private int 			_folderId;
 		private String			_filename;
 		private String			_content;
-		private bool			_verbose;
 
 
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
-
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
 			this._filename = Helper.isUnix()?"/tmp/kt_unit_test1.txt":"c:\\kt_unit_test1.txt";
 
 			String filename = "kt unit test1";
@@ -31,8 +23,6 @@ namespace MonoTests.KnowledgeTree
 			this._content = "hello world!";
 
 			Helper.writeFile(this._filename, this._content);
-
-			this._verbose = false;
 
 			this._folderId = 1;
 
@@ -58,9 +48,6 @@ namespace MonoTests.KnowledgeTree
 			{
 				System.Console.WriteLine("Could not delete file: " + this._filename);
 			}
-
-			this._kt.logout(this._session);
-
 		}
 
 		[Test]
