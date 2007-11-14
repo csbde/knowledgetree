@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -81,6 +81,8 @@ if ($action != 'login') {
             }
             if (PEAR::isError($ret)) {
                 $url = $url . '&errorMessage=' .  urlencode($ret->getMessage());
+                session_start();
+                $_SESSION['errormessage']['login'] = $ret->getMessage();
             }
             redirect($url);
             exit(0);
