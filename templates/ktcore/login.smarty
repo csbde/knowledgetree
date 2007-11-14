@@ -30,7 +30,13 @@
 			        {if ($errorMessage == null)}
 					    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
 					{else}
-					    <div class="ktErrorMessage"><span>{$errorMessage|sanitize}</span></div>
+					    <div class="ktErrorMessage"><span>
+					    	{if ($errorMessage == $errorMessageConfirm)}
+					    		{$errorMessage}
+					    	{else}
+					    		{$errorMessage|sanitize}
+					    	{/if}
+					    	</span></div>
 					{/if}
 		        	<label for="username">{i18n}Username{/i18n}</label>
 					<input type="text" id="username" name="username"/>
