@@ -1103,7 +1103,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$owner_mapping = array(
 						'created_by'=>'creator_id',
 						'modified_by'=>'modified_user_id',
-						'owner'=>'owner'
+						'owner'=>'owner_id'
 						);
 
 		$documents = array();
@@ -1135,7 +1135,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$documents['modified'] = $value;
 					break;
 				case 'is_immutable':
-					$documents['immutable'] = KTUtil::strToBool($value, false);
+					$documents['immutable'] = in_array(strtolower($value), array('1','true','on','yes'))?'1':'0';
 					break;
 				case 'filename':
 					$document_content['filename'] = $value;
@@ -1153,11 +1153,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$document_content['minor_version'] = $minor_version;
 					break;
 				case 'mime_type':
-					$value = KTMime::getMimeIdByName($value);
+					$sql = "select id from mime_types where mimetypes='$value'";
+					$value = DBUtil::getResultArray($sql);
 					if (PEAR::isError($value))
 					{
 						return $value;
 					}
+					if (count($value) == 0)
+					{
+						break;
+					}
+					$value = $value[0]['id'];
 					$document_content['mime_id'] = $value;
 					break;
 				case 'owner':
@@ -1173,9 +1179,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 					{
 						$sql = "select id from users where username='$value'";
 						$userId = DBUtil::getResultArray($sql);
-						if (PEAR::isError($value))
+						if (PEAR::isError($userId))
 						{
-							return $value;
+							return $userId;
 						}
 					}
 					if (empty($userId))
@@ -1201,7 +1207,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 			foreach($documents as $name=>$value)
 			{
 				if ($i++ > 0) $sql .= ",";
-				$sql .= "$name='$value'";
+				if (is_numeric($value))
+					$sql .= "$name=$value";
+				else
+					$sql .= "$name='$value'";
 			}
 			$sql .= " WHERE id=$this->documentid";
 			$result = DBUtil::runQuery($sql);
@@ -1215,7 +1224,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$content_id = $this->document->getContentVersionId();
 			$sql = "UPDATE document_content_version SET ";
 			$i=0;
-			foreach($documents as $name=>$value)
+			foreach($document_content as $name=>$value)
 			{
 				if ($i++ > 0) $sql .= ",";
 				$sql .= "$name='$value'";
@@ -1382,6 +1391,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function get_detail()
 	{
+		global $default;
 		// make sure we ge tthe latest
 		$this->clearCache();
 
@@ -1490,7 +1500,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		$detail['checked_out_by'] = $username;
 
-		$detail['checked_out_date'] = $document->getCheckedOutDate();
+		list($major, $minor, $fix) = explode('.', $default->systemVersion);
+
+
+		if ($major == 3 && $minor >= 5)
+		{
+			$detail['checked_out_date'] = $document->getCheckedOutDate();
+		}
+		else
+		{
+			$detail['checked_out_date'] = $detail['modified_date'];
+		}
 		if (is_null($detail['checked_out_date'])) $detail['checked_out_date'] = 'n/a';
 
 		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
