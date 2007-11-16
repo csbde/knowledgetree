@@ -263,6 +263,14 @@ class SearchHelper
 
 	public static function getSavedSearches($userID)
 	{
+		
+		// need to test for broken db configuration so that the queries dont fail
+		// and so that we can be redirected to the db error page
+		// TODO: maybe best to have a special db error page rather than the default template when logged in
+		
+		global $default;
+		if (is_null($default->_db) || PEAR::isError($default->_db)) return array();
+		
 		$sql = "SELECT id, name FROM search_saved WHERE type='S'";
 
 		// if we are not the system admin, then we get only ours or shared searches
