@@ -61,7 +61,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	public static function &get(&$ktapi, $folderid)
+	function &get(&$ktapi, $folderid)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -93,7 +93,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param Folder $folder
 	 * @return KTAPI_Folder
 	 */
-	public function KTAPI_Folder(&$ktapi, &$folder)
+	function KTAPI_Folder(&$ktapi, &$folder)
 	{
 		$this->ktapi = &$ktapi;
 		$this->folder = &$folder;
@@ -106,7 +106,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access protected
 	 * @return Folder
 	 */
-	public function &get_folder()
+	function &get_folder()
 	{
 		return $this->folder;
 	}
@@ -117,7 +117,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @return array
 	 */
-	public function get_detail()
+	function get_detail()
 	{
 		$detail = array(
 			'id'=>(int) $this->folderid,
@@ -129,12 +129,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return $detail;
 	}
 
-	public function get_parent_folder_id()
+	function get_parent_folder_id()
 	{
 		return (int) $this->folder->getParentID();
 	}
 
-	public function get_folder_name()
+	function get_folder_name()
 	{
 		return $this->folder->getFolderName($this->folderid);
 	}
@@ -145,12 +145,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @return int
 	 */
-	public function get_folderid()
+	function get_folderid()
 	{
 		return (int) $this->folderid;
 	}
 
-	public static function &_get_folder_by_name($ktapi, $foldername, $folderid)
+	function &_get_folder_by_name($ktapi, $foldername, $folderid)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -189,12 +189,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */
-	public function &get_folder_by_name($foldername)
+	function &get_folder_by_name($foldername)
 	{
 		return KTAPI_Folder::_get_folder_by_name($this->ktapi, $foldername, $this->folderid);
 	}
 
-	public function get_full_path()
+	function get_full_path()
 	{
 		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
 
@@ -209,7 +209,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $function
 	 * @return KTAPI_Document
 	 */
-	public function &_get_document_by_name($documentname, $function='getByNameAndFolder')
+	function &_get_document_by_name($documentname, $function='getByNameAndFolder')
 	{
 		$documentname=trim($documentname);
 		if (empty($documentname))
@@ -272,7 +272,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */
-	public function &get_document_by_name($documentname)
+	function &get_document_by_name($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByNameAndFolder');
 	}
@@ -284,12 +284,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */
-	public function &get_document_by_filename($documentname)
+	function &get_document_by_filename($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByFilenameAndFolder');
 	}
 
-	public function _resolve_user($userid)
+	function _resolve_user($userid)
 	{
 		$user=null;
 
@@ -304,7 +304,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return $user;
 	}
 
-	public function get_listing($depth=1, $what='DF')
+	function get_listing($depth=1, $what='DF')
 	{
 		if ($depth < 1)
 		{
@@ -456,7 +456,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
 	 * @return KTAPI_Document
 	 */
-	public function &add_document($title, $filename, $documenttype, $tempfilename)
+	function &add_document($title, $filename, $documenttype, $tempfilename)
 	{
 		if (!is_file($tempfilename))
 		{
@@ -514,7 +514,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */
-	public function &add_folder($foldername)
+	function &add_folder($foldername)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_ADD_FOLDER);
 
@@ -542,7 +542,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @param string $reason
 	 */
-	public function delete($reason)
+	function delete($reason)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_DELETE);
 		if (PEAR::isError($user))
@@ -571,7 +571,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @param string $newname
 	 */
-	public function rename($newname)
+	function rename($newname)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_RENAME_FOLDER);
 		if (PEAR::isError($user))
@@ -596,7 +596,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param KTAPI_Folder $ktapi_target_folder
 	 * @param string $reason
 	 */
-	public function move($ktapi_target_folder, $reason='')
+	function move($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -628,7 +628,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param KTAPI_Folder $ktapi_target_folder
 	 * @param string $reason
 	 */
-	public function copy($ktapi_target_folder, $reason='')
+	function copy($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
 		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
@@ -661,7 +661,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access public
 	 * @return array
 	 */
-	public function get_permissions()
+	function get_permissions()
 	{
 		return new PEAR_Error('TODO');
 	}
@@ -672,7 +672,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access public
 	 * @return array
 	 */
-	public function get_transaction_history()
+	function get_transaction_history()
 	{
 		return new PEAR_Error('TODO');
 	}

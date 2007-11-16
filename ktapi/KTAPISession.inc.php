@@ -163,7 +163,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @static
 	 * @param User $user
 	 */
-	private function _check_session(&$user)
+	function _check_session(&$user)
 	{
         $user_id = $user->getId();
 
