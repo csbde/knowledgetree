@@ -45,7 +45,19 @@ require_once('SOAP/Disco.php');
 require_once('KTDownloadManager.inc.php');
 require_once('KTUploadManager.inc.php');
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-require_once(KT_DIR . '/search2/search/search.inc.php');
+
+list($major, $minor, $fix) = explode('.', $default->systemVersion);
+
+if ($major == 3 && $minor >= 5)
+{
+	define('HAS_SEARCH_FUNCTIONALITY',1);
+}
+unset($major); unset($minor); unset($fix);
+
+if (defined('HAS_SEARCH_FUNCTIONALITY'))
+{
+	require_once(KT_DIR . '/search2/search/search.inc.php');
+}
 
 // TODO: Test getting files/metadata based on versioning works and implementation is consistent.
 
@@ -232,6 +244,9 @@ class KTWebService
          	);
          }
 
+        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+        {
+
         $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
          	array(
 				'document_id' => 'int',
@@ -270,6 +285,7 @@ class KTWebService
 				'message' => 'string',
         		'hits' => "{urn:$this->namespace}kt_search_results" ,
          	);
+        }
 
          if ($this->version >= 2)
          {
@@ -463,11 +479,14 @@ class KTWebService
             );
 
          /* methods */
+        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+        {
 
-         $this->__dispatch_map['search'] =
-            array('in' => array('session_id' => 'string', 'search'=>'string' ,'options'=>'string'),
-                  'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
-            );
+        	$this->__dispatch_map['search'] = array(
+        					'in' => array('session_id' => 'string', 'search'=>'string' ,'options'=>'string'),
+                  			'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
+            			);
+        }
 
          // login
          $this->__dispatch_map['login'] =
@@ -520,8 +539,6 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
              'alias'=>'create_folder'
             );
-
-
          }
 
 
