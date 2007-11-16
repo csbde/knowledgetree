@@ -1,0 +1,1 @@
+UPDATE mime_types SET friendly_name='PNG Image' where filetypes='png';
