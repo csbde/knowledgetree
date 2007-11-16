@@ -3953,65 +3953,34 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $kt);
     	}
 		$response=array(
-    		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+    		'status_code'=>KTWS_ERR_PROBLEM,
     		'message'=>'',
     		'hits'=>array()
     	);
 
-    	$noText = (stripos($options,'notext') !== false);
-		$results = array();
-
-    	try
+    	if (!defined('HAS_SEARCH_FUNCTIONALITY'))
     	{
-    		$expr = parseExpression($query);
+    		$response['message'] = _kt('Search has not been implemented for this version of KnowledgeTree');
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $response);
+    	}
 
-    		$rs = $expr->evaluate();
-    		usort($rs, 'rank_compare');
-
-    		$results = array();
-    		foreach($rs as $hit)
-    		{
-    			 $item = array(
-						'document_id' => (int) $hit->DocumentID,
-						'title' => (string) $hit->Title,
-						'relevance' => (float) $hit->Rank,
-        				'text' => (string)  $noText?'':$hit->Text,
-        				'filesize' => (int) $hit->Filesize,
-        				'fullpath' => (string) $hit->FullPath,
-        				'version' => (string) $hit->Version,
-        				'filename' => (string) $hit->Filename,
-        				'checked_out_by' => (string) $hit->CheckedOutUser,
-        				'checked_out_date' => (string) $hit->DateCheckedOut,
-        				'is_available' => (bool) $hit->IsAvailable,
-        				'workflow' => (string) $hit->Workflow,
-        				'workflow_state' => (string) $hit->WorkflowState,
-        				'folder_id' => (int) $hit->FolderId,
-        				'mime_type' => (string) $hit->MimeType,
-						'modified_by' => (string) $hit->ModifiedBy,
-						'modified_date' => (string) $hit->DateModified,
-						'created_by' => (string) $hit->CreatedBy,
-						'created_date' => (string) $hit->DateCreated,
-						'owner' => (string) $hit->Owner,
-						'is_immutable'=> (bool) $hit->Immutable,
-						'status' => (string) $hit->Status
-    				);
-
-    				$item = new SOAP_Value('item',"{urn:$this->namespace}kt_search_result_item", $item);
-    				$results[] = $item;
-
-    		}
-
-    		$response['message'] = '';
+		$results = processSearchExpression($query);
+		if (PEAR::isError($results))
+		{
+			$response['message'] = _kt('Could not process query.')  . $results->getMessage();
+			$results = array();
+		}
+		else
+		{
+			foreach($results as $key=>$item)
+			{
+				$results[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_search_result_item", $item);
+			}
+			$response['message'] = '';
     		$response['status_code'] = KTWS_SUCCESS;
-    	}
-    	catch(Exception $e)
-    	{
-    		$this->debug("search - exception " . $e->getMessage(), $session_id);
 
-    		$results = array();
-    		$response['message'] = _kt('Could not process query.')  . $e->getMessage();
-    	}
-    	$response['hits'] = new SOAP_Value('hits',"{urn:$this->namespace}kt_search_results", $results);
+		}
+		$response['hits'] = new SOAP_Value('hits',"{urn:$this->namespace}kt_search_results", $results);
 
 		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $response);
 	}
