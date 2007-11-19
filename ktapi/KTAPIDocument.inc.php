@@ -1055,6 +1055,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function update_metadata($metadata)
 	{
 		global $default;
+		if (empty($metadata))
+		{
+			return;
+		}
+
 		 $packed = $this->get_packed_metadata($metadata);
 
 		 DBUtil::startTransaction();
@@ -1196,7 +1201,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$documents[$name] = $userId;
 					break;
 				default:
-					return new PEAR_Error('Unexpected field: ' . $name);
+					// TODO: we should do some logging
+					//return new PEAR_Error('Unexpected field: ' . $name);
 			}
 		}
 
@@ -1266,7 +1272,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$metadata_version = $this->document->getMetadataVersion();
 		if ($metadata_version == 0)
 		{
-			return new PEAR_Error('MetadataVersion cannot be merged');
+			// this could theoretically happen in the case we are updating metadata and sysdata, but no metadata fields are specified.
+			return;
 		}
 
 		$metadata_id = $this->document->getMetadataVersionId();
