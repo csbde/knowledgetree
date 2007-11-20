@@ -1,0 +1,52 @@
+UPDATE system_settings SET value="1.2.3" WHERE name="knowledgeTreeVersion";
+
+-- indexes on important FKs
+ALTER TABLE active_sessions ADD INDEX session_id_idx (session_id);
+ALTER TABLE documents ADD INDEX fk_document_type_id (document_type_id);
+ALTER TABLE documents ADD INDEX fk_creator_id (creator_id);
+ALTER TABLE documents ADD INDEX fk_folder_id (folder_id);
+ALTER TABLE documents ADD INDEX fk_checked_out_user_id (checked_out_user_id);
+ALTER TABLE documents ADD INDEX fk_status_id (status_id);
+ALTER TABLE document_transactions ADD INDEX fk_document_id (document_id);
+ALTER TABLE document_transactions ADD INDEX fk_user_id (user_id);
+ALTER TABLE document_transactions ADD INDEX fk_transaction_id (transaction_id);
+ALTER TABLE folders ADD INDEX fk_parent_id (parent_id);
+ALTER TABLE folders ADD INDEX fk_creator_id (creator_id);
+ALTER TABLE folders ADD INDEX fk_unit_id (unit_id);
+ALTER TABLE folder_doctypes_link ADD INDEX fk_folder_id (folder_id);
+ALTER TABLE folder_doctypes_link ADD INDEX fk_document_type_id (document_type_id);
+ALTER TABLE groups_folders_link ADD INDEX fk_group_id (group_id);
+ALTER TABLE groups_folders_link ADD INDEX fk_folder_id (folder_id);
+ALTER TABLE groups_units_link ADD INDEX fk_group_id (group_id);
+ALTER TABLE groups_units_link ADD INDEX fk_unit_id (unit_id);
+ALTER TABLE search_document_user_link ADD INDEX fk_user_id (user_id);
+ALTER TABLE search_document_user_link ADD INDEX fk_document_ids (document_id);
+ALTER TABLE units_organisations_link ADD INDEX fk_unit_id (unit_id);
+ALTER TABLE units_organisations_link ADD INDEX fk_organisation_id (organisation_id);
+ALTER TABLE users_groups_link ADD INDEX fk_user_id (user_id);
+ALTER TABLE users_groups_link ADD INDEX fk_group_id (group_id);
+
+-- char -> varchar
+ALTER TABLE active_sessions MODIFY session_id VARCHAR(255), MODIFY ip VARCHAR(30);
+ALTER TABLE archiving_type_lookup MODIFY name VARCHAR(100);
+ALTER TABLE data_types MODIFY name VARCHAR(255);
+ALTER TABLE documents MODIFY description VARCHAR(200);
+ALTER TABLE document_fields MODIFY name VARCHAR(255), MODIFY data_type VARCHAR(100);
+ALTER TABLE document_fields_link MODIFY value VARCHAR(255);
+ALTER TABLE document_transactions MODIFY version VARCHAR(50), MODIFY ip VARCHAR(30), MODIFY filename VARCHAR(255), MODIFY comment VARCHAR(255);
+ALTER TABLE document_transaction_types_lookup MODIFY name VARCHAR(100);
+ALTER TABLE document_types_lookup MODIFY name VARCHAR(100);
+ALTER TABLE folders MODIFY name VARCHAR(255), MODIFY description VARCHAR(255);
+ALTER TABLE groups_lookup MODIFY name VARCHAR(100);
+ALTER TABLE links MODIFY name VARCHAR(100), MODIFY url VARCHAR(100);
+ALTER TABLE metadata_lookup MODIFY name VARCHAR(255);
+ALTER TABLE mime_types MODIFY filetypes VARCHAR(100), MODIFY mimetypes VARCHAR(100), MODIFY icon_path VARCHAR(255);
+ALTER TABLE organisations_lookup MODIFY name VARCHAR(100);
+ALTER TABLE roles MODIFY name VARCHAR(255);
+ALTER TABLE status_lookup MODIFY name VARCHAR(255);
+ALTER TABLE system_settings MODIFY name VARCHAR(255), MODIFY value VARCHAR(255);
+ALTER TABLE time_unit_lookup MODIFY name VARCHAR(100);
+ALTER TABLE units_lookup MODIFY name VARCHAR(100);
+ALTER TABLE users MODIFY username VARCHAR(255), MODIFY name VARCHAR(255), MODIFY password VARCHAR(255), MODIFY email VARCHAR(255), MODIFY mobile VARCHAR(255), MODIFY ldap_dn VARCHAR(255);
+ALTER TABLE web_documents_status_lookup MODIFY name VARCHAR(50);
+ALTER TABLE web_sites MODIFY web_site_name VARCHAR(100), MODIFY web_site_url VARCHAR(50);
