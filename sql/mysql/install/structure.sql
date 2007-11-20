@@ -1,11 +1,11 @@
 --
 -- $Id$
---    
+--
 -- The contents of this file are subject to the KnowledgeTree Public
 -- License Version 1.1.2 ("License"); You may not use this file except in
 -- compliance with the License. You may obtain a copy of the License at
 -- http://www.knowledgetree.com/KPL
--- 
+--
 -- Software distributed under the License is distributed on an "AS IS"
 -- basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
 -- See the License for the specific language governing rights and
@@ -16,9 +16,9 @@
 --    (ii) the KnowledgeTree copyright notice
 -- in the same form as they appear in the distribution.  See the License for
 -- requirements.
--- 
+--
 -- The Original Code is: KnowledgeTree Open Source
--- 
+--
 -- The Initial Developer of the Original Code is The Jam Warehouse Software
 -- (Pty) Ltd, trading as KnowledgeTree.
 -- Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -28,15 +28,15 @@
 --
 
 SET FOREIGN_KEY_CHECKS=0;
--- 
+--
 -- Database: `pristine`
--- 
+--
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `active_sessions`
--- 
+--
 
 CREATE TABLE `active_sessions` (
   `id` int(11) NOT NULL default '0',
@@ -50,9 +50,9 @@ CREATE TABLE `active_sessions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `archive_restoration_request`
--- 
+--
 
 CREATE TABLE `archive_restoration_request` (
   `id` int(11) NOT NULL default '0',
@@ -65,9 +65,9 @@ CREATE TABLE `archive_restoration_request` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `archiving_settings`
--- 
+--
 
 CREATE TABLE `archiving_settings` (
   `id` int(11) NOT NULL default '0',
@@ -80,9 +80,9 @@ CREATE TABLE `archiving_settings` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `archiving_type_lookup`
--- 
+--
 
 CREATE TABLE `archiving_type_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -92,9 +92,9 @@ CREATE TABLE `archiving_type_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `authentication_sources`
--- 
+--
 
 CREATE TABLE `authentication_sources` (
   `id` int(11) NOT NULL default '0',
@@ -110,9 +110,9 @@ CREATE TABLE `authentication_sources` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `column_entries`
--- 
+--
 
 CREATE TABLE `column_entries` (
   `id` int(11) NOT NULL default '0',
@@ -127,9 +127,9 @@ CREATE TABLE `column_entries` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `comment_searchable_text`
--- 
+--
 
 CREATE TABLE `comment_searchable_text` (
   `comment_id` int(11) NOT NULL default '0',
@@ -141,9 +141,9 @@ CREATE TABLE `comment_searchable_text` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `dashlet_disables`
--- 
+--
 
 CREATE TABLE `dashlet_disables` (
   `id` int(11) NOT NULL default '0',
@@ -156,9 +156,9 @@ CREATE TABLE `dashlet_disables` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `data_types`
--- 
+--
 
 CREATE TABLE `data_types` (
   `id` int(11) NOT NULL default '0',
@@ -168,9 +168,9 @@ CREATE TABLE `data_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `discussion_comments`
--- 
+--
 
 CREATE TABLE `discussion_comments` (
   `id` int(11) NOT NULL default '0',
@@ -185,9 +185,9 @@ CREATE TABLE `discussion_comments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `discussion_threads`
--- 
+--
 
 CREATE TABLE `discussion_threads` (
   `id` int(11) NOT NULL default '0',
@@ -205,9 +205,9 @@ CREATE TABLE `discussion_threads` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_archiving_link`
--- 
+--
 
 CREATE TABLE `document_archiving_link` (
   `id` int(11) NOT NULL default '0',
@@ -218,9 +218,9 @@ CREATE TABLE `document_archiving_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_content_version`
--- 
+--
 
 CREATE TABLE `document_content_version` (
   `id` int(11) NOT NULL default '0',
@@ -238,9 +238,9 @@ CREATE TABLE `document_content_version` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_fields`
--- 
+--
 
 CREATE TABLE `document_fields` (
   `id` int(11) NOT NULL default '0',
@@ -258,9 +258,9 @@ CREATE TABLE `document_fields` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_fields_link`
--- 
+--
 
 CREATE TABLE `document_fields_link` (
   `id` int(11) NOT NULL default '0',
@@ -274,9 +274,9 @@ CREATE TABLE `document_fields_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_incomplete`
--- 
+--
 
 CREATE TABLE `document_incomplete` (
   `id` int(10) unsigned NOT NULL default '0',
@@ -287,9 +287,9 @@ CREATE TABLE `document_incomplete` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_link`
--- 
+--
 
 CREATE TABLE `document_link` (
   `id` int(11) NOT NULL default '0',
@@ -301,9 +301,9 @@ CREATE TABLE `document_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_link_types`
--- 
+--
 
 CREATE TABLE `document_link_types` (
   `id` int(11) NOT NULL default '0',
@@ -315,9 +315,9 @@ CREATE TABLE `document_link_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_metadata_version`
--- 
+--
 
 CREATE TABLE `document_metadata_version` (
   `id` int(11) NOT NULL default '0',
@@ -345,9 +345,9 @@ CREATE TABLE `document_metadata_version` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_role_allocations`
--- 
+--
 
 CREATE TABLE `document_role_allocations` (
   `id` int(11) NOT NULL default '0',
@@ -360,9 +360,9 @@ CREATE TABLE `document_role_allocations` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_searchable_text`
--- 
+--
 
 CREATE TABLE `document_searchable_text` (
   `document_id` int(11) default NULL,
@@ -373,9 +373,9 @@ CREATE TABLE `document_searchable_text` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_subscriptions`
--- 
+--
 
 CREATE TABLE `document_subscriptions` (
   `id` int(11) NOT NULL default '0',
@@ -387,9 +387,9 @@ CREATE TABLE `document_subscriptions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_text`
--- 
+--
 
 CREATE TABLE `document_text` (
   `document_id` int(11) default NULL,
@@ -400,9 +400,9 @@ CREATE TABLE `document_text` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_transaction_text`
--- 
+--
 
 CREATE TABLE `document_transaction_text` (
   `document_id` int(11) default NULL,
@@ -413,9 +413,9 @@ CREATE TABLE `document_transaction_text` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_transaction_types_lookup`
--- 
+--
 
 CREATE TABLE `document_transaction_types_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -427,9 +427,9 @@ CREATE TABLE `document_transaction_types_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_transactions`
--- 
+--
 
 CREATE TABLE `document_transactions` (
   `id` int(11) NOT NULL default '0',
@@ -451,9 +451,9 @@ CREATE TABLE `document_transactions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_type_fields_link`
--- 
+--
 
 CREATE TABLE `document_type_fields_link` (
   `id` int(11) NOT NULL default '0',
@@ -465,9 +465,9 @@ CREATE TABLE `document_type_fields_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_type_fieldsets_link`
--- 
+--
 
 CREATE TABLE `document_type_fieldsets_link` (
   `id` int(11) NOT NULL default '0',
@@ -480,9 +480,9 @@ CREATE TABLE `document_type_fieldsets_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `document_types_lookup`
--- 
+--
 
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -495,9 +495,9 @@ CREATE TABLE `document_types_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `documents`
--- 
+--
 
 CREATE TABLE `documents` (
   `id` int(11) NOT NULL default '0',
@@ -533,9 +533,9 @@ CREATE TABLE `documents` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `field_behaviour_options`
--- 
+--
 
 CREATE TABLE `field_behaviour_options` (
   `behaviour_id` int(11) NOT NULL default '0',
@@ -548,9 +548,9 @@ CREATE TABLE `field_behaviour_options` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `field_behaviours`
--- 
+--
 
 CREATE TABLE `field_behaviours` (
   `id` int(11) NOT NULL default '0',
@@ -564,9 +564,9 @@ CREATE TABLE `field_behaviours` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `field_orders`
--- 
+--
 
 CREATE TABLE `field_orders` (
   `parent_field_id` int(11) NOT NULL default '0',
@@ -579,9 +579,9 @@ CREATE TABLE `field_orders` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `field_value_instances`
--- 
+--
 
 CREATE TABLE `field_value_instances` (
   `id` int(11) NOT NULL default '0',
@@ -596,9 +596,9 @@ CREATE TABLE `field_value_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `fieldsets`
--- 
+--
 
 CREATE TABLE `fieldsets` (
   `id` int(11) NOT NULL default '0',
@@ -621,9 +621,9 @@ CREATE TABLE `fieldsets` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folder_doctypes_link`
--- 
+--
 
 CREATE TABLE `folder_doctypes_link` (
   `id` int(11) NOT NULL default '0',
@@ -636,9 +636,9 @@ CREATE TABLE `folder_doctypes_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folder_searchable_text`
--- 
+--
 
 CREATE TABLE `folder_searchable_text` (
   `folder_id` int(11) NOT NULL default '0',
@@ -650,9 +650,9 @@ CREATE TABLE `folder_searchable_text` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folder_subscriptions`
--- 
+--
 
 CREATE TABLE `folder_subscriptions` (
   `id` int(11) NOT NULL default '0',
@@ -664,9 +664,9 @@ CREATE TABLE `folder_subscriptions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folder_transactions`
--- 
+--
 
 CREATE TABLE `folder_transactions` (
   `id` int(11) NOT NULL default '0',
@@ -686,9 +686,9 @@ CREATE TABLE `folder_transactions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folder_workflow_map`
--- 
+--
 
 CREATE TABLE `folder_workflow_map` (
   `folder_id` int(11) NOT NULL default '0',
@@ -699,9 +699,9 @@ CREATE TABLE `folder_workflow_map` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folders`
--- 
+--
 
 CREATE TABLE `folders` (
   `id` int(11) NOT NULL default '0',
@@ -725,9 +725,9 @@ CREATE TABLE `folders` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `folders_users_roles_link`
--- 
+--
 
 CREATE TABLE `folders_users_roles_link` (
   `id` int(11) NOT NULL default '0',
@@ -743,9 +743,9 @@ CREATE TABLE `folders_users_roles_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `groups_groups_link`
--- 
+--
 
 CREATE TABLE `groups_groups_link` (
   `id` int(11) NOT NULL default '0',
@@ -758,9 +758,9 @@ CREATE TABLE `groups_groups_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `groups_lookup`
--- 
+--
 
 CREATE TABLE `groups_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -780,9 +780,9 @@ CREATE TABLE `groups_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `help`
--- 
+--
 
 CREATE TABLE `help` (
   `id` int(11) NOT NULL default '0',
@@ -793,9 +793,9 @@ CREATE TABLE `help` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `help_replacement`
--- 
+--
 
 CREATE TABLE `help_replacement` (
   `id` int(11) NOT NULL default '0',
@@ -807,9 +807,9 @@ CREATE TABLE `help_replacement` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `interceptor_instances`
--- 
+--
 
 CREATE TABLE `interceptor_instances` (
   `id` int(11) NOT NULL,
@@ -822,9 +822,9 @@ CREATE TABLE `interceptor_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `links`
--- 
+--
 
 CREATE TABLE `links` (
   `id` int(11) NOT NULL default '0',
@@ -836,9 +836,9 @@ CREATE TABLE `links` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `metadata_lookup`
--- 
+--
 
 CREATE TABLE `metadata_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -854,9 +854,9 @@ CREATE TABLE `metadata_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `metadata_lookup_tree`
--- 
+--
 
 CREATE TABLE `metadata_lookup_tree` (
   `id` int(11) NOT NULL default '0',
@@ -870,9 +870,9 @@ CREATE TABLE `metadata_lookup_tree` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `mime_types`
--- 
+--
 
 CREATE TABLE `mime_types` (
   `id` int(11) NOT NULL default '0',
@@ -885,9 +885,9 @@ CREATE TABLE `mime_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `news`
--- 
+--
 
 CREATE TABLE `news` (
   `id` int(11) NOT NULL default '0',
@@ -903,9 +903,9 @@ CREATE TABLE `news` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `notifications`
--- 
+--
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL default '0',
@@ -925,9 +925,9 @@ CREATE TABLE `notifications` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `organisations_lookup`
--- 
+--
 
 CREATE TABLE `organisations_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -938,9 +938,9 @@ CREATE TABLE `organisations_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_assignments`
--- 
+--
 
 CREATE TABLE `permission_assignments` (
   `id` int(11) NOT NULL default '0',
@@ -956,9 +956,9 @@ CREATE TABLE `permission_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_descriptor_groups`
--- 
+--
 
 CREATE TABLE `permission_descriptor_groups` (
   `descriptor_id` int(11) NOT NULL default '0',
@@ -970,9 +970,9 @@ CREATE TABLE `permission_descriptor_groups` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_descriptor_roles`
--- 
+--
 
 CREATE TABLE `permission_descriptor_roles` (
   `descriptor_id` int(11) NOT NULL default '0',
@@ -984,9 +984,9 @@ CREATE TABLE `permission_descriptor_roles` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_descriptor_users`
--- 
+--
 
 CREATE TABLE `permission_descriptor_users` (
   `descriptor_id` int(11) NOT NULL default '0',
@@ -998,9 +998,9 @@ CREATE TABLE `permission_descriptor_users` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_descriptors`
--- 
+--
 
 CREATE TABLE `permission_descriptors` (
   `id` int(11) NOT NULL default '0',
@@ -1013,9 +1013,9 @@ CREATE TABLE `permission_descriptors` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_dynamic_assignments`
--- 
+--
 
 CREATE TABLE `permission_dynamic_assignments` (
   `dynamic_condition_id` int(11) NOT NULL default '0',
@@ -1026,9 +1026,9 @@ CREATE TABLE `permission_dynamic_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_dynamic_conditions`
--- 
+--
 
 CREATE TABLE `permission_dynamic_conditions` (
   `id` int(11) NOT NULL default '0',
@@ -1043,9 +1043,9 @@ CREATE TABLE `permission_dynamic_conditions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_lookup_assignments`
--- 
+--
 
 CREATE TABLE `permission_lookup_assignments` (
   `id` int(11) NOT NULL default '0',
@@ -1061,9 +1061,9 @@ CREATE TABLE `permission_lookup_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_lookups`
--- 
+--
 
 CREATE TABLE `permission_lookups` (
   `id` int(11) NOT NULL default '0',
@@ -1072,9 +1072,9 @@ CREATE TABLE `permission_lookups` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permission_objects`
--- 
+--
 
 CREATE TABLE `permission_objects` (
   `id` int(11) NOT NULL default '0',
@@ -1083,9 +1083,9 @@ CREATE TABLE `permission_objects` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `permissions`
--- 
+--
 
 CREATE TABLE `permissions` (
   `id` int(11) NOT NULL default '0',
@@ -1098,9 +1098,9 @@ CREATE TABLE `permissions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `plugins`
--- 
+--
 
 CREATE TABLE `plugins` (
   `id` int(11) NOT NULL default '0',
@@ -1117,9 +1117,30 @@ CREATE TABLE `plugins` (
 
 -- --------------------------------------------------------
 
--- 
+--
+-- Table structure for table `plugin_helper`
+--
+
+CREATE TABLE `plugin_helper` (
+	`id` INT NOT NULL default '0',
+	`namespace` VARCHAR(120) NOT NULL,
+	`plugin` VARCHAR(120) NOT NULL,
+	`classname` VARCHAR(120),
+	`pathname` VARCHAR(255),
+	`object` VARCHAR(1000) NOT NULL,
+	`classtype` VARCHAR(120) NOT NULL,
+	`viewtype` ENUM('general', 'dashboard', 'plugin', 'folder', 'document', 'admindispatcher', 'dispatcher') NOT NULL default 'general',
+    PRIMARY KEY  (`id`),
+    KEY `name` (`namespace`),
+    KEY `parent` (`plugin`),
+    KEY `view` (`viewtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `role_allocations`
--- 
+--
 
 CREATE TABLE `role_allocations` (
   `id` int(11) NOT NULL default '0',
@@ -1132,9 +1153,9 @@ CREATE TABLE `role_allocations` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `roles`
--- 
+--
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL default '0',
@@ -1145,9 +1166,9 @@ CREATE TABLE `roles` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `saved_searches`
--- 
+--
 
 CREATE TABLE `saved_searches` (
   `id` int(11) NOT NULL default '0',
@@ -1166,9 +1187,9 @@ CREATE TABLE `saved_searches` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `search_document_user_link`
--- 
+--
 
 CREATE TABLE `search_document_user_link` (
   `document_id` int(11) default NULL,
@@ -1179,9 +1200,9 @@ CREATE TABLE `search_document_user_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `status_lookup`
--- 
+--
 
 CREATE TABLE `status_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -1191,9 +1212,9 @@ CREATE TABLE `status_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `system_settings`
--- 
+--
 
 CREATE TABLE `system_settings` (
   `id` int(11) NOT NULL default '0',
@@ -1204,9 +1225,9 @@ CREATE TABLE `system_settings` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `time_period`
--- 
+--
 
 CREATE TABLE `time_period` (
   `id` int(11) NOT NULL default '0',
@@ -1217,9 +1238,9 @@ CREATE TABLE `time_period` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `time_unit_lookup`
--- 
+--
 
 CREATE TABLE `time_unit_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -1229,9 +1250,9 @@ CREATE TABLE `time_unit_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `trigger_selection`
--- 
+--
 
 CREATE TABLE `trigger_selection` (
   `event_ns` varchar(255) NOT NULL default '',
@@ -1242,9 +1263,9 @@ CREATE TABLE `trigger_selection` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `type_workflow_map`
--- 
+--
 
 CREATE TABLE `type_workflow_map` (
   `document_type_id` int(11) NOT NULL default '0',
@@ -1255,9 +1276,9 @@ CREATE TABLE `type_workflow_map` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `units_lookup`
--- 
+--
 
 CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL default '0',
@@ -1270,9 +1291,9 @@ CREATE TABLE `units_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `units_organisations_link`
--- 
+--
 
 CREATE TABLE `units_organisations_link` (
   `id` int(11) NOT NULL default '0',
@@ -1285,9 +1306,9 @@ CREATE TABLE `units_organisations_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `upgrades`
--- 
+--
 
 CREATE TABLE `upgrades` (
   `id` int(10) unsigned NOT NULL default '0',
@@ -1303,9 +1324,9 @@ CREATE TABLE `upgrades` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `user_history`
--- 
+--
 
 CREATE TABLE `user_history` (
   `id` int(11) NOT NULL,
@@ -1323,9 +1344,9 @@ CREATE TABLE `user_history` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `users`
--- 
+--
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL default '0',
@@ -1362,9 +1383,9 @@ CREATE TABLE `users` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `users_groups_link`
--- 
+--
 
 CREATE TABLE `users_groups_link` (
   `id` int(11) NOT NULL default '0',
@@ -1377,9 +1398,9 @@ CREATE TABLE `users_groups_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_actions`
--- 
+--
 
 CREATE TABLE `workflow_actions` (
   `workflow_id` int(11) NOT NULL default '0',
@@ -1390,9 +1411,9 @@ CREATE TABLE `workflow_actions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_documents`
--- 
+--
 
 CREATE TABLE `workflow_documents` (
   `document_id` int(11) NOT NULL default '0',
@@ -1405,9 +1426,9 @@ CREATE TABLE `workflow_documents` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_state_actions`
--- 
+--
 
 CREATE TABLE `workflow_state_actions` (
   `state_id` int(11) NOT NULL default '0',
@@ -1418,9 +1439,9 @@ CREATE TABLE `workflow_state_actions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_state_disabled_actions`
--- 
+--
 
 CREATE TABLE `workflow_state_disabled_actions` (
   `state_id` int(11) NOT NULL default '0',
@@ -1431,9 +1452,9 @@ CREATE TABLE `workflow_state_disabled_actions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_state_permission_assignments`
--- 
+--
 
 CREATE TABLE `workflow_state_permission_assignments` (
   `id` int(11) NOT NULL default '0',
@@ -1448,9 +1469,9 @@ CREATE TABLE `workflow_state_permission_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_state_transitions`
--- 
+--
 
 CREATE TABLE `workflow_state_transitions` (
   `state_id` int(11) NOT NULL default '0',
@@ -1459,9 +1480,9 @@ CREATE TABLE `workflow_state_transitions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_states`
--- 
+--
 
 CREATE TABLE `workflow_states` (
   `id` int(11) NOT NULL default '0',
@@ -1479,9 +1500,9 @@ CREATE TABLE `workflow_states` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_transitions`
--- 
+--
 
 CREATE TABLE `workflow_transitions` (
   `id` int(11) NOT NULL default '0',
@@ -1506,9 +1527,9 @@ CREATE TABLE `workflow_transitions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflow_trigger_instances`
--- 
+--
 
 CREATE TABLE `workflow_trigger_instances` (
   `id` int(10) unsigned NOT NULL default '0',
@@ -1522,9 +1543,9 @@ CREATE TABLE `workflow_trigger_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `workflows`
--- 
+--
 
 CREATE TABLE `workflows` (
   `id` int(11) NOT NULL default '0',
@@ -1539,9 +1560,9 @@ CREATE TABLE `workflows` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_active_sessions`
--- 
+--
 
 CREATE TABLE `zseq_active_sessions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1550,9 +1571,9 @@ CREATE TABLE `zseq_active_sessions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_archive_restoration_request`
--- 
+--
 
 CREATE TABLE `zseq_archive_restoration_request` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1561,9 +1582,9 @@ CREATE TABLE `zseq_archive_restoration_request` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_archiving_settings`
--- 
+--
 
 CREATE TABLE `zseq_archiving_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1572,9 +1593,9 @@ CREATE TABLE `zseq_archiving_settings` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_archiving_type_lookup`
--- 
+--
 
 CREATE TABLE `zseq_archiving_type_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1583,9 +1604,9 @@ CREATE TABLE `zseq_archiving_type_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_authentication_sources`
--- 
+--
 
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1594,9 +1615,9 @@ CREATE TABLE `zseq_authentication_sources` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_browse_criteria`
--- 
+--
 
 CREATE TABLE `zseq_browse_criteria` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1605,9 +1626,9 @@ CREATE TABLE `zseq_browse_criteria` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_column_entries`
--- 
+--
 
 CREATE TABLE `zseq_column_entries` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1616,9 +1637,9 @@ CREATE TABLE `zseq_column_entries` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_dashlet_disables`
--- 
+--
 
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1627,9 +1648,9 @@ CREATE TABLE `zseq_dashlet_disables` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_data_types`
--- 
+--
 
 CREATE TABLE `zseq_data_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1638,9 +1659,9 @@ CREATE TABLE `zseq_data_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_dependant_document_instance`
--- 
+--
 
 CREATE TABLE `zseq_dependant_document_instance` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1649,9 +1670,9 @@ CREATE TABLE `zseq_dependant_document_instance` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_dependant_document_template`
--- 
+--
 
 CREATE TABLE `zseq_dependant_document_template` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1660,9 +1681,9 @@ CREATE TABLE `zseq_dependant_document_template` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_discussion_comments`
--- 
+--
 
 CREATE TABLE `zseq_discussion_comments` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1671,9 +1692,9 @@ CREATE TABLE `zseq_discussion_comments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_discussion_threads`
--- 
+--
 
 CREATE TABLE `zseq_discussion_threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1682,9 +1703,9 @@ CREATE TABLE `zseq_discussion_threads` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_archiving_link`
--- 
+--
 
 CREATE TABLE `zseq_document_archiving_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1693,9 +1714,9 @@ CREATE TABLE `zseq_document_archiving_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_content_version`
--- 
+--
 
 CREATE TABLE `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1704,9 +1725,9 @@ CREATE TABLE `zseq_document_content_version` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_fields`
--- 
+--
 
 CREATE TABLE `zseq_document_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1715,9 +1736,9 @@ CREATE TABLE `zseq_document_fields` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_fields_link`
--- 
+--
 
 CREATE TABLE `zseq_document_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1726,9 +1747,9 @@ CREATE TABLE `zseq_document_fields_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_link`
--- 
+--
 
 CREATE TABLE `zseq_document_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1737,9 +1758,9 @@ CREATE TABLE `zseq_document_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_link_types`
--- 
+--
 
 CREATE TABLE `zseq_document_link_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1748,9 +1769,9 @@ CREATE TABLE `zseq_document_link_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_metadata_version`
--- 
+--
 
 CREATE TABLE `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1759,9 +1780,9 @@ CREATE TABLE `zseq_document_metadata_version` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_role_allocations`
--- 
+--
 
 CREATE TABLE `zseq_document_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1770,9 +1791,9 @@ CREATE TABLE `zseq_document_role_allocations` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_subscriptions`
--- 
+--
 
 CREATE TABLE `zseq_document_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1781,9 +1802,9 @@ CREATE TABLE `zseq_document_subscriptions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_transaction_types_lookup`
--- 
+--
 
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1792,9 +1813,9 @@ CREATE TABLE `zseq_document_transaction_types_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_transactions`
--- 
+--
 
 CREATE TABLE `zseq_document_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1803,9 +1824,9 @@ CREATE TABLE `zseq_document_transactions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_type_fields_link`
--- 
+--
 
 CREATE TABLE `zseq_document_type_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1814,9 +1835,9 @@ CREATE TABLE `zseq_document_type_fields_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_type_fieldsets_link`
--- 
+--
 
 CREATE TABLE `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1825,9 +1846,9 @@ CREATE TABLE `zseq_document_type_fieldsets_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_document_types_lookup`
--- 
+--
 
 CREATE TABLE `zseq_document_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1836,9 +1857,9 @@ CREATE TABLE `zseq_document_types_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_documents`
--- 
+--
 
 CREATE TABLE `zseq_documents` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1847,9 +1868,9 @@ CREATE TABLE `zseq_documents` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_field_behaviours`
--- 
+--
 
 CREATE TABLE `zseq_field_behaviours` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1858,9 +1879,9 @@ CREATE TABLE `zseq_field_behaviours` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_field_value_instances`
--- 
+--
 
 CREATE TABLE `zseq_field_value_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1869,9 +1890,9 @@ CREATE TABLE `zseq_field_value_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_fieldsets`
--- 
+--
 
 CREATE TABLE `zseq_fieldsets` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1880,9 +1901,9 @@ CREATE TABLE `zseq_fieldsets` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_folder_doctypes_link`
--- 
+--
 
 CREATE TABLE `zseq_folder_doctypes_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1891,9 +1912,9 @@ CREATE TABLE `zseq_folder_doctypes_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_folder_subscriptions`
--- 
+--
 
 CREATE TABLE `zseq_folder_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1902,9 +1923,9 @@ CREATE TABLE `zseq_folder_subscriptions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_folder_transactions`
--- 
+--
 
 CREATE TABLE `zseq_folder_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1913,9 +1934,9 @@ CREATE TABLE `zseq_folder_transactions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_folders`
--- 
+--
 
 CREATE TABLE `zseq_folders` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1924,9 +1945,9 @@ CREATE TABLE `zseq_folders` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_folders_users_roles_link`
--- 
+--
 
 CREATE TABLE `zseq_folders_users_roles_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1935,9 +1956,9 @@ CREATE TABLE `zseq_folders_users_roles_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_groups_groups_link`
--- 
+--
 
 CREATE TABLE `zseq_groups_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1946,9 +1967,9 @@ CREATE TABLE `zseq_groups_groups_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_groups_lookup`
--- 
+--
 
 CREATE TABLE `zseq_groups_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1957,9 +1978,9 @@ CREATE TABLE `zseq_groups_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_help`
--- 
+--
 
 CREATE TABLE `zseq_help` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1968,9 +1989,9 @@ CREATE TABLE `zseq_help` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_help_replacement`
--- 
+--
 
 CREATE TABLE `zseq_help_replacement` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1979,9 +2000,9 @@ CREATE TABLE `zseq_help_replacement` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_interceptor_instances`
--- 
+--
 
 CREATE TABLE `zseq_interceptor_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -1990,9 +2011,9 @@ CREATE TABLE `zseq_interceptor_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_links`
--- 
+--
 
 CREATE TABLE `zseq_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2001,9 +2022,9 @@ CREATE TABLE `zseq_links` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_metadata_lookup`
--- 
+--
 
 CREATE TABLE `zseq_metadata_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2012,9 +2033,9 @@ CREATE TABLE `zseq_metadata_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_metadata_lookup_tree`
--- 
+--
 
 CREATE TABLE `zseq_metadata_lookup_tree` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2023,9 +2044,9 @@ CREATE TABLE `zseq_metadata_lookup_tree` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_mime_types`
--- 
+--
 
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2034,9 +2055,9 @@ CREATE TABLE `zseq_mime_types` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_news`
--- 
+--
 
 CREATE TABLE `zseq_news` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2045,9 +2066,9 @@ CREATE TABLE `zseq_news` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_notifications`
--- 
+--
 
 CREATE TABLE `zseq_notifications` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2056,9 +2077,9 @@ CREATE TABLE `zseq_notifications` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_organisations_lookup`
--- 
+--
 
 CREATE TABLE `zseq_organisations_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2067,9 +2088,9 @@ CREATE TABLE `zseq_organisations_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_assignments`
--- 
+--
 
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2078,9 +2099,9 @@ CREATE TABLE `zseq_permission_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_descriptors`
--- 
+--
 
 CREATE TABLE `zseq_permission_descriptors` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2089,9 +2110,9 @@ CREATE TABLE `zseq_permission_descriptors` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_dynamic_conditions`
--- 
+--
 
 CREATE TABLE `zseq_permission_dynamic_conditions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2100,9 +2121,9 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_lookup_assignments`
--- 
+--
 
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2111,9 +2132,9 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_lookups`
--- 
+--
 
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2122,9 +2143,9 @@ CREATE TABLE `zseq_permission_lookups` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permission_objects`
--- 
+--
 
 CREATE TABLE `zseq_permission_objects` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2133,9 +2154,9 @@ CREATE TABLE `zseq_permission_objects` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_permissions`
--- 
+--
 
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2144,9 +2165,9 @@ CREATE TABLE `zseq_permissions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_plugins`
--- 
+--
 
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2155,9 +2176,20 @@ CREATE TABLE `zseq_plugins` (
 
 -- --------------------------------------------------------
 
--- 
+--
+-- Table structure for table `zseq_plugin_helper`
+--
+
+CREATE TABLE `zseq_plugin_helper` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `zseq_role_allocations`
--- 
+--
 
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2166,9 +2198,9 @@ CREATE TABLE `zseq_role_allocations` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_roles`
--- 
+--
 
 CREATE TABLE `zseq_roles` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2177,9 +2209,9 @@ CREATE TABLE `zseq_roles` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_saved_searches`
--- 
+--
 
 CREATE TABLE `zseq_saved_searches` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2188,9 +2220,9 @@ CREATE TABLE `zseq_saved_searches` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_status_lookup`
--- 
+--
 
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2199,9 +2231,9 @@ CREATE TABLE `zseq_status_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_system_settings`
--- 
+--
 
 CREATE TABLE `zseq_system_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2210,9 +2242,9 @@ CREATE TABLE `zseq_system_settings` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_time_period`
--- 
+--
 
 CREATE TABLE `zseq_time_period` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2221,9 +2253,9 @@ CREATE TABLE `zseq_time_period` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_time_unit_lookup`
--- 
+--
 
 CREATE TABLE `zseq_time_unit_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2232,9 +2264,9 @@ CREATE TABLE `zseq_time_unit_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_units_lookup`
--- 
+--
 
 CREATE TABLE `zseq_units_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2243,9 +2275,9 @@ CREATE TABLE `zseq_units_lookup` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_units_organisations_link`
--- 
+--
 
 CREATE TABLE `zseq_units_organisations_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2254,9 +2286,9 @@ CREATE TABLE `zseq_units_organisations_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_upgrades`
--- 
+--
 
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2265,9 +2297,9 @@ CREATE TABLE `zseq_upgrades` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_user_history`
--- 
+--
 
 CREATE TABLE `zseq_user_history` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2276,9 +2308,9 @@ CREATE TABLE `zseq_user_history` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_users`
--- 
+--
 
 CREATE TABLE `zseq_users` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2287,9 +2319,9 @@ CREATE TABLE `zseq_users` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_users_groups_link`
--- 
+--
 
 CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2298,9 +2330,9 @@ CREATE TABLE `zseq_users_groups_link` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflow_state_disabled_actions`
--- 
+--
 
 CREATE TABLE `zseq_workflow_state_disabled_actions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2309,9 +2341,9 @@ CREATE TABLE `zseq_workflow_state_disabled_actions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflow_state_permission_assignments`
--- 
+--
 
 CREATE TABLE `zseq_workflow_state_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2320,9 +2352,9 @@ CREATE TABLE `zseq_workflow_state_permission_assignments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflow_states`
--- 
+--
 
 CREATE TABLE `zseq_workflow_states` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2331,9 +2363,9 @@ CREATE TABLE `zseq_workflow_states` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflow_transitions`
--- 
+--
 
 CREATE TABLE `zseq_workflow_transitions` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2342,9 +2374,9 @@ CREATE TABLE `zseq_workflow_transitions` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflow_trigger_instances`
--- 
+--
 
 CREATE TABLE `zseq_workflow_trigger_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -2353,34 +2385,34 @@ CREATE TABLE `zseq_workflow_trigger_instances` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `zseq_workflows`
--- 
+--
 
 CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
--- 
+--
 -- Constraints for dumped tables
--- 
+--
 
--- 
+--
 -- Constraints for table `document_fields`
--- 
+--
 ALTER TABLE `document_fields`
   ADD CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `document_fields_link`
--- 
+--
 ALTER TABLE `document_fields_link`
   ADD CONSTRAINT `document_fields_link_ibfk_2` FOREIGN KEY (`document_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `document_metadata_version`
--- 
+--
 ALTER TABLE `document_metadata_version`
   ADD CONSTRAINT `document_metadata_version_ibfk_4` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`),
@@ -2389,163 +2421,163 @@ ALTER TABLE `document_metadata_version`
   ADD CONSTRAINT `document_metadata_version_ibfk_8` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
   ADD CONSTRAINT `document_metadata_version_ibfk_9` FOREIGN KEY (`workflow_state_id`) REFERENCES `workflow_states` (`id`);
 
--- 
+--
 -- Constraints for table `document_type_fieldsets_link`
--- 
+--
 ALTER TABLE `document_type_fieldsets_link`
   ADD CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `field_behaviour_options`
--- 
+--
 ALTER TABLE `field_behaviour_options`
   ADD CONSTRAINT `field_behaviour_options_ibfk_1` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_behaviour_options_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_behaviour_options_ibfk_3` FOREIGN KEY (`instance_id`) REFERENCES `field_value_instances` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `field_behaviours`
--- 
+--
 ALTER TABLE `field_behaviours`
   ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `field_orders`
--- 
+--
 ALTER TABLE `field_orders`
   ADD CONSTRAINT `field_orders_ibfk_1` FOREIGN KEY (`parent_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `field_value_instances`
--- 
+--
 ALTER TABLE `field_value_instances`
   ADD CONSTRAINT `field_value_instances_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_value_instances_ibfk_2` FOREIGN KEY (`field_value_id`) REFERENCES `metadata_lookup` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `field_value_instances_ibfk_3` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `fieldsets`
--- 
+--
 ALTER TABLE `fieldsets`
   ADD CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE SET NULL;
 
--- 
+--
 -- Constraints for table `folder_transactions`
--- 
+--
 ALTER TABLE `folder_transactions`
   ADD CONSTRAINT `folder_transactions_ibfk_1` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `folder_transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `groups_groups_link`
--- 
+--
 ALTER TABLE `groups_groups_link`
   ADD CONSTRAINT `groups_groups_link_ibfk_1` FOREIGN KEY (`parent_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `groups_groups_link_ibfk_2` FOREIGN KEY (`member_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `groups_lookup`
--- 
+--
 ALTER TABLE `groups_lookup`
   ADD CONSTRAINT `groups_lookup_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `units_lookup` (`id`);
 
--- 
+--
 -- Constraints for table `permission_assignments`
--- 
+--
 ALTER TABLE `permission_assignments`
   ADD CONSTRAINT `permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_descriptor_groups`
--- 
+--
 ALTER TABLE `permission_descriptor_groups`
   ADD CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_descriptor_roles`
--- 
+--
 ALTER TABLE `permission_descriptor_roles`
   ADD CONSTRAINT `permission_descriptor_roles_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_descriptor_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_descriptor_users`
--- 
+--
 ALTER TABLE `permission_descriptor_users`
   ADD CONSTRAINT `permission_descriptor_users_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_descriptor_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_dynamic_assignments`
--- 
+--
 ALTER TABLE `permission_dynamic_assignments`
   ADD CONSTRAINT `permission_dynamic_assignments_ibfk_2` FOREIGN KEY (`dynamic_condition_id`) REFERENCES `permission_dynamic_conditions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_dynamic_assignments_ibfk_3` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_dynamic_conditions`
--- 
+--
 ALTER TABLE `permission_dynamic_conditions`
   ADD CONSTRAINT `permission_dynamic_conditions_ibfk_1` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_dynamic_conditions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_dynamic_conditions_ibfk_3` FOREIGN KEY (`condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `permission_lookup_assignments`
--- 
+--
 ALTER TABLE `permission_lookup_assignments`
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `saved_searches`
--- 
+--
 ALTER TABLE `saved_searches`
   ADD CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- 
+--
 -- Constraints for table `user_history`
--- 
+--
 ALTER TABLE `user_history`
   ADD CONSTRAINT `user_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `users`
--- 
+--
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`authentication_source_id`) REFERENCES `authentication_sources` (`id`) ON DELETE SET NULL;
 
--- 
+--
 -- Constraints for table `users_groups_link`
--- 
+--
 ALTER TABLE `users_groups_link`
   ADD CONSTRAINT `users_groups_link_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `users_groups_link_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `workflow_state_permission_assignments`
--- 
+--
 ALTER TABLE `workflow_state_permission_assignments`
   ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_7` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `workflow_state_permission_assignments_ibfk_8` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
--- 
+--
 -- Constraints for table `workflow_states`
--- 
+--
 ALTER TABLE `workflow_states`
   ADD CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
   ADD CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL;
 
--- 
+--
 -- Constraints for table `workflow_transitions`
--- 
+--
 ALTER TABLE `workflow_transitions`
   ADD CONSTRAINT `workflow_transitions_ibfk_45` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `workflow_transitions_ibfk_46` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE,
@@ -2554,79 +2586,79 @@ ALTER TABLE `workflow_transitions`
   ADD CONSTRAINT `workflow_transitions_ibfk_49` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `workflow_transitions_ibfk_50` FOREIGN KEY (`guard_condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE SET NULL;
 
--- 
+--
 -- Constraints for table `workflows`
--- 
+--
 ALTER TABLE `workflows`
   ADD CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`);
 
 
-CREATE TABLE `plugin_rss` 
+CREATE TABLE `plugin_rss`
 ( `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `url` varchar(200) NOT NULL,
   `title` varchar(20) NOT NULL,
-  PRIMARY KEY  (`id`)) 
+  PRIMARY KEY  (`id`))
 ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `zseq_plugin_rss` 
+CREATE TABLE `zseq_plugin_rss`
 (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
 
-CREATE TABLE `tag_words` (            
-   `id` int(10) NOT NULL,     
-   `tag` varchar(100) default NULL,    
+CREATE TABLE `tag_words` (
+   `id` int(10) NOT NULL,
+   `tag` varchar(100) default NULL,
    PRIMARY KEY  (`id`))
-ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `document_tags` (
-   `document_id` int(10) NOT NULL, 
-   `tag_id` int(10) NOT NULL,       
+   `document_id` int(10) NOT NULL,
+   `tag_id` int(10) NOT NULL,
    PRIMARY KEY  (`document_id`,`tag_id`),
    CONSTRAINT fk_document_tags_document_id FOREIGN KEY (document_id) REFERENCES documents(id) ON UPDATE CASCADE ON DELETE CASCADE,
    CONSTRAINT fk_document_tags_tag_id FOREIGN KEY (tag_id) REFERENCES tag_words(id) ON UPDATE CASCADE ON DELETE CASCADE
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `zseq_document_tags` (                    
-   `id` int(10) NOT NULL auto_increment,       
+CREATE TABLE `zseq_document_tags` (
+   `id` int(10) NOT NULL auto_increment,
    PRIMARY KEY  (`id`))
 ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `zseq_tag_words` (                         
-   `id` int(10) NOT NULL auto_increment,        
+CREATE TABLE `zseq_tag_words` (
+   `id` int(10) NOT NULL auto_increment,
    PRIMARY KEY  (`id`))
 ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 ALTER TABLE fieldsets ADD disabled tinyint not null default 0;
 
-CREATE TABLE `uploaded_files` (                                                           
-`tempfilename` varchar(100) NOT NULL,                                                   
-`filename` varchar(100) NOT NULL,                                                       
-`userid` int(11) NOT NULL,                                                              
-`uploaddate` timestamp NOT NULL,  
-`action` char(1) NOT NULL COMMENT 'A = Add, C = Checkin',                         
-`document_id` int(11) default NULL                                                      
+CREATE TABLE `uploaded_files` (
+`tempfilename` varchar(100) NOT NULL,
+`filename` varchar(100) NOT NULL,
+`userid` int(11) NOT NULL,
+`uploaddate` timestamp NOT NULL,
+`action` char(1) NOT NULL COMMENT 'A = Add, C = Checkin',
+`document_id` int(11) default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `download_files` (                              
-`document_id` int(10) unsigned NOT NULL,                   
-`session` varchar(100) NOT NULL,                           
-`download_date` timestamp NULL default CURRENT_TIMESTAMP,  
-`downloaded` int(10) unsigned NOT NULL default '0',        
-`filesize` int(10) unsigned NOT NULL,                      
-`content_version` int(10) unsigned NOT NULL,               
-`hash` varchar(100) NOT NULL,                              
-PRIMARY KEY  (`document_id`,`session`)                     
+CREATE TABLE `download_files` (
+`document_id` int(10) unsigned NOT NULL,
+`session` varchar(100) NOT NULL,
+`download_date` timestamp NULL default CURRENT_TIMESTAMP,
+`downloaded` int(10) unsigned NOT NULL default '0',
+`filesize` int(10) unsigned NOT NULL,
+`content_version` int(10) unsigned NOT NULL,
+`hash` varchar(100) NOT NULL,
+PRIMARY KEY  (`document_id`,`session`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `index_files` (
-`document_id` int(10) unsigned NOT NULL,                                               
-`user_id` int(10) unsigned NOT NULL,                                                   
-`indexdate` timestamp NOT NULL,  
-PRIMARY KEY  (`document_id`)                                                           
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+`document_id` int(10) unsigned NOT NULL,
+`user_id` int(10) unsigned NOT NULL,
+`indexdate` timestamp NOT NULL,
+PRIMARY KEY  (`document_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS=1;

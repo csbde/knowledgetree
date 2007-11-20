@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -39,9 +39,9 @@ class KTPlugin {
     var $iOrder = 0;
     var $sFriendlyName = null;
     var $sSQLDir = null;
-    
+
     var $autoRegister = false;
-    
+
     var $_aPortlets = array();
     var $_aTriggers = array();
     var $_aActions = array();
@@ -55,14 +55,14 @@ class KTPlugin {
     var $_aLanguage = array();
     var $_aHelpLanguage = array();
     var $_aWFTriggers = array();
-    var $_aColumns = array();    
-    var $_aViews = array();       
-    var $_aNotificationHandlers = array();       
-    var $_aTemplateLocations = array();       
-    var $_aWidgets = array();         
-    var $_aValidators = array();      
-    var $_aCriteria = array();       
-    var $_aInterceptors = array();       
+    var $_aColumns = array();
+    var $_aViews = array();
+    var $_aNotificationHandlers = array();
+    var $_aTemplateLocations = array();
+    var $_aWidgets = array();
+    var $_aValidators = array();
+    var $_aCriteria = array();
+    var $_aInterceptors = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -75,27 +75,51 @@ class KTPlugin {
     function registerPortlet($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        if(is_array($aLocation)){
+            $sLocation = implode('_|', $aLocation);
+        }
+        $params = $sLocation.'|'.$sPortletClassName.'|'.$sPortletNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sPortletNamespace, $sPortletClassName, $sFilename, $params, 'general', 'portlet');
     }
 
     function registerTrigger($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aTriggers[$sTriggerNamespace] = array($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sAction.'|'.$sStage.'|'.$sTriggerClassName.'|'.$sTriggerNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sTriggerNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'trigger');
     }
 
     function registerAction($sActionType, $sActionClassName, $sActionNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aActions[$sActionNamespace] = array($sActionType, $sActionClassName, $sActionNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sActionType.'|'.$sActionClassName.'|'.$sActionNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sActionNamespace, $sActionClassName, $sFilename, $params, 'general', 'action');
     }
 
     function registerPage($sWebPath, $sPageClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
+
         $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sWebPath.'|'.$sPageClassName.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sWebPath, $sPageClassName, $sFilename, $params, 'general', 'page');
     }
-    
+
     function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aWFTriggers[$sNamespace] = array($sNamespace, $sTriggerClassName, $sFilename);
+
+        // Register helper in DB
+        $params = $sNamespace.'|'.$sTriggerClassName.'|'.$sFilename;
+        $this->registerPluginHelper($sNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'workflow_trigger');
     }
 
     function getPagePath($sPath) {
@@ -114,27 +138,52 @@ class KTPlugin {
     function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAuthenticationProviders[$sNamespace] = array($sName, $sClass, $sNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sClass.'|'.$sNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sNamespace, $sClass, $sFilename, $params, 'general', 'authentication_provider');
     }
 
-//registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
     function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename) {
         $sFullname = $sCategory . '/' . $sName;
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
     }
 
     function registerAdminCategory($sPath, $sName, $sDescription) {
         $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
+
+        // Register helper in DB
+        $params = $sPath.'|'.$sName.'|'.$sDescription;
+        $this->registerPluginHelper($sPath, $sName, $sPath, $params, 'general', 'admin_category');
     }
-    
+
+    /**
+     * Register a new dashlet
+     *
+     * @param string $sClassName
+     * @param string $sNamespace
+     * @param string $sFilename
+     */
     function registerDashlet($sClassName, $sNamespace, $sFilename) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aDashlets[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $this->sNamespace);
+
+        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'dashboard', 'dashlet');
     }
 
     function registeri18n($sDomain, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_ai18n[$sDomain] = array($sDomain, $sPath);
+
+        // Register helper in DB
+        $params = $sDomain.'|'.$sPath;
+        $this->registerPluginHelper($sDomain, $sDomain, $sPath, $params, 'general', 'i18n');
     }
 
     function registeri18nLang($sDomain, $sLang, $sPath) {
@@ -142,55 +191,150 @@ class KTPlugin {
             $sPath = $this->_fixFilename($sPath);
         }
         $this->_ai18nLang["$sDomain/$sLang"] = array($sDomain, $sLang, $sPath);
+
+        // Register helper in DB
+        $params = $sDomain.'|'.$sLang.'|'.$sPath;
+        $this->registerPluginHelper("$sDomain/$sLang", $sDomain, $sPath, $params, 'general', 'i18nlang');
     }
 
     function registerLanguage($sLanguage, $sLanguageName) {
         $this->_aLanguage[$sLanguage] = array($sLanguage, $sLanguageName);
+
+        // Register helper in DB
+        $params = $sLanguage.'|'.$sLanguageName;
+        $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'language');
     }
-    
+
     function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
         $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
+
+        // Register helper in DB
+        $params = $sPlugin.'|'.$sLanguage.'|'.$sBasedir;
+        $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'help_language');
     }
-    
+
     function registerColumn($sName, $sNamespace, $sClassName, $sFile) {
         $sFile = $this->_fixFilename($sFile);
         $this->_aColumns[$sNamespace] = array($sName, $sNamespace, $sClassName, $sFile);
-    }    
-    
+
+        // Register helper in DB
+        $params = $sName.'|'.$sNamespace.'|'.$sClassName.'|'.$sFile;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFile, $params, 'general', 'column');
+    }
+
     function registerView($sName, $sNamespace) {
         $this->_aViews[$sNamespace] = array($sName, $sNamespace);
-    }        
+
+        // Register helper in DB
+        $params = $sName.'|'.$sNamespace;
+        $this->registerPluginHelper($sNamespace, '', '', $params, 'general', 'view');
+    }
 
     function registerNotificationHandler($sName, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aNotificationHandlers[$sNamespace] = array($sNamespace, $sName, $sPath);
-    }        
+
+        // Register helper in DB
+        $params = $sNamespace.'|'.$sName.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sName, $sPath, $params, 'general', 'notification_handler');
+    }
 
     function registerTemplateLocation($sName, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aTemplateLocations[$sName] = array($sName, $sPath);
-    }        
 
-    
+        // Register helper in DB
+        $params = $sName.'|'.$sPath;
+        $this->registerPluginHelper($sName, $sName, $sPath, $params, 'general', 'template_location');
+    }
+
+    /**
+     * Register a new widget
+     *
+     * @param unknown_type $sClassname
+     * @param unknown_type $sNamespace
+     * @param unknown_type $sPath
+     */
     function registerWidget($sClassname, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aWidgets[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'widget');
     }
-    
+
     function registerValidator($sClassname, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aValidators[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'validator');
     }
 
 
     function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+
+        // Register helper in DB
+        if(is_array($aInitialize)){
+            $sInitialize = implode('_|', $aInitialize);
+        }
+
+        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$sInitialize;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'general', 'criterion');
     }
 
     function registerInterceptor($sClassname, $sNamespace, $sPath = null) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'interceptor');
+    }
+
+    /* ** Refactor into another class ** */
+    /**
+     * Register the plugin in the DB
+     *
+     * @param unknown_type $sClassName
+     * @param unknown_type $path
+     * @param unknown_type $object
+     * @param unknown_type $type
+     */
+    function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
+
+        $sql = "SELECT * FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
+        $res = DBUtil::getOneResult($sql);
+
+        $aValues = array();
+        $aValues['namespace'] = $sNamespace;
+        $aValues['plugin'] = (!empty($this->sNamespace)) ? $this->sNamespace : $sNamespace;
+        $aValues['classname'] = $sClassName;
+        $aValues['pathname'] = $path;
+        $aValues['object'] = $object;
+        $aValues['viewtype'] = $view;
+        $aValues['classtype'] = $type;
+
+        // if record exists - update it.
+        if(!empty($res)){
+            $id = $res['id'];
+            $updateRes = DBUtil::autoUpdate('plugin_helper', $aValues, $id);
+            if(PEAR::isError($updateRes)){
+                return $updateRes;
+            }
+            return true;
+        }
+
+        // Insert into DB
+        $res = DBUtil::autoInsert('plugin_helper', $aValues);
+        if(PEAR::isError($res)){
+            return $res;
+        }
+        return true;
     }
 
     function _fixFilename($sFilename) {
@@ -234,7 +378,120 @@ class KTPlugin {
         return true;
     }
 
+    /**
+     * Load the actions, portlets, etc as part of the parent plugin
+     *
+     */
     function load() {
+        // Get actions, portlets, etc, create arrays as part of plugin
+        $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
+        $aPluginHelpers = DBUtil::getResultArray($query);
+
+        if(!empty($aPluginHelpers)){
+            foreach ($aPluginHelpers as $plugin) {
+                $sName = $plugin['namespace'];
+            	$sParams = $plugin['object'];
+            	$aParams = explode('|', $sParams);
+            	$sClassType = $plugin['classtype'];
+
+            	switch ($sClassType) {
+            	    case 'portlet':
+            	        $aLocation = explode('_|', $aParams[0]);
+        	            $aParams[0] = $aLocation;
+                        $this->_aPortlets[$sName] = $aParams;
+            	        break;
+
+            	    case 'trigger':
+            	        $this->_aTriggers[$sName] = $aParams;
+            	        break;
+
+            	    case 'action':
+            	        $this->_aActions[$sName] = $aParams;
+            	        break;
+
+            	    case 'page':
+            	        $this->_aPages[$sName] = $aParams;
+            	        break;
+
+            	    case 'authentication_provider':
+            	        $this->_aAuthenticationProviders[$sName] = $aParams;
+            	        break;
+
+            	    case 'admin_category':
+            	        $this->_aAdminCategories[$sName] = $aParams;
+            	        break;
+
+            	    case 'admin_page':
+            	        $this->_aAdminPages[$sName] = $aParams;
+            	        break;
+
+            	    case 'dashlet':
+            	        $this->_aDashlets[$sName] = $aParams;
+            	        break;
+
+            	    case 'i18n':
+            	        $this->_ai18n[$sName] = $aParams;
+            	        break;
+
+            	    case 'i18nlang':
+            	        $this->_ai18nLang[$sName] = $aParams;
+            	        break;
+
+            	    case 'language':
+            	        $this->_aLanguage[$sName] = $aParams;
+            	        break;
+
+            	    case 'help_language':
+            	        $this->_aHelpLanguage[$sName] = $aParams;
+            	        break;
+
+            	    case 'workflow_trigger':
+            	        $this->_aWFTriggers[$sName] = $aParams;
+            	        break;
+
+            	    case 'column':
+            	        $this->_aColumns[$sName] = $aParams;
+            	        break;
+
+            	    case 'view':
+            	        $this->_aViews[$sName] = $aParams;
+            	        break;
+
+            	    case 'notification_handler':
+            	        $this->_aNotificationHandlers[$sName] = $aParams;
+            	        break;
+
+            	    case 'template_location':
+            	        $this->_aTemplateLocations[$sName] = $aParams;
+            	        break;
+
+            	    case 'criterion':
+            	        $aInit = explode('_|', $aParams[3]);
+        	            $aParams[3] = $aInit;
+            	        $this->_aCriteria[$sName] = $aParams;
+            	        break;
+
+            	    case 'widget':
+            	        $this->_aWidgets[$sName] = $aParams;
+            	        break;
+
+            	    case 'validator':
+            	        $this->_aValidators[$sName] = $aParams;
+            	        break;
+
+            	    case 'interceptor':
+            	        $this->_aInterceptors[$sName] = $aParams;
+            	        break;
+            	}
+        	}
+        }
+    }
+
+    /**
+     * Old load function
+     *
+     */
+    function load_old() {
         if (!$this->isRegistered()) {
             return;
         }
@@ -245,15 +502,15 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
         require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
         require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
-        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
-        require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
-        require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
+        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
+        require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
+        require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
         require_once(KT_LIB_DIR . "/help/help.inc.php");
         require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
-        require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");    
-        require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");          
-        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");        
-        require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");        
+        require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
+        require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
+        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+        require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");
         require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
@@ -261,16 +518,16 @@ class KTPlugin {
         $oARegistry =& KTActionRegistry::getSingleton();
         $oPageRegistry =& KTPageRegistry::getSingleton();
         $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
-        $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton(); 
+        $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton();
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $oi18nRegistry =& KTi18nRegistry::getSingleton();
         $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
         $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
-        $oColumnRegistry =& KTColumnRegistry::getSingleton();        
+        $oColumnRegistry =& KTColumnRegistry::getSingleton();
         $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
         $oTemplating =& KTTemplating::getSingleton();
         $oWidgetFactory =& KTWidgetFactory::getSingleton();
-        $oValidatorFactory =& KTValidatorFactory::getSingleton();        
+        $oValidatorFactory =& KTValidatorFactory::getSingleton();
         $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
         $oInterceptorRegistry =& KTInterceptorRegistry::getSingleton();
 
@@ -301,7 +558,7 @@ class KTPlugin {
         foreach ($this->_aAdminPages as $k => $v) {
             call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $v);
         }
-        
+
         foreach ($this->_aDashlets as $k => $v) {
             call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $v);
         }
@@ -317,38 +574,38 @@ class KTPlugin {
         foreach ($this->_aLanguage as $k => $v) {
             call_user_func_array(array(&$oi18nRegistry, 'registerLanguage'), $v);
         }
-        
+
         foreach ($this->_aHelpLanguage as $k => $v) {
             call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $v);
         }
-        
+
         foreach ($this->_aWFTriggers as $k => $v) {
             call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $v);
         }
-        
+
         foreach ($this->_aColumns as $k => $v) {
             call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $v);
-        }        
-        
+        }
+
         foreach ($this->_aViews as $k => $v) {
             call_user_func_array(array(&$oColumnRegistry, 'registerView'), $v);
-        }                
+        }
 
         foreach ($this->_aNotificationHandlers as $k => $v) {
             call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $v);
-        }                
+        }
 
         foreach ($this->_aTemplateLocations as $k => $v) {
             call_user_func_array(array(&$oTemplating, 'addLocation'), $v);
-        }                
+        }
 
         foreach ($this->_aCriteria as $k => $v) {
             call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $v);
-        }                
-        
+        }
+
         foreach ($this->_aWidgets as $k => $v) {
             call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $v);
-        }                        
+        }
 
         foreach ($this->_aValidators as $k => $v) {
             call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $v);
@@ -369,9 +626,9 @@ class KTPlugin {
         }
         return $sFilename;
     }
-    
+
     function upgradePlugin($iStart, $iEnd) {
-        if (is_null($this->sSQLDir)) { 
+        if (is_null($this->sSQLDir)) {
             return $iEnd; // no db changes, must reach the "end".
         }
         global $default;
@@ -382,7 +639,7 @@ class KTPlugin {
             if (!file_exists($sqlfile)) {
                 continue; // skip it.
             }
-            $queries = SQLFile::sqlFromFile($sqlfile);            
+            $queries = SQLFile::sqlFromFile($sqlfile);
             $res = DBUtil::runQueries($queries, $default->_admindb);
 
             if (PEAR::isError($res)) {
@@ -415,7 +672,7 @@ class KTPlugin {
                     'friendlyname' => $friendly_name,
                 ));
                 // FIXME we -really- need to raise an error here, somehow.
-                return $oEntity; 
+                return $oEntity;
             } else {
                 $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),

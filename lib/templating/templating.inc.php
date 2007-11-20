@@ -8,7 +8,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -19,9 +19,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -38,7 +38,7 @@ class KTTemplating {
 
     /** Location registry */
     var $aLocationRegistry;
-    
+
     // {{{ KTTemplating
     function KTTemplating() {
         $this->aTemplateRegistry = array(
@@ -88,7 +88,7 @@ class KTTemplating {
         return $this->_chooseTemplate($templatename, $aPossibilities);
     }
     // }}}
-    
+
     // {{{ loadTemplate
     /**
      * Create an object that conforms to the template interface, using
@@ -108,14 +108,31 @@ class KTTemplating {
         if (!class_exists($sClass)) {
             return PEAR::raiseError(_kt("Could not find template language"));
         }
-        
+
         $oTemplate =& new $sClass($sTemplatePath);
         return $oTemplate;
     }
     // }}}
 
     // {{{ addLocation
+    /**
+     * Register a new location in the database
+     *
+     * @param unknown_type $descr
+     * @param unknown_type $loc
+     */
     function addLocation ($descr, $loc) {
+        $this->aLocationRegistry[$descr] = $loc;
+        KTPlugin::registerPluginHelper($descr, $descr, $loc, $descr.'|'.$loc, 'general', 'locations');
+    }
+
+    /**
+     * Add the template location to the location registry
+     *
+     * @param unknown_type $descr
+     * @param unknown_type $loc
+     */
+    function addLocation2 ($descr, $loc) {
         $this->aLocationRegistry[$descr] = $loc;
     }
     // }}}
