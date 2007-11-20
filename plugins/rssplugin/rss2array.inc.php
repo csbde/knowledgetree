@@ -1,7 +1,7 @@
 <?php
 
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -80,8 +80,8 @@
             #
             # open the connection
             #
-
-            if($http = fsockopen($host, $port, $errno, $errstr, 5)){
+			$http = @fsockopen($host, $port, $errno, $errstr, 5);
+            if($http){
 
                 #
                 # make the request
@@ -169,7 +169,6 @@
             #
 
             else {
-
                 $rss2array_globals[errors][] = "Can't connect to $host";
 
             }
