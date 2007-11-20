@@ -37,7 +37,7 @@
  */
 
 require_once('indexing/extractorCore.inc.php');
-
+require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
 class QueryResultItem
 {
@@ -306,16 +306,14 @@ abstract class Indexer
 	 */
 	protected function __construct()
 	{
-		$this->extractorCache=array();
-		$this->debug=true;
-		$this->hookCache = array();
-		$this->generalHookCache = array();
-
 		$config = KTConfig::getSingleton();
 
-		$this->extractorPath = $config->get('indexer/extractorPath', 'extractors');
-		$this->hookPath = $config->get('indexer/extractorHookPath','extractorHooks');
-
+		$this->extractorCache	= array();
+		$this->debug 			= $config->get('indexer/debug', true);
+		$this->hookCache 		= array();
+		$this->generalHookCache = array();
+		$this->extractorPath 	= $config->get('indexer/extractorPath', 'extractors');
+		$this->hookPath 		= $config->get('indexer/extractorHookPath','extractorHooks');
 
 		$this->loadExtractorStatus();
 	}
@@ -383,7 +381,7 @@ abstract class Indexer
 		$sql = "delete from mime_extractors";
 		DBUtil::runQuery($sql);
 
-		$default->log->debug('clearExtractors');
+		if ($this->debug) $default->log->debug('clearExtractors');
 	}
 
 	/**
@@ -453,7 +451,7 @@ abstract class Indexer
         $sql = "INSERT INTO index_files(document_id, user_id, what) VALUES($document_id, $userid, '$what')";
         DBUtil::runQuery($sql);
 
-//        if ($this->debug) $default->log->debug("index: Queuing indexing of $document_id");
+        $default->log->debug("index: Queuing indexing of $document_id");
     }
 
 
@@ -487,7 +485,7 @@ abstract class Indexer
 					);';
         DBUtil::runQuery($sql);
 
-      //  if ($this->debug) $default->log->debug("clearoutDeleted: remove documents");
+        $default->log->debug("Indexer::clearoutDeleted: removed documents from indexing queue that have been deleted");
     }
 
 
@@ -679,7 +677,7 @@ abstract class Indexer
     	{
     		return;
     	}
-    	$default->log->info('checkForRegisteredTypes: start');
+    	if ($this->debug) $default->log->debug('checkForRegisteredTypes: start');
 
     	$date = date('Y-m-d H:i');
     	$sql = "UPDATE scheduler_tasks SET run_time='$date'";
@@ -701,7 +699,7 @@ abstract class Indexer
     		$default->log->info("checkForRegisteredTypes: disabled '$extractor'");
     	}
 
-    	$default->log->info('checkForRegisteredTypes: done');
+    	if ($this->debug) $default->log->debug('checkForRegisteredTypes: done');
     	KTUtil::setSystemSetting('mimeTypesRegistered', true);
     }
 
@@ -728,10 +726,11 @@ abstract class Indexer
 
     	$this->checkForRegisteredTypes();
 
-    	$default->log->info('indexDocuments: start');
+    	if ($this->debug) $default->log->debug('indexDocuments: start');
     	if (!$this->doesDiagnosticsPass())
     	{
     		//unlink($indexLockFile);
+    		if ($this->debug) $default->log->debug('indexDocuments: stopping - diagnostics problem. The dashboard will provide more information.');
     		return;
     	}
 
@@ -764,6 +763,7 @@ abstract class Indexer
         if (PEAR::isError($result))
         {
         	//unlink($indexLockFile);
+        	if ($this->debug) $default->log->debug('indexDocuments: stopping - db error');
         	return;
         }
 
@@ -771,6 +771,7 @@ abstract class Indexer
         if (count($result) == 0)
         {
         	//unlink($indexLockFile);
+        	if ($this->debug) $default->log->debug('indexDocuments: stopping - no work to be done');
             return;
         }
 
@@ -804,17 +805,12 @@ abstract class Indexer
 
         	if ($this->debug)
         	{
-        		$default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
+        		if ($this->debug) $default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
         	}
 
         	if (empty($extractorClass))
         	{
-	        	if ($this->debug)
-	        	{
-	        		$default->log->debug(sprintf(_kt("No extractor for docid: %d"),$docId));
-	        	}
-
-        		Indexer::unqueueDocument($docId);
+        		Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
         		continue;
         	}
 
@@ -867,8 +863,7 @@ abstract class Indexer
 
         		if (empty($sourceFile) || !is_file($sourceFile))
         		{
-        			$default->log->error(sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId));
-        			Indexer::unqueueDocument($docId);
+        			Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId), 'error');
         			continue;
         		}
 
@@ -896,10 +891,8 @@ abstract class Indexer
         		$extractor->setDocument($document);
         		$extractor->setIndexingStatus(null);
         		$extractor->setExtractionStatus(null);
-        		if ($this->debug)
-        		{
-        			$default->log->debug(sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile));
-        		}
+
+        		if ($this->debug) $default->log->debug(sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile));
 
         		$this->executeHook($extractor, 'pre_extract');
 				$this->executeHook($extractor, 'pre_extract', $mimeType);
@@ -971,22 +964,32 @@ abstract class Indexer
 
         	if ($removeFromQueue)
         	{
-        		Indexer::unqueueDocument($docId);
+        		Indexer::unqueueDocument($docId, sprintf(_kt("Done indexing docid: %d"),$docId));
         	}
-			if ($this->debug)
-			{
-				$default->log->debug(sprintf(_kt("Done indexing docid: %d"),$docId));
-			}
-
+        	else
+        	{
+        		if ($this->debug) $default->log->debug(sprintf(_kt("Document docid: %d was not removed from the queue as it looks like there was a problem with the extraction process"),$docId));
+        	}
         }
-        $default->log->info('indexDocuments: done');
+        if ($this->debug) $default->log->debug('indexDocuments: done');
         //unlink($indexLockFile);
     }
 
     public function migrateDocuments($max=null)
     {
+    	global $default;
+
+    	$default->log->info(_kt('migrateDocuments: starting'));
+
     	if (!$this->doesDiagnosticsPass(true))
     	{
+    		$default->log->info(_kt('migrateDocuments: stopping - diagnostics problem. The dashboard will provide more information.'));
+    		return;
+    	}
+
+    	if (KTUtil::getSystemSetting('migrationComplete') == 'true')
+    	{
+    		$default->log->info(_kt('migrateDocuments: stopping - migration is complete.'));
     		return;
     	}
 
@@ -996,16 +999,13 @@ abstract class Indexer
 			$max = $config->get('indexer/batchMigrateDocument',500);
     	}
 
-		global $default;
-
     	$lockFile = $config->get('cache/cacheDirectory') . '/migration.lock';
     	if (is_file($lockFile))
     	{
-    		$default->log->info(_kt('migrateDocuments: migration lockfile detected. exiting.'));
+    		$default->log->info(_kt('migrateDocuments: stopping - migration lockfile detected.'));
     		return;
     	}
     	touch($lockFile);
-    	$default->log->info(_kt('migrateDocuments: starting!'));
 
     	$startTime = KTUtil::getSystemSetting('migrationStarted');
     	if (is_null($startTime))
@@ -1015,7 +1015,7 @@ abstract class Indexer
 
     	$maxLoops = 5;
 
-    	$max = floor($max / $maxLoops);
+    	$max = ceil($max / $maxLoops);
 
 		$start =KTUtil::getBenchmarkTime();
 		$noDocs = false;
@@ -1033,6 +1033,7 @@ abstract class Indexer
     		$result = DBUtil::getResultArray($sql);
     		if (PEAR::isError($result))
     		{
+    			$default->log->info(_kt('migrateDocuments: db error'));
     			break;
     		}
 
@@ -1053,7 +1054,7 @@ abstract class Indexer
     			{
     				$sql = "DELETE FROM document_text WHERE document_id=$docId";
     				DBUtil::runQuery($sql);
-    				$default->log->error(sprintf(_kt('migrateDocuments: Could not get document %d\'s document! Removing content!',$docId)));
+    				$default->log->error(sprintf(_kt('migrateDocuments: Could not get document %d\'s document! Removing content!'),$docId));
     				continue;
     			}
 
@@ -1094,13 +1095,14 @@ abstract class Indexer
     	KTUtil::setSystemSetting('migrationTime', KTUtil::getSystemSetting('migrationTime',0) + $time);
     	KTUtil::setSystemSetting('migratedDocuments', KTUtil::getSystemSetting('migratedDocuments',0) + $numDocs);
 
-    	$default->log->info(sprintf(_kt('migrateDocuments: done in %d seconds!'), $time));
+    	$default->log->info(sprintf(_kt('migrateDocuments: stopping - done in %d seconds!'), $time));
     	if ($noDocs)
     	{
 	    	$default->log->info(_kt('migrateDocuments: Completed!'));
-	    	KTUtil::setSystemSetting('migrationComplete', true);
+	    	KTUtil::setSystemSetting('migrationComplete', 'true');
+	    	schedulerUtil::deleteByName('Index Migration');
+	    	$default->log->debug(_kt('migrateDocuments: Disabling \'Index Migration\' task by removing scheduler entry.'));
     	}
-
     }
 
     /**
@@ -1176,7 +1178,7 @@ abstract class Indexer
 
 			if (!$this->isExtractorEnabled($class))
 			{
-				$default->log->info(sprintf(_kt("diagnose: extractor '%s' is disabled."), $class));
+				$default->log->debug(sprintf(_kt("diagnose: extractor '%s' is disabled."), $class));
 				continue;
 			}
 
@@ -1263,10 +1265,15 @@ abstract class Indexer
      *
      * @param int $docid
      */
-    public static function unqueueDocument($docid)
+    public static function unqueueDocument($docid, $reason=false, $level='debug')
     {
     	$sql = "DELETE FROM index_files WHERE document_id=$docid";
         DBUtil::runQuery($sql);
+        if ($reason !== false)
+        {
+        	global $default;
+        	$default->log->$level("Indexer: removing document $docid from the queue - $reason");
+        }
     }
 
     /**
@@ -1343,6 +1350,18 @@ abstract class Indexer
      * @return int
      */
     public abstract function getDocumentsInIndex();
+
+    /**
+     * Returns the path to the index directory
+     *
+     * @return string
+     */
+    public function getIndexDirectory()
+    {
+    	$config = KTConfig::getSingleton();
+    	$directory = $config->get('indexer/luceneDirectory');
+    	return $directory;
+    }
 }
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-
+//debugger_start_debug();
 /**
  *
  * $Id$
@@ -9,36 +9,35 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
-
 require_once('../config/dmsDefaults.php');
 require_once('../ktapi/ktapi.inc.php');
 require_once('SOAP/Server.php');
@@ -46,7 +45,19 @@ require_once('SOAP/Disco.php');
 require_once('KTDownloadManager.inc.php');
 require_once('KTUploadManager.inc.php');
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-require_once(KT_DIR . '/search2/search/search.inc.php');
+
+list($major, $minor, $fix) = explode('.', $default->systemVersion);
+
+if ($major == 3 && $minor >= 5)
+{
+	define('HAS_SEARCH_FUNCTIONALITY',1);
+}
+unset($major); unset($minor); unset($fix);
+
+if (defined('HAS_SEARCH_FUNCTIONALITY'))
+{
+	require_once(KT_DIR . '/search2/search/search.inc.php');
+}
 
 // TODO: Test getting files/metadata based on versioning works and implementation is consistent.
 
@@ -106,6 +117,8 @@ class KTWebService
     var $namespace;
 
     var $mustDebug;
+    var $version;
+    var $ktapi;
 
 
 
@@ -114,13 +127,9 @@ class KTWebService
     	// Caching was giving some problems, so disable it.
 
     	$config = &KTConfig::getSingleton();
+    	$this->version = $config->get('webservice/version', 2);
     	$this->mustDebug = $config->get('webservice/debug', false);
-    	$cache_enabled = $config->get('cache/cacheEnabled');
-    	if ($cache_enabled)
-    	{
-			$this->error('Cache is enabled. This is likely to cause problems!', 'constructor');
-    	}
-    	$config->setns('cache','cacheEnabled',false);
+    	$this->ktapi = null;
 
     	$this->namespace = 'KnowledgeTree';
 
@@ -139,6 +148,11 @@ class KTWebService
         		'parent_id' => 'int',
         		'full_path' => 'string',
          	);
+
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['created_by'] = 'string';
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
          	array(
@@ -196,9 +210,42 @@ class KTWebService
         	   	'workflow_state' => 'string',
         	   	'checkout_by' => 'string',
         	   	'full_path' => 'string',
-        	  //  'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
-        	  // 'owner' => 'string',
          	);
+
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_detail"] =
+         	array(
+         		'status_code'=>'int',
+         		'message'=>'string',
+        		'title' => 'string',
+		        'document_type' => 'string',
+		        'version' => 'string',
+	   		    'filename' => 'string',
+	   	        'created_date' => 'string',
+        	   	'created_by' => 'string',
+        	   	'modified_date' => 'string',
+ 			   	'modified_by' => 'string',
+  			   	'document_id' => 'int',
+   			   	'folder_id' => 'int',
+        	   	'workflow' => 'string',
+        	   	'workflow_state' => 'string',
+        	   	//'checkout_by' => 'string',
+        	   	'full_path' => 'string',
+        	   	'owner'=>'string',
+        	   	'is_immutable'=>'boolean',
+        	   	'checked_out_date'=>'string',
+        	   	'checked_out_by'=>'string',
+        	   	'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
+	         	'links' => "{urn:$this->namespace}kt_linked_documents",
+    	     	'transitions' => "{urn:$this->namespace}kt_workflow_transitions",
+        	 	'version_history' => "{urn:$this->namespace}kt_document_version_history",
+         		'transaction_history' => "{urn:$this->namespace}kt_document_transaction_history",
+         	);
+         }
+
+        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+        {
 
         $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
          	array(
@@ -221,7 +268,7 @@ class KTWebService
         		'modified_date' => 'string',
         		'checked_out_by' => 'string',
         		'checked_out_date' => 'string',
-        		'is_immutable' => 'bool',
+        		'is_immutable' => 'boolean',
         		'status' => 'string',
          	);
 
@@ -238,6 +285,24 @@ class KTWebService
 				'message' => 'string',
         		'hits' => "{urn:$this->namespace}kt_search_results" ,
          	);
+        }
+
+         if ($this->version >= 2)
+         {
+
+    	$this->__typedef["{urn:$this->namespace}kt_sysdata_item"] =
+         	array(
+				'name' => 'string',
+				'value' => 'string'
+         	);
+
+		$this->__typedef["{urn:$this->namespace}kt_sysdata"] =
+         	array(
+				array(
+                        'item' => "{urn:$this->namespace}kt_sysdata_item"
+                  )
+         	);
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"] =
          	array(
@@ -314,8 +379,7 @@ class KTWebService
          		'username'=>'string',
          		'version' => 'string',
          		'comment' => 'string',
-         		'datetime' => 'string',
-
+         		'datetime' => 'string'
          		);
 
     	$this->__typedef["{urn:$this->namespace}kt_linked_document"] =
@@ -325,8 +389,7 @@ class KTWebService
          		'size' => 'int',
          		'workflow' => 'string',
          		'workflow_state' => 'string',
-         		'link_type' => 'string',
-
+         		'link_type' => 'string'
          		);
 
         $this->__typedef["{urn:$this->namespace}kt_linked_documents"] =
@@ -340,7 +403,7 @@ class KTWebService
          	array(
          		'status_code'=>'int',
          		'message'=>'string',
-         		'parent_document_id' => 'string',
+         		'parent_document_id' => 'int',
          		'links' => "{urn:$this->namespace}kt_linked_documents"
          		);
 
@@ -416,11 +479,14 @@ class KTWebService
             );
 
          /* methods */
+        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+        {
 
-         $this->__dispatch_map['search'] =
-            array('in' => array('session_id' => 'string', 'search'=>'string' ,'options'=>'string'),
-                  'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
-            );
+        	$this->__dispatch_map['search'] = array(
+        					'in' => array('session_id' => 'string', 'search'=>'string' ,'options'=>'string'),
+                  			'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
+            			);
+        }
 
          // login
          $this->__dispatch_map['login'] =
@@ -464,6 +530,17 @@ class KTWebService
             array('in' => array('session_id'=>'string','folder_id'=>'int','folder_name' =>'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
+
+         if ($this->version >=2)
+         {
+         // create_folder
+         $this->__dispatch_map['add_folder'] =
+            array('in' => array('session_id'=>'string','folder_id'=>'int','folder_name' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
+             'alias'=>'create_folder'
+            );
+         }
+
 
          // delete_folder
          $this->__dispatch_map['delete_folder'] =
@@ -509,10 +586,16 @@ class KTWebService
             );
 
 		// get_document_detail
-         $this->__dispatch_map['get_document_detail'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+         $this->__dispatch_map['get_document_detail'] = array(
+         		'in' => array('session_id' => 'string', 'document_id' => 'int' ),
+            	'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
             );
+
+		 if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_document_detail']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'detail'=>'string' );
+            }
+
 
           //  checkin_document
          $this->__dispatch_map['checkin_document'] =
@@ -532,6 +615,20 @@ class KTWebService
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
               'alias' => 'checkin_small_document'
             );
+
+         if ($this->version >= 2)
+         {
+ 	        $this->__dispatch_map['checkin_base64_document_with_metadata'] =
+	    	        array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','base64' =>'string', 'major_update'=>'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+        	     'alias'=>'checkin_small_document_with_metadata'
+            	);
+ 	        $this->__dispatch_map['checkin_document_with_metadata'] =
+	    	        array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','tempfilename' =>'string', 'major_update'=>'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+
+         }
 
          // add_document
          $this->__dispatch_map['add_document'] =
@@ -553,6 +650,23 @@ class KTWebService
 
             );
 
+         if ($this->version >= 2)
+         {
+ 	        $this->__dispatch_map['add_base64_document_with_metadata'] =
+    	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','base64' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+        	     'alias'=>'add_small_document_with_metadata'
+            	);
+
+ 	        $this->__dispatch_map['add_document_with_metadata'] =
+    	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+
+
+         }
+
+
 
          // get_document_detail_by_name
          $this->__dispatch_map['get_document_detail_by_name'] =
@@ -560,17 +674,47 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
             );
 
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_document_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id'=>'int', 'document_name' => 'string', 'what'=>'string', 'detail'=>'string' );
+
+            	$this->__dispatch_map['get_document_detail_by_title'] = array(
+            			'in' => array('session_id' => 'string', 'folder_id'=>'int', 'title' => 'string', 'detail'=>'string' ),
+            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            		);
+
+            	$this->__dispatch_map['get_document_detail_by_filename'] = array(
+            			'in' => array('session_id' => 'string', 'folder_id'=>'int', 'filename' => 'string', 'detail'=>'string' ),
+            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            		);
+            }
+
           // checkout_document
            $this->__dispatch_map['checkout_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
 
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_document'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string','download'=>'boolean'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+            }
+
+
           // checkout_small_document
            $this->__dispatch_map['checkout_small_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string','download' => 'boolean'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_small_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
 
           // checkout_base64_document
            $this->__dispatch_map['checkout_base64_document'] =
@@ -579,11 +723,24 @@ class KTWebService
               'alias' => 'checkout_small_document'
             );
 
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_base64_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+
             // undo_document_checkout
             $this->__dispatch_map['undo_document_checkout'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','reason' =>'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['undo_document_checkout']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+
 
             // download_document
             $this->__dispatch_map['download_document'] =
@@ -617,28 +774,51 @@ class KTWebService
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
 
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['change_document_owner']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+
             // copy_document
 			$this->__dispatch_map['copy_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','folder_id'=>'int','reason'=>'string','newtitle'=>'string','newfilename'=>'string'),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['copy_document']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
 
             // move_document
 			$this->__dispatch_map['move_document'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','folder_id'=>'int','reason'=>'string','newtitle'=>'string','newfilename'=>'string'),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['move_document']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
 			// rename_document_title
             $this->__dispatch_map['rename_document_title'] =
             array('in' => array('session_id'=>'string','document_id'=>'int', 'newtitle'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
-
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['rename_document_title']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
             // rename_document_filename
             $this->__dispatch_map['rename_document_filename'] =
             array('in' => array('session_id'=>'string','document_id'=>'int', 'newfilename'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['rename_document_filename']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
 
             // change_document_type
 			$this->__dispatch_map['change_document_type'] =
@@ -646,22 +826,50 @@ class KTWebService
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
 
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['change_document_type']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
             // start_document_workflow
             $this->__dispatch_map['start_document_workflow'] =
             array('in' => array('session_id'=>'string','document_id'=>'int', 'workflow'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['start_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
             // delete_document_workflow
             $this->__dispatch_map['delete_document_workflow'] =
             array('in' => array('session_id'=>'string','document_id'=>'int'  ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
             );
+
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['delete_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+
+            	// stop_document_workflow
+	            $this->__dispatch_map['stop_document_workflow'] =
+    		        array('in' => array('session_id'=>'string','document_id'=>'int'  ),
+       	    	        'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+       	    	        'alias'=>'delete_document_workflow'
+            		);
+            }
 
             // perform_document_workflow_transition
             $this->__dispatch_map['perform_document_workflow_transition'] =
             array('in' => array('session_id'=>'string','document_id'=>'int','transition'=>'string','reason'=>'string'  ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['perform_document_workflow_transition']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
 
             // get_document_metadata
             $this->__dispatch_map['get_document_metadata'] =
@@ -676,9 +884,19 @@ class KTWebService
             );
             //update_document_metadata
             $this->__dispatch_map['update_document_metadata'] =
-            array('in' => array('session_id'=>'string','document_id'=>'int','metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets"  ),
+            array('in' => array('session_id'=>'string','document_id'=>'int','metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets" ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
             );
+
+             if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['update_document_metadata'] =
+            array('in' => array('session_id'=>'string','document_id'=>'int','metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata"  ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            );
+
+
+            }
 
 
             //get_document_workflow_transitions
@@ -728,9 +946,10 @@ class KTWebService
 
     }
 
-    function debug($msg, $function = null)
+    function debug($msg, $function = null, $level=0)
     {
-    	if ($this->mustDebug)
+    	if ($this->mustDebug === false) return;
+    	if ($this->mustDebug >= $level)
     	{
     		global $default;
     		if (!is_null($function))
@@ -763,6 +982,11 @@ class KTWebService
      */
     function &get_ktapi($session_id)
     {
+    	if (!is_null($this->ktapi))
+    	{
+    		return $this->ktapi;
+    	}
+
     	$kt = new KTAPI();
 
     	$session = $kt->get_active_session($session_id, null);
@@ -776,6 +1000,7 @@ class KTWebService
 
             return $response;
     	}
+    	$this->ktapi = $kt;
     	return $kt;
     }
 
@@ -1368,9 +1593,9 @@ class KTWebService
      * @param int $document_id
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function get_document_detail($session_id, $document_id)
+    function get_document_detail($session_id, $document_id, $detail='')
     {
-    	$this->debug("get_document_detail('$session_id',$document_id)");
+    	$this->debug("get_document_detail('$session_id',$document_id,'$detail')");
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
@@ -1389,6 +1614,7 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
 
+    	$detailstr = $detail;
     	$detail = $document->get_detail();
     	if (PEAR::isError($detail))
     	{
@@ -1402,8 +1628,61 @@ class KTWebService
 
     	$detail['status_code']=KTWS_SUCCESS;
     	$detail['message']='';
+
+    	if ($this->version >= 2)
+    	{
+    		$detail['metadata'] = array();
+    		$detail['links'] = array();
+    		$detail['transitions'] = array();
+    		$detail['version_history'] = array();
+    		$detail['transaction_history'] = array();
+
+
+    		if (stripos($detailstr,'M') !== false)
+    		{
+    			$response = $this->get_document_metadata($session_id, $document_id);
+    			$detail['metadata'] = $response->value['metadata'];
+    		}
+
+    		if (stripos($detailstr,'L') !== false)
+    		{
+    			$response = $this->get_document_metadata($session_id, $document_id);
+    			$detail['links'] = $response->value['links'];
+    		}
+
+    		if (stripos($detailstr,'T') !== false)
+    		{
+    			$response = $this->get_document_workflow_transitions($session_id, $document_id);
+    			$detail['transitions'] = $response->value['transitions'];
+    		}
+
+    		if (stripos($detailstr,'V') !== false)
+    		{
+    			$response = $this->get_document_version_history($session_id, $document_id);
+    			$detail['version_history'] = $response->value['history'];
+    		}
+
+    		if (stripos($detailstr,'H') !== false)
+    		{
+    			$response = $this->get_document_transaction_history($session_id, $document_id);
+    			$detail['transaction_history'] = $response->value['history'];
+    		}
+
+    	}
+
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);
     }
+
+    function get_document_detail_by_filename($session_id, $folder_id, $filename, $detail='')
+    {
+    	return $this->get_document_detail_by_name($session_id, $folder_id, $filename, 'F', $detail);
+    }
+
+    function get_document_detail_by_title($session_id, $folder_id, $title, $detail='')
+    {
+    	return $this->get_document_detail_by_name($session_id, $folder_id,  $title, 'T', $detail);
+    }
+
 
     /**
      * Returns document detail given a document name which could include a full path.
@@ -1413,9 +1692,9 @@ class KTWebService
      * @param string @what
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function get_document_detail_by_name($session_id, $document_name, $what='T')
+    function get_document_detail_by_name($session_id, $folder_id, $document_name, $what='T', $detail='')
     {
-    	$this->debug("get_document_detail_by_name('$session_id','$document_name','$what')");
+    	$this->debug("get_document_detail_by_name('$session_id','$document_name','$what','$detail')");
 		$response=array(
     			'status_code'=>KTWS_ERR_INVALID_FOLDER,
     			'message'=>''
@@ -1439,10 +1718,11 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
     	}
 
-    	$root = &$kt->get_root_folder();
+    	if ($folder_id < 1) $folder_id = 1;
+    	$root = &$kt->get_folder_by_id($folder_id);
     	if (PEAR::isError($root))
     	{
-    		$this->debug("get_document_detail_by_name - cannot get root folder - "  . $root->getMessage(), $session_id);
+    		$this->debug("get_document_detail_by_name - cannot get root folder - folder_id = $folder_id - "  . $root->getMessage(), $session_id);
 
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
@@ -1466,6 +1746,8 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
 
+    	$detailstr = $detail;
+
     	$detail = $document->get_detail();
     	if (PEAR::isError($detail))
     	{
@@ -1479,6 +1761,47 @@ class KTWebService
 
     	$detail['status_code']=KTWS_SUCCESS;
     	$detail['message']='';
+
+
+    	if ($this->version >= 2)
+    	{
+
+    	$detail['metadata'] = array();
+    	$detail['links'] = array();
+    	$detail['transitions'] = array();
+    	$detail['version_history'] = array();
+    	$detail['transaction_history'] = array();
+
+		if (stripos($detailstr,'M') !== false)
+		{
+			$response = $this->get_document_metadata($session_id, $document_id);
+			$detail['metadata'] = $response->value['metadata'];
+		}
+
+		if (stripos($detailstr,'L') !== false)
+		{
+			$response = $this->get_document_metadata($session_id, $document_id);
+			$detail['links'] = $response->value['links'];
+		}
+
+		if (stripos($detailstr,'T') !== false)
+		{
+			$response = $this->get_document_workflow_transitions($session_id, $document_id);
+			$detail['transitions'] = $response->value['transitions'];
+		}
+
+		if (stripos($detailstr,'V') !== false)
+		{
+			$response = $this->get_document_version_history($session_id, $document_id);
+			$detail['version_history'] = $response->value['history'];
+		}
+
+		if (stripos($detailstr,'H') !== false)
+		{
+			$response = $this->get_document_transaction_history($session_id, $document_id);
+			$detail['transaction_history'] = $response->value['history'];
+		}
+    	}
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);
     }
@@ -1551,6 +1874,76 @@ class KTWebService
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);
     }
+
+    function add_small_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
+    {
+		$add_result = $this->add_small_document($session_id, $folder_id, $title, $filename, $documenttype, $base64);
+
+		$status_code = $add_result->value['status_code'];
+		if ($status_code != 0)
+		{
+			return $add_result;
+		}
+		$document_id = $add_result->value['document_id'];
+
+		$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata);
+		$status_code = $update_result->value['status_code'];
+		if ($status_code != 0)
+		{
+			return $update_result;
+		}
+
+		$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+    	}
+
+    	$document = $kt->get_document_by_id($document_id);
+		$result = $document->mergeWithLastMetadataVersion();
+		if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
+
+		return $update_result;
+    }
+
+    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    {
+		$add_result = $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename);
+
+		$status_code = $add_result->value['status_code'];
+		if ($status_code != 0)
+		{
+			return $add_result;
+		}
+		$document_id = $add_result->value['document_id'];
+
+		$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata);
+		$status_code = $update_result->value['status_code'];
+		if ($status_code != 0)
+		{
+			return $update_result;
+		}
+
+		$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+    	}
+
+    	$document = $kt->get_document_by_id($document_id);
+		$result = $document->mergeWithLastMetadataVersion();
+		if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
+
+		return $update_result;
+    }
+
+
 
     /**
      * Adds a document to the repository.
@@ -1705,10 +2098,77 @@ class KTWebService
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
 		}
 
-		$response['status_code'] = KTWS_SUCCESS;
-
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	// get status after checkin
+		return $this->get_document_detail($session_id, $document_id);
     }
+
+
+       function  checkin_small_document_with_metadata($session_id, $document_id,  $filename, $reason, $base64, $major_update, $metadata, $sysdata)
+       {
+       	$add_result = $this->checkin_small_document($session_id, $document_id,  $filename, $reason, $base64, $major_update);
+
+       	$status_code = $add_result->value['status_code'];
+       	if ($status_code != 0)
+       	{
+       		return $add_result;
+       	}
+
+       	$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata);
+       	$status_code = $update_result->value['status_code'];
+       	if ($status_code != 0)
+       	{
+       		return $update_result;
+       	}
+
+       	$kt = &$this->get_ktapi($session_id );
+       	if (is_array($kt))
+       	{
+       		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+       	}
+
+       	$document = $kt->get_document_by_id($document_id);
+       	$result = $document->mergeWithLastMetadataVersion();
+       	if (PEAR::isError($result))
+       	{
+       		// not much we can do, maybe just log!
+       	}
+
+       	return $update_result;
+       }
+
+       function  checkin_document_with_metadata($session_id, $document_id,  $filename, $reason, $tempfilename, $major_update, $metadata, $sysdata)
+       {
+       	$add_result = $this->checkin_document($session_id, $document_id,  $filename, $reason, $tempfilename, $major_update);
+
+       	$status_code = $add_result->value['status_code'];
+       	if ($status_code != 0)
+       	{
+       		return $add_result;
+       	}
+
+       	$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata);
+       	$status_code = $update_result->value['status_code'];
+       	if ($status_code != 0)
+       	{
+       		return $update_result;
+       	}
+
+       	$kt = &$this->get_ktapi($session_id );
+       	if (is_array($kt))
+       	{
+       		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+       	}
+
+       	$document = $kt->get_document_by_id($document_id);
+       	$result = $document->mergeWithLastMetadataVersion();
+       	if (PEAR::isError($result))
+       	{
+       		// not much we can do, maybe just log!
+       	}
+
+       	return $update_result;
+       }
+
 
     /**
      * Does a document checkin.
@@ -1795,10 +2255,8 @@ class KTWebService
 			$this->debug("checkin_small_document - cannot checkin document - "  . $result->getMessage(), $session_id);
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
 		}
-
-		$response['status_code'] = KTWS_SUCCESS;
-
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+		// get status after checkin
+		return $this->get_document_detail($session_id, $document_id);
     }
 
     /**
@@ -1807,9 +2265,9 @@ class KTWebService
      * @param string $session_id
      * @param int $document_id
      * @param string $reason
-     * @return kt_response.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
+     * @return kt_document_detail.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
      */
-    function checkout_document($session_id, $document_id, $reason)
+    function checkout_document($session_id, $document_id, $reason,$download=true)
     {
     	$this->debug("checkout_document('$session_id',$document_id,'$reason')");
 
@@ -1842,13 +2300,25 @@ class KTWebService
 
     	$session = &$kt->get_session();
 
-    	$download_manager = new KTDownloadManager();
-    	$download_manager->set_session($session->session);
-    	$download_manager->cleanup();
-    	$url = $download_manager->allow_download($document);
+    	$url = '';
+    	if ($download)
+    	{
+	    	$download_manager = new KTDownloadManager();
+    		$download_manager->set_session($session->session);
+    		$download_manager->cleanup();
+    		$url = $download_manager->allow_download($document);
+    	}
 
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = $url;
+
+		if ($this->version >= 2)
+		{
+			$result = $this->get_document_detail($session_id, $document_id);
+			$result->value['message'] = $url;
+
+			return $result;
+		}
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     }
@@ -1860,7 +2330,7 @@ class KTWebService
      * @param int $document_id
      * @param string $reason
      * @param boolean $download
-     * @return kt_response  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
+     * @return kt_document_detail  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
      */
     function checkout_small_document($session_id, $document_id, $reason, $download)
     {
@@ -1916,6 +2386,15 @@ class KTWebService
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = $content;
 
+		if ($this->version >= 2)
+		{
+			$result = $this->get_document_detail($session_id, $document_id);
+			$result->value['message'] = $content;
+
+			return $result;
+		}
+
+
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     }
 
@@ -1925,7 +2404,7 @@ class KTWebService
      * @param string $session_id
      * @param int $document_id
      * @param string $reason
-     * @return kt_response.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     * @return kt_document_detail.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     function undo_document_checkout($session_id, $document_id, $reason)
     {
@@ -1961,6 +2440,11 @@ class KTWebService
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
+
+		if ($this->version >= 2)
+		{
+			return $this->get_document_detail($session_id, $document_id);
+		}
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     }
@@ -2129,16 +2613,23 @@ class KTWebService
      * @param string $session_id
      * @param int $document_id
      * @param string $documenttype
-     * @return kt_response
+     * @return kt_document_detail
      */
     function change_document_type($session_id, $document_id, $documenttype)
     {
     	$this->debug("change_document_type('$session_id',$document_id,'$documenttype')");
 
     	$kt = &$this->get_ktapi($session_id );
+
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2151,7 +2642,7 @@ class KTWebService
     		$response['message'] = $document->getMessage();
 
     		$this->debug("change_document_type - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->change_document_type($documenttype);
@@ -2160,11 +2651,16 @@ class KTWebService
     		$response['message'] = $result->getMessage();
     		$this->debug("change_document_type - cannot change type - "  . $result->getMessage(), $session_id);
 
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -2176,7 +2672,7 @@ class KTWebService
      * @param string $reason
      * @param string $newtitle
      * @param string $newfilename
-     * @return kt_response
+     * @return kt_document_detail
      */
  	function copy_document($session_id,$document_id,$folder_id,$reason,$newtitle,$newfilename)
  	{
@@ -2217,6 +2713,11 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
+    	if ($this->version >= 2)
+    	{
+    		$new_document_id = $result->documentid;
+    		return $this->get_document_detail($session_id, $new_document_id, '');
+    	}
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
  	}
@@ -2286,9 +2787,16 @@ class KTWebService
  	{
     	$this->debug("rename_document_title('$session_id',$document_id,'$newtitle')");
     	$kt = &$this->get_ktapi($session_id );
+
+    	$responseType = 'kt_response';
+    	if ($this->version >=2)
+    	{
+    		$responseType='kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2300,7 +2808,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("rename_document_title - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->rename($newtitle);
@@ -2308,11 +2816,16 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("rename_document_title - cannot rename - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
  	}
 
  	/**
@@ -2328,9 +2841,15 @@ class KTWebService
     	$this->debug("rename_document_filename('$session_id',$document_id,'$newfilename')");
 
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >=2)
+    	{
+    		$responseType='kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2342,7 +2861,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("rename_document_filename - cannot get documetid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->renameFile($newfilename);
@@ -2350,11 +2869,16 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("rename_document_filename - cannot rename - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
  	}
 
     /**
@@ -2364,17 +2888,25 @@ class KTWebService
      * @param int $document_id
      * @param string $username
      * @param string $reason
-     * @return kt_response. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     function change_document_owner($session_id, $document_id, $username, $reason)
     {
     	$this->debug("change_document_owner('$session_id',$document_id,'$username','$reason')");
 
     	$kt = &$this->get_ktapi($session_id );
+
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
+
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
     		'message'=>''
@@ -2385,7 +2917,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("change_document_owner - cannot get documetid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->change_owner($username,  $reason);
@@ -2393,11 +2925,16 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("change_document_owner - cannot change owner - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -2406,16 +2943,22 @@ class KTWebService
      * @param string $session_id
      * @param int $document_id
      * @param string $workflow
-     * @return kt_response
+     * @return kt_document_detail
      */
     function start_document_workflow($session_id,$document_id,$workflow)
     {
     	$this->debug("start_document_workflow('$session_id',$document_id,'$workflow')");
 
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2427,7 +2970,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("start_document_workflow - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = &$document->start_workflow($workflow);
@@ -2435,11 +2978,16 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("start_document_workflow - cannot start workflow - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+		if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
 	/**
@@ -2447,15 +2995,20 @@ class KTWebService
 	 *
 	 * @param string $session_id
 	 * @param int $document_id
-	 * @return kt_response
+	 * @return kt_document_detail
 	 */
     function delete_document_workflow($session_id,$document_id)
     {
     	$this->debug("delete_document_workflow('$session_id',$document_id)");
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2467,7 +3020,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("delete_document_workflow - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->delete_workflow();
@@ -2478,8 +3031,12 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -2496,9 +3053,15 @@ class KTWebService
     	$this->debug("perform_document_workflow_transition('$session_id',$document_id,'$transition','$reason')");
 
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2510,7 +3073,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("perform_document_workflow_transition - cannot get document - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->perform_workflow_transition($transition,$reason);
@@ -2518,11 +3081,16 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("perform_document_workflow_transition - cannot perform transition - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id);
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -2814,16 +3382,22 @@ class KTWebService
 	 * @param string $session_id
 	 * @param int $document_id
 	 * @param array $metadata
-	 * @return kt_response
+	 * @return kt_document_detail
 	 */
-	function update_document_metadata($session_id,$document_id,$metadata)
+	function update_document_metadata($session_id,$document_id,$metadata, $sysdata=null)
 	{
-    	$this->debug("update_document_metadata('$session_id',$document_id,$metadata)");
+    	$this->debug("update_document_metadata('$session_id',$document_id,$metadata, $sysdata)");
 
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
@@ -2835,7 +3409,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("update_document_metadata - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->update_metadata($metadata);
@@ -2843,12 +3417,26 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("update_document_metadata - cannot update metadata - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
+
+    	if ($this->version >= 2)
+    	{
+    		$result = $document->update_sysdata($sysdata);
+    		if (PEAR::isError($result))
+    		{
+   	 			$response['message'] = $result->getMessage();
+    			$this->debug("update_document_metadata - cannot update sysdata - "  . $result->getMessage(), $session_id);
+    			return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
+    		}
+
+
+    		return $this->get_document_detail($session_id, $document_id, 'M');
+    	}
     	$response['status_code'] = KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
 
 	}
 
@@ -3149,7 +3737,7 @@ class KTWebService
 		$response=array(
     		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
     		'message'=>'',
-    		'parent_document_id' => $document_id,
+    		'parent_document_id' => (int) $document_id,
     		'links'=>array()
     	);
 
@@ -3162,7 +3750,8 @@ class KTWebService
     	}
 
     	$links = $document->get_linked_documents();
-    	$response['links'] = $links;
+   		$response['links'] = new SOAP_Value('links',"{urn:$this->namespace}kt_linked_documents", $links);
+   		$response['status_code'] = KTWS_SUCCESS;
 
 		return new SOAP_Value('return',"{urn:$this->namespace}kt_linked_document_response", $response);
 	}
@@ -3364,65 +3953,34 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $kt);
     	}
 		$response=array(
-    		'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+    		'status_code'=>KTWS_ERR_PROBLEM,
     		'message'=>'',
     		'hits'=>array()
     	);
 
-    	$noText = (stripos($options,'notext') !== false);
-		$results = array();
-
-    	try
+    	if (!defined('HAS_SEARCH_FUNCTIONALITY'))
     	{
-    		$expr = parseExpression($query);
+    		$response['message'] = _kt('Search has not been implemented for this version of KnowledgeTree');
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $response);
+    	}
 
-    		$rs = $expr->evaluate();
-    		usort($rs, 'rank_compare');
-
-    		$results = array();
-    		foreach($rs as $hit)
-    		{
-    			 $item = array(
-						'document_id' => (int) $hit->DocumentID,
-						'title' => (string) $hit->Title,
-						'relevance' => (float) $hit->Rank,
-        				'text' => (string)  $noText?'':$hit->Text,
-        				'filesize' => (int) $hit->Filesize,
-        				'fullpath' => (string) $hit->FullPath,
-        				'version' => (string) $hit->Version,
-        				'filename' => (string) $hit->Filename,
-        				'checked_out_by' => (string) $hit->CheckedOutUser,
-        				'checked_out_date' => (string) $hit->DateCheckedOut,
-        				'is_available' => (bool) $hit->IsAvailable,
-        				'workflow' => (string) $hit->Workflow,
-        				'workflow_state' => (string) $hit->WorkflowState,
-        				'folder_id' => (int) $hit->FolderId,
-        				'mime_type' => (string) $hit->MimeType,
-						'modified_by' => (string) $hit->ModifiedBy,
-						'modified_date' => (string) $hit->DateModified,
-						'created_by' => (string) $hit->CreatedBy,
-						'created_date' => (string) $hit->DateCreated,
-						'owner' => (string) $hit->Owner,
-						'is_immutable'=> (bool) $hit->Immutable,
-						'status' => (string) $hit->Status
-    				);
-
-    				$item = new SOAP_Value('item',"{urn:$this->namespace}kt_search_result_item", $item);
-    				$results[] = $item;
-
-    		}
-
-    		$response['message'] = '';
+		$results = processSearchExpression($query);
+		if (PEAR::isError($results))
+		{
+			$response['message'] = _kt('Could not process query.')  . $results->getMessage();
+			$results = array();
+		}
+		else
+		{
+			foreach($results as $key=>$item)
+			{
+				$results[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_search_result_item", $item);
+			}
+			$response['message'] = '';
     		$response['status_code'] = KTWS_SUCCESS;
-    	}
-    	catch(Exception $e)
-    	{
-    		$this->debug("search - exception " . $e->getMessage(), $session_id);
 
-    		$results = array();
-    		$response['message'] = _kt('Could not process query.')  . $e->getMessage();
-    	}
-    	$response['hits'] = new SOAP_Value('hits',"{urn:$this->namespace}kt_search_results", $results);
+		}
+		$response['hits'] = new SOAP_Value('hits',"{urn:$this->namespace}kt_search_results", $results);
 
 		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $response);
 	}
@@ -3435,13 +3993,17 @@ class KTWebService
      */
     function run()
     {
+    	ob_start();
     	$server = new SOAP_Server();
 
     	$server->addObjectMap($this, 'http://schemas.xmlsoap.org/soap/envelope/');
+    	$request = 'Not Set';
 
     	if (isset($_SERVER['REQUEST_METHOD'])  && $_SERVER['REQUEST_METHOD']=='POST')
     	{
-    		$server->service(file_get_contents("php://input"));
+    		$request = file_get_contents("php://input");
+
+    		$server->service($request);
     	}
     	else
     	{
@@ -3457,6 +4019,12 @@ class KTWebService
     			echo $disco->getDISCO();
     		}
     	}
+    	$capture = ob_get_flush();
+		$this->debug($request,'request', 5);
+    	$this->debug($capture,'response',5);
+    	global $_KT_starttime;
+    	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime,2);
+    	$this->debug($time, 'time from start',4);
     }
 
     function __dispatch($methodname)
@@ -3469,6 +4037,7 @@ class KTWebService
     }
 
 }
+
 
 $webservice = new KTWebService();
 $webservice->run();

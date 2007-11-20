@@ -263,6 +263,14 @@ class SearchHelper
 
 	public static function getSavedSearches($userID)
 	{
+
+		// need to test for broken db configuration so that the queries dont fail
+		// and so that we can be redirected to the db error page
+		// TODO: maybe best to have a special db error page rather than the default template when logged in
+
+		global $default;
+		if (is_null($default->_db) || PEAR::isError($default->_db)) return array();
+
 		$sql = "SELECT id, name FROM search_saved WHERE type='S'";
 
 		// if we are not the system admin, then we get only ours or shared searches
@@ -532,6 +540,52 @@ function parseExpression($expr_str)
     return $parser->getExprResult();
 }
 
+function processSearchExpression($query)
+{
+		try
+    	{
+    		$expr = parseExpression($query);
 
+    		$rs = $expr->evaluate();
+    		usort($rs, 'rank_compare');
+
+    		$results = array();
+    		foreach($rs as $hit)
+    		{
+    			 $item = array(
+						'document_id' => (int) $hit->DocumentID,
+						'title' => (string) $hit->Title,
+						'relevance' => (float) $hit->Rank,
+        				'text' => (string)  $noText?'':$hit->Text,
+        				'filesize' => (int) $hit->Filesize,
+        				'fullpath' => (string) $hit->FullPath,
+        				'version' => (string) $hit->Version,
+        				'filename' => (string) $hit->Filename,
+        				'checked_out_by' => (string) $hit->CheckedOutUser,
+        				'checked_out_date' => (string) $hit->DateCheckedOut,
+        				'is_available' => (bool) $hit->IsAvailable,
+        				'workflow' => (string) $hit->Workflow,
+        				'workflow_state' => (string) $hit->WorkflowState,
+        				'folder_id' => (int) $hit->FolderId,
+        				'mime_type' => (string) $hit->MimeType,
+						'modified_by' => (string) $hit->ModifiedBy,
+						'modified_date' => (string) $hit->DateModified,
+						'created_by' => (string) $hit->CreatedBy,
+						'created_date' => (string) $hit->DateCreated,
+						'owner' => (string) $hit->Owner,
+						'is_immutable'=> (bool) $hit->Immutable,
+						'status' => (string) $hit->Status
+    				);
+
+    				$results[] = $item;
+
+    		}
+    		return $results;
+    	}
+    	catch(Exception $e)
+    	{
+    		return new PEAR_Error(_kt('Could not process query.')  . $e->getMessage());
+    	}
+}
 
 ?>

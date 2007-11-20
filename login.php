@@ -95,14 +95,24 @@ class LoginPageDispatcher extends KTDispatcher {
             #var_dump($oUser);
             #var_dump(PEAR::raiseError());
         }
+        $iOldUserID = checkLastSessionUserID();
+        
+        //if the current person logging in isn't the same person who logged out or timed out
+        //then set the redirect to the dashboard and not the last page that was viewed.
+        if ($oUser->getId() != $iOldUserID['user_id'])
+        {
+        	$_REQUEST['redirect'] = generateControllerLink('dashboard');
+        	
+        }
+        
         $session = new Session();
         $sessionID = $session->create($oUser);
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
-
-        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
-
+		
+		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+        
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;
 
@@ -145,6 +155,10 @@ class LoginPageDispatcher extends KTDispatcher {
         header('Content-type: text/html; charset=UTF-8');
 
         $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
+        session_start();
+        
+        $errorMessageConfirm = $_SESSION['errormessage']['login'];
+        
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
         $oReg =& KTi18nregistry::getSingleton();
@@ -168,6 +182,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $aTemplateData = array(
               "context" => $this,
               'errorMessage' => $errorMessage,
+              'errorMessageConfirm' => $errorMessageConfirm,
               'redirect' => $redirect,
               'systemVersion' => $default->systemVersion,
               'versionName' => $default->versionName,
@@ -322,6 +337,14 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 }
 
+//FIXME Direct Database Access
+//checkLastSessionUserID finds the last user to logout or timeout
+function checkLastSessionUserID()
+{
+	$sQuery = 'SELECT user_id FROM user_history ORDER BY id DESC LIMIT 1';
+	$res = DBUtil::getOneResult($sQuery);
+	return $res;
+}
 
 $dispatcher =& new LoginPageDispatcher();
 $dispatcher->dispatch();

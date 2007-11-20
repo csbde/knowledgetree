@@ -250,5 +250,20 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     	return $stats->countDocuments;
     }
 
+    /**
+     * Returns the path to the index directory
+     *
+     * @return string
+     */
+    public function getIndexDirectory()
+    {
+    	$stats = $this->lucene->getStatistics();
+    	if ($stats === false || !is_object($stats))
+    	{
+    		return false;
+    	}
+    	return $stats->indexDirectory;
+    }
+
 }
 ?>

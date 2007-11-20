@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -49,13 +49,19 @@
  	// If it is a url, it is an external feed
  	$aRSSArray = rss2array($feed);
  }
- 
+ if(count($aRSSArray[errors]) > 0){
+ 	for($i=0;$i<count($aRSSArray[errors]);$i++){
+ 		$response .= $aRSSArray[errors][$i].'<br>';
+ 		echo '<br>'.$response.'<br>';
+ 		return;
+ 	}
+ }
  // Prepare response data to be passed back to page
- $reposonse = "<h3>".$aRSSArray[channel][title]."</h3>" .
+ $response = "<h3>".$aRSSArray[channel][title]."</h3>" .
  		"<div class='outerContainer' id='outerContainer'>" .
  		"<table width='90%'>";
 		for($i=0;$i<count($aRSSArray[items]);$i++){
-			 $reposonse .= "<tr>
+			 $response .= "<tr>
 				<td colspan='2'><strong><a href='".$aRSSArray[items][$i][link]."' target='_blank'>".$aRSSArray[items][$i][title]."</a><strong></td>
 			</tr>
 			<tr>
@@ -63,7 +69,7 @@
 			</tr>
 			<tr><td colspan='2'><br></td></tr>";
 		}
- $reposonse .= "</table></div><br>";
+ $response .= "</table></div><br>";
 	 
- echo  $reposonse;
+ echo  $response;
 ?>

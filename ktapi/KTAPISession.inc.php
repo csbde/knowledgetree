@@ -36,7 +36,7 @@
  *
  */
 
-abstract class KTAPI_Session
+class KTAPI_Session
 {
 	var $ktapi;
 	var $user = null;
@@ -45,7 +45,7 @@ abstract class KTAPI_Session
 	var $active;
 	var $origUserId;
 
-	public function KTAPI_Session(&$ktapi, &$user)
+	function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi,'KTAPI'));
@@ -64,7 +64,7 @@ abstract class KTAPI_Session
 	 *
 	 * @return string
 	 */
-	public function get_session()
+	function get_session()
 	{
 		return $this->session;
 	}
@@ -74,7 +74,7 @@ abstract class KTAPI_Session
 	 *
 	 * @return int
 	 */
-	public function get_sessionid()
+	function get_sessionid()
 	{
 		return $this->sessionid;
 	}
@@ -84,19 +84,19 @@ abstract class KTAPI_Session
 	 *
 	 * @return User
 	 */
-	public function &get_user()
+	function &get_user()
 	{
 		 return $this->user;
 	}
 
-	public function logout()
+	function logout()
 	{
 		$_SESSION['userID'] = $this->origUserId;
 		$this->active=false;
 		// don't need to do anything really
 	}
 
-	public function is_active()
+	function is_active()
 	{
 		return $this->active;
 	}
@@ -107,7 +107,7 @@ class KTAPI_UserSession extends KTAPI_Session
 {
 	var $ip = null;
 
-	public function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
+	function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
 	{
 		parent::KTAPI_Session($ktapi, $user);
 
@@ -133,7 +133,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @access private
 	 * @return string
 	 */
-	public function resolveIP()
+	function resolveIP()
 	{
 		if (getenv("REMOTE_ADDR"))
 		{
@@ -163,7 +163,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @static
 	 * @param User $user
 	 */
-	private function _check_session(&$user)
+	function _check_session(&$user)
 	{
         $user_id = $user->getId();
 
@@ -218,7 +218,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $password
 	 * @return KTAPI_Session
 	 */
-	public function &start_session(&$ktapi, $username, $password, $ip=null)
+	function &start_session(&$ktapi, $username, $password, $ip=null)
 	{
 		$this->active=false;
 		if ( empty($username) )
@@ -272,7 +272,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $ip
 	 * @return KTAPI_Session
 	 */
-	public function &get_active_session(&$ktapi, $session, $ip)
+	function &get_active_session(&$ktapi, $session, $ip)
 	{
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
 		if (!empty($ip))
@@ -313,7 +313,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * This closes the current session.
 	 *
 	 */
-	public function logout()
+	function logout()
 	{
 		$sql = "DELETE FROM active_sessions WHERE id=$this->sessionid";
 		$result = DBUtil::runQuery($sql);
@@ -332,7 +332,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
 class KTAPI_AnonymousSession extends KTAPI_UserSession
 {
-	public function &start_session(&$ktapi, $ip=null)
+	function &start_session(&$ktapi, $ip=null)
 	{
 		$user =& User::get(-2);
 		if (is_null($user) ||  PEAR::isError($user) || ($user === false) || !$user->isAnonymous())
@@ -370,7 +370,7 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
 
 class KTAPI_SystemSession extends KTAPI_Session
 {
-	public function KTAPI_SystemSession(&$ktapi, &$user)
+	function KTAPI_SystemSession(&$ktapi, &$user)
 	{
 		parent::KTAPI_Session($ktapi, $user);
 		$this->active=true;

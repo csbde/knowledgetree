@@ -5,28 +5,20 @@ using System.IO;
 namespace MonoTests.KnowledgeTree
 {
 	[TestFixture]
-	public class FolderTest
+	public class FolderTest : KTTest
     	{
-
-		private String 			_session;
-		private KnowledgeTreeService 	_kt;
+ 
 		private int			_folder_id;
 		private int			_subfolder_id;
 
 		[SetUp]
 		public void SetUp()
 		{
-			this._kt = new KnowledgeTreeService();
-			kt_response response = this._kt.login("admin","admin","127.0.0.1");
-			this._session = response.message;
-
 		}
 
 		[TearDown]
 		public void TearDown()
-		{
-
-			this._kt.logout(this._session);
+		{ 
 		}
 
 		[Test]

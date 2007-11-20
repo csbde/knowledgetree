@@ -53,7 +53,9 @@ class HouseKeeperPlugin extends KTPlugin
         $cacheDir = $config->get('cache/cacheDirectory');
         $logDir = $config->get('urls/logDirectory');
         $docsDir = $config->get('urls/documentRoot');
-        $luceneDir = $config->get('indexer/luceneDirectory');
+
+        $indexer = Indexer::get();
+        $luceneDir = $indexer->getIndexDirectory();
 
         $systemDir = OS_UNIX?'/tmp':'c:/windows/temp';
 
@@ -85,6 +87,8 @@ class HouseKeeperPlugin extends KTPlugin
         		'canClean'=>true
         	);
 
+        if (is_dir($docsDir))
+        {
         $this->folders[] =
         	array(
         		'name'=>_kt('KnowledgeTree Documents'),
@@ -92,6 +96,10 @@ class HouseKeeperPlugin extends KTPlugin
         		'pattern'=>'',
         		'canClean'=>false
         	);
+        }
+
+        if (is_dir($luceneDir))
+        {
         $this->folders[] =
         	array(
         		'name'=>_kt('KnowledgeTree Document Index'),
@@ -99,6 +107,7 @@ class HouseKeeperPlugin extends KTPlugin
         		'pattern'=>'',
         		'canClean'=>false
         	);
+        }
 
     }
 

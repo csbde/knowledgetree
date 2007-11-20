@@ -1132,9 +1132,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         /**
          * GET method helper
+         * Method takes a directory path and checks whether it refers to a document or folder. The relevant folder and/or document id is returned.
          *
-         * @param  string  directory path
-         * @return array  or false
+         * @param $path string The directory path
+         * @return array or bool Either returns an array of folder/document id's or false if an error occurred
          */
         function _folderOrDocument($path) {
 
@@ -1142,14 +1143,14 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             $this->ktwebdavLog("Entering _folderOrDocument. path is " . $path, 'info', true);
 
-            if ( !(strstr($path,"__BAOBABCLIENT__") === false) ) {
-                return array(0, 1);
-            }
-
+            /* ** Get the directory path and the folder/document being acted on ** */
             $sFileName = basename($path);
             // for windows replace backslash with forwardslash
             $sFolderPath = str_replace("\\", '/', dirname($path) );
 
+            /* ** Get the starting point for recursing through the directory structure
+                FolderId = 0 if we're in the root folder
+                FolderId = 1 the starting point for locating any other folder ** */
             if ($sFolderPath == "/" || $sFolderPath == "/ktwebdav") {
                 $this->ktwebdavLog("This is the root folder.", 'info', true);
                 $sFolderPath = $this->rootFolder;
@@ -1164,6 +1165,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $this->ktwebdavLog("sFolderName is " . $sFolderPath, 'info', true);
             $this->ktwebdavLog("iFolderID is " . $iFolderID, 'info', true);
 
+            /* ** Break up the directory path into its component directory's,
+                recurse through the directory's to find the correct id of the current directory.
+                Avoids situations where several directory's have the same name. ** */
             $aFolderNames = split('/', $sFolderPath);
 
             $this->ktwebdavLog("aFolderNames are: " . print_r($aFolderNames, true), 'info', true);
@@ -1196,6 +1200,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $this->ktwebdavLog("iFolderID set to " . $iFolderID, 'info', true);
             }
 
+            /* ** Get the document id using the basename and parent folder id as parameters.
+                If an id is obtained then the path refers to a document.
+                If no id is returned then the path refers to a folder or a non-existing document. ** */
             // FIXME: Direct database access
             //        $sQuery = "SELECT id FROM documents WHERE folder_id = ? AND filename = ? AND status_id = 1";
             $sQuery = "SELECT D.id ";
@@ -1214,12 +1221,18 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 return false;
             }
 
+            /* ** If the path refers to a folder or a non-existing document,
+                Get the folder id using the basename and parent folder id as parameters.
+                If an id is obtained then the path refers to an existing folder.
+                If no id is returned and the basename is empty then path refers to the root folder.
+                If no id is returned and the basename is not empty, then the path refers to either a non-existing folder or document. ** */
             if ($iDocumentID === null) {
                 $this->ktwebdavLog("iDocumentID is null", 'info', true);
                 // FIXME: Direct database access
                 $sQuery = "SELECT id FROM folders WHERE parent_id = ? AND name = ?";
                 $aParams = array($iFolderID, $sFileName);
                 $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+
                 if (PEAR::isError($id)) {
                     $this->ktwebdavLog("A DB(2) error occurred in _folderOrDocument", 'info', true);
                     return false;
@@ -1235,6 +1248,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     $this->ktwebdavLog("Setting Location Header to " . "Location: " . $_SERVER["PHP_SELF"] . "/", 'info', true);
                     header("Location: " . $_SERVER["PHP_SELF"] . "/");
                 }
+                $this->ktwebdavLog("DEBUG: return id ".$id, 'info', true);
                 return array($id, null);
             }
 
@@ -1647,24 +1661,16 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         /**
          * MOVE method handler
+         * Method checks if the source path refers to a document / folder then calls the appropriate method handler.
          *
-         * @param  array  parameter passing array
+         * @param $options array  parameter passing array
          * @return string  HTTP status code or false
          */
         function MOVE($options)
         {
-            // Use the WebDAV standards way.
-            // See rfc2518 Section 8.9
-            // This does a copy with delete
-            // FIXME: This way does not retain document history and other info
-
-            //return $this->COPY($options, true);
-
-            // Use the KT way.
-            // FIXME: This way does not allow overwrite
-
             $this->ktwebdavLog("Entering MOVE. options are " . print_r($options, true), 'info', true);
 
+            /* ** Check that write is allowed ** */
             if ($this->checkSafeMode()) {
 
                 if (!empty($_SERVER["CONTENT_LENGTH"])) { // no body parsing yet
@@ -1679,6 +1685,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         }
                  */
 
+                /* ** Get the path to the document/folder to be copied.
+                    Call function to check if the path refers to a document or a folder.
+                    Return 404 error if the path is invalid. ** */
                 $source_path = $options["path"];
 
                 // Fix for Mac Goliath
@@ -1710,22 +1719,30 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     return "404 Not found - Document was not found.";
                 }
 
+                /* ** Get the returned parent folder id and document/folder id.
+                    If the parent folder id is false, return 404 error.
+                    If the document id is either false or null, then the source is a folder.
+                    If the document id exists then the source is a document.
+                    If the source is a folder then call _MOVEFolder.
+                    If the source is a document then check if its checked out and call _MOVEDocument. ** */
                 list($iFolderID, $iDocumentID) = $source_res;
-                if ($iDocumentID === false) {
+                if ($iFolderID === false && ($iDocumentID === false || is_null($iDocumentID))) {
                     $this->ktwebdavLog("404 Not found - Folder was not found.", 'info', true);
                     return "404 Not found - Folder was not found.";
                 }
 
-                if (is_null($iDocumentID)) {
+                if (is_null($iDocumentID) || $iDocumentID === false) {
                     // Source is a folder
+                    $this->ktwebdavLog("Source is a Folder.", 'info', true);
                     $movestat = $this->_MOVEFolder($options, $iFolderID);
 
                 } else {
                 	 // Source is a document
+                	 $this->ktwebdavLog("Source is a Document.", 'info', true);
                 	if ($this->canCopyMoveRenameDocument($iDocumentID)) {
 						$movestat = $this->_MOVEDocument($options, $iFolderID, $iDocumentID);
 					} else {
-						return "Cannot MOVE document because it is checked out by another user.";
+						return "423 Locked - Cannot MOVE document because it is checked out by another user.";
 					}
                 }
 
@@ -1746,7 +1763,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _MOVEDocument($options, $iFolderID, $iDocumentID) {
 
+            /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
+            $this->ktwebdavLog("Entering _MOVEDocument. options are " . print_r($options, true), 'info', true);
 
             // Fix for Mac Goliath
             // Modified - 25/10/07 - remove ktwebdav from document path
@@ -1760,11 +1779,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 }
             }
 
-            $this->ktwebdavLog("Entering _MOVEDocument. options are " . print_r($options, true), 'info', true);
             global $default;
             $new = true;
-            //FIXME: refactor me into KTDocumentUtil
 
+            /* ** Get the relevant paths. Get the basename of the destination path as the destination filename.
+                Check whether the destination path refers to a folder / document. ** */
             $oDocument = Document::get($iDocumentID);
             $oSrcFolder = Folder::get($iFolderID);
             $oUser =& User::get($this->userID);
@@ -1772,36 +1791,16 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $source_path = $options["path"];
             $dest_path = urldecode($options["dest"]);
 
-            // Is this a rename?
-            if (dirname($source_path) == dirname($dest_path)) {
-                // This is a rename
-                //if ($options['overwrite'] != 'T') {
-                //	$this->ktwebdavLog("This is a Rename. Overwrite needs to be TRUE.", 'info', true);
-                //	return "412 Precondition Failed - This is a Rename. Overwrite needs to be TRUE.";
-                //}
-                $this->ktwebdavLog("Got an oDocument of " . print_r($oDocument, true), 'info', true);
-                $this->ktwebdavLog("Got a new name of " . basename($dest_path), 'info', true);
-
-                // Check if the user has permissions to write this document
-                $oPerm =& KTPermission::getByName('ktcore.permissions.write');
-                $oUser =& User::get($this->userID);
-                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDocument)) {
-                    return "403 Forbidden - User does not have sufficient permissions";
-                }
-                $res = KTDocumentUtil::rename($oDocument, basename($dest_path), $oUser);
-                if (PEAR::isError($res) || is_null($res) || ($res === false)) {
-                    return "404 Not Found - " . $res->getMessage();
-                } else {
-                    $this->ktwebdavLog("201 Created", 'info', true);
-                    return "201 Created";
-                }
-
-            }
-
+            /* ** Get the source folder object.
+                If the destination document is null, then the destination is a folder, continue.
+                If the destination document returns an id, then the document exists. Check overwrite.
+                If overwrite is true, then check permissions and delete the document, continue.
+                If the destination document is false, then continue. ** */
             list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
 
             if (is_null($iDestDoc)) {
                 // the dest is a folder
+                $this->ktwebdavLog("Destination is a folder.", 'info', true);
             } else if ($iDestDoc !== false) {
                 // Document exists
                 $this->ktwebdavLog("Destination Document exists.", 'info', true);
@@ -1822,6 +1821,39 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $new = false;
             }
 
+            /* ** Check if the source and destination directories are the same and the destination is not a folder.
+                Then action is probably a rename.
+                Check if user has permission to write to the document and folder.
+                Rename the document. ** */
+            if ((dirname($source_path) == dirname($dest_path)) && !is_null($iDestDoc)) {
+                // This is a rename
+                $this->ktwebdavLog("This is a rename.", 'info', true);
+                $this->ktwebdavLog("Got an oDocument of " . print_r($oDocument, true), 'info', true);
+                $this->ktwebdavLog("Got a new name of " . basename($dest_path), 'info', true);
+
+                // Check if the user has permissions to write this document
+                $oPerm =& KTPermission::getByName('ktcore.permissions.write');
+                $oUser =& User::get($this->userID);
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDocument)) {
+                    return "403 Forbidden - User does not have sufficient permissions";
+                }
+
+                // Perform rename
+                $res = KTDocumentUtil::rename($oDocument, basename($dest_path), $oUser);
+                if (PEAR::isError($res) || is_null($res) || ($res === false)) {
+                    return "404 Not Found - " . $res->getMessage();
+                } else if($new) {
+                    $this->ktwebdavLog("201 Created", 'info', true);
+                    return "201 Created";
+                }else {
+                    $this->ktwebdavLog("204 No Content", 'info', true);
+                    return "204 No Content";
+                }
+            }
+
+            /* ** Get the destination folder object and the source document object.
+                Check if user has permission to write to the document and folder.
+                Move the document. ** */
             $oDestFolder = Folder::get($iDestFolder);
             $this->ktwebdavLog("Got a destination folder of " . print_r($oDestFolder, true), 'info', true);
 
@@ -1832,57 +1864,20 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 return "403 Forbidden - User does not have sufficient permissions";
             }
 
-            $oOriginalFolder = $oSrcFolder;
-            $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
-            $iDocumentPermissionObjectId = $oDocument->getPermissionObjectId();
+            $reason = (isset($_SERVER['HTTP_REASON']) && !empty($_SERVER['HTTP_REASON'])) ? $_SERVER['HTTP_REASON'] : "KTWebDAV Move.";
 
-            if ($iDocumentPermissionObjectId === $iOriginalFolderPermissionObjectId) {
-                $oDocument->setPermissionObjectId($oDestFolder->getPermissionObjectId());
-            }
+            $res = KTDocumentUtil::move($oDocument, $oDestFolder, $oUser, $reason);
 
-            //put the document in the new folder
-            $oDocument->setFolderID($oDestFolder->getId());
-            if (!$oDocument->update(true)) {
-                return "502 Bad Gateway - Document update failed.";
-            }
-
-            //move the document on the file system
-            $oStorage =& KTStorageManagerUtil::getSingleton();
-            if (!$oStorage->moveDocument($oDocument, $oSrcFolder, $oDestFolder)) {
-                $oDocument->setFolderID($oSrcDocumentFolder->getId());
-                $oDocument->update(true);
-                return "502 Bad Gateway";
-            }
-
-            $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
-                    $oSrcFolder->getFullPath(),
-                    $oSrcFolder->getName(),
-                    $oDestFolder->getFullPath(),
-                    $oDestFolder->getName(),
-                    $_SERVER['HTTP_REASON']);
-
-            // create the document transaction record
-            $oDocumentTransaction = & new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
-            $oDocumentTransaction->create();
-
-            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-            $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
-            foreach ($aTriggers as $aTrigger) {
-                $sTrigger = $aTrigger[0];
-                $oTrigger = new $sTrigger;
-                $aInfo = array(
-                        "document" => $oDocument,
-                        "old_folder" => $oSrcFolder,
-                        "new_folder" => $oDestFolder,
-                        );
-                $oTrigger->setInfo($aInfo);
-                $ret = $oTrigger->postValidate();
-                // FIXME: handle trigger subfailures.
+            if(PEAR::isError($res)){
+                $this->ktwebdavLog("Move on document failed: ".$res->getMessage(), 'info', true);
+                return "500 Internal Server Error - Move on document failed.";
             }
 
             if ($new) {
+                $this->ktwebdavLog("201 Created", 'info', true);
                 return "201 Created";
             } else {
+                $this->ktwebdavLog("204 No Content", 'info', true);
                 return "204 No Content";
             }
         }
@@ -1897,11 +1892,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _MOVEFolder($options, $iFolderID) {
 
+            /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
             $this->ktwebdavLog("Entering _MOVEFolder. options are " . print_r($options, true), 'info', true);
 
+            /* ** RFC 2518 Section 8.9.2. A folder move must have a depth of 'infinity'.
+                Check the requested depth. If depth is set to '0' or '1' return a 400 error. ** */
             if ($options["depth"] != "infinity") {
-                // RFC 2518 Section 9.2, last paragraph
                 $this->ktwebdavLog("400 Bad request", 'info', true);
                 return "400 Bad request - depth must be 'inifinity'.";
             }
@@ -1920,23 +1917,75 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
+            /* ** Get the relevant paths.
+                Check whether the destination path refers to a folder / document. ** */
             $source_path = $options["path"];
             $dest_path = urldecode($options["dest"]);
-
-            $oSrcFolder = Folder::get($iFolderID);
-
             list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
 
+            /* ** Get the source folder objects.
+                If the destination document is null, then the destination is an existing folder. Check overwrite.
+                If overwrite is true, then check permissions and delete the folder, continue.
+                If the destination document returns an id, then the destination is a document, check overwrite.
+                If overwrite is true, then check permissions and delete the document, continue.
+                If the destination document is false, then continue. ** */
+            $oSrcFolder = Folder::get($iFolderID);
             $oDestFolder = Folder::get($iDestFolder);
 
-            // Is this a rename?
-            if (dirname($source_path) == dirname($dest_path)) {
-                // This is a rename
-                //if ($options['overwrite'] != 'T') {
-                //	$this->ktwebdavLog("This is a Rename. Overwrite needs to be TRUE.", 'info', true);
-                //	return "412 Precondition Failed - This is a Rename. Overwrite needs to be TRUE.";
-                //}
+            $new = true;
+            if (is_null($iDestDoc)) {
+                // Folder exists
+                $this->ktwebdavLog("Destination Folder exists.", 'info', true);
+                $oReplaceFolder = $oDestFolder;
+                if ($options['overwrite'] != 'T') {
+                    $this->ktwebdavLog("Overwrite needs to be TRUE.", 'info', true);
+                    return "412 Precondition Failed - Destination Folder exists. Overwrite needs to be TRUE.";
+                }
+                $this->ktwebdavLog("Overwrite is TRUE, deleting Destination Folder.", 'info', true);
 
+                // Check if the user has permissions to delete this folder
+                $oPerm =& KTPermission::getByName('ktcore.permissions.delete');
+                $oUser =& User::get($this->userID);
+
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oReplaceFolder)) {
+                    return "403 Forbidden - User does not have sufficient permissions";
+                }
+
+                KTFolderUtil::delete($oReplaceFolder, $oUser, 'KTWebDAV move overwrites target.');
+
+                // Destination folder has been replaced so we need to get the parent folder object
+                list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
+                $oDestFolder = Folder::get($iDestFolder);
+
+                $new = false;
+            } else if ($iDestDoc !== false) {
+                // Destination is a document
+                $this->ktwebdavLog("Destination is a document.", 'info', true);
+                $oReplaceDoc = Document::get($iDestDoc);
+                if ($options['overwrite'] != 'T') {
+                    $this->ktwebdavLog("Overwrite needs to be TRUE.", 'info', true);
+                    return "412 Precondition Failed - Destination Folder is a document. Overwrite needs to be TRUE.";
+                }
+                $this->ktwebdavLog("Overwrite is TRUE, deleting Destination Document.", 'info', true);
+
+                // Check if the user has permissions to delete this document
+                $oPerm =& KTPermission::getByName('ktcore.permissions.delete');
+                $oUser =& User::get($this->userID);
+
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oReplaceDoc)) {
+                    return "403 Forbidden - User does not have sufficient permissions";
+                }
+                KTDocumentUtil::delete($oReplaceDoc, 'KTWebDAV move overwrites target.');
+                $new = false;
+            }
+
+            /* ** Check if the source and destination directories are the same and the destination is not an existing folder.
+                Then action is probably a rename.
+                Check if user has permission to write to the folder.
+                Rename the document. ** */
+            if (dirname($source_path) == dirname($dest_path) && !is_null($iDestDoc)) {
+                // This is a rename
+                $this->ktwebdavLog("Rename collection.", 'info', true);
                 $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
                 $this->ktwebdavLog("Got an new name of " . basename($dest_path), 'info', true);
 
@@ -1952,36 +2001,22 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 if (PEAR::isError($res) || is_null($res) || ($res === false)) {
                     return "404 Not Found - " . $res->getMessage();
                 } else {
-                    $this->ktwebdavLog("201 Created", 'info', true);
-                    return "201 Created";
+                    if($new){
+                        $this->ktwebdavLog("201 Created", 'info', true);
+                        return "201 Created";
+                    }else{
+                        $this->ktwebdavLog("204 No Content", 'info', true);
+                        return "204 No Content";
+                    }
                 }
 
-            }
-
-            if (is_null($iDestDoc)) {
-                // the dest is a folder
-            } else if ($iDestDoc !== false) {
-                // Folder exists
-                $this->ktwebdavLog("Destination Folder exists.", 'info', true);
-                $oReplaceFolder = Folder::get($iDestDoc);
-                if ($options['overwrite'] != 'T') {
-                    $this->ktwebdavLog("Overwrite needs to be TRUE.", 'info', true);
-                    return "412 Precondition Failed - Destination Folder exists. Overwrite needs to be TRUE.";
-                }
-                $this->ktwebdavLog("Overwrite is TRUE, deleting Destination Folder.", 'info', true);
-
-                // Check if the user has permissions to delete this folder
-                $oPerm =& KTPermission::getByName('ktcore.permissions.delete');
-                $oUser =& User::get($this->userID);
-                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oReplaceFolder)) {
-                    return "403 Forbidden - User does not have sufficient permissions";
-                }
-                KTFolderUtil::delete($oReplaceFolder, 'KTWebDAV move overwrites target.');
-                $new = false;
             }
 
             include_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
+            /* ** Get the destination folder object and the source document object.
+                Check if user has permission to write to the folder.
+                Move the folder. ** */
             $oUser =& User::get($this->userID);
             $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
             $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
@@ -1993,18 +2028,29 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDestFolder)) {
                 return "403 Forbidden - User does not have sufficient permissions";
             }
-            KTFolderUtil::move($oSrcFolder, $oDestFolder, $oUser);
 
-            $this->ktwebdavLog("201 Created", 'info', true);
-            return "201 Created";
+            $res = KTFolderUtil::move($oSrcFolder, $oDestFolder, $oUser);
 
+            if(PEAR::isError($res)){
+                $this->ktwebdavLog("Move on folder failed: ".$res->getMessage(), 'info', true);
+                return "500 Internal Server Error - Move on folder failed.";
+            }
+
+            if($new){
+                $this->ktwebdavLog("201 Created", 'info', true);
+                return "201 Created";
+            }else{
+                $this->ktwebdavLog("204 No Content", 'info', true);
+                return "204 No Content";
+            }
         }
 
         /**
          * COPY method handler
+         * Method checks if the source path refers to a document / folder then calls the appropriate method handler.
          *
-         * @param  array   parameter passing array
-         * @param  string  delete source flag
+         * @param $options array   parameter passing array
+         * @param $del string  delete source flag
          * @return string  HTTP status code or false
          */
         function COPY($options, $del = false)
@@ -2012,6 +2058,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $this->ktwebdavLog("Entering COPY. options are " . print_r($options, true), 'info', true);
             $this->ktwebdavLog("del is: " . $del, 'info', true);
 
+            /* ** Check that writing to the server is allowed * **/
             if ($this->checkSafeMode()) {
 
                 if (!empty($_SERVER["CONTENT_LENGTH"])) { // no body parsing yet
@@ -2025,6 +2072,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         return "502 bad gateway - No copying to different WebDAV Servers yet";
                         }
                  */
+
+                /* ** Get the path to the document/folder to be copied.
+                    Call function to check if the path refers to a document or a folder.
+                    Return 404 error if the path is invalid. ** */
                 $source_path = $options["path"];
                 $this->ktwebdavLog("SourcePath is: " . $source_path, 'info', true);
                 $source_res = $this->_folderOrDocument($source_path);
@@ -2033,13 +2084,19 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     return "404 Not found - The document could not be found.";
                 }
 
+                /* ** Get the returned parent folder id and document/folder id.
+                    If the parent folder id is false, return 404 error.
+                    If the document id is either false or null, then the source is a folder.
+                    If the document id exists then the source is a document.
+                    If the source is a folder then call _COPYFolder.
+                    If the source is a document then check if its checked out and call _COPYDocument. ** */
                 list($iFolderID, $iDocumentID) = $source_res;
-                if ($iDocumentID === false) {
+                if ($iFolderID === false && ($iDocumentID === false || is_null($iDocumentID))) {
                     $this->ktwebdavLog("404 Not found - The folder could not be found.", 'info', true);
                     return "404 Not found - The folder could not be found.";
                 }
 
-                if (is_null($iDocumentID)) {
+                if (is_null($iDocumentID) || $iDocumentID === false) {
                     // Source is a folder
                     $this->ktwebdavLog("Source is a Folder.", 'info', true);
                     $copystat = $this->_COPYFolder($options, $iFolderID);
@@ -2049,13 +2106,15 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     $this->ktwebdavLog("Source is a Document.", 'info', true);
 
 					if ($this->canCopyMoveRenameDocument($iDocumentID)) {
-						$copystat = $this->_COPYDocument($options, $iFolderID, $iDocumentID, $dest_folder_id);
+						$copystat = $this->_COPYDocument($options, $iFolderID, $iDocumentID);
 					} else {
-						return "Cannot COPY document because it is checked out by another user.";
+					    // Document is locked
+						return "423 Locked - Cannot COPY document because it is checked out by another user.";
 					}
 
                 }
 
+                /* ** Deprecated. If the request is a move then delete the source **
                 // Delete the source if this is a move and the copy was ok
                 if ($del && ($copystat{0} == "2")) {
                     $delstat = $this->DELETE(array("path" => $options["path"]));
@@ -2064,6 +2123,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         return $delstat;
                     }
                 }
+                */
 
                 $this->ktwebdavLog("Final copystat result is: " . $copystat, 'info', true);
                 return $copystat;
@@ -2074,16 +2134,30 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         /**
          * COPY method helper for Documents
          *
-         * @param  array   parameter passing array
-         * @param  int     Folder ID
-         * @param  int     Document ID
+         * @param $options array   parameter passing array
+         * @param $iFolderID int     Folder ID
+         * @param $iDocumentID int     Document ID
          * @return string  HTTP status code or false
          */
         function _COPYDocument($options, $iFolderID, $iDocumentID) {
 
+            /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
             $this->ktwebdavLog("Entering _COPYDocument. options are " . print_r($options, true), 'info', true);
 
+            /* ** Get the relevant paths. Get the basename of the destination path as the destination filename.
+                Check whether the destination path refers to a folder / document. ** */
+            $source_path = $options["path"];
+            $dest_path = urldecode($options["dest"]);
+            $sDestFileName = basename($dest_path);
+
+            list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
+
+            if($iDestFolder === false){
+                return "409 Conflict - Destination folder does not exist.";
+            }
+
+            /* ** Depth must be infinity to copy a document ** */
             if ($options["depth"] != "infinity") {
                 // RFC 2518 Section 9.2, last paragraph
                 $this->ktwebdavLog("400 Bad request", 'info', true);
@@ -2092,17 +2166,20 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
-            $source_path = $options["path"];
-            $dest_path = urldecode($options["dest"]);
-
+            /* ** Get the source folder object.
+                If the destination document is null, then the destination is a folder, set the destination filename to empty, continue.
+                If the destination document returns an id, then the document exists. Check overwrite.
+                If overwrite is true, then check permissions and delete the document, continue.
+                If the destination document is false, then continue. ** */
             $oSrcFolder = Folder::get($iFolderID);
 
-            list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
-
+            $new = true;
             if (is_null($iDestDoc)) {
                 // the dest is a folder
                 //			$this->ktwebdavLog("400 Bad request", 'info', true);
-                return "400 Bad request - Destination is a Folder";
+                $this->ktwebdavLog("Destination is a folder.", 'info', true);
+                $sDestFileName = '';
+                //return "400 Bad request - Destination is a Folder";
             } else if ($iDestDoc !== false) {
                 // Document exists
                 $this->ktwebdavLog("Destination Document exists.", 'info', true);
@@ -2123,25 +2200,33 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $new = false;
             }
 
+            /* ** Get the destination folder object and the source document object.
+                Check if user has permission to write to the document and folder.
+                Copy the document. ** */
             $oDestFolder = Folder::get($iDestFolder);
             $oSrcDoc = Document::get($iDocumentID);
 
             include_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
-            $this->ktwebdavLog("Got an oSrcDoc of " . print_r($oSrcDoc, true), 'info', true);
-            $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
+            $this->ktwebdavLog("Got an oSrcDoc of " .$oSrcDoc->getName() . print_r($oSrcDoc, true), 'info', true);
+            $this->ktwebdavLog("Got an oDestFolder of " .$oDestFolder->getName() . print_r($oDestFolder, true), 'info', true);
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
             $oUser =& User::get($this->userID);
-            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oSrcDoc)) {
+            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDestFolder)) {
                 return "403 Forbidden - User does not have sufficient permissions";
             }
-            KTDocumentUtil::copy($oSrcDoc, $oDestFolder, $_SERVER['HTTP_REASON']);
 
-            // FIXME: Do failure checking here
+            $reason = (isset($_SERVER['HTTP_REASON']) && !empty($_SERVER['HTTP_REASON'])) ? $_SERVER['HTTP_REASON'] : "KTWebDAV Copy.";
 
-            $new = false;
+            $oDesDoc = KTDocumentUtil::copy($oSrcDoc, $oDestFolder, $reason, $sDestFileName);
+
+            if(PEAR::isError($oDesDoc)){
+                $this->ktwebdavLog("Copy on document failed: ".$oDesDoc->getMessage(), 'info', true);
+                return "500 Internal Server Error - Copy on document failed.";
+            }
+
             if ($new) {
                 $this->ktwebdavLog("201 Created", 'info', true);
                 return "201 Created";
@@ -2160,37 +2245,52 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _COPYFolder($options, $iFolderID) {
 
+            /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
             $this->ktwebdavLog("Entering _COPYFolder. options are " . print_r($options, true), 'info', true);
 
+            /* ** RFC 2518 Section 8.8.3. DAV compliant servers must support depth headers of '0' and 'infinity'.
+                Check the requested depth. If depth is set to '0', set copyall to false. A depth of 0 indicates
+                that the folder is copied without any children. If depth is set to '1', return a 400 error. ** */
+            $copyAll = true;
             if ($options["depth"] != "infinity") {
-                // RFC 2518 Section 9.2, last paragraph
-                $this->ktwebdavLog("400 Bad request", 'info', true);
-                return "400 Bad request - Depth must be 'infinity'.";
+                if($options['depth'] == '0'){
+                    $copyAll = false;
+                    $this->ktwebdavLog("Depth is 0. Copy only the base folder.", 'info', true);
+                }else{
+                    $this->ktwebdavLog("400 Bad request. Depth must be infinity or 0.", 'info', true);
+                    return "400 Bad request - Depth must be 'infinity' or '0'.";
+                }
             }
 
             global $default;
 
             $new = true;
 
+            /* ** Get the relevant paths. Get the basename of the destination path as the destination path name.
+                Check whether the destination path refers to a folder / document. ** */
             $source_path = $options["path"];
             $dest_path = urldecode($options["dest"]);
-
-            $oSrcFolder = Folder::get($iFolderID);
+            $sDestPathName = basename($dest_path);
 
             list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
 
+            /* ** Get the source and destination folder objects.
+                If the destination document is null, then the destination is an existing folder. Check overwrite.
+                If overwrite is true, then check permissions and delete the folder, continue.
+                If the destination document returns an id, then the destination is a document, return 409 error.
+                If the destination document is false, then continue. ** */
+            $oSrcFolder = Folder::get($iFolderID);
             $oDestFolder = Folder::get($iDestFolder);
 
             include_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 
-            if (is_null($iDestDoc)) {
-                // the dest is a folder
-                $this->ktwebdavLog("The Destination is a Folder.", 'info', true);
-            } else if ($iDestDoc !== false) {
-                // Folder exists
+            if(is_null($iDestDoc)) {
+                // Destination is a folder and exists
+                //$sDestPathName = '';
                 $this->ktwebdavLog("Destination Folder exists.", 'info', true);
-                $oReplaceFolder = Folder::get($iDestDoc);
+
+                $oReplaceFolder = $oDestFolder;
                 if ($options['overwrite'] != 'T') {
                     $this->ktwebdavLog("Overwrite needs to be TRUE.", 'info', true);
                     return "412 Precondition Failed - Destination Folder exists. Overwrite needs to be TRUE.";
@@ -2203,10 +2303,21 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oReplaceFolder)) {
                     return "403 Forbidden - User does not have sufficient permissions";
                 }
-                KTFolderUtil::delete($oReplaceFolder, 'KTWebDAV move overwrites target.');
+                KTFolderUtil::delete($oReplaceFolder, $oUser, 'KTWebDAV move overwrites target.');
+
+                // Destination folder has been deleted - get new object of destination parent folder
+                list($iDestFolder, $iDestDoc) = $this->_folderOrDocument($dest_path);
+                $oDestFolder = Folder::get($iDestFolder);
+
                 $new = false;
+            } else if ($iDestDoc !== false) {
+                // Destination is a document
+                return "409 Conflict - Can't write a collection to a document";
             }
 
+            /* ** Get the destination folder object and the source document object.
+                Check if user has permission to write to the folder.
+                Copy the document. Pass parameters for the destination folder name and the depth of copy. ** */
             $oUser =& User::get($this->userID);
             $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
             $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
@@ -2218,7 +2329,15 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDestFolder)) {
                 return "403 Forbidden - User does not have sufficient permissions";
             }
-            KTFolderUtil::copy($oSrcFolder, $oDestFolder, $oUser, 'KTWebDAV Copy.');
+
+            $reason = (isset($_SERVER['HTTP_REASON']) && !empty($_SERVER['HTTP_REASON'])) ? $_SERVER['HTTP_REASON'] : "KTWebDAV Copy.";
+
+            $res = KTFolderUtil::copy($oSrcFolder, $oDestFolder, $oUser, $reason, $sDestPathName, $copyAll);
+
+            if(PEAR::isError($res)){
+                $this->ktwebdavLog("Copy on folder failed: ".$res->getMessage(), 'info', true);
+                return "500 Internal Server Error - Copy on folder failed.";
+            }
 
             if ($new) {
                 $this->ktwebdavLog("201 Created", 'info', true);

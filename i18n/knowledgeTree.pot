@@ -4062,8 +4062,32 @@ msgstr ""
 msgid "Error creating allocation"
 msgstr ""
 
-#: plugins/ktcore/admin/managePermissions.php:76
-msgid "Error creating permission"
+#: plugins/ktcore/admin/managePermissions.php:81
+msgid "An error occured while creating your permission"
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:86
+msgid "An error occured while creating your permission: The System Name was not provided."
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:92
+msgid "An error occured while creating your permission: The Display Name was not provided."
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:98
+msgid "An error occured while creating your permission: The Display Name and System Name weren't provided."
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:120
+msgid "An error occured while creating your permission: The Display Name and System Name you have provided both already exist."
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:129
+msgid "An error occured while creating your permission: A permission with the same System Name already exists."
+msgstr ""
+
+#: plugins/ktcore/admin/managePermissions.php:138
+msgid "An error occured while creating your permission: A permission with the same Display Name already exists."
 msgstr ""
 
 #: plugins/ktcore/admin/managePermissions.php:95

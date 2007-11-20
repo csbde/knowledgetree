@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -314,13 +314,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			{
 				continue;
 			}
+
+
+
 			$result[] = array(
 					'document_id'=>(int)$row['document_id'],
 					'title'=> $row['title'],
 					'size'=>(int)$row['size'],
-					'workflow'=>$row['workflow'],
-					'workflow_state'=>$row['workflow_state'],
-					'link_type'=>$row['link_type'],
+					'workflow'=>empty($row['workflow'])?'n/a':$row['workflow'],
+					'workflow_state'=>empty($row['workflow_state'])?'n/a':$row['workflow_state'],
+					'link_type'=>empty($row['link_type'])?'unknown':$row['link_type'],
 				);
 		}
 
@@ -447,6 +450,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason
 	 * @param string $newname
 	 * @param string $newfilename
+	 * @return KTAPI_Document
 	 */
 	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
@@ -533,12 +537,14 @@ class KTAPI_Document extends KTAPI_FolderItem
             $oTrigger = new $sTrigger;
             $aInfo = array(
                 'document' => $new_document,
-                'old_folder' => $this->folder->get_folder(),
+                'old_folder' => $this->ktapi_folder->get_folder(),
                 'new_folder' => $target_folder,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
+
+        return KTAPI_Document::get($this->ktapi, $new_document->getId());
 	}
 
 	/**
@@ -676,6 +682,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$doctypeid = KTAPI::get_documenttypeid($documenttype);
+		if (PEAR::isError($doctypeid))
+		{
+			return $doctypeid;
+		}
 
 		if ($this->document->getDocumentTypeId() != $doctypeid)
 		{
@@ -836,7 +846,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$workflowid=$this->document->getWorkflowId();
-		if (!empty($workflowid))
+		if (empty($workflowid))
 		{
 			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
 		}
@@ -1045,6 +1055,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function update_metadata($metadata)
 	{
 		global $default;
+		if (empty($metadata))
+		{
+			return;
+		}
+
 		 $packed = $this->get_packed_metadata($metadata);
 
 		 DBUtil::startTransaction();
@@ -1079,6 +1094,233 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	}
 
+	/**
+	 * This updates the system metadata on the document.
+	 *
+	 * @param array $sysdata
+	 */
+	function update_sysdata($sysdata)
+	{
+		if (empty($sysdata))
+		{
+			return;
+		}
+		$owner_mapping = array(
+						'created_by'=>'creator_id',
+						'modified_by'=>'modified_user_id',
+						'owner'=>'owner_id'
+						);
+
+		$documents = array();
+		$document_content = array();
+
+		foreach($sysdata as $rec)
+		{
+			if (is_object($rec))
+			{
+				$name = $rec->name;
+				$value = sanitizeForSQL($rec->value);
+			}
+			elseif(is_array($rec))
+			{
+				$name = $rec['name'];
+				$value = sanitizeForSQL($rec['value']);
+			}
+			else
+			{
+				// just ignore
+				continue;
+			}
+			switch($name)
+			{
+				case 'created_date':
+					$documents['created'] = $value;
+					break;
+				case 'modified_date':
+					$documents['modified'] = $value;
+					break;
+				case 'is_immutable':
+					$documents['immutable'] = in_array(strtolower($value), array('1','true','on','yes'))?'1':'0';
+					break;
+				case 'filename':
+					$document_content['filename'] = $value;
+					break;
+				case 'major_version':
+					$document_content['major_version'] = $value;
+					break;
+				case 'minor_version':
+					$document_content['minor_version'] = $value;
+					break;
+				case 'version':
+					$version = number_format($value + 0,5);
+					list($major_version, $minor_version) = explode('.', $version);
+					$document_content['major_version'] = $major_version;
+					$document_content['minor_version'] = $minor_version;
+					break;
+				case 'mime_type':
+					$sql = "select id from mime_types where mimetypes='$value'";
+					$value = DBUtil::getResultArray($sql);
+					if (PEAR::isError($value))
+					{
+						return $value;
+					}
+					if (count($value) == 0)
+					{
+						break;
+					}
+					$value = $value[0]['id'];
+					$document_content['mime_id'] = $value;
+					break;
+				case 'owner':
+				case 'created_by':
+				case 'modified_by':
+					$sql = "select id from users where name='$value'";
+					$userId = DBUtil::getResultArray($sql);
+					if (PEAR::isError($userId))
+					{
+						return $userId;
+					}
+					if (empty($userId))
+					{
+						$sql = "select id from users where username='$value'";
+						$userId = DBUtil::getResultArray($sql);
+						if (PEAR::isError($userId))
+						{
+							return $userId;
+						}
+					}
+					if (empty($userId))
+					{
+						// if not found, not much we can do
+						break;
+					}
+					$userId=$userId[0];
+					$userId=$userId['id'];
+
+					$name = $owner_mapping[$name];
+					$documents[$name] = $userId;
+					break;
+				default:
+					// TODO: we should do some logging
+					//return new PEAR_Error('Unexpected field: ' . $name);
+			}
+		}
+
+		if (count($documents) > 0)
+		{
+			$sql = "UPDATE documents SET ";
+			$i=0;
+			foreach($documents as $name=>$value)
+			{
+				if ($i++ > 0) $sql .= ",";
+				if (is_numeric($value))
+					$sql .= "$name=$value";
+				else
+					$sql .= "$name='$value'";
+			}
+			$sql .= " WHERE id=$this->documentid";
+			$result = DBUtil::runQuery($sql);
+			if (PEAR::isError($result))
+			{
+				return $result;
+			}
+		}
+		if (count($document_content) > 0)
+		{
+			$content_id = $this->document->getContentVersionId();
+			$sql = "UPDATE document_content_version SET ";
+			$i=0;
+			foreach($document_content as $name=>$value)
+			{
+				if ($i++ > 0) $sql .= ",";
+				$sql .= "$name='$value'";
+			}
+			$sql .= " WHERE id=$content_id";
+			$result = DBUtil::runQuery($sql);
+			if (PEAR::isError($result))
+			{
+				return $result;
+			}
+		}
+	}
+
+	function clearCache()
+	{
+		// TODO: we should only clear the cache for the document we are working on
+		// this is a quick fix but not optimal!!
+
+
+		$metadataid = $this->document->getMetadataVersionId();
+		$contentid = $this->document->getContentVersionId();
+
+		$cache = KTCache::getSingleton();
+
+		$cache->remove('KTDocumentMetadataVersion/id', $metadataid);
+		$cache->remove('KTDocumentContentVersion/id', $contentid);
+		$cache->remove('KTDocumentCore/id', $this->documentid);
+		$cache->remove('Document/id', $this->documentid);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentMetadataVersion'][$metadataid]);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentContentVersion'][$contentid]);
+		unset($GLOBALS['_OBJECTCACHE']['KTDocumentCore'][$this->documentid]);
+
+		$this->document = &Document::get($this->documentid);
+	}
+
+	function mergeWithLastMetadataVersion()
+	{
+		// keep latest metadata version
+		$metadata_version = $this->document->getMetadataVersion();
+		if ($metadata_version == 0)
+		{
+			// this could theoretically happen in the case we are updating metadata and sysdata, but no metadata fields are specified.
+			return;
+		}
+
+		$metadata_id = $this->document->getMetadataVersionId();
+
+		// get previous version
+		$sql = "SELECT id, metadata_version FROM document_metadata_version WHERE id<$metadata_id AND document_id=$this->documentid order by id desc";
+		$old = DBUtil::getResultArray($sql);
+		if (is_null($old) || PEAR::isError($old))
+		{
+			return new PEAR_Error('Previous version could not be resolved');
+		}
+		// only interested in the first one
+		$old=$old[0];
+		$old_metadata_id = $old['id'];
+		$old_metadata_version = $old['metadata_version'];
+
+		DBUtil::startTransaction();
+
+		// delete previous metadata version
+
+		$sql = "DELETE FROM document_metadata_version WHERE id=$old_metadata_id";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+
+		// make latest equal to previous
+		$sql = "UPDATE document_metadata_version SET metadata_version=$old_metadata_version WHERE id=$metadata_id";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+		$sql = "UPDATE documents SET metadata_version=$old_metadata_version WHERE id=$this->documentid";
+		$rs = DBUtil::runQuery($sql);
+		if (PEAR::isError($rs))
+		{
+			DBUtil::rollback();
+			return $rs;
+		}
+		DBUtil::commit();
+
+		$this->clearCache();
+	}
 
 	/**
 	 * This returns a workflow transition
@@ -1156,6 +1398,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function get_detail()
 	{
+		global $default;
+		// make sure we ge tthe latest
+		$this->clearCache();
+
 		$detail = array();
 		$document = $this->document;
 
@@ -1191,6 +1437,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		$detail['created_by'] = $username;
 		$detail['updated_date'] = $document->getLastModifiedDate();
+		$detail['modified_date'] = $document->getLastModifiedDate();
 
 		$userid = $document->getModifiedUserId();
 		if (is_numeric($userid))
@@ -1202,6 +1449,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$username='n/a';
 		}
+		$detail['modified_by'] = $username;
 		$detail['updated_by'] = $username;
 		$detail['document_id'] = (int) $document->getId();
 		$detail['folder_id'] = (int) $document->getFolderID();
@@ -1230,6 +1478,22 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		$detail['workflow_state']=$workflowstate;
 
+		$userid = $document->getOwnerID();
+
+		if (is_numeric($userid))
+		{
+			$user = User::get($userid);
+			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
+		}
+		else
+		{
+			$username = 'n/a';
+		}
+		$detail['owner'] = $username;
+
+		$detail['is_immutable'] = (bool) $document->getImmutable();
+
+
 		$userid = $document->getCheckedOutUserID();
 
 		if (is_numeric($userid))
@@ -1241,7 +1505,20 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$username = 'n/a';
 		}
-		$detail['checkout_by'] = $username;
+		$detail['checked_out_by'] = $username;
+
+		list($major, $minor, $fix) = explode('.', $default->systemVersion);
+
+
+		if ($major == 3 && $minor >= 5)
+		{
+			$detail['checked_out_date'] = $document->getCheckedOutDate();
+		}
+		else
+		{
+			$detail['checked_out_date'] = $detail['modified_date'];
+		}
+		if (is_null($detail['checked_out_date'])) $detail['checked_out_date'] = 'n/a';
 
 		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
 

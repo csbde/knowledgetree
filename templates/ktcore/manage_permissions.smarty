@@ -1,3 +1,11 @@
+{literal}
+<script type="text/javascript">
+	function populateField(value, key){
+		var field = document.getElementById(key);
+		field.value = value;
+	}
+</script>
+{/literal}
 <h2>{i18n}Existing permissions{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}Permissions are descriptors used to ascertain whether groups of users have access to certain functionality. The built-in permissions below facilitate the default functionality of the DMS and can't be changed. Plugin developers may choose to add additional permissions below that manage access to their plugins functionality.{/i18n}</p>
@@ -54,4 +62,13 @@ class="ktAction ktDelete">{i18n}Delete Permission{/i18n}</a>
         </tr>
     { /foreach }
 </table>
-
+{if $context->sNameVal != ''}
+<script type="text/javascript">
+	populateField("{$context->sNameVal}", "name");
+</script>
+{/if}
+{if $context->sHumanNameVal != ''}
+<script type="text/javascript">
+	populateField("{$context->sHumanNameVal}", "human_name");
+</script>
+{/if}

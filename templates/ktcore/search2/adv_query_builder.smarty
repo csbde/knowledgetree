@@ -219,7 +219,7 @@ function initInt(groupid, fid)
 
 	var nf = new Ext.form.NumberField( {allowNegative: false, decimalPrecision : 0, name: startname});
 	nf.render(startname);
-	var nf2 = new Ext.form.NumberField( {allowNegative: false, decimalPrecision : 0, name: startname});
+	var nf2 = new Ext.form.NumberField( {allowNegative: false, decimalPrecision : 0, name: endname});
 	nf2.render(endname);
 }
 
@@ -721,6 +721,7 @@ function buildExpression()
 			var expr = expr = fieldname + ' ' + fieldop + ' "' + start.value + '"';
 			switch (fieldop)
 			{
+				case 'between':
 				case 'BETWEEN':
 					expr += ' AND "' + end.value + '"';
 					break;
