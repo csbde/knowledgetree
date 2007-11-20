@@ -1,1 +1,0 @@
-UPDATE system_settings SET value="1.2.4" WHERE name="knowledgeTreeVersion";
