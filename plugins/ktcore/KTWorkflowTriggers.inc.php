@@ -493,8 +493,18 @@ class CopyActionTrigger extends KTWorkflowTrigger {
         $aOptions['result_url'] = KTUtil::addQueryStringSelf($qs);                
         $aOptions['show_documents'] = false;
         
-        $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));        
+		$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));        
         
+		$oFolder = Folder::get($fFolderId);
+		$aBreadcrumbs = array();
+		if(PEAR::isError($oFolder))
+		{
+			$iRoot = 1;
+			$oFolder = Folder::get($iRoot);
+			$fFolderId = 1;
+			
+		}
+		
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BrowseQuery($fFolderId, $this->oUser));    
         $collection->setColumnOptions('ktcore.columns.singleselection', array(
@@ -508,24 +518,25 @@ class CopyActionTrigger extends KTWorkflowTrigger {
             'folder_link' => $aOptions['result_url'],
         ));			
 		
-		$oFolder = Folder::get($fFolderId);
-        $aBreadcrumbs = array();
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        $folder_path_ids[] = $oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
-
-        foreach (range(0, count($folder_path_ids) - 1) as $index) {
-            $id = $folder_path_ids[$index];
-            $qsFrag2 = $qsFrag;
-            $qsFrag2[] = sprintf('fFolderId=%d', $id);
-            $qs2 = implode('&',$qsFrag2);
-            $url = KTUtil::addQueryStringSelf($qs2);              
-            $aBreadcrumbs[] = sprintf('<a href="%s">%s</a>', $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
-        }
+		
+		
+		$folder_path_names = $oFolder->getPathArray();
+		$folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+		$folder_path_ids[] = $oFolder->getId();
+		
+		if ($folder_path_ids[0] == 0 || $folder_path_ids[0] == null) {
+			array_shift($folder_path_ids);
+			array_shift($folder_path_names);
+		}
+		foreach (range(0, count($folder_path_ids) - 1) as $index) {
+			$id = $folder_path_ids[$index];
+			
+			$qsFrag2 = $qsFrag;
+			$qsFrag2[] = sprintf('fFolderId=%d', $id);
+			$qs2 = implode('&',$qsFrag2);
+			$url = KTUtil::addQueryStringSelf($qs2);              
+			$aBreadcrumbs[] = sprintf('<a href="%s">%s</a>', $url, htmlentities($folder_path_names[$index], ENT_NOQUOTES, 'UTF-8'));
+		}
 		
         $sBreadcrumbs = implode(' &raquo; ', $aBreadcrumbs);		
 		
