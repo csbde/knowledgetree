@@ -672,7 +672,7 @@ class KTPlugin {
                     'friendlyname' => $friendly_name,
                 ));
                 // FIXME we -really- need to raise an error here, somehow.
-                return $oEntity;
+                //return $oEntity;
             } else {
                 $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
@@ -680,8 +680,11 @@ class KTPlugin {
                     'unavailable' => false,
                     'friendlyname' => $friendly_name,
                 ));
-                return $oEntity;
+                //return $oEntity;
             }
+            /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
+            $this->setup();
+            return $oEntity;
         }
         $disabled = 1;
         if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
@@ -697,6 +700,8 @@ class KTPlugin {
         if (PEAR::isError($oEntity)) {
             return $oEntity;
         }
+        /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
+        $this->setup();
         return true;
     }
 }
