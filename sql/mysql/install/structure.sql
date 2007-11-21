@@ -472,13 +472,13 @@ CREATE TABLE `document_transaction_types_lookup` (
 CREATE TABLE `document_transactions` (
   `id` int(11) NOT NULL default '0',
   `document_id` int(11) default NULL,
-  `version` char(50) default NULL,
+  `version` varchar(50) default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `ip` char(30) default NULL,
-  `filename` char(255) NOT NULL default '',
-  `comment` char(255) NOT NULL default '',
-  `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
+  `ip` varchar(15) default NULL,
+  `filename` varchar(255) NOT NULL default '',
+  `comment` varchar(1024) NOT NULL default '',
+  `transaction_namespace` varchar(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -1236,6 +1236,27 @@ CREATE TABLE `plugins` (
   UNIQUE KEY `namespace` (`namespace`),
   KEY `disabled` (`disabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `plugin_helper`
+--
+
+CREATE TABLE `plugin_helper` (
+	`id` INT NOT NULL default '0',
+	`namespace` VARCHAR(120) NOT NULL,
+	`plugin` VARCHAR(120) NOT NULL,
+	`classname` VARCHAR(120),
+	`pathname` VARCHAR(255),
+	`object` VARCHAR(1000) NOT NULL,
+	`classtype` VARCHAR(120) NOT NULL,
+	`viewtype` ENUM('general', 'dashboard', 'plugin', 'folder', 'document', 'admindispatcher', 'dispatcher') NOT NULL default 'general',
+    PRIMARY KEY  (`id`),
+    KEY `name` (`namespace`),
+    KEY `parent` (`plugin`),
+    KEY `view` (`viewtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `role_allocations`
@@ -2261,6 +2282,17 @@ CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `zseq_plugin_helper`
+--
+
+CREATE TABLE `zseq_plugin_helper` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `zseq_role_allocations`
