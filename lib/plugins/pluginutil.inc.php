@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -69,7 +69,7 @@ class KTPluginUtil {
 
 	/**
 	 * Store the plugin cache in the cache directory.
-	 *
+	 * @deprecated
 	 */
 	static function savePluginCache($array)
 	{
@@ -97,7 +97,7 @@ class KTPluginUtil {
 
 	/**
 	 * Remove the plugin cache.
-	 *
+	 * @deprecated
 	 */
 	static function removePluginCache()
 	{
@@ -115,7 +115,7 @@ class KTPluginUtil {
 
 	/**
 	 * Reads the plugin cache file. This must still be unserialised.
-	 *
+	 * @deprecated
 	 * @return mixed Returns false on failure, or the serialised cache.
 	 */
 	static function readPluginCache()
@@ -148,58 +148,213 @@ class KTPluginUtil {
 		return unserialize($cache);
 	}
 
-    static function loadPlugins () {
+	/**
+     * Load the plugins for the current page
+     *
+     * @param unknown_type $sType
+     */
+    static function loadPlugins ($sType) {
 
+        // Check the current page - can be extended.
+        // Currently we only distinguish between the dashboard and everything else.
+        if($sType != 'dashboard'){
+          $sType = 'general';
+        }
         $GLOBALS['_KT_PLUGIN'] = array();
-        $cache = KTPluginUtil::readPluginCache();
-        if ($cache === false)
-        {
-        	$aPlugins = KTPluginEntity::getList("disabled=0");
-        	KTPluginUtil::savePluginCache($aPlugins);
-        }
-        else
-        {
-        	$aPlugins = $cache;
+
+        $aPlugins = array();
+        $aPluginHelpers = array();
+
+        // Get the list of enabled plugins
+        $query = "SELECT * FROM plugin_helper h, plugins p
+           WHERE p.namespace = h.plugin AND p.disabled = 0 AND h.classtype='plugin'";
+        $aPluginHelpers = DBUtil::getResultArray($query);
+
+        // Check that there are plugins and if not, register them
+        if (empty($aPluginHelpers)) {
+            KTPluginUtil::registerPlugins();
+
+        	$query = "SELECT * FROM plugin_helper h, plugins p
+        	   WHERE p.namespace = h.plugin AND p.disabled = 0 AND h.viewtype='{$sType}' AND h.classtype='plugin'";
+        	$aPluginHelpers = DBUtil::getResultArray($query);
         }
 
-        if (count($aPlugins) === 0) {
-            KTPluginUtil::registerPlugins();
+        // Create plugin objects
+        foreach ($aPluginHelpers as $aItem){
+            $classname = $aItem['classname'];
+            $path = $aItem['pathname'];
+
+            if (!empty($path)) {
+                require_once($path);
+            }
+
+        	$oPlugin = new $classname($path);
+        	$aPlugins[] = $oPlugin;
+        	$oPlugin->load();
         }
-        $aPaths = array();
-        $aPaths[] = KT_DIR . '/plugins/ktcore/KTCorePlugin.php';
-        $aPaths[] = KT_DIR . '/plugins/ktcore/KTCoreLanguagePlugin.php';
-        foreach ($aPlugins as $oPlugin) {
-            if (!is_a($oPlugin, 'KTPluginEntity')) {
-                print "<pre>";
-                print "loadPlugins()\n";
-                var_dump($aPlugins);
-                exit(0);
-            }
-            $sPath = $oPlugin->getPath();
-            if (!KTUtil::isAbsolutePath($sPath)) {
-                $sPath = sprintf("%s/%s", KT_DIR, $sPath);
-            }
-            $aPaths[] = $sPath;
-        }
-        $aPaths = array_unique($aPaths);
-        foreach ($aPaths as $sPath) {
-            if (file_exists($sPath)) {
-                require_once($sPath);
+
+        // load plugin helpers into global space
+        $query = "SELECT h.* FROM plugin_helper h, plugins p
+        	   WHERE p.namespace = h.plugin AND p.disabled = 0 ";//WHERE viewtype='{$sType}'";
+        $aPluginList = DBUtil::getResultArray($query);
+        KTPluginUtil::load($aPluginList);
+
+        // Load the template locations
+        $query = "SELECT * FROM plugin_helper h WHERE h.classtype='locations'";
+        $aLocations = DBUtil::getResultArray($query);
+        if(!empty($aLocations)){
+            $oTemplating =& KTTemplating::getSingleton();
+            foreach ($aLocations as $location){
+                $aParams = explode('|', $location['object']);
+                call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
             }
         }
-        $oRegistry =& KTPluginRegistry::getSingleton();
-        $aPlugins =& $oRegistry->getPlugins();
-        foreach ($aPlugins as $oPlugin) {
-            if (!isset($aOrder[$oPlugin->iOrder])) {
-                $aOrder[$oPlugin->iOrder] = array();
-            }
-            $aOrder[$oPlugin->iOrder][] = $oPlugin;
-        }
-        ksort($aOrder, SORT_NUMERIC);
-        foreach ($aOrder as $iOrder => $aOrderPlugins) {
-            foreach ($aOrderPlugins as $oPlugin) {
-                $oPlugin->load();
-            }
+        return;
+    }
+
+    /**
+     * Load the plugins into the global space
+     *
+     * @param array $aPlugins
+     */
+    function load($aPlugins) {
+
+        require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
+        require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
+        require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+        require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
+        require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
+        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
+        require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
+        require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
+        require_once(KT_LIB_DIR . "/help/help.inc.php");
+        require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+        require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
+        require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
+        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+        require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");
+        require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
+
+        $oPRegistry =& KTPortletRegistry::getSingleton();
+        $oTRegistry =& KTTriggerRegistry::getSingleton();
+        $oARegistry =& KTActionRegistry::getSingleton();
+        $oPageRegistry =& KTPageRegistry::getSingleton();
+        $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+        $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton();
+        $oDashletRegistry =& KTDashletRegistry::getSingleton();
+        $oi18nRegistry =& KTi18nRegistry::getSingleton();
+        $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
+        $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
+        $oColumnRegistry =& KTColumnRegistry::getSingleton();
+        $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
+        $oTemplating =& KTTemplating::getSingleton();
+        $oWidgetFactory =& KTWidgetFactory::getSingleton();
+        $oValidatorFactory =& KTValidatorFactory::getSingleton();
+        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
+        $oInterceptorRegistry =& KTInterceptorRegistry::getSingleton();
+        $oKTPluginRegistry =& KTPluginRegistry::getSingleton();
+
+
+        // Loop through the loaded plugins and register them for access
+        foreach ($aPlugins as $plugin){
+            $sName = $plugin['namespace'];
+        	$sParams = $plugin['object'];
+        	$aParams = explode('|', $sParams);
+        	$sClassType = $plugin['classtype'];
+
+        	switch ($sClassType) {
+        	    case 'portlet':
+        	        $aLocation = explode('_|', $aParams[0]);
+        	        $aParams[0] = $aLocation;
+        	        call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $aParams);
+        	        break;
+
+        	    case 'trigger':
+        	        call_user_func_array(array(&$oTRegistry, 'registerTrigger'), $aParams);
+        	        break;
+
+        	    case 'action':
+        	        call_user_func_array(array(&$oARegistry, 'registerAction'), $aParams);
+        	        break;
+
+        	    case 'page':
+        	        call_user_func_array(array(&$oPageRegistry, 'registerPage'), $aParams);
+        	        break;
+
+        	    case 'authentication_provider':
+        	        call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $aParams);
+        	        break;
+
+        	    case 'admin_category':
+        	        call_user_func_array(array(&$oAdminRegistry, 'registerCategory'), $aParams);
+        	        break;
+
+        	    case 'admin_page':
+        	        call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $aParams);
+        	        break;
+
+        	    case 'dashlet':
+        	        call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $aParams);
+        	        break;
+
+        	    case 'i18n':
+        	        call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $aParams);
+        	        break;
+
+        	    case 'i18nlang':
+        	        call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $aParams);
+        	        break;
+
+        	    case 'language':
+        	        call_user_func_array(array(&$oi18nRegistry, 'registerLanguage'), $aParams);
+        	        break;
+
+        	    case 'help_language':
+        	        call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $aParams);
+        	        break;
+
+        	    case 'workflow_trigger':
+        	        call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $aParams);
+        	        break;
+
+        	    case 'column':
+        	        call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $aParams);
+        	        break;
+
+        	    case 'view':
+        	        call_user_func_array(array(&$oColumnRegistry, 'registerView'), $aParams);
+        	        break;
+
+        	    case 'notification_handler':
+        	        call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $aParams);
+        	        break;
+
+        	    case 'template_location':
+        	        call_user_func_array(array(&$oTemplating, 'addLocation'), $aParams);
+        	        break;
+
+        	    case 'criterion':
+            	    $aInit = explode('_|', $aParams[3]);
+        	        $aParams[3] = $aInit;
+        	        call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $aParams);
+        	        break;
+
+        	    case 'widget':
+        	        call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $aParams);
+        	        break;
+
+        	    case 'validator':
+        	        call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $aParams);
+        	        break;
+
+        	    case 'interceptor':
+        	        call_user_func_array(array(&$oInterceptorRegistry, 'registerInterceptor'), $aParams);
+        	        break;
+
+        	    case 'plugin':
+        	        $oKTPluginRegistry->_aPluginDetails[$sName] = $aParams;
+        	        break;
+        	}
         }
     }
 

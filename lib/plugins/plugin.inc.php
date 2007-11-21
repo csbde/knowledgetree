@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -81,27 +81,51 @@ class KTPlugin {
     function registerPortlet($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        if(is_array($aLocation)){
+            $sLocation = implode('_|', $aLocation);
+        }
+        $params = $sLocation.'|'.$sPortletClassName.'|'.$sPortletNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sPortletNamespace, $sPortletClassName, $sFilename, $params, 'general', 'portlet');
     }
 
     function registerTrigger($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aTriggers[$sTriggerNamespace] = array($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sAction.'|'.$sStage.'|'.$sTriggerClassName.'|'.$sTriggerNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sTriggerNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'trigger');
     }
 
     function registerAction($sActionType, $sActionClassName, $sActionNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aActions[$sActionNamespace] = array($sActionType, $sActionClassName, $sActionNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sActionType.'|'.$sActionClassName.'|'.$sActionNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sActionNamespace, $sActionClassName, $sFilename, $params, 'general', 'action');
     }
 
     function registerPage($sWebPath, $sPageClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
+
         $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sWebPath.'|'.$sPageClassName.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sWebPath, $sPageClassName, $sFilename, $params, 'general', 'page');
     }
 
     function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aWFTriggers[$sNamespace] = array($sNamespace, $sTriggerClassName, $sFilename);
+
+        // Register helper in DB
+        $params = $sNamespace.'|'.$sTriggerClassName.'|'.$sFilename;
+        $this->registerPluginHelper($sNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'workflow_trigger');
     }
 
     function getPagePath($sPath) {
@@ -120,6 +144,10 @@ class KTPlugin {
     function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAuthenticationProviders[$sNamespace] = array($sName, $sClass, $sNamespace, $sFilename, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sClass.'|'.$sNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sNamespace, $sClass, $sFilename, $params, 'general', 'authentication_provider');
     }
 
 //registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
@@ -127,20 +155,42 @@ class KTPlugin {
         $sFullname = $sCategory . '/' . $sName;
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
     }
 
     function registerAdminCategory($sPath, $sName, $sDescription) {
         $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
+
+        // Register helper in DB
+        $params = $sPath.'|'.$sName.'|'.$sDescription;
+        $this->registerPluginHelper($sPath, $sName, $sPath, $params, 'general', 'admin_category');
     }
 
+    /**
+     * Register a new dashlet
+     *
+     * @param string $sClassName
+     * @param string $sNamespace
+     * @param string $sFilename
+     */
     function registerDashlet($sClassName, $sNamespace, $sFilename) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aDashlets[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $this->sNamespace);
+
+        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'dashboard', 'dashlet');
     }
 
     function registeri18n($sDomain, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_ai18n[$sDomain] = array($sDomain, $sPath);
+
+        // Register helper in DB
+        $params = $sDomain.'|'.$sPath;
+        $this->registerPluginHelper($sDomain, $sDomain, $sPath, $params, 'general', 'i18n');
     }
 
     function registeri18nLang($sDomain, $sLang, $sPath) {
@@ -148,55 +198,151 @@ class KTPlugin {
             $sPath = $this->_fixFilename($sPath);
         }
         $this->_ai18nLang["$sDomain/$sLang"] = array($sDomain, $sLang, $sPath);
+
+        // Register helper in DB
+        $params = $sDomain.'|'.$sLang.'|'.$sPath;
+        $this->registerPluginHelper("$sDomain/$sLang", $sDomain, $sPath, $params, 'general', 'i18nlang');
     }
 
     function registerLanguage($sLanguage, $sLanguageName) {
         $this->_aLanguage[$sLanguage] = array($sLanguage, $sLanguageName);
+
+        // Register helper in DB
+        $params = $sLanguage.'|'.$sLanguageName;
+        $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'language');
     }
 
     function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
         $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
+
+        // Register helper in DB
+        $params = $sPlugin.'|'.$sLanguage.'|'.$sBasedir;
+        $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'help_language');
     }
 
     function registerColumn($sName, $sNamespace, $sClassName, $sFile) {
         $sFile = $this->_fixFilename($sFile);
         $this->_aColumns[$sNamespace] = array($sName, $sNamespace, $sClassName, $sFile);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sNamespace.'|'.$sClassName.'|'.$sFile;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFile, $params, 'general', 'column');
     }
 
     function registerView($sName, $sNamespace) {
         $this->_aViews[$sNamespace] = array($sName, $sNamespace);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sNamespace;
+        $this->registerPluginHelper($sNamespace, '', '', $params, 'general', 'view');
     }
 
     function registerNotificationHandler($sName, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aNotificationHandlers[$sNamespace] = array($sNamespace, $sName, $sPath);
+
+        // Register helper in DB
+        $params = $sNamespace.'|'.$sName.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sName, $sPath, $params, 'general', 'notification_handler');
     }
 
     function registerTemplateLocation($sName, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aTemplateLocations[$sName] = array($sName, $sPath);
+
+        // Register helper in DB
+        $params = $sName.'|'.$sPath;
+        $this->registerPluginHelper($sName, $sName, $sPath, $params, 'general', 'template_location');
     }
 
 
+    /**
+     * Register a new widget
+     *
+     * @param unknown_type $sClassname
+     * @param unknown_type $sNamespace
+     * @param unknown_type $sPath
+     */
     function registerWidget($sClassname, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aWidgets[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'widget');
     }
 
     function registerValidator($sClassname, $sNamespace, $sPath) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aValidators[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'validator');
     }
 
 
     function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+
+        // Register helper in DB
+        if(is_array($aInitialize)){
+            $sInitialize = implode('_|', $aInitialize);
+        }
+
+        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$sInitialize;
+        $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'general', 'criterion');
     }
 
     function registerInterceptor($sClassname, $sNamespace, $sPath = null) {
         $sPath = $this->_fixFilename($sPath);
         $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'interceptor');
+    }
+
+    /* ** Refactor into another class ** */
+    /**
+     * Register the plugin in the DB
+     *
+     * @param unknown_type $sClassName
+     * @param unknown_type $path
+     * @param unknown_type $object
+     * @param unknown_type $type
+     */
+    function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
+
+        $sql = "SELECT * FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
+        $res = DBUtil::getOneResult($sql);
+
+        $aValues = array();
+        $aValues['namespace'] = $sNamespace;
+        $aValues['plugin'] = (!empty($this->sNamespace)) ? $this->sNamespace : $sNamespace;
+        $aValues['classname'] = $sClassName;
+        $aValues['pathname'] = $path;
+        $aValues['object'] = $object;
+        $aValues['viewtype'] = $view;
+        $aValues['classtype'] = $type;
+
+        // if record exists - update it.
+        if(!empty($res)){
+            $id = $res['id'];
+            $updateRes = DBUtil::autoUpdate('plugin_helper', $aValues, $id);
+            if(PEAR::isError($updateRes)){
+                return $updateRes;
+            }
+            return true;
+        }
+
+        // Insert into DB
+        $res = DBUtil::autoInsert('plugin_helper', $aValues);
+        if(PEAR::isError($res)){
+            return $res;
+        }
+        return true;
     }
 
     function _fixFilename($sFilename) {
@@ -240,7 +386,120 @@ class KTPlugin {
         return true;
     }
 
+    /**
+     * Load the actions, portlets, etc as part of the parent plugin
+     *
+     */
     function load() {
+        // Get actions, portlets, etc, create arrays as part of plugin
+        $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
+        $aPluginHelpers = DBUtil::getResultArray($query);
+
+        if(!empty($aPluginHelpers)){
+            foreach ($aPluginHelpers as $plugin) {
+                $sName = $plugin['namespace'];
+            	$sParams = $plugin['object'];
+            	$aParams = explode('|', $sParams);
+            	$sClassType = $plugin['classtype'];
+
+            	switch ($sClassType) {
+            	    case 'portlet':
+            	        $aLocation = explode('_|', $aParams[0]);
+        	            $aParams[0] = $aLocation;
+                        $this->_aPortlets[$sName] = $aParams;
+            	        break;
+
+            	    case 'trigger':
+            	        $this->_aTriggers[$sName] = $aParams;
+            	        break;
+
+            	    case 'action':
+            	        $this->_aActions[$sName] = $aParams;
+            	        break;
+
+            	    case 'page':
+            	        $this->_aPages[$sName] = $aParams;
+            	        break;
+
+            	    case 'authentication_provider':
+            	        $this->_aAuthenticationProviders[$sName] = $aParams;
+            	        break;
+
+            	    case 'admin_category':
+            	        $this->_aAdminCategories[$sName] = $aParams;
+            	        break;
+
+            	    case 'admin_page':
+            	        $this->_aAdminPages[$sName] = $aParams;
+            	        break;
+
+            	    case 'dashlet':
+            	        $this->_aDashlets[$sName] = $aParams;
+            	        break;
+
+            	    case 'i18n':
+            	        $this->_ai18n[$sName] = $aParams;
+            	        break;
+
+            	    case 'i18nlang':
+            	        $this->_ai18nLang[$sName] = $aParams;
+            	        break;
+
+            	    case 'language':
+            	        $this->_aLanguage[$sName] = $aParams;
+            	        break;
+
+            	    case 'help_language':
+            	        $this->_aHelpLanguage[$sName] = $aParams;
+            	        break;
+
+            	    case 'workflow_trigger':
+            	        $this->_aWFTriggers[$sName] = $aParams;
+            	        break;
+
+            	    case 'column':
+            	        $this->_aColumns[$sName] = $aParams;
+            	        break;
+
+            	    case 'view':
+            	        $this->_aViews[$sName] = $aParams;
+            	        break;
+
+            	    case 'notification_handler':
+            	        $this->_aNotificationHandlers[$sName] = $aParams;
+            	        break;
+
+            	    case 'template_location':
+            	        $this->_aTemplateLocations[$sName] = $aParams;
+            	        break;
+
+            	    case 'criterion':
+            	        $aInit = explode('_|', $aParams[3]);
+        	            $aParams[3] = $aInit;
+            	        $this->_aCriteria[$sName] = $aParams;
+            	        break;
+
+            	    case 'widget':
+            	        $this->_aWidgets[$sName] = $aParams;
+            	        break;
+
+            	    case 'validator':
+            	        $this->_aValidators[$sName] = $aParams;
+            	        break;
+
+            	    case 'interceptor':
+            	        $this->_aInterceptors[$sName] = $aParams;
+            	        break;
+            	}
+        	}
+        }
+    }
+
+    /**
+     * Original load function for the plugins
+     * @deprecated
+     */
+    function load2() {
         if (!$this->isRegistered()) {
             return;
         }
@@ -411,6 +670,7 @@ class KTPlugin {
                 // remember to -start- the upgrade from the "next" version
                 $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
             }
+
             if ($iEndVersion != $this->iVersion) {
                 // we obviously failed.
                 $oEntity->updateFromArray(array(
@@ -421,7 +681,7 @@ class KTPlugin {
                     'friendlyname' => $friendly_name,
                 ));
                 // FIXME we -really- need to raise an error here, somehow.
-                return $oEntity;
+
             } else {
                 $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
@@ -429,8 +689,11 @@ class KTPlugin {
                     'unavailable' => false,
                     'friendlyname' => $friendly_name,
                 ));
-                return $oEntity;
+
             }
+            /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
+            $this->setup();
+            return $oEntity;
         }
         $disabled = 1;
         if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
@@ -446,6 +709,9 @@ class KTPlugin {
         if (PEAR::isError($oEntity)) {
             return $oEntity;
         }
+
+        /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
+        $this->setup();
         return true;
     }
 
