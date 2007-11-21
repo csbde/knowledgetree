@@ -182,7 +182,7 @@ class QueryResultItem
 			case 'IsLive': return (bool) $this->live;
 			case 'Filesize': return $this->filesize;
 			case 'Version': return (string) $this->version;
-			case 'Filename': return (int)$this->filename;
+			case 'Filename': return (string)$this->filename;
 			case 'FolderId': return (int)$this->folderId;
 			case 'Document':
 					if (is_null($this->document))
