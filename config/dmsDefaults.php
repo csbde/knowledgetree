@@ -216,7 +216,8 @@ class KTInit {
          * Eduardo Polidor, et. al.
          */
         if (ini_get('register_globals')) {
-            foreach (array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob) {
+            $aGlobals = array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER);
+            foreach ($aGlobals as $superglob) {
                 foreach ($superglob as $key => $val) {
                     if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $val) {
                         unset($GLOBALS[$key]);
@@ -639,7 +640,14 @@ require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 if ($checkup !== true) {
-    KTPluginUtil::loadPlugins();
+    // Replace function later
+    /* ** Get the page being loaded and load the plugins specific to the page ** */
+    $sScriptName = $GLOBALS['_SERVER']['SCRIPT_NAME'];
+    $sScript = basename($sScriptName);
+    $pos = strpos($sScript, '.');
+    $sType = substr($sScript, 0, $pos);
+
+    KTPluginUtil::loadPlugins($sType);
 }
 
 if ($checkup !== true) {
