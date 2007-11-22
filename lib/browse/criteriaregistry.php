@@ -83,9 +83,8 @@ class KTCriteriaRegistry {
         $sClassName = $aDetails[0];
         $oCriterion =& new $sClassName();
 
-
     if(is_array($aDetails[3])) {
-        call_user_func_array(array(&$oCriterion, 'initialize'), $aDetails[3]);
+        @call_user_func_array(array(&$oCriterion, 'initialize'), $aDetails[3]);
     }
 
 
