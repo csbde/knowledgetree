@@ -120,5 +120,13 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         schedulerUtil::updateRunTime($id, $iNextTime);
         return $iNextTime;
     }
+
+    /**
+     * Toggle the enable/disable on the task
+     */
+    function do_updateStatus() {
+        $fId = schedulerUtil::arrayGet($_REQUEST, 'fId');
+        schedulerUtil::toggleStatus($fId);
+    }
 }
 ?>

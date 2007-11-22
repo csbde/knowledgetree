@@ -28,6 +28,38 @@ var runOnNext = function(fId, sUrl) {
     var transaction = YAHOO.util.Connect.asyncRequest('POST', sUrl, callback, "fId="+fId);
 }
 
+//<!-- Enable / disable the task -->
+var toggleStatus = function(fId, sUrl, sDisableText, sEnableText) {
+
+    var statusLink = document.getElementById('statusLink'+fId);
+    var freqLink = document.getElementById('freqLink'+fId);
+    var runnowLink = document.getElementById('runnowLink'+fId);
+    var freqDrop = document.getElementById('freqDrop'+fId);
+    var fontClass = document.getElementById('font'+fId);
+    var freqDiv = document.getElementById('div'+fId);
+
+    var callback = {
+        success: function(o) {
+            if(statusLink.innerHTML == sDisableText){
+                statusLink.innerHTML = sEnableText;
+                freqLink.style.visibility = "hidden";
+                runnowLink.style.visibility = "hidden";
+                freqDrop.style.visibility = "hidden";
+                fontClass.className = 'descriptiveText';
+                freqDiv.style.display = "none";
+            }else{
+                statusLink.innerHTML = sDisableText;
+                freqLink.style.visibility = "visible";
+                runnowLink.style.visibility = "visible";
+                freqDrop.style.visibility = "visible";
+                freqDiv.style.display = "block";
+                fontClass.className = '';
+            }
+        }
+    }
+    var transaction = YAHOO.util.Connect.asyncRequest('POST', sUrl, callback, "fId="+fId);
+}
+
 var showFrequencyDiv = function(fId) {
     var formDiv = document.getElementById('formDiv');
     var fInput = document.getElementById('fId');

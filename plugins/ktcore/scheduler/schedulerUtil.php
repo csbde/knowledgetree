@@ -77,7 +77,7 @@ class schedulerUtil extends KTUtil
     /**
     * Method to register a task in the schedule
     */
-    function registerTask($sTask, $sUrl, $aParams, $sFreq, $iStartTime = NULL) {
+    function registerTask($sTask, $sUrl, $aParams, $sFreq, $iStartTime = NULL, $sStatus = 'disabled') {
         // Run task on next iteration if no start time given
         $iStartTime = (!empty($iStartTime)) ? strtotime($iStartTime) : time();
 
@@ -101,6 +101,7 @@ class schedulerUtil extends KTUtil
         $aTask['run_time'] = $dNextTime;
         $aTask['previous_run_time'] = $dStartTime;
         $aTask['run_duration'] = '0';
+        $sTask['status'] = $sStatus;
 
         $oEntity = schedulerEntity::createFromArray($aTask);
         if (PEAR::isError($oEntity)){
@@ -127,6 +128,7 @@ class schedulerUtil extends KTUtil
         $aTask['is_complete'] = '0';
         $aTask['run_time'] = date('Y-m-d H:i:s');
         $aTask['run_duration'] = '0';
+        $aTask['status'] = 'enabled';
 
         $oEntity = schedulerEntity::createFromArray($aTask);
         if (PEAR::isError($oEntity)){
@@ -229,6 +231,29 @@ class schedulerUtil extends KTUtil
 
         $oScheduler->setRunTime($iNextTime);
         $oScheduler->update();
+    }
+
+    /**
+    * Toggle whether a task is enabled or disabled. If its a system task, then ignore.
+    */
+    function toggleStatus($id) {
+        $oScheduler = schedulerEntity::get($id);
+
+        if (PEAR::isError($oScheduler)){
+            return _kt('Object can\'t be created');
+        }
+
+        $sStatus = $oScheduler->getStatus();
+
+        if($sStatus == 'system'){
+            // ignore
+            return $sStatus;
+        }
+
+        $sNewStatus = ($sStatus == 'enabled') ? 'disabled' : 'enabled';
+        $oScheduler->setStatus($sNewStatus);
+        $oScheduler->update();
+        return $sNewStatus;
     }
 
     /**
