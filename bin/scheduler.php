@@ -96,7 +96,7 @@ function updateTask($aFieldValues, $iId) {
 function getTaskList() {
     $now = date('Y-m-d H:i:s'); //time();
 
-    $query = "SELECT * FROM scheduler_tasks WHERE is_complete = 0 AND run_time < '{$now}'";
+    $query = "SELECT * FROM scheduler_tasks WHERE is_complete = 0 AND run_time < '{$now}' AND status != 'disabled'";
 
     $result = DBUtil::getResultArray($query);
 

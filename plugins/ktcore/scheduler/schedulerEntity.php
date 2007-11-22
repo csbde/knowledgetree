@@ -52,6 +52,7 @@ class schedulerEntity extends KTEntity
     var $iRun_time;
     var $iPrevious_run_time;
     var $iRun_duration;
+    var $sStatus;
 
     var $_aFieldToSelect = array(
        'iId' => 'id',
@@ -62,7 +63,8 @@ class schedulerEntity extends KTEntity
        'iFrequency' => 'frequency',
        'iRun_time' => 'run_time',
        'iPrevious_run_time' => 'previous_run_time',
-       'iRun_duration' => 'run_duration'
+       'iRun_duration' => 'run_duration',
+       'sStatus' => 'status'
    );
 
    function _table () {
@@ -78,6 +80,7 @@ class schedulerEntity extends KTEntity
     function getParams() { return $this->sScript_params; }
     function getIsComplete() { return $this->bIs_complete; }
     function getFrequency() { return $this->iFrequency; }
+    function getStatus() { return $this->sStatus; }
 
     function getFrequencyByLang() {
          $aFrequencies = array(
@@ -117,6 +120,7 @@ class schedulerEntity extends KTEntity
     function setRunTime($sValue) { return $this->iRun_time = date('Y-m-d H:i:s', $sValue); }
     function setPrevious($sValue) { return $this->iPrevious_run_time = date('Y-m-d H:i:s', $sValue); }
     function setRunDuration($sValue) { return $this->iRun_duration = $sValue; }
+    function setStatus($sValue) { return $this->sStatus = $sValue; }
 
     function get($iId) {
         return KTEntityUtil::get('schedulerEntity', $iId);
@@ -124,10 +128,11 @@ class schedulerEntity extends KTEntity
 
     function getTasksToRun() {
         $aOptions = array('multi' => true);
-        $aFields = array('is_complete', 'run_time');
+        $aFields = array('is_complete', 'run_time', 'status');
         $aValues = array();
         $aValues[] = array('type' => 'equals', 'value' => '0');
         $aValues[] = array('type' => 'before', 'value' => time());
+        $aValues[] = array('type' => 'nequals', 'value' => 'disabled');
 
         return KTEntityUtil::getBy('schedulerEntity', $aFields, $aValues, $aOptions);
     }
@@ -139,9 +144,10 @@ class schedulerEntity extends KTEntity
 
     function getLastRunTime($date) {
         $aOptions = array('multi' => true, 'orderby' => 'previous_run_time DESC');
-        $aFields = array('previous_run_time');
+        $aFields = array('previous_run_time', 'status');
         $aValues = array();
         $aValues[] = array('type' => 'before', 'value' => $date);
+        $aValues[] = array('type' => 'nequals', 'value' => 'disabled');
 
         return KTEntityUtil::getBy('schedulerEntity', $aFields, $aValues, $aOptions);
     }
@@ -175,11 +181,40 @@ class schedulerEntity extends KTEntity
     }
 
     /**
+     * Display the task name. If the task is disabled then grey it out.
+     *
+     */
+    function getTaskDiv() {
+        $sId = $this->getId();
+        $sStatus = $this->getStatus();
+
+        $sDiv = "<span id='font{$sId}' ";
+        $sDiv .= ($sStatus != 'disabled') ? 'class="">' : 'class="descriptiveText">';
+        $sDiv .= $this->getTask().'</span>';
+        return $sDiv;
+    }
+
+    function getFreqDiv() {
+        $sId = $this->getId();
+        $sStatus = $this->getStatus();
+        $sFreqs = $this->getFrequencyByLang();
+
+        $sLink = "<a href='#' id='freqDrop{$sId}' onclick='javascript: showFrequencyDiv(\"{$sId}\");'";
+        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
+        $sLink .= "<div id='div{$sId}'>$sFreqs</div></a>";
+        return $sLink;
+    }
+
+    /**
     * Get a link to alter the frequency of a task
     */
     function getAlterFreqLink() {
         $sId = $this->getId();
-        $sLink = "<a href='#' onclick='javascript: showFrequencyDiv({$sId});'>"._kt('Alter frequency')."</a>";
+        $sStatus = $this->getStatus();
+
+        $sLink = "<a href='#' id='freqLink{$this->getId()}' onclick='javascript: showFrequencyDiv({$sId});'";
+        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
+        $sLink .= _kt('Alter frequency')."</a>";
         return $sLink;
     }
 
@@ -188,8 +223,32 @@ class schedulerEntity extends KTEntity
     */
     function getRunNowLink() {
         $sId = $this->getId();
+        $sStatus = $this->getStatus();
         $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateRunTime');
-        $sLink = "<a href='#' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'>"._kt('Run on next iteration')."</a>";
+
+        $sLink = "<a href='#' id='runnowLink{$this->getId()}' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'";
+        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
+        $sLink .= _kt('Run on next iteration')."</a>";
+        return $sLink;
+    }
+
+    /**
+    * Run the task on the next iteration
+    */
+    function getStatusLink() {
+        $sId = $this->getId();
+        $sStatus = $this->getStatus();
+        if($sStatus == 'system'){
+            return '';
+        }
+
+        $sDisableText = _kt('Disable task');
+        $sEnableText = _kt('Enable task');
+
+        $sLinkText = ($sStatus == 'enabled') ? $sDisableText : $sEnableText;
+        $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateStatus');
+        $sLink = "<a id='statusLink{$this->getId()}' href='#'
+            onclick='javascript: toggleStatus(\"{$sId}\", \"{$sUrl}\", \"{$sDisableText}\", \"{$sEnableText}\");'>{$sLinkText}</a>";
         return $sLink;
     }
 }
