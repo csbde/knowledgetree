@@ -70,7 +70,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                 }
             }
         }
-        return '';
+        return 'PDF Generator';
     }
 
     function form_main() {
