@@ -855,7 +855,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
-INSERT INTO `system_settings` VALUES (1,'lastIndexUpdate','0'),(2,'knowledgeTreeVersion','3.5'),(3,'databaseVersion','3.5.0');
+INSERT INTO `system_settings` VALUES (1,'lastIndexUpdate','0'),(2,'knowledgeTreeVersion','3.5.2'),(3,'databaseVersion','3.5.2');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
