@@ -127,7 +127,7 @@ class KTWebService
     	// Caching was giving some problems, so disable it.
 
     	$config = &KTConfig::getSingleton();
-    	$this->version = $config->get('webservice/version', 2);
+    	$this->version = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
     	$this->mustDebug = $config->get('webservice/debug', false);
     	$this->ktapi = null;
 
@@ -174,6 +174,46 @@ class KTWebService
                 'workflow_state'=>'string',
                 'items' =>"{urn:$this->namespace}kt_folder_items"
          	);
+
+        if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
+         	array(
+		        'id' => 'int',
+        		'item_type' => 'string',
+
+        		'title' => 'string',
+                'filename' => 'string',
+                'filesize' => 'string',
+
+                'created_by' => 'string',
+                'created_date' => 'string',
+
+                'checked_out_by' => 'string',
+                'checked_out_date' => 'string',
+
+                'modified_by' => 'string',
+                'modified_date' => 'string',
+
+                'owned_by' => 'string',
+
+                'version' => 'string',
+
+                'immutable'=>'boolean',
+                'permissions' => 'string',
+
+                'workflow'=>'string',
+                'workflow_state'=>'string',
+
+                'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'storage_path' => 'string',
+
+                'items' =>"{urn:$this->namespace}kt_folder_items"
+         	);
+         }
 
         $this->__typedef["{urn:$this->namespace}kt_folder_items"] =
 			array(
