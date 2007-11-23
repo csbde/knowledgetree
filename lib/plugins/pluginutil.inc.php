@@ -171,8 +171,11 @@ class KTPluginUtil {
 
         	switch ($sClassType) {
         	    case 'portlet':
-        	        $aLocation = explode('_|', $aParams[0]);
-        	        $aParams[0] = $aLocation;
+        	        $aLocation = unserialize($aParams[0]);
+        	        if($aLocation !== false){
+        	           $aParams[0] = $aLocation;
+        	        }
+
         	        call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $aParams);
         	        break;
 
@@ -241,8 +244,10 @@ class KTPluginUtil {
         	        break;
 
         	    case 'criterion':
-            	    $aInit = explode('_|', $aParams[3]);
-        	        $aParams[3] = $aInit;
+            	    $aInit = unserialize($aParams[3]);
+            	    if($aInit !== false){
+        	           $aParams[3] = $aInit;
+            	    }
         	        call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $aParams);
         	        break;
 
