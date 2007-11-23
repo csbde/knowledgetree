@@ -1319,6 +1319,7 @@ CREATE TABLE `scheduler_tasks` (
   `run_time` datetime default NULL,
   `previous_run_time` datetime default NULL,
   `run_duration` float default NULL,
+  `status` ENUM('enabled', 'disabled', 'system') NOT NULL DEFAULT 'disabled',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `task` (`task`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

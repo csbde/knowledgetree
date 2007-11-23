@@ -5,7 +5,7 @@
 {else}
     <span class="descriptiveText">{i18n}No tasks have been run yet.{/i18n}</span>
 {/if}
-&nbsp;<span><a href="{$sAdmin}">Administration page</a></span>
+&nbsp;<span class="descriptiveText">{i18n  arg_link=$sAdminLink}This can be configured via the #link#.{/i18n}</span>
 
 <p>
 {if !$lasttime}

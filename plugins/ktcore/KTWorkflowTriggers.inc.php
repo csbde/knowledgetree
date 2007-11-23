@@ -514,6 +514,15 @@ class BaseCopyActionTrigger extends KTWorkflowTrigger {
 
         $fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', KTUtil::arrayGet($this->aConfig, 'folder_id', 1));
 
+		$oFolder = Folder::get($fFolderId);
+        if(PEAR::isError($oFolder))
+		{
+			$iRoot = 1;
+			$oFolder = Folder::get($iRoot);
+			$fFolderId = 1;
+			
+		}
+
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new BrowseQuery($fFolderId, $this->oUser));
         $collection->setColumnOptions('ktcore.columns.singleselection', array(
@@ -527,7 +536,7 @@ class BaseCopyActionTrigger extends KTWorkflowTrigger {
             'folder_link' => $aOptions['result_url'],
         ));
 
-		$oFolder = Folder::get($fFolderId);
+		
         $aBreadcrumbs = array();
         $folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = explode(',', $oFolder->getParentFolderIds());

@@ -28,15 +28,13 @@
 
     <tr class="{cycle name=rows values=",odd"}">
         <td width='2%'>
-            {$i++} 
+            {$i++}
         </td>
         <td>
-            {$task->getTask()} 
+            {$task->getTaskDiv()}
         </td>
-        <td id="tblCol"><a href="#" onclick="javascript: showFrequencyDiv('{$task->getId()}');">
-            <div id="div{$task->getId()}">
-               {$task->getFrequencyByLang()}
-            </div></a>
+        <td id="tblCol">
+            {$task->getFreqDiv()}
         </td>
         <td>
             <div id="runDiv{$task->getId()}">
@@ -49,11 +47,11 @@
             </div>
             {$task->getPrevious(TRUE)}
         </td>
-        <td>
+        <td width="10%">
             {$task->getRunDuration()}
         </td>
         <td>
-            {$task->getAlterFreqLink()}&nbsp;&nbsp;{$task->getRunNowLink()}
+            {$task->getAlterFreqLink()}&nbsp;&nbsp;{$task->getRunNowLink()}&nbsp;&nbsp;{$task->getStatusLink()}
         </td>
     </tr>
 
@@ -70,7 +68,7 @@
 
 <div id="formDiv" style="display: none; visibility: hidden;">
     <form name="changefreq" id="changefreq" method="post" action="{$sUrl}">
-        
+
         <select name="frequency" id="frequency">
             {html_options options=$aFrequencies}
         </select>
