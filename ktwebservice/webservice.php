@@ -230,7 +230,6 @@ class KTWebService
    			   	'folder_id' => 'int',
         	   	'workflow' => 'string',
         	   	'workflow_state' => 'string',
-        	   	//'checkout_by' => 'string',
         	   	'full_path' => 'string',
         	   	'owner'=>'string',
         	   	'is_immutable'=>'boolean',
@@ -3985,6 +3984,109 @@ class KTWebService
 		return new SOAP_Value('return',"{urn:$this->namespace}kt_search_response", $response);
 	}
 
+
+	/**
+	 * The main json request processing function.
+	 *
+	 * The method name of the method to be called must be $_POST['_method'].
+	 * All parameters may be set in any order, as long as the names correspond with the wdsl names.
+	 *
+	 */
+	function runJSON()
+	{
+		// Let us check that all the POST variables that are expected are set
+		if ($_SERVER['REQUEST_METHOD'] != 'POST')
+		{
+			print json_encode(array('msg'=>'Post request must be made!'));
+			return;
+		}
+		$method = '';
+		if (array_key_exists('_method',$_POST))
+		{
+			$method=$_POST['_method'];
+		}
+		if ($method == '' || !array_key_exists($method,$this->__dispatch_map))
+		{
+			print json_encode(array('msg'=>'Method must exist!'));
+			return;
+		}
+
+		// let us check that we have all the variables for the method to be called.
+		$dispatcher = $this->__dispatch_map[$method];
+		$params = array();
+		foreach($dispatcher['in'] as $var=>$type)
+		{
+			$param = array('var'=>$var,  'set'=>0);
+
+			if (array_key_exists($var, $_POST))
+			{
+				$param['set'] = 1;
+
+				// if it looks json like we should decode it
+				if (substr($_POST[$var],0,1) == '{' && substr($_POST[$var],-1) == '}')
+				{
+					$original = $_POST[$var];
+					$decoded = json_decode($original);
+
+					$_POST[$var] = is_null($decoded)?$original:$decoded;
+					unset($original);
+					unset($decoded);
+				}
+			}
+
+			$params[] = $param;
+		}
+
+		// prepare the parameters and call the method
+		// by passing references to $POST we hopefully save some memory
+
+		$paramstr = '';
+		foreach($params as $param)
+		{
+			$var = $param['var'];
+			if ($param['set'] == 0)
+			{
+				print json_encode(array('msg'=>"'$var' is not set!"));
+				return;
+			}
+			if ($paramstr != '') $paramstr .= ',';
+
+			$paramstr .= "\$_POST['$var']";
+		}
+
+		$result = eval("return \$this->$method($paramstr);");
+
+		// return the json encoded result
+		print json_encode(KTWebService::decodeSOAPValue($result));
+	}
+
+	/**
+	 * Returns a decoded soap value structure.
+	 *
+	 * @param SOAP_Value $value
+	 * @return mixed
+	 */
+	function decodeSOAPValue($value)
+	{
+		if ($value instanceof SOAP_Value)
+		{
+			$x = new stdClass();
+			$v = & $value->value;
+			$vars = array_keys($v);
+
+			foreach($vars as $var)
+			{
+				$x->$var = KTWebService::decodeSOAPValue($v[$var]);
+			}
+
+			return $x;
+		}
+		else
+		{
+			return $value;
+		}
+	}
+
     /**
      * This runs the web service
      *
@@ -3993,6 +4095,12 @@ class KTWebService
      */
     function run()
     {
+    	if (defined('JSON_WEBSERVICE'))
+		{
+			$this->runJSON();
+			return;
+		}
+
     	ob_start();
     	$server = new SOAP_Server();
 
