@@ -174,6 +174,7 @@ namespace MonoTests.KnowledgeTree
 	{
 		public String title;
 		public String filename;
+		public String realFilename;
 		public String content;
 		public int docId;
 		public String 			session;
@@ -185,7 +186,8 @@ namespace MonoTests.KnowledgeTree
 		public Document(int offset, String session, KnowledgeTreeService kt, bool verbose, bool local)
 		{
 			this.title = "kt unit test" + offset;
-			this.filename = Helper.isUnix()?("/tmp/kt_unit_test" + offset + ".txt"):("c:\\kt_unit_test"+offset+".txt");
+			this.realFilename =  "kt_unit_test" + offset + ".txt";
+			this.filename = (Helper.isUnix()?("/tmp/"):("c:\\")) + this.realFilename;
 			this.content = "hello world!";
 			this.docId = 0;
 			this.session = session;
