@@ -1371,9 +1371,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                             );
                     $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                    include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
+                    //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                     $aOptions = array(
-                            'contents' => new KTFSFileLike($sTempFilename),
+                            //'contents' => new KTFSFileLike($sTempFilename),
+                            'temp_file' => $sTempFilename,
                             'metadata' => array(),
                             'novalidate' => true,
                             );
@@ -1427,9 +1428,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         );
                 $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
+                //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                 $aOptions = array(
-                        'contents' => new KTFSFileLike($sTempFilename),
+                        //'contents' => new KTFSFileLike($sTempFilename),
+                        'temp_file' => $sTempFilename,
                         'metadata' => array(),
                         'novalidate' => true,
                         );

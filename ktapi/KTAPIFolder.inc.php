@@ -478,7 +478,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 
 		$options = array(
-			'contents' => new KTFSFileLike($tempfilename),
+			//'contents' => new KTFSFileLike($tempfilename),
+			'temp_file' => $tempfilename,
 			'novalidate' => true,
 			'documenttype' => DocumentType::get($documenttypeid),
 			'description' => $title,
