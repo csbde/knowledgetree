@@ -71,6 +71,29 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
     }
 
+    /**
+     * Upload a temporary file
+     *
+     * @param unknown_type $sUploadedFile
+     * @param unknown_type $sTmpFilePath
+     * @return unknown
+     */
+    function uploadTmpFile($sUploadedFile, $sTmpFilePath) {
+
+        //copy the file accross
+        if (OS_WINDOWS) {
+            $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
+        }
+        if ($this->writeToFile($sUploadedFile, $sTmpFilePath)) {
+            if (file_exists($sTmpFilePath)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
     function writeToFile($sTmpFilePath, $sDocumentFileSystemPath) {
         // Make it easy to write compressed/encrypted storage
 
@@ -162,7 +185,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             }
             // HTTP/1.0
             //header("Pragma: no-cache"); // Don't send this header! It breaks IE.
-            
+
             $oFile = new KTFSFileLike($sPath);
             KTFileLikeUtil::send_contents($oFile);
         } else {

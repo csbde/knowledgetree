@@ -183,7 +183,7 @@ class KTDocumentUtil {
     function &_add($oFolder, $sFilename, $oUser, $aOptions) {
         global $default;
 
-        $oContents = KTUtil::arrayGet($aOptions, 'contents');
+        //$oContents = KTUtil::arrayGet($aOptions, 'contents');
         $aMetadata = KTUtil::arrayGet($aOptions, 'metadata', null, false);
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
@@ -208,20 +208,20 @@ class KTDocumentUtil {
             return $oDocument;
         }
 
-        if (is_null($oContents)) {
-            $res = KTDocumentUtil::setIncomplete($oDocument, 'contents');
-            if (PEAR::isError($res)) {
-                $oDocument->delete();
-                return $res;
-            }
-        } else {
+//        if (is_null($oContents)) {
+//            $res = KTDocumentUtil::setIncomplete($oDocument, 'contents');
+//            if (PEAR::isError($res)) {
+//                $oDocument->delete();
+//                return $res;
+//            }
+//        } else {
             // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Storing contents')));
-            $res = KTDocumentUtil::storeContents($oDocument, $oContents, $aOptions);
+            $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
                 return $res;
             }
-        }
+//        }
 
         if (is_null($aMetadata)) {
             $res = KTDocumentUtil::setIncomplete($oDocument, 'metadata');
@@ -547,7 +547,7 @@ class KTDocumentUtil {
     /**
      * Stores contents (filelike) from source into the document storage
      */
-    function storeContents(&$oDocument, $oContents, $aOptions = null) {
+    function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -557,17 +557,20 @@ class KTDocumentUtil {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get('urls/tmpDirectory');
 
-        $sFilename = tempnam($sBasedir, 'kt_storecontents');
-        $oOutputFile = new KTFSFileLike($sFilename);
-        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
-        if (($res === false)) {
-            return PEAR::raiseError(_kt("Couldn't store contents, and no reason given."));
-        } else if (PEAR::isError($res)) {
-            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
-        }
+        $sFilename = (isset($aOptions['temp_file'])) ? $aOptions['temp_file'] : tempnam($sBasedir, 'kt_storecontents');
+
+//        $oOutputFile = new KTFSFileLike($sFilename);
+//        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
+//        if (($res === false)) {
+//            return PEAR::raiseError(_kt("Couldn't store contents, and no reason given."));
+//        } else if (PEAR::isError($res)) {
+//            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
+//        }
+
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
+
         $res = $oStorage->upload($oDocument, $sFilename);
         if ($res === false) {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('No reason given')));
@@ -578,7 +581,7 @@ class KTDocumentUtil {
         KTDocumentUtil::setComplete($oDocument, 'contents');
 
         if ($aOptions['cleanup_initial_file']) {
-            @unlink($oContents->sFilename);
+            @unlink($sFilename);
         }
 
         return true;
