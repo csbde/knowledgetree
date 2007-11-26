@@ -35,6 +35,12 @@
  * Contributor( s): ______________________________________
  *
  */
+ 
+    $userAgentValue = $_SERVER['HTTP_USER_AGENT'];
+    if (stristr($userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV")) {
+        // Fix for Novell Netdrive 
+        chdir(realpath(dirname(__FILE__)));
+    }
 
     $webdav_pear_path = 'thirdparty/pear';
     $kt_pear_path = '../thirdparty/pear';
