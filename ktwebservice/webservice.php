@@ -183,6 +183,7 @@ class KTWebService
         		'item_type' => 'string',
 
         		'title' => 'string',
+		        'document_type' => 'string',
                 'filename' => 'string',
                 'filesize' => 'string',
 
@@ -199,7 +200,7 @@ class KTWebService
 
                 'version' => 'string',
 
-                'immutable'=>'boolean',
+                'is_immutable'=>'string',
                 'permissions' => 'string',
 
                 'workflow'=>'string',
@@ -258,23 +259,40 @@ class KTWebService
          	array(
          		'status_code'=>'int',
          		'message'=>'string',
+
+  			   	'document_id' => 'int',
         		'title' => 'string',
 		        'document_type' => 'string',
-		        'version' => 'string',
 	   		    'filename' => 'string',
-	   	        'created_date' => 'string',
-        	   	'created_by' => 'string',
-        	   	'modified_date' => 'string',
- 			   	'modified_by' => 'string',
-  			   	'document_id' => 'int',
+	   		    'filesize' => 'int',
    			   	'folder_id' => 'int',
+
+        	   	'created_by' => 'string',
+	   	        'created_date' => 'string',
+
+        	   	'checked_out_by'=>'string',
+        	   	'checked_out_date'=>'string',
+
+ 			   	'modified_by' => 'string',
+        	   	'modified_date' => 'string',
+
+        	   	'owned_by'=>'string',
+
+        	   	'version' => 'string',
+
+        	   	'is_immutable'=>'boolean',
+        	   	'permissions' => 'string',
+
         	   	'workflow' => 'string',
         	   	'workflow_state' => 'string',
         	   	'full_path' => 'string',
-        	   	'owner'=>'string',
-        	   	'is_immutable'=>'boolean',
-        	   	'checked_out_date'=>'string',
-        	   	'checked_out_by'=>'string',
+
+				'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'storage_path' => 'string',
+
         	   	'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
 	         	'links' => "{urn:$this->namespace}kt_linked_documents",
     	     	'transitions' => "{urn:$this->namespace}kt_workflow_transitions",

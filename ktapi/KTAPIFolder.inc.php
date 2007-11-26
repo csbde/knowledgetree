@@ -367,7 +367,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 							'version' => 'n/a',
 
-							'immutable'=> 'n/a',
+							'is_immutable'=> 'n/a',
 							'permissions' => 'n/a',
 
 							'workflow'=>'n/a',
@@ -490,7 +490,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
 
-							'immutable'=> $document->getImmutable()?'true':'false',
+							'is_immutable'=> $document->getImmutable()?'true':'false',
 							'permissions' => 'n/a',
 
 							'workflow'=> $workflow,
