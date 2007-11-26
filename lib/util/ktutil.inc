@@ -185,12 +185,14 @@ class KTUtil {
     	} else {
     		$sCmd = $aCmd;
     	}
+    	
     	$sAppend = KTUtil::arrayGet($aOptions, 'append');
     	if ($sAppend) {
     		$sCmd .= " >> " . escapeshellarg($sAppend);
     	}
     	if (OS_WINDOWS) {
-    		$sCmd = "start /b \"kt\" " . $sCmd;
+    	   $sCmd = str_replace( '/','\\',$sCmd);
+    		 //$sCmd = "start /b \"kt\" " . $sCmd;
     	}
     	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
     	if ($sPopen) {
@@ -202,7 +204,16 @@ class KTUtil {
     	$aOutput = array();
     	$iRet = '';
 
-    	exec($sCmd, $aOutput, $iRet);
+      if (OS_WINDOWS){
+  			$WshShell = new COM("WScript.Shell");
+        $res = $WshShell->Run($sCmd, 0, false);
+        $iRet = 0;
+        $aOutput = array($res);
+  		}else{
+  			 exec($sCmd, $aOutput, $iRet);
+  		}
+    	//exec($sCmd, $aOutput, $iRet);
+
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
     	return $aRet;
