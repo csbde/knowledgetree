@@ -315,6 +315,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
 		$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
 
+		$config = KTConfig::getSingleton();
+
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
 
 		$user = $this->ktapi->get_user();
 
@@ -324,13 +327,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
 
-
 			foreach ($folder_children as $folder)
 			{
 				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder))
 				{
-					$creator=$this->_resolve_user($folder->getCreatorID());
-
 					if ($depth-1 > 0)
 					{
 						$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
@@ -341,6 +341,50 @@ class KTAPI_Folder extends KTAPI_FolderItem
 						$items=array();
 					}
 
+					$creator=$this->_resolve_user($folder->getCreatorID());
+
+
+					if ($wsversion >= 2)
+					{
+						$contents[] = array(
+							'id' => (int) $folder->getId(),
+							'item_type' => 'F',
+
+							'title' => $folder->getName(),
+							'filename' => $folder->getName(),
+							'filesize' => 'n/a',
+
+							'created_by' => is_null($creator)?'n/a':$creator->getName(),
+							'created_date' => 'n/a',
+
+							'checked_out_by' => 'n/a',
+							'checked_out_date' => 'n/a',
+
+							'modified_by' => 'n/a',
+							'modified_date' => 'n/a',
+
+							'owned_by' => 'n/a',
+
+							'version' => 'n/a',
+
+							'immutable'=> 'n/a',
+							'permissions' => 'n/a',
+
+							'workflow'=>'n/a',
+							'workflow_state'=>'n/a',
+
+							'mime_type' => 'folder',
+							'mime_icon_path' => 'folder',
+							'mime_display' => 'Folder',
+
+							'storage_path' => 'n/a',
+
+							'items'=>$items,
+
+					);
+					}
+					else
+					{
 
 					$contents[] = array(
 						'id' => (int) $folder->getId(),
@@ -360,8 +404,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 						'items'=>$items,
 						'workflow'=>'n/a',
 						'workflow_state'=>'n/a'
-
 					);
+					}
+
 				}
 			}
 		}
@@ -376,9 +421,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			{
 				if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document))
 				{
-					$creator=$this->_resolve_user($document->getCreatorID());
-					$checkedoutby=$this->_resolve_user($document->getCheckedOutUserID());
-					$modifiedby=$this->_resolve_user($document->getCreatorID());
+					$created_by=$this->_resolve_user($document->getCreatorID());
+					$created_date = $document->getCreatedDateTime();
+					if (empty($created_date)) $created_date = 'n/a';
+
+					$checked_out_by=$this->_resolve_user($document->getCheckedOutUserID());
+					$checked_out_date = $document->getCheckedOutDate();
+					if (empty($checked_out_date)) $checked_out_date = 'n/a';
+
+					$modified_by=$this->_resolve_user($document->getCreatorID());
+					$modified_date = $document->getCheckedOutDate();
+					if (empty($modified_date)) $modified_date = 'n/a';
+
+					$owned_by =$this->_resolve_user($document->getOwnerID());
 
 					$mimetypeid=$document->getMimeTypeID();
 					if (!array_key_exists($mimetypeid, $mime_cache))
@@ -396,37 +451,73 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					}
 					$mimeinfo=$mime_cache[$mimetypeid];
 
-					$workflow = KTWorkflowUtil::getWorkflowForDocument($document);
+					$workflow='n/a';
+					$state='n/a';
 
-					if (!is_null($workflow) && !PEAR::isError($workflow))
+					$wf = KTWorkflowUtil::getWorkflowForDocument($document);
+
+					if (!is_null($wf) && !PEAR::isError($wf))
 					{
-						$workflow=$workflow->getHumanName();
+						$workflow=$wf->getHumanName();
 
-						$state=KTWorkflowUtil::getWorkflowStateForDocument($document);
-						if (!is_null($state) && !PEAR::isError($state))
+						$ws=KTWorkflowUtil::getWorkflowStateForDocument($document);
+						if (!is_null($ws) && !PEAR::isError($ws))
 						{
 							$state=$state->getHumanName();
 						}
-						else
-						{
-							$state='n/a';
-						}
+					}
+
+					if ($wsversion >= 2)
+					{
+						$contents[] = array(
+							'id' => (int) $document->getId(),
+							'item_type' => 'D',
+
+							'title' => $document->getName(),
+							'filename' => $document->getFileName(),
+							'filesize' => $document->getFileSize(),
+
+							'created_by' => is_null($created_by)?'n/a':$created_by->getName(),
+							'created_date' => $created_date,
+
+							'checked_out_by' => is_null($checked_out_by)?'n/a':$checked_out_by->getName(),
+							'checked_out_date' => $checked_out_date,
+
+							'modified_by' => is_null($modified_by)?'n/a':$modified_by->getName(),
+							'modified_date' => $modified_date,
+
+							'owned_by' => is_null($owned_by)?'n/a':$owned_by->getName(),
+
+							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+
+							'immutable'=> $document->getImmutable()?'true':'false',
+							'permissions' => 'n/a',
+
+							'workflow'=> $workflow,
+							'workflow_state'=> $state,
+
+							'mime_type' => $mime_cache[$mimetypeid]['type'],
+							'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
+							'mime_display' => $mime_cache[$mimetypeid]['display'],
+
+							'storage_path' => $document->getStoragePath(),
+
+							'items'=>array(),
+
+					);
 					}
 					else
 					{
-						$workflow='n/a';
-						$state='n/a';
-					}
 
 
 					$contents[] = array(
 						'id' => (int) $document->getId(),
 						'item_type'=>'D',
 						'title'=>$document->getName(),
-						'creator'=>is_null($creator)?'n/a':$creator->getName(),
-						'checkedoutby'=>is_null($checkedoutby)?'n/a':$checkedoutby->getName(),
-						'modifiedby'=>is_null($modifiedby)?'n/a':$modifiedby->getName(),
-						'filename'=>$document->getName(),
+						'creator'=>is_null($created_by)?'n/a':$created_by->getName(),
+						'checkedoutby'=>is_null($checked_out_by)?'n/a':$checked_out_by->getName(),
+						'modifiedby'=>is_null($modified_by)?'n/a':$modified_by->getName(),
+						'filename'=>$document->getFileName(),
 						'size'=>$document->getFileSize(),
 						'major_version'=>$document->getMajorVersionNumber(),
 						'minor_version'=>$document->getMinorVersionNumber(),
@@ -438,6 +529,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 						'workflow'=>$workflow,
 						'workflow_state'=>$state
 					);
+
+					}
 				}
 			}
 
@@ -478,7 +571,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 
 		$options = array(
-			'contents' => new KTFSFileLike($tempfilename),
+			//'contents' => new KTFSFileLike($tempfilename),
+			'temp_file' => $tempfilename,
 			'novalidate' => true,
 			'documenttype' => DocumentType::get($documenttypeid),
 			'description' => $title,

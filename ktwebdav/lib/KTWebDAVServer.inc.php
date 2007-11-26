@@ -40,8 +40,14 @@ require_once 'HTTP/WebDAV/Server.php'; // thirdparty PEAR
 require_once 'Config.php';             // thirdparty PEAR
 require_once 'Log.php';                // thirdparty PEAR
 
-require_once '../config/dmsDefaults.php'; // This is our plug into KT.
-
+$userAgentValue = $_SERVER['HTTP_USER_AGENT'];
+if (stristr($userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV")) {
+    // Fix for Novell Netdrive 
+    chdir(realpath(dirname(__FILE__)));
+    require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
+}else{
+    require_once '../config/dmsDefaults.php'; // This is our plug into KT.
+}
 
 DEFINE('STATUS_WEBDAV', 5);  // Status code to handle 0 byte PUT    FIXME: Do we still need this!
 
@@ -1371,9 +1377,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                             );
                     $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                    include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
+                    //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                     $aOptions = array(
-                            'contents' => new KTFSFileLike($sTempFilename),
+                            //'contents' => new KTFSFileLike($sTempFilename),
+                            'temp_file' => $sTempFilename,
                             'metadata' => array(),
                             'novalidate' => true,
                             );
@@ -1427,9 +1434,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                         );
                 $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
+                //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                 $aOptions = array(
-                        'contents' => new KTFSFileLike($sTempFilename),
+                        //'contents' => new KTFSFileLike($sTempFilename),
+                        'temp_file' => $sTempFilename,
                         'metadata' => array(),
                         'novalidate' => true,
                         );
@@ -1769,7 +1777,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             // Fix for Mac Goliath
             // Modified - 25/10/07 - remove ktwebdav from document path
-            if($this->dav_client == 'MG'){
+            if($this->dav_client == 'MG' || $this->dav_client == 'MS'){
                 $this->ktwebdavLog("Remove ktwebdav from destination path: ".$options['dest'], 'info', true);
                 if(!(strpos($options['dest'], 'ktwebdav/ktwebdav.php/') === FALSE)){
                     $options['dest'] = substr($options['dest'], 22);
@@ -1894,6 +1902,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
+            $options['dest'] = $this->_slashify($options['dest']);
             $this->ktwebdavLog("Entering _MOVEFolder. options are " . print_r($options, true), 'info', true);
 
             /* ** RFC 2518 Section 8.9.2. A folder move must have a depth of 'infinity'.
@@ -1903,9 +1912,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 return "400 Bad request - depth must be 'inifinity'.";
             }
 
-            // Fix for Mac Goliath
+            // Fix for Mac Goliath - and for Novell Netdrive
             // Modified - 30/10/07 - remove ktwebdav from folder path
-            if($this->dav_client == 'MG'){
+            if($this->dav_client == 'MG' || $this->dav_client == 'MS'){
                 $this->ktwebdavLog("Remove ktwebdav from destination path: ".$options['dest'], 'info', true);
                 if(!(strpos($options['dest'], 'ktwebdav/ktwebdav.php/') === FALSE)){
                     $options['dest'] = substr($options['dest'], 22);

@@ -84,9 +84,9 @@ class KTPlugin {
 
         // Register helper in DB
         if(is_array($aLocation)){
-            $sLocation = implode('_|', $aLocation);
+            $aLocation = serialize($aLocation);
         }
-        $params = $sLocation.'|'.$sPortletClassName.'|'.$sPortletNamespace.'|'.$sFilename.'|'.$this->sNamespace;
+        $params = $aLocation.'|'.$sPortletClassName.'|'.$sPortletNamespace.'|'.$sFilename.'|'.$this->sNamespace;
         $this->registerPluginHelper($sPortletNamespace, $sPortletClassName, $sFilename, $params, 'general', 'portlet');
     }
 
@@ -288,10 +288,10 @@ class KTPlugin {
 
         // Register helper in DB
         if(is_array($aInitialize)){
-            $sInitialize = implode('_|', $aInitialize);
+            $aInitialize = serialize($aInitialize);
         }
 
-        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$sInitialize;
+        $params = $sClassName.'|'.$sNamespace.'|'.$sFilename.'|'.$aInitialize;
         $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'general', 'criterion');
     }
 
@@ -404,8 +404,10 @@ class KTPlugin {
 
             	switch ($sClassType) {
             	    case 'portlet':
-            	        $aLocation = explode('_|', $aParams[0]);
-        	            $aParams[0] = $aLocation;
+            	        $aLocation = unserialize($aParams[0]);
+            	        if($aLocation != false){
+        	               $aParams[0] = $aLocation;
+            	        }
                         $this->_aPortlets[$sName] = $aParams;
             	        break;
 
@@ -474,8 +476,10 @@ class KTPlugin {
             	        break;
 
             	    case 'criterion':
-            	        $aInit = explode('_|', $aParams[3]);
-        	            $aParams[3] = $aInit;
+            	        $aInit = unserialize($aParams[3]);
+            	        if($aInit != false){
+        	               $aParams[3] = $aInit;
+            	        }
             	        $this->_aCriteria[$sName] = $aParams;
             	        break;
 
