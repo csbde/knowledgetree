@@ -42,7 +42,7 @@ require_once 'Log.php';                // thirdparty PEAR
 
 $userAgentValue = $_SERVER['HTTP_USER_AGENT'];
 if (stristr($userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV")) {
-    // Fix for Novell Netdrive 
+    // Fix for Novell Netdrive
     chdir(realpath(dirname(__FILE__)));
     require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
 }else{
@@ -1217,7 +1217,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $sQuery .= "ON D.metadata_version_id = DM.id ";
             $sQuery .= "LEFT JOIN document_content_version AS DC ";
             $sQuery .= "ON DM.content_version_id = DC.id ";
-            $sQuery .= "WHERE D.folder_id = ? AND DC.filename = ?";
+            $sQuery .= "WHERE D.folder_id = ? AND DC.filename = ? AND D.status_id=1";
 
             $aParams = array($iFolderID, $sFileName);
             $iDocumentID = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
