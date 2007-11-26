@@ -727,7 +727,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::setComplete($oDocument, 'contents');
 
-        if ($aOptions['cleanup_initial_file']) {
+        if ($aOptions['cleanup_initial_file'] && file_exists($sFilename)) {
             @unlink($sFilename);
         }
 
