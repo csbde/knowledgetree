@@ -1405,111 +1405,68 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$detail = array();
 		$document = $this->document;
 
+		// get the document id
+		$detail['document_id'] = (int) $document->getId();
+
+		// get the title
 		$detail['title'] = $document->getName();
 
+		// get the document type
 		$documenttypeid=$document->getDocumentTypeID();
+		$documenttype = '* unknown *';
 		if (is_numeric($documenttypeid))
 		{
-			$documenttype = DocumentType::get($documenttypeid);
+			$dt = DocumentType::get($documenttypeid);
 
-			$documenttype=$documenttype->getName();
-		}
-		else
-		{
-			$documenttype = '* unknown *';
+			if (!is_null($dt) && !PEAR::isError($dt))
+			{
+				$documenttype=$dt->getName();
+			}
 		}
 		$detail['document_type'] = $documenttype;
 
-		$detail['version'] = $document->getVersion();
+		// get the filename
 		$detail['filename'] = $document->getFilename();
 
-		$detail['created_date'] = $document->getCreatedDateTime();
+		// get the filesize
+		$detail['filesize'] = (int) $document->getFileSize();
 
-		$userid = $document->getCreatorID();
-		if (is_numeric($userid))
-		{
-			$user = User::get($userid);
-			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-		}
-		else
-		{
-			$username='n/a';
-		}
-		$detail['created_by'] = $username;
-		$detail['updated_date'] = $document->getLastModifiedDate();
-		$detail['modified_date'] = $document->getLastModifiedDate();
-
-		$userid = $document->getModifiedUserId();
-		if (is_numeric($userid))
-		{
-			$user = User::get($userid);
-			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-		}
-		else
-		{
-			$username='n/a';
-		}
-		$detail['modified_by'] = $username;
-		$detail['updated_by'] = $username;
-		$detail['document_id'] = (int) $document->getId();
+		// get the folder id
 		$detail['folder_id'] = (int) $document->getFolderID();
 
-		$workflowid = $document->getWorkflowId();
-		if (is_numeric($workflowid))
-		{
-			$workflow = KTWorkflow::get($workflowid);
-			$workflowname=(is_null($workflow) || PEAR::isError($workflow))?'* unknown *':$workflow->getName();
-		}
-		else
-		{
-			$workflowname='n/a';
-		}
-		$detail['workflow'] = $workflowname;
-
-		$stateid = $document->getWorkflowStateId();
-		if (is_numeric($stateid))
-		{
-			$state = KTWorkflowState::get($stateid);
-			$workflowstate=(is_null($state) || PEAR::isError($state))?'* unknown *':$state->getName();
-		}
-		else
-		{
-			$workflowstate = 'n/a';
-		}
-		$detail['workflow_state']=$workflowstate;
-
-		$userid = $document->getOwnerID();
-
+		// get the creator
+		$userid = $document->getCreatorID();
+		$username='n/a';
 		if (is_numeric($userid))
 		{
+			$username = '* unknown *';
 			$user = User::get($userid);
-			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
 		}
-		else
-		{
-			$username = 'n/a';
-		}
-		$detail['owner'] = $username;
+		$detail['created_by'] = $username;
 
-		$detail['is_immutable'] = (bool) $document->getImmutable();
+		// get the creation date
+		$detail['created_date'] = $document->getCreatedDateTime();
 
-
+		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
-
+		$username='n/a';
 		if (is_numeric($userid))
 		{
+			$username = '* unknown *';
 			$user = User::get($userid);
-			$username=(is_null($user) || PEAR::isError($user))?'* unknown *':$user->getName();
-		}
-		else
-		{
-			$username = 'n/a';
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
 		}
 		$detail['checked_out_by'] = $username;
 
+		// get the checked out date
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
-
-
 		if ($major == 3 && $minor >= 5)
 		{
 			$detail['checked_out_date'] = $document->getCheckedOutDate();
@@ -1520,7 +1477,83 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		if (is_null($detail['checked_out_date'])) $detail['checked_out_date'] = 'n/a';
 
+		// get the modified user
+		$userid = $document->getModifiedUserId();
+		$username='n/a';
+		if (is_numeric($userid))
+		{
+			$username = '* unknown *';
+			$user = User::get($userid);
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
+		}
+		$detail['modified_by'] = $detail['updated_by'] = $username;
+
+		// get the modified date
+		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
+
+		// get the owner
+		$userid = $document->getOwnerID();
+		$username='n/a';
+		if (is_numeric($userid))
+		{
+			$username = '* unknown *';
+			$user = User::get($userid);
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
+		}
+		$detail['owned_by'] = $username;
+
+		// get the version
+		$detail['version'] = $document->getVersion();
+
+		// check immutability
+		$detail['is_immutable'] = (bool) $document->getImmutable();
+
+		// check permissions
+		$detail['permissions'] = 'not available';
+
+		// get workflow name
+		$workflowid = $document->getWorkflowId();
+		$workflowname='n/a';
+		if (is_numeric($workflowid))
+		{
+			$workflow = KTWorkflow::get($workflowid);
+			if (!is_null($workflow) && !PEAR::isError($workflow))
+			{
+				$workflowname = $workflow->getName();
+			}
+		}
+		$detail['workflow'] = $workflowname;
+
+		// get the workflow state
+		$stateid = $document->getWorkflowStateId();
+		$workflowstate = 'n/a';
+		if (is_numeric($stateid))
+		{
+			$state = KTWorkflowState::get($stateid);
+			if (!is_null($state) && !PEAR::isError($state))
+			{
+				$workflowstate = $state->getName();
+			}
+		}
+		$detail['workflow_state']=$workflowstate;
+
+		// get the full path
 		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
+
+		// get mime info
+		$mimetypeid = $document->getMimeTypeID();
+		$detail['mime_type'] =KTMime::getMimeTypeName($mimetypeid);
+		$detail['mime_icon_path'] =KTMime::getIconPath($mimetypeid);
+		$detail['mime_display'] =KTMime::getFriendlyNameForString($type);
+
+		// get the storage path
+		$detail['storage_path'] = $document->getStoragePath();
 
 		return $detail;
 	}
