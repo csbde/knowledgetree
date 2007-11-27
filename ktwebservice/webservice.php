@@ -263,6 +263,7 @@ class KTWebService
   			   	'document_id' => 'int',
         		'title' => 'string',
 		        'document_type' => 'string',
+        	   	'full_path' => 'string',
 	   		    'filename' => 'string',
 	   		    'filesize' => 'int',
    			   	'folder_id' => 'int',
@@ -285,7 +286,6 @@ class KTWebService
 
         	   	'workflow' => 'string',
         	   	'workflow_state' => 'string',
-        	   	'full_path' => 'string',
 
 				'mime_type' => 'string',
                 'mime_icon_path' => 'string',
@@ -304,28 +304,51 @@ class KTWebService
         if (defined('HAS_SEARCH_FUNCTIONALITY'))
         {
 
+
+
+
+
+
+
+
         $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
          	array(
 				'document_id' => 'int',
+
 				'relevance' => 'float',
         		'text' => 'string',
+
 				'title' => 'string',
+				'document_type' => 'string',
         		'fullpath' => 'string',
-        		'filesize' => 'int',
-        		'version' => 'string',
-        		'filename' => 'string',
+				'filename' => 'string',
+				'filesize' => 'int',
         		'folder_id' => 'int',
-        		'workflow' => 'string',
-        		'workflow_state' => 'string',
-        		'mime_type' => 'string',
-        		'owner' => 'string',
+
         		'created_by' => 'string',
         		'created_date' => 'string',
-        		'modified_by' => 'string',
-        		'modified_date' => 'string',
+
         		'checked_out_by' => 'string',
         		'checked_out_date' => 'string',
+
+        		'modified_by' => 'string',
+        		'modified_date' => 'string',
+
+        		'owned_by' => 'string',
+
+        		'version' => 'string',
         		'is_immutable' => 'boolean',
+        		'permissions' => 'string',
+
+        		'workflow' => 'string',
+        		'workflow_state' => 'string',
+
+				'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'storage_path' => 'string',
+
         		'status' => 'string',
          	);
 
