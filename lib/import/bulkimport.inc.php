@@ -105,7 +105,8 @@ class KTBulkImportManager {
     }
 
     function _importdocument($oFolder, $sPath) {
-        $aInfo = $this->oStorage->getDocumentInfo($sPath);
+        //$aInfo = $this->oStorage->getDocumentInfo($sPath);
+        $sTmpPath = $this->oStorage->sBasePath;
         if (PEAR::isError($aInfo)) {
             return $aInfo;
         }
@@ -122,7 +123,8 @@ class KTBulkImportManager {
         // else
         $aOptions = array(
             // XXX: Multiversion Import
-            'contents' => $aInfo->aVersions[0],
+            //'contents' => $aInfo->aVersions[0],
+            'temp_file' => sprintf("%s/%s", $sTmpPath, $sPath),
             'metadata' => $this->aMetadata,
             'documenttype' => $this->oDocumentType,
         );

@@ -62,7 +62,7 @@ class KTZipImportStorage extends KTFSImportStorage {
             "-d", $sTmpPath,
             $this->sZipPath,
         );
-        $aRes = KTUtil::pexec($aArgs);
+        $aRes = KTUtil::pexec($aArgs, array('exec_wait' => 'true'));
 
         if ($aRes['ret'] !== 0) {
             return PEAR::raiseError(_kt("Could not retrieve contents from zip storage"));

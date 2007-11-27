@@ -192,11 +192,13 @@ class KTUtil {
     	}
     	if (OS_WINDOWS) {
     	   $sCmd = str_replace( '/','\\',$sCmd);
-    		 //$sCmd = "start /b \"kt\" " . $sCmd;
     	}
     	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
     	if ($sPopen) {
-    		return popen($sCmd, $sPopen);
+        	if (OS_WINDOWS) {
+        		 $sCmd = "start /b \"kt\" " . $sCmd;
+        	}
+      		return popen($sCmd, $sPopen);
     	}
 
     	// for exec, check return code and output...
@@ -205,14 +207,19 @@ class KTUtil {
     	$iRet = '';
 
       if (OS_WINDOWS){
+        $wait = false;
+        if(isset($aOptions['exec_wait']) && ($aOptions['exec_wait'] == 'true')){
+            $wait = true;
+        }
+      
   			$WshShell = new COM("WScript.Shell");
-        $res = $WshShell->Run($sCmd, 0, false);
+        $res = $WshShell->Run($sCmd, 0, $wait);
+        
         $iRet = 0;
         $aOutput = array($res);
   		}else{
   			 exec($sCmd, $aOutput, $iRet);
   		}
-    	//exec($sCmd, $aOutput, $iRet);
 
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
