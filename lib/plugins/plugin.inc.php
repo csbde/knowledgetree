@@ -395,6 +395,9 @@ class KTPlugin {
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
+        // Include any required resources, javascript files, etc
+        $this->run_setup();
+
         if(!empty($aPluginHelpers)){
             foreach ($aPluginHelpers as $plugin) {
                 $sName = $plugin['namespace'];
@@ -629,6 +632,10 @@ class KTPlugin {
     }
 
     function setup() {
+        return;
+    }
+
+    function run_setup() {
         return;
     }
 
