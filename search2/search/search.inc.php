@@ -554,27 +554,45 @@ function processSearchExpression($query)
     		{
     			 $item = array(
 						'document_id' => (int) $hit->DocumentID,
-						'title' => (string) $hit->Title,
+
 						'relevance' => (float) $hit->Rank,
         				'text' => (string)  $noText?'':$hit->Text,
-        				'filesize' => (int) $hit->Filesize,
+
+        				'title' => (string) $hit->Title,
+        				'document_type'=> $hit->DocumentType,
         				'fullpath' => (string) $hit->FullPath,
-        				'version' => (string) $hit->Version,
         				'filename' => (string) $hit->Filename,
-        				'checked_out_by' => (string) $hit->CheckedOutUser,
-        				'checked_out_date' => (string) $hit->DateCheckedOut,
-        				'is_available' => (bool) $hit->IsAvailable,
-        				'workflow' => (string) $hit->WorkflowOnly,
-        				'workflow_state' => (string) $hit->WorkflowStateOnly,
+        				'filesize' => (int) $hit->Filesize,
         				'folder_id' => (int) $hit->FolderId,
-        				'mime_type' => (string) $hit->MimeType,
-						'modified_by' => (string) $hit->ModifiedBy,
-						'modified_date' => (string) $hit->DateModified,
+
 						'created_by' => (string) $hit->CreatedBy,
 						'created_date' => (string) $hit->DateCreated,
-						'owner' => (string) $hit->Owner,
-						'is_immutable'=> (bool) $hit->Immutable,
-						'status' => (string) $hit->Status
+
+						'modified_by' => (string) $hit->ModifiedBy,
+						'modified_date' => (string) $hit->DateModified,
+
+						'checked_out_by' => (string) $hit->CheckedOutUser,
+        				'checked_out_date' => (string) $hit->DateCheckedOut,
+
+						'owned_by' => (string) $hit->Owner,
+
+        				'version' => (string) $hit->Version,
+        				'is_immutable'=> (bool) $hit->Immutable,
+        				'permissions'=> $hit->Permissions,
+
+        				'workflow' => (string) $hit->WorkflowOnly,
+        				'workflow_state' => (string) $hit->WorkflowStateOnly,
+
+        				'mime_type' => (string) $hit->MimeType,
+        				'mime_icon_path' => (string) $hit->MimeIconPath,
+        				'mime_display' => (string) $hit->MimeDisplay,
+
+						'storage_path' => (string) $hit->StoragePath,
+
+						'status' => (string) $hit->Status,
+
+        				'is_available' => (bool) $hit->IsAvailable,
+
     				);
 
     				$results[] = $item;
