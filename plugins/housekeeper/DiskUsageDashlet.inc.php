@@ -114,6 +114,10 @@ class DiskUsageDashlet extends KTBaseDashlet
 				{
 					$colour = 'orange';
 				}
+                elseif ( $usedp < 100 - $this->warningPercent)
+                {
+                    $colour = 'none';
+                }
 
 				$usage[] = array(
 						'filesystem'=>$filesystem,
