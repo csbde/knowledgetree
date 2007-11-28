@@ -182,6 +182,9 @@ class KTWebService
 		        'id' => 'int',
         		'item_type' => 'string',
 
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+
         		'title' => 'string',
 		        'document_type' => 'string',
                 'filename' => 'string',
@@ -261,6 +264,10 @@ class KTWebService
          		'message'=>'string',
 
   			   	'document_id' => 'int',
+
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+
         		'title' => 'string',
 		        'document_type' => 'string',
         	   	'full_path' => 'string',
@@ -279,7 +286,7 @@ class KTWebService
 
         	   	'owned_by'=>'string',
 
-        	   	'version' => 'string',
+        	   	'version' => 'float',
 
         	   	'is_immutable'=>'boolean',
         	   	'permissions' => 'string',
@@ -293,6 +300,7 @@ class KTWebService
 
                 'storage_path' => 'string',
 
+
         	   	'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
 	         	'links' => "{urn:$this->namespace}kt_linked_documents",
     	     	'transitions' => "{urn:$this->namespace}kt_workflow_transitions",
@@ -304,16 +312,12 @@ class KTWebService
         if (defined('HAS_SEARCH_FUNCTIONALITY'))
         {
 
-
-
-
-
-
-
-
         $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
          	array(
 				'document_id' => 'int',
+
+				'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
 
 				'relevance' => 'float',
         		'text' => 'string',
@@ -336,7 +340,7 @@ class KTWebService
 
         		'owned_by' => 'string',
 
-        		'version' => 'string',
+        		'version' => 'float',
         		'is_immutable' => 'boolean',
         		'permissions' => 'string',
 
@@ -462,11 +466,28 @@ class KTWebService
          		'datetime' => 'string'
          		);
 
+        if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
+         	array(
+         		'transaction_name'=>'string',
+         		'username'=>'string',
+         		'version' => 'float',
+         		'comment' => 'string',
+         		'datetime' => 'string'
+         		);
+         }
+
+
     	$this->__typedef["{urn:$this->namespace}kt_linked_document"] =
          	array(
          		'document_id'=>'int',
-         		'title'=>'string',
-         		'size' => 'int',
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+                'title'=>'string',
+         		'document_type'=>'string',
+         		'filesize' => 'int',
+         		'version' => 'float',
          		'workflow' => 'string',
          		'workflow_state' => 'string',
          		'link_type' => 'string'
@@ -507,6 +528,17 @@ class KTWebService
          		'metadata_version'=>'string',
          		'content_version'=>'string',
          		);
+
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
+         	array(
+         		'user'=>'string',
+         		'metadata_version'=>'int',
+         		'content_version'=>'float',
+         		);
+         }
+
 
         $this->__typedef["{urn:$this->namespace}kt_document_version_history"] =
 			array(
@@ -1022,6 +1054,12 @@ class KTWebService
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_client_policies_response" ),
             );
+
+          if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_client_policies']['in'] = array('session_id'=>'string', 'client'=>'string');
+
+            }
 
 
     }
@@ -1717,35 +1755,59 @@ class KTWebService
     		$detail['version_history'] = array();
     		$detail['transaction_history'] = array();
 
-
     		if (stripos($detailstr,'M') !== false)
     		{
     			$response = $this->get_document_metadata($session_id, $document_id);
     			$detail['metadata'] = $response->value['metadata'];
+    			$detail['metadata']->name = 'metadata';
+    		}
+    		else
+    		{
+    			$detail['metadata'] = KTWebService::_encode_metadata_fields($detail['metadata']);
     		}
 
     		if (stripos($detailstr,'L') !== false)
     		{
-    			$response = $this->get_document_metadata($session_id, $document_id);
+    			$response = $this->get_document_links($session_id, $document_id);
     			$detail['links'] = $response->value['links'];
+    			$detail['links']->name = 'links';
+    		}
+    		else
+    		{
+    			$detail['links'] = KTWebService::_encode_document_links($detail['links']);
     		}
 
     		if (stripos($detailstr,'T') !== false)
     		{
     			$response = $this->get_document_workflow_transitions($session_id, $document_id);
-    			$detail['transitions'] = $response->value['transitions'];
+    			$detail['transitions'] =  $response->value['transitions'] ;
+    			$detail['transitions']->name = 'transitions';
+    		}
+    		else
+    		{
+    			$detail['transitions'] = KTWebService::_encode_document_workflow_transitions($detail['transitions']);
     		}
 
     		if (stripos($detailstr,'V') !== false)
     		{
     			$response = $this->get_document_version_history($session_id, $document_id);
-    			$detail['version_history'] = $response->value['history'];
+    			$detail['version_history'] =  $response->value['history'];
+    			$detail['version_history']->name = 'version_history';
+    		}
+    		else
+    		{
+    			$detail['version_history'] = KTWebService::_encode_version_history($detail['version_history'],'version_history');
     		}
 
     		if (stripos($detailstr,'H') !== false)
     		{
     			$response = $this->get_document_transaction_history($session_id, $document_id);
-    			$detail['transaction_history'] = $response->value['history'];
+    			$detail['transaction_history'] =  $response->value['history'];
+    			$detail['transaction_history']->name = 'transaction_history';
+    		}
+    		else
+    		{
+    			$detail['transaction_history'] = KTWebService::_encode_transaction_history($detail['transaction_history'],'transaction_history');
     		}
 
     	}
@@ -1826,65 +1888,10 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
 
-    	$detailstr = $detail;
-
-    	$detail = $document->get_detail();
-    	if (PEAR::isError($detail))
-    	{
-    		$response['status_code'] = KTWS_ERR_PROBLEM;
-    		$response['message'] = $detail->getMessage();
-
-    		$this->debug("get_document_detail_by_name - cannot get document detail - "  . $detail->getMessage(), $session_id);
-
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-    	}
-
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
-
-
-    	if ($this->version >= 2)
-    	{
-
-    	$detail['metadata'] = array();
-    	$detail['links'] = array();
-    	$detail['transitions'] = array();
-    	$detail['version_history'] = array();
-    	$detail['transaction_history'] = array();
-
-		if (stripos($detailstr,'M') !== false)
-		{
-			$response = $this->get_document_metadata($session_id, $document_id);
-			$detail['metadata'] = $response->value['metadata'];
-		}
-
-		if (stripos($detailstr,'L') !== false)
-		{
-			$response = $this->get_document_metadata($session_id, $document_id);
-			$detail['links'] = $response->value['links'];
-		}
-
-		if (stripos($detailstr,'T') !== false)
-		{
-			$response = $this->get_document_workflow_transitions($session_id, $document_id);
-			$detail['transitions'] = $response->value['transitions'];
-		}
-
-		if (stripos($detailstr,'V') !== false)
-		{
-			$response = $this->get_document_version_history($session_id, $document_id);
-			$detail['version_history'] = $response->value['history'];
-		}
-
-		if (stripos($detailstr,'H') !== false)
-		{
-			$response = $this->get_document_transaction_history($session_id, $document_id);
-			$detail['transaction_history'] = $response->value['history'];
-		}
-    	}
-
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);
+    	return $this->get_document_detail($session_id, $document->documentid, $detail);
     }
+
+
 
     /**
      * Adds a document to the repository.
@@ -3174,80 +3181,6 @@ class KTWebService
     }
 
     /**
-     * Encodes the array as a kt_metadata_selection_item
-     *
-     * @param aray $item
-     * @param string $name
-     * @return SOAP_Value of kt_metadata_selection_item
-     * @access private
-     * @static
-     */
-    function _encode_metadata_selection_item($item, $name='item')
-    {
-    	if (!is_null($item['id']))
-    	{
-    		$item['id'] = (int) $item['id'];
-    	}
-
-    	if (!is_null($item['parent_id']))
-    	{
-    		$item['parent_id'] = (int) $item['parent_id'];
-    	}
-
-    	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_selection_item", $item);
-    }
-
-    /**
-     * Encode an array as kt_metadata_selection
-     *
-     * @param array $selection
-     * @param string $name
-     * @return SOAP_Value of kt_metadata_selection
-     * @access private
-     * @static
-     */
-
-    function _encode_metadata_selection($selection, $name='selection')
-    {
-    	$encoded=array();
-    	foreach($selection as $field)
-    	{
-    		$encoded[] = KTWebService::_encode_metadata_selection_item($field);
-    	}
-
-    	if (empty($encoded))
-    	{
-    		$encoded=null;
-    	}
-
-    	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_selection", $encoded);
-    }
-
-    /**
-     * Encode an array as kt_metadata_field
-     *
-     * @param arra $field
-     * @param string $name
-     * @return SOAP_Value of kt_metadata_field
-     * @access private
-     * @static
-     */
-
-    function _encode_metadata_field($field, $name='field')
-    {
-    	if (!empty($field['selection']))
-    	{
-    		$field['selection'] = KTWebService::_encode_metadata_selection($field['selection']);
-    	}
-    	if (!is_null($field['required']))
-    	{
-    		$field['required'] = (bool) $field['required'];
-    	}
-
-    	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_field", $field);
-    }
-
-    /**
      * Encode an array as kt_metadata_fields
      *
      * @param array $fields
@@ -3258,16 +3191,32 @@ class KTWebService
      */
     function _encode_metadata_fields($fields, $name='fields')
     {
-    	$encoded=array();
-    	foreach($fields as $field)
+
+    	foreach($fields as $key=>$field)
     	{
-    		$encoded[] = KTWebService::_encode_metadata_field($field);
+    		$selection = $field['selection'];
+    		foreach($selection as $skey=>$sitem)
+    		{
+    			if (!is_null($item['id']))
+    			{
+    				$sitem['id'] = (int) $sitem['id'];
+    			}
+
+		    	if (!is_null($sitem['parent_id']))
+    			{
+		    		$sitem['parent_id'] = (int) $sitem['parent_id'];
+    			}
+    			$selection[$skey] = new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_selection_item", $sitem);
+    		}
+
+			$field['selection'] = new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_selection", $selection);
+
+   			$field['required'] = is_null($field['required'])?false:(bool) $field['required'];
+
+    		$fields[$key] = new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_field", $field);
     	}
-    	if (empty($encoded))
-    	{
-    		$encoded=null;
-    	}
-    	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_fields", $encoded);
+
+    	return new SOAP_Value($name,"{urn:$this->namespace}kt_metadata_fields", $fields);
     }
 
     /**
@@ -3558,9 +3507,14 @@ class KTWebService
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['transitions'] = $result;
+    	$response['transitions'] = KTWebService::_encode_document_workflow_transitions($result);
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_workflow_transitions_response", $response);
+	}
+
+	function _encode_document_workflow_transitions($transitions, $name='transitions')
+	{
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_workflow_transitions", $transitions);
 	}
 
 	/**
@@ -3608,20 +3562,6 @@ class KTWebService
 	}
 
 	/**
-	 * Encode an array as kt_document_transaction_history_item
-	 *
-	 * @param array $item
-	 * @param string $name
-	 * @return SOAP_Value of kt_document_transaction_history_item
-     * @access private
-     * @static
-	 */
-	function _encode_transaction_history_item($item, $name='item')
-	{
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_transaction_history_item", $item);
-	}
-
-	/**
 	 * Encode an array as kt_document_transaction_history
 	 *
 	 * @param array $history
@@ -3632,29 +3572,12 @@ class KTWebService
 	 */
 	function _encode_transaction_history($history, $name='history')
 	{
-		$encoded=array();
-		foreach($history as $item)
+		foreach($history as $key=>$item)
 		{
-			$encoded[] = KTWebService::_encode_transaction_history_item($item);
+			$history[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_document_transaction_history_item", $item);
 		}
 
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_transaction_history", $encoded);
-	}
-
-	/**
-	 * Encode an array as kt_document_transaction_history_response
-	 *
-	 * @param array $response
-	 * @param string $name
-	 * @return SOAP_Value of kt_document_transaction_history_response
-     * @access private
-     * @static
-	 */
-	function _encode_transaction_history_response($response, $name='return')
-	{
-		$response['history'] = KTWebService::_encode_transaction_history($response['history']);
-
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_transaction_history_response", $response);
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_transaction_history", $history);
 	}
 
 	/**
@@ -3695,23 +3618,9 @@ class KTWebService
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['history'] = $result;
+    	$response['history'] = KTWebService::_encode_transaction_history($result);
 
-    	return KTWebService::_encode_transaction_history_response($response);
-	}
-
-	/**
-	 * Encode an array as kt_document_version_history_item
-	 *
-	 * @param array $item
-	 * @param string $name
-	 * @return SOAP_Value of kt_document_version_history_item
-     * @access private
-     * @static
-	 */
-	function _encode_version_history_item($item, $name='item')
-	{
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_version_history_item", $item);
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_transaction_history_response", $response);
 	}
 
 	/**
@@ -3725,31 +3634,13 @@ class KTWebService
 	 */
 	function _encode_version_history($history, $name='history')
 	{
-		$encoded=array();
-		foreach($history as $item)
+		foreach($history as $key=>$item)
 		{
-			$encoded[] = KTWebService::_encode_version_history_item($item);
+			$history[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_document_version_history_item", $item);
 		}
 
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_version_history", $encoded);
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_version_history", $history);
 	}
-
-	/**
-	 * Encode an array as kt_document_version_history_response
-	 *
-	 * @param array $response
-	 * @param string $name
-	 * @return SOAP_Value of kt_document_version_history_response
-     * @access private
-     * @static
-	 */
-	function _encode_version_history_response($response, $name='return')
-	{
-		$response['history'] = KTWebService::_encode_version_history($response['history']);
-
-		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_version_history_response", $response);
-	}
-
 
 	/**
 	 * Returns the version history.
@@ -3790,9 +3681,9 @@ class KTWebService
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['history'] = $result;
+    	$response['history'] =KTWebService::_encode_version_history($result);
 
-    	return KTWebService::_encode_version_history_response($response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_version_history_response", $response);
 	}
 
 
@@ -3830,11 +3721,25 @@ class KTWebService
     	}
 
     	$links = $document->get_linked_documents();
-   		$response['links'] = new SOAP_Value('links',"{urn:$this->namespace}kt_linked_documents", $links);
+   		$response['links'] = KTWebService::_encode_document_links($links);
    		$response['status_code'] = KTWS_SUCCESS;
 
 		return new SOAP_Value('return',"{urn:$this->namespace}kt_linked_document_response", $response);
 	}
+
+	function _encode_document_links($links, $name='links')
+	{
+		foreach($links as $key=>$link)
+		{
+			$link['document_id'] = (int) $link['document_id'];
+			$link['filesize'] = (int) $link['filesize'];
+
+			$links[$key] = new SOAP_Value('links',"{urn:$this->namespace}kt_linked_document", $link);
+		}
+
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_linked_documents", $links);
+	}
+
 
 	/**
 	 * Removes a link between documents
@@ -3940,17 +3845,13 @@ class KTWebService
 	}
 
 	function _encode_client_policies($policies)
-        {
-    	$encoded=array();
-    	foreach($policies as $policy)
+    {
+    	foreach($policies as $key=>$policy)
     	{
-    		$encoded[] = new SOAP_Value('policy',"{urn:$this->namespace}kt_client_policy", $policy);
+    		$policies[$key] = new SOAP_Value('policy',"{urn:$this->namespace}kt_client_policy", $policy);
     	}
-    	if (empty($encoded))
-    	{
-    		$encoded=null;
-    	}
-    	return new SOAP_Value('policies',"{urn:$this->namespace}kt_client_policies_array", $encoded);
+
+    	return new SOAP_Value('policies',"{urn:$this->namespace}kt_client_policies_array", $policies);
     }
 
 	/**
@@ -3959,7 +3860,7 @@ class KTWebService
 	 * @param string $session_id
 	 * @return kt_client_policies_response
 	 */
-	function get_client_policies($session_id)
+	function get_client_policies($session_id, $client=null)
 	{
 		$this->debug("get_client_policies('$session_id')");
 		$config = KTConfig::getSingleton();
@@ -4226,7 +4127,6 @@ class KTWebService
     }
 
 }
-
 
 $webservice = new KTWebService();
 $webservice->run();
