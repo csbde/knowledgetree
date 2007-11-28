@@ -7,32 +7,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -72,7 +72,7 @@ class KTBulkImportManager {
 
     function _importfolder($oFolder, $sPath) {
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
-        
+
         $aDocPaths = $this->oStorage->listDocuments($sPath);
         if (PEAR::isError($aDocPaths)) {
             return $aDocPaths;
@@ -91,7 +91,7 @@ class KTBulkImportManager {
             if (Folder::folderExistsName(utf8_encode(basename($sFolderPath)), KTUtil::getId($oFolder))) {
                 $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), utf8_encode(basename($sFolderPath)), $oFolder->getName());
                 $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple(utf8_encode(basename($sFolderPath))) . '"');
-                if (PEAR::isError($aOptions)) { 
+                if (PEAR::isError($aOptions)) {
                     return $aOptions;
                 }
                 if (count($aOptions) != 1) {
@@ -100,7 +100,7 @@ class KTBulkImportManager {
                     $oThisFolder = $aOptions[0];
                 }
             } else {
-                
+
                 if(KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oFolder))
         		{
                 	$oThisFolder = KTFolderUtil::add($oFolder, utf8_encode(basename($sFolderPath)), $this->oUser);
@@ -119,7 +119,7 @@ class KTBulkImportManager {
             }
 
             $res = $this->_importfolder($oThisFolder, $sFolderPath);
-        	
+
             if (PEAR::isError($res)) {
                 return $res;
             }
@@ -128,6 +128,7 @@ class KTBulkImportManager {
 
     function _importdocument($oFolder, $sPath) {
         $aInfo = $this->oStorage->getDocumentInfo($sPath);
+        $sTmpFileName = sprintf("%s/%s", $this->oStorage->sBasePath, $sPath);
         if (PEAR::isError($aInfo)) {
             return $aInfo;
         }
@@ -135,7 +136,7 @@ class KTBulkImportManager {
         /*if (KTDocumentUtil::nameExists($oFolder, utf8_encode(basename($sPath)))) {
             $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
             $oDocument =& Document::getByNameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
-            return $oDocument;            
+            return $oDocument;
         } else if (KTDocumentUtil::fileExists($oFolder, utf8_encode(basename($sPath)))) {
             $_SESSION['KTErrorMessage'][] = sprintf(_kt("The document %s is already present in %s.  Ignoring."), utf8_encode(basename($sPath)), $oFolder->getName());
             $oDocument =& Document::getByFilenameAndFolder(utf8_encode(basename($sPath)), KTUtil::getId($oFolder));
@@ -144,7 +145,8 @@ class KTBulkImportManager {
         // else
         $aOptions = array(
             // XXX: Multiversion Import
-            'contents' => $aInfo->aVersions[0],
+            //'contents' => $aInfo->aVersions[0],
+            'temp_file' => $sTmpFileName,
             'metadata' => $this->aMetadata,
             'documenttype' => $this->oDocumentType,
         );
