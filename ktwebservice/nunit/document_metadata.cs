@@ -108,5 +108,42 @@ namespace MonoTests.KnowledgeTree
 
 	    	}
 
+		[Test]
+		public void UpdateDocumentMetadataWithSpecialCharactersTest()
+		{
+			kt_metadata_fieldset[] fs = new kt_metadata_fieldset[1];
+			fs[0] = new kt_metadata_fieldset();
+			fs[0].fieldset = "General information";
+			fs[0].fields = new kt_metadata_field[3];
+			fs[0].fields[0] = new kt_metadata_field();
+			fs[0].fields[0].name = "Document Author";
+			fs[0].fields[0].value = "Joe \\Soap";
+			fs[0].fields[1] = new kt_metadata_field();
+			fs[0].fields[1].name = "Category";
+			fs[0].fields[1].value = "Tec/hn\\ical/";
+			fs[0].fields[2] = new kt_metadata_field();
+			fs[0].fields[2].name = "Media Type";
+			fs[0].fields[2].value = "Text'";
+
+			kt_sysdata_item[] sysdata = new kt_sysdata_item[0];
+
+			kt_document_detail update_resp = this._kt.update_document_metadata(this._session, this._docId, fs, sysdata);
+			Assert.AreEqual(0, update_resp.status_code);
+			Assert.AreEqual("General information", update_resp.metadata[1].fieldset);
+
+			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[0].name);
+			Assert.AreEqual("Joe \\Soap", update_resp.metadata[1].fields[0].value);
+
+			Assert.AreEqual("Category", update_resp.metadata[1].fields[1].name);
+			Assert.AreEqual("Tec/hn\\ical/", update_resp.metadata[1].fields[1].value);
+
+			Assert.AreEqual("Media Type", update_resp.metadata[1].fields[2].name);
+			Assert.AreEqual("Text'", update_resp.metadata[1].fields[2].value);
+
+
+	    	}
+
+
+
 	}
 }
