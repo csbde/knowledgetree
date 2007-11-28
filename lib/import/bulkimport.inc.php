@@ -150,6 +150,7 @@ class KTBulkImportManager {
             'metadata' => $this->aMetadata,
             'documenttype' => $this->oDocumentType,
         );
+        $aOptions = array_merge($aOptions, $this->aOptions);
         $oDocument =& KTDocumentUtil::add($oFolder, utf8_encode(basename($sPath)), $this->oUser, $aOptions);
         return $oDocument;
     }
