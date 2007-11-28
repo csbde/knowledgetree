@@ -289,7 +289,7 @@ CREATE TABLE `document_fields` (
 CREATE TABLE `document_fields_link` (
   `id` int(11) NOT NULL default '0',
   `document_field_id` int(11) NOT NULL default '0',
-  `value` char(255) NOT NULL default '',
+  `value` mediumtext NOT NULL default '',
   `metadata_version_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `document_field_id` (`document_field_id`),
