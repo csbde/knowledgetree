@@ -197,6 +197,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function get_full_path()
 	{
 		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
+		if (substr($path,0,1) == '/') $path = substr($path,1);
 
 		return $path;
 	}
@@ -350,7 +351,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'id' => (int) $folder->getId(),
 							'item_type' => 'F',
 
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>'n/a',
+
 							'title' => $folder->getName(),
+							'document_type' => 'n/a',
 							'filename' => $folder->getName(),
 							'filesize' => 'n/a',
 
@@ -469,11 +474,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 					if ($wsversion >= 2)
 					{
+						$docTypeId = $document->getDocumentTypeID();
+						$documentType = DocumentType::get($docTypeId);
+
+
 						$contents[] = array(
 							'id' => (int) $document->getId(),
 							'item_type' => 'D',
 
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>'n/a',
+
 							'title' => $document->getName(),
+							'document_type'=>$documentType->getName(),
 							'filename' => $document->getFileName(),
 							'filesize' => $document->getFileSize(),
 

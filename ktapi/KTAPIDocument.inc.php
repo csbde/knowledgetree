@@ -261,7 +261,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res);
 		}
 
-		$oDocumentTransaction = & new DocumentTransaction($this->document, $reason, 'ktcore.transactions.force_checkin');
+		$oDocumentTransaction = new DocumentTransaction($this->document, $reason, 'ktcore.transactions.force_checkin');
 
 		$res = $oDocumentTransaction->create();
 		if (($res === false) || PEAR::isError($res)) {
@@ -280,13 +280,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 			dcv.size,
 			w.name as workflow,
 			ws.name as workflow_state,
-			dlt.name as link_type
+			dlt.name as link_type, dtl.name as document_type,
+			dcv.major_version, dcv.minor_version
 		FROM
 			document_link dl
 			INNER JOIN document_link_types dlt ON dl.link_type_id=dlt.id
 			INNER JOIN documents d ON dl.child_document_id=d.id
 			INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
 			INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+			INNER JOIN document_types_lookup dtl ON dtl.id=dmv.document_type_id
 			LEFT OUTER JOIN workflow_documents wd ON d.id=wd.document_id
 			LEFT OUTER JOIN workflows w ON w.id=wd.workflow_id
 			LEFT OUTER JOIN workflow_states ws ON wd.state_id=ws.id
@@ -319,8 +321,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 			$result[] = array(
 					'document_id'=>(int)$row['document_id'],
+					'custom_document_no'=>'n/a',
+					'oem_document_no'=>'n/a',
 					'title'=> $row['title'],
-					'size'=>(int)$row['size'],
+					'document_type'=> $row['document_type'],
+					'version'=> (float) ($row['major_version'] . '.' . $row['minor_version']),
+					'filesize'=>(int)$row['size'],
 					'workflow'=>empty($row['workflow'])?'n/a':$row['workflow'],
 					'workflow_state'=>empty($row['workflow_state'])?'n/a':$row['workflow_state'],
 					'link_type'=>empty($row['link_type'])?'unknown':$row['link_type'],
@@ -432,7 +438,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
 
-		$oDocumentTransaction = & new DocumentTransaction($this->document, $reason, 'ktcore.transactions.permissions_change');
+		$oDocumentTransaction = new DocumentTransaction($this->document, $reason, 'ktcore.transactions.permissions_change');
 
 		$res = $oDocumentTransaction->create();
 		if (($res === false) || PEAR::isError($res)) {
@@ -776,7 +782,7 @@ class KTAPI_Document extends KTAPI_FolderItem
            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
         }
 
-        $oDocumentTransaction = & new DocumentTransaction($this->document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
+        $oDocumentTransaction = new DocumentTransaction($this->document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
         DBUtil::commit();
@@ -1339,7 +1345,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$workflowid=$this->document->getWorkflowId();
 		if (empty($workflowid))
 		{
-			return new PEAR_Error(KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS);
+			return array();
 		}
 
 		$result = array();
@@ -1402,11 +1408,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// make sure we ge tthe latest
 		$this->clearCache();
 
+		$config = KTConfig::getSingleton();
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+
 		$detail = array();
 		$document = $this->document;
 
 		// get the document id
 		$detail['document_id'] = (int) $document->getId();
+
+		$detail['custom_document_no'] = 'n/a';
+		$detail['oem_document_no'] = 'n/a';
 
 		// get the title
 		$detail['title'] = $document->getName();
@@ -1510,12 +1522,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the version
 		$detail['version'] = $document->getVersion();
+		if ($wsversion >= 2)
+		{
+			$detail['version'] = (float) $detail['version'];
+		}
 
 		// check immutability
 		$detail['is_immutable'] = (bool) $document->getImmutable();
 
 		// check permissions
-		$detail['permissions'] = 'not available';
+		$detail['permissions'] = 'n/a';
 
 		// get workflow name
 		$workflowid = $document->getWorkflowId();
@@ -1550,7 +1566,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$mimetypeid = $document->getMimeTypeID();
 		$detail['mime_type'] =KTMime::getMimeTypeName($mimetypeid);
 		$detail['mime_icon_path'] =KTMime::getIconPath($mimetypeid);
-		$detail['mime_display'] =KTMime::getFriendlyNameForString($type);
+		$detail['mime_display'] =KTMime::getFriendlyNameForString($detail['mime_type']);
 
 		// get the storage path
 		$detail['storage_path'] = $document->getStoragePath();
@@ -1574,7 +1590,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         $options = array();
 
 
-        $oDocumentTransaction = & new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
+        $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 	}
 
@@ -1597,6 +1613,13 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
+        $config = KTConfig::getSingleton();
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		foreach($transactions as $key=>$transaction)
+		{
+			$transactions[$key]['version'] = (float) $transaction['version'];
+		}
+
         return $transactions;
 	}
 
@@ -1609,6 +1632,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
 
+		$config = KTConfig::getSingleton();
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+
         $versions = array();
         foreach ($metadata_versions as $version)
         {
@@ -1618,18 +1644,20 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         	$userid = $document->getModifiedUserId();
 			$user = User::get($userid);
-			if (PEAR::isError($user))
+			$username = 'Unknown';
+			if (!PEAR::isError($user))
 			{
-				$username = $user->getName();
-			}
-			else
-			{
-				$username = 'Unknown';
+				$username = is_null($user)?'n/a':$user->getName();
 			}
 
         	$version['user'] = $username;
         	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
+        	if ($wsversion >= 2)
+        	{
+        		$version['metadata_version'] = (int) $version['metadata_version'];
+        		$version['content_version'] = (float) $version['content_version'];
+        	}
 
             $versions[] = $version;
         }
@@ -1649,7 +1677,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		DBUtil::startTransaction();
 
-		$transaction = & new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
+		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
 
         $transaction->create();
 
