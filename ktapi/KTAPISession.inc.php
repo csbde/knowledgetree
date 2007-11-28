@@ -54,7 +54,7 @@ class KTAPI_Session
 
 		$this->ktapi=&$ktapi;
 		$this->user=&$user;
-		$this->origUserId = $_SESSION['userID'];
+		$this->origUserId = isset($_SESSION['userID'])?$_SESSION['userID']:null;
 		$_SESSION['userID']=$user->getId();
 		$this->active = false;
 	}
