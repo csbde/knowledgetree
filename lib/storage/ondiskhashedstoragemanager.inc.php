@@ -59,8 +59,10 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             global $default;
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
-            //remove the temporary file
-            @unlink($sTmpFilePath);
+            //remove the temporary file if it was uploaded
+            if (is_uploaded_file($sTmpFilePath)){
+                @unlink($sTmpFilePath);
+            }
             if (file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
