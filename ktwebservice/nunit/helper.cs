@@ -3,6 +3,8 @@ using System.Text;
 using System.Net;
 using System.IO; 
 using System.Collections;
+using System.Data;
+using System.Data.Odbc; 
 
 namespace MonoTests.KnowledgeTree
 {
@@ -22,16 +24,55 @@ namespace MonoTests.KnowledgeTree
     	{
 		protected KTWebService 	_kt;
 		protected String 			_session;
-		protected bool	_verbose;
+		protected bool	_verbose;  
+
 	
 		public KTTest()
 		{
 			this._kt = new KTWebService();
 			kt_response response = this._kt.login("admin","admin","127.0.0.1");
 			this._session = response.message;
-			this._verbose = false;
-
+			this._verbose = false;   
+			this.setupDb();
 		}
+		
+		void setupDb()
+		{
+			 
+			String connectionString = "DSN=ktdms;" + "UID=root;" + "PWD=";
+			try
+	  		{
+       				IDbConnection dbcon = new OdbcConnection(connectionString);
+       				if (dbcon == null) 
+				{
+					System.Console.WriteLine("Cannot create connection");
+       				}
+				dbcon.Open();
+       				IDbCommand dbcmd = dbcon.CreateCommand();
+         			if (dbcmd == null) 
+				{
+					System.Console.WriteLine("Cannot create command");
+				}
+       				dbcmd.CommandText = "DELETE FROM folders WHERE id > 1";
+       				dbcmd.CommandType = CommandType.Text;
+        			dbcmd.ExecuteNonQuery();
+       				dbcmd.CommandText = "DELETE FROM documents";
+       				dbcmd.CommandType = CommandType.Text;
+        			dbcmd.ExecuteNonQuery();
+				dbcmd.CommandText = "DELETE FROM document_types_lookup WHERE name = 'NewType'";
+        			dbcmd.ExecuteNonQuery();
+				dbcmd.CommandText = "INSERT INTO document_types_lookup(id,name) VALUES(2,'NewType')";
+        			dbcmd.ExecuteNonQuery();
+				dbcmd.Dispose();
+       				dbcmd = null;
+       				dbcon.Close();
+       				dbcon = null;
+       			}
+       			catch(Exception ex)
+       			{
+       				System.Console.WriteLine(ex.Message);
+       			}
+		}		
 		
 		~KTTest()
 		{
@@ -188,7 +229,7 @@ namespace MonoTests.KnowledgeTree
 			this.title = "kt unit test" + offset;
 			this.realFilename =  "kt_unit_test" + offset + ".txt";
 			this.filename = (Helper.isUnix()?("/tmp/"):("c:\\")) + this.realFilename;
-			this.content = "hello world!";
+			this.content = "Hello World!\nThis is a test! And more!\n\n\r\n";
 			this.docId = 0;
 			this.session = session;
 			this.kt = kt;
@@ -423,7 +464,6 @@ namespace MonoTests.KnowledgeTree
 			System.IO.FileStream inFile;
 
 			byte[] binaryData;
-			string base64String = "";
 
 			try
 			{

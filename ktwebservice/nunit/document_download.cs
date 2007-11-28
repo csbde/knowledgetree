@@ -1,12 +1,10 @@
 using NUnit.Framework;
 using System;
 using System.IO;
-using System.Net;
+using System.Net; 
 
 namespace MonoTests.KnowledgeTree
-{
-
-
+{ 
 	[TestFixture]
 	public class DocumentSystemMetadataTest : KTTest
     	{
@@ -61,10 +59,11 @@ namespace MonoTests.KnowledgeTree
 
 
 			long length = Helper.ConvertBase64EncodingToFile(update_resp.message, filename);
-			//System.Console.WriteLine(Helper.readFile(filename));
+			System.Console.WriteLine(Helper.readFile(filename));
 
 			// TODO - why???
-			//Assert.AreEqual(length, this._doc1.filesize);
+			Assert.AreEqual(length, this._doc1.filesize+1); 
+			
 	    	}
 	}
 }

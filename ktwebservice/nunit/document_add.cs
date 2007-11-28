@@ -8,20 +8,20 @@ namespace MonoTests.KnowledgeTree
 	public class AddDocumentTest : KTTest
     	{
 
-		 
+
 		private int 			_docId;
 		private int 			_folderId;
 		private String			_filename;
-		private String			_content; 
+		private String			_content;
 
 		public AddDocumentTest() : base()
-		{ 
+		{
 			this._folderId = 1;
-		} 
+		}
 
 		[SetUp]
 		public void SetUp()
-		{ 
+		{
 			this._filename = Helper.isUnix()?"/tmp/kt_unit_test1.txt":"c:\\kt_unit_test1.txt";
 			this._content = "hello world!";
 
@@ -29,10 +29,10 @@ namespace MonoTests.KnowledgeTree
 
 		[TearDown]
 		public void TearDown()
-		{ 
-			Helper.deleteFile(this._filename); 
-		} 
-		
+		{
+			Helper.deleteFile(this._filename);
+		}
+
 		[Test]
 		public void FindDocumentBeforeAdd()
 		{
@@ -49,7 +49,7 @@ namespace MonoTests.KnowledgeTree
 			{
 				System.Console.WriteLine("document not found. that is ok!");
 			}
-		} 
+		}
 
 		[Test]
 		public void FindFolderBeforeAdd()
@@ -67,7 +67,7 @@ namespace MonoTests.KnowledgeTree
 			{
 				if (this._verbose) System.Console.WriteLine("folder not found. that is ok!");
 			}
-		} 
+		}
 
 		[Test]
 		public void AddDocument()
@@ -89,7 +89,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, response1.status_code);
 			Assert.AreEqual("kt unit test1", response1.title);
 			Assert.AreEqual("Default", response1.document_type);
-			Assert.AreEqual("0.1", response1.version);
+			Assert.AreEqual(0.1, response1.version);
 			Assert.AreEqual("kt_unit_test1.txt", response1.filename);
 
 			Assert.IsFalse(response1.created_date == null);
@@ -172,7 +172,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, response1.status_code);
 			Assert.AreEqual(filename, response1.title);
 			Assert.AreEqual("Default", response1.document_type);
-			Assert.AreEqual("0.1", response1.version);
+			Assert.AreEqual(0.1, response1.version);
 			Assert.AreEqual("kt_unit_test1.txt", response1.filename);
 
 			Assert.IsFalse(response1.created_date == null);
