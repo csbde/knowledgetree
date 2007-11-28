@@ -555,6 +555,9 @@ function processSearchExpression($query)
     			 $item = array(
 						'document_id' => (int) $hit->DocumentID,
 
+						'custom_document_no' => 'n/a',
+		                'oem_document_no' => 'n/a',
+
 						'relevance' => (float) $hit->Rank,
         				'text' => (string)  $noText?'':$hit->Text,
 
@@ -576,7 +579,7 @@ function processSearchExpression($query)
 
 						'owned_by' => (string) $hit->Owner,
 
-        				'version' => (string) $hit->Version,
+        				'version' => (float) $hit->Version,
         				'is_immutable'=> (bool) $hit->Immutable,
         				'permissions'=> $hit->Permissions,
 
