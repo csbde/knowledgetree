@@ -7,39 +7,39 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class DocumentFieldLink extends KTEntity {
-	
+
 	/** document field link primary key */
 	var $iId;
 	/** primary key of document to which field is linked */
@@ -55,9 +55,9 @@ class DocumentFieldLink extends KTEntity {
         'iDocumentFieldId' => 'document_field_id',
         'sValue' => 'value',
     );
-	
+
 	/**
-	* Default constructor 
+	* Default constructor
 	*
 	* @param 	Primary key of document to which field is linked
 	* @param 	Primary key of field to which document is linked
@@ -71,7 +71,7 @@ class DocumentFieldLink extends KTEntity {
 		$this->iDocumentFieldId = $iNewDocumentFieldId;
 		$this->sValue = $sNewValue;
 	}
-	
+
 	/**
 	* Get the document field link primary key
 	*
@@ -81,7 +81,7 @@ class DocumentFieldLink extends KTEntity {
 	function getId() {
 		return $this->iId;
 	}
-	
+
 	/**
 	* Get the primary key of the document to which the field is linked
 	*
@@ -91,7 +91,7 @@ class DocumentFieldLink extends KTEntity {
 	function getMetadataVersionId() {
 		return $this->iMetadataVersionId;
 	}
-	
+
 	/**
 	* Set the primary key of the document to which the field is linked
 	*
@@ -101,7 +101,7 @@ class DocumentFieldLink extends KTEntity {
 	function setMetadataVersionId($iNewValue) {
 		$this->iMetadataVersionId = $iNewValue;
 	}
-	
+
 	/**
 	* Get the primary key of the field to which the document is linked
 	*
@@ -111,7 +111,7 @@ class DocumentFieldLink extends KTEntity {
 	function getDocumentFieldId() {
 		return $this->iDocumentFieldId;
 	}
-	
+
 	/**
 	* Set the primary key of the field to which the document is related
 	*
@@ -121,7 +121,7 @@ class DocumentFieldLink extends KTEntity {
 	function setDocumentFieldId($iNewVale) {
 		$this->iDocumentFieldId = $iNewValue;
 	}
-	
+
 	/**
 	* Get the value of the field
 	*
@@ -129,9 +129,9 @@ class DocumentFieldLink extends KTEntity {
 	*
 	*/
 	function getValue() {
-		return sanitizeForSQLtoHTML($this->sValue);
+		return $this->sValue;
 	}
-	
+
 	/**
 	* Set the value of the field
 	*
@@ -145,7 +145,7 @@ class DocumentFieldLink extends KTEntity {
     function _table () {
         return KTUtil::getTableName('document_fields_link');
     }
-	
+
 	/**
 	*
 	* Static function.  Given a document fields link primary key will create
