@@ -51,13 +51,13 @@ function sanitize($string) {
 }
 
 function sanitizeForSQL($string, $min='', $max='') {
-    
+
     $string = trim($string);
 	if(get_magic_quotes_gpc()) $string = stripslashes($string);
-    
+
     $len = strlen($string);
     if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
-    
+
     if(function_exists("mysql_real_escape_string")) {
         return mysql_real_escape_string($string);
     } else {
@@ -65,12 +65,10 @@ function sanitizeForSQL($string, $min='', $max='') {
     }
 }
 
-function sanitizeForSQLtoHTML($string, $min='', $max='') {
-    
-	$string = str_ireplace("\r", "", $string);
-	$string = str_ireplace("\n", "", $string);
-    return stripslashes(trim($string));
-    
+function sanitizeForSQLtoHTML($string, $min='', $max='')
+{
+	$string = str_replace(array("\r","\n"), array('',''), $string);
+    return $string;
 }
 
 function sanitizeForHTML($string, $min='', $max='')
@@ -80,7 +78,7 @@ function sanitizeForHTML($string, $min='', $max='')
 
     $len = strlen($string);
     if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
-    
+
     if(function_exists("htmlspecialchars")) {
     	return htmlspecialchars($string);
     } else {
@@ -117,8 +115,8 @@ function sanitizeForSYSTEM($string, $min='', $max='')
 
     $len = strlen($string);
     if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
-    
-    $pattern = '/( ;|\||`|>|<|&|^|"|'."\n|\r|'".'|{|}|[|]|\)|\( )/i'; 
+
+    $pattern = '/( ;|\||`|>|<|&|^|"|'."\n|\r|'".'|{|}|[|]|\)|\( )/i';
     $string = preg_replace( $pattern, '', $string);
     return '"'.preg_replace( '/\$/', '\\\$', $string).'"';
 }

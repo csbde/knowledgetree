@@ -1,0 +1,64 @@
+GENERAL
+-------
+
+This folder includes the Nunit unit tests to unit test web services.
+
+
+REQUIREMENTS
+------------
+
+The unit tests were written for NUnit. NUnit 2.2.0 was used during development.
+
+This framework was developed in Linux using Mono.
+
+DATABASE
+--------
+
+Review helper.cs to see the configuration settings. UnixODBC is used. Sample config files:
+
+ #  odbc.ini  
+
+[ktdms]
+Driver       = myodbcdriver
+Description  = MySQL ODBC 2.50 Driver DSN
+SERVER       = localhost
+PORT         =
+Socket 	     = /tmp/mysql.sock
+USER         = root
+Password     =
+Database     = ktdms
+OPTION       = 3
+
+ #  odbcinst.ini  
+[myodbcdriver]
+Description  = MySQL ODBC 2.50 Driver DSN
+Driver       = /usr/lib64/unixODBC/libmyodbc3.so
+
+
+The document type 'NewType' must be added to the database for the document_type.cs unit test to run.
+
+
+RUNNING THE TESTS
+-----------------
+
+Edit the makefile to ensure that the WSDL_URL is directed to the correct location.
+
+A makefile is provided which can be used as follows:
+
+- make 		// will build and run the tests
+
+- make clean 	// will remove all temporary and binary files
+
+STATE
+-----
+
+The states of the tests is very alpha. Some of the tests are quite complicated, so we can probably split them.
+
+REFERENCES
+----------
+
+For more information:
+
+http://nunit.org/
+http://www.mono-project.com/
+http://www.unixodbc.org
