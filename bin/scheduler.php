@@ -199,13 +199,16 @@ if (empty($aList))
         	$dirname = dirname($file);
         	chdir($dirname);
 
-        	$cmd = "$phpPath $cmd";
+        	$cmd = "\"$phpPath\" $cmd";
         }
 
         if (OS_WINDOWS)
-		{
-			$cmd = str_replace( '/','\\',$cmd);
-			$res = `$cmd`;
+		{   $default->log->info("Scheduler - dirname: $dirname cmd: $cmd");
+			//$WshShell = new COM("WScript.Shell");
+			//$res = $WshShell->Run($cmd, 0, true);
+
+			 KTUtil::pexec($cmd);
+
 		}
 		else
 		{
