@@ -48,13 +48,16 @@ while ($loop)
         	win32_set_service_status(WIN32_ERROR_CALL_NOT_IMPLEMENTED); // Add more cases to handle other service calls
     }
     // Run the scheduler script
-    $cmd = "\"$phpPath\" scheduler.php";
+    $cmd = "\"$phpPath\" \"$dir/scheduler.php\"";
+$default->log->info('Scheduler Service: cmd - ' .$cmd );
 
-	$cmd = str_replace( '/','\\',$cmd);
-	$res = `"$cmd" 2>&1`;
+	$WshShell = new COM("WScript.Shell");
+	$res = $WshShell->Run($cmd, 0, true);
+	//$cmd =  str_replace( '/','\\',$cmd);
+	//$res = `$cmd 2>&1`;
 	if (!empty($res))
 	{
-		$default->log->error('Scheduler: unexpected output - ' .$res);
+		$default->log->error('Scheduler Service: unexpected output - ' .$res);
 	}
 
     sleep($schedulerInterval);

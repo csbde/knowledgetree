@@ -349,8 +349,21 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 	 */
 	protected  function exec($cmd)
 	{
-		$aRet = KTUtil::pexec($cmd);
-		return $aRet['ret'] == 0;
+		if (OS_WINDOWS)
+		{
+			 
+
+			$WshShell = new COM("WScript.Shell");
+			$res = $WshShell->Run($cmd, 0, true);
+			 
+			 
+			return $res == 0;
+		}
+		else
+		{
+			$aRet = KTUtil::pexec($cmd);
+			return $aRet['ret'] == 0;
+		}
 	}
 
 	/**
