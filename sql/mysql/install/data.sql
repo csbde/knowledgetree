@@ -953,8 +953,9 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (156,'sql*3.5.1*0*3.5.1/png_mime_type.sql','Register PNG mimetype.','2007-11-21 00:00:00',1,'upgrade*3.5.1*99*upgrade3.5.1'),
 (157,'upgrade*3.5.1*99*upgrade3.5.1','Upgrade from version 3.5.0 to 3.5.1','2007-11-21 00:00:00',1,'upgrade*3.5.1*99*upgrade3.5.1'),
 (158,'sql*3.5.2*0*3.5.2/document_transactions.sql','Updates document_transactions table. Changes chars to varchars.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(159,'sql*3.5.2*0*3.5.2/scheduler_tasks.sql','Initialise some scheduler tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(160,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(159,'sql*3.5.2*0*3.5.2/metadata_length.sql','Updates metadata length. Changes chars to varchars.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(160,'sql*3.5.2*0*3.5.2/scheduler_tasks.sql','Initialise some scheduler tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(161,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1811,7 +1812,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (160);
+INSERT INTO `zseq_upgrades` VALUES (161);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
