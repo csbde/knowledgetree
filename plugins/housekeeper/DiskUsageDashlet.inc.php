@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id
+ * $Id: $
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -107,7 +107,7 @@ class DiskUsageDashlet extends KTBaseDashlet
 				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
 				if ($size === 0) continue;
-				
+
 				if ($usedp >= 100 - $this->urgentPercent)
 				{
 					$colour = 'red';
