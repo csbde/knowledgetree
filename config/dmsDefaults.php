@@ -353,7 +353,19 @@ class KTInit {
         }
         return false;
     }
+
     // }}}
+
+function catchFatalErrors($p_OnOff='On'){
+	ini_set('display_errors','On');
+    $phperror='><div id="phperror" style="display:none">';
+	ini_set('error_prepend_string',$phperror);
+    
+	$phperror='</div>><form name="catcher" action="/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
+	<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
+	ini_set('error_append_string',$phperror);      
+}
+
 
 
     // {{{ guessRootUrl()
@@ -594,6 +606,9 @@ require_once(KT_LIB_DIR . '/util/legacy.inc');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
+
+$KTInit->catchFatalErrors();
+
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
