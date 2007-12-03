@@ -106,6 +106,8 @@ class DiskUsageDashlet extends KTBaseDashlet
 				preg_match('/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%\s+(.*)/', $line, $matches);
 				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
+				if ($size === 0) continue;
+				
 				if ($usedp >= 100 - $this->urgentPercent)
 				{
 					$colour = 'red';
