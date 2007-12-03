@@ -3,44 +3,26 @@
 {literal}
 <script type="text/javascript"> 
 
-function tog1(){
-	
-	var toggled = document.getElementById('expand');
-	var pImage = document.getElementById('id');
-	var mImage = document.getElementById('ie');
-	if(pImage.style.display == 'block'){
-		pImage.style.display = 'none';
-		mImage.style.display = 'block';
-	}else{
-		pImage.style.display = 'block';
-		mImage.style.display = 'none';
-	}
-	 if(toggled.style.display == 'none'){
-	 	toggled.style.display = 'block';
-	 }else{
-	 	toggled.style.display = 'none'; 
-	 }
-
+function mouseOver()
+{
+var toggle = document.getElementById('exp');
+toggle.style.display = 'block'; 
+}
+function mouseOut()
+{
+var toggle = document.getElementById('exp');
+toggle.style.display = 'none';
 }
 
-function tog2(){
-	
-	var toggle = document.getElementById('exp');
-	var plusImage = document.getElementById('imgd');
-	var minusImage = document.getElementById('imge');
-	if(plusImage.style.display == 'block'){
-		plusImage.style.display = 'none';
-		minusImage.style.display = 'block';
-	}else{
-		plusImage.style.display = 'block';
-		minusImage.style.display = 'none';
-	}
-	 if(toggle.style.display == 'none'){
-	 	toggle.style.display = 'block';
-	 }else{
-	 	toggle.style.display = 'none'; 
-	 }
-
+function mouseOver1()
+{
+var toggle = document.getElementById('show');
+toggle.style.display = 'block'; 
+}
+function mouseOut1()
+{
+var toggle = document.getElementById('show');
+toggle.style.display = 'none';
 }
 
 </script>
@@ -49,44 +31,35 @@ function tog2(){
 
 <body>
 <table>
-<tr><td width="495px">{i18n}Last Optimization Date:{/i18n}</td><td>{$stats.optimisationDate}</td></tr>
-<tr></tr>
-<tr><td>{i18n}Period Since Last Optimization:{/i18n}</td><td>{$stats.optimisationPeriod}</td></tr>
-<tr><td>{i18n}Last Indexing Date:{/i18n}</td><td>{$stats.indexingDate}</td></tr>
-<tr><td>{i18n}Period Since Last Indexing:{/i18n}</td><td>{$stats.indexingPeriod}</td></tr>
-<tr><td>{i18n}Total # Documents in Repository:{/i18n}</td><td>{$stats.docsInRepository}</td></tr>
-<tr><td>{i18n}Documents Indexed:{/i18n}</td><td>{$stats.docsInIndex}</td></tr>
-<tr><td>{i18n}Documents in Indexing Queue:{/i18n}</td><td>{$stats.docsInQueue}</td></tr>
-<tr><td><span onclick="tog1();">
-<p id="id">
-<img src="{$rootUrl}/resources/graphics/bullet_toggle_plus.png" style="cursor: pointer;"/>
-Index Coverage:
-</p>
-<p id="ie">
-<img src="{$rootUrl}/resources/graphics/bullet_toggle_minus.png" style="cursor: pointer;"/>
-Index Coverage:
-</p>
+<tr><td></td><td>{i18n}Last Optimization Date:{/i18n}</td><td>{$stats.optimisationDate}</td></tr>
+<tr><td></td><td>{i18n}Period Since Last Optimization:{/i18n}</td><td>{$stats.optimisationPeriod}</td></tr>
+<tr><td></td><td>{i18n}Last Indexing Date:{/i18n}</td><td>{$stats.indexingDate}</td></tr>
+<tr><td></td><td>{i18n}Period Since Last Indexing:{/i18n}</td><td>{$stats.indexingPeriod}</td></tr>
+<tr><td></td><td>{i18n}Total # Documents in Repository:{/i18n}</td><td>{$stats.docsInRepository}</td></tr>
+<tr><td></td><td>{i18n}Documents Indexed:{/i18n}</td><td>{$stats.docsInIndex}</td></tr>
+<tr><td></td><td>{i18n}Documents in Indexing Queue:{/i18n}</td><td>{$stats.docsInQueue}</td></tr>
+<tr><td><img src="{$rootUrl}/resources/graphics/info.gif" style="cursor: pointer;" onmouseOver="mouseOver1()" onmouseOut="mouseOut1()"/></td>
+<td><span>
+{i18n}Index Coverage:{/i18n}
 </span>
-<div id="expand" style="display: none;">
-<i>{i18n}Indexing coverage percentage may vary from total - not all documents contain text.{/i18n}</i>
-<br/>
-</div></td><td>{$stats.indexingCoverage}</td></tr>
-
-
-<tr><td><span onclick="tog2();">
-<p id="imgd">
-<img src="{$rootUrl}/resources/graphics/bullet_toggle_plus.png" style="cursor: pointer;"/>
-Queue Coverage:
-</p>
-<p id="imge">
-<img src="{$rootUrl}/resources/graphics/bullet_toggle_minus.png" style="cursor: pointer;"/>
-Queue Coverage:
-</p>
-</span>
-<div id="exp" style="display: none;">
-<i>{i18n}Queue coverage indicates percentage of documents currently queued for indexing in relation to total repository size{/i18n}</i>
+<p>
+<div id="show" style="display: none; position: absolute; width: 340px; height: 40px;  background-color: #CCCCCC;"><i>
+{i18n}Indexing coverage percentage may vary from total - not all documents contain text.{/i18n}</i>
 <br/>
 </div>
+</p><td>{$stats.indexingCoverage}</td></tr>
+
+
+<tr><td><img src="{$rootUrl}/resources/graphics/info.gif" style="cursor: pointer;" onmouseOver="mouseOver()" onmouseOut="mouseOut()"/></td>
+<td><span>
+{i18n}Queue Coverage :{/i18n}
+</span>
+<p>
+<div id="exp" style="display: none; position: absolute; width: 410px; height: 40px;  background-color: #CCCCCC;"><i>
+{i18n}Queue coverage indicates percentage of documents currently queued for indexing in relation to total repository size.{/i18n}</i>
+<br/>
+</div>
+</p>
 </td><td>{$stats.queueCoverage}</td></tr>
 
 </table>
@@ -101,17 +74,6 @@ Queue Coverage:
 <tr><td colspan=2 align=right><a href="/search2.php?action=refreshLuceneStats" align=right>{i18n}Refresh{/i18n}</a></tr>
 </table>
 
-<script type="text/javascript">
-var plusImage = document.getElementById('imgd');
-var minusImage = document.getElementById('imge');
-plusImage.style.display = 'block';
-minusImage.style.display = 'none';
-
-var pImage = document.getElementById('id');
-var mImage = document.getElementById('ie');
-pImage.style.display = 'block';
-mImage.style.display = 'none';
-</script>
 
 </body>
 </html>
