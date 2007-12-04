@@ -91,25 +91,25 @@ class KTUtil {
 	{
 		$filesize = (int) $filesize;
 
-		if ($filesize >= KTutil::PB)
+		if ($filesize >= KTUtil::PB)
 		{
-			return number_format($filesize /  KTutil::PETA, 2, '.',',') . _kt('EB');
+			return number_format($filesize /  KTUtil::PB, 2, '.',',') . _kt('EB');
 		}
-		elseif ($filesize >= KTutil::TB)
+		elseif ($filesize >= KTUtil::TB)
 		{
-			return number_format($filesize /  KTutil::TERA, 2, '.',',') . _kt('PB');
+			return number_format($filesize /  KTUtil::TB, 2, '.',',') . _kt('PB');
 		}
-		elseif ($filesize >= KTutil::GB)
+		elseif ($filesize >= KTUtil::GB)
 		{
-			return number_format($filesize /  KTutil::GIGA, 2, '.',',') . _kt('TB');
+			return number_format($filesize /  KTUtil::GB, 2, '.',',') . _kt('TB');
 		}
-		elseif ($filesize >= KTutil::MB)
+		elseif ($filesize >= KTUtil::MB)
 		{
-			return number_format($filesize /  KTutil::MEGA, 2, '.',',') . _kt('GB');
+			return number_format($filesize /  KTUtil::MB, 2, '.',',') . _kt('GB');
 		}
-		elseif ($filesize >= KTutil::KB)
+		elseif ($filesize >= KTUtil::KB)
 		{
-			return number_format($filesize /  KTutil::KILO, 2, '.',',') . _kt('MB');
+			return number_format($filesize /  KTUtil::KB, 2, '.',',') . _kt('MB');
 		}
 		else
 		{
