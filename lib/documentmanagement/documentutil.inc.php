@@ -561,7 +561,9 @@ class KTDocumentUtil {
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
+        DBUtil::startTransaction();
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
+
         // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
@@ -633,6 +635,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::updateSearchableText($oDocument, true);
 
+        DBUtil::commit();
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('All done...')));
 
         return $oDocument;

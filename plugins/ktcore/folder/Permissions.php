@@ -1,36 +1,36 @@
 <?php
 /**
  * $Id$
- *    
+ *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -141,22 +141,22 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $sInherited = join(' > ', $oInherited->getPathArray());
         }
         // only allow inheritance if not inherited, -and- folders is editable
-        $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());        
+        $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());
         // only allow edit if the folder is editable.
         $bEdit = $bEdit && ($oInherited->getId() == $this->oFolder->getId());
-        
+
         $aConditions = array();
         $aDynConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
-        
+
         foreach ($aDynConditions as $oDynCondition) {
             $g = Group::get($oDynCondition->getGroupId());
 			if (is_null($g)) continue; // db integrity catch
-			
+
             if (PEAR::isError($g)) { continue; }
-            $c = KTSavedSearch::get($oDynCondition->getConditionId());     
-            if (is_null($c)) continue; // db integrity catch       
+            $c = KTSavedSearch::get($oDynCondition->getConditionId());
+            if (is_null($c)) continue; // db integrity catch
             if (PEAR::isError($c)) { continue; }
-            
+
             $aInfo = array(
                 'group' => $g->getName(),
                 'name' => $c->getName(),
@@ -183,7 +183,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'edit' => $bEdit,
             'inheritable' => $bInheritable,
             'inherited' => $sInherited,
-            'conditions' => $aConditions,             
+            'conditions' => $aConditions,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -206,15 +206,20 @@ class KTFolderPermissionsAction extends KTFolderAction {
             if (PEAR::isError($oPLA)) {
                 continue;
             }
-            $oDescriptor = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
+            $oDescriptor =& KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
             $iPermissionID = $oPermission->getID();
             $aMapPermissionGroup[$iPermissionID] = array();
-            foreach ($aUsers as $oUser) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)) {
-                    $aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
-                    $aActiveUsers[$oUser->getId()] = true;
-                }
-            }
+
+            $hasPermission = false;
+			$everyone = $oDescriptor->hasRoles(array(-3));
+			$authenticated = $oDescriptor->hasRoles(array(-4));
+			// TODO : paginate this page, when there are too many users
+			foreach ($aUsers as $oUser) {
+				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
+					$oUser->hasPermission($oDescriptor)) {
+					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
+				}
+             }
         }
 
         // now we constitute the actual sets.
@@ -222,12 +227,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $groups = array();
         $roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
 
-        // this should be quite limited - direct role -> user assignment is typically rare.
-        foreach ($aActiveUsers as $id => $marker) {
-            $oUser = User::get($id);
-            if (is_null($oUser)) continue;
-            $users[$oUser->getName()] = $oUser;
-        }
+        $users = $aUsers;
         asort($users); // ascending, per convention.
 
         $bEdit = false;
@@ -245,22 +245,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'aMapPermissionUser' => $aMapPermissionUser,
             'edit' => $bEdit,
             'inherited' => $sInherited,
-            'foldername' => $this->oFolder->getName(),     
-            'iFolderId' => $this->oFolder->getId(),                   
+            'foldername' => $this->oFolder->getName(),
+            'iFolderId' => $this->oFolder->getId(),
         );
         return $oTemplate->render($aTemplateData);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     function _copyPermissions() {
         $oTransaction = KTFolderTransaction::createFromArray(array(
@@ -295,13 +284,13 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
         if ($oInherited->getId() !== $this->oFolder->getId()) {
             $override = KTUtil::arrayGet($_REQUEST, 'override', false);
-            if (empty($override)) { 
+            if (empty($override)) {
                 $this->errorRedirectToMain(_kt('This folder does not override its permissions'), sprintf('fFolderId=%d', $this->oFolder->getId()));
             }
             $this->startTransaction();
     	    $this->_copyPermissions();
             $this->commitTransaction();
-            $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());           
+            $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         }
 
 
@@ -325,15 +314,15 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $perms = KTPermission::getList();
         $docperms = KTPermission::getDocumentRelevantList();
-        
-        $aTemplateData = array(			       
+
+        $aTemplateData = array(
             'iFolderId' => $this->oFolder->getId(),
 	        'roles' => Role::getList(),
 	        'groups' => Group::getList(),
             'conditions' => KTSavedSearch::getConditions(),
             'dynamic_conditions' => $aDynamicConditions,
             'context' => &$this,
-            'foldername' => $this->oFolder->getName(),          
+            'foldername' => $this->oFolder->getName(),
 	        'jsonpermissions' => $sJSONPermissions,
 	        'edit' => true,
 	        'permissions' => $perms,
@@ -374,7 +363,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $aRoleIds = $oDescriptor->getRoles();
             foreach ($aRoleIds as $iId) {
                 $aPermissionsMap['role'][$iId][$iPermissionId] = true;
-            }	    
+            }
         }
 	return $aPermissionsMap;
     }
@@ -427,7 +416,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 							       'name' => $oGroup->getName(),
 							       'permissions' => $aPerm,
 							       'id' => $oGroup->getId());
-		}						      
+		}
 	    }
 
 	    $aRoles = Role::getList(sprintf('name like \'%%%s%%\'', $sFilter));
@@ -436,9 +425,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
 		if(!is_array($aPerm)) {
 		    $aPerm = array();
 		}
-		
+
 		if($bSelected) {
-		    if(count($aPerm)) 
+		    if(count($aPerm))
 		    $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
 							      'display' => _kt('Role') . ': ' . $oRole->getName(),
 							      'name' => $oRole->getName(),
@@ -453,7 +442,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 							      'id' => $oRole->getId());
 		}
 	    }
-	}	 
+	}
 	return $aEntityList;
     }
 

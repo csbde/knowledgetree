@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -611,6 +611,56 @@ class AdvancedCollection {
             'columncount' => count($this->columns),
             'bIsBrowseCollection' => $this->is_browse,
             'batch_size' => $this->batchSize,
+        );
+
+        // in order to allow OTHER things than batch to move us around, we do:
+        return $oTemplate->render($aTemplateData);
+    }
+}
+
+class ExtCollection {
+
+    var $columns;
+    var $folders;
+    var $documents;
+
+    /**
+     * Add the column headers
+     *
+     * @param array $aColumns
+     */
+    function addColumns($aColumns) {
+        $this->columns = $aColumns;
+    }
+
+    /**
+     * Add the folders under the folder
+     *
+     * @param array $aFolders
+     */
+    function addFolders($aFolders) {
+        $this->folders = $aFolders;
+    }
+
+    /**
+     * Add the documents contained in the folder
+     *
+     * @param array $aDocuments
+     */
+    function addDocuments($aDocuments) {
+        $this->documents = $aDocuments;
+    }
+
+    function render() {
+
+        global $main;
+	    $main->requireJSResource('thirdpartyjs/extjs/adapter/ext/ext-base.js');
+	    $main->requireJSResource('thirdpartyjs/extjs/ext-all.js');
+	    $main->requireJSResource('resources/js/browse_ext.js');
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('kt3/ext_collection');
+        $aTemplateData = array(
         );
 
         // in order to allow OTHER things than batch to move us around, we do:
