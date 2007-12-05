@@ -55,7 +55,7 @@ class FolderUsageDashlet extends KTBaseDashlet
 		$files=0;
 		$filesize=0;
 
-		if ($dh = opendir($path))
+		if (is_dir($path) && ($dh = opendir($path)))
 		{
 			while (($file = readdir($dh)) !== false)
 			{
