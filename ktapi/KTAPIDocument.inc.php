@@ -35,6 +35,8 @@
  *
  */
 
+//require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
+
 class KTAPI_Document extends KTAPI_FolderItem
 {
 	/**
@@ -175,14 +177,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 
-		$tempfilename=addslashes($tempfilename);
-		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
-		$result = DBUtil::runQuery($sql);
-		if (PEAR::isError($result))
-		{
-			return $result;
-		}
-
+		KTUploadManager::temporary_file_imported($tempfilename);
 	}
 
 	/**
