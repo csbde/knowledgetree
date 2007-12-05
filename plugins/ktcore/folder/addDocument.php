@@ -324,7 +324,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         );
 
         $mpo->start();
-        $this->startTransaction();
+        //$this->startTransaction();
         $oDocument =& KTDocumentUtil::add($this->oFolder, basename($aFile['name']), $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
@@ -333,7 +333,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         }
         $this->addInfoMessage(_kt("Document added"));
 
-        $this->commitTransaction();
+        //$this->commitTransaction();
         $mpo->redirectToDocument($oDocument->getId());
         exit(0);
 

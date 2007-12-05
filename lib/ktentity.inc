@@ -7,32 +7,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -742,58 +742,67 @@ class KTEntityUtil {
         // var_dump("Building proxy for $sClassName");
         $methods = get_class_methods($sClassName);
         $allcode = array();
+        $allcode[] = sprintf('var $cacheGlobal = null;%s', "\n");
+
         foreach ($methods as $sMethod) {
-            $code = sprintf('function %s() { $aArgs = func_get_args(); return $this->_callOnObject("%s", $aArgs); }%s', $sMethod, $sMethod, "\n");
-            $allcode[] = $code;
+            if ($sMethod == 'getid') {
+                $code = sprintf('function getId() { return $this->iId; }');
+    		} else if ($sMethod == '_table' || $sMethod == 'update' ) {
+                $code = sprintf('function %s() { return parent::%s(); }', $sMethod, $sMethod);
+    		} else if ($sMethod == 'get') {
+    			$code = sprintf('function get($oId) { return $this->get(%s, $oid); }', $sClassName);
+    		} else {
+                $code = sprintf('function %s() { $aArgs = func_get_args(); return $this->_callOnObject("%s", $aArgs); }%s', $sMethod, $sMethod, "\n");
+            }
+		  $allcode[] = $code;
         }
 
         $allcode[] = sprintf('function &_fetch() {
-        if (!empty($GLOBALS["_OBJECTCACHE"]["%s"][$this->iId])) {
-            $oObject =& $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId];
+            if (!empty($this->cacheGlobal[$this->iId])) {
+                $oObject =& $this->cacheGlobal[$this->iId];
+                return $oObject;
+            }
+            $oObject =new %s;
+            $res = $oObject->load($this->iId);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            $this->cacheGlobal[$this->iId] =& $oObject;
             return $oObject;
-        }
-        $oObject =new %s;
-        $res = $oObject->load($this->iId);
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-        $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId] =& $oObject;
-        return $oObject;
-    }
-        ', $sClassName, $sClassName, $sClassName, $sClassName);
+        }', $sClassName, $sClassName, $sClassName, $sClassName);
 
         $allcode[] = sprintf('function _save(&$oObject) {
-        $GLOBALS["_OBJECTCACHE"]["%s"][$this->iId] =& $oObject;
-    }
-        ', $sClassName);
+            $this->cacheGlobal[$this->iId] =& $oObject;
+        }', $sClassName);
 
         $allcode[] = 'function &_callOnObject($sName, $aArgs) {
-        $oObject =& $this->_fetch();
-        if (PEAR::isError($oObject)) {
-            return $oObject;
-        }
-        /* */
-        $res = call_user_func_array(array(&$oObject, $sName), $aArgs);
-        $this->_save($oObject);
-        return $res;
-        /* */
+            $oObject =& $this->_fetch();
+            if (PEAR::isError($oObject)) {
+                return $oObject;
+            }
+            /* */
+            $res = call_user_func_array(array(&$oObject, $sName), $aArgs);
+            $this->cacheGlobal[$this->iId] =& $oObject;
+            return $res;
+            /* */
 
-        /* */
-        $aExecArgs = array();
-        $exec = \'$res =& $oObject->$sName(\';
-        foreach (array_keys($aArgs) as $iKey) {
-            $aExecArgs[] = \'$aArgs[\' . $iKey . \']\';
-        }
-        $exec .= join(", ", $aExecArgs);
-        $exec .= \');\';
-        eval($exec);
-        $this->_save($oObject);
-        return $res;
-        /* */
-    }
-        ';
+            /* */
+            $aExecArgs = array();
+            $exec = \'$res =& $oObject->$sName(\';
+            foreach (array_keys($aArgs) as $iKey) {
+                $aExecArgs[] = \'$aArgs[\' . $iKey . \']\';
+            }
+            $exec .= join(", ", $aExecArgs);
+            $exec .= \');\';
+            eval($exec);
+            $this->_save($oObject);
+            $this->cacheGlobal[$this->iId] =& $oObject;
+            return $res;
+            /* */
+        }';
 
         $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; }' . "\n", $sProxyClassName);
+        $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"][%s]; }' . "\n", $sProxyClassName, $sClassName);
 
         $gen = sprintf("class %s extends %s {\n", $sProxyClassName, $sClassName);
         $gen .= "    " . join("\n    ", $allcode) . "\n";
