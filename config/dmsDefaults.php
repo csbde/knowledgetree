@@ -609,6 +609,18 @@ require_once(KT_LIB_DIR . '/ktentity.inc');
 
 $KTInit->catchFatalErrors();
 
+if (phpversion()<5){
+	
+	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].'/'.'customerrorpage.php';
+	
+	session_start();
+    
+	$_SESSION['sErrorMessage'] = 'KnowledgeTree now requires that PHP version 5 is installed. PHP version 4 is no longer supported.';
+		
+   
+	header('location:'. $sErrorPage ) ;
+
+}
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
