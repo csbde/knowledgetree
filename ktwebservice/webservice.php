@@ -1916,15 +1916,14 @@ class KTWebService
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
-    	$tempdir = substr($tempfilename,0,strlen($upload_manager->temp_dir));
-    	if ($tempdir != $upload_manager->temp_dir)
+    	if (!$upload_manager->is_valid_temporary_file($tempfilename))
     	{
-			$response=array(
-				'status_code'=>KTWS_ERR_INVALID_FOLDER,
-				'message'=>'Invalid temporary file.'
+    		$response=array(
+				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+				'message'=>"Invalid temporary file: $tempfilename. Not compatible with $upload_manager->temp_dir."
 			);
 
-			$this->debug("add_document - $upload_manager->temp_dir != $tempdir", $session_id);
+			$this->debug("add_document - Invalid temporary file: $tempfilename. Not compatible with $upload_manager->temp_dir.", $session_id);
 
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
@@ -2052,38 +2051,6 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
     	}
 
-    	// create a temporary file
-		$oConfig = KTConfig::getSingleton();
-		$tmp_dir = $oConfig->get('webservice/uploadDirectory');
-
-		$tempfilename = tempnam($tmp_dir,'sa_');
-		if (!is_writable($tempfilename))
-		{
-			$response=array(
-				'status_code'=>KTWS_ERR_INVALID_FOLDER,
-				'message'=>'Cannot write to temp folder: ' + $tempfilename
-			);
-			$this->debug("add_small_document - cannot write $tempfilename", $session_id);
-
-			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-		}
-
-		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
-		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
-    	$upload_manager = new KTUploadManager();
-    	$tempdir = substr($tempfilename,0,strlen($upload_manager->temp_dir));
-		if ( $tempdir  != $upload_manager->temp_dir)
-    	{
-			$response=array(
-				'status_code'=>KTWS_ERR_INVALID_FOLDER,
-				'message'=>'Invalid temporary file.'
-			);
-
-			$this->debug("add_small_document - $upload_manager->temp_dir != $tempdir ", $session_id);
-
-			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-    	}
-
     	$folder = &$kt->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
 		{
@@ -2095,19 +2062,19 @@ class KTWebService
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
 		}
 
-		// write to the temporary file
-		$fp=fopen($tempfilename, 'wb');
-		if ($fp === false)
-		{
-			$response=array(
+		$upload_manager = new KTUploadManager();
+    	$tempfilename = $upload_manager->store_base64_file($base64);
+    	if (PEAR::isError($tempfilename))
+    	{
+    		$reason = $tempfilename->getMessage();
+    		$response=array(
 				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
-				'message'=>'Cannot write to temp file: ' + $tempfilename
+				'message'=>'Cannot write to temp file: ' + $tempfilename . ". Reason: $reason"
 			);
-			$this->debug("add_small_document - cannot get folderid $folder_id" , $session_id);
+			$this->debug("add_small_document - cannot write $tempfilename. Reason: $reason", $session_id);
+
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-		}
-		fwrite($fp, base64_decode($base64));
-		fclose($fp);
+    	}
 
 		// simulate the upload
 		$upload_manager->uploaded($filename,$tempfilename, 'A');
@@ -2159,8 +2126,7 @@ class KTWebService
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
-    	$tempdir = substr($tempfilename,0,strlen($upload_manager->temp_dir));
-    	if ($tempdir != $upload_manager->temp_dir)
+    	if (!$upload_manager->is_valid_temporary_file($tempfilename))
     	{
 			$response['message'] = 'Invalid temporary file';
 			$this->debug("checkin_document - $upload_manager->temp_dir != $tempdir", $session_id);
@@ -2282,47 +2248,19 @@ class KTWebService
 			'message'=>'',
 		);
 
-		// create a temporary file
-		$oConfig = KTConfig::getSingleton();
-		$tmp_dir = $oConfig->get('webservice/uploadDirectory');
-
-		$tempfilename = tempnam($tmp_dir,'su_');
-		if (!is_writable($tempfilename))
-		{
-			$response=array(
-				'status_code'=>KTWS_ERR_INVALID_FOLDER,
-				'message'=>'Cannot write to temp folder: ' + $tempfilename
-			);
-
-			$this->debug("checkin_small_document - $tempfilename is not writable", $session_id);
-
-			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-		}
-
-		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
-		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
-    	$tempdir = substr($tempfilename,0,strlen($upload_manager->temp_dir));
-    	if ($tempdir != $upload_manager->temp_dir)
+    	$tempfilename = $upload_manager->store_base64_file($base64, 'su_');
+    	if (PEAR::isError($tempfilename))
     	{
-			$response['message'] = 'Invalid temporary file';
-			$this->debug("checkin_small_document - $upload_manager->temp_dir != $tempdir", $session_id);
+			$reason = $tempfilename->getMessage();
+    		$response=array(
+				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+				'message'=>'Cannot write to temp file: ' + $tempfilename . ". Reason: $reason"
+			);
+			$this->debug("checkin_small_document - cannot write $tempfilename. Reason: $reason", $session_id);
+
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
     	}
-
-		// write to the temporary file
-		$fp=fopen($tempfilename, 'wb');
-		if ($fp === false)
-		{
-			$response=array(
-				'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
-				'message'=>'Cannot write to temp file: ' + $tempfilename
-			);
-			$this->debug("checkin_small_document - cannot write $tempfilename", $session_id);
-			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-		}
-		fwrite($fp, base64_decode($base64));
-		fclose($fp);
 
     	// simulate the upload
 		$upload_manager->uploaded($filename,$tempfilename, 'C');
