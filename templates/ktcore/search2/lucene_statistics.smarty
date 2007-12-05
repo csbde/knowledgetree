@@ -42,24 +42,24 @@ toggle.style.display = 'none';
 <td><span>
 {i18n}Index Coverage:{/i18n}
 </span>
-<p>
+
 <div id="show" style="display: none; position: absolute; width: 340px; height: 40px;  background-color: #CCCCCC;"><i>
 {i18n}Indexing coverage percentage may vary from total - not all documents contain text.{/i18n}</i>
 <br/>
 </div>
-</p><td>{$stats.indexingCoverage}</td></tr>
+<td>{$stats.indexingCoverage}</td></tr>
 
 
 <tr><td><img src="{$rootUrl}/resources/graphics/info.gif" style="cursor: pointer;" onmouseOver="mouseOver()" onmouseOut="mouseOut()"/></td>
 <td><span>
 {i18n}Queue Coverage :{/i18n}
 </span>
-<p>
+
 <div id="exp" style="display: none; position: absolute; width: 410px; height: 40px;  background-color: #CCCCCC;"><i>
 {i18n}Queue coverage indicates percentage of documents currently queued for indexing in relation to total repository size.{/i18n}</i>
 <br/>
 </div>
-</p>
+
 </td><td>{$stats.queueCoverage}</td></tr>
 
 </table>
