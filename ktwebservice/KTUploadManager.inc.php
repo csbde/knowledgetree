@@ -64,7 +64,7 @@ class KTUploadManager
 	function set_session($session)
 	{
 		$user = &$session->get_user();
-		$this->userid=$user->getId();
+		$this->userid=$_SESSION['userID'];
 		$this->session = $session->get_session();
 	}
 
@@ -119,7 +119,7 @@ class KTUploadManager
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis');
 
-		$newtempfile = realpath($this->temp_dir) . '/' . $this->userid . '-'. $now_str;
+		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
 		if (OS_WINDOWS)
 		{
 			$tempfile = str_replace('/','\\',$tempfile);
@@ -145,7 +145,15 @@ class KTUploadManager
 			return $id;
 		}
 		global $php_errormsg;
-		$result = @move_uploaded_file($tempfile, $newtempfile);
+		if (is_uploaded_file($tempfile))
+		{
+			$result = @move_uploaded_file($tempfile, $newtempfile);
+		}
+		else
+		{
+			$result = @rename($tempfile, $newtempfile);
+		}
+
 		$tmp = $php_errormsg;
 
 		if ($result == false)
