@@ -795,13 +795,11 @@ class KTEntityUtil {
             $exec .= join(", ", $aExecArgs);
             $exec .= \');\';
             eval($exec);
-            $this->_save($oObject);
             $this->cacheGlobal[$this->iId] =& $oObject;
             return $res;
             /* */
         }';
 
-        $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; }' . "\n", $sProxyClassName);
         $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"][%s]; }' . "\n", $sProxyClassName, $sClassName);
 
         $gen = sprintf("class %s extends %s {\n", $sProxyClassName, $sClassName);
