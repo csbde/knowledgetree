@@ -796,6 +796,7 @@ abstract class Indexer
         	if ($this->debug) $default->log->debug('indexDocuments: stopping - db error');
         	return;
         }
+        KTUtil::setSystemSetting('luceneIndexingDate', time());
 
         // bail if no work to do
         if (count($result) == 0)
