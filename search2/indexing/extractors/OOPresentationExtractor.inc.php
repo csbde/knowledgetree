@@ -56,6 +56,7 @@ class OOPresentationExtractor extends CompositeExtractor
 	public function getSupportedMimeTypes()
 	{
 		return array(
+			'application/vnd.ms-powerpoint',
        		'application/vnd.oasis.opendocument.presentation',
        		'application/vnd.oasis.opendocument.presentation-template',
 		);
