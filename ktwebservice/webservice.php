@@ -3687,6 +3687,11 @@ class KTWebService
 						'value' => bool2str($config->get('clientToolPolicies/captureReasonsMoveInKT')),
 						'type' => 'boolean'
 					),
+					array(
+						'name' => 'allow_remember_password',
+						'value' => bool2str($config->get('clientToolPolicies/allowRememberPassword')),
+						'type' => 'boolean'
+					),
 				);
 
 		$response['policies'] = $this->_encode_client_policies($policies);

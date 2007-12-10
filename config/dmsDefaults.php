@@ -517,6 +517,8 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCopyInKT', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsMoveInKT', true);
 
+            $oKTConfig->setdefaultns('clientToolPolicies', 'allowRememberPassword', true);
+
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
 
