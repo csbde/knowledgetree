@@ -66,7 +66,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         $oTemplate->setData(array(
 		    'context' => $this,
-            'fieldsets' => KTFieldset::getList('disabled != true'),
+            'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
         ));
         return $oTemplate;
     }
