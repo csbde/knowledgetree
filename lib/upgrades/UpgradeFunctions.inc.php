@@ -1011,6 +1011,7 @@ class UpgradeFunctions {
             $ini->addItem('clientToolPolicies', 'captureReasonsCancelCheckout', 'true');
             $ini->addItem('clientToolPolicies', 'captureReasonsCopyInKT', 'true');
             $ini->addItem('clientToolPolicies', 'captureReasonsMoveInKT', 'true');
+            $ini->addItem('clientToolPolicies', 'allowRememberPassword', 'true');
 
             // DiskUsage Section
             $ini->addItem('DiskUsage', 'warningThreshold', '10', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in ORANGE", "settings for the Disk Usage dashlet");
