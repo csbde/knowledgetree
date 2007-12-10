@@ -93,27 +93,27 @@ class KTUtil {
 
 		if ($filesize >= KTUtil::PB)
 		{
-			return number_format($filesize /  KTUtil::PB, 2, '.',',') . _kt('EB');
+			return number_format($filesize /  KTUtil::PB, 2, '.',',') . _kt('PB');
 		}
 		elseif ($filesize >= KTUtil::TB)
 		{
-			return number_format($filesize /  KTUtil::TB, 2, '.',',') . _kt('PB');
+			return number_format($filesize /  KTUtil::TB, 2, '.',',') . _kt('TB');
 		}
 		elseif ($filesize >= KTUtil::GB)
 		{
-			return number_format($filesize /  KTUtil::GB, 2, '.',',') . _kt('TB');
+			return number_format($filesize /  KTUtil::GB, 2, '.',',') . _kt('GB');
 		}
 		elseif ($filesize >= KTUtil::MB)
 		{
-			return number_format($filesize /  KTUtil::MB, 2, '.',',') . _kt('GB');
+			return number_format($filesize /  KTUtil::MB, 2, '.',',') . _kt('MB');
 		}
 		elseif ($filesize >= KTUtil::KB)
 		{
-			return number_format($filesize /  KTUtil::KB, 2, '.',',') . _kt('MB');
+			return number_format($filesize /  KTUtil::KB, 2, '.',',') . _kt('KB');
 		}
 		else
 		{
-			return $filesize . _kt('KB');
+			return $filesize . _kt('B');
 		}
 	}
 
