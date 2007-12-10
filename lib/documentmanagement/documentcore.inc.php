@@ -259,6 +259,9 @@ class KTDocumentCore extends KTEntity {
             $this->bImmutable = false;
         }
         $oFolder = Folder::get($this->getFolderId());
+        if (PEAR::isError($oFolder) || ($oFolder === false) || empty($oFolder) ) {
+            return false;
+        }
         $this->iPermissionObjectId = $oFolder->getPermissionObjectId();
         $res = parent::create();
 
