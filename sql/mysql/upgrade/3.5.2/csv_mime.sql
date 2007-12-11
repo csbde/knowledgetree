@@ -1,0 +1,1 @@
+update mime_types set icon_path='excel' where filetypes = 'csv';
