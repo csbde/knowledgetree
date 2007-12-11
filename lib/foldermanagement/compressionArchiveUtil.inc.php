@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -79,10 +79,17 @@ class ZipFolder {
     /**
     * Add a document to the zip file
     */
-    function addDocumentToZip($oDocument) {
-        $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $oDocument->getFullPath()))));
+    function addDocumentToZip($oDocument, $oFolder = null) {
+        if(empty($oFolder)){
+            $oFolder = Folder::get($oDocument->getFolderID());
+        }
+
+        $sDocPath = $oFolder->getFullPath().'/'.$oFolder->getName();
+        $sDocName = $oDocument->getFileName();
+
+        $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sDocPath))));
         $newDir = $this->sTmpPath;
-        $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($oDocument->getFullPath(), true))));
+        $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sDocPath, true))));
         foreach (split('/', $sFullPath) as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
             if (!file_exists($newDir)) {
@@ -91,11 +98,11 @@ class ZipFolder {
         }
 
         $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->oStorage->temporaryFile($oDocument))));
-        $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $oDocument->getFileName()))));
+        $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $sDocName))));
         $sFilename = $this->_convertEncoding($sFilename, true);
         copy($sOrigFile, $sFilename);
 
-        $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $oDocument->getFullPath(), $oDocument->getFileName()))));
+        $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $sDocPath, $sDocName))));
         $sPath = str_replace($this->aReplaceKeys, $this->aReplaceValues, $sPath);
         $sPath = $this->_convertEncoding($sPath, true);
 
