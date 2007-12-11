@@ -114,7 +114,16 @@ class KTBulkUploadFolderAction extends KTFolderAction {
 
         unset($aErrorOptions['message']);
         $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
-
+        
+        // Ensure file is a zip file
+        $sMime = $aFile['type'];
+        $pos = strpos($sMime, 'x-zip-compressed');
+        if($pos === false){
+            $this->addErrorMessage(_kt("Bulk Upload failed: File is not a zip file."));
+            controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
+            exit(0);
+        }
+        
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {
@@ -132,6 +141,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
+        
         $aErrorOptions['message'] = _kt("Bulk Upload failed");
         $this->oValidator->notError($res, $aErrorOptions);
 
