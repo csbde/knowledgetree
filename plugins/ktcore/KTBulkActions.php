@@ -661,6 +661,9 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
 
+            $aFolderObjects = array();
+            $aFolderObjects[$sFolderId] = $oFolder;
+
             // Export the folder structure to ensure the export of empty directories
             if(!empty($aFolderList)){
                 foreach($aFolderList as $k => $oFolderItem){
@@ -673,6 +676,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                         $aDocuments = array_merge($aDocuments, $aFolderDocs);
                     }
                     $this->oZip->addFolderToZip($oFolderItem);
+                    $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
                 }
             }
 
@@ -680,6 +684,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
+                    $sDocFolderId = $oDocument->getFolderID();
+                    $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
 
                     if ($this->bNoisy) {
                         $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
@@ -689,11 +695,10 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                     // fire subscription alerts for the downloaded document
                     if($this->bNotifications){
                         $oSubscriptionEvent = new SubscriptionEvent();
-                        $oFolder = Folder::get($oDocument->getFolderID());
                         $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                     }
 
-                    $this->oZip->addDocumentToZip($oDocument);
+                    $this->oZip->addDocumentToZip($oDocument, $oFolder);
                 }
             }
         }
@@ -906,6 +911,9 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
 
+            $aFolderObjects = array();
+            $aFolderObjects[$sFolderId] = $oFolder;
+
             // Get the documents within the folder
             if(!empty($aFolderList)){
                 foreach($aFolderList as $k => $oFolderItem){
@@ -921,6 +929,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     // Add the folder to the zip file
                     if($this->bDownload){
                         $this->oZip->addFolderToZip($oFolderItem);
+                        $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
                     }
                 }
             }
@@ -961,7 +970,9 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                             $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
                             $oDocumentTransaction->create();
                         }
-                        $this->oZip->addDocumentToZip($oDocument);
+                        $sDocFolderId = $oDocument->getFolderID();
+                        $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
+                        $this->oZip->addDocumentToZip($oDocument, $oFolder);
                     }
                 }
             }
