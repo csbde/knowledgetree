@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id
+ * $Id: $
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -106,6 +106,8 @@ class DiskUsageDashlet extends KTBaseDashlet
 				preg_match('/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%\s+(.*)/', $line, $matches);
 				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
+				if ($size === 0) continue;
+
 				if ($usedp >= 100 - $this->urgentPercent)
 				{
 					$colour = 'red';
@@ -114,6 +116,10 @@ class DiskUsageDashlet extends KTBaseDashlet
 				{
 					$colour = 'orange';
 				}
+                elseif ( $usedp < 100 - $this->warningPercent)
+                {
+                    $colour = 'none';
+                }
 
 				$usage[] = array(
 						'filesystem'=>$filesystem,

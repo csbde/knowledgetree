@@ -35,6 +35,8 @@
  *
  */
 
+require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
+
 class KTAPI_Folder extends KTAPI_FolderItem
 {
 	/**
@@ -197,6 +199,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function get_full_path()
 	{
 		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
+		if (substr($path,0,1) == '/') $path = substr($path,1);
 
 		return $path;
 	}
@@ -350,7 +353,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'id' => (int) $folder->getId(),
 							'item_type' => 'F',
 
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>'n/a',
+
 							'title' => $folder->getName(),
+							'document_type' => 'n/a',
 							'filename' => $folder->getName(),
 							'filesize' => 'n/a',
 
@@ -367,7 +374,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 							'version' => 'n/a',
 
-							'immutable'=> 'n/a',
+							'is_immutable'=> 'n/a',
 							'permissions' => 'n/a',
 
 							'workflow'=>'n/a',
@@ -469,11 +476,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 					if ($wsversion >= 2)
 					{
+						$docTypeId = $document->getDocumentTypeID();
+						$documentType = DocumentType::get($docTypeId);
+
+
 						$contents[] = array(
 							'id' => (int) $document->getId(),
 							'item_type' => 'D',
 
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>'n/a',
+
 							'title' => $document->getName(),
+							'document_type'=>$documentType->getName(),
 							'filename' => $document->getFileName(),
 							'filesize' => $document->getFileSize(),
 
@@ -490,7 +505,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
 
-							'immutable'=> $document->getImmutable()?'true':'false',
+							'is_immutable'=> $document->getImmutable()?'true':'false',
 							'permissions' => 'n/a',
 
 							'workflow'=> $workflow,
@@ -590,13 +605,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 
-		$tempfilename=addslashes($tempfilename);
-		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
-		$result = DBUtil::runQuery($sql);
-		if (PEAR::isError($result))
-		{
-			return $result;
-		}
+		KTUploadManager::temporary_file_imported($tempfilename);
 
 		return new KTAPI_Document($this->ktapi, $this, $document);
 	}

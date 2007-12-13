@@ -88,14 +88,16 @@ class OOTextExtractor extends ExternalDocumentExtractor
 
 	protected function getCommandLine()
 	{
-		$sourcefile = escapeshellcmd($this->sourcefile);
+		//$sourcefile = escapeshellcmd($this->sourcefile);
+		$sourcefile = ($this->sourcefile);
 		unlink($this->targetfile);
 		$this->targetfile .= '.' . $this->targetExtension;
-		$targetfile = escapeshellcmd($this->targetfile);
+		//$targetfile = escapeshellcmd($this->targetfile);
+		$targetfile =  ($this->targetfile);
 
 		$escape = OS_WINDOWS?'"':'\'';
 
-		$cmdline = "{$this->python} {$escape}{$this->documentConverter}{$escape} {$escape}{$sourcefile}{$escape} {$escape}{$targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
+		$cmdline = "{$escape}{$this->python}{$escape} {$escape}{$this->documentConverter}{$escape} {$escape}{$sourcefile}{$escape} {$escape}{$targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
 		return $cmdline;
 	}
 

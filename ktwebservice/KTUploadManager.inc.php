@@ -52,7 +52,8 @@ class KTUploadManager
 		$config = KTConfig::getSingleton();
 
 		$this->age = $config->get('webservice/uploadExpiry',60);
-		$this->temp_dir= $config->get('webservice/uploadDirectory');
+		$this->temp_dir = $config->get('webservice/uploadDirectory');
+		$this->temp_dir = str_replace('\\','/', $this->temp_dir);
 	}
 
 	/**
@@ -63,8 +64,46 @@ class KTUploadManager
 	function set_session($session)
 	{
 		$user = &$session->get_user();
-		$this->userid=$user->getId();
+		$this->userid=$_SESSION['userID'];
 		$this->session = $session->get_session();
+	}
+
+	function get_temp_filename($prefix)
+	{
+		$tempfilename = tempnam($this->temp_dir,$prefix);
+
+		return $tempfilename;
+	}
+
+	function is_valid_temporary_file($tempfilename)
+	{
+		$tempdir = substr($tempfilename,0,strlen($this->temp_dir));
+		$tempdir = str_replace('\\','/', $tempdir);
+		return ($tempdir == $this->temp_dir);
+	}
+
+	function store_base64_file($base64, $prefix= 'sa_')
+	{
+		$tempfilename = $this->get_temp_filename($prefix);
+		if (!is_writable($tempfilename))
+		{
+			return new PEAR_Error("Cannot write to file: $tempfilename");
+		}
+
+		if (!$this->is_valid_temporary_file($tempfilename))
+		{
+			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
+		}
+
+		$fp=fopen($tempfilename, 'wb');
+		if ($fp === false)
+		{
+			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
+		}
+		fwrite($fp, base64_decode($base64));
+		fclose($fp);
+
+		return $tempfilename;
 	}
 
 	/**
@@ -80,8 +119,9 @@ class KTUploadManager
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis');
 
-		$newtempfile = realpath($this->temp_dir) . '/' . $this->userid . '-'. $now_str;
-		if (DIRECTORY_SEPARATOR == '\\') {
+		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
+		if (OS_WINDOWS)
+		{
 			$tempfile = str_replace('/','\\',$tempfile);
 			$newtempfile = str_replace('\\','/',$newtempfile);
 		}
@@ -105,12 +145,19 @@ class KTUploadManager
 			return $id;
 		}
 		global $php_errormsg;
-		$result = @move_uploaded_file($tempfile, $newtempfile);
+		if (is_uploaded_file($tempfile))
+		{
+			$result = @move_uploaded_file($tempfile, $newtempfile);
+		}
+		else
+		{
+			$result = @rename($tempfile, $newtempfile);
+		}
+
 		$tmp = $php_errormsg;
 
 		if ($result == false)
 		{
-
 			DBUtil::rollback();
 			return new PEAR_Error($tmp);
 		}
@@ -136,11 +183,10 @@ class KTUploadManager
 		return $result;
 	}
 
-	function imported_file($action, $filename, $documentid)
+	function temporary_file_imported($tempfilename)
 	{
-		DBUtil::startTransaction();
-		$filename=basename($filename);
-		$sql = "DELETE FROM uploaded_files WHERE action='$action' AND filename='$filename'";
+		$tempfilename = addslashes(str_replace('\\','/',$tempfilename));
+		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
 		$rs = DBUtil::runQuery($sql);
 		if (PEAR::isError($rs))
 		{
@@ -148,15 +194,7 @@ class KTUploadManager
 			return false;
 		}
 
-		$sql = "INSERT INTO index_files(document_id, user_id) VALUES($documentid, $this->userid)";
-		DBUtil::runQuery($sql);
-		if (PEAR::isError($rs))
-		{
-			DBUtil::rollback();
-			return false;
-		}
 
-		DBUtil::commit();
 		return true;
 	}
 

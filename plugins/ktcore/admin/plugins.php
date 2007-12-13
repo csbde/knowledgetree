@@ -75,6 +75,33 @@ class KTPluginDispatcher extends KTAdminDispatcher {
         $sTable = KTUtil::getTableName('plugins');
         $aIds = (array) KTUtil::arrayGet($_REQUEST, 'pluginids');
         KTPluginEntity::setEnabled($aIds);
+        //enabling or disabling Tag fieldset depending on whether tag cloud plugin is enabled or disabled.
+        //Get tag cloud object
+        $oTagClouPlugin = KTPluginEntity::getByNamespace('ktcore.tagcloud.plugin');
+        if($oTagClouPlugin->getDisabled() == '1')
+        {
+        	//disable tag fieldset
+        	$aFV = array(
+                'disabled' => true,
+            );
+            $aWFV = array(
+                'namespace' => 'tagcloud'
+            );
+        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);	
+        }
+        //if Tag Cloud plugin disabled
+        if($oTagClouPlugin->getDisabled() == '0')
+        {
+        	//enable tag fieldset
+        	$aFV = array(
+                'disabled' => false,
+            );
+            $aWFV = array(
+                'namespace' => 'tagcloud'
+            );
+        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);	
+        }
+        
         $this->successRedirectToMain(_kt('Plugins updated'));
     }
 

@@ -67,6 +67,10 @@ class QueryResultItem
 	protected $deleted;
 	protected $status;
 	protected $folderId;
+	protected $storagePath;
+	protected $documentType;
+	protected $mimeIconPath;
+	protected $mimeDisplay;
 
 	public function __construct($document_id, $rank=null, $title=null, $text=null)
 	{
@@ -100,12 +104,14 @@ class QueryResultItem
 					d.folder_id, f.full_path, f.name, dcv.size as filesize, dcv.major_version,
 					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
 					mt.mimetypes as mimetype, md.mime_doc as mimedoc, d.checkedout, mbu.name as modifiedbyuser, d.modified,
-					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created
+					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created,dcv.storage_path, dtl.name as document_type,
+					mt.icon_path as mime_icon_path, mt.friendly_name as mime_display
 				FROM
 					documents d
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id = dmv.id
 					INNER JOIN document_content_version dcv ON dmv.content_version_id = dcv.id
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+					LEFT JOIN document_types_lookup dtl ON dtl.id=dmv.document_type_id
 					LEFT JOIN folders f ON f.id=d.folder_id
 					LEFT JOIN users cou ON d.checked_out_user_id=cou.id
 					LEFT JOIN workflows w ON dmv.workflow_id=w.id
@@ -134,6 +140,31 @@ class QueryResultItem
 			throw new Exception(_kt($msg));
 		}
 
+		// document_id, relevance, text, title
+
+		$this->documentType = $result['document_type'];
+		$this->filename=$result['filename'];
+		$this->filesize = KTUtil::filesizeToString($result['filesize']);
+		$this->folderId = $result['folder_id'];
+
+		$this->createdBy = $result['createdbyuser'];
+		$this->dateCreated = $result['created'];
+
+		$this->modifiedBy = $result['modifiedbyuser'];
+		$this->dateModified = $result['modified'];
+
+		$this->checkedOutUser = $result['checkoutuser'];
+		$this->dateCheckedout = $result['checkedout'];
+
+		$this->owner = $result['owneruser'];
+
+		$this->version = $result['major_version'] . '.' . $result['minor_version'];
+
+		$this->immutable = ($result['immutable'] + 0)?_kt('Immutable'):'';
+
+		$this->workflow = $result['workflow'];
+		$this->workflowState = $result['workflowstate'];
+
 		if (is_null($result['name']))
 		{
 			$this->fullpath = '(orphaned)';
@@ -144,28 +175,12 @@ class QueryResultItem
 			if (substr($this->fullpath,0,1) == '/') $this->fullpath = substr($this->fullpath,1);
 		}
 
-		$this->filesize = KTUtil::filesizeToString($result['filesize']);
-
-		$this->version = $result['major_version'] . '.' . $result['minor_version'];
-		$this->filename=$result['filename'];
-		$this->checkedOutUser = $result['checkoutuser'];
-		$this->workflow = $result['workflow'];
-		$this->workflowState = $result['workflowstate'];
-
-
 		$this->mimeType = $result['mimetype'];
-		$this->dateCheckedout = $result['checkedout'];
+		$this->mimeIconPath = $result['mime_icon_path'];
+		$this->mimeDisplay = $result['mime_display'];
 
-		$this->modifiedBy = $result['modifiedbyuser'];
-		$this->dateModified = $result['modified'];
-		$this->createdBy = $result['createdbyuser'];
-		$this->dateCreated = $result['created'];
-
-		$this->owner = $result['owneruser'];
-		$this->immutable = ($result['immutable'] + 0)?_kt('Immutable'):'';
+		$this->storagePath = $result['storage_path'];
 		$this->status = Document::getStatusString($result['status_id']);
-		$this->folderId = $result['folder_id'];
-
 	}
 
 	protected function __get($property)
@@ -193,12 +208,15 @@ class QueryResultItem
 			case 'IsAvailable':
 				return $this->Document->isLive();
 			case 'CheckedOutUser':
+			case 'CheckedOutBy':
 				return  (string) $this->checkedOutUser;
 			case 'WorkflowOnly':
+			case 'Workflow':
 				return (string)$this->workflow;
 			case 'WorkflowStateOnly':
+			case 'WorkflowState':
 				return (string)$this->workflowState;
-			case 'Workflow':
+			case 'WorkflowAndState':
 				if (is_null($this->workflow))
 				{
 					return '';
@@ -206,6 +224,10 @@ class QueryResultItem
 				return "$this->workflow - $this->workflowState";
 			case 'MimeType':
 				return (string) $this->mimeType;
+			case 'MimeIconPath':
+				return (string) $this->mimeIconPath;
+			case 'MimeDisplay':
+				return (string) $this->mimeDisplay;
 			case 'DateCheckedOut':
 				return (string) $this->dateCheckedout;
 			case 'ModifiedBy':
@@ -217,11 +239,19 @@ class QueryResultItem
 			case 'DateCreated':
 				return (string) $this->dateCreated;
 			case 'Owner':
+			case 'OwnedBy':
 				return (string) $this->owner;
+			case 'IsImmutable':
 			case 'Immutable':
 				return (bool) $this->immutable;
 			case 'Status':
 				return $this->status;
+			case 'StoragePath':
+				return $this->storagePath;
+			case 'DocumentType':
+				return $this->documentType;
+			case 'Permissions':
+				return 'not available';
 			case 'CanBeReadByUser':
 				if (!$this->live)
 					return false;
@@ -231,7 +261,7 @@ class QueryResultItem
 					return true;
 				return false;
 			default:
-				throw new Exception("Unknown property '$property' to get on MatchResult");
+				throw new Exception("Unknown property '$property' to get on QueryResultItem");
 		}
 		return ''; // Should not be reached
 	}
@@ -766,6 +796,7 @@ abstract class Indexer
         	if ($this->debug) $default->log->debug('indexDocuments: stopping - db error');
         	return;
         }
+        KTUtil::setSystemSetting('luceneIndexingDate', time());
 
         // bail if no work to do
         if (count($result) == 0)

@@ -353,7 +353,19 @@ class KTInit {
         }
         return false;
     }
+
     // }}}
+
+function catchFatalErrors($p_OnOff='On'){
+	ini_set('display_errors','On');
+    $phperror='><div id="phperror" style="display:none">';
+	ini_set('error_prepend_string',$phperror);
+    
+	$phperror='</div>><form name="catcher" action="/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
+	<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
+	ini_set('error_append_string',$phperror);      
+}
+
 
 
     // {{{ guessRootUrl()
@@ -505,6 +517,8 @@ class KTInit {
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCopyInKT', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsMoveInKT', true);
 
+            $oKTConfig->setdefaultns('clientToolPolicies', 'allowRememberPassword', true);
+
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
 
@@ -594,6 +608,21 @@ require_once(KT_LIB_DIR . '/util/legacy.inc');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
+
+$KTInit->catchFatalErrors();
+
+if (phpversion()<5){
+	
+	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].'/'.'customerrorpage.php';
+	
+	session_start();
+    
+	$_SESSION['sErrorMessage'] = 'KnowledgeTree now requires that PHP version 5 is installed. PHP version 4 is no longer supported.';
+		
+   
+	header('location:'. $sErrorPage ) ;
+
+}
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');

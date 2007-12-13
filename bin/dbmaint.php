@@ -2,51 +2,57 @@
 
 require_once('../config/dmsDefaults.php');
 
-print _kt('DB Maintenance') . "...\n\n";
-
 $action = 'check';
 $sqlaction = 'check table';
 if ($argc > 0)
 {
 	foreach($argv as $arg)
 	{
-		$arg=strtolower($arg);
-		switch ($arg)
+		$action=strtolower($arg);
+		switch ($action)
 		{
-			case 'check':
 			case 'repair':
+				$sqlaction='repair table';
+				break;
 			case 'optimize':
-				$sqlaction="$arg table";
-				$action = $arg;
+				$sqlaction='optimize table';
 				break;
 			case 'help':
 				print "Usage: dbmaint.php repair|check|optimize\n";
 				exit;
+			case 'check':
+			default:
+			    $action = 'check';
+				$sqlaction='check table';
+				break;
 		}
 	}
 }
 
-print '* ' . sprintf(_kt("Action selected: %s"), $action) . "\n\n";
+$default->log->info("DB Maintenance... \nAction selected: {$action}");
 
 $sql = "show tables";
 $tables = DBUtil::getResultArray($sql);
-foreach($tables as $table)
-{
-	$key = array_keys($table);
 
-	$tablename=$table[$key[0]];
-	$sql = "$sqlaction $tablename";
-	$result = DBUtil::getOneResult($sql);
+if(!empty($tables)){
+    foreach($tables as $table)
+    {
+    	$key = array_keys($table);
 
-	if (PEAR::isError($result))
-	{
-		print sprintf(_kt("Attempted: %s"), $sql) . "\n";
-		print sprintf(_kt(' *: %s'), $result->getMessage()) . "\n";
-		continue;
-	}
-	print sprintf(_kt("Running: %s - %s"), $sql, $result['Msg_text']) . "\n";
+    	$tablename=$table[$key[0]];
+    	$sql = "$sqlaction $tablename;";
+    	$result = DBUtil::getOneResult($sql);
+
+    	if (PEAR::isError($result))
+    	{
+    		$default->log->error('Attempted: '.$sql);
+    		$default->log->error(' *: '.$result->getMessage());
+    		continue;
+    	}
+    	$default->log->info('Running: '.$sql .' - '. $result['Msg_text']);
+    }
 }
 
-print _kt('Done.') . "\n";
+$default->log->info('Done.');
 
 ?>

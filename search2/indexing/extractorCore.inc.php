@@ -349,8 +349,21 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 	 */
 	protected  function exec($cmd)
 	{
-		$aRet = KTUtil::pexec($cmd);
-		return $aRet['ret'] == 0;
+		if (OS_WINDOWS)
+		{
+
+
+			$WshShell = new COM("WScript.Shell");
+			$res = $WshShell->Run($cmd, 0, true);
+
+
+			return $res == 0;
+		}
+		else
+		{
+			$aRet = KTUtil::pexec($cmd);
+			return $aRet['ret'] == 0;
+		}
 	}
 
 	/**
@@ -456,7 +469,8 @@ abstract class ApplicationExtractor extends ExternalDocumentExtractor
 	{
 		$sources = array('{source}','{target}');
 		$target = array($this->sourcefile, $this->targetfile);
-		$cmdline = $this->application . ' ' . str_replace($sources,$target, $this->params);
+		$escape = OS_WINDOWS?'"':'\'';
+		$cmdline = $escape . $this->application . $escape . ' ' . str_replace($sources,$target, $this->params);
 
 		return $cmdline;
 	}

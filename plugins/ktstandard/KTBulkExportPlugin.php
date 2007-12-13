@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -109,9 +109,24 @@ class KTBulkExportAction extends KTFolderAction {
         $this->oPage->template = "kt3/minimal_page";
         $this->handleOutput("");
 
+        // Create associative array of folder items for use by the contained documents
+        $aFolderObjects = array();
+        $aFolderObjects[$sCurrentFolderId] = $this->oFolder;
+
+        // Export the folder structure to ensure the export of empty directories
+        if(!empty($aFolderList)){
+            foreach($aFolderList as $k => $oFolderItem){
+                $this->oZip->addFolderToZip($oFolderItem);
+                $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
+            }
+        }
+
         if(!empty($aDocumentIds)){
             foreach ($aDocumentIds as $iId) {
                 $oDocument = Document::get($iId);
+                $sFolderId = $oDocument->getFolderID();
+
+                $oFolder = isset($aFolderObjects[$sFolderId]) ? $aFolderObjects[$sFolderId] : Folder::get($sFolderId);
 
                 if ($bNoisy) {
                     $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
@@ -121,17 +136,11 @@ class KTBulkExportAction extends KTFolderAction {
                 // fire subscription alerts for the downloaded document
                 if($bNotifications){
                     $oSubscriptionEvent = new SubscriptionEvent();
-                    $oFolder = Folder::get($oDocument->getFolderID());
                     $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                 }
 
-                $this->oZip->addDocumentToZip($oDocument);
+                $this->oZip->addDocumentToZip($oDocument, $oFolder);
             }
-        }
-
-        // Export the folder structure to ensure the export of empty directories
-        foreach($aFolderList as $k => $oFolderItem){
-            $this->oZip->addFolderToZip($oFolderItem);
         }
 
         $sExportCode = $this->oZip->createZipFile(TRUE);
@@ -168,7 +177,7 @@ class KTBulkExportAction extends KTFolderAction {
             return $res;
         }
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
-        $aPotentialWhere = array($sPermissionString, 'D.parent_folder_ids = ? OR D.parent_folder_ids LIKE ?', 'D.status_id = 1');
+        $aPotentialWhere = array($sPermissionString, 'D.folder_id = ? OR D.parent_folder_ids = ? OR D.parent_folder_ids LIKE ?', 'D.status_id = 1');
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
@@ -202,6 +211,7 @@ class KTBulkExportAction extends KTFolderAction {
             array_shift($aParentFolderIds);
         }
         $sParentFolderIds = join(',', $aParentFolderIds);
+        $aParams[] = $this->oFolder->getId();
         $aParams[] = $sParentFolderIds;
         $aParams[] = $sParentFolderIds . ",%";
         return array($sQuery, $aParams);

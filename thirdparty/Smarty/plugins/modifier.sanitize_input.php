@@ -6,6 +6,7 @@ function smarty_modifier_sanitize_input($string, $esc_type = 'html', $charset='U
     $string = mb_ereg_replace('"',"&quot;", $string);
     $string = mb_ereg_replace('<',"&lt;", $string);
     $string = mb_ereg_replace('>',"&gt;", $string);
+    $string = mb_ereg_replace('&lt;br/&gt;',"<br>", $string);
     return $string;
 }
 

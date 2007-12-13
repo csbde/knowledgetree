@@ -561,7 +561,9 @@ class KTDocumentUtil {
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
+        DBUtil::startTransaction();
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
+
         // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
@@ -633,6 +635,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::updateSearchableText($oDocument, true);
 
+        DBUtil::commit();
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('All done...')));
 
         return $oDocument;
@@ -718,7 +721,7 @@ class KTDocumentUtil {
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
 
-        $res = $oStorage->upload($oDocument, $sFilename);
+        $res = $oStorage->upload($oDocument, $sFilename, $aOptions);
         if ($res === false) {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('No reason given')));
         }
@@ -727,7 +730,7 @@ class KTDocumentUtil {
         }
         KTDocumentUtil::setComplete($oDocument, 'contents');
 
-        if ($aOptions['cleanup_initial_file']) {
+        if ($aOptions['cleanup_initial_file'] && file_exists($sFilename)) {
             @unlink($sFilename);
         }
 

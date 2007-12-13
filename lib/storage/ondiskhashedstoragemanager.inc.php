@@ -44,7 +44,14 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
-    function upload(&$oDocument, $sTmpFilePath) {
+    function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
+    	
+    	if (!file_exists($sTmpFilePath)) {
+              
+            	return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
+            }	
+    	
+    
         $oConfig =& KTConfig::getSingleton();
         $sStoragePath = $this->generateStoragePath($oDocument);
         if (PEAR::isError($sStoragePath)) {
@@ -60,7 +67,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         if (OS_WINDOWS) {
             $sDocumentFileSystemPath = str_replace('\\','/',$sDocumentFileSystemPath);
         }
-        if ($this->writeToFile($sTmpFilePath, $sDocumentFileSystemPath)) {
+        if ($this->writeToFile($sTmpFilePath, $sDocumentFileSystemPath, $aOptions)) {
             $end_time = KTUtil::getBenchmarkTime();
             global $default;
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
@@ -70,10 +77,10 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             if (file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
-                return false;
+            	return new PEAR_Error("$sDocumentFileSystemPath does not exist after write to storage path. Options: " . print_r($aOptions,true));
             }
         } else {
-            return false;
+            return new PEAR_Error("Could not write $sTmpFilePath to $sDocumentFileSystemPath with options: " . print_r($aOptions,true));
         }
     }
 
@@ -100,8 +107,11 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return false;
     }
 
-    function writeToFile($sTmpFilePath, $sDocumentFileSystemPath) {
+    function writeToFile($sTmpFilePath, $sDocumentFileSystemPath, $aOptions = null) {
         // Make it easy to write compressed/encrypted storage
+        if(isset($aOptions['copy_upload']) && ($aOptions['copy_upload'] == 'true')) {
+            return copy($sTmpFilePath, $sDocumentFileSystemPath);
+        }
 
         if (is_uploaded_file($sTmpFilePath))
             return move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);

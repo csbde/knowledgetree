@@ -44,8 +44,10 @@ class KTUtil {
 	const HOUR_IN_SECS = 3600;
 	const DAY_IN_SECS = 86400;
 	const KB = 1024;
-	const MB = 1048576;
-	const GB = 1073741824;
+    const MB = 1048576;
+    const GB = 1073741824;
+    const TB = 1099511627776;
+    const PB = 1125899906842624;
 
 	static function computePeriod($diff, $suffix = null, $returnArray=false)
 	{
@@ -89,21 +91,29 @@ class KTUtil {
 	{
 		$filesize = (int) $filesize;
 
-		if ($filesize >= KTutil::GB)
+		if ($filesize >= KTUtil::PB)
 		{
-			return number_format($filesize /  KTutil::GB, 2, '.',',') . _kt('GB');
+			return number_format($filesize /  KTUtil::PB, 2, '.',',') . _kt('PB');
 		}
-		elseif ($filesize >= KTutil::MB)
+		elseif ($filesize >= KTUtil::TB)
 		{
-			return number_format($filesize /  KTutil::MB, 2, '.',',') . _kt('MB');
+			return number_format($filesize /  KTUtil::TB, 2, '.',',') . _kt('TB');
 		}
-		elseif ($filesize >= KTutil::KB)
+		elseif ($filesize >= KTUtil::GB)
 		{
-			return number_format($filesize /  KTutil::KB, 2, '.',',') . _kt('KB');
+			return number_format($filesize /  KTUtil::GB, 2, '.',',') . _kt('GB');
+		}
+		elseif ($filesize >= KTUtil::MB)
+		{
+			return number_format($filesize /  KTUtil::MB, 2, '.',',') . _kt('MB');
+		}
+		elseif ($filesize >= KTUtil::KB)
+		{
+			return number_format($filesize /  KTUtil::KB, 2, '.',',') . _kt('KB');
 		}
 		else
 		{
-			return $filesize . _kt('b');
+			return $filesize . _kt('B');
 		}
 	}
 

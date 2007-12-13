@@ -1,0 +1,1 @@
+alter table document_fields_link change value value mediumtext not null;
