@@ -279,7 +279,15 @@ class KTrss{
     	// Build path to host
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
     	global $default;
-    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	if(count($aPath) > 2){
+    		for($i = 0; $i < count($aPath)-1; $i++){
+    			$sSuffix .= $aPath[$i];
+    		}
+    		$sSuffix = $aPath[1]."/";
+    	}else{
+    		$sSuffix = '';
+    	}
+    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$sSuffix;
     	$feed = "<?xml version=\"1.0\"?>\n";
     	$feed .= "<rss version=\"2.0\">\n".
     			 "<channel>\n" .
@@ -546,7 +554,7 @@ class KTrss{
 
     // get rss icon link
     function getImageLink($iItemId, $sItemType){
-    	return "<a title='View RSS Page' href='".KTrss::getRssLink($iItemId, $sItemType)."' target='_blank'>".KTrss::getRssLinkIcon()."</a>";
+    	return "<a href='".KTrss::getRssLink($iItemId, $sItemType)."' target='_blank'>".KTrss::getRssLinkIcon()."</a>";
     }
 
     // get the mime type id for a document
