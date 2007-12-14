@@ -81,6 +81,12 @@ class User extends KTEntity {
     var $dLastLogin = null;
     var $bDisabled = false;
 
+    /**
+     * The dashboard state for the current user
+     * @var string
+     */
+    var $sDashboardState = '';
+
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sUserName' => 'username',
@@ -176,23 +182,26 @@ class User extends KTEntity {
     }
 
     function getDashboardState() {
-        return KTUtil::getSystemSetting($this->_getDashboardStateKey());
+        if(empty($this->sDashboardState)){
+            $this->sDashboardState = KTUtil::getSystemSetting($this->_getDashboardStateKey());
+        }
+        return $this->sDashboardState;
     }
 
     function setDashboardState($mValue) {
+        $this->sDashboardState = $mValue;
         KTUtil::setSystemSetting($this->_getDashboardStateKey(), $mValue);
     }
 
     function refreshDashboadState()
     {
     	require_once(KT_DIR . "/thirdparty/pear/JSON.php");
-
     	$dashletRegistry = & KTDashletRegistry::getSingleton();
 
-    	$aDashlets = $dashletRegistry->getDashlets($this);
+    	$update = false;
+    	$knownlist = array();
 
     	$oJSON = new Services_JSON();
-
     	$state = $this->getDashboardState();
     	$dashlets = $oJSON->decode($state);
 
@@ -200,34 +209,59 @@ class User extends KTEntity {
     	if (!isset($dashlets->right)) $dashlets->right = array();
     	$mergedlist = kt_array_merge($dashlets->left,$dashlets->right);
 
-
-    	$knownlist = array();
     	foreach($mergedlist as $dashlet)
     	{
-    		array_push($knownlist,$dashlet->id);
+    		array_push($knownlist,"'".$dashlet->id."'");
     	}
-    	$update=false;
 
-    	//if (!isset($dashlets->left)) $dashlets->left=array();
-    	//if (!isset($dashlets->right)) $dashlets->right=array();
+    	$sKnownlist = implode(',', $knownlist);
+    	$aDashlets = $dashletRegistry->getNewDashlets($this, $sKnownlist);
 
-    	$column=1;
-    	foreach($aDashlets as $dashlet)
-    	{
-    		$class = get_class($dashlet);
-    		$column=($column + 1) %2;
-    		if (!in_array($class,$knownlist))
-    		{
-    			$obj = new stdClass();
-    			$obj->id=$class;
-    			$obj->state=0;
+    	if(!empty($aDashlets)){
+        	$column=1;
+        	foreach($aDashlets as $class)
+        	{
+        		$column = ($column + 1) %2;
+        	    $obj = new stdClass();
+        		$obj->id=$class;
+        		$obj->state=0;
 
-    			if ($column == 0)
-    				array_push($dashlets->left,$obj);
-				else
-    				array_push($dashlets->right,$obj);
-    			$update=true;
-    		}
+        		if ($column == 0)
+        			array_push($dashlets->left,$obj);
+    			else
+        			array_push($dashlets->right,$obj);
+        		$update=true;
+        	}
+    	}
+
+    	// Check if the KT Info dashlet is being displayed
+    	// If it's not in the top left corner, move it there.
+    	if(!(strpos($sKnownlist, 'KTInfoDashlet') === false) && $knownlist[0] != "'KTInfoDashlet'"){
+    	    $left = $dashlets->left;
+    	    $right = $dashlets->right;
+
+    	    $found = false;
+    	    $update = true;
+    	    foreach($left as $key => $item){
+    	        if($item->id == 'KTInfoDashlet'){
+    	            // found the dashlet
+    	            $found = 'true';
+    	            array_splice($dashlets->left, $key, 1);
+    	            array_unshift($dashlets->left, $item);
+    	            continue;
+    	        }
+    	    }
+    	    if(!$found){
+    	        foreach($right as $key => $item){
+        	        if($item->id == 'KTInfoDashlet'){
+        	            // found the dashlet
+        	            $found = 'true';
+    	                array_splice($dashlets->right, $key, 1);
+        	            array_unshift($dashlets->left, $item);
+        	            continue;
+        	        }
+        	    }
+    	    }
     	}
 
     	if ($update)
