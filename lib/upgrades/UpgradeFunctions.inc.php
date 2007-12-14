@@ -37,6 +37,7 @@
 
 require_once(KT_LIB_DIR . '/upgrades/Ini.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/scheduler.php');
+require_once(KT_LIB_DIR . '/database/schema.inc.php');
 
 class UpgradeFunctions {
     var $upgrades = array(
@@ -56,6 +57,7 @@ class UpgradeFunctions {
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
+            '3.5.2' => array('dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes'),
             );
 
     var $descriptions = array(
@@ -77,7 +79,13 @@ class UpgradeFunctions {
             'cleanupGroupMembership' => 'Cleanup any old references to missing groups, etc.',
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
             'updateConfigFile35' => 'Update the config.ini file for 3.5',
-            'registerIndexingTasks'=>'Register the required indexing background tasks'
+            'registerIndexingTasks'=>'Register the required indexing background tasks',
+            'dropForeignKeys'=>'Recreate db integrity: Drop foreign keys on the database',
+            'dropPrimaryKeys'=>'Recreate db integrity:Drop primary keys on the database',
+            'dropIndexes'=>'Recreate db integrity:Drop indexes on the database',
+            'createPrimaryKeys'=>'Recreate db integrity:Create primary keys on the database',
+            'createForeignKeys'=>'Recreate db integrity:Create foreign keys on the database',
+            'createIndexes'=>'Recreate db integrity:Create indexes on the database'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -87,7 +95,50 @@ class UpgradeFunctions {
             "fixUnits" => 1,
             'applyDiscussionUpgrade' => -1,
             'fixDocumentRoleAllocation' => -1,
+            'dropForeignKeys'=>1,
+            'dropPrimaryKeys'=>2,
+            'dropIndexes'=>3,
+            'createPrimaryKeys'=>4,
+            'createForeignKeys'=>5,
+            'createIndexes'=>6,
             );
+
+    function dropForeignKeys()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->dropForeignKeys();
+    }
+
+    function dropPrimaryKeys()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->dropPrimaryKeys();
+    }
+
+    function dropIndexes()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->dropIndexes();
+    }
+
+    function createPrimaryKeys()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->createPrimaryKeys();
+    }
+
+    function createForeignKeys()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->createForeignKeys();
+    }
+
+    function createIndexes()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->createIndexes();
+    }
+
 
     // {{{ _setPermissionFolder
     function _setPermissionFolder($iFolderId) {
