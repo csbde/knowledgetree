@@ -65,12 +65,6 @@ class KTSchemaUtil
 		$this->definePrimaryKeys();
 		$this->defineForeignKeys();
 		$this->defineOtherIndexes();
-		$this->_exec('SET FOREIGN_KEY_CHECKS = 0');
-	}
-
-	public function __destruct()
-	{
-		$this->_exec('SET FOREIGN_KEY_CHECKS = 1');
 	}
 
 	private function createFixUser()
@@ -759,6 +753,13 @@ class KTSchemaUtil
 
 	private function fixForeignKey($table, $field, $otherTable, $otherField)
 	{
+		if ($table == $otherTable)
+		{
+			$this->_exec("create temporary table tmp_{$table}(id int);");
+			$this->_exec("insert into tmp_{$table} select distinct id FROM {$table};");
+			$this->_exec("insert into tmp_{$table} select distinct id FROM {$table};");
+			$otherTable = "tmp_{$table}";
+		}
 		if ($otherTable == 'users' && $otherField == 'id')
 		{
 			$this->createFixUser();
@@ -769,6 +770,11 @@ class KTSchemaUtil
 
 		$sql = "DELETE FROM $table WHERE $field is not null and $field not in (select distinct $otherField FROM $otherTable)";
 		$this->_exec($sql);
+
+		if ($table == $otherTable)
+		{
+			$this->_exec("drop table tmp_{$table};");
+		}
 	}
 
 	/**
