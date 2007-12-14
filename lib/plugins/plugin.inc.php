@@ -315,7 +315,7 @@ class KTPlugin {
      */
     function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
 
-        $sql = "SELECT * FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
+        $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
         $res = DBUtil::getOneResult($sql);
 
         $aValues = array();
@@ -343,6 +343,13 @@ class KTPlugin {
             return $res;
         }
         return true;
+    }
+
+    function deRegisterPluginHelper($sNamespace, $sClass) {
+        $aWhere['namespace'] = $sNamespace;
+        $aWhere['classtype'] = $sClass;
+        $res = DBUtil::whereDelete('plugin_helper', $aWhere);
+        return $res;
     }
 
     function _fixFilename($sFilename) {
@@ -391,12 +398,16 @@ class KTPlugin {
      *
      */
     function load() {
+        // Include any required resources, javascript files, etc
+        $res = $this->run_setup();
+
+        if(!$res){
+            return false;
+        }
+
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
         $aPluginHelpers = DBUtil::getResultArray($query);
-
-        // Include any required resources, javascript files, etc
-        $this->run_setup();
 
         if(!empty($aPluginHelpers)){
             foreach ($aPluginHelpers as $plugin) {
@@ -500,6 +511,7 @@ class KTPlugin {
             	}
         	}
         }
+        return true;
     }
 
     /**
@@ -636,7 +648,7 @@ class KTPlugin {
     }
 
     function run_setup() {
-        return;
+        return true;
     }
 
     function stripKtDir($sFilename) {
