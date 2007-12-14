@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -74,7 +74,52 @@ class KTPluginDispatcher extends KTAdminDispatcher {
     function do_update() {
         $sTable = KTUtil::getTableName('plugins');
         $aIds = (array) KTUtil::arrayGet($_REQUEST, 'pluginids');
-        KTPluginEntity::setEnabled($aIds);
+
+        // Update disabled plugins
+        $sIds = implode(',', $aIds);
+        $sQuery = "UPDATE $sTable SET disabled = 1 WHERE id NOT IN ($sIds)";
+        DBUtil::runQuery(array($sQuery));
+
+        // Select disabled plugins that have been enabled
+        $sQuery = "SELECT * FROM $sTable WHERE disabled = 1 AND id IN ($sIds)";
+        $res = DBUtil::getResultArray($sQuery);
+
+        if(!PEAR::isError($res)){
+            // Enable the disabled plugins
+            $sQuery = "UPDATE $sTable SET disabled = 0 WHERE id IN ($sIds)";
+            DBUtil::runQuery(array($sQuery));
+
+            // run setup for each plugin
+            $aEnabled = array();
+            if(!empty($res)){
+                foreach ($res as $item){
+                    $aEnabled[] = $item['id'];
+                }
+
+                $sEnabled = implode(',', $aEnabled);
+
+                $sQuery = "SELECT h.classname, h.pathname FROM $sTable p
+                    INNER JOIN plugin_helper h ON (p.namespace = h.plugin)
+                    WHERE classtype = 'plugin' AND p.id IN ($sEnabled)";
+                $res = DBUtil::getResultArray($sQuery);
+
+                if(!PEAR::isError($res)){
+                    foreach($res as $item){
+                        $classname = $item['classname'];
+                        $path = $item['pathname'];
+
+                        if (!empty($path)) {
+                            require_once($path);
+                        }
+
+                    	$oPlugin = new $classname($path);
+                    	$oPlugin->setup();
+                    }
+                }
+            }
+        }
+        KTPluginEntity::clearAllCaches();
+
         //enabling or disabling Tag fieldset depending on whether tag cloud plugin is enabled or disabled.
         //Get tag cloud object
         $oTagClouPlugin = KTPluginEntity::getByNamespace('ktcore.tagcloud.plugin');
@@ -87,7 +132,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
             $aWFV = array(
                 'namespace' => 'tagcloud'
             );
-        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);	
+        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);
         }
         //if Tag Cloud plugin disabled
         if($oTagClouPlugin->getDisabled() == '0')
@@ -99,9 +144,9 @@ class KTPluginDispatcher extends KTAdminDispatcher {
             $aWFV = array(
                 'namespace' => 'tagcloud'
             );
-        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);	
+        	$res = DBUtil::whereUpdate('fieldsets', $aFV, $aWFV);
         }
-        
+
         $this->successRedirectToMain(_kt('Plugins updated'));
     }
 
