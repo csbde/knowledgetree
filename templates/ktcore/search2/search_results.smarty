@@ -134,10 +134,10 @@ function onShowAll(showall)
 
 	{foreach item=document from=$results}
 		<tr><td>
-		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr><a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title}</b></a>
+		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr><a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title|truncate:80}</b></a>
 		{if $document->Title != $document->Filename}
 			&nbsp;&nbsp;
-			<font style=" color: green "> - Filename: {$document->Filename}</font>
+			<font style=" color: green "> - Filename: {$document->Filename|truncate:40}</font>
 		{/if}
 		{if !$document->IsAvailable}
 			&nbsp;&nbsp;
@@ -149,7 +149,7 @@ function onShowAll(showall)
 			<font style=" color: orange ">{i18n}Version:{/i18n} {$document->Version}</font></td>
 		</tr>
 		<tr><td colspan=2>{$document->Text}</td></tr>
-		<tr><td><font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$document->FolderId}">{$document->FullPath}</a>/{$document->Title} - {$document->Filesize}</font></td>
+		<tr><td><font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$document->FolderId}" tag="{$document->FullPath}">{$document->FullPath|truncate:40}</a>/{$document->Title|truncate:40} - {$document->Filesize}</font></td>
 			<td align=right><nobr>
 				<font style="color: orange ">
 				{i18n}Created By:{/i18n} {$document->CreatedBy}

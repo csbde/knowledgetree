@@ -3,38 +3,38 @@
  * $Id$
  *
  * Main dashboard page -- This page is presented to the user after login.
- * It contains a high level overview of the users subscriptions, checked out 
- * document, pending approval routing documents, etc. 
+ * It contains a high level overview of the users subscriptions, checked out
+ * document, pending approval routing documents, etc.
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -53,9 +53,9 @@ require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 $sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
-    
+
     var $notifications = array();
-    var $sHelpPage = 'ktcore/dashboard.html';    
+    var $sHelpPage = 'ktcore/dashboard.html';
 
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
@@ -67,25 +67,29 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
         // FIXME what is the userid?
-        
-        
+
+
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
-        
+
         $this->sSection = 'dashboard';
         $this->oPage->setBreadcrumbDetails(_kt('Home'));
         $this->oPage->title = _kt('Dashboard');
-    
+
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
 
         $aDashletsLeft = array();
-        $aDashletsRight = array(); 
+        $aDashletsRight = array();
 
         $i = 0;
         foreach ($aDashlets as $oDashlet) {
-            if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
-            else {$aDashletsRight[] = $oDashlet; }
+            if(strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false && !empty($aDashletsLeft)){
+                array_unshift($aDashletsLeft, $oDashlet);
+            }else{
+                if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
+                else {$aDashletsRight[] = $oDashlet; }
+            }
             $i += 1;
             $i %= 2;
         }
@@ -97,10 +101,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
         $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
         $this->oPage->requireJSResource('resources/js/DDList.js');
-        
+
 
         $this->oUser->refreshDashboadState();
-        
+
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
         $sDSJS = 'var savedState = ';
@@ -114,7 +118,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
-
         // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
@@ -125,33 +128,33 @@ class DashboardDispatcher extends KTStandardDispatcher {
         );
         return $oTemplate->render($aTemplateData);
     }
-    
+
     // return some kind of ID for each dashlet
     // currently uses the class name
     function _getDashletId($oDashlet) {
         return get_class($oDashlet);
     }
 
-    // disable a dashlet.  
+    // disable a dashlet.
     // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
     function do_disableDashlet() {
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'fNamespace');
         $iUserId = $this->oUser->getId();
-        
+
         if (empty($sNamespace)) {
             $this->errorRedirectToMain('No dashlet specified.');
             exit(0);
         }
-    
+
         // do the "delete"
-        
+
         $this->startTransaction();
         $aParams = array('sNamespace' => $sNamespace, 'iUserId' => $iUserId);
         $oDD = KTDashletDisable::createFromArray($aParams);
         if (PEAR::isError($oDD)) {
             $this->errorRedirectToMain('Failed to disable the dashlet.');
         }
-    
+
         $this->commitTransaction();
         $this->successRedirectToMain('Dashlet disabled.');
     }
