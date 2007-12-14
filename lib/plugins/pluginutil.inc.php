@@ -386,6 +386,10 @@ class KTPluginUtil {
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
 
+        // Remove all entries from the plugin_helper table and refresh it.
+        $query = "DELETE FROM plugin_helper";
+        DBUtil::runQuery($query);
+
         $files = array();
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
