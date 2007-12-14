@@ -46,7 +46,7 @@ class KTPluginEntity extends KTEntity {
     var $bDisabled;
     var $sData;
     var $bUnavailable;
-    var $iOrderBy;
+    var $iOrderBy=0;
 
     // {{{ KTEntity-related
     var $_aFieldToSelect = array(
