@@ -164,18 +164,21 @@ class KTPluginUtil {
 
         $aPlugins = array();
         $aPluginHelpers = array();
+        $aDisabled = array();
 
         // Get the list of enabled plugins
-        $query = "SELECT * FROM plugin_helper h, plugins p
-           WHERE p.namespace = h.plugin AND p.disabled = 0 AND h.classtype='plugin'";
+        $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
+            INNER JOIN plugins p ON (p.namespace = h.plugin)
+           WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
         // Check that there are plugins and if not, register them
         if (empty($aPluginHelpers)) {
             KTPluginUtil::registerPlugins();
 
-        	$query = "SELECT * FROM plugin_helper h, plugins p
-        	   WHERE p.namespace = h.plugin AND p.disabled = 0 AND h.viewtype='{$sType}' AND h.classtype='plugin'";
+        	$query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
+        	   INNER JOIN plugins p ON (p.namespace = h.plugin)
+        	   WHERE p.disabled = 0 AND h.viewtype='{$sType}' AND h.classtype='plugin' ORDER BY p.orderby";
         	$aPluginHelpers = DBUtil::getResultArray($query);
         }
 
@@ -189,14 +192,25 @@ class KTPluginUtil {
             }
 
         	$oPlugin = new $classname($path);
-        	$aPlugins[] = $oPlugin;
-        	$oPlugin->load();
+        	if($oPlugin->load()){
+        	   $aPlugins[] = $oPlugin;
+        	}else{
+        	    $aDisabled[] = "'{$aItem['plugin']}'";
+        	}
         }
 
+        $sDisabled = implode(',', $aDisabled);
+
         // load plugin helpers into global space
-        $query = "SELECT h.* FROM plugin_helper h, plugins p
-        	   WHERE p.namespace = h.plugin AND p.disabled = 0 ";//WHERE viewtype='{$sType}'";
+        $query = 'SELECT h.* FROM plugin_helper h
+            INNER JOIN plugins p ON (p.namespace = h.plugin)
+        	WHERE p.disabled = 0 ORDER BY p.orderby';//WHERE viewtype='{$sType}'";
+        if(!empty($sDisabled)){
+        	   $query .= " AND h.plugin NOT IN ($sDisabled)";
+        }
+
         $aPluginList = DBUtil::getResultArray($query);
+
         KTPluginUtil::load($aPluginList);
 
         // Load the template locations
@@ -209,7 +223,7 @@ class KTPluginUtil {
                 call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
             }
         }
-        return;
+        return true;
     }
 
     /**
@@ -406,7 +420,7 @@ class KTPluginUtil {
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
 
-        KTPluginUtil::removePluginCache();
+        //KTPluginUtil::removePluginCache();
     }
 
     function _deleteSmartyFiles() {
