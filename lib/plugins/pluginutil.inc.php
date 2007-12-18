@@ -204,10 +204,11 @@ class KTPluginUtil {
         // load plugin helpers into global space
         $query = 'SELECT h.* FROM plugin_helper h
             INNER JOIN plugins p ON (p.namespace = h.plugin)
-        	WHERE p.disabled = 0 ORDER BY p.orderby';//WHERE viewtype='{$sType}'";
+        	WHERE p.disabled = 0 ';//WHERE viewtype='{$sType}'";
         if(!empty($sDisabled)){
-        	   $query .= " AND h.plugin NOT IN ($sDisabled)";
+        	   $query .= " AND h.plugin NOT IN ($sDisabled) ";
         }
+        $query .= ' ORDER BY p.orderby';
 
         $aPluginList = DBUtil::getResultArray($query);
 
