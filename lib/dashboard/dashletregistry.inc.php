@@ -66,10 +66,13 @@ class KTDashletRegistry {
         $sIgnore = (!empty($sInactive)) ? $sCurrent.','.$sInactive : $sCurrent;
 
         // Get all dashlets that haven't already been displayed to the user and are active for the user
-        $query = "SELECT * FROM plugin_helper h
+        $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
             INNER JOIN plugins p ON (h.plugin = p.namespace)
-            WHERE p.disabled = 0 AND classtype = 'dashlet'
-            AND h.classname NOT IN ($sIgnore)";
+            WHERE p.disabled = 0 AND classtype = 'dashlet' ";
+
+        if(!empty($sIgnore)){
+            $query .= " AND h.classname NOT IN ($sIgnore)";
+        }
 
         $res = DBUtil::getResultArray($query);
 
