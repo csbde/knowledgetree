@@ -1114,6 +1114,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$documents = array();
 		$document_content = array();
+		$indexContent = null;
 
 		foreach($sysdata as $rec)
 		{
@@ -1134,6 +1135,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 			switch($name)
 			{
+				case 'index_content':
+					$indexContent = $value;
+					break;
 				case 'created_date':
 					$documents['created'] = $value;
 					break;
@@ -1242,6 +1246,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 			{
 				return $result;
 			}
+		}
+		if (!is_null($indexContent))
+		{
+			$indexer = Indexer::get();
+			$indexer->updateDocumentIndex($this->documentid, $indexContent);
 		}
 	}
 

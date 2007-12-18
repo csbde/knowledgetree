@@ -39,6 +39,7 @@
  *
  */
 
+//debugger_start_debug();
 $output = 'php';
 if (array_key_exists('output',$_POST))
 {
@@ -74,7 +75,7 @@ if (!in_array($action,array('C','A')))
 	respond(3, 'Invalid action specified.');
 }
 
-$session_id = $_POST['session_id'];
+//$session_id = $_POST['session_id'];
 if (count($_FILES) == 0)
 {
 	respond(5, 'No files have been uploaded.');
@@ -92,6 +93,7 @@ if ($action == 'C')
 require_once('../ktapi/ktapi.inc.php');
 require_once('KTUploadManager.inc.php');
 
+$session_id = $_POST['session_id'];
 $ktapi = new KTAPI();
 $session = $ktapi->get_active_session($session_id);
 if (PEAR::isError($session))
