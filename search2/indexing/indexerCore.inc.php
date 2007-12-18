@@ -39,6 +39,9 @@
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
+
+class IndexerInconsistencyException extends Exception {};
+
 class QueryResultItem
 {
 	protected $document_id;
@@ -92,7 +95,7 @@ class QueryResultItem
 			case 'Title': return isset($this->title);
 			case null: break;
 			default:
-				throw new Exception("Unknown property '$property' to get on MatchResult");
+				throw new Exception("Unknown property '$property' to get on QueryResultItem");
 		}
 		return true; // should not be reached
 	}
@@ -137,7 +140,7 @@ class QueryResultItem
 			$msg = 'The database did not have a record matching the result from the document indexer. This may occur if there is an inconsistency between the document indexer and the repository. The indexer needs to be repaired. Please consult the administrator guide as to how to repair your indexer.';
 			$default->log->error('QueryResultItem: ' . $msg);
 			// TODO: repair process where we scan documents in index, and delete those for which there is nothing in the repository
-			throw new Exception(_kt($msg));
+			throw new IndexerInconsistencyException(_kt($msg));
 		}
 
 		// document_id, relevance, text, title
@@ -274,7 +277,7 @@ class QueryResultItem
 			case 'Title': $this->title = $value; break;
 			case 'Text': $this->text = $value; break;
 			default:
-				throw new Exception("Unknown property '$property' to set on MatchResult");
+				throw new Exception("Unknown property '$property' to set on QueryResultItem");
 		}
 	}
 }
@@ -1143,6 +1146,29 @@ abstract class Indexer
      * @param string $textFile
      */
     protected abstract function indexDocument($docId, $textFile, $title, $version);
+
+
+    public function updateDocumentIndex($docId, $text)
+    {
+    	$config = KTConfig::getSingleton();
+    	$tempPath = $config->get("urls/tmpDirectory");
+    	$tempFile = tempnam($tempPath,'ud_');
+
+    	file_put_contents($tempFile, $text);
+
+    	$document = Document::get($docId);
+    	$title = $document->getDescription();
+    	$version = $document->getVersion();
+
+    	$result = $this->indexDocument($docId, $tempFile, $title, $version);
+
+    	if (file_exists($tempFile))
+    	{
+    		unlink($tempFile);
+    	}
+
+    	return $result;
+    }
 
     /**
      * Index a discussion. The base class must override this function.

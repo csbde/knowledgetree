@@ -168,6 +168,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
      */
     public function query($query)
     {
+    	global $default;
     	$results = array();
     	$hits = $this->lucene->query($query);
     	if (is_array($hits))
@@ -179,14 +180,22 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     			// avoid adding duplicates. If it is in already, it has higher priority.
     			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Score)
     			{
-    				$item = new QueryResultItem($document_id);
-    				$item->Title = $hit->Title;
-    				$item->Text = $hit->Content;
-    				$item->Rank = $hit->Rank;
-
-    				if ($item->CanBeReadByUser)
+    				try
     				{
-    					$results[$document_id] = $item;
+    					$item = new QueryResultItem($document_id);
+    					$item->Title = $hit->Title;
+    					$item->Text = $hit->Content;
+    					$item->Rank = $hit->Rank;
+
+    					if ($item->CanBeReadByUser)
+    					{
+    						$results[$document_id] = $item;
+    					}
+    				}
+    				catch(IndexerInconsistencyException $ex)
+    				{
+    					$this->deleteDocument($document_id);
+    					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
     				}
     			}
     		}
