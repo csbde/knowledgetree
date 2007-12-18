@@ -439,9 +439,26 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             }
 
             if (is_array($aSearchResults)) {
-                foreach (array_keys($aSearchResults) as $k) {
+                $aSearchResultsKeys = array_keys($aSearchResults);
+                $aSearchDNs = array();
+                foreach ($aSearchResultsKeys as $k) {
                     if (is_array($aSearchResults[$k]['cn'])) {
                         $aSearchResults[$k]['cn'] = $aSearchResults[$k]['cn'][0];
+                    }
+                    $aSearchDNs[$k] = "'".$aSearchResults[$k]['dn']."'";
+                }
+                
+                $sDNs = implode(',', $aSearchDNs);
+                $query = "SELECT id, authentication_details_s1 AS dn FROM users
+                    WHERE authentication_details_s1 IN ($sDNs)";
+                $aCurUsers = DBUtil::getResultArray($query);
+                
+                // If the user has already been added, then remove from the list
+                if(!PEAR::isError($aCurUsers) && !empty($aCurUsers)){
+                    foreach($aCurUsers as $item){
+                        $key = array_search("'".$item['dn']."'", $aSearchDNs);
+                        $aKeys[] = $key;
+                        unset($aSearchResults[$key]);
                     }
                 }
             }
