@@ -37,7 +37,10 @@
  *
  */
 
-session_start();
+$_session_id = session_id();
+if (empty($_session_id)) session_start();
+unset($_session_id);
+
 require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
