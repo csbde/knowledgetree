@@ -1076,17 +1076,6 @@ class KTWebService
             }
     }
 
-    function get()
-    {
-    	static $ws = null;
-    	if (is_null($ws))
-    	{
-    		$classname = KTWebService::$wsclass;
-    		$ws = new $classname();
-    	}
-    	return $ws;
-    }
-
     function debug($msg, $function = null, $level=0)
     {
     	if ($this->mustDebug === false) return;
@@ -3832,7 +3821,7 @@ class KTWebService
 	 */
 	function decodeSOAPValue($value)
 	{
-		if ($value instanceof SOAP_Value)
+		if (is_a($value, 'SOAP_Value'))
 		{
 			$x = new stdClass();
 			$v = & $value->value;
@@ -3910,7 +3899,7 @@ class KTWebService
 
 }
 
-$webservice = KTWebService::get();
+$webservice = new KTWebService();
 $webservice->run();
 
 ?>
