@@ -158,10 +158,17 @@ class KTPage {
     function initMenu() {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
+    	global $default;
+    	$rootUrl = $default->rootUrl;
+		$bSSL = $default->sslEnabled;
+
+		$sProtocol = ($bSSL) ? 'https' : 'http';
+		$sBaseUrl = $sProtocol.'://'.$_SERVER['HTTP_HOST'].$rootUrl;
+
     	$this->menu = array();
-    	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => 'dashboard.php');
-		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => 'browse.php');
-		$this->menu['administration'] = array('label' => _kt("DMS Administration"), 'url' => 'admin.php');
+    	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
+		$this->menu['administration'] = array('label' => _kt("DMS Administration"), 'url' => $sBaseUrl.'/admin.php');
     	/*
     	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
     			    "browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
