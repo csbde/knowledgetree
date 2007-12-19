@@ -65,6 +65,7 @@ class KTPage {
 
 	/** context-relevant information */
 	var $errStack = Array();
+	var $booleanLink = false;
     var $infoStack = Array();
 	var $portlets = Array();
 	var $show_portlets = true;

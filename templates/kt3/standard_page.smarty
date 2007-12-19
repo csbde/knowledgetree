@@ -332,7 +332,13 @@
 				    	<div class="error_dashlet_rightrepeat_bottom"></div>
 				    	<div class="error_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sError from=$page->errStack}
+                          
+                          {if ($page->booleanLink == '0')}
                             <p>{$sError|sanitize}</p>
+                          {else}
+                            <p>{$sError}</p>
+                          {/if}  
+                                                                                                          
                         {/foreach}
                         <div class="error_dashlet_topleft_small"></div>
 			            <div class="error_dashlet_toprepeat_small"></div>
