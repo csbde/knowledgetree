@@ -115,6 +115,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oDocument =& Document::get($document_id);
         if (PEAR::isError($oDocument)) {
             $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
+                                        
+            $this->oPage->booleanLink = true;
+                          
             return $this->do_error();
         }
         $document_id = $oDocument->getId();
