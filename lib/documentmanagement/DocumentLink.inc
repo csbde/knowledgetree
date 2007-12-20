@@ -8,32 +8,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  *
@@ -50,6 +50,10 @@ class DocumentLink extends KTEntity {
 	var $iChildDocumentId;
     /** type of link */
     var $iLinkTypeId;
+    /** external url */
+    var $sTargetUrl;
+    /** external name */
+    var $sTargetName;
 
 
     var $_aFieldToSelect = array(
@@ -57,6 +61,8 @@ class DocumentLink extends KTEntity {
         'iParentDocumentId' => 'parent_document_id',
         'iChildDocumentId' => 'child_document_id',
         'iLinkTypeId' => 'link_type_id',
+        'sTargetUrl' => 'external_url',
+        'sTargetName' => 'external_name',
     );
 
 
@@ -68,13 +74,15 @@ class DocumentLink extends KTEntity {
 	* @param 	Link type primary key
 	*
 	*/
-	function DocumentLink($iNewParentDocumentID = null, $iNewChildDocumentID = null, $iLinkTypeId = null) {
+	function DocumentLink($iNewParentDocumentID = null, $iNewChildDocumentID = null, $iLinkTypeId = null, $sTargetUrl = null, $sTargetName = null) {
 		//object not created yet
 		global $default;
 		$this->iId = -1;
 		$this->iParentDocumentId = $iNewParentDocumentID;
 		$this->iChildDocumentId = $iNewChildDocumentID;
 		$this->iLinkTypeId = $iLinkTypeId;
+		$this->sTargetUrl = $sTargetUrl;
+		$this->sTargetName = $sTargetName;
 	}
 
 	function getID() { return $this->iId; }
@@ -84,6 +92,10 @@ class DocumentLink extends KTEntity {
 	function setChildDocumentID($iNewValue) { $this->iChildDocumentId = $iNewValue; }
 	function getLinkTypeID() { return $this->iLinkTypeId; }
 	function setLinkTypeID($iNewValue) { $this->iLinkTypeId = $iNewValue; }
+	function getTargetUrl() { return $this->sTargetUrl; }
+	function setTargetUrl($iNewValue) { $this->sTargetUrl = $iNewValue; }
+	function getTargetName() { return $this->sTargetName; }
+	function setTargetName($iNewValue) { $this->sTargetName = $iNewValue; }
 
 	/**
 	* Helper getters
@@ -118,6 +130,8 @@ class DocumentLink extends KTEntity {
             'parent_document_id' => $this->iParentDocumentId,
             'child_document_id' => $this->iChildDocumentId,
             'link_type_id' => $this->iLinkTypeId,
+            'external_url' => $this->sTargetUrl,
+            'external_name' => $this->sTargetName,
         );
     }
 
@@ -126,29 +140,33 @@ class DocumentLink extends KTEntity {
         return $default->document_link_table;
     }
 
-
 	// static boilerplate
 	function & get($iDocumentLinkID) {
-		global $default;
+	    $table = DocumentLink::_table();
+	    $query = "SELECT * FROM $table WHERE id = '$iDocumentLinkID'";
+	    $result = DBUtil::getOneResult($query);
 
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT * FROM $default->document_link_table WHERE id = ?", $iDocumentLinkID));/*ok*/
-		if ($result) {
-			if ($sql->next_record()) {
-				$oDocumentLink = new DocumentLink($sql->f("parent_document_id"), $sql->f("child_document_id"), $sql->f("link_type_id"));
-				$oDocumentLink->iId = $sql->f("id");
-				return $oDocumentLink;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentLinkID." table = $default->document_link_table";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+	    if(PEAR::isError($result)) {
+	        $_SESSION['errorMessage'] = $result->getMessage();
+	        return false;
+	    }
+
+	    if(!empty($result)){
+	        $oDocumentLink = new DocumentLink($result['parent_document_id'], $result['child_document_id'], $result['link_type_id'], $result['external_url'], $result['external_name']);
+	        $oDocumentLink->iId = $result['id'];
+	        return $oDocumentLink;
+	    }
+	    $_SESSION['errorMessage'] = _kt('The object does not exist. id = '.$iDocumentLinkID.' table = '.$table);
+	    return false;
 	}
+
     function getList($sWhereClause = null) {
         return KTEntityUtil::getList2('DocumentLink', $sWhereClause);
     }
-	function &createFromArray($aArray) { return KTEntityUtil::createFromArray('DocumentLink', $aArray); }
+
+	function &createFromArray($aArray) {
+	    return KTEntityUtil::createFromArray('DocumentLink', $aArray);
+	}
 
     /**
      * Static function
@@ -159,7 +177,8 @@ class DocumentLink extends KTEntity {
      * @return Array array of DocumentLink objects, false otherwise.
      */
     function getLinksFromDocument($iDocumentId) {
-        return KTEntityUtil::getList2('DocumentLink', sprintf("parent_document_id = %d", $iDocumentId));
+        $sWhere = "parent_document_id = $iDocumentId AND child_document_id != $iDocumentId";
+        return KTEntityUtil::getList2('DocumentLink', $sWhere);
     }
 
     /**
@@ -171,7 +190,21 @@ class DocumentLink extends KTEntity {
      * @return Array array of DocumentLink objects, false otherwise.
      */
     function getLinksToDocument($iDocumentId) {
-        return KTEntityUtil::getList2('DocumentLink', sprintf("child_document_id = %d", $iDocumentId));
+        $sWhere = "child_document_id = $iDocumentId AND parent_document_id != $iDocumentId";
+        return KTEntityUtil::getList2('DocumentLink', $sWhere);
+    }
+
+    /**
+     * Static function
+     * Get a list of external DocumentLinks where iDocumentId is the parent
+     *
+     * @param  Integer  Document ID of parent
+     *
+     * @return Array array of DocumentLink objects, false otherwise.
+     */
+    function getExternalLinks($iDocumentId) {
+        $sWhere = "child_document_id = $iDocumentId AND parent_document_id = $iDocumentId";
+        return KTEntityUtil::getList2('DocumentLink', $sWhere);
     }
 }
 

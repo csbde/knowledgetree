@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -222,10 +222,10 @@ class KTDispatcherValidation {
 
 	$iMaxlen = (int)KTUtil::arrayGet($aOptions, 'max_str_len', false);
 	if($iMaxlen !== false && $iMaxlen !== 0 && strlen($sString) > $iMaxlen) {
-	    $aOptions['message'] = KTUtil::arrayGet($aOptions, 
-						    'max_str_len_message', 
+	    $aOptions['message'] = KTUtil::arrayGet($aOptions,
+						    'max_str_len_message',
 						    _kt("The string is too long: the maximum length in characters is ") . $iMaxlen);
-	    $this->handleError($aOptions);						    
+	    $this->handleError($aOptions);
 	}
 
         return $sString;
@@ -238,8 +238,8 @@ class KTDispatcherValidation {
                     'message', _kt("An empty string was given"));
             $this->handleError($aOptions);
         }
-        
-        // illegal characters: /\ <>|%+':"?* 
+
+        // illegal characters: /\ <>|%+':"?*
         $pattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
         if(preg_match($pattern, $sString)){
             $sChars =  "\/<>|%+*':\"?";
@@ -262,20 +262,20 @@ class KTDispatcherValidation {
 	if(!is_numeric($sInteger)) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt("A non-numeric value was given"));
             $this->handleError($aOptions);
-        }	    
+        }
 
         return intval($sInteger);
     }
 
     function validateFile($aFile, $aOptions = null) {
         $bError = false;
-        
+
         if (strlen(trim($aFile['name'])) == 0) {
             $bError = true;
         } else {
             $bError = KTUtil::arrayGet($aFile, 'error');
         }
-        
+
         if ($bError) {
             $message = _kt("You did not select a valid document to upload");
 
@@ -388,29 +388,29 @@ class KTDispatcherValidation {
         }
         return $oEntity;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     /* unlike the KTEmail version, this only handles ONE email address */
     function validateEmailAddress($sEmailAddress, $aOptions = null) {
         $sEmailAddress = trim($sEmailAddress);
-        
+
         if (!ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress )) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions,
-                                                    'message', 
+                                                    'message',
                                                     _kt("This is not a valid email address."));
             $this->handleError($aOptions);
         }
         return $sEmailAddress;
     }
-    
-    
+
+
     /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
     function validateEntityName($sEntityTypeName, $sName, $aOptions = null) {
         $aOptions['message'] = KTUtil::arrayGet($aOptions, 'empty_message', _kt("No name was given for this item"));
-        
+
         $sName = $this->validateString($sName, $aOptions);
         $aOptions['message'] = KTUtil::arrayGet($aOptions, 'duplicate_message', _kt("An item with this name already exists"));
         return $this->validateDuplicateName($sEntityTypeName, $sName, $aOptions);
@@ -446,8 +446,16 @@ class KTDispatcherValidation {
         $aOptions['message'] = _kt('Password and confirmation password do not match');
         $this->handleError($aOptions);
     }
-            
 
+    function validateUrl($sUrl, $aOptions = null) {
+        $sUrl = trim($sUrl);
+
+        if(!((bool) preg_match("'^[^:]+:(?:[0-9a-z\.\?&-_=\+\/]+[\.]{1})*(?:[0-9a-z\.\?&-_=\+\/]+\.)[a-z]{2,3}.*$'i", $sUrl))){
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _kt('This is not a valid URL.'));
+            $this->handleError($aOptions);
+        }
+        return $sUrl;
+    }
 }
 
 ?>

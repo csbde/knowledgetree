@@ -1,20 +1,29 @@
 <div class="viewlet">
     {if $links_from}
-    <h3>{i18n}Links from this document{/i18n}</h3>
-    <ul>
-    {foreach from=$links_from item=info}
-      <li class="descriptiveText">{i18n}from{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
-    {/foreach}
-    </ul>
+        <h3>{i18n}Links from this document{/i18n}</h3>
+        <ul>
+        {foreach from=$links_from item=info}
+          <li class="descriptiveText"><a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
+        {/foreach}
+        </ul>
     {/if}
 
     {if $links_to}
-    <h3>{i18n}Links to this document{/i18n}</h3>
-    <ul>
-    {foreach from=$links_to item=info}
-      <li class="descriptiveText">{i18n}to{/i18n} <a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
-    {/foreach}
-    </ul>
+        <h3>{i18n}Links to this document{/i18n}</h3>
+        <ul>
+        {foreach from=$links_to item=info}
+          <li class="descriptiveText"><a href="{$info.url}" title="{$info.description}">{$info.name|sanitize}</a> ({$info.type})</li>
+        {/foreach}
+        </ul>
+    {/if}
+
+    {if $links_external}
+        <h3>{i18n}External Links from this document{/i18n}</h3>
+        <ul>
+        {foreach from=$links_external item=info}
+          <li class="descriptiveText"><a href="{$info.url}" title="{$info.description}: {$info.url}">{$info.name|sanitize}</a> ({$info.type})</li>
+        {/foreach}
+        </ul>
     {/if}
 
 </div>

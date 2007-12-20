@@ -5,6 +5,14 @@
 <p class="descriptiveText">{i18n}Select a target document to link to.{/i18n}
 </p>
 
+{foreach from=$breadcrumbs item=breadcrumb name=bc}
+    {if !$smarty.foreach.bc.last}
+        <a href="{$breadcrumb.url}">{$breadcrumb.name|sanitize}</a> &raquo;
+    {else}
+        {$breadcrumb.name|sanitize}
+    {/if}
+{/foreach}
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 {$collection->render()}
 <div class="form_actions">

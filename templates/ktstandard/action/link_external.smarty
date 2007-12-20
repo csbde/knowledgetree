@@ -1,0 +1,27 @@
+<h2>{i18n}Add External Link{/i18n}</h2>
+
+
+{if $link_types}
+<p class='descriptiveText'>{i18n}Enter the URL to the external document or site.{/i18n}
+</p>
+
+<form method='POST' action="{$smarty.server.PHP_SELF}">
+
+<label for='target_name'>{i18n}Link Name{/i18n}: </label><br />
+<input id='target_name' name='target_name' />
+<br />
+<label for='target_url'>{i18n}Link URL{/i18n}: </label><br />
+<input id='target_url' name='target_url' value='http://' size='60' />
+
+<div class='form_actions'>
+<input type='hidden' name='action' value='type_select' />
+<input type='hidden' name='linktype' value='external' />
+<input type='hidden' name='fDocumentId' value='{$iDocId}' />
+<input type='submit' name='submit[move]' value='{i18n}Link{/i18n}' />
+</div>
+</form>
+{else}
+<div class='ktInfoMessage'><span>
+{i18n}No link types are defined. Please ask the administrator to add them.{/i18n}</span></div>
+
+{/if}
