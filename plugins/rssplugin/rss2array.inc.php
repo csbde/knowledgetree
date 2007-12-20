@@ -143,7 +143,10 @@
                         xml_parser_free($xml_parser);
 
                     }
-
+					else if($status == 401)
+					{
+						$rss2array_globals[errors][] = "Password authenticated feeds are not supported.";
+					}
                     else {
 
                         $rss2array_globals[errors][] = "Can't get feed: HTTP status code $status";
