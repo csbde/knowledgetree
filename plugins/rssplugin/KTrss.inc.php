@@ -84,6 +84,27 @@ class KTrss{
     	return $response;
     }
 
+    // Get the data for the document or folder
+    function getExternalInternalFeed($sFeed, $iUserId){
+        $aRss = array();
+        $pos = strpos($sFeed, 'docId');
+
+        if($pos === false){
+            $pos = strpos($sFeed, 'folderId');
+            $folderId = substr($sFeed, $pos+9);
+            $aRss[] = KTrss::getOneFolder($folderId, $iUserId);
+        }else{
+            $docId = substr($sFeed, $pos+6);
+            $aRss[] = KTrss::getOneDocument($docId, $iUserId);
+        }
+
+    	if($aRss){
+    		$internalFeed = KTrss::arrayToXML($aRss);
+    		$response = rss2arrayBlock($internalFeed);
+    	}
+    	return $response;
+    }
+
     // Get list of document subscriptions
     function getDocumentList($iUserId){
     	$sQuery = "SELECT document_id as id FROM document_subscriptions WHERE user_id = ?";
