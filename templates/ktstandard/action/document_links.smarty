@@ -19,7 +19,7 @@
 
 
 
-{if $links_from || $links_to}
+{if $links_from || $links_to || $links_external}
 
 {foreach from=$links_from item=link}
 
@@ -35,7 +35,7 @@
             {/if}
             </td>
 
-            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
+            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main" title="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
             <td>{$type->getName()}</td>
             <td>{i18n}Linked <b>from</b> this document{/i18n}</td>
         </tr>
@@ -55,14 +55,34 @@
                 &nbsp;
             {/if}
             </td>
-
-            <td><a href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
+            <td><a title="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main" href="{"viewDocument"|generateControllerUrl}&qs[fDocumentId]={$target->getId()}&qs[action]=main">{$target->getName()|sanitize}</a></td>
             <td>{$type->getName()}</td>
             <td>{i18n}Links <b>to</b> this document{/i18n}</td>
         </tr>
 
 {/foreach}
 
+{foreach from=$links_external item=link}
+
+{assign var="type" value=$link->getLinkType()}
+{assign var="url" value=$link->getTargetUrl()}
+{assign var="name" value=$link->getTargetName()}
+
+        <tr>
+            <td>
+            {if $write_permission}
+                <a href="{addQS}action=delete&fDocumentId={$iDocId}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+            {else}
+                &nbsp;
+            {/if}
+            </td>
+
+            <td><a href="{$url}" title='{$url}'>{$link->getTargetName()|sanitize}</a></td>
+            <td>{$type->getName()}</td>
+            <td>{i18n}External link <b>from</b> this document{/i18n}</td>
+        </tr>
+
+{/foreach}
 
 {else}
 <tr><td colspan="4" align="center">{i18n}There are no links to or from this document.{/i18n}</td></tr>
@@ -78,6 +98,10 @@
 {if $write_permission}
 <a class="ktAction ktAdd ktInline" href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}{/addQS}">{i18n}Add a new link{/i18n}</a>
 <a
-href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">{i18n}Add a new link{/i18n}</a>.
+href="{addQS}action=new&fDocumentId={$context->oDocument->getId()}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">{i18n}Add a new link{/i18n}</a>
+<br /><br />
+<a class="ktAction ktAdd ktInline" href="{addQS}action=external&fDocumentId={$iDocId}{/addQS}">{i18n}Add a new link{/i18n}</a>
+<a
+href="{addQS}action=external&fDocumentId={$iDocId}&fFolderId={$context->oDocument->getFolderId()}{/addQS}">{i18n}Add an external link{/i18n}</a>.
 {/if}
 

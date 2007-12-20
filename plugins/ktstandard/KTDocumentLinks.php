@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -49,22 +49,22 @@ require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
 
 class KTDocumentLinks extends KTPlugin {
     var $sNamespace = "ktstandard.documentlinks.plugin";
-    
+
     function KTDocumentLinks($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Inter-document linking');
         return $res;
-    }          
+    }
 
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentLinkAction', 'ktcore.actions.document.link');
-        $this->registerAction('documentviewlet', 'KTDocumentLinkViewlet', 'ktcore.viewlets.document.link');        
-        $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle', 
+        $this->registerAction('documentviewlet', 'KTDocumentLinkViewlet', 'ktcore.viewlets.document.link');
+        $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle',
                               dirname(__FILE__) . '/KTDocumentLinksColumns.php');
         $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
             _kt('Link Type Management'),
             _kt('Manage the different ways documents can be associated with one another.'),
-            __FILE__, null);                              
+            __FILE__, null);
     }
 }
 
@@ -72,64 +72,87 @@ class KTDocumentLinks extends KTPlugin {
 
 class KTDocumentLinkViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.link';
-    
+
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktstandard/links/links_viewlet");
-        if (is_null($oTemplate)) { return ""; }
+        if (is_null($oTemplate)) { return ''; }
 
-        $temp_links_from = DocumentLink::getLinksFromDocument($this->oDocument->getId());
-        $temp_links_to = DocumentLink::getLinksToDocument($this->oDocument->getId());
+        $iDocId = $this->oDocument->getId();
+        $temp_links_from = DocumentLink::getLinksFromDocument($iDocId);
+        $temp_links_to = DocumentLink::getLinksToDocument($iDocId);
+        $temp_links_external = DocumentLink::getExternalLinks($iDocId);
 
         $links_to = array();
-        $links_from = array();        
-        
-        foreach ($temp_links_from as $link) {
-            $oDoc = $link->getChildDocument();
-            if (PEAR::isError($oDoc)) {
-                continue;
-            }
-            
-            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
-                $type = $link->getLinkType();
-                $aInfo = array(
-                    'url' => KTBrowseUtil::getUrlForDocument($oDoc),
-                    'name' => $oDoc->getName(),
-                    'type' => $type->getName(),
-                    'description' => $type->getDescription(),
-                );
-                
-                $links_from[] = $aInfo;
-            }
-        }
-        
-        foreach ($temp_links_to as $link) {
-            $oDoc = $link->getParentDocument();
-            if (PEAR::isError($oDoc)) {
-                continue;
-            }
-            
-            if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
-                $type = $link->getLinkType();
-                $aInfo = array(
-                    'url' => KTBrowseUtil::getUrlForDocument($oDoc),
-                    'name' => $oDoc->getName(),
-                    'type' => $type->getName(),
-                    'description' => $type->getDescription(),
-                );
-                
-                $links_to[] = $aInfo;
-            }
-        }        
+        $links_from = array();
+        $links_external = array();
 
-        if (empty($links_from) && empty($links_to)) {
-            return "";
+        if(!empty($temp_links_from)){
+            foreach ($temp_links_from as $link) {
+                $oDoc = $link->getChildDocument();
+                if (PEAR::isError($oDoc)) {
+                    continue;
+                }
+
+                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
+                    $type = $link->getLinkType();
+                    $aInfo = array(
+                        'url' => KTBrowseUtil::getUrlForDocument($oDoc),
+                        'name' => $oDoc->getName(),
+                        'type' => $type->getName(),
+                        'description' => $type->getDescription(),
+                    );
+
+                    $links_from[] = $aInfo;
+                }
+            }
         }
-        
+
+        if(!empty($temp_links_to)){
+            foreach ($temp_links_to as $link) {
+                $oDoc = $link->getParentDocument();
+                if (PEAR::isError($oDoc)) {
+                    continue;
+                }
+
+                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.read', $oDoc)) {
+                    $type = $link->getLinkType();
+                    $aInfo = array(
+                        'url' => KTBrowseUtil::getUrlForDocument($oDoc),
+                        'name' => $oDoc->getName(),
+                        'type' => $type->getName(),
+                        'description' => $type->getDescription(),
+                    );
+
+                    $links_to[] = $aInfo;
+                }
+            }
+        }
+
+        if(!empty($temp_links_external)){
+            foreach ($temp_links_external as $link) {
+                $type = $link->getLinkType();
+
+                $aInfo = array(
+                        'url' => $link->getTargetUrl(),
+                        'name' => $link->getTargetName(),
+                        'type' => $type->getName(),
+                        'description' => $type->getDescription(),
+                );
+
+                $links_external[] = $aInfo;
+            }
+        }
+
+        if (empty($links_from) && empty($links_to) && empty($links_external)) {
+            return '';
+        }
+
         $oTemplate->setData(array(
             'context' => $this,
             'links_from' => $links_from,
             'links_to' => $links_to,
+            'links_external' => $links_external,
         ));
         return $oTemplate->render();
     }
@@ -149,27 +172,24 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $this->oPage->setBreadcrumbDetails(_kt("Links"));
         $this->oPage->setTitle(_kt("Links"));
 
-        $oDocument = Document::get(
-                KTUtil::arrayGet($_REQUEST, 'fDocumentId', 0)
-        );
+        $iDocId = $_REQUEST['fDocumentId'];
+        $oDocument = Document::get($iDocId);
 
         $oReadPermission =& KTPermission::getByName('ktcore.permissions.read');
         $oWritePermission =& KTPermission::getByName('ktcore.permissions.write');
-        
+
         $aTemplateData = array(
               'context' => $this,
-              'links_from' => DocumentLink::getLinksFromDocument($oDocument->getId()),
-              'links_to' => DocumentLink::getLinksToDocument($oDocument->getId()),
+              'iDocId' => $iDocId,
+              'links_external' => DocumentLink::getExternalLinks($iDocId),
+              'links_from' => DocumentLink::getLinksFromDocument($iDocId),
+              'links_to' => DocumentLink::getLinksToDocument($iDocId),
               'read_permission' => KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oReadPermission, $this->oDocument),
               'write_permission' => KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oWritePermission, $this->oDocument),
         );
-        
-        
-        return $oTemplate->render($aTemplateData);                  
+
+        return $oTemplate->render($aTemplateData);
     }
-
-
-
 
     // select a target for the link
     function do_new() {
@@ -177,176 +197,204 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $this->oPage->setTitle(_kt("New Link"));
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
-        if (PEAR::isError($oPermission) || 
+        if (PEAR::isError($oPermission) ||
             !KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
             $this->errorRedirectToMain(_kt('You do not have sufficient permissions to add a document link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
             exit(0);
         }
 
         $oParentDocument =& $this->oDocument;
-        
-        if (PEAR::isError($oParentDocument)) { 
+
+        if (PEAR::isError($oParentDocument)) {
             $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
             exit(0);
         }
 
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', $oParentDocument->getFolderID()));
-        if (PEAR::isError($oFolder) || ($oFolder == false)) { 
+        if (PEAR::isError($oFolder) || ($oFolder == false)) {
             $this->errorRedirectToMain(_kt('Invalid folder selected.'));
             exit(0);
         }
         $iFolderId = $oFolder->getId();
-        
+
         // Setup the collection for move display.
-        
         $collection = new AdvancedCollection();
         $aBaseParams = array('fDocumentId'=>$oParentDocument->getId());
 
-
         $oCR =& KTColumnRegistry::getSingleton();
-
-        $col = $oCR->getColumn('ktcore.columns.singleselection');
-        $col->setOptions(array('qs_params'=>kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()))));
-        $collection->addColumn($col);        
-        
-        $col = $oCR->getColumn('ktdocumentlinks.columns.title');
-        $col->setOptions(array('qs_params'=>kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()))));
+        $col = $oCR->getColumn('ktcore.columns.selection');
+        $aColOptions = array();
+        $aColOptions['qs_params'] = kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()));
+        $aColOptions['show_folders'] = false;
+        $aColOptions['show_documents'] = true;
+        $aColOptions['rangename'] = 'linkselection[]';
+        $col->setOptions($aColOptions);
         $collection->addColumn($col);
-        
+
+        $col = $oCR->getColumn('ktdocumentlinks.columns.title');
+        $col->setOptions(array('qs_params'=>kt_array_merge($aBaseParams, array('action' => 'new', 'fFolderId'=>$oFolder->getId()))));
+        $collection->addColumn($col);
+
         $qObj = new BrowseQuery($iFolderId);
         $collection->setQueryObject($qObj);
 
         $aOptions = $collection->getEnvironOptions();
-        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], 
+        //$aOptions['is_browse'] = true;
+        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'],
                                                          array(kt_array_merge($aBaseParams, array('fFolderId' => $oFolder->getId()))));
 
         $collection->setOptions($aOptions);
 
-	$oWF =& KTWidgetFactory::getSingleton();
-	$oWidget = $oWF->get('ktcore.widgets.collection', 
-			     array('label' => _kt('Target Document'),
-				   'description' => _kt('Use the folder collection and path below to browse to the document you wish to link to.'),
-				   'required' => true,
-				   'name' => 'browse',
-                                   'folder_id' => $oFolder->getId(),
-                                   'bcurl_params' => $aBaseParams,
-				   'collection' => $collection));
+        $aURLParams = $aBaseParams;
+        $aURLParams['action'] = 'new';
+        $aBreadcrumbs = $this->_generate_breadcrumbs($oFolder, $iFolderId, $aURLParams);
 
-
-        
         $aTemplateData = array(
               'context' => $this,
               'folder' => $oFolder,
               'parent' => $oParentDocument,
               'breadcrumbs' => $aBreadcrumbs,
-              'collection' => $oWidget,
+              'collection' => $collection,
               'link_types' => LinkType::getList("id > 0"),
         );
-        
+
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/link');
-        return $oTemplate->render($aTemplateData);                  
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_external() {
+        $this->oPage->setBreadcrumbDetails(_kt("New External Link"));
+        $this->oPage->setTitle(_kt("New External Link"));
+
+        $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+        if (PEAR::isError($oPermission) ||
+            !KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
+            $this->errorRedirectToMain(_kt('You do not have sufficient permissions to add a document link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
+            exit(0);
+        }
+
+        $oParentDocument =& $this->oDocument;
+        $iParentId = $oParentDocument->getId();
+
+        $aTemplateData = array(
+              'context' => $this,
+              'iDocId' => $iParentId,
+              'link_types' => LinkType::getList("id > 0"),
+        );
+
+        $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/link_external');
+        return $oTemplate->render($aTemplateData);
     }
 
     // select a type for the link
     function do_type_select() {
         $this->oPage->setBreadcrumbDetails(_kt("link"));
 
-        $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
-        if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
-            exit(0);
+        $sType = (isset($_REQUEST['linktype'])) ? $_REQUEST['linktype'] : 'internal';
+        $sTarget = '';
+        $aTarget = array();
+
+        if($sType == 'external'){
+            $iParentId = $_REQUEST['fDocumentId'];
+            $aTarget['url'] = $_REQUEST['target_url'];
+            $aTarget['name'] = $_REQUEST['target_name'];
+            $aDocuments = array($iParentId);
+
+            $this->oValidator->validateUrl($aTarget['url']);
+            if(empty($aTarget['name'])){
+                $aTarget['name'] = $aTarget['url'];
+            }
+        }else{
+            $iParentId = $_REQUEST['fDocumentId'];
+            $aDocuments = $_REQUEST['linkselection'];
+            if(empty($aDocuments)){
+                $this->errorRedirectToMain(_kt('No documents have been selected.'));
+                exit;
+            }
         }
-
-        /*
-        print '<pre>';
-        var_dump($_REQUEST);
-        exit(0);
-        */
-
-
-        $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, '_d'));
-        if (PEAR::isError($oTargetDocument)) { 
-            $this->errorRedirectToMain(_kt('Invalid target document selected.'));
-            exit(0);
-        }
-
+        $sDocuments = serialize($aDocuments);
+        $sTarget = serialize($aTarget);
 
         // form fields
         $aFields = array();
-        
+
         $aVocab = array();
         foreach(LinkType::getList("id > 0") as $oLinkType) {
             $aVocab[$oLinkType->getID()] = $oLinkType->getName();
-        }        
+        }
 
         $aOptions = array('vocab' => $aVocab);
         $aFields[] = new KTLookupWidget(
-                _kt('Link Type'), 
-                _kt('The type of link you wish to use'), 
-                'fLinkTypeId', 
+                _kt('Link Type'),
+                _kt('The type of link you wish to use'),
+                'fLinkTypeId',
                 null,
                 $this->oPage,
                 true,
                 null,
                 null,
                 $aOptions);
-                
+
         $aTemplateData = array(
               'context' => $this,
-              'parent_id' => $oParentDocument->getId(),
-              'target_id' => $oTargetDocument->getId(),
+              'parent_id' => $iParentId,
+              'target_id' => $sDocuments,
+              'target_url' => $sTarget,
               'fields' => $aFields,
         );
-        
+
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/link_type_select');
-        return $oTemplate->render($aTemplateData);                  
-
-
+        return $oTemplate->render($aTemplateData);
     }
-
-
 
     // make the link
     function do_make_link() {
         $this->oPage->setBreadcrumbDetails(_kt("link"));
+        $iParentId = $_REQUEST['fDocumentId'];
+        $iLinkTypeId = $_REQUEST['fLinkTypeId'];
+        $sDocIds = $_REQUEST['fTargetDocumentId'];
+        $aDocIds = unserialize($sDocIds);
+        $sTarget = $_REQUEST['fTargetUrl'];
+        $aTarget = unserialize($sTarget);
 
-        // check validity of things
-        $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
-        if (PEAR::isError($oParentDocument)) { 
-            $this->errorRedirectToMain(_kt('Invalid parent document selected.'));
-            exit(0);
-        }
-
-        $oTargetDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fTargetDocumentId'));
-        if (PEAR::isError($oTargetDocument)) { 
-            $this->errorRedirectToMain(_kt('Invalid target document selected.'));
-            exit(0);
-        }
-
-        $oLinkType = LinkType::get(KTUtil::arrayGet($_REQUEST, 'fLinkTypeId'));
-        if (PEAR::isError($oLinkType)) { 
+        $oLinkType = LinkType::get($iLinkTypeId);
+        if (PEAR::isError($oLinkType)) {
             $this->errorRedirectToMain(_kt('Invalid link type selected.'));
             exit(0);
         }
 
+        $sTargetUrl = '';
+        $sTargetName = '';
+        if(!empty($aTarget)){
+            $sTargetUrl = $aTarget['url'];
+            $sTargetName = $aTarget['name'];
+        }
 
-        // create document link
+        // create document links
         $this->startTransaction();
-        
-        $oDocumentLink =& DocumentLink::createFromArray(array(
-            'iParentDocumentId' => $oParentDocument->getId(),
-            'iChildDocumentId'  => $oTargetDocument->getId(),
-            'iLinkTypeId'       => $oLinkType->getId(),
-        ));
 
-        if (PEAR::isError($oDocumentLink)) {
-            $this->errorRedirectToMain(_kt('Could not create document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
-            exit(0);
+        if(!empty($aDocIds)){
+            foreach ($aDocIds as $iDocId){
+
+                $oDocumentLink =& DocumentLink::createFromArray(array(
+                    'iParentDocumentId' => $iParentId,
+                    'iChildDocumentId'  => $iDocId,
+                    'iLinkTypeId'       => $iLinkTypeId,
+                    'sTargetUrl'       => $sTargetUrl,
+                    'sTargetName'       => $sTargetName,
+                ));
+
+                if (PEAR::isError($oDocumentLink)) {
+                    $this->rollbackTransaction();
+                    $this->errorRedirectToMain(_kt('Could not create document link'), sprintf('fDocumentId=%d', $iParentId));
+                    exit(0);
+                }
+            }
         }
 
         $this->commitTransaction();
 
-        $this->successRedirectToMain(_kt('Document link created'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+        $this->successRedirectToMain(_kt('Document link created'), sprintf('fDocumentId=%d', $iParentId));
         exit(0);
     }
 
@@ -357,30 +405,29 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         // check security
         $oPermission =& KTPermission::getByName('ktcore.permissions.write');
-        if (PEAR::isError($oPermission) || 
+        if (PEAR::isError($oPermission) ||
             !KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
             $this->errorRedirectToMain(_kt('You do not have sufficient permissions to delete a link'), sprintf("fDocumentId=%d", $this->oDocument->getId()));
             exit(0);
         }
 
-
         // check validity of things
         $oDocumentLink = DocumentLink::get(KTUtil::arrayGet($_REQUEST, 'fDocumentLinkId'));
-        if (PEAR::isError($oDocumentLink)) { 
+        if (PEAR::isError($oDocumentLink)) {
             $this->errorRedirectToMain(_kt('Invalid document link selected.'));
             exit(0);
         }
         $oParentDocument = Document::get(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
-        if (PEAR::isError($oParentDocument)) { 
+        if (PEAR::isError($oParentDocument)) {
             $this->errorRedirectToMain(_kt('Invalid document selected.'));
             exit(0);
         }
-        
+
         // do deletion
         $this->startTransaction();
-        
+
         $res = $oDocumentLink->delete();
-        
+
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
             exit(0);
@@ -391,7 +438,61 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $this->successRedirectToMain(_kt('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
     }
+
+    function _generate_breadcrumbs($oFolder, $iFolderId, $aURLParams) {
+        static $aFolders = array();
+        static $aBreadcrumbs = array();
+
+        // Check if selected folder is a parent of the current folder
+        if(in_array($iFolderId, $aFolders)){
+            $temp = array_flip($aFolders);
+            $key = $temp[$iFolderId];
+            array_splice($aFolders, $key);
+            array_splice($aBreadcrumbs, $key);
+            return $aBreadcrumbs;
+        }
+
+        // Check for the parent of the selected folder unless its the root folder
+        $iParentId = $oFolder->getParentID();
+        if($iFolderId != 1 && in_array($iParentId, $aFolders)){
+            $temp = array_flip($aFolders);
+            $key = $temp[$iParentId];
+            array_splice($aFolders, $key);
+            array_splice($aBreadcrumbs, $key);
+            array_push($aFolders, $iFolderId);
+
+            $aParams = $aURLParams;
+            $aParams['fFolderId'] = $iFolderId;
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
+            $aBreadcrumbs[] = array('url' => $url, 'name' => $oFolder->getName());
+            return $aBreadcrumbs;
+        }
+
+        // Create the breadcrumbs
+        $folder_path_names = $oFolder->getPathArray();
+        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        $folder_path_ids[] = $oFolder->getId();
+        if ($folder_path_ids[0] == 0) {
+            array_shift($folder_path_ids);
+            array_shift($folder_path_names);
+        }
+
+        $iCount = count($folder_path_ids);
+        $range = range(0, $iCount - 1);
+        foreach ($range as $index) {
+            $id = $folder_path_ids[$index];
+            $name = $folder_path_names[$index];
+
+            $aParams = $aURLParams;
+            $aParams['fFolderId'] = $id;
+            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
+            $aBreadcrumbs[] = array('url' => $url, 'name' => $name);
+        }
+        $aFolders = $folder_path_ids;
+        return $aBreadcrumbs;
+    }
 }
+
 class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
     var $sHelpPage = 'ktcore/admin/link type management.html';
 
@@ -403,17 +504,17 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
         $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
         $this->oPage->setBreadcrumbDetails(_kt("view"));
-        
+
         $aLinkTypes =& LinkType::getList('id > 0');
-        
+
         $addLinkForm = array();
-        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
+        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null)
         $addLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', null, $this->oPage, true);
         $addLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', null, $this->oPage, true);
-        
-        
+
+
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');       
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');
         $oTemplate->setData(array(
             "context" => $this,
             "add_form" => $addLinkForm,
@@ -421,28 +522,28 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         ));
         return $oTemplate;
     }
-    
+
     function do_edit() {
         $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
         if ($link_id === null) {
            $this->errorRedirectToMain(_kt("Please specify a link type to edit."));
         }
-        
+
         $oLinkType =& LinkType::get($link_id);
-        
+
         $this->aBreadcrumbs[] = array('name' => _kt('Document Links'));
         $this->oPage->setBreadcrumbDetails(_kt("view"));
-        
+
         $aLinkTypes =& LinkType::getList('id > 0');
-        
+
         $editLinkForm = array();
-        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) 
+        // KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null)
         $editLinkForm[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the link type.'), 'fName', $oLinkType->getName(), $this->oPage, true);
         $editLinkForm[] = new KTStringWidget(_kt('Description'), _kt('A short brief description of the relationship implied by this link type.'), 'fDescription', $oLinkType->getDescription(), $this->oPage, true);
-        
-        
+
+
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');       
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/linktypesadmin');
         $oTemplate->setData(array(
             "context" => $this,
             "edit_form" => $editLinkForm,
@@ -450,54 +551,54 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
             "links" => $aLinkTypes,
         ));
         return $oTemplate;
-    }    
-    
+    }
+
 
     function do_update() {
         $link_id = KTUtil::arrayGet($_REQUEST, 'fLinkTypeId', null, false);
         if ($link_id === null) {
             $this->errorRedirectToMain(_kt("Please specify a link type to update."));
         }
-        
-        $name = KTUtil::arrayGet($_REQUEST, 'fName');        
+
+        $name = KTUtil::arrayGet($_REQUEST, 'fName');
         $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
 
         if (empty($name) || empty($description)) { // for bonus points, make this go to edit, and edit catch it.
             $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
         }
-        
+
         $oLinkType =& LinkType::get($link_id);
-        
+
         $oLinkType->setName($name);
         $oLinkType->setDescription($description);
         $oLinkType->update();
-        
+
         $this->successRedirectToMain(_kt("Link Type updated."));
     }
-    
+
     function do_add() {
-        $name = KTUtil::arrayGet($_REQUEST, 'fName');        
+        $name = KTUtil::arrayGet($_REQUEST, 'fName');
         $description = KTUtil::arrayGet($_REQUEST, 'fDescription');
 
         if (empty($name) || empty($description)) {
             $this->errorRedirectToMain(_kt('Please enter information for all fields.'));
         }
-        
+
         $oLinkType = new LinkType($name, $description);
         $oLinkType->create();
-             
+
         //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
-        
+
         $this->successRedirectToMain(_kt("Link Type created."));
     }
-    
+
     function do_delete() {
         $types_to_delete = KTUtil::arrayGet($_REQUEST, 'fLinksToDelete');         // is an array.
 
         if (empty($types_to_delete)) {
             $this->errorRedirectToMain(_kt('Please select one or more link types to delete.'));
         }
-        
+
         $count = 0;
         foreach ($types_to_delete as $link_id) {
             $oLinkType = LinkType::get($link_id);
@@ -505,13 +606,13 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
             foreach(DocumentLink::getList(sprintf("link_type_id = %d", $link_id)) as $oLink) {
                 $oLink->delete();
             }
-            
+
             $oLinkType->delete(); // technically, this is a bad thing
-            $count += 1; 
+            $count += 1;
         }
-        
+
         //$oLinkType =& LinkType::createFromArray(array("sName" => $name, "sDescription" => $description));
-        
+
         $this->successRedirectToMain($count . " " . _kt("Link types deleted."));
     }
 
