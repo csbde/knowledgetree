@@ -1,0 +1,1 @@
+ALTER TABLE `document_link` ADD `external_url` varchar(255), ADD `external_name` varchar(50);

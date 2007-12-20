@@ -318,6 +318,8 @@ CREATE TABLE `document_link` (
   `parent_document_id` int(11) NOT NULL default '0',
   `child_document_id` int(11) NOT NULL default '0',
   `link_type_id` int(11) NOT NULL default '0',
+  `external_url` varchar(255),
+  `external_name` varchar(50),
   PRIMARY KEY  (`id`),
   KEY `parent_document_id` (`parent_document_id`),
   KEY `child_document_id` (`child_document_id`),
