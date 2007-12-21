@@ -957,14 +957,15 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (159,'sql*3.5.2*0*3.5.2/metadata_length.sql','Updates metadata length. Changes chars to varchars.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (160,'sql*3.5.2*0*3.5.2/scheduler_tasks.sql','Initialise some scheduler tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (161,'sql*3.5.2*0*3.5.2/csv_mime.sql','Update mime types for CSV files.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(162,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(163,'func*3.5.2*1*dropForeignKeys','Recreate db integrity: Drop foreign keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(164,'func*3.5.2*2*dropPrimaryKeys','Recreate db integrity:Drop primary keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(165,'func*3.5.2*3*dropIndexes','Recreate db integrity:Drop indexes on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(166,'func*3.5.2*4*createPrimaryKeys','Recreate db integrity:Create primary keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(167,'func*3.5.2*5*createForeignKeys','Recreate db integrity:Create foreign keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(168,'func*3.5.2*6*createIndexes','Recreate db integrity:Create indexes on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(169,'sql*3.5.2*0*3.5.2/plugins_orderby.sql','Database upgrade to version 3.5.2: Plugins orderby','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(162,'func*3.5.2*1*dropForeignKeys','Recreate db integrity: Drop foreign keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(163,'func*3.5.2*2*dropPrimaryKeys','Recreate db integrity:Drop primary keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(164,'func*3.5.2*3*dropIndexes','Recreate db integrity:Drop indexes on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(165,'func*3.5.2*4*createPrimaryKeys','Recreate db integrity:Create primary keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(166,'func*3.5.2*5*createForeignKeys','Recreate db integrity:Create foreign keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(167,'func*3.5.2*6*createIndexes','Recreate db integrity:Create indexes on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(168,'sql*3.5.2*0*3.5.2/plugins_orderby.sql','Plugins orderby update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(169,'sql*3.5.2*0*3.5.2/document_link.sql','Document Link update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(170,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1821,7 +1822,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (169);
+INSERT INTO `zseq_upgrades` VALUES (170);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
