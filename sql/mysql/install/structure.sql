@@ -485,7 +485,8 @@ CREATE TABLE `document_transactions` (
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
-  KEY `document_id` (`document_id`)
+  KEY `document_id` (`document_id`),
+  KEY (`datetime`,`transaction_namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

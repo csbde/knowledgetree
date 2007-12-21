@@ -534,6 +534,8 @@ class KTSchemaUtil
 		$this->defineIndex('document_content_version','filename','','(255)');
 		$this->defineIndex('document_content_version','size');
 
+		$this->defineIndex('document_transactions',array('datetime','transaction_namespace'));
+
 		$this->defineIndex('field_behaviour_options',array('behaviour_id','field_id'));
 
 		$this->defineIndex('field_behaviours','name');
@@ -548,6 +550,7 @@ class KTSchemaUtil
 
 		$this->defineIndex('folder_transactions','folder_id');
 		$this->defineIndex('folder_transactions','session_id');
+
 		$this->defineIndex('folders', array('parent_id','name'));
 
 		$this->defineIndex('groups_lookup','name', 'UNIQUE');
