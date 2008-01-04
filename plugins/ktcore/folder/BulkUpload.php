@@ -115,16 +115,6 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         unset($aErrorOptions['message']);
         $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
 
-        // Ensure file is a zip file
-        $sMime = $aFile['type'];
-        $pos = strpos($sMime, 'x-zip-compressed');
-        $pos2 = strpos($sMime, 'application/zip');
-        if($pos === false && $pos2 === false){
-            $this->addErrorMessage(_kt("Bulk Upload failed: File is not a zip file."));
-            controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
-            exit(0);
-        }
-
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {
@@ -138,7 +128,14 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             'metadata' => $aFields,
         );
 
-        $fs =& new KTZipImportStorage($aFile['tmp_name']);
+        $fs =& new KTZipImportStorage('file');
+        if(!$fs->CheckFormat()){
+            $sFormats = $fs->getFormats();
+            $this->addErrorMessage(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: ".$sFormats));
+            controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
+            exit;
+        }
+
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
@@ -152,3 +149,4 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         exit(0);
     }
 }
+?>

@@ -7,71 +7,140 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/import/fsimportstorage.inc.php');
 
+require_once('File/Archive.php');
+
 class KTZipImportStorage extends KTFSImportStorage {
-    function KTZipImportStorage($sZipPath) {
-        $this->sZipPath = $sZipPath;
+
+    /**
+     * The archive extension.
+     * @var string
+     */
+    var $sExtension = 'zip';
+
+    var $sZipPath = '';
+
+    var $sBasePath = '';
+
+    var $aFile = array();
+
+    var $allowed_extensions = array('tgz', 'tar', 'gz', 'gzip', 'zip', 'deb', 'ar');
+
+    function KTZipImportStorage($sFilesName) {
+        $this->aFile = $_FILES[$sFilesName];
+        $this->sZipPath = $this->aFile['tmp_name'];
+
+        // Check the bzip2 lib functions are available
+        if(function_exists('bzopen')){
+            $this->allowed_extensions = array_merge($this->allowed_extensions, array('bz2', 'bzip2', 'tbz'));
+        }
+    }
+
+    function CheckFormat(){
+        // Get the file extension
+        $aFilename = explode('.', $this->aFile['name']);
+        $cnt = count($aFilename);
+        $sExtension = $aFilename[$cnt - 1];
+
+        // check if its in the list of supported extensions
+        if(!in_array($sExtension, $this->allowed_extensions)){
+            return false;
+        }
+
+        $this->sExtension = (!empty($sExtension)) ? $sExtension : 'zip';
+
+        // Check if the archive is a .tar.gz or .tar.bz, etc
+        if($cnt > 2){
+            if($aFilename[$cnt-2] == 'tar'){
+                switch($this->sExtension){
+                    case 'gz':
+                        $this->sExtension = 'tgz';
+                        break;
+                    case 'bz2':
+                        $this->sExtension = 'tbz';
+                        break;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function getFormats(){
+        return implode(', ', $this->allowed_extensions);
     }
 
     function init() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sBasedir = $oKTConfig->get("urls/tmpDirectory");    
-    
-        $sTmpPath = tempnam($sBasedir, 'zipimportstorage');
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+
+        $sTmpPath = tempnam($sBasedir, 'archiveimportstorage');
         if ($sTmpPath === false) {
-            return PEAR::raiseError(_kt("Could not create temporary directory for zip storage"));
+            return PEAR::raiseError(_kt("Could not create temporary directory for archive storage"));
         }
         if (!file_exists($this->sZipPath)) {
-            return PEAR::raiseError(_kt("Zip file given does not exist"));
+            return PEAR::raiseError(_kt("Archive file given does not exist"));
         }
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
         $this->sBasePath = $sTmpPath;
-        $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
-        if (empty($sUnzipCommand)) {
-            return PEAR::raiseError(_kt("unzip command not found on system"));
-        }
-        $aArgs = array(
-            $sUnzipCommand,
-            "-q", "-n",
-            "-d", $sTmpPath,
-            $this->sZipPath,
-        );
-        $aRes = KTUtil::pexec($aArgs);
 
-        if ($aRes['ret'] !== 0) {
-            return PEAR::raiseError(_kt("Could not retrieve contents from zip storage"));
+        // File Archive doesn't unzip properly so sticking to the original unzip functionality
+        if($this->sExtension == 'zip'){
+            // ** Original zip functionality
+            $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
+            if (empty($sUnzipCommand)) {
+                return PEAR::raiseError(_kt("unzip command not found on system"));
+            }
+            $aArgs = array(
+                $sUnzipCommand,
+                "-q", "-n",
+                "-d", $sTmpPath,
+                $this->sZipPath,
+            );
+            $aRes = KTUtil::pexec($aArgs);
+
+            if ($aRes['ret'] !== 0) {
+                return PEAR::raiseError(_kt("Could not retrieve contents from zip storage"));
+            }
+        }else{
+            File_Archive::extract(
+                File_Archive::readArchive(
+                    $this->sExtension, File_Archive::readUploadedFile('file')
+                ),
+                $dst = $sTmpPath
+            );
         }
     }
 
