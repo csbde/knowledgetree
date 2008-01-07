@@ -108,7 +108,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(null, response.transitions);
 	    	}
 
-		//[Test]
+		[Test]
 		public void GetDetailByTitleTest()
 		{
 			kt_document_detail response = this._kt.get_document_detail_by_name(this._session, 1, "Root Folder/kt unit test1", "T","");
@@ -118,7 +118,7 @@ namespace MonoTests.KnowledgeTree
 	    	}
 
 
-		//[Test]
+		[Test]
 		public void GetDetailByTitle2Test()
 		{
 			kt_document_detail response = this._kt.get_document_detail_by_title(this._session, 1, "Root Folder/kt unit test1", "");
@@ -127,7 +127,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(this._docId, response.document_id);
 	    	}
 
-		//[Test]
+		[Test]
 		public void GetDetailByFileTest()
 		{
 			kt_document_detail response = this._kt.get_document_detail_by_name(this._session, 1, "Root Folder/kt_unit_test1.txt", "F","");
@@ -135,7 +135,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, response.status_code);
 			Assert.AreEqual(this._docId, response.document_id);
 	    	}
-		//[Test]
+		[Test]
 		public void GetDetailByFile2Test()
 		{
 			kt_document_detail response = this._kt.get_document_detail_by_filename(this._session, 1, "Root Folder/kt_unit_test1.txt", "");
@@ -144,7 +144,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(this._docId, response.document_id);
 	    	}
 
-		//[Test]
+		[Test]
 		public void GetDetailByUnknownNameTest()
 		{
 			kt_document_detail response = this._kt.get_document_detail_by_name(this._session, 1, "Root Folder/kt_unit_test1.ssssdasdasd", "F","");
