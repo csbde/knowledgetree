@@ -121,6 +121,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get_detail()
 	{
+		$this->clearCache();
 		$detail = array(
 			'id'=>(int) $this->folderid,
 			'folder_name'=>$this->get_folder_name(),
@@ -130,6 +131,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		return $detail;
 	}
+
+	function clearCache()
+	{
+		// TODO: we should only clear the cache for the document we are working on
+		// this is a quick fix but not optimal!!
+
+		$cache = KTCache::getSingleton();
+
+		$cache->remove('Folder/id', $this->folderid);
+
+		$this->folder = &Folder::get($this->folderid);
+	}
+
 
 	function get_parent_folder_id()
 	{
@@ -479,13 +493,16 @@ class KTAPI_Folder extends KTAPI_FolderItem
 						$docTypeId = $document->getDocumentTypeID();
 						$documentType = DocumentType::get($docTypeId);
 
+						$oemDocumentNo = $document->getOemNo();
+						if (empty($oemDocumentNo)) $oemDocumentNo = 'n/a';
+
 
 						$contents[] = array(
 							'id' => (int) $document->getId(),
 							'item_type' => 'D',
 
 							'custom_document_no'=>'n/a',
-							'oem_document_no'=>'n/a',
+							'oem_document_no'=>$oemDocumentNo,
 
 							'title' => $document->getName(),
 							'document_type'=>$documentType->getName(),
