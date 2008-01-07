@@ -4,7 +4,28 @@ using System.Net;
 using System.IO; 
 using System.Collections;
 using System.Data;
-using System.Data.Odbc; 
+using System.Data.Odbc;  
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Remoting.Activation;
+using System.Runtime.Remoting.Services;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Web.Services.Protocols;
+using System.Reflection;
+using Interception;
+using System.Web;
+using System.Xml;
+using System.Web.Services;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Web.Services.Description;
+using System.Web.Services.Discovery;
+using System.Xml.Serialization;
+using System.Xml.Schema;
+using System.Threading;
+using System.Web.Services.Protocols;
 
 namespace MonoTests.KnowledgeTree
 {
@@ -18,7 +39,22 @@ namespace MonoTests.KnowledgeTree
 		{
 			this.Url = Environment.GetEnvironmentVariable("KT_ROOT_URL") + "/ktwebservice/webservice.php";
 		}
- 	}
+ 	} 
+	
+	public class MySoapHttpClientProtocol : SoapHttpClientProtocol
+	{
+		public MySoapHttpClientProtocol() : base() {}
+		
+		public  object [] ReceiveResponse (WebResponse response, SoapClientMessage message, SoapExtension[] extensions)
+		{
+			
+			StreamReader sr = new StreamReader(response.GetResponseStream());
+			String content = sr.ReadToEnd();
+			System.Console.WriteLine(content);
+
+			return null;
+		}
+	}
 	
 	public class KTTest
     	{
@@ -33,8 +69,10 @@ namespace MonoTests.KnowledgeTree
 			kt_response response = this._kt.login("admin","admin","127.0.0.1");
 			this._session = response.message;
 			this._verbose = false;   
-			this.setupDb();
-		}
+			this.setupDb(); 
+			
+			//System.Web.Services.Protocols.SoapHttpClientProtocol.ReceiveResponse 
+		} 
 		
 		void setupDb()
 		{
