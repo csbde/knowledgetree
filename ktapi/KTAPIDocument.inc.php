@@ -180,6 +180,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		KTUploadManager::temporary_file_imported($tempfilename);
 	}
 
+	function removeUpdateNotification()
+	{
+		$sql =  "DELETE FROM notifications WHERE data_int_1=$this->documentid AND data_str_1='ModifyDocument'";
+		DBUtil::runQuery($sql);
+	}
+
 	/**
 	 * Link a document to another
 	 *
@@ -276,7 +282,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			w.name as workflow,
 			ws.name as workflow_state,
 			dlt.name as link_type, dtl.name as document_type,
-			dcv.major_version, dcv.minor_version
+			dcv.major_version, dcv.minor_version, d.oem_no
 		FROM
 			document_link dl
 			INNER JOIN document_link_types dlt ON dl.link_type_id=dlt.id
@@ -312,12 +318,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 				continue;
 			}
 
-
+			$oem_no = $row['oem_no'];
+			if (empty($oem_no)) $oem_no = 'n/a';
 
 			$result[] = array(
 					'document_id'=>(int)$row['document_id'],
 					'custom_document_no'=>'n/a',
-					'oem_document_no'=>'n/a',
+					'oem_document_no'=>$oem_no,
 					'title'=> $row['title'],
 					'document_type'=> $row['document_type'],
 					'version'=> (float) ($row['major_version'] . '.' . $row['minor_version']),
@@ -1008,9 +1015,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	}
 
 		 	$fieldset = KTFieldset::getByName($fieldsetname);
-		 	if (is_null($fieldset) || PEAR::isError($fieldset))
+		 	if (is_null($fieldset) || PEAR::isError($fieldset) || is_a($fieldset, 'KTEntityNoObjects'))
 		 	{
-		 		$default->log->debug("could not resolve fieldset: $fieldsetname");
+		 		$default->log->debug("could not resolve fieldset: $fieldsetname for document id: $this->documentid");
 		 		// exit graciously
 		 		continue;
 		 	}
@@ -1034,9 +1041,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		}
 
 		 		$field = DocumentField::getByFieldsetAndName($fieldset, $fieldname);
-		 		if (is_null($field) || PEAR::isError($fieldset))
+		 		if (is_null($field) || PEAR::isError($field) || is_a($field, 'KTEntityNoObjects'))
 		 		{
-		 			$default->log->debug("could not resolve field: $fieldname");
+		 			$default->log->debug("Could not resolve field: $fieldname on fieldset $fieldsetname for document id: $this->documentid");
 		 			// exit graciously
 		 			continue;
 		 		}
@@ -1115,6 +1122,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$documents = array();
 		$document_content = array();
 		$indexContent = null;
+		$uniqueOemNo = false;
 
 		foreach($sysdata as $rec)
 		{
@@ -1135,6 +1143,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 			switch($name)
 			{
+				case 'unique_oem_document_no':
+					$documents['oem_no'] = $value;
+					$uniqueOemNo = true;
+					break;
+				case 'oem_document_no':
+					$documents['oem_no'] = $value;
+					break;
 				case 'index_content':
 					$indexContent = $value;
 					break;
@@ -1218,10 +1233,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 			foreach($documents as $name=>$value)
 			{
 				if ($i++ > 0) $sql .= ",";
-				if (is_numeric($value))
-					$sql .= "$name=$value";
-				else
-					$sql .= "$name='$value'";
+				$value = sanitizeForSQL($value);
+				$sql .= "$name='$value'";
 			}
 			$sql .= " WHERE id=$this->documentid";
 			$result = DBUtil::runQuery($sql);
@@ -1229,6 +1242,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 			{
 				return $result;
 			}
+
+			if ($uniqueOemNo)
+			{
+				$oem_no = sanitizeForSQL($documents['oem_no']);
+				$sql = "UPDATE documents SET oem_no=null WHERE oem_no = '$oem_no' AND id != $this->documentid";
+				$result = DBUtil::runQuery($sql);
+			}
+
 		}
 		if (count($document_content) > 0)
 		{
@@ -1238,6 +1259,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			foreach($document_content as $name=>$value)
 			{
 				if ($i++ > 0) $sql .= ",";
+				$value = sanitizeForSQL($value);
 				$sql .= "$name='$value'";
 			}
 			$sql .= " WHERE id=$content_id";
@@ -1421,8 +1443,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// get the document id
 		$detail['document_id'] = (int) $document->getId();
 
+		$oem_document_no = null;
+		if ($wsversion >= 2)
+		{
+			$oem_document_no = $document->getOemNo();
+		}
+		if (empty($oem_document_no))
+		{
+			$oem_document_no = 'n/a';
+		}
+
 		$detail['custom_document_no'] = 'n/a';
-		$detail['oem_document_no'] = 'n/a';
+		$detail['oem_document_no'] = $oem_document_no;
 
 		// get the title
 		$detail['title'] = $document->getName();
