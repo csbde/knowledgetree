@@ -1,0 +1,1 @@
+ALTER TABLE documents ADD oem_no varchar(255) NULL, ADD INDEX (oem_no);
