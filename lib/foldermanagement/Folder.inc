@@ -494,6 +494,7 @@ class Folder extends KTEntity {
     }
 
     function clearAllCaches() {
+    	$GLOBALS["_OBJECTCACHE"]['Folder'] = array();
         return KTEntityUtil::clearAllCaches('Folder');
     }
 
