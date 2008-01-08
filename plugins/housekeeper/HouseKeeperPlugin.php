@@ -35,6 +35,9 @@
  * Contributor( s): ______________________________________
  */
 
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
 class HouseKeeperPlugin extends KTPlugin
  {
 	var $autoRegister = true;
@@ -49,8 +52,16 @@ class HouseKeeperPlugin extends KTPlugin
         $this->sFriendlyName = _kt('Housekeeper');
 
         $config = KTConfig::getSingleton();
-        $tempDir = $config->get('urls/tmpDirectory');
         $cacheDir = $config->get('cache/cacheDirectory');
+        $cacheFile = $cacheDir . '/houseKeeper.folders';
+
+        if (is_file($cacheFile))
+        {
+        	$this->folders = unserialize(file_get_contents($cacheFile));
+        	return;
+        }
+
+        $tempDir = $config->get('urls/tmpDirectory');
         $logDir = $config->get('urls/logDirectory');
         $docsDir = $config->get('urls/documentRoot');
 
@@ -107,7 +118,12 @@ class HouseKeeperPlugin extends KTPlugin
         		'pattern'=>'',
         		'canClean'=>false
         	);
+
+        	// lets only cache this once it has been resolved!
+        	file_put_contents($cacheFile, serialize($this->folders));
         }
+
+
 
     }
 
