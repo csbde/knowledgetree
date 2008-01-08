@@ -1,11 +1,14 @@
 div#error-container {
-	width: 500px;
+	border:1px solid gray;
 	color: #555;
 	font-size: 11px;
 	font-family: Verdana, Arial, sans-serif;
+	margin:2em auto;
+	padding:10px;
+	width:470px;
 }
 div#error-container div {
-	height: 140px;
+	height: 150px;
 }
 div#error-container h1 {
 	font-weight: lighter;
