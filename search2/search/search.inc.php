@@ -556,7 +556,7 @@ function processSearchExpression($query)
 						'document_id' => (int) $hit->DocumentID,
 
 						'custom_document_no' => 'n/a',
-		                'oem_document_no' => 'n/a',
+		                'oem_document_no' => (string) $hit->OemDocumentNo,
 
 						'relevance' => (float) $hit->Rank,
         				'text' => (string)  $noText?'':$hit->Text,

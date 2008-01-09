@@ -74,6 +74,7 @@ class QueryResultItem
 	protected $documentType;
 	protected $mimeIconPath;
 	protected $mimeDisplay;
+	protected $oemDocumentNo;
 
 	public function __construct($document_id, $rank=null, $title=null, $text=null)
 	{
@@ -108,7 +109,7 @@ class QueryResultItem
 					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
 					mt.mimetypes as mimetype, md.mime_doc as mimedoc, d.checkedout, mbu.name as modifiedbyuser, d.modified,
 					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created,dcv.storage_path, dtl.name as document_type,
-					mt.icon_path as mime_icon_path, mt.friendly_name as mime_display
+					mt.icon_path as mime_icon_path, mt.friendly_name as mime_display, d.oem_no
 				FROM
 					documents d
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id = dmv.id
@@ -168,6 +169,9 @@ class QueryResultItem
 		$this->workflow = $result['workflow'];
 		$this->workflowState = $result['workflowstate'];
 
+		$this->oemDocumentNo = $result['oem_no'];
+		if (empty($this->oemDocumentNo)) $this->oemDocumentNo = 'n/a';
+
 		if (is_null($result['name']))
 		{
 			$this->fullpath = '(orphaned)';
@@ -202,6 +206,7 @@ class QueryResultItem
 			case 'Version': return (string) $this->version;
 			case 'Filename': return (string)$this->filename;
 			case 'FolderId': return (int)$this->folderId;
+			case 'OemDocumentNo': return (string) $this->oemDocumentNo;
 			case 'Document':
 					if (is_null($this->document))
 					{

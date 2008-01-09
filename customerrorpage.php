@@ -32,7 +32,9 @@ $phperror = $_SESSION['sErrorMessage'];
 function Click()
 {
 var open = document.getElementById('exp');
-open.style.display = 'block'; 
+open.style.display = 'block';
+var border = document.getElementById('error-container');
+border.style.height = '250px'; 
 }
 
 </script>		

@@ -32,7 +32,7 @@ namespace MonoTests.KnowledgeTree
 			this._doc2.deleteFile();
 		}
 
-//		[Test]
+		[Test]
 		public void UpdateDocumentMetadataTest()
 		{
 
@@ -81,7 +81,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("2007-01-17 00:00:00", update_resp.created_date);
 	    	}
 
-//		[Test]
+		[Test]
 		public void AddSmallDocumentWithMetadataTest()
 		{
 			kt_metadata_fieldset[] fs = new kt_metadata_fieldset[1];
@@ -125,7 +125,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("2007-01-17 00:00:00", update_resp.created_date);
 	    	}
 
-//		[Test]
+		[Test]
 		public void CheckinSmallDocumentWithMetadataTest()
 		{
 			kt_metadata_fieldset[] fs = new kt_metadata_fieldset[1];
@@ -172,7 +172,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("Anonymous", update_resp.created_by);
 			Assert.AreEqual("2007-01-17 00:00:00", update_resp.created_date);
 	    	}
-		
+
 		[Test]
 		public void AddDocumentWithMetadataTest()
 		{
@@ -190,7 +190,7 @@ namespace MonoTests.KnowledgeTree
 			fs[0].fields[2].name = "Media Type";
 			fs[0].fields[2].value = "Text";
 
-			kt_sysdata_item[] sysdata = new kt_sysdata_item[2];
+			kt_sysdata_item[] sysdata = new kt_sysdata_item[3];
 			sysdata[0] = new kt_sysdata_item();
 			sysdata[0].name = "created_by";
 			sysdata[0].value = "Anonymous";
@@ -199,19 +199,29 @@ namespace MonoTests.KnowledgeTree
 			sysdata[1].value = "2007-01-17";
 
 
+			sysdata[2] = new kt_sysdata_item();
+			sysdata[2].name = "index_content";
+			sysdata[2].value = "happy happy. this is a test with hippos and rhinos under the sun. unbrellas are required to create shade when trees are not abound.";
+
+
 
 			this._doc2.local = true;
 			this._doc2.createFile(this._folderId);
 
-			 
+
+
+			 for (int i =0;i<2;i++)
+			{
 			FileUploader uploader = new FileUploader( );
 
 			uploader.upload(this._session, this._doc2.filename);
-			
-			 System.Console.WriteLine("uploaded: " + uploader.filename);
-			kt_document_detail response1 = this._kt.add_document_with_metadata(this._session, this._folderId, this._doc2.title, this._doc2.filename, "Default", uploader.filename,fs, sysdata);
 
-			Assert.AreEqual(0, response1.status_code); 
+			 System.Console.WriteLine("uploaded: " + uploader.filename);
+
+			kt_document_detail response1 = this._kt.add_document_with_metadata(this._session, this._folderId, this._doc2.title+i, this._doc2.filename+i, "Default", uploader.filename,fs, sysdata);
+
+			Assert.AreEqual(0, response1.status_code);
+			}
 	    	}
 
 		[Test]
@@ -246,8 +256,8 @@ namespace MonoTests.KnowledgeTree
 
 			uploader.upload(this._session, this._doc1.filename);
 
-			kt_document_detail update_resp = this._kt.checkin_document(this._session, this._doc1.docId, this._doc1.filename, "unit test - doing checkin", uploader.filename, false); 
-			Assert.AreEqual(0, update_resp.status_code); 
+			kt_document_detail update_resp = this._kt.checkin_document(this._session, this._doc1.docId, this._doc1.filename, "unit test - doing checkin", uploader.filename, false);
+			Assert.AreEqual(0, update_resp.status_code);
 	    	}
 
 	}

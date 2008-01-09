@@ -82,6 +82,8 @@ class KTDocumentCore extends KTEntity {
 
     var $dCheckedOut;
 
+    var $sOemNo;
+
     var $_aFieldToSelect = array(
         "iId" => "id",
 
@@ -114,10 +116,11 @@ class KTDocumentCore extends KTEntity {
         'iRestoreFolderId' => 'restore_folder_id',
         'sRestoreFolderPath' => 'restore_folder_path',
 
-        'dCheckedOut'=>'checkedout'
+        'dCheckedOut'=>'checkedout',
+        'sOemNo'=>'oem_no'
     );
 
-    function KTDocument() {
+    function KTDocumentCore() {
     }
 
     // {{{ getters/setters
@@ -132,6 +135,8 @@ class KTDocumentCore extends KTEntity {
     function setLastModifiedDate($dNewValue) { $this->dModified = $dNewValue; }
     function getCheckedOutDate() { return $this->dCheckedOut; }
     function setCheckedOutDate($dNewValue) { $this->dCheckedOut = $dNewValue; }
+
+    function getOemNo() { return $this->sOemNo; }
 
     function getFolderId() { return $this->iFolderId; }
     function setFolderId($iNewValue) { $this->iFolderId = $iNewValue; }

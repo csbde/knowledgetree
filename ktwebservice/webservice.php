@@ -69,6 +69,7 @@ if (defined('HAS_SEARCH_FUNCTIONALITY'))
 // TODO: redo metadata encoding
 // TODO: unit tests - metadata - test return values in selectin - list/tree
 // TODO: ktwsapi/php must be made compatible with v2/v3
+// TODO: subscriptions/notifications
 
 // NOTE: some features are not implemented yet. most expected for v3. e.g. oem_document_no, custom_document_no, download($version)., get_metadata($version)
 
@@ -555,6 +556,34 @@ class KTWebService
          		);
          }
 
+        $this->__typedef["{urn:$this->namespace}kt_document_collection"] =
+			array(
+            	array(
+                        'item' =>  "{urn:$this->namespace}kt_document_detail"
+                  )
+            );
+
+         $this->__typedef["{urn:$this->namespace}kt_document_collection_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'collection' => "{urn:$this->namespace}kt_document_collection"
+            );
+
+        $this->__typedef["{urn:$this->namespace}kt_folder_collection"] =
+			array(
+            	array(
+                        'item' =>  "{urn:$this->namespace}kt_folder_detail"
+                  )
+            );
+
+         $this->__typedef["{urn:$this->namespace}kt_folder_collection_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'collection' => "{urn:$this->namespace}kt_folder_collection"
+            );
+
         $this->__typedef["{urn:$this->namespace}kt_document_version_history"] =
 			array(
             	array(
@@ -642,6 +671,12 @@ class KTWebService
          	 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
          }
 
+         // get_documents_by_oem_no
+         $this->__dispatch_map['get_documents_by_oem_no'] =
+            array('in' => array('session_id' => 'string', 'oem_no' => 'string', 'detail' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_collection_response"),
+            );
+
          // get_folder_detail_by_name
          $this->__dispatch_map['get_folder_detail_by_name'] =
             array('in' => array('session_id' => 'string', 'folder_name' => 'string' ),
@@ -712,11 +747,22 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
             );
 
+         if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['copy_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
+            }
+
          // move_folder
          $this->__dispatch_map['move_folder'] =
             array('in' => array('session_id'=>'string','source_id'=>'int','target_id'=>'int','reason' =>'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
+
+         if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['move_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
+            }
+
 
 		// get_document_detail
          $this->__dispatch_map['get_document_detail'] = array(
@@ -914,7 +960,10 @@ class KTWebService
             );
             if ($this->version >= 2)
             {
-            	$this->__dispatch_map['copy_document']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            	$this->__dispatch_map['copy_document'] =
+            		array('in' => array('session_id'=>'string','document_id'=>'int','folder_id'=>'int','reason'=>'string', 'options'=>'string' ),
+             				'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            			);
             }
 
             // move_document
@@ -924,7 +973,10 @@ class KTWebService
             );
             if ($this->version >= 2)
             {
-            	$this->__dispatch_map['move_document']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            	$this->__dispatch_map['move_document'] =
+		            array('in' => array('session_id'=>'string','document_id'=>'int','folder_id'=>'int','reason'=>'string', 'options'=>'string'),
+        			     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            		);
             }
 
 			// rename_document_title
@@ -1493,9 +1545,15 @@ class KTWebService
     {
     	$this->debug("copy_folder('$session_id',$source_id,$target_id,'$reason')");
     	$kt = &$this->get_ktapi($session_id );
+
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_folder_detail';
+    	}
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER);
@@ -1505,7 +1563,7 @@ class KTWebService
     	{
     		$response['message'] = $src_folder->getMessage();
     		$this->debug("copy_folder - cannot get source folderid $source_id - "  . $src_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$tgt_folder = &$kt->get_folder_by_id($target_id);
@@ -1514,7 +1572,7 @@ class KTWebService
     		$response['message'] = $tgt_folder->getMessage();
     		$this->debug("copy_folder - cannot get target folderid $target_id - "  . $tgt_folder->getMessage(), $session_id);
 
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result= $src_folder->copy($tgt_folder, $reason);
@@ -1524,12 +1582,23 @@ class KTWebService
     		$response['message'] = $result->getMessage();
     		$this->debug("copy_folder - copy to target folder - "  . $result->getMessage(), $session_id);
 
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
+    	}
+
+    	if ($this->version >=2)
+    	{
+
+	    	$sourceName = $src_folder->get_folder_name();
+	    	$targetPath = $tgt_folder->get_full_path();
+
+	    	$response = $this->get_folder_detail_by_name($session_id, $targetPath . '/' . $sourceName);
+
+    		return $response;
     	}
 
     	$response['status_code']= KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -1545,9 +1614,14 @@ class KTWebService
     {
     	$this->debug("move_folder('$session_id',$source_id,$target_id,'$reason')");
     	$kt = &$this->get_ktapi($session_id );
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_folder_detail';
+    	}
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER);
@@ -1557,7 +1631,7 @@ class KTWebService
     	{
     		$response['message'] = $src_folder->getMessage();
     		$this->debug("move_folder - cannot get source folder $source_id - "  . $src_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$tgt_folder = &$kt->get_folder_by_id($target_id);
@@ -1565,7 +1639,7 @@ class KTWebService
     	{
     		$response['message'] = $tgt_folder->getMessage();
     		$this->debug("move_folder - cannot get target folder $target_id - "  . $tgt_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $src_folder->move($tgt_folder, $reason);
@@ -1574,12 +1648,20 @@ class KTWebService
     		$response['status_code'] = KTWS_ERR_PROBLEM;
     		$response['message'] = $result->getMessage();
     		$this->debug("move_folder - cannot move folder - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
+    	}
+
+    	if ($this->version >=2)
+    	{
+
+	    	$response = $this->get_folder_detail($session_id, $source_id);
+
+    		return $response;
     	}
 
     	$response['status_code']= KTWS_SUCCESS;
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
@@ -1908,6 +1990,11 @@ class KTWebService
     	}
 
     	$document = $kt->get_document_by_id($document_id);
+    	$result = $document->removeUpdateNotification();
+    	if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
 		$result = $document->mergeWithLastMetadataVersion();
 		if (PEAR::isError($result))
 		{
@@ -1942,6 +2029,13 @@ class KTWebService
     	}
 
     	$document = $kt->get_document_by_id($document_id);
+    	$result = $document->removeUpdateNotification();
+    	if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
+
+
 		$result = $document->mergeWithLastMetadataVersion();
 		if (PEAR::isError($result))
 		{
@@ -1950,6 +2044,45 @@ class KTWebService
 
 		return $update_result;
     }
+
+
+    /**
+     * Find documents matching the document oem (integration) no
+     *
+     * @param string $session_id
+     * @param string $oem_no
+     * @param string $detail
+     * @return kt_document_collection_response
+     */
+	function get_documents_by_oem_no($session_id, $oem_no, $detail)
+	{
+		$this->debug("get_documents_by_oem_no('$session_id','$oem_no', '$detail')");
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_collection_response", $kt);
+    	}
+
+    	$documents = $kt->get_documents_by_oem_no($oem_no);
+
+    	$collection = array();
+    	foreach($documents as $documentId)
+    	{
+			$detail = $this->get_document_detail($session_id, $documentId, $detail);
+			if ($detail->value['status_code'] != 0)
+			{
+				continue;
+			}
+			$collection[] = $detail->value;
+    	}
+
+    	$response=array();
+    	$response['status_code'] = KTWS_SUCCESS;
+		$response['message'] = empty($collection)?_kt('No documents were found matching the specified document no'):'';
+    	$response['collection'] = new SOAP_Value('collection',"{urn:$this->namespace}kt_document_collection", $collection);
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_collection_response", $response);
+	}
 
     /**
      * Adds a document to the repository.
@@ -2088,6 +2221,11 @@ class KTWebService
        	}
 
        	$document = $kt->get_document_by_id($document_id);
+       	$result = $document->removeUpdateNotification();
+    	if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
        	$result = $document->mergeWithLastMetadataVersion();
        	if (PEAR::isError($result))
        	{
@@ -2121,6 +2259,11 @@ class KTWebService
        	}
 
        	$document = $kt->get_document_by_id($document_id);
+       	$result = $document->removeUpdateNotification();
+    	if (PEAR::isError($result))
+		{
+			// not much we can do, maybe just log!
+		}
        	$result = $document->mergeWithLastMetadataVersion();
        	if (PEAR::isError($result))
        	{
@@ -2583,14 +2726,19 @@ class KTWebService
      * @param string $newfilename
      * @return kt_document_detail
      */
- 	function copy_document($session_id,$document_id,$folder_id,$reason,$newtitle,$newfilename)
+ 	function copy_document($session_id,$document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
  	{
     	$this->debug("copy_document('$session_id',$document_id,$folder_id,'$reason','$newtitle','$newfilename')");
 
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
@@ -2600,7 +2748,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("copy_document - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$tgt_folder = &$kt->get_folder_by_id($folder_id);
@@ -2609,7 +2757,7 @@ class KTWebService
     		$response['status_code'] = KTWS_ERR_INVALID_FOLDER;
     		$response['message'] = $tgt_folder->getMessage();
     		$this->debug("copy_document - cannot get folderid $folder_id - "  . $tgt_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->copy($tgt_folder, $reason, $newtitle, $newfilename);
@@ -2617,7 +2765,7 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("copy_document - cannot copy - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
     	$response['status_code'] = KTWS_SUCCESS;
     	if ($this->version >= 2)
@@ -2626,7 +2774,7 @@ class KTWebService
     		return $this->get_document_detail($session_id, $new_document_id, '');
     	}
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
  	}
 
  	/**
@@ -2640,13 +2788,18 @@ class KTWebService
  	 * @param string $newfilename
  	 * @return kt_response
  	 */
- 	function move_document($session_id,$document_id,$folder_id,$reason,$newtitle,$newfilename)
+ 	function move_document($session_id,$document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
  	{
     	$this->debug("move_document('$session_id',$document_id,$folder_id,'$reason','$newtitle','$newfilename')");
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
@@ -2656,8 +2809,12 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("move_document - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
+
+    	if ($document->ktapi_folder->folderid != $folder_id)
+    	{
+		// we only have to do something if the source and target folders are different
 
     	$tgt_folder = &$kt->get_folder_by_id($folder_id);
 		if (PEAR::isError($tgt_folder))
@@ -2665,7 +2822,7 @@ class KTWebService
     		$response['status_code'] = KTWS_ERR_INVALID_FOLDER;
     		$response['message'] = $tgt_folder->getMessage();
     		$this->debug("move_document - cannot get folderid $folder_id - "  . $tgt_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->move($tgt_folder, $reason, $newtitle, $newfilename);
@@ -2673,11 +2830,17 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("move_document - cannot move - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
-    	$response['status_code'] = KTWS_SUCCESS;
+    	}
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	$response['status_code'] = KTWS_SUCCESS;
+    	if ($this->version >= 2)
+    	{
+    		return $this->get_document_detail($session_id, $document_id, '');
+    	}
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
  	}
 
  	/**

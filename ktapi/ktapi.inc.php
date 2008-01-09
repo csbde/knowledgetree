@@ -179,6 +179,36 @@ class KTAPI
 		return $user;
  	}
 
+ 	/**
+ 	 * Search for documents matching the oem_no.
+ 	 *
+ 	 * Note that oem_no is associated with a document and not with version of file (document content).
+ 	 * oem_no is set on a document using document::update_sysdata().
+ 	 *
+ 	 * @param string $oem_no
+ 	 * @param boolean idsOnly Defaults to true
+ 	 * @return array
+ 	 */
+ 	function get_documents_by_oem_no($oem_no, $idsOnly=true)
+ 	{
+		$sql = array("SELECT id FROM documents WHERE oem_no=?",$oem_no);
+		$rows = DBUtil::getResultArray($sql);
+		if (is_null($rows) || PEAR::isError($rows))
+		{
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+		}
+
+		$result = array();
+		foreach($rows as $row)
+		{
+			$documentid = $row['id'];
+
+			$result[] = $idsOnly?$documentid:KTAPI_Document::get($this, $documentid);
+		}
+
+ 		return $result;
+ 	}
+
 	/**
 	 * This returns a session object based on a session string.
 	 *

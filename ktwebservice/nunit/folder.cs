@@ -49,6 +49,9 @@ namespace MonoTests.KnowledgeTree
 
 	    	}
 
+
+
+
 		[Test]
 		public void GetFolderByName()
 		{
@@ -122,6 +125,55 @@ namespace MonoTests.KnowledgeTree
 	    		response = this._kt.create_folder(this._session, 1, "kt - unit - test");
 		       	Assert.AreEqual(0,response.status_code);
 		       	Assert.AreEqual("kt - unit - test",response.folder_name);
+
+		       	response = this._kt.get_folder_detail_by_name(this._session, "/kt ' unit \" test");
+		       	Assert.AreEqual(0,response.status_code);
+		       	Assert.AreEqual("kt ' unit \" test",response.folder_name);
 		}
+
+		[Test]
+		public void CopyFolder()
+		{
+
+	    		kt_folder_detail response = this._kt.create_folder(this._session, 1, "kt_unit_test2");
+		       	Assert.AreEqual(0,response.status_code);
+
+			this._folder_id = response.id;
+
+	    		response = this._kt.create_folder(this._session, 1, "subfolder");
+		       	Assert.AreEqual(0,response.status_code);
+
+				this._subfolder_id = response.id;
+
+
+				response = this._kt.copy_folder(this._session, this._folder_id, this._subfolder_id, "copy reason");
+		       	Assert.AreEqual(0,response.status_code);
+		       	Assert.AreEqual(this._subfolder_id,response.parent_id);
+		       	Assert.AreEqual("kt_unit_test2",response.folder_name);
+
+	    	}
+
+	    [Test]
+		public void MoveFolder()
+		{
+
+	    		kt_folder_detail response = this._kt.create_folder(this._session, 1, "kt_unit_test3");
+		       	Assert.AreEqual(0,response.status_code);
+
+				this._folder_id = response.id;
+
+	    		response = this._kt.create_folder(this._session, 1, "subfolder3");
+		       	Assert.AreEqual(0,response.status_code);
+
+				this._subfolder_id = response.id;
+
+				response = this._kt.move_folder(this._session, this._folder_id, this._subfolder_id, "move reason");
+		       	Assert.AreEqual(0,response.status_code);
+		       	Assert.AreEqual(this._folder_id,response.id);
+		       	Assert.AreEqual(this._subfolder_id,response.parent_id);
+		       	Assert.AreEqual("kt_unit_test3",response.folder_name);
+	    }
+
+
 	}
 }

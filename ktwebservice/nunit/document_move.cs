@@ -7,11 +7,12 @@ namespace MonoTests.KnowledgeTree
 
 
 	[TestFixture]
-	public class DocumentCopyTest : KTTest
+	public class DocumentMoveTest : KTTest
     	{
 		private int 			_folderId;
 		private Document		_doc1;
 
+		private int 			_folderId2;
 
 		[SetUp]
 		public void SetUp()
@@ -32,9 +33,9 @@ namespace MonoTests.KnowledgeTree
 		}
 
 		[Test]
-		public void FindDocumentBeforeCopy()
+		public void FindDocumentBeforeMove()
 		{
-			String filename = "Root Folder/test123";
+			String filename = "Root Folder/test123move";
 			if (this._verbose) System.Console.WriteLine("Finding document before add: " + filename);
 			kt_document_detail documentDetail = this._kt.get_document_detail_by_title(this._session, 1, filename, "");
 			if (0 == documentDetail.status_code)
@@ -47,28 +48,35 @@ namespace MonoTests.KnowledgeTree
 			{
 				System.Console.WriteLine("document not found. that is ok!");
 			}
+
+
 		}
 
 
 		[Test]
-		public void CopyTest()
+		public void MoveTest()
 		{
-		kt_folder_detail response2 = this._kt.create_folder(this._session, 1, "kt_unit_test_move");
+			kt_folder_detail response2 = this._kt.create_folder(this._session, 1, "kt_unit_test_move");
 		       	Assert.AreEqual(0,response2.status_code);
-		        int folderId =    response2.id;
+		        int folderId = _folderId2 =response2.id;
+
+		       	System.Console.WriteLine("The folder id is: " +folderId);
 
 
-			kt_document_detail linkresp = this._kt.copy_document(this._session, this._doc1.docId, folderId, "copy", "");
+				System.Console.WriteLine("The document id is: " +this._doc1.docId);
+
+			kt_document_detail linkresp = this._kt.move_document(this._session, this._doc1.docId, folderId, "move ", "");
 			Assert.AreEqual(0, linkresp.status_code);
 			Assert.AreEqual("kt_unit_test1.txt", linkresp.filename);
 			Assert.AreEqual("kt unit test1", linkresp.title);
+			Assert.AreEqual(folderId, linkresp.folder_id);
 
 
 
 	    	}
 
 		[Test]
-		public void FindDocumentAfterCopy()
+		public void FindDocumentAfterMove()
 		{
 			String filename = "Root Folder/kt unit test1";
 			if (this._verbose) System.Console.WriteLine("Finding document before add: " + filename);
