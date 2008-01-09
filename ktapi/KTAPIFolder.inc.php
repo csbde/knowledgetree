@@ -137,9 +137,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		// TODO: we should only clear the cache for the document we are working on
 		// this is a quick fix but not optimal!!
 
-		$cache = KTCache::getSingleton();
-
-		$cache->remove('Folder/id', $this->folderid);
+		$GLOBALS["_OBJECTCACHE"]['Folder'] = array();
 
 		$this->folder = &Folder::get($this->folderid);
 	}
@@ -598,7 +596,16 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$documenttypeid = KTAPI::get_documenttypeid($documenttype);
 		if (PEAR::isError($documenttypeid))
 		{
-		    return new PEAR_Error('The document type could not be resolved or is disabled: ' . $documenttype);
+			$config = KTCache::getSingleton();
+			$defaultToDefaultDocType = $config->get('webservice/useDefaultDocumentTypeIfInvalid',true);
+			if ($defaultToDefaultDocType)
+			{
+				$documenttypeid = KTAPI::get_documenttypeid('Default');
+			}
+			else
+			{
+		    	return new PEAR_Error('The document type could not be resolved or is disabled: ' . $documenttype);
+			}
 		}
 
 
