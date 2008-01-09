@@ -236,7 +236,7 @@ class KTFolderUtil {
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
 
-        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
+        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
 
         if ($oFolder->getId() == 1) {
             $sOldPath = $oFolder->getName();
@@ -249,20 +249,18 @@ class KTFolderUtil {
         $aParams = array(
         sprintf("%s", $sNewPath),
         strlen($sOldPath) + 1,
-        sprintf("%s%%", $sOldPath),
+        $sOldPath.'/%',
+        $sOldPath,
         );
+
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
             return $res;
         }
 
         $table = "documents";
-        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ?";
-        $aParams = array(
-        sprintf("%s", $sNewPath),
-        strlen($sOldPath) + 1,
-        sprintf("%s%%", $sOldPath),
-        );
+        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
+
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
             return $res;
