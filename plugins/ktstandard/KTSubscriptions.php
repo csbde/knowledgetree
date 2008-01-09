@@ -267,7 +267,7 @@ class KTDeleteSubscriptionTrigger {
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
+       // $oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
     }
 }
 // }}}
