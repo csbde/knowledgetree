@@ -500,7 +500,7 @@ class User extends KTEntity {
 		  "WHERE $pdgTable.descriptor_id = ? AND " .
 		  "$uglTable.user_id=?";
 		$aParams = array($oPermissionDescriptor->getID());
-		$aParams[] = $this->$iId;
+		$aParams[] = $this->iId;
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
         if (PEAR::isError($res)) {
             return $res;
