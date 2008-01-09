@@ -140,8 +140,6 @@ class KTWebService
     var $version;
     var $ktapi;
 
-    static $wsclass = 'KTWebService';
-
     function KTWebService()
     {
     	// Caching was giving some problems, so disable it.
@@ -1438,7 +1436,7 @@ class KTWebService
     	if (PEAR::isError($newfolder))
     	{
     		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$newfolder);
-    		$this->debug("create_folder - cannot create folder $folder_name - "  . $folder->getMessage(), $session_id);
+    		$this->debug("create_folder - cannot create folder $folder_name - "  . $newfolder->getMessage(), $session_id);
 
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
     	}
