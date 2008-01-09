@@ -30,8 +30,10 @@ window.onload = function()
   }
   
   window.onsubmit = function(){
-  	var myElem = document.getElementById("modalDiv");
-	myElem.style.display = "block";
+  	if(typeof disable_loader == "undefined"){
+	  	var myElem = document.getElementById("modalDiv");
+		myElem.style.display = "block";
+	}
   }
   function Loader()
 { 

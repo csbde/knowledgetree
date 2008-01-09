@@ -1,3 +1,9 @@
+{literal}
+<script type="text/javascript">
+	var disable_loader = true;
+</script>
+{/literal}
+
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Generate PDF of{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
 
 {$form->render()}
