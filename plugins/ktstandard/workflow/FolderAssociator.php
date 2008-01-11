@@ -48,7 +48,14 @@ class KTFolderWorkflowAssociationPlugin extends KTPlugin {
     function setup() {
         $this->registerTrigger('workflow', 'objectModification', 'FolderWorkflowAssociator',
             'ktstandard.triggers.workflowassociation.folder.handler');
+        }
 
+    /**
+     * Method to setup the plugin on rendering it
+     *
+     * @return unknown
+     */
+    function run_setup() {
         $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
         $sQuery .= ' WHERE event_ns = ?';
         $aParams = array('ktstandard.workflowassociation.handler');
@@ -57,8 +64,11 @@ class KTFolderWorkflowAssociationPlugin extends KTPlugin {
         if ($res == 'ktstandard.triggers.workflowassociation.folder.handler') {
             $this->registerAction('folderaction', 'FolderWorkflowAssignmentFolderAction',
                 'ktstandard.workflowassociation.folder.action');
-            }
+        }else{
+            $this->deRegisterPluginHelper('ktstandard.workflowassociation.folder.action', 'action');
         }
+        return true;
+    }
 }
 
 class FolderWorkflowAssociator extends KTWorkflowAssociationHandler {

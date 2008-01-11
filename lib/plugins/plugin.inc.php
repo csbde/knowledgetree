@@ -307,7 +307,7 @@ class KTPlugin {
      */
     function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
 
-        $sql = "SELECT * FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
+        $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
         $res = DBUtil::getOneResult($sql);
 
         $aValues = array();
@@ -335,6 +335,13 @@ class KTPlugin {
             return $res;
         }
         return true;
+    }
+
+    function deRegisterPluginHelper($sNamespace, $sClass) {
+        $aWhere['namespace'] = $sNamespace;
+        $aWhere['classtype'] = $sClass;
+        $res = DBUtil::whereDelete('plugin_helper', $aWhere);
+        return $res;
     }
 
     function _fixFilename($sFilename) {
@@ -383,6 +390,13 @@ class KTPlugin {
      *
      */
     function load() {
+        // Include any required resources, javascript files, etc
+        $res = $this->run_setup();
+
+        if(!$res){
+            return false;
+        }
+
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
         $aPluginHelpers = DBUtil::getResultArray($query);
@@ -397,7 +411,7 @@ class KTPlugin {
             	switch ($sClassType) {
             	    case 'portlet':
             	        $aLocation = unserialize($aParams[0]);
-            	        if($aLocation !== false){
+            	        if($aLocation != false){
         	               $aParams[0] = $aLocation;
             	        }
 
@@ -470,7 +484,7 @@ class KTPlugin {
 
             	    case 'criterion':
             	        $aInit = unserialize($aParams[3]);
-            	        if($aInit !== false){
+            	        if($aInit != false){
         	               $aParams[3] = $aInit;
             	        }
 
@@ -491,6 +505,7 @@ class KTPlugin {
             	}
         	}
         }
+        return true;
     }
 
     /**
@@ -624,6 +639,10 @@ class KTPlugin {
 
     function setup() {
         return;
+    }
+
+    function run_setup() {
+        return true;
     }
 
     function stripKtDir($sFilename) {

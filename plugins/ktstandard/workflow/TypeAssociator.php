@@ -44,19 +44,28 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
     function setup() {
         $this->registerTrigger('workflow', 'objectModification', 'DocumentTypeWorkflowAssociator',
             'ktstandard.triggers.workflowassociation.documenttype.handler');
+        $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
+    }
 
+    /**
+     * Method to setup the plugin on rendering it
+     *
+     * @return unknown
+     */
+    function run_setup() {
         $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
-            $sQuery .= ' WHERE event_ns = ?';
-            $aParams = array('ktstandard.workflowassociation.handler');
-            $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
+        $sQuery .= ' WHERE event_ns = ?';
+        $aParams = array('ktstandard.workflowassociation.handler');
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
 
         if ($res == 'ktstandard.triggers.workflowassociation.documenttype.handler') {
             $this->registerAdminPage('workflow_type_allocation', 'WorkflowTypeAllocationDispatcher',
                 'documents', _kt('Workflow Allocation by Document Types'),
                 _kt('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);
-            $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
+        }else{
+            $this->deRegisterPluginHelper('documents/workflow_type_allocation', 'admin_page');
         }
-
+        return true;
     }
 }
 
@@ -100,6 +109,15 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
     function check() {
         $res = parent::check();
         if (!$res) { return false; }
+
+        $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
+        $sQuery .= ' WHERE event_ns = ?';
+        $aParams = array('ktstandard.workflowassociation.handler');
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
+
+        if ($res != 'ktstandard.triggers.workflowassociation.documenttype.handler') {
+            return false;
+        }
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _kt('Workflow Allocation by Document Types'));
 
