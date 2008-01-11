@@ -118,7 +118,10 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         if (empty($sUnzipCommand)) {
             return;
         }
-        $this->sTmpPath = tempnam('/tmp', 'opendocumentextract');
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+        
+        $this->sTmpPath = tempnam($sBasedir, 'opendocumentextract');
         if ($this->sTmpPath === false) {
             return;
         }
@@ -131,14 +134,20 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
             "-d", $this->sTmpPath,
             $sFilename,
         );
-        KTUtil::pexec($sCmd);
+        KTUtil::pexec($sCmd, array('exec_wait' => 'true'));
 
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "META-INF/manifest.xml");
+        if (OS_WINDOWS) {
+    	     $sManifest = str_replace( '/','\\',$sManifest);
+    	  } 
         if (!file_exists($sManifest)) {
             $this->cleanup();
             return;
         }
         $sContentFile = sprintf("%s/%s", $this->sTmpPath, "content.xml");
+        if (OS_WINDOWS) {
+    	     $sContentFile = str_replace( '/','\\',$sContentFile );
+    	  } 
         if (!file_exists($sContentFile)) {
             $this->cleanup();
             return;
@@ -152,7 +161,8 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
     }
 
     function cleanup() {
-        KTUtil::deleteDirectory($this->sTmpPath);
+        return;
+        //KTUtil::deleteDirectory($this->sTmpPath);
     }
 }
 
