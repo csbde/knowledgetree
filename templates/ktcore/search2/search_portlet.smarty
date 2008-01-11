@@ -1,13 +1,6 @@
-<div style="position: absolute; left: 10px">
-<input id=searchPortletCriteria value="{$search2_quickQuery|sanitize}" style="width:150px; font-size:12px; position:relative; top: -2px;  z-index: 11"
-	onfocus="searchGotFocus('searchPortletCriteria')" onblur="searchLostFocus('searchPortletCriteria')"  onkeypress="return processSearchEnter(event,'searchPortletCriteria')" >
-<img onclick="search('searchPortletCriteria')" src="resources/tango-icons/system-search.png" border="0" style="position: relative; left: -25px; top: 4px;  z-index: 11" />
-<select id=searchPortletOptions style="width:170px; font-size:12px; position:absolute; left: -0px; z-index: 10" onchange="searchOptionSelect('searchPortletOptions')">
-	                            		<option value="s">--- {i18n}quick search{/i18n} ---
-	                            		<option value="s" {if $search2_general==1}selected{/if}>{i18n}content and metadata{/i18n} {if $search2_general==1}*{/if}
-	                            		<option value="m" {if $search2_general==0}selected{/if}>{i18n}metadata{/i18n} {if $search2_general==0}*{/if}
-	                            	</select>
-</div>
+
+<div id=searchPortletCriteria></div>
+
 <ul class="actionlist">
 <li><a href="{$rootUrl}/search2.php?action=guiBuilder">{i18n}Advanced Search{/i18n}</a></li>
 <li><a href="{$rootUrl}/search2.php?action=queryBuilder">{i18n}Search Criteria Editor{/i18n}</a></li>
