@@ -1,7 +1,3 @@
-{$context->oPage->requireCSSResource("thirdpartyjs/extjs/resources/css/ext-all.css")}
-
-{$context->oPage->requireJSResource("thirdpartyjs/extjs/adapter/ext/ext-base.js")}
-{$context->oPage->requireJSResource("thirdpartyjs/extjs/ext-all.js")}
 
 
 {literal}
@@ -320,7 +316,7 @@ function createFilesize(groupid, fid)
 	html += "<option>{/literal}{i18n}megabytes{/i18n}{literal}";
 	html += "<option>{/literal}{i18n}gigabytes{/i18n}{literal}";
 	html += "</SELECT>";
-	html += "<input style=\"display: none\" value=\"1\" id=\"field" + groupid + "_" + fid + "start\">";
+	html += "<input style=\"display: none\" value=\"0\" id=\"field" + groupid + "_" + fid + "start\">";
 	html += "<td width=\"100%\">&nbsp;";
 
 	html += "</table>";
@@ -332,8 +328,8 @@ function createDateDiff(groupid, fid)
 	var html = "<table><tr><td width=\"140\"";
 
 	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
-	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+	html += "<option value=\"<\">{/literal}{i18n}less than{/i18n}{literal}";
+	html += "<option value=\">\">{/literal}{i18n}greater than{/i18n}{literal}";
 	html += "</SELECT>"
 
 
