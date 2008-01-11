@@ -147,6 +147,7 @@ class KTBaseIndexerTrigger {
         $cmdline[] = $sFilename;
         
         $aOptions = array();
+        $aOptions['exec_wait'] = 'true';
         if ($this->use_pipes) {
             $aOptions["append"] = $sTempFilename;
         } else {
