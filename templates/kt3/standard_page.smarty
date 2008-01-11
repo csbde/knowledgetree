@@ -53,6 +53,8 @@
     <!-- Standalone Javascript. -->
     {foreach item=sJavascript from=$page->getJSStandalone()}
        <script type="text/javascript">
+       var rootURL = "{$absoluteRootUrl}";
+       var quickQuery = "{$search2_quickQuery}";
 {$sJavascript}
        </script>
     {/foreach}
@@ -90,123 +92,47 @@
 	                                    <li><div id="menu_divider"></div></li>
 	                            {/foreach}
 
-	                            {literal}
+
 	                            <script language="javascript">
 
-	                            function search(elname)
-	                            {
-									var sc = document.getElementById(elname);
-	                            	var val = sc.value;
+	                            var sSearchTranslations =
+	                            	[
 
-	                            	if (val == "{/literal}{i18n}Enter search criteria{/i18n}{literal}" || val == "")
-	                            	{
-	                            		alert('{/literal}{i18n}Please enter some search criteria{/i18n}{literal}');
-	                            		return;
-	                            	}
-	                            	var sq = document.getElementById('txtQuery');
+	                            	/* 0  */	"{i18n}Quick Search Options{/i18n}",
+	                            	/* 1  */	"{i18n}Searches will now search both content and metadata{/i18n}",
+	                            	/* 2  */	"{i18n}Searches will now only search metadata{/i18n}",
+	                            	/* 3  */	"{i18n}Hint{/i18n}",
+	                            	/* 4  */	"{i18n}Please enter some search criteria!{/i18n}",
+	                            	/* 5  */	"{i18n}Saved Searches{/i18n}",
+	                            	/* 6  */	"{i18n}Advanced Search{/i18n}",
+	                            	/* 7  */	"{i18n}Previous Search Results{/i18n}",
+	                            	/* 8  */	"{i18n}Quick Search Options{/i18n}",
+	                            	/* 9  */	"{i18n}content and metadata{/i18n}",
+	                            	/* 10  */	"{i18n}metadata{/i18n}",
+	                            	/* 11  */	"{i18n}search{/i18n}",
+	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}",
 
-									var so = document.getElementById('searchOptions');
+	                            	];
 
-									val = val.replace(/\"/g, "'");
+	                            var aSavedSearches = [
 
-									if (so.value == 's')
-									{
-	                            		sq.value = '(GeneralText contains "' + val + '")';
-									}
-									else
-									{
-	                            		sq.value = '(Metadata contains "' + val + '")';
-									}
-
-									var frm = document.getElementById('frmQuickSearch');
-	                            	frm.submit();
-	                            }
-	                            function processSearchEnter(event, elname)
-	                            {
-									var sc = document.getElementById(elname);
-									if(event && event.which)
-									{
-										characterCode = event.which;
-									}
-									else
-									{
-										characterCode = event.keyCode;
-									}
-
-									if (characterCode.toString() == '13')
-										search(elname);
-
-	                            	if (sc.value == "{/literal}{i18n}Enter search criteria{/i18n}{literal}")
-	                            	{
-	                            		sc.value = '';
-	                            	}
-
-									return true;
-	                            }
-	                            function searchGotFocus(elname)
-	                            {
-									var sc = document.getElementById(elname);
-									if (sc.value == "{/literal}{i18n}Enter search criteria{/i18n}{literal}")
-	                            	{
-	                            		sc.value = "";
-	                            	}
-	                            }
-	                            function searchLostFocus(elname)
-	                            {
-									var sc = document.getElementById(elname);
-									if (sc.value == "")
-	                            	{
-	                            		sc.value = "{/literal}{i18n}Enter search criteria{/i18n}{literal}";
-	                            	}
-	                            }
+	                            {assign var=count value=0}
+									{foreach item=searchitem from=$savedSearches}
+									{if $count>0},{/if}
+	                            	{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
+	                            	{assign var=count value=$count+1}
+	                            	{/foreach}
 
 
-	                            function updateSelect(el, idx, value, name)
-	                            {
-	                            	var elOptNew = new Option(name, value);
 
-	                            	var elOptOld = el.options[idx];
-	                            	try
-	                            	{
-	                            		el.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
-	                            	}
-	                            	catch(ex)
-	                            	{
-	                            		el.add(elOptNew, idx); // IE only
-	                            	}
-	                            	el.remove(idx+1);
-	                            }
 
-	                            function searchOptionSelect(elname)
-	                            {
-									var so = document.getElementById(elname);
-									switch(so.value)
-									{
-										case '':
-											break
-										case 's':
-											updateSelect(so, 1, 's', "{/literal}{i18n}content and metadata{/i18n}{literal} *");
-											updateSelect(so, 2, 'm', "{/literal}{i18n}metadata{/i18n}{literal}");
-											$('cbQuickGeneral').value = 1;
-											break
-										case 'm':
-											updateSelect(so, 1, 's', "{/literal}{i18n}content and metadata{/i18n}{literal}");
-											updateSelect(so, 2, 'm', "{/literal}{i18n}metadata{/i18n}{literal} *");
-											$('cbQuickGeneral').value = 0;
-											break;
-										case 'A':
-											document.location="{/literal}{$rootUrl}{literal}/search2.php?action=guiBuilder";
-											break;
-										case 'R':
-											document.location="{/literal}{$rootUrl}{literal}/search2.php?action=searchResults";
-											break;
-										default:
-											document.location="{/literal}{$rootUrl}{literal}/search2.php?action=processSaved&fSavedSearchId=" + so.value + "";
-											break;
-									}
-	                            }
+	                            ];
+
+
 	                            </script>
-								{/literal}
+	                            {literal}
+
+ {/literal}
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                                {if ($page->user)}
@@ -231,28 +157,18 @@
 
 	                            <li class="pref">
 	                            	<div style="position: absolute;">
-	                            	<input id=searchCriteria value="{$search2_quickQuery|sanitize}" style="width:129px; font-size:12px; position:relative; top: -2px; left: -180px; z-index: 11"
-	                            		onfocus="searchGotFocus('searchCriteria')" onblur="searchLostFocus('searchCriteria')"  onkeypress="return processSearchEnter(event,'searchCriteria')" >
-	                            	<img onclick="search('searchCriteria')" src="resources/tango-icons/system-search.png" border="0" style="position: relative; left: -183px; top: 4px;  z-index: 11" />
-	                            	<select id=searchOptions style="width:170px; font-size:12px; position:absolute; left: -180px; z-index: 10" onchange="searchOptionSelect('searchOptions')">
-	                            		<option value="">--- {i18n}quick search{/i18n} ---
-	                            		<option value="s" {if $search2_general==1}selected{/if}>{i18n}content and metadata{/i18n} {if $search2_general==1}*{/if}
-	                            		<option value="m" {if $search2_general==0}selected{/if}>{i18n}metadata{/i18n} {if $search2_general==0}*{/if}
-	                            		<option value="">--- {i18n}search{/i18n} ---
-	                            		<option value="A">{i18n}Advanced Search{/i18n}
-	                            		<option value="R">{i18n}Previous Results{/i18n}
-	                            		{if count($savedSearches) > 0}
-	                            			<option value="">--- {i18n}saved searches{/i18n} ---
-	                            			{foreach item=searchitem from=$savedSearches}
-	                            			<option value="{$searchitem.id}">{$searchitem.name|sanitize}
-	                            			{/foreach}
-	                            		{/if}
-	                            	</select>
+
+
 	                            	<form id=frmQuickSearch method=post action="{$rootUrl}/search2.php?action=process">
 	                            	<input id=txtQuery name=txtQuery type=hidden>
 	                            	<input type=hidden name="cbQuickQuery" id="cbQuickQuery" value="1">
 	                            	<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1"></form>
 	                            	</div>
+
+	                            	<div id="newSearchQuery"/>
+
+
+
 	                            	</li>
 
 	                        </ul>
@@ -332,13 +248,13 @@
 				    	<div class="error_dashlet_rightrepeat_bottom"></div>
 				    	<div class="error_dashlet_leftrepeat_bottom"></div>
                         {foreach item=sError from=$page->errStack}
-                          
+
                           {if ($page->booleanLink == '0')}
                             <p>{$sError|sanitize}</p>
                           {else}
                             <p>{$sError}</p>
-                          {/if}  
-                                                                                                          
+                          {/if}
+
                         {/foreach}
                         <div class="error_dashlet_topleft_small"></div>
 			            <div class="error_dashlet_toprepeat_small"></div>

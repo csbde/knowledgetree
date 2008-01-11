@@ -90,14 +90,14 @@ class KTSmartyTemplate extends KTTemplate {
         	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
         	if ($search2_quickQuery == '')
         	{
-        		$search2_quickQuery = _kt('Enter search criteria');
+        		$search2_quickQuery = '';
         	}
         }
         else
         {
 			$search2_quick=0;
 			$search2_general=1;
-			$search2_quickQuery = _kt('Enter search criteria');
+			$search2_quickQuery = '';
 			$_SESSION['search2_quick'] = $search2_quick;
 			$_SESSION['search2_general'] = $search2_general;
 			$_SESSION['search2_quickQuery'] = '';
