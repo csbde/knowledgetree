@@ -64,13 +64,37 @@ class KTrss{
 
     // Gets full listing of data of documents and folders subscribed to
     function getInternalFeed($iUserId){
-    	$documents=KTrss::getDocuments($iUserId);
-    	$folders=KTrss::getFolders($iUserId);
+    	$documents = KTrss::getDocuments($iUserId);
+    	$folders = KTrss::getFolders($iUserId);
+
     	if (is_null($documents)) $documents=array();
     	if (is_null($folders)) $folders=array();
-    	$aFullList = array_merge($documents,$folders );
-    	if($aFullList){
+
+    	$response = '';
+    	$aFullList = kt_array_merge($documents,$folders );
+    	if(!empty($aFullList)){
     		$internalFeed = KTrss::arrayToXML($aFullList);
+    		$response = rss2arrayBlock($internalFeed);
+    	}
+    	return $response;
+    }
+
+    // Get the data for the document or folder
+    function getExternalInternalFeed($sFeed, $iUserId){
+        $aRss = array();
+        $pos = strpos($sFeed, 'docId');
+
+        if($pos === false){
+            $pos = strpos($sFeed, 'folderId');
+            $folderId = substr($sFeed, $pos+9);
+            $aRss[] = KTrss::getOneFolder($folderId);
+        }else{
+            $docId = substr($sFeed, $pos+6);
+            $aRss[] = KTrss::getOneDocument($docId, $iUserId);
+        }
+
+    	if($aRss){
+    		$internalFeed = KTrss::arrayToXML($aRss);
     		$response = rss2arrayBlock($internalFeed);
     	}
     	return $response;
@@ -95,7 +119,7 @@ class KTrss{
     function getFolderList($iUserId){
         $sQuery = "SELECT folder_id as id FROM folder_subscriptions WHERE user_id = ?";
         $aParams = array($iUserId);
-        $aFolderList = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id'); 
+        $aFolderList = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 
         if (PEAR::isError($aFolderList)) {
             // XXX: log error
@@ -131,9 +155,8 @@ class KTrss{
     	$aFList = KTrss::getFolderList($iUserId);
 
     	if($aFList){
-	    	foreach($aFList as $folderElement){
-		        $folder_id = $folderElement['id'];
-		        $folder = KTrss::getOneFolder($folder_id, $iUserId);
+	    	foreach($aFList as $folder_id){
+		        $folder = KTrss::getOneFolder($folder_id);
 		        if($folder){
 		        	$aFolders[] = $folder;
 		        }
@@ -150,44 +173,53 @@ class KTrss{
     }
 
     function getChildrenFolderTransactions($iParentFolderId, $depth = '1'){
-    	if($depth == '1'){
-	    	$sQuery = "SELECT id from folders WHERE parent_folder_ids LIKE ?";
-	    	$aParams = array('%'.$iParentFolderId);
-    	}//else
+        $aParams = array($iParentFolderId);
 
-        $aFolderList = DBUtil::getResultArray(array($sQuery, $aParams));
+        if($depth == '1'){
+            // Get direct child folder id's
+            $sQuery = "SELECT id FROM folders WHERE parent_id = ?";
+        }else{
+            // Get all child folders
+            if($iParentFolderId == 1){
+                $sQuery = "SELECT id FROM folders WHERE parent_folder_ids LIKE '?' OR parent_folder_ids LIKE '?,%'";
+            }
+	    	$sQuery = "SELECT id FROM folders WHERE parent_folder_ids LIKE '%,?' OR parent_folder_ids LIKE '%,?,%'";
+	    	$aParams[] = $iParentFolderId;
+    	}
+
+        $aFolderList = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+
         if (PEAR::isError($aFolderList)) {
             // XXX: log error
             return false;
         }
-        if ($aFolderList) {
-            foreach($aFolderList as $folderElement){
-		        $folder_id = $folderElement['id'];
-		        $aFolderTransactions = array_merge($aFolderTransactions, KTrss::getFolderTransactions($folder_id));
-	    	}
-        }
-        if ($aFolderTransactions){
-            return $aFolderTransactions;
-        }
+        return $aFolderList;
     }
 
     function getChildrenDocumentTransactions($iParentFolderId, $depth = '1'){
-    	if($depth == '1'){
-    		$sQuery = "SELECT id from documents WHERE parent_folder_ids LIKE ? ";
-    		$aParams = array('%'.$iParentFolderId);
-    	}//else
+    	$aParams = array($iParentFolderId);
 
-        $aDocumentList = DBUtil::getResultArray(array($sQuery, $aParams));
+        if($depth == '1'){
+            // Get direct child document id's
+            $sQuery = "SELECT id FROM documents WHERE folder_id = ?";
+        }else{
+            // Get all documents in child folders
+            if($iParentFolderId == 1){
+                $sQuery = "SELECT id FROM documents WHERE parent_folder_ids LIKE '?' OR parent_folder_ids LIKE '?,%'";
+            }
+	    	$sQuery = "SELECT id FROM documents WHERE parent_folder_ids LIKE '%,?' OR parent_folder_ids LIKE '%,?,%'";
+	    	$aParams[] = $iParentFolderId;
+    	}
+
+        $aDocumentList = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 
         if (PEAR::isError($aDocumentList)) {
             // XXX: log error
             return false;
         }
+
         if ($aDocumentList) {
-            foreach($aDocumentList as $documentElement){
-		        $document_id = $documentElement['id'];
-		        $aDocumentTransactions = kt_array_merge($aDocumentTransactions, KTrss::getDocumentTransactions($document_id));
-	    	}
+            $aDocumentTransactions = KTrss::getDocumentTransactions($aDocumentList);
         }
         if ($aDocumentTransactions){
             return $aDocumentTransactions;
@@ -197,7 +229,8 @@ class KTrss{
     // get information on document
     function getOneDocument($iDocumentId, $iUserId){
         $aDData = KTrss::getDocumentData($iUserId, $iDocumentId);
-        $aDTransactions = KTrss::getDocumentTransactions($iDocumentId);
+        $aDTransactions = KTrss::getDocumentTransactions(array($iDocumentId));
+
         if($aDData){
         	$aDData['itemType'] = 'document';
 
@@ -219,22 +252,41 @@ class KTrss{
 
     // get information for folder
     function getOneFolder($iFolderId){
+    	$aFolder = array();
     	$aFData = KTrss::getFolderData($iFolderId);
-        $aFTransactions = kt_array_merge(KTrss::getChildrenFolderTransactions($iFolderId), KTrss::getFolderTransactions($iFolderId));
-        $aFTransactions = kt_array_merge($aFTransactions, KTrss::getChildrenDocumentTransactions($iFolderId));
 
-        $code = 'if (strtotime($a[datetime]) == strtotime($b[datetime])){
-	        return 0;
-	    }
-	    return (strtotime($a[datetime]) > strtotime($b[datetime])) ? -1 : 1;';
-
-		$compare = create_function('$a,$b', $code);
-
-        usort($aFTransactions, $compare);
-        for($i=0; $i<4; $i++){
-        	$aFTransactions_new[] = $aFTransactions[$i];
+    	if (PEAR::isError($aFData)) {
+            return false;
         }
-		$aFTransactions = $aFTransactions_new;
+
+    	// Get child folder ids
+    	$aFolderIds = KTrss::getChildrenFolderTransactions($iFolderId);
+
+    	// Get folder transactions
+    	$aFolderIds[] = $iFolderId;
+    	$aFTransactions = KTrss::getFolderTransactions($aFolderIds);
+
+    	if(PEAR::isError($aFTransactions)){
+    	    return false;
+    	}
+
+    	// Get child document transactions
+    	$aDocTransactions = KTrss::getChildrenDocumentTransactions($iFolderId);
+
+    	if(!empty($aDocTransactions)){
+            $aFTransactions = array_merge($aFTransactions, $aDocTransactions);
+
+            // Sort the child folder and document transactions by date and reduce to 4
+            $code = 'if (strtotime($a[datetime]) == strtotime($b[datetime])){
+    	        return 0;
+    	    }
+    	    return (strtotime($a[datetime]) > strtotime($b[datetime])) ? -1 : 1;';
+
+    		$compare = create_function('$a,$b', $code);
+
+            usort($aFTransactions, $compare);
+            $aFTransactions = array_slice($aFTransactions, 0, 4);
+    	}
 
         if($aFData){
         	$aFData['itemType'] = 'folder';
@@ -245,10 +297,6 @@ class KTrss{
 
         	$aFolder[] = $aFData;
         	$aFolder[] = $aFTransactions;
-        	$aFolderBox[] = $aFolder;
-        }
-    	if (PEAR::isError($aFData)) {
-            return false;
         }
         if ($aFolder){
             return $aFolder;
@@ -271,7 +319,15 @@ class KTrss{
     	// Build path to host
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
     	global $default;
-    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
+    	if(count($aPath) > 2){
+    		for($i = 0; $i < count($aPath)-1; $i++){
+    			$sSuffix .= $aPath[$i];
+    		}
+    		$sSuffix = $aPath[1]."/";
+    	}else{
+    		$sSuffix = '';
+    	}
+    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$sSuffix;
     	$feed = "<?xml version=\"1.0\"?>\n";
     	$feed .= "<rss version=\"2.0\">\n".
     			 "<channel>\n" .
@@ -331,7 +387,7 @@ class KTrss{
 											"&lt;td&gt;&lt;/td&gt;\n".
 										"&lt;/tr&gt;\n".
 									"&lt;/table&gt;&lt;br&gt;\n".
-									"Transaction Summary (Last 3)\n".
+									"Transaction Summary (Last 4)\n".
 									"&lt;hr&gt;\n".
 									"&lt;table width='100%'&gt;\n";
 										foreach($aItems[1] as $item){
@@ -618,38 +674,41 @@ class KTrss{
     }
 
     // get a listing of the latest 3 transactions for a document
-    function getDocumentTransactions($iDocumentId){
-    	$sQuery = "SELECT DT.datetime AS datetime, 'Document' AS type, DMV.name, D.full_path AS fullpath, DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment " .
-    			"FROM document_transactions AS DT INNER JOIN users AS U ON DT.user_id = U.id " .
-    			"INNER JOIN document_transaction_types_lookup AS DTT ON DTT.namespace = DT.transaction_namespace " .
-    			"LEFT JOIN document_metadata_version AS DMV ON DT.document_id = DMV.document_id " .
-    			"LEFT JOIN documents AS D ON DT.document_id = D.id " .
-    			"WHERE DT.document_id = ? " .
-    			"ORDER BY DT.datetime DESC " .
-    			"LIMIT 4";
+    function getDocumentTransactions($aDocumentIds){
+        $sDocumentIds = implode(', ', $aDocumentIds);
 
-    	$aParams = array($iDocumentId);
-    	$aDocumentTransactions = DBUtil::getResultArray(array($sQuery, $aParams));
-    	if($aDocumentTransactions){
-			return $aDocumentTransactions;
-        }
+    	$sQuery = "SELECT DT.datetime AS datetime, 'Document' AS type, DMV.name, D.full_path AS fullpath,
+    	   DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment
+    	   FROM document_transactions AS DT
+    	   INNER JOIN users AS U ON DT.user_id = U.id
+    	   INNER JOIN document_transaction_types_lookup AS DTT ON DTT.namespace = DT.transaction_namespace
+    	   LEFT JOIN documents AS D ON DT.document_id = D.id
+    	   LEFT JOIN document_metadata_version AS DMV ON D.metadata_version_id = DMV.id
+    	   WHERE DT.document_id IN ($sDocumentIds)
+    	   ORDER BY DT.datetime DESC
+    	   LIMIT 4";
+
+    	$aDocumentTransactions = DBUtil::getResultArray($sQuery);
+    	if(!PEAR::isError($aDocumentTransactions)){
+            return $aDocumentTransactions;
+    	}
     }
 
-    // Get a listing of the latest 3 transactions for a folder
-    function getFolderTransactions($iFolderId){
-    	$sQuery = "SELECT FT.datetime AS datetime, 'Folder' AS type, F.name, F.full_path AS fullpath, DTT.name AS transaction_name, U.name AS user_name, FT.comment AS comment " .
-    			"FROM folder_transactions AS FT LEFT JOIN users AS U ON FT.user_id = U.id " .
-    			"LEFT JOIN document_transaction_types_lookup AS DTT ON DTT.namespace = FT.transaction_namespace " .
-    			"LEFT JOIN folders AS F ON FT.folder_id = F.id " .
-    			"WHERE FT.folder_id = ? " .
-    			"ORDER BY FT.datetime DESC " .
-    			"LIMIT 4";
+    // Get a listing of the latest transactions for a folder and its child folders
+    function getFolderTransactions($aFolderIds){
+        $sFolderIds = implode(', ', $aFolderIds);
 
-    	$aParams = array($iFolderId);
-    	$aFolderTransactions = DBUtil::getResultArray(array($sQuery, $aParams));
-    	if($iFolderId){
-			return $aFolderTransactions;
-        }
+    	$sQuery = "SELECT FT.datetime AS datetime, 'Folder' AS type, F.name, F.full_path AS fullpath,
+    	   DTT.name AS transaction_name, U.name AS user_name, FT.comment AS comment
+    	   FROM folder_transactions AS FT LEFT JOIN users AS U ON FT.user_id = U.id
+    	   LEFT JOIN document_transaction_types_lookup AS DTT ON DTT.namespace = FT.transaction_namespace
+    	   LEFT JOIN folders AS F ON FT.folder_id = F.id
+    	   WHERE FT.folder_id IN ($sFolderIds)
+    	   ORDER BY FT.datetime DESC
+    	   LIMIT 4";
+
+    	$aFolderTransactions = DBUtil::getResultArray($sQuery);
+		return $aFolderTransactions;
     }
 }
 ?>
