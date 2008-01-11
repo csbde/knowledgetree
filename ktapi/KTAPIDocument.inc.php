@@ -1109,6 +1109,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function update_sysdata($sysdata)
 	{
+		global $default;
 		if (empty($sysdata))
 		{
 			return;
@@ -1182,10 +1183,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$value = DBUtil::getResultArray($sql);
 					if (PEAR::isError($value))
 					{
+						$default->log->error("Problem resolving mime type '$value' for document id $this->documentid. Reason: " . $value->getMessage());
 						return $value;
 					}
 					if (count($value) == 0)
 					{
+						$default->log->error("Problem resolving mime type '$value' for document id $this->documentid. None found.");
 						break;
 					}
 					$value = $value[0]['id'];
@@ -1198,6 +1201,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$userId = DBUtil::getResultArray($sql);
 					if (PEAR::isError($userId))
 					{
+						$default->log->error("Problem resolving user '$value' for document id $this->documentid. Reason: " . $userId->getMessage());
 						return $userId;
 					}
 					if (empty($userId))
@@ -1206,11 +1210,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 						$userId = DBUtil::getResultArray($sql);
 						if (PEAR::isError($userId))
 						{
+							$default->log->error("Problem resolving username '$value' for document id $this->documentid. Reason: " . $userId->getMessage());
 							return $userId;
 						}
 					}
 					if (empty($userId))
 					{
+						$default->log->error("Problem resolving user based on '$value' for document id $this->documentid. No user found");
 						// if not found, not much we can do
 						break;
 					}
@@ -1221,6 +1227,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$documents[$name] = $userId;
 					break;
 				default:
+					$default->log->error("Problem updating field '$name' with value '$value' for document id $this->documentid. Field is unknown.");
 					// TODO: we should do some logging
 					//return new PEAR_Error('Unexpected field: ' . $name);
 			}
@@ -1272,7 +1279,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (!is_null($indexContent))
 		{
 			$indexer = Indexer::get();
-			$indexer->updateDocumentIndex($this->documentid, $indexContent);
+			$result = $indexer->diagnose();
+			if (empty($result))
+			{
+				$indexer->updateDocumentIndex($this->documentid, $indexContent);
+			}
+			else
+			{
+				$default->log->error("Problem updating index with value '$value' for document id $this->documentid. Problem with indexer.");
+			}
 		}
 	}
 
