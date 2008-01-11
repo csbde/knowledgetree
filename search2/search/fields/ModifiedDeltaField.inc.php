@@ -58,7 +58,7 @@ class ModifiedDeltaField extends DBFieldExpr
 
     public function modifyValue($value)
     {
-		return "cast(cast($this->modifiedName as date) + $value as date)";
+    	return "adddate(cast($this->modifiedName as date), interval '$value' day)";
     }
 
     public function getInputRequirements()
