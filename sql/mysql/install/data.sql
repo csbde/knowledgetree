@@ -983,6 +983,9 @@ INSERT INTO `upgrades` VALUES (135, 'sql*3.4.0*0*3.4.0/upload_download.sql', 'Up
 INSERT INTO `upgrades` VALUES (136, 'upgrade*3.4.0*99*upgrade3.4.0', 'Upgrade from version 3.3.2 to 3.4.0', '2007-04-17 00:00:00', 1, 'upgrade*3.4.0*99*upgrade3.4.0');
 INSERT INTO `upgrades` VALUES (137, 'sql*3.4.5*0*3.4.5/plugin_helper.sql', 'Create the plugin helper table.', '2007-11-20 00:00:00', 1, 'upgrade*3.4.5*99*upgrade3.4.5');
 INSERT INTO `upgrades` VALUES (138, 'upgrade*3.4.5*99*upgrade3.4.5', 'Upgrade from version 3.4.0 to 3.4.5', '2007-11-20 00:00:00', 1, 'upgrade*3.4.5*99*upgrade3.4.5');
+INSERT INTO `upgrades` VALUES (139,'sql*3.4.6*0*3.4.6/remove_backslashes.sql','Remove backslashes.','2007-11-20 00:00:00',1,'upgrade*3.4.6*99*upgrade3.4.6');
+INSERT INTO `upgrades` VALUES (140,'upgrade*3.4.6*99*upgrade3.4.6','Upgrade from version 3.4.5 to 3.4.6','2007-11-20 00:00:00',1,'upgrade*3.4.6*99*upgrade3.4.6');
+
 
 -- 
 -- Dumping data for table `user_history`
@@ -1457,7 +1460,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (138);
+INSERT INTO `zseq_upgrades` VALUES (140);
 
 -- 
 -- Dumping data for table `zseq_user_history`
