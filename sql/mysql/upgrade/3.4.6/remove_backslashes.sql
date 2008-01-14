@@ -13,3 +13,7 @@ SET name = replace(replace(replace(name, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '
 UPDATE folders
 SET name = replace(replace(replace(name, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\''),
  description = replace(replace(replace(description, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\'');
+
+UPDATE discussion_comments
+SET subject = replace(replace(replace(subject, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\''),
+ body = replace(replace(replace(body, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\'');

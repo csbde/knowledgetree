@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -136,12 +136,12 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $fields[] = new KTStringWidget(_kt("Subject"), _kt("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
         $fields[] = new KTTextWidget(_kt("Body"), _kt("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
-	$bIncludeClosed = KTUtil::arrayGet($_REQUEST, 'fIncludeClosed', false);
+    	$bIncludeClosed = KTUtil::arrayGet($_REQUEST, 'fIncludeClosed', false);
 
-	$sQuery = sprintf('document_id = %d', $this->oDocument->getId());
-	if(!$bIncludeClosed) {
-	    $sQuery .= sprintf(' AND state != %d', DISCUSSION_CLOSED);
-	}
+    	$sQuery = sprintf('document_id = %d', $this->oDocument->getId());
+    	if(!$bIncludeClosed) {
+    	    $sQuery .= sprintf(' AND state != %d', DISCUSSION_CLOSED);
+    	}
 
         $threads = DiscussionThread::getList($sQuery);
         $sQuery2 = sprintf('document_id = %d AND state = %d', $this->oDocument->getId(), DISCUSSION_CLOSED);
@@ -183,8 +183,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => sanitizeForSQL($sSubject),
-            'body' => sanitizeForSQL(KTUtil::formatPlainText($sBody)),
+            'subject' => $sSubject,
+            'body' => KTUtil::formatPlainText($sBody),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -315,8 +315,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
             'userid' => $this->oUser->getId(),
-            'subject' => sanitizeForSQL($sSubject),
-            'body' => sanitizeForSQL(KTUtil::formatPlainText($sBody)),
+            'subject' => $sSubject,
+            'body' => KTUtil::formatPlainText($sBody),
         ));
         $aErrorOptions['message'] = _kt("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
@@ -378,7 +378,7 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         );
 
         $oPermission =& KTPermission::getByName('ktcore.permissions.workflow');
-	$sRedirectTo = implode('&', $aErrorOptions['redirect_to']);
+	    $sRedirectTo = implode('&', $aErrorOptions['redirect_to']);
 
         if (PEAR::isError($oPermission)) {
             $this->errorRedirectTo($sRedirectTo, _kt("Error getting permission"));
@@ -389,30 +389,30 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 	    exit(0);
         }
 
-	$iStateId = KTUtil::arrayGet($_REQUEST, 'state');
-	if(!in_array($iStateId, $this->aTransitions[$oThread->getState()])) {
-	    $this->errorRedirectTo($sRedirectTo, _kt("Invalid transition"));
-	    exit(0);
-	}
+    	$iStateId = KTUtil::arrayGet($_REQUEST, 'state');
+    	if(!in_array($iStateId, $this->aTransitions[$oThread->getState()])) {
+    	    $this->errorRedirectTo($sRedirectTo, _kt("Invalid transition"));
+    	    exit(0);
+    	}
 
-	$aErrorOptions['message'] = _kt("No reason provided");
-	$sReason = sanitizeForSQL($this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions));
+    	$aErrorOptions['message'] = _kt("No reason provided");
+    	$sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
 
-	if($iStateId > $oThread->getState()) {
-	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';
-	} else {
-	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_rollback';
-	}
+    	if($iStateId > $oThread->getState()) {
+    	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_approve';
+    	} else {
+    	    $sTransactionNamespace = 'ktcore.transactions.collaboration_step_rollback';
+    	}
 
         // Start the transaction comment creation
         $this->startTransaction();
 
         $oThread->setState($iStateId);
-	if($iStateId == DISCUSSION_CLOSED) {
-	    $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
-	} else if($iStateId == DISCUSSION_CONCLUSION) {
-	    $oThread->setCloseReason($sReason);
-	}
+    	if($iStateId == DISCUSSION_CLOSED) {
+    	    $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
+    	} else if($iStateId == DISCUSSION_CONCLUSION) {
+    	    $oThread->setCloseReason($sReason);
+    	}
 
         $oDocumentTransaction = new DocumentTransaction($this->oDocument, $sReason, $sTransactionNamespace);
         $oDocumentTransaction->create();
@@ -428,9 +428,6 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $this->successRedirectTo('viewThread', _kt("Thread state changed"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
         exit(0);
     }
-
-
-
 
     function &_buildStates(&$oThread) {
 	$iCurState = $oThread->getState();
@@ -450,3 +447,4 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
 
 
 }
+?>

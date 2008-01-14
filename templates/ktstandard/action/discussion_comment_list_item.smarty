@@ -7,14 +7,14 @@
 {/if}
 
   <dt>
-    <span class="subject">{$comment->getSubject()|sanitize_input}</span>
+    <span class="subject">{$comment->getSubject()}</span>
     by
     <span class="author">{$creator->getName()}</span>
     <span class="date">({$comment->getDate()})</span>
 
   </dt>
 
-  <dd>{$comment->getBody()|sanitize_input}</dd>
+  <dd>{$comment->getBody()}</dd>
 
 </dl>
 
