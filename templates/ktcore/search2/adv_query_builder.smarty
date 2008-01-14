@@ -325,11 +325,11 @@ function createFilesize(groupid, fid)
 
 function createDateDiff(groupid, fid)
 {
-	var html = "<table><tr><td width=\"140\"";
+	var html = "<table><tr><td width=\"140\">";
 
 	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"<\">{/literal}{i18n}less than{/i18n}{literal}";
-	html += "<option value=\">\">{/literal}{i18n}greater than{/i18n}{literal}";
+	html += "<option value=\"\<\">{/literal}{i18n}less than{/i18n}{literal}";
+	html += "<option value=\"\>\">{/literal}{i18n}greater than{/i18n}{literal}";
 	html += "</SELECT>"
 
 
