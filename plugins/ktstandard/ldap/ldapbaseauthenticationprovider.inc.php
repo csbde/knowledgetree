@@ -39,11 +39,11 @@ require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 
 class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
-    var $sName = "LDAP authentication provider";
-    var $sNamespace = "ktstandard.authentication.ldapprovider";
+    var $sName = 'LDAP authentication provider';
+    var $sNamespace = 'ktstandard.authentication.ldapprovider';
 
-    var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
-    var $aMembershipAttributes = array ("memberOf");
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
+    var $aMembershipAttributes = array ('memberOf');
 
     // {{{ KTLDAPBaseAuthenticationProvider
     function KTLDAPBaseAuthenticationProvider() {
@@ -281,10 +281,13 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $this->oValidator->notError($aResults);
 
         $sUserName = $aResults[$this->aAttributes[1]];
-        // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
-        // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
-        if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
-            $sUserName = strtolower($aResults[$this->aAttributes[2]]);
+
+        // If the SAMAccountName is empty then use the UserPrincipalName (UPN) to find the username.
+        // The UPN is normally the username @ the internet domain
+        if(empty($sUserName)) {
+            $sUpn = $aResults[$this->aAttributes[6]];
+            $aUpn = explode('@', $sUpn);
+            $sUserName = $aUpn[0];
         }
 
         $fields = array();
@@ -447,12 +450,12 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                     }
                     $aSearchDNs[$k] = "'".$aSearchResults[$k]['dn']."'";
                 }
-                
+
                 $sDNs = implode(',', $aSearchDNs);
                 $query = "SELECT id, authentication_details_s1 AS dn FROM users
                     WHERE authentication_details_s1 IN ($sDNs)";
                 $aCurUsers = DBUtil::getResultArray($query);
-                
+
                 // If the user has already been added, then remove from the list
                 if(!PEAR::isError($aCurUsers) && !empty($aCurUsers)){
                     foreach($aCurUsers as $item){
@@ -961,3 +964,4 @@ class KTLDAPBaseAuthenticator extends Authenticator {
     }
 }
 
+?>
