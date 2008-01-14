@@ -110,25 +110,18 @@
 	                            	/* 9  */	"{i18n}content and metadata{/i18n}",
 	                            	/* 10  */	"{i18n}metadata{/i18n}",
 	                            	/* 11  */	"{i18n}search{/i18n}",
-	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}",
+	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}"
 
 	                            	];
 
 	                            var aSavedSearches = [
-
 	                            {assign var=count value=0}
 									{foreach item=searchitem from=$savedSearches}
 									{if $count>0},{/if}
 	                            	{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
 	                            	{assign var=count value=$count+1}
 	                            	{/foreach}
-
-
-
-
 	                            ];
-
-
 	                            </script>
 	                            {literal}
 
