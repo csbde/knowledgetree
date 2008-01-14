@@ -73,7 +73,7 @@ class KTDisclaimersPlugin extends KTPlugin {
     	    $aHelp = KTHelp::getHelpInfo($sLocation);
 
     	    if(!PEAR::isError($aHelp) && strlen(trim($aHelp['body']))) {
-    	        $sDisclaimer = str_replace(array('\r','\n'), array('<br>','<br>'), $aHelp['body']);
+    	        $sDisclaimer = str_replace('\r\n', '<br>', $aHelp['body']);
     	    }
     	}
 
