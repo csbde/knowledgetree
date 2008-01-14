@@ -104,7 +104,13 @@ class KTPage {
         $aCSS = Array(
            "resources/css/kt-framing.css",
            "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css"
+           "resources/css/kt-headings.css",
+//           "thirdpartyjs/extjs/resources/css/xtheme-kt.css",
+           "thirdpartyjs/extjs/resources/css/ext-all.css",
+           "thirdpartyjs/extjs/examples/examples.css",
+ //          "thirdpartyjs/extjs/examples/menu/menu.css",
+           "thirdpartyjs/extjs/examples/lib.css",
+//           "skins/kt-toolbar.css"
         );
         $this->requireCSSResources($aCSS);
 
@@ -134,9 +140,12 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
         $aJS[] = 'resources/js/loader.js';
         $aJS[] = 'thirdpartyjs/yui/tools/tools.js';
-        $aJS[] = 'thirdpartyjs/yui/connection/connection.js';
+        $aJS[] = 'thirdpartyjs/yui/connection/connection-min.js';
 
-
+        $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
+        $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
+        $aJS[] = 'thirdpartyjs/extjs/examples/examples.js';
+        $aJS[] = 'resources/js/search2widget.js';
 
         //$aJS[] = 'thirdpartyjs/MochiKit/.js';
         //$aJS[] = 'resources/js/translate.js';
