@@ -71,7 +71,7 @@ function populateSavedSearch(menu)
 	{
 		return;
 	}
-	item = menu.addMenuItem({
+	var item = menu.addMenuItem({
 		text: sSearchTranslations[5], /*Saved Searches*/
 		menu:	{
 			items: []
@@ -95,15 +95,17 @@ function populateSavedSearch(menu)
 
 function createSearchBar(div, suffix)
 {
-	x = Ext.get(div);
+	var x = Ext.get(div);
 	if (x == null)
 	{
 		return;
 	}
 
+	var button;
+
 	if (suffix == 1)
 	{
-		menu = new Ext.menu.Menu({
+		var menu = new Ext.menu.Menu({
 			items: [
 				{
 					text: sSearchTranslations[6], /* Advanced Search */
@@ -137,6 +139,7 @@ function createSearchBar(div, suffix)
 			]
 		});
 
+
 		button = new Ext.Toolbar.MenuButton({
 			text: sSearchTranslations[11], /* search */
 			handler: onSearchClick,
@@ -145,49 +148,53 @@ function createSearchBar(div, suffix)
 			menu : menu
 		});
 
+		populateSavedSearch(menu);
+
+
+
 
 	}
 	else
 	{
 		menu = null;
-		button = new Ext.Toolbar.Button({
+		 button = new Ext.Toolbar.Button({
 			text: sSearchTranslations[11], /* search */
 			pressed: true,
 			handler: onSearchClick,
-			id: 'searchButton' + suffix,
+			id: 'searchButton' + suffix
 			//cls: 'x-btn-text-icon blist',
 
 		});
 	}
 
 	var tb = new Ext.Toolbar(div);
-	var el = Ext.get(div);
 
-	text_width = suffix==1?160:140;
 
-	txtField = new Ext.form.TextField({
+
+	tb.add(new Ext.form.TextField({
 			emptyText: sSearchTranslations[12], /* Enter search criteria... */
 			value: quickQuery,
 			selectOnFocus:true,
 			id:'txtSearchBar' + suffix,
-			width: text_width
-		});
-
-	tb.add(txtField, '-',button);
+			width: 110
+		}), button);
 
 	var map = new Ext.KeyMap("txtSearchBar" + suffix,
 				{
-					key: 13,
+					key: Ext.EventObject.ENTER,
 					fn: function() {
 						onSearchClick(Ext.get('txtSearchBar' + suffix));
 					}
 				});
 
+	var el = Ext.get(div);
 	if (suffix == 1)
 	{
-		populateSavedSearch(menu);
-
 		el.applyStyles('position:relative; top: -3px');
+	}
+	else
+	{
+		el.applyStyles('position:relative; left: 20px; top: 10px');
 	}
 
 	return menu;
