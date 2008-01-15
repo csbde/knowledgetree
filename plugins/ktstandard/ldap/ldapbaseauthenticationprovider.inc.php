@@ -33,11 +33,11 @@ require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 
 class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
-    var $sName = "LDAP authentication provider";
-    var $sNamespace = "ktstandard.authentication.ldapprovider";
+    var $sName = 'LDAP authentication provider';
+    var $sNamespace = 'ktstandard.authentication.ldapprovider';
 
-    var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
-    var $aMembershipAttributes = array ("memberOf");
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
+    var $aMembershipAttributes = array ('memberOf');
 
     // {{{ KTLDAPBaseAuthenticationProvider
     function KTLDAPBaseAuthenticationProvider() {
@@ -146,6 +146,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         if (empty($aConfig)) {
             $aConfig = array('serverport'=>389);
         }
+
         $aConfig['searchattributes'] = KTUtil::arrayGet($aConfig, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
         $aConfig['objectclasses'] = KTUtil::arrayGet($aConfig, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
         $fields = array();
@@ -210,6 +211,44 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         }
         $oSource->setConfig(serialize($aConfig));
         $res = $oSource->update();
+
+        //force a commit here to keep any data entered into the fields
+        //when redirected to the do_editSourceProvider function above the $oSource object will
+        //now contain the information entered by the user.
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+
+        $aErrorOptions = array(
+            'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $oSource->getId())),
+        );
+        $aErrorOptions['message'] = _kt("No server name provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'servername');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+        $aErrorOptions['message'] = _kt("No Base DN provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'basedn');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+        $aErrorOptions['message'] = _kt("No Search User provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchuser');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+        $aErrorOptions['message'] = _kt("No Search Password provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchpassword');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+        $aErrorOptions['message'] = _kt("No Search Attributes provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'searchattributes_nls');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+        $aErrorOptions['message'] = _kt("No Object Classes provided");
+        $sName = KTUtil::arrayGet($_REQUEST, 'objectclasses_nls');
+        $sName = $this->oValidator->validateString($sName, $aErrorOptions);
+
+
+
+
         $this->successRedirectTo('viewsource', _kt("Configuration updated"), 'source_id=' . $oSource->getId());
     }
     // }}}
@@ -236,10 +275,13 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $this->oValidator->notError($aResults);
 
         $sUserName = $aResults[$this->aAttributes[1]];
-        // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
-        // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
-        if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
-            $sUserName = strtolower($aResults[$this->aAttributes[2]]);
+
+        // If the SAMAccountName is empty then use the UserPrincipalName (UPN) to find the username.
+        // The UPN is normally the username @ the internet domain
+        if(empty($sUserName)) {
+            $sUpn = $aResults[$this->aAttributes[6]];
+            $aUpn = explode('@', $sUpn);
+            $sUserName = $aUpn[0];
         }
 
         $fields = array();
@@ -272,7 +314,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the user.')); }
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
         if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
-        
+
         $dupUser =& User::getByUserName($username);
         if(!PEAR::isError($dupUser)) {
             $this->errorRedirectToMain(_kt("A user with that username already exists"));
@@ -297,7 +339,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             "authenticationdetails2" => $samaccountname,
             "password" => "",
         ));
-        
+
         if (PEAR::isError($oUser) || ($oUser == false)) {
             $this->errorRedirectToMain(_kt("failed to create user") . ": " . $oUser->message);
             exit(0);
@@ -314,7 +356,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $oAuthenticator = $this->getAuthenticator($oSource);
         $aNames = array();
-        
+
         foreach ($aIds as $sId) {
             $aResults = $oAuthenticator->getUser($sId);
             $dn = $sId;
@@ -394,16 +436,33 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             }
 
             if (is_array($aSearchResults)) {
-                foreach (array_keys($aSearchResults) as $k) {
+                $aSearchResultsKeys = array_keys($aSearchResults);
+                $aSearchDNs = array();
+                foreach ($aSearchResultsKeys as $k) {
                     if (is_array($aSearchResults[$k]['cn'])) {
                         $aSearchResults[$k]['cn'] = $aSearchResults[$k]['cn'][0];
+                    }
+                    $aSearchDNs[$k] = "'".$aSearchResults[$k]['dn']."'";
+                }
+
+                $sDNs = implode(',', $aSearchDNs);
+                $query = "SELECT id, authentication_details_s1 AS dn FROM users
+                    WHERE authentication_details_s1 IN ($sDNs)";
+                $aCurUsers = DBUtil::getResultArray($query);
+
+                // If the user has already been added, then remove from the list
+                if(!PEAR::isError($aCurUsers) && !empty($aCurUsers)){
+                    foreach($aCurUsers as $item){
+                        $key = array_search("'".$item['dn']."'", $aSearchDNs);
+                        $aKeys[] = $key;
+                        unset($aSearchResults[$key]);
                     }
                 }
             }
         }
 
         $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
-        
+
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
@@ -445,7 +504,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             $oAuthenticator = $this->getAuthenticator($oSource);
             $aSearchResults = $oAuthenticator->searchGroups($name);
         }
-        
+
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
@@ -467,7 +526,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $aAttributes = $oAuthenticator->getGroup($id);
-        
+
         $fields = array();
         $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $aAttributes['dn'], $this->oPage);
         $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $aAttributes['cn'], $this->oPage, true);
@@ -565,10 +624,18 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
     }
 
     function _createSignupGroups($dn, $oSource) {
+
+    	$config = KTConfig::getSingleton();
+    	$createGroups = $config->get('ldapAuthentication/autoGroupCreation', true);
+    	if (!$createGroups)
+    	{
+    		return;
+    	}
+
         $oAuthenticator =& $this->getAuthenticator($oSource);
         $aGroupDNs = $oAuthenticator->getGroups($dn);
         if(PEAR::isError($aGroupDNs) || empty($aGroupDNs)) return;
-        
+
         foreach ($aGroupDNs as $sGroupDN) {
             $oGroup = Group::getByAuthenticationSourceAndDetails($oSource, $sGroupDN);
             if (PEAR::isError($oGroup)) {
@@ -630,7 +697,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         $this->bTls = KTUtil::arrayGet($aConfig, 'tls', false);
 
         if ($this->iLdapPort + 0 == 0) $this->iLdapPort=389; // some basic validation in case port is blank or 0
-    
+
         require_once('Net/LDAP.php');
         $config = array(
             'dn' => $this->sSearchUser,
@@ -672,7 +739,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
     }
 
     function checkSignupPassword($sUsername, $sPassword) {
-    
+
         if(empty($sPassword) || empty($sUsername)) {
             return false;
         }
@@ -891,3 +958,4 @@ class KTLDAPBaseAuthenticator extends Authenticator {
     }
 }
 
+?>

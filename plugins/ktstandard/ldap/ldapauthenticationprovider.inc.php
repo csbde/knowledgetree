@@ -35,19 +35,20 @@ require_once('Net/LDAP.php');
 require_once(KT_DIR . '/plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php');
 
 class KTLDAPAuthenticationProvider extends KTLDAPBaseAuthenticationProvider {
-    var $sNamespace = "ktstandard.authentication.ldapprovider";
+    var $sNamespace = 'ktstandard.authentication.ldapprovider';
 
-    var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
-    var $sAuthenticatorClass = "KTLDAPAuthenticator";
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
+    var $sAuthenticatorClass = 'KTLDAPAuthenticator';
 
     function KTLDAPAuthenticationProvider() {
-        $this->sName = _kt("LDAP authentication provider");
+        $this->sName = _kt('LDAP authentication provider');
         parent::KTLDAPBaseAuthenticationProvider();
     }
 
 }
 
 class KTLDAPAuthenticator extends KTLDAPBaseAuthenticator {
-    var $aAttributes = array ("cn", "uid", "givenname", "sn", "mail", "mobile");
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
 }
 
+?>

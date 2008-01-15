@@ -34,20 +34,21 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once(KT_DIR . '/plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php');
 
 class KTActiveDirectoryAuthenticationProvider extends KTLDAPBaseAuthenticationProvider {
-    var $sNamespace = "ktstandard.authentication.adprovider";      
+    var $sNamespace = 'ktstandard.authentication.adprovider';
 
     var $bGroupSource = true;
 
-    var $sAuthenticatorClass = "KTActiveDirectoryAuthenticator";
-    var $aAttributes = array ("cn", "samaccountname", "givenname", "sn", "userprincipalname", "telephonenumber");
+    var $sAuthenticatorClass = 'KTActiveDirectoryAuthenticator';
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'telephonenumber', 'userprincipalname');
 
     function KTActiveDirectoryAuthenticationProvider() {
-        $this->sName = _kt("ActiveDirectory authentication provider");
+        $this->sName = _kt('ActiveDirectory authentication provider');
         parent::KTLDAPBaseAuthenticationProvider();
     }
 }
 
 class KTActiveDirectoryAuthenticator extends KTLDAPBaseAuthenticator {
-    var $aAttributes = array ("cn", "samaccountname", "givenname", "sn", "userprincipalname", "telephonenumber");
+    var $aAttributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'telephonenumber', 'userprincipalname');
 }
 
+?>
