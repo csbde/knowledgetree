@@ -805,8 +805,8 @@ INSERT INTO `status_lookup` VALUES (5, 'Incomplete');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.4.5');
-INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.4.5');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '3.4.6');
+INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '3.4.6');
 
 -- 
 -- Dumping data for table `time_period`
