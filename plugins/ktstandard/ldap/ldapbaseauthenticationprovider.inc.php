@@ -741,6 +741,63 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             return $this->oLdap;
         }
         $res = $this->oLdap->reBind($dn, $sPassword);
+
+        if(PEAR::isError($res)){
+            // If bind returns false, do a search on the user using the SAMAccountName which should be unique
+            $res = $this->authenticateOnLDAPUsername($oUser, $sPassword);
+        }
+        return $res;
+    }
+
+    /**
+     * Search for the user on the username / sAMAccountName and authenticate.
+     * If authentication is successful then update the users authentication details (dn)
+     *
+     * @param object $oUser
+     * @param string $sPassword
+     * @return unknown
+     */
+    function authenticateOnLDAPUsername($oUser, $sPassword){
+
+        // Reconnect for the search.
+        $config = array(
+            'dn' => $this->sSearchUser,
+            'password' => $this->sSearchPassword,
+            'host' => $this->sLdapServer,
+            'base' => $this->sBaseDN,
+            'options' => array('LDAP_OPT_REFERRALS' => 0),
+            'tls' => $this->bTls,
+            'port'=> $this->iLdapPort
+        );
+
+        $this->oLdap =& Net_LDAP::connect($config);
+        if (PEAR::isError($this->oLdap)) {
+            return $res;
+        }
+
+        // Get the users sAMAccountName and search LDAP
+        $sName = $oUser->getAuthenticationDetails2();
+        if(empty($sName)){
+            return false;
+        }
+        $aResults = $this->searchUsers($sName);
+        if(PEAR::isError($aResults) || empty($aResults)){
+            return $aResults;
+        }
+        foreach($aResults as $aEntry){
+            if($aEntry['sAMAccountName'] == $sName){
+                $newDn = $aEntry['dn'];
+                break;
+            }
+        }
+
+        $res = $this->oLdap->reBind($newDn, $sPassword);
+
+        if(!PEAR::isError($res) && $res){
+            // If the connection is successful, update the users authentication details with the new dn.
+            $oUser->setAuthenticationDetails($newDn);
+            $oUser->update();
+        }
         return $res;
     }
 
@@ -850,6 +907,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         }
         $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
         $default->log->debug("Search filter is: " . $sFilter);
+
         $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
         if (PEAR::isError($oResult)) {
             return $oResult;
