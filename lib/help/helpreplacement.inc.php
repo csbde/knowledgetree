@@ -55,9 +55,9 @@ class KTHelpReplacement extends KTEntity {
     function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
     function getTitle() { return sanitizeForSQLtoHTML($this->sTitle); }
     function setID($iId) { $this->iId = $iId; }
-    function setName($sName) { $this->sName = sanitizeForSQL($sName); }
-    function setDescription($sDescription) { $this->sDescription = sanitizeForSQL($sDescription); }
-    function setTitle($sTitle) { $this->sTitle= sanitizeForSQL($sTitle); }
+    function setName($sName) { $this->sName = $sName; }
+    function setDescription($sDescription) { $this->sDescription = $sDescription; }
+    function setTitle($sTitle) { $this->sTitle= $sTitle; }
 
     function _table () {
         global $default;
