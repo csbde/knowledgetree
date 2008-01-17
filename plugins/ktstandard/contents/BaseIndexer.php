@@ -5,37 +5,37 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
 
-class KTBaseIndexerTrigger { 
+class KTBaseIndexerTrigger {
     /**
      * Which MIME types that this indexer acts upon.
      */
@@ -76,8 +76,8 @@ class KTBaseIndexerTrigger {
      * If it is false, the temporary file will be sent as the last
      * parameter.
      */
-    var $use_pipes = true; 
-    
+    var $use_pipes = true;
+
     /* return a diagnostic string _if_ there is something wrong.  NULL otherwise. */
     function getDiagnostic() {
         return null;
@@ -103,9 +103,10 @@ class KTBaseIndexerTrigger {
         }
 
         $oKTConfig =& KTConfig::getSingleton();
-        $sBasedir = $oKTConfig->get("urls/tmpDirectory");        
-        
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+
         $myfilename = tempnam($sBasedir, 'kt.' . $tempstub);
+
         if (OS_WINDOWS) {
             $intermediate = tempnam($sBasedir, 'kt.' . $tempstub);
             if (!@copy($sFile, $intermediate)) {
@@ -114,9 +115,9 @@ class KTBaseIndexerTrigger {
         } else {
             $intermediate = $sFile;
         }
-        
+
         $contents = $this->extract_contents($intermediate, $myfilename);
-        
+
         @unlink($myfilename);
         if (OS_WINDOWS) { @unlink($intermediate); }
         if (empty($contents)) {
@@ -127,14 +128,14 @@ class KTBaseIndexerTrigger {
             'document_text' => $contents,
         );
         $sTable = KTUtil::getTableName('document_text');
-        
+
         // clean up the document query "stuff".
         // FIXME this suggests that we should move the _old_ document_searchable_text across to the old-document's id if its a checkin.
         DBUtil::runQuery(array('DELETE FROM ' . $sTable . ' WHERE document_id = ?', array($this->oDocument->getId())));
         DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
 
     }
-    
+
     // handles certain, _very_ simple reader types.
     function extract_contents($sFilename, $sTempFilename) {
         $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
@@ -145,7 +146,7 @@ class KTBaseIndexerTrigger {
         $cmdline = array($sCommand);
         $cmdline = kt_array_merge($cmdline, $this->args);
         $cmdline[] = $sFilename;
-        
+
         $aOptions = array();
         $aOptions['exec_wait'] = 'true';
         if ($this->use_pipes) {
@@ -153,7 +154,12 @@ class KTBaseIndexerTrigger {
         } else {
             $cmdline[] = $sTempFilename;
         }
-        $aRet = KTUtil::pexec($cmdline, $aOptions);
+
+        if(OS_WINDOWS){
+            $aRet = KTUtil::winexec($cmdline, $aOptions);
+        }else{
+            $aRet = KTUtil::pexec($cmdline, $aOptions);
+        }
         $this->aCommandOutput = $aRet['out'];
         $contents = file_get_contents($sTempFilename);
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id:$
+ * $Id$
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
