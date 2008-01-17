@@ -57,6 +57,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
             $sDir = dirname(dirname($sCommand));
 	          putenv('HOME=' . $sDir);
 
+	        /*
             $cmdline = array($sCommand);
             $cmdline = kt_array_merge($cmdline, $this->args);
             $cmdline[] = $sFilename;
@@ -73,6 +74,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
             $this->aCommandOutput = 1;
             $contents = file_get_contents($sTempFilename);
             return $contents;
+            */
         }
         return parent::extract_contents($sFilename, $sTempFilename);
     }
