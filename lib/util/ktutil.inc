@@ -303,6 +303,49 @@ class KTUtil {
     }
     // }}}
 
+
+    // {{{ winexec
+    /**
+     * Execute a command on a windows platform.
+     */
+    function winexec($aCmd, $aOptions = null) {
+    	if (is_array($aCmd)) {
+    		$sCmd = KTUtil::safeShellString($aCmd);
+    	} else {
+    		$sCmd = $aCmd;
+    	}
+    	$sAppend = KTUtil::arrayGet($aOptions, 'append');
+    	if ($sAppend) {
+    		$sCmd .= " >> " . escapeshellarg($sAppend);
+    	}
+
+    	$sCmd = str_replace( '/','\\',$sCmd);
+
+    	// Set wait to true if the execute must wait for the script to complete before continuing
+    	$wait = true;
+        if(isset($aOptions['exec_wait']) && ($aOptions['exec_wait'] == 'false')){
+            $wait = false;
+        }
+
+    	// Iterate through the various execute functions till one works.
+  		$WshShell = new COM("WScript.Shell");
+        $res = $WshShell->Run($sCmd, 0, $wait);
+
+        if($res){
+            return $res;
+        }
+
+    	$sCmd = "start /b \"kt\" " . $sCmd;
+    	$fp = popen($sCmd, 'r');
+    	fclose($fp);
+
+    	if($wait){
+    	    sleep(1);
+    	}
+    	return 1;
+    }
+    // }}}
+
     // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
         if (file_exists($sDst)) {
