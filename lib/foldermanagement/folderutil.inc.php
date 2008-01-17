@@ -51,8 +51,8 @@ class KTFolderUtil {
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oFolder =& Folder::createFromArray(array(
-        'name' => sanitizeForSQL($sFolderName),
-        'description' => sanitizeForSQL($sFolderName),
+        'name' => ($sFolderName),
+        'description' => ($sFolderName),
         'parentid' => $oParentFolder->getID(),
         'creatorid' => $oUser->getID(),
         ));
