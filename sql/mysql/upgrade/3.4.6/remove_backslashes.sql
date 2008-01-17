@@ -1,7 +1,3 @@
-/* Script to remove back slashes from ' and " and \
- * From the welcome dashlet, folder names and document titles.
- */
-
 UPDATE help_replacement
 SET description = replace(replace(replace(description, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\''),
  title = replace(replace(replace(title, '\\\\', '\\'), '\\\"', '\"'), '\\\'', '\'');
