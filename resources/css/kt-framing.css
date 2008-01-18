@@ -553,8 +553,10 @@ a.main_nav_item {
     top: 0;
     z-index: 1;
     width:auto;
-    padding: 0 2em 1em 0;
-    overflow: auto;
+    /*padding: 0 2em 1em 0; 
+    overflow: auto;*/ 
+    padding: 0.25em 2em 0em 0em; 
+    overflow: hidden; 
     min-height: 600px;
 }
 
