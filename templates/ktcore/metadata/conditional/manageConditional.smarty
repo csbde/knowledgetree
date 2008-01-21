@@ -1,16 +1,11 @@
 <h2>{i18n}Manage conditional fieldset{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}Conditional fieldsets allow you to restrict the options
-a user has for values in some fields based on the values in other fields.  There
-are two kinds of conditional fieldsets:  <strong>Simple</strong> and <strong>Complex</strong>
-.  Simple fieldsets should be sufficient for most things:  they allow you to say that 
+a user has for values in some fields based on the values in other fields, allowing you to say that 
 the values of one field are restricted to a certain subset of values if another field
 has a specific value.  For example, you could say that if the field "Street" is "Jeffrey", 
 then the field "Residents" must be one of "Jones","Smith" or "Friedman".{/i18n}</p>
 
-<p class="descriptiveText">{i18n}Complex fieldsets allow you to give far more detailed structure to
-your information:  The value of "Residents" can depend not only on "Street", but on
-how the user was allowed to select the specific street (given another field).{/i18n}</p>
 
 {* don't show warnings until the basics are done. *}
 
@@ -42,29 +37,6 @@ to complete{/i18n}: {$sIncomplete}</span>
 
 <h2>{i18n}Conditional type{/i18n}</h2>
 
-{if $oFieldset->getIsComplex()}
-<p>{i18n}The fieldset is currently designated as <strong>Complex</strong>{/i18n}</p> 
-
-{if ($oMasterField && empty($free_fields))}<p><a
-class="ktActionLink ktEdit"
-href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
-complex conditional{/i18n}</a></p>{/if}
-
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="changeToSimple" />
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
-<input type="submit" name="submit" value="{i18n}Change to simple{/i18n}" />
-</form>
-
-{else}
-
-<p>{i18n}The fieldset is currently designated as <strong>Simple</strong>{/i18n}</p> 
-
-{if ($oMasterField && empty($free_fields))}<p><a
-class="ktActionLink ktEdit"
-href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
-</p>
-{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToComplex" />
