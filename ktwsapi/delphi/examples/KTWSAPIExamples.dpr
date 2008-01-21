@@ -1,5 +1,5 @@
 {
-  Copyright (c) 2007, The Jam Warehouse Software (Pty) Ltd.
+  Copyright (c) 2008, The Jam Warehouse Software (Pty) Ltd.
 
   All rights reserved.
 
@@ -31,7 +31,7 @@
 {*
   This is a Delphi port of the php api for KnowledgeTree WebService.
 
-  @Author Bjarte Kalstveit Vebjørnsen <bjarte@macaos.com>
+  @Author Bjarte Kalstveit Vebjï¿½rnsen <bjarte@macaos.com>
   @Version 1.0  BKV 24.09.2007  Initial revision
 *}
 
