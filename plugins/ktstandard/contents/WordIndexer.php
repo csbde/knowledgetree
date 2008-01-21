@@ -2,35 +2,29 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
- * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * The contents of this file are subject to the KnowledgeTree Public
+ * License Version 1.1.2 ("License"); You may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.knowledgetree.com/KPL
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 3 as published by the
- * Free Software Foundation.
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * See the License for the specific language governing rights and
+ * limitations under the License.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
+ * All copies of the Covered Code must include on each user interface screen:
+ *    (i) the "Powered by KnowledgeTree" logo and
+ *    (ii) the KnowledgeTree copyright notice
+ * in the same form as they appear in the distribution.  See the License for
+ * requirements.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * The Original Code is: KnowledgeTree Open Source
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the
- * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original
- * copyright notice.
+ * The Initial Developer of the Original Code is The Jam Warehouse Software
+ * (Pty) Ltd, trading as KnowledgeTree.
+ * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
+ * (C) 2007 The Jam Warehouse Software (Pty) Ltd;
+ * All Rights Reserved.
  * Contributor( s): ______________________________________
  *
  */
@@ -54,7 +48,7 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
         }
 	  putenv('LANG=en_US.UTF-8');
 
-	  $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
+	    $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
         if (empty($sCommand)) {
             return false;
         }
@@ -62,25 +56,6 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
         if (OS_WINDOWS) {
             $sDir = dirname(dirname($sCommand));
 	        putenv('HOME=' . $sDir);
-
-	        /*
-            $cmdline = array($sCommand);
-            $cmdline = kt_array_merge($cmdline, $this->args);
-            $cmdline[] = $sFilename;
-
-            $sCmd = KTUtil::safeShellString($cmdline);
-        	$sCmd .= " >> " . escapeshellarg($sTempFilename);
-
-        	$sCmd = str_replace( '/','\\',$sCmd);
-
-            $sCmd = "start /b \"kt\" " . $sCmd;
-
-            pclose(popen($sCmd, 'r'));
-
-            $this->aCommandOutput = 1;
-            $contents = file_get_contents($sTempFilename);
-            return $contents;
-            */
         }
         return parent::extract_contents($sFilename, $sTempFilename);
     }
