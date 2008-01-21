@@ -206,11 +206,9 @@ class KTUtil {
     	$aOutput = array();
     	$iRet = '';
 
-      if (OS_WINDOWS){
-        $wait = false;
-        if(isset($aOptions['exec_wait']) && ($aOptions['exec_wait'] == 'true')){
-            $wait = true;
-        }
+    	if(OS_WINDOWS){
+    	    $sCmd = 'call '.$sCmd;
+    	}
       
   			$WshShell = new COM("WScript.Shell");
         $res = $WshShell->Run($sCmd, 0, $wait);

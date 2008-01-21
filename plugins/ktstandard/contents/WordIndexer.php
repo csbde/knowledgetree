@@ -56,25 +56,6 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
         if (OS_WINDOWS) {	
             $sDir = dirname(dirname($sCommand));
 	          putenv('HOME=' . $sDir);
-
-	        /*
-            $cmdline = array($sCommand);
-            $cmdline = kt_array_merge($cmdline, $this->args);
-            $cmdline[] = $sFilename;
-            
-            $sCmd = KTUtil::safeShellString($cmdline);
-        	$sCmd .= " >> " . escapeshellarg($sTempFilename);
-        	
-        	$sCmd = str_replace( '/','\\',$sCmd);
-        	
-            $sCmd = "start /b \"kt\" " . $sCmd;
-            
-            pclose(popen($sCmd, 'r'));
-        	
-            $this->aCommandOutput = 1;
-            $contents = file_get_contents($sTempFilename);
-            return $contents;
-            */
         }
         return parent::extract_contents($sFilename, $sTempFilename);
     }

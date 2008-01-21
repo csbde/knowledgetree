@@ -148,11 +148,8 @@ class KTBaseIndexerTrigger {
             $cmdline[] = $sTempFilename;
         }
 
-        if(OS_WINDOWS){
-            $aRet = KTUtil::winexec($cmdline, $aOptions);
-        }else{
-            $aRet = KTUtil::pexec($cmdline, $aOptions);
-        }
+        $aRet = KTUtil::pexec($cmdline, $aOptions);
+
         $this->aCommandOutput = $aRet['out'];
         $contents = file_get_contents($sTempFilename);
 
