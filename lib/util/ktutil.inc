@@ -209,15 +209,7 @@ class KTUtil {
     	if(OS_WINDOWS){
     	    $sCmd = 'call '.$sCmd;
     	}
-      
-  			$WshShell = new COM("WScript.Shell");
-        $res = $WshShell->Run($sCmd, 0, $wait);
-        
-        $iRet = 0;
-        $aOutput = array($res);
-  		}else{
-  			 exec($sCmd, $aOutput, $iRet);
-  		}
+	    exec($sCmd, $aOutput, $iRet);
 
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
