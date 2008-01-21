@@ -283,11 +283,12 @@ class KTUtil {
     	if ($sAppend) {
     		$sCmd .= " >> " . escapeshellarg($sAppend);
     	}
-    	if (OS_WINDOWS) {
-    		$sCmd = "start /b \"kt\" " . $sCmd;
-    	}
+
     	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
     	if ($sPopen) {
+    	    if (OS_WINDOWS) {
+                $sCmd = "start /b \"kt\" " . $sCmd;
+    	    }
     		return popen($sCmd, $sPopen);
     	}
 
@@ -296,6 +297,9 @@ class KTUtil {
     	$aOutput = array();
     	$iRet = '';
 
+    	if(OS_WINDOWS){
+    	    $sCmd = 'call '.$sCmd;
+    	}
     	exec($sCmd, $aOutput, $iRet);
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
