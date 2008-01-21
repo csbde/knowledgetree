@@ -29,30 +29,6 @@ values in the other fields.  Only <strong>lookup</strong> fields can be added to
 </p>
 
 
-<p>
-    <a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=renameBehaviours{/addQS}">{i18n}Rename Behaviours{/i18n}</a>
-    <a href="{addQS context=$context}fieldset_action=renameBehaviours{/addQS}">{i18n}Rename Behaviours{/i18n}</a>
-</p>
-
-{if $oFieldset->getIsComplex()}
-<p>{i18n}The fieldset is currently designated as <strong>Complex</strong>.{/i18n} {i18n}Changing the conditional type set will remove all existing field
-ordering!{/i18n}</p> 
-
-
-<p><a href="{addQS context=$context}fieldset_action=changeToSimple{/addQS}"
-   class="ktAction ktActionDescribed ktEdit">{i18n}Change to simple{/i18n}</a>
-<a href="{addQS context=$context}fieldset_action=changeToSimple{/addQS}">{i18n}Change to simple{/i18n}</a></p>
-
-{else}
-
-<p class="descriptiveText important">{i18n}The fieldset is currently designated as <strong>Simple</strong>.{/i18n}</p> 
-
-<p><a href="{addQS context=$context}fieldset_action=changeToComplex{/addQS}"
-   class="ktAction ktActionDescribed ktEdit">{i18n}Change to complex{/i18n}</a>
-<a href="{addQS context=$context}fieldset_action=changeToComplex{/addQS}">{i18n}Change to complex{/i18n}</a></p>
-
-{/if}
-
 </fieldset>
 
 <br />

@@ -181,6 +181,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');
         $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');
 
+        $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
+                
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
