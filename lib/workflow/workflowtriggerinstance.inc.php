@@ -7,7 +7,7 @@
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the

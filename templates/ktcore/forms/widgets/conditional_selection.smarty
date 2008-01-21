@@ -1,0 +1,28 @@
+{if $master}
+<script type="text/javascript">
+var lookups_{$masterid} = {$lookups};
+var connections_{$masterid} = {$connections};
+</script>
+{/if}
+
+
+{if empty($vocab)}
+    <div class="ktInfoMessage"><span>{$context->sEmptyMessage}</span></div>
+{else}
+  <select name="{$name}" class="is_conditional_{$masterid}{if $master} is_master{/if}"
+    id="field_{$field}"
+    >
+    {if $options.initial_string}
+    <option value="">{$options.initial_string}</option>
+    {/if}    
+  {foreach item=lookup key=lookup_key from=$vocab}
+      {if is_array($lookup)}
+           <option value="{$lookup_key}" id="lookup_{$lookup.1}"
+	       {if ($value == $lookup_key)} selected="selected"{/if}>{$lookup.0}</option>
+      {else}
+           <option value="{$lookup_key}" 
+	       {if ($value == $lookup_key)} selected="selected"{/if}>{$lookup}</option>
+      {/if}
+  {/foreach}
+  </select>
+{/if}

@@ -4,7 +4,7 @@
  *    
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -767,4 +767,160 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
 }
 
 
-?>
+
+// based on the selection widget, this carries a mapping array,
+// which is converted to JSON and inserted into the output. javascript
+// enforces the various relationships between conditional fields.
+
+class KTCoreConditionalSelectionWidget extends KTCoreSelectionWidget {
+    var $sNamespace = 'ktcore.widgets.conditionalselection';
+
+    var $sIdMethod;
+    var $sLabelMethod;
+
+    var $bIsMaster;
+    var $bMappings;
+    
+    function _getFieldIdForMetadataId($iMetadata) {
+	$sTable = 'metadata_lookup';
+	$sQuery = "SELECT document_field_id FROM " . $sTable . " WHERE id = ?";
+	$aParams = array($iMetadata);
+	
+	$res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'document_field_id');
+	if (PEAR::isError($res)) {
+	    return false;
+	}
+	return $res;
+    }
+	    
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) { 
+            return $res;
+        }
+        
+        $this->sIdMethod = KTUtil::arrayGet($aOptions, 'id_method', 'getId');
+        $this->sLabelMethod = KTUtil::arrayGet($aOptions, 'label_method');
+        if (empty($this->sLabelMethod)) {
+            return PEAR::raiseError(_kt('No label method specified.'));
+        }
+        $existing_entities = (array) KTUtil::arrayGet($aOptions, 'existing_entities');
+        
+        if (empty($this->value)) {
+            $this->value = array();
+            foreach ($existing_entities as $oEntity) {
+                $this->value[] = call_user_func(array(&$oEntity, $this->sIdMethod));
+            }
+        }
+
+	$this->iField = KTUtil::arrayGet($aOptions, 'field');
+	$this->iMasterId = KTUtil::arrayGet($aOptions, 'masterid');
+
+	// if we're the master, we have to build the dependancy array and store it as JSON
+	// also, include the javascript
+	if(KTUtil::arrayGet($aOptions, 'master', false)) {
+	    $this->bMaster = true;
+	    $this->aJavascript = array('resources/js/conditional_selection.js');
+
+	    $oFieldset = KTFieldset::get(KTUtil::arrayGet($aOptions, 'fieldset'));
+	    $aLookups = array();
+	    $aConnections = array();
+
+	    foreach($oFieldset->getFields() as $oField) {
+		$c = array();
+	      
+		foreach($oField->getEnabledValues() as $oMetadata) {
+		    $a = array();
+		    // print '<pre>';
+
+		    $nvals = KTMetadataUtil::getNextValuesForLookup($oMetadata->getId());
+		    if($nvals) {
+			foreach($nvals as $i=>$aVals) {
+			    $a = array_merge($a, $aVals);
+			    
+			    foreach($aVals as $id) {
+			      $field = $this->_getFieldIdForMetadataId($id);
+			      // print 'id ' . $id . ' is in field ' . $field . "<br/>";
+			      if(!in_array($field, $c)) {
+				$c[] = $field;
+			      }
+			    }
+			}
+		    }
+
+		    $aLookups[$oMetadata->getId()] = $a;
+		}
+		$aConnections[$oField->getId()] = $c;
+	    }
+	    
+	    //exit(0);
+
+	    $oJSON = new Services_JSON;
+	    $this->sLookupsJSON = $oJSON->encode($aLookups);
+	    $this->sConnectionsJSON = $oJSON->encode($aConnections);
+	}
+		
+
+        $new_vocab = array();
+        foreach ($this->aVocab as $oEntity) {
+            $id = call_user_func(array(&$oEntity, $this->sIdMethod));
+            $label = call_user_func(array(&$oEntity, $this->sLabelMethod));
+            $new_vocab[$id] = array($label, $oEntity->getId());
+        }
+        $this->aVocab = $new_vocab;
+    }
+
+    function getWidget() {
+        $bHasErrors = false;       
+        if (count($this->aErrors) != 0) { $bHasErrors = true; }
+
+	$this->sTemplate = 'ktcore/forms/widgets/conditional_selection';        
+        
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
+
+        $unselected = KTUtil::arrayGet($this->aOptions, 'unselected_label');
+        if (!empty($unselected)) {
+            $vocab = array();
+            $vocab[] = $unselected;
+            foreach ($this->aVocab as $k => $v) {
+                $vocab[$k] = $v;
+            }
+            $this->aVocab = $vocab;
+            if (empty($this->value)) {
+                $this->value = '0';
+            }
+        }
+
+        if ($this->bMulti) {
+            $this->_valuesearch = array();
+            $value = (array) $this->value;
+            foreach ($value as $v) {
+                $this->_valuesearch[$v] = true;
+            }
+        }
+        
+        $aTemplateData = array(
+            'context' => $this,
+            'name' => $this->sName,
+            'has_id' => ($this->sId !== null),
+            'id' => $this->sId,
+            'has_value' => ($this->value !== null),
+            'value' => $this->value,
+            'options' => $this->aOptions,
+            'vocab' => $this->aVocab,
+	    'lookups' => $this->sLookupsJSON,
+	    'connections' => $this->sConnectionsJSON,
+	    'master' => $this->bMaster,
+	    'masterid' => $this->iMasterId,
+	    'field' => $this->iField,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+
+
+}
+
+

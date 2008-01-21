@@ -5,7 +5,7 @@
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -413,6 +413,16 @@ ordering!");
         $data = $res['results'];
 
         $oField = $data['master_field'];
+
+	// remove all existing behaviors
+	$aFieldIds = array();
+	foreach($this->oFieldset->getFields() as $i) {
+	    $aFieldIds[] = $i->getId();
+	}
+
+	$sTable = KTUtil::getTableName('field_behaviours');
+	$aQuery = array("DELETE FROM $sTable WHERE field_id IN (" . DBUtil::paramArray($aFieldIds) . ")", $aFieldIds);
+	$res = DBUtil::runQuery($aQuery);		
 
         $res = KTMetadataUtil::removeFieldOrdering($this->oFieldset);
         $this->oFieldset->setMasterFieldId($oField->getId());

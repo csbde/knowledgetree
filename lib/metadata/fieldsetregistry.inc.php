@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -97,12 +97,53 @@ class KTFieldsetRegistry {
 
         // FIXME delegate.
         $oFieldset =& $fieldsetOrType;
-        if ($oFieldset->getIsConditional()) {
-            return PEAR::raiseError(_kt("Conditional Fieldsets are not yet implemented"));
-        } else {
+
             $widgets = array();
             $fields = $oFieldset->getFields();
 
+	if ($oFieldset->getIsConditional()) {
+	    $iMasterId = $oFieldset->getMasterFieldId();
+
+	    $oMasterField = DocumentField::get($iMasterId);
+	    
+	    $newfields = array();
+	    $newfields[] = $oMasterField;
+	    foreach($fields as $oField) {
+		if($oField->getId() != $iMasterId) {
+		    $newfields[] = $oField;
+		}
+	    }
+	    
+            foreach ($newfields as $oField) {
+                $fname = 'metadata_' . $oField->getId(); 
+                $value = null;
+                
+                if (!is_null($oDocument)) {
+                    $oFL = DocumentFieldLink::getByDocumentAndField($oDocument, $oField);
+                    if (!is_null($oFL) && (!PEAR::isError($oFL))) {
+                        $value = $oFL->getValue();
+                    }
+                }
+                
+		$widgets[] = $this->oWF->get('ktcore.widgets.conditionalselection', 
+					     array(
+						   'label' => $oField->getName(),
+						   'required' => $oField->getIsMandatory(),
+						   'name' => $fname,
+						   'value' => $value,
+						   'description' => $oField->getDescription(),
+						   'vocab' => MetaData::getEnabledByDocumentField($oField),
+						   'id_method' => 'getName',
+						   'label_method' => 'getName',
+						   'unselected_label' => _kt("No selection."),
+						   'simple_select' => false,
+						   'master' => ($oField->getId() == $iMasterId),
+						   'masterid' => $iMasterId,
+						   'fieldset' => $oFieldset->getId(),
+						   'field' => $oField->getId(),
+						   ));
+            }
+        } else {
             foreach ($fields as $oField) {
 
                 $fname = 'metadata_' . $oField->getId();
@@ -165,13 +206,17 @@ class KTFieldsetRegistry {
                 }
             }
 
-            return array($this->oWF->get('ktcore.widgets.fieldset',array(
+
+        }
+	
+	return array($this->oWF->get('ktcore.widgets.fieldset',
+				     array(
                 'label' => $oFieldset->getName(),
                 'description' => $oFieldset->getDescription(),
                 'name' => $sContainerName,
                 'widgets' => $widgets,
             )));
-        }
+	
     }
 
 
@@ -184,7 +229,26 @@ class KTFieldsetRegistry {
         // FIXME delegate.
         $oFieldset =& $fieldsetOrType;
         if ($oFieldset->getIsConditional()) {
-            return PEAR::raiseError(_kt("Conditional Fieldsets are not yet implemented"));
+            $validators = array();
+            $fields = $oFieldset->getFields();
+            
+            if ($bIncludeAuto) {
+                $widgets = $this->widgetsForFieldset($oFieldset, $sContainerName, $sDocument);
+                $validators = kt_array_merge($validators, $widgets[0]->getValidators());
+            }
+                    
+            foreach ($fields as $oField) {
+                $fname = 'metadata_' . $oField->getId();
+
+		// Change back to 'membership'
+		$validators[] = $this->oVF->get('ktcore.validators.membership',
+						array(
+						      'test' => $fname,
+						      'output' => $fname,
+						      'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+						      'id_method' => 'getName',
+						      ));
+	    }
         } else {
             $validators = array();
             $fields = $oFieldset->getFields();
@@ -243,13 +307,14 @@ class KTFieldsetRegistry {
                 }
             }
 
-            return array($this->oVF->get('ktcore.validators.fieldset',array(
+        }
+	return array($this->oVF->get('ktcore.validators.fieldset',
+				     array(
                 'test' => $sContainerName,
                 'output' => $sContainerName,
                 'validators' => $validators,
             )));
         }
     }
-}
 
 ?>

@@ -6,7 +6,7 @@
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2007 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -283,11 +283,12 @@ class KTUtil {
     	if ($sAppend) {
     		$sCmd .= " >> " . escapeshellarg($sAppend);
     	}
-    	if (OS_WINDOWS) {
-    		$sCmd = "start /b \"kt\" " . $sCmd;
-    	}
+
     	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
     	if ($sPopen) {
+    	    if (OS_WINDOWS) {
+                $sCmd = "start /b \"kt\" " . $sCmd;
+    	    }
     		return popen($sCmd, $sPopen);
     	}
 
@@ -296,6 +297,9 @@ class KTUtil {
     	$aOutput = array();
     	$iRet = '';
 
+    	if(OS_WINDOWS){
+    	    $sCmd = 'call '.$sCmd;
+    	}
     	exec($sCmd, $aOutput, $iRet);
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;

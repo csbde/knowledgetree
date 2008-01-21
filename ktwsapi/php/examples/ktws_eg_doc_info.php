@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007, The Jam Warehouse Software (Pty) Ltd.
+ * Copyright (c) 2008, The Jam Warehouse Software (Pty) Ltd.
  *
  * All rights reserved.
  *
