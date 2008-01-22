@@ -1,0 +1,15 @@
+<h2>{i18n}Reschedule All Documents{/i18n}</h2>
+<p class="descriptiveText">{i18n}Reschedule all documents for indexing{/i18n}</p>
+<p class="descriptiveText">{i18n}Please note that rescheduling all documents may take a long time, depending on the size if the repository{/i18n}</h3>
+
+<form name="rescheduleAllDocs" action="{$smarty.server.PHP_SELF}" method="POST">
+<br>
+{if $rescheduleDone == true}
+<p>Documents Rescheduled</p>
+<p>You can view the schedule queue <a href=admin.php?kt_path_info=search/pendingdocuments>here</a></p>
+<br>
+{/if}
+<input type="submit" name="Reschedule" value="{i18n}Reschedule All{/i18n}" />
+<input type="hidden" name="rescheduleValue" id="rescheduleValue" value="reschedule" />
+
+</form>

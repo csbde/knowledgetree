@@ -207,6 +207,44 @@ class KTMime {
     function stripAllButExtension($sFileName) {
         return strtolower(substr($sFileName, strrpos($sFileName, ".")+1, strlen($sFileName) - strrpos($sFileName, ".")));
     }
+    
+    /**
+     * getAllMimeTypesInformation is a staic function used to get a fuller set of 
+     * information on the mime types held in the database.
+     * 
+     */    
+    function getAllMimeTypesInformation()
+    {
+    	$sTable = KTUtil::getTableName('mimetypes');
+    	$aQuery = array('SELECT MT.id, MT.filetypes, MT.mimetypes, MT.icon_path, MT.friendly_name, ME.name as extractor FROM '
+    	. $sTable .' MT LEFT JOIN mime_extractors ME ON(MT.extractor_id = ME.id) ORDER BY MT.filetypes', array());
+        $res = DBUtil::getResultArray($aQuery);
+		return $res;
+    }
+    
+    /**
+     * get all information on all the extractors in the database
+     * 
+     */
+    function getMimeExtractorInformation()
+    {
+    	$aQuery = array('SELECT id, name, active FROM mime_extractors ORDER BY name', array());
+        $res = DBUtil::getResultArray($aQuery);
+		return $res;
+    }
+    
+    /**
+     *give the mimetype name and get the friendly names and the extensions
+     *
+     */ 
+    function getFriendlyNameAndExtension($sMimeType)
+    {
+    	$sTable = KTUtil::getTableName('mimetypes');
+        $sQuery = "SELECT friendly_name, filetypes FROM " . $sTable . " WHERE mimetypes = ?";
+        $aQuery = array($sQuery, array($sMimeType));
+        $res = DBUtil::getResultArray($aQuery);
+        return $res;
+    }
 }
 
 $_KT_icon_path_cache = array();
