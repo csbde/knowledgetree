@@ -76,10 +76,10 @@ class Folder extends KTEntity {
     // }}}
 
 	function getID() { return $this->iId; }
-	function getName() { return sanitizeForSQLtoHTML($this->sName); }
-	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
-	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
-	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
+	function getName() { return ($this->sName); }
+	function setName($sNewValue) { $this->sName = ($sNewValue); }
+	function getDescription() { return ($this->sDescription); }
+	function setDescription($sNewValue) { $this->sDescription = ($sNewValue); }
 	function getParentID() { return $this->iParentID; }
 	function setParentID($iNewValue) { $this->iParentID = $iNewValue; }
 	function getCreatorID() { return $this->iCreatorID; }
