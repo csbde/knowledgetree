@@ -892,6 +892,7 @@ CREATE TABLE `index_files` (
   `indexdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `processdate` datetime default NULL,
   `what` char(1) default NULL,
+  `status_msg` mediumtext NULL,
   PRIMARY KEY  (`document_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `index_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
