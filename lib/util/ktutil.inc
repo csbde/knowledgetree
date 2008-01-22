@@ -185,7 +185,7 @@ class KTUtil {
     	} else {
     		$sCmd = $aCmd;
     	}
-    	
+
     	$sAppend = KTUtil::arrayGet($aOptions, 'append');
     	if ($sAppend) {
     		$sCmd .= " >> " . escapeshellarg($sAppend);
@@ -207,16 +207,26 @@ class KTUtil {
     	$iRet = '';
 
     	if(OS_WINDOWS){
-    	    $sCmd = 'call '.$sCmd;
+    	    $wait = false;
+            if(isset($aOptions['exec_wait']) && ($aOptions['exec_wait'] == 'true')){
+                $wait = true;
+            }
+
+            $WshShell = new COM("WScript.Shell");
+            $res = $WshShell->Run($sCmd, 0, $wait);
+
+            $iRet = 0;
+            $aOutput = array($res);
+    	}else{
+	       exec($sCmd, $aOutput, $iRet);
     	}
-	    exec($sCmd, $aOutput, $iRet);
 
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
     	return $aRet;
     }
     // }}}
-    
+
     // {{{ winexec
     /**
      * Execute a command on a windows platform.

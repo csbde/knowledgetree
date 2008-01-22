@@ -6,7 +6,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -17,9 +17,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -39,9 +39,9 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
     var $commandconfig = 'indexer/catdoc';          // could be any application.
     var $args = array("-w", "-d", "UTF-8");
     var $use_pipes = true;
-    
+
     function extract_contents($sFilename, $sTempFilename) {
-        if (OS_WINDOWS) {	    
+        if (OS_WINDOWS) {
             $this->command = 'c:\antiword\antiword.exe';
             $this->commandconfig = 'indexer/antiword';
             $this->args = array();
@@ -52,32 +52,55 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
         if (empty($sCommand)) {
             return false;
         }
-        
-        if (OS_WINDOWS) {	
+
+        if (OS_WINDOWS) {
             $sDir = dirname(dirname($sCommand));
-	          putenv('HOME=' . $sDir);
+            putenv('HOME=' . $sDir);
+            $sBatDir = KT_DIR.'\bin\exec_files.bat';
+
+	        $cmdline = array($sCommand);
+            $cmdline = kt_array_merge($cmdline, $this->args);
+
+            $sCmd_1 = KTUtil::safeShellString($cmdline);
+            $sCmd_2 = escapeshellarg($sFilename);
+            $sCmd_3 = escapeshellarg($sTempFilename);
+
+            $sCmd_1 = str_replace( '/','\\',$sCmd_1);
+            $sCmd_2 = str_replace( '/','\\',$sCmd_2);
+            $sCmd_3 = str_replace( '/','\\',$sCmd_3);
+
+            $iRet = '';
+
+ 	        $sBat = '"'.$sBatDir.'" '.$sCmd_1.' '.$sCmd_2.' '.$sCmd_3;
+ 	        $sBat = str_replace( '/','\\',$sBat);
+
+ 	        $WshShell = new COM("WScript.Shell");
+            $res = $WshShell->Run($sBat, 0, true);
+
+ 	        $contents = file_get_contents($sTempFilename);
+            return $contents;
         }
         return parent::extract_contents($sFilename, $sTempFilename);
     }
-    
+
     function findLocalCommand() {
         if (OS_WINDOWS) {
             $this->command = 'c:\antiword\antiword.exe';
             $this->commandconfig = 'indexer/antiword';
             $this->args = array();
-        }        
+        }
         $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
         return $sCommand;
     }
-    
+
     function getDiagnostic() {
         $sCommand = $this->findLocalCommand();
-        
+
         // can't find the local command.
         if (empty($sCommand)) {
             return sprintf(_kt('Unable to find required command for indexing.  Please ensure that <strong>%s</strong> is installed and in the %s Path.  For more information on indexers and helper applications, please <a href="%s">visit the %s site</a>.'), $this->command, APP_NAME, $this->support_url, APP_NAME);
         }
-        
+
         return null;
     }
 }
