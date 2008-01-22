@@ -36,6 +36,7 @@
  *
  */
 
+define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
@@ -492,6 +493,19 @@ abstract class Indexer
         $default->log->debug("index: Queuing indexing of $document_id");
     }
 
+	public static function reindexQueue()
+	{
+		$sql = "UPDATE index_files SET processdate = null";
+		DBUtil::runQuery($sql);
+	}
+
+	public static function reindexDocument($documentId)
+	{
+		$sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
+		DBUtil::runQuery($sql);
+	}
+
+
 
     public static function indexAll()
     {
@@ -741,6 +755,73 @@ abstract class Indexer
     	KTUtil::setSystemSetting('mimeTypesRegistered', true);
     }
 
+	public function getExtractor($extractorClass)
+	{
+		$includeFile = SEARCH2_INDEXER_DIR . 'extractors/' . $extractorClass . '.inc.php';
+		if (!file_exists($includeFile))
+		{
+			throw new Exception("Extractor file does not exist: $includeFile");
+		}		
+	
+		require_once($includeFile);
+
+        if (!class_exists($extractorClass))
+        {
+        	throw new Exception("Extractor '$classname' not defined in file: $includeFile");	 
+        }
+        
+        $extractor = new $extractorClass();
+        
+        if (!($extractor instanceof DocumentExtractor))
+		{
+        	throw new Exception("Class $classname was expected to be of type DocumentExtractor");
+		}
+		        
+        return $extractor;
+	}
+
+	public static function getIndexingQueue($problemItemsOnly=true)
+	{
+		
+		if ($problemItemsOnly)
+		{
+			$sql = "SELECT
+	        			iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
+					FROM
+						index_files iff
+						INNER JOIN documents d ON iff.document_id=d.id
+						INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
+						INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
+	 				WHERE
+	 					(iff.status_msg IS NOT NULL) AND dmv.status_id=1
+					ORDER BY indexdate ";
+		}
+		else
+		{
+			$sql = "SELECT
+	        			iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
+					FROM
+						index_files iff
+						INNER JOIN documents d ON iff.document_id=d.id
+						INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
+						INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
+	 				WHERE
+	 					(iff.status_msg IS NULL or iff.status_msg = '') AND dmv.status_id=1
+					ORDER BY indexdate ";			
+		}
+		$aResult = DBUtil::getResultArray($sql);
+		
+		return $aResult;
+	}
+	
+	public static function getPendingIndexingQueue()
+	{
+		return Indexer::getIndexingQueue(false); 
+	}
 
     /**
      * The main function that may be called repeatedly to index documents.

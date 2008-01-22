@@ -232,6 +232,8 @@ class KTCorePlugin extends KTPlugin {
             _kt('Manage checked-out, archived and deleted documents.'));
         $this->registerAdminCategory('documents', _kt('Document Metadata and Workflow Configuration'),
             _kt('Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows.'));
+        $this->registerAdminCategory('search', _kt('Search and Indexing'),
+            _kt('Search and Indexing Settings'));
         $this->registerAdminCategory('misc', _kt('Miscellaneous'),
             _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));
 
@@ -289,7 +291,26 @@ class KTCorePlugin extends KTPlugin {
             _kt('Restore or Expunge Deleted Documents'), _kt('Restore previously deleted documents, or permanently expunge them.'),
             'admin/deletedDocuments.php', null);
 
-
+		//Search and Indexing
+		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'search',
+            _kt('Mime Types'), _kt('Mime type information.'),
+            '../search2/reporting/ManageMimeTypes.php', null);
+            
+        $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'search',
+            _kt('Extractor Information'), _kt('Extractor information.'),
+            '../search2/reporting/ExtractorInfo.php', null);
+            
+        $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
+            _kt('Document Indexing Diagnostics'), _kt('Document Indexing Diagnostics'),
+            '../search2/reporting/IndexErrors.php', null);
+            
+		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
+            _kt('Pending Documents Indexing Queue'), _kt('Pending Documents Indexing Information'),
+            '../search2/reporting/PendingDocuments.php', null);        	
+            
+        $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
+            _kt('Reschedule all documents'), _kt('Reschedule all documents'),
+            '../search2/reporting/RescheduleDocuments.php', null);
 
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
