@@ -1,0 +1,1 @@
+alter table index_files add status_msg mediumtext;
