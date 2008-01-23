@@ -1,0 +1,44 @@
+<h2>{i18n}Pending Documents Indexing Queue{/i18n}</h2>
+{i18n}This report lists documents that are waiting to be indexed.{/i18n}
+<br><br>
+{i18n}If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.{/i18n}
+<br><br>
+
+{if empty($pending_docs)}
+
+<b>{i18n}There are no documents in the indexing queue.{/i18n}</b>
+
+{else}
+
+
+<table class=kt_collection>
+
+<thead>
+<tr>
+	<th width="10"><nobr>{i18n}Document ID{/i18n}</th>
+	<th><nobr>{i18n}Filename{/i18n}</th>
+	<th width="100"><nobr>{i18n}Extension{/i18n}</th>
+	<th width="150"><nobr>{i18n}Mime Type{/i18n}</th>
+	<th width="100"><nobr>{i18n}Extractor{/i18n}</th>
+	<th width="100"><nobr>{i18n}Index Date{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+
+{foreach key=key from=$pending_docs item=pendingDocs}
+<tr>
+	<td><a href="/view.php?fDocumentId={$pendingDocs.document_id}">{$pendingDocs.document_id}</a></td>
+	<td>{$pendingDocs.filename|truncate:40:'...'}</td>
+	<td>{$pendingDocs.filetypes}</td>
+	<td>{$pendingDocs.mimetypes}</td>
+	<td>{if $pendingDocs.extractor}{$pendingDocs.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
+	<td>{$pendingDocs.indexdate}</td>
+</tr>
+{/foreach}
+
+</tbody>
+
+</table>
+
+{/if}

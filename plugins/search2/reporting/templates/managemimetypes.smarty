@@ -1,0 +1,48 @@
+<h2>{i18n}Manage Mime Types{/i18n}</h2>
+<p class="descriptiveText">{i18n}This report lists all mime types and extensions that can be identified by KnowledgeTree.{/i18n}</p>
+
+
+{if $mime_types}
+
+<table class=kt_collection>
+
+<thead>
+<tr>
+<th>Icon </th>
+<th> Extension </th>
+<th> Mime Type </th>
+<th> Description </th>
+<th> Extractor </th>
+</tr>
+</thead>
+
+<tbody>
+{foreach from=$mime_types item=mimetype}
+<tr>
+<td><span class="contenttype {$mimetype.icon_path}"></span></td>
+<td>{$mimetype.filetypes}</td>
+<td>{$mimetype.mimetypes}</td>
+<td>{if $mimetype.friendly_name}
+{$mimetype.friendly_name}
+{else}
+<p><font color="#FF9933">no description</font></p>
+{/if}</td>
+<td>{if $mimetype.extractor}
+{$mimetype.extractor}
+{else}
+<p><font color="#FF9933">n/a</font></p>
+{/if}</td>
+</tr>
+{/foreach}
+</tbody>
+
+</table>
+
+<table>
+<tr><td>Number of Extensions<td>{$numExtensions}
+<tr><td>Number of indexed extensions<td>{$numIndexedExtensions} ( {$indexedPercentage}% )
+</table>
+
+
+{/if}
+

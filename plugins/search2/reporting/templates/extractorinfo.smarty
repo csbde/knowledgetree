@@ -1,0 +1,39 @@
+<h2>{i18n}Extractor Information{/i18n}</h2>
+<p class="descriptiveText">{i18n}This report lists the text extractors and their supported mime types.{/i18n}</p>
+
+{if $extractor_info}
+
+{foreach key=key from=$extractor_info item=extractor}
+<br>
+<dl class='panel_menu'><h3>{$extractor.name}{if $extractor.active == 1} ({i18n}Active{/i18n}){else} ({i18n}Inactive{/i18n}){/if}</h3><dl/>
+
+<table class=kt_collection>
+
+<thead>
+<tr>
+<th width="300">{i18n}Description{/i18n}</th>
+<th width="400">{i18n}Mime Types{/i18n}</th>
+<th>{i18n}Extensions{/i18n}</th>
+</tr>
+</thead>
+
+<tbody>
+
+{foreach from=$extractor.mimeTypes key=key item=mimeType}
+<tr>
+	<td>{$mimeType.description}</td>
+	<td>{$key}</td>
+	<td>{$extractor.mimeTypes.$key.extensions}</td>
+</tr>
+{/foreach}
+
+</tbody>
+
+</table>
+
+{/foreach}
+
+{else}
+<br>
+<h3>{i18n}There are no extractors registered.{/i18n}</h3>
+{/if}

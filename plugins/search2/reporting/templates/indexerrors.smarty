@@ -1,0 +1,65 @@
+{literal}
+<script type="text/javascript">
+	function doReschedule(rescheduleAction)
+	{
+		var hiddenVal = document.getElementById("rescheduleValue");
+		hiddenVal.value = rescheduleAction;
+		document.scheduleForm.submit();
+	}
+
+</script>
+{/literal}
+
+<h2>{i18n}Document Indexing Diagnostics{/i18n}</h2>
+<p class="descriptiveText">{i18n}This report will help to diagnose problems with document indexing.{/i18n}</p>
+
+<br>
+{if $index_errors}
+
+<form name="scheduleForm" action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="rescheduleValue" id="rescheduleValue" value="" />
+
+<table class=kt_collection>
+<thead>
+	<tr>
+		<th width="10"></th>
+		<th width="80"><nobr>{i18n}Document ID{/i18n}</th>
+		<th ><nobr>{i18n}Filename{/i18n}</th>
+		<th width="100"><nobr>{i18n}Extension{/i18n}</th>
+		<th width="100"><nobr>{i18n}Mime Type{/i18n}</th>
+		<th width="100"><nobr>{i18n}Extractor{/i18n}</th>
+		<th width="100"><nobr>{i18n}Index Date{/i18n}</th>
+	</tr>
+</thead>
+
+<tbody>
+{foreach key=key from=$index_errors item=indexError}
+<tr>
+	<td class="centered"><input type="checkbox" name="index_error[{$indexError.document_id}]" value="1"/></td>
+	<td>{$indexError.document_id}</td>
+	<td>{$indexError.filename|truncate:40:'...'}</td>
+	<td>{$indexError.filetypes}</td>
+	<td>{$indexError.mimetypes}</td>
+	<td>{if $pendingDocs.extractor}{$indexError.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
+	<td>{$indexError.indexdate}</td>
+
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td colspan=4><pre>{$indexError.status_msg}</pre></td>
+</tr>
+
+
+{/foreach}
+
+</tbody>
+
+</table>
+
+<br>
+<input type="button" name="Reschedule" value="{i18n}Reschedule{/i18n}" onclick="doReschedule('reschedule');"/>
+<input type="button" name="Reschedule All" value="{i18n}Reschedule All{/i18n}" onclick="doReschedule('rescheduleall');"/>
+{else}
+<h3>{i18n}There are no indexing issues.{/i18n}</h3>
+{/if}
+</form>

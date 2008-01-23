@@ -610,7 +610,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 
 		$options = array(
-			//'contents' => new KTFSFileLike($tempfilename),
+			'contents' => new KTFSFileLike($tempfilename),
 			'temp_file' => $tempfilename,
 			'novalidate' => true,
 			'documenttype' => DocumentType::get($documenttypeid),
@@ -622,7 +622,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		DBUtil::startTransaction();
 		$document =& KTDocumentUtil::add($this->folder, $filename, $user, $options);
 
-		if (!is_a($document,'Document'))
+		if (PEAR::isError($document))
 		{
 			DBUtil::rollback();
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $document->getMessage());

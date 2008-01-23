@@ -36,6 +36,7 @@
  *
  */
 
+define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
@@ -492,6 +493,19 @@ abstract class Indexer
         $default->log->debug("index: Queuing indexing of $document_id");
     }
 
+	public static function reindexQueue()
+	{
+		$sql = "UPDATE index_files SET processdate = null";
+		DBUtil::runQuery($sql);
+	}
+
+	public static function reindexDocument($documentId)
+	{
+		$sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
+		DBUtil::runQuery($sql);
+	}
+
+
 
     public static function indexAll()
     {
@@ -741,6 +755,107 @@ abstract class Indexer
     	KTUtil::setSystemSetting('mimeTypesRegistered', true);
     }
 
+    private function updatePendingDocumentStatus($documentId, $message, $level)
+    {
+    	$this->indexingHistory .=  "\n" . $level . ': ' . $message;
+    	$message = sanitizeForSQL($this->indexingHistory);
+    	$sql = "UPDATE index_files SET status_msg='$message' WHERE document_id=$documentId";
+    	DBUtil::runQuery($sql);
+    }
+
+     /**
+     *
+     * @param int $documentId
+     * @param string $message
+     * @param string $level This may be info, error, debug
+     */
+    private function logPendingDocumentInfoStatus($documentId, $message, $level)
+    {
+		$this->updatePendingDocumentStatus($documentId, $message, $level);
+		global $default;
+
+		switch ($level)
+		{
+			case 'debug':
+				if ($this->debug)
+				{
+					$default->log->debug($message);
+				}
+				break;
+			default:
+				$default->log->$level($message);
+		}
+    }
+
+
+
+	public function getExtractor($extractorClass)
+	{
+		$includeFile = SEARCH2_INDEXER_DIR . 'extractors/' . $extractorClass . '.inc.php';
+		if (!file_exists($includeFile))
+		{
+			throw new Exception("Extractor file does not exist: $includeFile");
+		}
+
+		require_once($includeFile);
+
+        if (!class_exists($extractorClass))
+        {
+        	throw new Exception("Extractor '$classname' not defined in file: $includeFile");
+        }
+
+        $extractor = new $extractorClass();
+
+        if (!($extractor instanceof DocumentExtractor))
+		{
+        	throw new Exception("Class $classname was expected to be of type DocumentExtractor");
+		}
+
+        return $extractor;
+	}
+
+	public static function getIndexingQueue($problemItemsOnly=true)
+	{
+
+		if ($problemItemsOnly)
+		{
+			$sql = "SELECT
+	        			iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
+					FROM
+						index_files iff
+						INNER JOIN documents d ON iff.document_id=d.id
+						INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
+						INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
+	 				WHERE
+	 					(iff.status_msg IS NOT NULL) AND dmv.status_id=1
+					ORDER BY indexdate ";
+		}
+		else
+		{
+			$sql = "SELECT
+	        			iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
+					FROM
+						index_files iff
+						INNER JOIN documents d ON iff.document_id=d.id
+						INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
+						INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
+	 				WHERE
+	 					(iff.status_msg IS NULL or iff.status_msg = '') AND dmv.status_id=1
+					ORDER BY indexdate ";
+		}
+		$aResult = DBUtil::getResultArray($sql);
+
+		return $aResult;
+	}
+
+	public static function getPendingIndexingQueue()
+	{
+		return Indexer::getIndexingQueue(false);
+	}
 
     /**
      * The main function that may be called repeatedly to index documents.
@@ -841,11 +956,10 @@ abstract class Indexer
         	$extractorClass=$docinfo['extractor'];
         	$indexDocument = in_array($docinfo['what'], array('A','C'));
         	$indexDiscussion = in_array($docinfo['what'], array('A','D'));
+			$this->indexingHistory = '';
 
-        	if ($this->debug)
-        	{
-        		if ($this->debug) $default->log->debug(sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass));
-        	}
+        	$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass), 'debug');
+
 
         	if (empty($extractorClass))
         	{
@@ -855,13 +969,13 @@ abstract class Indexer
 
         	if (!$this->isExtractorEnabled($extractorClass))
 			{
-				$default->log->info(sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass));
+				$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass), 'info');
 				continue;
 			}
 
         	if ($this->debug)
         	{
-        		$default->log->info(sprintf(_kt("Processing docid: %d.\n"),$docId));
+        		$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Processing docid: %d.\n"),$docId), 'info');
         	}
 
         	$removeFromQueue = true;
@@ -873,26 +987,12 @@ abstract class Indexer
         		}
         		else
         		{
-        			require_once('extractors/' . $extractorClass . '.inc.php');
-
-        			if (!class_exists($extractorClass))
-        			{
-        				$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' does not exist."),$extractorClass));
-						continue;
-        			}
-
-        			$extractor = $extractorCache[$extractorClass] = new $extractorClass();
-        		}
-
-        		if (is_null($extractor))
-        		{
-        			$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' not resolved - it is null."),$extractorClass));
-        			continue;
+        			$extractor = $extractorCache[$extractorClass] = $this->getExtractor($extractorClass);
         		}
 
 				if (!($extractor instanceof DocumentExtractor))
 				{
-        			$default->log->error(sprintf(_kt("indexDocuments: extractor '%s' is not a document extractor class."),$extractorClass));
+					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("indexDocuments: extractor '%s' is not a document extractor class."),$extractorClass), 'error');
 					continue;
 				}
 
@@ -914,7 +1014,7 @@ abstract class Indexer
         			$result = @copy($sourceFile, $intermediate);
         			if ($result === false)
         			{
-        				$default->log->error(sprintf(_kt("Could not create intermediate file from document %d"),$docId));
+        				$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not create intermediate file from document %d"),$docId), 'error');
         				// problem. lets try again later. probably permission related. log the issue.
         				continue;
         			}
@@ -931,7 +1031,7 @@ abstract class Indexer
         		$extractor->setIndexingStatus(null);
         		$extractor->setExtractionStatus(null);
 
-        		if ($this->debug) $default->log->debug(sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile));
+        		$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile), 'debug');
 
         		$this->executeHook($extractor, 'pre_extract');
 				$this->executeHook($extractor, 'pre_extract', $mimeType);
@@ -952,7 +1052,8 @@ abstract class Indexer
 
         				if (!$indexStatus)
         				{
-        					$default->log->error(sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId));
+        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
+
         				}
 
         				$extractor->setIndexingStatus($indexStatus);
@@ -961,7 +1062,7 @@ abstract class Indexer
         			{
         				if (!$this->filterText($targetFile))
         				{
-        					$default->log->error(sprintf(_kt("Problem filtering document %d"),$docId));
+        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
         				}
 						else
 						{
@@ -969,7 +1070,8 @@ abstract class Indexer
 
 							if (!$indexStatus)
 							{
-								$default->log->error(sprintf(_kt("Problem indexing document %d - indexDocument"),$docId));
+								$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocument"),$docId), 'error');
+								$this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
 							}
 
         					$extractor->setIndexingStatus($indexStatus);
@@ -982,7 +1084,7 @@ abstract class Indexer
         		else
         		{
         			$extractor->setExtractionStatus(false);
-        			$default->log->error(sprintf(_kt("Could not extract contents from document %d"),$docId));
+        			$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not extract contents from document %d"),$docId), 'error');
         		}
 
 				$this->executeHook($extractor, 'post_extract', $mimeType);
