@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -110,7 +110,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('IndexingStatusDashlet', 'ktcore.dashlet.indexing_status', KT_DIR . '/plugins/search2/IndexingStatusDashlet.php');
         $this->registerDashlet('LuceneStatisticsDashlet', 'ktcore.dashlet.indexing_statss', KT_DIR . '/plugins/search2/LuceneStatisticsDashlet.php');
         $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
-        
+
         $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'misc', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
         $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
@@ -134,6 +134,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerColumn(_kt('Selection'), 'ktcore.columns.selection', 'AdvancedSelectionColumn', 'KTColumns.inc.php');
         $this->registerColumn(_kt('Single Selection'), 'ktcore.columns.singleselection', 'AdvancedSingleSelectionColumn', 'KTColumns.inc.php');
         $this->registerColumn(_kt('Workflow State'), 'ktcore.columns.workflow_state', 'AdvancedWorkflowColumn', 'KTColumns.inc.php');
+        $this->registerColumn(_kt('Checked Out By'), 'ktcore.columns.checkedout_by', 'CheckedOutByColumn', 'KTColumns.inc.php');
         $this->registerColumn(_kt('Creation Date'), 'ktcore.columns.creationdate', 'CreationDateColumn', 'KTColumns.inc.php');
         $this->registerColumn(_kt('Modification Date'), 'ktcore.columns.modificationdate', 'ModificationDateColumn', 'KTColumns.inc.php');
         $this->registerColumn(_kt('Creator'), 'ktcore.columns.creator', 'CreatorColumn', 'KTColumns.inc.php');
@@ -158,7 +159,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerTrigger('edit', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.edit', KT_DIR . '/plugins/search2/Search2Triggers.php');
 		$this->registerTrigger('add', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.add', KT_DIR . '/plugins/search2/Search2Triggers.php');
 		$this->registerTrigger('discussion', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.discussion', KT_DIR . '/plugins/search2/Search2Triggers.php');
-		
+
 		//Tag Cloud Triggers
 		$this->registerTrigger('add', 'postValidate', 'KTAddDocumentTrigger', 'ktcore.triggers.tagcloud.add', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
         $this->registerTrigger('edit', 'postValidate', 'KTEditDocumentTrigger', 'ktcore.triggers.tagcloud.edit', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
@@ -182,7 +183,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');
 
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
-                
+
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
@@ -295,19 +296,19 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'search',
             _kt('Mime Types'), _kt('Mime type information.'),
             '../search2/reporting/ManageMimeTypes.php', null);
-            
+
         $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'search',
             _kt('Extractor Information'), _kt('Extractor information.'),
             '../search2/reporting/ExtractorInfo.php', null);
-            
+
         $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
             _kt('Document Indexing Diagnostics'), _kt('Document Indexing Diagnostics'),
             '../search2/reporting/IndexErrors.php', null);
-            
+
 		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
             _kt('Pending Documents Indexing Queue'), _kt('Pending Documents Indexing Information'),
-            '../search2/reporting/PendingDocuments.php', null);        	
-            
+            '../search2/reporting/PendingDocuments.php', null);
+
         $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
             _kt('Reschedule all documents'), _kt('Reschedule all documents'),
             '../search2/reporting/RescheduleDocuments.php', null);
