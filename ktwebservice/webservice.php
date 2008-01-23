@@ -1978,6 +1978,7 @@ class KTWebService
 		$status_code = $update_result->value['status_code'];
 		if ($status_code != 0)
 		{
+			$this->delete_document($session_id, $document_id, 'Rollback because metadata could not be added');
 			return $update_result;
 		}
 
@@ -2017,6 +2018,7 @@ class KTWebService
 		$status_code = $update_result->value['status_code'];
 		if ($status_code != 0)
 		{
+			$this->delete_document($session_id, $document_id, 'Rollback because metadata could not be added');
 			return $update_result;
 		}
 
