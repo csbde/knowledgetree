@@ -1,5 +1,5 @@
 <h2>{i18n}Extractor Information{/i18n}</h2>
-<p class="descriptiveText">{i18n}Important information about the current document extractors{/i18n}</p>
+<p class="descriptiveText">{i18n}This report lists the text extractors and their supported mime types.{/i18n}</p>
 
 {if $extractor_info}
 

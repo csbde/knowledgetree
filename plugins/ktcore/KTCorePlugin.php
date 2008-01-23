@@ -294,23 +294,23 @@ class KTCorePlugin extends KTPlugin {
 
 		//Search and Indexing
 		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'search',
-            _kt('Mime Types'), _kt('Mime type information.'),
+            _kt('Mime Types'), _kt('This report lists all mime types and extensions that can be identified by KnowledgeTree.'),
             '../search2/reporting/ManageMimeTypes.php', null);
 
         $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'search',
-            _kt('Extractor Information'), _kt('Extractor information.'),
+            _kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
             '../search2/reporting/ExtractorInfo.php', null);
 
         $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
-            _kt('Document Indexing Diagnostics'), _kt('Document Indexing Diagnostics'),
+            _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
             '../search2/reporting/IndexErrors.php', null);
 
 		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
-            _kt('Pending Documents Indexing Queue'), _kt('Pending Documents Indexing Information'),
+            _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
             '../search2/reporting/PendingDocuments.php', null);
 
         $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
-            _kt('Reschedule all documents'), _kt('Reschedule all documents'),
+            _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
             '../search2/reporting/RescheduleDocuments.php', null);
 
         // misc
