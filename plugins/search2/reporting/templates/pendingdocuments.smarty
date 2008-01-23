@@ -1,7 +1,7 @@
 <h2>{i18n}Pending Documents Indexing Queue{/i18n}</h2>
-{i18n}This report lists documents that are waiting to be indexed. 
+{i18n}This report lists documents that are waiting to be indexed.{/i18n}
 <br><br>
-If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.{/i18n}
+{i18n}If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.{/i18n}
 <br><br>
 
 {if empty($pending_docs)}
