@@ -1071,7 +1071,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 $packed = $this->get_packed_metadata($metadata);
 
 		 DBUtil::startTransaction();
-		 $result = KTDocumentUtil::saveMetadata($this->document, $packed);
+		 $result = KTDocumentUtil::saveMetadata($this->document, $packed, array('novalidate'=>true));
 
 		 if (is_null($result))
 		 {
