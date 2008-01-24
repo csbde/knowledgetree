@@ -449,7 +449,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					if (empty($checked_out_date)) $checked_out_date = 'n/a';
 
 					$modified_by=$this->_resolve_user($document->getCreatorID());
-					$modified_date = $document->getCheckedOutDate();
+					$modified_date = $document->getLastModifiedDate();
 					if (empty($modified_date)) $modified_date = 'n/a';
 
 					$owned_by =$this->_resolve_user($document->getOwnerID());
