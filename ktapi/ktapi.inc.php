@@ -365,7 +365,7 @@ class KTAPI
 		{
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_TYPE_INVALID);
 		}
-		list($documenttypeid) = $row['id'];
+		$documenttypeid = $row['id'];
 		return $documenttypeid;
 	}
 
@@ -377,7 +377,7 @@ class KTAPI
 		{
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID);
 		}
-		list($typeid) = $row['id'];
+		$typeid = $row['id'];
 		return $typeid;
 	}
 
