@@ -70,6 +70,8 @@ class ExprFieldRegistry
 
     private $display;
 
+    private $general;
+
     /**
      * Initialise the registry.
      * This is private and class must be obtained via the get() method.
@@ -136,8 +138,17 @@ class ExprFieldRegistry
         else
         {
 			$this->display[] = $field->getAlias();
-        }
 
+			if (isset($field->general_op))
+			{
+				$this->general[] = get_class($field);
+			}
+        }
+    }
+
+    function getGeneralTextClasses()
+    {
+    	return $this->general;
     }
 
     public function resolveAlias($alias)
