@@ -1068,6 +1068,11 @@ class UpgradeFunctions {
             $ini->addItem('DiskUsage', 'warningThreshold', '10', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in ORANGE", "settings for the Disk Usage dashlet");
             $ini->addItem('DiskUsage', 'urgentThreshold', '5', "When free space in a mount point is less than this percentage,\r\n; the disk usage dashlet will highlight the mount in RED");
 
+            // CustomErrorMessages Section
+            $ini->addItem('CustomErrorMessages', 'customerrormessages', 'on', 'Turn custom error messages on or off here (account wide)');
+            $ini->addItem('CustomErrorMessages', 'customerrorpagepath', 'customerrorpage.php', 'Name or url of custom error page');
+            $ini->addItem('CustomErrorMessages', 'customerrorhandler', 'on', 'Turn custom error handler on or off');
+
             $ini->write();
         }
     }

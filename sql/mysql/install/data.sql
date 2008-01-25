@@ -968,7 +968,8 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (170,'sql*3.5.2*0*3.5.2/plugins_orderby.sql','Plugins orderby update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (171,'sql*3.5.2*0*3.5.2/document_link.sql','Document Link update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (172,'sql*3.5.2*0*3.5.2/index_file_status_message.sql','Index file status message update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(173,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(173,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(174,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1825,7 +1826,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (173);
+INSERT INTO `zseq_upgrades` VALUES (174);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
