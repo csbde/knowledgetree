@@ -448,6 +448,34 @@ class CheckedOutByColumn extends AdvancedColumn {
     }
 }
 
+class DocumentTypeColumn extends AdvancedColumn {
+    var $namespace = 'ktcore.columns.document_type';
+    var $sortable = false;
+
+    function DocumentTypeColumn() {
+        $this->label = _kt('Document Type');
+        $this->sortable = false;
+    }
+
+    function renderData($aDataRow) {
+        // only show this for documents.
+        if ($aDataRow['type'] === 'folder') {
+            return '&nbsp;';
+        }
+
+        // Check if document is checked out
+        $iDocTypeId = $aDataRow['document']->getDocumentTypeID();
+
+        if(!empty($iDocTypeId)){
+            $oDocumentType = DocumentType::get($iDocTypeId);
+            $sType = $oDocumentType->getName();
+
+            return '<span class="descriptive">'.htmlentities($sType, ENT_NOQUOTES, 'UTF-8').'</span>';
+        }
+        return '&mdash;';
+    }
+}
+
 class AdvancedDownloadColumn extends AdvancedColumn {
 
     var $namespace = 'ktcore.columns.download';
