@@ -38,6 +38,9 @@
 
 class FilenameField extends DBFieldExpr
 {
+	public $general_op = ExprOp::CONTAINS;
+
+
     public function __construct()
     {
         parent::__construct('filename', 'document_content_version', _kt('Filename'));

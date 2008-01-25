@@ -38,6 +38,9 @@
 
 class AnyMetadataField extends DBFieldExpr
 {
+	public $general_op = ExprOp::CONTAINS;
+
+
     public function __construct()
     {
         parent::__construct('value', 'document_fields_link', _kt('Any Metadata'));

@@ -54,7 +54,6 @@ class GeneralTextField extends SearchableText
         return DefaultOpCollection::validateParent($this, DefaultOpCollection::$contains);
     }
 
-
     public function rewrite(&$left, &$op, &$right)
     {
     	// note the grouping of the db queries
@@ -62,17 +61,28 @@ class GeneralTextField extends SearchableText
     	$left = new OpExpr(new DocumentTextField(), ExprOp::CONTAINS, $right);
 
     	$op = ExprOp::OP_OR;
+    	$value = $right;
+    	$right=null;
 
-    	$right = new OpExpr(
-    					new OpExpr(new FilenameField(), ExprOp::CONTAINS, $right),
-    					ExprOp::OP_OR,
-    					new OpExpr(
-    						new OpExpr(
-    							new TitleField(), ExprOp::CONTAINS, $right),
-    							ExprOp::OP_OR,
-			    				new OpExpr(new AnyMetadataField(), ExprOp::CONTAINS, $right)
-			    			)
-			    		);
+    	$registry = ExprFieldRegistry::getRegistry();
+    	$classes = $registry->getGeneralTextClasses();
+
+    	while (!empty($classes))
+    	{
+    		$classname = array_pop($classes);
+    		$obj = new $classname();
+    		$exprop = $obj->general_op;
+    		$newexpr = new OpExpr($obj, $exprop, $value);
+    		if (empty($right))
+    		{
+    			$right = $newexpr;
+    		}
+    		else
+    		{
+				$right = new OpExpr($right, ExprOp::OP_OR, $newexpr);
+    		}
+    	}
+
     }
 
 

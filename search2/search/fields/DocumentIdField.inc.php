@@ -38,6 +38,8 @@
 
 class DocumentIdField extends DBFieldExpr
 {
+	public $general_op = ExprOp::IS;
+
     public function __construct()
     {
         parent::__construct('id', 'documents', _kt('Document ID'));
