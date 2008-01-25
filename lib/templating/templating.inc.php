@@ -127,11 +127,63 @@ class KTTemplating {
      * @param unknown_type $descr
      * @param unknown_type $loc
      */
-    function addLocation ($descr, $loc) {
+    function addLocation ($descr, $loc, $sPluginNamespace = NULL) {
         $this->aLocationRegistry[$descr] = $loc;
-        KTPlugin::registerPluginHelper($descr, $descr, $loc, $descr.'|'.$loc, 'general', 'locations');
+
+        if(!empty($sPluginNamespace)){
+            $sPlugin = $sPluginNamespace;
+        }else{
+            $sPlugin = $this->getPluginName();
+            $sPlugin = (!empty($sPlugin)) ? $sPlugin : $descr;
+        }
+
+        KTPlugin::registerPluginHelper($sPlugin, $sPlugin, $loc, $descr.'|'.$loc, 'general', 'locations');
     }
     // }}}
+
+    function getPluginName(){
+        $class = 'kttemplating';
+        $function = 'addlocation';
+        $function2 = 'setup';
+        $bIsPlugin = false;
+        $file = false;
+        $plugin = false;
+
+        $trace = debug_backtrace();
+
+        if(empty($trace)){
+            return '';
+        }
+
+        foreach($trace as $call){
+            if(strtolower($call['class']) == $class && strtolower($call['function']) == $function){
+                $file = $call['file'];
+            }
+            if($file && strtolower($call['function']) == $function2){
+                $plugin = $call['class'];
+            }
+            if(strtolower($call['class']) == 'ktplugin' && strtolower($call['function']) == 'register'){
+                $bIsPlugin = true;
+                break;
+            }
+            if(strtolower($call['class']) == 'ktplugindispatcher' && strtolower($call['function']) == 'do_update'){
+                $bIsPlugin = true;
+                break;
+            }
+        }
+
+        if($bIsPlugin && $file !== false && $plugin !== false){
+            include_once($file);
+            $oPlugin = new $plugin;
+            $sPluginName = $oPlugin->sNamespace;
+
+            if(!empty($sPluginName)){
+                return $sPluginName;
+            }
+        }
+
+        return '';
+    }
 
     /**
      * Add the template location to the location registry
