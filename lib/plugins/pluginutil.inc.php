@@ -214,9 +214,14 @@ class KTPluginUtil {
 
         KTPluginUtil::load($aPluginList);
 
-        // Load the template locations
-        $query = "SELECT * FROM plugin_helper h WHERE h.classtype='locations'";
+        // Load the template locations - ignore disabled plugins
+        // Allow for templates that don't correctly link to the plugin
+        $query = "SELECT * FROM plugin_helper h
+            LEFT JOIN plugins p ON (p.namespace = h.plugin)
+            WHERE h.classtype='locations' AND (disabled = 0 OR disabled IS NULL)";
+
         $aLocations = DBUtil::getResultArray($query);
+
         if(!empty($aLocations)){
             $oTemplating =& KTTemplating::getSingleton();
             foreach ($aLocations as $location){
