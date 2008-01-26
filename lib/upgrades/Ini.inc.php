@@ -187,7 +187,7 @@ class Ini {
 
         if(!$this->itemExists($delSection, $delItem)) return false;
 
-        unset(this->cleanArray[$delSection][$delItem]);
+        unset($this->cleanArray[$delSection][$delItem]);
         return true;
     }
     
