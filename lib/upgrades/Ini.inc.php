@@ -168,7 +168,9 @@ class Ini {
 
     function addItem($addSection, $addItem, $value, $itemComment = '', $sectionComment = '') {
 
-        if($this->itemExists($addSection, $addItem)) return false;
+        if($this->itemExists($addSection, $addItem)) {
+            $this->delItem($addSection, $addItem);
+        }
 
         if($this->exists != 'section') {
             $this->cleanArray['_blankline_'.$this->lineNum++]='';
@@ -180,7 +182,15 @@ class Ini {
         $this->cleanArray[$addSection][$addItem] = stripcslashes($value);
         return true;
     }
+    
+    function delItem($delSection, $delItem) {
 
+        if(!$this->itemExists($delSection, $delItem)) return false;
+
+        unset($array_splice(this->cleanArray[$delSection][$delItem]);
+        return true;
+    }
+    
 }
 /*
 // USAGE EXAMPLE
