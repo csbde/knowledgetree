@@ -191,6 +191,12 @@ class Ini {
         return true;
     }
     
+    function delSection($delSection) {
+
+        unset($this->cleanArray[$delSection]);
+        return true;
+    }
+    
 }
 /*
 // USAGE EXAMPLE
