@@ -1076,9 +1076,9 @@ class UpgradeFunctions {
 
             // URLS Section
             $ini->delSection('urls');
-            $ini->addItem('urls', 'varDirectory', str_replace('\\', '/', $config->get("urls/varDirectory")), 'directories');
+            $ini->addItem('urls', 'varDirectory', '"'.str_replace('\\', '/', $config->get("urls/varDirectory")).'"', 'directories');
             $ini->addItem('urls', 'logDirectory', '${varDirectory}/log');
-            $ini->addItem('urls', 'documentRoot', str_replace('\\', '/', $config->get("urls/documentRoot"));
+            $ini->addItem('urls', 'documentRoot', '"'.str_replace('\\', '/', $config->get("urls/documentRoot")).'"');
             $ini->addItem('urls', 'uiDirectory', '${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree');
             $ini->addItem('urls', 'tmpDirectory', '${varDirectory}/tmp');
             $ini->addItem('urls', 'graphicsUrl', '${rootUrl}/graphics', 'urls');
