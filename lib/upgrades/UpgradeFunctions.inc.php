@@ -1073,6 +1073,18 @@ class UpgradeFunctions {
             $ini->addItem('CustomErrorMessages', 'customerrorpagepath', 'customerrorpage.php', 'Name or url of custom error page');
             $ini->addItem('CustomErrorMessages', 'customerrorhandler', 'on', 'Turn custom error handler on or off');
 
+            // URLS Section
+            $ini->addItem('urls', 'varDirectory', '${fileSystemRoot}/var', 'directories');
+            $ini->addItem('urls', 'logDirectory', '${varDirectory}/log');
+            $ini->addItem('urls', 'documentRoot', '${fileSystemRoot}/Documents');
+            $ini->addItem('urls', 'uiDirectory', '${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree');
+            $ini->addItem('urls', 'tmpDirectory', '${varDirectory}/tmp');
+            $ini->addItem('urls', 'graphicsUrl', '${rootUrl}/graphics', 'urls');
+            $ini->addItem('urls', 'uiUrl', '${rootUrl}/presentation/lookAndFeel/knowledgeTree');
+            $ini->addItem('urls', ';dedicatedrsstitle', 'RSS Feed Title', 'RSS dedicated feed url');
+            $ini->addItem('urls', ';dedicatedrssurl', '');
+            $ini->addItem('urls', 'stopwordsFile', '${fileSystemRoot}/config/stopwords.txt', 'files');
+
             $ini->write();
         }
     }
