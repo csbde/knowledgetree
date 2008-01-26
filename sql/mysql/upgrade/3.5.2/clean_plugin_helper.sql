@@ -1,1 +1,1 @@
-DELETE * FROM plugin_helper;
+DELETE FROM plugin_helper;

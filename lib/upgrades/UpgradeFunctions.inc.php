@@ -967,7 +967,8 @@ class UpgradeFunctions {
     // {{{ updateConfigFile35
     function updateConfigFile35()
     {
-    	$configPath = KTConfig::getConfigFilename();
+    	$config = KTConfig::getSingleton();
+        $configPath = KTConfig::getConfigFilename();
     	$configPath = str_replace(array("\n","\r"), array('',''), $configPath);
 
         if(file_exists($configPath)) {
@@ -1074,9 +1075,9 @@ class UpgradeFunctions {
             $ini->addItem('CustomErrorMessages', 'customerrorhandler', 'on', 'Turn custom error handler on or off');
 
             // URLS Section
-            $ini->addItem('urls', 'varDirectory', '${fileSystemRoot}/var', 'directories');
+            $ini->addItem('urls', 'varDirectory', $config->get("urls/varDirectory"), 'directories');
             $ini->addItem('urls', 'logDirectory', '${varDirectory}/log');
-            $ini->addItem('urls', 'documentRoot', '${fileSystemRoot}/Documents');
+            $ini->addItem('urls', 'documentRoot', $config->get("urls/documentRoot"));
             $ini->addItem('urls', 'uiDirectory', '${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree');
             $ini->addItem('urls', 'tmpDirectory', '${varDirectory}/tmp');
             $ini->addItem('urls', 'graphicsUrl', '${rootUrl}/graphics', 'urls');
