@@ -115,9 +115,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oDocument =& Document::get($document_id);
         if (PEAR::isError($oDocument)) {
             $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
-                                        
+
             $this->oPage->booleanLink = true;
-                          
+
             return $this->do_error();
         }
         $document_id = $oDocument->getId();
@@ -263,7 +263,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     function do_viewComparison() {
 
         $document_data = array();
-        $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
+        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if ($document_id === null) {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
@@ -271,7 +271,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $document_data['document_id'] = $document_id;
 
-        $base_version = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fBaseVersion'));
+        $base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
 
         // try get the document.
         $oDocument =& Document::get($document_id, $base_version);
@@ -296,7 +296,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
         $this->oPage->setBreadcrumbDetails(_kt('compare versions'));
 
-        $comparison_version = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fComparisonVersion'));
+        $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
         if ($comparison_version=== null) {
             $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id)));
             return $this->do_error();
@@ -306,6 +306,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if (PEAR::isError($oComparison)) {
             $this->errorRedirectToMain(_kt('Invalid document to compare against.'));
         }
+
         $comparison_data = array();
         $comparison_data['document_id'] = $oComparison->getId();
 
@@ -324,12 +325,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         // we want to grab all the md for this doc, since its faster that way.
-        $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($oDocument->getMetadataVersionId())));
+        $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($base_version)));
 
         $field_values = array();
         foreach ($mdlist as $oFieldLink) {
                 $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
         }
+
 
         $document_data['field_values'] = $field_values;
         $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
