@@ -35,6 +35,8 @@
  *
  */
 
+//debugger_start_debug();
+
 require_once(KT_LIB_DIR . '/upgrades/Ini.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/scheduler.php');
 require_once(KT_LIB_DIR . '/database/schema.inc.php');
@@ -57,7 +59,7 @@ class UpgradeFunctions {
             '3.1.5' => array('upgradeSavedSearches'),
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
-            '3.5.2' => array('dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes'),
+            '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             );
 
     var $descriptions = array(
@@ -80,12 +82,14 @@ class UpgradeFunctions {
             'cleanupOldKTAdminVersionNotifier' => 'Cleanup any old files from the old KTAdminVersionNotifier',
             'updateConfigFile35' => 'Update the config.ini file for 3.5',
             'registerIndexingTasks'=>'Register the required indexing background tasks',
+            'setStorageEngine'=>'Recreate db integrity: Set storage engine to InnoDB for transaction safety',
             'dropForeignKeys'=>'Recreate db integrity: Drop foreign keys on the database',
             'dropPrimaryKeys'=>'Recreate db integrity:Drop primary keys on the database',
             'dropIndexes'=>'Recreate db integrity:Drop indexes on the database',
             'createPrimaryKeys'=>'Recreate db integrity:Create primary keys on the database',
             'createForeignKeys'=>'Recreate db integrity:Create foreign keys on the database',
-            'createIndexes'=>'Recreate db integrity:Create indexes on the database'
+            'createIndexes'=>'Recreate db integrity:Create indexes on the database',
+            'removeSlashesFromObjects'=>'Remove slashes from documents and folders'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -95,12 +99,13 @@ class UpgradeFunctions {
             "fixUnits" => 1,
             'applyDiscussionUpgrade' => -1,
             'fixDocumentRoleAllocation' => -1,
-            'dropForeignKeys'=>1,
-            'dropPrimaryKeys'=>2,
-            'dropIndexes'=>3,
-            'createPrimaryKeys'=>4,
-            'createForeignKeys'=>5,
-            'createIndexes'=>6,
+            'setStorageEngine'=>1,
+            'dropForeignKeys'=>2,
+            'dropPrimaryKeys'=>3,
+            'dropIndexes'=>4,
+            'createPrimaryKeys'=>5,
+            'createForeignKeys'=>6,
+            'createIndexes'=>7,
             );
 
     function dropForeignKeys()
@@ -137,6 +142,55 @@ class UpgradeFunctions {
     {
 		$schemautil = KTSchemaUtil::getSingleton();
 		$schemautil->createIndexes();
+    }
+
+    // {{{ setStorageEngine
+    function setStorageEngine()
+    {
+		$schemautil = KTSchemaUtil::getSingleton();
+		$schemautil->setTablesToInnoDb();
+    }
+    // }}}
+
+    function _removeSlashesFromFolders($folderid, $name, $full_path, $folder_ids)
+    {
+    	$name = str_replace(array('/','\\'),array('-','-'), $name);
+
+    	// get folders
+		$sql = "select id, name from folders where parent_id=$folderid";
+		$ids = DBUtil::getResultArray($sql);
+
+		// set to the latest values
+		$parent_ids = implode(',', $folder_ids);
+		if (empty($parent_ids)) $parent_ids = null;
+		if (empty($full_path)) $full_path = null;
+
+		$full_path = (empty($full_path))?$name:($full_path . '/' . $name);
+		$folder_ids [] = $folderid;
+
+		$sql = "update folders set name=?,description=?, full_path=?, parent_folder_ids=? where id=?";
+		DBUtil::runQuery(array($sql, array($name,$name, $full_path, $parent_ids, $folderid)));
+
+		// update documents
+		$sql = "update documents set full_path=?, parent_folder_ids=? where folder_id=?";
+		DBUtil::runQuery(array($sql, array($full_path, $parent_ids, $folderid)));
+
+
+		// recurse subfolders
+		foreach($ids as $row)
+		{
+			$id = $row['id'];
+			$name = $row['name'];
+			UpgradeFunctions::_removeSlashesFromFolders($id, $name, $full_path, $folder_ids);
+		}
+    }
+
+    function removeSlashesFromObjects()
+    {
+    	$GLOBALS["_OBJECTCACHE"] = array();
+
+		UpgradeFunctions::_removeSlashesFromFolders(1, '', array(), array());
+		DBUtil::commit();
     }
 
 

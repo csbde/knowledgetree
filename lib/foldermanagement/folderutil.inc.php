@@ -57,10 +57,10 @@ class KTFolderUtil {
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oFolder =& Folder::createFromArray(array(
-        'name' => ($sFolderName),
-        'description' => ($sFolderName),
-        'parentid' => $oParentFolder->getID(),
-        'creatorid' => $oUser->getID(),
+			'name' => ($sFolderName),
+			'description' => ($sFolderName),
+			'parentid' => $oParentFolder->getID(),
+			'creatorid' => $oUser->getID(),
         ));
         if (PEAR::isError($oFolder)) {
             return $oFolder;
@@ -100,12 +100,26 @@ class KTFolderUtil {
         $oSubscriptionEvent = new SubscriptionEvent();
         $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
 
-        KTFolderUtil::updateSearchableText($oFolder);
-
         return $oFolder;
     }
 
     function move($oFolder, $oNewParentFolder, $oUser, $sReason=null) {
+    	if ($oFolder->getId() == 1)
+    	{
+    		return PEAR::raiseError(_kt('Cannot move root folder!'));
+    	}
+    	if ($oFolder->getParentID() == $oNewParentFolder->getId())
+    	{
+    		// moved! done.
+    		return;
+    	}
+    	$sFolderParentIds = $oFolder->getParentFolderIDs();
+    	$sNewFolderParentIds = $oNewParentFolder->getParentFolderIDs();
+
+    	if (strpos($sNewFolderParentIds, "$sFolderParentIds,") === 0)
+    	{
+    		return PEAR::raiseError(_kt('Cannot move folder into a descendant folder!'));
+    	}
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
             return PEAR::raiseError(_kt('Folder with the same name already exists in the new parent folder'));
         }
@@ -134,51 +148,42 @@ class KTFolderUtil {
             $bChangePermissionObject = true;
         }
 
-
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = 'folders';
 
-        if ($oNewParentFolder->getId() == 1) {
-            $sNewParentFolderPath = $oNewParentFolder->getName();
-            $sNewParentFolderIds = '';
-        } else {
-            $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
-            $sNewParentFolderIds = sprintf("%s,%s", $oNewParentFolder->getParentFolderIDs(), $oNewParentFolder->getID());
+        if ($oNewParentFolder->getId() == 1)
+        {
+            $sNewFullPath = $oFolder->getName();
+            $sNewParentFolderIds = "1";
         }
-
-        $sOldPath = $oFolder->getFullPath();
-
-        if ($oNewParentFolder->getId() == 1) {
-        } else {
-            $sNewParentFolderPath = sprintf("%s/%s", $oNewParentFolder->getFullPath(), $oNewParentFolder->getName());
+        else
+        {
+            $sNewFullPath = $oNewParentFolder->getFullPath() . '/' . $oFolder->getName();
+            $sNewParentFolderIds =  $oNewParentFolder->getParentFolderIDs() . ',' . $oNewParentFolder->getID();
         }
 
         // Update the moved folder first...
         $sQuery = "UPDATE $table SET full_path = ?, parent_folder_ids = ?, parent_id = ? WHERE id = ?";
         $aParams = array(
-        sprintf("%s", $sNewParentFolderPath),
-        $sNewParentFolderIds,
-        $oNewParentFolder->getID(),
-        $oFolder->getID(),
+							$sNewFullPath,
+					        $sNewParentFolderIds,
+        					$oNewParentFolder->getID(),
+        					$oFolder->getID(),
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
             return $res;
         }
 
-        if ($oFolder->getId() == 1) {
-            $sOldFolderPath = $oFolder->getName();
-        } else {
-            $sOldFolderPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
-        }
+        $sOldFolderPath = $oFolder->getFullPath();
 
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)), parent_folder_ids = CONCAT(?, SUBSTRING(parent_folder_ids FROM ?)) WHERE full_path LIKE ?";
         $aParams = array(
-        sprintf("%s", $sNewParentFolderPath),
-        strlen($oFolder->getFullPath()) + 1,
-        $sNewParentFolderIds,
-        strlen($oFolder->getParentFolderIDs()) + 1,
-        sprintf("%s%%", $sOldFolderPath),
+        					$sNewFullPath,
+        					strlen($oFolder->getFullPath()) + 1,
+        					$sNewParentFolderIds,
+        					strlen($oFolder->getParentFolderIDs()) + 1,
+        					"$sOldFolderPath%"
         );
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
@@ -187,13 +192,7 @@ class KTFolderUtil {
 
         $table = 'documents';
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)), parent_folder_ids = CONCAT(?, SUBSTRING(parent_folder_ids FROM ?)) WHERE full_path LIKE ?";
-        $aParams = array(
-        sprintf("%s", $sNewParentFolderPath),
-        strlen($oFolder->getFullPath()) + 1,
-        $sNewParentFolderIds,
-        strlen($oFolder->getParentFolderIDs()) + 1,
-        sprintf("%s%%", $sOldFolderPath),
-        );
+        // use same $aParams as above
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
             return $res;
@@ -219,6 +218,7 @@ class KTFolderUtil {
 
         Document::clearAllCaches();
         Folder::clearAllCaches();
+        $GLOBALS["_OBJECTCACHE"] = array();
 
         if ($bChangePermissionObject) {
             $aOptions = array(
@@ -236,21 +236,20 @@ class KTFolderUtil {
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
 
-        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
-
         if ($oFolder->getId() == 1) {
             $sOldPath = $oFolder->getName();
             $sNewPath = $sNewName;
         } else {
-            $sOldPath = sprintf("%s/%s", $oFolder->getFullPath(), $oFolder->getName());
-            $sNewPath = sprintf("%s/%s", $oFolder->getFullPath(), $sNewName);
-
+            $sOldPath = $oFolder->getFullPath();
+            $sNewPath = dirname($oFolder->getFullPath()) . '/' . $sNewName;
         }
+
+        $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
         $aParams = array(
-        sprintf("%s", $sNewPath),
-        strlen($sOldPath) + 1,
-        $sOldPath.'/%',
-        $sOldPath,
+        	"$sNewPath/",
+        	strlen($sOldPath) + 2,
+        	$sOldPath.'/%',
+        	$sOldPath,
         );
 
         $res = DBUtil::runQuery(array($sQuery, $aParams));
@@ -272,6 +271,7 @@ class KTFolderUtil {
         }
 
         $oFolder->setName($sNewName);
+        $oFolder->setDescription($sNewName);
         $res = $oFolder->update();
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
@@ -284,8 +284,6 @@ class KTFolderUtil {
         if (PEAR::isError($oTransaction)) {
             return $oTransaction;
         }
-
-        KTFolderUtil::updateSearchableText($oFolder);
 
         Document::clearAllCaches();
         Folder::clearAllCaches();
@@ -436,7 +434,8 @@ class KTFolderUtil {
 
         DBUtil::startTransaction();
 
-        while (!empty($aRemainingFolders) && $copyAll) {
+        while (!empty($aRemainingFolders) && $copyAll)
+        {
             $iFolderId = array_pop($aRemainingFolders);
             $oFolder = Folder::get($iFolderId);
             if (PEAR::isError($oFolder) || ($oFolder == false)) {
@@ -496,7 +495,7 @@ class KTFolderUtil {
         $aRow['description'] = $sDestFolderName;
         $aRow['parent_id'] = $oDestFolder->getId();
         $aRow['parent_folder_ids'] = sprintf('%s,%s', $oDestFolder->getParentFolderIDs(), $oDestFolder->getId());
-        $aRow['full_path'] = sprintf('%s/%s', $oDestFolder->getFullPath(), $oDestFolder->getName());
+        $aRow['full_path'] = $oDestFolder->getFullPath() . '/' . $aRow['name'];
 
         $id = DBUtil::autoInsert($sTable, $aRow);
         if (PEAR::isError($id)) {
@@ -530,7 +529,7 @@ class KTFolderUtil {
             $sPrevParentId = $aRow['parent_id'];
             $aRow['parent_id'] = $aFolderMap[$aRow['parent_id']]['parent_id'];
             $aRow['parent_folder_ids'] = sprintf('%s,%s', $aFolderMap[$sPrevParentId]['parent_folder_ids'], $aRow['parent_id']);
-            $aRow['full_path'] = sprintf('%s/%s', $aFolderMap[$sPrevParentId]['full_path'], $aFolderMap[$sPrevParentId]['name']);
+            $aRow['full_path'] = sprintf('%s/%s', $aFolderMap[$sPrevParentId]['full_path'], $aRow['name']);
 
             $id = DBUtil::autoInsert($sTable, $aRow);
             if (PEAR::isError($id)) {
@@ -572,35 +571,6 @@ class KTFolderUtil {
         DBUtil::commit();
 
         return true;
-    }
-
-    function updateSearchableText($oFolder) {
-
-        // NEW SEARCH
-
-        return;
-
-        // very simple function to rebuild the searchable text for this
-        // folder.
-
-        // MyISAM table for fulltext index - no transactions.
-
-        // get the folder text
-        // XXX replace this with a trigger / producer set.
-        $sSearchableText = $oFolder->getName();
-
-        // do the update.
-        $iFolderId = KTUtil::getId($oFolder);
-        $sTable = KTUtil::getTableName('folder_searchable_text');
-        $aDelete = array(
-        "folder_id" => $iFolderId,
-        );
-        DBUtil::whereDelete($sTable, $aDelete);
-        $aInsert = array(
-        "folder_id" => $iFolderId,
-        "folder_text" => $sSearchableText,
-        );
-        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
 }
 
