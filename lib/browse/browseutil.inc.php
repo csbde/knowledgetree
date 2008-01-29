@@ -186,7 +186,7 @@ class KTBrowseUtil {
         $aBreadcrumbs = array();
 
         // skip root.
-        $folder_path_names = array_slice($oFolder->getPathArray(), 1);
+        $folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
 
         $parents = count($folder_path_ids);

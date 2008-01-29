@@ -183,8 +183,21 @@ class Folder extends KTEntity {
 	}
 
     function _fieldValues () {
-        $this->sFullPath = Folder::generateFolderPath($this->iParentID);
-        $this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
+    	if ($this->getId() == 1)
+    	{
+			$this->sFullPath = null;
+			$this->sParentFolderIDs = null;
+    	}
+    	else
+    	{
+    		$parent = Folder::get($this->iParentID);
+        	$this->sFullPath = $parent->getFullPath();
+        	if (!empty($this->sFullPath)) $this->sFullPath .= '/';
+        	$this->sFullPath .= $this->sName;
+        	$this->sParentFolderIDs = $parent->getParentFolderIDs();
+			if (!empty($this->sParentFolderIDs)) $this->sParentFolderIDs .= ',';
+        	$this->sParentFolderIDs .= $this->iParentID;
+    	}
         return parent::_fieldValues();
         return array(
             'name' => $this->sName,
@@ -331,6 +344,8 @@ class Folder extends KTEntity {
      */
     function getFolderPathNamesAsArray($iFolderID) {
 		global $default;
+
+
 		$oFolder = Folder::get($iFolderID);
 		$aPathArray = array();
 		if ($oFolder) {
@@ -340,7 +355,8 @@ class Folder extends KTEntity {
 				} else {
 					$aPathArray = array($oFolder->getFullPath());
 				}
-				$aPathArray[count($aPathArray)] = $oFolder->getName();
+
+				//$aPathArray[count($aPathArray)] = $oFolder->getName();
 			} else {
 				$aPathArray = array($oFolder->getName());
 			}
