@@ -256,20 +256,12 @@ class KTDocumentUtil {
             'documenttypeid' => $iDocumentTypeId,
         ));
 
-//        if (is_null($oContents)) {
-//            $res = KTDocumentUtil::setIncomplete($oDocument, 'contents');
-//            if (PEAR::isError($res)) {
-//                $oDocument->delete();
-//                return $res;
-//            }
-//        } else {
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Storing contents')));
-            $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
-            if (PEAR::isError($res)) {
-                $oDocument->delete();
-                return $res;
-            }
-//        }
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Storing contents')));
+        $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
+        if (PEAR::isError($res)) {
+        	$oDocument->delete();
+        	return $res;
+        }
 
         if (is_null($aMetadata)) {
             $res = KTDocumentUtil::setIncomplete($oDocument, 'metadata');
@@ -278,7 +270,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Saving metadata')));
+            $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Saving metadata')));
             $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata, $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -420,13 +412,15 @@ class KTDocumentUtil {
     function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
         $table = 'document_fields_link';
         $bNoValidate = KTUtil::arrayGet($aOptions, 'novalidate', false);
-        if ($bNoValidate !== true) {
+        if ($bNoValidate !== true)
+        {
             $res = KTDocumentUtil::validateMetadata($oDocument, $aMetadata);
+            if (PEAR::isError($res))
+            {
+            	return $res;
+       		}
+	        $aMetadata = empty($res)?array():$res;
         }
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-        $aMetadata = empty($res)?array():$res;
 
         $iMetadataVersionId = $oDocument->getMetadataVersionId();
         $res = DBUtil::runQuery(array("DELETE FROM $table WHERE metadata_version_id = ?", array($iMetadataVersionId)));
