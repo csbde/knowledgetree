@@ -76,6 +76,30 @@ class ZipFolder {
         $this->aReplaceValues = array_values($aReplace);
     }
 
+ /**
+     * Return the full path
+     *
+     * @param mixed $oFolderOrDocument May be a Folder or Document
+     */
+    function getFullFolderPath($oFolder)
+    {
+    	static $sRootFolder = null;
+
+    	if (is_null($sRootFolder))
+    	{
+    		$oRootFolder = Folder::get(1);
+    		$sRootFolder = $oRootFolder->getName();
+    	}
+
+    	$sFullPath = $sRootFolder . '/';
+    	$sFullPath .= $oFolder->getFullPath();
+
+
+    	if (substr($sFullPath,-1) == '/') $sFullPath = substr($sFullPath,0,-1);
+    	return $sFullPath;
+    }
+
+
     /**
     * Add a document to the zip file
     */
@@ -84,7 +108,7 @@ class ZipFolder {
             $oFolder = Folder::get($oDocument->getFolderID());
         }
 
-        $sDocPath = $oFolder->getFullPath().'/'.$oFolder->getName();
+        $sDocPath = $this->getFullFolderPath($oFolder);
         $sDocName = $oDocument->getFileName();
 
         $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sDocPath))));
@@ -114,7 +138,7 @@ class ZipFolder {
     * Add a folder to the zip file
     */
     function addFolderToZip($oFolder) {
-        $sFolderPath = $oFolder->getFullPath().'/'.$oFolder->getName().'/';
+        $sFolderPath = $this->getFullFolderPath($oFolder) .'/';
         $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sFolderPath))));
         $newDir = $this->sTmpPath;
         $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sFolderPath, true))));

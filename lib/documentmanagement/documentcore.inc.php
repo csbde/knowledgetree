@@ -194,7 +194,20 @@ class KTDocumentCore extends KTEntity {
 		  }
 		}
         if (!is_null($lastFolder)) {
-            $this->sFullPath = $lastFolder->getFullPath();
+        	$this->sFullPath = 'pending';
+        	if (!is_null($this->getMetadataVersionId()))
+        	{
+	       		$metadata = KTDocumentMetadataVersion::get($this->getMetadataVersionId());
+				$name =$metadata->getName();
+        		if ($lastFolder->getId() == 1)
+        		{
+        			$this->sFullPath = $name;
+        		}
+        		else
+        		{
+					$this->sFullPath = $lastFolder->getFullPath() . '/' . $name;
+        		}
+        	}
 			$this->sParentFolderIds = $lastFolder->getParentFolderIDs();
         }
         return parent::_fieldValues();

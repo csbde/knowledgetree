@@ -311,8 +311,9 @@ class KTPermissionUtil {
             return;
         }
 
+        $oPO = KTPermissionObject::get($iPermissionObjectId);
         if (is_null($aMapPermAllowed)) {
-			$oPO = KTPermissionObject::get($iPermissionObjectId);
+
 			$aPAs = KTPermissionAssignment::getByObjectMulti($oPO);
 			$aMapPermAllowed = array();
 			foreach ($aPAs as $oPA) {
@@ -654,7 +655,8 @@ class KTPermissionUtil {
         if (empty($bEvenIfNotOwner) && !KTPermissionUtil::isPermissionOwner($oDocumentOrFolder)) {
             return PEAR::raiseError(_kt("Document or Folder doesn't own its permission object"));
         }
-        $oOrigPO =& KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
+        $iOrigPOID = $oDocumentOrFolder->getPermissionObjectID();
+        $oOrigPO =& KTPermissionObject::get($iOrigPOID);
         $oFolder =& Folder::get($oDocumentOrFolder->getParentID());
         $iNewPOID = $oFolder->getPermissionObjectID();
         $oNewPO =& KTPermissionObject::get($iNewPOID);
@@ -667,6 +669,18 @@ class KTPermissionUtil {
             // If we're a document, no niggly children to worry about.
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
+        }
+
+       // if the new and old permission object and lookup ids are the same, then we might as well bail
+       if ($iOrigPOID == $iNewPOID)
+        {
+        	if ($oDocumentOrFolder->getPermissionLookupID() == $oFolder->getPermissionLookupID())
+        	{
+        		// doing this, as this was done below... (not ideal to copy, but anyways...)
+        		Document::clearAllCaches();
+        		Folder::clearAllCaches();
+        		return;
+        	}
         }
 
         $iFolderID = $oDocumentOrFolder->getID();

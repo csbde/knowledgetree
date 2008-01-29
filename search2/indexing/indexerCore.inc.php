@@ -179,8 +179,7 @@ class QueryResultItem
 		}
 		else
 		{
-			$this->fullpath = $result['full_path'] . '/' . $result['name'];
-			if (substr($this->fullpath,0,1) == '/') $this->fullpath = substr($this->fullpath,1);
+			$this->fullpath = $result['full_path'];
 		}
 
 		$this->mimeType = $result['mimetype'];
