@@ -182,10 +182,12 @@ class KTInit {
 
         $oKTConfig =& KTConfig::getSingleton();
 
+        $prefix = defined('USE_DB_ADMIN_USER')?'Admin':'';
+
         $dsn = array(
             'phptype'  => $oKTConfig->get('db/dbType'),
-            'username' => $oKTConfig->get('db/dbUser'),
-            'password' => $oKTConfig->get('db/dbPass'),
+            'username' => $oKTConfig->get("db/db{$prefix}User"),
+            'password' => $oKTConfig->get("db/db{$prefix}Pass"),
             'hostspec' => $oKTConfig->get('db/dbHost'),
             'database' => $oKTConfig->get('db/dbName'),
             'port' => $oKTConfig->get('db/dbPort'),
@@ -320,6 +322,25 @@ class KTInit {
     }
     // }}}
 
+    static function detectMagicFile()
+    {
+    	$knownPaths = array(
+    			'/usr/share/file/magic', // the old default
+    			'/etc/httpd/conf/magic', // fedora's location
+    			'/etc/magic' // worst case scenario. Noticed this is sometimes empty and containing a reference to somewher else
+    		);
+
+		foreach($knownPaths as $path)
+		{
+			if (file_exists($path))
+			{
+				return $path;
+			}
+		}
+		return KT_DIR . '/config/magic';
+    }
+
+
     static protected $handlerMapping = array(
     		E_WARNING=>PEAR_LOG_WARNING,
     		E_USER_WARNING=>PEAR_LOG_WARNING,
@@ -360,10 +381,10 @@ function catchFatalErrors($p_OnOff='On'){
 	ini_set('display_errors','On');
     $phperror='><div id="phperror" style="display:none">';
 	ini_set('error_prepend_string',$phperror);
-    
+
 	$phperror='</div>><form name="catcher" action="/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
 	<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
-	ini_set('error_append_string',$phperror);      
+	ini_set('error_append_string',$phperror);
 }
 
 
@@ -452,7 +473,7 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('KnowledgeTree', 'rootUrl', $this->guessRootUrl());
             $oKTConfig->setdefaultns('KnowledgeTree', 'execSearchPath', $_SERVER['PATH']);
             $oKTConfig->setdefaultns('KnowledgeTree', 'pathInfoSupport', false);
-            $oKTConfig->setdefaultns('KnowledgeTree', 'magicDatabase', '/usr/share/file/magic');
+            $oKTConfig->setdefaultns('KnowledgeTree', 'magicDatabase', KTInit::detectMagicFile());
 
             $oKTConfig->setdefaultns('dashboard', 'alwaysShowYCOD', true);
 
@@ -612,14 +633,14 @@ require_once(KT_LIB_DIR . '/ktentity.inc');
 $KTInit->catchFatalErrors();
 
 if (phpversion()<5){
-	
+
 	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].'/'.'customerrorpage.php';
-	
+
 	session_start();
-    
+
 	$_SESSION['sErrorMessage'] = 'KnowledgeTree now requires that PHP version 5 is installed. PHP version 4 is no longer supported.';
-		
-   
+
+
 	header('location:'. $sErrorPage ) ;
 
 }
@@ -632,7 +653,7 @@ $KTInit->setupI18n();
 
 define('KTLOG_CACHE',false);
 
-if ($GLOBALS['kt_test']) {
+if (isset($GLOBALS['kt_test'])) {
     $KTInit->initTesting();
 }
 
