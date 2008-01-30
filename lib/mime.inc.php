@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -50,15 +50,9 @@ class KTMime {
     function getMimeTypeID($sMimeType, $sFileName) {
     	global $default;
     	$sTable = KTUtil::getTableName('mimetypes');
-    	$lookupExtension = false;
 
-    	if (in_array($sMimeType, array('application/x-zip','application/octet-stream', 'application/msword', 'text/plain')))
-    	{
-    		$lookupExtension = true;
-    	}
 
-    	if ($lookupExtension || empty($sMimeType))
-    	{
+
     		// check by file extension
     		$sExtension = KTMime::stripAllButExtension($sFileName);
     		$res = DBUtil::getOneResultKey(array("SELECT id FROM " . $sTable . " WHERE LOWER(filetypes) = ?", array($sExtension)),'id');
@@ -69,7 +63,7 @@ class KTMime {
     		else {
     			return $res;
     		}
-    	}
+
 
     	// get the mime type id
     	if (isset($sMimeType)) {
@@ -207,12 +201,12 @@ class KTMime {
     function stripAllButExtension($sFileName) {
         return strtolower(substr($sFileName, strrpos($sFileName, ".")+1, strlen($sFileName) - strrpos($sFileName, ".")));
     }
-    
+
     /**
-     * getAllMimeTypesInformation is a staic function used to get a fuller set of 
+     * getAllMimeTypesInformation is a staic function used to get a fuller set of
      * information on the mime types held in the database.
-     * 
-     */    
+     *
+     */
     function getAllMimeTypesInformation()
     {
     	$sTable = KTUtil::getTableName('mimetypes');
@@ -221,10 +215,10 @@ class KTMime {
         $res = DBUtil::getResultArray($aQuery);
 		return $res;
     }
-    
+
     /**
      * get all information on all the extractors in the database
-     * 
+     *
      */
     function getMimeExtractorInformation()
     {
@@ -232,11 +226,11 @@ class KTMime {
         $res = DBUtil::getResultArray($aQuery);
 		return $res;
     }
-    
+
     /**
      *give the mimetype name and get the friendly names and the extensions
      *
-     */ 
+     */
     function getFriendlyNameAndExtension($sMimeType)
     {
     	$sTable = KTUtil::getTableName('mimetypes');
