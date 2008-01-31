@@ -289,6 +289,59 @@ class schedulerUtil extends KTUtil
     }
 
     /**
+     * Check if this is a new installation
+     *
+     */
+    function checkNewInstall() {
+        // The date and time of installation is not stored anywhere so we work around it
+        // On installation the run_time of all tasks is set to '2007-10-01', so we check if all the tasks have the same run_time date with time set to 00:00:00
+        // We then set run_time to the current date, ensuring the time is not 00.
+
+        $query = 'SELECT count(*) as cnt, run_time FROM scheduler_tasks s GROUP BY run_time';
+        $res = DBUtil::getResultArray($query);
+
+        if(PEAR::isError($res)){
+            return false;
+        }
+
+        // if they aren't all the same return false - not a fresh install
+        $iCnt = count($res);
+        if($iCnt > 1){
+            return false;
+        }
+
+        // Check if the time is 00
+        $sRunTime = $res[0]['run_time'];
+
+        $aRunTime = explode(' ', $sRunTime);
+
+        if(!isset($aRunTime[1]) || empty($aRunTime[1])){
+            // set install date
+            schedulerUtil::setInstallDate();
+            return true;
+        }
+        if($aRunTime[1] == '00:00:00'){
+            // set install date
+            schedulerUtil::setInstallDate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set the date first checked as the install date for all scheduler tasks
+     *
+     */
+    function setInstallDate() {
+        // get current date
+        $date = date('Y-m-d H:i:s');
+
+        $query = "UPDATE scheduler_tasks SET run_time = '$date'";
+
+        DBUtil::runQuery($query);
+    }
+
+    /**
     * Delete task by name
     */
     function deleteByName($sName) {
