@@ -154,9 +154,10 @@ class schedulerEntity extends KTEntity
 
     function getNextRunTime($date) {
         $aOptions = array('multi' => true, 'orderby' => 'run_time ASC');
-        $aFields = array('run_time');
+        $aFields = array('run_time', 'status');
         $aValues = array();
         $aValues[] = array('type' => 'after', 'value' => $date);
+        $aValues[] = array('type' => 'nequals', 'value' => 'disabled');
 
         return KTEntityUtil::getBy('schedulerEntity', $aFields, $aValues, $aOptions);
     }
