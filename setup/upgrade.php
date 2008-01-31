@@ -123,7 +123,16 @@ function performAllUpgrades () {
     return $res;
 }
 
-function performPersistentActions() {
+function performPreUpgradeActions() {
+    
+    // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
+    // It should idealy work the same as the upgrades.
+    
+    return true;
+
+}
+
+function performPostUpgradeActions() {
     
     // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
     // It should idealy work the same as the upgrades.
@@ -1063,8 +1072,24 @@ function Upgrade()
         upgrade your <?php echo APP_NAME;?> installation to <strong><?php echo $default->systemVersion;?></strong>.
  
   <?php
+    $pre_res = performPreUpgradeActions();
+	if (PEAR::isError($pre_res)) 
+	{
+?>
+<font color="red">Pre-Upgrade actions failed.</font>
+<?php
+	} 
+	else 
+	{
+?>
+<p>
+<font color="green">Pre-Upgrade actions succeeded.</font>
+<?php
+	}
+?>
+<p>
+  <?php
 	$res = performAllUpgrades();
-    $pres = performPersistentActions();
 	if (PEAR::isError($res) || PEAR::isError($pres)) 
 	{
 ?>
@@ -1073,7 +1098,6 @@ function Upgrade()
 	} 
 	else 
 	{
-		 
 ?>
 <p>
 <font color="green">Upgrade succeeded.</font>
@@ -1081,6 +1105,22 @@ function Upgrade()
 	}
 ?>
 <p>
+  <?php
+    $post_pres = performPostUpgradeActions();
+	if (PEAR::isError($post_res)) 
+	{
+?>
+<font color="red">Post-Upgrade actions failed.</font>
+<?php
+	} 
+	else 
+	{
+?>
+<p>
+<font color="green">Post-Upgrade actions succeeded.</font>
+<?php
+	}
+?>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';"> 
