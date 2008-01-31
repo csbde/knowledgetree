@@ -70,9 +70,11 @@ class schedulerDashlet extends KTBaseDashlet {
         if($iNow > $iNext){
             $iDif = $iNow - $iNext;
 
-            // if it hasn't run for a whole day then display dashlet alert.
+            // if it hasn't run for a whole day and its not a fresh install then display dashlet alert.
             if($iDif > 60*60*24) {
-                return true;
+                // check if its a new install
+                $check = schedulerUtil::checkNewInstall();
+                return !$check;
             }
         }
 
@@ -106,6 +108,11 @@ class schedulerDashlet extends KTBaseDashlet {
         $aTimes = $this->aTimes;
         $sLastRunTime = $aTimes['lastruntime'];
         $sNextRunTime = $aTimes['nextruntime'];
+
+        // Check if the previous time is empty - mysql DB defaults to 0000-00-00 for an empty date
+        if($sLastRunTime == '0000-00-00 00:00:00'){
+            $sLastRunTime = false;
+        }
 
         // Check if scheduler has missed the last run
         $iNow = time();
@@ -146,7 +153,6 @@ class schedulerDashlet extends KTBaseDashlet {
         $sLastTime = $aTimes['lasttime'];
         $sTimeDif = $aTimes['timedif'];
         $bDue = $aTimes['due'];
-
 
         $oKTConfig =& KTConfig::getSingleton();
         $rootUrl = $oKTConfig->get("rootUrl");

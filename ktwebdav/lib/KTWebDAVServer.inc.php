@@ -1074,13 +1074,25 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             }
 
             $srv_proto = split('/', $_SERVER['SERVER_PROTOCOL']);
+            $proto = strtolower($srv_proto[0]);
+
+            // check if ssl enabled
+            if($proto == 'http' && $default->sslEnabled){
+                $proto = 'https';
+            }
+
+            $dataSafe = '';
+            if($this->safeMode != 'off'){
+                $dataSafe = "<div style=\"color: orange;\" align=\"center\">NOTE: Safe mode is currently enabled, only viewing and downloading of documents will be allowed.</div><br><br>";
+            }
 
             $data = "<html><head><title>KTWebDAV - The KnowledgeTree WebDAV Server</title></head>";
             $data .= "<body>";
             $data .= "<div align=\"center\"><IMG src=\"../resources/graphics/ktlogo-topbar_base.png\" width=\"308\" height=\"61\" border=\"0\"></div><br>";
             $data .= "<div align=\"center\"><h2><strong>Welcome to KnowledgeTree WebDAV Server</strong></h2></div><br><br>";
             $data .= "<div align=\"center\">To access KTWebDAV copy the following URL and paste it into your WebDAV enabled client...</div><br><br>";
-            $data .= "<div align=\"center\"><strong>" . strtolower($srv_proto[0]) . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . "</strong></div>";
+            $data .= $dataSafe;
+            $data .= "<div align=\"center\"><strong>" . $proto . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . "</strong></div>";
             $data .= "</body>";
 
             $options['mimetype'] = 'text/html';

@@ -1,42 +1,30 @@
 
-<span class="descriptiveText">{i18n}The scheduler runs background tasks.{/i18n}</span>
+<span class="descriptiveText">{i18n  arg_link=$sAdminLink}The scheduler takes care of managing and running tasks or batch jobs at regular intervals in the background. These tasks can be configured via the #link#.{/i18n}</span>
+
+<p>
 {if $lasttime}
-    <span class="descriptiveText">{i18n  arg_time=$lasttime}The last time these tasks were performed was on #time#.{/i18n}</span>
+    <span class=''>{i18n  arg_time=$lasttime}The last time these tasks were performed was on #time#.{/i18n}</span>
 {else}
-    <span class="descriptiveText">{i18n}No tasks have been run yet.{/i18n}</span>
+    <span class=''>{i18n}No tasks have been run yet.{/i18n}</span>
 {/if}
-&nbsp;<span class="descriptiveText">{i18n  arg_link=$sAdminLink}This can be configured via the #link#.{/i18n}</span>
+</p>
 
 <p>
 {if !$lasttime}
-{if $isDue}
-    <span class="">{i18n  arg_time=$timedif}The tasks were scheduled to be run #time# ago.{/i18n}</span>
-{else}
-    <span class="">{i18n  arg_time=$timedif}The tasks are scheduled to be run in #time#.{/i18n}</span>
-{/if}
+    {if $isDue}
+        <span class=''>{i18n  arg_time=$timedif}The tasks were scheduled to be run #time# ago.{/i18n}</span>
+    {else}
+        <span class=''>{i18n  arg_time=$timedif}The tasks are scheduled to be run in #time#.{/i18n}</span>
+    {/if}
 {/if}
 </p>
 
 
 {if $bWin}
     <p>
-    {i18n}Note: The stack install uses its own service for task scheduling and the following is only for source installs.<br>{/i18n}
-    {i18n}To view the list of scheduled tasks, open the Control Panel and go to Scheduled Tasks. For further information on how to add or update a task, please refer to the documentation.{/i18n}
-    </p>
-    <p>
-    <strong><span onclick="{$onClick}">
-        <img id="scheduler_icon" src="{$sImg}"/>
-        {i18n}Brief Guide to Scheduled Tasks:{/i18n}</span></strong>
-    <div id="cronguide" style="display: none; visibility: hidden;">
-    {i18n}If the scheduler is not in the list of jobs then add it by clicking on "Add Scheduled Task" or by right-clicking and selecting New->Scheduled Task. If the scheduler exists then right-click on it and select Properties.{/i18n}
-    <br /><br />Set the following:
-        <ul>
-        <li>{i18n}Task to run = path/to/knowledgetree/bin/scheduler.php{/i18n}</li>
-        <li>{i18n}Frequency = Daily at midnight{/i18n}</li>
-        <li>{i18n}Under advanced, set it to repeat every 5 minutes{/i18n}</li>
-        </ul>
-    </div>
-    </p>
+    {i18n}Note: The stack install uses its own service for task scheduling. To check if this service has been installed and is running, open the <i>Control Panel</i>, go to
+    <i>Administrative Tools</i> and open the list of <i>Services</i>. The scheduler service is called <i>ktdmsScheduler</i>. For further information on this service,
+    please refer to the documentation.{/i18n}
 
 {else}
     <p>
@@ -46,9 +34,9 @@
     </p>
 
     <p>
-    <strong><span onclick="{$onClick}">
+    <span onclick="{$onClick}">
         <img id="scheduler_icon" src="{$sImg}"/>
-        {i18n}Guide to using cron:{/i18n}</span></strong>
+        <b>{i18n}Guide to using cron:{/i18n}</b></span>
     <div id="cronguide" style="display: none; visibility: hidden;">
     <ul>
         <li>{i18n}View jobs in the crontab:{/i18n} crontab -l</li>
