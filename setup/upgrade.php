@@ -119,8 +119,21 @@ function performAllUpgrades () {
 			break;
 		}
 	}
-	KTPluginUtil::registerPlugins();
-	return $res;
+	
+    return $res;
+}
+
+function performPersistentActions() {
+    
+    // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
+    // It should idealy work the same as the upgrades.
+    
+    // Clean out the plugin_helper table
+    $sql = "DELETE FROM plugin_helper";
+    $res = DBUtil::runQuery($sql);
+
+    return $res;
+
 }
 
 function failWritablePath($name, $path) {
@@ -1051,7 +1064,8 @@ function Upgrade()
  
   <?php
 	$res = performAllUpgrades();
-	if (PEAR::isError($res)) 
+    $pres = performPersistentActions();
+	if (PEAR::isError($res) || PEAR::isError($pres)) 
 	{
 ?>
 <font color="red">Upgrade failed.</font>
