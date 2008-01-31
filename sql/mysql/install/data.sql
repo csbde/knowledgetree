@@ -965,11 +965,14 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (167,'func*3.5.2*4*createPrimaryKeys','Recreate db integrity:Create primary keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (168,'func*3.5.2*5*createForeignKeys','Recreate db integrity:Create foreign keys on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (169,'func*3.5.2*6*createIndexes','Recreate db integrity:Create indexes on the database','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(170,'sql*3.5.2*0*3.5.2/plugins_orderby.sql','Plugins orderby update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(171,'sql*3.5.2*0*3.5.2/document_link.sql','Document Link update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(172,'sql*3.5.2*0*3.5.2/index_file_status_message.sql','Index file status message update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(173,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(174,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(170,'func*3.5.2*0*setStorageEngine','Recreate db integrity: Set storage engine to InnoDB for transaction safety','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(171,'func*3.5.2*0*removeSlashesFromObjects','Remove slashes from documents and folders','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(172,'sql*3.5.2*0*3.5.2/plugins_orderby.sql','Plugins orderby update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(173,'sql*3.5.2*0*3.5.2/oem_no.sql','Database upgrade to version 3.5.2: Oem no','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(174,'sql*3.5.2*0*3.5.2/document_link.sql','Document Link update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(175,'sql*3.5.2*0*3.5.2/index_file_status_message.sql','Index file status message update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(176,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(177,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1826,7 +1829,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (174);
+INSERT INTO `zseq_upgrades` VALUES (177);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
