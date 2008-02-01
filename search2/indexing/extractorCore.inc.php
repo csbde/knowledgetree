@@ -101,6 +101,13 @@ abstract class DocumentExtractor
 	 */
 	protected $indexStatus;
 
+	/**
+	 * If an error occurred, this is the output that was captured
+	 *
+	 * @var string
+	 */
+	public $output;
+
 
 	public function __construct()
 	{
@@ -349,21 +356,66 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 	 */
 	protected  function exec($cmd)
 	{
+		$config = KTConfig::getSingleton();
+		$temp_dir = $config->get('urls/tmpDirectory');
+		$res = 0;
+
+		$script_prefix = $temp_dir . '/' . time();
+		$script_out = $script_prefix . '.out';
+
+		// define the scripts that we want
+
 		if (OS_WINDOWS)
 		{
+			$script_name = $script_prefix . '.bat';
 
-
-			$WshShell = new COM("WScript.Shell");
-			$res = $WshShell->Run($cmd, 0, true);
-
-
-			return $res == 0;
+			$script = "rem This is an auto generated file. \n";
+			$script .= $cmd . ' 2> ' . $script_out . "\r\n";
 		}
 		else
 		{
-			$aRet = KTUtil::pexec($cmd);
-			return $aRet['ret'] == 0;
+			$script_name = $script_prefix . '.sh';
+
+			$script = "#!/bin/sh\n";
+			$script .= "# This is an auto generated file. \n";
+			$script .= $cmd . ' 2> ' . $script_out . "\n";
+			$script .= "exit $?\n";
 		}
+
+		// write the script file
+		if (file_put_contents($script_name, $script) === false)
+		{
+			$this->output = _kt('Could not create exec script: ') . $script_name;
+			return false;
+		}
+
+		// execute the script file
+		if (OS_WINDOWS)
+		{
+			$WshShell = new COM("WScript.Shell");
+			$res = $WshShell->Run($script_name, 0, true);
+		}
+		else
+		{
+			if (chmod($script_name, 0755) === false)
+			{
+				$this->output = _kt('Could change permission on exec script: ') . $script_name;
+				return false;
+			}
+			$aRet = KTUtil::pexec($script_name);
+			$res = $aRet['ret'];
+		}
+
+		// remote the script file and get the output if available
+		@unlink($script_name);
+
+		if (file_exists($script_out))
+		{
+			$this->output = file_get_contents($script_out);
+			@unlink($script_out);
+		}
+
+		return $res == 0;
 	}
 
 	/**
