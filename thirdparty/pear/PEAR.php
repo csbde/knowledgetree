@@ -211,7 +211,7 @@ class PEAR
     * @return mixed   A reference to the variable. If not set it will be
     *                 auto initialised to NULL.
     */
-    function &getStaticProperty($class, $var)
+    static function &getStaticProperty($class, $var)
     {
         static $properties;
         return $properties[$class][$var];
@@ -248,9 +248,9 @@ class PEAR
      * @access  public
      * @return  bool    true if parameter is an error
      */
-    function isError($data, $code = null)
+    static function isError($data, $code = null)
     {
-        if (is_a($data, 'PEAR_Error')) {
+        if ($data instanceof PEAR_Error) {
             if (is_null($code)) {
                 return true;
             } elseif (is_string($code)) {
@@ -863,6 +863,20 @@ class PEAR_Error
             trigger_error("PEAR_ERROR_EXCEPTION is obsolete, use class PEAR_ErrorStack for exceptions", E_USER_WARNING);
             eval('$e = new Exception($this->message, $this->code);$e->PEAR_Error = $this;throw($e);');
         }
+
+        static $hasError=false;
+        if (!$hasError)
+        {
+        	$hasError = true;
+
+        	global $default;
+        	$trace = debug_backtrace();
+        	$msg = $this->getMessage();
+        	if ($msg == 'No licenses have been installed') return;
+        	$default->log->info('PEAR_ERROR: ' . $msg);
+        	$default->log->info('Stack Trace: ' . print_r($trace,true));
+        }
+
     }
 
     // }}}
