@@ -1034,6 +1034,7 @@ abstract class Indexer
 
         		$this->executeHook($extractor, 'pre_extract');
 				$this->executeHook($extractor, 'pre_extract', $mimeType);
+				$removeFromQueue = false;
 
         		if ($extractor->extractTextContent())
         		{
@@ -1048,11 +1049,10 @@ abstract class Indexer
         			if ($indexDiscussion)
         			{
         				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
-
+        				$removeFromQueue = $indexStatus;
         				if (!$indexStatus)
         				{
         					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
-
         				}
 
         				$extractor->setIndexingStatus($indexStatus);
@@ -1066,6 +1066,7 @@ abstract class Indexer
 						else
 						{
 							$indexStatus = $this->indexDocument($docId, $targetFile, $title, $version);
+							$removeFromQueue = $indexStatus;
 
 							if (!$indexStatus)
 							{
@@ -1095,7 +1096,7 @@ abstract class Indexer
         		}
 
         		@unlink($targetFile);
-        		$removeFromQueue = $indexStatus;
+
         	}
         	else
         	{
