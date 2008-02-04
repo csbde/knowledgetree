@@ -2283,7 +2283,7 @@ class KTWebService
      * @param string $reason
      * @param string $base64
      * @param boolean $major_update
-     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     function checkin_small_document($session_id, $document_id,  $filename, $reason, $base64, $major_update )
     {
@@ -2335,16 +2335,22 @@ class KTWebService
      * @param string $session_id
      * @param int $document_id
      * @param string $reason
-     * @return kt_document_detail.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
+     * @return kt_document_detail.  status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     function checkout_document($session_id, $document_id, $reason,$download=true)
     {
     	$this->debug("checkout_document('$session_id',$document_id,'$reason')");
 
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
@@ -2354,7 +2360,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
 			$this->debug("checkout_document - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->checkout($reason);
@@ -2362,7 +2368,7 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
 			$this->debug("checkout_document - cannot checkout - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$session = &$kt->get_session();
@@ -2403,10 +2409,16 @@ class KTWebService
     {
     	$this->debug("checkout_small_document('$session_id',$document_id,'$reason', $download)");
 
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
@@ -2416,7 +2428,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("checkout_small_document - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->checkout($reason);
@@ -2424,7 +2436,7 @@ class KTWebService
     	{
     		$response['message'] = $result->getMessage();
     		$this->debug("checkout_small_document - cannot checkout - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$content='';
@@ -2440,7 +2452,7 @@ class KTWebService
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 	    		$this->debug("checkout_small_document - cannot write $filename ", $session_id);
-    			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    			return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     		}
     		$content = fread($fp, filesize($filename));
     		fclose($fp);
