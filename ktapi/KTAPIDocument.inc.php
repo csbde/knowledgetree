@@ -1076,12 +1076,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 if (is_null($result))
 		 {
 		 	DBUtil::rollback();
-		 	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR);
+		 	return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': Null result returned but not expected.');
 		 }
 		 if (PEAR::isError($result))
 		 {
 		 	DBUtil::rollback();
-		 	return new KTAPI_Error(sprintf(_kt("Unexpected validation failure: %s."), $result->getMessage()));
+		 	return new KTAPI_Error('Unexpected validation failure', $result);
 		 }
 		 DBUtil::commit();
 
