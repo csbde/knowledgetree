@@ -12,13 +12,16 @@
 {assign var=red value=0}
 {section name=usage loop=$usages}
 
+{assign var=colorstr value=""}
 {if $usages[usage].colour == 'orange'}
     {assign var=orange value=1}
+    {assign var=colorstr value="bgcolor='orange'"}
 {/if}
 {if $usages[usage].colour == 'red'}
     {assign var=red value=1}
+    {assign var=colorstr value="bgcolor='red'"}
 {/if}
-    <tr bgcolor="{$usages[usage].colour}">
+    <tr {$colorstr}>
         <td>{$usages[usage].mounted}</td>
 		<td align=right>{$usages[usage].size}&nbsp;&nbsp;</td>
 		<td align=right>{$usages[usage].used}&nbsp;&nbsp;</td>
