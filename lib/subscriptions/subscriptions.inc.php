@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  *
@@ -101,7 +101,7 @@ class SubscriptionEvent {
 	    // only useful for folder subscriptions.
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
     		foreach ($aUsers as $oSubscriber) {
-    
+
     		    // notification object first.
     		    $aNotificationOptions = array();
     		    $aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -111,7 +111,7 @@ class SubscriptionEvent {
     		    $aNotificationOptions['object_id'] = $oAddedFolder->getId();  // parent folder_id, in this case.
     		    $aNotificationOptions['event_type'] = "AddFolder";
     			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-    
+
     			// now the email content.
     			// FIXME this needs to be handled entirely within notifications from now on.
     			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -127,7 +127,7 @@ class SubscriptionEvent {
 	    // two parts to this:
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
     		foreach ($aUsers as $oSubscriber) {
-    
+
     		    // notification object first.
     			$aNotificationOptions = array();
     			$aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -136,9 +136,9 @@ class SubscriptionEvent {
     		    $aNotificationOptions['location_name'] = Folder::generateFullFolderPath($oParentFolder->getId());
     		    $aNotificationOptions['object_id'] = $oAddedDocument->getId();  // parent folder_id, in this case.
     		    $aNotificationOptions['event_type'] = "AddDocument";
-    
+
     			$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-    
+
     			// now the email content.
     			// FIXME this needs to be handled entirely within notifications from now on.
     			if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -400,7 +400,7 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
-        
+
 		foreach ($aUsers as $oSubscriber) {
 
 		    // notification object first.
@@ -428,9 +428,9 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
 	    // OK:  two actions:  document registrants, folder registrants.
         $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
-        
+
 					foreach ($aUsers as $oSubscriber) {
-			
+
 					    // notification object first.
 						$aNotificationOptions = array();
 						$aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -440,7 +440,7 @@ class SubscriptionEvent {
 					    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 					    $aNotificationOptions['event_type'] = "CheckOutDocument";
 						$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-			
+
 						// now the email content.
 						// FIXME this needs to be handled entirely within notifications from now on.
 						if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -454,7 +454,7 @@ class SubscriptionEvent {
 
         $aUsers = $this->_getSubscribers($oParentFolder->getId(), $this->subscriptionTypes["Folder"]);
 				foreach ($aUsers as $oSubscriber) {
-		
+
 				    // notification object first.
 					$aNotificationOptions = array();
 					$aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -464,7 +464,7 @@ class SubscriptionEvent {
 				    $aNotificationOptions['object_id'] = $oModifiedDocument->getId();  // parent folder_id, in this case.
 				    $aNotificationOptions['event_type'] = "CheckOutDocument";
 					$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-		
+
 					// now the email content.
 					// FIXME this needs to be handled entirely within notifications from now on.
 					if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -491,7 +491,7 @@ class SubscriptionEvent {
       	    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
       	    $aNotificationOptions['event_type'] = $moveOrCopy;
       	    $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-      
+
       	    // now the email content.
       	    // FIXME this needs to be handled entirely within notifications from now on.
       	    if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -504,9 +504,9 @@ class SubscriptionEvent {
 
 
         $aUsers = $this->_getSubscribers($oFromFolder->getId(), $this->subscriptionTypes["Folder"]);
-        
+
       	foreach ($aUsers as $oSubscriber) {
-      
+
       	    // notification object first.
       	    $aNotificationOptions = array();
       	    $aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -516,7 +516,7 @@ class SubscriptionEvent {
       	    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
       	    $aNotificationOptions['event_type'] = $moveOrCopy;
       	    $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-      
+
       	    // now the email content.
       	    // FIXME this needs to be handled entirely within notifications from now on.
       	    if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -529,7 +529,7 @@ class SubscriptionEvent {
 
         $aUsers = $this->_getSubscribers($oToFolder->getId(), $this->subscriptionTypes["Folder"]);
       	foreach ($aUsers as $oSubscriber) {
-      
+
       	    // notification object first.
       	    $aNotificationOptions = array();
       	    $aNotificationOptions['target_user'] = $oSubscriber->getID();
@@ -539,7 +539,7 @@ class SubscriptionEvent {
       	    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
       	    $aNotificationOptions['event_type'] = $moveOrCopy;
       	    $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-      
+
       	    // now the email content.
       	    // FIXME this needs to be handled entirely within notifications from now on.
       	    if ($oSubscriber->getEmailNotification() && (strlen($oSubscriber->getEmail()) > 0)) {
@@ -703,7 +703,7 @@ class SubscriptionEvent {
 			}
 		}
     }
-    
+
     // small helper function to assist in identifying the numeric id.
     function _getKeyForType($sEventType) {
         foreach ($this->eventTypes as $key => $val) {
@@ -737,9 +737,16 @@ class SubscriptionEvent {
 		// Remove alerted users
 		$aNewUsers = $this->_pruneAlertedUsers($aNewUsers);
 
+
+		$iCurrentUserId = $_SESSION['userID'];
 		// notionally less efficient than the old code.  if its a big issue, can easily
 		// be refactored.
 		foreach ($aNewUsers as $iUserId) {
+		    // the user doesn't need to be notified for his/her own modifications
+		    if($iUserId == $iCurrentUserId){
+		        continue;
+		    }
+
 			$oUser = & User::get($iUserId);
 
 			// do a quick prune here, for performance/maintenance reasons.
