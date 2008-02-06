@@ -236,7 +236,7 @@ class User extends KTEntity {
 
     	// Check if the KT Info dashlet is being displayed
     	// If it's not in the top left corner, move it there.
-    	if(!(strpos($sKnownlist, 'KTInfoDashlet') === false) && $knownlist[0] != "'KTInfoDashlet'"){
+    	if((!(strpos($sKnownlist, 'KTInfoDashlet') === false) && $knownlist[0] != "'KTInfoDashlet'") || empty($knownlist)){
     	    $left = $dashlets->left;
     	    $right = $dashlets->right;
 
