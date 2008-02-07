@@ -37,7 +37,15 @@
                    <strong>{i18n}current version{/i18n}</strong>
                 {else}
                     {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
-                        <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with current{/i18n}</a></td>
+                        <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}Metadata{/i18n}</a>
+                        {if ($bShowCompare)}
+                            &nbsp;|&nbsp;
+                            {if ($document->getMimeTypeID() != $oVersion->getMimeTypeID())}
+                                <span class='descriptiveText'>{i18n}mime types do not match{/i18n}</span>
+                            {else}
+                                <a style="cursor:hand;" onclick='window.open("{$sUrl}&action=downloadComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}", "Document_Diffs");'>{i18n}Content{/i18n}</a>
+                            {/if}
+                        {/if}
                     {else}
                         &mdash;
                     {/if}
@@ -48,7 +56,11 @@
                 &mdash;
                 {else}
                     {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
-                        <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}compare with other version{/i18n}</a>
+                        <a href="{addQS}action=startComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}Metadata{/i18n}</a>
+                        {if ($bShowVersionCompare)}
+                            &nbsp;|&nbsp;
+                            <a href="{$sUrl}&action=showContentCompare&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}">{i18n}Content{/i18n}</a>
+                        {/if}
                     {else}
                         &mdash;
                     {/if}
@@ -73,7 +85,7 @@
         </tbody>
 
     </table>
-    
+
 {if ($showdelete && !$showall)}
     <p>
     <a href="{addQS}fDocumentId={$document->getId()}&show=all{/addQS}">{i18n}Show deleted versions{/i18n}</a>
