@@ -101,7 +101,9 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             }
             var name=arrPath[arrPath.length-1];
             var name=name.split('.');
-            name.pop();
+            if(name.length > 1){
+                name.pop();
+            }
             var title=name.join('.');
             document.getElementById('document_name').value=title;";
 
