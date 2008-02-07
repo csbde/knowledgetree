@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -119,6 +119,11 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         return _kt('Version History');
     }
 
+    /**
+     * Display a list of versions for comparing
+     *
+     * @return unknown
+     */
     function do_main() {
         $show_version = KTUtil::arrayGet($_REQUEST, 'show');
         $showall = (isset($show_version) && ($show_version == 'all')) ? true : false;
@@ -157,6 +162,26 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             $bShowDelete = KTUtil::arrayGet($_SESSION, 'adminmode', false);
         }
 
+        // Check if the document comparison plugin is installed
+        $isActive = KTPluginUtil::pluginIsActive('document.comparison.plugin');
+
+        $bShowCompare = false;
+        $bShowVersionCompare = false;
+        $sUrl = false;
+
+        if($isActive){
+            $oRegistry =& KTPluginRegistry::getSingleton();
+    		$oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
+    		$oPlugin->load();
+    		$sUrl = $oPlugin->getPagePath('DocumentComparison');
+    		$file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
+
+    		include_once($file);
+
+            // Check mime type of document for content comparison
+            list($bShowCompare, $bShowVersionCompare) = DocumentComparison::checkMimeType($this->oDocument);
+        }
+
         $aTemplateData = array(
               'context' => $this,
               'document_id' => $this->oDocument->getId(),
@@ -165,10 +190,18 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
               'downloadaction' => $oAction,
               'showdelete' => $bShowDelete,
               'showall' => $showall,
+              'bShowCompare' => $bShowCompare,
+              'bShowVersionCompare' => $bShowVersionCompare,
+              'sUrl' => $sUrl
         );
         return $oTemplate->render($aTemplateData);
     }
 
+    /**
+     * Display list of metadata versions to compare with the selected version
+     *
+     * @return unknown
+     */
     function do_startComparison() {
         $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
 
@@ -202,6 +235,10 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 
+    /**
+     * Display the metadata comparison
+     *
+     */
     function do_viewComparison() {
         // this is just a redirector
         $QS = array(
@@ -225,15 +262,20 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
-    
+
+    /**
+     * Confirm the deletion of a version
+     *
+     * @return unknown
+     */
     function do_confirmdeleteVersion() {
         $this->oPage->setSecondaryTitle($this->oDocument->getName());
         $this->oPage->setBreadcrumbDetails(_kt('Delete document version'));
-        
+
         // Display the version name and number
         $iVersionId = $_REQUEST['version'];
         $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/delete_version');
         $aTemplateData = array(
@@ -243,25 +285,29 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         );
         return $oTemplate->render($aTemplateData);
     }
-    
+
+    /**
+     * Delete a version
+     *
+     */
     function do_deleteVersion() {
         $iVersionId = $_REQUEST['versionid'];
         $sReason = $_REQUEST['reason'];
         $oVersion = Document::get($this->oDocument->getId(), $iVersionId);
-        
+
         $res = KTDocumentUtil::deleteVersion($this->oDocument, $iVersionId, $sReason);
-        
+
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             redirect(KTDocumentAction::getURL());
             exit(0);
         }
-        
+
         // Record the transaction
         $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document version deleted'), 'ktcore.transactions.delete_version', $aOptions);
         $oDocumentTransaction->create();
-        
+
         redirect(KTDocumentAction::getURL());
     }
 }
@@ -1336,7 +1382,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         $sReason = $data['reason'];
 
         $res = KTDocumentUtil::archive($this->oDocument, $sReason);
-        
+
         if(PEAR::isError($res)){
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
@@ -1364,7 +1410,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Workflow');
     }
-    
+
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
@@ -1381,7 +1427,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
 
         $oUser =& User::get($_SESSION['userID']);
-        
+
         // If the document is checked out - set transitions and workflows to empty and set checkedout to true
         $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
         if ($bIsCheckedOut){
@@ -1389,28 +1435,28 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             $aWorkflows = array();
             $transition_fields = array();
             $bHasPerm = FALSE;
-            
+
         }else{
             $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
 
             $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
-    
+
             $bHasPerm = false;
             if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
                 $bHasPerm = true;
             }
-    
+
             $fieldErrors = null;
-    
+
             $transition_fields = array();
-            
+
             if ($aTransitions) {
                 $aVocab = array();
                 foreach ($aTransitions as $oTransition) {
                 	if(is_null($oTransition) || PEAR::isError($oTransition)){
                 		continue;
                 	}
-    
+
                     $aVocab[$oTransition->getId()] = $oTransition->showDescription();
                 }
                 $fieldOptions = array('vocab' => $aVocab);
@@ -1422,7 +1468,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                     array('cols' => 80, 'rows' => 4));
             }
         }
-        
+
         $aTemplateData = array(
             'oDocument' => $oDocument,
             'oWorkflow' => $oWorkflow,
@@ -1479,7 +1525,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     function form_quicktransition() {
 
         $oForm = new KTForm;
-        
+
         if($this->oDocument->getIsCheckedOut()){
             $this->addErrorMessage(_kt('The workflow cannot be changed while the document is checked out.'));
         }else{
