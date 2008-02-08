@@ -1,21 +1,43 @@
 <h2>{i18n}Support and System Information{/i18n}</h2>
 
 {capture assign=kt_tracker_location}<a href="http://support.knowledgetree.com/">{i18n arg_appname="$appname"}#appname# Issue Tracker{/i18n}</a>{/capture}
-<p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker#{/i18n}</a> 
+<p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker#{/i18n}</a>
 {i18n}first if you believe you have found a bug.  Always check for known issues relating
 to the version you are using &mdash; we may already have found the problem you're referring to,
-and may have fixed it in a newer version.  If we ask for your PHP_INFO data, we're
-looking for the information described below.{/i18n}</p>
+and may have fixed it in a newer version. {/i18n}</p>
+<p class="descriptiveText">
+{i18n}The following download action allows you to download a zip archive of information that may assist the KnowledgeTree team to diagnose problems on your system. This archive contains:{/i18n}
+
+<br>*
+{i18n}PHP Information{/i18n}
+<br>*
+{i18n}Log Files (KnowledgeTree, Apache, Mysql){/i18n}
+<br>*
+{i18n}KnowledgeTree System Settings{/i18n}
+<br>*
+{i18n}KnowledgeTree Version Files{/i18n}
+<br>*
+{i18n}KnowledgeTree Database Schema (the structure of the database only){/i18n}
+<br>*
+{i18n}KnowledgeTree Database Counters Report{/i18n}
+<br>*
+{i18n}KnowledgeTree Database Storage Engine Report{/i18n}
+<br>*
+{i18n}System Information (Disk Usage, Process List, if easily detectable){/i18n}
+<br>*
+{i18n}MD5 Checksum of files (used to ensure files have not been tampered with){/i18n}
+</p>
+<p><a href="{addQS}action=actualInfo&fDownload=1{/addQS}"
+   class="ktInline ktAction ktDownload" title="Download Support Information">{i18n}Download Support information{/i18n}</a>
+<a href="{addQS}action=actualInfo&fDownload=1{/addQS}">{i18n}Download Support information{/i18n}</a>   </p>
+
+
 
 <p class="descriptiveText">{i18n}If you feel that the information presents to much
 specific information about your system (e.g. you feel that it would be a security
 risk to reveal aspects of it),  please do sanitise the information, or ask us
 if you can mail it directly to the developer who is dealing with your issue.{/i18n}</p>
 
-<p><a href="{addQS}action=actualInfo&fDownload=1{/addQS}"
-   class="ktInline ktAction ktDownload" title="Download PHP Information">{i18n}Download PHP information{/i18n}</a>
-<a href="{addQS}action=actualInfo&fDownload=1{/addQS}">{i18n}Download PHP information{/i18n}</a>   </p>
 
-<iframe src="{addQS}action=actualInfo{/addQS}" id="support-block">
 
-</iframe>
+
