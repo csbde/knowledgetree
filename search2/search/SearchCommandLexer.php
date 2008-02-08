@@ -95,6 +95,9 @@ class SearchCommandLexer
                 $append=false;
                 $clear=true;
                 break;
+            case '~':
+            	$this->token=SearchCommandParser::TILDE;
+                break;
             case '=':
                 $this->token=SearchCommandParser::IS;
                 break;
@@ -136,8 +139,8 @@ class SearchCommandLexer
                 }
                 elseif ($this->lookahead == '=')
                 {
-                    $this->zap();
                     $this->token=($this->char == '<')?(SearchCommandParser::LE):(SearchCommandParser::GE);
+                    $this->zap();
                 }
                 else
                 {
@@ -223,6 +226,9 @@ class SearchCommandLexer
         {
             switch($this->char)
             {
+            	case '"':
+                    $this->value .= '"';
+                    break;
                 case 'r':
                     $this->value .= "\r";
                     break;
