@@ -867,14 +867,27 @@ class PEAR_Error
         static $hasError=false;
         if (!$hasError)
         {
+        	if ($this instanceof KTEntityNoObjects) return;
         	$hasError = true;
+        	$config = KTConfig::getSingleton();
+        	$logPearError = $config->get('tweaks/logPearError', false);
+			if ($logPearError !== true) return;
 
         	global $default;
-        	$trace = debug_backtrace();
         	$msg = $this->getMessage();
-        	if ($msg == 'No licenses have been installed') return;
+        	$ignore = array(
+        			_kt('No licenses have been installed'),
+        			_kt('Session timed out'),
+        			_kt('You need to login to access this page'),
+        			_kt('You are coming from a different IP address than the session requires'),
+        			_kt('Anonymous logins are no longer allowed by the system administrator.  Please login.'),
+        			_kt('Your account has been disabled.  Please contact the system administrator for assistance.'));
+
+        	if (in_array($msg, $ignore)) return;
+        	$trace = debug_backtrace();
+
         	$default->log->info('PEAR_ERROR: ' . $msg);
-        	$default->log->info('Stack Trace: ' . print_r($trace,true));
+        	$default->log->info('Stack Trace: ' . print_r($trace, true));
         }
 
     }
