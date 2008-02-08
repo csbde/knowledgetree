@@ -390,13 +390,14 @@ class FieldExpr extends Expr
 			$value = $right;
 		}
 
-		if (substr($value,0,1) != '\'' || substr($value,-1) != '\'')
+		if ((substr($value,0,1) == '\'' && substr($value,-1) == '\'') || (substr($value,0,1) == '"' && substr($value,-1) == '"'))
 		{
-			OpExpr::rewriteString($left, $op, $right, $not);
+			$value =  trim( substr($value,1,-1) );
+			$right = new ValueExpr($value);
 		}
 		else
 		{
-			$right = new ValueExpr(trim(substr($value,1,-1)));
+			OpExpr::rewriteString($left, $op, $right, $not);
 		}
     }
 }
@@ -541,19 +542,26 @@ class ValueExpr extends Expr
      */
     protected $value;
 
+    protected $fuzzy;
+
+    protected $proximity;
+
     /**
      * Constructor for the value expression
      *
      * @param mixed $value
      */
-    public function __construct($value)
+    public function __construct($value, $fuzzy=null, $proximity=null)
     {
         parent::__construct();
         $this->value=$value;
+        $this->fuzzy = $fuzzy;
+        $this->proximity = $proximity;
     }
 
     public function getValue()
     {
+
         return $this->value;
     }
 
@@ -851,7 +859,14 @@ class TextQueryBuilder implements QueryBuilder
 
             $not = $expr->not()?' NOT ':'';
 
-			$query = "$not$fieldname: \"$value\"";
+            if (strpos($value, ' ') === false)
+            {
+            	$query = "$not$fieldname: $value";
+            }
+            else
+            {
+            	$query = "$not$fieldname: \"$value\"";
+            }
 		}
 
 		return $query;
@@ -875,7 +890,10 @@ class TextQueryBuilder implements QueryBuilder
 
             $not = $expr->not()?' NOT ':'';
 
-			$query .= "$not$fieldname: \"$value\"";
+            if (strpos($value, ' ') !== false)
+				$query .= "$not$fieldname: \"$value\"";
+			else
+				$query .= "$not$fieldname: $value";
 		}
 
 		return $query;
@@ -1931,7 +1949,8 @@ class OpExpr extends Expr
 
     	$results = array();
 
-    	if ($this->debug) print "\n\n$sql\n\n";
+    	global $default;
+    	$default->log->debug("SEARCH SQL: $sql");
     	$rs = DBUtil::getResultArray($sql);
 
     	if (PEAR::isError($rs))
@@ -1969,7 +1988,9 @@ class OpExpr extends Expr
     	}
 
     	$indexer = Indexer::get();
-    	if ($this->debug) print "\n\n$query\n\n";
+    	global $default;
+    	$default->log->debug("SEARCH LUCENE: $query");
+
     	$results = $indexer->query($query);
     	foreach($results as $item)
     	{
