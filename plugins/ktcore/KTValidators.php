@@ -381,7 +381,17 @@ class KTMembershipValidator extends KTValidator {
                             implode(', ', $failed)));                
                 }
             } else {
-                if (!$this->aVocab[$val]) {
+                
+                $mandatory=true;
+				 
+				if (substr($this->sInputVariable, 0, 9) == 'metadata_')
+				{
+					$fieldid = substr($this->sInputVariable, 9);
+					$field = DocumentField::get($fieldid);
+					$mandatory = $field->getIsMandatory();
+				}				
+			
+                if (!array_key_exists($val, $this->aVocab) && $mandatory) {
                     $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions, 
                         'error_message', sprintf(_kt('"%s"is not a valid selection.'), $val));
                 }
