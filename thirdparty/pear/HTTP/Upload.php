@@ -205,7 +205,7 @@ class HTTP_Upload_Error extends PEAR
                 'en'    => 'The file was only partially uploaded.',
                 'de'    => 'Die Datei wurde unvollst&auml;ndig &uuml;bertragen.',
                 'nl'    => 'Het bestand is slechts gedeeltelijk geupload.',
-                'pt_BR' => 'O arquivo nï¿½o foi enviado por completo.'
+                'pt_BR' => 'O arquivo não foi enviado por completo.'
                 ),
             'ERROR' => array(
                 'es'    => 'Error en subida:',
@@ -215,7 +215,7 @@ class HTTP_Upload_Error extends PEAR
                 'pt_BR' => 'Erro de upload:'
                 ),
             'DEV_NO_DEF_FILE' => array(
-                'es'    => 'No estï¿½ definido en el formulario este nombre de fichero como &lt;input type="file" name=?&gt;.',
+                'es'    => 'No está definido en el formulario este nombre de fichero como &lt;input type="file" name=?&gt;.',
                 'en'    => 'This filename is not defined in the form as &lt;input type="file" name=?&gt;.',
                 'de'    => 'Dieser Dateiname ist im Formular nicht als &lt;input type="file" name=?&gt; definiert.',
                 'nl'    => 'Deze bestandsnaam is niett gedefineerd in het formulier als &lt;input type="file" name=?&gt;.'
@@ -660,7 +660,7 @@ class HTTP_Upload_File extends HTTP_Upload_Error
      */
     function nameToSafe($name, $maxlen=250)
     {
-        $noalpha = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½';
+        $noalpha = 'ÁÉÍÓÚİáéíóúıÂÊÎÔÛâêîôûÀÈÌÒÙàèìòùÄËÏÖÜäëïöüÿÃãÕõÅåÑñÇç@°ºª';
         $alpha   = 'AEIOUYaeiouyAEIOUaeiouAEIOUaeiouAEIOUaeiouyAaOoAaNnCcaooa';
 
         $name = substr($name, 0, $maxlen);

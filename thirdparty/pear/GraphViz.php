@@ -4,7 +4,7 @@
 /**
  * Image_GraphViz
  *
- * Copyright (c) 2001-2006, Dr. Volker Gï¿½bbels <vmg@arachnion.de> and
+ * Copyright (c) 2001-2006, Dr. Volker Göbbels <vmg@arachnion.de> and
  * Sebastian Bergmann <sb@sebastian-bergmann.de>. All rights reserved.
  *
  * LICENSE: This source file is subject to version 3.0 of the PHP license
@@ -15,7 +15,7 @@
  *
  * @category   Image
  * @package    GraphViz
- * @author     Dr. Volker Gï¿½bbels <vmg@arachnion.de>
+ * @author     Dr. Volker Göbbels <vmg@arachnion.de>
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @author     Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author     Michael Lively Jr. <mlively@ft11.net>
@@ -90,10 +90,10 @@ require_once 'System.php';
  * @category  Image
  * @package   GraphViz
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @author    Dr. Volker Gï¿½bbels <vmg@arachnion.de>
+ * @author    Dr. Volker Göbbels <vmg@arachnion.de>
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author    Michael Lively Jr. <mlively@ft11.net>
- * @copyright Copyright &copy; 2001-2006 Dr. Volker Gï¿½bbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright Copyright &copy; 2001-2006 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.php.net/license/3_0.txt The PHP License, Version 3.0
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Image_GraphViz
