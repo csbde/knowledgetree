@@ -285,6 +285,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+				if ($oFieldset->getIsConditional())
+                {
+                	if ($val == _kt('No selection.'))
+                	{
+                		$val = null;
+                	}
+                }
                 // ALT.METADATA.LAYER.DIE.DIE.DIE
                 if (!is_null($val)) {
                     $MDPack[] = array(
