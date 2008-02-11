@@ -235,13 +235,13 @@ class File_Archive_Writer_Files extends File_Archive_Writer
             }
 
             if (isset($this->stat[2])) {
-                chmod($this->filename, $this->stat[2]);
+                @chmod($this->filename, $this->stat[2]);
             }
             if (isset($this->stat[5])) {
-                chgrp($this->filename, $this->stat[5]);
+                @chgrp($this->filename, $this->stat[5]);
             }
             if (isset($this->stat[4])) {
-                chown($this->filename, $this->stat[4]);
+                @chown($this->filename, $this->stat[4]);
             }
         }
     }
