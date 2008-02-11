@@ -370,7 +370,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 			$script_name = $script_prefix . '.bat';
 
 			$script = "rem This is an auto generated file. \n";
-			$script .= $cmd . ' 2> ' . $script_out . "\r\n";
+			$script .= $cmd . ' 2> "' . $script_out . "\"\r\n";
 		}
 		else
 		{
@@ -378,7 +378,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 			$script = "#!/bin/sh\n";
 			$script .= "# This is an auto generated file. \n";
-			$script .= $cmd . ' 2> ' . $script_out . "\n";
+			$script .= $cmd . ' 2> "' . $script_out . "\"\n";
 			$script .= "exit $?\n";
 		}
 
