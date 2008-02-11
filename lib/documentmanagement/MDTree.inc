@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -44,7 +44,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 class MDTreeNode extends KTEntity {
     /** boilerplate DB code. */
     /** primary key */
-    var $iId = -1; 
+    var $iId = -1;
     var $iFieldId;
     var $sName;
     var $iParentNode;
@@ -81,7 +81,7 @@ class MDTreeNode extends KTEntity {
 
 }
 
-/* simple class to encapsulate tree-as-a-whole behaviour. 
+/* simple class to encapsulate tree-as-a-whole behaviour.
     NBM - should this move, be refactored?  It certainly doesn't belong in the DB,
             since its just an aggregate utility.
 */
@@ -100,11 +100,11 @@ class MDTree {
         $this->contents = null;
         $this->mapnodes = null;
         $this->root = null;
-        $this->lookups = null;  
+        $this->lookups = null;
         $this->field_id = null;
     }
 
-    /* function buildForField 
+    /* function buildForField
      *
      * build a tree for a particular field instance.
      * sets contents, so we can edit "stuff".
@@ -112,7 +112,7 @@ class MDTree {
     function buildForField($iFieldId)
      {
         global $default;
-        // before we start, we need to check that 
+        // before we start, we need to check that
         // the specified field exists and is organised into a tree.
         $organisedField =& DocumentField::get($iFieldId);
         if (PEAR::isError($organisedField) || ($organisedField === false)) {
@@ -182,8 +182,8 @@ class MDTree {
             }
 
             $leafArray = null;
-            if (!array_key_exists("leaves", $target_set)) { 
-                $target_set["leaves"] = array($lookup_value->getId()); 
+            if (!array_key_exists("leaves", $target_set)) {
+                $target_set["leaves"] = array($lookup_value->getId());
             }
             else
             {
@@ -193,14 +193,14 @@ class MDTree {
 
             $this->lookups[$lookup_value->getId()] = $lookup_value;
 
-        }      
+        }
         $this->root =& $this->contents[0];
         $default->log->debug("MDTree::buildForField done: " . print_r($this, true));
-        
+
     }
 
     // handle deleting subtrees
-    function deleteNode($iNode) { 
+    function deleteNode($iNode) {
         $stack = array();
         array_push($stack, $iNode);
         while (count($stack) != 0)
@@ -215,7 +215,7 @@ class MDTree {
                         $this->lookups[$leaf]->setTreeParent(0);
                         $this->lookups[$leaf]->update();
                         $this->contents[0]["leaves"][] = $leaf;
-                    }   
+                    }
                 }
                 else array_push($stack, $value);
             }
@@ -225,7 +225,7 @@ class MDTree {
         $iParent = $this->mapnodes[$iNode]->getParentNode();
         foreach ($this->contents[$iParent] as $index => $val)
             if ($iNode === $val) unset($this->contents[$iParent][$index]);
-    }     
+    }
 
     // add a node to the mapping after the fact (e.g. created later in the process.)
     function addNode($oNode) {
@@ -244,7 +244,7 @@ class MDTree {
         $oNewParent = $this->mapnodes[$destination_parent_id];
         // we will have failed by here if its bogus.
         //$default->log->debug('MDTree::reparentKeyword '.print_r($oNewParent, true));
-        
+
         // if its 0 or NULL, we reparent to null.
         if (($oNewParent === null) or ($desintation_parent_id === 0)) {
             $new_home = 0;
@@ -256,19 +256,19 @@ class MDTree {
         if (!empty($this->contents[$oldparent])) {
              $KWIndex = array_search($lookup_id, $this->contents[$oldParent]["leaves"]);
              unset($this->contents[$oldParent]["leaves"][$KWIndex]);
-            
+
         }
         $this->contents[$new_home]["leaves"][] = $oKeyword->getId();
         $oKeyword->update();
-    }   
-    
+    }
+
 
     // STUB FUNCTIONS:  need to be filled in.
-    
+
 
     // REALLY need to deprecate this, but how?
     function render($bEditable) { return null; }     // render using a template (with edit / buttons.) FIXME build a widget / renderer.
-    
+
 
     /* ----------------------- EVIL HACK --------------------------
      *
@@ -307,7 +307,7 @@ class MDTree {
         }
         $treeStr .= '</ul>';
         return $treeStr;
-        
+
     }
 
     // I can't seem to do recursion in smarty, and recursive templates seems a bad solution.
@@ -348,7 +348,8 @@ class MDTree {
                     if ($leaf === $this->activevalue) {
                        $is_selected=' checked="checked"';
                     }
-                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'" '.$is_selected.'>' . $treeToRender->lookups[$leaf]->getName() .'</input>';
+                    $sValue = htmlentities($treeToRender->lookups[$leaf]->getName());
+                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$sValue.'" '.$is_selected.'>' . $sValue .'</input>';
                     $treeStr .=  '</li>';
                 }
             }
@@ -357,9 +358,9 @@ class MDTree {
         //$treeStr .= '</li></ul>';
 
         return $treeStr;
-    
+
     }
-    
+
     // again, not pretty.  set a particular item as "active"
     function setActiveItem($sMetadataMatch) {
         // also need to:
