@@ -323,10 +323,19 @@ class User extends KTEntity {
     * @return Array array of User objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null, $aOptions = null) {
-	    if(!is_array($aOptions)) $aOptions = array($aOptions);
-		$aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
-		//if disabled = 2 then the user is deleted
-		$sWhereClause = 'disabled != \'2\'';
+        if(!is_array($aOptions)) $aOptions = array($aOptions);
+        $aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
+
+        // don't include deleted users: disabled = 2
+        if(!empty($sWhereClause)){
+            if(strpos(strtolower($sWhereClause), 'where ') === false){
+                $sWhereClause = '('.$sWhereClause.')';
+            }
+            $sWhereClause .= ' AND disabled != 2';
+        }else{
+            $sWhereClause = 'disabled != 2';
+        }
+
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 

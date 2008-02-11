@@ -41,7 +41,7 @@ class PDFExtractor extends ApplicationExtractor
 	public function __construct()
 	{
 		$config = KTConfig::getSingleton();
-		$params = $config->get('extractorParameters/pdftotext', '-nopgbrk -enc UTF-8 \'{source}\' \'{target}\'');
+		$params = $config->get('extractorParameters/pdftotext', '-nopgbrk -enc UTF-8 "{source}" "{target}"');
 
 		parent::__construct('externalBinary','pdftotext','pdftotext',_kt('PDF Text Extractor'),$params);
 	}
