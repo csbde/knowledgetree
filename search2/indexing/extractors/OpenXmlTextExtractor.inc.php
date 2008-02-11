@@ -43,7 +43,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		$config = KTConfig::getSingleton();
 
 		$this->unzip = KTUtil::findCommand("import/unzip", 'unzip');
-		$this->unzip_params = $config->get('extractorParameters/unzip', '\'{source}\' \'{part}\' -d \'{target_dir}\'');
+		$this->unzip_params = $config->get('extractorParameters/unzip', '"{source}" "{part}" -d "{target_dir}"');
 		parent::__construct();
 	}
 

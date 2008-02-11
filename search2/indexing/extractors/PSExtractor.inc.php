@@ -41,7 +41,7 @@ class PSExtractor extends ApplicationExtractor
 	public function __construct()
 	{
 		$config = KTConfig::getSingleton();
-		$params = $config->get('extractorParameters/pstotext', '\'{source}\' > \'{target}\'');
+		$params = $config->get('extractorParameters/pstotext', '"{source}" > "{target}"');
 
 		parent::__construct('externalBinary','pstotext','pstotext',_kt('PostScript Text Extractor'), $params);
 	}
