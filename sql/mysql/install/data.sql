@@ -827,7 +827,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `search_ranking` WRITE;
 /*!40000 ALTER TABLE `search_ranking` DISABLE KEYS */;
-INSERT INTO `search_ranking` VALUES ('Discussion','',150,'S'),('documents','checked_out_user_id',1,'T'),('documents','created',1,'T'),('documents','creator_id',1,'T'),('documents','id',1,'T'),('documents','immutable',1,'T'),('documents','is_checked_out',1,'T'),('documents','modified',1,'T'),('documents','modified_user_id',1,'T'),('documents','title',300,'T'),('DocumentText','',100,'S'),('document_content_version','filesize',1,'T'),('document_content_version','filename',10,'T'),('document_metadata_version','document_type_id',1,'T'),('document_metadata_version','name',1,'T'),('document_metadata_version','workflow_id',1,'T'),('document_metadata_version','workflow_state_id',1,'T'),('tag_words','tag',1,'T');
+INSERT INTO `search_ranking` VALUES ('Discussion','',150,'S'),('documents','checked_out_user_id',1,'T'),('documents','created',1,'T'),('documents','creator_id',1,'T'),('documents','id',1,'T'),('documents','immutable',1,'T'),('documents','is_checked_out',1,'T'),('documents','modified',1,'T'),('documents','modified_user_id',1,'T'),('documents','title',300,'T'),('DocumentText','',100,'S'),('document_content_version','filesize',1,'T'),('document_content_version','filename',10,'T'),('document_metadata_version','document_type_id',1,'T'),('document_metadata_version','name',1,'T'),('document_metadata_version','workflow_id',1,'T'),('document_metadata_version','workflow_state_id',1,'T'),('tag_words','tag',1,'T');
 /*!40000 ALTER TABLE `search_ranking` ENABLE KEYS */;
 UNLOCK TABLES;
 
