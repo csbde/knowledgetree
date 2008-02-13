@@ -1799,15 +1799,6 @@ CREATE TABLE `zseq_authentication_sources` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `zseq_browse_criteria`
---
-
-CREATE TABLE `zseq_browse_criteria` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
---
 -- Table structure for table `zseq_column_entries`
 --
 
@@ -1833,24 +1824,6 @@ CREATE TABLE `zseq_data_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `zseq_dependant_document_instance`
---
-
-CREATE TABLE `zseq_dependant_document_instance` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `zseq_dependant_document_template`
---
-
-CREATE TABLE `zseq_dependant_document_template` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_discussion_comments`
@@ -1967,7 +1940,7 @@ CREATE TABLE `zseq_document_tags` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_transactions`
@@ -2111,7 +2084,7 @@ CREATE TABLE `zseq_groups_lookup` (
 CREATE TABLE `zseq_help` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=99 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_help_replacement`
@@ -2353,7 +2326,7 @@ CREATE TABLE `zseq_search_saved` (
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_system_settings`
