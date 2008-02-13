@@ -413,7 +413,7 @@ gettext("Enter search criteria...");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2004-2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>");
+gettext("&copy; 2004-2008 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
@@ -5213,7 +5213,7 @@ gettext("#appname# #versionname#");
 gettext("Version #version#");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("&copy; 2004-2007 <a href=\" http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree.com/About/legal/license\">View License Agreement</a>");
+gettext("&copy; 2004-2008 <a href=\" http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree.com/About/legal/license\">View License Agreement</a>");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
