@@ -9,7 +9,7 @@ values associated with a given field.  There are a number of different states
 that are possible for a given lookup{/i18n}:</p>
 
 <ul class="descriptiveText">
-    <li>{i18n}<strong>Enabled</strong>, which means that users cannot specify this
+    <li>{i18n}<strong>Enabled</strong>, which means that users can specify this
     as an option when editing or creating documents.{/i18n}</li>
     <li>{i18n}<strong>Sticky</strong>, which is used if you have some external
     plugin controlling this lookup set.  This will then tell that plugin not to

@@ -176,9 +176,9 @@ function createRange(groupid, fid, type)
 	switch(type)
 	{
 		case 'DATE':
-			html += "<option value=\"\>=\">{/literal}{i18n}after{/i18n}{literal}";
+			html += "<option value=\"\>\">{/literal}{i18n}after{/i18n}{literal}";
 			html += "<option value=\"between\">{/literal}{i18n}between{/i18n}{literal}";
-			html += "<option value=\"<=\">{/literal}{i18n}before{/i18n}{literal}";
+			html += "<option value=\"<\">{/literal}{i18n}before{/i18n}{literal}";
 			html += "<option value=\"is\">{/literal}{i18n}on{/i18n}{literal}";
 			html += "<option value=\"is not\">{/literal}{i18n}not on{/i18n}{literal}";
 			break;
