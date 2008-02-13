@@ -7,17 +7,23 @@ will typically be done within the system and will generate a
 notification to you.{/i18n}
 </p>
 
+<p>{i18n}Use the folder collection and path below to browse to the folder containing the documents you wish to restore.{/i18n}
+</p>
+<br />
+
+{foreach from=$breadcrumbs item=breadcrumb name=bc}
+    {if !$smarty.foreach.bc.last}
+        <a href="{$breadcrumb.url}">{$breadcrumb.name|sanitize}</a> &raquo;
+    {else}
+        {$breadcrumb.name|sanitize}
+    {/if}
+{/foreach}
+
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="confirm_restore" />
 <input type="hidden" name="fFolderId" value="{$folder->getId()}" />
-{foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
-<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
-{if !$smarty.foreach.bc.last}
-&raquo;
-{/if}
-{/foreach}
-{$collection->render()}
 
+{$collection->render()}
 
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Restore{/i18n}" />
