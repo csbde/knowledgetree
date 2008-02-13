@@ -732,6 +732,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
+            // Check that the document isn't already checked out
             if ($oEntity->getIsCheckedOut()) {
                 $checkedOutUser = $oEntity->getCheckedOutUserID();
                 $sUserId = $_SESSION['userID'];
@@ -740,6 +741,11 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     $oCheckedOutUser = User::get($checkedOutUser);
                     return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
                 }
+            }
+
+            // Check that the checkout action isn't restricted for the document
+            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.checkout')){
+                return PEAR::raiseError($oEntity->getName().': '._kt('Checkout is restricted by the workflow state.'));
             }
         }else if(!is_a($oEntity, 'Folder')) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
@@ -944,22 +950,29 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         continue;
                     }
 
-                    // Checkout document - if it is already checked out, check the owner.
-                    // If the current user is the owner, then include to the download, otherwise ignore.
-                    $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser);
-                    if(PEAR::isError($res)) {
-                        if($oDocument->getIsCheckedOut()){
-                            $checkedOutUser = $oDocument->getCheckedOutUserID();
-                            $sUserId = $_SESSION['userID'];
+                    // Check if the action is restricted by workflow on the document
+                    if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
+                        $this->addErrorMessage($oDocument->getName().': '._kt('Checkout is restricted by the workflow state.'));
+                        continue;
+                    }
 
-                            if($checkedOutUser != $sUserId){
-                                $oCheckedOutUser = User::get($checkedOutUser);
-                                $this->addErrorMessage($oDocument->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
-                                continue;
-                            }
-                        }
+                    // Check if document is already checked out, check the owner.
+                    // If the current user is the owner, then include to the download, otherwise ignore.
+                    if($oDocument->getIsCheckedOut()){
+                        $checkedOutUser = $oDocument->getCheckedOutUserID();
+                        $sUserId = $_SESSION['userID'];
+
                         if($checkedOutUser != $sUserId){
-                            $this->addErrorMessage($oDocument->getName().': '.$res->getMessage());
+                            $oCheckedOutUser = User::get($checkedOutUser);
+                            $this->addErrorMessage($oDocument->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
+                            continue;
+                        }
+                    }else{
+                        // Check out document
+                        $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser);
+
+                        if(PEAR::isError($res)) {
+                            $this->addErrorMessage($oDocument->getName().': '._kt('Document could not be checked out. ').$res->getMessage());
                             continue;
                         }
                     }
@@ -967,7 +980,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     // Add document to the zip file
                     if($this->bDownload){
                         if ($this->bNoisy) {
-                            $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
+                            $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document part of bulk checkout', 'ktstandard.transactions.check_out', array());
                             $oDocumentTransaction->create();
                         }
                         $sDocFolderId = $oDocument->getFolderID();
