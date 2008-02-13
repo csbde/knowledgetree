@@ -1611,7 +1611,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$detail['workflow_state']=$workflowstate;
 
 		// get the full path
-		$detail['full_path'] = $this->ktapi_folder->get_full_path() . '/' . $this->get_title();
+		$detail['full_path'] = '/' . $this->document->getFullPath();
 
 		// get mime info
 		$mimetypeid = $document->getMimeTypeID();
