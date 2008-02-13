@@ -176,7 +176,7 @@ function createSearchBar(div, suffix)
 			value: quickQuery,
 			selectOnFocus:true,
 			id:'txtSearchBar' + suffix,
-			width: 110
+			width: (suffix == 1)?180:110
 		}), button);
 
 	var map = new Ext.KeyMap("txtSearchBar" + suffix,
@@ -190,7 +190,7 @@ function createSearchBar(div, suffix)
 	var el = Ext.get(div);
 	if (suffix == 1)
 	{
-		el.applyStyles('position:relative; top: -3px');
+		el.applyStyles('position:relative; top: -15px; margin-right: 15px');
 	}
 	else
 	{
