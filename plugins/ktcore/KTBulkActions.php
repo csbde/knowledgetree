@@ -49,6 +49,16 @@ class KTBulkDeleteAction extends KTBulkAction {
     function getDisplayName() {
         return _kt('Delete');
     }
+    
+    function check_entity($oEntity) {
+        if(is_a($oEntity, 'Document')) {
+            if($oEntity->getImmutable())
+            {
+            	return PEAR::raiseError(_kt('Document cannot be deleted as it is immutable'));
+            }            
+        }
+        return parent::check_entity($oEntity);
+    }
 
     function form_collectinfo() {
         $oForm = new KTForm;
