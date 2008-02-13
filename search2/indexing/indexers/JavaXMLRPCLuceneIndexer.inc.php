@@ -202,7 +202,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     	}
     	else
     	{
-			 $_SESSION['KTErrorMessage'][] = _kt('The XMLRPC Server did not respond correctly. Please notify the system administrator to investigate.');
+			 $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results. Please notify the system administrator to investigate why the Document Indexer is not running.');
     	}
         return $results;
     }
