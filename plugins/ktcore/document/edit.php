@@ -294,68 +294,76 @@ class KTDocumentEditAction extends KTDocumentAction {
         }
 
         $document_type = $data['type'];
+        $doctypeid = $document_type->getId();
 
+        // Get the current document type, fieldsets and metadata
+        $iOldDocTypeID = $this->oDocument->getDocumentTypeID();
+        $fieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument, $iOldDocTypeID);
+        $mdlist = DocumentFieldLink::getByDocument($this->oDocument);
 
-    	$doctypeid = $document_type->getId();
+        $field_values = array();
+        foreach ($mdlist as $oFieldLink) {
+            $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+        }
 
+        DBUtil::startTransaction();
 
-    	DBUtil::startTransaction();
-    	$this->oDocument->setDocumentTypeId($doctypeid);
-    	$res = $this->oDocument->update();
+        // Update the document with the new document type id
+        $this->oDocument->startNewMetadataVersion($this->oUser);
+        $this->oDocument->setDocumentTypeId($doctypeid);
+        $res = $this->oDocument->update();
 
+        if (PEAR::isError($res))
+        {
+            DBUtil::rollback();
+            return $res;
+        }
 
-    	if (PEAR::isError($res))
-    	{
-    		DBUtil::rollback();
-    		return $res;
-    	}
-    	DBUtil::commit();
+        // Ensure all values for fieldsets common to both document types are retained
+        $fs_ids = array();
 
-    	$fieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument, $doctypeid);
+        $doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
+        foreach($doctype_fieldsets as $fieldset)
+        {
+            $fs_ids[] = $fieldset->getId();
+        }
 
-    	$fs_ids = array();
+        $MDPack = array();
+        foreach ($fieldsets as $oFieldset)
+        {
+            if ($oFieldset->getIsGeneric() || in_array($oFieldset->getId(), $fs_ids))
+            {
+                $fields = $oFieldset->getFields();
 
-    	$doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
-    	foreach($doctype_fieldsets as $fieldset)
-    	{
-    		$fs_ids[] = $fieldset->getId();
-    	}
-    	$MDPack = array();
-    	foreach ($fieldsets as $oFieldset)
-    	{
-    		if ($oFieldset->getIsGeneric() || in_array($oFieldset->getId(),$fs_ids))
-    		{
-    			//print $oFieldset->getName() . "<br>";
-    			$fields = $oFieldset->getFields();
-    			$values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
-    			foreach ($fields as $oField)
-    			{
-    				$val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+                foreach ($fields as $oField)
+                {
+                    $val = isset($field_values[$oField->getId()]) ? $field_values[$oField->getId()] : '';
 
-    				// FIXME "null" has strange meanings here.
-    				if (!is_null($val))
-    				{
-    					$MDPack[] = array(
-    					$oField,
-    					$val
-    					);
-    				}
-    			}
-    		}
+                    if (!empty($val))
+                    {
+                        $MDPack[] = array($oField, $val);
+                    }
+                }
+            }
+        }
 
-    	}
+        $core_res = KTDocumentUtil::saveMetadata($this->oDocument, $MDPack, array('novalidate' => true));
 
-    	 $core_res = KTDocumentUtil::saveMetadata($this->oDocument, $MDPack);
+        if (PEAR::isError($core_res)) {
+            DBUtil::rollback();
+            return $core_res;
+        }
+        DBUtil::commit();
 
-    	 $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
 
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                "document" => $this->oDocument,
-                "aOptions" => $MDPack,
+            "document" => $this->oDocument,
+            "aOptions" => $MDPack,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
