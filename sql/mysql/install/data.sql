@@ -1169,16 +1169,6 @@ INSERT INTO `zseq_authentication_sources` VALUES (1);
 UNLOCK TABLES;
 
 --
--- Dumping data for table `zseq_browse_criteria`
---
-
-LOCK TABLES `zseq_browse_criteria` WRITE;
-/*!40000 ALTER TABLE `zseq_browse_criteria` DISABLE KEYS */;
-INSERT INTO `zseq_browse_criteria` VALUES (5);
-/*!40000 ALTER TABLE `zseq_browse_criteria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `zseq_column_entries`
 --
 
@@ -1206,26 +1196,6 @@ LOCK TABLES `zseq_data_types` WRITE;
 /*!40000 ALTER TABLE `zseq_data_types` DISABLE KEYS */;
 INSERT INTO `zseq_data_types` VALUES (5);
 /*!40000 ALTER TABLE `zseq_data_types` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `zseq_dependant_document_instance`
---
-
-LOCK TABLES `zseq_dependant_document_instance` WRITE;
-/*!40000 ALTER TABLE `zseq_dependant_document_instance` DISABLE KEYS */;
-INSERT INTO `zseq_dependant_document_instance` VALUES (1);
-/*!40000 ALTER TABLE `zseq_dependant_document_instance` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `zseq_dependant_document_template`
---
-
-LOCK TABLES `zseq_dependant_document_template` WRITE;
-/*!40000 ALTER TABLE `zseq_dependant_document_template` DISABLE KEYS */;
-INSERT INTO `zseq_dependant_document_template` VALUES (1);
-/*!40000 ALTER TABLE `zseq_dependant_document_template` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1353,7 +1323,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_transaction_types_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_document_transaction_types_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_document_transaction_types_lookup` VALUES (20);
+INSERT INTO `zseq_document_transaction_types_lookup` VALUES (21);
 /*!40000 ALTER TABLE `zseq_document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1512,7 +1482,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_help` WRITE;
 /*!40000 ALTER TABLE `zseq_help` DISABLE KEYS */;
-INSERT INTO `zseq_help` VALUES (98);
+INSERT INTO `zseq_help` VALUES (100);
 /*!40000 ALTER TABLE `zseq_help` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1750,7 +1720,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `zseq_scheduler_tasks` VALUES (3);
+INSERT INTO `zseq_scheduler_tasks` VALUES (5);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1769,7 +1739,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_status_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_status_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_status_lookup` VALUES (5);
+INSERT INTO `zseq_status_lookup` VALUES (6);
 /*!40000 ALTER TABLE `zseq_status_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
