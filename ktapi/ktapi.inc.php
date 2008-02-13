@@ -70,7 +70,7 @@ class KTAPI_FolderItem
 
 class KTAPI_Error extends PEAR_Error
 {
-	function KTAPI_Error($msg, $obj)
+	function KTAPI_Error($msg, $obj = null)
 	{
 		if (PEAR::isError($obj))
 		{
@@ -82,6 +82,8 @@ class KTAPI_Error extends PEAR_Error
 		}
 	}
 }
+
+class KTAPI_DocumentTypeError extends KTAPI_Error {}
 
 class KTAPI
 {

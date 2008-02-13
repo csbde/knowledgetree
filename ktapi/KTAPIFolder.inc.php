@@ -210,8 +210,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	function get_full_path()
 	{
-		$path = $this->folder->getFullPath() . '/' . $this->folder->getName();
-		if (substr($path,0,1) == '/') $path = substr($path,1);
+		$path = $this->folder->getFullPath();
+		if (empty($path)) $path = '/';
 
 		return $path;
 	}
@@ -604,7 +604,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			}
 			else
 			{
-		    	return new PEAR_Error('The document type could not be resolved or is disabled: ' . $documenttype);
+		    	return new KTAPI_DocumentTypeError('The document type could not be resolved or is disabled: ' . $documenttype);
 			}
 		}
 
