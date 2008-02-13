@@ -247,7 +247,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $aURLParams = $aBaseParams;
         $aURLParams['action'] = 'new';
-        $aBreadcrumbs = $this->_generate_breadcrumbs($oFolder, $iFolderId, $aURLParams);
+        $aBreadcrumbs = KTUtil::generate_breadcrumbs($oFolder, $iFolderId, $aURLParams);
 
         $aTemplateData = array(
               'context' => $this,
@@ -437,59 +437,6 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $this->successRedirectToMain(_kt('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
-    }
-
-    function _generate_breadcrumbs($oFolder, $iFolderId, $aURLParams) {
-        static $aFolders = array();
-        static $aBreadcrumbs = array();
-
-        // Check if selected folder is a parent of the current folder
-        if(in_array($iFolderId, $aFolders)){
-            $temp = array_flip($aFolders);
-            $key = $temp[$iFolderId];
-            array_splice($aFolders, $key);
-            array_splice($aBreadcrumbs, $key);
-            return $aBreadcrumbs;
-        }
-
-        // Check for the parent of the selected folder unless its the root folder
-        $iParentId = $oFolder->getParentID();
-        if($iFolderId != 1 && in_array($iParentId, $aFolders)){
-            $temp = array_flip($aFolders);
-            $key = $temp[$iParentId];
-            array_splice($aFolders, $key);
-            array_splice($aBreadcrumbs, $key);
-            array_push($aFolders, $iFolderId);
-
-            $aParams = $aURLParams;
-            $aParams['fFolderId'] = $iFolderId;
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
-            $aBreadcrumbs[] = array('url' => $url, 'name' => $oFolder->getName());
-            return $aBreadcrumbs;
-        }
-
-        // Create the breadcrumbs
-        $folder_path_names = $oFolder->getPathArray();
-        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
-        $folder_path_ids[] = $oFolder->getId();
-        if ($folder_path_ids[0] == 0) {
-            array_shift($folder_path_ids);
-            array_shift($folder_path_names);
-        }
-
-        $iCount = count($folder_path_ids);
-        $range = range(0, $iCount - 1);
-        foreach ($range as $index) {
-            $id = $folder_path_ids[$index];
-            $name = $folder_path_names[$index];
-
-            $aParams = $aURLParams;
-            $aParams['fFolderId'] = $id;
-            $url = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aParams);
-            $aBreadcrumbs[] = array('url' => $url, 'name' => $name);
-        }
-        $aFolders = $folder_path_ids;
-        return $aBreadcrumbs;
     }
 }
 
