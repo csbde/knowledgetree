@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-13 19:02+0200\n"
+"POT-Creation-Date: 2008-02-13 19:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -193,14 +193,10 @@ msgid "%s successfully copied as %s"
 msgstr ""
 
 #: i18n/templates.c:5216
-msgid "&copy; 2004-2007 <a href=\" http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree.com/About/legal/license\">View License Agreement</a>"
+msgid "&copy; 2004-2008 <a href=\" http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree.com/About/legal/license\">View License Agreement</a>"
 msgstr ""
 
-#: i18n/templates.c:416
-msgid "&copy; 2004-2007 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>"
-msgstr ""
-
-#: i18n/templates.c:5786
+#: i18n/templates.c:416 i18n/templates.c:5786
 msgid "&copy; 2004-2008 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>"
 msgstr ""
 
