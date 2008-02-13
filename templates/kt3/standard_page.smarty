@@ -158,7 +158,7 @@
 	                            	<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1"></form>
 	                            	</div>
 
-	                            	<div id="newSearchQuery"/>
+
 
 
 
@@ -198,6 +198,7 @@
                     {if ($page->breadcrumbDetails !== false)}
                         <span class="additional">({$page->breadcrumbDetails|sanitize})</span>
                     {/if}
+                	<div id="newSearchQuery" style="float: right; "/>
                 </div>
             {/if}
         </div>
