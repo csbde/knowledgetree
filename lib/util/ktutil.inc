@@ -749,6 +749,11 @@ class KTUtil {
     // {{{ isAbsolutePath
     static function isAbsolutePath($sPath) {
 
+        $sPath = str_replace('\\', '/', $sPath);
+        $sReal = str_replace('\\', '/', realpath($sPath));
+
+        return ($sReal == $sPath);
+
         if (substr($sPath, 0, 1) == '/') {
             return true;
         }

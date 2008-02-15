@@ -171,15 +171,17 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         if($isActive){
             $oRegistry =& KTPluginRegistry::getSingleton();
-    		$oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
-    		$oPlugin->load();
-    		$sUrl = $oPlugin->getPagePath('DocumentComparison');
-    		$file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
+            $oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
+            
+            if($oPlugin->load()){
+                $sUrl = $oPlugin->getPagePath('DocumentComparison');
+                $file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
 
-    		include_once($file);
+                include_once($file);
 
-            // Check mime type of document for content comparison
-            list($bShowCompare, $bShowVersionCompare) = DocumentComparison::checkMimeType($this->oDocument);
+                // Check mime type of document for content comparison
+                list($bShowCompare, $bShowVersionCompare) = DocumentComparison::checkMimeType($this->oDocument);
+            }
         }
 
         $aTemplateData = array(
