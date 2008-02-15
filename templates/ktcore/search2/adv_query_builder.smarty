@@ -387,8 +387,8 @@ function createText(groupid, fid, type)
 			html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 			html += "<option value=\"contains\">{/literal}{i18n}contains{/i18n}{literal}";
 			html += "<option value=\"does not contain\">{/literal}{i18n}does not contain{/i18n}{literal}";
-			html += "<option value=\"is like\">{/literal}{i18n}like{/i18n}{literal}";
-			html += "<option value=\"is not like\">{/literal}{i18n}not like{/i18n}{literal}";
+			html += "<option value=\"like\">{/literal}{i18n}like{/i18n}{literal}";
+			html += "<option value=\"not like\">{/literal}{i18n}not like{/i18n}{literal}";
 			html += "<option value=\"starts with\">{/literal}{i18n}starts with{/i18n}{literal}";
 			html += "<option value=\"ends with\">{/literal}{i18n}ends with{/i18n}{literal}";
 			break;
