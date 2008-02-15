@@ -8,32 +8,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -95,24 +95,24 @@ class LoginPageDispatcher extends KTDispatcher {
             #var_dump($oUser);
             #var_dump(PEAR::raiseError());
         }
-        $iOldUserID = checkLastSessionUserID();
-        
-        //if the current person logging in isn't the same person who logged out or timed out
-        //then set the redirect to the dashboard and not the last page that was viewed.
-        if ($oUser->getId() != $iOldUserID['user_id'])
+
+        // If the last user from the same IP address timed out within the last hour then redirect to the dashboard
+        // Otherwise allow any other redirect to continue.
+        // The user might still be taken to the last page of the previous users session but
+        // if we always redirect to dashboard then we break other features such as linking in from emails or documents.
+        if (checkLastSessionUserID($oUser->getId()))
         {
         	$_REQUEST['redirect'] = generateControllerLink('dashboard');
-        	
         }
-        
+
         $session = new Session();
         $sessionID = $session->create($oUser);
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
-		
+
 		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
-        
+
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;
 
@@ -156,9 +156,9 @@ class LoginPageDispatcher extends KTDispatcher {
 
         $errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
         session_start();
-        
+
         $errorMessageConfirm = $_SESSION['errormessage']['login'];
-        
+
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 
         $oReg =& KTi18nregistry::getSingleton();
@@ -337,13 +337,43 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 }
 
-//FIXME Direct Database Access
-//checkLastSessionUserID finds the last user to logout or timeout
-function checkLastSessionUserID()
+/**
+ * Check if the last user logging in from the same IP as the current user timed out in the last hour.
+ *
+ * @param unknown_type $userId
+ * @return unknown
+ */
+function checkLastSessionUserID($userId)
 {
-	$sQuery = 'SELECT user_id FROM user_history ORDER BY id DESC LIMIT 1';
-	$res = DBUtil::getOneResult($sQuery);
-	return $res;
+    // Get the current users IP Address
+    $sIp = '%'.$_SERVER['REMOTE_ADDR'];
+
+    // Get the time for a day ago and an hour ago
+    $dif = time() - (24*60*60);
+    $sDayAgo = date('Y-m-d H:i:s', $dif);
+    $dif2 = time() - (60*60);
+    $sHourAgo = date('Y-m-d H:i:s', $dif2);
+
+    // Get the session id for the last user to log in from the current IP address within the last day
+    // Use the session id to find if that user logged out or timed out within the last hour.
+	$sQuery = 'SELECT user_id, action_namespace FROM user_history
+        WHERE datetime > ? AND
+        session_id = (SELECT session_id FROM user_history WHERE comments LIKE ? AND datetime > ? ORDER BY id DESC LIMIT 1)
+        ORDER BY id DESC LIMIT 1';
+
+	$aParams = array($sHourAgo, $sIp, $sDayAgo);
+	$res = DBUtil::getOneResult(array($sQuery, $aParams));
+
+	if(PEAR::isError($res) || empty($res)){
+	    return false;
+	}
+
+	// Check whether the user timed out and whether it was the current user or a different one
+	if($res['action_namespace'] == 'ktcore.user_history.timeout' && $res['user_id'] != $userId){
+	    return true;
+	}
+
+	return false;
 }
 
 $dispatcher =& new LoginPageDispatcher();
