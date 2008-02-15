@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -66,75 +66,79 @@ if ( !empty( $altinfo) && !isset( $_SERVER['PHP_AUTH_USER'])) {
 }
 
 if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
-   header('WWW-Authenticate: Basic realm="KnowledgeTree DMS"');
-   header('HTTP/1.0 401 Unauthorized');
-   echo 'This RSS feed requires authentication. Please enter your username and password.';
-   exit;
+    header('WWW-Authenticate: Basic realm="KnowledgeTree DMS"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo 'This RSS feed requires authentication. Please enter your username and password.';
+    exit;
 } else {
-	$user = DBAuthenticator::getUser($_SERVER['PHP_AUTH_USER'], array('id'=>'id',));
-	$id =  $user[$_SERVER['PHP_AUTH_USER']]['id'];
+    $user = DBAuthenticator::getUser($_SERVER['PHP_AUTH_USER'], array('id'=>'id',));
+    $id =  $user[$_SERVER['PHP_AUTH_USER']]['id'];
 
+    header('Content-Type: application/rss+xml; charset=utf-8;');
+    header('Content-Disposition: inline; filename="rss.xml"');
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-	if(KTUtil::arrayGet($_REQUEST, 'docId')){ // if a docId parameter is passed
-		// get document id from http request object
-		$iDocumentId = KTUtil::arrayGet($_REQUEST, 'docId');
+    if(KTUtil::arrayGet($_REQUEST, 'docId')){ // if a docId parameter is passed
+        // get document id from http request object
+        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'docId');
 
-		if(KTrss::validateDocumentPermissions($id, $iDocumentId)){ // if document passes validation check
-			// get document info
-			$aDocumentInfo[] = KTrss::getOneDocument($iDocumentId, $id);
+        if(KTrss::validateDocumentPermissions($id, $iDocumentId)){ // if document passes validation check
+            // get document info
+            $aDocumentInfo[] = KTrss::getOneDocument($iDocumentId, $id);
 
-			if($aDocumentInfo){
-				// create rss xml for document
-				$documentFeed = KTrss::arrayToXML($aDocumentInfo);
-			}else{
-				// create rss xml for the error
-				$error = KTrss::errorToXML(_kt('This document has returned a empty response'));
-			}
-		}else{
-			// create rss xml for error
-			$error = KTrss::errorToXML(_kt('You are either not authorised to view details on this document or it does not exist.' .
-					' Please visit http://' .$_SERVER['HTTP_HOST'].'/'.$GLOBALS['KTRootUrl'].'/ to browse for a valid document.'));
-		}
-		if(isset($error)){ // if an error exist, output...else out the result
-			echo $error;
-		}else{
-			echo $documentFeed;
-		}
-   	}elseif(KTUtil::arrayGet($_REQUEST, 'folderId')){ // if a folderId parameter is passed
-   		// get folder id from http request object
-   		$iFolderId = KTUtil::arrayGet($_REQUEST, 'folderId');
+            if($aDocumentInfo){
+                // create rss xml for document
+                $documentFeed = KTrss::arrayToXML($aDocumentInfo);
+            }else{
+                // create rss xml for the error
+                $error = KTrss::errorToXML(_kt('This document has returned a empty response'));
+            }
+        }else{
+            // create rss xml for error
+            $error = KTrss::errorToXML(_kt('You are either not authorised to view details on this document or it does not exist.' .
+            ' Please visit http://' .$_SERVER['HTTP_HOST'].'/'.$GLOBALS['KTRootUrl'].'/ to browse for a valid document.'));
+        }
+        if(isset($error)){ // if an error exist, output...else out the result
+            echo $error;
+        }else{
+            echo $documentFeed;
+        }
+    }elseif(KTUtil::arrayGet($_REQUEST, 'folderId')){ // if a folderId parameter is passed
+        // get folder id from http request object
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'folderId');
 
-		if(KTrss::validateFolderPermissions($id, $iFolderId)){ // if folder passes validation check
-			// get folder info
-			$aFolderInfo[] = KTrss::getOneFolder($iFolderId);
+        if(KTrss::validateFolderPermissions($id, $iFolderId)){ // if folder passes validation check
+            // get folder info
+            $aFolderInfo[] = KTrss::getOneFolder($iFolderId);
 
-			if($aFolderInfo){
-				// create rss xml for folder
-				$folderFeed = KTrss::arrayToXML($aFolderInfo);
-			}else{
-				// create rss xml for error
-				$error = KTrss::errorToXML(_kt('This document has returned a empty response'));
-			}
-		}else{
-			// create rss xml for error
-			$error = KTrss::errorToXML(_kt('You are either not authorised to view details on this folder or it does not exist.' .
-					' Please visit http://' .$_SERVER['HTTP_HOST'].'/'.$GLOBALS['KTRootUrl'].'/ to browse for a valid folder.'));
-		}
-		if(isset($error)){ // if an error exist, output...else out the result
-			echo $error;
-		}else{
-			echo $folderFeed;
-		}
-   	}else{ // else do normal rss parsing
-   		// get full list of subscribed documents and folders
-	   	$aFullList = kt_array_merge(KTrss::getDocuments($id), KTrss::getFolders($id));
-	   	$internalFeed = KTrss::arrayToXML($aFullList);
-	   	echo $internalFeed;
-   	}
+            if($aFolderInfo){
+                // create rss xml for folder
+                $folderFeed = KTrss::arrayToXML($aFolderInfo);
+            }else{
+                // create rss xml for error
+                $error = KTrss::errorToXML(_kt('This document has returned a empty response'));
+            }
+        }else{
+            // create rss xml for error
+            $error = KTrss::errorToXML(_kt('You are either not authorised to view details on this folder or it does not exist.' .
+            ' Please visit http://' .$_SERVER['HTTP_HOST'].'/'.$GLOBALS['KTRootUrl'].'/ to browse for a valid folder.'));
+        }
+        if(isset($error)){ // if an error exist, output...else out the result
+            echo $error;
+        }else{
+            echo $folderFeed;
+        }
+    }else{ // else do normal rss parsing
+        // get full list of subscribed documents and folders
+        $aFullList = kt_array_merge(KTrss::getDocuments($id), KTrss::getFolders($id));
+        $internalFeed = KTrss::arrayToXML($aFullList);
+        echo $internalFeed;
+    }
 }
 
 // Validate user credentials
 function validateUser($username, $password){
-	return DBAuthenticator::checkPassword($username, $password);
+    return DBAuthenticator::checkPassword($username, $password);
 }
 ?>
