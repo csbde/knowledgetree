@@ -336,111 +336,145 @@ class KTrss{
     		$sSuffix = '';
     	}
     	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$sSuffix;
-    	$feed = "<?xml version=\"1.0\"?>\n";
-    	$feed .= "<rss version=\"2.0\">\n".
-    			 "<channel>\n" .
-	    			"<title>".APP_NAME." RSS</title>\n" .
-	    			"<copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n" .
-	    			"<link>".$hostPath."</link>\n" .
-	    			"<description>KT-RSS</description>\n" .
-	    			"<image>\n".
-					"<title>".APP_NAME." RSS</title>\n".
-					"<width>140</width>\n".
-					"<height>28</height>".
-					"<link>".$hostPath."knowledgeTree/</link>\n".
-					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
-					"</image>\n";
-	    foreach($aItems as $aItems){
-	    	if($aItems[0][itemType] == 'folder'){
-	    		$sTypeSelect = 'folder.transactions&amp;fFolderId';
-	    	}elseif($aItems[0][itemType] == 'document'){
-	    		$sTypeSelect = 'document.transactionhistory&amp;fDocumentId';
-	    	}
-	    	$feed .= "<item>\n" .
-	    	         	"<title>".htmlentities(KTrss::rss_sanitize($aItems[0][0][name],false), ENT_QUOTES, 'UTF-8')."</title>\n" .
-	    	         	"<link>".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$aItems[0][0]['id']."</link>\n" .
-	    	         	"<description>\n" .
-	    	         	"&lt;table border='0' width='90%'&gt;\n".
-			 				"&lt;tr&gt;\n".
-								"&lt;td width='5%' height='16px'&gt;" .
-									"&lt;a href='".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$aItems[0][0][id]."' &gt;&lt;img src='".$aItems[0][mimeTypeIcon]."' align='left' height='16px' width='16px' alt='' border='0' /&gt;&lt;/a&gt;" .
-								"&lt;/td&gt;\n".
-								"&lt;td align='left'&gt; ".$aItems[0][mimeTypeFName]."&lt;/td&gt;\n".
-							"&lt;/tr&gt;\n".
-							"&lt;tr&gt;\n".
-								"&lt;td colspan='2'&gt;\n".
-									ucfirst($aItems[0]['itemType'])." Information (ID: ".$aItems[0][0][id].")&lt;/&gt;\n".
-									"&lt;hr&gt;\n".
-									"&lt;table width='95%'&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Filename: ".KTrss::rss_sanitize($aItems[0][0][filename])."&lt;/td&gt;\n".
-											"&lt;td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Author: ".$aItems[0][0][author]."&lt;/td&gt;\n".
-											"&lt;td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Owner: ";if($aItems[0][0][owner]){$feed .= $aItems[0][0][owner];}else{$feed .= "None";}
-											$feed .= "&lt;/td&gt;\n".
-											"&lt;td&gt;&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n";if($aItems[0][0][type]){
-											$feed .= "&lt;td&gt;Document type: ".$aItems[0][0][type]."&lt;/td&gt;\n".
-											"&lt;td&gt;&lt;/td&gt;\n";}
-										$feed .= "&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Workflow status: ";if($aItems[0][0][workflow_status]){$feed .= $aItems[0][0][workflow_status];}else{$feed .= "No Workflow";}
-											$feed .= "&lt;/td&gt;\n".
-											"&lt;td&gt;&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-									"&lt;/table&gt;&lt;br&gt;\n".
-									"Transaction Summary (Last 4)\n".
-									"&lt;hr&gt;\n".
-									"&lt;table width='100%'&gt;\n";
-										foreach($aItems[1] as $item){
-										$feed .= "&lt;tr&gt;\n".
-											"&lt;td&gt;".$item[type]." name:&lt;/td&gt;\n".
-											"&lt;td&gt;".KTrss::rss_sanitize($item[name] )."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Path:&lt;/td&gt;\n".
-											"&lt;td&gt;".KTrss::rss_sanitize($item[fullpath] )."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Transaction:&lt;/td&gt;\n".
-											"&lt;td&gt;".$item[transaction_name]."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Comment:&lt;/td&gt;\n".
-											"&lt;td&gt;".KTrss::rss_sanitize($item[comment] )."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n";if($item[version]){
-											$feed .= "&lt;td&gt;Version:&lt;/td&gt;\n".
-											"&lt;td&gt;".$item[version]."&lt;/td&gt;\n";}
-										$feed .= "&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;Date:&lt;/td&gt;\n".
-											"&lt;td&gt;".$item[datetime]."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td&gt;User:&lt;/td&gt;\n".
-											"&lt;td&gt;".$item[user_name]."&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n".
-										"&lt;tr&gt;\n".
-											"&lt;td colspan='2'&gt;&lt;hr width='100' align='left'&gt;&lt;/td&gt;\n".
-										"&lt;/tr&gt;\n";}
-								$feed .= "&lt;/table&gt;\n".
-								"&lt;/td&gt;\n".
-							"&lt;/tr&gt;\n".
-						"&lt;/table&gt;".
-						"</description>\n".
-	    			 "</item>\n";
-	    }
-	    $feed .= "</channel>\n" .
-	    		 "</rss>\n";
+    	
+    	$head = "<?xml version=\"1.0\"?>\n
+    	       <rss version=\"2.0\">\n
+    	           <channel>\n
+    	               <title>".APP_NAME." RSS</title>\n
+    	               <copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n
+    	               <link>".$hostPath."</link>\n
+    	               <description>KT-RSS</description>\n
+    	               <image>\n
+        	               <title>".APP_NAME." RSS</title>\n
+        	               <width>140</width>\n
+        	               <height>28</height>
+        	               <link>".$hostPath."knowledgeTree/</link>\n
+        	               <url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n
+    	               </image>\n";
 
-	   return $feed;
+
+    	$feed = '';
+    	foreach($aItems as $aItem){
+
+    	    $aItemHead = $aItem[0][0];
+    	    $aItemList = $aItem[1];
+
+	    	if($aItem[0][itemType] == 'folder'){
+	    		$sTypeSelect = 'folder.transactions&fFolderId';
+	    	}elseif($aItem[0][itemType] == 'document'){
+	    		$sTypeSelect = 'document.transactionhistory&fDocumentId';
+	    	}
+
+
+	    	if($aItem[0][0][owner]){
+	    	    $owner = $aItem[0][0][owner];
+	    	}else{
+	    	    $owner = _kt('None');
+	    	}
+
+	    	$type = '';
+	    	if($aItem[0][0][type]){
+	    	    $type = '<tr><td>Document type: '.$aItem[0][0][type]."</td>\n<td></td></tr>\n";
+	    	}
+
+	    	if($aItem[0][0][workflow_status]){
+	    	    $workflow = $aItem[0][0][workflow_status];
+	    	}else{
+	    	    $workflow = _kt('No Workflow');
+	    	}
+
+	    	$xmlItemHead = "<item>\n
+	    	      <title>".htmlentities($aItem[0][0][name], ENT_QUOTES, 'UTF-8')."</title>\n
+	    	      <link>".$hostPath."action.php?kt_path_info=ktcore.actions.".htmlentities($sTypeSelect, ENT_QUOTES, 'UTF-8')."=".$aItem[0][0]['id']."</link>\n
+	    	      <description>\n";
+
+	    	$htmlItem = "<table border='0' width='90%'>\n
+	    	      <tr>\n
+	    	          <td width='5%' height='16px'>
+	    	              <a href='".$hostPath."action.php?kt_path_info=ktcore.actions.".$sTypeSelect."=".$aItem[0][0][id]."' >
+	    	              <img src='".$aItem[0][mimeTypeIcon]."' align='left' height='16px' width='16px' alt='' border='0' /></a>
+	    	          </td>\n
+	    	          <td align='left'> ".$aItem[0][mimeTypeFName]."</td>\n
+	    	      </tr>\n
+	    	      <tr>\n
+    	    	      <td colspan='2'>\n
+        	    	      ".ucfirst($aItem[0]['itemType'])." Information (ID: ".$aItem[0][0][id].")</>\n
+        	    	      <hr>\n
+
+        	    	      <table width='95%'>\n
+        	    	          <tr>\n
+        	    	              <td>"._kt('Filename').": ".$aItem[0][0][filename]."</td>\n
+        	    	          </tr>\n
+        	    	          <tr>\n
+        	    	              <td>"._kt('Author').": ".$aItem[0][0][author]."</td>\n
+        	    	          </tr>\n
+        	    	          <tr>\n
+            	    	          <td>"._kt('Owner').": ".$owner."</td>\n
+            	    	          <td></td>\n
+        	    	          </tr>\n
+        	    	          ".$type."\n
+        	    	          <tr>\n
+        	    	              <td>"._kt('Workflow status').": ".$workflow."</td>\n
+        	    	              <td></td>\n
+        	    	          </tr>\n
+        	    	      </table><br>\n
+
+        	    	      "._kt('Transaction Summary (Last 4)')."\n
+        	    	      <hr>\n
+
+	    	                  <table width='100%'>\n";
+
+                        	    	foreach($aItem[1] as $item){
+                        	    	    $htmlItem .= "<tr>\n
+                            	    	        <td>".$item[type]." name:</td>\n
+                            	    	        <td>".$item[name]."</td>\n
+                        	    	        </tr>\n
+                        	    	        <tr>\n
+                        	    	            <td>Path:</td>\n
+                        	    	            <td>".$item[fullpath]."</td>\n
+                        	    	        </tr>\n
+                        	    	        <tr>\n
+                        	    	            <td>Transaction:</td>\n
+                        	    	            <td>".$item[transaction_name]."</td>\n
+                        	    	        </tr>\n
+                        	    	        <tr>\n
+                        	    	            <td>Comment:</td>\n
+                        	    	            <td>".$item[comment]."</td>\n
+											</tr>\n
+											<tr>\n";
+
+                        	    	            if($item[version]){
+                        	    	                $htmlItem .= "<td>Version:</td>\n
+                        	    	                <td>".$item[version]."</td>\n";
+                        	    	            }
+                        	    	        $htmlItem .= "</tr>\n
+                        	    	        <tr>\n
+                        	    	            <td>Date:</td>\n
+                        	    	            <td>".$item[datetime]."</td>\n
+                        	    	        </tr>\n
+                        	    	        <tr>\n
+                        	    	            <td>User:</td>\n
+                        	    	            <td>".$item[user_name]."</td>\n
+                        	    	        </tr>\n
+                        	    	        <tr>\n
+                        	    	            <td colspan='2'><hr width='100' align='left'></td>\n
+                        	    	        </tr>\n";
+                        	    	}
+                        	   $htmlItem .= "</table>\n
+                      </td>\n
+                  </tr>\n
+              </table>";
+
+          $xmlItemFooter = "</description>\n</item>\n";
+
+          // Use htmlentities to allow html tags in the xml.
+          $htmlItem = htmlentities($htmlItem, ENT_QUOTES, 'UTF-8');
+
+          $feed .= $xmlItemHead.$htmlItem.$xmlItemFooter;
+	    }
+	    $footer = "</channel>\n</rss>\n";
+
+	    return $head.$feed.$footer;
     }
 
     // Takes in an array as a parameter and returns rss2.0 compatible xml
@@ -449,26 +483,28 @@ class KTrss{
     	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
     	global $default;
     	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$aPath[1]."/";
-    	$feed = "<?xml version=\"1.0\"?>\n";
-    	$feed .= "<rss version=\"2.0\">\n".
-    			 "<channel>\n" .
-	    			"<title>".APP_NAME." RSS</title>\n" .
-	    			"<copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n" .
-	    			"<link>".$hostPath."</link>\n" .
-	    			"<description>KT-RSS</description>\n" .
-	    			"<image>\n".
-					"<title>".APP_NAME." RSS</title>\n".
-					"<width>140</width>\n".
-					"<height>28</height>".
-					"<link>".$hostPath."knowledgeTree/</link>\n".
-					"<url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n".
-					"</image>\n";
-    	$feed .= "<item>\n".
-    	         	"<title>Feed load error</title>\n" .
-    	         	"<description>".$sError."</description>\n".
-    			 "</item>\n";
-	    $feed .= "</channel>\n" .
-	    		 "</rss>\n";
+    	$feed = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n
+    	    <rss version=\"2.0\">\n
+
+    			<channel>\n
+	    			<title>".APP_NAME." RSS</title>\n
+	    			<copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n
+	    			<link>{$hostPath}</link>\n
+	    			<description>KT-RSS</description>\n
+	    			<image>\n
+					      <title>".APP_NAME." RSS</title>\n
+					      <width>140</width>\n
+					      <height>28</height>
+					      <link>{$hostPath}knowledgeTree/</link>\n
+					      <url>{$hostPath}resources/graphics/ktlogo_rss.png</url>\n
+					  </image>\n
+            <item>\n
+    	          <title>Feed load error</title>\n
+    	          <description>".$sError."</description>\n
+    			 </item>\n
+	      </channel>\n
+
+	    	</rss>\n";
 
 	   return $feed;
     }

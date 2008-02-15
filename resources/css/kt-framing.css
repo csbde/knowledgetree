@@ -1817,6 +1817,7 @@ hr {
 
 #content ul {
     list-style-image: url(../graphics/bullet.png);
+    padding-left: 15px;
 }
 
 
