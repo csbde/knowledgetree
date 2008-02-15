@@ -370,10 +370,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 			$script_name = $script_prefix . '.bat';
 
 			$script = "rem This is an auto generated file. \n";
-			$script .= $cmd . ' 2> "' . $script_out . "\"\r\n";
-			
-			
-			
+			$script .= $cmd . ' 2>>"' . $script_out . '" >>"' . $script_out . "\"\r\n";
 		}
 		else
 		{
@@ -381,7 +378,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 			$script = "#!/bin/sh\n";
 			$script .= "# This is an auto generated file. \n";
-			$script .= $cmd . ' 2> "' . $script_out . "\"\n";
+			$script .= $cmd . ' 2>>"' . $script_out . '" >>"' . $script_out . "\"\n";
 			$script .= "exit $?\n";
 		}
 
@@ -406,8 +403,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 				$this->output = _kt('Could change permission on exec script: ') . $script_name;
 				return false;
 			}
-			$aRet = KTUtil::pexec($script_name);
-			$res = $aRet['ret'];
+			system($script_name, $res);
 		}
 
 		// remote the script file and get the output if available
@@ -419,7 +415,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 			@unlink($script_out);
 		}
 
-		return $res == 0;
+		return ($res == 0) && empty($this->output);
 	}
 
 	/**
