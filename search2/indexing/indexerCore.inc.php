@@ -828,13 +828,13 @@ abstract class Indexer
 						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
 						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
 	 				WHERE
-	 					(iff.status_msg IS NOT NULL) AND dmv.status_id=1
+	 					(iff.status_msg IS NOT NULL AND iff.status_msg <> '') AND d.status_id=1
 					ORDER BY indexdate ";
 		}
 		else
 		{
 			$sql = "SELECT
-	        			iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
+						iff.document_id, iff.indexdate, mt.filetypes, mt.mimetypes, me.name as extractor, iff.what, iff.status_msg, dcv.filename
 					FROM
 						index_files iff
 						INNER JOIN documents d ON iff.document_id=d.id
@@ -843,7 +843,7 @@ abstract class Indexer
 						INNER JOIN mime_types mt ON dcv.mime_id=mt.id
 						LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
 	 				WHERE
-	 					(iff.status_msg IS NULL or iff.status_msg = '') AND dmv.status_id=1
+	 					(iff.status_msg IS NULL or iff.status_msg = '') AND d.status_id=1
 					ORDER BY indexdate ";
 		}
 		$aResult = DBUtil::getResultArray($sql);
@@ -1085,6 +1085,7 @@ abstract class Indexer
         		{
         			$extractor->setExtractionStatus(false);
         			$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not extract contents from document %d"),$docId), 'error');
+					$this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
         		}
 
 				$this->executeHook($extractor, 'post_extract', $mimeType);
