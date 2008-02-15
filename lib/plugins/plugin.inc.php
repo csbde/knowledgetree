@@ -356,12 +356,14 @@ class KTPlugin {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
         }
+
         if (!KTUtil::isAbsolutePath($sFilename)) {
             if ($this->sFilename) {
                 $sDirPath = dirname($this->sFilename);
                 $sFilename = sprintf("%s/%s", $sDirPath, $sFilename);
             }
         }
+        $sFilename = str_replace('\\', '/', $sFilename);
         return $sFilename;
     }
 
