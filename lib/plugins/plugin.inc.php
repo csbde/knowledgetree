@@ -694,7 +694,6 @@ class KTPlugin {
                 // capture the filname version.
                 // remember to -start- the upgrade from the "next" version
                 $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
-            }
 
             if ($iEndVersion != $this->iVersion) {
                 // we obviously failed.
@@ -715,6 +714,7 @@ class KTPlugin {
                     'friendlyname' => $friendly_name,
                 ));
 
+            }
             }
             /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
             $this->setup();
