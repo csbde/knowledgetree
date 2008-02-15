@@ -2262,7 +2262,7 @@ CREATE TABLE `zseq_plugin_rss` (
 CREATE TABLE `zseq_plugins` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_plugin_helper`
