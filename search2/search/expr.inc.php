@@ -585,9 +585,30 @@ class ValueExpr extends Expr
         }
     }
 
+
+
+
 	public function getSQL($field, $fieldname, $op, $not=false)
     {
-    	$val = $field->modifyValue($this->getValue());
+    	$val = $this->getValue();
+    	switch($op)
+        {
+            case ExprOp::LIKE:
+
+                break;
+            case ExprOp::CONTAINS:
+            	$val = "%$val%";
+                break;
+            case ExprOp::STARTS_WITH:
+            	$val = "$val%";
+                break;
+            case ExprOp::ENDS_WITH:
+            	$val = "%$val";
+                break;
+        }
+
+
+    	$val = $field->modifyValue($val);
     	$quote = '';
     	if ($field->isValueQuoted())
     	{
@@ -598,19 +619,19 @@ class ValueExpr extends Expr
         switch($op)
         {
             case ExprOp::LIKE:
-                $sql = "$fieldname LIKE '$val'";
+                $sql = "$fieldname LIKE $quote$val$quote";
                 if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::CONTAINS:
-                $sql = "$fieldname LIKE '%$val%'";
+                $sql = "$fieldname LIKE $quote$val$quote";
                 if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::STARTS_WITH:
-                $sql = "$fieldname LIKE '$val%'";
+                $sql = "$fieldname LIKE $quote$val$quote";
                 if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::ENDS_WITH:
-                $sql = "$fieldname LIKE '%$val'";
+                $sql = "$fieldname LIKE $quote$val$quote";
                 if ($not) $sql = "not ($sql)";
                 break;
             case ExprOp::IS:

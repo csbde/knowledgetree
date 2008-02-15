@@ -42,6 +42,7 @@ class FolderField extends DBFieldExpr
     {
         parent::__construct('full_path', 'documents', _kt('Folder'));
         $this->setAlias('Folder');
+        $this->isValueQuoted(false);
     }
 
     public function getInputRequirements()
@@ -53,6 +54,19 @@ class FolderField extends DBFieldExpr
     {
         return DefaultOpCollection::validateParent($this, DefaultOpCollection::$is);
     }
+
+    public function modifyName($sql)
+    {
+    	$this->path = $sql;
+   		return "case when position('/' in $sql) = 0 then '/' else reverse(substring(reverse($sql) from position('/' in reverse($sql)) + 1 )) end";
+    }
+
+
+    public function modifyValue($value)
+    {
+    	return "case when position('/' in $this->path) = 0 then '/' else '$value' end";
+    }
+
 }
 
 ?>
