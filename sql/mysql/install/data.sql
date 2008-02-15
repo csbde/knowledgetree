@@ -765,9 +765,7 @@ INSERT INTO `plugins` VALUES
 	(18,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin',0),
 	(19,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0),
 	(20,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0),
-	(21,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0),
-    (22,'ktcore.scheduler.plugin','plugins/ktcore/scheduler/KTSchedulerPlugin.php',0,0,NULL,0,'Task Scheduler Plugin',0),
-    (23,'ktcore.schedulerdashlet.plugin','plugins/ktcore/scheduler/schedulerDashletPlugin.php',0,0,NULL,0,'Scheduler Dashlet Plugin',0);
+	(21,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0);
 /*!40000 ALTER TABLE `plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1682,7 +1680,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_plugins` WRITE;
 /*!40000 ALTER TABLE `zseq_plugins` DISABLE KEYS */;
-INSERT INTO `zseq_plugins` VALUES (23);
+INSERT INTO `zseq_plugins` VALUES (21);
 /*!40000 ALTER TABLE `zseq_plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
