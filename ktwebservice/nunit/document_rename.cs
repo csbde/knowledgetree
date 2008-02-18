@@ -35,6 +35,14 @@ namespace MonoTests.KnowledgeTree
 			response = this._kt.rename_document_title(this._session, this._doc1.docId, "test title");
 			Assert.AreEqual(0, response.status_code);
 			Assert.AreEqual("test title", response.title);
-	    	}
+	    }
+
+	    [Test]
+		public void RenameWithInvalidCharactersTest()
+		{
+			kt_document_detail response = this._kt.rename_document_filename(this._session, this._doc1.docId, "te<s'`me");
+			Assert.AreEqual(0, response.status_code);
+			Assert.AreEqual("te-s--me", response.filename);
+	    }
 	}
 }

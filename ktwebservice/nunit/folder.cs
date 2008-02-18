@@ -99,9 +99,9 @@ namespace MonoTests.KnowledgeTree
 			kt_folder_detail response2 = this._kt.get_folder_detail(this._session, this._subfolder_id);
 			Assert.AreEqual(0, response2.status_code);
 			Assert.AreEqual(this._subfolder_id, response2.id);
-			Assert.AreEqual("subfolde'r2", response2.folder_name);
+			Assert.AreEqual("subfolde-r2", response2.folder_name);
 			Assert.AreEqual(this._folder_id, response2.parent_id);
-			Assert.AreEqual("kt_unit_test/subfolde'r2", response2.full_path);
+			Assert.AreEqual("kt_unit_test/subfolde-r2", response2.full_path);
 	    }
 
 		[Test]
@@ -120,15 +120,16 @@ namespace MonoTests.KnowledgeTree
 
 	    		response = this._kt.create_folder(this._session, 1, "kt ' unit \" test");
 		       	Assert.AreEqual(0,response.status_code);
-		       	Assert.AreEqual("kt ' unit \" test",response.folder_name);
-
-	    		response = this._kt.create_folder(this._session, 1, "kt - unit - test");
-		       	Assert.AreEqual(0,response.status_code);
 		       	Assert.AreEqual("kt - unit - test",response.folder_name);
+
+		       	// this fails because the previous folder makes a folder with the same name because of invalid character substitution
+	    		response = this._kt.create_folder(this._session, 1, "kt - unit - test");
+		       	Assert.AreEqual(22,response.status_code);
+//		       	Assert.AreEqual("kt - unit - test",response.folder_name);
 
 		       	response = this._kt.get_folder_detail_by_name(this._session, "/kt ' unit \" test");
 		       	Assert.AreEqual(0,response.status_code);
-		       	Assert.AreEqual("kt ' unit \" test",response.folder_name);
+		       	Assert.AreEqual("kt - unit - test",response.folder_name);
 		}
 
 		[Test]

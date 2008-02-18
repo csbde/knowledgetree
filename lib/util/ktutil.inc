@@ -117,6 +117,40 @@ class KTUtil {
 		}
 	}
 
+
+
+	static $invalidFilenameCharacters = array('\\','/',':','*','?','"','<','>','|','%','+','\'','`');
+
+	/**
+	 * Checks if a filename is valid
+	 *
+	 * @param string $filename
+	 * @return boolean
+	 */
+	static function isValidFilename($filename)
+	{
+		foreach(KTUtil::$invalidFilenameCharacters as $char)
+		{
+			if (strpos($filename, $char) !== false)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	static function replaceInvalidCharacters($filename)
+	{
+		foreach(KTUtil::$invalidFilenameCharacters as $char)
+		{
+			$filename = str_replace($char, '-', $filename);
+		}
+
+		return $filename;
+	}
+
+
     function extractGPC () {
         foreach (func_get_args() as $var) {
             if (array_key_exists($var, $_REQUEST)) {
