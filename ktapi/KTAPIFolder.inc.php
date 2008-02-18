@@ -180,6 +180,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			{
 				continue;
 			}
+			$foldername = KTUtil::replaceInvalidCharacters($foldername);
 			$foldername = sanitizeForSQL($foldername);
 			$sql = "SELECT id FROM folders WHERE
 					(name='$foldername' and parent_id=$folderid) OR
@@ -234,6 +235,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$foldername = dirname($documentname);
 		$documentname = basename($documentname);
+		$documentname = KTUtil::replaceInvalidCharacters($documentname);
 
 		$ktapi_folder = $this;
 
@@ -592,7 +594,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return $user;
 		}
 
+		$title = KTUtil::replaceInvalidCharacters($title);
 		$filename = basename($filename);
+		$filename = KTUtil::replaceInvalidCharacters($filename);
 		$documenttypeid = KTAPI::get_documenttypeid($documenttype);
 		if (PEAR::isError($documenttypeid))
 		{
@@ -649,6 +653,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return $user;
 		}
+		$foldername = KTUtil::replaceInvalidCharacters($foldername);
 
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::add($this->folder, $foldername, $user);
@@ -705,6 +710,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return $user;
 		}
+		$newname = KTUtil::replaceInvalidCharacters($newname);
 
 		DBUtil::startTransaction();
 		$result = KTFolderUtil::rename($this->folder, $newname, $user);
