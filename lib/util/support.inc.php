@@ -65,6 +65,10 @@ class MD5SourceTree
 	 */
 	private function _scan($dir)
 	{
+		if (in_array($dir, $this->exclusions))
+		{
+			return;
+		}
 		if (is_dir($dir))
 		{
     		if ($dh = opendir($dir))
@@ -88,6 +92,7 @@ class MD5SourceTree
         				if (is_readable($path))
         				{
 							$md5 = md5_file($path);
+							$path = substr($path, strlen($this->rootDir) + 1);
 							fwrite($this->logFile, "$md5:$path\n");
         				}
         			}
@@ -249,7 +254,11 @@ class SupportUtil
 		$this->capture_zseqs($tables, $this->path . '/zseqreport.htm');
 
 		// get md5 on table
-		$tree = new MD5SourceTree();
+		$exclusions = array(
+			KT_DIR . '/var',
+			realpath(KT_DIR . '/../var')
+		);
+		$tree = new MD5SourceTree($exclusions);
 		$config = KTConfig::getSingleton();
 		$sourcePath = $config->get('KnowledgeTree/fileSystemRoot');
 		$tree->scan($sourcePath, $this->path . '/md5report.txt');
