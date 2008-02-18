@@ -159,6 +159,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT);
 		}
 
+		$filename = KTUtil::replaceInvalidCharacters($filename);
+
 		$options = array('major_update'=>$major_update);
 
 		$currentfilename = $this->document->getFileName();
@@ -664,6 +666,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return $user;
 		}
+		$newname = KTUtil::replaceInvalidCharacters($newname);
 
 		DBUtil::startTransaction();
 		$res = KTDocumentUtil::rename($this->document, $newname, $user);
@@ -743,6 +746,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return $user;
 		}
+		$newname = KTUtil::replaceInvalidCharacters($newname);
 
 		if ($this->document->getName() != $newname)
 		{
@@ -1164,6 +1168,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$documents['immutable'] = in_array(strtolower($value), array('1','true','on','yes'))?'1':'0';
 					break;
 				case 'filename':
+					$value = KTUtil::replaceInvalidCharacters($value);
 					$document_content['filename'] = $value;
 					break;
 				case 'major_version':
