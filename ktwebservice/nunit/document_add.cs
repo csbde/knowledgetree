@@ -112,7 +112,7 @@ namespace MonoTests.KnowledgeTree
 
 			Assert.AreEqual("n/a",response1.workflow_state);
 
-			Assert.AreEqual("Root Folder/" + folder + "/kt unit test1", response1.full_path);
+			Assert.AreEqual("/" + folder + "/kt unit test1", response1.full_path);
 
 			this._docId = response1.document_id;
 	    	}

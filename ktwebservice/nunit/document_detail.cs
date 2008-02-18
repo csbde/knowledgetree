@@ -68,7 +68,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("n/a", response.custom_document_no);
 			Assert.AreEqual("n/a", response.oem_document_no);
 			Assert.AreEqual("Default", response.document_type);
-			Assert.AreEqual("Root Folder/kt unit test1", response.full_path);
+			Assert.AreEqual("/kt unit test1", response.full_path);
 			Assert.AreEqual("kt_unit_test1.txt", response.filename);
 			Assert.AreEqual(this._content.Length + 1, response.filesize);
 			Assert.AreEqual(this._folderId, response.folder_id);
