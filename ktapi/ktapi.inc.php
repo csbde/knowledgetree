@@ -361,11 +361,11 @@ class KTAPI
 	 */
 	function get_documenttypeid($documenttype)
 	{
-		$sql = "SELECT id FROM document_types_lookup WHERE name='$documenttype' and disabled=0";
+		$sql = array("SELECT id FROM document_types_lookup WHERE name=? and disabled=0", $documenttype);
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_TYPE_INVALID);
+			return new KTAPI_DocumentTypeError(KTAPI_ERROR_DOCUMENT_TYPE_INVALID, $row);
 		}
 		$documenttypeid = $row['id'];
 		return $documenttypeid;
@@ -373,7 +373,7 @@ class KTAPI
 
 	function get_link_type_id($linktype)
 	{
-		$sql = "SELECT id FROM document_link_types WHERE name='$linktype'";
+		$sql = array("SELECT id FROM document_link_types WHERE name=?",$linktype);
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
@@ -426,10 +426,22 @@ class KTAPI
 		return $result;
 	}
 
+	/**
+	 * This should actually not be in ktapi, but in webservice
+	 *
+	 * @param unknown_type $document_type
+	 * @return unknown
+	 */
 	function get_document_type_metadata($document_type='Default')
 	{
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
+
+    	if (is_a($typeid, 'KTAPI_DocumentTypeError'))
+    	{
+			return $typeid;
+    	}
+
     	if (is_null($typeid) || PEAR::isError($typeid))
     	{
     		$response['message'] = $typeid->getMessage();
