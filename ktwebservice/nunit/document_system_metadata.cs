@@ -125,6 +125,13 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("2007-01-17 00:00:00", update_resp.created_date);
 	    	}
 
+	    [Test]
+	    public void TestBadCharsInDocType()
+	    {
+	    	kt_metadata_response resp = this._kt.get_document_type_metadata(this._session, "'''´`\"\"\\/:&;!.~,$%()|<>#=[]*?");
+	    	Assert.AreEqual(26, resp.status_code);
+	    }
+
 		[Test]
 		public void CheckinSmallDocumentWithMetadataTest()
 		{
@@ -173,7 +180,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("2007-01-17 00:00:00", update_resp.created_date);
 	    	}
 
-		[Test]
+		//[Test]
 		public void AddDocumentWithMetadataTest()
 		{
 			kt_metadata_fieldset[] fs = new kt_metadata_fieldset[1];
@@ -210,7 +217,7 @@ namespace MonoTests.KnowledgeTree
 
 
 
-			 for (int i =0;i<2;i++)
+			 for (int i =0;i<1;i++)
 			{
 			FileUploader uploader = new FileUploader( );
 

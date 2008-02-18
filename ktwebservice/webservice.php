@@ -3279,9 +3279,10 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $kt);
     	}
 
-    	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
+    	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT_TYPE);
 
     	$metadata = $kt->get_document_type_metadata($document_type);
+
     	if (PEAR::isError($metadata))
     	{
     		$response['message'] = $metadata->getMessage();
