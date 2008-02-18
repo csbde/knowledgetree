@@ -30,7 +30,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(1, response.id);
 			Assert.AreEqual("Root Folder", response.folder_name);
 			Assert.AreEqual(0, response.parent_id);
-			Assert.AreEqual("Root Folder", response.full_path);
+			Assert.AreEqual("/", response.full_path);
     		}
 
 		[Test]
@@ -81,13 +81,13 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0,response.status_code);
 			Assert.AreEqual(this._folder_id,response.folder_id);
 			Assert.AreEqual("kt_unit_test", response.folder_name);
-			Assert.AreEqual("Root Folder/kt_unit_test", response.full_path);
+			Assert.AreEqual("kt_unit_test", response.full_path);
 
 	    		kt_folder_contents response2 = this._kt.get_folder_contents(this._session, this._subfolder_id, 1, "DF");
 			Assert.AreEqual(0, response2.status_code);
 			Assert.AreEqual(this._subfolder_id, response2.folder_id);
 			Assert.AreEqual("subfolder", response2.folder_name);
-			Assert.AreEqual("Root Folder/kt_unit_test/subfolder", response2.full_path);
+			Assert.AreEqual("kt_unit_test/subfolder", response2.full_path);
 	    }
 
 		[Test]
@@ -101,7 +101,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(this._subfolder_id, response2.id);
 			Assert.AreEqual("subfolde'r2", response2.folder_name);
 			Assert.AreEqual(this._folder_id, response2.parent_id);
-			Assert.AreEqual("Root Folder/kt_unit_test/subfolde'r2", response2.full_path);
+			Assert.AreEqual("kt_unit_test/subfolde'r2", response2.full_path);
 	    }
 
 		[Test]
