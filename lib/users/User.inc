@@ -499,22 +499,22 @@ class User extends KTEntity {
 
     }
 
-    function hasPermission(&$oPermissionDescriptor) {
+    function hasPermission(&$oPermissionDescriptor, $iUserId = null) {
+    	if(empty($iUserId)){
+    		$iUserId = $_SESSION['iUserId'];
+    	}
+    	
 		$pdgTable = KTUtil::getTableName('permission_descriptor_groups');
         global $default;
 		$uglTable = $default->users_groups_table;
 
-		$sQuery = "SELECT COUNT(*) AS num FROM $pdgTable INNER JOIN " .
-		  "$uglTable ON $uglTable.group_id=$pdgTable.group_id" .
-		  "WHERE $pdgTable.descriptor_id = ? AND " .
-		  "$uglTable.user_id=?";
-		$aParams = array($oPermissionDescriptor->getID());
-		$aParams[] = $this->iId;
+		$sQuery = "SELECT COUNT(*) AS num FROM $pdgTable pd
+			INNER JOIN $uglTable ug ON ug.group_id = pd.group_id
+			WHERE pd.descriptor_id = ? AND ug.user_id = ?";
+		
+		$aParams = array($oPermissionDescriptor->getID(), $iUserId);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-        if ((int)$res === 0) {
+        if (PEAR::isError($res) || empty($res)) {
             return false;
         }
         return true;
