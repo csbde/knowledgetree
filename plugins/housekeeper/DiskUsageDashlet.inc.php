@@ -88,7 +88,8 @@ class DiskUsageDashlet extends KTBaseDashlet
 			if (OS_WINDOWS)
 			{
 				$cmd = str_replace( '/','\\',$cmd);
-				$result = `"$cmd" 2>&1`;
+				$res = KTUtil::pexec("\"$cmd\" 2>&1");
+				$result = implode("\r\n",$res['out']);
 			}
 			else
 			{

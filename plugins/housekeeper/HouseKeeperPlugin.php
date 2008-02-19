@@ -146,12 +146,7 @@ class HouseKeeperPlugin extends KTPlugin
 
     function setup()
     {
-    	if (OS_UNIX)
-    	{
-    		// unfortunately, df only seems to be working under linux at this stage. we had
-    		// issues getting gnuwin32's df to run in the stack. the application kept on core dumping! ;(
-    		$this->registerDashlet('DiskUsageDashlet', 'ktcore.diskusage.dashlet', 'DiskUsageDashlet.inc.php');
-    	}
+ 		$this->registerDashlet('DiskUsageDashlet', 'ktcore.diskusage.dashlet', 'DiskUsageDashlet.inc.php');
 		$this->registerDashlet('FolderUsageDashlet', 'ktcore.folderusage.dashlet', 'FolderUsageDashlet.inc.php');
 
         $oTemplating =& KTTemplating::getSingleton();
