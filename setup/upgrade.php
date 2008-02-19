@@ -1076,14 +1076,14 @@ function Upgrade()
 	if (PEAR::isError($pre_res)) 
 	{
 ?>
-<font color="red">Pre-Upgrade actions failed.</font>
+<font color="red">Pre-Upgrade actions failed.</font><br>
 <?php
 	} 
 	else 
 	{
 ?>
 <p>
-<font color="green">Pre-Upgrade actions succeeded.</font>
+<font color="green">Pre-Upgrade actions succeeded.</font><br>
 <?php
 	}
 ?>
@@ -1110,14 +1110,17 @@ function Upgrade()
 	if (PEAR::isError($post_res)) 
 	{
 ?>
-<font color="red">Post-Upgrade actions failed.</font>
+<font color="red">Post-Upgrade actions failed.</font><br><br>
 <?php
 	} 
 	else 
 	{
 ?>
 <p>
-<font color="green">Post-Upgrade actions succeeded.</font>
+<font color="green">Post-Upgrade actions succeeded.</font><br><br>
+<script>
+    alert("To complete the upgrade please do the following before continuing:\n\n1. Restart the KnowledgeTree services as appropriate for your environment.\n\n\nOn first run of your upgraded KnowledgeTree installaton please do the following:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the KnowledgeTree Dashboard.\n2. Enable the new plugins you wish to use.\n\n\nSelect 'next' at the bottom of this page to continue.")
+</script>
 <?php
 	}
 ?>
