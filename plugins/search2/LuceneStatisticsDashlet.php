@@ -101,8 +101,11 @@ class LuceneStatisticsDashlet extends KTBaseDashlet
 			$docsInIndex = $index->getDocumentsInIndex();
 
 			// we are only interested in documents that are active
-			$sql = "SELECT count(*) as docsInQueue FROM index_files q INNER JOIN documents d on q.document_id=d.id WHERE d.status_id=1";
-			$docsInQueue  = DBUtil::getOneResultKey($sql, 'docsInQueue');
+			$docsInQueue = $index->getIndexingQueue();
+			$docsInQueue = count($docsInQueue);
+
+			$errorsInQueue = $index->getIndexingQueue(true);
+			$errorsInQueue = count($errorsInQueue);
 
 			$sql = "SELECT count(*) as docsInRepository FROM documents";
 			$docsInRepository = DBUtil::getOneResultKey($sql, 'docsInRepository');
@@ -138,6 +141,7 @@ class LuceneStatisticsDashlet extends KTBaseDashlet
 	    		'indexingPeriod'=>$indexingPeriod,
 	    		'docsInIndex'=>$docsInIndex,
 	    		'docsInQueue'=>$docsInQueue,
+	    		'errorsInQueue'=>$errorsInQueue,
 	    		'docsInRepository'=>$docsInRepository,
 	    		'indexingCoverage'=>$indexingCoverage,
 	    		'queueCoverage'=>$queueCoverage,
