@@ -558,12 +558,12 @@ class KTDocumentUtil {
         DBUtil::startTransaction();
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
         }
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Scanning file')));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Scanning file')));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
         $iTrigger = 0;
@@ -582,22 +582,8 @@ class KTDocumentUtil {
         // NEW SEARCH
 
         Indexer::index($oDocument);
-        /*
-        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Transforming file')));
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            if ($aTrigger[1]) {
-                require_once($aTrigger[1]);
-            }
-            $oTrigger = new $sTrigger;
-            $oTrigger->setDocument($oDocument);
-            // $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $sTrigger)));
-            $oTrigger->transform();
-        }*/
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
         $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document created'), 'ktcore.transactions.create', $aOptions);
@@ -607,7 +593,7 @@ class KTDocumentUtil {
             return $res;
         }
 
-        // $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
@@ -630,6 +616,20 @@ class KTDocumentUtil {
         KTDocumentUtil::updateSearchableText($oDocument, true);
 
         DBUtil::commit();
+
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Checking permissions...')));
+
+        // Check if there are any dynamic conditions / permissions that need to be updated on the document
+        // If there are dynamic conditions then update the permissions on the document
+        // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
+        include_once(KT_LIB_DIR.'/permissions/permissiondynamiccondition.inc.php');
+        $iPermissionObjectId = $oFolder->getPermissionObjectID();
+        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
+
+        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+            $res = KTPermissionUtil::updatePermissionLookup($oDocument);
+        }
+
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('All done...')));
 
         return $oDocument;

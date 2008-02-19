@@ -76,6 +76,16 @@ if (!defined('KT_LIB_DIR')) {
     define('KT_LIB_DIR', KT_DIR . '/lib');
 }
 
+// If not defined, set KT_INSTALL_DIR based on my usual location in the tree
+if (!defined('KT_INSTALL_DIR')) {
+    $installLoc = realpath(dirname(__FILE__) . '/../..');
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
+            $installLoc = str_replace('\\','/',$installLoc);
+    }
+    define('KT_INSTALL_DIR', $installLoc);
+}
+
+
 // PATH_SEPARATOR added in PHP 4.3.0
 if (!defined('PATH_SEPARATOR')) {
     if (substr(PHP_OS, 0, 3) == 'WIN') {

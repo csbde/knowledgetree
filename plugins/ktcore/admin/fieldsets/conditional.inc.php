@@ -111,12 +111,15 @@ class ConditionalFieldsetManagementDispatcher extends BasicFieldsetManagementDis
         // now prep for the warnings.
         if ($this->oMasterfield) {
             if (!empty($this->aFreeFields)) {
-                $this->addErrorMessage(_kt("All fields must be assigned to an order in the conditional system.  To correct this, please use the \"manage field ordering\" link below.  <strong>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</strong>"));                
+                $this->addErrorMessage(_kt("Al fields must be assigned to an order in the conditional system.  To correct this, please use the \"manage field ordering\" link below.  <b>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</b>"));
+                $this->oPage->booleanLink = true;                
             } else if ($this->bIncomplete) {
-                $this->addErrorMessage(sprintf(_kt("This fieldset is incomplete: %s <strong>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</strong>"), $sIncomplete));
+                $this->addErrorMessage(sprintf(_kt("This fieldset is incomplete: %s <b>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</b>"), $sIncomplete));
+                $this->oPage->booleanLink = true;
             }    
         } else {
-            $this->addErrorMessage(_kt("A conditional fieldset must have a master field before it can be used. To correct this, please use the \"manage field ordering\" link below.  <strong>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</strong>"));        
+            $this->addErrorMessage(_kt("A conditional fieldset must have a master field before it can be used. To correct this, please use the \"manage field ordering\" link below.  <b>This fieldset will display as a normal, non-conditional fieldset until this problem is corrected.</b>"));
+            $this->oPage->booleanLink = true;        
         }
     
     }
