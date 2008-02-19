@@ -600,7 +600,8 @@ class KTPermissionUtil {
 
         $sQuery = "UPDATE $default->documents_table SET
             permission_object_id = ? WHERE permission_object_id = ? AND
-            parent_folder_ids LIKE ?";
+            (parent_folder_ids LIKE ? OR folder_id = ?)";
+        $aParams[] = $iFolderID;
         DBUtil::runQuery(array($sQuery, $aParams));
 
         Document::clearAllCaches();
