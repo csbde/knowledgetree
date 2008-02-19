@@ -25,7 +25,7 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr>
       <td>
-         { $oFieldset->getName() }
+         { $oFieldset->getName()|truncate:40:"..." }
         </a>
       </td>
       <td class="centered">
