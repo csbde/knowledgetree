@@ -49,6 +49,7 @@ require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR.'/permissions/permissiondynamiccondition.inc.php');
 
 // {{{ KTDocumentEditAction
 class KTDocumentEditAction extends KTDocumentAction {
@@ -233,6 +234,16 @@ class KTDocumentEditAction extends KTDocumentAction {
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document metadata updated'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
+        // Check if there are any dynamic conditions / permissions that need to be updated on the document
+        // If there are dynamic conditions then update the permissions on the document
+        // The dynamic condition test fails unless the changes exists in the DB therefore update permissions after committing the transaction.
+        $iPermissionObjectId = $this->oDocument->getPermissionObjectID();
+        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
+
+        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+            $res = KTPermissionUtil::updatePermissionLookup($this->oDocument);
+        }
+
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument->getId()));
         exit(0);
     }
@@ -367,6 +378,16 @@ class KTDocumentEditAction extends KTDocumentAction {
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
+        }
+
+        // Check if there are any dynamic conditions / permissions that need to be updated on the document
+        // If there are dynamic conditions then update the permissions on the document
+        // The dynamic condition test fails unless the changes exists in the DB therefore update permissions after committing the transaction.
+        $iPermissionObjectId = $this->oDocument->getPermissionObjectID();
+        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
+
+        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+            $res = KTPermissionUtil::updatePermissionLookup($this->oDocument);
         }
 
         $this->successRedirectToMain(sprintf(_kt("You have selected a new document type: %s. "), $data['type']->getName()));

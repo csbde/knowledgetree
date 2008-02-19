@@ -431,7 +431,7 @@ class KTPermissionUtil {
         */
 
 
-        if (is_null($oPermLookup)) {
+        //if (is_null($oPermLookup)) {
             $aMapPermDesc = array();
             foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
                 $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
@@ -439,7 +439,7 @@ class KTPermissionUtil {
             }
 
             $oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
-        }
+        //}
 
         $oFolderOrDocument->setPermissionLookupID($oPermLookup->getID());
         $oFolderOrDocument->update();
