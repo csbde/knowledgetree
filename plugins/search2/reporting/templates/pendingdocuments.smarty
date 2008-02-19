@@ -15,10 +15,7 @@
 
 <thead>
 <tr>
-	<th width="10"><nobr>{i18n}Document ID{/i18n}</th>
 	<th><nobr>{i18n}Filename{/i18n}</th>
-	<th width="100"><nobr>{i18n}Extension{/i18n}</th>
-	<th width="150"><nobr>{i18n}Mime Type{/i18n}</th>
 	<th width="100"><nobr>{i18n}Extractor{/i18n}</th>
 	<th width="100"><nobr>{i18n}Index Date{/i18n}</th>
 </tr>
@@ -28,10 +25,7 @@
 
 {foreach key=key from=$pending_docs item=pendingDocs}
 <tr>
-	<td><a href="/view.php?fDocumentId={$pendingDocs.document_id}">{$pendingDocs.document_id}</a></td>
-	<td>{$pendingDocs.filename|truncate:40:'...'}</td>
-	<td>{$pendingDocs.filetypes}</td>
-	<td>{$pendingDocs.mimetypes}</td>
+	<td><a href="/view.php?fDocumentId={$pendingDocs.document_id}">{$pendingDocs.filename|truncate:40:'...'}</a></td>
 	<td>{if $pendingDocs.extractor}{$pendingDocs.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
 	<td>{$pendingDocs.indexdate}</td>
 </tr>

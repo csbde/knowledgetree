@@ -23,10 +23,8 @@
 <thead>
 	<tr>
 		<th width="10"></th>
-		<th width="80"><nobr>{i18n}Document ID{/i18n}</th>
+
 		<th ><nobr>{i18n}Filename{/i18n}</th>
-		<th width="100"><nobr>{i18n}Extension{/i18n}</th>
-		<th width="100"><nobr>{i18n}Mime Type{/i18n}</th>
 		<th width="100"><nobr>{i18n}Extractor{/i18n}</th>
 		<th width="100"><nobr>{i18n}Index Date{/i18n}</th>
 	</tr>
@@ -36,11 +34,8 @@
 {foreach key=key from=$index_errors item=indexError}
 <tr>
 	<td class="centered"><input type="checkbox" name="index_error[{$indexError.document_id}]" value="1"/></td>
-	<td>{$indexError.document_id}</td>
-	<td>{$indexError.filename|truncate:40:'...'}</td>
-	<td>{$indexError.filetypes}</td>
-	<td>{$indexError.mimetypes}</td>
-	<td>{if $pendingDocs.extractor}{$indexError.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
+	<td><a href="/view.php?fDocumentId={$pendingDocs.document_id}">{$indexError.filename|truncate:40:'...'}</a></td>
+	<td>{if $indexError.extractor}{$indexError.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
 	<td>{$indexError.indexdate}</td>
 
 </tr>
