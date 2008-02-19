@@ -80,7 +80,7 @@ if (!defined('KT_LIB_DIR')) {
 if (!defined('KT_INSTALL_DIR')) {
     $installLoc = realpath(dirname(__FILE__) . '/../..');
     if (substr(PHP_OS, 0, 3) == 'WIN') {
-            $installLoc = str_replace('\\','/',$rootLoc);
+            $installLoc = str_replace('\\','/',$installLoc);
     }
     define('KT_INSTALL_DIR', $installLoc);
 }
