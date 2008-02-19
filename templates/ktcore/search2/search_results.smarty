@@ -129,7 +129,7 @@ function onShowAll(showall)
 {else}
 
 	<form method=post action="/action.php">
-	<table border=0 cellpadding="1" cellspacing="1" width="800px" align=center>
+	<table border=0 cellpadding="1" cellspacing="1" width="100%" align=center>
 	{assign var=cbid value=0}
 
 	{foreach item=document from=$results}

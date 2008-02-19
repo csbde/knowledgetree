@@ -216,7 +216,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 			// TODO : paginate this page, when there are too many users
 			foreach ($aUsers as $oUser) {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
-					$oUser->hasPermission($oDescriptor)) {
+					$oUser->hasPermission($oDescriptor, $oUser->getId())) {
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
 				}
              }
