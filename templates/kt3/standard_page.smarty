@@ -172,7 +172,13 @@
             {/if}
             {if (!$page->hide_section)}
                 <div id="breadcrumbs">
-                    <span class="additional">{i18n}You are here{/i18n}: </span>
+                	<table width="100%">
+                    <tr>
+                    <td valign=top align=left width="100">
+                    <span class="additional"><nobr>{i18n}You are here{/i18n}: </span>
+                    </td>
+					<td valign=top align=left width="100%">
+
                     {if ($page->breadcrumbSection !== false)}
                         {if ($page->breadcrumbSection.url) }
                             <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
@@ -183,10 +189,11 @@
                     {if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
                         &raquo;
                     {/if}
+
                     {if ($page->breadcrumbs !== false)}
                         {foreach item=aCrumb from=$page->breadcrumbs name=bc}
                             {if ($aCrumb.url) }
-                                <a href="{$aCrumb.url}">{$aCrumb.label|sanitize}</a>
+                                <a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</a>
                             {else}
                                 <span>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
                             {/if}
@@ -198,7 +205,12 @@
                     {if ($page->breadcrumbDetails !== false)}
                         <span class="additional">({$page->breadcrumbDetails|sanitize})</span>
                     {/if}
-                	<div id="newSearchQuery" style="float: right; "/>
+                    </td>
+                    <td width="5px">&nbsp;</td>
+                    <td valign=top align=right width="100">
+                	<div id="newSearchQuery"  /></td>
+                	</tr>
+                	</table>
                 </div>
             {/if}
         </div>

@@ -190,9 +190,7 @@ function createSearchBar(div, suffix)
 	var el = Ext.get(div);
 	if (suffix == 1)
 	{
-		el.applyStyles('position:relative; top: -15px; margin-right: 15px');
-		if (Ext.isSafari)
-			el.applyStyles('top: 0px');
+		el.applyStyles('position:relative; margin-right: 15px');
 	}
 	else
 	{
