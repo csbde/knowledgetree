@@ -80,6 +80,12 @@ class KTPermissionDynamicCondition extends KTEntity {
         return KTEntityUtil::getList2('KTPermissionDynamicCondition', $sWhereClause);
     }
 
+    function getPermissionObjectIdList($sWhereClause, $aParams) {
+        $query = 'SELECT DISTINCT(permission_object_id) FROM permission_dynamic_conditions WHERE '.$sWhereClause;
+        $aQuery = array($query, $aParams);
+        return DBUtil::getResultArray($aQuery);
+    }
+
     function &getByPermissionObject($oPermissionObject) {
         $iPermissionObjectId = KTUtil::getId($oPermissionObject);
         return KTEntityUtil::getByDict('KTPermissionDynamicCondition', array(
