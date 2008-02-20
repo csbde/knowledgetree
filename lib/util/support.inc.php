@@ -737,6 +737,10 @@ class SupportUtil
 
 	private function get_index_contents($title, $path, $relative = true)
 	{
+		if (!is_dir($path))
+		{
+			return '';
+		}
 		$contents = array();
 		$dh = opendir($path);
 		while (($filename = readdir($dh)) !== false)
