@@ -339,7 +339,7 @@ class SupportUtil
 		chdir(dirname($this->path));
 		$subdir = basename($this->path);
 		$archivename = $this->path . '.zip';
-		$cmd = "'$zip' -r '$archivename' '$subdir'";
+		$cmd = "\"$zip\" -r \"$archivename\" \"$subdir\"";
 
 		KTUtil::pexec($cmd);
 
