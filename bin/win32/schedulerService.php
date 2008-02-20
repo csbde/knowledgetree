@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id: schedulerService.php 8085 2008-02-18 15:22:27Z kevin_fourie $
+ * $Id: schedulerService.php 8105 2008-02-20 08:35:13Z megan_w $
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -63,9 +63,49 @@ if (!is_file($phpPath))
 	exit;
 }
 
-$default->log->info("Scheduler Service: starting main loop");
 
 $loop = true;
+$bTableExists = false;
+
+while(!$bTableExists){
+	switch (win32_get_last_control_message())
+    {
+
+        case WIN32_SERVICE_CONTROL_CONTINUE:
+        	break; // Continue server routine
+        case WIN32_SERVICE_CONTROL_INTERROGATE:
+        	win32_set_service_status(WIN32_NO_ERROR);
+        	break; // Respond with status
+        case WIN32_SERVICE_CONTROL_STOP: win32_set_service_status(WIN32_SERVICE_STOPPED);
+        	$loop = false; // Terminate script
+        	$bTableExists = true;
+        	continue;
+        default:
+        	win32_set_service_status(WIN32_ERROR_CALL_NOT_IMPLEMENTED); // Add more cases to handle other service calls
+    }
+
+	$default->log->info("Scheduler Service: Checking if the scheduler_tasks table exists.");
+
+	$checkQuery = 'show tables';
+	$tableList = DBUtil::getResultArray($checkQuery);
+
+	if(!empty($tableList)){
+		foreach($tableList as $table){
+			if(in_array('scheduler_tasks', $table)){
+				$bTableExists = true;
+			}
+		}
+	}
+
+
+	if(!$bTableExists){
+		$default->log->error('Scheduler Service: Scheduler_tasks table does not exist, sleeping for 30 seconds');
+		sleep(30);
+	}
+}
+
+$default->log->info("Scheduler Service: starting main loop");
+
 // Main Scheduler Service Loop
 while ($loop)
 {

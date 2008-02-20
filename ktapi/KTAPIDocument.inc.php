@@ -1146,7 +1146,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				// just ignore
 				continue;
 			}
-			switch($name)
+			switch(strtolower($name))
 			{
 				case 'unique_oem_document_no':
 					$documents['oem_no'] = $value;
