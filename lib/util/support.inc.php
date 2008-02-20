@@ -339,7 +339,7 @@ class SupportUtil
 		chdir(dirname($this->path));
 		$subdir = basename($this->path);
 		$archivename = $this->path . '.zip';
-		$cmd = "'$zip' -r '$archivename' '$subdir'";
+		$cmd = "\"$zip\" -r \"$archivename\" \"$subdir\"";
 
 		KTUtil::pexec($cmd);
 
@@ -737,6 +737,10 @@ class SupportUtil
 
 	private function get_index_contents($title, $path, $relative = true)
 	{
+		if (!is_dir($path))
+		{
+			return '';
+		}
 		$contents = array();
 		$dh = opendir($path);
 		while (($filename = readdir($dh)) !== false)
