@@ -209,6 +209,7 @@
                     <td width="5px">&nbsp;</td>
                     <td valign=top align=right width="100">
                 	<div id="newSearchQuery"  /></td>
+                	<td id="add-dashlet"></td>
                 	</tr>
                 	</table>
                 </div>
