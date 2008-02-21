@@ -42,6 +42,7 @@
  * This script is to be called periodically to index documents.
  */
 
+chdir(dirname(__FILE__));
 require_once(realpath('../../../config/dmsDefaults.php'));
 require_once('indexing/indexerCore.inc.php');
 
