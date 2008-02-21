@@ -128,7 +128,7 @@ class Document {
     function setMetadataStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); }
 
     function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
-    function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->getMetadataVersion($iNewValue); }
+    function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->setMetadataVersion($iNewValue); }
 
     function getMetadataVersionId() { return $this->_oDocumentCore->getMetadataVersionId(); }
     function setMetadataVersionId($iNewValue) { $this->_oDocumentCore->setMetadataVersionId($iNewValue); }
