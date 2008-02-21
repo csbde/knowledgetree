@@ -43,7 +43,7 @@ KTDashlet.prototype = {
     'getStatus' : function() {
         return this.dashboard.getStatus(this.id);
     }
-        
+
 };
 
 
@@ -74,7 +74,7 @@ KTDashboard.prototype = {
             }, this.getDashletBlocks());
 
         // make add button
-        var breadcrumbs = $('breadcrumbs');
+        var breadcrumbs = $('add-dashlet');
         this.addButton = INPUT({'id':'add_dashlet', 'type':'submit', 'value':_('Add Dashlet')});
         breadcrumbs.insertBefore(this.addButton, breadcrumbs.firstChild);
         this.hideAddButton();
@@ -86,7 +86,7 @@ KTDashboard.prototype = {
     'mochikitInitializeDraggables' : function() {
         var dashOpts = {
             'tag':'div',
-            'constraint': false,  
+            'constraint': false,
             'tree':true,
             'only' : ['dashboard_block'],
             'handle' : 'dashboard_block_handle'
@@ -99,13 +99,13 @@ KTDashboard.prototype = {
                 if(e.id) {
                     new YAHOO.example.DDList(e.id);
                     //new YAHOO.util.DD(e.id);
-                }                    
+                }
             }, this.getDashletBlocks());
         map(function(e) {
                 if(e.id) {
                     new YAHOO.example.DDList(e.id);
                     //new YAHOO.util.DD(e.id);
-                }                    
+                }
             }, this.getDashletBlockStoppers());
         new YAHOO.example.DDListBoundary('copyrightbar');
         new YAHOO.example.DDListBoundary('breadcrumbs');
@@ -117,7 +117,7 @@ KTDashboard.prototype = {
     'getDashletBlocks' : function() {
         return getElementsByTagAndClassName('*', 'dashboard_block', this.element);
     },
-    
+
     'getDashletBlockStoppers' : function(){
     	return getElementsByTagAndClassName('*', 'dashboard_block_empty', this.element);
     },
@@ -150,7 +150,7 @@ KTDashboard.prototype = {
             }
         }
     },
-                
+
 
     'setStatus' : function(id, status) {
         this.dashlets[id]['state'] = status;
@@ -161,7 +161,7 @@ KTDashboard.prototype = {
         return this.dashlets[id]['state'];
     },
 
-    'getDashletsInState' : function(state) { 
+    'getDashletsInState' : function(state) {
         var ret = [];
         for(var i in this.dashlets) {
             if(this.dashlets[i]['state'] == state) {
@@ -169,7 +169,7 @@ KTDashboard.prototype = {
             }
         }
         return ret;
-    },        
+    },
 
     'getDashletTitle' : function(elm) {
         var h2 = getElementsByTagAndClassName('H2', null, elm);
@@ -191,7 +191,7 @@ KTDashboard.prototype = {
                     var dashletelm = $(id);
                     var dashlet = self.dashlets[id]['object'];
 
-                    var link = A({'class':'dashletLink', 'href':'#'}, self.getDashletTitle(dashletelm));                    
+                    var link = A({'class':'dashletLink', 'href':'#'}, self.getDashletTitle(dashletelm));
                     var linkli = LI(null, link);
 
                     connect(link, 'onclick', function(event) {
@@ -199,14 +199,14 @@ KTDashboard.prototype = {
                                 dashlet.toggleClose(event);
                                 if(hasElementClass(dashlet.elm, 'rolled-up')) {
                                     self.setStatus(id, KTDashboard.ROLLEDUP);
-                                }                                    
+                                }
                                 event.stop();
                             });
                     appendChildNodes(dashletList, linkli);
                 });
         appendChildNodes(addDialog, H2(null, _('Add Dashlets')));
         appendChildNodes(addDialog, dashletList);
-        
+
         var closeLink = A({'class':'closeLink','href':'#'}, _('close'));
         connect(closeLink, 'onclick', function(event) { removeElement(addDialogScreen); });
 
@@ -229,7 +229,7 @@ KTDashboard.prototype = {
             ret[col] = [];
             var container = this.getColumn(col);
             forEach(getElementsByTagAndClassName('*', 'dashboard_block', container), function(e) {
-                        if(e.id) {                        
+                        if(e.id) {
                             try {
                                 ret[col].push({'id':e.id, 'state':self.dashlets[e.id]['state']});
                             } catch(e) {
@@ -247,7 +247,7 @@ KTDashboard.prototype = {
                     if(d.id && !hasElementClass(d, 'empty')) {
                         appendChildNodes(bucket, d);
                     }});
-        
+
         var hasClosed = false;
 
         for(var col in KTDashboard.columns) {
@@ -264,7 +264,7 @@ KTDashboard.prototype = {
                     dobj.object.toggleClose();
                     hasClosed = true;
                 }
-                    
+
                 appendChildNodes(container, elm);
             }
             appendChildNodes(container, $('end-'+col));
@@ -280,12 +280,12 @@ KTDashboard.prototype = {
     },
 
     'pushState' : function(event) {
-        var args = {'action' : 'json', 
-                    'json_action' : 'saveDashboardState', 
+        var args = {'action' : 'json',
+                    'json_action' : 'saveDashboardState',
                     'state' : serializeJSON(this.serialize())  };
         var xmlreq = getXMLHttpRequest();
         xmlreq.open('GET', this.getPushLocation() + '?' + queryString(args), false);
-        xmlreq.send(null);	
+        xmlreq.send(null);
     }
 
 };
@@ -308,4 +308,4 @@ addLoadEvent(
         }
     });
 
-               
+
