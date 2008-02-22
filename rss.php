@@ -74,10 +74,16 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
     $user = DBAuthenticator::getUser($_SERVER['PHP_AUTH_USER'], array('id'=>'id',));
     $id =  $user[$_SERVER['PHP_AUTH_USER']]['id'];
 
-    header('Content-Type: application/rss+xml; charset=utf-8;');
-    header('Content-Disposition: inline; filename="rss.xml"');
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+    if(OS_WINDOWS){
+    	$sReferrer = $_SERVER['HTTP_USER_AGENT'];
+    	// Check if this is IE 6
+    	if(strstr($sReferrer, 'MSIE 6.0')){
+    		header('Content-Type: application/rss+xml; charset=utf-8;');
+		    header('Content-Disposition: inline; filename="rss.xml"');
+		    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+    	}
+    }
 
     if(KTUtil::arrayGet($_REQUEST, 'docId')){ // if a docId parameter is passed
         // get document id from http request object
