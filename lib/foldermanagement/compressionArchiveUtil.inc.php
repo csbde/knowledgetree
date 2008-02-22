@@ -43,6 +43,8 @@ class ZipFolder {
     var $sTmpPath = '';
     var $sZipFileName = '';
     var $sZipFile = '';
+    var $sPattern = '';
+    var $sFolderPattern = '';
     var $aPaths = array();
     var $aReplaceKeys = array();
     var $aReplaceValues = array();
@@ -55,6 +57,8 @@ class ZipFolder {
         $this->oKTConfig =& KTConfig::getSingleton();
         $this->oStorage =& KTStorageManagerUtil::getSingleton();
 
+        $this->sOutputEncoding = $this->oKTConfig->get('export/encoding', 'UTF-8');
+
         $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
         $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
 
@@ -64,6 +68,9 @@ class ZipFolder {
         $this->sTmpPath = $sTmpPath;
         $this->sZipFileName = $sZipFileName;
         $this->aPaths = array();
+
+        $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
+        $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
         $aReplace = array(
             "[" => "[[]",
@@ -76,7 +83,7 @@ class ZipFolder {
         $this->aReplaceValues = array_values($aReplace);
     }
 
- /**
+    /**
      * Return the full path
      *
      * @param mixed $oFolderOrDocument May be a Folder or Document
@@ -109,28 +116,30 @@ class ZipFolder {
         }
 
         $sDocPath = $this->getFullFolderPath($oFolder);
-        $sDocName = $oDocument->getFileName();
+        $sDocPath = preg_replace($this->sFolderPattern, '-', $sDocPath);
+        $sDocPath = $this->_convertEncoding($sDocPath, true);
 
-        $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sDocPath))));
+
+        $sDocName = $oDocument->getFileName();
+        $sDocName = preg_replace($this->sPattern, '-', $sDocName);
+        $sDocName = $this->_convertEncoding($sDocName, true);
+
+        $sParentFolder = $this->sTmpPath.'/'.$sDocPath;
         $newDir = $this->sTmpPath;
-        $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sDocPath, true))));
-        foreach (split('/', $sFullPath) as $dirPart) {
+
+        $aFullPath = split('/', $sDocPath);
+        foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
             if (!file_exists($newDir)) {
                 mkdir($newDir, 0700);
             }
         }
 
-        $sOrigFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->oStorage->temporaryFile($oDocument))));
-        $sFilename = sprintf("%s/%s", $sParentFolder, str_replace('<', '', str_replace('</', '', str_replace('>', '', $sDocName))));
-        $sFilename = $this->_convertEncoding($sFilename, true);
+        $sOrigFile = $this->oStorage->temporaryFile($oDocument);
+        $sFilename = $sParentFolder.'/'.$sDocName;
         copy($sOrigFile, $sFilename);
 
-        $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s/%s", $sDocPath, $sDocName))));
-        $sPath = str_replace($this->aReplaceKeys, $this->aReplaceValues, $sPath);
-        $sPath = $this->_convertEncoding($sPath, true);
-
-        $this->aPaths[] = $sPath;
+        $this->aPaths[] = $sDocPath.'/'.$sDocName;
         return true;
     }
 
@@ -139,21 +148,20 @@ class ZipFolder {
     */
     function addFolderToZip($oFolder) {
         $sFolderPath = $this->getFullFolderPath($oFolder) .'/';
-        $sParentFolder = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf('%s/%s', $this->sTmpPath, $sFolderPath))));
+        $sFolderPath = preg_replace($this->sFolderPattern, '-', $sFolderPath);
+        $sFolderPath = $this->_convertEncoding($sFolderPath, true);
+
         $newDir = $this->sTmpPath;
-        $sFullPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', $this->_convertEncoding($sFolderPath, true))));
-        foreach (split('/', $sFullPath) as $dirPart) {
+
+        $aFullPath = split('/', $sFolderPath);
+        foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
             if (!file_exists($newDir)) {
                 mkdir($newDir, 0700);
             }
         }
 
-        $sPath = str_replace('<', '', str_replace('</', '', str_replace('>', '', sprintf("%s", $sFolderPath))));
-        $sPath = str_replace($this->aReplaceKeys, $this->aReplaceValues, $sPath);
-        $sPath = $this->_convertEncoding($sPath, true);
-
-        $this->aPaths[] = $sPath;
+        $this->aPaths[] = $sFolderPath;
         return true;
     }
 
@@ -163,9 +171,13 @@ class ZipFolder {
     function createZipFile($bEchoStatus = FALSE) {
         if(empty($this->aPaths)){
             return PEAR::raiseError(_kt("No folders or documents found to compress"));
-            //$this->addErrorMessage(_kt("No folders or documents found to compress"));
-            //return false;
         }
+
+        // Set environment language to output character encoding
+        $loc = $this->sOutputEncoding;
+        putenv("LANG=$loc");
+        putenv("LANGUAGE=$loc");
+        $loc = setlocale(LC_ALL, $loc);
 
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $this->aPaths));
@@ -218,6 +230,7 @@ class ZipFolder {
         if(!(isset($exportCode) && !empty($exportCode))) {
             $exportCode = KTUtil::arrayGet($_SESSION['zipcompression'], 'exportcode');
         }
+
         $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
 
         if(!empty($aData)){
@@ -232,7 +245,7 @@ class ZipFolder {
             return PEAR::raiseError(_kt('The ZIP file can only be downloaded once - if you cancel the download, you will need to reload the page.'));
         }
 
-		header("Content-Type: application/zip");
+        header("Content-Type: application/zip; charset=utf-8");
         header("Content-Length: ". filesize($sZipFile));
         header("Content-Disposition: attachment; filename=\"" . $this->sZipFileName . ".zip" . "\"");
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
