@@ -370,7 +370,9 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 			$script_name = $script_prefix . '.bat';
 
 			$script = "rem This is an auto generated file. \n";
-			$script .= $cmd . ' 2>>"' . $script_out . '" >>"' . $script_out . "\"\r\n";
+			$script .= $cmd . ' 2>"' . $script_out . "\"\r\n";
+			$script .= "set er=%ERRORLEVEL%\r\n";
+			$script .= "exit /B %er%\r\n";
 		}
 		else
 		{
@@ -392,9 +394,8 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 		// execute the script file
 		if (OS_WINDOWS)
 		{
-			$script_name = "\"$script_name\"";
-			$WshShell = new COM("WScript.Shell");
-			$res = $WshShell->Run($script_name, 0, true);
+			$res = KTUtil::pexec("\"$script_name\"");
+			$res = $res['ret'];
 		}
 		else
 		{

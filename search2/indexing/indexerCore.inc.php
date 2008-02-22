@@ -110,7 +110,7 @@ class QueryResultItem
 					dcv.minor_version, dcv.filename, cou.name as checkoutuser, w.human_name as workflow, ws.human_name as workflowstate,
 					mt.mimetypes as mimetype, md.mime_doc as mimedoc, d.checkedout, mbu.name as modifiedbyuser, d.modified,
 					cbu.name as createdbyuser, ou.name as owneruser, d.immutable, d.status_id, d.created,dcv.storage_path, dtl.name as document_type,
-					mt.icon_path as mime_icon_path, mt.friendly_name as mime_display, d.oem_no
+					mt.icon_path as mime_icon_path, mt.friendly_name as mime_display, d.oem_no, dmv.name as title
 				FROM
 					documents d
 					INNER JOIN document_metadata_version dmv ON d.metadata_version_id = dmv.id
@@ -151,6 +151,7 @@ class QueryResultItem
 		$this->filename=$result['filename'];
 		$this->filesize = KTUtil::filesizeToString($result['filesize']);
 		$this->folderId = $result['folder_id'];
+		$this->title = $result['title'];
 
 		$this->createdBy = $result['createdbyuser'];
 		$this->dateCreated = $result['created'];
@@ -510,7 +511,11 @@ abstract class Indexer
     {
     	 $userid=$_SESSION['userID'];
     	 if (empty($userid)) $userid=1;
-    	$sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'C' FROM documents WHERE status_id=1";
+
+    	$sql = "DELETE FROM index_files";
+    	DBUtil::runQuery($sql);
+
+    	$sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE status_id=1 and id not in (select document_id from index_files)";
     	DBUtil::runQuery($sql);
     }
 
@@ -895,7 +900,7 @@ abstract class Indexer
 
     	Indexer::clearoutDeleted();
 
-    	$date = date('Y-m-d H:j:s');
+    	$date = date('Y-m-d H:i:s');
     	// identify the indexers that must run
         // mysql specific limit!
         $sql = "SELECT
@@ -959,18 +964,38 @@ abstract class Indexer
 
         	$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass), 'debug');
 
-
         	if (empty($extractorClass))
         	{
-        		Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
-        		continue;
-        	}
+        		/*
 
-        	if (!$this->isExtractorEnabled($extractorClass))
-			{
-				$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass), 'info');
-				continue;
-			}
+        		if no extractor is found and we don't need to index discussions, then we can remove the item from the queue.
+
+        		*/
+        		if ($indexDiscussion)
+        		{
+        			$indexDocument = false;
+        			$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Not indexing docid: %d content because extractor could not be resolve. Still indexing discussion."), $docId), 'info');
+        		}
+        		else
+        		{
+        			Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
+        			continue;
+        		}
+        	}
+        	else
+        	{
+        		/*
+
+        		If an extractor is available, we must ensure it is enabled.
+
+        		 */
+
+	        	if (!$this->isExtractorEnabled($extractorClass))
+				{
+					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass), 'info');
+					continue;
+				}
+        	}
 
         	if ($this->debug)
         	{
@@ -1048,14 +1073,21 @@ abstract class Indexer
 					$title = $document->getName();
         			if ($indexDiscussion)
         			{
-        				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
-        				$removeFromQueue = $indexStatus;
-        				if (!$indexStatus)
+        				if (!$this->filterText($targetFile))
         				{
-        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
+        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
         				}
+						else
+						{
+	        				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
+    	    				$removeFromQueue = $indexStatus;
+        					if (!$indexStatus)
+        					{
+        						$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
+        					}
 
-        				$extractor->setIndexingStatus($indexStatus);
+        					$extractor->setIndexingStatus($indexStatus);
+						}
         			}
         			else
         			{
@@ -1101,7 +1133,8 @@ abstract class Indexer
         	}
         	else
         	{
-				$this->indexDiscussion($docId);
+				$indexStatus = $this->indexDiscussion($docId);
+				$removeFromQueue = $indexStatus;
         	}
 
         	if ($removeFromQueue)
