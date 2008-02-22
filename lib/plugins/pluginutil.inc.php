@@ -412,7 +412,8 @@ class KTPluginUtil {
             }
         }
 
-        foreach (KTPluginEntity::getList() as $oPluginEntity) {
+        $aPluginList = KTPluginEntity::getList();
+        foreach ($aPluginList as $oPluginEntity) {
             $sPath = $oPluginEntity->getPath();
             if (!KTUtil::isAbsolutePath($sPath)) {
                 $sPath = sprintf("%s/%s", KT_DIR, $sPath);
