@@ -38,6 +38,8 @@
 
 class DiscussionTextField extends SearchableText
 {
+	public $general_op = ExprOp::CONTAINS;
+
     public function __construct()
     {
         parent::__construct('Discussion', _kt('Discussion Text'));
