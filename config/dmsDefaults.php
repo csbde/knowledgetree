@@ -76,13 +76,14 @@ if (!defined('KT_LIB_DIR')) {
     define('KT_LIB_DIR', KT_DIR . '/lib');
 }
 
-// If not defined, set KT_INSTALL_DIR based on my usual location in the tree
-if (!defined('KT_INSTALL_DIR')) {
-    $installLoc = realpath(dirname(__FILE__) . '/../..');
+// If not defined, set KT_STACK_DIR based on my usual location in the tree
+// TODO: This needs to use a config.ini entry if available
+if (!defined('KT_STACK_DIR')) {
+    $stackLoc = realpath(dirname(__FILE__) . '/../..');
     if (substr(PHP_OS, 0, 3) == 'WIN') {
-            $installLoc = str_replace('\\','/',$installLoc);
+            $stackLoc = str_replace('\\','/',$stackLoc);
     }
-    define('KT_INSTALL_DIR', $installLoc);
+    define('KT_STACK_DIR', $stackLoc);
 }
 
 
