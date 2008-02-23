@@ -704,7 +704,7 @@ class KTUtil {
     		case 'externalBinary/python':
     			if (OS_WINDOWS)
 				{
-					$script = $stackPath . '/openoffice/openoffice/program/python.bat';
+					$script = $stackPath . '/openoffice/program/python.bat';
 				}
 				else
 				{

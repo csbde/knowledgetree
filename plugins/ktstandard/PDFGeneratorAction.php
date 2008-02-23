@@ -58,25 +58,23 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
+    function getName() {
+        return 'PDF Generator';
+    }
+
     function getDisplayName() {
-        // We need to handle Windows differently - as usual ;)
-        if (substr( PHP_OS, 0, 3) == 'WIN') {
-            $cmdpath = KT_DIR . "/../openoffice/openoffice/program/python.bat";
-            $cmdpath = str_replace( '/','\\',$cmdpath);   
-        } else {
-            $cmdpath = "../openoffice/program/python";
-        }
+		$cmdpath = KTUtil::findCommand('externalBinary/python');
         // Check if openoffice and python are available
-        if(file_exists($cmdpath)) {
+        if($cmdpath != false && file_exists($cmdpath) && !empty($cmdpath)) {
             $sDocType = $this->getMimeExtension();
-            // make sure that the selected document id of an acceptable extension
+            // make sure that the selected document is of an acceptable extension
             foreach($this->aAcceptedMimeTypes as $acceptType){
                 if($acceptType == $sDocType){
                     return _kt('Generate PDF') . "&nbsp;<a href=\"" . KTUtil::ktLink( 'action.php', 'ktstandard.pdf.generate', array( "fDocumentId" => $this->oDocument->getId(), "action" => "pdfdownload") ) . "\" <img src='resources/mimetypes/pdf.png' alt='PDF' border=0/></a>";
                 }
             }
         }
-        return 'PDF Generator';
+        return '';
     }
 
     function form_main() {
@@ -174,6 +172,14 @@ class PDFGeneratorAction extends KTDocumentAction {
         $oDocument = $this->oDocument;
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oConfig =& KTConfig::getSingleton();
+		$cmdpath = KTUtil::findCommand('externalBinary/python');
+        // Check if openoffice and python are available
+        if($cmdpath == false || !file_exists($cmdpath) || empty($cmdpath)) {
+            // Set the error messsage and redirect to view document
+            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. Python binary not found.'));
+            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+            exit(0);          
+        }
 
         //get the actual path to the document on the server
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oStorage->getPath($oDocument));
@@ -186,7 +192,7 @@ class PDFGeneratorAction extends KTDocumentAction {
             // We need to handle Windows differently - as usual ;)
             if (substr( PHP_OS, 0, 3) == 'WIN') {
 
-                $cmd = "\"" . KT_DIR . "/../openoffice/openoffice/program/python.bat\" \"". KT_DIR . "/bin/openoffice/pdfgen.py\" \"" . $sPath . "\" \"" . $sTempFilename . "\"";
+                $cmd = "\"" . $cmdpath . "\" \"". KT_DIR . "/bin/openoffice/pdfgen.py\" \"" . $sPath . "\" \"" . $sTempFilename . "\"";
                 $cmd = str_replace( '/','\\',$cmd);   
 
                 // TODO: Check for more errors here
@@ -202,7 +208,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                 // TODO: Check for more errors here
                 // SECURTIY: Ensure $sPath and $sTempFilename are safe or they could be used to excecute arbitrary commands!
                 // Excecute the python script.
-                $cmd = '../openoffice/program/python bin/openoffice/pdfgen.py ' . escapeshellcmd($sPath) . ' ' . escapeshellcmd($sTempFilename);
+                $cmd = $cmdpath . ' ' . KT_DIR . '/bin/openoffice/pdfgen.py ' . escapeshellcmd($sPath) . ' ' . escapeshellcmd($sTempFilename);
                 $res = shell_exec($cmd." 2>&1");
                 //print($res);
                 //print($cmd);
@@ -245,15 +251,15 @@ class PDFGeneratorAction extends KTDocumentAction {
 
             } else {
                 // Set the error messsage and redirect to view document
-                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>' . $res));
-                redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
+                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. ' . $res));
+                redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
                 exit(0);  
             }
 
         } else {
             // Set the error messsage and redirect to view document
-            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator.<br>The path to the document did not exist.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$oDocument->getId())));
+            $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. The path to the document did not exist.'));
+            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
             exit(0);  
         }
 

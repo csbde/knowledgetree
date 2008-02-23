@@ -1040,16 +1040,16 @@ class UpgradeFunctions {
             // externalBinary Section
             $ini->delSection('externalBinary');
             if(OS_WINDOWS){
-                $ini->addItem('externalBinary', 'xls2csv', KT_INSTALL_DIR . '/bin/catdoc/xls2csv.exe', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
-                $ini->addItem('externalBinary', 'pdftotext', KT_INSTALL_DIR . '/bin/xpdf/pdftotext.exe');
-                $ini->addItem('externalBinary', 'catppt', KT_INSTALL_DIR . '/bin/catdoc/catppt.exe');
-                $ini->addItem('externalBinary', 'pstotext', KT_INSTALL_DIR . '/pstotext');
-                $ini->addItem('externalBinary', 'catdoc', KT_INSTALL_DIR . '/bin/catdoc/catdoc.exe');
-                $ini->addItem('externalBinary', 'antiword', KT_INSTALL_DIR . '/bin/antiword/antiword.exe');
-                $ini->addItem('externalBinary', 'python', KT_INSTALL_DIR . '/python.bat');
-                $ini->addItem('externalBinary', 'java', KT_INSTALL_DIR . '/java/jre/bin/java.exe');
-                $ini->addItem('externalBinary', 'php', KT_INSTALL_DIR . '/php/php.exe');
-                $ini->addItem('externalBinary', 'df', KT_INSTALL_DIR . '/bin/gnuwin32/df.exe');
+                $ini->addItem('externalBinary', 'xls2csv', KT_STACK_DIR . '/bin/catdoc/xls2csv.exe', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
+                $ini->addItem('externalBinary', 'pdftotext', KT_STACK_DIR . '/bin/xpdf/pdftotext.exe');
+                $ini->addItem('externalBinary', 'catppt', KT_STACK_DIR . '/bin/catdoc/catppt.exe');
+                $ini->addItem('externalBinary', 'pstotext', KT_STACK_DIR . '/bin/pstotext/pstotext.exe');
+                $ini->addItem('externalBinary', 'catdoc', KT_STACK_DIR . '/bin/catdoc/catdoc.exe');
+                $ini->addItem('externalBinary', 'antiword', KT_STACK_DIR . '/bin/antiword/antiword.exe');
+                $ini->addItem('externalBinary', 'python', KT_STACK_DIR . '/openoffice/program/python.bat');
+                $ini->addItem('externalBinary', 'java', KT_STACK_DIR . '/java/jre/bin/java.exe');
+                $ini->addItem('externalBinary', 'php', KT_STACK_DIR . '/php/php.exe');
+                $ini->addItem('externalBinary', 'df', KT_STACK_DIR . '/bin/gnuwin32/df.exe');
 
             } else {
                 $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
@@ -1057,7 +1057,7 @@ class UpgradeFunctions {
                 $ini->addItem('externalBinary', 'catppt', 'catppt');
                 $ini->addItem('externalBinary', 'pstotext', 'pstotext');
                 $ini->addItem('externalBinary', 'catdoc', 'catdoc');
-                $ini->addItem('externalBinary', 'antiword', '');
+                $ini->addItem('externalBinary', 'antiword', 'antiword');
                 $ini->addItem('externalBinary', 'python', 'python');
                 $ini->addItem('externalBinary', 'java', 'java');
                 $ini->addItem('externalBinary', 'php', 'php');

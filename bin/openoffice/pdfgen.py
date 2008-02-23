@@ -84,7 +84,7 @@ except RuntimeException, e:
     sys.stderr.write("An unknown error occured: " + e.Message + "\n")
 
 if doc == None:
-    sys.stderr.write("Could not load doc.\n")
+    sys.stderr.write("OpenOffice could not load the document for conversion. This could indicate an unsupported minetype.\n")
     sys.exit(1)
     
 
