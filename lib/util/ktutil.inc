@@ -230,8 +230,7 @@ class KTUtil {
             $aArray = (array) $aArray;
         }
         
-        // Evaluates to false if $aArray is not set or if it has zero length (ie. it's first character is not set).
-        if (!isset($aArray{0})) {
+        if ($aArray !== 0 && $aArray !== '0' && empty($aArray)) {
             return $mDefault;
         }
         if (array_key_exists($sKey, $aArray)) {
