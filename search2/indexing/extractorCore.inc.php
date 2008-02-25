@@ -360,7 +360,9 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 		$temp_dir = $config->get('urls/tmpDirectory');
 		$res = 0;
 
-		$script_prefix = $temp_dir . '/' . time();
+		$docid = $this->document->getId();
+
+		$script_prefix = $temp_dir . '/' . time() . '-' . $docid;
 		$script_out = $script_prefix . '.out';
 
 		// define the scripts that we want
@@ -380,7 +382,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 			$script = "#!/bin/sh\n";
 			$script .= "# This is an auto generated file. \n";
-			$script .= $cmd . ' 2>>"' . $script_out . '" >>"' . $script_out . "\"\n";
+			$script .= $cmd . ' 2>>"' . $script_out . "\"\n";
 			$script .= "exit $?\n";
 		}
 
