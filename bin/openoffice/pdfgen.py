@@ -84,7 +84,7 @@ except RuntimeException, e:
     sys.stderr.write("An unknown error occured: " + e.Message + "\n")
 
 if doc == None:
-    sys.stderr.write("OpenOffice could not load the document for conversion. This could indicate an unsupported minetype.\n")
+    sys.stderr.write("The document could not be opened for conversion. This could indicate an unsupported mimetype.\n")
     sys.exit(1)
     
 
@@ -100,5 +100,14 @@ p.Value = 'writer_pdf_Export'
 properties.append(p)
 properties = tuple(properties)
 
-doc.storeToURL(url_save, properties)
-doc.dispose()
+try:
+    doc.storeToURL(url_save, properties)
+    doc.dispose()
+except IOException, e:
+    sys.stderr.write("URL (" + url_save + ") couldn't be found or was corrupt (" + e.Message + ")\n")
+    sys.exit(1)
+except IllegalArgumentException, e:
+    sys.stderr.write("Given parameters don't conform to the specification ( " + e.Message + ")\n")
+    sys.exit(1)
+except RuntimeException, e:
+    sys.stderr.write("An unknown error occured: " + e.Message + "\n")

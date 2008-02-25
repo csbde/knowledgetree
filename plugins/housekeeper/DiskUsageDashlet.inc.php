@@ -145,7 +145,16 @@ class DiskUsageDashlet extends KTBaseDashlet
 		$oRegistry =& KTPluginRegistry::getSingleton();
 		$oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
 
+		$config = KTConfig::getSingleton();
+		$rootUrl = $config->get('KnowledgeTree/rootUrl');
+
 		$dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
+		if (!empty($rootUrl)) $dispatcherURL .= $rootUrl . $dispatcherURL;
+        if ( substr( $dispatcherURL, 0,1 ) == '/' || substr( $dispatcherURL, 0,1 ) == '\\')
+		{
+			$dispatcherURL = substr($dispatcherURL,1);
+		}
+        $dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
 
 
 		$aTemplateData = array(
