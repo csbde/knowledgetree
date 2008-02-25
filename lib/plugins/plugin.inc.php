@@ -685,6 +685,7 @@ class KTPlugin {
     function register() {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         $friendly_name = '';
+        $iOrder = $this->iOrder;
         if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
 
@@ -695,33 +696,38 @@ class KTPlugin {
                 // remember to -start- the upgrade from the "next" version
                 $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
 
-            if ($iEndVersion != $this->iVersion) {
-                // we obviously failed.
-                $oEntity->updateFromArray(array(
+                if ($iEndVersion != $this->iVersion) {
+                    // we obviously failed.
+                    $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
                     'version' => $iEndVersion,   // as far as we got.
                     'disabled' => true,
                     'unavailable' => false,
                     'friendlyname' => $friendly_name,
-                ));
-                // FIXME we -really- need to raise an error here, somehow.
+                    ));
+                    // FIXME we -really- need to raise an error here, somehow.
 
-            } else {
-                $oEntity->updateFromArray(array(
+                } else {
+                    $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
                     'version' => $this->iVersion,
                     'unavailable' => false,
                     'friendlyname' => $friendly_name,
-                ));
+                    'orderby' => $iOrder,
+                    ));
 
-            }
+                }
             }
             /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
             $this->setup();
             return $oEntity;
         }
         $disabled = 1;
-        if ($this->bAlwaysInclude || $this->autoRegister) { $disabled = 0; }
+
+        if ($this->bAlwaysInclude || $this->autoRegister) {
+            $disabled = 0;
+        }
+
         $iEndVersion = $this->upgradePlugin(0, $this->iVersion);
         $oEntity = KTPluginEntity::createFromArray(array(
             'namespace' => $this->sNamespace,
@@ -730,7 +736,9 @@ class KTPlugin {
             'disabled' => $disabled,
             'unavailable' => false,
             'friendlyname' => $friendly_name,
-        ));
+            'orderby' => $iOrder,
+            ));
+
         if (PEAR::isError($oEntity)) {
             return $oEntity;
         }
