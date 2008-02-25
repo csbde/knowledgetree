@@ -15,6 +15,11 @@ class DocumentIndexAction extends KTDocumentAction
     	$this->sDisplayName=_kt('Schedule Indexing');
     }
 
+	function getName()
+	{
+		return _kt('Document Indexer');
+	}
+
     function getDisplayName()
     {
     	if (Permission::userIsSystemAdministrator() && $_SESSION['adminmode'])
