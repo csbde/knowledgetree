@@ -259,7 +259,9 @@ class KTDocumentUtil {
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Storing contents')));
         $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
         if (PEAR::isError($res)) {
-        	$oDocument->delete();
+            if (!PEAR::isError($oDocument)) {
+        	    $oDocument->delete();
+            }
         	return $res;
         }
 
