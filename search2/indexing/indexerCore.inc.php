@@ -795,6 +795,11 @@ abstract class Indexer
 
 	public function getExtractor($extractorClass)
 	{
+		if (empty($extractorClass))
+		{
+			return null;
+		}
+
 		$includeFile = SEARCH2_INDEXER_DIR . 'extractors/' . $extractorClass . '.inc.php';
 		if (!file_exists($includeFile))
 		{

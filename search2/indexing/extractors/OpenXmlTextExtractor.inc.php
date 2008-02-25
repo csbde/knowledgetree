@@ -144,15 +144,9 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		$config = KTConfig::getSingleton();
 		$temp_dir = $config->get('urls/tmpDirectory');
 
-		$time = 'openxml_'. time();
+		$docid = $this->document->getId();
+		$time = 'openxml_'. time() . '-' . $docid;
 		$this->openxml_dir = $temp_dir . '/' . $time;
-
-		if (!mkdir($this->openxml_dir))
-		{
-			$this->output = _kt('Could not create folder: ') . $this->openxml_dir;
-			return false;
-		}
-
 
 		$cmd = $this->unzip . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
@@ -282,13 +276,15 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 				if ($result === false)
 				{
 					$this->output = _kt('Could not save content to file: ') . $this->targetfile;
-					@rmdir($this->openxml_dir);
+					KTUtil::deleteDirectory($this->openxml_dir);
 					return false;
 				}
 			}
-			@rmdir($this->openxml_dir);
+			KTUtil::deleteDirectory($this->openxml_dir);
+
 			return true;
 		}
+		KTUtil::deleteDirectory($this->openxml_dir);
 
 		return false;
 
