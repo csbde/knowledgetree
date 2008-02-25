@@ -14,7 +14,13 @@
     <thead>
         <th>{i18n}State{/i18n}</th>
       {foreach from=$actions item=oAction}
-        <th>{$oAction->getDisplayName()}</th>  
+        <th>
+        	{if $oAction->getDisplayName() != ''}
+        		{$oAction->getDisplayName()}
+        	{else}	
+        		{$oAction->getName()}
+        	{/if}
+        </th>  
       {/foreach}
     </thead>
     
