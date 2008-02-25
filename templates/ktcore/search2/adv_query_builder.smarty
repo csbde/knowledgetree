@@ -714,12 +714,12 @@ function buildExpression()
 			var start = getElByName(gid, 'field' + gid + '_' + fid + 'start');
 			var end = getElByName(gid, 'field' + gid + '_' + fid + 'end');
 
-			var expr = expr = fieldname + ' ' + fieldop + ' "' + start.value + '"';
+			var expr = expr = fieldname + ' ' + fieldop + ' "' + start.value.replace(/\"/g, "'") + '"';
 			switch (fieldop)
 			{
 				case 'between':
 				case 'BETWEEN':
-					expr += ' AND "' + end.value + '"';
+					expr += ' AND "' + end.value.replace(/\"/g, "'") + '"';
 					break;
 				default:
 					break;
