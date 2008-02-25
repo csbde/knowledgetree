@@ -58,6 +58,11 @@ class PendingDocumentsDispatcher extends KTAdminDispatcher
  		foreach($aPendingDocs as $key=>$doc)
  		{
  			$extractor = $indexer->getExtractor($doc['extractor']);
+ 			if (is_null($extractor))
+ 			{
+ 				$doc['extractor'] = 'n/a';
+ 				continue;
+ 			}
  			$doc['extractor'] = $extractor->getDisplayName();
  			$aPendingDocs[$key] = $doc;
  		}
