@@ -118,6 +118,10 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     	try
     	{
     		$discussion = Indexer::getDiscussionText($docid);
+    		if (empty($discussion))
+    		{
+    			return true;
+    		}
     		return $this->lucene->updateDiscussion($docid, $discussion);
     	}
     	catch(Exception $e)
