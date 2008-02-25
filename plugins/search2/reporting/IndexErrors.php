@@ -84,6 +84,11 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
         foreach($aIndexerValues as $key=>$doc)
         {
         	$extractor=$indexer->getExtractor($doc['extractor']);
+        	if (is_null($extractor))
+ 			{
+ 				$doc['extractor'] = 'n/a';
+ 				continue;
+ 			}
         	$doc['extractor'] = $extractor->getDisplayName();
         	$aIndexerValues[$key] = $doc;
         }
