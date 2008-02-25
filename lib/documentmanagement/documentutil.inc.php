@@ -695,6 +695,10 @@ class KTDocumentUtil {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+        if (PEAR::isError($oDocument)) {
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $oDocument->getMessage()));
+        }
+
         $bCanMove = KTUtil::arrayGet($aOptions, 'move');
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
