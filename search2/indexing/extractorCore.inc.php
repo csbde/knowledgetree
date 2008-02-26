@@ -382,7 +382,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 			$script = "#!/bin/sh\n";
 			$script .= "# This is an auto generated file. \n";
-			$script .= $cmd . ' 2>>"' . $script_out . "\"\n";
+			$script .= $cmd . ' 2>>"' . $script_out . "\" >/dev/null\n";
 			$script .= "exit $?\n";
 		}
 
