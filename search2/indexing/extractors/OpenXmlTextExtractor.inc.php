@@ -198,8 +198,9 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		{
 			$filename = substr($filename,1);
 		}
+		$filename = str_replace('\\','/',$filename);
 
-		$cmd = $this->unzip . ' ' . str_replace(
+		$cmd = '"' .$this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
 			array($this->sourcefile, $filename,$this->openxml_dir), $this->unzip_params);
 
