@@ -16,7 +16,7 @@
 // | Authors: Martin Jansen <mj@php.net>                                  |
 // |          Tomas V.V.Cox <cox@idecnet.com>                             |
 // |          Jan Lehnardt  <jan@php.net>                                 |
-// |          Kai Schröder <k.schroeder@php.net>                          |
+// |          Kai Schrï¿½der <k.schroeder@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
@@ -408,7 +408,7 @@ class Net_Ping
     * @param mixed $error a PEAR error or a string with the error message
     * @return bool false
     * @access private
-    * @author Kai Schröder <k.schroeder@php.net>
+    * @author Kai Schrï¿½der <k.schroeder@php.net>
     */
     function _raiseError($error)
     {
@@ -864,7 +864,7 @@ class Net_Ping_Result
     /**
     * Parses the output of Windows' ping command
     *
-    * @author Kai Schröder <k.schroeder@php.net>
+    * @author Kai Schrï¿½der <k.schroeder@php.net>
     * @access private
     */
     function _parseResultwindows()

@@ -71,9 +71,11 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
-    function getReplacementItemData($oHelpReplacement) {
+    function getReplacementItemData($oHelpReplacement, $sTitle = null) {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Help Administration'));
-        $this->oPage->setTitle(_kt('Editing: ') . $oHelpReplacement->getTitle());
+        
+        $sTitle = (is_null($sTitle)) ? $oHelpReplacement->getTitle() : $sTitle;
+        $this->oPage->setTitle(_kt('Editing: ') . $sTitle);
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
         $aTemplateData = array(
@@ -89,10 +91,15 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     function do_editReplacement() {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         $oHelpReplacement = KTHelpReplacement::get($id);
+        $sTitle = $oHelpReplacement->getTitle();
+        //Changing " in title to &quot so title is interpreted properly
+        $oHelpReplacement->setTitle(htmlentities($sTitle, ENT_QUOTES, 'utf-8'));
+        
+        
         if (PEAR::isError($oHelpReplacement)) {
             return $this->errorRedirectToMain(_kt("Could not find specified item"));
         }
-        return $this->getReplacementItemData($oHelpReplacement);
+        return $this->getReplacementItemData($oHelpReplacement, $sTitle);
     }
 
     function do_deleteReplacement() {
@@ -119,11 +126,12 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
             return $this->errorRedirectToMain(_kt("No description given"));
         }
         $oHelpReplacement->setDescription($description);
-        
+                
         $title = KTUtil::arrayGet($_REQUEST, 'title');
         if (empty($title)) {
             return $this->errorRedirectToMain(_kt("No title given"));
         }
+                
         $oHelpReplacement->setTitle($title);
         
         $res = $oHelpReplacement->update();

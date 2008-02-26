@@ -43,6 +43,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		$config = KTConfig::getSingleton();
 
 		$this->unzip = KTUtil::findCommand("import/unzip", 'unzip');
+		$this->unzip = str_replace('\\','/',$this->unzip);
 		$this->unzip_params = $config->get('extractorParameters/unzip', '"{source}" "{part}" -d "{target_dir}"');
 		parent::__construct();
 	}
@@ -148,9 +149,14 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		$time = 'openxml_'. time() . '-' . $docid;
 		$this->openxml_dir = $temp_dir . '/' . $time;
 
-		$cmd = $this->unzip . ' ' . str_replace(
+		$this->sourcefile = str_replace('\\','/',$this->sourcefile);
+		$this->openxml_dir = str_replace('\\','/',$this->openxml_dir);
+
+		$cmd = '"' . $this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
-			array($this->sourcefile, '\[Content_Types\].xml',$this->openxml_dir), $this->unzip_params);
+			array($this->sourcefile, '*Content_Types*.xml',$this->openxml_dir), $this->unzip_params);
+
+		$cmd = str_replace('\\','/', $cmd);
 
  		if (!$this->exec($cmd))
 		{
@@ -192,8 +198,9 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		{
 			$filename = substr($filename,1);
 		}
+		$filename = str_replace('\\','/',$filename);
 
-		$cmd = $this->unzip . ' ' . str_replace(
+		$cmd = '"' .$this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
 			array($this->sourcefile, $filename,$this->openxml_dir), $this->unzip_params);
 
