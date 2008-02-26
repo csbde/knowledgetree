@@ -94,8 +94,7 @@ class KTAddDocumentTrigger {
 		    	
 		    	foreach($tags as $sTag)
 		    	{
-		    		$sTag=strtolower(trim($sTag));
-		    		
+		    		$sTag = mb_strtolower(trim($sTag), mb_detect_encoding($sTag));
 		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
 		
 		    		if (PEAR::isError($res)) {
