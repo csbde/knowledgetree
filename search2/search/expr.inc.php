@@ -882,11 +882,11 @@ class TextQueryBuilder implements QueryBuilder
 
             if (strpos($value, ' ') === false)
             {
-            	$query = "$not$fieldname: $value";
+            	$query = "$not$fieldname:$value";
             }
             else
             {
-            	$query = "$not$fieldname: \"$value\"";
+            	$query = "$not$fieldname:\"$value\"";
             }
 		}
 
@@ -912,9 +912,9 @@ class TextQueryBuilder implements QueryBuilder
             $not = $expr->not()?' NOT ':'';
 
             if (strpos($value, ' ') !== false)
-				$query .= "$not$fieldname: \"$value\"";
+				$query .= "$not$fieldname:\"$value\"";
 			else
-				$query .= "$not$fieldname: $value";
+				$query .= "$not$fieldname:$value";
 		}
 
 		return $query;

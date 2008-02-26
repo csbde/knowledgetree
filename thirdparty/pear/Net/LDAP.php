@@ -386,7 +386,7 @@ define ('NET_LDAP_ERROR', 1000);
      * The <replace> option takes a argument in the same
      * form as add, but will cause any existing
      * attributes with the same name to be replaced. If
-     * the value for any attribute in the ï¿½rray is a refï¿½
+     * the value for any attribute in the årray is a ref­
      * erence to an empty string the all instances of the
      * attribute will be deleted.
      *
