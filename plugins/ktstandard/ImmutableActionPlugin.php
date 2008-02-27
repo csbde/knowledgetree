@@ -65,9 +65,17 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oDocument->setImmutable(true);
-        $this->oDocument->update();
-        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        if(!$this->oDocument->getIsCheckedOut())
+        {
+	        $this->oDocument->setImmutable(true);
+	        $this->oDocument->update();
+	        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        }
+        else
+        {
+        	$this->addErrorMessage(_kt('Document is checked out and cannot be made immutable'));
+        	controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        }
     }
 }
 
