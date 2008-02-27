@@ -453,11 +453,29 @@ class KTFolderPermissionsAction extends KTFolderAction {
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
             $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
         }
+
+        $aFoo = $_REQUEST['foo'];
+        $aPermissions = KTPermission::getList();
+
+        // Check which groups have permission to manage security
+        $aNewGroups = $aFoo[4]['group'];
+        $aNewRoles = (isset($aFoo[4]['role']) ? $aFoo[4]['role'] : array());
+
+        // Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
+        if(!in_array(-3, $aNewRoles)){
+            $iUserId = $this->oUser->getId();
+            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups)){
+                // If user no longer has permission, return an error.
+                $this->addErrorMessage(_kt('The selected permissions cannot be updated. You will no longer have permission to manage security on this folder.'));
+                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
+                exit(0);
+            }
+        }
+
+
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
-        $aFoo = $_REQUEST['foo'];
 
-        $aPermissions = KTPermission::getList();
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
 
@@ -471,11 +489,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
-        ));
+            ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
             'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
-        );
+            );
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
         $po =& new JavascriptObserver($this);

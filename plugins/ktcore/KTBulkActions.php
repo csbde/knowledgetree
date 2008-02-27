@@ -49,13 +49,13 @@ class KTBulkDeleteAction extends KTBulkAction {
     function getDisplayName() {
         return _kt('Delete');
     }
-    
+
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
             if($oEntity->getImmutable())
             {
             	return PEAR::raiseError(_kt('Document cannot be deleted as it is immutable'));
-            }            
+            }
         }
         return parent::check_entity($oEntity);
     }
@@ -894,11 +894,23 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         $sReason = $this->sReason;
 
         if(is_a($oEntity, 'Document')) {
-            $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser);
 
-            if(PEAR::isError($res)) {
-                return PEAR::raiseError($oEntity->getName().': '.$res->getMessage());
+            if($oEntity->getIsCheckedOut()){
+                $checkedOutUser = $oEntity->getCheckedOutUserID();
+                $sUserId = $_SESSION['userID'];
+
+                if($checkedOutUser != $sUserId){
+                    $oCheckedOutUser = User::get($checkedOutUser);
+                    return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
+                }
+            }else{
+                $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser);
+
+                if(PEAR::isError($res)) {
+                    return PEAR::raiseError($oEntity->getName().': '.$res->getMessage());
+                }
             }
+
             if($this->bDownload){
                 if ($this->bNoisy) {
                     $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());

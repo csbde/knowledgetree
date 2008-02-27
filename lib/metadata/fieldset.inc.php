@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -45,7 +45,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
  * Represents the basic grouping of fields into a fieldset.
  */
 class KTFieldset extends KTEntity {
-	
+
 	/** primary key value */
 	var $iId = -1;
 	/** document fieldset name */
@@ -54,7 +54,7 @@ class KTFieldset extends KTEntity {
 	var $sDescription;
 	/** document fieldset namespace */
 	var $sNamespace;
-	
+
 	/** document fieldset mandatory flag */
 	var $bMandatory = false;
 	var $iMasterFieldId;
@@ -70,30 +70,30 @@ class KTFieldset extends KTEntity {
      * is used only by the document management system.
      */
     var $bIsSystem = false;
-	
+
     var $_bUsePearError = true;
-	
+
 	function getId() { return $this->iId; }
-	function getName() { return sanitizeForSQLtoHTML($this->sName); }
-	function setDescription($sNewValue) { $this->sDescription = sanitizeForSQL($sNewValue); }
-	function getDescription() { return sanitizeForSQLtoHTML($this->sDescription); }
-	function setName($sNewValue) { $this->sName = sanitizeForSQL($sNewValue); }
+	function getName() { return $this->sName; }
+	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
+	function getDescription() { return $this->sDescription; }
+	function setName($sNewValue) { $this->sName = $sNewValue; }
 	function getNamespace() { return $this->sNamespace; }
     function setNamespace($sNewValue) {	$this->sNamespace = $sNewValue; }
 	function getMandatory() { return $this->bMandatory; }
-	function setMandatory($bNewValue) {	$this->bMandatory = $bNewValue; }	
+	function setMandatory($bNewValue) {	$this->bMandatory = $bNewValue; }
 	function getIsConditional () { return $this->bIsConditional; }
-	function setIsConditional ($bNewValue) {	$this->bIsConditional = $bNewValue; }	
+	function setIsConditional ($bNewValue) {	$this->bIsConditional = $bNewValue; }
 	function getMasterFieldId () { return $this->iMasterFieldId; }
-	function setMasterFieldId ($iNewValue) {	$this->iMasterFieldId = $iNewValue; }	
+	function setMasterFieldId ($iNewValue) {	$this->iMasterFieldId = $iNewValue; }
 	function getIsGeneric () { return $this->bIsGeneric; }
-	function setIsGeneric ($bNewValue) {	$this->bIsGeneric = $bNewValue; }	
+	function setIsGeneric ($bNewValue) {	$this->bIsGeneric = $bNewValue; }
 	function getIsComplete () { return $this->bIsComplete; }
-	function setIsComplete ($bNewValue) {	$this->bIsComplete = $bNewValue; }	
+	function setIsComplete ($bNewValue) {	$this->bIsComplete = $bNewValue; }
 	function getIsComplex () { return $this->bIsComplex; }
-	function setIsComplex ($bNewValue) {	$this->bIsComplex = $bNewValue; }	
+	function setIsComplex ($bNewValue) {	$this->bIsComplex = $bNewValue; }
 	function getIsSystem () { return $this->bIsSystem; }
-	function setIsSystem ($bNewValue) {	$this->bIsSystem = $bNewValue; }	
+	function setIsSystem ($bNewValue) {	$this->bIsSystem = $bNewValue; }
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -108,17 +108,17 @@ class KTFieldset extends KTEntity {
         "bIsComplex" => "is_complex",
         "bIsSystem" => "is_system",
     );
-	
+
     // returns TRUE if all children are lookup enabled, false otherwise.
     function canBeMadeConditional() {
 	if ($this->getIsConditional()) {
 	    return false;
 	}
-	   
+
 	// DEBUG
 	return false;
     }
-	
+
     function _table () {
         return KTUtil::getTableName('fieldsets');
     }
@@ -127,13 +127,13 @@ class KTFieldset extends KTEntity {
 
 
 
-    /* 
+    /*
      * get document types using this field
-     * for listing displays                 
+     * for listing displays
      */
     function &getDocumentTypesUsing($aOptions = null) {
         $bIds = KTUtil::arrayGet($aOptions, 'ids');
-        
+
         $sTable = KTUtil::getTableName('document_type_fieldsets');
 
         $aQuery = array(
@@ -161,7 +161,7 @@ class KTFieldset extends KTEntity {
 
     // Static function
     function &get($iId) { return KTEntityUtil::get('KTFieldset', $iId); }
-    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTFieldset', $sWhereClause); }	
+    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTFieldset', $sWhereClause); }
     function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTFieldset', $aOptions); }
 
 	function &getNonGenericFieldsets($aOptions = null) {
@@ -172,18 +172,18 @@ class KTFieldset extends KTEntity {
             'is_generic' => false,
             'disabled' => false,
         ), $aOptions);
-    }	
+    }
 
     function &getGenericFieldsets($aOptions = null) {
 	$aOptions = KTUtil::meldOptions(
-	    $aOptions, 
+	    $aOptions,
 	    array('multi' => true,)
 	);
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => true,
             'disabled' => false,
         ), $aOptions);
-    }	
+    }
 
     function &getForDocumentType($oDocumentType, $aOptions = null) {
         $bIds = KTUtil::arrayGet($aOptions, 'ids');
@@ -192,7 +192,7 @@ class KTFieldset extends KTEntity {
         } else {
             $iDocumentTypeId = $oDocumentType;
         }
-        
+
         $sTable = KTUtil::getTableName('document_type_fieldsets');
         $aQuery = array(
             "SELECT fieldset_id FROM $sTable WHERE document_type_id = ?",
@@ -210,22 +210,22 @@ class KTFieldset extends KTEntity {
         }
         return $aRet;
     }
-	
+
 	function &getAssociatedTypes() {
 	    // NOTE:  this returns null if we are generic (all is the wrong answer)
 		if ($this->getIsGeneric()) { return array(); }
-		
+
 		$sTable = KTUtil::getTableName('document_type_fieldsets');
         $aQuery = array(
             "SELECT document_type_id FROM $sTable WHERE fieldset_id = ?",
             array($this->getId()),
         );
         $aIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
-		
+
 		$aRet = array();
 		foreach ($aIds as $iID) {
 		    $oType = DocumentType::get($iID);
-			if (!PEAR::isError($oType)) { 
+			if (!PEAR::isError($oType)) {
 			    $aRet[] = $oType;
 			}
 		}
@@ -248,13 +248,13 @@ class KTFieldset extends KTEntity {
             'disabled' => false,
         ));
     }
-    
+
     function &getByName($sName) {
         return KTEntityUtil::getByDict('KTFieldset', array(
             'name' => $sName,
             'disabled' => false,
         ));
-    }	    
+    }
 }
 
 ?>

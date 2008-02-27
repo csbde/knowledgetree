@@ -259,8 +259,8 @@ class ExprFieldRegistry
 
 		foreach($result as $record)
 		{
-			$fieldset = $record['fieldset'];
-			$field = $record['field'];
+			$fieldset = addslashes($record['fieldset']);
+			$field = addslashes($record['field']);
 			$fieldsetid = $record['fsid'];
 			$fieldid = $record['fid'];
 			$classname = "MetadataField$fieldid";

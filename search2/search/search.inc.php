@@ -96,7 +96,7 @@ class SearchHelper
 		{
 			if ($dt++ > 0) $documenttypes_str .= ',';
 			$id=$user['id'];
-			$name=$user['name'];
+			$name=(addslashes($user['name']));
 
 			$documenttypes_str .= "\n\t{id: \"$id\", name: \"$name\"}";
 		}
@@ -139,7 +139,7 @@ class SearchHelper
 		{
 			if ($uo++ > 0) $users_str .= ',';
 			$id=$user['id'];
-			$name=$user['name'];
+			$name=(addslashes($user['name']));
 
 			$users_str .= "\n\t{id: \"$id\", name: \"$name\"}";
 		}
@@ -159,8 +159,8 @@ class SearchHelper
 		foreach($fields as $field)
 		{
 			if ($fo++ > 0) $fields_str .= ',';
-			$alias = $field['alias'];
-			$display = $field['display'];
+			$alias = (addslashes($field['alias']));
+			$display = (addslashes($field['display']));
 			$type = $field['type'];
 			$fields_str .= "\n\t{alias: \"$alias\", name: \"$display\", type:\"$type\"}";
 		}
@@ -182,7 +182,7 @@ class SearchHelper
         {
         	if ($wo++ > 0) $workflow_str .= ',';
         	$wid = $workflow['id'];
-        	$name = $workflow['name'];
+        	$name = (addslashes($workflow['name']));
 
         	$workflow_str .= "\n\t{id:\"$wid\", name: \"$name\", states: [ ";
 
@@ -194,7 +194,7 @@ class SearchHelper
         	{
         		if ($so++>0) $workflow_str .= ',';
 				$sid = $state['id'];
-				$name=$state['name'];
+				$name=(addslashes($state['name']));
 				$result['workflows'][$wid]['states'][$sid] = $state;
 				$workflow_str .= "\n\t\t{id:\"$wid\", name: \"$name\"}";
         	}
@@ -217,8 +217,8 @@ class SearchHelper
         foreach($fieldsets as $fieldset)
         {
         	$fsid=$fieldset['id'];
-        	$name = $fieldset['name'];
-        	$desc = $fieldset['description'];
+        	$name = (addslashes($fieldset['name']));
+        	$desc = (addslashes($fieldset['description']));
         	if ($fso++>0) $fieldset_str .= ',';
         	$fieldset_str .= "\n\t{id:\"$fsid\",name:\"$name\",description:\"$desc\", fields: [";
 
@@ -231,8 +231,8 @@ class SearchHelper
         	{
         		if ($fo++ >0) $fieldset_str .= ',';
 				$fid = $field['id'];
-				$name= $field['name'];
-				$desc = $field['description'];
+				$name= (addslashes($field['name']));
+				$desc = (addslashes($field['description']));
 				$datatype=$field['datatype'];
 				$control=$field['control'];
         		$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";
@@ -246,7 +246,7 @@ class SearchHelper
         		{
         			if ($oo++ > 0) $fieldset_str .= ',';
         			$oid = $option['id'];
-					$name= $option['name'];
+					$name= (addslashes($option['name']));
         			$fieldset_str .= "\n\t\t\t{id: \"$oid\", name: \"$name\"}";
         		}
         		$fieldset_str .= ']}';
