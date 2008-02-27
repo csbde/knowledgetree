@@ -289,7 +289,7 @@ class MDTree {
 		    $extraclass = ' inactive';
 		}
 
-                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . htmlentities($treeToRender->mapnodes[$subnode_val]->getName()) . '</a>';
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }
@@ -301,7 +301,8 @@ class MDTree {
                     if ($leaf === $this->activevalue) {
                        $is_selected=' checked="checked"';
                     }
-                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'" '.$is_selected.'>' . $treeToRender->lookups[$leaf]->getName() .'</input>';
+                    $sValue = htmlentities($treeToRender->lookups[$leaf]->getName());
+                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$sValue.'" '.$is_selected.'>' . $sValue .'</input>';
                     $treeStr .=  '</li>';            }
                 }
         }
