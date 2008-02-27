@@ -39,8 +39,9 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
- 
-$aDocuments =& Document::getList("status_id=" . DELETED);
+
+$sWhere = "status_id=" . DELETED;
+$aDocuments =& Document::getList($sWhere);
 
 $pageNum = $_REQUEST['page'];
 
@@ -50,6 +51,11 @@ if(fmod($items, 10) > 0){
 }else{
 	$pages = ($items/10);
 }
+
+for($i=1; $i<=$pages; $i++){
+	$aPages[] = $i;
+}
+			
 if($pageNum == 1){
 	$listStart = 0;
 	$listEnd = 9;
@@ -60,13 +66,53 @@ if($pageNum == 1){
 	$listStart = (10*($pageNum-1));
 	$listEnd = $listStart+9;
 }
+
+
+
+$output = "<table class=\"kt_collection\"> 
+				<thead>
+			    <tr>
+	      			<th style=\"width:2em\"><input type=\"checkbox\" onclick=\"toggleSelectFor(this, 'selected_docs')\" title=\"toggle all\"/></th>
+	      			<th>"._kt('Document Name').'</th>
+			        <th>'._kt('Last Modification').'</th>
+	      			<th>'._kt('Deletion Comment').'</th>
+    			</tr>
+  				</thead> 
+				<tbody>';
+				
+
 for($i = $listStart; $i <= $listEnd; $i++){
-	$output .=  "<tr>
-	      <td><input type='checkbox' name='selected_docs[]' value='".$aDocuments[$i]->getId()."'/></td>
+	$output .= "
+				<tr>
+	      <td><input type=\"checkbox\" name=\"selected_docs[]\" value=\"".$aDocuments[$i]->getId()."\"/></td>
 	      <td>".$aDocuments[$i]->getName()."</td>
 	      <td>".$aDocuments[$i]->getLastModifiedDate()."</td>
 	      <td>".$aDocuments[$i]->getLastDeletionComment()."</td>
 	    </tr>";
+	        
 }
+
+
+$output .= '<tfoot>
+  	<tr>
+  		<td colspan="4">
+  			<span style="float: left">'.$items.' '._kt('items, 10 per page').'</span>
+  		</td>
+  	</tr>
+  	<tr>
+  		<td colspan="4">
+  			<div align="center">';
+  			
+  				foreach($aPages as $page){
+					$output .= '<a href="#" onclick="buildList(this.innerHTML)">'.$page.'</a>&nbsp;';
+  				}
+  				
+$output .= '</div>
+		</td>
+  	</tr>
+  </tfoot>
+  </table>
+  </tbody></table>';
+  
 echo $output;
 ?>

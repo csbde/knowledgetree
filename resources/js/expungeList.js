@@ -16,7 +16,7 @@ function buildList(value){
 
 function stateChanged(){ 
 	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete"){ 
-		document.getElementById("output").innerHTML=xmlHttp.responseText;
+		document.getElementById("tableoutput").innerHTML=xmlHttp.responseText;
 	}
 } 
 
