@@ -42,24 +42,23 @@ require_once('../config/dmsDefaults.php');
 // Check if open office is running
 $sCheckOO = SearchHelper::checkOpenOfficeAvailablity();
 
-
 // If it is running - exit, we don't need to do anything otherwise start it
 if(!empty($sCheckOO)){
-	
+
 	$default->log->debug('Check Open Office Task: Open office service is not running... trying to start it.');
-	
+
     if(OS_WINDOWS){
-    	
+
         // Check the path first
-        $sPath = realpath('../../winserv.exe');
+        $sPath = realpath('../../bin/winserv.exe');
 
         if(file_exists($sPath)){
-            $sCmd = "\"$sPath\" start kt_openoffice";
+            $sCmd = "\"$sPath\" start ktopenoffice";
             KTUtil::pexec($sCmd);
             exit;
         }
         // If that doesn't work, check for the all start
-        $sPath = realpath('../../bin/allctl.bat');
+        $sPath = realpath('../../bin/dmsctl.bat');
         if(file_exists($sPath)){
             $sCmd = "\"$sPath\" start";
             KTUtil::pexec($sCmd);
