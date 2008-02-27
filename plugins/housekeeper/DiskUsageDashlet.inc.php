@@ -61,13 +61,23 @@ class DiskUsageDashlet extends KTBaseDashlet
 		$this->warningPercent = $config->get('DiskUsage/warningThreshold', 15);
 		$this->urgentPercent = $config->get('DiskUsage/urgentThreshold', 5);
 
-		$this->getUsage();
+		$got_usage = $this->getUsage();
+
+		if ($got_usage == false)
+		{
+			return false;
+		}
 
 		return Permission::userIsSystemAdministrator();
 	}
 
 	function getUsage($refresh=false)
 	{
+		if (isset($_SESSION['DiskUsage']['problem']))
+		{
+			return false;
+		}
+
     	$check = true;
     	// check if we have a cached result
 		if (isset($_SESSION['DiskUsage']))
@@ -95,6 +105,13 @@ class DiskUsageDashlet extends KTBaseDashlet
 			{
 				$result = shell_exec($cmd." 2>&1");
 			}
+
+			if (strpos($result, 'cannot read table of mounted file systems') !== false)
+			{
+				$_SESSION['DiskUsage']['problem'] = true;
+				return false;
+			}
+
 
 			$result = explode("\n", $result);
 
@@ -135,6 +152,8 @@ class DiskUsageDashlet extends KTBaseDashlet
     		$_SESSION['DiskUsage']['time'] = time();
     		$_SESSION['DiskUsage']['usage'] = $this->usage;
 		}
+
+		return true;
 	}
 
 	function render()
