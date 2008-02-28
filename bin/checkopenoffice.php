@@ -39,46 +39,105 @@
 chdir(realpath(dirname(__FILE__)));
 require_once('../config/dmsDefaults.php');
 
-// Check if open office is running
+/*
+Script checks if open office is running, if it isn't then it attempts to start it.
+
+Windows Vista always returns false if we try and check the host and port
+so for windows we use the win32 service status checks.
+
+*/
+
+// Check if the calling function requires a return value
+$sGiveOutput = (isset($argv[1]) && $argv[1] == 'output') ? true : false;
+
+// First we check the host:port to see if open office is running
 $sCheckOO = SearchHelper::checkOpenOfficeAvailablity();
 
-// If it is running - exit, we don't need to do anything otherwise start it
-if(!empty($sCheckOO)){
-
-	$default->log->debug('Check Open Office Task: Open office service is not running... trying to start it.');
-
-    if(OS_WINDOWS){
-
-        // Check the path first
-        $sPath = realpath('../../bin/winserv.exe');
-
-        if(file_exists($sPath)){
-            $sCmd = "\"$sPath\" start ktopenoffice";
-            KTUtil::pexec($sCmd);
-            exit;
-        }
-        // If that doesn't work, check for the all start
-        $sPath = realpath('../../bin/dmsctl.bat');
-        if(file_exists($sPath)){
-            $sCmd = "\"$sPath\" start";
-            KTUtil::pexec($sCmd);
-            exit;
-        }
-        // Might be a source install ... ???
-        $default->log->debug('Check Open Office Task: Can\'t start Open office, this may be a source install.');
-        exit;
-    }else{
-        $sPath = realpath('../../dmsctl.sh');
-        if(file_exists($sPath)){
-            $sCmd = "\"$sPath\" start";
-            KTUtil::pexec($sCmd);
-            exit;
-        }
-        // might be a source install
-        $default->log->debug('Check Open Office Task: Can\'t start Open office, this may be a source install.');
-        exit;
+if(empty($sCheckOO)){
+    // If the check returns empty then it is available on that port so we exit
+    if($sGiveOutput){
+        echo 1;
     }
+    exit;
 }
 
+// Open office appears not to be running.
+
+if(OS_WINDOWS){
+    // If this is vista, it might be being blocked, so we query the service
+    $OOService = 'ktopenoffice';
+    $result = win32_query_service_status($OOService);
+
+    if(is_array($result)){
+        $iProcessId = $result['ProcessId'];
+        if(!empty($iProcessId) && $iProcessId != 0){
+            // If there is a process id (PID) then open office is running so we exit
+            if($sGiveOutput){
+                echo 1;
+            }
+        	exit;
+        }
+    }
+
+    // Service is not running - log it and attempt to start
+	$default->log->debug('Check Open Office Task: Open office service is not running... trying to start it.');
+
+	// Use the win32 service start
+	$result2 = win32_start_service($OOService);
+
+	if($result2 == 0){
+	    // Service started successfully
+	    $default->log->debug('Check Open Office Task: Open office service started.');
+	    if($sGiveOutput){
+            echo 1;
+        }
+        exit;
+	}
+
+	$default->log->debug('Check Open Office Task: Open office service could not be started. Error code '.$result2);
+
+
+	// Attempt using the dmsctl batch script
+	$sPath = realpath('../../bin/dmsctl.bat');
+	if(file_exists($sPath)){
+	    $sCmd = "\"$sPath\" start";
+	    $res = KTUtil::pexec($sCmd);
+
+	    $default->log->debug('Check Open Office Task: Attempted start using dmsctl.bat.');
+	    if($sGiveOutput){
+            echo 2;
+        }
+	    exit;
+	}else{
+	    $default->log->debug('Check Open Office Task: Can\'t find dmsctl.bat, this may be a source install.');
+	    if($sGiveOutput){
+            echo 0;
+        }
+        exit;
+	}
+}else{
+    // If the OS is Unix or Linux
+    $sPath = realpath('../../dmsctl.sh');
+    if(file_exists($sPath)){
+        $sCmd = "\"$sPath\" start";
+        KTUtil::pexec($sCmd);
+
+        $default->log->debug('Check Open Office Task: Attempted start using dmsctl.sh.');
+	    if($sGiveOutput){
+            echo 2;
+        }
+        exit;
+    }else{
+	    $default->log->debug('Check Open Office Task: Can\'t find dmsctl.sh, this may be a source install.');
+	    if($sGiveOutput){
+            echo 0;
+        }
+        exit;
+	}
+}
+$default->log->debug('Check Open Office Task: Can\'t start Open office, this may be a source install.');
+if($sGiveOutput){
+    echo 0;
+}
 exit;
 ?>
