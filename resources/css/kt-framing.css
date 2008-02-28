@@ -1450,7 +1450,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .error_dashlet_bottomrepeat_small {
     position: absolute;
     width: 97%;
-    height: 21px;
+    height: 30px;
     bottom: 0px;
     left: 10x;
     background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
@@ -1478,6 +1478,17 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     overflow:hidden;
 }
 
+.error_dashlet_rightrepeat_top_small {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
 .error_dashlet_rightrepeat_bottom {
     position: absolute;
     width: 30px;
@@ -1491,6 +1502,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .error_dashlet_rightrepeat_top {
     min-height: 70px;
+}
+
+.error_dashlet_rightrepeat_top_small {
+    min-height: 20px;
 }
 
 .dashboard_block.rolled-up .error_dashlet_toprepeat
@@ -1521,6 +1536,14 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .dashboard_block.rolled-up .error_dashlet_leftrepeat_bottom
 { 
     display: none;
+}
+
+.dashboard_block.rolled-up .error_dashlet_bottomleft {
+    background: url(../graphics/error_bottomleft_rolledup.png) bottom left no-repeat;
+}
+
+.dashboard_block.rolled-up .error_dashlet_bottomright {
+	background: url(../graphics/error_bottomright_rolledup.png) bottom right no-repeat;
 }
 
 .info_dashlet_topleft {
@@ -1627,7 +1650,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .info_dashlet_bottomrepeat_small {
     position: absolute;
     width: 97%;
-    height: 21px;
+    height: 30px;
     bottom: 0px;
     left: 10x;
     background: #DEDEDE url(../graphics/info_bottomrepeat.png) bottom left repeat-x;
@@ -1655,6 +1678,17 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     overflow:hidden;
 }
 
+.info_dashlet_rightrepeat_top_small {
+    position: absolute;
+    width: 30px;
+    height: 50%;
+    top: 5px;
+    right: 0px;
+    background: #DEDEDE url(../graphics/info_rightrepeat.png) top right repeat-y;
+    z-index:-1;
+    overflow:hidden;
+}
+
 .info_dashlet_rightrepeat_bottom {
     position: absolute;
     width: 30px;
@@ -1668,6 +1702,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .info_dashlet_rightrepeat_top {
     min-height: 70px;
+}
+
+.info_dashlet_rightrepeat_top_small {
+    min-height: 20px;
 }
 
 .dashboard_block.rolled-up .info_dashlet_toprepeat
