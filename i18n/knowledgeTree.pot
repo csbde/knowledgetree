@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-28 09:34+0200\n"
+"POT-Creation-Date: 2008-02-28 15:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -300,6 +300,10 @@ msgstr ""
 msgid "A critical part of workflow is the creation of various different states for documents."
 msgstr ""
 
+#: plugins/ktstandard/KTDocumentLinks.php:299
+msgid "A document cannot be linked to itself."
+msgstr ""
+
 #: plugins/ktcore/KTDocumentActions.php:1070
 #: plugins/ktcore/KTDocumentActions.php:1276
 msgid "A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document."
@@ -356,8 +360,8 @@ msgstr ""
 msgid "A particular workflow state can override some, all, or none of the permissions that would normally apply to a document.  In this way you can (for example) let the folder's permissions decide who can see the document (with <strong>Read</strong> permissions), while having the workflow restrict access to the \"edit\" permission."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:460
-#: plugins/ktstandard/KTDocumentLinks.php:489
+#: plugins/ktstandard/KTDocumentLinks.php:472
+#: plugins/ktstandard/KTDocumentLinks.php:501
 msgid "A short brief description of the relationship implied by this link type."
 msgstr ""
 
@@ -386,8 +390,8 @@ msgstr ""
 msgid "A short, human-readable name for the document type."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:459
-#: plugins/ktstandard/KTDocumentLinks.php:488
+#: plugins/ktstandard/KTDocumentLinks.php:471
+#: plugins/ktstandard/KTDocumentLinks.php:500
 msgid "A short, human-readable name for the link type."
 msgstr ""
 
@@ -1517,16 +1521,12 @@ msgstr ""
 
 #: search2/search/search.inc.php:74
 #, php-format
-msgid ""
-"Cannot connect to Open Office Server on host '%s:%s'.\n"
-"Please consult the Administrator Guide for more information on configuring Open Office Server."
+msgid "Cannot connect to Open Office Server on host '%s:%s'."
 msgstr ""
 
 #: search2/indexing/indexers/JavaXMLRPCLuceneIndexer.inc.php:232
 #, php-format
-msgid ""
-"Cannot connect to the %s on '%s'.\n"
-"Please consult the Administrator Guide for more information on configuring the %s."
+msgid "Cannot connect to the %s on '%s'."
 msgstr ""
 
 #: plugins/ktcore/KTPermissions.php:518
@@ -2275,7 +2275,7 @@ msgstr ""
 msgid "Could not create directory for storage"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:389
+#: plugins/ktstandard/KTDocumentLinks.php:401
 msgid "Could not create document link"
 msgstr ""
 
@@ -2311,7 +2311,7 @@ msgstr ""
 msgid "Could not create workflow."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:432
+#: plugins/ktstandard/KTDocumentLinks.php:444
 msgid "Could not delete document link"
 msgstr ""
 
@@ -2594,7 +2594,7 @@ msgstr ""
 msgid "Created by"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:579
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:583
 msgid "Created new group"
 msgstr ""
 
@@ -2879,8 +2879,8 @@ msgstr ""
 #: plugins/ktcore/admin/documentFieldsv2.php:327
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:118
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:233
-#: plugins/ktstandard/KTDocumentLinks.php:460
-#: plugins/ktstandard/KTDocumentLinks.php:489 i18n/templates.c:107
+#: plugins/ktstandard/KTDocumentLinks.php:472
+#: plugins/ktstandard/KTDocumentLinks.php:501 i18n/templates.c:107
 #: i18n/templates.c:218 i18n/templates.c:1583 i18n/templates.c:1697
 #: i18n/templates.c:5864
 msgid "Description"
@@ -3099,8 +3099,8 @@ msgstr ""
 msgid "Document Link Type Management"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:452
-#: plugins/ktstandard/KTDocumentLinks.php:481 i18n/templates.c:971
+#: plugins/ktstandard/KTDocumentLinks.php:464
+#: plugins/ktstandard/KTDocumentLinks.php:493 i18n/templates.c:971
 msgid "Document Links"
 msgstr ""
 
@@ -3334,11 +3334,11 @@ msgstr ""
 msgid "Document is no longer available"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:397
+#: plugins/ktstandard/KTDocumentLinks.php:409
 msgid "Document link created"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:438
+#: plugins/ktstandard/KTDocumentLinks.php:450
 msgid "Document link deleted"
 msgstr ""
 
@@ -4829,7 +4829,7 @@ msgstr ""
 #: plugins/ktcore/admin/groupManagement.php:86
 #: plugins/ktcore/admin/groupManagement.php:126
 #: plugins/ktcore/admin/groupManagement.php:552
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:538
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:542
 #: i18n/templates.c:1244 i18n/templates.c:4946
 msgid "Group Name"
 msgstr ""
@@ -5271,7 +5271,7 @@ msgstr ""
 msgid "Invalid document id specified. Aborting restore."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:417
+#: plugins/ktstandard/KTDocumentLinks.php:429
 msgid "Invalid document link selected."
 msgstr ""
 
@@ -5280,7 +5280,7 @@ msgstr ""
 msgid "Invalid document object."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:422
+#: plugins/ktstandard/KTDocumentLinks.php:434
 msgid "Invalid document selected."
 msgstr ""
 
@@ -5316,7 +5316,7 @@ msgstr ""
 msgid "Invalid identifier provided for: %s"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:362
+#: plugins/ktstandard/KTDocumentLinks.php:374
 msgid "Invalid link type selected."
 msgstr ""
 
@@ -5470,7 +5470,7 @@ msgid "LDAP Authentication Plugin"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:294
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:537
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:541
 msgid "LDAP DN"
 msgstr ""
 
@@ -5539,7 +5539,7 @@ msgstr ""
 msgid "Link Title"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:328
+#: plugins/ktstandard/KTDocumentLinks.php:340
 msgid "Link Type"
 msgstr ""
 
@@ -5547,11 +5547,11 @@ msgstr ""
 msgid "Link Type Management"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:539
+#: plugins/ktstandard/KTDocumentLinks.php:551
 msgid "Link Type created."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:523
+#: plugins/ktstandard/KTDocumentLinks.php:535
 msgid "Link Type updated."
 msgstr ""
 
@@ -5559,7 +5559,7 @@ msgstr ""
 msgid "Link URL"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:563
+#: plugins/ktstandard/KTDocumentLinks.php:575
 msgid "Link types deleted."
 msgstr ""
 
@@ -6146,8 +6146,8 @@ msgstr ""
 #: plugins/ktcore/authentication/authenticationadminpage.inc.php:57
 #: plugins/ktcore/authentication/authenticationadminpage.inc.php:83
 #: plugins/ktcore/authentication/authenticationadminpage.inc.php:136
-#: plugins/ktstandard/KTDocumentLinks.php:459
-#: plugins/ktstandard/KTDocumentLinks.php:488
+#: plugins/ktstandard/KTDocumentLinks.php:471
+#: plugins/ktstandard/KTDocumentLinks.php:500
 #: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:296
 #: preferences.php:75 i18n/templates.c:956 i18n/templates.c:1208
 #: i18n/templates.c:1415 i18n/templates.c:1580 i18n/templates.c:1649
@@ -6458,7 +6458,7 @@ msgstr ""
 msgid "No documents found to export"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:311
+#: plugins/ktstandard/KTDocumentLinks.php:323
 msgid "No documents have been selected."
 msgstr ""
 
@@ -7420,8 +7420,8 @@ msgstr ""
 msgid "Please enter a name for the search expression."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:514
-#: plugins/ktstandard/KTDocumentLinks.php:531
+#: plugins/ktstandard/KTDocumentLinks.php:526
+#: plugins/ktstandard/KTDocumentLinks.php:543
 msgid "Please enter information for all fields."
 msgstr ""
 
@@ -7543,7 +7543,7 @@ msgstr ""
 msgid "Please select documents or folders first."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:546
+#: plugins/ktstandard/KTDocumentLinks.php:558
 msgid "Please select one or more link types to delete."
 msgstr ""
 
@@ -7575,11 +7575,11 @@ msgstr ""
 msgid "Please select which states this transition should be available from.  <strong>Note</strong> that transitions are never available from their target state, even if you specify it below."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:476
+#: plugins/ktstandard/KTDocumentLinks.php:488
 msgid "Please specify a link type to edit."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:507
+#: plugins/ktstandard/KTDocumentLinks.php:519
 msgid "Please specify a link type to update."
 msgstr ""
 
@@ -8394,6 +8394,10 @@ msgstr ""
 msgid "Security Overview: #name#"
 msgstr ""
 
+#: search2/indexing/extractors/PDFExtractor.inc.php:66
+msgid "Security properties on the PDF document prevent text from being extracted."
+msgstr ""
+
 #: i18n/templates.c:2486
 msgid "Select All"
 msgstr ""
@@ -8605,13 +8609,13 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:128
 #: plugins/ktcore/admin/groupManagement.php:560
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:540
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:544
 msgid "Should all the members of this group be given <strong>system</strong> administration privileges?"
 msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:127
 #: plugins/ktcore/admin/groupManagement.php:592
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:539
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:543
 msgid "Should all the members of this group be given <strong>unit</strong> administration privileges?"
 msgstr ""
 
@@ -8925,7 +8929,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:128
 #: plugins/ktcore/admin/groupManagement.php:559
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:540
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:544
 msgid "System Administrators"
 msgstr ""
 
@@ -9379,7 +9383,7 @@ msgstr ""
 msgid "The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:537
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:541
 msgid "The location of the group within the LDAP directory."
 msgstr ""
 
@@ -9410,7 +9414,7 @@ msgstr ""
 msgid "The name of the document selected is invalid. The following characters are not allowed: %s"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:538
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:542
 #, php-format
 msgid "The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>"
 msgstr ""
@@ -9589,7 +9593,7 @@ msgstr ""
 msgid "The transition listed will cause the document to change from its current state to the listed destination state."
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:329
+#: plugins/ktstandard/KTDocumentLinks.php:341
 msgid "The type of link you wish to use"
 msgstr ""
 
@@ -10680,7 +10684,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:127
 #: plugins/ktcore/admin/groupManagement.php:591
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:539
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:543
 msgid "Unit Administrators"
 msgstr ""
 
@@ -11611,7 +11615,7 @@ msgstr ""
 msgid "You do not have sufficient permissions to add a document link"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:410
+#: plugins/ktstandard/KTDocumentLinks.php:422
 msgid "You do not have sufficient permissions to delete a link"
 msgstr ""
 
@@ -11749,7 +11753,7 @@ msgstr ""
 msgid "You must select at least one fieldset"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:558
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:562
 msgid "You must specify a name for the group."
 msgstr ""
 
@@ -12244,7 +12248,7 @@ msgstr ""
 msgid "fDocumentId=%d"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:572
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:576
 msgid "failed to create group."
 msgstr ""
 
@@ -12361,9 +12365,9 @@ msgstr ""
 msgid "like"
 msgstr ""
 
-#: plugins/ktstandard/KTDocumentLinks.php:291
-#: plugins/ktstandard/KTDocumentLinks.php:352
-#: plugins/ktstandard/KTDocumentLinks.php:404
+#: plugins/ktstandard/KTDocumentLinks.php:303
+#: plugins/ktstandard/KTDocumentLinks.php:364
+#: plugins/ktstandard/KTDocumentLinks.php:416
 msgid "link"
 msgstr ""
 
@@ -12720,8 +12724,8 @@ msgid "verify document storage"
 msgstr ""
 
 #: plugins/ktcore/admin/deletedDocuments.php:54
-#: plugins/ktstandard/KTDocumentLinks.php:453
-#: plugins/ktstandard/KTDocumentLinks.php:482
+#: plugins/ktstandard/KTDocumentLinks.php:465
+#: plugins/ktstandard/KTDocumentLinks.php:494
 msgid "view"
 msgstr ""
 

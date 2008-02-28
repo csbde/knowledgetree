@@ -229,7 +229,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
 		if (false === $connection)
 		{
 			$indexer = $this->getDisplayName();
-			return sprintf(_kt("Cannot connect to the %s on '%s'.\nPlease consult the Administrator Guide for more information on configuring the %s."), $indexer, $javaLuceneURL, $indexer);
+			return sprintf(_kt("Cannot connect to the %s on '%s'."), $indexer, $javaLuceneURL);
 		}
 		fclose($connection);
 

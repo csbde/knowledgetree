@@ -252,7 +252,7 @@
 			                <!-- any status / error messages get added here. -->
                 {if (!empty($page->errStack))}
                     <div class="ktError">
-				    	<div class="error_dashlet_rightrepeat_top"></div>
+				    	<div class="error_dashlet_rightrepeat_top_small"></div>
 				    	<div class="error_dashlet_leftrepeat_top"></div>
 				    	<div class="error_dashlet_rightrepeat_bottom"></div>
 				    	<div class="error_dashlet_leftrepeat_bottom"></div>
@@ -277,7 +277,7 @@
 
                 {if (!empty($page->infoStack))}
                     <div class="ktInfo">
-                    	<div class="info_dashlet_rightrepeat_top"></div>
+                    	<div class="info_dashlet_rightrepeat_top_small"></div>
 				    	<div class="info_dashlet_leftrepeat_top"></div>
                     	<div class="info_dashlet_rightrepeat_bottom"></div>
 				    	<div class="info_dashlet_leftrepeat_bottom"></div>
