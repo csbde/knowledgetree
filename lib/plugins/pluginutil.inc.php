@@ -218,7 +218,7 @@ class KTPluginUtil {
         // Allow for templates that don't correctly link to the plugin
         $query = "SELECT * FROM plugin_helper h
             LEFT JOIN plugins p ON (p.namespace = h.plugin)
-            WHERE h.classtype='locations' AND (disabled = 0 OR disabled IS NULL)";
+            WHERE h.classtype='locations' AND (disabled = 0 OR disabled IS NULL) AND unavailable = 0";
 
         $aLocations = DBUtil::getResultArray($query);
 
