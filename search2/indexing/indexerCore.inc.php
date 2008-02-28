@@ -139,7 +139,7 @@ class QueryResultItem
 			}
 
 			$default->log->error('QueryResultItem: $result is null');
-			$msg = 'The database did not have a record matching the result from the document indexer. This may occur if there is an inconsistency between the document indexer and the repository. The indexer needs to be repaired. Please consult the administrator guide as to how to repair your indexer.';
+			$msg = 'The database did not have a record matching the result from the document indexer. This may occur if there is an inconsistency between the document indexer and the repository. The indexer needs to be repaired.';
 			$default->log->error('QueryResultItem: ' . $msg);
 			// TODO: repair process where we scan documents in index, and delete those for which there is nothing in the repository
 			throw new IndexerInconsistencyException(_kt($msg));

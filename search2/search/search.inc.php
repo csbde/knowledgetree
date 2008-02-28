@@ -71,7 +71,7 @@ class SearchHelper
 		$connection = @fsockopen($ooHost, $ooPort,$errno, $errstr, 2);
 		if (false === $connection)
 		{
-			return  sprintf(_kt("Cannot connect to Open Office Server on host '%s:%s'.\nPlease consult the Administrator Guide for more information on configuring Open Office Server."), $ooHost, $ooPort);
+			return  sprintf(_kt("Cannot connect to Open Office Server on host '%s:%s'."), $ooHost, $ooPort);
 		}
 		fclose($connection);
 
