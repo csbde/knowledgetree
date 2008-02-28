@@ -50,6 +50,26 @@ class PDFExtractor extends ApplicationExtractor
 	{
 		return array('application/pdf');
 	}
+
+	protected function filter($text)
+	{
+		return $text;
+	}
+
+	protected  function exec($cmd)
+	{
+		$res = 	parent::exec($cmd);
+
+		if (false === $res && (strpos($this->output, 'Copying of text from this document is not allowed') !== false))
+		{
+			$this->output = '';
+			file_put_contents($this->targetfile, _kt('Security properties on the PDF document prevent text from being extracted.'));
+			return true;
+		}
+
+		return $res;
+
+	}
 }
 
 ?>
