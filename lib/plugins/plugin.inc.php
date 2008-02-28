@@ -652,6 +652,13 @@ class KTPlugin {
     function run_setup() {
         return true;
     }
+    
+    function setAvailability($sNamespace, $bAvailable = true){
+    	$aValues = array('unavailable' => $bAvailable);
+    	$aWhere = array('namespace' => $sNamespace);
+    	$res = DBUtil::whereUpdate('plugins', $aValues, $aWhere);
+    	return $res;
+    }
 
     function stripKtDir($sFilename) {
         if (strpos($sFilename, KT_DIR) === 0 ||strpos($sFilename, realpath(KT_DIR)) === 0) {
@@ -762,3 +769,4 @@ class KTPlugin {
     }
 }
 
+?>
