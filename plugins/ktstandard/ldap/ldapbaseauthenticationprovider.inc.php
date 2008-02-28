@@ -504,11 +504,15 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $fields = array();
         $fields[] = new KTStringWidget(_kt("Group's name"), _kt("The group's name, or part thereof, to find the group that you wish to add"), 'name', '', $this->oPage, true);
 
-        $oAuthenticator = $this->getAuthenticator($oSource);
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (!empty($name)) {
             $oAuthenticator = $this->getAuthenticator($oSource);
             $aSearchResults = $oAuthenticator->searchGroups($name);
+
+            if(PEAR::isError($aSearchResults)){
+                $this->addErrorMessage($aSearchResults->getMessage());
+                $aSearchResults = array();
+            }
         }
 
         $aTemplateData = array(
@@ -973,6 +977,11 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         }
         $sFilter = sprintf('(&(objectClass=group)(cn=*%s*))', $sSearch);
         $oResults = $this->oLdap->search($rootDn, $sFilter, $aParams);
+
+        if(PEAR::isError($oResults)){
+            return $oResults;
+        }
+
         $aRet = array();
         foreach($oResults->entries() as $oEntry) {
             $aAttr = $oEntry->attributes();
