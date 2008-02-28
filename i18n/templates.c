@@ -122,16 +122,7 @@ gettext("Document Indexing Diagnostics");
 gettext("This report will help to diagnose problems with document indexing.");
 
 /* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Document ID");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
 gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Extension");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Mime Type");
 
 /* ./plugins/search2/reporting/templates/indexerrors.smarty */
 gettext("Extractor");
@@ -182,16 +173,7 @@ gettext("If a document is not associated with an extractor, no content will be a
 gettext("There are no documents in the indexing queue.");
 
 /* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Document ID");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
 gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Extension");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Mime Type");
 
 /* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
 gettext("Extractor");
@@ -2595,6 +2577,9 @@ gettext("Documents Indexed:");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("Documents in Indexing Queue:");
+
+/* ./templates/ktcore/search2/lucene_statistics.smarty */
+gettext("Documents with Indexing Problems:");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("Index Coverage:");
