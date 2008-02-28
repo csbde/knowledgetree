@@ -1055,7 +1055,7 @@ class UpgradeFunctions {
                 $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
                 $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
                 $ini->addItem('externalBinary', 'catppt', 'catppt');
-                $ini->addItem('externalBinary', 'pstotext', 'ps2txt');
+                $ini->addItem('externalBinary', 'pstotext', 'pstotext');
                 $ini->addItem('externalBinary', 'catdoc', 'catdoc');
                 $ini->addItem('externalBinary', 'antiword', 'antiword');
                 $ini->addItem('externalBinary', 'python', 'python');
