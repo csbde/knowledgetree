@@ -719,6 +719,8 @@ if ($checkup !== true) {
         if ($name) {
             $default->versionName = sprintf('%s %s', $default->versionName, $name);
         }
+    }else{
+        $default->versionName = $default->versionName.' '._kt('(Community Edition)');
     }
 }
 
