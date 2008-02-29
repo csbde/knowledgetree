@@ -837,7 +837,6 @@ class KTWorkflowUtil {
         if (PEAR::isError($res)) { return $res; }
 
         Document::clearAllCaches();
-        KTWorkflowTransition::clearCachedGroups();
     }
 }
 
