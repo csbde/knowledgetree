@@ -1073,10 +1073,10 @@ class UpgradeFunctions {
             $ini->addItem('indexer', 'batchDocuments', 'default', "The number of documents to be indexed in a cron session\r\n; defaults to 20");
             $ini->addItem('indexer', 'batchMigrateDocuments', 'default', "The number of documents to be migrated in a cron session\r\n; defaults to 500");
             $ini->addItem('indexer', 'luceneDirectory', '${varDirectory}/indexes', "The location of the lucene indexes");
-            $ini->addItem('indexer', 'javaLuceneURL', 'default', "The url for the Java Lucene Server. This should match up with the Lucene Server configuration.\r\n; defaults to http://localhost:8875");
+            $ini->addItem('indexer', 'javaLuceneURL', 'default', "The url for the Java Lucene Server. This should match up with the Lucene Server configuration.\r\n; defaults to http://127.0.0.1:8875");
 
             // openoffice Section
-            $ini->addItem('openoffice', 'host', 'default', "The host on which open office is installed\r\n; defaults to localhost");
+            $ini->addItem('openoffice', 'host', 'default', "The host on which open office is installed\r\n; defaults to 127.0.0.1");
             $ini->addItem('openoffice', 'port', 'default', "The port on which open office is listening\r\n; defaults to 8100");
 
             // user_prefs Section
