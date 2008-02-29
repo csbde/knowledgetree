@@ -1738,6 +1738,15 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     display: none;
 }
 
+.dashboard_block.rolled-up .info_dashlet_bottomleft
+{
+	background: url(../graphics/info_bottomleft_rolledup.png) bottom left no-repeat;
+}
+
+.dashboard_block.rolled-up .info_dashlet_bottomright
+{
+	background: url(../graphics/info_bottomright_rolledup.png) bottom right no-repeat;
+}
 
 #copyrightbarBorder {
     margin-top: 40px;
