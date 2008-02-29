@@ -1,0 +1,1 @@
+alter table plugin_rss change title title varchar(100) NOT NULL;
