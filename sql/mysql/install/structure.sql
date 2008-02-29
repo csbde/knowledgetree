@@ -1219,7 +1219,7 @@ CREATE TABLE `plugin_rss` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `url` varchar(200) NOT NULL,
-  `title` varchar(20) NOT NULL,
+  `title` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `plugin_rss_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
