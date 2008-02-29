@@ -41,13 +41,13 @@
 {else}
 	<span class="ktAction ktDenied">{i18n}No{/i18n}</span>
 {/if}
-      </td>	  
+      </td>
       <td>
 {assign var="aFields" value=$oFieldset->getFields()}
 {if $aFields}
 
 {foreach from=$aFields item=oField name=fields}
-{$oField->getName()}{if (!$smarty.foreach.fields.last)}<br/> {/if} 
+{$oField->getName()|truncate:40}{if (!$smarty.foreach.fields.last)}<br/> {/if}
 {/foreach}
 
 {else}
@@ -65,9 +65,9 @@
 	  <td>
 	     <a href="{addQS}action=delete&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
 	  </td>
-	  
 
-	  
+
+
     </tr>
   </tbody>
 {/foreach}
