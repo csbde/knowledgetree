@@ -528,9 +528,9 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('indexer', 'luceneDirectory', '${varDirectory}/indexes');
             $oKTConfig->setdefaultns('indexer', 'extractorPath', '${indexingBasePath}/extractors');
             $oKTConfig->setdefaultns('indexer', 'extractorHookPath', '${indexingBasePath}/extractorHooks');
-			$oKTConfig->setdefaultns('indexer', 'javaLuceneURL', 'http://localhost:8875');
+			$oKTConfig->setdefaultns('indexer', 'javaLuceneURL', 'http://127.0.0.1:8875');
 
-            $oKTConfig->setdefaultns('openoffice', 'host', 'localhost');
+            $oKTConfig->setdefaultns('openoffice', 'host', '127.0.0.1');
             $oKTConfig->setdefaultns('openoffice', 'port', 8100);
 
             $oKTConfig->setdefaultns('webservice', 'uploadDirectory', '${varDirectory}/uploads');
