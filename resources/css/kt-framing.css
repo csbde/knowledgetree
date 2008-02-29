@@ -1028,7 +1028,7 @@ a.main_nav_item {
 
 .ktError p {
     padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
     margin-top: 20px;
 }
 
@@ -1040,7 +1040,7 @@ a.main_nav_item {
 
 .ktInfo p {
     padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
     margin-top: 20px;
 }
 
@@ -1738,6 +1738,15 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     display: none;
 }
 
+.dashboard_block.rolled-up .info_dashlet_bottomleft
+{
+	background: url(../graphics/info_bottomleft_rolledup.png) bottom left no-repeat;
+}
+
+.dashboard_block.rolled-up .info_dashlet_bottomright
+{
+	background: url(../graphics/info_bottomright_rolledup.png) bottom right no-repeat;
+}
 
 #copyrightbarBorder {
     margin-top: 40px;

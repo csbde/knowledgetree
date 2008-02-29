@@ -8,7 +8,7 @@
     <table class="metadatatable" cellspacing="0" cellpadding="5">
     <tr class="even first">
         <th>{i18n}Document Filename{/i18n}</th>
-        <td>{$filename|wordwrap:40:"\n":true|sanitize} ({$context->_sizeHelper($document->getSize())})</td>
+        <td>{$filename|wordwrap:40:"\n":false|sanitize} ({$context->_sizeHelper($document->getSize())})</td>
     </tr>
 
     <tr class="odd">
