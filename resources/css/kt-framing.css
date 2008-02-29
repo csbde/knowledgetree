@@ -1028,7 +1028,7 @@ a.main_nav_item {
 
 .ktError p {
     padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
     margin-top: 20px;
 }
 
@@ -1040,7 +1040,7 @@ a.main_nav_item {
 
 .ktInfo p {
     padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
     margin-top: 20px;
 }
 
