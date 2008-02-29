@@ -983,7 +983,8 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (175,'sql*3.5.2*0*3.5.2/index_file_status_message.sql','Index file status message update','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (176,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (177,'sql*3.5.2*0*3.5.2/openxml_mime_types.sql','Add the OpenXML mimetypes.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(178,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(178,'sql*3.5.2*0*3.5.2/rss_plugin_title.sql','Increase size of RSS Title.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(179,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1810,7 +1811,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (178);
+INSERT INTO `zseq_upgrades` VALUES (179);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
