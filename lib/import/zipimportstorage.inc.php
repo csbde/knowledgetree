@@ -55,7 +55,7 @@ class KTZipImportStorage extends KTFSImportStorage {
 
     var $aFile = array();
 
-    var $allowed_extensions = array('tgz', 'tar', 'gz', 'gzip', 'zip', 'deb', 'ar');
+    var $allowed_extensions = array('tgz', 'tar', 'gz', 'zip', 'deb', 'ar');
 
     function KTZipImportStorage($sFilesName) {
         $this->aFile = $_FILES[$sFilesName];
@@ -63,7 +63,7 @@ class KTZipImportStorage extends KTFSImportStorage {
 
         // Check the bzip2 lib functions are available
         if(function_exists('bzopen')){
-            $this->allowed_extensions = array_merge($this->allowed_extensions, array('bz2', 'bzip2', 'tbz'));
+            $this->allowed_extensions = array_merge($this->allowed_extensions, array('bz2', 'tbz'));
         }
     }
 
@@ -115,6 +115,13 @@ class KTZipImportStorage extends KTFSImportStorage {
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
         $this->sBasePath = $sTmpPath;
+
+        // Set environment language to output character encoding
+        $sOutputEncoding = $oKTConfig->get('export/encoding', 'UTF-8');
+        $loc = $sOutputEncoding;
+        putenv("LANG=$loc");
+        putenv("LANGUAGE=$loc");
+        $loc = setlocale(LC_ALL, $loc);
 
         // File Archive doesn't unzip properly so sticking to the original unzip functionality
         if($this->sExtension == 'zip'){
