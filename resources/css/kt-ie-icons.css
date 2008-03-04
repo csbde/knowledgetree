@@ -381,3 +381,8 @@
 #loginbox.hasDisclaimer #loginboxRightBottom {
     height: 260px;
 }
+
+#content .field.error .errorMessage
+{
+    display: block;
+}

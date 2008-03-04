@@ -58,19 +58,23 @@ class ZipFolder {
         $this->oStorage =& KTStorageManagerUtil::getSingleton();
 
         $this->sOutputEncoding = $this->oKTConfig->get('export/encoding', 'UTF-8');
+        
+        $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
+        $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
         $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
         $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
 
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
+        
+        // Hard coding the zip file name - else it doesn't download properly
+        $sZipFileName = 'kt_zip';
 
         $this->sTmpPath = $sTmpPath;
         $this->sZipFileName = $sZipFileName;
         $this->aPaths = array();
 
-        $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
-        $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
         $aReplace = array(
             "[" => "[[]",
@@ -178,6 +182,8 @@ class ZipFolder {
         putenv("LANG=$loc");
         putenv("LANGUAGE=$loc");
         $loc = setlocale(LC_ALL, $loc);
+        
+        
 
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $this->aPaths));
@@ -187,6 +193,7 @@ class ZipFolder {
         $aCmd = array($sZipCommand, "-r", $sZipFile, ".", "-i@MANIFEST");
         $sOldPath = getcwd();
         chdir($this->sTmpPath);
+        
         // Note that the popen means that pexec will return a file descriptor
         $aOptions = array('popen' => 'r');
         $fh = KTUtil::pexec($aCmd, $aOptions);
@@ -218,7 +225,7 @@ class ZipFolder {
             'dir' => $this->oZip->sTmpPath,
         );
         $_SESSION['zipcompression']['exportcode'] = $sExportCode;
-
+        
         $this->sZipFile = $sZipFile;
         return $sExportCode;
     }
@@ -244,7 +251,7 @@ class ZipFolder {
         if (!file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The ZIP file can only be downloaded once - if you cancel the download, you will need to reload the page.'));
         }
-
+        
         header("Content-Type: application/zip; charset=utf-8");
         header("Content-Length: ". filesize($sZipFile));
         header("Content-Disposition: attachment; filename=\"" . $this->sZipFileName . ".zip" . "\"");
