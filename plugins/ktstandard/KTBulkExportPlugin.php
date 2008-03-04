@@ -223,7 +223,10 @@ class KTBulkExportAction extends KTFolderAction {
         $folderName = $this->oFolder->getName();
         $this->oZip = new ZipFolder($folderName);
 
-        if(!$this->oZip->downloadZipFile($sCode)){
+        $res = $this->oZip->downloadZipFile($sCode);
+        
+        if(PEAR::isError($res)){
+        	$this->addErrorMessage($res->getMessage());
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
         }
         exit(0);
