@@ -189,7 +189,10 @@ class UpgradeFunctions {
     {
     	$GLOBALS["_OBJECTCACHE"] = array();
 
-		UpgradeFunctions::_removeSlashesFromFolders(1, '', array(), array());
+    	$sql = "select name from folders where id=1";
+		$name = DBUtil::getOneResultKey($sql,'name');
+
+		UpgradeFunctions::_removeSlashesFromFolders(1, $name, array(), array());
 		DBUtil::commit();
     }
 
