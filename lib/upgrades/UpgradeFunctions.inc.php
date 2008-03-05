@@ -165,7 +165,7 @@ class UpgradeFunctions {
 		if (empty($parent_ids)) $parent_ids = null;
 		if (empty($full_path)) $full_path = null;
 
-		$full_path = (empty($full_path))?$name:($full_path . '/' . $name);
+		if($folderid != 1) $full_path = (empty($full_path))?$name:($full_path . '/' . $name);
 		$folder_ids [] = $folderid;
 
 		$sql = "update folders set name=?,description=?, full_path=?, parent_folder_ids=? where id=?";
