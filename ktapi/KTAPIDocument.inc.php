@@ -1449,6 +1449,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (Permission::userHasDocumentWritePermission($document))
 		{
 			$perms .= 'W';
+
+			$user_id = $_SESSION['userID'];
+			$co_user_id = $document->getCheckedOutUserID();
+
+			if (!empty($co_user_id) && ($user_id == $co_user_id))
+			{
+				$perms .= 'E';
+			}
 		}
 		return $perms;
 	}
