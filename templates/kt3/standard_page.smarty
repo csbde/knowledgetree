@@ -20,6 +20,8 @@
 
     <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" title="KnowledgeTree Quick Search" href="{$rootUrl}/plugins/search2/openSearchDescription.php">
+
 
 {if $refreshTimeout}
        <meta http-equiv="refresh" content="{$refreshTimeout}" />
