@@ -1443,6 +1443,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	}
 
+	function get_permissions($document)
+	{
+		$perms = 'R';
+		if (Permission::userHasDocumentWritePermission($document))
+		{
+			$perms .= 'W';
+		}
+		return $perms;
+	}
+
 	/**
 	 * This returns detailed information on the document.
 	 *
@@ -1587,7 +1597,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$detail['is_immutable'] = (bool) $document->getImmutable();
 
 		// check permissions
-		$detail['permissions'] = 'n/a';
+		$detail['permissions'] = KTWSAPI_Document::get_permissions($document);
 
 		// get workflow name
 		$workflowid = $document->getWorkflowId();
