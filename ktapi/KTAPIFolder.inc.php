@@ -321,7 +321,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return $user;
 	}
 
-	function get_permissions($folder)
+	function get_permission_string($folder)
 	{
 		$perms = 'R';
 		if (Permission::userHasFolderWritePermission($folder))
@@ -399,7 +399,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'version' => 'n/a',
 
 							'is_immutable'=> 'n/a',
-							'permissions' => KTWSAPI_Folder::get_permissions($folder),
+							'permissions' => KTWSAPI_Folder::get_permission_string($folder),
 
 							'workflow'=>'n/a',
 							'workflow_state'=>'n/a',
@@ -533,7 +533,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
 
 							'is_immutable'=> $document->getImmutable()?'true':'false',
-							'permissions' => KTWSAPI_Document::get_permissions($document),
+							'permissions' => KTWSAPI_Document::get_permission_string($document),
 
 							'workflow'=> $workflow,
 							'workflow_state'=> $state,
