@@ -49,6 +49,14 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
+    static function kt_url()
+	{
+		global $default;
+
+		return ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'] . $default->rootUrl;
+
+	}
+
 	static function computePeriod($diff, $suffix = null, $returnArray=false)
 	{
 		if (is_null($suffix))
@@ -229,7 +237,7 @@ class KTUtil {
         if (!is_array($aArray)) {
             $aArray = (array) $aArray;
         }
-        
+
         if ($aArray !== 0 && $aArray !== '0' && empty($aArray)) {
             return $mDefault;
         }
