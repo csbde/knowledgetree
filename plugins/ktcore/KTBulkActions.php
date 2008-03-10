@@ -916,6 +916,23 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
                     $oDocumentTransaction->create();
                 }
+
+                $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+                $aTriggers = $oKTTriggerRegistry->getTriggers('checkoutDownload', 'postValidate');
+                foreach ($aTriggers as $aTrigger) {
+                    $sTrigger = $aTrigger[0];
+                    $oTrigger = new $sTrigger;
+                    $aInfo = array(
+                        'document' => $oEntity,
+                    );
+                    $oTrigger->setInfo($aInfo);
+                    $ret = $oTrigger->postValidate();
+                    if (PEAR::isError($ret)) {
+                        return $ret;
+                    }
+                }
+                $oEntity->setFileName('outterfile.pdf');
+
                 $this->oZip->addDocumentToZip($oEntity);
             }
 
@@ -1005,6 +1022,24 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                             $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document part of bulk checkout', 'ktstandard.transactions.check_out', array());
                             $oDocumentTransaction->create();
                         }
+
+                        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+                        $aTriggers = $oKTTriggerRegistry->getTriggers('checkoutDownload', 'postValidate');
+                        foreach ($aTriggers as $aTrigger) {
+                            $sTrigger = $aTrigger[0];
+                            $oTrigger = new $sTrigger;
+                            $aInfo = array(
+                                'document' => $oDocument,
+                            );
+                            $oTrigger->setInfo($aInfo);
+                            $ret = $oTrigger->postValidate();
+                            if (PEAR::isError($ret)) {
+                                return $ret;
+                            }
+                        }
+
+                        $oDocument->setFileName('innerfile.pdf');
+
                         $sDocFolderId = $oDocument->getFolderID();
                         $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
                         $this->oZip->addDocumentToZip($oDocument, $oFolder);

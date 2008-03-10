@@ -172,7 +172,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         if($isActive){
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
-            
+
             if($oPlugin->load()){
                 $sUrl = $oPlugin->getPagePath('DocumentComparison');
                 $file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
@@ -497,6 +497,20 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $this->oValidator->notEmpty($sReason);
 
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('checkoutDownload', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
 
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->download($this->oDocument, true);
