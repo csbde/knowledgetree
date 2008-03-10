@@ -731,16 +731,21 @@ class SizeCriterion extends BrowseCriterion {
 			'M'=>'Megabytes');
 
     var $aTypeAssocs = array('B' => 1, 'KB' => 1024, 'M' => 1048576);
+    
+    var $aCmps = array();
 
-    var $aCmps = array('LT'=>'Less than',
-		       'GT'=>'Greater than',
-		       'EQ'=>'Equal to',
-		       'NEQ'=>'Not equal to');
-
-    var $aCmpAssocs = array('LT' => '<', 'GT' => '>', 'EQ' => '=', 'NEQ' => '!=');
+    var $aCmpAssocs = array();
 
     function SizeCriterion() {
-	$this->sDisplay = _kt('File Size');
+		$this->sDisplay = _kt('File Size');
+		
+		$this->aCmps = array('LT'=>_kt('Less than'),
+		       'GT'=>_kt('Greater than'),
+		       'EQ'=>_kt('Equal to'),
+		       'NEQ'=>_kt('Not equal to'));
+		       
+		$this->aCmpAssocs = array('LT' => '<', 'GT' => '>', 'EQ' => '=', 'NEQ' => '!=');
+		
     }
 
     function documentDisplay ($oDocument) {
@@ -918,15 +923,18 @@ class TagCloudCriterion extends BrowseCriterion {
 class DateCreatedDeltaCriterion extends DateCreatedCriterion {
     var $sDocumentField = 'created';
     var $sSortField = 'created';
-    var $aTypes = array('MINUTE'=>'Minutes',
-			'HOUR'=>'Hours',
-			'DAY'=>'Days',
-			'MONTH'=>'Months',
-			'YEAR'=>'Years');
+	var $aTypes = array();
     var $sNamespace = 'ktcore.criteria.datecreateddelta';
 
     function DateCreatedDeltaCriterion() {
-	$this->sDisplay = _kt('Date Created Delta');
+		$this->sDisplay = _kt('Date Created Delta');
+		
+		$this->aTypes = array('MINUTE'=>_kt('Minutes'),
+			'HOUR'=>_kt('Hours'),
+			'DAY'=>_kt('Days'),
+			'MONTH'=>_kt('Months'),
+			'YEAR'=>_kt('Years')
+			);
     }
 
     function parameterDisplay($aData) {
@@ -951,7 +959,7 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
 
         $sToRender = $this->getNotWidget($aPreValue);
 
-	$sToRender .= '<input name="'.$sNumWidget.'" value="'.$aPreValue[$sNumWidget].'"/>'.$sSelect.' ago';
+	$sToRender .= '<input name="'.$sNumWidget.'" value="'.$aPreValue[$sNumWidget].'"/>'.$sSelect._kt(' ago');
         return $sToRender;
     }
 
