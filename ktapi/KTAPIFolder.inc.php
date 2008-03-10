@@ -399,7 +399,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'version' => 'n/a',
 
 							'is_immutable'=> 'n/a',
-							'permissions' => KTWSAPI_Folder::get_permission_string($folder),
+							'permissions' => KTAPI_Folder::get_permission_string($folder),
 
 							'workflow'=>'n/a',
 							'workflow_state'=>'n/a',
@@ -533,7 +533,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
 
 							'is_immutable'=> $document->getImmutable()?'true':'false',
-							'permissions' => KTWSAPI_Document::get_permission_string($document),
+							'permissions' => KTAPI_Document::get_permission_string($document),
 
 							'workflow'=> $workflow,
 							'workflow_state'=> $state,

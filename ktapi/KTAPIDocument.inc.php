@@ -1605,7 +1605,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$detail['is_immutable'] = (bool) $document->getImmutable();
 
 		// check permissions
-		$detail['permissions'] = KTWSAPI_Document::get_permission_string($document);
+		$detail['permissions'] = KTAPI_Document::get_permission_string($document);
 
 		// get workflow name
 		$workflowid = $document->getWorkflowId();
