@@ -115,7 +115,7 @@ class TitleColumn extends BrowseColumn {
     }
 
     function renderFolderLink($aDataRow) {
-        $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
+        $outStr = '<a class="contenttype_href" href="' . $this->buildFolderLink($aDataRow) . '">';
         $outStr .= htmlentities($aDataRow['folder']->getName(), ENT_NOQUOTES, 'UTF-8');
         $outStr .= '</a> ';
         return $outStr;

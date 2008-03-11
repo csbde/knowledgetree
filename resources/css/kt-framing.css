@@ -2118,3 +2118,9 @@ body #content #add_dashlet
     left: 500px;
     display: block;
 }
+
+/*contenttype_href class style is used to stop underline error on a hyperlink in IE*/
+.contenttype_href
+{
+	margin-right: 25px;
+}
