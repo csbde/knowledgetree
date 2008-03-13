@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -56,11 +56,11 @@ class KTAddDocumentTrigger {
      */
     function postValidate() {
         global $default;
-        $oDocument =& $this->aInfo['document'];    
+        $oDocument =& $this->aInfo['document'];
         $aMeta = & $this->aInfo['aOptions'];
-     
-        $iDocId = $oDocument->getID();        
-        
+
+        $iDocId = $oDocument->getID();
+
         // get tag id from document_fields table where name = Tag
 		$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
 				'WHERE df.name = \'Tag\'';
@@ -77,7 +77,7 @@ class KTAddDocumentTrigger {
         	{
         		foreach($aMeta['metadata'] as $aMetaData)
         		{
-        		 
+
 				$oProxy = $aMetaData[0];
 				if($oProxy->iId == $sTags)
 				{
@@ -89,35 +89,39 @@ class KTAddDocumentTrigger {
 	        	$words_table = KTUtil::getTableName('tag_words');
 	        	$tagString = str_replace(' ', '', $tagString);
 		    	$tags = explode(',',$tagString);
-		    	
+
 		    	$aTagIds = array();
-		    	
+
 		    	foreach($tags as $sTag)
 		    	{
-		    		$sTag = mb_strtolower(trim($sTag), mb_detect_encoding($sTag));
+		    		$sTag = trim($sTag);
+		    	    $sTag = utf8_decode($sTag);
+		    	    $sTag = mb_strtolower($sTag);
+		    	    $sTag = utf8_encode($sTag);
+
 		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
-		
+
 		    		if (PEAR::isError($res)) {
 		            	return $res;
 		        	}
-		        	
-		        	if (is_null($res)) 
+
+		        	if (is_null($res))
 		        	{
 		        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
 		        		$aTagIds[$sTag] = $id;
 		        	}
-		        	else 
+		        	else
 		        	{
 		        		$aTagIds[$sTag] = $res['id'];
 		        	}
 		    	}
-		    	
+
 		    	$doc_tags = KTUtil::getTableName('document_tags');
-		    	
+
 		    	foreach($aTagIds as $sTag=>$tagid)
 		    	{
 		    		DBUtil::autoInsert($doc_tags, array(
-		    			
+
 		    			'document_id'=>$iDocId,
 		    			'tag_id'=>$tagid),
 		    			array('noid'=>true));
@@ -150,11 +154,11 @@ class KTEditDocumentTrigger {
      */
     function postValidate() {
         global $default;
-        $oDocument =& $this->aInfo['document'];    
+        $oDocument =& $this->aInfo['document'];
         $aMeta = & $this->aInfo['aOptions'];
       	// get document id
-        $iDocId = $oDocument->getID();        
-		
+        $iDocId = $oDocument->getID();
+
         // get all tags that are linked to the document
 		$sQuery = 'SELECT tw.id FROM tag_words AS tw, document_tags AS dt, documents AS d ' .
 				'WHERE dt.tag_id = tw.id ' .
@@ -178,7 +182,7 @@ class KTEditDocumentTrigger {
         		return false;
     		}
         }
-        // proceed to add the tags as per normaly
+        // proceed to add the tags as per normal
 		$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
 		'WHERE df.name = \'Tag\'';
 
@@ -206,32 +210,35 @@ class KTEditDocumentTrigger {
 	        	$words_table = KTUtil::getTableName('tag_words');
 	        	$tagString = str_replace('  ', ' ', $tagString);
 		    	$tags = explode(',',$tagString);
-		    	
+
 		    	$aTagIds = array();
-		    	
+
 		    	foreach($tags as $sTag)
 		    	{
-		    		$sTag=strtolower(trim($sTag));
-		    		
+		    	    $sTag = trim($sTag);
+		    	    $sTag = utf8_decode($sTag);
+		    	    $sTag = mb_strtolower($sTag);
+		    	    $sTag = utf8_encode($sTag);
+
 		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
-		
+
 		    		if (PEAR::isError($res)) {
 		            	return $res;
 		        	}
-		        	
-		        	if (is_null($res)) 
+
+		        	if (is_null($res))
 		        	{
 		        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
 		        		$aTagIds[$sTag] = $id;
 		        	}
-		        	else 
+		        	else
 		        	{
 		        		$aTagIds[$sTag] = $res['id'];
 		        	}
 		    	}
-		    	
+
 		    	$doc_tags = KTUtil::getTableName('document_tags');
-		    	
+
 		    	foreach($aTagIds as $sTag=>$tagid)
 		    	{
 		    		DBUtil::autoInsert($doc_tags, array(

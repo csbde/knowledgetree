@@ -88,7 +88,7 @@ class AdvancedTitleColumn extends AdvancedColumn {
         }
 
         if($this->link_folders) {
-            $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
+            $outStr = '<a class="contenttype_href" href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
         }
         return $outStr;
     }

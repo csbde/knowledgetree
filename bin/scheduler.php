@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: scheduler.php 8085 2008-02-18 15:22:27Z kevin_fourie $
+ * $Id: scheduler.php 8245 2008-03-11 13:06:57Z megan_w $
  *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
@@ -193,7 +193,8 @@ if (empty($aList))
         if ($ext == 'php')
         {
         	$config = KTConfig::getSingleton();
-        	$phpPath = $config->get('externalBinary/php');
+        	$phpPath = KTUtil::checkForStackCommand('externalBinary/php');
+        	//$config->get('externalBinary/php');
 
         	// being protective as some scripts work on relative paths
         	$dirname = dirname($file);

@@ -11,7 +11,9 @@
     padding-top: 5px;
     padding-bottom: 5px;
     padding-right: 0;
-    margin-right: 25px;
+    /*This margin-right has been moved to kt-framing
+      under contenttype_href to fix a display bug in IE 6 */
+    /*margin-right: 25px;*/
 }
 
 .contenttype.office { background-image: url(../../resources/mimetypes/office.png); }
