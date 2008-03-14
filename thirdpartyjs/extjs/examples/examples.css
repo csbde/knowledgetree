@@ -2,24 +2,11 @@
  * Ext JS Library 1.1 Beta 1
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
- * 
+ *
  * http://www.extjs.com/license
  */
 
-body {
-	font-family:verdana,tahoma,helvetica;
-	padding:20px;
-    padding-top:32px;
-    font-size:13px;
-	background-color:#fff !important;
-}
-p {
-	margin-bottom:15px;
-}
-h1 {
-	font-size:large; 
-	margin-bottom:20px;
-}
+
 .example-info{
 	width:150px;
 	border:1px solid #c3daf9;
