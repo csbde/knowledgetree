@@ -804,9 +804,9 @@ UNLOCK TABLES;
 LOCK TABLES `scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `scheduler_tasks` DISABLE KEYS */;
 INSERT INTO `scheduler_tasks` VALUES
-(1,'Indexing','search2/indexing/bin/cronIndexer.php','',0,'1min','2007-10-01',NULL,0,'system'),
-(2,'Index Migration','search2/indexing/bin/cronMigration.php','',0,'5mins','2007-10-01',NULL,0,'system'),
-(3,'Index Optimisation','search2/indexing/bin/optimise.php','',0,'weekly','2007-10-01',NULL,0,'system'),
+(1,'Indexing','search2/bin/cronIndexer.php','',0,'1min','2007-10-01',NULL,0,'system'),
+(2,'Index Migration','search2/bin/cronMigration.php','',0,'5mins','2007-10-01',NULL,0,'system'),
+(3,'Index Optimisation','search2/bin/optimise.php','',0,'weekly','2007-10-01',NULL,0,'system'),
 (4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01',NULL,0,'disabled'),
 (5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01',NULL,0,'disabled'),
 (6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled');
