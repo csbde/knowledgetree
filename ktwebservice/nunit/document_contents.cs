@@ -57,7 +57,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("Administrator", response.items[1].owned_by);
 			Assert.AreEqual("0.1", response.items[1].version);
 			Assert.AreEqual("false", response.items[1].is_immutable);
-			Assert.AreEqual("n/a", response.items[1].permissions);
+			Assert.AreEqual("RW", response.items[1].permissions);
 			Assert.AreEqual("n/a", response.items[1].workflow);
 			Assert.AreEqual("n/a", response.items[1].workflow_state);
 			Assert.AreEqual("text/plain", response.items[1].mime_type);
@@ -79,7 +79,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("n/a", response.items[0].owned_by);
 			Assert.AreEqual("n/a", response.items[0].version);
 			Assert.AreEqual("n/a", response.items[0].is_immutable);
-			Assert.AreEqual("n/a", response.items[0].permissions);
+			Assert.AreEqual("RW", response.items[0].permissions);
 			Assert.AreEqual("n/a", response.items[0].workflow);
 			Assert.AreEqual("n/a", response.items[0].workflow_state);
 			Assert.AreEqual("folder", response.items[0].mime_type);
