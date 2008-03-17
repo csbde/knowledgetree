@@ -585,6 +585,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if($this->dav_client == 'MC'){
                 $path = str_replace('%2F', '/', urlencode($path));
             }
+            $path = str_replace('&', '%26', $path);
+
             $info = array();
             $info["path"]  = $path;
             $info["props"] = array();
@@ -666,6 +668,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if($this->dav_client == 'MC'){
                 $path = str_replace('%2F', '/', urlencode(utf8_encode($path)));
             }
+            $path = str_replace('&', '%26', $path);
+
             // create result array
             $info = array();
             $info["path"] = $path;

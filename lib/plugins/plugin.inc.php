@@ -213,11 +213,12 @@ class KTPlugin {
     }
 
     function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
+        $sBasedir = (!empty($sBasedir)) ? $this->_fixFilename($sBasedir) : '';
         $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
 
         // Register helper in DB
         $params = $sPlugin.'|'.$sLanguage.'|'.$sBasedir;
-        $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'help_language');
+        $this->registerPluginHelper($sLanguage, $sClassName, '', $params, 'general', 'help_language');
     }
 
     function registerColumn($sName, $sNamespace, $sClassName, $sFile) {
@@ -363,7 +364,11 @@ class KTPlugin {
                 $sFilename = sprintf("%s/%s", $sDirPath, $sFilename);
             }
         }
+
+        $sKtDir = str_replace('\\', '/', KT_DIR);
+        $sFilename = realpath($sFilename);
         $sFilename = str_replace('\\', '/', $sFilename);
+        $sFilename = str_replace($sKtDir.'/', '', $sFilename);
         return $sFilename;
     }
 
@@ -652,7 +657,7 @@ class KTPlugin {
     function run_setup() {
         return true;
     }
-    
+
     function setAvailability($sNamespace, $bAvailable = true){
     	$aValues = array('unavailable' => $bAvailable);
     	$aWhere = array('namespace' => $sNamespace);
@@ -767,6 +772,7 @@ class KTPlugin {
 		}
 		return $path;
     }
+
 }
 
 ?>

@@ -178,7 +178,7 @@ class KTPluginUtil {
 
         	$query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
         	   INNER JOIN plugins p ON (p.namespace = h.plugin)
-        	   WHERE p.disabled = 0 AND h.viewtype='{$sType}' AND h.classtype='plugin' ORDER BY p.orderby";
+        	   WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
         	$aPluginHelpers = DBUtil::getResultArray($query);
         }
 
@@ -188,15 +188,16 @@ class KTPluginUtil {
             $path = $aItem['pathname'];
 
             if (!empty($path)) {
+                $path = KT_DIR.'/'.$path;
                 require_once($path);
-            }
 
-        	$oPlugin = new $classname($path);
-        	if($oPlugin->load()){
-        	   $aPlugins[] = $oPlugin;
-        	}else{
-        	    $aDisabled[] = "'{$aItem['plugin']}'";
-        	}
+            	$oPlugin = new $classname($path);
+            	if($oPlugin->load()){
+            	   $aPlugins[] = $oPlugin;
+            	}else{
+            	    $aDisabled[] = "'{$aItem['plugin']}'";
+            	}
+            }
         }
 
         $sDisabled = implode(',', $aDisabled);
