@@ -43,7 +43,7 @@ class FullPathField extends DBFieldExpr
     public function __construct()
     {
         parent::__construct('full_path', 'documents', _kt('Full Path'));
-        $this->setAlias('Full Path');
+        $this->setAlias('FullPath');
     }
 
     public function getInputRequirements()
