@@ -41,6 +41,21 @@ require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+/**
+ * Compare the fields within a fieldset for alphabetising.
+ *
+ * @param object $a
+ * @param object $b
+ * @return integer
+ */
+function compareFields($a, $b)
+{
+    if ($a->getName() == $b->getName()) return 0;
+    if ($a->getName() < $b->getName()) return -1;
+    return 1;
+}
+
+
 class DocumentField extends KTEntity {
 
     /** primary key value */
@@ -130,11 +145,20 @@ class DocumentField extends KTEntity {
         } else {
             $iFieldsetId = $oFieldset;
         }
-        return KTEntityUtil::getByDict('DocumentField', array(
+        $aFields = KTEntityUtil::getByDict('DocumentField', array(
             'parent_fieldset' => $iFieldsetId,
         ), array(
             'multi' => true,
         ));
+
+        // Alphabetise the metadata fields within a fieldset if set in config
+        $oKTConfig =& KTConfig::getSingleton();
+        $use_sort = $oKTConfig->get('ui/metadata_sort', false);
+
+        if($use_sort){
+            usort($aFields, 'compareFields');
+        }
+        return $aFields;
     }
 
     function &getByFieldsetAndName($oFieldset, $sName) {
