@@ -81,14 +81,14 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("Administrator", response.owned_by);
 			Assert.AreEqual(0.1, response.version);
 			Assert.AreEqual(false, response.is_immutable);
-			Assert.AreEqual("n/a", response.permissions);
+			Assert.AreEqual("RW", response.permissions);
 			Assert.AreEqual("n/a", response.workflow);
 			Assert.AreEqual("n/a", response.workflow_state);
 			Assert.AreEqual("text/plain", response.mime_type);
 			Assert.AreEqual("text", response.mime_icon_path);
 			Assert.AreEqual("Plain Text", response.mime_display);
 			Assert.IsTrue("" != response.storage_path);
-			Assert.AreEqual(2, response.metadata.Length);
+			Assert.AreEqual(3, response.metadata.Length);
 			Assert.AreEqual(null, response.links);
 
 			Assert.AreEqual(1, response.transaction_history.Length);

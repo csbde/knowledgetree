@@ -1,4 +1,4 @@
-RESULTS=folder.result document_metadata.result authentication.result document_contents.result document_detail.result  document_history.result   document_add.result document_checkout.result  document_links.result document_owner.result document_rename.result  document_workflow.result document_copy.result  document_move.result document_system_metadata.result query.result document_download.result document_type.result document_oem_no.result
+RESULTS=folder.result document_metadata.result authentication.result document_contents.result document_detail.result  document_history.result   document_add.result document_checkout.result  document_links.result document_owner.result document_rename.result  document_copy.result  document_move.result document_system_metadata.result query.result document_download.result document_type.result document_oem_no.result document_workflow.result
 PROXY=KTproxy.cs
 WSDL=ktdms.wsdl
 ROOT_URL=http://ktdms.trunk

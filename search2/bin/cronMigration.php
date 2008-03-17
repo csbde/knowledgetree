@@ -36,25 +36,9 @@
  *
  */
 
-class FullPathField extends DBFieldExpr
-{
-	public $general_op = ExprOp::CONTAINS;
+chdir(dirname(__FILE__));
+require_once(realpath('../../config/dmsDefaults.php'));
 
-    public function __construct()
-    {
-        parent::__construct('full_path', 'documents', _kt('Full Path'));
-        $this->setAlias('FullPath');
-    }
-
-    public function getInputRequirements()
-    {
-        return array('value'=>array('type'=>FieldInputType::TEXT));
-    }
-
-    public function is_valid()
-    {
-        return DefaultOpCollection::validateParent($this, DefaultOpCollection::$contains);
-    }
-}
+KTUtil::call_page('search2/indexing/bin/cronMigration.php');
 
 ?>

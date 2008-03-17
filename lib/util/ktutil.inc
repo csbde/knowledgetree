@@ -53,8 +53,22 @@ class KTUtil {
 	{
 		global $default;
 
-		return ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'] . $default->rootUrl;
+		$config = KTConfig::getSingleton();
+		$serverName = $config->get('knowledgeTree/serverName', $_SERVER['HTTP_HOST']);
 
+		return ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $default->rootUrl;
+
+	}
+
+	static function call_page($path)
+	{
+		$kt_url = KTUtil::kt_url();
+
+		$full_url = $kt_url . '/' . $path;
+
+		$ch = curl_init($full_url);
+		curl_exec($ch);
+		curl_close($ch);
 	}
 
 	static function computePeriod($diff, $suffix = null, $returnArray=false)
