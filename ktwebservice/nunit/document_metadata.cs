@@ -81,11 +81,11 @@ namespace MonoTests.KnowledgeTree
 			fs[0].fieldset = "General information";
 			fs[0].fields = new kt_metadata_field[3];
 			fs[0].fields[0] = new kt_metadata_field();
-			fs[0].fields[0].name = "Document Author";
-			fs[0].fields[0].value = "Joe Soap";
+			fs[0].fields[0].name = "Category";
+			fs[0].fields[0].value = "Technical";
 			fs[0].fields[1] = new kt_metadata_field();
-			fs[0].fields[1].name = "Category";
-			fs[0].fields[1].value = "Technical";
+			fs[0].fields[1].name = "Document Author";
+			fs[0].fields[1].value = "Joe Soap";
 			fs[0].fields[2] = new kt_metadata_field();
 			fs[0].fields[2].name = "Media Type";
 			fs[0].fields[2].value = "Text";
@@ -96,11 +96,11 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, update_resp.status_code);
 			Assert.AreEqual("General information", update_resp.metadata[1].fieldset);
 
-			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[0].name);
-			Assert.AreEqual("Joe Soap", update_resp.metadata[1].fields[0].value);
+			Assert.AreEqual("Category", update_resp.metadata[1].fields[0].name);
+			Assert.AreEqual("Technical", update_resp.metadata[1].fields[0].value);
 
-			Assert.AreEqual("Category", update_resp.metadata[1].fields[1].name);
-			Assert.AreEqual("Technical", update_resp.metadata[1].fields[1].value);
+			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[1].name);
+			Assert.AreEqual("Joe Soap", update_resp.metadata[1].fields[1].value);
 
 			Assert.AreEqual("Media Type", update_resp.metadata[1].fields[2].name);
 			Assert.AreEqual("Text", update_resp.metadata[1].fields[2].value);
@@ -131,11 +131,13 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, update_resp.status_code);
 			Assert.AreEqual("General information", update_resp.metadata[1].fieldset);
 
-			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[0].name);
-			Assert.AreEqual("Joe \\Soap", update_resp.metadata[1].fields[0].value);
+			Assert.AreEqual("Category", update_resp.metadata[1].fields[0].name);
+			Assert.AreEqual("Tec/hn\\ical/", update_resp.metadata[1].fields[0].value);
 
-			Assert.AreEqual("Category", update_resp.metadata[1].fields[1].name);
-			Assert.AreEqual("Tec/hn\\ical/", update_resp.metadata[1].fields[1].value);
+
+			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[1].name);
+			Assert.AreEqual("Joe \\Soap", update_resp.metadata[1].fields[1].value);
+
 
 			Assert.AreEqual("Media Type", update_resp.metadata[1].fields[2].name);
 			Assert.AreEqual("Text'", update_resp.metadata[1].fields[2].value);
