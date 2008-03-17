@@ -591,22 +591,25 @@ class ValueExpr extends Expr
 	public function getSQL($field, $fieldname, $op, $not=false)
     {
     	$val = $this->getValue();
+    	if (strpos($val, '*') !== false || strpos($val, '?') !== false)
+    	{
+			$val = str_replace(array('?','*'), array('%','%'), $val);
+    	}
+
     	switch($op)
-        {
-            case ExprOp::LIKE:
-
-                break;
-            case ExprOp::CONTAINS:
-            	$val = "%$val%";
-                break;
-            case ExprOp::STARTS_WITH:
-            	$val = "$val%";
-                break;
-            case ExprOp::ENDS_WITH:
-            	$val = "%$val";
-                break;
-        }
-
+    	{
+    		case ExprOp::LIKE:
+    			break;
+    		case ExprOp::CONTAINS:
+    			$val = "%$val%";
+    			break;
+    		case ExprOp::STARTS_WITH:
+    			$val = "$val%";
+    			break;
+    		case ExprOp::ENDS_WITH:
+    			$val = "%$val";
+    			break;
+    	}
 
     	$val = $field->modifyValue($val);
     	$quote = '';
