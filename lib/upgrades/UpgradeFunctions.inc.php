@@ -60,6 +60,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
+            '3.5.2a' => array('updateConfigFile35'),
             );
 
     var $descriptions = array(
@@ -1055,16 +1056,16 @@ class UpgradeFunctions {
                 $ini->addItem('externalBinary', 'df', KT_STACK_DIR . '/bin/gnuwin32/df.exe');
 
             } else {
-                $ini->addItem('externalBinary', 'xls2csv', 'xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
-                $ini->addItem('externalBinary', 'pdftotext', 'pdftotext');
-                $ini->addItem('externalBinary', 'catppt', 'catppt');
-                $ini->addItem('externalBinary', 'pstotext', 'pstotext');
-                $ini->addItem('externalBinary', 'catdoc', 'catdoc');
-                $ini->addItem('externalBinary', 'antiword', 'antiword');
-                $ini->addItem('externalBinary', 'python', 'python');
-                $ini->addItem('externalBinary', 'java', 'java');
-                $ini->addItem('externalBinary', 'php', 'php');
-                $ini->addItem('externalBinary', 'df', 'df');
+                $ini->addItem('externalBinary', 'xls2csv', KT_STACK_DIR . '/common/bin/xls2csv', '', 'The following are external binaries that may be used by various parts of knowledgeTree.');
+                $ini->addItem('externalBinary', 'pdftotext', KT_STACK_DIR . '/common/bin/pdftotext');
+                $ini->addItem('externalBinary', 'catppt', KT_STACK_DIR . '/common/bin/catppt');
+                $ini->addItem('externalBinary', 'pstotext', KT_STACK_DIR . '/common/bin/pstotext');
+                $ini->addItem('externalBinary', 'catdoc', KT_STACK_DIR . '/common/bin/catdoc');
+                $ini->addItem('externalBinary', 'antiword', KT_STACK_DIR . '/common/bin/antiword');
+                $ini->addItem('externalBinary', 'python', KT_STACK_DIR . '/openoffice/program/python');
+                $ini->addItem('externalBinary', 'java', KT_STACK_DIR . '/java/jre/bin/java');
+                $ini->addItem('externalBinary', 'php', KT_STACK_DIR . '/php/bin/php');
+                $ini->addItem('externalBinary', 'df', KT_STACK_DIR . '/common/bin/df');
             }
 
             // search Section
