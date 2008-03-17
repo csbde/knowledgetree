@@ -521,7 +521,7 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('search', 'resultsPerPage', 25);
             $oKTConfig->setdefaultns('search', 'dateFormat', 'Y-m-d');
 
-            $oKTConfig->setdefaultns('indexer', 'coreClass', 'PHPLuceneIndexer');
+            $oKTConfig->setdefaultns('indexer', 'coreClass', 'JavaXMLRPCLuceneIndexer');
             $oKTConfig->setdefaultns('indexer', 'batchDocuments', 20);
             $oKTConfig->setdefaultns('indexer', 'batchMigrateDocuments', 500);
             $oKTConfig->setdefaultns('indexer', 'indexingBasePath', '${searchBasePath}/indexing');
