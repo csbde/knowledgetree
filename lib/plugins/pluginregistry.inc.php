@@ -54,6 +54,7 @@ class KTPluginRegistry {
      * @param unknown_type $sFilename
      */
     function registerPlugin($sClassName, $sNamespace, $sFilename = null) {
+        $sFilename = (!empty($sFilename)) ? KTPlugin::_fixFilename($sFilename) : '';
         $this->_aPluginDetails[$sNamespace] = array($sClassName, $sNamespace, $sFilename);
 
         $object = $sClassName.'|'.$sNamespace.'|'.$sFilename;
@@ -66,15 +67,9 @@ class KTPluginRegistry {
         }
         $aDetails = KTUtil::arrayGet($this->_aPluginDetails, $sNamespace);
         if (empty($aDetails)) {
-            // plugin hasn't been registered - check the DB
-//            $query = "SELECT * FROM plugin_helper WHERE namespace = '{$sNamespace}'";
-//            $plugin = DBUtil::getOneResult($query);
-//            if(empty($plugin)){
                 return null;
-//            }
-//            $aDetails = explode('|', $plugin['object']);
         }
-        $sFilename = $aDetails[2];
+        $sFilename = KT_DIR.'/'.$aDetails[2];
         if (!empty($sFilename)) {
             require_once($sFilename);
         }
