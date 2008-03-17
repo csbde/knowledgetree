@@ -158,9 +158,17 @@ class ExprFieldRegistry
 
     public function resolveMetadataField($fieldset, $field)
     {
+    	if ($fieldset instanceof ValueExpr)
+    	{
+    		$fieldset = $fieldset->getValue();
+    	}
     	if (!array_key_exists($fieldset,$this->metadata))
     	{
     		throw new ResolutionException("Metadata class for fieldset '$fieldset' and field '$field' not found.");
+    	}
+    	if ($field instanceof ValueExpr)
+    	{
+    		$field = $field->getValue();
     	}
     	if (!array_key_exists($field,$this->metadata[$fieldset]))
     	{
@@ -249,7 +257,7 @@ class ExprFieldRegistry
     private function registerMetdataFields()
     {
 		$sql = "SELECT
-					fs.name as fieldset, f.name as field, fs.id as fsid, f.id as fid
+					fs.name as fieldset, f.name as field, fs.id as fsid, f.id as fid, f.data_type
 				FROM
 					fieldsets fs
 					INNER JOIN document_fields f ON f.parent_fieldset=fs.id
@@ -263,6 +271,7 @@ class ExprFieldRegistry
 			$field = addslashes($record['field']);
 			$fieldsetid = $record['fsid'];
 			$fieldid = $record['fid'];
+			$type = $record['data_type'];
 			$classname = "MetadataField$fieldid";
 
 			$classdefn = "
@@ -270,7 +279,9 @@ class ExprFieldRegistry
 				{
 					public function __construct()
 					{
-						parent::__construct('$fieldset','$field',$fieldsetid, $fieldid);
+						parent::__construct('$fieldset','$field',$fieldsetid, $fieldid);" .
+
+			 (($type=='INT')?'$this->isValueQuoted(false);':'') . "
 					}
 				}";
 			eval($classdefn);
