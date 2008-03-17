@@ -2,6 +2,9 @@
 {foreach item=action from=$context->actions }
 {if $action != null}
 <li {if $action.active}class="active"{/if}>
+{if $action.js}
+	{$action.js}
+{else}
 {if ($action.url)}
 <a href="{$action.url}" {if $action.description}title="{$action.description}"{/if}>
 	{$action.name}
@@ -9,6 +12,7 @@
 {else}
 	{$action.name}
 {/if}</li>
+{/if}
 {/if}
 {/foreach}
 </ul>
