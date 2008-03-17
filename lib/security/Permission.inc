@@ -118,7 +118,14 @@ class Permission {
         if ($iUserID == '') {
             $iUserID = $_SESSION['userID'];
         }
+        if (empty($iUserID)) {
+        	return false;
+        }
         $iUserID = KTUtil::getId($iUserID);
+        if (PEAR::isError($iUserID))
+        {
+        	return false;
+        }
 
         $query = 'SELECT UGL.group_id
             FROM '.$default->users_groups_table.' AS UGL
