@@ -1,1 +1,1 @@
-  <input type="text" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value|sanitize_input}"{/if}{if ($options.autocomplete === false)}autocomplete="off"{/if}  {if $options.width}size="{$options.width}"{/if} />
+  <input type="text" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value|sanitize_input}"{/if}{if ($options.autocomplete === false)}autocomplete="off"{/if}  {if $options.width}size="{$options.width}"{/if} {if $options.onchange}onchange="{$options.onchange}" {/if}/>
