@@ -67,6 +67,12 @@ class PDFExtractor extends ApplicationExtractor
 			return true;
 		}
 
+		if (false === $res && (strpos($this->output, '(continuing anyway)') !== false))
+		{
+			$this->output = '';
+			return true;
+		}
+
 		return $res;
 
 	}
