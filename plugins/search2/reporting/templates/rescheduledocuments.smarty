@@ -1,6 +1,6 @@
 <h2>{i18n}Reschedule All Documents{/i18n}</h2>
 <p class="descriptiveText">{i18n}This function allows you to re-index your entire repository.{/i18n}</p>
-<p class="descriptiveText">{i18n}Please note that rescheduling all documents may take a long time, depending on the size if the repository.{/i18n}</h3>
+<p class="descriptiveText">{i18n}Please note that rescheduling all documents may take a long time, depending on the size of the repository.{/i18n}</h3>
 
 <form name="rescheduleAllDocs" action="{$smarty.server.PHP_SELF}" method="POST">
 <br>
