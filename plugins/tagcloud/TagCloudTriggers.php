@@ -87,7 +87,7 @@ class KTAddDocumentTrigger {
 			}
 			if($tagString != ''){
 	        	$words_table = KTUtil::getTableName('tag_words');
-	        	$tagString = str_replace(' ', '', $tagString);
+	        	$tagString = str_replace('  ', ' ', $tagString);
 		    	$tags = explode(',',$tagString);
 
 		    	$aTagIds = array();
