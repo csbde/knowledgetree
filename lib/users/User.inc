@@ -504,20 +504,59 @@ class User extends KTEntity {
     		$iUserId = $_SESSION['iUserId'];
     	}
     	
-		$pdgTable = KTUtil::getTableName('permission_descriptor_groups');
+    	$pdgTable = KTUtil::getTableName('permission_descriptor_groups');
         global $default;
 		$uglTable = $default->users_groups_table;
-
 		$sQuery = "SELECT COUNT(*) AS num FROM $pdgTable pd
 			INNER JOIN $uglTable ug ON ug.group_id = pd.group_id
 			WHERE pd.descriptor_id = ? AND ug.user_id = ?";
 		
 		$aParams = array($oPermissionDescriptor->getID(), $iUserId);
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'num');
+        
         if (PEAR::isError($res) || empty($res)) {
-            return false;
+            
+            $aSubGrpOneParams = array($oPermissionDescriptor->getID());
+            
+            //Checking if user is in a subgroup
+            //Query One is the get any groups with permissions
+            $sSubGrpQueryOne = "SELECT group_id FROM $pdgTable pd
+            					WHERE pd.descriptor_id = ?";
+            $aSubRes = DBUtil::getResultArrayKey(array($sSubGrpQueryOne, $aSubGrpOneParams), 'group_id');
+            
+            if(!(PEAR::isError($aSubRes) || empty($aSubRes)))
+            {
+            	$list = implode(',', $aSubRes);
+
+            	$sSubGroupTable = KTUtil::getTableName('groups_groups_link');
+            	$aParams = array($iUserId);
+            	
+            	//Query two is to check if the current user's group is a sub group of the
+            	//group with permissions
+            	$sSubGrpQueryTwo = "SELECT COUNT(member_group_id) count FROM $sSubGroupTable ggl
+            			INNER JOIN users_groups_link ugl ON (ugl.group_id = ggl.member_group_id)
+            			WHERE ugl.user_id = ? AND parent_group_id IN ($list)";
+            	$aSubResTwo = DBUtil::getOneResultKey(array($sSubGrpQueryTwo, $aParams), 'count');
+        	
+            	if(PEAR::isError($aSubResTwo) || empty($aSubResTwo))
+            	{
+            		return false;
+            	}
+            	else
+            	{
+            		return true;
+            	}
+            }
+            else
+            {
+            	return false;
+            }
+            
         }
-        return true;
+        else
+        {
+        	return true;
+        }
 	}
 }
 ?>

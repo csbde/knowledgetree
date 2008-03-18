@@ -448,12 +448,20 @@ class Folder extends KTEntity {
 	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function folderExistsName($sName, $iParentID) {
-        $sQuery = "SELECT id FROM " . KTUtil::getTableName('folders') . " WHERE name = ? AND parent_id = ?";/*ok*/
+        $sQuery = "SELECT id, name FROM " . KTUtil::getTableName('folders') . " WHERE name = ? AND parent_id = ?";/*ok*/
         $aParams = array($sName, $iParentID);
 		$res = DBUtil::getResultArray(array($sQuery, $aParams));
 		//var_dump($res);
 		if (count($res) != 0) {
-			return true;
+
+		    // mysql is case-insensitive - check using php
+		    foreach ($res as $folder){
+    		    $name = isset($folder['name']) ? $folder['name'] : '';
+    		    if($name == $sName){
+    		        return true;
+    		    }
+		    }
+			return false;
 		}
 		return false;
 	}
