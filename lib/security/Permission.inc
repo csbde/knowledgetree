@@ -53,6 +53,12 @@ class Permission {
     * @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */
     function userHasDocumentWritePermission($oDocument) {
+
+    	if ($oDocument->getImmutable())
+		{
+			return false;
+		}
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
 
