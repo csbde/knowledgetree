@@ -925,6 +925,9 @@ class KTUtil {
         );
         $res = DBUtil::getOneResultKey($aQuery, 'value');
         if (PEAR::isError($res)) {
+            if(!is_null($default)){
+                return $default;
+            }
             return PEAR::raiseError(sprintf(_kt('Unable to retrieve system setting %s: %s'), $name, $res->getMessage()));
         }
 
