@@ -129,9 +129,12 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
 	    $oTemplating =& KTTemplating::getSingleton();
 	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/external_resources');
 
+		$sUrl = KTUtil::kt_url();
+
 	    $aTemplateData = array(
 	    		'context' => $this,
-				'resources' => $this->resources
+				'resources' => $this->resources,
+				'url' => $sUrl
 			);
 
         return $oTemplate->render($aTemplateData);
