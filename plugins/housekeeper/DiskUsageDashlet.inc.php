@@ -98,12 +98,12 @@ class DiskUsageDashlet extends KTBaseDashlet
 			if (OS_WINDOWS)
 			{
 				$cmd = str_replace( '/','\\',$cmd);
-				$res = KTUtil::pexec("\"$cmd\" 2>&1");
+				$res = KTUtil::pexec("\"$cmd\" -B 1 2>&1");
 				$result = implode("\r\n",$res['out']);
 			}
 			else
 			{
-				$result = shell_exec($cmd." 2>&1");
+				$result = shell_exec($cmd." -B 1 2>&1");
 			}
 
 			if (strpos($result, 'cannot read table of mounted file systems') !== false)
