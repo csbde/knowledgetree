@@ -396,7 +396,7 @@ function catchFatalErrors($p_OnOff='On'){
 	$sUrl = KTInit::guessRootUrl();
 	global $default;
 	$sRootUrl = ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'].$sUrl;
-	
+
 	$phperror='</div>><form name="catcher" action="'.$sRootUrl.'/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
 	<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
 	ini_set('error_append_string',$phperror);
@@ -727,6 +727,11 @@ if ($checkup !== true) {
         $default->versionName = $default->versionName.' '._kt('(Community Edition)');
     }
 }
+if (!extension_loaded('mbstring'))
+{
+	require_once(KT_LIB_DIR . '/lib/mbstring.inc.php');
+}
+
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] =new KTPage();
