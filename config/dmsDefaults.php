@@ -393,7 +393,11 @@ function catchFatalErrors($p_OnOff='On'){
     $phperror='><div id="phperror" style="display:none">';
 	ini_set('error_prepend_string',$phperror);
 
-	$phperror='</div>><form name="catcher" action="/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
+	$sUrl = KTInit::guessRootUrl();
+	global $default;
+	$sRootUrl = ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'].$sUrl;
+	
+	$phperror='</div>><form name="catcher" action="'.$sRootUrl.'/customerrorpage.php" method="post" ><input type="hidden" name="fatal" value=""></form>
 	<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
 	ini_set('error_append_string',$phperror);
 }
