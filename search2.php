@@ -70,14 +70,14 @@ class SearchDispatcher extends KTStandardDispatcher {
     function do_refreshLuceneStats()
     {
     	session_unregister('LuceneStats');
-    	redirect('/dashboard.php');
+    	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 
     function do_refreshDashboardStatus()
     {
     	session_unregister('ExternalResourceStatus');
     	session_unregister('IndexingStatus');
-    	redirect('/dashboard.php');
+    	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 
     /**
