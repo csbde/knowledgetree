@@ -1026,6 +1026,12 @@ abstract class Indexer
 				}
 
         		$document = Document::get($docId);
+        		if (PEAR::isError($document))
+        		{
+        			Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Cannot resolve document id %d: %s."),$docId, $document->getMessage()), 'error');
+        			continue;
+        		}
+
         		$version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
         		$sourceFile = $storageManager->temporaryFile($document);
 
