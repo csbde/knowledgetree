@@ -60,7 +60,7 @@ Options +ExecCGI
 Options +SymLinksIfOwnerMatch
 #AcceptPathInfo On
 
-AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript application/x-javascript text/css
+AddOutputFilter DEFLATE text/html text/plain text/xml text/javascript application/x-javascript text/css
 ExpiresActive ON
 ExpiresByType text/html "access plus 1 day"
 ExpiresByType text/css "access plus 1 day"
