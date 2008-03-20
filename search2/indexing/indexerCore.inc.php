@@ -475,9 +475,20 @@ abstract class Indexer
 	 * @param string $document
 	 * @param string $what
 	 */
-    public static function index($document, $what='C')
+    public static function index($document, $what='A')
     {
     	global $default;
+
+    	if (is_numeric($document))
+    	{
+    		$document = Document::get($document+0);
+    	}
+
+    	if (PEAR::isError($document))
+    	{
+    		$default->log->error("index: Could not index document: " .$document->getMessage());
+    		return;
+    	}
 
         $document_id = $document->getId();
         $userid=$_SESSION['userID'];

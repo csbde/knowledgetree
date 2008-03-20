@@ -273,18 +273,21 @@ class Expr
             $ext = pathinfo($filename, PATHINFO_EXTENSION);
             $base = substr($filename, 0, -strlen($ext)-1);
 
-            $dotfile="$path/$base.$ext";
-            $jpgfile="$path/$base.jpg";
+            $curdir = getcwd();
+            chdir($_ENV['PWD']);
+            $dotfile="$base.$ext";
+            $jpgfile="$base.jpg";
             $fp = fopen($dotfile,'wt');
             fwrite($fp, $str);
             fclose($fp);
 
-            system("dot -Tjpg -o$jpgfile $dotfile");
+            system("dot -Tjpg -o$jpgfile $dotfile 2>1 >/dev/null ");
 
             if (isset($options['view']) && $options['view'])
             {
                 system("eog $jpgfile");
             }
+            chdir($curdir);
         }
 
         return $str;
