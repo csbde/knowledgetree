@@ -59,6 +59,14 @@ class Permission {
 			return false;
 		}
 
+		if ($oDocument->getIsCheckedOut())
+		{
+			if ($oDocument->getCheckedOutUserID() != $_SESSION["userID"])
+			{
+				return false;
+			}
+		}
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
 
