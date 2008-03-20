@@ -309,7 +309,7 @@ class GroupUtil {
 
         global $default;
         $sTable = $default->users_groups_table;
-        $sQuery = "SELECT count(*) AS cnt FROM $sTable WHERE user_id = ? AND group_id IN (?)";
+        $sQuery = "SELECT COUNT(group_id) AS cnt FROM $sTable WHERE user_id = ? AND group_id IN (?)";
         $aParams = array($iUserId, $sGroupIds);
 
         $res = DBUtil::getOneResult(array($sQuery, $aParams));
