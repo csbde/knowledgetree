@@ -612,8 +612,8 @@ abstract class Indexer
     	$this->generalHookCache = array();
     	$this->mimeHookCache = array();
 
-    	$this->hookPath = str_replace('\\','/', $this->hookPath);
-		$dir = opendir($this->hookPath);
+
+		$dir = opendir(SearchHelper::correctPath($this->hookPath));
 		while (($file = readdir($dir)) !== false)
 		{
 			if (substr($file,-12) == 'Hook.inc.php')
@@ -1374,8 +1374,7 @@ abstract class Indexer
 
     	$diagnoses = array();
 
-    	$path = str_replace('\\','/', $path);
-    	$dir = opendir($path);
+    	$dir = opendir(SearchHelper::correctPath($path));
     	$extlen = - strlen($extension);
 
 		while (($file = readdir($dir)) !== false)
@@ -1447,8 +1446,7 @@ abstract class Indexer
     	{
     		$this->clearExtractors();
     	}
-    	$this->extractorPath = str_replace('\\','/', $this->extractorPath);
-    	$dir = opendir($this->extractorPath);
+    	$dir = opendir(SearchHelper::correctPath($this->extractorPath));
 		while (($file = readdir($dir)) !== false)
 		{
 			if (substr($file,-17) == 'Extractor.inc.php')
