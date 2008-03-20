@@ -223,6 +223,7 @@ class ExprFieldRegistry
     {
     	$this->fields = array();
 
+    	$this->path = str_replace('\\','/', $this->path);
     	$dir = opendir($this->path);
 		while (($file = readdir($dir)) !== false)
 		{
