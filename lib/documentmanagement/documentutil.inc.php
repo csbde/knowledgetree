@@ -254,15 +254,15 @@ class KTDocumentUtil {
             'folderid' => $oFolder->getID(),
             'creatorid' => $oUser->getID(),
             'documenttypeid' => $iDocumentTypeId,
-        ));
+            ));
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Storing contents')));
         $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
         if (PEAR::isError($res)) {
             if (!PEAR::isError($oDocument)) {
-        	    $oDocument->delete();
+                $oDocument->delete();
             }
-        	return $res;
+            return $res;
         }
 
         if (is_null($aMetadata)) {
@@ -707,7 +707,7 @@ class KTDocumentUtil {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get('urls/tmpDirectory');
 
-        $sFilename = (isset($aOptions['temp_file'])) ? $aOptions['temp_file'] : tempnam($sBasedir, 'kt_storecontents');
+        $sFilename = (isset($aOptions['temp_file'])) ? $aOptions['temp_file'] : '';
 
 //        $oOutputFile = new KTFSFileLike($sFilename);
 //        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
@@ -716,6 +716,10 @@ class KTDocumentUtil {
 //        } else if (PEAR::isError($res)) {
 //            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
 //        }
+
+        if(empty($sFilename)){
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
+        }
 
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());

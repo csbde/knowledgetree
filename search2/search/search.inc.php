@@ -62,6 +62,18 @@ function search_alias_compare($a, $b)
 
 class SearchHelper
 {
+	public static function correctPath($path)
+	{
+		if (OS_WINDOWS)
+		{
+			return str_replace('/','\\', $path);
+		}
+		else
+		{
+			return str_replace('\\','/', $path);
+		}
+	}
+
 	public static function checkOpenOfficeAvailablity()
 	{
 		$config =& KTConfig::getSingleton();

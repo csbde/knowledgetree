@@ -223,7 +223,7 @@ class ExprFieldRegistry
     {
     	$this->fields = array();
 
-    	$dir = opendir($this->path);
+    	$dir = opendir(SearchHelper::correctPath($this->path));
 		while (($file = readdir($dir)) !== false)
 		{
 			if (substr($file,-13) == 'Field.inc.php')

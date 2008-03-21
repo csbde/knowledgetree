@@ -456,29 +456,55 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
-
+		
+		//-------------------
+        //This section is used to make sure that a user doesn't disable the admin groups
+        //Manage security permission or the Manage Security permission of a group they
+        //are currently a member of.  
+		
         // Check which groups have permission to manage security
-        $aNewGroups = $aFoo[4]['group'];
+        $aNewGroups = (isset($aFoo[4]['group']) ? $aFoo[4]['group'] : array());
         $aNewRoles = (isset($aFoo[4]['role']) ? $aFoo[4]['role'] : array());
-
-        // Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
-        if(!in_array(-3, $aNewRoles)){
-            $iUserId = $this->oUser->getId();
-            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups)){
-                // If user no longer has permission, return an error.
-                $this->addErrorMessage(_kt('The selected permissions cannot be updated. You will no longer have permission to manage security on this folder.'));
-                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
-                exit(0);
-            }
+        
+        $iUserId = $this->oUser->getId();
+        
+        //Check that they aren't removing the sys admin Manage Security permission 
+        //1 in this case is the admin group.        
+        if(!in_array('1', $aNewGroups))
+        {
+        	$this->addErrorMessage(_kt('You cannot remove the Manage Security permission from the System Administrators Group'));
+            $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
+            exit(0);
         }
-
-
+        
+        
+        //Check that they aren't removing the Manage Security permission from a group
+        //They are a member of. 
+        if(!GroupUtil::checkUserInGroups($iUserId, array(1)))
+        {        
+	        //Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
+	        if(!in_array(-3, $aNewRoles))
+	        {
+	            
+	            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups))
+	            {
+	                // If user no longer has permission, return an error.
+	                $this->addErrorMessage(_kt('You cannot remove the Manage Security permission from a group you belong to.'));
+	                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
+	                exit(0);
+	            }
+	        
+	        }
+        }
+		//-----------------
+        
+        
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
-
+			
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }

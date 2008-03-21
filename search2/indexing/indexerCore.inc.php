@@ -475,9 +475,20 @@ abstract class Indexer
 	 * @param string $document
 	 * @param string $what
 	 */
-    public static function index($document, $what='C')
+    public static function index($document, $what='A')
     {
     	global $default;
+
+    	if (is_numeric($document))
+    	{
+    		$document = Document::get($document+0);
+    	}
+
+    	if (PEAR::isError($document))
+    	{
+    		$default->log->error("index: Could not index document: " .$document->getMessage());
+    		return;
+    	}
 
         $document_id = $document->getId();
         $userid=$_SESSION['userID'];
@@ -601,7 +612,8 @@ abstract class Indexer
     	$this->generalHookCache = array();
     	$this->mimeHookCache = array();
 
-		$dir = opendir($this->hookPath);
+
+		$dir = opendir(SearchHelper::correctPath($this->hookPath));
 		while (($file = readdir($dir)) !== false)
 		{
 			if (substr($file,-12) == 'Hook.inc.php')
@@ -1361,7 +1373,8 @@ abstract class Indexer
     	global $default;
 
     	$diagnoses = array();
-    	$dir = opendir($path);
+
+    	$dir = opendir(SearchHelper::correctPath($path));
     	$extlen = - strlen($extension);
 
 		while (($file = readdir($dir)) !== false)
@@ -1433,7 +1446,7 @@ abstract class Indexer
     	{
     		$this->clearExtractors();
     	}
-    	$dir = opendir($this->extractorPath);
+    	$dir = opendir(SearchHelper::correctPath($this->extractorPath));
 		while (($file = readdir($dir)) !== false)
 		{
 			if (substr($file,-17) == 'Extractor.inc.php')
