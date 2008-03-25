@@ -79,7 +79,7 @@ toggle.style.display = 'none';
 {/if}
 </table>
 <table width="100%">
-<tr><td colspan=2 align=right><a href="/search2.php?action=refreshLuceneStats" align=right>{i18n}Refresh{/i18n}</a></tr>
+<tr><td colspan=2 align=right><a href="{$rootUrl}/search2.php?action=refreshLuceneStats" align=right>{i18n}Refresh{/i18n}</a></tr>
 </table>
 
 

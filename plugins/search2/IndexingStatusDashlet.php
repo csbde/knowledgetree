@@ -105,11 +105,14 @@ class IndexingStatusDashlet extends KTBaseDashlet
 	    $oTemplating =& KTTemplating::getSingleton();
 	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/indexing_status');
 
+		$url = KTUtil::kt_url();
+		
 	    $aTemplateData = array(
 	    		'context' => $this,
 	    		'indexerName' => $this->indexerName,
 	    		'indexerDiagnosis' => $this->indexerDiagnosis,
-	    		'extractorDiagnosis' => $this->extractorDiagnosis
+	    		'extractorDiagnosis' => $this->extractorDiagnosis,
+	    		'rootUrl' => $url
 			);
 
         return $oTemplate->render($aTemplateData);
