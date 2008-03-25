@@ -11,6 +11,122 @@ require_once(KT_LIB_DIR . "/actions/bulkaction.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 
+function search2queryCompare($a, $b)
+{
+	global $search2queryColumn, $search2queryOrder;
+
+
+	if ($a->$search2queryColumn == $b->$search2queryColumn)
+	{
+		return 0;
+	}
+
+	$result = ($a->$search2queryColumn < $b->$search2queryColumn)?-1:1;
+
+	if ($search2queryOrder == 'asc')
+		return $result;
+	else
+		return - $result;
+}
+
+
+/**
+ * Assists with old browse search results
+ *
+ * @param unknown_type $sSortColumn
+ * @param unknown_type $sSortOrder
+ */
+
+function search2QuerySort($sSortColumn, $sSortOrder)
+{
+	$defaultSortColumn = $_SESSION['search2_sort_column'];
+	$defaultSortOrder = $_SESSION['search2_sort_order'];
+
+	if (($defaultSortColumn == $sSortColumn) && ($defaultSortOrder == $sSortOrder))
+	{
+		return;
+	}
+
+	global $search2queryColumn, $search2queryOrder;
+
+	$search2queryOrder = strtolower($sSortOrder);
+
+	switch(strtolower($sSortColumn))
+	{
+		case 'ktcore.columns.title':
+			$search2queryColumn = 'Title';
+			break;
+		case 'ktcore.columns.workflow_state':
+			$search2queryColumn = 'WorkflowAndState';
+			break;
+		case 'ktcore.columns.checkedout_by':
+			$search2queryColumn = 'CheckedOutBy';
+			break;
+		case 'ktcore.columns.creationdate':
+			$search2queryColumn = 'DateCreated';
+			break;
+		case 'ktcore.columns.modificationdate':
+			$search2queryColumn = 'DateModified';
+			break;
+		case 'ktcore.columns.creator':
+			$search2queryColumn = 'CreatedBy';
+			break;
+		case 'ktcore.columns.docid':
+			$search2queryColumn = 'DocumentID';
+			break;
+		case 'ktcore.columns.document_type':
+			$search2queryColumn = 'DocumentType';
+			break;
+		default:
+			return;
+	}
+
+
+	$results = unserialize($_SESSION['search2_results']);
+
+	usort($results, 'search2queryCompare');
+
+	$_SESSION['search2_results'] = serialize($results);
+
+}
+
+/**
+ * Search2Query is used to provide allow the old browse search to work
+ *
+ */
+class Search2Query extends PartialQuery
+{
+    function getFolderCount() { return 0; }
+    function getDocumentCount()
+    {
+    	return count(unserialize($_SESSION['search2_results']));
+    }
+
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null)
+  	{
+  		return array();
+  	}
+
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null)
+    {
+    	search2QuerySort($_GET['sort_on'], $_GET['sort_order']);
+    	$results = unserialize($_SESSION['search2_results']);
+
+    	$batch = array();
+
+    	$no_results = count($results);
+    	for($i=0;$i<$no_results;$i++)
+    	{
+			if ($i < $iBatchStart) continue;
+			if ($i > $iBatchStart + $iBatchSize) continue;
+
+			$batch[] = array('id'=>$results[$i]->DocumentID);
+    	}
+
+    	return $batch;
+    }
+}
+
 
 class SearchDispatcher extends KTStandardDispatcher {
 
@@ -157,6 +273,56 @@ class SearchDispatcher extends KTStandardDispatcher {
 		$this->processQuery($expr);
     }
 
+	function do_oldSearchResults()
+	{
+		$this->oPage->setBreadcrumbDetails(_kt("Search Results"));
+        $this->oPage->title = _kt("Search Results");
+
+        $collection = new AdvancedCollection;
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
+        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
+        $collection->addColumns($aColumns);
+
+        // set a view option
+        $aTitleOptions = array(
+            'documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',
+            'direct_folder' => true,
+        );
+        $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
+
+        // set the selection options
+        $collection->setColumnOptions('ktcore.columns.selection', array(
+            'rangename' => 'selection',
+            'show_folders' => true,
+            'show_documents' => true,
+        ));
+
+
+        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
+
+        $aOptions['empty_message'] = _kt("No documents or folders match this query.");
+        $aOptions['is_browse'] = true;
+		$aOptions['return_url'] = KTUtil::addQueryStringSelf("action=oldSearchResults");
+
+
+        $collection->setOptions($aOptions);
+        $collection->setQueryObject(new Search2Query());
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse");
+        $aTemplateData = array(
+            "context" => $this,
+            "collection" => $collection,
+            'isEditable' => true,
+            'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
+            'browseutil' => new KTBrowseUtil(),
+            'returnaction' => 'search2',
+        );
+        return $oTemplate->render($aTemplateData);
+        }
+
+
+
     /**
      * Renders the search results.
      *
@@ -164,7 +330,33 @@ class SearchDispatcher extends KTStandardDispatcher {
      */
     function do_searchResults()
     {
-		$this->oPage->setBreadcrumbDetails(_kt("Search Results"));
+        if (array_key_exists('format', $_GET))
+        {
+			if ($_GET['format'] == 'toggle')
+			{
+				switch ($_SESSION['search2resultFormat'])
+				{
+					case 'searchengine':
+						$_SESSION['search2resultFormat'] = 'browseview';
+						break;
+					case 'browseview':
+						$_SESSION['search2resultFormat'] = 'searchengine';
+						break;
+				}
+			}
+        }
+        else
+        {
+        	$_SESSION['search2resultFormat'] = 'searchengine';
+        }
+
+        if ($_SESSION['search2resultFormat'] == 'browseview')
+        {
+        	$this->redirectTo('oldSearchResults');
+
+        }
+
+        $this->oPage->setBreadcrumbDetails(_kt("Search Results"));
         $this->oPage->title = _kt("Search Results");
 
     	$oTemplating =& KTTemplating::getSingleton();
