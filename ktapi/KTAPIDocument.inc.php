@@ -1645,6 +1645,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// get the storage path
 		$detail['storage_path'] = $document->getStoragePath();
 
+		if ($wsversion >= 2)
+		{
+			unset($detail['updated_by']);
+			unset($detail['updated_date']);
+		}
+
 		return $detail;
 	}
 
