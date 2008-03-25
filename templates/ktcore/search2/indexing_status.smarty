@@ -36,5 +36,5 @@
 <B>{i18n}Note:{/i18n}</b> {i18n}Indexing will not continue until all issues have been resolved.{/i18n}
 <table width="100%">
 <tr>
-<td align=right><a href="/search2.php?action=refreshDashboardStatus">Refresh</a>
+<td align=right><a href="{$rootUrl}/search2.php?action=refreshDashboardStatus">Refresh</a>
 </table>
