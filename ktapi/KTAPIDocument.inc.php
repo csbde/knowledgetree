@@ -1159,10 +1159,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$indexContent = $value;
 					break;
 				case 'created_date':
-					$documents['created'] = $value;
+					if (!empty($value)) $documents['created'] = $value;
 					break;
 				case 'modified_date':
-					$documents['modified'] = $value;
+					if (!empty($value)) $documents['modified'] = $value;
 					break;
 				case 'is_immutable':
 					$documents['immutable'] = in_array(strtolower($value), array('1','true','on','yes'))?'1':'0';
@@ -1644,6 +1644,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the storage path
 		$detail['storage_path'] = $document->getStoragePath();
+
+		if ($wsversion >= 2)
+		{
+			unset($detail['updated_by']);
+			unset($detail['updated_date']);
+		}
 
 		return $detail;
 	}
