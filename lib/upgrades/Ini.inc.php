@@ -68,7 +68,9 @@ class Ini {
     	$date = date('YmdHis');
 
     	$backupFile = $iniFile . '.' .$date;
-    	return file_put_contents($backupFile, $content) !== false;
+        if (is_writeable($backupFile)) {
+    	    file_put_contents($backupFile, $content);
+        }
     }
 
     function read($iniFile) {
@@ -121,6 +123,10 @@ class Ini {
         if(empty($iniFile)) {
             $iniFile = $this->iniFile;
         }
+        if (!is_writeable($iniFile)) {
+            return;
+        }
+
         $fileHandle = fopen($iniFile, 'wb');
         foreach ($this->cleanArray as $section => $items) {
             if (substr($section, 0, strlen('_blankline_')) === '_blankline_' ) {
