@@ -166,12 +166,8 @@ class LoginPageDispatcher extends KTDispatcher {
         $aLanguageNames = $oReg->getLanguages('knowledgeTree');
         $aRegisteredLanguageNames = array();
 
-        if(empty($aRegisteredLangs)) {
-            $query = "DELETE FROM plugin_helper";
-            DBUtil::runQuery($query);
-            redirect($_SERVER['REQUEST_URI']);
-            exit;
-        } else {
+        if(!empty($aRegisteredLangs))
+        {
             foreach (array_keys($aRegisteredLangs) as $sLang) {
                 $aRegisteredLanguageNames[$sLang] = $aLanguageNames[$sLang];
             }

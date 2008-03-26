@@ -26,6 +26,18 @@ function onMetadataClick()
 	Ext.example.msg(sSearchTranslations[0], sSearchTranslations[2]); /* Quick Search Options, Searches will now only search metadata */
 }
 
+function onSearchEngineFormatClick()
+{
+    bResultsFormatSearchEngine = true;
+    document.location=rootURL + "/search2.php?action=searchResults&format=searchengine";
+}
+
+function onBrowseFormatClick()
+{
+    bResultsFormatSearchEngine = false;
+    document.location=rootURL + "/search2.php?action=searchResults&format=browseview";
+}
+
 function onSavedSearchClick(item)
 {
 	id = item.id.substr(11);
@@ -132,6 +144,27 @@ function createSearchBar(div, suffix)
 								id: 'cbSearchOptionMetadata' +  suffix,
 								group: 'options',
 								handler: onMetadataClick
+							})
+						]
+					}
+				},
+				{
+					text: sSearchTranslations[13] , /*Toggle results format*/
+					menu: {
+						items: [
+							new Ext.menu.CheckItem({
+								text: sSearchTranslations[14], /* search engine format */
+								id: 'cbResultsFormatSearchEngine' + suffix,
+								checked: bResultsFormatSearchEngine,
+								group: 'options',
+								handler: onSearchEngineFormatClick
+							}),
+							new Ext.menu.CheckItem({
+								text: sSearchTranslations[15], /* browse view format */
+								id: 'cbBrowseSearchEngine' +  suffix,
+								checked: !bResultsFormatSearchEngine,
+								group: 'options',
+								handler: onBrowseFormatClick
 							})
 						]
 					}

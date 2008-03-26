@@ -112,7 +112,10 @@
 	                            	/* 9  */	"{i18n}content and metadata{/i18n}",
 	                            	/* 10  */	"{i18n}metadata{/i18n}",
 	                            	/* 11  */	"{i18n}search{/i18n}",
-	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}"
+	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}",
+	                            	/* 13  */	"{i18n}Toggle search results format{/i18n}",
+	                            	/* 14  */	"{i18n}Search engine format{/i18n}",
+	                            	/* 15  */	"{i18n}Browse view format{/i18n}"
 
 	                            	];
 
@@ -124,6 +127,12 @@
 	                            	{assign var=count value=$count+1}
 	                            	{/foreach}
 	                            ];
+
+	                            {if $smarty.session.search2resultFormat != 'searchengine'}
+	                                var bResultsFormatSearchEngine = false;
+	                            {else}
+	                                var bResultsFormatSearchEngine = true;
+	                            {/if}
 	                            </script>
 	                            {literal}
 
