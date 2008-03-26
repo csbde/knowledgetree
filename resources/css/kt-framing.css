@@ -1,13 +1,13 @@
 /* ------------------ generic ------------------ */
 
-html { 
+html {
     height: 100%;
 }
 
 body
 {
     padding: 1em ; border: 0; margin: 0;
-    font-size: smaller; 
+    font-size: smaller;
     font-family: sans-serif;
 }
 
@@ -38,7 +38,7 @@ body
 	width: 80%;
 	min-height: 200px;
 	position: relative;
-	top:100; 
+	top:100;
 	left:100;
 }
 
@@ -151,14 +151,14 @@ body
     height: 1.4em;
 }
 
-#navbar ul li a 
+#navbar ul li a
 {
     color: white;
     text-decoration: none;
     border-bottom: 1px transparent;
 }
 
-#navbar ul li a:hover 
+#navbar ul li a:hover
 {
     border-bottom: 1px solid white;
 }
@@ -188,7 +188,7 @@ a.main_nav_item {
 
 /* ------------------ breadcrumbs -------------- */
 
-#breadcrumbs 
+#breadcrumbs
 {
     margin-top: 0.5em;
     margin-bottom: 1em;
@@ -197,7 +197,7 @@ a.main_nav_item {
     text-transform: lowercase;
 }
 
-#breadcrumbs .primary 
+#breadcrumbs .primary
 {
     font-weight: bold;
 }
@@ -221,7 +221,7 @@ a.main_nav_item {
     text-decoration: none;
     border-bottom: 1px solid #9d0a0a;
 }
-    
+
 /* ------------------ portlets ----------------- */
 
 #portletbar
@@ -254,7 +254,7 @@ a.main_nav_item {
     left: 30px;
     height: 30px;
     width: 80%;
-    z-index: -1;  
+    z-index: -1;
     border:0;
 }
 
@@ -265,13 +265,13 @@ a.main_nav_item {
     right: 0px;
     height: 30px;
     width: 60%;
-    z-index: -1; 
+    z-index: -1;
     border: 0;
 }
 
 #portletbar .portlet.expanded {
     position: relative;
-    margin: 0 0 1.5em 0;       
+    margin: 0 0 1.5em 0;
     padding: 0 0 0 0;
     background: url(../../resources/graphics/portlet_corner_topleft.png) top left no-repeat;
     border: 0;
@@ -285,7 +285,7 @@ a.main_nav_item {
     left: 30px;
     height: 28px;
     width: 80%;
-    z-index: -1;  
+    z-index: -1;
     border: 0;
 }
 
@@ -296,7 +296,7 @@ a.main_nav_item {
     right: 0px;
     height: 28px;
     width: 60%;
-    z-index: -1; 
+    z-index: -1;
     border: 0;
 }
 
@@ -308,7 +308,7 @@ a.main_nav_item {
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;
     width: 99%;
-    height: 100%;                             
+    height: 100%;
 }
 
 /* Attempt to contain side portlet containers in MORE containers*/
@@ -343,7 +343,7 @@ a.main_nav_item {
 /* Bottom Portlet borders */
 /*
 #portletbar .portlet .portletbodyBottomLeft {
-    position: absolute;                                           
+    position: absolute;
     bottom: 0px;
     left: 0px;
     width: 10px;
@@ -352,7 +352,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyBottomRight {
-    position: absolute;                                                
+    position: absolute;
     bottom: 0px;
     right: 0px;
     width: 10px;
@@ -361,7 +361,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyBottom {
-    position: absolute;                                                
+    position: absolute;
     bottom: 0px;
     left: 5px;
     height: 3px;
@@ -372,7 +372,7 @@ a.main_nav_item {
 /* Right-hand side portlet borders */
 /*
 #portletbar .portlet .portletbodyRightTop {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 0px;
     right: 0px;
@@ -381,7 +381,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyRightBottom {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 0px;
     right: 0px;
@@ -391,7 +391,7 @@ a.main_nav_item {
 
 
 #portletbar .portlet .portletbodyRightMiddleTop {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 50%;
     right: 0px;
@@ -400,7 +400,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyRightMiddleBottom {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 50%;
     right: 0px;
@@ -409,7 +409,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyRightQuartTop {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 15%;
     right: 0px;
@@ -418,7 +418,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbodyRightQuartBottom {
-    position: absolute;                                                
+    position: absolute;
     background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 25%;
     right: 0px;
@@ -539,8 +539,8 @@ a.main_nav_item {
 
 #portletbar .portlet .actionlist li {
     display: block;
-    padding: 0 0 0 10px; 
-    margin: 0.5em 0.5em 0.15em 0; 
+    padding: 0 0 0 10px;
+    margin: 0.5em 0.5em 0.15em 0;
     text-align:left;
     background: transparent url(../graphics/leftbullet.png) center left no-repeat;
 }
@@ -553,10 +553,10 @@ a.main_nav_item {
     top: 0;
     z-index: 1;
     width:auto;
-    /*padding: 0 2em 1em 0; 
-    overflow: auto;*/ 
-    padding: 0.25em 2em 0em 0em; 
-    overflow: hidden; 
+    /*padding: 0 2em 1em 0;
+    overflow: auto;*/
+    padding: 0.25em 2em 0em 0em;
+    overflow: hidden;
     min-height: 600px;
 }
 
@@ -573,7 +573,7 @@ a.main_nav_item {
     display: none;
 }
 
-#content 
+#content
 {
     line-height: 1.6em;
 }
@@ -595,7 +595,7 @@ a.main_nav_item {
     border-bottom: 1px solid #9d0a0a;
 }
 
-#content .descriptiveText 
+#content .descriptiveText
 {
     color: #666;
 }
@@ -656,15 +656,15 @@ a.main_nav_item {
 }
 
 /* unframed (single button) forms */
-#content .noframe fieldset 
-{ 
+#content .noframe fieldset
+{
    border-width: 0px;
    padding: 0;
 }
 
 #content .noframe .form_actions
-{ 
-   margin-top: 0; 
+{
+   margin-top: 0;
 }
 
 /* old cancel style */
@@ -708,7 +708,7 @@ a.main_nav_item {
     color: #ffdd80;
 }
 
-#content .field label 
+#content .field label
 {
     display: block;
     font-weight: bold;
@@ -729,7 +729,7 @@ a.main_nav_item {
     background: transparent url(../../resources/graphics/required.png) center left no-repeat;
 }
 
-.errorMessage 
+.errorMessage
 {
     font-weight: bold;
 }
@@ -767,7 +767,7 @@ a.main_nav_item {
     font-weight: bold;
 }
 
-#content .actionmessage 
+#content .actionmessage
 {
     padding-bottom: 0.5em;
     border-bottom: 1px dashed #ccc;
@@ -786,7 +786,7 @@ a.main_nav_item {
 }
 
 .metadata.versioned dd div {
-    
+
     padding: 0.2em 0.5em;
     border-style: solid;
     border-color: #ccc;
@@ -807,7 +807,7 @@ a.main_nav_item {
 }
 .metadata.versioned dd .current.different {
     background-color: #fff2b8;
-/*    
+/*
     padding-left: 25px;
     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
@@ -815,7 +815,7 @@ a.main_nav_item {
 
 .metadata.versioned dd .previous.different {
     background-color: #e9dda8;
-/*    
+/*
     padding-left: 25px;
     background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
@@ -851,8 +851,8 @@ a.main_nav_item {
 
 .metadatatable td {
     border-bottom: 1px dotted #ccc;
-    vertical-align: top;    
-    padding: 0.5em;    
+    vertical-align: top;
+    padding: 0.5em;
     font-weight: bold;
 }
 
@@ -1090,7 +1090,7 @@ a.main_nav_item {
     margin-bottom: 20px;
 }
 
-/* ========== kt actions 
+/* ========== kt actions
 
 These are used to mark up various different "actions" (e.g. cut, copy, delete).
 Use them as follows:
@@ -1102,7 +1102,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 */
 
 
-.ktAction { 
+.ktAction {
     display: block;
     text-decoration: none;
     overflow: hidden;
@@ -1115,12 +1115,12 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     width: 16px;
     background-position: top left;
     background-repeat: no-repeat;
-    background-color: transparent;    
+    background-color: transparent;
 }
 
 .ktActionDescribed {
     float: left;
-    margin-right: 0.5em;    
+    margin-right: 0.5em;
 }
 
 
@@ -1132,12 +1132,12 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .ktAction.ktInline {
-    float: left; 
+    float: left;
     padding-right: 0.5em;
     background-position: top left;
 }
 
-.ktHelp { 
+.ktHelp {
     background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
     float: right;
     display: block;
@@ -1164,6 +1164,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
 .ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.png); }
 .ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.png); }
+.ktActionLink.ktPreview, .ktAction.ktPreview { background-image: url(../../resources/tango-icons/system-search.png); }
 
 /* this is sometimes used separately to get the auto-delete help. */
 .ktDelete { }
@@ -1188,7 +1189,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 /* dashboard blocks. */
 
-#dashboard-container-left { 
+#dashboard-container-left {
     clear: left;
     width: 47%;
     margin-top: 0;
@@ -1319,22 +1320,22 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block.rolled-up .dashboard_block_rightrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .dashboard_block_rightrepeat_bottom
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .dashboard_block_leftrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .dashboard_block_leftrepeat_bottom
-{ 
+{
     display: none;
 }
 
@@ -1509,32 +1510,32 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block.rolled-up .error_dashlet_toprepeat
-{ 
+{
     height: 38px;
 }
 
 .dashboard_block.rolled-up .error_dashlet_bottomrepeat
-{ 
+{
     height: 20px;
 }
 
 .dashboard_block.rolled-up .error_dashlet_rightrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .error_dashlet_rightrepeat_bottom
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .error_dashlet_leftrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .error_dashlet_leftrepeat_bottom
-{ 
+{
     display: none;
 }
 
@@ -1709,32 +1710,32 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block.rolled-up .info_dashlet_toprepeat
-{ 
+{
     height: 38px;
 }
 
 .dashboard_block.rolled-up .info_dashlet_bottomrepeat
-{ 
+{
     height: 20px;
 }
 
 .dashboard_block.rolled-up .info_dashlet_rightrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .info_dashlet_rightrepeat_bottom
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .info_dashlet_leftrepeat_top
-{ 
+{
     display: none;
 }
 
 .dashboard_block.rolled-up .info_dashlet_leftrepeat_bottom
-{ 
+{
     display: none;
 }
 
@@ -1813,7 +1814,7 @@ hr {
 #document-views .downloadbox ul li {
     padding-left: 25px;
     padding-top: 0.25em;
-    padding-bottom: 0.25em;    
+    padding-bottom: 0.25em;
     background-repeat: no-repeat;
     background-position: center left;
 }
@@ -1829,8 +1830,8 @@ hr {
 #document-views .viewlet .actionlist li
 {
     display: block;
-    padding: 0 0 0 10px; 
-    margin: 0.5em 0.5em 0.15em 0; 
+    padding: 0 0 0 10px;
+    margin: 0.5em 0.5em 0.15em 0;
     text-align: left;
     background: transparent url(../graphics/leftbullet.png) center left no-repeat;
     border: 0;
@@ -1889,7 +1890,7 @@ hr {
     border-left: 1px solid white;
     border-top: 1px solid white;
     border-right: 1px solid white;
-    border-bottom: 1px solid white;            
+    border-bottom: 1px solid white;
     padding: 0 0 0.5em;
 }
 
@@ -1939,7 +1940,7 @@ hr {
 
 
 /* -------------------------- iframe browse ------------------------ */
-.browse-frame { 
+.browse-frame {
     width: 100%;
     height: 55em;
     border-width: 0px;
@@ -1947,14 +1948,14 @@ hr {
     margin: 0;
 }
 
-.browse_body { 
+.browse_body {
     padding: 0;
 }
 
 /* -------------------------- dashboard ------------------------ */
 
 .dashboard_block_icons
-{ 
+{
     position: absolute;
 	top: 0px;
 	right: 10px;
@@ -1970,12 +1971,12 @@ hr {
 }
 
 .dashboard_block.rolled-up .dashboard_block_body
-{ 
+{
     display: none;
 }
 
 .ktBlock .dashboard_block_body
-{ 
+{
     z-index:99;
     margin: 8px 0 10px 0;
     background-color:#FFFFFF;
@@ -1998,8 +1999,8 @@ hr {
     overflow: auto;
 }
 
-.dashboard_block .dashboard_block_body  .edit_action 
-{ 
+.dashboard_block .dashboard_block_body  .edit_action
+{
     z-index:99;
     background-color:#FFFFFF;
 }
@@ -2007,7 +2008,7 @@ hr {
 /* actions */
 
 #content .dashboard_block .action
-{ 
+{
     padding: 1em 0.5em;
     border-bottom-width: 0px;
     background-repeat: no-repeat;
@@ -2015,46 +2016,46 @@ hr {
 }
 
 #content .dashboard_block .action:hover
-{ 
+{
     border-bottom-width: 0px;
 }
 
-#content .dashboard_block .action_rollup 
-{ 
+#content .dashboard_block .action_rollup
+{
     background-image: url(../graphics/bullet_toggle_minus.png);
 }
 
-#content .dashboard_block.rolled-up .action_rollup 
-{ 
+#content .dashboard_block.rolled-up .action_rollup
+{
     background-image: url(../graphics/bullet_toggle_plus.png);
 }
 
-#content .dashboard_block .action_close 
-{ 
+#content .dashboard_block .action_close
+{
     background-image: url(../graphics/bullet_toggle_close.png);
 }
 
 /* action effects */
-#content .dashboard_block.rolled-up h2 
-{ 
+#content .dashboard_block.rolled-up h2
+{
     border-bottom-width: 0px;
     padding-bottom: 10px;
 }
 
-#content .ktBlock h2 
-{ 
+#content .ktBlock h2
+{
     border-bottom-width: 0px;
     color: #FFFFFF;
     font-size: small;
 }
 
-#content .dashboard_block.closed 
-{ 
+#content .dashboard_block.closed
+{
     display: none;
 }
 
 .addDialogScreen
-{ 
+{
     position: absolute;
     display: block;
     top: 0px;
@@ -2068,7 +2069,7 @@ hr {
 }
 
 .addDialog
-{ 
+{
     display: block;
     border: 1px solid #ccc;
     background-color: white;
@@ -2081,18 +2082,18 @@ hr {
 
 
 .addDialog .dashletLink
-{ 
+{
     color: #666;
     text-decoration: none;
     display: block;
 }
 
 body #content #add_dashlet
-{ 
+{
     display: none;
     text-decoration: none;
     border-width: 0px;
-    
+
 }
 
 #add_dashlet
