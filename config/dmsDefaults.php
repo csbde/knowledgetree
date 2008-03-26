@@ -489,13 +489,20 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('KnowledgeTree', 'execSearchPath', $_SERVER['PATH']);
             $oKTConfig->setdefaultns('KnowledgeTree', 'pathInfoSupport', false);
             $oKTConfig->setdefaultns('KnowledgeTree', 'magicDatabase', KTInit::detectMagicFile());
-
+			$oKTConfig->setdefaultns('KnowledgeTree', 'schedulerInterval', 30);			
+			
             $oKTConfig->setdefaultns('dashboard', 'alwaysShowYCOD', true);
 
             $oKTConfig->setdefaultns('storage', 'manager', 'KTOnDiskHashedStorageManager');
             $oKTConfig->setdefaultns('config', 'useDatabaseConfiguration', false);
 
+            $oKTConfig->setdefaultns('urls', 'varDirectory', '${fileSystemRoot}/var');
+            $oKTConfig->setdefaultns('urls', 'logDirectory', '${varDirectory}/log');
+            $oKTConfig->setdefaultns('urls', 'documentRoot', '${varDirectory}/Documents');
+            $oKTConfig->setdefaultns('urls', 'uiDirectory', '${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree');
             $oKTConfig->setdefaultns('urls', 'tmpDirectory', '${varDirectory}/tmp');
+            $oKTConfig->setdefaultns('urls', 'graphicsUrl', '${rootUrl}/graphics');
+            $oKTConfig->setdefaultns('urls', 'uiUrl', '${rootUrl}/presentation/lookAndFeel/knowledgeTree');
             $oKTConfig->setdefaultns('urls', 'stopwordsFile', '${fileSystemRoot}/config/stopwords.txt');
 
             $oKTConfig->setdefaultns('tweaks', 'browseToUnitFolder', false);
@@ -503,27 +510,73 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('tweaks', 'phpErrorLogFile', false);
             $oKTConfig->setdefaultns('tweaks', 'developmentWindowLog', false);
             $oKTConfig->setdefaultns('tweaks', 'noisyBulkOperations', false);
+            
+            $oKTConfig->setdefaultns('email', 'emailServer', 'none');
+            $oKTConfig->setdefaultns('email', 'emailPort', '');
+            $oKTConfig->setdefaultns('email', 'emailAuthentication', false);
+            $oKTConfig->setdefaultns('email', 'emailUsername', 'username');
+            $oKTConfig->setdefaultns('email', 'emailPassword', 'password');
+            $oKTConfig->setdefaultns('email', 'emailFrom', 'kt@example.org');
+            $oKTConfig->setdefaultns('email', 'emailFromName', 'KnowledgeTree Document Management System');
+            $oKTConfig->setdefaultns('email', 'allowAttachment', false);
+            $oKTConfig->setdefaultns('email', 'allowEmailAddresses', false);
+            $oKTConfig->setdefaultns('email', 'sendAsSystem', false);
+            $oKTConfig->setdefaultns('email', 'onlyOwnGroups', false);
 
             $oKTConfig->setdefaultns('user_prefs', 'passwordLength', 6);
             $oKTConfig->setdefaultns('user_prefs', 'restrictAdminPasswords', false);
+            $oKTConfig->setdefaultns('user_prefs', 'restrictPreferences', false);
 
+            $oKTConfig->setdefaultns('session', 'sessionTimeout', 1200);
             $oKTConfig->setdefaultns('session', 'allowAnonymousLogin', false);
 
+			$oKTConfig->setdefaultns('ui', 'companyLogo', '${rootUrl}/resources/companylogo.png');
+			$oKTConfig->setdefaultns('ui', 'companyLogoWidth', '313px');
+			$oKTConfig->setdefaultns('ui', 'companyLogoTitle', 'ACME Corporation');
             $oKTConfig->setdefaultns('ui', 'ieGIF', true);
             $oKTConfig->setdefaultns('ui', 'alwaysShowAll', false);
+            $oKTConfig->setdefaultns('ui', 'automaticRefresh', false);
             $oKTConfig->setdefaultns('ui', 'condensedAdminUI', false);
+            $oKTConfig->setdefaultns('ui', 'fakeMimetype', false);
+			$oKTConfig->setdefaultns('ui', 'dot', 'dot');
+			$oKTConfig->setdefaultns('ui', 'metadata_sort', true);
+			
+			$oKTConfig->setdefaultns('i18n', 'useLike', false);
 
             $oKTConfig->setdefaultns(null, 'logLevel', 'INFO');
             $oKTConfig->setdefaultns('import', 'unzip', 'unzip');
+            $oKTConfig->setdefaultns('export', 'zip', 'zip');
+            $oKTConfig->setdefaultns('export', 'encoding', 'UTF-8');
+            
+            $oKTConfig->setdefaultns('externalBinary', 'xls2csv', 'xls2csv');
+            $oKTConfig->setdefaultns('externalBinary', 'pdftotext', 'pdftotext');
+            $oKTConfig->setdefaultns('externalBinary', 'catppt', 'catppt');
+            $oKTConfig->setdefaultns('externalBinary', 'pstotext', 'pstotext');
+            $oKTConfig->setdefaultns('externalBinary', 'catdoc', 'catdoc');
+            $oKTConfig->setdefaultns('externalBinary', 'antiword', 'antiword');
+            $oKTConfig->setdefaultns('externalBinary', 'python', 'python');
+            $oKTConfig->setdefaultns('externalBinary', 'java', 'java');
+            $oKTConfig->setdefaultns('externalBinary', 'php', 'php');
+            $oKTConfig->setdefaultns('externalBinary', 'df', 'df');
+            
             $oKTConfig->setdefaultns('cache', 'cacheDirectory', '${varDirectory}/cache');
             $oKTConfig->setdefaultns('cache', 'cacheEnabled', 'false');
             $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
             $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
+            $oKTConfig->setdefaultns('cache', 'cachePlugins', 'true');
+            
+            $oKTConfig->setdefaultns('KTWebDAVSettings', 'debug', 'off');
+            $oKTConfig->setdefaultns('KTWebDAVSettings', 'safemode', 'on');
+            
+            $oKTConfig->setdefaultns('BaobabSettings', 'debug', 'off');
+            $oKTConfig->setdefaultns('BaobabSettings', 'safemode', 'on');
 
             $oKTConfig->setdefaultns('search', 'searchBasePath', KT_DIR . '/search2');
             $oKTConfig->setdefaultns('search', 'fieldsPath', '${searchBasePath}/search/fields');
             $oKTConfig->setdefaultns('search', 'resultsPerPage', 25);
             $oKTConfig->setdefaultns('search', 'dateFormat', 'Y-m-d');
+            
+            $oKTConfig->setdefaultns('browse', 'previewActivation', 'mouse-over');
 
             $oKTConfig->setdefaultns('indexer', 'coreClass', 'JavaXMLRPCLuceneIndexer');
             $oKTConfig->setdefaultns('indexer', 'batchDocuments', 20);
@@ -542,6 +595,8 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('webservice', 'uploadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'downloadExpiry', '30');
             $oKTConfig->setdefaultns('webservice', 'randomKeyText', 'bkdfjhg23yskjdhf2iu');
+            $oKTConfig->setdefaultns('webservice', 'validateSessionCount', false);
+            $oKTConfig->setdefaultns('webservice', 'useDefaultDocumentTypeIfInvalid', true);
             $oKTConfig->setdefaultns('webservice', 'debug', false);
 
             $oKTConfig->setdefaultns('clientToolPolicies', 'explorerMetadataCapture', true);
@@ -552,8 +607,10 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCancelCheckout', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsCopyInKT', true);
             $oKTConfig->setdefaultns('clientToolPolicies', 'captureReasonsMoveInKT', true);
-
             $oKTConfig->setdefaultns('clientToolPolicies', 'allowRememberPassword', true);
+
+			$oKTConfig->setdefaultns('DiskUsage', 'warningThreshold', 10);
+			$oKTConfig->setdefaultns('DiskUsage', 'urgentThreshold', 5);	            
 
             $res = $this->readConfig();
             if (PEAR::isError($res)) { return $res; }
