@@ -74,7 +74,8 @@ class KTTriggerRegistry {
         {
         	if (!class_exists($trigger[0]))
         	{
-        		require_once($trigger[1]);
+        	    $sPath = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR.'/'.$trigger[1];
+        		require_once($sPath);
         		if (!class_exists($trigger[0]))
         		{
         			global $default;
