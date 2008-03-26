@@ -520,7 +520,7 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig->setdefaultns('cache', 'proxyCacheDirectory', '${varDirectory}/proxies');
             $oKTConfig->setdefaultns('cache', 'proxyCacheEnabled', 'true');
 
-            $oKTConfig->setdefaultns('search', 'searchBasePath', '${fileSystemRoot}/search2');
+            $oKTConfig->setdefaultns('search', 'searchBasePath', KT_DIR . '/search2');
             $oKTConfig->setdefaultns('search', 'fieldsPath', '${searchBasePath}/search/fields');
             $oKTConfig->setdefaultns('search', 'resultsPerPage', 25);
             $oKTConfig->setdefaultns('search', 'dateFormat', 'Y-m-d');
