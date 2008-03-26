@@ -237,7 +237,13 @@ class KTDocumentUtil {
         //$oContents = KTUtil::arrayGet($aOptions, 'contents');
         $aMetadata = KTUtil::arrayGet($aOptions, 'metadata', null, false);
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
-        $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
+        $sDescription = KTUtil::arrayGet($aOptions, 'description', '');
+
+        if(empty($sDescription)){
+            // If no document name is provided use the filename minus the extension
+            $aFile = pathinfo($sFilename);
+            $sDescription = (isset($aFile['filename']) && !empty($aFile['filename'])) ? $aFile['filename'] : $sFilename;
+        }
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
 
