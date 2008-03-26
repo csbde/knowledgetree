@@ -182,7 +182,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     			$document_id 	= $hit->DocumentID;
 
     			// avoid adding duplicates. If it is in already, it has higher priority.
-    			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Score)
+    			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Rank)
     			{
     				try
     				{
