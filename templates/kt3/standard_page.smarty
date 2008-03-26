@@ -127,6 +127,12 @@
 	                            	{assign var=count value=$count+1}
 	                            	{/foreach}
 	                            ];
+
+	                            {if $smarty.session.search2resultFormat != 'searchengine'}
+	                                var bResultsFormatSearchEngine = false;
+	                            {else}
+	                                var bResultsFormatSearchEngine = true;
+	                            {/if}
 	                            </script>
 	                            {literal}
 

@@ -332,22 +332,21 @@ class SearchDispatcher extends KTStandardDispatcher {
     {
         if (array_key_exists('format', $_GET))
         {
-			if ($_GET['format'] == 'toggle')
-			{
-				switch ($_SESSION['search2resultFormat'])
-				{
-					case 'searchengine':
-						$_SESSION['search2resultFormat'] = 'browseview';
-						break;
-					case 'browseview':
-						$_SESSION['search2resultFormat'] = 'searchengine';
-						break;
-				}
-			}
+            switch ($_GET['format']){
+                case 'searchengine':
+                    $_SESSION['search2resultFormat'] = 'searchengine';
+                    break;
+                case 'browseview':
+                    $_SESSION['search2resultFormat'] = 'browseview';
+                    break;
+            }
         }
         else
         {
-        	$_SESSION['search2resultFormat'] = 'searchengine';
+            if(!array_key_exists('search2resultFormat', $_SESSION)){
+                global $default;
+                $_SESSION['search2resultFormat'] = $default->resultsDisplayFormat;
+            }
         }
 
         if ($_SESSION['search2resultFormat'] == 'browseview')
