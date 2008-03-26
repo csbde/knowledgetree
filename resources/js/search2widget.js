@@ -135,6 +135,10 @@ function createSearchBar(div, suffix)
 							})
 						]
 					}
+				},
+				{
+					text: sSearchTranslations[13] , /*Toggle results format*/
+					handler: function() { document.location=rootURL + "/search2.php?action=searchResults&format=toggle"; }
 				}
 			]
 		});
