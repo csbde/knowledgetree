@@ -2,3 +2,9 @@
 {
     clear: none !important;
 }
+
+.workflow_step2
+{
+	overflow:scroll; 
+	width:700px;
+}

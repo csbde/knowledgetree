@@ -386,3 +386,9 @@
 {
     display: block;
 }
+
+.workflow_step2
+{
+	overflow:scroll; 
+	width:700px;
+}
