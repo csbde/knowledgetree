@@ -9,7 +9,7 @@ states.  Use the table below to configure this behaviour.{/i18n}</p>
         <input type="hidden" name="{$k}" value="{$v}" />
     {/foreach}
     <input type="hidden" name="fWizardKey" value="{$fWizardKey}" />
-    <div style="overflow:scroll">
+    <div class="workflow_step2">
     <table class="kt_collection" cellspacing="0">
         <thead>
             <tr>
