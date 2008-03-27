@@ -288,18 +288,20 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
     // select a type for the link
     function do_type_select() {
-        
+
         //Checking to see if the document is being linked to itself and returning an error if it is.
         $iTempParentDocId = $_REQUEST['fDocumentId'];
         $aTempDocuments = $_REQUEST['linkselection'];
-        foreach ($aTempDocuments as $iTempDocId)
-        {
-	        if($iTempParentDocId == $iTempDocId)
-	        {
-	        	$this->errorRedirectToMain(_kt('A document cannot be linked to itself.'));
-	        }
+        if(!empty($aTempDocuments)){
+            foreach ($aTempDocuments as $iTempDocId)
+            {
+    	        if($iTempParentDocId == $iTempDocId)
+    	        {
+    	        	$this->errorRedirectToMain(_kt('A document cannot be linked to itself.'));
+    	        }
+            }
         }
-        
+
         $this->oPage->setBreadcrumbDetails(_kt("link"));
 
         $sType = (isset($_REQUEST['linktype'])) ? $_REQUEST['linktype'] : 'internal';
@@ -331,7 +333,8 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $aFields = array();
 
         $aVocab = array();
-        foreach(LinkType::getList("id > 0") as $oLinkType) {
+        $aLinkTypes = LinkType::getList("id > 0");
+        foreach($aLinkTypes as $oLinkType) {
             $aVocab[$oLinkType->getID()] = $oLinkType->getName();
         }
 
@@ -562,8 +565,11 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
         foreach ($types_to_delete as $link_id) {
             $oLinkType = LinkType::get($link_id);
 
-            foreach(DocumentLink::getList(sprintf("link_type_id = %d", $link_id)) as $oLink) {
-                $oLink->delete();
+            $aLinks = DocumentLink::getList(sprintf("link_type_id = %d", $link_id));
+            if(!empty($aLinks)){
+                foreach($aLinks as $oLink) {
+                    $oLink->delete();
+                }
             }
 
             $oLinkType->delete(); // technically, this is a bad thing
