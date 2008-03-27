@@ -87,7 +87,10 @@ class LuceneMigrationDashlet extends KTBaseDashlet
 			$migrationStartString = date('Y-m-d H:i:s', $migrationStart);
 			$migrationTime = KTUtil::getSystemSetting('migrationTime',0);
 			$migrationPeriod = KTUtil::computePeriod($migrationTime, '');
-			$timePerDocument = $migrationTime / ($migratedDocuments > 0) ? $migratedDocuments : 1;
+
+			// Cannot divide by zero so make it 1
+			$divMigratedDocuments = ($migratedDocuments > 0) ? $migratedDocuments : 1;
+			$timePerDocument = $migrationTime / $divMigratedDocuments;
 			$estimatedPeriod = $timePerDocument * $migratingDocuments;
 			$estimatedTime = date('Y-m-d H:i:s', $migrationStart + $estimatedPeriod);
 			$estimatedPeriod = KTUtil::computePeriod($estimatedPeriod, '');
