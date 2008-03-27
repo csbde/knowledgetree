@@ -2125,3 +2125,9 @@ body #content #add_dashlet
 {
 	margin-right: 25px;
 }
+
+.workflow_step2
+{
+	overflow:scroll; 
+
+}
