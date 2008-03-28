@@ -1161,9 +1161,19 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= " LEFT JOIN document_fields df$offset ON df$offset.id=dfl$offset.document_field_id" . "\n";
         }
 
+        // Add permissions sql for read access
+        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+        $permId = $oPermission->getID();
+        $oUser = User::get($_SESSION['userID']);
+        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+        $sPermissionDescriptors = (!empty($aPermissionDescriptors)) ? implode(',', $aPermissionDescriptors) : '';
 
-        $sql .=
-            'WHERE dmv.status_id=1 AND d.status_id=1 AND ' . "\n ";
+        $sql .= 'LEFT JOIN folders f ON d.folder_id = f.id '. "\n";
+
+        $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
+        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
+
+        $sql .= "WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND dmv.status_id=1 AND d.status_id=1 AND  \n ";
 
        	return $sql;
 	}
