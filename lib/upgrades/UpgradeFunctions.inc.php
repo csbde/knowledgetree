@@ -1064,7 +1064,7 @@ class UpgradeFunctions {
                 $ini->addItem('externalBinary', 'python', KT_STACK_DIR . '/openoffice/program/python');
                 $ini->addItem('externalBinary', 'java', KT_STACK_DIR . '/java/jre/bin/java');
                 $ini->addItem('externalBinary', 'php', KT_STACK_DIR . '/php/bin/php');
-                $ini->addItem('externalBinary', 'df', KT_STACK_DIR . '/common/bin/df');
+                $ini->addItem('externalBinary', 'df', ';'. KT_STACK_DIR . '/common/bin/df');
             }
 
             // search Section
