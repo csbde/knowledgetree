@@ -753,7 +753,7 @@ a.main_nav_item {
 
 #content h2
 {
-    font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
+    font-family: "Lucida Grande", Tahoma, sans-serif; /* "Bitstream Vera Sans" */
     padding-bottom: 0.25em;
     border-width: 0 0 0 0;
     border-style: solid;
@@ -2128,6 +2128,6 @@ body #content #add_dashlet
 
 .workflow_step2
 {
-	overflow:scroll; 
+	overflow:scroll;
 
 }
