@@ -539,7 +539,7 @@ abstract class Indexer
     	global $default;
 
         $sql = 'DELETE FROM
-					index_files AS iff USING index_files AS iff, documents
+					iff USING index_files AS iff, documents
 				WHERE
 					NOT EXISTS(
 						SELECT
