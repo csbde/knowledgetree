@@ -523,6 +523,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "iQuotaCurrent" => 0,
             "sEmail" => $email_address,
             "bEmailNotification" => $email_notifications,
+            "sMobile" => $mobile_number,
             "bSmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
             "iMaxSessions" => $max_sessions,
         ));
