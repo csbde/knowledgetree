@@ -240,9 +240,10 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $aOptions = $collection->getEnvironOptions();
         //$aOptions['is_browse'] = true;
-        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'],
-                                                         array(kt_array_merge($aBaseParams, array('fFolderId' => $oFolder->getId()))));
-
+        $aResultUrl = $aBaseParams;
+        $aResultUrl['fFolderId'] = $oFolder->getId();
+        $aResultUrl['action'] = 'new';
+        $aOptions['result_url'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $aResultUrl);
         $collection->setOptions($aOptions);
 
         $aURLParams = $aBaseParams;
