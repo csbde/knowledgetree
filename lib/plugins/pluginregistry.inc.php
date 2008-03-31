@@ -69,7 +69,7 @@ class KTPluginRegistry {
         if (empty($aDetails)) {
                 return null;
         }
-        $sFilename = KT_DIR.'/'.$aDetails[2];
+        $sFilename = (KTUtil::isAbsolutePath($aDetails[2])) ? $aDetails[2] : KT_DIR.'/'.$aDetails[2];
         if (!empty($sFilename)) {
             require_once($sFilename);
         }
