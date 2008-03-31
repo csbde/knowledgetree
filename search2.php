@@ -99,7 +99,11 @@ class Search2Query extends PartialQuery
     function getFolderCount() { return 0; }
     function getDocumentCount()
     {
-    	return count(unserialize($_SESSION['search2_results']));
+        $results = $_SESSION['search2_results'];
+        if(isset($results) && !empty($results)){
+            return count(unserialize($results));
+        }
+    	return 0;
     }
 
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null)
