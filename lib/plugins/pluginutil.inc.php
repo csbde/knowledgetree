@@ -289,22 +289,37 @@ class KTPluginUtil {
         	        if($aLocation != false){
         	           $aParams[0] = $aLocation;
         	        }
+                    if(isset($aParams[3])){
+                        $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
+                    }
         	        call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $aParams);
         	        break;
 
         	    case 'trigger':
+                    if(isset($aParams[4])){
+                        $aParams[4] = KTPluginUtil::getFullPath($aParams[4]);
+                    }
         	        call_user_func_array(array(&$oTRegistry, 'registerTrigger'), $aParams);
         	        break;
 
         	    case 'action':
+                    if(isset($aParams[3])){
+                        $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
+                    }
         	        call_user_func_array(array(&$oARegistry, 'registerAction'), $aParams);
         	        break;
 
         	    case 'page':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oPageRegistry, 'registerPage'), $aParams);
         	        break;
 
         	    case 'authentication_provider':
+                    if(isset($aParams[3])){
+                        $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
+                    }
         	        call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $aParams);
         	        break;
 
@@ -313,18 +328,30 @@ class KTPluginUtil {
         	        break;
 
         	    case 'admin_page':
+                    if(isset($aParams[5])){
+                        $aParams[5] = KTPluginUtil::getFullPath($aParams[5]);
+                    }
         	        call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $aParams);
         	        break;
 
         	    case 'dashlet':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $aParams);
         	        break;
 
         	    case 'i18n':
+                    if(isset($aParams[1])){
+                        $aParams[1] = KTPluginUtil::getFullPath($aParams[1]);
+                    }
         	        call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $aParams);
         	        break;
 
         	    case 'i18nlang':
+                    if(isset($aParams[2]) && $aParams[2] != 'default'){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $aParams);
         	        break;
 
@@ -333,14 +360,23 @@ class KTPluginUtil {
         	        break;
 
         	    case 'help_language':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $aParams);
         	        break;
 
         	    case 'workflow_trigger':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $aParams);
         	        break;
 
         	    case 'column':
+                    if(isset($aParams[3])){
+                        $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
+                    }
         	        call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $aParams);
         	        break;
 
@@ -349,11 +385,17 @@ class KTPluginUtil {
         	        break;
 
         	    case 'notification_handler':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $aParams);
         	        break;
 
         	    case 'template_location':
-        	        call_user_func_array(array(&$oTemplating, 'addLocation'), $aParams);
+                    if(isset($aParams[1])){
+                        $aParams[1] = KTPluginUtil::getFullPath($aParams[1]);
+                    }
+        	        call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
         	        break;
 
         	    case 'criterion':
@@ -361,26 +403,55 @@ class KTPluginUtil {
             	    if($aInit != false){
         	           $aParams[3] = $aInit;
             	    }
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $aParams);
         	        break;
 
         	    case 'widget':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $aParams);
         	        break;
 
         	    case 'validator':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $aParams);
         	        break;
 
         	    case 'interceptor':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        call_user_func_array(array(&$oInterceptorRegistry, 'registerInterceptor'), $aParams);
         	        break;
 
         	    case 'plugin':
+                    if(isset($aParams[2])){
+                        $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
+                    }
         	        $oKTPluginRegistry->_aPluginDetails[$sName] = $aParams;
         	        break;
         	}
         }
+    }
+
+    /**
+     * Get the absolute path
+     */
+    function getFullPath($sPath = '') {
+        if(empty($sPath)){
+            return '';
+        }
+        if($sPath[0] != '/'){
+            $sPath = '/'.$sPath;
+        }
+        $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR . $sPath;
+        return $sPath;
     }
 
     /**
