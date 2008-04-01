@@ -45,7 +45,6 @@ class LuceneMigrationDashlet extends KTBaseDashlet
 
 	function is_active($oUser)
 	{
-	    return true;
 	    if (!Permission::userIsSystemAdministrator($oUser))
 	    {
 	    	return false;
