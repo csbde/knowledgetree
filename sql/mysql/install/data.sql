@@ -175,7 +175,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_fields` WRITE;
 /*!40000 ALTER TABLE `document_fields` DISABLE KEYS */;
-INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words'),(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author'),(4,'Category','STRING',0,1,0,3,0,'Please select a category'),(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type');
+INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words',0),
+(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author',0),
+(4,'Category','STRING',0,1,0,3,0,'Please select a category',1),
+(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type',2);
 /*!40000 ALTER TABLE `document_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
