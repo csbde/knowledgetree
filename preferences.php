@@ -238,7 +238,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oUser->setName($res['name']);
         $oUser->setEmail($res['email_address']);
         $oUser->setEmailNotification($res['email_notifications']);
-        $oUser->setMobile(null);
+        
         
         
         // old system used the very evil store.php.
