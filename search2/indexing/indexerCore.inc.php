@@ -539,17 +539,10 @@ abstract class Indexer
     	global $default;
 
         $sql = 'DELETE FROM
-					iff USING index_files AS iff, documents
+					index_files
 				WHERE
-					NOT EXISTS(
-						SELECT
-							d.id
-						FROM
-							documents AS d
-							INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
-						WHERE
-							iff.document_id = d.id OR dmv.status_id=3
-					);';
+					document_id in (SELECT d.id FROM documents AS d WHERE d.status_id=3) OR
+					NOT EXISTS(SELECT index_files.document_id FROM documents WHERE index_files.document_id=documents.id)';
         DBUtil::runQuery($sql);
 
         $default->log->debug("Indexer::clearoutDeleted: removed documents from indexing queue that have been deleted");
