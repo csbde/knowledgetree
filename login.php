@@ -129,6 +129,8 @@ class LoginPageDispatcher extends KTDispatcher {
     function do_main() {
         global $default;
 
+        KTUtil::save_base_kt_url();
+
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
         if (is_a($oUser, 'User')) {
             $res = $this->performLogin($oUser);

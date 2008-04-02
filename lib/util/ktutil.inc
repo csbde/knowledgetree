@@ -49,19 +49,73 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
+    const SERVER_NAME_FILE = 'serverName.txt';
+
+    /**
+     * Used to resolve the server name
+     *
+     */
+    static function save_base_kt_url()
+    {
+    	global $default;
+		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$protocol  = $default->sslEnabled ? 'https' : 'http';
+		$port = $_SERVER['SERVER_PORT']+0;
+
+		$base_url = $protocol . '://' . $_SERVER['SERVER_NAME'];
+
+		if (($protocol == 'http' && $port == 80) || ($protocol == 'https' && $port == 443))
+		{
+			// don't need to do anything
+		}
+		else
+		{
+			$base_url .= ':' . $port;
+		}
+
+		@file_put_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE, $base_url);
+    }
+
+
     static function kt_url()
 	{
 		global $default;
+		static $base_url = null;
 
 		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
+
+		$rootUrl = $config->get( 'KnowlegeTree/rootUrl');
+		if (false !== $base_url)
+		{
+			return $base_url . $rootUrl;
+		}
+
 		$serverName = $config->get('knowledgeTree/serverName', $_SERVER['HTTP_HOST']);
 
-		return ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $default->rootUrl;
+		return ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $rootUrl;
 
 	}
 
 	static function call_page($path)
 	{
+		$config = KTConfig::getSingleton();
+		$cacheDir = $config->get('cache/cacheDirectory');
+
+		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
+
+		if (false == $base_url)
+		{
+			global $default;
+			$default->log->info("call_page: $path - cannot call script until user logs in for the first time!");
+			return;
+		}
+
+
 		$kt_url = KTUtil::kt_url();
 
 		$full_url = $kt_url . '/' . $path;
