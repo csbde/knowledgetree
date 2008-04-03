@@ -107,18 +107,19 @@ class KTUtil {
 		$cacheDir = $config->get('cache/cacheDirectory');
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
+		global $default;
 
 		if (false == $base_url)
 		{
-			global $default;
 			$default->log->info("call_page: $path - cannot call script until user logs in for the first time!");
 			return;
 		}
 
-
 		$kt_url = KTUtil::kt_url();
 
 		$full_url = $kt_url . '/' . $path;
+
+		$default->log->debug("call_page: calling $full_url");
 
 		$ch = curl_init($full_url);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);

@@ -101,7 +101,7 @@ class LuceneStatisticsDashlet extends KTBaseDashlet
 			$docsInIndex = $index->getDocumentsInIndex();
 
 			// we are only interested in documents that are active
-			$docsInQueue = $index->getIndexingQueue();
+			$docsInQueue = $index->getIndexingQueue(false);
 			$docsInQueue = count($docsInQueue);
 
 			$errorsInQueue = $index->getIndexingQueue(true);

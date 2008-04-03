@@ -242,7 +242,8 @@ class BrowseCriterion {
     }
 
     function getWidgetBase () {
-        return strtr($this->getNamespace(), '-', '_');
+        //return strtr($this->getNamespace(), '-', '_');
+        return $this->getNamespace();
     }
 
     function getSearchTable() {
@@ -731,21 +732,21 @@ class SizeCriterion extends BrowseCriterion {
 			'M'=>'Megabytes');
 
     var $aTypeAssocs = array('B' => 1, 'KB' => 1024, 'M' => 1048576);
-    
+
     var $aCmps = array();
 
     var $aCmpAssocs = array();
 
     function SizeCriterion() {
 		$this->sDisplay = _kt('File Size');
-		
+
 		$this->aCmps = array('LT'=>_kt('Less than'),
 		       'GT'=>_kt('Greater than'),
 		       'EQ'=>_kt('Equal to'),
 		       'NEQ'=>_kt('Not equal to'));
-		       
+
 		$this->aCmpAssocs = array('LT' => '<', 'GT' => '>', 'EQ' => '=', 'NEQ' => '!=');
-		
+
     }
 
     function documentDisplay ($oDocument) {
@@ -928,7 +929,7 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
 
     function DateCreatedDeltaCriterion() {
 		$this->sDisplay = _kt('Date Created Delta');
-		
+
 		$this->aTypes = array('MINUTE'=>_kt('Minutes'),
 			'HOUR'=>_kt('Hours'),
 			'DAY'=>_kt('Days'),

@@ -631,21 +631,29 @@ abstract class CompositeExtractor extends DocumentExtractor
 
 		$this->sourceExtractor->setSourceFile($this->sourcefile);
 		$this->sourceExtractor->setTargetFile($intermediateFile);
+		$this->sourceExtractor->setDocument($this->getDocument());
 		$this->sourceExtractor->setMimeType($this->mimetype);
 		$this->sourceExtractor->setExtension($this->extension);
 		if (!$this->sourceExtractor->extractTextContent())
 		{
+			$this->output = $this->sourceExtractor->output;
+			@unlink($intermediateFile);
 			return false;
 		}
 		$intermediateFile = $this->sourceExtractor->getTargetFile();
 
 		$this->targetExtractor->setSourceFile($intermediateFile);
 		$this->targetExtractor->setTargetFile($this->targetfile);
+		$this->targetExtractor->setDocument($this->getDocument());
 		$this->targetExtractor->setMimeType($this->targetMimeType);
 		$this->targetExtractor->setExtension($this->targetExtension);
 		$result = $this->targetExtractor->extractTextContent();
+		if (!$result)
+		{
+			$this->output = $this->targetExtractor->output;
+		}
 
-		unlink(@$intermediateFile);
+		@unlink($intermediateFile);
 
 		return $result;
 	}
