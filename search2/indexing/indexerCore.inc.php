@@ -1012,6 +1012,20 @@ abstract class Indexer
         		$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Processing docid: %d.\n"),$docId), 'info');
         	}
 
+        	$document = Document::get($docId);
+        	if (PEAR::isError($document))
+        	{
+        		Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Cannot resolve document id %d: %s."),$docId, $document->getMessage()), 'error');
+        		continue;
+        	}
+
+        	$filename = $document->getFileName();
+        	if (substr($filename,0,1) == '~')
+        	{
+        		Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
+        		continue;
+        	}
+
         	$removeFromQueue = true;
         	if ($indexDocument)
         	{
@@ -1030,12 +1044,7 @@ abstract class Indexer
 					continue;
 				}
 
-        		$document = Document::get($docId);
-        		if (PEAR::isError($document))
-        		{
-        			Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Cannot resolve document id %d: %s."),$docId, $document->getMessage()), 'error');
-        			continue;
-        		}
+
 
         		$version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
         		$sourceFile = $storageManager->temporaryFile($document);
