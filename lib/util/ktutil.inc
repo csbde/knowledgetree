@@ -121,6 +121,9 @@ class KTUtil {
 		$full_url = $kt_url . '/' . $path;
 
 		$ch = curl_init($full_url);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($ch,CURLOPT_FOLLOWLOCATION, true);
 		curl_exec($ch);
 		curl_close($ch);
 	}
