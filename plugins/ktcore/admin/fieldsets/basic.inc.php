@@ -416,12 +416,41 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     function do_managelookups() {
         $this->oPage->setBreadcrumbDetails(_kt('manage lookup values'));
 
-        $oTemplate =& $this->oValidator->validateTemplate("ktcore/metadata/admin/manage_lookups");
+        // Add javascript to create the edit form
+        $sJavaScript = "\nfunction editLookup(id)\n
+            {\n
+                var div = document.getElementById(id);\n
+                var value = div.innerHTML;
+
+                <!-- Replace all double quotes with &#34; -->\n
+                matches = value.match(/\"/g);\n
+                var newValue = value;\n
+                if(matches){\n
+                    for(var i = 0; i < matches.length; i++){\n
+                        newValue = newValue.replace('\"', '&#34;');\n
+                    }\n
+                }\n\n
+
+                var inner = '<input type=\"text\" name=\"lookup['+id+']\" id=\"lookup_'+id+'\" value=\"'+newValue+'\" />';\n
+                inner += '<input type=\"hidden\" id=\"original_'+id+'\" value=\"'+newValue+'\" />';\n
+                inner += '<input type=\"submit\" name=\"submit[edit]\" value=\""._kt('Save')."\" />';\n
+                inner += '<input type=\"button\" onclick=\"javascript: closeLookupEdit('+id+');\" name=\"cancel\" value=\""._kt('Cancel')."\" />';\n
+                div.innerHTML = inner;\n
+                document.getElementById('lookup_'+id).focus();\n
+            }\n\n
+
+            function closeLookupEdit(id)
+            {\n
+                value = document.getElementById('original_'+id).value;\n
+                document.getElementById(id).innerHTML = value;\n
+            }\n\n";
+
+        $this->oPage->requireJSStandalone($sJavaScript);
 
         $lookups =& MetaData::getByDocumentField($this->oField);
-
         $args = $this->meldPersistQuery("","metadataMultiAction", true);
 
+        $oTemplate =& $this->oValidator->validateTemplate("ktcore/metadata/admin/manage_lookups");
         $oTemplate->setData(array(
             'context' => $this,
             'field_name' => $this->oField->getName(),
@@ -485,6 +514,40 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         exit(0);
     }
     // }}}
+
+    /**
+     * Save the edited lookup values
+     *
+     */
+    function lookup_edit(){
+        $aLookupValues = $_REQUEST['lookup'];
+
+        if(empty($aLookupValues)){
+            $this->errorRedirectTo('managelookups', _kt('No lookups were selected for editing'));
+            exit;
+        }
+
+        foreach ($aLookupValues as $iMetaDataId => $sValue){
+            $oMetaData = MetaData::get($iMetaDataId);
+            if (PEAR::isError($oMetaData)) {
+                $this->addErrorMessage(_kt('Invalid lookup selected').': '.$sValue);
+                continue;
+                //$this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
+            }
+            if(empty($sValue)){
+                $this->addErrorMessage(_kt('Lookup cannot be empty').': '.$oMetaData->getName());
+                if(count($aLookupValues) == 1){
+                    $this->redirectTo('managelookups');
+                }
+                continue;
+            }
+            $oMetaData->setName($sValue);
+            $oMetaData->update();
+        }
+
+        $this->successRedirectTo('managelookups', _kt('Lookup values saved'));
+        exit(0);
+    }
 
     // {{{ lookup_enable
     function lookup_toggleenabled() {
