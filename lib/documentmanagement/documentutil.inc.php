@@ -1121,6 +1121,11 @@ class KTDocumentUtil {
         $oDocument->setModifiedUserId($oUser->getId());
         $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
+		
+		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
+		$iMimeTypeId = KTMime::getMimeTypeID($sType, $sNewFilename);
+        $oDocument->setMimeTypeId($iMimeTypeId);
+		
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
             if (PEAR::isError($bSuccess)) {
