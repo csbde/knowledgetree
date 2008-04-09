@@ -169,7 +169,7 @@ class KTUtil {
 
 	static function filesizeToString($filesize)
 	{
-		$filesize = (int) $filesize;
+		$filesize = (double) $filesize;
 
 		if ($filesize >= KTUtil::PB)
 		{
