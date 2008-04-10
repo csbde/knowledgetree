@@ -6,32 +6,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -44,7 +44,7 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 class TagCloudDashlet extends KTBaseDashlet {
 	var $oUser;
 	var $sClass = 'ktBlock';
-	
+
 	/**
 	 * Constructor method
 	 *
@@ -53,7 +53,7 @@ class TagCloudDashlet extends KTBaseDashlet {
 	function TagCloudDashlet(){
 		$this->sTitle = _kt('Tag Cloud');
 	}
-	
+
 	/**
 	 * Check to see if user is active
 	 *
@@ -74,9 +74,7 @@ class TagCloudDashlet extends KTBaseDashlet {
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('TagCloud/dashlet');
 
-		$aTags = & $this->get_relevant_tags();
-		if($aTags)
-			$aTags = & $this->get_tag_weightings($aTags);
+		$aTags = $this->get_tag_weightings($aTags);
 
 		$oRegistry =& KTPluginRegistry::getSingleton();
 		$oPlugin =& $oRegistry->getPlugin('ktcore.tagcloud.plugin');
@@ -88,14 +86,14 @@ class TagCloudDashlet extends KTBaseDashlet {
 		);
 		return $oTemplate->render($aTemplateData);
     }
-    
+
     /**
      * Builds the weightings for tags based on their frequency
      *
      * @param array $aTags
      * @return array
      */
-    function & get_tag_weightings(&$aTags)
+    function get_tag_weightings($aTags)
 	{
 		$aTags = $this->get_relevant_tags();
 
@@ -121,23 +119,23 @@ class TagCloudDashlet extends KTBaseDashlet {
 
 		return $aTags;
 	}
-    
+
     /**
      * Returns the relevant tags for the current user
      *
      * @return array
      */
-    function & get_relevant_tags()
+    function get_relevant_tags()
 	{
 		$aUserPermissions = KTSearchUtil::permissionToSQL($this->oUser, null);
 		if(PEAR::isError($aUserPermissions)) {
             return false;
         }
-		list($where, $params, $joins) = KTSearchUtil::permissionToSQL($this->oUser, null);
+		list($where, $params, $joins) = $aUserPermissions;
 		$sql = "
-    		SELECT 
-    			TW.tag, count(*) as freq 
-    		FROM 
+    		SELECT
+    			TW.tag, count(*) as freq
+    		FROM
     			document_tags DT INNER JOIN tag_words TW ON DT.tag_id=TW.id
     		WHERE DT.document_id in (SELECT D.id FROM documents D $joins WHERE $where AND D.status_id = '1')  GROUP BY TW.tag";
 
@@ -155,6 +153,6 @@ class TagCloudDashlet extends KTBaseDashlet {
 		return $aTags;
 
 	}
-    
+
 }
 ?>

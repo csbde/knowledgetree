@@ -1,0 +1,29 @@
+{literal}
+<style type="text/css">
+#tagcloud a, a.link, a.visited, a.hover, a.active {
+
+color: gray;
+border-bottom: 0px;
+text-decoration: none;
+
+}
+</style>
+{/literal}
+
+{if empty($tags)}
+<p>
+    {i18n}There are no tags defined or accessible.{/i18n}
+</p>
+
+{else}
+<div id=tagcloud>
+{foreach from=$tags key=tag item=size}
+
+	<a  href="{$url}&tag={$tag|urlencode}" style="color: #333; font-size: {$size}px">{$tag|sanitize}</a>&nbsp;
+
+{/foreach}
+</div>
+{/if}
+
+<br>
+<br>
