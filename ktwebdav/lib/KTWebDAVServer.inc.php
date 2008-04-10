@@ -420,6 +420,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             return false;
         }
 
+        $oUser->setLastLogin(date('Y-m-d H:i:s'));
+        $oUser->update();
+
+        $this->ktwebdavLog('Session ID is: '.$sessionID, 'info', true);
         $this->ktwebdavLog('UserID is: ' . $oUser->getId(), 'info', true );
         $this->_setUserID($oUser->getId());
         $_SESSION['userID'] = $this->_getUserID();
@@ -2482,7 +2486,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             // Check/Set the WebDAV Client
             $userAgentValue = $_SERVER['HTTP_USER_AGENT'];
             // KT Explorer
-            if (stristr($userAgentValue,"Microsoft Data Access Internet Publishing Provider DAV")) {
+            if (stristr($userAgentValue,"Microsoft Data Access Internet Publishing Provider")) {
                 $this->dav_client = "MS";
                 $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
