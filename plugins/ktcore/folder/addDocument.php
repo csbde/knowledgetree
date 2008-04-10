@@ -185,7 +185,10 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
-            return $oForm->handleError();
+            if(!isset($res['errors']['file'])){
+                $aError['file'] = array(_kt('Please reselect the file to upload.'));
+            }
+            return $oForm->handleError('', $aError);
         }
         $data = $res['results'];
         $key = KTUtil::randomString(32);
