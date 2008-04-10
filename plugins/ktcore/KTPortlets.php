@@ -5,32 +5,32 @@
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -48,7 +48,7 @@ class KTSearchPortlet extends KTPortlet {
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
-        
+
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (!$iFolderId && !$iDocumentId) {
@@ -59,10 +59,10 @@ class KTSearchPortlet extends KTPortlet {
 	$aSearches = KTSavedSearch::getUserSearches($iUserId);
 
         // empty on error.
-        if (PEAR::isError($aSearches)) { 
-            $aSearches = array(); 
+        if (PEAR::isError($aSearches)) {
+            $aSearches = array();
         }
-        
+
 	$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $aTemplateData = array(
             "context" => $this,
@@ -87,16 +87,24 @@ class KTBrowseModePortlet extends KTPortlet {
         parent::KTPortlet($sTitle);
     }
 
-    function render() { 
+    function render() {
         // this is unfortunate, but such is life.
         $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(
-            'folder' => array('name' => _kt('Folder'), 'target' => "main"),            
+            'folder' => array('name' => _kt('Folder'), 'target' => "main"),
             'document_type' => array('name' => _kt('Document Type'), 'target' => 'selectType'),
             'lookup_value' => array('name' => _kt('Lookup Value'), 'target' => 'selectField'),
-        );        
-        
-        $oTemplating =& KTTemplating::getSingleton();        
+        );
+
+        // Browse by tag
+        $oRegistry =& KTPluginRegistry::getSingleton();
+		$oPlugin =& $oRegistry->getPlugin('ktcore.tagcloud.plugin');
+		if(!PEAR::isError($oPlugin) && !empty($oPlugin)){
+    		$tagUrl = $oPlugin->getPagePath('TagCloudRedirection');
+    		$modes['tag'] = array('name' => '<a href="'.$tagUrl.'">'._kt('Tag').'</a>');
+		}
+
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/browsemodes_portlet");
         $aTemplateData = array(
             "context" => $this,
@@ -104,7 +112,7 @@ class KTBrowseModePortlet extends KTPortlet {
             "modes" => $modes,
         );
 
-        return $oTemplate->render($aTemplateData);        
+        return $oTemplate->render($aTemplateData);
     }
 }
 
@@ -161,21 +169,21 @@ class KTAdminSectionNavigation extends KTPortlet {
     function KTAdminSectionNavigation() {
         parent::KTPortlet(_kt("Administration"));
     }
-    
+
     function render() {
         require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
-    
+
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $categories = $oRegistry->getCategories();		
-        
+        $categories = $oRegistry->getCategories();
+
         // we need to investigate sub_url solutions.
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_categories");
         $aTemplateData = array(
               "context" => $this,
               "categories" => $categories,
         );
-        return $oTemplate->render($aTemplateData);			
+        return $oTemplate->render($aTemplateData);
     }
 }
