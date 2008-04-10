@@ -95,17 +95,20 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         // Onchange gets the name of the file and inserts it as the document title.
         $sFileOnchange = "javascript:
-            var arrPath=this.value.split('/');
-            if(arrPath.length == 1){
-                var arrPath=this.value.split('\\\');
-            }
-            var name=arrPath[arrPath.length-1];
-            var name=name.split('.');
-            if(name.length > 1){
-                name.pop();
-            }
-            var title=name.join('.');
-            document.getElementById('document_name').value=title;";
+            var doc = document.getElementById('document_name');
+            if(doc.value == ''){
+                var arrPath=this.value.split('/');
+                if(arrPath.length == 1){
+                    var arrPath=this.value.split('\\\');
+                }
+                var name=arrPath[arrPath.length-1];
+                var name=name.split('.');
+                if(name.length > 1){
+                    name.pop();
+                }
+                var title=name.join('.');
+                doc.value=title;
+            }";
 
         $oForm->setWidgets(array(
             array('ktcore.widgets.file',array(
