@@ -249,8 +249,6 @@ class KTRequiredFileValidator extends KTValidator {
         $val = KTUtil::arrayGet($_FILES, $this->sInputVariable);
         if (empty($val) || empty($val['name'])) {
             $errors[$this->sBasename] = _kt("You must select a file to upload.");
-        }else{
-            $errors[$this->sBasename] = _kt("Please reselect the file to upload.");
         }
 
         return array(
