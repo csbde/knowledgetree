@@ -1,36 +1,36 @@
 <?php
 /**
  * $Id$
- *    
+ *
  * KnowledgeTree Open Source Edition
  * Document Management Made Simple
  * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
  * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  */
 
@@ -40,54 +40,54 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 
 class KTStringValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.string';
-    
+
     var $iMinLength;
     var $iMaxLength;
     var $sMinLengthWarning;
-    var $sMaxLengthWarning; 
-    
-     
-    
+    var $sMaxLengthWarning;
+
+
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
         if (PEAR::isError($res)) {
             return $res;
         }
-        
+
         $this->iMinLength = KTUtil::arrayGet($aOptions, 'min_length', 0);
         $this->iMaxLength = KTUtil::arrayGet($aOptions, 'max_length', 254);        // sane default for char fields...
-        
+
         $this->sMinLengthWarning = KTUtil::arrayGet($aOptions, 'min_length_warning',
             sprintf(_kt('You must provide a value which is at least %d characters long.'), $this->iMinLength));
         $this->sMaxLengthWarning = KTUtil::arrayGet($aOptions, 'max_length_warning',
-            sprintf(_kt('You must provide a value which is at most %d characters long.'), $this->iMaxLength));      
-            
-        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
+            sprintf(_kt('You must provide a value which is at most %d characters long.'), $this->iMaxLength));
+
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
-        
+
         if ($this->bTrim) {
             $val = trim($val);
         }
-        
+
         $l = KTUtil::utf8_strlen($val);
         if ($l < $this->iMinLength) {
             $errors[$this->sBasename] = $this->sMinLengthWarning;
         } else if ($l > $this->iMaxLength) {
             $errors[$this->sBasename] = $this->sMaxLengthWarning;
         }
-        
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -98,28 +98,28 @@ class KTStringValidator extends KTValidator {
 class KTIllegalCharValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.illegal_char';
     var $sWarning;
-    
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
         if (PEAR::isError($res)) {
             return $res;
         }
-        
+
         $sChars =  "\/*<>|%+':\"?";
         $sWarning = sprintf(_kt('The value you have entered is invalid. The following characters are not allowed: %s'), $sChars);
         $this->sWarning = KTUtil::arrayGet($aOptions, 'illegal_character_warning', $sWarning);
-            
-        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
+
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
-        
+
         if ($this->bTrim) {
             $val = trim($val);
         }
@@ -134,7 +134,7 @@ class KTIllegalCharValidator extends KTValidator {
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -144,16 +144,16 @@ class KTIllegalCharValidator extends KTValidator {
 
 class KTEntityValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.entity';
-    
+
     var $sEntityClass;
     var $sGetFunction;
-    
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
         if (PEAR::isError($res)) {
             return $res;
         }
-        
+
         $this->sEntityClass = KTUtil::arrayGet($aOptions, 'class');
         if (empty($this->sEntityClass)) {
             return PEAR::raiseError(_kt("No entity class specified."));
@@ -161,16 +161,16 @@ class KTEntityValidator extends KTValidator {
         $this->sGetFunction = KTUtil::arrayGet($aOptions, 'id_method', 'get');
         $this->bMultiple = KTUtil::arrayGet($aOptions, 'multi', false, false);
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
 
-        
+
+
         $aFunc = array($this->sEntityClass, $this->sGetFunction);
 
-        
+
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
         $output = null;
         if (!empty($val)) {
@@ -198,7 +198,7 @@ class KTEntityValidator extends KTValidator {
                 $oEntity =& call_user_func($aFunc, $val);
                 if (PEAR::isError($oEntity)) {
                     $errors[$this->sBasename] = sprintf(_kt("No such id: %s"), $val);
-                }                
+                }
                 if ($this->aOptions['ids']) {
                     $output = $val;
                 } else {
@@ -210,7 +210,7 @@ class KTEntityValidator extends KTValidator {
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $output;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -222,15 +222,15 @@ class KTEntityValidator extends KTValidator {
 // in the data array.
 class KTRequiredValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.required';
-    
+
     function validate($data) {
         $errors = array();
-        
+
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
         if (empty($val)) {
             $errors[$this->sBasename] = _kt("You must provide a value for this field.");
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => array(),
@@ -242,15 +242,17 @@ class KTRequiredValidator extends KTValidator {
 // in the data array.
 class KTRequiredFileValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.requiredfile';
-    
+
     function validate($data) {
         $errors = array();
-        
+
         $val = KTUtil::arrayGet($_FILES, $this->sInputVariable);
         if (empty($val) || empty($val['name'])) {
             $errors[$this->sBasename] = _kt("You must select a file to upload.");
-        } 
-        
+        }else{
+            $errors[$this->sBasename] = _kt("Please reselect the file to upload.");
+        }
+
         return array(
             'errors' => $errors,
             'results' => array(),
@@ -260,27 +262,27 @@ class KTRequiredFileValidator extends KTValidator {
 
 class KTEmailValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.emailaddress';
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
 
         $sEmailAddress = trim($val);
-        
+
         if (!ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress )) {
             $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions,
-                'message', 
+                'message',
                 _kt("This is not a valid email address."));
         }
-        
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $sEmailAddress;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -291,21 +293,21 @@ class KTEmailValidator extends KTValidator {
 
 class KTBooleanValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.boolean';
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
 
-        $out = ($val == true);        
-        
+        $out = ($val == true);
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $out;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -316,7 +318,7 @@ class KTBooleanValidator extends KTValidator {
 
 class KTPasswordValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.password';
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
@@ -325,11 +327,11 @@ class KTPasswordValidator extends KTValidator {
         if ($bundle['base'] != $bundle['confirm']) {
             $errors[$this->sBasename] = _kt('Your passwords do not match.');
         }
-        
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -339,16 +341,16 @@ class KTPasswordValidator extends KTValidator {
 
 class KTMembershipValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.membership';
-    
+
     var $bMulti;
     var $aVocab;
-    
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         }
-        
+
         $this->bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
         $vocab = (array) KTUtil::arrayGet($aOptions, 'vocab');
         $this->aVocab = array();
@@ -356,17 +358,17 @@ class KTMembershipValidator extends KTValidator {
             $this->aVocab[$v] = true;
         }
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
         if (empty($val)) {
             ; // pass
-        } else {       
+        } else {
             if ($this->bMulti) {
                 $val = (array) $val;
                 $failed = array();
@@ -376,32 +378,32 @@ class KTMembershipValidator extends KTValidator {
                     }
                 }
                 if (!empty($failed)) {
-                    $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions, 
-                        'error_message', sprintf(_kt('"%s" are not valid selections.'), 
-                            implode(', ', $failed)));                
+                    $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions,
+                        'error_message', sprintf(_kt('"%s" are not valid selections.'),
+                            implode(', ', $failed)));
                 }
             } else {
-                
+
                 $mandatory=true;
-				 
+
 				if (substr($this->sInputVariable, 0, 9) == 'metadata_')
 				{
 					$fieldid = substr($this->sInputVariable, 9);
 					$field = DocumentField::get($fieldid);
 					$mandatory = $field->getIsMandatory();
-				}				
-			
+				}
+
                 if (!array_key_exists($val, $this->aVocab) && $mandatory) {
-                    $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions, 
+                    $errors[$this->sBasename] = KTUtil::arrayGet($this->aOptions,
                         'error_message', sprintf(_kt('"%s"is not a valid selection.'), $val));
                 }
             }
         }
-        
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -412,34 +414,34 @@ class KTMembershipValidator extends KTValidator {
 
 class KTFieldsetValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.fieldset';
-    
+
     var $_validators;
-    
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
-        if (PEAR::isError($res)) { 
+        if (PEAR::isError($res)) {
             return $res;
         }
 
         $this->_validators = (array) KTUtil::arrayGet($aOptions, 'validators', array());
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $d = (array) KTUtil::arrayGet($data, $this->sInputVariable);
         //var_dump($this); exit(0);
         foreach ($this->_validators as $v) {
             $res = $v->validate($d);
-            
+
             // results comes out with a set of names and values.
             // these *shouldn't* overlap, so just merge them
             $extra_results = KTUtil::arrayGet($res, 'results', array());
             $results = kt_array_merge($results, $extra_results);
-            
+
             // errors *can* overlap
             // the format is:
             //   basename => array(errors)
@@ -451,7 +453,7 @@ class KTFieldsetValidator extends KTValidator {
             $extra_errors = KTUtil::arrayGet($res, 'errors', array());
             foreach ($extra_errors as $varname => $aErrors) {
                 if (is_string($aErrors)) {
-                    $errors[$varname][] = $aErrors; 
+                    $errors[$varname][] = $aErrors;
                 } else {
                     $errors[$varname] = kt_array_merge($errors[$varname], $aErrors);
                 }
@@ -461,7 +463,7 @@ class KTFieldsetValidator extends KTValidator {
         if ($this->bProduceOutput) {
             $final_results[$this->sOutputVariable] = $results;
         }
-        
+
         $final_errors = array();
         if (!empty($errors)) {
             $final_errors[$this->sInputVariable] = $errors;
@@ -478,7 +480,7 @@ class KTFieldsetValidator extends KTValidator {
 class KTFileValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.file';
     // we don't actual need to do *anything*
-    
+
     function validate($data) {
         $d = (array) KTUtil::arrayGet($data, $this->sInputVariable);
         $results = array();
@@ -495,26 +497,26 @@ class KTFileValidator extends KTValidator {
 class KTFileIllegalCharValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.fileillegalchar';
     var $sWarning;
-    
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
         if (PEAR::isError($res)) {
             return $res;
         }
-        
+
         $sChars =  "\/*<>|%+':\"?";
         $sWarning = sprintf(_kt('The name of the document selected is invalid. The following characters are not allowed: %s'), $sChars);
         $this->sWarning = KTUtil::arrayGet($aOptions, 'file_illegal_character_warning', $sWarning);
-            
-        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);      
+
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);
     }
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         $aFile = (array) KTUtil::arrayGet($data, $this->sInputVariable);
-        
+
         // Get the file name
         $val = $aFile['name'];
         if ($this->bTrim) {
@@ -530,7 +532,7 @@ class KTFileIllegalCharValidator extends KTValidator {
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $aFile;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
@@ -541,19 +543,19 @@ class KTFileIllegalCharValidator extends KTValidator {
 
 class KTArrayValidator extends KTValidator {
     var $sNamespace = 'ktcore.validators.array';
-    
+
     function validate($data) {
         $results = array();
         $errors = array();
-        
+
         // very simple if we're required and not present, fail
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
-        //var_dump($data); exit(0);        
+        //var_dump($data); exit(0);
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
-        
+
         return array(
             'errors' => $errors,
             'results' => $results,
