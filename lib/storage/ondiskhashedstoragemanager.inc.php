@@ -45,13 +45,13 @@ require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
     function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
-    	
+
     	if (!file_exists($sTmpFilePath)) {
-              
+
             	return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
-            }	
-    	
-    
+            }
+
+
         $oConfig =& KTConfig::getSingleton();
         $sStoragePath = $this->generateStoragePath($oDocument);
         if (PEAR::isError($sStoragePath)) {
@@ -114,9 +114,16 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
 
         if (is_uploaded_file($sTmpFilePath))
-            return move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
+            $res = @move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
         else
-            return rename($sTmpFilePath, $sDocumentFileSystemPath);
+            $res = @rename($sTmpFilePath, $sDocumentFileSystemPath);
+
+        if ($res === false)
+        {
+        	$res = @copy($sTmpFilePath, $sDocumentFileSystemPath);
+        }
+
+        return $res;
     }
 
     function getPath(&$oDocument) {
