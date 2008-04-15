@@ -357,14 +357,16 @@ class SearchHelper
 						document_type_fields_link dtfl
 						INNER JOIN  document_fields df on dtfl.field_id=df.id
 					WHERE
-						dtfl.document_type_id=$documentTypeID";
+						dtfl.document_type_id=$documentTypeID
+					ORDER BY
+						df.name";
 
 
 		}
 		else
 		{
 			$fieldsetID = sanitizeForSQL($fieldsetID);
-			$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID";
+			$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";
 		}
 
 		$rs = DBUtil::getResultArray($sql);
@@ -423,7 +425,7 @@ class SearchHelper
 
 	public static function getFieldsets()
 	{
-		$sql = "SELECT id, name, description FROM fieldsets WHERE disabled=0";
+		$sql = "SELECT id, name, description FROM fieldsets WHERE disabled=0 ORDER BY name";
 		$rs = DBUtil::getResultArray($sql);
 
 		return $rs;
@@ -445,34 +447,34 @@ class SearchHelper
 
 	public static function getDocumentTypes()
 	{
-		$sql = "SELECT id, name from document_types_lookup WHERE disabled=0";
+		$sql = "SELECT id, name from document_types_lookup WHERE disabled=0 ORDER BY name";
 		$rs = DBUtil::getResultArray($sql);
 		return $rs;
 	}
 
 	public static function getMimeTypes() {
-		$sql = "SELECT DISTINCT mimetypes as name FROM mime_types order by mimetypes ";
+		$sql = "SELECT DISTINCT mimetypes as name FROM mime_types ORDER BY mimetypes ";
 		$rs = DBUtil::getResultArray($sql);
 		return $rs;
 	}
 
 	public static function getWorkflows()
 	{
-		$sql = "SELECT id, human_name as name FROM workflows WHERE enabled=1";
+		$sql = "SELECT id, human_name as name FROM workflows WHERE enabled=1 ORDER BY human_name";
 		$rs = DBUtil::getResultArray($sql);
 		return $rs;
 	}
 
 	public static function getUsers()
 	{
-		$sql = "SELECT id, name FROM users WHERE disabled=0";
+		$sql = "SELECT id, name FROM users WHERE disabled=0 ORDER BY name";
 		$rs = DBUtil::getResultArray($sql);
 		return $rs;
 	}
 
 	public static function getWorkflowStates($workflowid)
 	{
-		$sql = "SELECT id,human_name as name FROM workflow_states WHERE workflow_id=$workflowid";
+		$sql = "SELECT id,human_name as name FROM workflow_states WHERE workflow_id=$workflowid ORDER BY id";
 		$rs = DBUtil::getResultArray($sql);
 		return $rs;
 	}
