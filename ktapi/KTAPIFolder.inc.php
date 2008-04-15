@@ -361,7 +361,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					if ($depth-1 > 0)
 					{
 						$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-						$items = $sub_folder->get_listing($depth-1);
+						$items = $sub_folder->get_listing($depth-1, $what);
 					}
 					else
 					{
