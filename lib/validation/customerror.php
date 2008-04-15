@@ -33,37 +33,52 @@
  * copyright notice. 
  * Contributor( s): ______________________________________
  */
-  //require_once(KT_DIR.'config/dmsDefaults.php');
-  require_once(KT_LIB_DIR.'/Log.inc');
-
- class KTCustomErrorHandler
- {
- 	// {{{ initCustomErrorHandler()
- 	function initCustomErrorHandler ()
- 	{
- 		return $oCustomErrorHandler =& new KTCustomErrorHandler; 
- 	}
- 	// }}}
  
-	// {{{ logError() 
- 	function logError($oError) 	
-  	
- 	{
- 		global $default;
- 		
- 		$sErrorType = '';
- 		if(substr($oError->toString(),1,2) == 'db')
- 		{
- 			$sErrorType = 'database_error';	
- 		}
- 		else
- 		{
- 			$sErrorType = 'unknown_error';
- 		}
- 		
- 			
- 		$default->log->error($oError->toString());
- 	
- 	}
- }
- ?>
+require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
+require_once(KT_LIB_DIR . '/validation/customerrorviewer.inc.php');
+                
+class KTCustomErrorCheck
+{
+    function customErrorInit($error)
+	{
+		$oCustomViewer =& KTCustomErrorViewer::initCustomErrorViewer();
+		        
+		//if the custom error messages are set to 'on' in the config file 
+		//we check if the error page exists and redirect to it if it does.
+		//if either the page doesn't exit or the custom error option is off in the config file
+		//we carry out default error reporting
+		if ($oCustomViewer->getCustomErrorConfigSetting() == 'on')
+		{
+			
+			$CustomErrorPage = $oCustomViewer->getCustomErrorRedirectPage();
+			if ( $CustomErrorPage != '0') //if an error is not returned from getCustomErrorRedirectPage();
+			{
+				
+				$sErrorHandler = $oCustomViewer->getCustomErrorHandlerSetting();
+					
+				
+				if ($sErrorHandler == 'on')
+				{
+					$oErrorHandler = KTCustomErrorHandler::initCustomErrorHandler();
+					$oErrorHandler->logError($error);
+				}
+				
+				//redirect
+				$oCustomViewer->doCustomErrorPageRedirect($CustomErrorPage, $error);
+				
+				
+				//exit without errors	
+				return true;
+		   	}
+		   	else
+		   	{
+		   		return false;
+		   	}
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+?>
