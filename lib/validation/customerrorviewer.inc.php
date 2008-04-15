@@ -72,7 +72,11 @@
     	if (substr($sCustomErrorPage, 0, 4) != 'http')
     	{
     		    		
-    		$sCustomErrorPage = 'http://'.$_SERVER['HTTP_HOST'].'/'.$sCustomErrorPage;
+    		$sUrl = KTInit::guessRootUrl();
+    		global $default;
+			$sRootUrl = ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'].$sUrl;
+    		$sCustomErrorPage = $sRootUrl.'/'.$sCustomErrorPage;
+ 		
     		
     	}
 
@@ -106,7 +110,6 @@
     // {{{ customErrorPageRedirect()
     function doCustomErrorPageRedirect($CustomErrorPage, $oError = null)
     {
-    	$sErrorMessage = '';
     	if($oError != null)
     	{
     		//call error handler
@@ -114,22 +117,19 @@
     		$aErrorMessage = array ();
 			$aErrorMessage['Error_MessageOne'] = $oError->getMessage();
 			$aErrorMessage['Error_MessageTwo'] = $oError->getUserInfo();
-    		//echo '<pre>';
-    		//print_r($aErrorMessage);
-    		//echo '</pre>';
-    		//exit;
-    		$customErrorHandler = KTCustomErrorHandler::initCustomErrorHandler();
-    		$customErrorHandler->logError($oError);
+    		
     	}
-    	
+		
+		    	
     	$ErrorPageCurlSession = curl_init($CustomErrorPage);
-	//curl_setopt($ErrorPageCurlSession, CURLOPT_SSL_VERIFYPEER, false);
+	  //curl_setopt($ErrorPageCurlSession, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ErrorPageCurlSession, CURLOPT_POST, true);
 		curl_setopt($ErrorPageCurlSession, CURLOPT_POSTFIELDS, $aErrorMessage);
     	$ErrorPageSent = curl_exec($ErrorPageCurlSession);
-   	curl_close($ErrorPageCurlSession);
-	
+   	    curl_close($ErrorPageCurlSession);
+
     }
  	// }}}
+ 	
  }
  ?>

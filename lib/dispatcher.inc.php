@@ -537,38 +537,17 @@ class KTErrorDispatcher extends KTStandardDispatcher {
     }
 
     function dispatch() {
-        require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
-        require_once(KT_LIB_DIR . '/validation/customerrorviewer.inc.php');
-                
-        $oCustomViewer =& KTCustomErrorViewer::initCustomErrorViewer();
-                
-        //if the custom error messages are set to 'on' in the config file 
-        //we check if the error page exists and redirect to it if it does.
-        //if either the page doesn't exit or the custom error option is off in the config file
-        //we carry out default error reporting
-        if ($oCustomViewer->getCustomErrorConfigSetting() == 'on'){
-        	$CustomErrorPage = $oCustomViewer->getCustomErrorRedirectPage();
-        	if ( $CustomErrorPage != '0') //if an error is not returned from getCustomErrorRedirectPage();
-        	{
-        		$sErrorHandler = $oCustomViewer->getCustomErrorHandlerSetting();
-
-        		//redirect
-        		if ($sErrorHandler == 'on')
-        		{
-        			//if custom error handler is set to on inside config.ini then send error object with error page
-        			$oCustomViewer->doCustomErrorPageRedirect($CustomErrorPage, $this->oError);
-				}
-        		else if ($sErrorHandler != 'on')
-        		{
-        			//if custom error handler is set to off inside config.ini then just send error page
-        			$oCustomViewer->doCustomErrorPageRedirect($CustomErrorPage);
-        		}
-        		
-        		//exit without errors	
-        		exit(0);
-           	}
+        
+        require_once(KT_LIB_DIR . '/validation/customerror.php');
+        
+        $bCustomCheck = KTCustomErrorCheck::customErrorInit($this->oError);
+              
+        if($bCustomCheck)
+        {
+        	exit(0);
         }
         
+                
         //if either customer error messages is off or the custom error page doesn't exist the function will run 
         //the default error handling here
         $oRegistry =& KTErrorViewerRegistry::getSingleton();
