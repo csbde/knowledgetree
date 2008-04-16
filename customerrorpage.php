@@ -45,7 +45,7 @@ function Click()
 	var open = document.getElementById('exp');
 	open.style.display = 'block';
 	var border = document.getElementById('error-container');
-	border.style.height = '250px'; 
+	border.style.height = '220px'; 
 }
 
 </script>		
@@ -58,9 +58,10 @@ function Click()
 			<div id="acc-error">
 	
 						
-				<h1>Error!! - You have encountered a problem starting your document management system.</h1>
-				<p><h2>Please contact your systems administrator</h2></p>
-				<p>For more details, click here <img src="<?php echo $sRootUrl ?>/resources/graphics/info.gif" style="cursor: pointer;" onclick="Click()" /><div id ="exp" style="display: none; "> <?php if(isset($sErrorMessage)){ echo $sErrorMessage;  }else  if(isset($posted)){ echo $posted; } else if($phperror){ echo $phperror; } ?></div></p>
+				<h1>An Has Error Occurred</h1>
+				<p>You have encountered a problem with your document management system.</p>
+				<p>Please contact your systems administrator.</p>
+				<p>For more information on the error click here: <img src="<?php echo $sRootUrl ?>/resources/graphics/info.gif" style="cursor: pointer;" onclick="Click()" /><div id ="exp" style="display: none; "> <?php if(isset($sErrorMessage)){ echo $sErrorMessage;  }else  if(isset($posted)){ echo $posted; } else if($phperror){ echo $phperror; } ?></div></p>
 				
 			</div>		
 		</div>		
