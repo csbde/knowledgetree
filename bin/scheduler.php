@@ -192,9 +192,7 @@ if (empty($aList))
 
         if ($ext == 'php')
         {
-        	$config = KTConfig::getSingleton();
-        	$phpPath = KTUtil::checkForStackCommand('externalBinary/php');
-        	//$config->get('externalBinary/php');
+        	$phpPath = KTUtil::findCommand('externalBinary/php');
 
         	// being protective as some scripts work on relative paths
         	$dirname = dirname($file);
