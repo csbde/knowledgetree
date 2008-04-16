@@ -867,7 +867,7 @@ class KTUtil {
         $sPath = str_replace('\\', '/', $sPath);
         $sReal = str_replace('\\', '/', realpath($sPath));
 
-        if(substr($sPath, -1, 1) == '/'){
+        if(substr($sPath, -1, 1) == '/' && substr($sReal, -1, 1) != '/'){
             $sReal .= '/';
         }
 
