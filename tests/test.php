@@ -2,9 +2,10 @@
 
 $GLOBALS['kt_test'] = true;
 require_once(dirname(__FILE__) . '/../config/dmsDefaults.php');
-require_once('simpletest/unit_tester.php');
-require_once('simpletest/mock_objects.php');
-require_once('simpletest/reporter.php');
+require_once('simpletest/autorun.php');
+//require_once('simpletest/unit_tester.php');
+//require_once('simpletest/mock_objects.php');
+//require_once('simpletest/reporter.php');
 
 class KTUnitTestCase extends UnitTestCase {
     function assertExpectedResults($aExpected, $aReceived) {
@@ -29,10 +30,17 @@ class KTUnitTestCase extends UnitTestCase {
     }
 
     function assertNotError($oObject) {
-	if(PEAR::isError($oObject)) {
-	    return $this->fail(sprintf('Object is a PEAR Error'));
-	}
-	return $this->pass(sprintf('Object is not a PEAR Error'));
+        if(PEAR::isError($oObject)) {
+            return $this->fail(sprintf('Object is a PEAR Error: '.$oObject->getMessage() ));
+        }
+        return $this->pass(sprintf('Object is not a PEAR Error'));
+    }
+    
+    function assertError($oObject) {
+        if(PEAR::isError($oObject)) {
+            return $this->pass(sprintf('Object is a PEAR Error: '.$oObject->getMessage() ));
+        }
+        return $this->fail(sprintf('Object is not a PEAR Error'));
     }
 
     function assertGroup($oGroup) {
