@@ -22,7 +22,7 @@ class DocumentTestCase extends KTUnitTestCase {
 	return $oDocument;
     }
 
-    function testAddInOneGo() {
+/*    function testAddInOneGo() {
         $sLocalname = dirname(__FILE__) . '/dataset1/critique-of-pure-reason.txt';
         $sFilename = tempnam("/tmp", "kt_tests_document_add");
         copy($sLocalname, $sFilename);
@@ -83,4 +83,5 @@ class DocumentTestCase extends KTUnitTestCase {
 
 	$this->assertEqual($res, true);
     }
+*/
 }
