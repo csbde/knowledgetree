@@ -186,7 +186,7 @@ class KTBrowseUtil {
         $aBreadcrumbs = array();
 
         // skip root.
-        $folder_path_names = $oFolder->getPathArray();
+        //$folder_path_names = $oFolder->getPathArray();
         $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
 
         $parents = count($folder_path_ids);
@@ -204,19 +204,20 @@ class KTBrowseUtil {
             foreach (range(0, $parents - 1) as $index) {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
+                $sFolderName = $oThisFolder->getName();
                 $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
                 if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
                     if (KTBrowseUtil::inAdminMode($oUser, $oThisFolder)) {
-                        $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $folder_path_names[$index]));
+                        $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $sFolderName));
                     } else {
                         $aBreadcrumbs[] = array('name' => '...');
                     }
                     continue;
                 }
-                $aBreadcrumbs[] = array('url' => $url, 'name' => $folder_path_names[$index]);
+                $aBreadcrumbs[] = array('url' => $url, 'name' => $sFolderName);
             }
         }
 
