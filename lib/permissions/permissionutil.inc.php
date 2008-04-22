@@ -227,12 +227,37 @@ class KTPermissionUtil {
                 KTPermissionUtil::updatePermissionLookup($oFolder, $aOptions);
             }
         }
-        $aDocuments =& Document::getList(array($sWhere, $aParams));
+        $aIds = DBUtil::getResultArrayKey(array("SELECT id FROM documents WHERE permission_object_id=?", $aParams), 'id');
+        if (!PEAR::isError($aIds))
+        {
+			$cache = KTCache::getSingleton();
+
+			foreach ($aIds as $iId)
+	        {
+    	        $oDocument =& Document::get($iId);
+        	    KTPermissionUtil::updatePermissionLookup($oDocument, $aOptions);
+
+        	    $metadataid = $oDocument->getMetadataVersionId();
+				$contentid = $oDocument->getContentVersionId();
+
+				$cache->remove('KTDocumentMetadataVersion/id', $metadataid);
+				$cache->remove('KTDocumentContentVersion/id', $contentid);
+				$cache->remove('KTDocumentCore/id', $iId);
+				$cache->remove('Document/id', $iId);
+				unset($GLOBALS['_OBJECTCACHE']['KTDocumentMetadataVersion'][$metadataid]);
+				unset($GLOBALS['_OBJECTCACHE']['KTDocumentContentVersion'][$contentid]);
+				unset($GLOBALS['_OBJECTCACHE']['KTDocumentCore'][$iId]);
+
+				unset($oDocument);
+        	}
+        }
+
+       /* $aDocuments =& Document::getList(array($sWhere, $aParams));
         if (!PEAR::isError($aDocuments)) {
             foreach ($aDocuments as $oDocument) {
                 KTPermissionUtil::updatePermissionLookup($oDocument, $aOptions);
             }
-        }
+        }*/
     }
     // }}}
 
