@@ -419,7 +419,7 @@ class KTPage {
         			"page" => $this,
 			       	"systemversion" => $default->systemVersion,
 			       	"versionname" => $default->versionName,
-					'smallVersion' => substr($default->versionName, 0, 3),
+					'smallVersion' => substr($default->versionName, -17),
 			       	'savedSearches'=> $savedSearches);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;

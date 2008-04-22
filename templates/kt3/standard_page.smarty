@@ -314,24 +314,59 @@
         </div>
     </div>
     <div id="copyrightbarBorder">
-		<table width="98%" align="center">
+			<table width="98%">
 			<tr>
-				<td align="left">
-					<span>{i18n}&copy; 2004-2008 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Limited</a>{/i18n}</span><br>
-					{if ($smallVersion == 'OSS')}
-						{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
-					{else}
-						{i18n}All rights reserved.{/i18n}<br>
-					{/if}
-					<p>{$page->getDisclaimer()}</p>
-				</td>
-				<td align="right">
-					<span>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}</span><br />
-					<span>{i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}</span><br/>
-					<a href="{$rootUrl}"><img src="{$rootUrl}/resources/powered-by-kt.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
-				</td>
+			{if ($smallVersion == 'Community Edition')}
+				<td width="60%">
+			{else}
+				<td width="40%">
+			{/if}
+				<table >
+					<tr>
+						<td valign="top">
+							<a href="{$rootUrl}"><img src="{$rootUrl}/resources/powered-by-kt.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+						</td>
+						<td valign="top">
+							{i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}
+							{if ($smallVersion == 'Community Edition')}
+								{i18n}is licensed free of charge and supplied with 
+									<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>
+									, <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>
+									, and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.
+								{/i18n}
+							{else}
+								<br>
+								{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
+							{/if}
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td width="1">
+			</td>
+			<td width="35%" valign="top" align="right">
+				<table >
+					<tr>
+						<td valign="top">
+							{i18n}&copy; 2008 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
+							{i18n}All rights reserved.{/i18n}
+							{if ($smallVersion == 'Community Edition')}
+								{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
+							{/if}
+						</td>
+						<!--
+						{if ($smallVersion == 'Community Edition')}
+							<td valign="top">
+								<a href="http://sourceforge.net/projects/kt-dms"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=107851&amp;type=4" border="0" alt="SourceForge.net logo"/></a>
+							</td>
+						{/if}
+						-->
+					</tr>
+				</table>
+			</td>					
 			</tr>
-		</table>
+			</table>
+			
         <div class="floatClear"></div>
     </div>
 </div>
