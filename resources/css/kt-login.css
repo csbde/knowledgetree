@@ -148,3 +148,8 @@
     margin: 0; border: 0; padding: 0;
     width: 1px;
 }
+
+.communityLabel
+{
+	color: #919192;	
+}
