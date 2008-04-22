@@ -149,7 +149,7 @@ gettext("Reschedule All Documents");
 gettext("This function allows you to re-index your entire repository.");
 
 /* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Please note that rescheduling all documents may take a long time, depending on the size if the repository.");
+gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
 
 /* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
 gettext("Reschedule All");
@@ -189,6 +189,9 @@ gettext("You have no orphaned folders.");
 
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Title");
+
+/* ./plugins/tagcloud/templates/TagCloud/portlet.smarty */
+gettext("There are no tags defined or accessible.");
 
 /* ./plugins/housekeeper/templates/DiskUsage.smarty */
 gettext("Mount");
@@ -392,22 +395,34 @@ gettext("search");
 gettext("Enter search criteria...");
 
 /* ./templates/kt3/standard_page.smarty */
+gettext("Toggle search results format");
+
+/* ./templates/kt3/standard_page.smarty */
+gettext("Search engine format");
+
+/* ./templates/kt3/standard_page.smarty */
+gettext("Browse view format");
+
+/* ./templates/kt3/standard_page.smarty */
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2004-2008 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>");
+gettext("#appname# Version: #version#");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
+gettext("is licensed free of charge and supplied with 									<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a> 									, <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a> 									, and <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>.");
+
+/* ./templates/kt3/standard_page.smarty */
+gettext("Request created in #timing#s");
+
+/* ./templates/kt3/standard_page.smarty */
+gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("All rights reserved.");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("Request created in #timing#s");
-
-/* ./templates/kt3/standard_page.smarty */
-gettext("#appname# Version: #version#");
 
 /* ./templates/kt3/browse.smarty */
 gettext("Parameters");
@@ -586,20 +601,8 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.RemoveSubscribedFolder.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.RemoveSubscribedFolder.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveSubscribedFolder.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
 gettext("The document \"#object_name#\" has been restored by an administrator.");
-
-/* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.RestoreDocument.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -628,12 +631,6 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.AddDocument.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.AddDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.AddDocument.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.DiscussDocument.smarty */
 gettext("has added to the discussion around document");
 
@@ -642,12 +639,6 @@ gettext("View Document");
 
 /* ./templates/kt3/notifications/subscriptions.DiscussDocument.smarty */
 gettext("Document is no longer available");
-
-/* ./templates/kt3/notifications/subscriptions.DiscussDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.DiscussDocument.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.DiscussDocument.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -676,23 +667,11 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.CheckInDocument.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.RemoveSubscribedDocument.smarty */
 gettext("The document \"#object_name#\" to which you were subscribed, has been removed");
 
 /* ./templates/kt3/notifications/subscriptions.RemoveSubscribedDocument.smarty */
 gettext("by #actor_name#");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveSubscribedDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveSubscribedDocument.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.RemoveSubscribedDocument.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -721,12 +700,6 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.RemoveChildFolder.smarty */
 gettext("The folder \"#object_name#\" has been removed");
 
@@ -746,18 +719,6 @@ gettext("Location is no longer available");
 gettext("Are you sure you wish to clear the notification?");
 
 /* ./templates/kt3/notifications/subscriptions.RemoveChildFolder.smarty */
-gettext("Clear Alert");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveChildFolder.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveChildFolder.smarty */
-gettext("Clear Alert");
-
-/* ./templates/kt3/notifications/subscriptions.generic.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.generic.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.generic.smarty */
@@ -780,12 +741,6 @@ gettext("View New Folder");
 
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
 gettext("Folder is no longer available");
-
-/* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
 gettext("Clear Alert");
@@ -814,12 +769,6 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.RemoveChildDocument.smarty */
 gettext("Clear Alert");
 
-/* ./templates/kt3/notifications/subscriptions.RemoveChildDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.RemoveChildDocument.smarty */
-gettext("Clear Alert");
-
 /* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
 gettext("The document \"#object_name#\" has been changed");
 
@@ -836,15 +785,6 @@ gettext("View Document");
 gettext("Document is no longer available");
 
 /* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
-gettext("Clear Alert");
-
-/* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.ModifyDocument.smarty */
 gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
@@ -858,12 +798,6 @@ gettext("was archived");
 
 /* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
 gettext("by #actor_name#");
-
-/* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
 gettext("Clear Alert");
@@ -882,12 +816,6 @@ gettext("View New Location");
 
 /* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
 gettext("Location is no longer available");
-
-/* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
-gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
-gettext("Clear Alert");
 
 /* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -1289,7 +1217,16 @@ gettext("Column");
 gettext("Delete");
 
 /* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Position");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
 gettext("Delete");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Reorder up");
+
+/* ./templates/ktcore/misc/columns/edit_view.smarty */
+gettext("Reorder down");
 
 /* ./templates/ktcore/misc/columns/edit_view.smarty */
 gettext("No columns have been added to this view");
@@ -1484,6 +1421,9 @@ gettext("Enabled");
 gettext("Sticky");
 
 /* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
+gettext("Edit");
+
+/* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
 gettext("Yes");
 
 /* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
@@ -1491,6 +1431,9 @@ gettext("No");
 
 /* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
 gettext("Yes");
+
+/* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
+gettext("Edit value");
 
 /* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
 gettext("Toggle enabled state");
@@ -1625,10 +1568,19 @@ gettext("Delete");
 gettext("Type Description");
 
 /* ./templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Position");
+
+/* ./templates/ktcore/metadata/admin/basic_overview.smarty */
 gettext("edit");
 
 /* ./templates/ktcore/metadata/admin/basic_overview.smarty */
 gettext("delete");
+
+/* ./templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Reorder up");
+
+/* ./templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Reorder down");
 
 /* ./templates/ktcore/metadata/admin/list.smarty */
 gettext("Document Fieldsets");
@@ -5198,13 +5150,28 @@ gettext("#appname# #versionname#");
 gettext("Version #version#");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("&copy; 2004-2008 <a href=\" http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree.com/About/legal/license\">View License Agreement</a>");
+gettext("&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("All rights reserved.");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("Portions copyright The Jam Warehouse Software (Pty) Limited.");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("All rights reserved.");
+gettext("KnowledgeTree Community Edition is supplied with <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a>, 	<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a>, 	and <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>.");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("Please contact the <a href=\"mailto:sales@knowledgetree.com\">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("This is a professionally supported edition of KnowledgeTree.");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.");
 
 /* ./templates/ktcore/principals/addunit.smarty */
 gettext("Add a new unit");
@@ -5768,7 +5735,7 @@ gettext("#appname# Version");
 gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2004-2008 <a href=\"http://www.knowledgetree.com/\">The Jam Warehouse Software (Pty) Limited</a>");
+gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/login.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
