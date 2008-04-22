@@ -342,7 +342,7 @@ class KTrss{
     	       <rss version=\"2.0\">\n
     	           <channel>\n
     	               <title>".APP_NAME." RSS</title>\n
-    	               <copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n
+    	               <copyright>(c) 2008 KnowledgeTree Inc.</copyright>\n
     	               <link>".$hostPath."</link>\n
     	               <description>KT-RSS</description>\n
     	               <image>\n
@@ -489,7 +489,7 @@ class KTrss{
 
     			<channel>\n
 	    			<title>".APP_NAME." RSS</title>\n
-	    			<copyright>(c) 2007 The Jam Warehouse Software (Pty) Ltd. All Rights Reserved</copyright>\n
+	    			<copyright>(c) 2008 KnowledgeTree Inc.</copyright>\n
 	    			<link>{$hostPath}</link>\n
 	    			<description>KT-RSS</description>\n
 	    			<image>\n
