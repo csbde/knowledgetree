@@ -51,7 +51,22 @@ class KTInfoDashlet extends KTBaseDashlet {
     var $help_id;
 
     function KTInfoDashlet() {
+        global $default;
         $this->sTitle = sprintf(_kt('Welcome to %s'), APP_NAME);
+        $versionName = substr($default->versionName, -17);
+        
+        if($versionName != 'Community Edition')
+        {
+        	$this->helpLocation = 'ktcore/welcomeCommercial.html';
+        }
+	    
+	    //This check is for non english language packs which might not have
+	    //a commercial welcome page.    
+	    $oHelpCheck = KTHelp::getHelpInfo($this->helpLocation);
+	    if(PEAR::isError($oHelpCheck))
+        {
+        	$this->helpLocation = 'ktcore/welcome.html';
+        }
     }
 
     function is_active($oUser) {
