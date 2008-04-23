@@ -59,6 +59,8 @@ if (array_key_exists('sErrorMessage', $_SESSION))
 $sHost = $_SERVER['HTTP_HOST'];
 $sScriptName = dirname($_SERVER['SCRIPT_NAME']);
 $sRoot = $sHost.$sScriptName;
+$sLastChar = substr($sScriptName, -1, 1);
+$sScriptName = ($sLastChar == '\\' || $sLastChar == '/') ? substr($sScriptName, 0, -1) : $sScriptName;
 $bSSLEnabled = false;
 if ($_SERVER['HTTPS'] === 'on')
 {
