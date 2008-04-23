@@ -28,7 +28,7 @@
 						<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="{$appname}" class="logoimage" height="50" width="252"/><br />
 					{/if}
 					{if $smallVersion == 'Community Edition'}
-						<span class="communityLabel"><h2>{i18n}Community Edition{i18n}</h2></span>
+						<span class="communityLabel"><h2>{i18n}Community Edition{/i18n}</h2></span>
 					{/if}
 			        {if ($errorMessage == null)}
 					    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
