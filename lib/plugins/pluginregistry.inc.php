@@ -35,6 +35,8 @@
  *
  */
 
+require_once( KT_LIB_DIR . '/plugins/plugin.inc.php');
+
 class KTPluginRegistry {
     var $_aPluginDetails = array();
     var $_aPlugins = array();
