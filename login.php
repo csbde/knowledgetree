@@ -96,6 +96,10 @@ class LoginPageDispatcher extends KTDispatcher {
             #var_dump(PEAR::raiseError());
         }
 
+        /*
+        Removing the code that redirects to the dashboard as it breaks linking in from external documents.
+        The fix below doesn't work if the users are behind a proxy server.
+
         // If the last user from the same IP address timed out within the last hour then redirect to the dashboard
         // Otherwise allow any other redirect to continue.
         // The user might still be taken to the last page of the previous users session but
@@ -104,6 +108,7 @@ class LoginPageDispatcher extends KTDispatcher {
         {
         	$_REQUEST['redirect'] = generateControllerLink('dashboard');
         }
+        */
 
         $session = new Session();
         $sessionID = $session->create($oUser);
