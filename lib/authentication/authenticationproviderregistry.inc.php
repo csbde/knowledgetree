@@ -85,7 +85,11 @@ class KTAuthenticationProviderRegistry {
         $sClass = $aInfo[1];
         $sPath = $aInfo[3];
         if ($sPath) {
-            require_once($sPath);
+            $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR .'/'. $sPath;
+            include_once($sPath);
+        }
+        if(!class_exists($sClass)){
+            return PEAR::raiseError(_kt('Authentication provider class does not exist. '.$sClass));
         }
         $oProvider =new $sClass;
         $this->_aAuthenticationProviders[$nsname] =& $oProvider;
