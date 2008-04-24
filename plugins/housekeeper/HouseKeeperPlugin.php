@@ -79,13 +79,13 @@ class HouseKeeperPlugin extends KTPlugin
         		'canClean'=>true
         	),
         	array(
-        		'name'=>_kt('KnowledgeTree Cache'),
+        		'name'=>_kt('System Cache'),
         		'folder'=>$cacheDir,
         		'pattern'=>'',
         		'canClean'=>true
         	),
         	array(
-        		'name'=>_kt('KnowledgeTree Logs'),
+        		'name'=>_kt('System Logs'),
         		'folder'=>$logDir,
         		'pattern'=>'.+\.txt$',
         		'canClean'=>true
@@ -103,7 +103,7 @@ class HouseKeeperPlugin extends KTPlugin
         {
         $this->folders[] =
         	array(
-        		'name'=>_kt('KnowledgeTree Documents'),
+        		'name'=>_kt('Documents'),
         		'folder'=>$docsDir,
         		'pattern'=>'',
         		'canClean'=>false
@@ -114,7 +114,7 @@ class HouseKeeperPlugin extends KTPlugin
         {
         $this->folders[] =
         	array(
-        		'name'=>_kt('KnowledgeTree Document Index'),
+        		'name'=>_kt('Document Index'),
         		'folder'=>$luceneDir,
         		'pattern'=>'',
         		'canClean'=>false
