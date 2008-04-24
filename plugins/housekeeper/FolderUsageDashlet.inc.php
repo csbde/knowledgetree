@@ -155,13 +155,13 @@ class FolderUsageDashlet extends KTBaseDashlet
 		$rootUrl = $config->get('KnowledgeTree/rootUrl');
 
 		$dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
-		if (!empty($rootUrl)) $dispatcherURL .= $rootUrl . $dispatcherURL;
-        if ( substr( $dispatcherURL, 0,1 ) == '/' || substr( $dispatcherURL, 0,1 ) == '\\')
-		{
-			$dispatcherURL = substr($dispatcherURL,1);
-		}
+		if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
         $dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
-		
+        if ( substr( $dispatcherURL, 0,1 ) != '/')
+		{
+			$dispatcherURL = '/'.$dispatcherURL;
+		}
+
         $this->getUsage();
 
 		$aTemplateData = array(
