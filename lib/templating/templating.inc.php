@@ -37,7 +37,7 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_LIB_DIR . 'templating/smartytemplate.inc.php');
+require_once(KT_LIB_DIR . '/templating/smartytemplate.inc.php');
 require_once( KT_LIB_DIR . '/plugins/plugin.inc.php');
 
 class KTTemplating {
