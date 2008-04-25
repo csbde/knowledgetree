@@ -458,6 +458,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
 		
+		/*
+		--- This section has been commented out to remove these checks when permissions 
+		--- are updated.
+		---------------------------------------------------------------------------------
+		
 		//-------------------
         //This section is used to make sure that a user doesn't disable the admin groups
         //Manage security permission or the Manage Security permission of a group they
@@ -498,7 +503,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	        }
         }
 		//-----------------
-        
+        */
         
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
