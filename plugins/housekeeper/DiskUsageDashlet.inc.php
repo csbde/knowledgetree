@@ -104,7 +104,11 @@ class DiskUsageDashlet extends KTBaseDashlet
 			}
 			else
 			{
-				$result = shell_exec($cmd." -B 1 2>&1");
+			    if(strtolower(PHP_OS) == 'darwin'){
+			        $result = shell_exec($cmd." -k 2>&1");
+			    }else{
+				    $result = shell_exec($cmd." -B 1 2>&1");
+			    }
 			}
 
 			if (strpos($result, 'cannot read table of mounted file systems') !== false)
@@ -126,6 +130,12 @@ class DiskUsageDashlet extends KTBaseDashlet
 				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
 				if ($size === 0) continue;
+
+				if(strtolower(PHP_OS) == 'darwin'){
+				    $size = $size * 1024;
+				    $used = $used * 1024;
+				    $avail = $avail * 1024;
+				}
 
 				$colour = '';
 				if ($usedp >= 100 - $this->urgentPercent)
