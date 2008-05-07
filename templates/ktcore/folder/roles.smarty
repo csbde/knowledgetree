@@ -1,6 +1,6 @@
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Allocate Roles for{/i18n}:<br />{$folderName|sanitize}</h2>
 
-<p class="descriptiveText">{i18n}
+<p class="descriptiveText role_allocation">{i18n}
     In many cases, workflow actions will be assigned to certain <strong>roles</strong>
     (e.g. Manager, Interviewer, Researcher, Journalist).  You can assign these roles
     to specific groups in particular areas of the document management system.
@@ -8,8 +8,9 @@
 
 <div class='ktInfoMessage'><span><strong>{i18n}Warning{/i18n}:</strong> {i18n}Please note that changing
 role allocations may take a some time, depending on the number of folders below this one.{/i18n}</span></div>
-
+<div class="role_allocation">
 <table class="kt_collection narrow" cellspacing="0">
+
 <thead>
     <tr>
         <th>{i18n}Role{/i18n}</th>
@@ -52,4 +53,6 @@ role allocations may take a some time, depending on the number of folders below 
 <tr><td colspan="5" class="ktInfoMessage"><span>{i18n}No roles defined in the Role Administration area.{/i18n}</span></td></tr>
 {/if}
 </tbody>
+
 </table>
+</div>

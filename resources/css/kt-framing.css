@@ -2133,3 +2133,9 @@ body #content #add_dashlet
 	overflow:scroll;
 
 }
+
+.role_allocation
+{
+	overflow:auto; 
+	
+}
