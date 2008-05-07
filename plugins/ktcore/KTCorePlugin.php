@@ -295,7 +295,7 @@ class KTCorePlugin extends KTPlugin {
 
 		//Search and Indexing
 		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'search',
-            _kt('Mime Types'), _kt('This report lists all mime types and extensions that can be identified by KnowledgeTree.'),
+            _kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
             '../search2/reporting/ManageMimeTypes.php', null);
 
         $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'search',
