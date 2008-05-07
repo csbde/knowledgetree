@@ -10,6 +10,7 @@ require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_LIB_DIR . "/actions/bulkaction.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
 function search2queryCompare($a, $b)
 {
