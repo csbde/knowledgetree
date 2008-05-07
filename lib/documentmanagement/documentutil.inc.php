@@ -71,8 +71,16 @@ class KTDocumentUtil {
         }
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
+		
+		$md5hash = md5_file($sFilename);
+        $content = $oDocument->_oDocumentContentVersion;
+        $content->setStorageHash($md5hash);
+        $content->update();
 
-        if (!$oStorage->upload($oDocument, $sFilename)) {
+        if (empty($aOptions)) $aOptions = array();
+        $aOptions['md5hash'] = $md5hash;
+		
+        if (!$oStorage->upload($oDocument, $sFilename, $aOptions)) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
 
@@ -727,6 +735,14 @@ class KTDocumentUtil {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
 
+        $md5hash = md5_file($sFilename);
+        $content = $oDocument->_oDocumentContentVersion;
+        $content->setStorageHash($md5hash);
+        $content->update();
+
+        if (empty($aOptions)) $aOptions = array();
+        $aOptions['md5hash'] = $md5hash;
+
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
@@ -1121,6 +1137,11 @@ class KTDocumentUtil {
         $oDocument->setModifiedUserId($oUser->getId());
         $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
+
+		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
+		$iMimeTypeId = KTMime::getMimeTypeID($sType, $sNewFilename);
+        $oDocument->setMimeTypeId($iMimeTypeId);
+
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
             if (PEAR::isError($bSuccess)) {
