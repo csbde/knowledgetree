@@ -6,22 +6,22 @@
 to the version you are using &mdash; we may already have found the problem you're referring to,
 and may have fixed it in a newer version. {/i18n}</p>
 <p class="descriptiveText">
-{i18n}The following download action allows you to download a zip archive of information that may assist the KnowledgeTree team to diagnose problems on your system. This archive contains:{/i18n}
+{i18n arg_appname="$appname"} The following download action allows you to download a zip archive of information that may assist the #appname# team to diagnose problems on your system. This archive contains:{/i18n}
 
 <br>*
 {i18n}PHP Information{/i18n}
 <br>*
-{i18n}Log Files (KnowledgeTree, Apache, Mysql){/i18n}
+{i18n arg_appname="$appname"} Log Files (#appname#, Apache, Mysql){/i18n}
 <br>*
-{i18n}KnowledgeTree System Settings{/i18n}
+{i18n arg_appname="$appname"} #appname# System Settings{/i18n}
 <br>*
-{i18n}KnowledgeTree Version Files{/i18n}
+{i18n arg_appname="$appname"} #appname# Version Files{/i18n}
 <br>*
-{i18n}KnowledgeTree Database Schema (the structure of the database only){/i18n}
+{i18n arg_appname="$appname"} #appname# Database Schema (the structure of the database only){/i18n}
 <br>*
-{i18n}KnowledgeTree Database Counters Report{/i18n}
+{i18n arg_appname="$appname"} #appname# Database Counters Report{/i18n}
 <br>*
-{i18n}KnowledgeTree Database Storage Engine Report{/i18n}
+{i18n arg_appname="$appname"} #appname# Database Storage Engine Report{/i18n}
 <br>*
 {i18n}System Information (Disk Usage, Process List, if easily detectable){/i18n}
 <br>*
