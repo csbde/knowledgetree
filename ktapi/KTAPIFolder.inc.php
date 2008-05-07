@@ -494,7 +494,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 						$ws=KTWorkflowUtil::getWorkflowStateForDocument($document);
 						if (!is_null($ws) && !PEAR::isError($ws))
 						{
-							$state=$state->getHumanName();
+							$state=$ws->getHumanName();
 						}
 					}
 
