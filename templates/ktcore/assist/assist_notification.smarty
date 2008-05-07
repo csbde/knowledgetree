@@ -15,7 +15,7 @@
 
         <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}'
                  kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}"
-                 class="ktAction ktInline ktDelete" style="position: relative;" >{i18n}Clear Alert{/i18n}</a>
+                 class="ktAction ktInline ktDelete" style="position: relative;" ></a>
 
         <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}'
             kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}"">{i18n}Clear Alert{/i18n}</a>
