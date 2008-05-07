@@ -469,10 +469,18 @@ function catchFatalErrors($p_OnOff='On'){
             $oKTConfig =& KTConfig::getSingleton();
             $oKTConfig->loadCache($cache_file);
 
-            foreach ($oKTConfig->flat as $k => $v) {
-                $default->$k = $oKTConfig->get($k);
+            // checking flatns as it should be more complete
+            if (empty($oKTConfig->flatns)) {
+                $use_cache = false;
             }
-        } else {
+            else  {
+                foreach ($oKTConfig->flat as $k => $v) {
+                    $default->$k = $oKTConfig->get($k);
+                }
+            }
+        }
+
+        if (!$use_cache) {
             $oKTConfig =& KTConfig::getSingleton();
 
 			$oKTConfig->setdefaultns('ui', 'appName', 'KnowledgeTree');
