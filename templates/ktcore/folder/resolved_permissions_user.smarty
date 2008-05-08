@@ -30,9 +30,8 @@ this folder.{/i18n}</p>
 </thead>
 <tbody>
 
-{ foreach item=oUser from=$users }
-<td><span class="descriptiveText">{i18n}User: {/i18n}</span> {$oUser->getName()}</td>
-  { assign var=iUserId value=$oUser->getId() }
+{ foreach item=sUserName key=iUserId from=$users }
+<td><span class="descriptiveText">{i18n}User: {/i18n}</span> {$sUserName}</td>
   { foreach item=oPerm from=$permissions }
     { assign var=iPermId value=$oPerm->getId() }
     { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }

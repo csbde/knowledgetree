@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -202,6 +202,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $aUsers = User::getList();
 
+
         foreach ($aPermissions as $oPermission) {
             $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
             if (PEAR::isError($oPLA)) {
@@ -219,6 +220,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
 					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
+					$aActiveUsers[$oUser->getId()] = $oUser->getName();
 				}
              }
         }
@@ -228,7 +230,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $groups = array();
         $roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
 
-        $users = $aUsers;
+        $users = $aActiveUsers;
         asort($users); // ascending, per convention.
 
         $bEdit = false;
@@ -457,41 +459,41 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
-		
+
 		/*
-		--- This section has been commented out to remove these checks when permissions 
+		--- This section has been commented out to remove these checks when permissions
 		--- are updated.
 		---------------------------------------------------------------------------------
-		
+
 		//-------------------
         //This section is used to make sure that a user doesn't disable the admin groups
         //Manage security permission or the Manage Security permission of a group they
-        //are currently a member of.  
-		
+        //are currently a member of.
+
         // Check which groups have permission to manage security
         $aNewGroups = (isset($aFoo[4]['group']) ? $aFoo[4]['group'] : array());
         $aNewRoles = (isset($aFoo[4]['role']) ? $aFoo[4]['role'] : array());
-        
+
         $iUserId = $this->oUser->getId();
-        
-        //Check that they aren't removing the sys admin Manage Security permission 
-        //1 in this case is the admin group.        
+
+        //Check that they aren't removing the sys admin Manage Security permission
+        //1 in this case is the admin group.
         if(!in_array('1', $aNewGroups))
         {
         	$this->addErrorMessage(_kt('You cannot remove the Manage Security permission from the System Administrators Group'));
             $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
-        
-        
+
+
         //Check that they aren't removing the Manage Security permission from a group
-        //They are a member of. 
+        //They are a member of.
         if(!GroupUtil::checkUserInGroups($iUserId, array(1)))
-        {        
+        {
 	        //Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
 	        if(!in_array(-3, $aNewRoles))
 	        {
-	            
+
 	            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups))
 	            {
 	                // If user no longer has permission, return an error.
@@ -499,18 +501,18 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
 	                exit(0);
 	            }
-	        
+
 	        }
         }
 		//-----------------
         */
-        
+
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
-			
+
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
