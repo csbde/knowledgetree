@@ -726,6 +726,13 @@ class KTUtil {
 
     // {{{ findCommand
     function findCommand($sConfigVar, $sDefault = null) {
+        // Check for the stack command before using the user defined command
+        $result = KTUtil::checkForStackCommand($sConfigVar);
+    	if (!empty($result))
+    	{
+    		return $result;
+    	}
+
     	$oKTConfig =& KTConfig::getSingleton();
     	$sCommand = $oKTConfig->get($sConfigVar, $sDefault);
     	if (empty($sCommand)) {
@@ -736,12 +743,6 @@ class KTUtil {
     	}
     	if (file_exists($sCommand . ".exe")) {
     		return $sCommand . ".exe";
-    	}
-
-    	$result = KTUtil::checkForStackCommand($sConfigVar);
-    	if (!empty($result))
-    	{
-    		return $result;
     	}
 
     	$sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
