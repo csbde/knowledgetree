@@ -557,6 +557,12 @@ class ValueExpr extends Expr
     public function __construct($value, $fuzzy=null, $proximity=null)
     {
         parent::__construct();
+
+        // some keywords are used by lucene, and may conflict. for some reason, if it is lowercase, the problem does not occur.
+        if (in_array($value, array('AND','OR','NOT')))
+        {
+            $value = strtolower($value);
+        }
         $this->value=$value;
         $this->fuzzy = $fuzzy;
         $this->proximity = $proximity;
