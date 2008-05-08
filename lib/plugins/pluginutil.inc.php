@@ -172,6 +172,12 @@ class KTPluginUtil {
            WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
+        if(PEAR::isError($aPluginHelpers)){
+            global $default;
+            $default->log->debug('Error in pluginutil: '.$aPluginHelpers->getMessage());
+            return false;
+        }
+
         // Check that there are plugins and if not, register them
         if (empty($aPluginHelpers)) {
             KTPluginUtil::registerPlugins();
