@@ -218,6 +218,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
 					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
+					$aActiveUsers[$oUser->getId()] = $oUser->getName();
 				}
              }
         }
@@ -227,7 +228,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $groups = array();
         $roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
 
-        $users = $aUsers;
+        $users = $aActiveUsers;
         asort($users); // ascending, per convention.
 
         $bEdit = false;
