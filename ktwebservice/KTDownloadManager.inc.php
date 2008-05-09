@@ -10,31 +10,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -85,14 +85,24 @@ class KTDownloadManager
 	function allow_download($document, $content_version=null)
 	{
 		assert(!is_null($document));
-		assert(is_a($document, 'KTAPI_Document'));
 
-		$hash = sha1("$document->documentid $this->session $this->random");
+	   if ($document instanceof KTAPI_Document )
+	       $doc_id = $document->documentid;
+	   else if ($document instanceof Document || $document instanceof DocumentProxy)
+	       $doc_id = $document->getId();
+	   else if (is_numeric($document))
+	       $doc_id = $document;
+	   else die('gracefully');
+
+
+		//assert(is_a($document, 'KTAPI_Document'));
+
+		$hash = sha1("$doc_id $this->session $this->random");
 
 
 		$id = DBUtil::autoInsert('download_files',
 			array(
-				'document_id'=>$document->documentid,
+				'document_id'=>$doc_id,
 				'session'=>$this->session,
 				'download_date'=>date('Y-m-d H:i:s'),
 				'hash'=>$hash
@@ -100,7 +110,7 @@ class KTDownloadManager
 				array('noid'=>true)
 			);
 
-		return $this->build_url($hash, $document->documentid );
+		return $this->build_url($hash, $doc_id );
 	}
 
 	/**
@@ -136,8 +146,14 @@ class KTDownloadManager
 			return new PEAR_Error('Invalid session.');
 		}
 
-		$storage =& KTStorageManagerUtil::getSingleton();
+		// If document is being downloaded by an external user bypass the session checking
+		$check = strstr($this->session, 'ktext_'.$document_id);
+		if($check == 0 && $check !== false){
+		    // Use external download function
+		    return $this->download_ext($document_id, $hash, $version = null);
+		}
 
+		$storage =& KTStorageManagerUtil::getSingleton();
 
         $ktapi = &new KTAPI();
         $res = $ktapi->get_active_session($this->session);
@@ -171,6 +187,36 @@ class KTDownloadManager
         $result = DBUtil::runQuery($sql);
 
         return true;
+	}
+
+	function download_ext($document_id, $hash, $version = null)
+	{
+	    $storage =& KTStorageManagerUtil::getSingleton();
+	    $document = Document::get($document_id);
+	    if (PEAR::isError($document))
+	    {
+	        return $document;
+	    }
+
+	    if (!empty($version))
+	    {
+	        $version = KTDocumentContentVersion::get($version);
+
+	        $res = $storage->downloadVersion($document, $version);
+	    }
+	    else
+	    {
+	        $res = $storage->download($document);
+	    }
+	    if (PEAR::isError($res))
+	    {
+	        return $res;
+	    }
+
+	    $sql = "DELETE FROM download_files WHERE hash='$hash' AND session='$this->session' AND document_id=$document_id";
+	    $result = DBUtil::runQuery($sql);
+
+	    return true;
 	}
 
 	/**
