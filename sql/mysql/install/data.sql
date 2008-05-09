@@ -5,31 +5,31 @@
 -- Document Management Made Simple
 -- Copyright (C) 2008 KnowledgeTree Inc.
 -- Portions copyright The Jam Warehouse Software (Pty) Limited
--- 
+--
 -- This program is free software; you can redistribute it and/or modify it under
 -- the terms of the GNU General Public License version 3 as published by the
 -- Free Software Foundation.
--- 
+--
 -- This program is distributed in the hope that it will be useful, but WITHOUT
 -- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 -- FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 -- details.
--- 
+--
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
--- 
--- You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+--
+-- You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
 -- California 94120-7775, or email info@knowledgetree.com.
--- 
+--
 -- The interactive user interfaces in modified source and object code versions
 -- of this program must display Appropriate Legal Notices, as required under
 -- Section 5 of the GNU General Public License version 3.
--- 
+--
 -- In accordance with Section 7(b) of the GNU General Public License version 3,
 -- these Appropriate Legal Notices must retain the display of the "Powered by
--- KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+-- KnowledgeTree" logo and retain the original copyright notice. If the display of the
 -- logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
--- must display the words "Powered by KnowledgeTree" and retain the original 
+-- must display the words "Powered by KnowledgeTree" and retain the original
 -- copyright notice.
 -- Contributor( s): ______________________________________
 --
@@ -813,7 +813,9 @@ INSERT INTO `scheduler_tasks` VALUES
 (3,'Index Optimisation','search2/bin/optimise.php','',0,'weekly','2007-10-01',NULL,0,'system'),
 (4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01',NULL,0,'disabled'),
 (5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01',NULL,0,'disabled'),
-(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled');
+(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
+(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01',NULL,0,'enabled');
+
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -988,7 +990,8 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (176,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (177,'sql*3.5.2*0*3.5.2/openxml_mime_types.sql','Add the OpenXML mimetypes.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (178,'sql*3.5.2*0*3.5.2/rss_plugin_title.sql','Increase size of RSS Title.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(179,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(179,'sql*3.5.2*0*3.5.2/temp_cleanup.sql','Adds background script to clean up temporary index files.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(180,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1726,7 +1729,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `zseq_scheduler_tasks` VALUES (6);
+INSERT INTO `zseq_scheduler_tasks` VALUES (7);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1815,7 +1818,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (179);
+INSERT INTO `zseq_upgrades` VALUES (180);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

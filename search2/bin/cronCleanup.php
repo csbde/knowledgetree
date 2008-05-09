@@ -37,58 +37,35 @@
  *
  */
 
-class PDFExtractor extends ApplicationExtractor
+chdir(dirname(__FILE__));
+require_once(realpath('../../config/dmsDefaults.php'));
+
+$config = KTConfig::getSingleton();
+$temp_dir =$config->get("urls/tmpDirectory");
+
+
+cleanupTempDirectory($temp_dir);
+
+function cleanupTempDirectory($dir)
 {
-	public function __construct()
-	{
-		$config = KTConfig::getSingleton();
-		$params = $config->get('extractorParameters/pdftotext', '-nopgbrk -enc UTF-8 "{source}" "{target}"');
+    if (!is_dir($dir))
+    {
+        return;
+    }
+    $dir = str_replace('\\','/', $dir);
 
-		parent::__construct('externalBinary','pdftotext','pdftotext',_kt('PDF Text Extractor'),$params);
-	}
-
-	public function getSupportedMimeTypes()
-	{
-		return array('application/pdf');
-	}
-
-	protected function filter($text)
-	{
-		return $text;
-	}
-
-	protected  function exec($cmd)
-	{
-		$res = 	parent::exec($cmd);
-
-		if (false === $res && (strpos($this->output, 'Copying of text from this document is not allowed') !== false))
-		{
-			$this->output = '';
-			file_put_contents($this->targetfile, _kt('Security properties on the PDF document prevent text from being extracted.'));
-			return true;
-		}
-
-		if (false === $res && (strpos($this->output, '(continuing anyway)') !== false))
-		{
-			$this->output = '';
-			return true;
-		}
-
-		if (false === $res && (strpos($this->output, 'font') !== false))
-		{
-			$this->output = '';
-			return true;
-		}
-
-		if (filesize($this->targetfile) > 0)
-		{
-			$this->output = '';
-			return true;
-		}
-
-		return $res;
-
-	}
+    $dh = opendir($dir);
+    while (($name = readdir($dh)) !== false)
+    {
+        if (substr($name, 0, 9) != 'ktindexer')
+        {
+            continue;
+        }
+        unlink($dir . '/' . $name);
+    }
+    closedir($dh);
 }
+
+
 
 ?>
