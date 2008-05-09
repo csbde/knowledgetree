@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_DIR . '/ktwebservice/KTDownloadManager.inc.php');
 
 /**
  * Sends emails to the selected groups
@@ -129,8 +130,71 @@ function sendManualEmails($aEmailAddresses, &$aUserEmails, &$aEmailErrors) {
         $default->log->info('sendingEmail to address ' .  $sEmailAddress);
         if (validateEmailAddress($sEmailAddress)) {
             // use the email address as the index to ensure the user is only sent 1 email
-            $aUserEmails[$sEmailAddress] = $sEmailAddress;
+            $aUserEmails[$sEmailAddress] = '';
         }
+    }
+}
+
+function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors){
+    global $default;
+    $oSendingUser = User::get($_SESSION['userID']);
+
+    // Create email content
+    $sMessage = '<font face="arial" size="2">';
+	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
+	$sMessage .= " \n";
+	$sMessage .= _kt('Click on the hyperlink below to view it');
+    $sMsgEnd = '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
+	$sMsgEnd .= '</font>';
+
+	$sTitle = sprintf(_kt("Link: %s from %s"), $sDocumentName, $oSendingUser->getName());
+
+	$sEmail = null;
+    $sEmailFrom = null;
+    $oConfig =& KTConfig::getSingleton();
+    if (!$oConfig->get('email/sendAsSystem')) {
+        $sEmail = $oSendingUser->getEmail();
+        $sEmailFrom = $oSendingUser->getName();
+    }
+    $oEmail = new Email($sEmail, $sEmailFrom);
+
+    foreach ($aEmailAddresses as $sAddress){
+        if(validateEmailAddress($sAddress)){
+            // Add to list of addresses
+            $sDestEmails .= (empty($sDestEmails)) ? $sAddress : ', '.$sAddress;
+
+            // Create temporary session id
+            $session = 'ktext_'.$iDocumentID.time();
+
+            // Create download link
+            $oDownloadManager = new KTDownloadManager();
+            $oDownloadManager->set_session($session);
+            $link = $oDownloadManager->allow_download($iDocumentID);
+
+            $sMsg = $sMessage.$link.$sMsgEnd;
+            $res = $oEmail->send(array($sAddress), $sTitle, $sMsg);
+
+            if (PEAR::isError($res)) {
+                $default->log->error($res->getMessage());
+                $aEmailErrors[] = $res->getMessage();
+            } else if ($res === false) {
+        		$default->log->error("Error sending email ($sTitle) to $sAddress");
+        		$aEmailErrors[] = "Error sending email ($sTitle) to $sAddress";
+            }
+        }
+        $default->log->info("Send email ($sTitle) to external addresses $sDestEmails");
+
+    	// emailed link transaction
+    	// need a document to do this.
+    	$oDocument =& Document::get($iDocumentID);
+
+        $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt("Document link emailed to external addresses %s. "), $sDestEmails).$sComment, 'ktcore.transactions.email_link');
+
+        if ($oDocumentTransaction->create()) {
+    		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
+    	} else {
+    		$default->log->error("emailBL.php couldn't create email link document transaction for document ID=$iDocumentID");
+    	}
     }
 }
 
@@ -304,19 +368,19 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         $fields = array();
 
-	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
-					      'groups', '', $this->oPage, false, null, null,
-					      array('action'=>sprintf('getGroups&fDocumentId=%d', $this->oDocument->getId()),
-						    'assigned' => array(),
-						    'multi'=>'true',
-						    'size'=>'8'));
+    	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
+    					      'groups', '', $this->oPage, false, null, null,
+    					      array('action'=>sprintf('getGroups&fDocumentId=%d', $this->oDocument->getId()),
+    						    'assigned' => array(),
+    						    'multi'=>'true',
+    						    'size'=>'8'));
 
-	$fields[] = new KTJSONLookupWidget(_kt('Users'), '',
-					      'users', '', $this->oPage, false, null, null,
-					      array('action'=>sprintf('getUsers&fDocumentId=%d', $this->oDocument->getId()),
-						    'assigned' => array(),
-						    'multi'=>'true',
-						    'size'=>'8'));
+    	$fields[] = new KTJSONLookupWidget(_kt('Users'), '',
+    					      'users', '', $this->oPage, false, null, null,
+    					      array('action'=>sprintf('getUsers&fDocumentId=%d', $this->oDocument->getId()),
+    						    'assigned' => array(),
+    						    'multi'=>'true',
+    						    'size'=>'8'));
 
 
         if ($bAttachment) {
@@ -326,7 +390,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
         }
         if ($bEmailAddresses) {
             $fields[] = new KTTextWidget(_kt('Email addresses'),
-					 _kt('Add extra email addresses here'),
+					 _kt('Documents can be emailed to external users by entering their email addresses below'),
 					 'fEmailAddresses', '', $this->oPage,
 					 false, null, null, array('cols' => 60, 'rows' => 5));
         }
@@ -351,22 +415,22 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $oConfig = KTConfig::getSingleton();
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
-	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-	$aGroupList = array('off'=> _kt('-- Please filter --'));
+        $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+        $aGroupList = array('off'=> _kt('-- Please filter --'));
 
-	if($sFilter && trim($sFilter)) {
-	    $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
-	    if ($bOnlyOwnGroup != true) {
-		$aGroups = Group::getList($sWhere);
-	    } else {
-		$aGroups = GroupUtil::listGroupsForUser($this->oUser, array('where' => $sWhere));
-	    }
+        if($sFilter && trim($sFilter)) {
+            $sWhere = sprintf('name LIKE "%%%s%%"', $sFilter);
+            if ($bOnlyOwnGroup != true) {
+                $aGroups = Group::getList($sWhere);
+            } else {
+                $aGroups = GroupUtil::listGroupsForUser($this->oUser, array('where' => $sWhere));
+            }
 
-	    $aGroupList = array();
-	    foreach($aGroups as $g) {
-		$aGroupList[$g->getId()] = $g->getName();
-	    }
-	}
+            $aGroupList = array();
+            foreach($aGroups as $g) {
+                $aGroupList[$g->getId()] = $g->getName();
+            }
+        }
 
 	return $aGroupList;
     }
@@ -376,36 +440,36 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $oConfig = KTConfig::getSingleton();
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
-	$sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-	$aUserList = array('off' => _kt('-- Please filter --'));
+        $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
+        $aUserList = array('off' => _kt('-- Please filter --'));
 
-	if($sFilter && trim($sFilter)) {
-	    $sWhere = sprintf('name LIKE \'%%%s%%\' AND disabled = \'0\'', $sFilter);
-	    if ($bOnlyOwnGroup != true) {
-		$aUsers = User::getEmailUsers($sWhere);
-	    } else {
-		$aGroups = GroupUtil::listGroupsForUser($this->oUser);
-		$aMembers = array();
-		foreach ($aGroups as $oGroup) {
-		    $aMembers = kt_array_merge($aMembers, $oGroup->getMembers());
-		}
-		$aUsers = array();
-		$aUserIds = array();
-		foreach ($aMembers as $oUser) {
-		    if (in_array($oUser->getId(), $aUserIds)) {
-			continue;
-		    }
-		    $aUsers[] = $oUser;
-		}
-	    }
+        if($sFilter && trim($sFilter)) {
+            $sWhere = sprintf('name LIKE \'%%%s%%\' AND disabled = \'0\'', $sFilter);
+            if ($bOnlyOwnGroup != true) {
+                $aUsers = User::getEmailUsers($sWhere);
+            } else {
+                $aGroups = GroupUtil::listGroupsForUser($this->oUser);
+                $aMembers = array();
+                foreach ($aGroups as $oGroup) {
+                    $aMembers = kt_array_merge($aMembers, $oGroup->getMembers());
+                }
+                $aUsers = array();
+                $aUserIds = array();
+                foreach ($aMembers as $oUser) {
+                    if (in_array($oUser->getId(), $aUserIds)) {
+                        continue;
+                    }
+                    $aUsers[] = $oUser;
+                }
+            }
 
-	    $aUserList = array();
-	    foreach($aUsers as $u) {
-		$aUserList[$u->getId()] = $u->getName();
-	    }
-	}
+            $aUserList = array();
+            foreach($aUsers as $u) {
+                $aUserList[$u->getId()] = $u->getName();
+            }
+        }
 
-	return $aUserList;
+        return $aUserList;
     }
 
 
@@ -430,7 +494,11 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $aUserIDs = explode(',', $userNewRight);
         }
         if (!empty($fEmailAddresses)) {
-            $aEmailAddresses = explode(' ', $fEmailAddresses);
+            $aAddresses = explode("\n", $fEmailAddresses);
+            foreach ($aAddresses as $item){
+                $aItems = explode(' ', $item);
+                $aEmailAddresses = array_merge($aEmailAddresses, $aItems);
+            }
         }
 
         $oConfig = KTConfig::getSingleton();
@@ -451,6 +519,9 @@ class KTDocumentEmailAction extends KTDocumentAction {
             exit(0);
         }
 
+        $iDocumentID = $this->oDocument->getID();
+        $sDocumentName = $this->oDocument->getName();
+
         $aEmailErrors = array();
         $aUserEmails = array();
 
@@ -458,16 +529,17 @@ class KTDocumentEmailAction extends KTDocumentAction {
         sendGroupEmails($aGroupIDs, $aUserEmails, $aEmailErrors);
         // send user emails
         sendUserEmails($aUserIDs, $aUserEmails, $aEmailErrors);
-        // send manual email addresses
-        sendManualEmails($aEmailAddresses, $aUserEmails, $aEmailErrors);
+        // send manual/external email addresses
+        if((boolean)$fAttachDocument){
+            sendManualEmails($aEmailAddresses, $aUserEmails, $aEmailErrors);
+        }else{
+            sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $fComment, $aEmailErrors);
+        }
 
         // get list of email addresses and send
         if(!empty($aUserEmails)){
             // email addresses are in the keys -> extract the keys
             $aListEmails = array_keys($aUserEmails);
-
-            $iDocumentID = $this->oDocument->getID();
-            $sDocumentName = $this->oDocument->getName();
             sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
         }
 
