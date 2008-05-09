@@ -131,7 +131,7 @@ class FolderUsageDashlet extends KTBaseDashlet
 					'description'=>$name,
 					'folder'=>$directory,
 					'files'=>number_format($temp['files'],0,'.',','),
-					'filesize'=>KTUtil::filesizeToString($temp['filesize']/1024),
+					'filesize'=>KTUtil::filesizeToString($temp['filesize']),
 					'action'=>$i,
 					'canClean'=>$canClean
 				);
