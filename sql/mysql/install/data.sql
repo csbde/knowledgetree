@@ -809,7 +809,9 @@ INSERT INTO `scheduler_tasks` VALUES
 (3,'Index Optimisation','search2/bin/optimise.php','',0,'weekly','2007-10-01',NULL,0,'system'),
 (4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01',NULL,0,'disabled'),
 (5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01',NULL,0,'disabled'),
-(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled');
+(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
+(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01',NULL,0,'enabled');
+
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -984,7 +986,8 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (176,'sql*3.5.2*0*3.5.2/clean_plugin_helper.sql','Clean out the plugin helper table.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (177,'sql*3.5.2*0*3.5.2/openxml_mime_types.sql','Add the OpenXML mimetypes.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (178,'sql*3.5.2*0*3.5.2/rss_plugin_title.sql','Increase size of RSS Title.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(179,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(179,'sql*3.5.2*0*3.5.2/temp_cleanup.sql','Adds background script to clean up temporary index files.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(180,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1722,7 +1725,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `zseq_scheduler_tasks` VALUES (6);
+INSERT INTO `zseq_scheduler_tasks` VALUES (7);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1811,7 +1814,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (179);
+INSERT INTO `zseq_upgrades` VALUES (180);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

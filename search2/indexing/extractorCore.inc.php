@@ -654,6 +654,7 @@ abstract class CompositeExtractor extends DocumentExtractor
 		}
 
 		@unlink($intermediateFile);
+		$this->setTargetFile($this->targetExtractor->getTargetFile());
 
 		return $result;
 	}
