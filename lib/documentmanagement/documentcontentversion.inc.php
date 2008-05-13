@@ -61,6 +61,8 @@ class KTDocumentContentVersion extends KTEntity {
     /** Where in the storage this file can be found */
     var $sStoragePath;
 
+    var $md5hash;
+
     var $_aFieldToSelect = array(
         "iId" => "id",
 
@@ -72,6 +74,7 @@ class KTDocumentContentVersion extends KTEntity {
         "iMajorVersion" => 'major_version',
         "iMinorVersion" => 'minor_version',
         "sStoragePath" => 'storage_path',
+        'md5hash' => 'md5hash'
     );
 
     function KTDocumentContentVersion() {
@@ -79,6 +82,7 @@ class KTDocumentContentVersion extends KTEntity {
 
     function getFileName() { return $this->sFileName; }
     function setFileName($sNewValue) { $this->sFileName = $sNewValue; }
+    function getDocumentId() { return $this->iDocumentId; }
     function getFileSize() { return $this->iSize; }
     function setFileSize($iNewValue) { $this->iSize = $iNewValue; }
     function getSize() { return $this->iSize; }
@@ -91,6 +95,8 @@ class KTDocumentContentVersion extends KTEntity {
     function setMinorVersionNumber($iNewValue) { $this->iMinorVersion = $iNewValue; }
     function getStoragePath() { return $this->sStoragePath; }
     function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
+    function getStorageHash() { return $this->md5hash; }
+    function setStorageHash($sNewValue) { $this->md5hash = $sNewValue; }
 
     function getVersion() {
         return sprintf("%s.%s", $this->getMajorVersionNumber(), $this->getMinorVersionNumber());
