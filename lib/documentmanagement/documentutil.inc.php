@@ -727,14 +727,6 @@ class KTDocumentUtil {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
 
-        $md5hash = md5_file($sFilename);
-        $content = $oDocument->_oDocumentContentVersion;
-        $content->setStorageHash($md5hash);
-        $content->update();
-
-        if (empty($aOptions)) $aOptions = array();
-        $aOptions['md5hash'] = $md5hash;
-
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
