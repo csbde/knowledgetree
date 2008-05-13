@@ -71,16 +71,8 @@ class KTDocumentUtil {
         }
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
-		
-		$md5hash = md5_file($sFilename);
-        $content = $oDocument->_oDocumentContentVersion;
-        $content->setStorageHash($md5hash);
-        $content->update();
 
-        if (empty($aOptions)) $aOptions = array();
-        $aOptions['md5hash'] = $md5hash;
-		
-        if (!$oStorage->upload($oDocument, $sFilename, $aOptions)) {
+        if ( !$oStorage->upload( $oDocument, $sFilename)) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
 
