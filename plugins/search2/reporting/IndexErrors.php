@@ -51,6 +51,9 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
+		
+		//Number of items on a page
+		$itemsPerPage = 50;
 
         //registerTypes registers the mime types and populates the needed tables.
         $indexer = Indexer::get();
@@ -93,12 +96,54 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
         	$doc['extractor'] = $extractor->getDisplayName();
         	$aIndexerValues[$key] = $doc;
         }
+        
+		$aIndexList = array();
+		
+		//creating page variables and loading the items for the current page
+		if(!empty($aIndexerValues)){
+        	$items = count($aIndexerValues);
 
+			if(fmod($items, $itemsPerPage) > 0){
+				$pages = floor($items/$itemsPerPage)+1;
+			}else{
+				$pages = ($items/$itemsPerPage);
+			}
+			for($i=1; $i<=$pages; $i++){
+				$aPages[] = $i;
+			}
+			if($items < $itemsPerPage){
+				$limit = $items-1;
+			}else{
+				$limit = $itemsPerPage-1;
+			}
 
+			if(isset($_REQUEST['pageValue']))
+			{
+				$pageNum = (int)$_REQUEST['pageValue'];
+				$start = (($pageNum-1)*$itemsPerPage)-1;
+				$limit = $start+$itemsPerPage;
+				for($i = $start; $i <= $limit; $i++){
+					if(isset($aIndexerValues[$i]))
+					{
+						$aIndexList[] = $aIndexerValues[$i];
+					}
+				}
+			}
+			else
+			{	
+				for($i = 0; $i <= $limit; $i++){
+					$aIndexList[] = $aIndexerValues[$i];
+				}
+			}
+        }
 
         $oTemplate->setData(array(
             'context' => $this,
-            'index_errors' => $aIndexerValues
+            'pageList' => $aPages,
+            'pageCount' => $pages,
+            'itemCount' => $items,
+            'itemsPerPage' => $itemsPerPage,
+            'indexErrors' => $aIndexList
 
         ));
         return $oTemplate;
