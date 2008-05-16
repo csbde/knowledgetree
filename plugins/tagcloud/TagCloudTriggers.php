@@ -96,9 +96,9 @@ class KTAddDocumentTrigger {
 		    	foreach($tags as $sTag)
 		    	{
 		    		$sTag = trim($sTag);
-		    	    $sTag = utf8_decode($sTag);
-		    	    $sTag = mb_strtolower($sTag);
-		    	    $sTag = utf8_encode($sTag);
+		    	    if(mb_detect_encoding($sTag) == 'ASCII'){
+		    	        $sTag = strtolower($sTag);
+		    	    }
 
 		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
 
