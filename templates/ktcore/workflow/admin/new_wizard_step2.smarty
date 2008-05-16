@@ -14,30 +14,30 @@ states.  Use the table below to configure this behaviour.{/i18n}</p>
         <thead>
             <tr>
                 <th>{i18n}Transition{/i18n}</th>
-                <th>{i18n}Leads to state{/i18n}</th>                
+                <th>{i18n}Leads to state{/i18n}</th>
                 {foreach from=$states item=state}
-                <th>{$state}</th>                
-                {/foreach}                
+                <th>{$state}</th>
+                {/foreach}
             </tr>
         </thead>
         <tbody>
             {foreach from=$transitions item=transition}
                 <tr class="row {cycle values=odd,even}">
                     <td>{$transition}</td>
-                    <td><select name="fTo[{$transition}]">
+                    <td><select name="fTo[{$transition|sanitize}]">
                         {foreach from=$states item=state}
-                            <option value="{$state}">{$state}</option>
+                            <option value="{$state|sanitize}">{$state}</option>
                         {/foreach}
-                    </select></td>     
+                    </select></td>
                     {foreach from=$states item=state}
-                        <td><input type="checkbox" name="fFrom[{$transition}][{$state}]"/></td>
-                    {/foreach}               
+                        <td><input type="checkbox" name="fFrom[{$transition|sanitize}][{$state|sanitize}]"/></td>
+                    {/foreach}
                 </tr>
             {/foreach}
         </tbody>
     </table>
     </div>
-    
+
     <div class="form_actions">
         <input type="submit" value="{i18n}Create Workflow{/i18n}" />
         <a href="{$smarty.server.PHP_SELF}">{i18n}Cancel{/i18n}</a>
