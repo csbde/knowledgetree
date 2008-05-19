@@ -202,7 +202,7 @@ if (empty($aList))
         }
 
         if (OS_WINDOWS)
-		{   $default->log->info("Scheduler - dirname: $dirname cmd: $cmd");
+		{   $default->log->debug("Scheduler - dirname: $dirname cmd: $cmd");
 			//$WshShell = new COM("WScript.Shell");
 			//$res = $WshShell->Run($cmd, 0, true);
 
