@@ -25,7 +25,7 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr>
       <td>
-         { $oFieldset->getName()|truncate:40:"..." }
+         { $oFieldset->getName()|mb_truncate:40:"..." }
         </a>
       </td>
       <td class="centered">
@@ -47,7 +47,7 @@
 {if $aFields}
 
 {foreach from=$aFields item=oField name=fields}
-{$oField->getName()|truncate:40}{if (!$smarty.foreach.fields.last)}<br/> {/if}
+{$oField->getName()|mb_truncate:40}{if (!$smarty.foreach.fields.last)}<br/> {/if}
 {/foreach}
 
 {else}
