@@ -82,7 +82,7 @@ function createUserList(groupid, fid)
 	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
 	for(i=0;i<meta_users.length;i++)
 	{
-		html += "<option>" + meta_users[i].name;
+		html += "<option value=\"" + meta_users[i].name + "\">" + meta_users[i].name;
 	}
 	html += "</SELECT>";
 	html += "<td width=\"100%\">&nbsp;";
@@ -105,7 +105,7 @@ function createDocTypes(groupid, fid)
 	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
 	for(i=0;i<meta_documenttypes.length;i++)
 	{
-		html += "<option>" + meta_documenttypes[i].name;
+		html += "<option value=\"" + meta_documenttypes[i].name + "\">" + meta_documenttypes[i].name;
 	}
 	html += "</SELECT>";
 	html += "<td width=\"100%\">&nbsp;";
@@ -128,7 +128,7 @@ function createMimeTypes(groupid, fid)
 	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
 	for(i=0;i<meta_mimetypes.length;i++)
 	{
-		html += "<option>" + meta_mimetypes[i];
+		html += "<option value=\"" + meta_mimetypes[i] + "\">" + meta_mimetypes[i];
 	}
 	html += "</SELECT>";
 	html += "<td width=\"100%\">&nbsp;";
