@@ -161,7 +161,7 @@ if (PEAR::isError($loggingSupport)) {
 }
 
 if (PEAR::isError($dbSupport)) {
-	print '<p><font color="red">Database support is not currently working.  Check post-installation checkup.</font></p>';
+	print '<p><font color="red">Database support is not currently working.  Check post-installation checkup or refresh this page (F5) to try again.</font></p>';
 	exit(1);
 }
 
