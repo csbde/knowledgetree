@@ -188,7 +188,7 @@ td { vertical-align: top; }
   	if($oKTConfig->get('ui/mainLogo')){
   		echo $oKTConfig->get('ui/mainLogo');
   	}else{
-	  	echo '../resources/graphics/ktlogo-topbar-right.png';
+	  	echo '../resources/graphics/ktlogo-topbar_base.png';
 	}?>">
   <p>
   <img src="upgrade-title.jpg">
