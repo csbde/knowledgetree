@@ -773,14 +773,64 @@ class KTUtil {
 
     	switch ($configCommand)
     	{
-    		case 'externalBinary/php':
+    		case 'externalBinary/xls2cvs':
+    			if (OS_WINDOWS)
+				{
+					$script = $stackPath . '/bin/catdoc/xls2csv.exe';
+				}
+				else
+				{
+					$script = $stackPath . '/common/bin/xls2csv';
+				}
+				break;
+    		case 'externalBinary/pdftotext':;
     			if (OS_WINDOWS)
     			{
-    				$script = $stackPath . '/php/php.exe';
+    				$script = $stackPath . '/bin/xpdf/pdftotext.exe';
     			}
     			else
     			{
-    				$script = $stackPath . '/php/bin/php';
+    				$script = $stackPath . '/common/bin/pdftotext';
+    			}
+    			break;
+    		case 'externalBinary/catppt':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/catdoc/catppt.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/catppt';
+    			}
+    			break;
+    		case 'externalBinary/pstotext':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/pstotext/pstotext.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/pstotext';
+    			}
+    			break;
+    		case 'externalBinary/catdoc':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/catdoc/catdoc.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/catdoc';
+    			}
+    			break;
+    		case 'externalBinary/antiword':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/antiword/antiword.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/antiword';
     			}
     			break;
     		case 'externalBinary/python':
@@ -794,7 +844,34 @@ class KTUtil {
 				}
 				break;
     		case 'externalBinary/java':
-				$script = $stackPath . '/j2re/bin/java';
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/java/jre/bin/java.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/java/jre/bin/java';
+    			}
+    			break;
+    		case 'externalBinary/df':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/gnuwin32/df.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/df';
+    			}
+    			break;
+    		case 'externalBinary/php':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/php/php.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/php/bin/php';
+    			}
     			break;
     		default:
     			return null;
