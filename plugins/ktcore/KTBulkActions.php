@@ -719,7 +719,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
 
         $folderName = $this->oFolder->getName();
-        $this->oZip = new ZipFolder($folderName);
+        $this->oZip = new ZipFolder($folderName, $sCode);
 
         $res = $this->oZip->downloadZipFile($sCode);
 

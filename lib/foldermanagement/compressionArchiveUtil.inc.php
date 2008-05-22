@@ -52,29 +52,41 @@ class ZipFolder {
 
     /**
     * Constructor
+    *
+    * @param string $sZipFileName The name of the zip file - gets ignored at the moment.
+    * @param string $exportCode The code to use if a zip file has already been created.
     */
-    function ZipFolder($sZipFileName) {
+    function ZipFolder($sZipFileName, $exportCode = null) {
         $this->oKTConfig =& KTConfig::getSingleton();
         $this->oStorage =& KTStorageManagerUtil::getSingleton();
 
         $this->sOutputEncoding = $this->oKTConfig->get('export/encoding', 'UTF-8');
-        
+
         $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
         $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
-        $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
-        $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
+        // If the export code exists then a temp zip directory has already been created
+        if(!empty($exportCode)){
+            $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
 
-        unlink($sTmpPath);
-        mkdir($sTmpPath, 0700);
-        
-        // Hard coding the zip file name - else it doesn't download properly
+            if(!empty($aData)){
+                $sTmpPath = $aData['dir'];
+            }
+        }else {
+            $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
+            $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
+
+            unlink($sTmpPath);
+            mkdir($sTmpPath, 0755);
+        }
+
+        // Hard coding the zip file name.
+        // It normally uses the folder name but if there are special characters in the name then it doesn't download properly.
         $sZipFileName = 'kt_zip';
 
         $this->sTmpPath = $sTmpPath;
         $this->sZipFileName = $sZipFileName;
         $this->aPaths = array();
-
 
         $aReplace = array(
             "[" => "[[]",
@@ -182,8 +194,8 @@ class ZipFolder {
         putenv("LANG=$loc");
         putenv("LANGUAGE=$loc");
         $loc = setlocale(LC_ALL, $loc);
-        
-        
+
+
 
         $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
         file_put_contents($sManifest, join("\n", $this->aPaths));
@@ -193,7 +205,7 @@ class ZipFolder {
         $aCmd = array($sZipCommand, "-r", $sZipFile, ".", "-i@MANIFEST");
         $sOldPath = getcwd();
         chdir($this->sTmpPath);
-        
+
         // Note that the popen means that pexec will return a file descriptor
         $aOptions = array('popen' => 'r');
         $fh = KTUtil::pexec($aCmd, $aOptions);
@@ -222,10 +234,10 @@ class ZipFolder {
         $sExportCode = KTUtil::randomString();
         $_SESSION['zipcompression'][$sExportCode] = array(
             'file' => $sZipFile,
-            'dir' => $this->oZip->sTmpPath,
+            'dir' => $this->sTmpPath,
         );
         $_SESSION['zipcompression']['exportcode'] = $sExportCode;
-        
+
         $this->sZipFile = $sZipFile;
         return $sExportCode;
     }
@@ -251,7 +263,7 @@ class ZipFolder {
         if (!file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The ZIP file can only be downloaded once - if you cancel the download, you will need to reload the page.'));
         }
-        
+
         header("Content-Type: application/zip; charset=utf-8");
         header("Content-Length: ". filesize($sZipFile));
         header("Content-Disposition: attachment; filename=\"" . $this->sZipFileName . ".zip" . "\"");
@@ -259,8 +271,7 @@ class ZipFolder {
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate");
         readfile($sZipFile);
-        $sTmpDir = $sTmpPath;
-        KTUtil::deleteDirectory($sTmpDir);
+        KTUtil::deleteDirectory($sTmpPath);
         return true;
     }
 
