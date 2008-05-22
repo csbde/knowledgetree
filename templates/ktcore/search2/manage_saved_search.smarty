@@ -38,19 +38,25 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 		<td>{if $oSearch.username}{$oSearch.username|sanitize}{else}{i18n}All users{/i18n}{/if}</td>
         <td>{if ($oSearch.editable || $sysadmin)}<a href="{addQS}action=queryBuilder&fSavedSearchId={$oSearch.id}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a>{/if}</td>
         <td>{if ($oSearch.editable || $sysadmin)}<a href="{addQS}action=delete&fSavedSearchId={$oSearch.id}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>{/if}</td>
-		<td> {if !$oSearch.shared}
-				<span class="ktAction ktDenied" >{i18n}Not Shared{/i18n}</span>
-			{else}
-				<span class="ktAction ktAllowed" >{i18n}Shared{/i18n}</span>
-			{/if}
 		<td>
 			{if $sysadmin}
 				{if !$oSearch.shared}
-					<a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=yes{/addQS}" title="{i18n}Share{/i18n}"><img border=0 src="{$rootUrl}/thirdparty/icon-theme/group_add.png"></a>
-				{else}
-					<a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=no{/addQS}" title="{i18n}Don't Share{/i18n}"><img border=0 src="{$rootUrl}/thirdparty/icon-theme/group_delete.png"></a>
-				{/if}
+				    <a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=yes{/addQS}" title="{i18n}Share{/i18n}"><span class="ktAction ktDenied" >{i18n}Not Shared{/i18n}</span></a>
+			     {else}
+				    <a href="{addQS}action=share&fSavedSearchId={$oSearch.id}&share=no{/addQS}" title="{i18n}Don't Share{/i18n}"><span class="ktAction ktAllowed" >{i18n}Shared{/i18n}</span></a>
+			     {/if}
+			{else}
+			     {if !$oSearch.shared}
+				    <span class="ktAction ktDenied" >{i18n}Not Shared{/i18n}</span>
+			     {else}
+				    <span class="ktAction ktAllowed" >{i18n}Shared{/i18n}</span>
+			     {/if}
+
 			{/if}
+
+
+		<td>
+
 
         <td>
 
