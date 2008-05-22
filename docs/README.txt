@@ -11,7 +11,7 @@ For further information and documents please refer to the following resources:
 KnowledgeTree User and Developer Documentation:
 -----------------------------------------------
 
-    http://docs.knowledgetree.com
+    http://www.knowledgetree.com/documentation
 
 
 Forums:
