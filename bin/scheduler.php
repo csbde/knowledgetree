@@ -218,12 +218,18 @@ if (empty($aList))
         $iEnd = KTUtil::getBenchmarkTime();
         $iDuration = number_format($iEnd - $iStart,2);
 
+
+        $ignore = array('open office test');
+
 		if (!empty($res))
 		{
-			$default->log->info("Scheduler - Task: $sTask");
-			$default->log->info("Scheduler - Command: $cmd");
-			$default->log->info("Scheduler - Output: $res");
-			$default->log->info("Scheduler - Background tasks should not produce output. Please review why this is producing output.");
+		    $func = in_array(strtolower($sTask), $ignore)?'debug':'info';
+
+		    $default->log->$func("Scheduler - Task: $sTask");
+		    $default->log->$func("Scheduler - Command: $cmd");
+		    $default->log->$func("Scheduler - Output: $res");
+		    $default->log->$func("Scheduler - Background tasks should not produce output. Please review why this is producing output.");
+
 		}
 		else
 		{
