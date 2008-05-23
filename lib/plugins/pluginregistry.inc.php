@@ -85,9 +85,16 @@ class KTPluginRegistry {
     function &getPlugins() {
         $aRet = array();
         foreach (array_keys($this->_aPluginDetails) as $sPluginName) {
-            $aRet[] =& $this->getPlugin($sPluginName);
+            $oPlugin =& $this->getPlugin($sPluginName);
+            $aRet[(int)$oPlugin->iOrder][] =& $oPlugin;
         }
-        return $aRet;
+        ksort($aRet);
+        $aRes = array();
+        foreach($aRet as $iOrder => $aPlugins) {
+            foreach(array_keys($aPlugins) as $iPlugin) {
+                $aRes[] =& $aRet[$iOrder][$iPlugin];
+            }
+        }
+        return $aRes;
     }
 }
-
