@@ -61,6 +61,10 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 class KTDocumentUtil {
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
+
+        $sType = KTMime::getMimeTypeFromFile($sFilename);
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
+
         $iFileSize = filesize($sFilename);
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
@@ -99,8 +103,6 @@ class KTDocumentUtil {
             }
         }
 
-        $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
 
         $bSuccess = $oDocument->update();
