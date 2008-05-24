@@ -89,7 +89,6 @@ class ZipFolder {
         $this->sZipFileName = $sZipFileName;
         $this->aPaths = array();
 
-
         $aReplace = array(
             "[" => "[[]",
             " " => "[ ]",
