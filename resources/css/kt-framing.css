@@ -2139,3 +2139,23 @@ body #content #add_dashlet
 	overflow:auto; 
 	
 }
+
+.kt_config
+{
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+.kt_config td {
+    padding: 0.25em 0.5em;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.kt_config th{
+
+	border-bottom:1px solid #888888;
+	padding: 0.5em 0.5em;
+    overflow: hidden;
+    vertical-align: top;
+}

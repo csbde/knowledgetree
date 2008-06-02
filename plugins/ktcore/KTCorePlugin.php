@@ -237,6 +237,8 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows.'));
         $this->registerAdminCategory('search', _kt('Search and Indexing'),
             _kt('Search and Indexing Settings'));
+		$this->registerAdminCategory('config', _kt('System Configuration'),
+            _kt('System Configuration Settings'));            
         $this->registerAdminCategory('misc', _kt('Miscellaneous'),
             _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));
 
@@ -314,7 +316,31 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
             _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
             '../search2/reporting/RescheduleDocuments.php', null);
-
+		//config
+		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
+            _kt('Email Settings'), _kt('Manage Email Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'config',
+            _kt('User Interface Settings'), _kt('Manage User Interface Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'config',
+            _kt('Search and Indexing Settings'), _kt('Manage Search and Indexing Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'config',
+            _kt('Client Tools Settings'), _kt('Manage Client Tools Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
+            _kt('General Settings'), _kt('Manage General Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
+            _kt('Internationalisation Settings'), _kt('Manage Internationalisation Settings'),
+            '/admin/configsettings.php', null);
+		
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
             _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
