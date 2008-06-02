@@ -39,6 +39,7 @@
 require_once("Config.php");
 
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once (KT_LIB_DIR. '/database/dbutil.inc');
 
 class KTConfig {
     var $conf = array();
@@ -46,6 +47,8 @@ class KTConfig {
     var $aFileRoot;
     var $flat = array();
     var $flatns = array();
+    var $aDBConfig = array();
+    var $aConfFile = array();
 
     // FIXME nbm:  how do we cache errors here?
     function loadCache($filename) {
@@ -66,6 +69,143 @@ class KTConfig {
 
         return true;
     }
+    	
+	// {{{ readConfig
+    function readConfig () {
+        global $default;
+        
+        //Load config data from the database
+        $sQuery = 'select group_name, item, value, default_value from config_settings';
+        $confResult = DBUtil::getResultArray($sQuery);
+
+        foreach ($confResult as $confItem) 
+        {
+            
+            //if $aConfFile doesn't contain the value already set the value
+
+            if(!isset($this->aConfFile[$confItem['group_name']][$confItem['item']]) || $this->aConfFile[$confItem['group_name']][$confItem['item']] == 'default')
+            {
+	            if($confItem['value'] != 'default')
+	            {
+	            	$this->flatns[$confItem['group_name'].'/'.$confItem['item']] = $confItem['value'];
+	            	$this->flat[$confItem['item']] = $confItem['value'];
+
+	            }
+	            else
+	            {
+	            	$this->flatns[$confItem['group_name'].'/'.$confItem['item']] = $confItem['default_value'];
+	            	$this->flat[$confItem['item']] = $confItem['default_value'];
+
+	            }
+            }
+            else //if $aConfFile does have the value set $default and flatns with $aConfFile
+            {
+            	$this->flatns[$confItem['group_name'].'/'.$confItem['item']] = $this->aConfFile[$confItem['group_name']][$confItem['item']];
+            	$this->flat[$confItem['item']] = $this->aConfFile[$confItem['group_name']][$confItem['item']];
+
+            }
+        }
+        foreach($this->flatns as $sGroupItem => $sValue)
+        {
+        	$aGroupItemArray = explode('/', $sGroupItem);
+        	$default->$aGroupItemArray[1] = $this->expand($this->flatns[$sGroupItem]);
+        }
+        
+    }
+    // }}}
+	
+	// {{{ readDBConfig()
+	function readDBConfig()
+	{
+		$sConfigFile = trim(file_get_contents(KT_DIR .  '/config/config-path'));
+        if (KTUtil::isAbsolutePath($sConfigFile)) {
+            $res = $this->loadDBFile($sConfigFile);
+        } else {
+            $res = $this->loadDBFile(sprintf('%s/%s', KT_DIR, $sConfigFile));
+        }
+	}
+	// }}}
+	
+	// {{{ loadDBFile()
+	function loadDBFile($filename, $bDefault = false)
+	{
+		$c = new Config;
+        $root =& $c->parseConfig($filename, "IniCommented");
+
+        if (PEAR::isError($root)) {
+            return $root;
+        }
+
+        $this->aFileRoot[$filename] =& $root;
+
+        $conf =& $root->toArray();
+        
+        //Set the database specific config details here
+        $this->aDBConfig = $conf['root']['db'];
+        
+        //load entire config file into $aConfFile array
+        //These values will override those given by the database
+        //This is in case the system fails and the user cannot get to the admin page
+        //all items given the value default will be poplulated either by the DB or
+        //by the setdefaultns function
+        foreach($conf['root'] as $sItem => $sValue)
+        {
+        	$this->aConfFile[$sItem] = $sValue;
+        }
+                
+	}
+	// }}}
+	
+	function setupDB () {
+        global $default;
+
+        require_once('DB.php');
+
+        // DBCompat allows phplib API compatibility
+        require_once(KT_LIB_DIR . '/database/dbcompat.inc');
+        $default->db = new DBCompat;
+
+        // DBUtil is the preferred database abstraction
+        require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
+        // KTEntity is the database-backed base class
+        require_once(KT_LIB_DIR . '/ktentity.inc');
+
+        
+
+        $prefix = defined('USE_DB_ADMIN_USER')?'Admin':'';
+
+		$sUser = 'dbUser';
+		$sPass = 'dbPass';
+		
+		if ($prefix == 'Admin')
+		{
+			$sUser = 'dbAdminUser';
+			$sPass = 'dbAdminPass';
+		}
+		$dsn = array(
+            'phptype'  => $this->aDBConfig['dbType'],
+            'username' => $this->aDBConfig[$sUser],
+            'password' => $this->aDBConfig[$sPass],
+            'hostspec' => $this->aDBConfig['dbHost'],
+            'database' => $this->aDBConfig['dbName'],
+            'port' => $this->aDBConfig['dbPort']
+        );
+		
+        $options = array(
+            'debug'       => 2,
+            'portability' => DB_PORTABILITY_ERRORS,
+            'seqname_format' => 'zseq_%s',
+        );
+
+        $default->_db = &DB::connect($dsn, $options);
+        if (PEAR::isError($default->_db)) {
+            // return PEAR error
+            return $default->_db;
+        }
+        $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
+
+    }
 
     function createCache($filename) {
         $config_cache = array();
@@ -77,30 +217,6 @@ class KTConfig {
         file_put_contents($filename, serialize($config_cache));
 
 
-    }
-
-    function loadFile($filename, $bDefault = false) {
-        $c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if (PEAR::isError($root)) {
-            return $root;
-        }
-
-        $this->aFileRoot[$filename] =& $root;
-
-        $conf =& $root->toArray();
-        foreach ($conf["root"] as $seck => $secv) {
-            $aSectionFile[$seck] = $filename;
-            if (is_array($secv)) {
-                foreach ($secv as $k => $v) {
-                    $this->setns($seck, $k, $v);
-                }
-            } else {
-                $this->setns(null, $seck, $secv);
-            }
-        }
-        $this->conf = kt_array_merge($this->conf, $conf["root"]);
     }
 
     function setns($seck, $k, $v, $bDefault = false) {
@@ -142,7 +258,9 @@ class KTConfig {
     }
 
     function get($var, $oDefault = null) {
-        if (array_key_exists($var, $this->flatns)) {
+	    
+	    
+	    if (array_key_exists($var, $this->flatns)) {
             return $this->expand($this->flatns[$var]);
         }
         if (array_key_exists($var, $this->flat)) {

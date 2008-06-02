@@ -157,6 +157,22 @@ CREATE TABLE `comment_searchable_text` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `config_settings`
+--
+
+CREATE TABLE `config_settings` (
+  `id` int(255) unsigned NOT NULL,
+  `group_name` varchar(255) NOT NULL default '0',
+  `item` varchar(255) NOT NULL default '0',
+  `type` varchar(255) NOT NULL default '0',
+  `value` varchar(255) NOT NULL default 'default',
+  `helptext` varchar(255) NOT NULL default '0',
+  `default_value` varchar(255) NOT NULL default 'default',
+  `can_edit` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `dashlet_disables`
 --
 
@@ -1810,6 +1826,15 @@ CREATE TABLE `zseq_column_entries` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `zseq_config_settings`
+--
+
+CREATE TABLE `zseq_config_settings` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_dashlet_disables`
