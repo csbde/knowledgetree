@@ -90,7 +90,7 @@ class KTUtil {
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
 
-		$rootUrl = $config->get( 'KnowlegeTree/rootUrl');
+		$rootUrl = $config->get( 'KnowledgeTree/rootUrl');
 		if (false !== $base_url)
 		{
 			return $base_url . $rootUrl;
