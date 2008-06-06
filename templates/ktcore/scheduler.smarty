@@ -25,6 +25,7 @@
 
 {if $aList}
 {foreach from=$aList item=task}
+{assign var=taskId value=$task->getId()}
 
     <tr class="{cycle name=rows values=",odd"}">
         <td width='2%'>
@@ -33,17 +34,24 @@
         <td>
             {$task->getTaskDiv()}
         </td>
-        <td id="tblCol">
-            {$task->getFreqDiv()}
-        </td>
         <td>
-            <div id="runDiv{$task->getId()}">
-                {$task->getRunTime()}
+            {$task->getFreqDiv()}
+            <div id="col_{$taskId}">
+            </div>
+            <div style="visibility: hidden; display: none;">
+                <input type="hidden" name="freq_{$taskId}" id="freq_{$taskId}" value="{$task->getFrequency()}" />
             </div>
         </td>
         <td>
-            <div id="prevDiv{$task->getId()}" style="display:none; visibility:hidden;">
-                <input type="hidden" name="prev{$task->getId()}" id="prev{$task->getId()}" value="{$task->getPrevious()}" />
+            <div id="runDiv{$taskId}">
+                {if $task->getStatus() != 'disabled'}
+                    {$task->getRunTime()}
+                {/if}
+            </div>
+        </td>
+        <td>
+            <div id="prevDiv{$taskId}" style="display:none; visibility:hidden;">
+                <input type="hidden" name="prev{$taskId}" id="prev{$taskId}" value="{$task->getPrevious()}" />
             </div>
             {$task->getPrevious(TRUE)}
         </td>
@@ -76,7 +84,3 @@
         <input type="button" name="save" id="save" onclick='javascript: saveFreq("{$sUrl}");' value="{i18n}Save{/i18n}" />
     </form>
 </div>
-
-<p>
-    {$sClear}
-</p>
