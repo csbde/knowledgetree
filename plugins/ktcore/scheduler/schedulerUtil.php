@@ -213,6 +213,7 @@ class schedulerUtil extends KTUtil
         // Recalculate the next run time, use the previous run time as the start time.
         $iPrevious = $oScheduler->getPrevious();
         $iNextTime = schedulerUtil::calculateRunTime($sFreq, $iPrevious);
+        $iNextTime = ($iNextTime < time()) ? time() : $iNextTime;
 
         $oScheduler->setFrequency($sFreq);
         $oScheduler->setRunTime($iNextTime);
@@ -248,6 +249,12 @@ class schedulerUtil extends KTUtil
         if($sStatus == 'system'){
             // ignore
             return $sStatus;
+        }
+        if($sStatus == 'disabled'){
+            // If the task is being enabled, set the next run time to the current date plus the frequency period
+            $freq = $oScheduler->getFrequency();
+            $runTime = schedulerUtil::calculateRunTime($freq, time());
+            $oScheduler->setRunTime($runTime);
         }
 
         $sNewStatus = ($sStatus == 'enabled') ? 'disabled' : 'enabled';

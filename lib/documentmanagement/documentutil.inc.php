@@ -61,6 +61,10 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 class KTDocumentUtil {
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
+
+        $sType = KTMime::getMimeTypeFromFile($sFilename);
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
+
         $iFileSize = filesize($sFilename);
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
@@ -72,7 +76,7 @@ class KTDocumentUtil {
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
-        if (!$oStorage->upload($oDocument, $sFilename)) {
+        if ( !$oStorage->upload( $oDocument, $sFilename)) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
 
@@ -99,8 +103,6 @@ class KTDocumentUtil {
             }
         }
 
-        $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
 
         $bSuccess = $oDocument->update();
@@ -1121,11 +1123,11 @@ class KTDocumentUtil {
         $oDocument->setModifiedUserId($oUser->getId());
         $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
-		
+
 		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
 		$iMimeTypeId = KTMime::getMimeTypeID($sType, $sNewFilename);
         $oDocument->setMimeTypeId($iMimeTypeId);
-		
+
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
             if (PEAR::isError($bSuccess)) {

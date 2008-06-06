@@ -216,8 +216,9 @@ class KTFolderPermissionsAction extends KTFolderAction {
 			// TODO : paginate this page, when there are too many users
 			foreach ($aUsers as $oUser) {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
-					$oUser->hasPermission($oDescriptor, $oUser->getId())) {
+					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
+					$aActiveUsers[$oUser->getId()] = $oUser->getName();
 				}
              }
         }
@@ -227,7 +228,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $groups = array();
         $roles = array(); // should _always_ be empty, barring a bug in permissions::updatePermissionLookup
 
-        $users = $aUsers;
+        $users = $aActiveUsers;
         asort($users); // ascending, per convention.
 
         $bEdit = false;
@@ -457,6 +458,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
 		
+		/*
+		--- This section has been commented out to remove these checks when permissions 
+		--- are updated.
+		---------------------------------------------------------------------------------
+		
 		//-------------------
         //This section is used to make sure that a user doesn't disable the admin groups
         //Manage security permission or the Manage Security permission of a group they
@@ -497,7 +503,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	        }
         }
 		//-----------------
-        
+        */
         
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());

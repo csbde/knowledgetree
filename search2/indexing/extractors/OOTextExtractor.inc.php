@@ -132,6 +132,9 @@ class OOTextExtractor extends ExternalDocumentExtractor
 			return true;
 		}
 		$content = file_get_contents($this->targetfile);
+
+        $this->setTargetFile($this->targetfile . '.txt');
+
 		return file_put_contents($this->targetfile, $this->filter($content));
 
 	}

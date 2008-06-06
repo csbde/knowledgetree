@@ -1,5 +1,5 @@
 <h2>{i18n}Manage Mime Types{/i18n}</h2>
-<p class="descriptiveText">{i18n}This report lists all mime types and extensions that can be identified by KnowledgeTree.{/i18n}</p>
+<p class="descriptiveText">{i18n arg_appname="$appname"}This report lists all mime types and extensions that can be identified by #appname#.{/i18n}</p>
 
 
 {if $mime_types}

@@ -68,19 +68,17 @@ class DocumentField extends KTEntity {
     var $iParentFieldset;
     var $bHasLookupTree;
     var $bIsMandatory;
-    var $iPosition;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
-	    'sDescription' => 'description',
+	'sDescription' => 'description',
         'sDataType' => 'data_type',
         'bIsGeneric' => 'is_generic',
         'bHasLookup' => 'has_lookup',
         'bHasLookupTree' => 'has_lookuptree',
         'iParentFieldset' => 'parent_fieldset',
         'bIsMandatory' => 'is_mandatory',
-        'iPosition' => 'position',
     );
 
     // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.
@@ -93,7 +91,6 @@ class DocumentField extends KTEntity {
 		$this->bHasLookup = $bNewHasLookup;
 		$this->iParentFieldset = $iParentFieldset;
 		$this->bHasLookupTree = $bHasLookupTree;
-		$this->iPosition = $this->getNextFieldPosition($iParentFieldset);
 	}
 
 	function getID() { return $this->iId; }
@@ -115,20 +112,17 @@ class DocumentField extends KTEntity {
 	function setHasLookupTree($iNewValue) { $this->bHasLookupTree = KTUtil::anyToBool($iNewValue); }
     function getIsMandatory() { return $this->bIsMandatory; }
 	function setIsMandatory($iNewValue) { $this->bIsMandatory = KTUtil::anyToBool($iNewValue); }
-    function getPosition() { return $this->iPosition; }
-	function setPosition($iNewValue) { $this->iPosition = $iNewValue; }
 
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-	        'description' => $this->sDescription,
+	    'description' => $this->sDescription,
             'data_type' => $this->sDataType,
             'is_generic' => KTUtil::anyToBool($this->bIsGeneric),
             'has_lookup' => KTUtil::anyToBool($this->bHasLookup),
             'parent_fieldset' => $this->iParentFieldset,
             'has_lookuptree' => KTUtil::anyToBool($this->bHasLookupTree),
             'is_mandatory' => KTUtil::anyToBool($this->bIsMandatory),
-            'position' => $this->iPosition,
         );
     }
 
@@ -151,19 +145,19 @@ class DocumentField extends KTEntity {
         } else {
             $iFieldsetId = $oFieldset;
         }
-        $aParams = array('parent_fieldset' => $iFieldsetId);
-        $aOptions = array('multi' => true, 'orderby' => 'position');
+        $aFields = KTEntityUtil::getByDict('DocumentField', array(
+            'parent_fieldset' => $iFieldsetId,
+        ), array(
+            'multi' => true,
+        ));
 
-        $aFields = KTEntityUtil::getByDict('DocumentField', $aParams, $aOptions);
-
-        /* Alphabetise the metadata fields within a fieldset if set in config
+        // Alphabetise the metadata fields within a fieldset if set in config
         $oKTConfig =& KTConfig::getSingleton();
         $use_sort = $oKTConfig->get('ui/metadata_sort', false);
 
         if($use_sort){
             usort($aFields, 'compareFields');
         }
-        */
         return $aFields;
     }
 
@@ -255,155 +249,6 @@ class DocumentField extends KTEntity {
         return $sFS . '.' . $this->getName();
     }
 
-    /**
-     * Reset the field positions for a given fieldset
-     *
-     */
-    function reorderFields($iFieldsetId) {
-        // Get the fields in the order they'll appear - first by position then by id
-        $sql = "SELECT id, position FROM document_fields
-	       WHERE parent_fieldset = ?
-	       ORDER BY position, id ASC";
-	    $aParams = array($iFieldsetId);
-
-	    $result = DBUtil::getResultArray(array($sql, $aParams));
-
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
-
-	    // Set all positions to be unique and in order
-	    foreach($result as $key => $field){
-	        $position = $field['position'];
-
-	        // If the fields position is correct in the order, continue
-	        if($position == $key){
-	            continue;
-	        }
-
-	        // Reset the position
-	        $aFields = array();
-	        $aFields['position'] = $key;
-
-	        $res = DBUtil::autoUpdate('document_fields', $aFields, $field['id']);
-	    }
-	    return true;
-    }
-
-	/**
-	 * Get the postion of the last field
-	 */
-	function getNextFieldPosition($iFieldsetId){
-	    $sql = "SELECT position FROM document_fields
-	       WHERE parent_fieldset = ?
-	       ORDER BY position DESC LIMIT 1";
-	    $aParams = array($iFieldsetId);
-
-	    $result = DBUtil::getResultArray(array($sql, $aParams));
-
-	    if(PEAR::isError($result) || empty($result)){
-	        return 0;
-	    }
-	    return $result[0]['position'] + 1;
-	}
-
-	/**
-	 * Get the next postion up / down
-	 */
-	function getNextPosition($iFieldsetId, $iId, $position, $dir = 'up') {
-	    switch($dir){
-	        case 'down':
-	            $comp = '>';
-	            $order = 'ASC';
-	            break;
-	        default:
-	            $comp = '<';
-	            $order = 'DESC';
-	    }
-
-	    // Get the column above / below to swop position
-	    $sql = "SELECT id, position FROM document_fields
-	       WHERE parent_fieldset = ? AND (position {$comp} ? || (position = ? AND id {$comp} ?))
-	       ORDER BY position {$order} LIMIT 1";
-	    $aParams = array($iFieldsetId, $position, $position, $iId);
-
-	    $result = DBUtil::getOneResult(array($sql, $aParams));
-
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
-	    return $result;
-	}
-
-	/**
-	 * Get the updated position of the field
-	 *
-	 * @param int $iId
-	 * @return int
-	 */
-	function getNewPosition($iId){
-	    // Get the new position
-	    $sql = "SELECT id, position FROM document_fields
-    	       WHERE id = ?";
-	    $aParams = array($iId);
-	    $result = DBUtil::getOneResult(array($sql, $aParams));
-
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
-	    return $result['position'];
-	}
-
-	/**
-	 * Update the position of a field
-	 */
-	function updatePosition($iId, $position) {
-	    $aFields = array('position' => $position);
-	    DBUtil::autoUpdate('document_fields', $aFields, $iId);
-	}
-
-	/**
-	 * Move the display position of the field up
-	 */
-	function movePosition($iFieldsetId, $iId, $dir = 'up') {
-	    $position = $this->getPosition();
-
-	    // Get the field to swop position with
-	    $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
-	    if($next === false){
-	        return false;
-	    }
-
-	    // Get position of the next field up / down
-	    $newPos = $next['position'];
-	    $iNextId = $next['id'];
-
-	    if($newPos == $position){
-	        // 2 fields have the same position - reorder them
-	        $res = $this->reorderFields($iFieldsetId);
-	        if($res === false){
-	            return false;
-	        }
-
-    	    $position = $this->getNewPosition($iId);
-    	    if($position === false){
-	            return false;
-	        }
-
-    	    // Get the field to swop with
-    	    $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
-    	    if($next === false){
-    	        return false;
-    	    }
-    	    $newPos = $next['position'];
-    	    $iNextId = $next['id'];
-	    }
-
-	    // update the fields
-	    $this->updatePosition($iId, $newPos);
-	    $this->updatePosition($iNextId, $position);
-	    return true;
-	}
 }
 
 /**

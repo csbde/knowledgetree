@@ -12,7 +12,11 @@
         &nbsp;|&nbsp;
         </div>
 
-            <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}">
-            <span class="ktAction ktInline ktDelete"></span>{i18n}Clear Alert{/i18n}</a>
+            <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}"
+                 kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}"
+                 class="ktAction ktInline ktDelete" style="position: relative;" >{i18n}Clear Alert{/i18n}</a>
+
+            <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}"
+                kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}">{i18n}Clear Alert{/i18n}</a>
     </div>
 </dd>

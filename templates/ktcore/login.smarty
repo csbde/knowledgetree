@@ -50,7 +50,7 @@
 					{/foreach}
 					</select>
 				    <div class="form_actions">
-			        	<input type="submit" value="{i18n}login{/i18n}" />
+			        	<input type="submit" value="{i18n}Login{/i18n}" />
 					</div>
 	    		</form>
 			</div>

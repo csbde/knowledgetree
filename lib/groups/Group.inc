@@ -322,8 +322,8 @@ class Group extends KTEntity {
         if (PEAR::isError($res)) {
             return $res;
         }
-        if ($this->hasMember($oGroup)) {
-            return PEAR::raiseError(_kt("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?"));
+        if ($this->hasMemberGroup($oGroup)) {
+            return PEAR::raiseError(_kt("An error occurred while removing the sub-group."));
         }
         return true;
     }

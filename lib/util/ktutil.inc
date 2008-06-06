@@ -89,7 +89,7 @@ class KTUtil {
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
 
-		$rootUrl = $config->get( 'KnowlegeTree/rootUrl');
+		$rootUrl = $config->get( 'KnowledgeTree/rootUrl');
 		if (false !== $base_url)
 		{
 			return $base_url . $rootUrl;
@@ -726,6 +726,13 @@ class KTUtil {
 
     // {{{ findCommand
     function findCommand($sConfigVar, $sDefault = null) {
+        // Check for the stack command before using the user defined command
+        $result = KTUtil::checkForStackCommand($sConfigVar);
+    	if (!empty($result))
+    	{
+    		return $result;
+    	}
+
     	$oKTConfig =& KTConfig::getSingleton();
     	$sCommand = $oKTConfig->get($sConfigVar, $sDefault);
     	if (empty($sCommand)) {
@@ -736,12 +743,6 @@ class KTUtil {
     	}
     	if (file_exists($sCommand . ".exe")) {
     		return $sCommand . ".exe";
-    	}
-
-    	$result = KTUtil::checkForStackCommand($sConfigVar);
-    	if (!empty($result))
-    	{
-    		return $result;
     	}
 
     	$sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
@@ -772,14 +773,64 @@ class KTUtil {
 
     	switch ($configCommand)
     	{
-    		case 'externalBinary/php':
+    		case 'externalBinary/xls2cvs':
+    			if (OS_WINDOWS)
+				{
+					$script = $stackPath . '/bin/catdoc/xls2csv.exe';
+				}
+				else
+				{
+					$script = $stackPath . '/common/bin/xls2csv';
+				}
+				break;
+    		case 'externalBinary/pdftotext':;
     			if (OS_WINDOWS)
     			{
-    				$script = $stackPath . '/php/php.exe';
+    				$script = $stackPath . '/bin/xpdf/pdftotext.exe';
     			}
     			else
     			{
-    				$script = $stackPath . '/php/bin/php';
+    				$script = $stackPath . '/common/bin/pdftotext';
+    			}
+    			break;
+    		case 'externalBinary/catppt':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/catdoc/catppt.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/catppt';
+    			}
+    			break;
+    		case 'externalBinary/pstotext':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/pstotext/pstotext.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/pstotext';
+    			}
+    			break;
+    		case 'externalBinary/catdoc':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/catdoc/catdoc.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/catdoc';
+    			}
+    			break;
+    		case 'externalBinary/antiword':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/antiword/antiword.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/antiword';
     			}
     			break;
     		case 'externalBinary/python':
@@ -793,7 +844,34 @@ class KTUtil {
 				}
 				break;
     		case 'externalBinary/java':
-				$script = $stackPath . '/j2re/bin/java';
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/java/jre/bin/java.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/java/jre/bin/java';
+    			}
+    			break;
+    		case 'externalBinary/df':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/bin/gnuwin32/df.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/common/bin/df';
+    			}
+    			break;
+    		case 'externalBinary/php':
+    			if (OS_WINDOWS)
+    			{
+    				$script = $stackPath . '/php/php.exe';
+    			}
+    			else
+    			{
+    				$script = $stackPath . '/php/bin/php';
+    			}
     			break;
     		default:
     			return null;
@@ -867,7 +945,7 @@ class KTUtil {
         $sPath = str_replace('\\', '/', $sPath);
         $sReal = str_replace('\\', '/', realpath($sPath));
 
-        if(substr($sPath, -1, 1) == '/'){
+        if(substr($sPath, -1, 1) == '/' && substr($sReal, -1, 1) != '/'){
             $sReal .= '/';
         }
 

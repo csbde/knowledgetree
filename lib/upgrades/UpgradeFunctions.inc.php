@@ -1024,7 +1024,13 @@ class UpgradeFunctions {
     // {{{ updateConfigFile35
     function updateConfigFile35()
     {
-    	$config = KTConfig::getSingleton();
+        // The following is no longer needed due to defaults now being in place.
+        // It also was corrupting the file "sometimes".
+        // We leave the function in but do nothing so we don't mess with the upgrades table.
+
+        return;
+
+/*    	$config = KTConfig::getSingleton();
         $configPath = KTConfig::getConfigFilename();
     	$configPath = str_replace(array("\n","\r"), array('',''), $configPath);
 
@@ -1147,6 +1153,7 @@ class UpgradeFunctions {
 
             $ini->write();
         }
+*/        
     }
     // }}}
 

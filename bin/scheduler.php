@@ -192,9 +192,7 @@ if (empty($aList))
 
         if ($ext == 'php')
         {
-        	$config = KTConfig::getSingleton();
-        	$phpPath = KTUtil::checkForStackCommand('externalBinary/php');
-        	//$config->get('externalBinary/php');
+        	$phpPath = KTUtil::findCommand('externalBinary/php');
 
         	// being protective as some scripts work on relative paths
         	$dirname = dirname($file);
@@ -204,7 +202,7 @@ if (empty($aList))
         }
 
         if (OS_WINDOWS)
-		{   $default->log->info("Scheduler - dirname: $dirname cmd: $cmd");
+		{   $default->log->debug("Scheduler - dirname: $dirname cmd: $cmd");
 			//$WshShell = new COM("WScript.Shell");
 			//$res = $WshShell->Run($cmd, 0, true);
 
@@ -220,12 +218,18 @@ if (empty($aList))
         $iEnd = KTUtil::getBenchmarkTime();
         $iDuration = number_format($iEnd - $iStart,2);
 
+
+        $ignore = array('open office test');
+
 		if (!empty($res))
 		{
-			$default->log->info("Scheduler - Task: $sTask");
-			$default->log->info("Scheduler - Command: $cmd");
-			$default->log->info("Scheduler - Output: $res");
-			$default->log->info("Scheduler - Background tasks should not produce output. Please review why this is producing output.");
+		    $func = in_array(strtolower($sTask), $ignore)?'debug':'info';
+
+		    $default->log->$func("Scheduler - Task: $sTask");
+		    $default->log->$func("Scheduler - Command: $cmd");
+		    $default->log->$func("Scheduler - Output: $res");
+		    $default->log->$func("Scheduler - Background tasks should not produce output. Please review why this is producing output.");
+
 		}
 		else
 		{

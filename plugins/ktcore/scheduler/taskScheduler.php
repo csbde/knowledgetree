@@ -48,24 +48,21 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
     function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Task Scheduler Management'));
         $this->oPage->setTitle(_kt('Task Scheduler Management'));
-        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/connection/connection.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
         $this->oPage->requireJSResource('resources/js/scheduler.js');
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/scheduler');
 
         // Link for clearing out old tasks
-        $lClear = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=clearTasks');
-        $sClear = "<a href='#' onclick='javascript: clearTasks(\"{$lClear}\");'>"._kt('Clean-up old tasks').'</a>';
+//        $lClear = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=clearTasks');
+//        $sClear = "<a href='#' onclick='javascript: clearTasks(\"{$lClear}\");'>"._kt('Clean-up old tasks').'</a>';
 
         // Link for saving the updated frequencies
         $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=saveFreq');
 
         // Get all tasks
         $aList = SchedulerEntity::getTaskList();
-        $aHeadings = array('', _kt('Task'), _kt('Frequency'), _kt('Next run time'), _kt('Previous run time'), _kt('Time taken to complete'), '');
+        $aHeadings = array('&nbsp;', _kt('Task'), _kt('Frequency'), _kt('Next run time'), _kt('Previous run time'), _kt('Time taken to complete'), '&nbsp;');
 
         //$aFrequencies = array('monthly', 'weekly', 'daily', 'hourly', 'half_hourly', 'quarter_hourly', '10mins', '5mins');
         $aFrequencies = array(
@@ -88,7 +85,7 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
               'aFrequencies' => $aFrequencies,
               'i' => 1,
               'sUrl' => $sUrl,
-              'sClear' => $sClear
+//              'sClear' => $sClear
         );
         return $oTemplate->render($aTemplateData);
     }

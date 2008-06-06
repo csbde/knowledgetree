@@ -472,6 +472,20 @@ class KTWebService
          		'message'=>'string',
          		'transitions' => "{urn:$this->namespace}kt_workflow_transitions"
          		);
+				
+		$this->__typedef["{urn:$this->namespace}kt_workflows_array"] =
+			array(
+            	array(
+                        'workflow' => 'string'
+                  )
+            );
+				
+		$this->__typedef["{urn:$this->namespace}kt_workflows_response"] =
+         	array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'workflows' => "{urn:$this->namespace}kt_workflows_array"
+            );
 
     	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
          	array(
@@ -1106,6 +1120,12 @@ class KTWebService
          $this->__dispatch_map['get_document_types'] =
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
+            );
+			
+		 // get_workflows
+         $this->__dispatch_map['get_workflows'] =
+            array('in' => array('session_id'=>'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_workflows_response" ),
             );
 
          // get_document_link_types
@@ -3437,6 +3457,38 @@ class KTWebService
     	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
+	}
+	
+	/**
+	 * Returns a list of available workflows
+	 *
+	 * @param string $session_id
+	 * @return kt_response
+	 */
+	function get_workflows($session_id)
+	{
+		$this->debug("get_workflows('$session_id')");
+    	$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_workflows_response", $kt);
+    	}
+		
+		$response = KTWebService::_status(KTWS_ERR_PROBLEM);
+		
+		$result = $kt->get_workflows();
+    	if (PEAR::isError($result))
+    	{
+    	    $response['message']= $result->getMessage();
+    		$this->debug("get_workflows - "  . $result->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_workflows_response", $response);
+    	}
+
+   		$response['status_code']= KTWS_SUCCESS;
+   		$response['workflows']= $result;
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_workflows_response", $response);
 	}
 
 	/**

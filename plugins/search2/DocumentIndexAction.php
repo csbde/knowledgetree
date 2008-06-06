@@ -24,6 +24,9 @@ class DocumentIndexAction extends KTDocumentAction
     {
     	if (Permission::userIsSystemAdministrator() && $_SESSION['adminmode'])
     	{
+    	    if(!is_object($this->oDocument)){
+    	        return '';
+    	    }
     		if (Indexer::isDocumentScheduled($this->oDocument->getId()))
     		{
     			return _kt('Unschedule Indexing');

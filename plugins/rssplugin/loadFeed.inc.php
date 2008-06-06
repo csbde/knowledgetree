@@ -69,9 +69,9 @@
  	    $aRSSArray = rss2array($feed);
  	}
  }
- if(count($aRSSArray[errors]) > 0){
- 	for($i=0;$i<count($aRSSArray[errors]);$i++){
- 		$response .= $aRSSArray[errors][$i].'<br>';
+ if(is_array($aRSSArray[errors])){
+     foreach ($aRSSArray[errors] as $errorItem){
+ 		$response .= $errorItem.'<br>';
  		echo '<br>'.$response.'<br>';
  		return;
  	}

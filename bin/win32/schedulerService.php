@@ -42,6 +42,10 @@ $myservicename = 'ktscheduler';
 if (!win32_start_service_ctrl_dispatcher($myservicename)) die('Could not connect to service :'.$myservicename);
 win32_set_service_status(WIN32_SERVICE_RUNNING);
 
+// Scheduler is dependent on the mysql server being up,
+// so we sleep for a minute to ensure the server is running before we start the scheduler
+sleep(120);
+
 chdir(dirname(__FILE__)); // need to be here to include dmsDefaults
 require_once('../../config/dmsDefaults.php');
 

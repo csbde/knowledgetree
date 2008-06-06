@@ -3,9 +3,9 @@
 <fieldset>
 <legend>{i18n}Manage Lookups{/i18n}</legend>
 
-<p class="descriptiveText">{i18n}Over time, the lookup values which make sense will
+<p class="descriptiveText">{i18n}Over time, the lookup values which make sense will 
 change and evolve as your organisation does. You may thus need to change the lookup
-values associated with a given field.  There are a number of different states
+values associated with a given field.  There are a number of different states 
 that are possible for a given lookup{/i18n}:</p>
 
 <ul class="descriptiveText">
@@ -13,10 +13,10 @@ that are possible for a given lookup{/i18n}:</p>
     as an option when editing or creating documents.{/i18n}</li>
     <li>{i18n}<strong>Sticky</strong>, which is used if you have some external
     plugin controlling this lookup set.  This will then tell that plugin not to
-    remove the "sticky" value, even if it no longer available in the remote source.{/i18n}</li>
-    <li>{i18n}<strong>Deleted</strong>, which completely removes the selected items
+    remove the "sticky" value, even if it no longer available in the remote source.{/i18n}</li>    
+    <li>{i18n}<strong>Deleted</strong>, which completely removes the selected items 
     from the lookup. Note that this may not be possible if some other aspect of the system
-    depends on a particular lookup.{/i18n}</li>
+    depends on a particular lookup.{/i18n}</li>        
 </ul>
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 
@@ -29,20 +29,17 @@ that are possible for a given lookup{/i18n}:</p>
         <tr>
             <th>&nbsp;</th>
             <th>{i18n}Lookup Value{/i18n}</th>
-            <th class="centered">{i18n}Enabled{/i18n}</th>
-            <th class="centered">{i18n}Sticky{/i18n}</th>
-            <th class="centered">{i18n}Edit{/i18n}</th>
+            <th class="centered">{i18n}Enabled{/i18n}</th>            
+            <th class="centered">{i18n}Sticky{/i18n}</th>                        
         </tr>
     </thead>
     <tbody>
       {foreach from=$lookups item=oLookup}
-      {assign var='id' value=$oLookup->getId()}
         <tr>
             <td><input type="checkbox" name="metadata[]" value="{$oLookup->getId()}" /></td>
-            <td><div id="{$id}">{$oLookup->getName()}</div></td>
+            <td>{$oLookup->getName()}</td>
             <td class="centered">{if (!$oLookup->getDisabled())}<span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>{else}<span class="ktAction ktDenied">{i18n}No{/i18n}</span>{/if}</td>
             <td class="centered">{if ($oLookup->getIsStuck())}<span>{i18n}Yes{/i18n}</span>{else}&nbsp;{/if}</td>
-            <td class="centered"><a href="#" onclick="javascript: editLookup({$id});" class="ktAction ktEdit">{i18n}Edit value{/i18n}</a></td>
         </tr>
       {/foreach}
     </tbody>

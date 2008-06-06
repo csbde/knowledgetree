@@ -131,7 +131,7 @@ class FolderUsageDashlet extends KTBaseDashlet
 					'description'=>$name,
 					'folder'=>$directory,
 					'files'=>number_format($temp['files'],0,'.',','),
-					'filesize'=>KTUtil::filesizeToString($temp['filesize']/1024),
+					'filesize'=>KTUtil::filesizeToString($temp['filesize']),
 					'action'=>$i,
 					'canClean'=>$canClean
 				);
@@ -155,13 +155,13 @@ class FolderUsageDashlet extends KTBaseDashlet
 		$rootUrl = $config->get('KnowledgeTree/rootUrl');
 
 		$dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
-		if (!empty($rootUrl)) $dispatcherURL .= $rootUrl . $dispatcherURL;
-        if ( substr( $dispatcherURL, 0,1 ) == '/' || substr( $dispatcherURL, 0,1 ) == '\\')
-		{
-			$dispatcherURL = substr($dispatcherURL,1);
-		}
+		if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
         $dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
-		
+        if ( substr( $dispatcherURL, 0,1 ) != '/')
+		{
+			$dispatcherURL = '/'.$dispatcherURL;
+		}
+
         $this->getUsage();
 
 		$aTemplateData = array(

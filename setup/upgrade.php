@@ -161,7 +161,7 @@ if (PEAR::isError($loggingSupport)) {
 }
 
 if (PEAR::isError($dbSupport)) {
-	print '<p><font color="red">Database support is not currently working.  Check post-installation checkup.</font></p>';
+	print '<p><font color="red">Database support is not currently working.  Check post-installation checkup or refresh this page (F5) to try again.</font></p>';
 	exit(1);
 }
 
@@ -187,7 +187,7 @@ td { vertical-align: top; }
   	if($oKTConfig->get('ui/mainLogo')){
   		echo $oKTConfig->get('ui/mainLogo');
   	}else{
-	  	echo '../resources/graphics/ktlogo-topbar-right.png';
+	  	echo '../resources/graphics/ktlogo-topbar_base.png';
 	}?>">
   <p>
   <img src="upgrade-title.jpg">

@@ -172,9 +172,17 @@ class KTPluginUtil {
            WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
+        if(PEAR::isError($aPluginHelpers)){
+            global $default;
+            $default->log->debug('Error in pluginutil: '.$aPluginHelpers->getMessage());
+            return false;
+        }
+
         // Check that there are plugins and if not, register them
         if (empty($aPluginHelpers)) {
+            DBUtil::startTransaction();
             KTPluginUtil::registerPlugins();
+            DBUtil::commit();
 
         	$query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
         	   INNER JOIN plugins p ON (p.namespace = h.plugin)
@@ -477,7 +485,8 @@ class KTPluginUtil {
             }
         }
         $oRegistry =& KTPluginRegistry::getSingleton();
-        foreach ($oRegistry->getPlugins() as $oPlugin) {
+        $aRegistryList = $oRegistry->getPlugins();
+        foreach ($aRegistryList as $oPlugin) {
             $res = $oPlugin->register();
             if (PEAR::isError($res)) {
                 var_dump($res);

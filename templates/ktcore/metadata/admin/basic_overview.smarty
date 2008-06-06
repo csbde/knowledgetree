@@ -8,15 +8,14 @@ of related information.{/i18n}</p>
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <tr>
-            <th>{i18n}Field Name{/i18n}</th>
+            <th>{i18n}Field Name{/i18n}</th>    
             <th class="centered">{i18n}Edit{/i18n}</th>
-            <th class="centered">{i18n}Delete{/i18n}</th>
-            <th>{i18n}Type Description{/i18n}</th>
-            <th colspan="2">{i18n}Position{/i18n}</th>
+            <th class="centered">{i18n}Delete{/i18n}</th>                                
+            <th>{i18n}Type Description{/i18n}</th>            
         </tr>
     </thead>
     <tbody>
-      {foreach name=fieldlist from=$fields item=oField}
+      {foreach from=$fields item=oField}
         <tr>
             <td class="title">
                 {$oField->getName()}
@@ -26,19 +25,9 @@ of related information.{/i18n}</p>
             </td>
             <td class="centered">
                 <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktDelete">{i18n}delete{/i18n}</a>
-            </td>
+            </td>            
             <td>
                 <span class="descriptiveText">{$oField->getTypeDescription()}</span>
-            </td>
-            <td>
-                {if !$smarty.foreach.fieldlist.first}
-                    <a href="{addQS context=$context}fieldset_action=orderUp&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveUp">{i18n}Reorder up{/i18n}</a>
-                {/if}
-            </td>
-            <td>
-                {if !$smarty.foreach.fieldlist.last}
-                    <a href="{addQS context=$context}fieldset_action=orderDown&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveDown">{i18n}Reorder down{/i18n}</a>
-                {/if}
             </td>
         </tr>
       {/foreach}

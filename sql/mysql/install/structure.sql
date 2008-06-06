@@ -277,7 +277,6 @@ CREATE TABLE `document_fields` (
   `parent_fieldset` int(11) default NULL,
   `is_mandatory` tinyint(4) NOT NULL default '0',
   `description` mediumtext NOT NULL,
-  `position` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `parent_fieldset` (`parent_fieldset`),
   CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

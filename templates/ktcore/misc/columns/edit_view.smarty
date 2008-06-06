@@ -1,41 +1,29 @@
 <h2>{i18n}Edit View{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}The columns included in this view are displayed below.  To add additional columns into the
+<p class="descriptiveText">{i18n}The columns included in this view are displayed below.  To add additional columns into the 
 view, use the form below the list.  To remove items, click on the "delete" icon next to the column name.  Note that some columns may be required
-in a given view. Also, while you can
+in a given view. Also, while you can 
 have multiple copies of a given column in a specific view this is not recommended.{/i18n}</p>
 
 {if (!empty($current_columns))}
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <tr>
-            <th>{i18n}Column{/i18n}</th>
-            <th>{i18n}Delete{/i18n}</th>
-            <th colspan="2">{i18n}Position{/i18n}</th>
+            <th>{i18n}Column{/i18n}</th>        
+            <th>{i18n}Delete{/i18n}</th>                     
         </tr>
     </thead>
     <tbody>
-    {foreach name=cols from=$current_columns item=oColumn}
+    {foreach from=$current_columns item=oColumn}
         <tr>
             <td>{$oColumn->getName()}</td>
 
             {if $oColumn->getRequiredInView()}
             <td>&mdash;</td>
-            {else}
-            <td><a href="{addQS}action=deleteEntry&entry_id={$oColumn->getEntryId()}&viewNS={$view}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+            {else}            
+            <td><a href="{addQS}action=deleteEntry&entry_id={$oColumn->getEntryId()}&viewNS={$view}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>            
             {/if}
-
-            <td>
-                {if !$smarty.foreach.cols.first}
-                    <a href="{addQS}action=orderUp&entry_id={$oColumn->getEntryId()}&viewNS={$view}{/addQS}" class="ktAction ktMoveUp">{i18n}Reorder up{/i18n}</a>
-                {/if}
-            </td>
-            <td>
-                {if !$smarty.foreach.cols.last}
-                    <a href="{addQS}action=orderDown&entry_id={$oColumn->getEntryId()}&viewNS={$view}{/addQS}" class="ktAction ktMoveDown">{i18n}Reorder down{/i18n}</a>
-                {/if}
-            </td>
-        </tr>
+        </tr>    
     {/foreach}
     </tbody>
 </table>
@@ -50,9 +38,9 @@ have multiple copies of a given column in a specific view this is not recommende
     {$add_field->render()}
 
     <div class="form_actions">
-        <input type="submit" value="{i18n}Add Column to View{/i18n}"/>
+        <input type="submit" value="{i18n}Add Column to View{/i18n}"/>    
         <input type="hidden" name="action" value="addEntry" />
-        <input type="hidden" name="viewNS" value="{$view}" />
-    </div>
+        <input type="hidden" name="viewNS" value="{$view}" />        
+    </div>    
 </fieldset>
 </form>

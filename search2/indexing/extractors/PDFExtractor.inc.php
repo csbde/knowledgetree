@@ -73,6 +73,18 @@ class PDFExtractor extends ApplicationExtractor
 			return true;
 		}
 
+		if (false === $res && (strpos($this->output, 'font') !== false))
+		{
+			$this->output = '';
+			return true;
+		}
+
+		if (filesize($this->targetfile) > 0)
+		{
+			$this->output = '';
+			return true;
+		}
+
 		return $res;
 
 	}
