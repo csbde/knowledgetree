@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -201,9 +201,9 @@ class schedulerEntity extends KTEntity
         $sStatus = $this->getStatus();
         $sFreqs = $this->getFrequencyByLang();
 
-        $sLink = "<a href='#' id='freqDrop{$sId}' onclick='javascript: showFrequencyDiv(\"{$sId}\");'";
+        $sLink = "<div id='div{$sId}'";
         $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
-        $sLink .= "<div id='div{$sId}'>$sFreqs</div></a>";
+        $sLink .= $sFreqs.'</div>';
         return $sLink;
     }
 
@@ -214,9 +214,10 @@ class schedulerEntity extends KTEntity
         $sId = $this->getId();
         $sStatus = $this->getStatus();
 
-        $sLink = "<a href='#' id='freqLink{$this->getId()}' onclick='javascript: showFrequencyDiv({$sId});'";
-        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
-        $sLink .= _kt('Alter frequency')."</a>";
+        $sLink = "<input type='button' id='freqLink{$this->getId()}' onclick='javascript: showFrequencyDiv(\"{$sId}\");'";
+        $sLink .= " value='"._kt('Change Frequency')."' ";
+        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" />' : ' />';
+
         return $sLink;
     }
 
@@ -228,9 +229,11 @@ class schedulerEntity extends KTEntity
         $sStatus = $this->getStatus();
         $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateRunTime');
 
-        $sLink = "<a href='#' id='runnowLink{$this->getId()}' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'";
-        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" >' : '>';
-        $sLink .= _kt('Run on next iteration')."</a>";
+        $sTitle = _kt('This task will run the next time the Scheduler runs'); //, and then revert to the frequency you set on this page');
+        $sLink = "<input type='button' id='runnowLink{$this->getId()}' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'";
+        $sLink .= " title='$sTitle' value='"._kt('Run on Next Iteration')."' ";
+        $sLink .= ($sStatus == 'disabled') ? 'style="visibility: hidden;" />' : ' />';
+
         return $sLink;
     }
 
@@ -244,13 +247,13 @@ class schedulerEntity extends KTEntity
             return '';
         }
 
-        $sDisableText = _kt('Disable task');
-        $sEnableText = _kt('Enable task');
+        $sDisableText = _kt('Disable Task');
+        $sEnableText = _kt('Enable Task');
 
         $sLinkText = ($sStatus == 'enabled') ? $sDisableText : $sEnableText;
         $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateStatus');
-        $sLink = "<a id='statusLink{$this->getId()}' href='#'
-            onclick='javascript: toggleStatus(\"{$sId}\", \"{$sUrl}\", \"{$sDisableText}\", \"{$sEnableText}\");'>{$sLinkText}</a>";
+        $sLink = "<input type='button' id='statusLink{$this->getId()}'
+            onclick='javascript: toggleStatus(\"{$sId}\", \"{$sUrl}\", \"{$sDisableText}\", \"{$sEnableText}\");' value='{$sLinkText}' />";
         return $sLink;
     }
 }
