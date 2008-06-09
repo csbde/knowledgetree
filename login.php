@@ -341,7 +341,7 @@ class LoginPageDispatcher extends KTDispatcher {
             $url = $redirect;
         // else redirect to the dashboard if there is none
         } else {
-            $url = generateControllerUrl("dashboard");
+            $url = KTUtil::kt_url().'/dashboard.php';
         }
 
         exit(redirect($url));
