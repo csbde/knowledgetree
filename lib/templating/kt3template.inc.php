@@ -168,22 +168,12 @@ class KTPage {
     function initMenu() {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
-    	global $default;
-    	$rootUrl = $default->rootUrl;
-		$bSSL = $default->sslEnabled;
-
-		$sProtocol = ($bSSL) ? 'https' : 'http';
-		$sBaseUrl = $sProtocol.'://'.$_SERVER['HTTP_HOST'].$rootUrl;
+    	$sBaseUrl = KTUtil::kt_url();
 
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
 		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
 		$this->menu['administration'] = array('label' => _kt("DMS Administration"), 'url' => $sBaseUrl.'/admin.php');
-    	/*
-    	$this->menu = array("dashboard" => $this->_actionHelper(array("name" => _kt("Dashboard"), "action" => "dashboard", "active" => 0)),
-    			    "browse" => $this->_actionHelper(array("name" => _kt("Browse Documents"), "action" => "browse", "active" => 0)),
-    			    "administration" => $this->_actionHelper(array("name" => _kt("DMS Administration"), "action" => "administration", "active" => 0)),);
-    	*/
     }
 
 
@@ -385,21 +375,23 @@ class KTPage {
 
 	$this->userMenu = array();
 	if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
+	    $sBaseUrl = KTUtil::kt_url();
+
 	    if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
-		$this->userMenu = array("logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
+		    $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
 	    } else {
-		$this->userMenu = array("preferences" => $this->_actionHelper(array("name" => _kt("Preferences"), "action" => "preferences", "active" => 0)),
-					"aboutkt" => $this->_actionhelper(array("name" => _kt("About"), "action" => "aboutkt", "active" => 0)),
-					"logout" => $this->_actionHelper(array("name" => _kt("Logout"), "action" => "logout", "active" => 0)),);
+	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
+	        $this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
+	        $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
 	    }
 	} else {
-	    $this->userMenu = array("login" => $this->_actionHelper(array("name" => _kt("Login"), "action" => "login")),);
+	    $this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
 	}
 
 	// FIXME we need a more complete solution to navigation restriction
 	if (!is_null($this->menu['administration']) && !is_null($this->user)) {
 	    if (!Permission::userIsSystemAdministrator($this->user->getId())) {
-		unset($this->menu['administration']);
+		  unset($this->menu['administration']);
 	    }
 	}
 
@@ -419,7 +411,7 @@ class KTPage {
         			"page" => $this,
 			       	"systemversion" => $default->systemVersion,
 			       	"versionname" => $default->versionName,
-					'smallVersion' => substr($default->versionName, 0, 3),
+					'smallVersion' => substr($default->versionName, -17),
 			       	'savedSearches'=> $savedSearches);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
