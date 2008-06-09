@@ -89,6 +89,7 @@ define('KTWS_ERR_INVALID_METADATA',			23);
 define('KTWS_ERR_INVALID_REASON',			24);
 define('KTWS_ERR_INVALID_DEPTH',			25);
 define('KTWS_ERR_INVALID_DOCUMENT_TYPE',	26);
+define('KTWS_ERR_INVALID_WORKFLOW',			27);
 
 define('KTWS_ERR_PROBLEM',					98);
 define('KTWS_ERR_DB_PROBLEM',				99);
@@ -3055,7 +3056,7 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
-    	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
+    	$response = KTWebService::_status(KTWS_ERR_INVALID_WORKFLOW);
 
     	$document = &$kt->get_document_by_id($document_id);
 		if (PEAR::isError($document))
