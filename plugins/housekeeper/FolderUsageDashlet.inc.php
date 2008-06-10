@@ -38,141 +38,48 @@
 
 class FolderUsageDashlet extends KTBaseDashlet
 {
-	private $usage;
+    private $usage;
 
-	function FolderUsageDashlet()
-	{
-		$this->sTitle = _kt('System Folder Utilization');
-		$this->sClass = "ktInfo";
-	}
+    function FolderUsageDashlet()
+    {
+        $this->sTitle = _kt('System Folder Utilization');
+        $this->sClass = "ktInfo";
+    }
 
-	function is_active($oUser)
-	{
-		return Permission::userIsSystemAdministrator();
-	}
+    function is_active($oUser)
+    {
+        return Permission::userIsSystemAdministrator();
+    }
 
-	function scanPath($path,$pattern)
-	{
-		$files=0;
-		$filesize=0;
+    function render()
+    {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('FolderUsage');
 
-		if (is_dir($path) && ($dh = opendir($path)))
-		{
-			while (($file = readdir($dh)) !== false)
-			{
-				if (substr($file,0,1) == '.')
-				{
-					continue;
-				}
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
 
-				$full = $path . '/' . $file;
+        $config = KTConfig::getSingleton();
+        $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
-				if (!is_readable($full) || !is_writable($full))
-				{
-					continue;
-				}
-
-				if (is_dir($full))
-				{
-					$result = $this->scanPath($full,$pattern);
-					$files += $result['files'];
-					$filesize += $result['filesize'];
-					continue;
-				}
-				if ($pattern != '')
-				{
-					if (preg_match('/' . $pattern . '/', $file) === false)
-					{
-						continue;
-					}
-				}
-
-				$files++;
-				$filesize += filesize($full);
-			}
-			closedir($dh);
-		}
-		return array('files'=>$files,'filesize'=>$filesize,'dir'=>$path);
-	}
-
-	function getUsage()
-	{
-		$check = true;
-    	// check if we have a cached result
-		if (isset($_SESSION['SystemFolderUsage']))
-		{
-			// we will only do the check every 5 minutes
-			if (time() - $_SESSION['SystemFolderUsage']['time'] < 5 * 60)
-			{
-				$check = false;
-				$this->usage = $_SESSION['SystemFolderUsage']['usage'];
-			}
-		}
-
-		// we will only check if the result is not cached, or after 5 minutes
-		if ($check)
-		{
-			$usage = array();
-
-			$oRegistry =& KTPluginRegistry::getSingleton();
-			$oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
-
-			$folders = $oPlugin->getDirectories();
-
-			foreach($folders as $folder)
-			{
-				$directory 	= $folder['folder'];
-				$pattern 	= $folder['pattern'];
-				$canClean 	= $folder['canClean'];
-				$name 		= $folder['name'];
-
-				$temp = $this->scanPath($directory,$pattern);
-
-				$usage[] = array(
-					'description'=>$name,
-					'folder'=>$directory,
-					'files'=>number_format($temp['files'],0,'.',','),
-					'filesize'=>KTUtil::filesizeToString($temp['filesize']),
-					'action'=>$i,
-					'canClean'=>$canClean
-				);
-				$this->usage = $usage;
-			}
-
-			$_SESSION['SystemFolderUsage']['time'] = time();
-			$_SESSION['SystemFolderUsage']['usage'] = $this->usage;
-		}
-	}
-
-	function render()
-	{
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('FolderUsage');
-
-		$oRegistry =& KTPluginRegistry::getSingleton();
-		$oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
-
-		$config = KTConfig::getSingleton();
-		$rootUrl = $config->get('KnowledgeTree/rootUrl');
-
-		$dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
-		if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
+        $dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
+        if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
         $dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
         if ( substr( $dispatcherURL, 0,1 ) != '/')
-		{
-			$dispatcherURL = '/'.$dispatcherURL;
-		}
+        {
+            $dispatcherURL = '/'.$dispatcherURL;
+        }
 
-        $this->getUsage();
+        $usage = unserialize(KTUtil::getSystemSetting('KTUsage','n/a'));
 
-		$aTemplateData = array(
-				'context' => $this,
-				'usages'=>$this->usage,
-				'dispatcherURL'=>$dispatcherURL
-			);
+        $aTemplateData = array(
+        'context' => $this,
+        'usages'=>$usage,
+        'dispatcherURL'=>$dispatcherURL
+        );
 
-		return $oTemplate->render($aTemplateData);
-	}
+        return $oTemplate->render($aTemplateData);
+    }
 }
 
 
