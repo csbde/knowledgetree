@@ -1,6 +1,7 @@
 <?php
-/*
- * $Id:$
+
+/**
+ * $Id: $
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -36,42 +37,12 @@
  *
  */
 
-require_once('AdminVersion.inc.php');
+// NOTE: this is a test script. The values are for test purposes only.
 
-class AdminVersionDashlet extends KTBaseDashlet {
-	var $sClass = 'ktError';
+$versions = array(
+'Development OSS'=> '3.5'
+);
 
-	function AdminVersionDashlet(){
-		$this->sTitle = _kt('New Version Available');
-	}
+print json_encode($versions);
 
-	function is_active($oUser)
-	{
-	    $this->version = AdminVersion::isNewVersionAvailable();
-	    return true;
-	    if ($this->version === false)
-	    {
-	        return false;
-	    }
-		return Permission::userIsSystemAdministrator();
-	}
-
-	function render() {
-		global $main;
-
-		$oTemplating =& KTTemplating::getSingleton();
-       	$oTemplate = $oTemplating->loadTemplate('dashlet');
-
-       	$name = $this->version['name'];
-       	$version = $this->version['version'];
-
-		$aTemplateData = array(
-			'context' => $this,
-			'name' => $name,
-			'version' => $version
-		);
-
-        return $oTemplate->render($aTemplateData);
-    }
-}
 ?>
