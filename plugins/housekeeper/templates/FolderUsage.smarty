@@ -30,7 +30,3 @@ function cleanupFolder(path)
 {/section}
 	<tr><td colspan=4><hr></tr>
 </table>
-<table width="100%">
-<tr width="100%">
-<td align="right"><a href="{$dispatcherURL}?action=refreshFolderUsage">{i18n}refresh{/i18n}</a></td>
-</table>
