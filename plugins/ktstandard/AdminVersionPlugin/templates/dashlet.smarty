@@ -8,7 +8,7 @@
 #AdminHeader { font-weight: bold;
 			   margin-left: 25px;}
 #AdminVersionBlock {
-	background:  url(./plugins/ktstandard/AdminVersionPlugin/templates/AdminVersionPlugin/computer_go.png) no-repeat scroll left;
+	background:  url(./plugins/ktstandard/AdminVersionPlugin/templates/computer_go.png) no-repeat scroll left;
 	font-weight: bold;
 	padding-left:25px;
 	background-position: top left;

@@ -48,7 +48,6 @@ class AdminVersionDashlet extends KTBaseDashlet {
 	function is_active($oUser)
 	{
 	    $this->version = AdminVersion::isNewVersionAvailable();
-	    return true;
 	    if ($this->version === false)
 	    {
 	        return false;
