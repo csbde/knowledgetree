@@ -344,7 +344,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $mpo->start();
         //$this->startTransaction();
-        $oDocument =& KTDocumentUtil::add($this->oFolder, basename($aFile['name']), $this->oUser, $aOptions);
+        $oDocument =& KTDocumentUtil::add($this->oFolder, $aFile['name'], $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
             $this->errorRedirectTo('main',sprintf(_kt("Unexpected failure to add document - %s"), $message), 'fFolderId=' . $this->oFolder->getId());
