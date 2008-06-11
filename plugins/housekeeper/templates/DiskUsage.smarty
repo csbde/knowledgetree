@@ -43,5 +43,5 @@
 {if $red==1}
 <td bgcolor=red><nobr> &lt; {$urgentPercent} %</td>
 {/if}
-<td width="100%" align="right"><a href="{$dispatcherURL}?action=refreshDiskUsage">{i18n}refresh{/i18n}</a></td>
+<td width="100%" align="right">&nbsp;</td>
 </table>

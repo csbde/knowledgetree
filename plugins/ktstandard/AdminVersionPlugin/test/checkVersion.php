@@ -1,7 +1,7 @@
 <?php
 
 /**
- * $Id
+ * $Id: $
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -34,43 +34,17 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
+ *
  */
 
-session_start();
+chdir(dirname(__FILE__));
+require_once(realpath('../../../../config/dmsDefaults.php'));
+require_once('../AdminVersion.inc.php');
 
-require_once("../../config/dmsDefaults.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once('HouseKeeper.inc.php');
+$version = AdminVersion::isNewVersionAvailable();
 
-class HouseKeeperDispatcher extends KTStandardDispatcher
-{
+if ($version == false)
+print 'No new version available.';
+else
+print_r($version);
 
-    function do_cleanup()
-    {
-        $folder = KTUtil::arrayGet($_REQUEST, 'folder');
-        if (is_null($folder))
-        {
-            exit(redirect(generateControllerLink('dashboard')));
-        }
-
-        $oRegistry =& KTPluginRegistry::getSingleton();
-        $oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
-
-        // we must avoid doing anything to the documents folder at all costs!
-        $folder = HouseKeeper::getDirectory($folder);
-        if (is_null($folder) || !$folder['canClean'])
-        {
-            exit(redirect(generateControllerLink('dashboard')));
-        }
-
-        HouseKeeper::cleanDirectory($folder['folder'], $folder['pattern']);
-        HouseKeeper::getKTUsageStats();
-
-        exit(redirect(generateControllerLink('dashboard')));
-    }
-}
-$oDispatcher = new HouseKeeperDispatcher();
-$oDispatcher->dispatch();
-
-?>
