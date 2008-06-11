@@ -456,10 +456,7 @@ class KTPluginUtil {
         if(empty($sPath)){
             return '';
         }
-        if($sPath[0] != '/'){
-            $sPath = '/'.$sPath;
-        }
-        $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR . $sPath;
+        $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR . '/' . $sPath;
         return $sPath;
     }
 
