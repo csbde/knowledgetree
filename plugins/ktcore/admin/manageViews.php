@@ -36,6 +36,7 @@
 
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/widgets/reorderdisplay.inc.php');
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
  
