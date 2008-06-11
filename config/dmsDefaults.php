@@ -104,12 +104,12 @@ require_once(KT_LIB_DIR . '/validation/customerror.php');
 
 // {{{ prependPath()
 function prependPath ($path) {
-    
+
     $include_path = ini_get('include_path');
     ini_set('include_path', $path . PATH_SEPARATOR . $include_path);
 }
 // }}}
-    
+
 prependPath(KT_DIR . '/thirdparty/ZendFramework/library');
 prependPath(KT_DIR . '/thirdparty/pear');
 prependPath(KT_DIR . '/thirdparty/Smarty');
@@ -128,11 +128,11 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
-require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');   
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 // {{{ KTInit
 class KTInit {
-    
+
     // {{{ setupLogging()
     function setupLogging () {
         global $default;
@@ -202,7 +202,7 @@ class KTInit {
     }
     // }}}
 
-    
+
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
@@ -373,25 +373,25 @@ class KTInit {
 
 	function catchFatalErrors()
 	{
-		
+
 		$CustomErrorPage = KTCustomErrorViewer::getCustomErrorRedirectPage();
 		if($CustomErrorPage != '0')
 		{
 			ini_set('display_errors','On');
 		    $phperror='><div id="phperror" style="display:none">';
 			ini_set('error_prepend_string',$phperror);
-		
+
 			$sUrl = KTInit::guessRootUrl();
 			global $default;
 			$sRootUrl = ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'].$sUrl;
-			
+
 			$CustomErrorPage = basename($CustomErrorPage);
-			
+
 			$phperror='</div>><form name="catcher" action="'.$sRootUrl.'/'.$CustomErrorPage.'" method="post" ><input type="hidden" name="fatal" value=""></form>
 			<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
 			ini_set('error_append_string',$phperror);
 		}
-		
+
 	}
 
 
@@ -450,61 +450,79 @@ class KTInit {
     // {{{ initConfig
     function initConfig() {
         global $default;
+        $oKTConfig = KTConfig::getSingleton();
+
+        // TODO: refactor when all the config settings are stored in the database
+        // Check for the config cache
         $use_cache = false;
         $store_cache = false;
-        if (file_exists(KT_DIR .  '/config/cache-path')) {
+        $cachePathFile = KT_DIR .  '/config/cache-path';
+        if (file_exists($cachePathFile)) {
             $store_cache = true;
-            $user = KTLegacyLog::running_user();
-            // handle vhosts.
-            $truehost = KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'default');
-            $trueport = KTUtil::arrayGet($_SERVER, 'SERVER_PORT', '80');
-            $cache_file = trim(file_get_contents(KT_DIR .  '/config/cache-path')) . '/configcache' . $user . $truehost . $trueport;
-            if (!KTUtil::isAbsolutePath($cache_file)) { $cache_file = sprintf('%s/%s', KT_DIR, $cache_file); }
-            $config_file = trim(file_get_contents(KT_DIR .  '/config/config-path'));
-            // Remove any double slashes
-            $config_file = str_replace('//', '/', $config_file);
-            $config_file = str_replace('\\\\', '\\', $config_file);
-            if (!KTUtil::isAbsolutePath($config_file)) { $config_file = sprintf('%s/%s', KT_DIR, $config_file); }
+            // Get the path to the config cache
+            $cachePath = trim(file_get_contents($cachePathFile));
+            $cachePath .= '/configcache';
 
-            $exists = file_exists($cache_file);
-            if ($exists) {
-                $cachestat = stat($cache_file);
-                $configstat = stat($config_file);
+            $cachePath = (!KTUtil::isAbsolutePath($cachePath)) ? sprintf('%s/%s', KT_DIR, $cachePath) : $cachePath;
+
+            // Get the path to the config file
+            $configPathFile = KT_DIR . '/config/config-path';
+            $configPath = trim(file_get_contents($configPathFile));
+
+            $configPath = (!KTUtil::isAbsolutePath($configPath)) ? sprintf('%s/%s', KT_DIR, $configPath) : $configPath;
+
+            // Remove any double slashes
+            $configPath = str_replace('//', '/', $configPath);
+            $configPath = str_replace('\\\\', '\\', $configPath);
+
+            // This check can be removed once all config settings are in the database
+            // Check if the config file has been updated since the last time the cache file was generated.
+            if (file_exists($cachePath)) {
+                $cachestat = stat($cachePath);
+                $configstat = stat($configPath);
                 $tval = 9;
-                // print sprintf("is %d > %d\n", $cachestat[$tval], $configstat[$tval]);
                 if ($cachestat[$tval] > $configstat[$tval]) {
                     $use_cache = true;
+                    $store_cache = false;
+                }
+            }
+
+            if ($use_cache) {
+                $oKTConfig->loadCache($cachePath);
+
+                foreach ($oKTConfig->flat as $k => $v) {
+                    $default->$k = $oKTConfig->get($k);
                 }
             }
         }
 
-/*
-        if ($use_cache) {
-            $oKTConfig =& KTConfig::getSingleton();
-            $oKTConfig->loadCache($cache_file);
+        //Read in DB settings and config settings
+        if(!$use_cache) $oKTConfig->readDBConfig();
+        $dbSetup = $oKTConfig->setupDB();
 
-            foreach ($oKTConfig->flat as $k => $v) {
-                $default->$k = $oKTConfig->get($k);
-            }
-        } else {
-        	//fail safe will be put here
-        	  
-        	  
-            if (PEAR::isError($res)) { return $res; }
-
-            //$oKTConfig =& KTConfig::getSingleton();
-            @touch($cache_file);
-            if ($store_cache && is_writable($cache_file)) {
-                $oKTConfig->createCache($cache_file);
-            }
-
-
+        if(PEAR::isError($dbSetup))
+        {
+        	$this->handleInitError($dbSetup);
         }
-*/
+
+        // Get default server url settings
+        if(!$use_cache) $this->getDynamicConfigSettings();
+
+        // Read in the config settings from the database
+        // Create the global $default array
+        if(!$use_cache) $res = $oKTConfig->readConfig();
+
+
+        if($store_cache && isset($cachePath)){
+            @touch($cachePath);
+            if (is_writable($cachePath)) {
+                $oKTConfig->createCache($cachePath);
+            }
+        }
     }
     // }}}
 
-    
+
 
     // {{{ initTesting
     function initTesting() {
@@ -530,30 +548,10 @@ class KTInit {
 }
 // }}}
 
-//Creating all the config settings 
-//====================================
-$oKTConfig = KTConfig::getSingleton();
-
-//Read in DB specific config settings
-$res = $oKTConfig->readDBConfig();
-//Set up DB connection
-$dbSetup = $oKTConfig->setupDB();
 
 $KTInit = new KTInit();
-
-if(PEAR::isError($dbSetup))
-{
-	$KTInit->handleInitError($dbSetup);
-}
-
-
-
-$KTInit->getDynamicConfigSettings();
 $KTInit->initConfig();
 $KTInit->setupI18n();
-
-//Create final flatns and $default arrays to finish config setup
-$res = $oKTConfig->readConfig();
 
 //====================================
 
@@ -563,8 +561,7 @@ if (isset($GLOBALS['kt_test'])) {
     $KTInit->initTesting();
 }
 
-
-
+$oKTConfig = KTConfig::getSingleton();
 
 if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
 {
