@@ -249,7 +249,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
 
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirecToMain(_kt('Failed to update your details.'));
+            $this->errorRedirectToMain(_kt('Failed to update your details.'));
         }
 
         $this->commitTransaction();
