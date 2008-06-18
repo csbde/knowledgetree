@@ -502,6 +502,26 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("index: Queuing indexing of $document_id");
+
+    }
+
+    private static function incrementCount()
+    {
+        // Get count from system settings
+        $count = Indexer::getIndexedDocumentCount();
+        $count = (int)$count + 1;
+        Indexer::updateIndexedDocumentCount($count);
+    }
+
+    public static function getIndexedDocumentCount()
+    {
+        $count = KTUtil::getSystemSetting('indexedDocumentCount', 0);
+        return (int) $count;
+    }
+
+    public static function updateIndexedDocumentCount($cnt = 0)
+    {
+        KTUtil::setSystemSetting('indexedDocumentCount', $cnt);
     }
 
 	public static function reindexQueue()
@@ -964,6 +984,9 @@ abstract class Indexer
 
         foreach($result as $docinfo)
         {
+        // increment indexed documents count
+        Indexer::incrementCount();
+
         	$docId=$docinfo['document_id'];
         	$extension=$docinfo['filetypes'];
         	$mimeType=$docinfo['mimetypes'];

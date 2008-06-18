@@ -50,10 +50,25 @@ so for windows we use the win32 service status checks.
 // Check if the calling function requires a return value
 $sGiveOutput = (isset($argv[1]) && $argv[1] == 'output') ? true : false;
 
+// Check indexed document count
+// If the number of indexed documents is greater than the set amount, restart open office
+// this clears open office's memory usage
+$resetPoint = 50; // todo: put in config
+$count = Indexer::getIndexedDocumentCount();
+
+$restartOO = false;
+if($count > $resetPoint){
+    $restartOO = true;
+
+    // reset the count
+    Indexer::updateIndexedDocumentCount(0);
+    $default->log->debug('Check Open Office Task: Restarting open office.');
+}
+
 // First we check the host:port to see if open office is running
 $sCheckOO = SearchHelper::checkOpenOfficeAvailablity();
 
-if(empty($sCheckOO)){
+if(empty($sCheckOO) && !$restartOO){
     // If the check returns empty then it is available on that port so we exit
     if($sGiveOutput){
         echo 1;
@@ -61,21 +76,44 @@ if(empty($sCheckOO)){
     exit;
 }
 
-// Open office appears not to be running.
-
+// Open office appears not to be running or requires a restart
 if(OS_WINDOWS){
-    // If this is vista, it might be being blocked, so we query the service
     $OOService = 'ktopenoffice';
-    $result = win32_query_service_status($OOService);
+    $default->log->debug('Check Open Office Task: ' . get_current_user());
 
-    if(is_array($result)){
-        $iProcessId = $result['ProcessId'];
-        if(!empty($iProcessId) && $iProcessId != 0){
-            // If there is a process id (PID) then open office is running so we exit
-            if($sGiveOutput){
-                echo 1;
+    if($restartOO){
+        // If Open office needs to be restarted - stop it here
+        $result_stop = win32_stop_service($OOService);
+
+
+        // Wait for the service to stop fully before trying to restart it
+        $continue = false;
+        $cnt = 0;
+        while($continue === false && $cnt < 15){
+            $result = win32_query_service_status($OOService);
+
+            if(isset($result['ProcessId']) && $result['ProcessId'] != 0){
+                // If there is still a process id then the service has not stopped yet.
+                sleep(2);
+                $continue = false;
+                $cnt++;
+            }else{
+                $continue = true;
             }
-        	exit;
+        }
+    }else{
+        // If this is vista, checking the port may not work so we query the service
+        $result = win32_query_service_status($OOService);
+
+        if(is_array($result)){
+            $iProcessId = $result['ProcessId'];
+            if(!empty($iProcessId) && $iProcessId != 0){
+                // If there is a process id (PID) then open office is running so we exit
+                if($sGiveOutput){
+                    echo 1;
+                }
+            	exit;
+            }
         }
     }
 
@@ -96,11 +134,14 @@ if(OS_WINDOWS){
 
 	$default->log->debug('Check Open Office Task: Open office service could not be started. Error code '.$result2);
 
-
 	// Attempt using the dmsctl batch script
 	$sPath = realpath('../../bin/dmsctl.bat');
+
 	if(file_exists($sPath)){
 	    $sCmd = "\"$sPath\" start";
+	    $default->log->debug('Check Open Office Task: ' . get_current_user());
+        $default->log->debug('Check Open Office Task: ' . $sCmd);
+
 	    $res = KTUtil::pexec($sCmd);
 
 	    $default->log->debug('Check Open Office Task: Attempted start using dmsctl.bat.');
@@ -119,21 +160,35 @@ if(OS_WINDOWS){
     // If the OS is Unix or Linux
     $sPath = realpath('../../dmsctl.sh');
     if(file_exists($sPath)){
-        $sCmd = "\"$sPath\" start";
-        KTUtil::pexec($sCmd);
+        // If Open office needs to be restarted - stop it here
+        if($restartOO){
+            $sCmd = "\"$sPath\" restart soffice";
+            $default->log->debug('Check Open Office Task: ' . get_current_user());
+            $default->log->debug('Check Open Office Task: ' . $sCmd);
 
-        $default->log->debug('Check Open Office Task: Attempted start using dmsctl.sh.');
-	    if($sGiveOutput){
+            KTUtil::pexec($sCmd);
+
+            $default->log->debug('Check Open Office Task: Attempted restart using dmsctl.sh.');
+        }else{
+            $sCmd = "\"$sPath\" start soffice";
+            $default->log->debug('Check Open Office Task: ' . get_current_user());
+            $default->log->debug('Check Open Office Task: ' . $sCmd);
+
+            KTUtil::pexec($sCmd);
+
+            $default->log->debug('Check Open Office Task: Attempted start using dmsctl.sh.');
+        }
+        if($sGiveOutput){
             echo 2;
         }
         exit;
     }else{
-	    $default->log->debug('Check Open Office Task: Can\'t find dmsctl.sh, this may be a source install.');
-	    if($sGiveOutput){
+        $default->log->debug('Check Open Office Task: Can\'t find dmsctl.sh, this may be a source install.');
+        if($sGiveOutput){
             echo 0;
         }
         exit;
-	}
+    }
 }
 $default->log->debug('Check Open Office Task: Can\'t start Open office, this may be a source install.');
 if($sGiveOutput){
