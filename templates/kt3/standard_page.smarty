@@ -140,7 +140,7 @@
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                                {if ($page->user)}
-	                                    <span class="ktLoggedInUser">{$page->user->getName()}</span>
+	                                    <span class="ktLoggedInUser">{$page->user->getName()|truncate:65:"..."}</span>
 	                                {/if}
 	                                {if !empty($page->userMenu)}
 	                                    &middot;
