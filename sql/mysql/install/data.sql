@@ -177,7 +177,7 @@ INSERT INTO `config_settings`(`id`,`group_name`,`item`,`type`,`value`,`helptext`
 (54,'search','resultsDisplayFormat','','searchengine','The format in which to display the results\r\n options are searchengine or browseview defaults to searchengine\r\n.','searchengine',1),
 (55,'search','resultsPerPage','','50','The number of results per page\r\n, defaults to 25\r\n','25',1),
 (56,'search','dateFormat','','Y-m-d','The date format used when making queries using widgets\r\n, defaults to Y-m-d\r\n','Y-m-d',1),
-(57,'browse','previewActivation','','default','The document info box / preview is activated by mousing over or clicking on the icon\r\n. Options: mouse-over (default) or onclick\r\n.','mouse-over',1),
+(57,'browse','previewActivation','','default','The document info box / preview is activated by mousing over or clicking on the icon\r\n. Options: onclick (default) or mouse-over\r\n.','onclick',1),
 (58,'indexer','coreClass','','JavaXMLRPCLuceneIndexer','The core indexing class\r\n. Choices: JavaXMLRPCLuceneIndexer or PHPLuceneIndexer.','JavaXMLRPCLuceneIndexer',1),
 (59,'indexer','batchDocuments','','20','The number of documents to be indexed in a cron session, defaults to 20\r\n.','20',1),
 (60,'indexer','batchMigrateDocuments','','500','The number of documents to be migrated in a cron session, defaults to 500\r\n.','500',1),
