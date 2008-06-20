@@ -77,11 +77,19 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID,$folder);
 		}
 
-		$user = $ktapi->can_user_access_object_requiring_permission($folder, KTAPI_PERMISSION_READ);
-
-		if (is_null($user) || PEAR::isError($user))
+		// A special case. We ignore permission checking on the root folder.
+		if ($folderid != 1)
 		{
-			return $user;
+		    $user = $ktapi->can_user_access_object_requiring_permission($folder, KTAPI_PERMISSION_READ);
+
+		    if (is_null($user) || PEAR::isError($user))
+		    {
+		        $user = $ktapi->can_user_access_object_requiring_permission($folder, KTAPI_PERMISSION_VIEW_FOLDER);
+		        if (is_null($user) || PEAR::isError($user))
+		        {
+		            return $user;
+		        }
+		    }
 		}
 
 		return new KTAPI_Folder($ktapi, $folder);
