@@ -46,74 +46,6 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
         $this->sClass = 'ktError';
     }
 
-    function addIssue($resource, $status)
-    {
-    	$this->resources[] = array(
-    				'name'=>$resource,
-    				'status'=>str_replace(
-
-    						array("\n",_kt('Administrator Guide')),
-    						array('<br>', sprintf("<a target='_blank' href=\"http://www.knowledgetree.com/go/ktAdminManual\">%s</a>", _kt('Administrator Guide'))), $status));
-    }
-
-    function checkResources()
-    {
-    	$check = true;
-    	// check if we have a cached result
-		if (isset($_SESSION['ExternalResourceStatus']))
-		{
-			// we will only do the check every 5 minutes
-			if (time() - $_SESSION['ExternalResourceStatus']['time'] < 5 * 60)
-			{
-				$check = false;
-				$this->resources = $_SESSION['ExternalResourceStatus']['resources'];
-			}
-		}
-
-		// we will only check if the result is not cached, or after 5 minutes
-		if ($check)
-		{
-	    	$this->checkOpenOffice();
-    		$this->checkLucene();
-    		$this->checkDF();
-    		$_SESSION['ExternalResourceStatus']['time'] = time();
-    		$_SESSION['ExternalResourceStatus']['resources'] = $this->resources;
-		}
-
-    	return (count($this->resources) > 0);
-    }
-
-    function checkOpenOffice()
-    {
-		$diagnose = SearchHelper::checkOpenOfficeAvailablity();
-		if (!is_null($diagnose))
-		{
-			$this->addIssue(_kt('Open Office Server'), $diagnose);
-		}
-    }
-
-    function checkLucene()
-    {
-		$indexer = Indexer::get();
-		$diagnose = $indexer->diagnose();
-		if (!is_null($diagnose))
-		{
-			$this->addIssue(_kt('Document Indexer'), $diagnose);
-		}
-    }
-
-    function checkDF()
-    {
-    	$df = KTUtil::findCommand('externalBinary/df','df');
-
-		if (false === $df)
-		{
-			$this->addIssue(_kt('Storage Utilization'), _kt('Could not locate the <i>df</i> binary.'));
-		}
-    }
-
-
-
     function is_active($oUser)
 	{
 	    if (!Permission::userIsSystemAdministrator())
@@ -121,7 +53,14 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
 	    	return false;
 	    }
 
-	    return $this->checkResources() > 0;
+	    $this->resources = KTUtil::getSystemSetting('externalResourceIssues');
+	    if (empty($this->resources))
+	    {
+	        return false;
+	    }
+	    $this->resources = unserialize($this->resources);
+
+	    return count($this->resources) > 0;
 	}
 
 	function render()
@@ -130,6 +69,12 @@ class ExternalResourceStatusDashlet extends KTBaseDashlet
 	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/external_resources');
 
 		$sUrl = KTUtil::kt_url();
+		foreach($this->resources as $k=>$v)
+		{
+		    $this->resources[$k]['status'] = str_replace(
+    						array("\n",_kt('Administrator Guide')),
+    						array('<br>', sprintf("<a target='_blank' href=\"http://www.knowledgetree.com/go/ktAdminManual\">%s</a>", _kt('Administrator Guide'))), $v['status']);
+		}
 
 	    $aTemplateData = array(
 	    		'context' => $this,

@@ -53,20 +53,17 @@ class IndexingStatusDashlet extends KTBaseDashlet
 	    	return false;
 	    }
 
-		if (isset($_SESSION['IndexingStatus']))
-		{
-			$this->indexerName = $_SESSION['IndexingStatus']['indexerName'];
-	    	$this->indexerDiagnosis = $_SESSION['IndexingStatus']['indexerDiagnosis'];
-	    	$this->extractorDiagnosis = $_SESSION['IndexingStatus']['extractorDiagnosis'];
-		}
-		else
-		{
-			$indexer = Indexer::get();
-	    	$this->indexerName = $indexer->getDisplayName();
-	    	$this->indexerDiagnosis = $indexer->diagnose();
-	    	$this->extractorDiagnosis = array();
-	    	$extractorDiagnosis = $indexer->diagnoseExtractors();
+	    $indexerDiagnosis = KTUtil::getSystemSetting('indexerDiagnostics');
+	    $extractorDiagnosis = KTUtil::getSystemSetting('extractorDiagnostics');
+	    if (!empty($indexerDiagnosis)) $indexerDiagnosis = unserialize($indexerDiagnosis);
+	    if (!empty($extractorDiagnosis)) $extractorDiagnosis = unserialize($extractorDiagnosis);
 
+	    if (empty($indexerDiagnosis) && empty($extractorDiagnosis))
+		{
+			return false;
+		}
+	    	$this->indexerDiagnosis = $indexerDiagnosis;
+	    	$this->extractorDiagnosis = array();
 
 	    	$result = array();
 	    	foreach($extractorDiagnosis as $class=>$diagnosis)
@@ -84,18 +81,8 @@ class IndexingStatusDashlet extends KTBaseDashlet
 
 	    	$this->indexerDiagnosis = str_replace(
 
-    						array("\n",_kt('Administrator Guide')),
+    						array("\n",'Administrator Guide'),
     						array('<br>', sprintf("<a target='_blank' href=\"http://www.knowledgetree.com/go/ktAdminManual\">%s</a>", _kt('Administrator Guide'))), $this->indexerDiagnosis);
-
-	    	$_SESSION['IndexingStatus']['indexerName'] = $this->indexerName;
-	    	$_SESSION['IndexingStatus']['indexerDiagnosis'] = $this->indexerDiagnosis;
-	    	$_SESSION['IndexingStatus']['extractorDiagnosis'] = $this->extractorDiagnosis;
-		}
-
-		if (empty($this->indexerDiagnosis) && empty($this->extractorDiagnosis))
-		{
-			return false;
-		}
 
 	    return true;
 	}
@@ -106,7 +93,7 @@ class IndexingStatusDashlet extends KTBaseDashlet
 	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/indexing_status');
 
 		$url = KTUtil::kt_url();
-		
+
 	    $aTemplateData = array(
 	    		'context' => $this,
 	    		'indexerName' => $this->indexerName,
