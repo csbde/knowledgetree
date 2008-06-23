@@ -175,7 +175,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_fields` WRITE;
 /*!40000 ALTER TABLE `document_fields` DISABLE KEYS */;
-INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words'),(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author'),(4,'Category','STRING',0,1,0,3,0,'Please select a category'),(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type');
+INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words',0),
+(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author',0),
+(4,'Category','STRING',0,1,0,3,0,'Please select a category',1),
+(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type',2);
 /*!40000 ALTER TABLE `document_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -973,8 +976,9 @@ INSERT INTO `scheduler_tasks` VALUES
 (4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01',NULL,0,'disabled'),
 (5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01',NULL,0,'disabled'),
 (6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01',NULL,0,'enabled');
-
+(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
+(8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01',NULL,0,'enabled'),
+(9,'Check Latest Version','plugins/ktstandard/AdminVersionPlugin/bin/UpdateNewVersion.php','',0,'daily','2007-10-01',NULL,0,'enabled');
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1891,7 +1895,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `zseq_scheduler_tasks` VALUES (7);
+INSERT INTO `zseq_scheduler_tasks` VALUES (9);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
