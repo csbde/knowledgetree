@@ -34,16 +34,16 @@
  * Contributor( s): ______________________________________
  *
  */
- 
-require_once(KT_LIB_DIR . '/dispatcher.inc.php'); 
-require_once(KT_LIB_DIR . '/templating/templating.inc.php'); 
 
-class BaseConfigDispatcher extends KTAdminDispatcher 
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+
+class BaseConfigDispatcher extends KTAdminDispatcher
 {
 	function check() {
         return parent::check();
     }
-	
+
 	function do_main($sQuery)
 	{
 		if(empty($sQuery))
@@ -51,10 +51,10 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 			$sQuery = '';
 		}
 		$aResults = DBUtil::getResultArray($sQuery);
-        
+
         //populating paths correctly
         $oKTConfig =& KTConfig::getSingleton();
-        
+
         for($i = 0; $i < count($aResults); $i++)
         {
         	if(strstr($aResults[$i]['value'],'$') != false)
@@ -66,12 +66,12 @@ class BaseConfigDispatcher extends KTAdminDispatcher
         //If template has posted changes for config settings save all values to db.
         if(isset($_POST['configArray']))
         {
-			
+
         	foreach ($aResults as $values)
         	{
-        		
+
         		//IF current db entries id is in the array sent back by the page AND
-        		//the values for the db and the page are different, update the db. 
+        		//the values for the db and the page are different, update the db.
         		if(isset($_POST['configArray'][$values['id']]) && $_POST['configArray'][$values['id']]
         		!= $values['value'])
         		{
@@ -82,7 +82,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	        			if($_POST['configArray'][$values['id']] == 'true')
 	        			{
 		        			$aFields['value'] = true;
-		        			
+
 	        			}
 	        			else
 	        			{
@@ -96,8 +96,11 @@ class BaseConfigDispatcher extends KTAdminDispatcher
         			$oUpdateResult = DBUtil::autoUpdate('config_settings', $aFields, $values['id']);
         		}
         	}
-        } 
-        
+
+        	// Clear the cached settings
+        	$oKTConfig->clearCache();
+        }
+
         //Get new results after any db change above
         if(isset($_POST['configArray']))
         {
@@ -110,21 +113,21 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	        	}
         	}
         }
-        
+
         $oTemplating =& KTTemplating::getSingleton();
-        
+
         $oTemplate =& $oTemplating->loadTemplate('ktcore/configsettings');
-        
-        //set db config data being sent to template         
+
+        //set db config data being sent to template
         $oTemplate->setData(array(
             'results' => $aResults
-            
+
         ));
         return $oTemplate;
 	}
 }
 
-class UIConfigPageDispatcher extends BaseConfigDispatcher 
+class UIConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -135,14 +138,14 @@ class UIConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where group_name = \'ui\'order by group_name';
         return parent::do_main($sQuery);
-    } 
+    }
 }
 
-class ClientSettingsConfigPageDispatcher extends BaseConfigDispatcher 
+class ClientSettingsConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -153,16 +156,16 @@ class ClientSettingsConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where
         		group_name = \'KTWebDAVSettings\' or group_name = \'BaobabSettings\' or
         		group_name = \'webservice\' or group_name = \'clientToolPolicies\' order by group_name';
         return parent::do_main($sQuery);
-	} 
+	}
 }
 
-class EmailConfigPageDispatcher extends BaseConfigDispatcher 
+class EmailConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -173,14 +176,14 @@ class EmailConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where group_name = \'email\'order by group_name';
         return parent::do_main($sQuery);
-    } 
+    }
 }
 
-class GeneralConfigPageDispatcher extends BaseConfigDispatcher 
+class GeneralConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -191,16 +194,16 @@ class GeneralConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where
         		item = \'schedulerInterval\' or item = \'fakeMimetype\'
         		or item = \'browseToUnitFolder\' order by group_name';
         return parent::do_main($sQuery);
-    } 
+    }
 }
 
-class i18nConfigPageDispatcher extends BaseConfigDispatcher 
+class i18nConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -211,15 +214,15 @@ class i18nConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where
         		group_name = \'i18n\' order by group_name';
         return parent::do_main($sQuery);
-    } 
+    }
 }
 
-class SearchAndIndexingConfigPageDispatcher extends BaseConfigDispatcher 
+class SearchAndIndexingConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
         $this->aBreadcrumbs[] = array(
@@ -230,11 +233,11 @@ class SearchAndIndexingConfigPageDispatcher extends BaseConfigDispatcher
     }
 
     function do_main() {
-        
+
         //get config settings from db
         $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where
         		group_name = \'search\' or group_name = \'indexer\'order by group_name';
         return parent::do_main($sQuery);
-    } 
+    }
 }
 ?>

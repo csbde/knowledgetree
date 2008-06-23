@@ -49,8 +49,36 @@ class KTConfig {
     var $expanded = array();
     var $expanding = array();
 
+    /**
+     * Get the path to the cache file for the config settings
+     *
+     * @return string
+     */
+    static function getCacheFilename()
+    {
+        $pathFile = KT_DIR .  '/config/cache-path';
+
+        if(!file_exists($pathFile)){
+            return false;
+        }
+
+        // Get the directory containing the file, append the file name
+        $cacheFile = trim(file_get_contents($pathFile));
+        $cacheFile .= '/configcache';
+
+        // Ensure path is absolute
+        $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;
+
+        return $cacheFile;
+    }
+
     // FIXME nbm:  how do we cache errors here?
-    function loadCache($filename) {
+    function loadCache() {
+        $filename = $this->getCacheFilename();
+        if($filename === false){
+            return false;
+        }
+
         $config_str = file_get_contents($filename);
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
@@ -60,7 +88,9 @@ class KTConfig {
         return true;
     }
 
-    function createCache($filename) {
+    function createCache() {
+        $filename = $this->getCacheFilename();
+
         $config_cache = array();
         $config_cache['flat'] = $this->flat;
         $config_cache['flatns'] = $this->flatns;
@@ -68,6 +98,19 @@ class KTConfig {
         $config_cache['expanding'] = $this->expanding;
 
         file_put_contents($filename, serialize($config_cache));
+    }
+
+    /**
+     * Delete the cache so it can be refreshed on the next page load
+     *
+     * @param string $filename
+     */
+    function clearCache()
+    {
+        $filename = $this->getCacheFilename();
+        if($filename !== false && file_exists($filename)){
+            @unlink($filename);
+        }
     }
 
 	// {{{ readConfig
@@ -236,15 +279,22 @@ class KTConfig {
      */
     static function getConfigFilename()
     {
-    	$configPath = file_get_contents(KT_DIR . '/config/config-path');
+        $pathFile = KT_DIR . '/config/config-path';
+        $configFile = trim(file_get_contents($pathFile));
 
-    	if (is_file($configPath))
+        $configFile = (!KTUtil::isAbsolutePath($configFile)) ? sprintf('%s/%s', KT_DIR, $configFile) : $configFile;
+
+        // Remove any double slashes
+        $configFile = str_replace('//', '/', $configFile);
+        $configFile = str_replace('\\\\', '\\', $configFile);
+
+    	if (file_exists($configFile))
     	{
-    		return $configPath;
+    		return $configFile;
     	}
     	else
     	{
-    		return KT_DIR . '/' . $configPath;
+    		return KT_DIR . DIRECTORY_SEPARATOR . $configFile;
     	}
     }
 
