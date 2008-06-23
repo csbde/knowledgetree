@@ -48,6 +48,11 @@ class FolderUsageDashlet extends KTBaseDashlet
 
     function is_active($oUser)
     {
+        $usage = KTUtil::getSystemSetting('KTUsage');
+        if (empty($usage)) return false;
+
+        $this->usage = unserialize($usage);
+
         return Permission::userIsSystemAdministrator();
     }
 
@@ -70,11 +75,11 @@ class FolderUsageDashlet extends KTBaseDashlet
             $dispatcherURL = '/'.$dispatcherURL;
         }
 
-        $usage = unserialize(KTUtil::getSystemSetting('KTUsage','n/a'));
+
 
         $aTemplateData = array(
         'context' => $this,
-        'usages'=>$usage,
+        'usages'=>$this->usage,
         'dispatcherURL'=>$dispatcherURL
         );
 
