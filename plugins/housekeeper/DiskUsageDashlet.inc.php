@@ -37,155 +37,54 @@
 
 class DiskUsageDashlet extends KTBaseDashlet
 {
-	private $dfCmd;
-	private $usage;
-	private $warningPercent;
-	private $urgentPercent;
+    private $usage;
 
-	function DiskUsageDashlet()
-	{
-		$this->sTitle = _kt('Storage Utilization');
-		$this->sClass = "ktInfo";
-	}
+    function DiskUsageDashlet()
+    {
+        $this->sTitle = _kt('Storage Utilization');
+        $this->sClass = "ktInfo";
+    }
 
-	function is_active($oUser)
-	{
-		$dfCmd = KTUtil::findCommand('externalBinary/df','df');
-		if ($dfCmd === false)
-		{
-			return false;
-		}
-		$this->dfCmd = $dfCmd;
+    function is_active($oUser)
+    {
+        $usage = unserialize(KTUtil::getSystemSetting('DiskUsage','n/a'));
+        if ($usage == 'n/a') return false;
+        $this->usage = $usage;
+        return Permission::userIsSystemAdministrator();
+    }
 
-		$config = KTConfig::getSingleton();
-		$this->warningPercent = $config->get('DiskUsage/warningThreshold', 15);
-		$this->urgentPercent = $config->get('DiskUsage/urgentThreshold', 5);
+    function render()
+    {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('DiskUsage');
 
-		$got_usage = $this->getUsage();
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
 
-		if ($got_usage == false)
-		{
-			return false;
-		}
+        $config = KTConfig::getSingleton();
+        $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
-		return Permission::userIsSystemAdministrator();
-	}
-
-	function getUsage($refresh=false)
-	{
-		if (isset($_SESSION['DiskUsage']['problem']))
-		{
-			return false;
-		}
-
-    	$check = true;
-    	// check if we have a cached result
-		if (isset($_SESSION['DiskUsage']))
-		{
-			// we will only do the check every 5 minutes
-			if (time() - $_SESSION['DiskUsage']['time'] < 5 * 60)
-			{
-				$check = false;
-				$this->usage = $_SESSION['DiskUsage']['usage'];
-			}
-		}
-
-		// we will only check if the result is not cached, or after 5 minutes
-		if ($check)
-		{
-			$cmd = $this->dfCmd;
-
-			if (OS_WINDOWS)
-			{
-				$cmd = str_replace( '/','\\',$cmd);
-				$res = KTUtil::pexec("\"$cmd\" -B 1 2>&1");
-				$result = implode("\r\n",$res['out']);
-			}
-			else
-			{
-				$result = shell_exec($cmd." -B 1 2>&1");
-			}
-
-			if (strpos($result, 'cannot read table of mounted file systems') !== false)
-			{
-				$_SESSION['DiskUsage']['problem'] = true;
-				return false;
-			}
-
-
-			$result = explode("\n", $result);
-
-			unset($result[0]); // gets rid of headings
-
-			$usage=array();
-			foreach($result as $line)
-			{
-				if (empty($line)) continue;
-				preg_match('/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%\s+(.*)/', $line, $matches);
-				list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
-
-				if ($size === 0) continue;
-
-				$colour = '';
-				if ($usedp >= 100 - $this->urgentPercent)
-				{
-					$colour = 'red';
-				}
-				elseif ($usedp >= 100 - $this->warningPercent)
-				{
-					$colour = 'orange';
-				}
-
-				$usage[] = array(
-						'filesystem'=>$filesystem,
-						'size'=>KTUtil::filesizeToString($size),
-						'used'=>KTUtil::filesizeToString($used),
-						'available'=>KTUtil::filesizeToString($avail),
-						'usage'=>$usedp . '%',
-						'mounted'=>$mount,
-						'colour'=>$colour
-					);
-			}
-
-			$this->usage = $usage;
-
-    		$_SESSION['DiskUsage']['time'] = time();
-    		$_SESSION['DiskUsage']['usage'] = $this->usage;
-		}
-
-		return true;
-	}
-
-	function render()
-	{
-		$oTemplating =& KTTemplating::getSingleton();
-       	$oTemplate = $oTemplating->loadTemplate('DiskUsage');
-
-		$oRegistry =& KTPluginRegistry::getSingleton();
-		$oPlugin =& $oRegistry->getPlugin('ktcore.housekeeper.plugin');
-
-		$config = KTConfig::getSingleton();
-		$rootUrl = $config->get('KnowledgeTree/rootUrl');
-
-		$dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
-		if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
-		$dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
+        $dispatcherURL = $oPlugin->getURLPath('HouseKeeperDispatcher.php');
+        if (!empty($rootUrl)) $dispatcherURL = $rootUrl . $dispatcherURL;
+        $dispatcherURL = str_replace( '\\', '/', $dispatcherURL);
         if ( substr( $dispatcherURL, 0,1 ) != '/')
-		{
-			$dispatcherURL = '/'.$dispatcherURL;
-		}
+        {
+            $dispatcherURL = '/'.$dispatcherURL;
+        }
 
-		$aTemplateData = array(
-			'context' => $this,
-			'usages'=>$this->usage,
-			'warnPercent'=>$this->warningPercent,
-			'urgentPercent'=>$this->urgentPercent,
-			'dispatcherURL'=>$dispatcherURL
-		);
+        $warningPercent = $config->get('DiskUsage/warningThreshold', 15);
+        $urgentPercent = $config->get('DiskUsage/urgentThreshold', 5);
+
+        $aTemplateData = array(
+        'context' => $this,
+        'usages'=> $this->usage,
+        'warnPercent'=>$warningPercent,
+        'urgentPercent'=>$urgentPercent,
+        'dispatcherURL'=>$dispatcherURL
+        );
 
         return $oTemplate->render($aTemplateData);
     }
 }
-
 
 ?>
