@@ -951,7 +951,7 @@ abstract class Indexer
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
 					LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
  				WHERE
- 					(iff.processdate IS NULL or iff.processdate < cast(cast('$date' as date) -1 as date)) AND dmv.status_id=1
+ 					(iff.processdate IS NULL or iff.processdate < date_sub('$date', interval 1 day)) AND dmv.status_id=1
 				ORDER BY indexdate
  					LIMIT $max";
         $result = DBUtil::getResultArray($sql);
