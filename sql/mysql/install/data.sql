@@ -1276,8 +1276,9 @@ INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','D
 (179,'sql*3.5.2*0*3.5.2/temp_cleanup.sql','Adds background script to clean up temporary index files.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (180,'sql*3.5.2*0*3.5.2/scheduler_permissions.sql','Update scheduler permissions..','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (181,'sql*3.5.2*0*3.5.2/mime_type_update.sql','Update MIME types.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(192,'sql*3.5.2*0*3.5.2/zdashboard_tasks.sql','Update Dashboard tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(183,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(182,'sql*3.5.2*0*3.5.2/zdashboard_tasks.sql','Update Dashboard tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(183,'sql*3.5.2*0*3.5.2/zdashboard_tasks2.sql','Update more Dashboard tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(184,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2104,7 +2105,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (183);
+INSERT INTO `zseq_upgrades` VALUES (184);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
