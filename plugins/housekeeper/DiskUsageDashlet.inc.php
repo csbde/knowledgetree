@@ -47,8 +47,9 @@ class DiskUsageDashlet extends KTBaseDashlet
 
     function is_active($oUser)
     {
-        $usage = unserialize(KTUtil::getSystemSetting('DiskUsage','n/a'));
-        if ($usage == 'n/a') return false;
+        $usage = KTUtil::getSystemSetting('DiskUsage');
+        if (empty($usage)) return false;
+        $usage = unserialize($usage);
         $this->usage = $usage;
         return Permission::userIsSystemAdministrator();
     }
