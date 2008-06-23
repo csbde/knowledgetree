@@ -37,54 +37,62 @@
  *
  */
 
-class ExternalResourceStatusDashlet extends KTBaseDashlet
-{
-	var $resources = array();
+chdir(dirname(__FILE__));
+require_once(realpath('../../config/dmsDefaults.php'));
 
-    function ExternalResourceStatusDashlet()
+class ResourceChecker
+{
+    var $resources;
+
+    function addIssue($resource, $status)
     {
-        $this->sTitle = _kt('External Resource Dependancy Status');
-        $this->sClass = 'ktError';
+    	$this->resources[] = array(
+    				'name'=>$resource,
+    				'status'=>$status);
     }
 
-    function is_active($oUser)
-	{
-	    if (!Permission::userIsSystemAdministrator())
-	    {
-	    	return false;
-	    }
 
-	    $this->resources = KTUtil::getSystemSetting('externalResourceIssues');
-	    if (empty($this->resources))
-	    {
-	        return false;
-	    }
-	    $this->resources = unserialize($this->resources);
-
-	    return count($this->resources) > 0;
-	}
-
-	function render()
-	{
-	    $oTemplating =& KTTemplating::getSingleton();
-	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/external_resources');
-
-		$sUrl = KTUtil::kt_url();
-		foreach($this->resources as $k=>$v)
+    function checkOpenOffice()
+    {
+		$diagnose = SearchHelper::checkOpenOfficeAvailablity();
+		if (!is_null($diagnose))
 		{
-		    $this->resources[$k]['status'] = str_replace(
-    						array("\n",_kt('Administrator Guide')),
-    						array('<br>', sprintf("<a target='_blank' href=\"http://www.knowledgetree.com/go/ktAdminManual\">%s</a>", _kt('Administrator Guide'))), $v['status']);
+			$this->addIssue('Open Office Server', $diagnose);
 		}
+    }
 
-	    $aTemplateData = array(
-	    		'context' => $this,
-				'resources' => $this->resources,
-				'url' => $sUrl
-			);
+    function checkLucene()
+    {
+		$indexer = Indexer::get();
+		$diagnose = $indexer->diagnose();
+		if (!is_null($diagnose))
+		{
+			$this->addIssue('Document Indexer', $diagnose);
+		}
+    }
 
-        return $oTemplate->render($aTemplateData);
+    function checkDF()
+    {
+    	$df = KTUtil::findCommand('externalBinary/df','df');
+
+		if (false === $df)
+		{
+			$this->addIssue('Storage Utilization', 'Could not locate the <i>df</i> binary.');
+		}
+    }
+
+
+    function check()
+    {
+        $this->checkOpenOffice();
+    	$this->checkLucene();
+    	$this->checkDF();
+
+    	KTUtil::setSystemSetting('externalResourceIssues', serialize($this->resources));
     }
 }
+
+$checker = new ResourceChecker();
+$checker->check();
 
 ?>

@@ -899,6 +899,100 @@ abstract class Indexer
 		return Indexer::getIndexingQueue(false);
 	}
 
+	public function updateIndexStats()
+	{
+	    $optimisationDate = KTUtil::getSystemSetting('luceneOptimisationDate', '');
+
+	    $noOptimisation = false;
+	    if ($optimisationDate == '')
+	    {
+	        $optimisationDate = _kt('N/A');
+	        $optimisationPeriod = $optimisationDate;
+	    }
+	    else
+	    {
+	        $optimisationPeriod = KTUtil::computePeriodToDate($optimisationDate, null, true);
+	        $noOptimisation = $optimisationPeriod['days'] > 2;
+	        $optimisationPeriod = $optimisationPeriod['str'];
+	        $optimisationDate = date('Y-m-d H:i:s', $optimisationDate);
+	    }
+
+	    $indexingDate = KTUtil::getSystemSetting('luceneIndexingDate', '');
+	    if ($indexingDate == '')
+	    {
+	        $indexingDate = _kt('N/A');
+	        $indexingPeriod = $indexingDate;
+	    }
+	    else
+	    {
+	        $indexingPeriod = KTUtil::computePeriodToDate($indexingDate);
+	        $indexingDate = date('Y-m-d H:i:s', $indexingDate);
+	    }
+
+	    $index = Indexer::get();
+	    $docsInIndex = $index->getDocumentsInIndex();
+
+	    // we are only interested in documents that are active
+	    $docsInQueue = $index->getIndexingQueue(false);
+	    $docsInQueue = count($docsInQueue);
+
+	    $errorsInQueue = $index->getIndexingQueue(true);
+	    $errorsInQueue = count($errorsInQueue);
+
+	    $sql = "SELECT count(*) as docsInRepository FROM documents";
+	    $docsInRepository = DBUtil::getOneResultKey($sql, 'docsInRepository');
+
+	    if ($docsInRepository == 0)
+	    {
+	        $indexingCoverage = '0.00%';
+	        $queueCoverage = $indexingCoverage;
+	    }
+	    else
+	    {
+	        // compute indexing coverage
+	        $indexingCoverage = _kt('Not Available');
+	        if (is_numeric($docsInIndex))
+	        {
+	            $indexingCoverage = ($docsInIndex * 100) / $docsInRepository;
+	            $indexingCoverage = number_format($indexingCoverage, 2, '.',',') . '%';
+	        }
+
+	        // compute queue coverage
+	        $queueCoverage = _kt('Not Available');
+	        if (is_numeric($docsInQueue))
+	        {
+	            $queueCoverage = ($docsInQueue * 100) / $docsInRepository;
+	            $queueCoverage = number_format($queueCoverage, 2, '.',',') . '%';
+	        }
+	    }
+
+
+	    $stats = array(
+	    'optimisationDate'=>$optimisationDate,
+	    'optimisationPeriod'=>$optimisationPeriod,
+	    'indexingDate'=>$indexingDate,
+	    'indexingPeriod'=>$indexingPeriod,
+	    'docsInIndex'=>$docsInIndex,
+	    'docsInQueue'=>$docsInQueue,
+	    'errorsInQueue'=>$errorsInQueue,
+	    'docsInRepository'=>$docsInRepository,
+	    'indexingCoverage'=>$indexingCoverage,
+	    'queueCoverage'=>$queueCoverage,
+	    'noOptimisation'=>$noOptimisation
+	    );
+
+	    KTUtil::setSystemSetting('indexerStats', serialize($stats));
+
+	    $indexer = Indexer::get();
+
+	    $diagnosis = $indexer->diagnose();
+	    KTUtil::setSystemSetting('indexerDiagnostics', serialize($diagnosis));
+
+	    $extractorDiagnosis = $indexer->diagnoseExtractors();
+
+	    KTUtil::setSystemSetting('extractorDiagnostics', serialize($extractorDiagnosis));
+	}
+
     /**
      * The main function that may be called repeatedly to index documents.
      *
