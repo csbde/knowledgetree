@@ -793,6 +793,13 @@ abstract class Indexer
     	DBUtil::runQuery($sql);
     }
 
+    private $restartCurrentBatch = false;
+
+    public function restartBatch()
+    {
+        $this->restartCurrentBatch = true;
+    }
+
      /**
      *
      * @param int $documentId
@@ -944,7 +951,7 @@ abstract class Indexer
 					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
 					LEFT JOIN mime_extractors me ON mt.extractor_id=me.id
  				WHERE
- 					(iff.processdate IS NULL or iff.processdate < cast(cast('$date' as date) -1 as date)) AND dmv.status_id=1
+ 					(iff.processdate IS NULL or iff.processdate < date_sub('$date', interval 1 day)) AND dmv.status_id=1
 				ORDER BY indexdate
  					LIMIT $max";
         $result = DBUtil::getResultArray($sql);
@@ -1043,8 +1050,16 @@ abstract class Indexer
         		continue;
         	}
 
+        	if ($this->restartCurrentBatch)
+			{
+			    Indexer::unqueueDocument($docId);
+        		Indexer::index($docId, 'A');
+			    continue;
+			}
+
+
         	$filename = $document->getFileName();
-        	if (substr($filename,0,1) == '~')
+        	if (substr($filename,0,1) == '~' || substr($filename,-1) == '~')
         	{
         		Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
         		continue;
@@ -1081,7 +1096,7 @@ abstract class Indexer
 
         		if ($extractor->needsIntermediateSourceFile())
         		{
-        			$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
+        			//$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
 
         			$intermediate = $tempPath . '/'. $docId . '.' . $extension;
         			$result = @copy($sourceFile, $intermediate);
