@@ -37,54 +37,6 @@
  *
  */
 
-class ExternalResourceStatusDashlet extends KTBaseDashlet
-{
-	var $resources = array();
-
-    function ExternalResourceStatusDashlet()
-    {
-        $this->sTitle = _kt('External Resource Dependancy Status');
-        $this->sClass = 'ktError';
-    }
-
-    function is_active($oUser)
-	{
-	    if (!Permission::userIsSystemAdministrator())
-	    {
-	    	return false;
-	    }
-
-	    $this->resources = KTUtil::getSystemSetting('externalResourceIssues');
-	    if (empty($this->resources))
-	    {
-	        return false;
-	    }
-	    $this->resources = unserialize($this->resources);
-
-	    return count($this->resources) > 0;
-	}
-
-	function render()
-	{
-	    $oTemplating =& KTTemplating::getSingleton();
-	    $oTemplate = $oTemplating->loadTemplate('ktcore/search2/external_resources');
-
-		$sUrl = KTUtil::kt_url();
-		foreach($this->resources as $k=>$v)
-		{
-		    $this->resources[$k]['status'] = str_replace(
-    						array("\n",_kt('Administrator Guide')),
-    						array('<br>', sprintf("<a target='_blank' href=\"http://www.knowledgetree.com/go/ktAdminManual\">%s</a>", _kt('Administrator Guide'))), $v['status']);
-		}
-
-	    $aTemplateData = array(
-	    		'context' => $this,
-				'resources' => $this->resources,
-				'url' => $sUrl
-			);
-
-        return $oTemplate->render($aTemplateData);
-    }
-}
+require_once('optimise.php');
 
 ?>
