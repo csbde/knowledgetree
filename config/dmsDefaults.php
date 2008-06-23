@@ -455,36 +455,19 @@ class KTInit {
         // TODO: refactor when all the config settings are stored in the database
         // Check for the config cache
         $use_cache = false;
-        $store_cache = false;
-        $cachePathFile = KT_DIR .  '/config/cache-path';
-        if (file_exists($cachePathFile)) {
-            $store_cache = true;
-            // Get the path to the config cache
-            $cachePath = trim(file_get_contents($cachePathFile));
-            $cachePath .= '/configcache';
-
-            $cachePath = (!KTUtil::isAbsolutePath($cachePath)) ? sprintf('%s/%s', KT_DIR, $cachePath) : $cachePath;
-
-            // Get the path to the config file
-            $configPathFile = KT_DIR . '/config/config-path';
-            $configPath = trim(file_get_contents($configPathFile));
-
-            $configPath = (!KTUtil::isAbsolutePath($configPath)) ? sprintf('%s/%s', KT_DIR, $configPath) : $configPath;
-
-            // Remove any double slashes
-            $configPath = str_replace('//', '/', $configPath);
-            $configPath = str_replace('\\\\', '\\', $configPath);
+        $store_cache = true;
+        $cachePath = $oKTConfig->getCacheFilename();
+        if (file_exists($cachePath)) {
+            $configPath = $oKTConfig->getConfigFilename();
 
             // This check can be removed once all config settings are in the database
             // Check if the config file has been updated since the last time the cache file was generated.
-            if (file_exists($cachePath)) {
-                $cachestat = stat($cachePath);
-                $configstat = stat($configPath);
-                $tval = 9;
-                if ($cachestat[$tval] > $configstat[$tval]) {
-                    $use_cache = true;
-                    $store_cache = false;
-                }
+            $cachestat = stat($cachePath);
+            $configstat = stat($configPath);
+            $tval = 9;
+            if ($cachestat[$tval] > $configstat[$tval]) {
+                $use_cache = true;
+                $store_cache = false;
             }
 
             if ($use_cache) {
