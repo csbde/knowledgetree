@@ -58,14 +58,25 @@ class PDFExtractor extends ApplicationExtractor
 
 	protected  function exec($cmd)
 	{
+	    global $default;
 		$res = 	parent::exec($cmd);
 
-		if (false === $res && (strpos($this->output, 'Copying of text from this document is not allowed') !== false))
+		if (false === $res && ((strpos($this->output, 'Copying of text from this document is not allowed') !== false) ||
+		                      (strpos($this->output, 'Incorrect password') !== false)))
 		{
 			$this->output = '';
 			file_put_contents($this->targetfile, _kt('Security properties on the PDF document prevent text from being extracted.'));
+			$default->log->info('Security properties on the PDF document prevent text from being extracted.');
 			return true;
 		}
+
+		if (false === $res && (strpos($this->output, 'PDF file is damaged') !== false))
+		{
+			$this->output = '';
+			$default->log->info('PDF file is damaged');
+			return true;
+		}
+
 
 		if (false === $res && (strpos($this->output, '(continuing anyway)') !== false))
 		{

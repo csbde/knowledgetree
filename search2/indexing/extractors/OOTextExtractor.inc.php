@@ -122,13 +122,53 @@ class OOTextExtractor extends ExternalDocumentExtractor
 
 	public function extractTextContent()
 	{
-		if (false === parent::extractTextContent())
+	    global $default;
+
+        $docId = $this->document->getId();
+
+	    if (empty($this->extension))
+	    {
+	        $default->log->info("DocumentId: $docId - Document does not have an extension");
+            Indexer::unqueueDocument($docId, sprintf(("Removing document from queue: documentId %d"),$docId));
+	        return false;
+	    }
+
+	    // Open Office does not support the following files
+	    if (in_array($this->extension, array('xlt')))
+	    {
+	        $default->log->info("DocumentId: $docId - Document does not have an extension");
+	        Indexer::unqueueDocument($docId, sprintf(("Removing document from queue: documentId %d"),$docId));
+	        return false;
+	    }
+
+        if (false === parent::extractTextContent())
 		{
+		    if (strpos($this->output, 'OpenOffice process not found or not listening') !== false)
+		    {
+		        $indexer = Indexer::get();
+                $indexer->restartBatch();
+                return false;
+		    }
+		    elseif (strpos($this->output, 'Unexpected connection closure') !== false
+		    || strpos($this->output, '\'NoneType\' object has no attribute \'storeToURL\'') !== false
+		    || strpos($this->output, 'The document could not be opened for conversion. This could indicate an unsupported mimetype.') !== false
+		    || strpos($this->output, 'URL seems to be an unsupported one.') !== false
+		    || strpos($this->output, '__main__.com.sun.star.task.ErrorCodeIOException') !== false)
+		    {
+                $default->log->info("DocumentId: $docId - Suspect the file cannot be indexed by Open Office.");
+                file_put_contents($this->targetfile, '');
+                $indexer = Indexer::get();
+                $indexer->restartBatch();
+
+                Indexer::unqueueDocument($docId, sprintf(_kt("Removing document from queue: documentId %d"),$docId));
+	           return true;
+		    }
 			return false;
 		}
 
 		if ($this->targetExtension != 'html')
 		{
+		    file_put_contents($this->targetfile, '');
 			return true;
 		}
 		$content = file_get_contents($this->targetfile);
