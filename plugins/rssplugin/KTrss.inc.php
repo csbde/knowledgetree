@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -315,7 +315,7 @@ class KTrss{
     function rss_sanitize($str, $do_amp=true)
     {
 
-        $result = str_replace("\\\"","\"",str_replace('\\\'','\'',htmlentities($str,ENT_NOQUOTES, 'UTF-8')));
+        $result = str_replace("\\\"","\"",str_replace('\\\'','\'',htmlspecialchars($str,ENT_NOQUOTES, 'UTF-8')));
         if ($do_amp)
         {
             $result = str_replace('&','&amp;',$result);
@@ -325,20 +325,9 @@ class KTrss{
 
     // Takes in an array as a parameter and returns rss2.0 compatible xml
     function arrayToXML($aItems){
-    	// Build path to host
-    	$aPath = explode('/', trim($_SERVER['PHP_SELF']));
-    	global $default;
-    	if(count($aPath) > 2){
-    		for($i = 0; $i < count($aPath)-1; $i++){
-    			$sSuffix .= $aPath[$i];
-    		}
-    		$sSuffix = $aPath[1]."/";
-    	}else{
-    		$sSuffix = '';
-    	}
-    	$hostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$sSuffix;
-    	
-    	$head = "<?xml version=\"1.0\"?>\n
+    	$hostPath = KTUtil::kt_url() . DIRECTORY_SEPARATOR;
+
+    	$head = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n
     	       <rss version=\"2.0\">\n
     	           <channel>\n
     	               <title>".APP_NAME." RSS</title>\n
@@ -349,7 +338,7 @@ class KTrss{
         	               <title>".APP_NAME." RSS</title>\n
         	               <width>140</width>\n
         	               <height>28</height>
-        	               <link>".$hostPath."knowledgeTree/</link>\n
+        	               <link>".$hostPath."</link>\n
         	               <url>".$hostPath."resources/graphics/ktlogo_rss.png</url>\n
     	               </image>\n";
 
@@ -385,8 +374,8 @@ class KTrss{
 	    	}
 
 	    	$xmlItemHead = "<item>\n
-	    	      <title>".htmlentities($aItem[0][0][name], ENT_QUOTES, 'UTF-8')."</title>\n
-	    	      <link>".$hostPath."action.php?kt_path_info=ktcore.actions.".htmlentities($sTypeSelect, ENT_QUOTES, 'UTF-8')."=".$aItem[0][0]['id']."</link>\n
+	    	      <title>".htmlspecialchars($aItem[0][0][name], ENT_QUOTES, 'UTF-8')."</title>\n
+	    	      <link>".$hostPath."action.php?kt_path_info=ktcore.actions.".htmlspecialchars($sTypeSelect, ENT_QUOTES, 'UTF-8')."=".$aItem[0][0]['id']."</link>\n
 	    	      <description>\n";
 
 	    	$htmlItem = "<table border='0' width='90%'>\n
@@ -468,8 +457,8 @@ class KTrss{
 
           $xmlItemFooter = "</description>\n</item>\n";
 
-          // Use htmlentities to allow html tags in the xml.
-          $htmlItem = htmlentities($htmlItem, ENT_QUOTES, 'UTF-8');
+          // Use htmlspecialchars to allow html tags in the xml.
+          $htmlItem = htmlspecialchars($htmlItem, ENT_QUOTES, 'UTF-8');
 
           $feed .= $xmlItemHead.$htmlItem.$xmlItemFooter;
 	    }
