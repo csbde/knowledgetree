@@ -1708,6 +1708,8 @@ abstract class Indexer
      */
     public abstract function getDocumentsInIndex();
 
+    public abstract function isDocumentIndexed($documentId);
+
     /**
      * Returns the path to the index directory
      *
