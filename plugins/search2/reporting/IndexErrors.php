@@ -55,24 +55,34 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
         $indexer = Indexer::get();
         $indexer->registerTypes();
 
-        if($_REQUEST['rescheduleValue'] == 'reschedule')
+        switch ($_REQUEST['rescheduleValue'])
         {
-
-			foreach(KTUtil::arrayGet($_REQUEST, 'index_error', array()) as $sDocId => $v)
-			{
-				Indexer::reindexDocument($sDocId);
-
-			}
-
-        }
-        else if($_REQUEST['rescheduleValue'] == 'rescheduleall')
-        {
-        	$aIndexerValues = Indexer::getIndexingQueue();
-        	foreach ($aIndexerValues as $sDocValues)
-			{
-				Indexer::reindexDocument($sDocValues['document_id']);
-			}
-
+            case 'reschedule':
+                foreach(KTUtil::arrayGet($_REQUEST, 'index_error', array()) as $sDocId => $v)
+                {
+                    Indexer::reindexDocument($sDocId);
+                }
+                break;
+            case 'remove':
+                foreach(KTUtil::arrayGet($_REQUEST, 'index_error', array()) as $sDocId => $v)
+                {
+                    Indexer::unqueueDocument($sDocId, 'Document removed from queue via admin interface. Normally this is because an indexer is not able to process the document.');
+                }
+                break;
+            case 'rescheduleall':
+                $aIndexerValues = Indexer::getIndexingQueue();
+                foreach ($aIndexerValues as $sDocValues)
+                {
+                    Indexer::reindexDocument($sDocValues['document_id']);
+                }
+                break;
+            case 'removeall':
+                $aIndexerValues = Indexer::getIndexingQueue();
+                foreach ($aIndexerValues as $sDocValues)
+                {
+                    Indexer::unqueueDocument($sDocValues['document_id'], 'Document removed from queue via admin interface. Normally this is because an indexer is not able to process the document.');
+                }
+                break;
         }
 
         $oTemplating =& KTTemplating::getSingleton();

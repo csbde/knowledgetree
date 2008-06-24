@@ -54,6 +54,8 @@
 <br>
 <input type="button" name="Reschedule" value="{i18n}Reschedule{/i18n}" onclick="doReschedule('reschedule');"/>
 <input type="button" name="Reschedule All" value="{i18n}Reschedule All{/i18n}" onclick="doReschedule('rescheduleall');"/>
+<input type="button" name="Remove" value="{i18n}Remove{/i18n}" onclick="doReschedule('remove');"/>
+<input type="button" name="Remove All" value="{i18n}Remove All{/i18n}" onclick="doReschedule('removeall');"/>
 {else}
 <h3>{i18n}There are no indexing issues.{/i18n}</h3>
 {/if}
