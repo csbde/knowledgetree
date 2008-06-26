@@ -1,38 +1,3 @@
---
--- $Id$
---
--- KnowledgeTree Community Edition
--- Document Management Made Simple
--- Copyright (C) 2008 KnowledgeTree Inc.
--- Portions copyright The Jam Warehouse Software (Pty) Limited
--- 
--- This program is free software; you can redistribute it and/or modify it under
--- the terms of the GNU General Public License version 3 as published by the
--- Free Software Foundation.
--- 
--- This program is distributed in the hope that it will be useful, but WITHOUT
--- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
--- FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
--- details.
--- 
--- You should have received a copy of the GNU General Public License
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.
--- 
--- You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
--- California 94120-7775, or email info@knowledgetree.com.
--- 
--- The interactive user interfaces in modified source and object code versions
--- of this program must display Appropriate Legal Notices, as required under
--- Section 5 of the GNU General Public License version 3.
--- 
--- In accordance with Section 7(b) of the GNU General Public License version 3,
--- these Appropriate Legal Notices must retain the display of the "Powered by
--- KnowledgeTree" logo and retain the original copyright notice. If the display of the 
--- logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
--- must display the words "Powered by KnowledgeTree" and retain the original 
--- copyright notice.
--- Contributor( s): ______________________________________
---
 -- MySQL dump 10.11
 --
 -- Host: localhost    Database: ktdms
@@ -55,7 +20,7 @@
 --
 
 CREATE TABLE `active_sessions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) default NULL,
   `session_id` char(255) default NULL,
   `lastused` datetime default NULL,
@@ -71,7 +36,7 @@ CREATE TABLE `active_sessions` (
 --
 
 CREATE TABLE `archive_restoration_request` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL default '0',
   `request_user_id` int(11) NOT NULL default '0',
   `admin_user_id` int(11) NOT NULL default '0',
@@ -90,7 +55,7 @@ CREATE TABLE `archive_restoration_request` (
 --
 
 CREATE TABLE `archiving_settings` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `archiving_type_id` int(11) NOT NULL default '0',
   `expiration_date` date default NULL,
   `document_transaction_id` int(11) default NULL,
@@ -107,7 +72,7 @@ CREATE TABLE `archiving_settings` (
 --
 
 CREATE TABLE `archiving_type_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -117,7 +82,7 @@ CREATE TABLE `archiving_type_lookup` (
 --
 
 CREATE TABLE `authentication_sources` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
   `namespace` varchar(255) NOT NULL default '',
   `authentication_provider` varchar(255) NOT NULL default '',
@@ -133,7 +98,7 @@ CREATE TABLE `authentication_sources` (
 --
 
 CREATE TABLE `column_entries` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `column_namespace` varchar(255) NOT NULL default '',
   `view_namespace` varchar(255) NOT NULL default '',
   `config_array` text NOT NULL,
@@ -161,7 +126,7 @@ CREATE TABLE `comment_searchable_text` (
 --
 
 CREATE TABLE `config_settings` (
-  `id` int(255) unsigned NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `group_name` varchar(255) NOT NULL default '0',
   `item` varchar(255) NOT NULL default '0',
   `type` varchar(255) NOT NULL default '0',
@@ -177,7 +142,7 @@ CREATE TABLE `config_settings` (
 --
 
 CREATE TABLE `dashlet_disables` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `dashlet_namespace` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
@@ -191,7 +156,7 @@ CREATE TABLE `dashlet_disables` (
 --
 
 CREATE TABLE `data_types` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -201,7 +166,7 @@ CREATE TABLE `data_types` (
 --
 
 CREATE TABLE `discussion_comments` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `thread_id` int(11) NOT NULL default '0',
   `in_reply_to` int(11) default NULL,
   `user_id` int(11) NOT NULL default '0',
@@ -222,10 +187,10 @@ CREATE TABLE `discussion_comments` (
 --
 
 CREATE TABLE `discussion_threads` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL,
-  `first_comment_id` int(11) NULL,
-  `last_comment_id` int(11) NULL,
+  `first_comment_id` int(11) default NULL,
+  `last_comment_id` int(11) default NULL,
   `views` int(11) NOT NULL default '0',
   `replies` int(11) NOT NULL default '0',
   `creator_id` int(11) NOT NULL,
@@ -248,7 +213,7 @@ CREATE TABLE `discussion_threads` (
 --
 
 CREATE TABLE `document_archiving_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL default '0',
   `archiving_settings_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -263,7 +228,7 @@ CREATE TABLE `document_archiving_link` (
 --
 
 CREATE TABLE `document_content_version` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL default '0',
   `filename` mediumtext NOT NULL,
   `size` bigint(20) NOT NULL default '0',
@@ -287,7 +252,7 @@ CREATE TABLE `document_content_version` (
 --
 
 CREATE TABLE `document_fields` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `data_type` varchar(100) NOT NULL default '',
   `is_generic` tinyint(1) default NULL,
@@ -307,9 +272,9 @@ CREATE TABLE `document_fields` (
 --
 
 CREATE TABLE `document_fields_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_field_id` int(11) NOT NULL default '0',
-  `value` mediumtext NOT NULL default '',
+  `value` mediumtext NOT NULL,
   `metadata_version_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `document_field_id` (`document_field_id`),
@@ -323,7 +288,7 @@ CREATE TABLE `document_fields_link` (
 --
 
 CREATE TABLE `document_incomplete` (
-  `id` int(10) unsigned NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `contents` tinyint(1) unsigned NOT NULL default '0',
   `metadata` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -334,12 +299,12 @@ CREATE TABLE `document_incomplete` (
 --
 
 CREATE TABLE `document_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `parent_document_id` int(11) NOT NULL default '0',
   `child_document_id` int(11) NOT NULL default '0',
   `link_type_id` int(11) NOT NULL default '0',
-  `external_url` varchar(255),
-  `external_name` varchar(50),
+  `external_url` varchar(255) default NULL,
+  `external_name` varchar(50) default NULL,
   PRIMARY KEY  (`id`),
   KEY `parent_document_id` (`parent_document_id`),
   KEY `child_document_id` (`child_document_id`),
@@ -354,7 +319,7 @@ CREATE TABLE `document_link` (
 --
 
 CREATE TABLE `document_link_types` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) NOT NULL default '',
   `reverse_name` char(100) NOT NULL default '',
   `description` char(255) NOT NULL default '',
@@ -366,7 +331,7 @@ CREATE TABLE `document_link_types` (
 --
 
 CREATE TABLE `document_metadata_version` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL default '0',
   `content_version_id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
@@ -401,7 +366,7 @@ CREATE TABLE `document_metadata_version` (
 --
 
 CREATE TABLE `document_role_allocations` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) NOT NULL default '0',
   `role_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) NOT NULL default '0',
@@ -429,7 +394,7 @@ CREATE TABLE `document_searchable_text` (
 --
 
 CREATE TABLE `document_subscriptions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
@@ -480,7 +445,7 @@ CREATE TABLE `document_transaction_text` (
 --
 
 CREATE TABLE `document_transaction_types_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL default '',
   `namespace` varchar(250) NOT NULL default '',
   PRIMARY KEY  (`id`),
@@ -492,21 +457,21 @@ CREATE TABLE `document_transaction_types_lookup` (
 --
 
 CREATE TABLE `document_transactions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) default NULL,
   `version` float default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   `ip` varchar(15) default NULL,
-  `filename` mediumtext NOT NULL default '',
-  `comment` mediumtext NOT NULL default '',
+  `filename` mediumtext NOT NULL,
+  `comment` mediumtext NOT NULL,
   `transaction_namespace` varchar(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `document_id` (`document_id`),
-  KEY (`datetime`,`transaction_namespace`)
+  KEY `datetime` (`datetime`,`transaction_namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -514,7 +479,7 @@ CREATE TABLE `document_transactions` (
 --
 
 CREATE TABLE `document_type_fields_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_type_id` int(11) NOT NULL default '0',
   `field_id` int(11) NOT NULL default '0',
   `is_mandatory` tinyint(1) NOT NULL default '0',
@@ -530,7 +495,7 @@ CREATE TABLE `document_type_fields_link` (
 --
 
 CREATE TABLE `document_type_fieldsets_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_type_id` int(11) NOT NULL default '0',
   `fieldset_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -545,7 +510,7 @@ CREATE TABLE `document_type_fieldsets_link` (
 --
 
 CREATE TABLE `document_types_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) default NULL,
   `disabled` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -557,7 +522,7 @@ CREATE TABLE `document_types_lookup` (
 --
 
 CREATE TABLE `documents` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `creator_id` int(11) default NULL,
   `modified` datetime NOT NULL default '0000-00-00 00:00:00',
   `folder_id` int(11) default NULL,
@@ -640,7 +605,7 @@ CREATE TABLE `field_behaviour_options` (
 --
 
 CREATE TABLE `field_behaviours` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(255) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
   `field_id` int(11) NOT NULL default '0',
@@ -671,7 +636,7 @@ CREATE TABLE `field_orders` (
 --
 
 CREATE TABLE `field_value_instances` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `field_id` int(11) NOT NULL default '0',
   `field_value_id` int(11) NOT NULL default '0',
   `behaviour_id` int(11) default '0',
@@ -689,7 +654,7 @@ CREATE TABLE `field_value_instances` (
 --
 
 CREATE TABLE `fieldsets` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `namespace` varchar(255) NOT NULL default '',
   `mandatory` tinyint(4) NOT NULL default '0',
@@ -727,7 +692,7 @@ CREATE TABLE `folder_descendants` (
 --
 
 CREATE TABLE `folder_doctypes_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `folder_id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -753,7 +718,7 @@ CREATE TABLE `folder_searchable_text` (
 --
 
 CREATE TABLE `folder_subscriptions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `folder_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
@@ -769,7 +734,7 @@ CREATE TABLE `folder_subscriptions` (
 --
 
 CREATE TABLE `folder_transactions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `folder_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -801,7 +766,7 @@ CREATE TABLE `folder_workflow_map` (
 --
 
 CREATE TABLE `folders` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) default NULL,
   `description` varchar(255) default NULL,
   `parent_id` int(11) default NULL,
@@ -829,7 +794,7 @@ CREATE TABLE `folders` (
 --
 
 CREATE TABLE `folders_users_roles_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `group_folder_approval_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
@@ -849,7 +814,7 @@ CREATE TABLE `folders_users_roles_link` (
 --
 
 CREATE TABLE `groups_groups_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `parent_group_id` int(11) NOT NULL default '0',
   `member_group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -864,7 +829,7 @@ CREATE TABLE `groups_groups_link` (
 --
 
 CREATE TABLE `groups_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL default '',
   `is_sys_admin` tinyint(1) NOT NULL default '0',
   `is_unit_admin` tinyint(1) NOT NULL default '0',
@@ -884,7 +849,7 @@ CREATE TABLE `groups_lookup` (
 --
 
 CREATE TABLE `help` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `fSection` varchar(100) NOT NULL default '',
   `help_info` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
@@ -895,7 +860,7 @@ CREATE TABLE `help` (
 --
 
 CREATE TABLE `help_replacement` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `description` mediumtext NOT NULL,
   `title` varchar(255) NOT NULL default '',
@@ -912,7 +877,7 @@ CREATE TABLE `index_files` (
   `indexdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `processdate` datetime default NULL,
   `what` char(1) default NULL,
-  `status_msg` mediumtext NULL,
+  `status_msg` mediumtext,
   PRIMARY KEY  (`document_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `index_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -924,7 +889,7 @@ CREATE TABLE `index_files` (
 --
 
 CREATE TABLE `interceptor_instances` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `interceptor_namespace` varchar(255) NOT NULL,
   `config` text,
@@ -937,7 +902,7 @@ CREATE TABLE `interceptor_instances` (
 --
 
 CREATE TABLE `links` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) NOT NULL default '',
   `url` char(100) NOT NULL default '',
   `rank` int(11) NOT NULL default '0',
@@ -949,7 +914,7 @@ CREATE TABLE `links` (
 --
 
 CREATE TABLE `metadata_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_field_id` int(11) NOT NULL default '0',
   `name` char(255) default NULL,
   `treeorg_parent` int(11) default NULL,
@@ -966,7 +931,7 @@ CREATE TABLE `metadata_lookup` (
 --
 
 CREATE TABLE `metadata_lookup_tree` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `document_field_id` int(11) NOT NULL default '0',
   `name` char(255) default NULL,
   `metadata_lookup_tree_parent` int(11) default NULL,
@@ -994,7 +959,7 @@ CREATE TABLE `mime_document_mapping` (
 --
 
 CREATE TABLE `mime_documents` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `mime_doc` varchar(100) default NULL,
   `icon_path` varchar(20) default NULL,
   PRIMARY KEY  (`id`)
@@ -1005,7 +970,7 @@ CREATE TABLE `mime_documents` (
 --
 
 CREATE TABLE `mime_extractors` (
-  `id` mediumint(9) NOT NULL,
+  `id` mediumint(9) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL,
   `active` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -1016,7 +981,7 @@ CREATE TABLE `mime_extractors` (
 --
 
 CREATE TABLE `mime_types` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `filetypes` char(100) NOT NULL default '',
   `mimetypes` char(100) NOT NULL default '',
   `icon_path` char(255) default NULL,
@@ -1037,7 +1002,7 @@ CREATE TABLE `mime_types` (
 --
 
 CREATE TABLE `news` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `synopsis` varchar(255) NOT NULL default '',
   `body` mediumtext,
   `rank` int(11) default NULL,
@@ -1055,7 +1020,7 @@ CREATE TABLE `news` (
 --
 
 CREATE TABLE `notifications` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `label` varchar(255) NOT NULL default '',
   `type` varchar(255) NOT NULL default '',
@@ -1076,7 +1041,7 @@ CREATE TABLE `notifications` (
 --
 
 CREATE TABLE `organisations_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
@@ -1087,7 +1052,7 @@ CREATE TABLE `organisations_lookup` (
 --
 
 CREATE TABLE `permission_assignments` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `permission_id` int(11) NOT NULL default '0',
   `permission_object_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) default NULL,
@@ -1144,7 +1109,7 @@ CREATE TABLE `permission_descriptor_users` (
 --
 
 CREATE TABLE `permission_descriptors` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `descriptor` varchar(32) NOT NULL default '',
   `descriptor_text` mediumtext NOT NULL,
   PRIMARY KEY  (`id`),
@@ -1169,7 +1134,7 @@ CREATE TABLE `permission_dynamic_assignments` (
 --
 
 CREATE TABLE `permission_dynamic_conditions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `permission_object_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   `condition_id` int(11) NOT NULL default '0',
@@ -1187,7 +1152,7 @@ CREATE TABLE `permission_dynamic_conditions` (
 --
 
 CREATE TABLE `permission_lookup_assignments` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `permission_id` int(11) NOT NULL default '0',
   `permission_lookup_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) default NULL,
@@ -1205,7 +1170,7 @@ CREATE TABLE `permission_lookup_assignments` (
 --
 
 CREATE TABLE `permission_lookups` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1214,7 +1179,7 @@ CREATE TABLE `permission_lookups` (
 --
 
 CREATE TABLE `permission_objects` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1223,7 +1188,7 @@ CREATE TABLE `permission_objects` (
 --
 
 CREATE TABLE `permissions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
   `built_in` tinyint(4) NOT NULL default '0',
@@ -1232,11 +1197,30 @@ CREATE TABLE `permissions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `plugin_helper`
+--
+
+CREATE TABLE `plugin_helper` (
+  `id` int(11) NOT NULL auto_increment,
+  `namespace` varchar(120) NOT NULL,
+  `plugin` varchar(120) NOT NULL,
+  `classname` varchar(120) default NULL,
+  `pathname` varchar(255) default NULL,
+  `object` varchar(1000) NOT NULL,
+  `classtype` varchar(120) NOT NULL,
+  `viewtype` enum('general','dashboard','plugin','folder','document','admindispatcher','dispatcher') NOT NULL default 'general',
+  PRIMARY KEY  (`id`),
+  KEY `name` (`namespace`),
+  KEY `parent` (`plugin`),
+  KEY `view` (`viewtype`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `plugin_rss`
 --
 
 CREATE TABLE `plugin_rss` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
   `url` varchar(200) NOT NULL,
   `title` varchar(100) NOT NULL,
@@ -1250,7 +1234,7 @@ CREATE TABLE `plugin_rss` (
 --
 
 CREATE TABLE `plugins` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `namespace` varchar(255) NOT NULL default '',
   `path` varchar(255) NOT NULL default '',
   `version` int(11) NOT NULL default '0',
@@ -1265,32 +1249,11 @@ CREATE TABLE `plugins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `plugin_helper`
---
-
-CREATE TABLE `plugin_helper` (
-	`id` INT NOT NULL default '0',
-	`namespace` VARCHAR(120) NOT NULL,
-	`plugin` VARCHAR(120) NOT NULL,
-	`classname` VARCHAR(120),
-	`pathname` VARCHAR(255),
-	`object` VARCHAR(1000) NOT NULL,
-	`classtype` VARCHAR(120) NOT NULL,
-	`viewtype` ENUM('general', 'dashboard', 'plugin', 'folder', 'document', 'admindispatcher', 'dispatcher') NOT NULL default 'general',
-    PRIMARY KEY  (`id`),
-    KEY `name` (`namespace`),
-    KEY `parent` (`plugin`),
-    KEY `view` (`viewtype`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `role_allocations`
 --
 
 CREATE TABLE `role_allocations` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `folder_id` int(11) NOT NULL default '0',
   `role_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) NOT NULL default '0',
@@ -1308,7 +1271,7 @@ CREATE TABLE `role_allocations` (
 --
 
 CREATE TABLE `roles` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
@@ -1319,7 +1282,7 @@ CREATE TABLE `roles` (
 --
 
 CREATE TABLE `saved_searches` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
   `namespace` varchar(250) NOT NULL default '',
   `is_condition` tinyint(1) NOT NULL default '0',
@@ -1337,7 +1300,7 @@ CREATE TABLE `saved_searches` (
 --
 
 CREATE TABLE `scheduler_tasks` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `task` varchar(50) NOT NULL,
   `script_url` varchar(255) NOT NULL,
   `script_params` varchar(255) default NULL,
@@ -1346,7 +1309,7 @@ CREATE TABLE `scheduler_tasks` (
   `run_time` datetime default NULL,
   `previous_run_time` datetime default NULL,
   `run_duration` float default NULL,
-  `status` ENUM('enabled', 'disabled', 'system') NOT NULL DEFAULT 'disabled',
+  `status` enum('enabled','disabled','system') NOT NULL default 'disabled',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `task` (`task`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1381,7 +1344,7 @@ CREATE TABLE `search_ranking` (
 --
 
 CREATE TABLE `search_saved` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL,
   `expression` tinytext NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -1407,7 +1370,7 @@ CREATE TABLE `search_saved_events` (
 --
 
 CREATE TABLE `status_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1417,7 +1380,7 @@ CREATE TABLE `status_lookup` (
 --
 
 CREATE TABLE `system_settings` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(255) NOT NULL default '',
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
@@ -1429,7 +1392,7 @@ CREATE TABLE `system_settings` (
 --
 
 CREATE TABLE `tag_words` (
-  `id` int(10) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `tag` varchar(100) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1439,7 +1402,7 @@ CREATE TABLE `tag_words` (
 --
 
 CREATE TABLE `time_period` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `time_unit_id` int(11) default NULL,
   `units` int(11) default NULL,
   PRIMARY KEY  (`id`),
@@ -1452,7 +1415,7 @@ CREATE TABLE `time_period` (
 --
 
 CREATE TABLE `time_unit_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1485,7 +1448,7 @@ CREATE TABLE `type_workflow_map` (
 --
 
 CREATE TABLE `units_lookup` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(100) NOT NULL default '',
   `folder_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -1499,7 +1462,7 @@ CREATE TABLE `units_lookup` (
 --
 
 CREATE TABLE `units_organisations_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `unit_id` int(11) NOT NULL default '0',
   `organisation_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -1514,7 +1477,7 @@ CREATE TABLE `units_organisations_link` (
 --
 
 CREATE TABLE `upgrades` (
-  `id` int(10) unsigned NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `descriptor` char(100) NOT NULL default '',
   `description` char(255) NOT NULL default '',
   `date_performed` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -1548,7 +1511,7 @@ CREATE TABLE `uploaded_files` (
 --
 
 CREATE TABLE `user_history` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `datetime` datetime NOT NULL,
   `user_id` int(11) NOT NULL,
   `action_namespace` varchar(255) NOT NULL,
@@ -1567,7 +1530,7 @@ CREATE TABLE `user_history` (
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `username` varchar(255) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   `password` varchar(255) NOT NULL default '',
@@ -1603,7 +1566,7 @@ CREATE TABLE `users` (
 --
 
 CREATE TABLE `users_groups_link` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -1666,7 +1629,7 @@ CREATE TABLE `workflow_state_disabled_actions` (
 --
 
 CREATE TABLE `workflow_state_permission_assignments` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `workflow_state_id` int(11) NOT NULL default '0',
   `permission_id` int(11) NOT NULL default '0',
   `permission_descriptor_id` int(11) NOT NULL default '0',
@@ -1697,7 +1660,7 @@ CREATE TABLE `workflow_state_transitions` (
 --
 
 CREATE TABLE `workflow_states` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `workflow_id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
@@ -1717,7 +1680,7 @@ CREATE TABLE `workflow_states` (
 --
 
 CREATE TABLE `workflow_transitions` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `workflow_id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
@@ -1747,7 +1710,7 @@ CREATE TABLE `workflow_transitions` (
 --
 
 CREATE TABLE `workflow_trigger_instances` (
-  `id` int(10) unsigned NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `workflow_transition_id` int(11) NOT NULL default '0',
   `namespace` char(255) NOT NULL default '',
   `config_array` text,
@@ -1762,7 +1725,7 @@ CREATE TABLE `workflow_trigger_instances` (
 --
 
 CREATE TABLE `workflows` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   `name` char(250) NOT NULL default '',
   `human_name` char(100) NOT NULL default '',
   `start_state_id` int(11) default NULL,
@@ -1780,7 +1743,7 @@ CREATE TABLE `workflows` (
 CREATE TABLE `zseq_active_sessions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_archive_restoration_request`
@@ -1789,7 +1752,7 @@ CREATE TABLE `zseq_active_sessions` (
 CREATE TABLE `zseq_archive_restoration_request` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_archiving_settings`
@@ -1798,7 +1761,7 @@ CREATE TABLE `zseq_archive_restoration_request` (
 CREATE TABLE `zseq_archiving_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_archiving_type_lookup`
@@ -1807,7 +1770,7 @@ CREATE TABLE `zseq_archiving_settings` (
 CREATE TABLE `zseq_archiving_type_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_authentication_sources`
@@ -1816,7 +1779,7 @@ CREATE TABLE `zseq_archiving_type_lookup` (
 CREATE TABLE `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_column_entries`
@@ -1825,7 +1788,7 @@ CREATE TABLE `zseq_authentication_sources` (
 CREATE TABLE `zseq_column_entries` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_config_settings`
@@ -1834,7 +1797,7 @@ CREATE TABLE `zseq_column_entries` (
 CREATE TABLE `zseq_config_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_dashlet_disables`
@@ -1843,7 +1806,7 @@ CREATE TABLE `zseq_config_settings` (
 CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_data_types`
@@ -1852,7 +1815,7 @@ CREATE TABLE `zseq_dashlet_disables` (
 CREATE TABLE `zseq_data_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_discussion_comments`
@@ -1861,7 +1824,7 @@ CREATE TABLE `zseq_data_types` (
 CREATE TABLE `zseq_discussion_comments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_discussion_threads`
@@ -1870,7 +1833,7 @@ CREATE TABLE `zseq_discussion_comments` (
 CREATE TABLE `zseq_discussion_threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_archiving_link`
@@ -1879,7 +1842,7 @@ CREATE TABLE `zseq_discussion_threads` (
 CREATE TABLE `zseq_document_archiving_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_content_version`
@@ -1888,7 +1851,7 @@ CREATE TABLE `zseq_document_archiving_link` (
 CREATE TABLE `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_fields`
@@ -1897,7 +1860,7 @@ CREATE TABLE `zseq_document_content_version` (
 CREATE TABLE `zseq_document_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_fields_link`
@@ -1906,7 +1869,7 @@ CREATE TABLE `zseq_document_fields` (
 CREATE TABLE `zseq_document_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_link`
@@ -1915,7 +1878,7 @@ CREATE TABLE `zseq_document_fields_link` (
 CREATE TABLE `zseq_document_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_link_types`
@@ -1924,7 +1887,7 @@ CREATE TABLE `zseq_document_link` (
 CREATE TABLE `zseq_document_link_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_metadata_version`
@@ -1933,7 +1896,7 @@ CREATE TABLE `zseq_document_link_types` (
 CREATE TABLE `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_role_allocations`
@@ -1951,7 +1914,7 @@ CREATE TABLE `zseq_document_role_allocations` (
 CREATE TABLE `zseq_document_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_tags`
@@ -1969,7 +1932,7 @@ CREATE TABLE `zseq_document_tags` (
 CREATE TABLE `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_transactions`
@@ -1978,7 +1941,7 @@ CREATE TABLE `zseq_document_transaction_types_lookup` (
 CREATE TABLE `zseq_document_transactions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_type_fields_link`
@@ -1987,7 +1950,7 @@ CREATE TABLE `zseq_document_transactions` (
 CREATE TABLE `zseq_document_type_fields_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_type_fieldsets_link`
@@ -1996,7 +1959,7 @@ CREATE TABLE `zseq_document_type_fields_link` (
 CREATE TABLE `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_document_types_lookup`
@@ -2005,7 +1968,7 @@ CREATE TABLE `zseq_document_type_fieldsets_link` (
 CREATE TABLE `zseq_document_types_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_documents`
@@ -2014,7 +1977,7 @@ CREATE TABLE `zseq_document_types_lookup` (
 CREATE TABLE `zseq_documents` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_field_behaviours`
@@ -2023,7 +1986,7 @@ CREATE TABLE `zseq_documents` (
 CREATE TABLE `zseq_field_behaviours` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_field_value_instances`
@@ -2032,7 +1995,7 @@ CREATE TABLE `zseq_field_behaviours` (
 CREATE TABLE `zseq_field_value_instances` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_fieldsets`
@@ -2041,7 +2004,7 @@ CREATE TABLE `zseq_field_value_instances` (
 CREATE TABLE `zseq_fieldsets` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_folder_doctypes_link`
@@ -2050,7 +2013,7 @@ CREATE TABLE `zseq_fieldsets` (
 CREATE TABLE `zseq_folder_doctypes_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_folder_subscriptions`
@@ -2059,7 +2022,7 @@ CREATE TABLE `zseq_folder_doctypes_link` (
 CREATE TABLE `zseq_folder_subscriptions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_folder_transactions`
@@ -2077,7 +2040,7 @@ CREATE TABLE `zseq_folder_transactions` (
 CREATE TABLE `zseq_folders` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_folders_users_roles_link`
@@ -2086,7 +2049,7 @@ CREATE TABLE `zseq_folders` (
 CREATE TABLE `zseq_folders_users_roles_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_groups_groups_link`
@@ -2095,7 +2058,7 @@ CREATE TABLE `zseq_folders_users_roles_link` (
 CREATE TABLE `zseq_groups_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_groups_lookup`
@@ -2104,7 +2067,7 @@ CREATE TABLE `zseq_groups_groups_link` (
 CREATE TABLE `zseq_groups_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_help`
@@ -2113,7 +2076,7 @@ CREATE TABLE `zseq_groups_lookup` (
 CREATE TABLE `zseq_help` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_help_replacement`
@@ -2122,7 +2085,7 @@ CREATE TABLE `zseq_help` (
 CREATE TABLE `zseq_help_replacement` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_interceptor_instances`
@@ -2140,7 +2103,7 @@ CREATE TABLE `zseq_interceptor_instances` (
 CREATE TABLE `zseq_links` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_metadata_lookup`
@@ -2149,7 +2112,7 @@ CREATE TABLE `zseq_links` (
 CREATE TABLE `zseq_metadata_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_metadata_lookup_tree`
@@ -2158,7 +2121,7 @@ CREATE TABLE `zseq_metadata_lookup` (
 CREATE TABLE `zseq_metadata_lookup_tree` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_mime_documents`
@@ -2183,7 +2146,7 @@ CREATE TABLE `zseq_mime_extractors` (
 CREATE TABLE `zseq_mime_types` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=162 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_news`
@@ -2192,7 +2155,7 @@ CREATE TABLE `zseq_mime_types` (
 CREATE TABLE `zseq_news` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_notifications`
@@ -2201,7 +2164,7 @@ CREATE TABLE `zseq_news` (
 CREATE TABLE `zseq_notifications` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_organisations_lookup`
@@ -2210,7 +2173,7 @@ CREATE TABLE `zseq_notifications` (
 CREATE TABLE `zseq_organisations_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_assignments`
@@ -2219,7 +2182,7 @@ CREATE TABLE `zseq_organisations_lookup` (
 CREATE TABLE `zseq_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_descriptors`
@@ -2228,7 +2191,7 @@ CREATE TABLE `zseq_permission_assignments` (
 CREATE TABLE `zseq_permission_descriptors` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_dynamic_conditions`
@@ -2237,7 +2200,7 @@ CREATE TABLE `zseq_permission_descriptors` (
 CREATE TABLE `zseq_permission_dynamic_conditions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_lookup_assignments`
@@ -2246,7 +2209,7 @@ CREATE TABLE `zseq_permission_dynamic_conditions` (
 CREATE TABLE `zseq_permission_lookup_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_lookups`
@@ -2255,7 +2218,7 @@ CREATE TABLE `zseq_permission_lookup_assignments` (
 CREATE TABLE `zseq_permission_lookups` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permission_objects`
@@ -2264,7 +2227,7 @@ CREATE TABLE `zseq_permission_lookups` (
 CREATE TABLE `zseq_permission_objects` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_permissions`
@@ -2273,25 +2236,7 @@ CREATE TABLE `zseq_permission_objects` (
 CREATE TABLE `zseq_permissions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `zseq_plugin_rss`
---
-
-CREATE TABLE `zseq_plugin_rss` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `zseq_plugins`
---
-
-CREATE TABLE `zseq_plugins` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_plugin_helper`
@@ -2302,7 +2247,23 @@ CREATE TABLE `zseq_plugin_helper` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
+--
+-- Table structure for table `zseq_plugin_rss`
+--
+
+CREATE TABLE `zseq_plugin_rss` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `zseq_plugins`
+--
+
+CREATE TABLE `zseq_plugins` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_role_allocations`
@@ -2311,7 +2272,7 @@ CREATE TABLE `zseq_plugin_helper` (
 CREATE TABLE `zseq_role_allocations` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_roles`
@@ -2320,7 +2281,7 @@ CREATE TABLE `zseq_role_allocations` (
 CREATE TABLE `zseq_roles` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_saved_searches`
@@ -2329,7 +2290,7 @@ CREATE TABLE `zseq_roles` (
 CREATE TABLE `zseq_saved_searches` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_scheduler_tasks`
@@ -2355,7 +2316,7 @@ CREATE TABLE `zseq_search_saved` (
 CREATE TABLE `zseq_status_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_system_settings`
@@ -2364,7 +2325,7 @@ CREATE TABLE `zseq_status_lookup` (
 CREATE TABLE `zseq_system_settings` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_tag_words`
@@ -2382,7 +2343,7 @@ CREATE TABLE `zseq_tag_words` (
 CREATE TABLE `zseq_time_period` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_time_unit_lookup`
@@ -2391,7 +2352,7 @@ CREATE TABLE `zseq_time_period` (
 CREATE TABLE `zseq_time_unit_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_units_lookup`
@@ -2400,7 +2361,7 @@ CREATE TABLE `zseq_time_unit_lookup` (
 CREATE TABLE `zseq_units_lookup` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_units_organisations_link`
@@ -2409,7 +2370,7 @@ CREATE TABLE `zseq_units_lookup` (
 CREATE TABLE `zseq_units_organisations_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_upgrades`
@@ -2418,7 +2379,7 @@ CREATE TABLE `zseq_units_organisations_link` (
 CREATE TABLE `zseq_upgrades` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=154 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_user_history`
@@ -2436,7 +2397,7 @@ CREATE TABLE `zseq_user_history` (
 CREATE TABLE `zseq_users` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_users_groups_link`
@@ -2445,7 +2406,7 @@ CREATE TABLE `zseq_users` (
 CREATE TABLE `zseq_users_groups_link` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_workflow_state_disabled_actions`
@@ -2463,7 +2424,7 @@ CREATE TABLE `zseq_workflow_state_disabled_actions` (
 CREATE TABLE `zseq_workflow_state_permission_assignments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_workflow_states`
@@ -2472,7 +2433,7 @@ CREATE TABLE `zseq_workflow_state_permission_assignments` (
 CREATE TABLE `zseq_workflow_states` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_workflow_transitions`
@@ -2481,7 +2442,7 @@ CREATE TABLE `zseq_workflow_states` (
 CREATE TABLE `zseq_workflow_transitions` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zseq_workflow_trigger_instances`
@@ -2499,7 +2460,7 @@ CREATE TABLE `zseq_workflow_trigger_instances` (
 CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2510,4 +2471,4 @@ CREATE TABLE `zseq_workflows` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-10-23 13:43:23
+-- Dump completed on 2008-06-26 13:51:01
