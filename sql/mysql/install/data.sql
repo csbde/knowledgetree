@@ -83,7 +83,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `archiving_type_lookup` WRITE;
 /*!40000 ALTER TABLE `archiving_type_lookup` DISABLE KEYS */;
-INSERT INTO `archiving_type_lookup` VALUES (1,'Date'),(2,'Utilisation');
+INSERT INTO `archiving_type_lookup` VALUES
+(1,'Date'),
+(2,'Utilisation');
 /*!40000 ALTER TABLE `archiving_type_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +104,21 @@ UNLOCK TABLES;
 
 LOCK TABLES `column_entries` WRITE;
 /*!40000 ALTER TABLE `column_entries` DISABLE KEYS */;
-INSERT INTO `column_entries` VALUES (1,'ktcore.columns.selection','ktcore.views.browse','',0,1),(2,'ktcore.columns.title','ktcore.views.browse','',1,1),(3,'ktcore.columns.download','ktcore.views.browse','',2,0),(4,'ktcore.columns.creationdate','ktcore.views.browse','',3,0),(5,'ktcore.columns.modificationdate','ktcore.views.browse','',4,0),(6,'ktcore.columns.creator','ktcore.views.browse','',5,0),(7,'ktcore.columns.workflow_state','ktcore.views.browse','',6,0),(8,'ktcore.columns.selection','ktcore.views.search','',0,1),(9,'ktcore.columns.title','ktcore.views.search','',1,1),(10,'ktcore.columns.download','ktcore.views.search','',2,0),(11,'ktcore.columns.creationdate','ktcore.views.search','',3,0),(12,'ktcore.columns.modificationdate','ktcore.views.search','',4,0),(13,'ktcore.columns.creator','ktcore.views.search','',5,0),(14,'ktcore.columns.workflow_state','ktcore.views.search','',6,0);
+INSERT INTO `column_entries` VALUES
+(1,'ktcore.columns.selection','ktcore.views.browse','',0,1),
+(2,'ktcore.columns.title','ktcore.views.browse','',1,1),
+(3,'ktcore.columns.download','ktcore.views.browse','',2,0),
+(4,'ktcore.columns.creationdate','ktcore.views.browse','',3,0),
+(5,'ktcore.columns.modificationdate','ktcore.views.browse','',4,0),
+(6,'ktcore.columns.creator','ktcore.views.browse','',5,0),
+(7,'ktcore.columns.workflow_state','ktcore.views.browse','',6,0),
+(8,'ktcore.columns.selection','ktcore.views.search','',0,1),
+(9,'ktcore.columns.title','ktcore.views.search','',1,1),
+(10,'ktcore.columns.download','ktcore.views.search','',2,0),
+(11,'ktcore.columns.creationdate','ktcore.views.search','',3,0),
+(12,'ktcore.columns.modificationdate','ktcore.views.search','',4,0),
+(13,'ktcore.columns.creator','ktcore.views.search','',5,0),
+(14,'ktcore.columns.workflow_state','ktcore.views.search','',6,0);
 /*!40000 ALTER TABLE `column_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,7 +137,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `config_settings` WRITE;
 /*!40000 ALTER TABLE `config_settings` DISABLE KEYS */;
-INSERT INTO `config_settings`(`id`,`group_name`,`item`,`type`,`value`,`helptext`,`default_value`,`can_edit`) VALUES
+INSERT INTO `config_settings` VALUES
 (1,'ui','appName','','KnowledgeTree','OEM application name','KnowledgeTree',1),
 (2,'KnowledgeTree','schedulerInterval','','30','','30',1),
 (3,'dashboard','alwaysShowYCOD','boolean','default','Display the \"Your Checked-out Documents\" dashlet even when empty.','0',1),
@@ -139,7 +155,8 @@ INSERT INTO `config_settings`(`id`,`group_name`,`item`,`type`,`value`,`helptext`
 (15,'email','emailFrom','','kt@example.org','','kt@example.org',1),
 (16,'email','emailFromName','','KnowledgeTree Document Management System','','KnowledgeTree Document Management System',1),
 (17,'email','allowAttachment','boolean','default','Set to true to allow users to send attachments from the document\r\n management system\r\n.','0',1),
-(18,'email','allowEmailAddresses','boolean','default','Set to true to allow users to send to any email address, as opposed to\r\n only users of the system\r\n.','0',1),(19,'email','sendAsSystem','boolean','default','Set to true to always send email from the emailFrom address listed above, even if there is an identifiable sending user\r\n.','0',1),
+(18,'email','allowEmailAddresses','boolean','default','Set to true to allow users to send to any email address, as opposed to\r\n only users of the system\r\n.','0',1),
+(19,'email','sendAsSystem','boolean','default','Set to true to always send email from the emailFrom address listed above, even if there is an identifiable sending user\r\n.','0',1),
 (20,'email','onlyOwnGroups','boolean','default','Set to true to only allow users to send emails to those in the same\r\n groups as them\r\n.','0',1),
 (21,'user_prefs','passwordLength','','6','Minimum password length on password-setting\r\n','6',1),
 (22,'user_prefs','restrictAdminPasswords','boolean','default','Apply the minimum password length to admin while creating / editing accounts?\r\n default is set to \"false\" meaning that admins can create users with shorter passwords.\r\n','0',1),
@@ -247,7 +264,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `data_types` WRITE;
 /*!40000 ALTER TABLE `data_types` DISABLE KEYS */;
-INSERT INTO `data_types` VALUES (1,'STRING'),(2,'CHAR'),(3,'TEXT'),(4,'INT'),(5,'FLOAT');
+INSERT INTO `data_types` VALUES
+(1,'STRING'),
+(2,'CHAR'),
+(3,'TEXT'),
+(4,'INT'),
+(5,'FLOAT');
 /*!40000 ALTER TABLE `data_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +315,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_fields` WRITE;
 /*!40000 ALTER TABLE `document_fields` DISABLE KEYS */;
-INSERT INTO `document_fields` VALUES (2,'Tag','STRING',0,0,0,2,0,'Tag Words',0),
+INSERT INTO `document_fields` VALUES
+(2,'Tag','STRING',0,0,0,2,0,'Tag Words',0),
 (3,'Document Author','STRING',0,0,0,3,0,'Please add a document author',0),
 (4,'Category','STRING',0,1,0,3,0,'Please select a category',1),
 (5,'Media Type','STRING',0,1,0,3,0,'Please select a media type',2);
@@ -333,7 +356,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_link_types` WRITE;
 /*!40000 ALTER TABLE `document_link_types` DISABLE KEYS */;
-INSERT INTO `document_link_types` VALUES (-1,'depended on','was depended on by','Depends relationship whereby one documents depends on another\'s creation to go through approval'),(0,'Default','Default (reverse)','Default link type'),(3,'Attachment','','Document Attachment'),(4,'Reference','','Document Reference'),(5,'Copy','','Document Copy');
+INSERT INTO `document_link_types` VALUES
+(-1,'depended on','was depended on by','Depends relationship whereby one documents depends on another\'s creation to go through approval'),
+(0,'Default','Default (reverse)','Default link type'),
+(3,'Attachment','','Document Attachment'),
+(4,'Reference','','Document Reference'),
+(5,'Copy','','Document Copy');
 /*!40000 ALTER TABLE `document_link_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -406,7 +434,28 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_transaction_types_lookup` WRITE;
 /*!40000 ALTER TABLE `document_transaction_types_lookup` DISABLE KEYS */;
-INSERT INTO `document_transaction_types_lookup` VALUES (1,'Create','ktcore.transactions.create'),(2,'Update','ktcore.transactions.update'),(3,'Delete','ktcore.transactions.delete'),(4,'Rename','ktcore.transactions.rename'),(5,'Move','ktcore.transactions.move'),(6,'Download','ktcore.transactions.download'),(7,'Check In','ktcore.transactions.check_in'),(8,'Check Out','ktcore.transactions.check_out'),(9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),(10,'View','ktcore.transactions.view'),(11,'Expunge','ktcore.transactions.expunge'),(12,'Force CheckIn','ktcore.transactions.force_checkin'),(13,'Email Link','ktcore.transactions.email_link'),(14,'Collaboration Step Approve','ktcore.transactions.collaboration_step_approve'),(15,'Email Attachment','ktcore.transactions.email_attachment'),(16,'Workflow state transition','ktcore.transactions.workflow_state_transition'),(17,'Permissions changed','ktcore.transactions.permissions_change'),(18,'Role allocations changed','ktcore.transactions.role_allocations_change'),(19,'Bulk Export','ktstandard.transactions.bulk_export'),(20,'Copy','ktcore.transactions.copy'),(21,'Delete Version','ktcore.transactions.delete_version');
+INSERT INTO `document_transaction_types_lookup` VALUES
+(1,'Create','ktcore.transactions.create'),
+(2,'Update','ktcore.transactions.update'),
+(3,'Delete','ktcore.transactions.delete'),
+(4,'Rename','ktcore.transactions.rename'),
+(5,'Move','ktcore.transactions.move'),
+(6,'Download','ktcore.transactions.download'),
+(7,'Check In','ktcore.transactions.check_in'),
+(8,'Check Out','ktcore.transactions.check_out'),
+(9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),
+(10,'View','ktcore.transactions.view'),
+(11,'Expunge','ktcore.transactions.expunge'),
+(12,'Force CheckIn','ktcore.transactions.force_checkin'),
+(13,'Email Link','ktcore.transactions.email_link'),
+(14,'Collaboration Step Approve','ktcore.transactions.collaboration_step_approve'),
+(15,'Email Attachment','ktcore.transactions.email_attachment'),
+(16,'Workflow state transition','ktcore.transactions.workflow_state_transition'),
+(17,'Permissions changed','ktcore.transactions.permissions_change'),
+(18,'Role allocations changed','ktcore.transactions.role_allocations_change'),
+(19,'Bulk Export','ktstandard.transactions.bulk_export'),
+(20,'Copy','ktcore.transactions.copy'),
+(21,'Delete Version','ktcore.transactions.delete_version');
 /*!40000 ALTER TABLE `document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -443,7 +492,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `document_types_lookup` WRITE;
 /*!40000 ALTER TABLE `document_types_lookup` DISABLE KEYS */;
-INSERT INTO `document_types_lookup` VALUES (1,'Default',0);
+INSERT INTO `document_types_lookup` VALUES
+(1,'Default',0);
 /*!40000 ALTER TABLE `document_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +557,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `fieldsets` WRITE;
 /*!40000 ALTER TABLE `fieldsets` DISABLE KEYS */;
-INSERT INTO `fieldsets` VALUES (2,'Tag Cloud','tagcloud',0,0,NULL,1,0,0,0,'Tag Cloud',0),(3,'General information','generalinformation',0,0,NULL,1,0,0,0,'General document information',0);
+INSERT INTO `fieldsets` VALUES
+(2,'Tag Cloud','tagcloud',0,0,NULL,1,0,0,0,'Tag Cloud',0),
+(3,'General information','generalinformation',0,0,NULL,1,0,0,0,'General document information',0);
 /*!40000 ALTER TABLE `fieldsets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -526,7 +578,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `folder_doctypes_link` WRITE;
 /*!40000 ALTER TABLE `folder_doctypes_link` DISABLE KEYS */;
-INSERT INTO `folder_doctypes_link` VALUES (1,1,1);
+INSERT INTO `folder_doctypes_link` VALUES
+(1,1,1);
 /*!40000 ALTER TABLE `folder_doctypes_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -536,7 +589,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `folder_searchable_text` WRITE;
 /*!40000 ALTER TABLE `folder_searchable_text` DISABLE KEYS */;
-INSERT INTO `folder_searchable_text` VALUES (1,'Root Folder');
+INSERT INTO `folder_searchable_text` VALUES
+(1,'Root Folder');
 /*!40000 ALTER TABLE `folder_searchable_text` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -573,7 +627,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
-INSERT INTO `folders` VALUES (1,'Root Folder','Root Document Folder',NULL,1,0,NULL,NULL,1,5,0,1);
+INSERT INTO `folders` VALUES
+(1,'Root Folder','Root Document Folder',NULL,1,0,NULL,NULL,1,5,0,1);
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -601,7 +656,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `groups_lookup` WRITE;
 /*!40000 ALTER TABLE `groups_lookup` DISABLE KEYS */;
-INSERT INTO `groups_lookup` VALUES (1,'System Administrators',1,0,NULL,NULL,NULL,NULL);
+INSERT INTO `groups_lookup` VALUES
+(1,'System Administrators',1,0,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `groups_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -611,7 +667,107 @@ UNLOCK TABLES;
 
 LOCK TABLES `help` WRITE;
 /*!40000 ALTER TABLE `help` DISABLE KEYS */;
-INSERT INTO `help` VALUES (1,'browse','dochelp.html'),(2,'dashboard','dashboardHelp.html'),(3,'addFolder','addFolderHelp.html'),(4,'editFolder','editFolderHelp.html'),(5,'addFolderCollaboration','addFolderCollaborationHelp.html'),(6,'modifyFolderCollaboration','addFolderCollaborationHelp.html'),(7,'addDocument','addDocumentHelp.html'),(8,'viewDocument','viewDocumentHelp.html'),(9,'modifyDocument','modifyDocumentHelp.html'),(10,'modifyDocumentRouting','modifyDocumentRoutingHelp.html'),(11,'emailDocument','emailDocumentHelp.html'),(12,'deleteDocument','deleteDocumentHelp.html'),(13,'administration','administrationHelp.html'),(14,'addGroup','addGroupHelp.html'),(15,'editGroup','editGroupHelp.html'),(16,'removeGroup','removeGroupHelp.html'),(17,'assignGroupToUnit','assignGroupToUnitHelp.html'),(18,'removeGroupFromUnit','removeGroupFromUnitHelp.html'),(19,'addUnit','addUnitHelp.html'),(20,'editUnit','editUnitHelp.html'),(21,'removeUnit','removeUnitHelp.html'),(22,'addOrg','addOrgHelp.html'),(23,'editOrg','editOrgHelp.html'),(24,'removeOrg','removeOrgHelp.html'),(25,'addRole','addRoleHelp.html'),(26,'editRole','editRoleHelp.html'),(27,'removeRole','removeRoleHelp.html'),(28,'addLink','addLinkHelp.html'),(29,'addLinkSuccess','addLinkHelp.html'),(30,'editLink','editLinkHelp.html'),(31,'removeLink','removeLinkHelp.html'),(32,'systemAdministration','systemAdministrationHelp.html'),(33,'deleteFolder','deleteFolderHelp.html'),(34,'editDocType','editDocTypeHelp.html'),(35,'removeDocType','removeDocTypeHelp.html'),(36,'addDocType','addDocTypeHelp.html'),(37,'addDocTypeSuccess','addDocTypeHelp.html'),(38,'manageSubscriptions','manageSubscriptionsHelp.html'),(39,'addSubscription','addSubscriptionHelp.html'),(40,'removeSubscription','removeSubscriptionHelp.html'),(41,'preferences','preferencesHelp.html'),(42,'editPrefsSuccess','preferencesHelp.html'),(43,'modifyDocumentGenericMetaData','modifyDocumentGenericMetaDataHelp.html'),(44,'viewHistory','viewHistoryHelp.html'),(45,'checkInDocument','checkInDocumentHelp.html'),(46,'checkOutDocument','checkOutDocumentHelp.html'),(47,'advancedSearch','advancedSearchHelp.html'),(48,'deleteFolderCollaboration','deleteFolderCollaborationHelp.html'),(49,'addFolderDocType','addFolderDocTypeHelp.html'),(50,'deleteFolderDocType','deleteFolderDocTypeHelp.html'),(51,'addGroupFolderLink','addGroupFolderLinkHelp.html'),(52,'deleteGroupFolderLink','deleteGroupFolderLinkHelp.html'),(53,'addWebsite','addWebsiteHelp.html'),(54,'addWebsiteSuccess','addWebsiteHelp.html'),(55,'editWebsite','editWebsiteHelp.html'),(56,'removeWebSite','removeWebSiteHelp.html'),(57,'standardSearch','standardSearchHelp.html'),(58,'modifyDocumentTypeMetaData','modifyDocumentTypeMetaDataHelp.html'),(59,'addDocField','addDocFieldHelp.html'),(60,'editDocField','editDocFieldHelp.html'),(61,'removeDocField','removeDocFieldHelp.html'),(62,'addMetaData','addMetaDataHelp.html'),(63,'editMetaData','editMetaDataHelp.html'),(64,'removeMetaData','removeMetaDataHelp.html'),(65,'addUser','addUserHelp.html'),(66,'editUser','editUserHelp.html'),(67,'removeUser','removeUserHelp.html'),(68,'addUserToGroup','addUserToGroupHelp.html'),(69,'removeUserFromGroup','removeUserFromGroupHelp.html'),(70,'viewDiscussion','viewDiscussionThread.html'),(71,'addComment','addDiscussionComment.html'),(72,'listNews','listDashboardNewsHelp.html'),(73,'editNews','editDashboardNewsHelp.html'),(74,'previewNews','previewDashboardNewsHelp.html'),(75,'addNews','addDashboardNewsHelp.html'),(76,'modifyDocumentArchiveSettings','modifyDocumentArchiveSettingsHelp.html'),(77,'addDocumentArchiveSettings','addDocumentArchiveSettingsHelp.html'),(78,'listDocFields','listDocumentFieldsAdmin.html'),(79,'editDocFieldLookups','editDocFieldLookups.html'),(80,'addMetaDataForField','addMetaDataForField.html'),(81,'editMetaDataForField','editMetaDataForField.html'),(82,'removeMetaDataFromField','removeMetaDataFromField.html'),(83,'listDocs','listDocumentsCheckoutHelp.html'),(84,'editDocCheckout','editDocCheckoutHelp.html'),(85,'listDocTypes','listDocTypesHelp.html'),(86,'editDocTypeFields','editDocFieldHelp.html'),(87,'addDocTypeFieldsLink','addDocTypeFieldHelp.html'),(88,'listGroups','listGroupsHelp.html'),(89,'editGroupUnit','editGroupUnitHelp.html'),(90,'listOrg','listOrgHelp.html'),(91,'listRole','listRolesHelp.html'),(92,'listUnits','listUnitHelp.html'),(93,'editUnitOrg','editUnitOrgHelp.html'),(94,'removeUnitFromOrg','removeUnitFromOrgHelp.html'),(95,'addUnitToOrg','addUnitToOrgHelp.html'),(96,'listUsers','listUsersHelp.html'),(97,'editUserGroups','editUserGroupsHelp.html'),(98,'listWebsites','listWebsitesHelp.html'),(99,'loginDisclaimer','loginDisclaimer.html'),(100,'pageDisclaimer','pageDisclaimer.html');
+INSERT INTO `help` VALUES
+(1,'browse','dochelp.html'),
+(2,'dashboard','dashboardHelp.html'),
+(3,'addFolder','addFolderHelp.html'),
+(4,'editFolder','editFolderHelp.html'),
+(5,'addFolderCollaboration','addFolderCollaborationHelp.html'),
+(6,'modifyFolderCollaboration','addFolderCollaborationHelp.html'),
+(7,'addDocument','addDocumentHelp.html'),
+(8,'viewDocument','viewDocumentHelp.html'),
+(9,'modifyDocument','modifyDocumentHelp.html'),
+(10,'modifyDocumentRouting','modifyDocumentRoutingHelp.html'),
+(11,'emailDocument','emailDocumentHelp.html'),
+(12,'deleteDocument','deleteDocumentHelp.html'),
+(13,'administration','administrationHelp.html'),
+(14,'addGroup','addGroupHelp.html'),
+(15,'editGroup','editGroupHelp.html'),
+(16,'removeGroup','removeGroupHelp.html'),
+(17,'assignGroupToUnit','assignGroupToUnitHelp.html'),
+(18,'removeGroupFromUnit','removeGroupFromUnitHelp.html'),
+(19,'addUnit','addUnitHelp.html'),
+(20,'editUnit','editUnitHelp.html'),
+(21,'removeUnit','removeUnitHelp.html'),
+(22,'addOrg','addOrgHelp.html'),
+(23,'editOrg','editOrgHelp.html'),
+(24,'removeOrg','removeOrgHelp.html'),
+(25,'addRole','addRoleHelp.html'),
+(26,'editRole','editRoleHelp.html'),
+(27,'removeRole','removeRoleHelp.html'),
+(28,'addLink','addLinkHelp.html'),
+(29,'addLinkSuccess','addLinkHelp.html'),
+(30,'editLink','editLinkHelp.html'),
+(31,'removeLink','removeLinkHelp.html'),
+(32,'systemAdministration','systemAdministrationHelp.html'),
+(33,'deleteFolder','deleteFolderHelp.html'),
+(34,'editDocType','editDocTypeHelp.html'),
+(35,'removeDocType','removeDocTypeHelp.html'),
+(36,'addDocType','addDocTypeHelp.html'),
+(37,'addDocTypeSuccess','addDocTypeHelp.html'),
+(38,'manageSubscriptions','manageSubscriptionsHelp.html'),
+(39,'addSubscription','addSubscriptionHelp.html'),
+(40,'removeSubscription','removeSubscriptionHelp.html'),
+(41,'preferences','preferencesHelp.html'),
+(42,'editPrefsSuccess','preferencesHelp.html'),
+(43,'modifyDocumentGenericMetaData','modifyDocumentGenericMetaDataHelp.html'),
+(44,'viewHistory','viewHistoryHelp.html'),
+(45,'checkInDocument','checkInDocumentHelp.html'),
+(46,'checkOutDocument','checkOutDocumentHelp.html'),
+(47,'advancedSearch','advancedSearchHelp.html'),
+(48,'deleteFolderCollaboration','deleteFolderCollaborationHelp.html'),
+(49,'addFolderDocType','addFolderDocTypeHelp.html'),
+(50,'deleteFolderDocType','deleteFolderDocTypeHelp.html'),
+(51,'addGroupFolderLink','addGroupFolderLinkHelp.html'),
+(52,'deleteGroupFolderLink','deleteGroupFolderLinkHelp.html'),
+(53,'addWebsite','addWebsiteHelp.html'),
+(54,'addWebsiteSuccess','addWebsiteHelp.html'),
+(55,'editWebsite','editWebsiteHelp.html'),
+(56,'removeWebSite','removeWebSiteHelp.html'),
+(57,'standardSearch','standardSearchHelp.html'),
+(58,'modifyDocumentTypeMetaData','modifyDocumentTypeMetaDataHelp.html'),
+(59,'addDocField','addDocFieldHelp.html'),
+(60,'editDocField','editDocFieldHelp.html'),
+(61,'removeDocField','removeDocFieldHelp.html'),
+(62,'addMetaData','addMetaDataHelp.html'),
+(63,'editMetaData','editMetaDataHelp.html'),
+(64,'removeMetaData','removeMetaDataHelp.html'),
+(65,'addUser','addUserHelp.html'),
+(66,'editUser','editUserHelp.html'),
+(67,'removeUser','removeUserHelp.html'),
+(68,'addUserToGroup','addUserToGroupHelp.html'),
+(69,'removeUserFromGroup','removeUserFromGroupHelp.html'),
+(70,'viewDiscussion','viewDiscussionThread.html'),
+(71,'addComment','addDiscussionComment.html'),
+(72,'listNews','listDashboardNewsHelp.html'),
+(73,'editNews','editDashboardNewsHelp.html'),
+(74,'previewNews','previewDashboardNewsHelp.html'),
+(75,'addNews','addDashboardNewsHelp.html'),
+(76,'modifyDocumentArchiveSettings','modifyDocumentArchiveSettingsHelp.html'),
+(77,'addDocumentArchiveSettings','addDocumentArchiveSettingsHelp.html'),
+(78,'listDocFields','listDocumentFieldsAdmin.html'),
+(79,'editDocFieldLookups','editDocFieldLookups.html'),
+(80,'addMetaDataForField','addMetaDataForField.html'),
+(81,'editMetaDataForField','editMetaDataForField.html'),
+(82,'removeMetaDataFromField','removeMetaDataFromField.html'),
+(83,'listDocs','listDocumentsCheckoutHelp.html'),
+(84,'editDocCheckout','editDocCheckoutHelp.html'),
+(85,'listDocTypes','listDocTypesHelp.html'),
+(86,'editDocTypeFields','editDocFieldHelp.html'),
+(87,'addDocTypeFieldsLink','addDocTypeFieldHelp.html'),
+(88,'listGroups','listGroupsHelp.html'),
+(89,'editGroupUnit','editGroupUnitHelp.html'),
+(90,'listOrg','listOrgHelp.html'),
+(91,'listRole','listRolesHelp.html'),
+(92,'listUnits','listUnitHelp.html'),
+(93,'editUnitOrg','editUnitOrgHelp.html'),
+(94,'removeUnitFromOrg','removeUnitFromOrgHelp.html'),
+(95,'addUnitToOrg','addUnitToOrgHelp.html'),
+(96,'listUsers','listUsersHelp.html'),
+(97,'editUserGroups','editUserGroupsHelp.html'),
+(98,'listWebsites','listWebsitesHelp.html'),
+(99,'loginDisclaimer','loginDisclaimer.html'),
+(100,'pageDisclaimer','pageDisclaimer.html');
 /*!40000 ALTER TABLE `help` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -657,7 +813,17 @@ UNLOCK TABLES;
 
 LOCK TABLES `metadata_lookup` WRITE;
 /*!40000 ALTER TABLE `metadata_lookup` DISABLE KEYS */;
-INSERT INTO `metadata_lookup` VALUES (2,4,'Technical',NULL,0,0),(3,4,'Financial',NULL,0,0),(4,4,'Legal',NULL,0,0),(5,4,'Administrative',NULL,0,0),(6,4,'Miscellaneous',NULL,0,0),(7,4,'Sales',NULL,0,0),(8,5,'Text',NULL,0,0),(9,5,'Image',NULL,0,0),(10,5,'Audio',NULL,0,0),(11,5,'Video',NULL,0,0);
+INSERT INTO `metadata_lookup` VALUES
+(2,4,'Technical',NULL,0,0),
+(3,4,'Financial',NULL,0,0),
+(4,4,'Legal',NULL,0,0),
+(5,4,'Administrative',NULL,0,0),
+(6,4,'Miscellaneous',NULL,0,0),
+(7,4,'Sales',NULL,0,0),
+(8,5,'Text',NULL,0,0),
+(9,5,'Image',NULL,0,0),
+(10,5,'Audio',NULL,0,0),
+(11,5,'Video',NULL,0,0);
 /*!40000 ALTER TABLE `metadata_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -866,16 +1032,15 @@ INSERT INTO `mime_types` VALUES
 (160,'csv','text/csv','excel','Comma delimited spreadsheet',NULL,NULL),
 (161,'msi','application/x-msi','compressed','MSI Installer file',NULL,NULL),
 (162,'pps','application/vnd.ms-powerpoint','office','Powerpoint Presentation',NULL,NULL),
-(163, 'docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'word', 'Word Document',NULL,NULL),
-(164, 'dotx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.template', 'word', 'Word Document',NULL,NULL),
-(165, 'potx', 'application/vnd.openxmlformats-officedocument.presentationml.template', 'office', 'Powerpoint Presentation',NULL,NULL),
-(166, 'ppsx', 'application/vnd.openxmlformats-officedocument.presentationml.slideshow', 'office', 'Powerpoint Presentation',NULL,NULL),
-(167, 'pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'office', 'Powerpoint Presentation',NULL,NULL),
-(168, 'xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'excel', 'Excel Spreadsheet',NULL,NULL),
-(169, 'xltx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.template', 'excel', 'Excel Spreadsheet',NULL,NULL),
-(170, 'msg', 'application/vnd.ms-outlook', 'office', 'Outlook Item',NULL,NULL),
-(171, 'db', 'application/db', '', 'Misc DB file',NULL,NULL);
-
+(163,'docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document','word','Word Document',NULL,NULL),
+(164,'dotx','application/vnd.openxmlformats-officedocument.wordprocessingml.template','word','Word Document',NULL,NULL),
+(165,'potx','application/vnd.openxmlformats-officedocument.presentationml.template','office','Powerpoint Presentation',NULL,NULL),
+(166,'ppsx','application/vnd.openxmlformats-officedocument.presentationml.slideshow','office','Powerpoint Presentation',NULL,NULL),
+(167,'pptx','application/vnd.openxmlformats-officedocument.presentationml.presentation','office','Powerpoint Presentation',NULL,NULL),
+(168,'xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','excel','Excel Spreadsheet',NULL,NULL),
+(169,'xltx','application/vnd.openxmlformats-officedocument.spreadsheetml.template','excel','Excel Spreadsheet',NULL,NULL),
+(170,'msg','application/vnd.ms-outlook','office','Outlook Item',NULL,NULL),
+(171,'db','application/db','','Misc DB file',NULL,NULL);
 /*!40000 ALTER TABLE `mime_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -903,7 +1068,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `organisations_lookup` WRITE;
 /*!40000 ALTER TABLE `organisations_lookup` DISABLE KEYS */;
-INSERT INTO `organisations_lookup` VALUES (1,'Default Organisation');
+INSERT INTO `organisations_lookup` VALUES
+(1,'Default Organisation');
 /*!40000 ALTER TABLE `organisations_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -913,7 +1079,15 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_assignments` WRITE;
 /*!40000 ALTER TABLE `permission_assignments` DISABLE KEYS */;
-INSERT INTO `permission_assignments` VALUES (1,1,1,2),(2,2,1,2),(3,3,1,2),(4,4,1,2),(5,5,1,2),(6,6,1,2),(7,7,1,2),(8,8,1,2);
+INSERT INTO `permission_assignments` VALUES
+(1,1,1,2),
+(2,2,1,2),
+(3,3,1,2),
+(4,4,1,2),
+(5,5,1,2),
+(6,6,1,2),
+(7,7,1,2),
+(8,8,1,2);
 /*!40000 ALTER TABLE `permission_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -923,7 +1097,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_descriptor_groups` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_groups` DISABLE KEYS */;
-INSERT INTO `permission_descriptor_groups` VALUES (2,1);
+INSERT INTO `permission_descriptor_groups` VALUES
+(2,1);
 /*!40000 ALTER TABLE `permission_descriptor_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -951,7 +1126,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_descriptors` WRITE;
 /*!40000 ALTER TABLE `permission_descriptors` DISABLE KEYS */;
-INSERT INTO `permission_descriptors` VALUES (1,'d41d8cd98f00b204e9800998ecf8427e',''),(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)');
+INSERT INTO `permission_descriptors` VALUES
+(1,'d41d8cd98f00b204e9800998ecf8427e',''),
+(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)');
 /*!40000 ALTER TABLE `permission_descriptors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -979,7 +1156,31 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_lookup_assignments` WRITE;
 /*!40000 ALTER TABLE `permission_lookup_assignments` DISABLE KEYS */;
-INSERT INTO `permission_lookup_assignments` VALUES (1,1,1,1),(2,2,1,1),(3,3,1,1),(4,1,2,2),(5,2,2,2),(6,3,2,2),(7,1,3,2),(8,2,3,2),(9,3,3,2),(10,4,3,2),(11,5,3,2),(12,1,4,2),(13,2,4,2),(14,3,4,2),(15,4,4,2),(16,5,4,2),(17,6,4,2),(18,1,5,2),(19,2,5,2),(20,3,5,2),(21,4,5,2),(22,5,5,2),(23,6,5,2),(24,7,5,2);
+INSERT INTO `permission_lookup_assignments` VALUES
+(1,1,1,1),
+(2,2,1,1),
+(3,3,1,1),
+(4,1,2,2),
+(5,2,2,2),
+(6,3,2,2),
+(7,1,3,2),
+(8,2,3,2),
+(9,3,3,2),
+(10,4,3,2),
+(11,5,3,2),
+(12,1,4,2),
+(13,2,4,2),
+(14,3,4,2),
+(15,4,4,2),
+(16,5,4,2),
+(17,6,4,2),
+(18,1,5,2),
+(19,2,5,2),
+(20,3,5,2),
+(21,4,5,2),
+(22,5,5,2),
+(23,6,5,2),
+(24,7,5,2);
 /*!40000 ALTER TABLE `permission_lookup_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -989,7 +1190,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_lookups` WRITE;
 /*!40000 ALTER TABLE `permission_lookups` DISABLE KEYS */;
-INSERT INTO `permission_lookups` VALUES (1),(2),(3),(4),(5);
+INSERT INTO `permission_lookups` VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
 /*!40000 ALTER TABLE `permission_lookups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -999,7 +1205,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_objects` WRITE;
 /*!40000 ALTER TABLE `permission_objects` DISABLE KEYS */;
-INSERT INTO `permission_objects` VALUES (1);
+INSERT INTO `permission_objects` VALUES
+(1);
 /*!40000 ALTER TABLE `permission_objects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1009,8 +1216,25 @@ UNLOCK TABLES;
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES (1,'ktcore.permissions.read','Read',1),(2,'ktcore.permissions.write','Write',1),(3,'ktcore.permissions.addFolder','Add Folder',1),(4,'ktcore.permissions.security','Manage security',1),(5,'ktcore.permissions.delete','Delete',1),(6,'ktcore.permissions.workflow','Manage workflow',1),(7,'ktcore.permissions.folder_details','Folder Details',1),(8,'ktcore.permissions.folder_rename','Rename Folder',1);
+INSERT INTO `permissions` VALUES
+(1,'ktcore.permissions.read','Read',1),
+(2,'ktcore.permissions.write','Write',1),
+(3,'ktcore.permissions.addFolder','Add Folder',1),
+(4,'ktcore.permissions.security','Manage security',1),
+(5,'ktcore.permissions.delete','Delete',1),
+(6,'ktcore.permissions.workflow','Manage workflow',1),
+(7,'ktcore.permissions.folder_details','Folder Details',1),
+(8,'ktcore.permissions.folder_rename','Rename Folder',1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `plugin_helper`
+--
+
+LOCK TABLES `plugin_helper` WRITE;
+/*!40000 ALTER TABLE `plugin_helper` DISABLE KEYS */;
+/*!40000 ALTER TABLE `plugin_helper` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1029,27 +1253,27 @@ UNLOCK TABLES;
 LOCK TABLES `plugins` WRITE;
 /*!40000 ALTER TABLE `plugins` DISABLE KEYS */;
 INSERT INTO `plugins` VALUES
-	(1,'ktcore.tagcloud.plugin','plugins/tagcloud/TagCloudPlugin.php',0,0,NULL,0,'Tag Cloud Plugin',0),
-	(2,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin',0),
-	(3,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support',-75),
-	(4,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality',-25),
-	(5,'ktstandard.adminversion.plugin','plugins/ktstandard/AdminVersionPlugin/AdminVersionPlugin.php',0,0,NULL,0,'Admin Version Notifier',0),
-	(6,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin',0),
-	(7,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin',0),
-	(8,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin',0),
-	(9,'ktstandard.immutableaction.plugin','plugins/ktstandard/ImmutableActionPlugin.php',0,0,NULL,0,'Immutable action plugin',0),
-	(10,'ktstandard.subscriptions.plugin','plugins/ktstandard/KTSubscriptions.php',0,0,NULL,0,'Subscription Plugin',0),
-	(11,'ktstandard.discussion.plugin','plugins/ktstandard/KTDiscussion.php',0,0,NULL,0,'Document Discussions Plugin',0),
-	(12,'ktstandard.email.plugin','plugins/ktstandard/KTEmail.php',0,0,NULL,0,'Email Plugin',0),
-	(13,'ktstandard.indexer.plugin','plugins/ktstandard/KTIndexer.php',0,0,NULL,0,'Full-text Content Indexing',0),
-	(14,'ktstandard.documentlinks.plugin','plugins/ktstandard/KTDocumentLinks.php',0,0,NULL,0,'Inter-document linking',0),
-	(15,'ktstandard.workflowassociation.plugin','plugins/ktstandard/KTWorkflowAssociation.php',0,0,NULL,0,'Workflow Association Plugin',0),
-	(16,'ktstandard.workflowassociation.documenttype.plugin','plugins/ktstandard/workflow/TypeAssociator.php',0,0,NULL,0,'Workflow allocation by document type',0),
-	(17,'ktstandard.workflowassociation.folder.plugin','plugins/ktstandard/workflow/FolderAssociator.php',0,0,NULL,0,'Workflow allocation by location',0),
-	(18,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin',0),
-	(19,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0),
-	(20,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0),
-	(21,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0);
+(1,'ktcore.tagcloud.plugin','plugins/tagcloud/TagCloudPlugin.php',0,0,NULL,0,'Tag Cloud Plugin',0),
+(2,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin',0),
+(3,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support',-75),
+(4,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality',-25),
+(5,'ktstandard.adminversion.plugin','plugins/ktstandard/AdminVersionPlugin/AdminVersionPlugin.php',0,0,NULL,0,'Admin Version Notifier',0),
+(6,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin',0),
+(7,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin',0),
+(8,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin',0),
+(9,'ktstandard.immutableaction.plugin','plugins/ktstandard/ImmutableActionPlugin.php',0,0,NULL,0,'Immutable action plugin',0),
+(10,'ktstandard.subscriptions.plugin','plugins/ktstandard/KTSubscriptions.php',0,0,NULL,0,'Subscription Plugin',0),
+(11,'ktstandard.discussion.plugin','plugins/ktstandard/KTDiscussion.php',0,0,NULL,0,'Document Discussions Plugin',0),
+(12,'ktstandard.email.plugin','plugins/ktstandard/KTEmail.php',0,0,NULL,0,'Email Plugin',0),
+(13,'ktstandard.indexer.plugin','plugins/ktstandard/KTIndexer.php',0,0,NULL,0,'Full-text Content Indexing',0),
+(14,'ktstandard.documentlinks.plugin','plugins/ktstandard/KTDocumentLinks.php',0,0,NULL,0,'Inter-document linking',0),
+(15,'ktstandard.workflowassociation.plugin','plugins/ktstandard/KTWorkflowAssociation.php',0,0,NULL,0,'Workflow Association Plugin',0),
+(16,'ktstandard.workflowassociation.documenttype.plugin','plugins/ktstandard/workflow/TypeAssociator.php',0,0,NULL,0,'Workflow allocation by document type',0),
+(17,'ktstandard.workflowassociation.folder.plugin','plugins/ktstandard/workflow/FolderAssociator.php',0,0,NULL,0,'Workflow allocation by location',0),
+(18,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin',0),
+(19,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0),
+(20,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0),
+(21,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0);
 /*!40000 ALTER TABLE `plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1068,7 +1292,13 @@ UNLOCK TABLES;
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (-4,'Authenticated Users'),(4,'Creator'),(-3,'Everyone'),(-2,'Owner'),(2,'Publisher'),(3,'Reviewer');
+INSERT INTO `roles` VALUES
+(-4,'Authenticated Users'),
+(4,'Creator'),
+(-3,'Everyone'),
+(-2,'Owner'),
+(2,'Publisher'),
+(3,'Reviewer');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1088,17 +1318,17 @@ UNLOCK TABLES;
 LOCK TABLES `scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `scheduler_tasks` DISABLE KEYS */;
 INSERT INTO `scheduler_tasks` VALUES
-(1,'Indexing','search2/bin/cronIndexer.php','',0,'1min','2007-10-01',NULL,0,'system'),
-(2,'Index Migration','search2/bin/cronMigration.php','',0,'5mins','2007-10-01',NULL,0,'system'),
-(3,'Index Optimization','search2/bin/cronOptimize.php','',0,'weekly','2007-10-01',NULL,0,'system'),
-(4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01',NULL,0,'disabled'),
-(5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01',NULL,0,'disabled'),
-(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01',NULL,0,'enabled'),
-(9,'Check Latest Version','plugins/ktstandard/AdminVersionPlugin/bin/UpdateNewVersion.php','',0,'daily','2007-10-01',NULL,0,'enabled'),
-(10,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'daily','2007-10-01',NULL,0,'enabled'),
-(11,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'daily','2007-10-01',NULL,0,'enabled');
+(1,'Indexing','search2/bin/cronIndexer.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'system'),
+(2,'Index Migration','search2/bin/cronMigration.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'system'),
+(3,'Index Optimization','search2/bin/cronOptimize.php','',0,'weekly','2007-10-01 00:00:00',NULL,0,'system'),
+(4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01 00:00:00',NULL,0,'disabled'),
+(5,'Database Maintenance','bin/dbmaint.php','optimize',0,'monthly','2007-10-01 00:00:00',NULL,0,'disabled'),
+(6,'Open Office test','bin/checkopenoffice.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'enabled'),
+(7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'enabled'),
+(8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'enabled'),
+(9,'Check Latest Version','plugins/ktstandard/AdminVersionPlugin/bin/UpdateNewVersion.php','',0,'daily','2007-10-01 00:00:00',NULL,0,'enabled'),
+(10,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'daily','2007-10-01 00:00:00',NULL,0,'enabled'),
+(11,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'daily','2007-10-01 00:00:00',NULL,0,'enabled');
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1117,7 +1347,25 @@ UNLOCK TABLES;
 
 LOCK TABLES `search_ranking` WRITE;
 /*!40000 ALTER TABLE `search_ranking` DISABLE KEYS */;
-INSERT INTO `search_ranking` VALUES ('Discussion','',150,'S'),('documents','checked_out_user_id',1,'T'),('documents','created',1,'T'),('documents','creator_id',1,'T'),('documents','id',1,'T'),('documents','immutable',1,'T'),('documents','is_checked_out',1,'T'),('documents','modified',1,'T'),('documents','modified_user_id',1,'T'),('documents','title',300,'T'),('DocumentText','',100,'S'),('document_content_version','filesize',1,'T'),('document_content_version','filename',10,'T'),('document_metadata_version','document_type_id',1,'T'),('document_metadata_version','name',1,'T'),('document_metadata_version','workflow_id',1,'T'),('document_metadata_version','workflow_state_id',1,'T'),('tag_words','tag',1,'T');
+INSERT INTO `search_ranking` VALUES
+('Discussion','',150,'S'),
+('documents','checked_out_user_id',1,'T'),
+('documents','created',1,'T'),
+('documents','creator_id',1,'T'),
+('documents','id',1,'T'),
+('documents','immutable',1,'T'),
+('documents','is_checked_out',1,'T'),
+('documents','modified',1,'T'),
+('documents','modified_user_id',1,'T'),
+('documents','title',300,'T'),
+('DocumentText','',100,'S'),
+('document_content_version','filename',10,'T'),
+('document_content_version','filesize',1,'T'),
+('document_metadata_version','document_type_id',1,'T'),
+('document_metadata_version','name',1,'T'),
+('document_metadata_version','workflow_id',1,'T'),
+('document_metadata_version','workflow_state_id',1,'T'),
+('tag_words','tag',1,'T');
 /*!40000 ALTER TABLE `search_ranking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1145,7 +1393,13 @@ UNLOCK TABLES;
 
 LOCK TABLES `status_lookup` WRITE;
 /*!40000 ALTER TABLE `status_lookup` DISABLE KEYS */;
-INSERT INTO `status_lookup` VALUES (1,'Live'),(2,'Published'),(3,'Deleted'),(4,'Archived'),(5,'Incomplete'),(6,'Version Deleted');
+INSERT INTO `status_lookup` VALUES
+(1,'Live'),
+(2,'Published'),
+(3,'Deleted'),
+(4,'Archived'),
+(5,'Incomplete'),
+(6,'Version Deleted');
 /*!40000 ALTER TABLE `status_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1155,7 +1409,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
-INSERT INTO `system_settings` VALUES (1,'lastIndexUpdate','0'),(2,'knowledgeTreeVersion','3.5.2'),(3,'databaseVersion','3.5.2');
+INSERT INTO `system_settings` VALUES
+(1,'lastIndexUpdate','0'),
+(2,'knowledgeTreeVersion','3.5.2'),
+(3,'databaseVersion','3.5.2');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1183,7 +1440,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `time_unit_lookup` WRITE;
 /*!40000 ALTER TABLE `time_unit_lookup` DISABLE KEYS */;
-INSERT INTO `time_unit_lookup` VALUES (1,'Years'),(2,'Months'),(3,'Days');
+INSERT INTO `time_unit_lookup` VALUES
+(1,'Years'),
+(2,'Months'),
+(3,'Days');
 /*!40000 ALTER TABLE `time_unit_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1229,7 +1489,141 @@ UNLOCK TABLES;
 
 LOCK TABLES `upgrades` WRITE;
 /*!40000 ALTER TABLE `upgrades` DISABLE KEYS */;
-INSERT INTO `upgrades` VALUES (1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','Database upgrade to version 2.0.6: Create upgrade table','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(2,'upgrade*2.0.6*0*upgrade2.0.6','Upgrade from version 2.0.2 to 2.0.6','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(3,'func*2.0.6*0*addTemplateMimeTypes','Add MIME types for Excel and Word templates','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(4,'sql*2.0.6*0*2.0.6/add_email_attachment_transaction_type.sql','Database upgrade to version 2.0.6: Add email attachment transaction type','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(5,'sql*2.0.6*0*2.0.6/create_link_type_table.sql','Database upgrade to version 2.0.6: Create link type table','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(6,'sql*2.0.6*1*2.0.6/1-update_database_version.sql','Database upgrade to version 2.0.6: Update database version','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),(7,'upgrade*2.0.7*0*upgrade2.0.7','Upgrade from version 2.0.7 to 2.0.7','2005-07-21 22:35:15',1,'upgrade*2.0.7*0*upgrade2.0.7'),(8,'sql*2.0.7*0*2.0.7/document_link_update.sql','Database upgrade to version 2.0.7: Document link update','2005-07-21 22:35:16',1,'upgrade*2.0.7*0*upgrade2.0.7'),(9,'sql*2.0.8*0*2.0.8/nestedgroups.sql','Database upgrade to version 2.0.8: Nestedgroups','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),(10,'sql*2.0.8*0*2.0.8/help_replacement.sql','Database upgrade to version 2.0.8: Help replacement','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),(11,'upgrade*2.0.8*0*upgrade2.0.8','Upgrade from version 2.0.7 to 2.0.8','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),(12,'sql*2.0.8*0*2.0.8/permissions.sql','Database upgrade to version 2.0.8: Permissions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),(13,'func*2.0.8*1*setPermissionObject','Set the permission object in charge of a document or folder','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),(14,'sql*2.0.8*1*2.0.8/1-metadata_versions.sql','Database upgrade to version 2.0.8: Metadata versions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),(15,'sql*2.0.8*2*2.0.8/2-permissions.sql','Database upgrade to version 2.0.8: Permissions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),(16,'sql*2.0.9*0*2.0.9/storagemanager.sql','','0000-00-00 00:00:00',1,NULL),(17,'sql*2.0.9*0*2.0.9/metadata_tree.sql','','0000-00-00 00:00:00',1,NULL),(18,'sql*2.0.9*0*2.0.9/document_incomplete.sql','','0000-00-00 00:00:00',1,NULL),(20,'upgrade*2.99.1*0*upgrade2.99.1','Upgrade from version 2.0.8 to 2.99.1','2005-10-07 14:26:15',1,'upgrade*2.99.1*0*upgrade2.99.1'),(21,'sql*2.99.1*0*2.99.1/workflow.sql','Database upgrade to version 2.99.1: Workflow','2005-10-07 14:26:15',1,'upgrade*2.99.1*0*upgrade2.99.1'),(22,'sql*2.99.1*0*2.99.1/fieldsets.sql','Database upgrade to version 2.99.1: Fieldsets','2005-10-07 14:26:16',1,'upgrade*2.99.1*0*upgrade2.99.1'),(23,'func*2.99.1*1*createFieldSets','Create a fieldset for each field without one','2005-10-07 14:26:16',1,'upgrade*2.99.1*0*upgrade2.99.1'),(24,'sql*2.99.2*0*2.99.2/saved_searches.sql','','0000-00-00 00:00:00',1,NULL),(25,'sql*2.99.2*0*2.99.2/transactions.sql','','0000-00-00 00:00:00',1,NULL),(26,'sql*2.99.2*0*2.99.2/field_mandatory.sql','','0000-00-00 00:00:00',1,NULL),(27,'sql*2.99.2*0*2.99.2/fieldsets_system.sql','','0000-00-00 00:00:00',1,NULL),(28,'sql*2.99.2*0*2.99.2/permission_by_user_and_roles.sql','','0000-00-00 00:00:00',1,NULL),(29,'sql*2.99.2*0*2.99.2/disabled_metadata.sql','','0000-00-00 00:00:00',1,NULL),(30,'sql*2.99.2*0*2.99.2/searchable_text.sql','','0000-00-00 00:00:00',1,NULL),(31,'sql*2.99.2*0*2.99.2/workflow.sql','','0000-00-00 00:00:00',1,NULL),(32,'sql*2.99.2*1*2.99.2/1-constraints.sql','','0000-00-00 00:00:00',1,NULL),(33,'sql*2.99.3*0*2.99.3/notifications.sql','','0000-00-00 00:00:00',1,NULL),(34,'sql*2.99.3*0*2.99.3/last_modified_user.sql','','0000-00-00 00:00:00',1,NULL),(35,'sql*2.99.3*0*2.99.3/authentication_sources.sql','','0000-00-00 00:00:00',1,NULL),(36,'sql*2.99.3*0*2.99.3/document_fields_constraints.sql','','0000-00-00 00:00:00',1,NULL),(37,'sql*2.99.5*0*2.99.5/dashlet_disabling.sql','','0000-00-00 00:00:00',1,NULL),(38,'sql*2.99.5*0*2.99.5/role_allocations.sql','','0000-00-00 00:00:00',1,NULL),(39,'sql*2.99.5*0*2.99.5/transaction_namespaces.sql','','0000-00-00 00:00:00',1,NULL),(40,'sql*2.99.5*0*2.99.5/fieldset_field_descriptions.sql','','0000-00-00 00:00:00',1,NULL),(41,'sql*2.99.5*0*2.99.5/role_changes.sql','','0000-00-00 00:00:00',1,NULL),(42,'sql*2.99.6*0*2.99.6/table_cleanup.sql','Database upgrade to version 2.99.6: Table cleanup','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),(43,'sql*2.99.6*0*2.99.6/plugin-registration.sql','Database upgrade to version 2.99.6: Plugin-registration','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),(44,'sql*2.99.7*0*2.99.7/documents_normalisation.sql','Database upgrade to version 2.99.7: Documents normalisation','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),(45,'sql*2.99.7*0*2.99.7/help_replacement.sql','Database upgrade to version 2.99.7: Help replacement','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),(46,'sql*2.99.7*0*2.99.7/table_cleanup.sql','Database upgrade to version 2.99.7: Table cleanup','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),(47,'func*2.99.7*1*normaliseDocuments','Normalise the documents table','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),(48,'sql*2.99.7*10*2.99.7/10-documents_normalisation.sql','Database upgrade to version 2.99.7: Documents normalisation','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),(49,'sql*2.99.7*20*2.99.7/20-fields.sql','Database upgrade to version 2.99.7: Fields','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),(50,'upgrade*2.99.7*99*upgrade2.99.7','Upgrade from version 2.99.5 to 2.99.7','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),(51,'sql*2.99.7*0*2.99.7/discussion.sql','','0000-00-00 00:00:00',1,NULL),(52,'func*2.99.7*-1*applyDiscussionUpgrade','func upgrade to version 2.99.7 phase -1','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(53,'sql*2.99.8*0*2.99.8/mime_types.sql','Database upgrade to version 2.99.8: Mime types','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(54,'sql*2.99.8*0*2.99.8/category-correction.sql','Database upgrade to version 2.99.8: Category-correction','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(55,'sql*2.99.8*0*2.99.8/trigger_selection.sql','Database upgrade to version 2.99.8: Trigger selection','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(56,'sql*2.99.8*0*2.99.8/units.sql','Database upgrade to version 2.99.8: Units','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(57,'sql*2.99.8*0*2.99.8/type_workflow_map.sql','Database upgrade to version 2.99.8: Type workflow map','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),(58,'sql*2.99.8*0*2.99.8/disabled_documenttypes.sql','Database upgrade to version 2.99.8: Disabled documenttypes','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(59,'func*2.99.8*1*fixUnits','func upgrade to version 2.99.8 phase 1','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(60,'sql*2.99.8*10*2.99.8/10-units.sql','Database upgrade to version 2.99.8: Units','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(61,'sql*2.99.8*15*2.99.8/15-status.sql','Database upgrade to version 2.99.8: Status','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(62,'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql','Database upgrade to version 2.99.8: State permission assignments','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(63,'sql*2.99.8*25*2.99.8/25-authentication_details.sql','Database upgrade to version 2.99.8: Authentication details','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(64,'upgrade*2.99.8*99*upgrade2.99.8','Upgrade from version 2.99.7 to 2.99.8','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),(65,'func*2.99.9*0*createSecurityDeletePermissions','Create the Core: Manage Security and Core: Delete permissions','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(66,'func*2.99.9*0*createLdapAuthenticationProvider','Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(67,'sql*2.99.9*0*2.99.9/mimetype-friendly.sql','Database upgrade to version 2.99.9: Mimetype-friendly','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(68,'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql','Database upgrade to version 2.99.9: Opendocument-mime-types','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(69,'sql*3.0*0*3.0/zipfile-mimetype.sql','Database upgrade to version 3.0: Zipfile-mimetype','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(70,'upgrade*3.0*99*upgrade3.0','Upgrade from version 2.99.8 to 3.0','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),(71,'sql*3.0.1.1*0*3.0.1.1/document_role_allocations.sql','Database upgrade to version 3.0.1.1: Document role allocations','2006-03-28 11:22:19',1,'upgrade*3.0.1.1*99*upgrade3.0.1.1'),(72,'upgrade*3.0.1.1*99*upgrade3.0.1.1','Upgrade from version 3.0 to 3.0.1.1','2006-03-28 11:22:19',1,'upgrade*3.0.1.1*99*upgrade3.0.1.1'),(73,'sql*3.0.1.2*0*3.0.1.2/user_more_authentication_details.sql','Database upgrade to version 3.0.1.2: User more authentication details','2006-04-07 16:50:28',1,'upgrade*3.0.1.2*99*upgrade3.0.1.2'),(74,'upgrade*3.0.1.2*99*upgrade3.0.1.2','Upgrade from version 3.0.1.1 to 3.0.1.2','2006-04-07 16:50:28',1,'upgrade*3.0.1.2*99*upgrade3.0.1.2'),(75,'sql*3.0.1.2*0*3.0.1.2/owner_role_move.sql','Database upgrade to version 3.0.1.2: Owner role move','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(76,'func*3.0.1.3*0*addTransactionTypes3013','Add new folder transaction types','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(77,'sql*3.0.1.3*0*3.0.1.3/user_history.sql','Database upgrade to version 3.0.1.3: User history','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(78,'sql*3.0.1.3*0*3.0.1.3/folder_transactions.sql','Database upgrade to version 3.0.1.3: Folder transactions','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(79,'sql*3.0.1.3*0*3.0.1.3/plugin-unavailable.sql','Database upgrade to version 3.0.1.3: Plugin-unavailable','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(80,'func*3.0.1.4*0*createWorkflowPermission','Create the Core: Manage Workflow','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(81,'upgrade*3.0.1.4*99*upgrade3.0.1.4','Upgrade from version 3.0.1.2 to 3.0.1.4','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),(82,'sql*3.0.1.5*0*3.0.1.5/anonymous-user.sql','Database upgrade to version 3.0.1.5: Anonymous-user','2006-04-18 12:38:41',1,'upgrade*3.0.1.5*99*upgrade3.0.1.5'),(83,'upgrade*3.0.1.5*99*upgrade3.0.1.5','Upgrade from version 3.0.1.4 to 3.0.1.5','2006-04-18 12:38:41',1,'upgrade*3.0.1.5*99*upgrade3.0.1.5'),(84,'sql*3.0.1.6*0*3.0.1.6/workflow-into-metadata.sql','Database upgrade to version 3.0.1.6: Workflow-into-metadata','2006-04-20 14:22:24',1,'upgrade*3.0.1.6*99*upgrade3.0.1.6'),(85,'upgrade*3.0.1.6*99*upgrade3.0.1.6','Upgrade from version 3.0.1.5 to 3.0.1.6','2006-04-20 14:22:24',1,'upgrade*3.0.1.6*99*upgrade3.0.1.6'),(86,'sql*3.0.1.7*0*3.0.1.7/session_id.sql','Database upgrade to version 3.0.1.7: Session id','2006-04-20 17:03:55',1,'upgrade*3.0.1.7*99*upgrade3.0.1.7'),(87,'upgrade*3.0.1.7*99*upgrade3.0.1.7','Upgrade from version 3.0.1.6 to 3.0.1.7','2006-04-20 17:03:56',1,'upgrade*3.0.1.7*99*upgrade3.0.1.7'),(88,'sql*3.0.1.8*0*3.0.1.8/friendly-plugins.sql','Database upgrade to version 3.0.1.8: Friendly-plugins','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),(89,'sql*3.0.1.8*0*3.0.1.8/longer-text.sql','Database upgrade to version 3.0.1.8: Longer-text','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),(90,'sql*3.0.1.8*0*3.0.1.8/admin-mode-logging.sql','Database upgrade to version 3.0.1.8: Admin-mode-logging','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),(91,'upgrade*3.0.1.8*99*upgrade3.0.1.8','Upgrade from version 3.0.1.7 to 3.0.1.8','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),(92,'upgrade*3.0.2*99*upgrade3.0.2','Upgrade from version 3.0.1.8 to 3.0.2','2006-05-02 10:08:13',1,'upgrade*3.0.2*99*upgrade3.0.2'),(93,'sql*3.0.2.1*0*3.0.2.1/disclaimer-help-files.sql','Database upgrade to version 3.0.2.1: Disclaimer-help-files','2006-05-25 16:04:23',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),(94,'sql*3.0.2.2*0*3.0.2.2/folder_search.sql','Database upgrade to version 3.0.2.2: Folder search','2006-05-25 16:04:23',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),(95,'upgrade*3.0.2.2*99*upgrade3.0.2.2','Upgrade from version 3.0.2 to 3.0.2.2','2006-05-25 16:04:24',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),(96,'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql','Database upgrade to version 3.0.2.3: Msi-filetype','2006-05-30 10:55:58',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),(97,'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql','Database upgrade to version 3.0.2.4: Discussion-fulltext','2006-05-30 10:55:59',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),(98,'upgrade*3.0.2.4*99*upgrade3.0.2.4','Upgrade from version 3.0.2.2 to 3.0.2.4','2006-05-30 10:55:59',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),(99,'upgrade*3.0.3*99*upgrade3.0.3','Upgrade from version 3.0.2.4 to 3.0.3','2006-05-31 13:02:04',1,'upgrade*3.0.3*99*upgrade3.0.3'),(100,'sql*3.0.3.1*0*3.0.3.1/utf8.sql','Database upgrade to version 3.0.3.1: Utf8','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(101,'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql','Database upgrade to version 3.0.3.1: Document immutable','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(102,'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql','Database upgrade to version 3.0.3.1: Workflow-triggers','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(103,'func*3.0.3.2*0*createFolderDetailsPermission','Create the Core: Folder Details permission','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(104,'func*3.0.3.3*0*generateWorkflowTriggers','Migrate old in-transition guards to triggers','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(105,'sql*3.0.3.4*0*3.0.3.4/column_entries.sql','Database upgrade to version 3.0.3.4: Column entries','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(106,'sql*3.0.3.4*0*3.0.3.4/bulk_export_transaction.sql','Database upgrade to version 3.0.3.4: Bulk export transaction','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(107,'upgrade*3.0.3.4*99*upgrade3.0.3.4','Upgrade from version 3.0.3 to 3.0.3.4','2006-07-12 12:00:34',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),(108,'sql*3.0.3.5*0*3.0.3.5/notifications_data_text.sql','Database upgrade to version 3.0.3.5: Notifications data text','2006-07-14 15:26:49',1,'upgrade*3.0.3.5*99*upgrade3.0.3.5'),(109,'upgrade*3.0.3.5*99*upgrade3.0.3.5','Upgrade from version 3.0.3.4 to 3.0.3.5','2006-07-14 15:26:49',1,'upgrade*3.0.3.5*99*upgrade3.0.3.5'),(110,'sql*3.0.3.6*0*3.0.3.6/document-restore.sql','Database upgrade to version 3.0.3.6: Document-restore','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),(111,'func*3.0.3.7*0*rebuildAllPermissions','Rebuild all permissions to ensure correct functioning of permission-definitions.','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),(112,'upgrade*3.0.3.7*99*upgrade3.0.3.7','Upgrade from version 3.0.3.5 to 3.0.3.7','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),(113,'upgrade*3.1*99*upgrade3.1','Upgrade from version 3.0.3.7 to 3.1','2006-07-31 10:41:12',1,'upgrade*3.1*99*upgrade3.1'),(114,'sql*3.1.1*0*3.1.1/parentless-documents.sql','Database upgrade to version 3.1.1: Parentless-documents','2006-08-15 11:58:07',1,'upgrade*3.1.1*99*upgrade3.1.1'),(115,'upgrade*3.1.1*99*upgrade3.1.1','Upgrade from version 3.1 to 3.1.1','2006-08-15 11:58:07',1,'upgrade*3.1.1*99*upgrade3.1.1'),(116,'sql*3.1.2*0*3.1.2/user-disable.sql','Database upgrade to version 3.1.2: User-disable','2006-09-08 17:08:26',1,'upgrade*3.1.2*99*upgrade3.1.2'),(117,'upgrade*3.1.2*99*upgrade3.1.2','Upgrade from version 3.1.1 to 3.1.2','2006-09-08 17:08:26',1,'upgrade*3.1.2*99*upgrade3.1.2'),(118,'func*3.1.5*0*upgradeSavedSearches','Upgrade saved searches to use namespaces instead of integer ids','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(119,'sql*3.1.6*0*3.1.6/interceptor_instances.sql','Database upgrade to version 3.1.6: Interceptor instances','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(120,'sql*3.1.6*0*3.1.6/workflow-sanity.sql','Database upgrade to version 3.1.6: Workflow-sanity','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(121,'sql*3.1.6.2*0*3.1.6.2/workflow_state_disabled_actions.sql','Database upgrade to version 3.1.6.2: Workflow state disabled actions','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(122,'sql*3.1.6.2*0*3.1.6.2/folder_owner_role.sql','Database upgrade to version 3.1.6.2: Folder owner role','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(123,'func*3.1.6.3*0*cleanupGroupMembership','Cleanup any old references to missing groups, etc.','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(124,'sql*3.1.6.3*0*3.1.6.3/groups-integrity.sql','Database upgrade to version 3.1.6.3: Groups-integrity','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(125,'sql*3.1.6.5*0*3.1.6.5/workflow-state-referencefixes.sql','Database upgrade to version 3.1.6.5: Workflow-state-referencefixes','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(126,'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql','Database upgrade to version 3.1.6.6: Copy transaction','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(127,'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql','Database upgrade to version 3.1.6.7: Sane-names-for-stuff','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(128,'upgrade*3.1.6.7*99*upgrade3.1.6.7','Upgrade from version 3.1.2 to 3.1.6.7','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),(129,'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql','Database upgrade to version 3.3.0.1: System-settings-to-text','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),(130,'upgrade*3.3.0.1*99*upgrade3.3.0.1','Upgrade from version 3.1.6.7 to 3.3.0.1','2006-10-30 12:49:33',1,'upgrade*3.3.0.1*99*upgrade3.3.0.1'),(131,'sql*3.3.1*0*3.3.1/rss.sql','Database upgrade to version 3.3.1: Rss','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),(132,'upgrade*3.3.1*99*upgrade3.3.1','Upgrade from version 3.3.0.1 to 3.3.1','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),(133,'sql*3.3.2*0*3.3.2/tagclouds.sql','Database upgrade to version 3.3.2: Tagclouds','2007-02-23 11:55:09',1,'upgrade*3.3.2*99*upgrade3.3.2'),(134,'upgrade*3.3.2*99*upgrade3.3.2','Upgrade from version 3.3.1 to 3.3.2','2007-02-23 11:55:09',1,'upgrade*3.3.2*99*upgrade3.3.2'),(135,'sql*3.4.0*0*3.4.0/upload_download.sql','Upgrade to version 3.4.0: Upload download','2007-04-17 00:00:00',1,'upgrade*3.4.0*99*upgrade3.4.0'),
+INSERT INTO `upgrades` VALUES
+(1,'sql*2.0.6*0*2.0.6/create_upgrade_table.sql','Database upgrade to version 2.0.6: Create upgrade table','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(2,'upgrade*2.0.6*0*upgrade2.0.6','Upgrade from version 2.0.2 to 2.0.6','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(3,'func*2.0.6*0*addTemplateMimeTypes','Add MIME types for Excel and Word templates','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(4,'sql*2.0.6*0*2.0.6/add_email_attachment_transaction_type.sql','Database upgrade to version 2.0.6: Add email attachment transaction type','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(5,'sql*2.0.6*0*2.0.6/create_link_type_table.sql','Database upgrade to version 2.0.6: Create link type table','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(6,'sql*2.0.6*1*2.0.6/1-update_database_version.sql','Database upgrade to version 2.0.6: Update database version','2005-06-16 00:30:06',1,'upgrade*2.0.6*0*upgrade2.0.6'),
+(7,'upgrade*2.0.7*0*upgrade2.0.7','Upgrade from version 2.0.7 to 2.0.7','2005-07-21 22:35:15',1,'upgrade*2.0.7*0*upgrade2.0.7'),
+(8,'sql*2.0.7*0*2.0.7/document_link_update.sql','Database upgrade to version 2.0.7: Document link update','2005-07-21 22:35:16',1,'upgrade*2.0.7*0*upgrade2.0.7'),
+(9,'sql*2.0.8*0*2.0.8/nestedgroups.sql','Database upgrade to version 2.0.8: Nestedgroups','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(10,'sql*2.0.8*0*2.0.8/help_replacement.sql','Database upgrade to version 2.0.8: Help replacement','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(11,'upgrade*2.0.8*0*upgrade2.0.8','Upgrade from version 2.0.7 to 2.0.8','2005-08-02 16:02:06',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(12,'sql*2.0.8*0*2.0.8/permissions.sql','Database upgrade to version 2.0.8: Permissions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(13,'func*2.0.8*1*setPermissionObject','Set the permission object in charge of a document or folder','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(14,'sql*2.0.8*1*2.0.8/1-metadata_versions.sql','Database upgrade to version 2.0.8: Metadata versions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(15,'sql*2.0.8*2*2.0.8/2-permissions.sql','Database upgrade to version 2.0.8: Permissions','2005-08-02 16:02:07',1,'upgrade*2.0.8*0*upgrade2.0.8'),
+(16,'sql*2.0.9*0*2.0.9/storagemanager.sql','','0000-00-00 00:00:00',1,NULL),
+(17,'sql*2.0.9*0*2.0.9/metadata_tree.sql','','0000-00-00 00:00:00',1,NULL),
+(18,'sql*2.0.9*0*2.0.9/document_incomplete.sql','','0000-00-00 00:00:00',1,NULL),
+(20,'upgrade*2.99.1*0*upgrade2.99.1','Upgrade from version 2.0.8 to 2.99.1','2005-10-07 14:26:15',1,'upgrade*2.99.1*0*upgrade2.99.1'),
+(21,'sql*2.99.1*0*2.99.1/workflow.sql','Database upgrade to version 2.99.1: Workflow','2005-10-07 14:26:15',1,'upgrade*2.99.1*0*upgrade2.99.1'),
+(22,'sql*2.99.1*0*2.99.1/fieldsets.sql','Database upgrade to version 2.99.1: Fieldsets','2005-10-07 14:26:16',1,'upgrade*2.99.1*0*upgrade2.99.1'),
+(23,'func*2.99.1*1*createFieldSets','Create a fieldset for each field without one','2005-10-07 14:26:16',1,'upgrade*2.99.1*0*upgrade2.99.1'),
+(24,'sql*2.99.2*0*2.99.2/saved_searches.sql','','0000-00-00 00:00:00',1,NULL),
+(25,'sql*2.99.2*0*2.99.2/transactions.sql','','0000-00-00 00:00:00',1,NULL),
+(26,'sql*2.99.2*0*2.99.2/field_mandatory.sql','','0000-00-00 00:00:00',1,NULL),
+(27,'sql*2.99.2*0*2.99.2/fieldsets_system.sql','','0000-00-00 00:00:00',1,NULL),
+(28,'sql*2.99.2*0*2.99.2/permission_by_user_and_roles.sql','','0000-00-00 00:00:00',1,NULL),
+(29,'sql*2.99.2*0*2.99.2/disabled_metadata.sql','','0000-00-00 00:00:00',1,NULL),
+(30,'sql*2.99.2*0*2.99.2/searchable_text.sql','','0000-00-00 00:00:00',1,NULL),
+(31,'sql*2.99.2*0*2.99.2/workflow.sql','','0000-00-00 00:00:00',1,NULL),
+(32,'sql*2.99.2*1*2.99.2/1-constraints.sql','','0000-00-00 00:00:00',1,NULL),
+(33,'sql*2.99.3*0*2.99.3/notifications.sql','','0000-00-00 00:00:00',1,NULL),
+(34,'sql*2.99.3*0*2.99.3/last_modified_user.sql','','0000-00-00 00:00:00',1,NULL),
+(35,'sql*2.99.3*0*2.99.3/authentication_sources.sql','','0000-00-00 00:00:00',1,NULL),
+(36,'sql*2.99.3*0*2.99.3/document_fields_constraints.sql','','0000-00-00 00:00:00',1,NULL),
+(37,'sql*2.99.5*0*2.99.5/dashlet_disabling.sql','','0000-00-00 00:00:00',1,NULL),
+(38,'sql*2.99.5*0*2.99.5/role_allocations.sql','','0000-00-00 00:00:00',1,NULL),
+(39,'sql*2.99.5*0*2.99.5/transaction_namespaces.sql','','0000-00-00 00:00:00',1,NULL),
+(40,'sql*2.99.5*0*2.99.5/fieldset_field_descriptions.sql','','0000-00-00 00:00:00',1,NULL),
+(41,'sql*2.99.5*0*2.99.5/role_changes.sql','','0000-00-00 00:00:00',1,NULL),
+(42,'sql*2.99.6*0*2.99.6/table_cleanup.sql','Database upgrade to version 2.99.6: Table cleanup','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(43,'sql*2.99.6*0*2.99.6/plugin-registration.sql','Database upgrade to version 2.99.6: Plugin-registration','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(44,'sql*2.99.7*0*2.99.7/documents_normalisation.sql','Database upgrade to version 2.99.7: Documents normalisation','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(45,'sql*2.99.7*0*2.99.7/help_replacement.sql','Database upgrade to version 2.99.7: Help replacement','2006-01-20 17:04:05',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(46,'sql*2.99.7*0*2.99.7/table_cleanup.sql','Database upgrade to version 2.99.7: Table cleanup','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(47,'func*2.99.7*1*normaliseDocuments','Normalise the documents table','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(48,'sql*2.99.7*10*2.99.7/10-documents_normalisation.sql','Database upgrade to version 2.99.7: Documents normalisation','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(49,'sql*2.99.7*20*2.99.7/20-fields.sql','Database upgrade to version 2.99.7: Fields','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(50,'upgrade*2.99.7*99*upgrade2.99.7','Upgrade from version 2.99.5 to 2.99.7','2006-01-20 17:04:07',1,'upgrade*2.99.7*99*upgrade2.99.7'),
+(51,'sql*2.99.7*0*2.99.7/discussion.sql','','0000-00-00 00:00:00',1,NULL),
+(52,'func*2.99.7*-1*applyDiscussionUpgrade','func upgrade to version 2.99.7 phase -1','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(53,'sql*2.99.8*0*2.99.8/mime_types.sql','Database upgrade to version 2.99.8: Mime types','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(54,'sql*2.99.8*0*2.99.8/category-correction.sql','Database upgrade to version 2.99.8: Category-correction','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(55,'sql*2.99.8*0*2.99.8/trigger_selection.sql','Database upgrade to version 2.99.8: Trigger selection','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(56,'sql*2.99.8*0*2.99.8/units.sql','Database upgrade to version 2.99.8: Units','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(57,'sql*2.99.8*0*2.99.8/type_workflow_map.sql','Database upgrade to version 2.99.8: Type workflow map','2006-02-06 12:23:41',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(58,'sql*2.99.8*0*2.99.8/disabled_documenttypes.sql','Database upgrade to version 2.99.8: Disabled documenttypes','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(59,'func*2.99.8*1*fixUnits','func upgrade to version 2.99.8 phase 1','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(60,'sql*2.99.8*10*2.99.8/10-units.sql','Database upgrade to version 2.99.8: Units','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(61,'sql*2.99.8*15*2.99.8/15-status.sql','Database upgrade to version 2.99.8: Status','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(62,'sql*2.99.8*20*2.99.8/20-state_permission_assignments.sql','Database upgrade to version 2.99.8: State permission assignments','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(63,'sql*2.99.8*25*2.99.8/25-authentication_details.sql','Database upgrade to version 2.99.8: Authentication details','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(64,'upgrade*2.99.8*99*upgrade2.99.8','Upgrade from version 2.99.7 to 2.99.8','2006-02-06 12:23:42',1,'upgrade*2.99.8*99*upgrade2.99.8'),
+(65,'func*2.99.9*0*createSecurityDeletePermissions','Create the Core: Manage Security and Core: Delete permissions','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(66,'func*2.99.9*0*createLdapAuthenticationProvider','Create an LDAP authentication source based on your KT2 LDAP settings (must keep copy of config/environment.php to work)','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(67,'sql*2.99.9*0*2.99.9/mimetype-friendly.sql','Database upgrade to version 2.99.9: Mimetype-friendly','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(68,'sql*2.99.9*5*2.99.9/5-opendocument-mime-types.sql','Database upgrade to version 2.99.9: Opendocument-mime-types','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(69,'sql*3.0*0*3.0/zipfile-mimetype.sql','Database upgrade to version 3.0: Zipfile-mimetype','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(70,'upgrade*3.0*99*upgrade3.0','Upgrade from version 2.99.8 to 3.0','2006-02-28 09:23:21',1,'upgrade*3.0*99*upgrade3.0'),
+(71,'sql*3.0.1.1*0*3.0.1.1/document_role_allocations.sql','Database upgrade to version 3.0.1.1: Document role allocations','2006-03-28 11:22:19',1,'upgrade*3.0.1.1*99*upgrade3.0.1.1'),
+(72,'upgrade*3.0.1.1*99*upgrade3.0.1.1','Upgrade from version 3.0 to 3.0.1.1','2006-03-28 11:22:19',1,'upgrade*3.0.1.1*99*upgrade3.0.1.1'),
+(73,'sql*3.0.1.2*0*3.0.1.2/user_more_authentication_details.sql','Database upgrade to version 3.0.1.2: User more authentication details','2006-04-07 16:50:28',1,'upgrade*3.0.1.2*99*upgrade3.0.1.2'),
+(74,'upgrade*3.0.1.2*99*upgrade3.0.1.2','Upgrade from version 3.0.1.1 to 3.0.1.2','2006-04-07 16:50:28',1,'upgrade*3.0.1.2*99*upgrade3.0.1.2'),
+(75,'sql*3.0.1.2*0*3.0.1.2/owner_role_move.sql','Database upgrade to version 3.0.1.2: Owner role move','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(76,'func*3.0.1.3*0*addTransactionTypes3013','Add new folder transaction types','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(77,'sql*3.0.1.3*0*3.0.1.3/user_history.sql','Database upgrade to version 3.0.1.3: User history','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(78,'sql*3.0.1.3*0*3.0.1.3/folder_transactions.sql','Database upgrade to version 3.0.1.3: Folder transactions','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(79,'sql*3.0.1.3*0*3.0.1.3/plugin-unavailable.sql','Database upgrade to version 3.0.1.3: Plugin-unavailable','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(80,'func*3.0.1.4*0*createWorkflowPermission','Create the Core: Manage Workflow','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(81,'upgrade*3.0.1.4*99*upgrade3.0.1.4','Upgrade from version 3.0.1.2 to 3.0.1.4','2006-04-18 11:06:34',1,'upgrade*3.0.1.4*99*upgrade3.0.1.4'),
+(82,'sql*3.0.1.5*0*3.0.1.5/anonymous-user.sql','Database upgrade to version 3.0.1.5: Anonymous-user','2006-04-18 12:38:41',1,'upgrade*3.0.1.5*99*upgrade3.0.1.5'),
+(83,'upgrade*3.0.1.5*99*upgrade3.0.1.5','Upgrade from version 3.0.1.4 to 3.0.1.5','2006-04-18 12:38:41',1,'upgrade*3.0.1.5*99*upgrade3.0.1.5'),
+(84,'sql*3.0.1.6*0*3.0.1.6/workflow-into-metadata.sql','Database upgrade to version 3.0.1.6: Workflow-into-metadata','2006-04-20 14:22:24',1,'upgrade*3.0.1.6*99*upgrade3.0.1.6'),
+(85,'upgrade*3.0.1.6*99*upgrade3.0.1.6','Upgrade from version 3.0.1.5 to 3.0.1.6','2006-04-20 14:22:24',1,'upgrade*3.0.1.6*99*upgrade3.0.1.6'),
+(86,'sql*3.0.1.7*0*3.0.1.7/session_id.sql','Database upgrade to version 3.0.1.7: Session id','2006-04-20 17:03:55',1,'upgrade*3.0.1.7*99*upgrade3.0.1.7'),
+(87,'upgrade*3.0.1.7*99*upgrade3.0.1.7','Upgrade from version 3.0.1.6 to 3.0.1.7','2006-04-20 17:03:56',1,'upgrade*3.0.1.7*99*upgrade3.0.1.7'),
+(88,'sql*3.0.1.8*0*3.0.1.8/friendly-plugins.sql','Database upgrade to version 3.0.1.8: Friendly-plugins','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),
+(89,'sql*3.0.1.8*0*3.0.1.8/longer-text.sql','Database upgrade to version 3.0.1.8: Longer-text','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),
+(90,'sql*3.0.1.8*0*3.0.1.8/admin-mode-logging.sql','Database upgrade to version 3.0.1.8: Admin-mode-logging','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),
+(91,'upgrade*3.0.1.8*99*upgrade3.0.1.8','Upgrade from version 3.0.1.7 to 3.0.1.8','2006-04-23 12:54:12',1,'upgrade*3.0.1.8*99*upgrade3.0.1.8'),
+(92,'upgrade*3.0.2*99*upgrade3.0.2','Upgrade from version 3.0.1.8 to 3.0.2','2006-05-02 10:08:13',1,'upgrade*3.0.2*99*upgrade3.0.2'),
+(93,'sql*3.0.2.1*0*3.0.2.1/disclaimer-help-files.sql','Database upgrade to version 3.0.2.1: Disclaimer-help-files','2006-05-25 16:04:23',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),
+(94,'sql*3.0.2.2*0*3.0.2.2/folder_search.sql','Database upgrade to version 3.0.2.2: Folder search','2006-05-25 16:04:23',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),
+(95,'upgrade*3.0.2.2*99*upgrade3.0.2.2','Upgrade from version 3.0.2 to 3.0.2.2','2006-05-25 16:04:24',1,'upgrade*3.0.2.2*99*upgrade3.0.2.2'),
+(96,'sql*3.0.2.3*0*3.0.2.3/msi-filetype.sql','Database upgrade to version 3.0.2.3: Msi-filetype','2006-05-30 10:55:58',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),
+(97,'sql*3.0.2.4*0*3.0.2.4/discussion-fulltext.sql','Database upgrade to version 3.0.2.4: Discussion-fulltext','2006-05-30 10:55:59',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),
+(98,'upgrade*3.0.2.4*99*upgrade3.0.2.4','Upgrade from version 3.0.2.2 to 3.0.2.4','2006-05-30 10:55:59',1,'upgrade*3.0.2.4*99*upgrade3.0.2.4'),
+(99,'upgrade*3.0.3*99*upgrade3.0.3','Upgrade from version 3.0.2.4 to 3.0.3','2006-05-31 13:02:04',1,'upgrade*3.0.3*99*upgrade3.0.3'),
+(100,'sql*3.0.3.1*0*3.0.3.1/utf8.sql','Database upgrade to version 3.0.3.1: Utf8','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(101,'sql*3.0.3.1*0*3.0.3.1/document_immutable.sql','Database upgrade to version 3.0.3.1: Document immutable','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(102,'sql*3.0.3.1*0*3.0.3.1/workflow-triggers.sql','Database upgrade to version 3.0.3.1: Workflow-triggers','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(103,'func*3.0.3.2*0*createFolderDetailsPermission','Create the Core: Folder Details permission','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(104,'func*3.0.3.3*0*generateWorkflowTriggers','Migrate old in-transition guards to triggers','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(105,'sql*3.0.3.4*0*3.0.3.4/column_entries.sql','Database upgrade to version 3.0.3.4: Column entries','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(106,'sql*3.0.3.4*0*3.0.3.4/bulk_export_transaction.sql','Database upgrade to version 3.0.3.4: Bulk export transaction','2006-07-12 12:00:33',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(107,'upgrade*3.0.3.4*99*upgrade3.0.3.4','Upgrade from version 3.0.3 to 3.0.3.4','2006-07-12 12:00:34',1,'upgrade*3.0.3.4*99*upgrade3.0.3.4'),
+(108,'sql*3.0.3.5*0*3.0.3.5/notifications_data_text.sql','Database upgrade to version 3.0.3.5: Notifications data text','2006-07-14 15:26:49',1,'upgrade*3.0.3.5*99*upgrade3.0.3.5'),
+(109,'upgrade*3.0.3.5*99*upgrade3.0.3.5','Upgrade from version 3.0.3.4 to 3.0.3.5','2006-07-14 15:26:49',1,'upgrade*3.0.3.5*99*upgrade3.0.3.5'),
+(110,'sql*3.0.3.6*0*3.0.3.6/document-restore.sql','Database upgrade to version 3.0.3.6: Document-restore','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),
+(111,'func*3.0.3.7*0*rebuildAllPermissions','Rebuild all permissions to ensure correct functioning of permission-definitions.','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),
+(112,'upgrade*3.0.3.7*99*upgrade3.0.3.7','Upgrade from version 3.0.3.5 to 3.0.3.7','2006-07-26 11:48:28',1,'upgrade*3.0.3.7*99*upgrade3.0.3.7'),
+(113,'upgrade*3.1*99*upgrade3.1','Upgrade from version 3.0.3.7 to 3.1','2006-07-31 10:41:12',1,'upgrade*3.1*99*upgrade3.1'),
+(114,'sql*3.1.1*0*3.1.1/parentless-documents.sql','Database upgrade to version 3.1.1: Parentless-documents','2006-08-15 11:58:07',1,'upgrade*3.1.1*99*upgrade3.1.1'),
+(115,'upgrade*3.1.1*99*upgrade3.1.1','Upgrade from version 3.1 to 3.1.1','2006-08-15 11:58:07',1,'upgrade*3.1.1*99*upgrade3.1.1'),
+(116,'sql*3.1.2*0*3.1.2/user-disable.sql','Database upgrade to version 3.1.2: User-disable','2006-09-08 17:08:26',1,'upgrade*3.1.2*99*upgrade3.1.2'),
+(117,'upgrade*3.1.2*99*upgrade3.1.2','Upgrade from version 3.1.1 to 3.1.2','2006-09-08 17:08:26',1,'upgrade*3.1.2*99*upgrade3.1.2'),
+(118,'func*3.1.5*0*upgradeSavedSearches','Upgrade saved searches to use namespaces instead of integer ids','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(119,'sql*3.1.6*0*3.1.6/interceptor_instances.sql','Database upgrade to version 3.1.6: Interceptor instances','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(120,'sql*3.1.6*0*3.1.6/workflow-sanity.sql','Database upgrade to version 3.1.6: Workflow-sanity','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(121,'sql*3.1.6.2*0*3.1.6.2/workflow_state_disabled_actions.sql','Database upgrade to version 3.1.6.2: Workflow state disabled actions','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(122,'sql*3.1.6.2*0*3.1.6.2/folder_owner_role.sql','Database upgrade to version 3.1.6.2: Folder owner role','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(123,'func*3.1.6.3*0*cleanupGroupMembership','Cleanup any old references to missing groups, etc.','2006-10-17 12:09:45',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(124,'sql*3.1.6.3*0*3.1.6.3/groups-integrity.sql','Database upgrade to version 3.1.6.3: Groups-integrity','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(125,'sql*3.1.6.5*0*3.1.6.5/workflow-state-referencefixes.sql','Database upgrade to version 3.1.6.5: Workflow-state-referencefixes','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(126,'sql*3.1.6.6*0*3.1.6.6/copy_transaction.sql','Database upgrade to version 3.1.6.6: Copy transaction','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(127,'sql*3.1.6.7*0*3.1.6.7/sane-names-for-stuff.sql','Database upgrade to version 3.1.6.7: Sane-names-for-stuff','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(128,'upgrade*3.1.6.7*99*upgrade3.1.6.7','Upgrade from version 3.1.2 to 3.1.6.7','2006-10-17 12:09:46',1,'upgrade*3.1.6.7*99*upgrade3.1.6.7'),
+(129,'sql*3.3.0.1*0*3.3.0.1/system-settings-to-text.sql','Database upgrade to version 3.3.0.1: System-settings-to-text','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),
+(130,'upgrade*3.3.0.1*99*upgrade3.3.0.1','Upgrade from version 3.1.6.7 to 3.3.0.1','2006-10-30 12:49:33',1,'upgrade*3.3.0.1*99*upgrade3.3.0.1'),
+(131,'sql*3.3.1*0*3.3.1/rss.sql','Database upgrade to version 3.3.1: Rss','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),
+(132,'upgrade*3.3.1*99*upgrade3.3.1','Upgrade from version 3.3.0.1 to 3.3.1','2007-01-28 23:49:52',1,'upgrade*3.3.1*99*upgrade3.3.1'),
+(133,'sql*3.3.2*0*3.3.2/tagclouds.sql','Database upgrade to version 3.3.2: Tagclouds','2007-02-23 11:55:09',1,'upgrade*3.3.2*99*upgrade3.3.2'),
+(134,'upgrade*3.3.2*99*upgrade3.3.2','Upgrade from version 3.3.1 to 3.3.2','2007-02-23 11:55:09',1,'upgrade*3.3.2*99*upgrade3.3.2'),
+(135,'sql*3.4.0*0*3.4.0/upload_download.sql','Upgrade to version 3.4.0: Upload download','2007-04-17 00:00:00',1,'upgrade*3.4.0*99*upgrade3.4.0'),
 (136,'upgrade*3.4.0*99*upgrade3.4.0','Upgrade from version 3.3.2 to 3.4.0','2007-04-17 00:00:00',1,'upgrade*3.4.0*99*upgrade3.4.0'),
 (137,'sql*3.4.5*0*3.4.5/plugin_helper.sql','Create the plugin helper table.','2007-11-20 00:00:00',1,'upgrade*3.4.5*99*upgrade3.4.5'),
 (138,'upgrade*3.4.5*99*upgrade3.4.5','Upgrade from version 3.4.0 to 3.4.5','2007-11-20 00:00:00',1,'upgrade*3.4.5*99*upgrade3.4.5'),
@@ -1306,7 +1700,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (-2,'anonymous','Anonymous','---------------',0,0,NULL,NULL,0,0,NULL,30000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),(1,'admin','Administrator','21232f297a57a5a743894a0e4a801fc3',0,0,'','',1,1,'',1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO `users` VALUES
+(-2,'anonymous','Anonymous','---------------',0,0,NULL,NULL,0,0,NULL,30000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),
+(1,'admin','Administrator','21232f297a57a5a743894a0e4a801fc3',0,0,'','',1,1,'',1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1316,7 +1712,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `users_groups_link` WRITE;
 /*!40000 ALTER TABLE `users_groups_link` DISABLE KEYS */;
-INSERT INTO `users_groups_link` VALUES (1,1,1);
+INSERT INTO `users_groups_link` VALUES
+(1,1,1);
 /*!40000 ALTER TABLE `users_groups_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1371,7 +1768,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `workflow_state_transitions` WRITE;
 /*!40000 ALTER TABLE `workflow_state_transitions` DISABLE KEYS */;
-INSERT INTO `workflow_state_transitions` VALUES (2,2),(3,3),(3,4),(5,5),(6,6);
+INSERT INTO `workflow_state_transitions` VALUES
+(2,2),
+(3,3),
+(3,4),
+(5,5),
+(6,6);
 /*!40000 ALTER TABLE `workflow_state_transitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1381,7 +1783,13 @@ UNLOCK TABLES;
 
 LOCK TABLES `workflow_states` WRITE;
 /*!40000 ALTER TABLE `workflow_states` DISABLE KEYS */;
-INSERT INTO `workflow_states` VALUES (2,2,'Draft','Draft',NULL,0,0),(3,2,'Approval','Approval',NULL,0,0),(4,2,'Published','Published',NULL,0,0),(5,3,'Draft','Draft',NULL,0,0),(6,3,'Final','Final',NULL,0,0),(7,3,'Published','Published',NULL,0,0);
+INSERT INTO `workflow_states` VALUES
+(2,2,'Draft','Draft',NULL,0,0),
+(3,2,'Approval','Approval',NULL,0,0),
+(4,2,'Published','Published',NULL,0,0),
+(5,3,'Draft','Draft',NULL,0,0),
+(6,3,'Final','Final',NULL,0,0),
+(7,3,'Published','Published',NULL,0,0);
 /*!40000 ALTER TABLE `workflow_states` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1391,7 +1799,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `workflow_transitions` WRITE;
 /*!40000 ALTER TABLE `workflow_transitions` DISABLE KEYS */;
-INSERT INTO `workflow_transitions` VALUES (2,2,'Request Approval','Request Approval',3,NULL,NULL,NULL,NULL),(3,2,'Reject','Reject',2,NULL,NULL,NULL,NULL),(4,2,'Approve','Approve',4,NULL,NULL,NULL,NULL),(5,3,'Draft Completed','Draft Completed',6,NULL,NULL,NULL,NULL),(6,3,'Publish','Publish',7,NULL,NULL,NULL,NULL);
+INSERT INTO `workflow_transitions` VALUES
+(2,2,'Request Approval','Request Approval',3,NULL,NULL,NULL,NULL),
+(3,2,'Reject','Reject',2,NULL,NULL,NULL,NULL),
+(4,2,'Approve','Approve',4,NULL,NULL,NULL,NULL),
+(5,3,'Draft Completed','Draft Completed',6,NULL,NULL,NULL,NULL),
+(6,3,'Publish','Publish',7,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `workflow_transitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1410,7 +1823,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `workflows` WRITE;
 /*!40000 ALTER TABLE `workflows` DISABLE KEYS */;
-INSERT INTO `workflows` VALUES (2,'Review Process','Review Process',2,1),(3,'Generate Document','Generate Document',5,1);
+INSERT INTO `workflows` VALUES
+(2,'Review Process','Review Process',2,1),
+(3,'Generate Document','Generate Document',5,1);
 /*!40000 ALTER TABLE `workflows` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1420,7 +1835,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_active_sessions` WRITE;
 /*!40000 ALTER TABLE `zseq_active_sessions` DISABLE KEYS */;
-INSERT INTO `zseq_active_sessions` VALUES (1);
+INSERT INTO `zseq_active_sessions` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_active_sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1430,7 +1846,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_archive_restoration_request` WRITE;
 /*!40000 ALTER TABLE `zseq_archive_restoration_request` DISABLE KEYS */;
-INSERT INTO `zseq_archive_restoration_request` VALUES (1);
+INSERT INTO `zseq_archive_restoration_request` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_archive_restoration_request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1440,7 +1857,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_archiving_settings` WRITE;
 /*!40000 ALTER TABLE `zseq_archiving_settings` DISABLE KEYS */;
-INSERT INTO `zseq_archiving_settings` VALUES (1);
+INSERT INTO `zseq_archiving_settings` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_archiving_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1450,7 +1868,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_archiving_type_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_archiving_type_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_archiving_type_lookup` VALUES (2);
+INSERT INTO `zseq_archiving_type_lookup` VALUES
+(2);
 /*!40000 ALTER TABLE `zseq_archiving_type_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1460,7 +1879,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_authentication_sources` WRITE;
 /*!40000 ALTER TABLE `zseq_authentication_sources` DISABLE KEYS */;
-INSERT INTO `zseq_authentication_sources` VALUES (1);
+INSERT INTO `zseq_authentication_sources` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_authentication_sources` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1470,8 +1890,18 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_column_entries` WRITE;
 /*!40000 ALTER TABLE `zseq_column_entries` DISABLE KEYS */;
-INSERT INTO `zseq_column_entries` VALUES (14);
+INSERT INTO `zseq_column_entries` VALUES
+(14);
 /*!40000 ALTER TABLE `zseq_column_entries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `zseq_config_settings`
+--
+
+LOCK TABLES `zseq_config_settings` WRITE;
+/*!40000 ALTER TABLE `zseq_config_settings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `zseq_config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1480,7 +1910,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_dashlet_disables` WRITE;
 /*!40000 ALTER TABLE `zseq_dashlet_disables` DISABLE KEYS */;
-INSERT INTO `zseq_dashlet_disables` VALUES (1);
+INSERT INTO `zseq_dashlet_disables` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_dashlet_disables` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1490,7 +1921,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_data_types` WRITE;
 /*!40000 ALTER TABLE `zseq_data_types` DISABLE KEYS */;
-INSERT INTO `zseq_data_types` VALUES (5);
+INSERT INTO `zseq_data_types` VALUES
+(5);
 /*!40000 ALTER TABLE `zseq_data_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1500,7 +1932,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_discussion_comments` WRITE;
 /*!40000 ALTER TABLE `zseq_discussion_comments` DISABLE KEYS */;
-INSERT INTO `zseq_discussion_comments` VALUES (1);
+INSERT INTO `zseq_discussion_comments` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_discussion_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1510,7 +1943,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_discussion_threads` WRITE;
 /*!40000 ALTER TABLE `zseq_discussion_threads` DISABLE KEYS */;
-INSERT INTO `zseq_discussion_threads` VALUES (1);
+INSERT INTO `zseq_discussion_threads` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_discussion_threads` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1520,7 +1954,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_archiving_link` WRITE;
 /*!40000 ALTER TABLE `zseq_document_archiving_link` DISABLE KEYS */;
-INSERT INTO `zseq_document_archiving_link` VALUES (1);
+INSERT INTO `zseq_document_archiving_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_archiving_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1530,7 +1965,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_content_version` WRITE;
 /*!40000 ALTER TABLE `zseq_document_content_version` DISABLE KEYS */;
-INSERT INTO `zseq_document_content_version` VALUES (1);
+INSERT INTO `zseq_document_content_version` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_content_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1540,7 +1976,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_fields` WRITE;
 /*!40000 ALTER TABLE `zseq_document_fields` DISABLE KEYS */;
-INSERT INTO `zseq_document_fields` VALUES (5);
+INSERT INTO `zseq_document_fields` VALUES
+(5);
 /*!40000 ALTER TABLE `zseq_document_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1550,7 +1987,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_fields_link` WRITE;
 /*!40000 ALTER TABLE `zseq_document_fields_link` DISABLE KEYS */;
-INSERT INTO `zseq_document_fields_link` VALUES (1);
+INSERT INTO `zseq_document_fields_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_fields_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1560,7 +1998,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_link` WRITE;
 /*!40000 ALTER TABLE `zseq_document_link` DISABLE KEYS */;
-INSERT INTO `zseq_document_link` VALUES (1);
+INSERT INTO `zseq_document_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1570,7 +2009,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_link_types` WRITE;
 /*!40000 ALTER TABLE `zseq_document_link_types` DISABLE KEYS */;
-INSERT INTO `zseq_document_link_types` VALUES (5);
+INSERT INTO `zseq_document_link_types` VALUES
+(5);
 /*!40000 ALTER TABLE `zseq_document_link_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1580,7 +2020,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_metadata_version` WRITE;
 /*!40000 ALTER TABLE `zseq_document_metadata_version` DISABLE KEYS */;
-INSERT INTO `zseq_document_metadata_version` VALUES (1);
+INSERT INTO `zseq_document_metadata_version` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_metadata_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1599,7 +2040,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_subscriptions` WRITE;
 /*!40000 ALTER TABLE `zseq_document_subscriptions` DISABLE KEYS */;
-INSERT INTO `zseq_document_subscriptions` VALUES (1);
+INSERT INTO `zseq_document_subscriptions` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_subscriptions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1609,7 +2051,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_tags` WRITE;
 /*!40000 ALTER TABLE `zseq_document_tags` DISABLE KEYS */;
-INSERT INTO `zseq_document_tags` VALUES (1);
+INSERT INTO `zseq_document_tags` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_tags` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1619,7 +2062,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_transaction_types_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_document_transaction_types_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_document_transaction_types_lookup` VALUES (21);
+INSERT INTO `zseq_document_transaction_types_lookup` VALUES
+(21);
 /*!40000 ALTER TABLE `zseq_document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1629,7 +2073,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_transactions` WRITE;
 /*!40000 ALTER TABLE `zseq_document_transactions` DISABLE KEYS */;
-INSERT INTO `zseq_document_transactions` VALUES (1);
+INSERT INTO `zseq_document_transactions` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1639,7 +2084,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_type_fields_link` WRITE;
 /*!40000 ALTER TABLE `zseq_document_type_fields_link` DISABLE KEYS */;
-INSERT INTO `zseq_document_type_fields_link` VALUES (1);
+INSERT INTO `zseq_document_type_fields_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_type_fields_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1649,7 +2095,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_type_fieldsets_link` WRITE;
 /*!40000 ALTER TABLE `zseq_document_type_fieldsets_link` DISABLE KEYS */;
-INSERT INTO `zseq_document_type_fieldsets_link` VALUES (1);
+INSERT INTO `zseq_document_type_fieldsets_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_type_fieldsets_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1659,7 +2106,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_document_types_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_document_types_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_document_types_lookup` VALUES (1);
+INSERT INTO `zseq_document_types_lookup` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_document_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1669,7 +2117,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_documents` WRITE;
 /*!40000 ALTER TABLE `zseq_documents` DISABLE KEYS */;
-INSERT INTO `zseq_documents` VALUES (1);
+INSERT INTO `zseq_documents` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_documents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1679,7 +2128,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_field_behaviours` WRITE;
 /*!40000 ALTER TABLE `zseq_field_behaviours` DISABLE KEYS */;
-INSERT INTO `zseq_field_behaviours` VALUES (1);
+INSERT INTO `zseq_field_behaviours` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_field_behaviours` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1689,7 +2139,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_field_value_instances` WRITE;
 /*!40000 ALTER TABLE `zseq_field_value_instances` DISABLE KEYS */;
-INSERT INTO `zseq_field_value_instances` VALUES (1);
+INSERT INTO `zseq_field_value_instances` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_field_value_instances` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1699,7 +2150,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_fieldsets` WRITE;
 /*!40000 ALTER TABLE `zseq_fieldsets` DISABLE KEYS */;
-INSERT INTO `zseq_fieldsets` VALUES (3);
+INSERT INTO `zseq_fieldsets` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_fieldsets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1709,7 +2161,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_folder_doctypes_link` WRITE;
 /*!40000 ALTER TABLE `zseq_folder_doctypes_link` DISABLE KEYS */;
-INSERT INTO `zseq_folder_doctypes_link` VALUES (2);
+INSERT INTO `zseq_folder_doctypes_link` VALUES
+(2);
 /*!40000 ALTER TABLE `zseq_folder_doctypes_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1719,7 +2172,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_folder_subscriptions` WRITE;
 /*!40000 ALTER TABLE `zseq_folder_subscriptions` DISABLE KEYS */;
-INSERT INTO `zseq_folder_subscriptions` VALUES (1);
+INSERT INTO `zseq_folder_subscriptions` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_folder_subscriptions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1738,7 +2192,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_folders` WRITE;
 /*!40000 ALTER TABLE `zseq_folders` DISABLE KEYS */;
-INSERT INTO `zseq_folders` VALUES (2);
+INSERT INTO `zseq_folders` VALUES
+(2);
 /*!40000 ALTER TABLE `zseq_folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1748,7 +2203,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_folders_users_roles_link` WRITE;
 /*!40000 ALTER TABLE `zseq_folders_users_roles_link` DISABLE KEYS */;
-INSERT INTO `zseq_folders_users_roles_link` VALUES (1);
+INSERT INTO `zseq_folders_users_roles_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_folders_users_roles_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1758,7 +2214,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_groups_groups_link` WRITE;
 /*!40000 ALTER TABLE `zseq_groups_groups_link` DISABLE KEYS */;
-INSERT INTO `zseq_groups_groups_link` VALUES (1);
+INSERT INTO `zseq_groups_groups_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_groups_groups_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1768,7 +2225,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_groups_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_groups_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_groups_lookup` VALUES (3);
+INSERT INTO `zseq_groups_lookup` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_groups_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1778,7 +2236,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_help` WRITE;
 /*!40000 ALTER TABLE `zseq_help` DISABLE KEYS */;
-INSERT INTO `zseq_help` VALUES (100);
+INSERT INTO `zseq_help` VALUES
+(100);
 /*!40000 ALTER TABLE `zseq_help` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1788,7 +2247,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_help_replacement` WRITE;
 /*!40000 ALTER TABLE `zseq_help_replacement` DISABLE KEYS */;
-INSERT INTO `zseq_help_replacement` VALUES (1);
+INSERT INTO `zseq_help_replacement` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_help_replacement` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1807,7 +2267,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_links` WRITE;
 /*!40000 ALTER TABLE `zseq_links` DISABLE KEYS */;
-INSERT INTO `zseq_links` VALUES (1);
+INSERT INTO `zseq_links` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_links` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1817,7 +2278,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_metadata_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_metadata_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_metadata_lookup` VALUES (11);
+INSERT INTO `zseq_metadata_lookup` VALUES
+(11);
 /*!40000 ALTER TABLE `zseq_metadata_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1827,7 +2289,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_metadata_lookup_tree` WRITE;
 /*!40000 ALTER TABLE `zseq_metadata_lookup_tree` DISABLE KEYS */;
-INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
+INSERT INTO `zseq_metadata_lookup_tree` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_metadata_lookup_tree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1846,7 +2309,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_mime_extractors` WRITE;
 /*!40000 ALTER TABLE `zseq_mime_extractors` DISABLE KEYS */;
-INSERT INTO `zseq_mime_extractors` VALUES (1);
+INSERT INTO `zseq_mime_extractors` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_mime_extractors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1856,7 +2320,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_mime_types` WRITE;
 /*!40000 ALTER TABLE `zseq_mime_types` DISABLE KEYS */;
-INSERT INTO `zseq_mime_types` VALUES (171);
+INSERT INTO `zseq_mime_types` VALUES
+(171);
 /*!40000 ALTER TABLE `zseq_mime_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1866,7 +2331,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_news` WRITE;
 /*!40000 ALTER TABLE `zseq_news` DISABLE KEYS */;
-INSERT INTO `zseq_news` VALUES (1);
+INSERT INTO `zseq_news` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_news` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1876,7 +2342,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_notifications` WRITE;
 /*!40000 ALTER TABLE `zseq_notifications` DISABLE KEYS */;
-INSERT INTO `zseq_notifications` VALUES (1);
+INSERT INTO `zseq_notifications` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1886,7 +2353,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_organisations_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_organisations_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_organisations_lookup` VALUES (1);
+INSERT INTO `zseq_organisations_lookup` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_organisations_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1896,7 +2364,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_assignments` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_assignments` DISABLE KEYS */;
-INSERT INTO `zseq_permission_assignments` VALUES (8);
+INSERT INTO `zseq_permission_assignments` VALUES
+(8);
 /*!40000 ALTER TABLE `zseq_permission_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1906,7 +2375,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_descriptors` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_descriptors` DISABLE KEYS */;
-INSERT INTO `zseq_permission_descriptors` VALUES (2);
+INSERT INTO `zseq_permission_descriptors` VALUES
+(2);
 /*!40000 ALTER TABLE `zseq_permission_descriptors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1916,7 +2386,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_dynamic_conditions` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_dynamic_conditions` DISABLE KEYS */;
-INSERT INTO `zseq_permission_dynamic_conditions` VALUES (1);
+INSERT INTO `zseq_permission_dynamic_conditions` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_permission_dynamic_conditions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1926,7 +2397,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_lookup_assignments` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_lookup_assignments` DISABLE KEYS */;
-INSERT INTO `zseq_permission_lookup_assignments` VALUES (24);
+INSERT INTO `zseq_permission_lookup_assignments` VALUES
+(24);
 /*!40000 ALTER TABLE `zseq_permission_lookup_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1936,7 +2408,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_lookups` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_lookups` DISABLE KEYS */;
-INSERT INTO `zseq_permission_lookups` VALUES (5);
+INSERT INTO `zseq_permission_lookups` VALUES
+(5);
 /*!40000 ALTER TABLE `zseq_permission_lookups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1946,7 +2419,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permission_objects` WRITE;
 /*!40000 ALTER TABLE `zseq_permission_objects` DISABLE KEYS */;
-INSERT INTO `zseq_permission_objects` VALUES (1);
+INSERT INTO `zseq_permission_objects` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_permission_objects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1956,8 +2430,18 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_permissions` WRITE;
 /*!40000 ALTER TABLE `zseq_permissions` DISABLE KEYS */;
-INSERT INTO `zseq_permissions` VALUES (8);
+INSERT INTO `zseq_permissions` VALUES
+(8);
 /*!40000 ALTER TABLE `zseq_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `zseq_plugin_helper`
+--
+
+LOCK TABLES `zseq_plugin_helper` WRITE;
+/*!40000 ALTER TABLE `zseq_plugin_helper` DISABLE KEYS */;
+/*!40000 ALTER TABLE `zseq_plugin_helper` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1966,7 +2450,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_plugin_rss` WRITE;
 /*!40000 ALTER TABLE `zseq_plugin_rss` DISABLE KEYS */;
-INSERT INTO `zseq_plugin_rss` VALUES (1);
+INSERT INTO `zseq_plugin_rss` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_plugin_rss` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1976,7 +2461,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_plugins` WRITE;
 /*!40000 ALTER TABLE `zseq_plugins` DISABLE KEYS */;
-INSERT INTO `zseq_plugins` VALUES (21);
+INSERT INTO `zseq_plugins` VALUES
+(21);
 /*!40000 ALTER TABLE `zseq_plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1986,7 +2472,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_role_allocations` WRITE;
 /*!40000 ALTER TABLE `zseq_role_allocations` DISABLE KEYS */;
-INSERT INTO `zseq_role_allocations` VALUES (1);
+INSERT INTO `zseq_role_allocations` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_role_allocations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1996,7 +2483,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_roles` WRITE;
 /*!40000 ALTER TABLE `zseq_roles` DISABLE KEYS */;
-INSERT INTO `zseq_roles` VALUES (4);
+INSERT INTO `zseq_roles` VALUES
+(4);
 /*!40000 ALTER TABLE `zseq_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2006,7 +2494,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_saved_searches` WRITE;
 /*!40000 ALTER TABLE `zseq_saved_searches` DISABLE KEYS */;
-INSERT INTO `zseq_saved_searches` VALUES (1);
+INSERT INTO `zseq_saved_searches` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_saved_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2016,7 +2505,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` DISABLE KEYS */;
-INSERT INTO `zseq_scheduler_tasks` VALUES (11);
+INSERT INTO `zseq_scheduler_tasks` VALUES
+(11);
 /*!40000 ALTER TABLE `zseq_scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2035,7 +2525,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_status_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_status_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_status_lookup` VALUES (6);
+INSERT INTO `zseq_status_lookup` VALUES
+(6);
 /*!40000 ALTER TABLE `zseq_status_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2045,7 +2536,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_system_settings` WRITE;
 /*!40000 ALTER TABLE `zseq_system_settings` DISABLE KEYS */;
-INSERT INTO `zseq_system_settings` VALUES (3);
+INSERT INTO `zseq_system_settings` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2055,7 +2547,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_tag_words` WRITE;
 /*!40000 ALTER TABLE `zseq_tag_words` DISABLE KEYS */;
-INSERT INTO `zseq_tag_words` VALUES (1);
+INSERT INTO `zseq_tag_words` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_tag_words` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2065,7 +2558,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_time_period` WRITE;
 /*!40000 ALTER TABLE `zseq_time_period` DISABLE KEYS */;
-INSERT INTO `zseq_time_period` VALUES (1);
+INSERT INTO `zseq_time_period` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_time_period` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2075,7 +2569,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_time_unit_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_time_unit_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_time_unit_lookup` VALUES (3);
+INSERT INTO `zseq_time_unit_lookup` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_time_unit_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2085,7 +2580,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_units_lookup` WRITE;
 /*!40000 ALTER TABLE `zseq_units_lookup` DISABLE KEYS */;
-INSERT INTO `zseq_units_lookup` VALUES (1);
+INSERT INTO `zseq_units_lookup` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_units_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2095,7 +2591,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_units_organisations_link` WRITE;
 /*!40000 ALTER TABLE `zseq_units_organisations_link` DISABLE KEYS */;
-INSERT INTO `zseq_units_organisations_link` VALUES (1);
+INSERT INTO `zseq_units_organisations_link` VALUES
+(1);
 /*!40000 ALTER TABLE `zseq_units_organisations_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2105,7 +2602,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
-INSERT INTO `zseq_upgrades` VALUES (184);
+INSERT INTO `zseq_upgrades` VALUES
+(184);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2124,7 +2622,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_users` WRITE;
 /*!40000 ALTER TABLE `zseq_users` DISABLE KEYS */;
-INSERT INTO `zseq_users` VALUES (3);
+INSERT INTO `zseq_users` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2134,7 +2633,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_users_groups_link` WRITE;
 /*!40000 ALTER TABLE `zseq_users_groups_link` DISABLE KEYS */;
-INSERT INTO `zseq_users_groups_link` VALUES (3);
+INSERT INTO `zseq_users_groups_link` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_users_groups_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2162,7 +2662,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_workflow_states` WRITE;
 /*!40000 ALTER TABLE `zseq_workflow_states` DISABLE KEYS */;
-INSERT INTO `zseq_workflow_states` VALUES (7);
+INSERT INTO `zseq_workflow_states` VALUES
+(7);
 /*!40000 ALTER TABLE `zseq_workflow_states` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2172,7 +2673,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_workflow_transitions` WRITE;
 /*!40000 ALTER TABLE `zseq_workflow_transitions` DISABLE KEYS */;
-INSERT INTO `zseq_workflow_transitions` VALUES (6);
+INSERT INTO `zseq_workflow_transitions` VALUES
+(6);
 /*!40000 ALTER TABLE `zseq_workflow_transitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2191,7 +2693,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `zseq_workflows` WRITE;
 /*!40000 ALTER TABLE `zseq_workflows` DISABLE KEYS */;
-INSERT INTO `zseq_workflows` VALUES (3);
+INSERT INTO `zseq_workflows` VALUES
+(3);
 /*!40000 ALTER TABLE `zseq_workflows` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -2204,4 +2707,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-10-23 13:43:26
+-- Dump completed on 2008-06-26 13:51:02
