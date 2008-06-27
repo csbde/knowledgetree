@@ -134,30 +134,39 @@ function onShowAll(showall)
 
 	{foreach item=document from=$results}
 		<tr><td>
-		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr><a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title|truncate:80}</b></a>
+		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr>&nbsp;&nbsp;<a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title|truncate:80}</b></a>
 		{if $document->Title != $document->Filename}
 			&nbsp;&nbsp;
 			<font style=" color: green "> - Filename: {$document->Filename|truncate:40}</font>
 		{/if}
+		{if $document->IsAvailable}
+		    &nbsp;&nbsp;
+            <img src="/resources/graphics/download.png" title="Download Document" onclick="document.location='/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId={$document->DocumentID}';"></a>
+
+		{/if}
+
+
 		{if !$document->IsAvailable}
 			&nbsp;&nbsp;
 			<font style=" color: red "><B> * {i18n}NOT AVAILABLE{/i18n} * </B></font>
 		{/if}
+
+		</nobr>
 		</td><td align=right>
 			<font style="color: green ">{i18n}Document ID:{/i18n} {$document->DocumentID}</font>
 			&nbsp;&nbsp;
 			<font style=" color: orange ">{i18n}Version:{/i18n} {$document->Version}</font></td>
 		</tr>
 		<tr><td colspan=2>{$document->Text}</td></tr>
-		<tr><td><font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$document->FolderId}" tag="{$document->FullPath}">{$document->FullPath|truncate:40}</a>/{$document->Title|truncate:40} - {$document->Filesize}</font></td>
+		<tr><td><font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$document->FolderId}" tag="{$document->FullPath}">{$document->FullPath|truncate:40}</a>/{$document->Title|truncate:40} - {$document->Filesize}</font>
+
+		</td>
 			<td align=right><nobr>
 				<font style="color: orange ">
 				{i18n}Created By:{/i18n} {$document->CreatedBy}
 				{i18n}on{/i18n} {$document->DateCreated}
 				</font>
 			</td>
-
-
 		<tr><td>
 			{if $workflow != ''}
 				<font style="color: orange ">{i18n}Workflow:{/i18n} $document->Workflow}</font>
@@ -181,12 +190,12 @@ function onShowAll(showall)
 	{/foreach}
 
 	<tr><td>
-		<input type="checkbox" id="cbSelectAll" onclick="onSelectAll()">{i18n}Select All{/i18n}
+		<input type="checkbox" id="cbSelectAll" onclick="onSelectAll()">&nbsp;&nbsp;{i18n}Select All{/i18n}
 		{if $showAll}
-			<input type="checkbox"  onclick="onShowAll('false')" checked>{i18n}Show All{/i18n}
+			<input type="checkbox"  onclick="onShowAll('false')" checked>&nbsp;&nbsp;{i18n}Show All{/i18n}
 		{/if}
 		{if !$showAll}
-			<input type="checkbox"  onclick="onShowAll('true')">{i18n}Show All{/i18n}
+			<input type="checkbox"  onclick="onShowAll('true')">&nbsp;&nbsp;{i18n}Show All{/i18n}
 		{/if}
 		<br>
   		<input type="hidden" name="fFolderId" value="1" />
