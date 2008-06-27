@@ -67,8 +67,9 @@ class DBUtil {
             $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
-        if ($default->queryLog) {
-            $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
+        if ($default->queryLog->isDebugEnabled())
+        {
+            $default->queryLog->debug(DBUtil::lastQuery($db));
         }
         if (PEAR::isError($res))
         {
@@ -129,8 +130,12 @@ class DBUtil {
 
     function logQueryError($query, $result) {
         global $default;
-        $default->log->error('Problem Query: ' . $query);
-        $default->log->error('Problem: ' . $result->getMessage());
+        if (!$default->queryLog->isDebugEnabled())
+        {
+            // if debug is enabled, the query is already logged.
+            $default->queryLog->error($query);
+        }
+        $default->log->error('Query error: ' . $result->getMessage());
     }
 
     function runQueries($aQueries, $db = null) {
@@ -153,7 +158,8 @@ class DBUtil {
         // $default->log->debug('AutoInsert called for table ' . $sTable);
         $db =& DBUtil::getDB();
         $res = $db->autoExecute($sTable, $aFieldValues);
-        if ($default->queryLog) {
+        if ($default->queryLog->isDebugEnabled())
+        {
             $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         }
         if ($res === DB_OK) {
