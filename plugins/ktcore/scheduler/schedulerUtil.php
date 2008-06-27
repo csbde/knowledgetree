@@ -102,7 +102,7 @@ class schedulerUtil extends KTUtil
         $aTask['run_time'] = $dNextTime;
         $aTask['previous_run_time'] = $dStartTime;
         $aTask['run_duration'] = '0';
-        $sTask['status'] = $sStatus;
+        $aTask['status'] = $sStatus;
 
         $oEntity = schedulerEntity::createFromArray($aTask);
         if (PEAR::isError($oEntity)){
