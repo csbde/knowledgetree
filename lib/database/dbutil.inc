@@ -67,7 +67,7 @@ class DBUtil {
             $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
-        if ($default->queryLog->isDebugEnabled())
+        if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
             $default->queryLog->debug(DBUtil::lastQuery($db));
         }
