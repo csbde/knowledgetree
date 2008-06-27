@@ -97,7 +97,6 @@ if (!defined('PATH_SEPARATOR')) {
     }
 }
 
-require_once(KT_LIB_DIR . '/Log.inc');
 require_once(KT_LIB_DIR . '/validation/customerror.php');
 
 
@@ -136,53 +135,39 @@ class KTInit {
     // {{{ setupLogging()
     function setupLogging () {
         global $default;
-        require_once(KT_LIB_DIR . '/Log.inc');
         $oKTConfig =& KTConfig::getSingleton();
-
         if(!defined('APP_NAME')) {
 		    define('APP_NAME', $oKTConfig->get('ui/appName', 'KnowledgeTree'));
 		}
-        $logLevel = $default->logLevel;
-        if (!is_numeric($logLevel)) {
-            $logLevel = @constant($logLevel);
-            if (is_null($logLevel)) {
-                $logLevel = @constant('ERROR');
-            }
-        }
-        $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel);
-        $res = $default->log->initialiseLogFile();
-        if (PEAR::isError($res)) {
-            $this->handleInitError($res);
-            // returns only in checkup
-            return $res;
-        }
-        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, 'query');
-        $res = $default->queryLog->initialiseLogFile();
-        if (PEAR::isError($res)) {
-            $this->handleInitError($res);
-            // returns only in checkup
-            return $res;
-        }
-        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $logLevel, 'timer');
-        $res = $default->timerLog->initialiseLogFile();
-        if (PEAR::isError($res)) {
-            $this->handleInitError($res);
-            // returns only in checkup
-            return $res;
-        }
 
-        require_once('Log.php');
-        $default->phpErrorLog =& Log::factory('composite');
+        define('KT_LOG4PHP_DIR', KT_DIR . '/thirdparty/apache-log4php/src/main/php' . DIRECTORY_SEPARATOR);
+        define('LOG4PHP_CONFIGURATION', KT_DIR . '/config/ktlog.ini');
+        define('LOG4PHP_DEFAULT_INIT_OVERRIDE', true);
 
-        if ($default->phpErrorLogFile) {
-            $fileLog =& Log::factory('file', $oKTConfig->get('urls/logDirectory') . '/php_error_log', 'KT', array(), $logLevel);
-            $default->phpErrorLog->addChild($fileLog);
-        }
+        require_once(KT_LOG4PHP_DIR . 'LoggerManager.php');
+        require_once(KT_LOG4PHP_DIR . 'LoggerPropertyConfigurator.php');
 
-        if ($default->developmentWindowLog) {
-            $windowLog =& Log::factory('win', 'LogWindow', 'BLAH');
-            $default->phpErrorLog->addChild($windowLog);
-        }
+        $configurator = new LoggerPropertyConfigurator();
+        $repository = LoggerManager::getLoggerRepository();
+        $properties = @parse_ini_file(LOG4PHP_CONFIGURATION);
+        $properties['log4php.appender.default'] = 'LoggerAppenderDailyFile';
+        $properties['log4php.appender.default.layout'] = 'LoggerPatternLayout';
+        $properties['log4php.appender.default.layout.conversionPattern'] = '%d{Y-m-d | H:i:s} | %p | %t | %r | %X{userid} | %X{db} | %c | %M | %m%n';
+        $properties['log4php.appender.default.datePattern'] = 'Y-m-d';
+        $properties['log4php.appender.default.file'] = KT_DIR . '/var/log/kt%s.log.txt';
+
+        session_start();
+        $configurator->doConfigureProperties($properties, $repository);
+
+        $userId = isset($_SESSION['userID'])?$_SESSION['userID']:'n/a';
+
+        LoggerMDC::put('userid', $userId);
+        LoggerMDC::put('db', $oKTConfig->get('db/dbName'));
+
+        $default->log = LoggerManager::getLogger('default');
+        $default->queryLog = LoggerManager::getLogger('sql');
+        $default->timerLog = LoggerManager::getLogger('timer');
+        $default->phpErrorLog = LoggerManager::getLogger('php');
     }
     // }}}
 
@@ -336,37 +321,35 @@ class KTInit {
 
 
     static protected $handlerMapping = array(
-    		E_WARNING=>PEAR_LOG_WARNING,
-    		E_USER_WARNING=>PEAR_LOG_WARNING,
-        	E_NOTICE=>PEAR_LOG_NOTICE,
-        	E_USER_NOTICE=>PEAR_LOG_NOTICE,
-			E_ERROR=>PEAR_LOG_ERR,
-			E_USER_ERROR=>PEAR_LOG_ERR,
+    		E_WARNING=>'warn',
+    		E_USER_WARNING=>'warn',
+        	E_NOTICE=>'info',
+        	E_USER_NOTICE=>'info',
+			E_ERROR=>'error',
+			E_USER_ERROR=>'error'
     );
 
     // {{{ handlePHPError()
     static function handlePHPError($code, $message, $file, $line) {
         global $default;
 
+        $priority = 'info';
         if (array_key_exists($code, KTInit::$handlerMapping))
         {
 			$priority = KTInit::$handlerMapping[$code];
         }
-        else
+
+        if (empty($priority))
         {
-        	$priority = PEAR_LOG_INFO;
+            $priority = 'info';
         }
 
         $msg = $message . ' in ' . $file . ' at line ' . $line;
-        if ($priority == PEAR_LOG_ERR)
-        {
-        	$default->log->error($msg);
-        }
 
-        if (!empty($default->phpErrorLog)) {
-            $default->phpErrorLog->log($msg, $priority);
+        if (isset($default->phpErrorLog))
+        {
+            $default->phpErrorLog->$priority($msg);
         }
-        return false;
     }
 
     // }}}
