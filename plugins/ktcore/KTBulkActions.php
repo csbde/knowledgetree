@@ -565,7 +565,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     var $bNotifications = true;
 
     function getDisplayName() {
-        return _kt('Export');
+        return _kt('Download All');
     }
 
 
