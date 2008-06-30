@@ -1,6 +1,6 @@
 <h2>{i18n arg_appname="$appname"}Crash Course in #appname#{/i18n}</h2>
-<p class="descriptiveText">{i18n arg_appname="$appname"}New to Document Management, or to 
-#appname#&trade; 3?  We've written some quick documentation to help you along{/i18n}</p>
+<p class="descriptiveText">{i18n arg_appname="$appname"}New to Document Management, or to
+#appname#?  We've written some quick documentation to help you along{/i18n}</p>
 
 <a href="#">{i18n}Take the crash course.{/i18n}</a> |
 <a href="#">{i18n arg_appname="$appname"}Learn about #appname# 3.{/i18n}</a> |
