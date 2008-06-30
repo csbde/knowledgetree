@@ -140,6 +140,12 @@ gettext("Reschedule");
 gettext("Reschedule All");
 
 /* ./plugins/search2/reporting/templates/indexerrors.smarty */
+gettext("Remove");
+
+/* ./plugins/search2/reporting/templates/indexerrors.smarty */
+gettext("Remove All");
+
+/* ./plugins/search2/reporting/templates/indexerrors.smarty */
 gettext("There are no indexing issues.");
 
 /* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
@@ -158,7 +164,7 @@ gettext("Reschedule All");
 gettext("Manage Mime Types");
 
 /* ./plugins/search2/reporting/templates/managemimetypes.smarty */
-gettext("This report lists all mime types and extensions that can be identified by KnowledgeTree.");
+gettext("This report lists all mime types and extensions that can be identified by #appname#.");
 
 /* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
 gettext("Pending Documents Indexing Queue");
@@ -211,9 +217,6 @@ gettext("Usage");
 /* ./plugins/housekeeper/templates/DiskUsage.smarty */
 gettext("Free Space");
 
-/* ./plugins/housekeeper/templates/DiskUsage.smarty */
-gettext("refresh");
-
 /* ./plugins/housekeeper/templates/FolderUsage.smarty */
 gettext("Are you sure you want to clear");
 
@@ -235,9 +238,6 @@ gettext("cleanup");
 /* ./plugins/housekeeper/templates/FolderUsage.smarty */
 gettext("N/A");
 
-/* ./plugins/housekeeper/templates/FolderUsage.smarty */
-gettext("refresh");
-
 /* ./templates/kt3/browse_types.smarty */
 gettext("Select a document type");
 
@@ -257,7 +257,7 @@ gettext("no value");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
-gettext("The information in this section is stored by #appname#&trade; for every         document.");
+gettext("The information in this section is stored by #appname# for every         document.");
 
 /* ./templates/kt3/fieldsets/generic_versioned.smarty */
 gettext("Document Title");
@@ -317,7 +317,7 @@ gettext("no value in this version");
 gettext("Generic Information");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
-gettext("The information in this section is stored by #appname#&trade; for every         document.");
+gettext("The information in this section is stored by #appname# for every         document.");
 
 /* ./templates/kt3/fieldsets/generic.smarty */
 gettext("Document Filename");
@@ -2135,7 +2135,7 @@ gettext("Don't show me this again.");
 gettext("Crash Course in #appname#");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
-gettext("New to Document Management, or to #appname#&trade; 3?  We've written some quick documentation to help you along");
+gettext("New to Document Management, or to #appname#?  We've written some quick documentation to help you along");
 
 /* ./templates/ktcore/dashlets/usertutorial.smarty */
 gettext("Take the crash course.");
@@ -2681,16 +2681,22 @@ gettext("Edit");
 gettext("Delete");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
+gettext("Share");
+
+/* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("Not Shared");
+
+/* ./templates/ktcore/search2/manage_saved_search.smarty */
+gettext("Don't Share");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("Shared");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
-gettext("Share");
+gettext("Not Shared");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
-gettext("Don't Share");
+gettext("Shared");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("Run Search");
@@ -2971,6 +2977,9 @@ gettext("Test conditions");
 /* ./templates/ktcore/edit_conditional.smarty */
 gettext("Fieldset cannot be made conditional. One of the fields must not be a lookup.");
 
+/* ./templates/ktcore/configsettings.smarty */
+gettext("Save Config Settings");
+
 /* ./templates/ktcore/workflowtriggers/roles.smarty */
 gettext("Guard Roles for Transition");
 
@@ -3218,13 +3227,13 @@ gettext("Subject");
 gettext("Details");
 
 /* ./templates/ktcore/assist/assist_notification_details.smarty */
+gettext("Restore Document");
+
+/* ./templates/ktcore/assist/assist_notification_details.smarty */
 gettext("View Document");
 
 /* ./templates/ktcore/assist/assist_notification_details.smarty */
 gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/ktcore/assist/assist_notification_details.smarty */
-gettext("Clear Alert");
 
 /* ./templates/ktcore/assist/assist_notification_details.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -3243,9 +3252,6 @@ gettext("Document is no longer available");
 
 /* ./templates/ktcore/assist/assist_notification.smarty */
 gettext("Are you sure you wish to clear the notification?");
-
-/* ./templates/ktcore/assist/assist_notification.smarty */
-gettext("Clear Alert");
 
 /* ./templates/ktcore/assist/assist_notification.smarty */
 gettext("Are you sure you wish to clear the notification?");
@@ -4802,28 +4808,28 @@ gettext("Visit the #tracker#");
 gettext("first if you believe you have found a bug.  Always check for known issues relating to the version you are using &mdash; we may already have found the problem you're referring to, and may have fixed it in a newer version.");
 
 /* ./templates/ktcore/support.smarty */
-gettext("The following download action allows you to download a zip archive of information that may assist the KnowledgeTree team to diagnose problems on your system. This archive contains:");
+gettext("The following download action allows you to download a zip archive of information that may assist the #appname# team to diagnose problems on your system. This archive contains:");
 
 /* ./templates/ktcore/support.smarty */
 gettext("PHP Information");
 
 /* ./templates/ktcore/support.smarty */
-gettext("Log Files (KnowledgeTree, Apache, Mysql)");
+gettext("Log Files (#appname#, Apache, Mysql)");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree System Settings");
+gettext("#appname# System Settings");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree Version Files");
+gettext("#appname# Version Files");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree Database Schema (the structure of the database only)");
+gettext("#appname# Database Schema (the structure of the database only)");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree Database Counters Report");
+gettext("#appname# Database Counters Report");
 
 /* ./templates/ktcore/support.smarty */
-gettext("KnowledgeTree Database Storage Engine Report");
+gettext("#appname# Database Storage Engine Report");
 
 /* ./templates/ktcore/support.smarty */
 gettext("System Information (Disk Usage, Process List, if easily detectable)");
@@ -5417,7 +5423,7 @@ gettext("Cancel");
 gettext("Dynamic Conditions");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Dynamic Conditions give the administrator the cability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
+gettext("Dynamic Conditions give the administrator the capability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
 gettext("Create a new condition");
@@ -5714,6 +5720,9 @@ gettext("Reread plugins");
 gettext("Login | #appname#");
 
 /* ./templates/ktcore/login.smarty */
+gettext("Community Edition");
+
+/* ./templates/ktcore/login.smarty */
 gettext("Please enter your details below to login.");
 
 /* ./templates/ktcore/login.smarty */
@@ -5726,7 +5735,7 @@ gettext("Password");
 gettext("Language");
 
 /* ./templates/ktcore/login.smarty */
-gettext("login");
+gettext("Login");
 
 /* ./templates/ktcore/login.smarty */
 gettext("#appname# Version");

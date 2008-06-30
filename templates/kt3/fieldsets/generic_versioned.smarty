@@ -1,7 +1,7 @@
 <div class="detail_fieldset">
     <h3>{i18n}Generic Information{/i18n}</h3>
     <p class="descriptiveText">
-        {i18n arg_appname="$appname"}The information in this section is stored by #appname#&trade; for every
+        {i18n arg_appname="$appname"}The information in this section is stored by #appname# for every
         document.{/i18n}
     </p>
 
