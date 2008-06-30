@@ -356,7 +356,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
     function renderEdit($document_data) {
         global $main; // FIXME remove direct access to $main
         $oField = new KTBaseWidget(_kt('Document Title'),
-            sprintf(_kt("The document title is used as the main name of a document throughout %s&trade;."), APP_NAME),
+            sprintf(_kt("The document title is used as the main name of a document throughout %s."), APP_NAME),
             'generic_title', $document_data['document']->getName(), $main, true, null, array());
         $aFields = array($oField); // its the only one editable from the basic set (currently).
 
@@ -366,7 +366,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             'context' => $this,
             'fields' => $aFields,
             'title' => _kt('Generic Document Information'),
-            'description' => sprintf(_kt("The information in this section is stored by %s&trade; for every document."), APP_NAME),
+            'description' => sprintf(_kt("The information in this section is stored by %s for every document."), APP_NAME),
         );
         return $oTemplate->render($aTemplateData);
     }
