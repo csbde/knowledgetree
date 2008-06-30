@@ -5,57 +5,74 @@
    <title>Document Fieldsets</title>
 </head>
 <body>
-<h2>Document Fieldsets</h2>
 <p>
-Document Fieldsets allow you to associate custom metadata with documents in the
-repository.
+A <b>Fieldset</b> is a collection of Fields that may be associated with a specific Document Type, or with all Document Types in the system.
 </p>
+<br />
 <p>
-There are two types of document fieldsets:
+<h3>Types of Fields</h3>
+There are three types of fields:
 <ul>
-<li><strong>Normal</strong> - users are allowed to edit normal fieldsets only if they have been
-   associated with the document type that is being edited.</li>
-<li><strong>Generic</strong> - users may add and edit generic fieldsets to any document type in
-   KnowledgeTree.</li>
+<li><b>Normal</b> - stores text metadata, such as invoice code</li>
+<li><b>Lookup</b> - contains a list of selectable options that display in a pick list</li>
+<li><b>Tree</b> - allows you to select metadata values by browsing a tree structure</li>
 </ul>
 </p>
-<p>   
-<strong>Note:</strong> KnowledgeTree auto-generates an editable system name (namespace) for every
-fieldset. Plug-ins use this namespace to call the fieldset, and to control how the fieldset works.
-For more information on developing Plug-ins for KnowledgeTree, see the KnowledgeTree Wiki
-at <a href ="http://support.knowledgetree.com/confluence/">http://support.knowledgetree.com/confluence/</a>
+<br />
+<p>
+<h3>Types of Fieldsets</h3>
+<p>
+The following two fieldset types are KnowledgeTree defaults:
 </p>
-
-<h2>Document Fields</h2>
 <p>
-KnowledgeTree uses fields to group sets of related information into predefined
-fieldsets. The custom fieldsets are then associated with specific document types, to
-define the information (metadata) that should be included on documents of that
-type.</p>
-<p>
-There are three classes of custom fields in KnowledgeTree:
+<b>Note:</b> You can add plugins to KnowledgeTree that add different types of fieldsets, if required.
+</p>
+<p> 
 <ul>
-<li><strong>Normal</strong> - stores text metadata, such as invoice code</li>
-<li><strong>Lookup</strong> - used to allow users to select from a predefined set of options</li>
-<li><strong>Tree</strong> - used to allow users to select a metadata value by browsing a tree structure</li>
+<li><b>Normal</b> - may contain a variety of field types, i.e. one or more, or a combination, of Lookup field's, Tree field's, and Normal field's.</li>
+<li><b>Conditional</b> - contains two or more Lookup fields. This fieldset must be configured in the Fieldset editing pages after you add the fieldset, in order to set one field as the 'master' field, and to define how user-selected values in the master field determine the display of subsequent fields and values that are presented when the user adds document metadata. Since conditional fieldsets comprise a collection of interdependent fields and values, you need to plan the fieldset structure before creating the fieldset in the DMS. To use this feature, enable the 'Conditional Metadata' plugin in <b>DMS Administration >> Miscellaneous</b></li>
+</ul>.
+</p>
+<h3>Generic Fieldsets</h3>
+<p>
+A fieldset that is defined as 'generic' is automatically associated with each document type you add to the repository. Define a fielset as 'generic' when adding or editing the fieldset.
+</p>
+<br />
+<p>
+<h3>Working with Fieldsets</h3>
+How to View Existing Fieldsets
+<p>
+<li>1.	To open the Fieldset management page, click Document Fieldsets in Document Metadata and Workflow Configuration.</li>
+<li>2.	On the Document Fieldsets page, view existing fieldsets listed in the table.</li>
+</p>
+<br />
+<p> 
+<h3>How to Add a New Fieldset</h3>
+<p>
+<li>1.	On the Fieldset management page in DMS Administration, click Create New Fieldset.</li>
+<li>2.	Define a name for the fieldset in the Fieldset Name field; then, add a description in the Description field.</li>
+<li>3.	In the Fieldset Type section, define whether the fieldset is 'Normal' or Conditional'; then, define whether this is a 'generic' fieldset.</li>
+<li>4.	Click Create Fieldset.</li>
+</p>
+<br />
+<p>
+<h3>How to Add a New Conditional Fieldset</h3>
+<p>
+Before you begin, plan the fieldset, and its lookup fields and lookup values.
+</p>
+<br />
+<p>
+<ul>
+<li>1.	Add a new fieldset, and define the fieldset as 'Conditional'.</li>
+<li>2.	On the Edit Fieldset page, click Add New Field to add two or more lookup fields to this fieldset, and add lookup values for each field.</li>
+<li>3.	Once you have added all the fields and their lookup fields, set one field as the 'master' field - click Manage Field Ordering on the Edit Fieldset page.</li>
+<li>4.	Define the control field / dependent field relationship between all fields in the fieldset, starting with the master field - click Manage Field Ordering on the Edit Fieldset page. Repeat this step until all fields have been ordered into the control / dependent structure.</li>
+<li>5.	Edit fieldset rules to define conditional behaviour. To do this, click Manage Conditional Behaviour on the Edit Fieldset page.</li>
+<li>6.	For each control field, select a lookup value; then, select two or more lookup values in the dependent field - the dependent field values will display when the user selects the control field lookup value in the conditional fieldset. Click save this dependency to save each behaviour; then, when you're ready to configure the next field, click edit field.</li>
+<li>7.	When fieldset rules (conditional behaviour) have been set up on all control/dependent fields, click View Overview on the Edit Fieldset page to walk through a test of the fieldset you created.</li>
 </ul>
 </p>
-<h3>Managing Tree Fields</h3>
-
+<br />
 <p>
-Trees can have multiple sub-categories and levels. You need to add sub-categories at
-each level in order to organize the options into a 'tree'.</p>
-<p>
-The top level of the tree is called the root. The root, which holds all the top level
-items, is not shown to the user, but it provides a single 'parent' to the top level items.</p>
-<p>
-For example, let's say you create a tree of the countries in the world. In this case, the
-actual countries would be keywords - e.g. South Africa, England, Singapore, etc. And
-the highest group of categories (the top level or 'root') would be continents - e.g.
-Africa, Europe, Asia etc. The sub-categories, which fall below the top level 'continents'
-could be 'regions' - e.g. Sub-Saharan Africa, Western Europe, South East Asia.</p><p>
-KnowledgeTree allows you to create more sophisticated tree fields on the Edit
-Lookup Tree page.</p>
-
 </body>
 </html>

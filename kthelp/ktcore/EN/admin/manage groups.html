@@ -7,17 +7,36 @@
 <body>
 <h2>Manage Groups</h2>
 <p>
-Only a <b>User</b> that has been assigned to a <b>Group</b> is allowed to access the KnowledgeTree Document Management System.
+Any system User may belong to more than one Group, and any Group may be added as a member of another Group, as a Sub Group.
 </p>
-<strong>Note:</strong> Groups can be members of other groups, and can have other groups as members.  These memberships pass the permissions set on to the parent group to user members of the member groups, possibly along a few chains.
-
-<h3>Example:</h3>
-
-<p>Let's say you create a new Group called Testers. Having created the Testers Group, you must assign the it to a Unit. You can name the Unit 'Quality Assurance'. So, the group named Testers is part of the unit Quality Assurance.
+<br />
+<p>
+Permissions and Group Membership
 </p>
-<p> 
-Group: Testers<br>
-Unit: Quality Assurance
+<br />
+<p>
+KnowledgeTree permissions are assigned at the Group level (and also at the Role level), but not to individual users. Each user requiring access to the system must be added to KnowledgeTree as an individual user, and then that user is added to one or more Groups, or is assigned to a Role, in order to obtain the permissions allocated to the Group (or the Role).
+</p>
+<br />
+<p>
+Permissions are passed on to users through their membership of a Group (or a Role), and any sub group that is a member of another Group (the parent) obtains the permissions that are allocated to the parent group.
+</p>
+<br />
+<p>
+Add users to groups in DMS Administration - Manage Users.
+</p>
+<br />
+<p>
+<h3>Tasks in Manage Groups</h3>
+</p>
+<p>
+In Manage Groups you can perform the following tasks:
+<ul>
+<li>View existing groups - search for a group by entering all or part of the group name, or click View All Groups to display a list of all groups</li>
+<li>Add new groups</li>
+<li>Edit groups - change the name of a group, allocate Unit Administrator rights and/or System Administrator rights to group members, remove a Group from a Unit</li>
+<li>Add or remove sub groups from a Group</li>
+</ul>
 </p>
 </body>
 </html>
