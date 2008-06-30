@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-30 17:12+0200\n"
+"POT-Creation-Date: 2008-06-30 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3569,6 +3569,10 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+#: plugins/ktcore/KTBulkActions.php:568
+msgid "Download All"
+msgstr ""
+
 #: lib/browse/BrowseColumns.inc.php:429 plugins/ktcore/KTColumns.inc.php:499
 msgid "Download Document"
 msgstr ""
@@ -4199,10 +4203,6 @@ msgstr ""
 
 #: lib/ktentity.inc:295
 msgid "Expected an array!"
-msgstr ""
-
-#: plugins/ktcore/KTBulkActions.php:568
-msgid "Export"
 msgstr ""
 
 #: i18n/templates.c:5879 i18n/transactions.c:11
