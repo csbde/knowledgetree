@@ -101,7 +101,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         $widgets = array(
             array('ktcore.widgets.string', array(
                 'label' => _kt("Document Title"),
-                'description' => sprintf(_kt("The document title is used as the main name of a document throughout %s."), APP_NAME),;
+                'description' => sprintf(_kt("The document title is used as the main name of a document throughout %s."), APP_NAME),
                 'name' => 'document_title',
                 'required' => true,
                 'value' => sanitizeForHTML($this->oDocument->getName()),
