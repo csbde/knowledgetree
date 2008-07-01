@@ -2,44 +2,90 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-   <title>Archived Documents</title>
+<title>Document Types</title>
 </head>
 <body>
-<h2>Archived Documents</h2>
+<h2>Document Types</h2>
 <p>
-Document Types are used to group together documents that have a similar function.
-They also allow you to associate custom fieldsets for specific information that must be
-included with a particular document type.
+KnowledgeTree uses Document Types to group documents in the repository. This allows you to search for and manage your documents by 'Document Type', e.g. Invoice, Report, Template, Order, etc.
 </p>
-Let's say you create a document type called 'Invoice', and you want to ensure that
-all documents of the type 'Invoice' contain the following fields: invoice number,
-customer name, delivery address. You can group these fields in a fieldset called
-Invoice Details, for example. And then you may want to create another fieldset for
-the monetary values in the invoice, which you could call 'Amount'. The fieldset
-Amount may include the following fields: Nett Item Value, Tax, Discount, and
-Total Due.
+<br />
 <p>
-There are two ways you can configure the document type - Invoice - and the
-fieldsets you want to associate with this document type.
+For each Document Type, you can create a collection of fields, called 'fieldsets', and then associate the fieldsets (one or more) with selected Document Types. For example, for an 'Invoice' document type, you could create a fieldset called 'Invoice Details', for which you can create a collection of fields, such as: Invoice Number, Customer Name, Date, etc. When a user adds a document of the type 'Invoice', the fields display, and the user is required to enter field values, such as the invoice number, the name of the customer, and the date. When adding fieldsets and fields, you can specify whether they are 'required' - i.e. whether the user is must enter values for those fields.
 </p>
-
+<br />
 <p>
-1. You can first create the document type in the Document Types section, and then
-create one or more custom fieldsets in the Document Fieldsets section. The
-collection of fieldsets you define are automatically listed in the Document Type
-editing page. Having created the fieldset(s), you need to edit the document type you
-created in order to to add (associate) the fieldset(s) you want to use in this document
-type.
+<b>Note:</b> Fields, Fieldsets, and Document Type are Metadata - they are descriptive references for documents in the repository.
 </p>
+<br />
 <p>
-2. Alternatively, you can first create a set of custom fieldsets in the Document
-Fieldsets section, and then create the document type. Having added the document
-type, KnowledgeTree automatically opens the Document Type editing page, where
-you can select the fieldsets out of the collection of fieldsets you have pre-defined in
-Document Fieldsets, and which now display on the Document Type editing page.
+<h2>Working with Document Types</h2>
 </p>
+<br />
 <p>
-<b>Note:</b> Document types cannot be deleted in KnowledgeTree; they can only be disabled. Since a document type may be associated with a large amount of documents, deleting a document type may cause the loss of required metadata.
+<h3>How to Add a New Document Type</h3>
+<ul>
+<li>1.	On the Document Types page, enter a name for the new document type in the Name field.</li>
+<li>2.	Click Create.</li>
+<li>3.	On the document type configuration screen that displays, you can:</li>
+<ul>
+<li>change the document type name (click Change to save the new document type name)</li>
+<li>associate one or more fieldsets with this document type (available fieldsets are listed in the Available Fieldsets menu; or you can add more fieldsets in the Fieldset configuration section of DMS Administration, and then return to this page to associate additional fieldsets). When you're done, click Associate Fieldsets.</li>
+</ul>
+</ul>
+</p>
+<br />
+<p>
+<h3>How to View Existing Document Types</h3>
+<ul>
+<li>1.	Existing document types are listed in a table on the Document Types page. The table provides access to the following configuration options:</li>
+<ul>
+<li>Edit document type (edit document type name and associated fieldsets)</li>
+<li>Enable / disable the document type</li>
+<li>Delete document type (if the document type may be deleted)</li>
+</ul>
+</ul>
+</p>
+<br />
+<p>
+<h3>How to Edit a Document Type</h3>
+<ul>
+<li>1.	View existing document types in the table on the Document Types page.</li>
+</p>
+<br />
+<p>
+<li>2.	Do you want to ...</li>
+<ul>
+<li>change the document type name? Click the Edit icon in the Edit column for the relevant document type. On the editing screen, change the name of the document type. Click Change.</li>
+<li>associate or disassociate fieldsets on a document type? Click the Edit icon in the Edit column for the relevant document type. To associate fieldsets, on the editing screen, select fieldsets in the menu; then, click Associate Fieldsets; Or, to disassociate fieldsets, on the editing screen, select fieldsets you want to remove from this document type; then, click Disassociate Fieldsets.</li>
+</ul>
+</ul>
+</p>
+<br />
+<p>
+<h3>ENABLE OR DISABLE A DOCUMENT TYPE</h3>
+<ul>
+<li>1.	View existing document types in the table on the Document Types page.</li>
+<li>2.	Click on the icon in the Enable/Disable column for the relevant document type. If the document type is currently disabled, clicking the icon enables the document type; if the document type is currently enabled, clicking the icon disables the document type.</li>
+</ul>
+</p>
+<br />
+<p>
+<h3>EDIT A FIELDSET ASSOCIATED WITH A DOCUMENT TYPE</h3>
+<ul>
+<li>1.	View existing document types in the table on the Document Types page.</li>
+<li>2.	Click on the fieldset you want to edit (listed in the Associated Fieldsets column for the relevant document type).</li>
+<li>3.	On the Edit Fieldset page, to edit the fieldset name, description, and to define whether the fieldset is generic, click Edit these details); you can also manage (add, edit, or remove) fields in the fieldset.</li>
+</ul>
+ </p>
+<br />
+<p>
+<h3>DELETE A DOCUMENT TYPE</h3>
+<ul>
+<li>1.	View existing document types in the table on the Document Types page.</li>
+<li>2.	Click the delete icon in the Delete column for the relevant document type.</li>
+<b>Note:</b> You may only delete document types that have no associated documents in the repository - i.e. you cannot delete the 'Invoice' document type if you have documents in the repository of the type 'Invoice'. This prevents the removal of required metadata. You may however 'disable' a document type if you have no further use for it.
+</ul>
 </p>
 </body>
 </html>
