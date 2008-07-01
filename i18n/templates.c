@@ -1,3 +1,78 @@
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Generic Information");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("The information in this section is stored by #appname# for every         document.");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Document Filename");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Custom Document No");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("File is a");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Document Version");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Created by");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Owned by");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Last update by");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Document Type");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Workflow");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("No workflow");
+
+/* ./plugins/custom-numbering/templates/kt3/fieldsets/generic.smarty */
+gettext("Document ID");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Document Numbering Schemes");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Numbering Schemes");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Please define an appropriate numbering scheme for each document type:");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Document Type");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Scheme");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Regenerate On Checkin");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Control");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Yes");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("No");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Schema guide");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Token");
+
+/* ./plugins/custom-numbering/templates/CustomNumberingAdminPage.smarty */
+gettext("Example");
+
 /* ./plugins/rssplugin/templates/RSSPlugin/managerssfeeds.smarty */
 gettext("Manage RSS Feeds");
 
@@ -196,8 +271,713 @@ gettext("You have no orphaned folders.");
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Title");
 
+/* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
+gettext("There are no quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
+gettext("Manage Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("New Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("New Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Use the folder collection and path below to browse to the document you wish to link to.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Link");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/addlink.smarty */
+gettext("Cancel");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Use the up and down arrows to move an item. Please note that changes are only saved when you click the 're-order' button.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Re-order");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/reorderquicklinks.smarty */
+gettext("Cancel");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Manage Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Quicklinks allow the administrator to create and order a collection of links to documents and folders, which will display on users' dashboards.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Quicklinks are links to documents and folders which you use often.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Add Quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink that will appear on users' dashboards.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink that will appear on your dashboard.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Create a new quicklink");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Re-order Quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Change the order in which quicklinks are shown.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Re-order quicklinks");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("There are no system quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("You have no quicklinks.");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Target");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Delete");
+
+/* ./plugins/network/quicklinks/templates/Quicklinks/managequicklinks.smarty */
+gettext("Delete");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("Items you've added or changed recently within the DMS.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("Location");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/dashlet.smarty */
+gettext("Action taken");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Select User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Since there may be many users in the system, please select a group from the list below, or type a few letters from the person's username to begin.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Name");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("Username");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_info.smarty */
+gettext("View Transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("Document Summary for \"#name#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("Workflow Info");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_workflow_doctypes.smarty */
+gettext("No Workflow");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("User Information: #username# in \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Each user will have performed a large number of different actions.  In order to make the report more useful, please specify more details about the information you need.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Either select a range in which to view the users actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_details.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
+gettext("#appname# Recent Documents");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/recent_rss.smarty */
+gettext("User: #username# &lt;br /&gt;           Action: #action# &lt;br /&gt;           #reason#");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("Usage Information for \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("View information about what documents have been added, or changed in folder and its children.  You can view this information by user or as a whole.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("Per-User Activity");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("General Activity");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_main.smarty */
+gettext("Documents by Workflow and Document Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("User Information: #username#");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Each user will have performed a large number of different actions.  In order to make the report more useful, please specify more details about the information you need.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Either select a range in which to view the users actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/user_details.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Global Activity");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("In order to refine the kind of information shown to you, please provide further information below.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Either select a range in which to view the actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/global_activity.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("Extended Transaction Information");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("The DMS tracks a large amount of activity by users.  Use these reports to get better information on who's doing what on the system. Note that transactions are only shown for documents you are allowed to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("User Activity Information");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/admin_main.smarty */
+gettext("Global Activity Information");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Global Activity in \"#folder#\"");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Specify Search Details");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("In order to refine the kind of information shown to you, please provide further information below.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Date Range");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Either select a range in which to view the actions, or specify the       number of days into the past to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("transactions in the last #widget# days");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Transaction Type");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Required");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Select what kind of report you'd like to view.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("All Actions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Check-ins/Check-outs");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Recent Downloads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Recent Uploads");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Show Items");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Specify the maximum items to show, or leave it at zero or blank to show all transactions matching your report");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("show transactions");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Show #max# of #total# transactions.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Document");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Action");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Date");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Content version");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("Comment");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_global_activity.smarty */
+gettext("No Transactions matched your query.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Select User");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Since there may be many users in the system, please select a group from the list below, or type a few letters from the person's username to begin.");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("search for users");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Name");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("Username");
+
+/* ./plugins/network/extendedtransactioninfo/templates/extendedtransactioninfo/standard_user_info.smarty */
+gettext("View Transactions");
+
+/* ./plugins/network/inlineview/templates/inlineview/view.smarty */
+gettext("Inline View");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("Jump To Document");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("If you know the numeric ID of a document, type it in here and press \"go\"");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("Document ID");
+
+/* ./plugins/network/gotodocumentid/templates/gotodocid/dashlet.smarty */
+gettext("Go");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Items you've viewed recently within the DMS.");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Folders");
+
+/* ./plugins/network/userhistory/templates/userhistory/dashlet.smarty */
+gettext("Documents");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("The top downloads for the last 7 days.  Only documents which you are allowed to see are listed.");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("Document");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("Location");
+
+/* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
+gettext("Downloads");
+
 /* ./plugins/tagcloud/templates/TagCloud/portlet.smarty */
 gettext("There are no tags defined or accessible.");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Document types");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Select document types allowed in folder");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Folder");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Restrict document types");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Document Types");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Assign");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/folderassign.smarty */
+gettext("Back to folder");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Document Type");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Change");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Type-specific field sets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Linked Fieldsets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Fieldset");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Disassociate Fieldsets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("No fieldsets are currently associated with this type.");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Associate Fieldsets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Associate Fieldsets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("No fieldsets are available to be added.  To add a fieldset, please go to DMS Administration");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Document Metadata and Workflow Configuration");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/edit.smarty */
+gettext("Document Field Management");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Email Document Types");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Create a new email document type");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("To create a new email document type, please type its name below and then click on the Create button. Note that email document type names must end with the word 'Email'.");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Create");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Existing document types");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Select a document type from the list below to change its details, or use the enable/disable buttons to change its availability state.");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Document Type");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Associated Fieldsets");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Edit");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Disable/Enable");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Edit");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Enable");
+
+/* ./plugins/wintools/templates/wintools/email/emaildocumenttypes/list.smarty */
+gettext("Disable");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Manage keys");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Access to the DMS requires that the user be allocated one of the organisation's keys.  You currently have <strong>#keys#</strong> licenses available.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Add new key");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("If you've purchased a new key from <a href=\"http://www.knowledgetree.com\">KnowledgeTree.com</a> or one of our partners,     you can upload it here.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Below you can see a list of the keys that are currently active for your organisation.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Please note that only 1 key is ever active - the key which expires first (listed at the top).  If you need more active users, you will need to purchase additional user licenses. If you have upgraded from Basic to Plus or Premium, please add your new license and then delete the old license.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("You have no keys currently registered for Windows Tools.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Licenses");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Expires");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Granted to");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Delete");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Invalid key");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("This key expires in");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("This key has expired.");
+
+/* ./plugins/wintools/templates/wintools/key_overview.smarty */
+gettext("Delete");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("search for users");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Name");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Username");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Enabled");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Allocate Key");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("De-allocate Key");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("Key Assigned");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("No Key Assigned");
+
+/* ./plugins/wintools/templates/wintools/allocate_keys.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/wintools/templates/licensedashlet/license.smarty */
+gettext("There is currently no license installed! Either you have yet to install your license or it has expired. A license is required to enable some of the functionality within the DMS.");
+
+/* ./plugins/wintools/templates/licensedashlet/license.smarty */
+gettext("Your license will expire in #days# day(s). On expiration of your license certain functionality within the DMS will be disabled.");
+
+/* ./plugins/wintools/templates/licensedashlet/license.smarty */
+gettext("Please contact #email# to purchase a new subscription, or renew your existing one.");
 
 /* ./plugins/housekeeper/templates/DiskUsage.smarty */
 gettext("Mount");
@@ -237,6 +1017,222 @@ gettext("cleanup");
 
 /* ./plugins/housekeeper/templates/FolderUsage.smarty */
 gettext("N/A");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("User");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/loginhistory.smarty */
+gettext("Comments");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Login history for");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Date");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Action");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("Comments");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("User Reporting");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show all users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show users that");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("have");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("have not");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("logged into the system in the last");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("day(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("week(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("month(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("years(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login activity");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Want to know who all has logged in the system over a period of time?  You can get an overview of all login activity for all users over a specified period of time.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show login activity for the last");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("day(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("week(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("month(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("years(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show login activity between");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("select");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("and");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("select");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Show");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Full login history for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Since there may be many users in the system, please select a user from the list below, or type a few letters from the person's username to begin. Alternatively, <a href=\"#link#\">view all users</a> (note that this may be very slow if you have many users).");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("search for users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login information");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Want to know when last users of your system logged in?  You can get an overview of the last login times of all users, or of users that have or have not logged in recently.");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Show all users");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Show users that");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("have");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("have not");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("logged into the system in the last");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("day(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("week(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("month(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("years(s)");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Show");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Name");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Username");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Last login");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Login history");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("View");
+
+/* ./plugins/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("No results for your search.");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Select Document Version to compare against");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("This page lists versions of document content and allows you to compare a content version with another content version.");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Document History for #appname# New UI Presentation");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("User");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Metadata Version");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Content Version");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Compare");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("comparing against this version");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("mime types do not match");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("no difference between content versions");
+
+/* ./plugins/documentcomparison/templates/comparison_content_version_select.smarty */
+gettext("Compare");
 
 /* ./templates/kt3/browse_types.smarty */
 gettext("Select a document type");
