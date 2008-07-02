@@ -932,7 +932,6 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         return $ret;
                     }
                 }
-                $oEntity->setFileName('outterfile.pdf');
 
                 $this->oZip->addDocumentToZip($oEntity);
             }
