@@ -342,9 +342,24 @@ class LoginPageDispatcher extends KTDispatcher {
             $url = $redirect;
         // else redirect to the dashboard if there is none
         } else {
-            $url = KTUtil::kt_url().'/dashboard.php';
-        }
+            $url = KTUtil::kt_url();
 
+            $config = KTConfig::getSingleton();
+            $redirectToBrowse = $config->get('KnowledgeTree/redirectToBrowse', false);
+            $redirectToDashboardList = $config->get('KnowledgeTree/redirectToBrowseExceptions', '');
+
+            if ($redirectToBrowse)
+            {
+                $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
+                $user = User::get($_SESSION['userID']);
+                $username = $user->getUserName();
+                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':'/browse.php';
+            }
+            else
+            {
+                $url .=  '/dashboard.php';
+            }
+        }
         exit(redirect($url));
     }
 }
