@@ -42,6 +42,15 @@ require_once(KT_LIB_DIR . '/database/dbutil.inc');
 // Set the time limit to 0 to prevent the script timing out
 set_time_limit(0);
 
+global $default;
+
+// Check the lock file before starting
+$lock = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+if(file_exists($lock)){
+    $default->log->debug('Scheduler: can\'t start - lock file exists');
+    exit(0);
+}
+
 
 /* ** Set up functions ** */
 
@@ -107,10 +116,7 @@ function getTaskList() {
     return $result;
 }
 
-
 /* ** Scheduler script ** */
-
-global $default;
 
 $default->log->debug('Scheduler: starting');
 
