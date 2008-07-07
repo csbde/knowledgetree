@@ -31,18 +31,18 @@ YAHOO.example.DDList.prototype.endDrag = function(e) {
 };
 
 YAHOO.example.DDList.prototype.onDrag = function(e, id) {
-    
+
 };
 
 YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
     var el;
-    
+
     if ("string" == typeof id) {
         el = YAHOO.util.DDM.getElement(id);
-    } else { 
+    } else {
         el = YAHOO.util.DDM.getBestMatch(id).getEl();
     }
-    
+
 
     var mid = YAHOO.util.DDM.getPosY(el) + ( Math.floor(el.offsetTop / 2));
 
@@ -61,7 +61,7 @@ YAHOO.example.DDList.prototype.onDragOver = function(e, id) {
         }
         p.insertBefore(el2, el);
     }
-        
+
 };
 
 YAHOO.example.DDList.prototype.toString = function() {
@@ -71,9 +71,9 @@ YAHOO.example.DDList.prototype.toString = function() {
 
 YAHOO.example.DDListBoundary = function(id, sGroup, config) {
     if (id) {
-        this.init(id, sGroup, config);
-        this.logger = this.logger || YAHOO;
-        this.isBoundary = true;
+//        this.init(id, sGroup, config);
+//        this.logger = this.logger || YAHOO;
+//        this.isBoundary = true;
     }
 };
 

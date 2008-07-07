@@ -121,29 +121,15 @@ class KTPage {
         /* default js files initialisation */
         $aJS = Array();
 
-		$aJS[] = 'thirdpartyjs/yui/yahoo/yahoo.js';
-		$aJS[] = 'thirdpartyjs/yui/utilities/utilities.js';
-        /*
-        $aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/New.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/DragAndDrop.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/Sortable.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/Style.js';
-        */
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
         $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
         $aJS[] = 'resources/js/loader.js';
-        $aJS[] = 'thirdpartyjs/yui/tools/tools.js';
-        $aJS[] = 'thirdpartyjs/yui/connection/connection-min.js';
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'resources/js/search2widget.js';
-
-        //$aJS[] = 'thirdpartyjs/MochiKit/.js';
-        //$aJS[] = 'resources/js/translate.js';
 
         $this->requireJSResources($aJS);
 
