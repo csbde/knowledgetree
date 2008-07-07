@@ -128,7 +128,7 @@
 	                            	{/foreach}
 	                            ];
 
-	                            {if $smarty.session.search2resultFormat != 'searchengine'}
+	                            {if $smarty.session.search2resultFormat == 'browseview'}
 	                                var bResultsFormatSearchEngine = false;
 	                            {else}
 	                                var bResultsFormatSearchEngine = true;
@@ -219,7 +219,8 @@
                     </td>
                     <td width="5px">&nbsp;</td>
                     <td valign=top align=right width="100">
-                	<div id="newSearchQuery"  /></td>
+                	   <div id="newSearchQuery"></div>
+                	</td>
                 	<td id="add-dashlet"></td>
                 	</tr>
                 	</table>
@@ -329,7 +330,7 @@
 						<td valign="top">
 							{i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}
 							{if ($smallVersion == 'Community Edition')}
-								{i18n}is licensed free of charge and supplied with 
+								{i18n}is licensed free of charge and supplied with
 									<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>
 									, <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>
 									, and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.
@@ -363,10 +364,10 @@
 						-->
 					</tr>
 				</table>
-			</td>					
+			</td>
 			</tr>
 			</table>
-			
+
         <div class="floatClear"></div>
     </div>
 </div>

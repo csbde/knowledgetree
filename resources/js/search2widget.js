@@ -1,8 +1,8 @@
 Ext.onReady(function(){
 
-var bSearchOptionMetadataAndContent = true;
-
 Ext.BLANK_IMAGE_URL = '../../thirdpartyjs/extjs/resources/images/default/s.gif';
+
+var bSearchOptionMetadataAndContent = true;
 
 function doAdvancedSearch()
 {
@@ -17,13 +17,13 @@ function doViewPreviousSearchResults()
 function onMetadataAndContentClick()
 {
 	bSearchOptionMetadataAndContent = true;
-	Ext.example.msg(sSearchTranslations[0], sSearchTranslations[1]); /* Quick Search Options, Searches will now search both content and metadata   */
+	//Ext.example.msg(sSearchTranslations[0], sSearchTranslations[1]); /* Quick Search Options, Searches will now search both content and metadata   */
 }
 
 function onMetadataClick()
 {
 	bSearchOptionMetadataAndContent = false;
-	Ext.example.msg(sSearchTranslations[0], sSearchTranslations[2]); /* Quick Search Options, Searches will now only search metadata */
+	//Ext.example.msg(sSearchTranslations[0], sSearchTranslations[2]); /* Quick Search Options, Searches will now only search metadata */
 }
 
 function onSearchEngineFormatClick()
@@ -53,7 +53,7 @@ function onSearchClick(sender)
 
 	if (text == sSearchTranslations[12] || text == '')
 	{
-		Ext.example.msg(sSearchTranslations[3], sSearchTranslations[4]); /* Hint, Please enter some search criteria!  */
+//		Ext.example.msg(sSearchTranslations[3], sSearchTranslations[4]); /* Hint, Please enter some search criteria!  */
 		return;
 	}
 
@@ -90,7 +90,7 @@ function populateSavedSearch(menu)
 		}
 	});
 
-	for(i=0;i<aSavedSearches.length;i++)
+	for(i = 0; i < aSavedSearches.length; i++)
 	{
 		var search = aSavedSearches[i];
 		var name = search.name;
@@ -102,8 +102,6 @@ function populateSavedSearch(menu)
 		});
 	}
 }
-
-
 
 function createSearchBar(div, suffix)
 {
@@ -118,6 +116,7 @@ function createSearchBar(div, suffix)
 	if (suffix == 1)
 	{
 		var menu = new Ext.menu.Menu({
+		    shadow: false,
 			items: [
 				{
 					text: sSearchTranslations[6], /* Advanced Search */
@@ -130,6 +129,7 @@ function createSearchBar(div, suffix)
 				{
 					text: sSearchTranslations[8] , /*Quick Search Options*/
 					menu: {
+					    shadow: false,
 						items: [
 							new Ext.menu.CheckItem({
 								text: sSearchTranslations[9], /* content and metadata */
@@ -151,19 +151,20 @@ function createSearchBar(div, suffix)
 				{
 					text: sSearchTranslations[13] , /*Toggle results format*/
 					menu: {
+					    shadow: false,
 						items: [
 							new Ext.menu.CheckItem({
 								text: sSearchTranslations[14], /* search engine format */
 								id: 'cbResultsFormatSearchEngine' + suffix,
 								checked: bResultsFormatSearchEngine,
-								group: 'options',
+								group: 'format',
 								handler: onSearchEngineFormatClick
 							}),
 							new Ext.menu.CheckItem({
 								text: sSearchTranslations[15], /* browse view format */
 								id: 'cbBrowseSearchEngine' +  suffix,
 								checked: !bResultsFormatSearchEngine,
-								group: 'options',
+								group: 'format',
 								handler: onBrowseFormatClick
 							})
 						]
@@ -171,7 +172,6 @@ function createSearchBar(div, suffix)
 				}
 			]
 		});
-
 
 		button = new Ext.Toolbar.MenuButton({
 			text: sSearchTranslations[11], /* search */
@@ -182,9 +182,6 @@ function createSearchBar(div, suffix)
 		});
 
 		populateSavedSearch(menu);
-
-
-
 
 	}
 	else
@@ -202,15 +199,15 @@ function createSearchBar(div, suffix)
 
 	var tb = new Ext.Toolbar(div);
 
-
-
-	tb.add(new Ext.form.TextField({
+	tb.add(
+	new Ext.form.TextField({
 			emptyText: sSearchTranslations[12], /* Enter search criteria... */
 			value: quickQuery,
 			selectOnFocus:true,
 			id:'txtSearchBar' + suffix,
-			width: (suffix == 1)?180:110
-		}), button);
+			width: (suffix == 1) ? 180 : 110
+		}),
+		button);
 
 	var map = new Ext.KeyMap("txtSearchBar" + suffix,
 				{
@@ -227,7 +224,7 @@ function createSearchBar(div, suffix)
 	}
 	else
 	{
-		el.applyStyles('position:relative; left: 20px; top: 10px');
+		el.applyStyles('position:relative; left: 20px; top: 0px;');
 	}
 
 	return menu;
