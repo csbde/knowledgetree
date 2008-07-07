@@ -103,15 +103,10 @@ class KTPage {
 
         /* default css files initialisation */
         $aCSS = Array(
+           "thirdpartyjs/extjs/resources/css/ext-all.css",
            "resources/css/kt-framing.css",
            "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css",
-//           "thirdpartyjs/extjs/resources/css/xtheme-kt.css",
-           "thirdpartyjs/extjs/resources/css/ext-all.css",
-           "thirdpartyjs/extjs/examples/examples.css",
- //          "thirdpartyjs/extjs/examples/menu/menu.css",
-           "thirdpartyjs/extjs/examples/lib.css",
-//           "skins/kt-toolbar.css"
+           "resources/css/kt-headings.css"
         );
         $this->requireCSSResources($aCSS);
 
@@ -145,7 +140,6 @@ class KTPage {
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'thirdpartyjs/extjs/examples/examples.js';
         $aJS[] = 'resources/js/search2widget.js';
 
         //$aJS[] = 'thirdpartyjs/MochiKit/.js';
