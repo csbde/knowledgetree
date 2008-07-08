@@ -120,6 +120,8 @@ INSERT INTO `config_settings`(`id`,`group_name`,`item`,`type`,`value`,`helptext`
 (105,'cache','cacheDirectory','','default','','${varDirectory}/cache',1),
 (106,'cache','cachePlugins','boolean','default','','1',1),
 (107,'urls','varDirectory','','default','','${fileSystemRoot}/var',1),
-(108,'urls','documentRoot','','default','','${varDirectory}/Documents',0);
+(108,'urls','documentRoot','','default','','${varDirectory}/Documents',0),
+(109,'KnowledgeTree','redirectToBrowse','boolean','default','set to true to redirect to browse screen ','false',1),
+(110,'KnowledgeTree','redirectToBrowseExceptions','boolean','default','if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. \r\nredirectToBrowseExceptions = admin, joebloggs ','',1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
