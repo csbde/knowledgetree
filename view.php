@@ -152,7 +152,20 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         );
 
         $this->oDocument =& $oDocument;
-        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
+        
+        //Figure out if we came here by navigating trough a shortcut.
+        //If we came here from a shortcut, the breadcrumbspath should be relative
+        //to the shortcut folder.
+    	$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
+        if(is_numeric($iSymLinkFolderId)){
+            $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
+            $aOptions['final'] = false;
+            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,$aOptions));
+            $this->aBreadcrumbs[] = array('name'=>$this->oDocument->getName());
+        }else{
+            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
+        }
+        
         $this->oPage->setBreadcrumbDetails(_kt('document details'));
         $this->addPortlets('Document Details');
 

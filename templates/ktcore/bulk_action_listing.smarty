@@ -59,7 +59,11 @@
 <h3>{i18n}Folders{/i18n}</h3>
 <ul>
 {foreach from=$folders item=folder}
-<li>{$folder|sanitize}</li>
+<li>{$folder.name|sanitize}
+{if $folder.notice}
+	<b>({$folder.notice})</b>
+{/if}
+</li>
 {/foreach}
 </ul>
 {/if}
@@ -68,7 +72,11 @@
 <h3>{i18n}Documents{/i18n}</h3>
 <ul>
 {foreach from=$documents item=document}
-<li>{$document|sanitize}</li>
+<li>{$document.name|sanitize}
+{if $document.notice}
+	<b>({$document.notice})</b>
+{/if}
+</li>
 {/foreach}
 </ul>
 {/if}

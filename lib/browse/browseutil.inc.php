@@ -261,13 +261,15 @@ class KTBrowseUtil {
     // }}}
 
     // {{{ breadcrumbsForDocument
-    function breadcrumbsForDocument($oDocument, $aOptions = null) {
+    function breadcrumbsForDocument($oDocument, $aOptions = null, $iFolderId = null) {
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
         $aOptions = KTUtil::meldOptions($aOptions, array(
             'final' => false,
         ));
 
-        $iFolderId = $oDocument->getFolderId();
+        if($iFolderId == null){
+       	 	$iFolderId = $oDocument->getFolderId();
+        }
         $aBreadcrumbs = KTBrowseUtil::breadcrumbsForFolder($iFolderId, $aOptions);
 
 

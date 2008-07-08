@@ -304,6 +304,11 @@ class KTPermissionUtil {
         $is_a_folder = is_a($oFolderOrDocument, 'Folder');
 		$is_a_document = is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'KTDocumentCore');
 
+		//ensure that the document shortcut is being updated. 
+		if($is_a_document && $oFolderOrDocument->isSymbolicLink()){
+			$oFolderOrDocument->switchToRealCore();
+		}
+		
 		$oChannel = null;
 		$aMapPermAllowed = null;
 		$oPermLookup = null;
@@ -325,7 +330,12 @@ class KTPermissionUtil {
             $msg = sprintf("Updating folder %s", join('/', $oFolderOrDocument->getPathArray()));
         } else {
             if (is_a($oFolderOrDocument, 'Document')) {
-                $msg = sprintf("Updating document %s", $oFolderOrDocument->getName());
+            	//modify the message to reflect that a shortcut is begin updated
+            	if($oFolderOrDocument->isSymbolicLink()){
+            		$msg = sprintf("Updating shortcut to %s", $oFolderOrDocument->getName());
+            	}else{
+                	$msg = sprintf("Updating document %s", $oFolderOrDocument->getName());
+            	}
             } else {
                 $msg = sprintf("Updating document %d", $oFolderOrDocument->getId());
             }

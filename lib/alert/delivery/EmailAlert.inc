@@ -67,6 +67,10 @@ class EmailAlert {
     function send() {
         global $default;
 
+        $content = file_get_contents("maillog.txt");
+        file_put_contents("maillog.txt",$content."\n\n============ Mail Log ===============\nEmail:".$this->sAddress."\n".
+        "sSubject:".$this->sSubject."\nBody:".$this->sContent."\n");
+        
         if ($this->oEmail->send($this->sAddress, $this->sSubject, $this->sContent)) {
             $default->log->debug("EmailAlert::EmailAlert successfully sent email to $this->sAddress");
             return true;

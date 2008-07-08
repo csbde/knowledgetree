@@ -10,31 +10,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -173,6 +173,9 @@ class KTWebService
          {
          	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['created_by'] = 'string';
          }
+         if($this->version >= 3){
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
          	array(
@@ -235,8 +238,14 @@ class KTWebService
 
                 'storage_path' => 'string',
 
-                'items' =>"{urn:$this->namespace}kt_folder_items"
+
          	);
+
+         	if($this->version>=3){
+         		$this->__typedef["{urn:$this->namespace}kt_folder_item"]['linked_folder_id'] = 'int';
+         	}
+
+         	$this->__typedef["{urn:$this->namespace}kt_folder_item"]['items'] = "{urn:$this->namespace}kt_folder_items";
          }
 
         $this->__typedef["{urn:$this->namespace}kt_folder_items"] =
@@ -327,6 +336,10 @@ class KTWebService
         	 	'version_history' => "{urn:$this->namespace}kt_document_version_history",
          		'transaction_history' => "{urn:$this->namespace}kt_document_transaction_history",
          	);
+
+         	if($this->version>=3){
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
+         	}
          }
 
         if (defined('HAS_SEARCH_FUNCTIONALITY'))
@@ -474,14 +487,14 @@ class KTWebService
          		'message'=>'string',
          		'transitions' => "{urn:$this->namespace}kt_workflow_transitions"
          		);
-				
-		$this->__typedef["{urn:$this->namespace}kt_workflows_array"] =
+
+ 		$this->__typedef["{urn:$this->namespace}kt_workflows_array"] =
 			array(
             	array(
                         'workflow' => 'string'
                   )
             );
-				
+
 		$this->__typedef["{urn:$this->namespace}kt_workflows_response"] =
          	array(
             	'status_code' => 'int',
@@ -545,6 +558,62 @@ class KTWebService
                         'history' => "{urn:$this->namespace}kt_document_transaction_history_item"
                   )
             );
+         if($this->version >= 3){
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut"] =
+	         	array(
+	         		'id' => 'int',
+        	   	'full_path' => 'string',
+   			   	'folder_id' => 'int',
+        	   	'creator_id' => 'string',
+	   	        'created' => 'string',
+        	   	'owner_id'=>'string',
+        	   	'permission_object_id' => 'string',
+	         	'permission_lookup_id' => 'string',
+				'linked_document_id' => 'int',
+	         		);
+
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcuts"] =
+				array(
+	            	array(
+	                        'shortcuts' => "{urn:$this->namespace}kt_document_shortcut"
+	                  )
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut_response"] =
+				array(
+	            	'status_code'=>'int',
+	         		'message'=>'string',
+	         		'shortcuts' => "{urn:$this->namespace}kt_document_shortcuts"
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut"] =
+	         	array(
+	         		'id' => 'int',
+	         	'name' => 'string',
+	         	'parent_id' => 'string',
+        	   	'full_path' => 'string',
+   			   	'folder_id' => 'int',
+        	   	'creator_id' => 'string',
+	   	        'created' => 'string',
+        	   	'permission_object_id' => 'string',
+	         	'permission_lookup_id' => 'string',
+				'linked_folder_id' => 'int',
+	         		);
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcuts"] =
+				array(
+	            	array(
+	                        'shortcuts' => "{urn:$this->namespace}kt_folder_shortcut"
+	                  )
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut_response"] =
+				array(
+	            	'status_code'=>'int',
+	         		'message'=>'string',
+	         		'shortcuts' => "{urn:$this->namespace}kt_folder_shortcuts"
+	            );
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_response"] =
          	array(
@@ -819,6 +888,25 @@ class KTWebService
 	    	        array('in' => array('session_id'=>'string','document_id'=>'int','filename'=>'string','reason' =>'string','tempfilename' =>'string', 'major_update'=>'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
 	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
             	);
+         }
+
+
+         if($this->version >= 3){
+         	//add folder shortcut
+         	$this->__dispatch_map['create_folder_shortcut'] = array('in'=>array('session_id'=>'string','target_folder_id'=>'int','source_folder_id'=>'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_detail" ));
+
+         	//add document shortcut
+         	$this->__dispatch_map['create_document_shortcut'] = array('in'=>array('session_id'=>'string','target_folder_id'=>'int','source_document_id'=>'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_document_detail" ));
+
+         	//get document shortcuts
+         	$this->__dispatch_map['get_document_shortcuts'] = array('in'=>array('session_id'=>'string','document_id'=>'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_document_shortcuts" ));
+
+         	//get folder shortcuts
+         	$this->__dispatch_map['get_folder_shortcuts'] = array('in'=>array('session_id'=>'string','folder_id'=>'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_shortcuts" ));
          }
 
          // add_document
@@ -1123,8 +1211,8 @@ class KTWebService
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
             );
-			
-		 // get_workflows
+
+         // get_workflows
          $this->__dispatch_map['get_workflows'] =
             array('in' => array('session_id'=>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_workflows_response" ),
@@ -1333,6 +1421,66 @@ class KTWebService
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $detail);
     }
 
+	/** Encode an array as kt_folder_shortcut
+	 *
+	 * @param array $shortcuts
+	 * @param string $name
+	 * @return SOAP_Value of kt_folder_shortcuts
+     * @access private
+     * @static
+	 */
+	function _encode_folder_shortcuts($shortcuts, $name='shortcuts')
+	{
+		foreach($shortcuts as $key=>$item)
+		{
+			$shortcuts[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_folder_shortcut", $item);
+		}
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_folder_shortcuts", $shortcuts);
+	}
+
+    /**
+     * Retrieves all shortcuts linking to a specific document
+     *
+     * @param string $session_id
+     * @param ing $document_id
+     *
+	 * @return kt_document_shortcuts. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     *
+     */
+    function get_folder_shortcuts($session_id, $folder_id){
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_shortcuts", $kt);
+    	}
+
+    	$folder = $kt->get_folder_by_id($folder_id);
+    	if(PEAR::isError($document)){
+    		$response=array(
+    			'status_code'=>KTWS_ERR_INVALID_FOLDER,
+    			'message'=>$folder->getMessage()
+    		);
+    		$this->debug("get_folder_shortcuts - cannot get folder - "  . $folder->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_shortcuts", $response);
+    	}
+
+    	$shortcuts = $folder->get_shortcuts();
+    	if(PEAR::isError($shortcuts)){
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$shortcuts);
+    		$this->debug("get_folder_shortcuts - cannot retrieve shortcuts linking to $folder_id - "  . $shortcuts->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_shortcuts", $response);
+    	}
+
+    	$response['status_code'] = KTWS_SUCCESS;
+    	$response['history'] = KTWebService::_encode_folder_shortcuts($shortcuts);
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_shortcuts", $response);
+
+    }
+
+
     /**
      * Returns folder detail given a folder name which could include a full path.
      *
@@ -1394,7 +1542,7 @@ class KTWebService
      * @param string $what
      * @return kt_folder_contents
      */
-    function get_folder_contents($session_id, $folder_id, $depth=1, $what='DF')
+    function get_folder_contents($session_id, $folder_id, $depth=1, $what='DFS')
     {
     	$this->debug("get_folder_contents('$session_id',$folder_id,$depth,'$what')");
     	$kt = &$this->get_ktapi($session_id);
@@ -1468,6 +1616,113 @@ class KTWebService
     	$detail['message']='';
 
     	return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $detail);
+    }
+
+    /**
+     * Creates a shortcut to an existing folder
+     *
+     * @param string $session_id
+     * @param int $target_folder_id Folder to place the shortcut in
+     * @param int $source_folder_id Folder to create the shortcut to
+     * @return kt_folder_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
+     */
+    function create_folder_shortcut($session_id, $target_folder_id, $source_folder_id){
+    	$this->debug("create_folder_shortcut('$session_id',$target_folder_id,' $source_folder_id')");
+
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $kt);
+    	}
+
+    	$folder = &$kt->get_folder_by_id($target_folder_id);
+    	if (PEAR::isError($folder))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$folder);
+
+    		$this->debug("create_folder_shortcut - cannot get folderid $target_folder_id - "  . $folder->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
+    	}
+
+    	$source_folder = &$kt->get_folder_by_id($source_folder_id);
+    	if (PEAR::isError($source_folder))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$source_folder);
+
+    		$this->debug("create_folder_shortcut - cannot get folderid $source_folder_id - "  . $source_folder->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
+    	}
+
+    	$shortcut = &$folder->add_folder_shortcut($source_folder_id);
+    	if (PEAR::isError($shortcut))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$shortcut);
+    		$this->debug("create_folder_shortcut - cannot create shortcut to $source_folder_id - "  . $shortcut->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
+    	}
+
+    	$detail = $shortcut->get_detail();
+    	$detail['status_code']=KTWS_SUCCESS;
+    	$detail['message']='';
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $detail);
+    }
+
+	/**
+     * Creates a shortcut to an existing document
+     *
+     * @param string $session_id
+     * @param int $target_folder_id Folder to place the shortcut in
+     * @param int $source_document_id Document to create the shortcut to
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER,KTWS_ERR_INVALID_DOCUMENT  or KTWS_SUCCESS
+     */
+    function create_document_shortcut($session_id, $target_folder_id, $source_document_id){
+    	$this->debug("create_document_shortcut('$session_id',$target_folder_id,'$source_document_id')");
+
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $kt);
+    	}
+
+    	$folder = &$kt->get_folder_by_id($target_folder_id);
+    	if (PEAR::isError($folder))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$folder);
+
+    		$this->debug("create_document_shortcut - cannot get folderid $target_folder_id - "  . $folder->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	}
+
+    	$source_document = &$kt->get_document_by_id($source_document_id);
+    	if (PEAR::isError($source_folder))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,$source_document);
+
+    		$this->debug("create_document_shortcut - cannot get docid $source_document_id - "  . $source_document->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	}
+
+    	$shortcut = &$folder->add_document_shortcut($source_document_id);
+    	if (PEAR::isError($shortcut))
+    	{
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,$shortcut);
+    		$this->debug("create_document_shortcut - cannot create shortcut to $source_document_id - "  . $shortcut->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    	}
+
+
+    	$detail = $shortcut->get_detail();
+    	$detail['status_code']=KTWS_SUCCESS;
+    	$detail['message']='';
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $detail);
     }
 
     /**
@@ -1926,6 +2181,65 @@ class KTWebService
     	}
 
     	return $this->get_document_detail($session_id, $document->documentid, $detail);
+    }
+
+ 	/** Encode an array as kt_document_shortcut
+	 *
+	 * @param array $shortcuts
+	 * @param string $name
+	 * @return SOAP_Value of kt_document_shortcuts
+     * @access private
+     * @static
+	 */
+	function _encode_document_shortcuts($shortcuts, $name='shortcuts')
+	{
+		foreach($shortcuts as $key=>$item)
+		{
+			$shortcuts[$key] = new SOAP_Value('item',"{urn:$this->namespace}kt_document_shortcut", $item);
+		}
+		return new SOAP_Value($name,"{urn:$this->namespace}kt_document_shortcuts", $shortcuts);
+	}
+
+    /**
+     * Retrieves all shortcuts linking to a specific document
+     *
+     * @param string $session_id
+     * @param ing $document_id
+     *
+	 * @return kt_document_shortcuts. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     *
+     */
+    function get_document_shortcuts($session_id, $document_id){
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_shortcuts", $kt);
+    	}
+
+    	$document = $kt->get_document_by_id($document_id);
+    	if(PEAR::isError($document)){
+    		$response=array(
+    			'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
+    			'message'=>$document->getMessage()
+    		);
+    		$this->debug("get_document_shortcuts - cannot get document - "  . $document->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_shortcuts", $response);
+    	}
+
+    	$shortcuts = $document->get_shortcuts();
+    	if(PEAR::isError($shortcuts)){
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,$shortcuts);
+    		$this->debug("get_document_shortcuts - cannot retrieve shortcuts linking to $document_id - "  . $shortcuts->getMessage(), $session_id);
+
+    		return new SOAP_Value('return',"{urn:$this->namespace}kt_document_shortcuts", $response);
+    	}
+
+    	$response['status_code'] = KTWS_SUCCESS;
+    	$response['history'] = KTWebService::_encode_document_shortcuts($shortcuts);
+
+    	return new SOAP_Value('return',"{urn:$this->namespace}kt_document_shortcuts", $response);
+
     }
 
     /**
@@ -3460,7 +3774,7 @@ class KTWebService
 
     	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
 	}
-	
+
 	/**
 	 * Returns a list of available workflows
 	 *
@@ -3475,9 +3789,9 @@ class KTWebService
     	{
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_workflows_response", $kt);
     	}
-		
+
 		$response = KTWebService::_status(KTWS_ERR_PROBLEM);
-		
+
 		$result = $kt->get_workflows();
     	if (PEAR::isError($result))
     	{

@@ -112,7 +112,18 @@ class AdvancedTitleColumn extends AdvancedColumn {
     }
 
     function buildDocumentLink($aDataRow) {
-        return KTBrowseUtil::getUrlForDocument($aDataRow["document"]->getId());
+    	if($aDataRow['document']->isSymbolicLink()){
+    		$iDocId = $aDataRow['document']->getRealDocumentId();
+    	}else{
+    		$iDocId = $aDataRow["document"]->getId();
+    	}
+		
+        $url = KTBrowseUtil::getUrlForDocument($iDocId);
+        if($aDataRow['document']->isSymbolicLink()){
+        	$aDataRow['document']->switchToRealCore();
+        	$url .= "&fShortcutFolder=".$aDataRow['document']->getFolderId();
+        }
+        return $url;
     }
 
 
@@ -122,9 +133,15 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
     function buildFolderLink($aDataRow) {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
-            $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
-	    $params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()),
-				     array('fFolderId' => $aDataRow['folder']->getId()));
+           $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
+           if($aDataRow['folder']->isSymbolicLink()){
+           		$params = array('fFolderId' => $aDataRow['folder']->getLinkedFolderId(),
+				     'fShortcutFolder' => $aDataRow['folder']->getParentID());
+           }else{
+          		$params = array('fFolderId' => $aDataRow['folder']->getId());
+           }
+	   		$params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()),
+				     $params);
 
             if (empty($dest)) {
                 return KTUtil::addQueryStringSelf($params);
@@ -133,7 +150,11 @@ class AdvancedTitleColumn extends AdvancedColumn {
             }
 
         } else {
-            return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
+        	if($aDataRow['folder']->isSymbolicLink()){
+        		return KTBrowseUtil::getUrlForFolder($aDataRow['folder']->getLinkedFolder())."&fShortcutFolder=".$aDataRow['folder']->getParentID();
+        	}else{
+            	return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
+        	}
         }
     }
 
@@ -142,12 +163,22 @@ class AdvancedTitleColumn extends AdvancedColumn {
        if ($aDataRow["type"] == "folder") {
            $contenttype = 'folder';
            $link = $this->renderFolderLink($aDataRow);
-           return sprintf('<span class="contenttype %s">%s</span>', $contenttype, $link);
+           if($aDataRow['folder']->isSymbolicLink()){
+           		return sprintf('<span class="contenttype %s">%s<img src="resources/tango-icons/shortcut.png" /></span>', $contenttype, $link);
+           }else{
+           		return sprintf('<span class="contenttype %s">%s</span>', $contenttype, $link);
+           }
         } else {
-           $contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId());
-           $link = $this->renderDocumentLink($aDataRow);
-           $size = $this->prettySize($aDataRow["document"]->getSize());
-           return sprintf('<span class="contenttype %s">%s (%s)</span>', $contenttype, $link, $size);
+        	$contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId());
+           	$link = $this->renderDocumentLink($aDataRow);
+           	
+           	//Render an image instead of the size in case of a shortcut
+           if($aDataRow['document']->isSymbolicLink()){           	
+	           	return sprintf('<span class="contenttype %s">%s <img src="resources/tango-icons/shortcut.png" /></span>', $contenttype, $link);
+           }else{
+          		 $size = $this->prettySize($aDataRow["document"]->getSize());
+           		return sprintf('<span class="contenttype %s">%s (%s)</span>', $contenttype, $link, $size);
+           }
         }
     }
 
@@ -359,6 +390,11 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
     }
 
     function renderHeader() {
+    	global $main;
+        //include some javascript to force real single selections
+        if($this->show_folders && $this->show_documents){
+        	$main->requireJSResource("resources/js/singleselect.js");
+        }
         return '&nbsp;';
     }
 
@@ -380,7 +416,12 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
             return '&nbsp;';
         }
 
-        return '<input type="radio" name="' . $localname . '" value="' . $v . '"/>';
+        $return =  '<input type="radio" name="' . $localname . '" value="' . $v . '" ';  
+        if($this->show_folders && $this->show_documents){
+        	$return .= 'onClick="forceSingleSelect(this)" ';
+        }
+        $return .='/>';
+        return $return;
     }
 
     // no label, but we do have a title
