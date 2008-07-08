@@ -1,0 +1,48 @@
+<form name="manageConfigSettings" action="{$smarty.server.PHP_SELF}" method="POST">
+
+<table class="kt_config">
+	<tbody>
+		{foreach from=$results item=settings}
+			<tr>
+				<td>
+					<b>{$settings.group_name}</b> : {$settings.item}
+				</td>
+				<td>
+					{if ($settings.value != 'default')}
+						{if ($settings.type) == 'boolean'}
+							{if ($settings.value == '1')}
+								<input name="configArray[{$settings.id}]" value="true" size="40">
+							{else}
+								<input name="configArray[{$settings.id}]" value="false" size="40">
+							{/if}
+						{else}
+							<input name="configArray[{$settings.id}]" value="{$settings.value}" size="40">
+						{/if}
+					{else}
+						{if ($settings.type) == 'boolean'}
+							{if ($settings.default_value == '1')}
+								<input name="configArray[{$settings.id}]" value="true" size="40">
+							{else}
+								<input name="configArray[{$settings.id}]" value="false" size="40">
+							{/if}
+						{else}
+							<input name="configArray[{$settings.id}]" value="{$settings.default_value}" size="40">
+						{/if}
+					{/if}
+				</td>
+			</tr>
+			<tr>
+				<td class="descriptiveText" style="font-size:0.85em;">
+					{$settings.helptext}
+				</td>
+			</tr>
+		{/foreach}
+	
+	</tbody>
+	
+</table>
+
+<br>
+<input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+
+</form>

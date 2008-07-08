@@ -20,7 +20,11 @@ class BrowseUtilTestCase extends KTUnitTestCase {
 
     function testFolderOrDocument() {
 	$oFolder =& KTFolderUtil::add($this->oFolder, 'testFolderOrDocument', $this->oUser);
+	$this->assertNotError($oFolder);
+    if(PEAR::isError($oFolder)) return;
 	$oDocument =& KTDocumentUtil::add($oFolder, 'testFolderOrDocument.txt', $this->oUser, array());
+	$this->assertNotError($oDocument);
+    if(PEAR::isError($oDocument)) return;
 	$sPath = "/Root Folder/" . $this->oFolder->getName() . "/testFolderOrDocument/";
 
 
@@ -122,9 +126,5 @@ class BrowseUtilTestCase extends KTUnitTestCase {
     // lots of set up. tbd.
     function testInAdminMode() {
     }
-
-    
-	
-		 
 
 }

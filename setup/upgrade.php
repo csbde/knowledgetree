@@ -2,35 +2,36 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -119,24 +120,37 @@ function performAllUpgrades () {
 			break;
 		}
 	}
-	
+
     return $res;
 }
 
 function performPreUpgradeActions() {
-    
+
     // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
     // It should idealy work the same as the upgrades.
-    
+
+    global $default;
+
+    // Lock the scheduler
+    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+    touch($lockFile);
     return true;
 
 }
 
 function performPostUpgradeActions() {
-    
+
     // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
     // It should idealy work the same as the upgrades.
-    
+
+    global $default;
+
+    // Unlock the scheduler
+    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+    if(file_exists($lockFile)){
+        unlink($lockFile);
+    }
+
     // Clean out the plugin_helper table
     $sql = "DELETE FROM plugin_helper";
     $res = DBUtil::runQuery($sql);
@@ -183,7 +197,7 @@ td { vertical-align: top; }
   </head>
 
   <body>
-  <img src="<?php 
+  <img src="<?php
   	if($oKTConfig->get('ui/mainLogo')){
   		echo $oKTConfig->get('ui/mainLogo');
   	}else{
@@ -218,31 +232,31 @@ switch ($action)
 	case 'Backup':
 		backup();
 		break;
-	case 'BackupDone':		 
+	case 'BackupDone':
 		backupDone();
-		break;		
-	case 'RestoreConfirm':		 
+		break;
+	case 'RestoreConfirm':
 		restoreConfirm();
-		break;		
-	case 'RestoreSelect':		 
+		break;
+	case 'RestoreSelect':
 		restoreSelect();
-		break;		
-	case 'RestoreSelected':		 
+		break;
+	case 'RestoreSelected':
 		restoreSelected();
-		break;		
-	case 'Restore':		 
+		break;
+	case 'Restore':
 		restore();
-		break;		
-	case 'RestoreDone':		 
+		break;
+	case 'RestoreDone':
 		restoreDone();
-		break;		
+		break;
 	case 'Login':
 		login();
 		break;
 	case 'LoginProcess':
 		loginProcess();
 		break;
-	default:		
+	default:
 		if (!isset($_SESSION['setup_user']))
 			login();
 		else
@@ -267,26 +281,26 @@ Only administrator users may access the upgrade wizard.
 <tr><td colspan=2 align=center><input type=submit value="login">
 </table>
 </form>
-<?php	
+<?php
 }
 
 function loginProcess()
 {
 	$username=$_REQUEST['username'];
 	$password=$_REQUEST['password'];
-		
+
 	$authenticated = checkPassword($username, $password);
-	
+
 	if (!$authenticated)
 	{
 		session_unset();
 		loginFailed(_kt('Could not authenticate administrative user'));
 		return;
 	}
-		
+
 	$_SESSION['setup_user'] = $username;
-		
-	welcome();	
+
+	welcome();
 }
 
 function checkPassword($username, $password) {
@@ -316,31 +330,31 @@ function loginFailed($message)
 }
 
 function resolveMysqlDir()
-{	
+{
 	// possibly detect existing installations:
-	
+
 	if (OS_UNIX)
 	{
 		$dirs = array('/opt/mysql/bin','/usr/local/mysql/bin');
 		$mysqlname ='mysql';
 	}
-	else 
+	else
 	{
-		$dirs = explode(';', $_SERVER['PATH']);	
+		$dirs = explode(';', $_SERVER['PATH']);
 		$dirs[] ='c:/Program Files/MySQL/MySQL Server 5.0/bin';
 		$dirs[] = 'c:/program files/ktdms/mysql/bin';
 		$mysqlname ='mysql.exe';
 	}
-	
+
 	$oKTConfig =& KTConfig::getSingleton();
 	$mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
-	$dirs[] = $mysqldir;	
-	
+	$dirs[] = $mysqldir;
+
 	if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false)
 	{
 		$dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
 	}
-	
+
 	foreach($dirs as $dir)
 	{
 		if (is_file($dir . '/' . $mysqlname))
@@ -348,7 +362,7 @@ function resolveMysqlDir()
 			return $dir;
 		}
 	}
-	
+
 	return '';
 }
 
@@ -361,18 +375,18 @@ function create_backup_stmt($targetfile=null)
 	$adminPwd = $oKTConfig->get('db/dbAdminPass');
 	$dbHost = $oKTConfig->get('db/dbHost');
 	$dbName = $oKTConfig->get('db/dbName');
-	
+
 	$dbPort = trim($oKTConfig->get('db/dbPort'));
 	if (empty($dbPort) || $dbPort=='default') $dbPort = get_cfg_var('mysql.default_port');
 	if (empty($dbPort)) $dbPort='3306';
 	$dbSocket = trim($oKTConfig->get('db/dbSocket'));
 	if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
 	if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
-	
+
 	$date=date('Y-m-d-H-i-s');
 
 	$dir=resolveMysqlDir();
-	 
+
 	$info['dir']=$dir;
 
 	$prefix='';
@@ -380,28 +394,28 @@ function create_backup_stmt($targetfile=null)
 	{
 		$prefix .= "./";
 	}
-	
+
 	if (@stat($dbSocket) !== false)
 	{
 		$mechanism="--socket=\"$dbSocket\"";
 	}
-	else 
+	else
 	{
 		$mechanism="--port=\"$dbPort\"";
 	}
-	
+
 	$tmpdir=resolveTempDir();
-	
+
 	if (is_null($targetfile))
 	{
 		$targetfile="$tmpdir/kt-backup-$date.sql";
 	}
-	
+
 	$stmt = $prefix . "mysqldump --user=\"$adminUser\" -p $mechanism \"$dbName\" > \"$targetfile\"";
 	$info['display']=$stmt;
 	$info['target']=$targetfile;
 
-	 
+
 	$stmt  = $prefix. "mysqldump --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" > \"$targetfile\"";
 	$info['cmd']=$stmt;
 	return $info;
@@ -423,7 +437,7 @@ function create_restore_stmt($targetfile)
 	if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
 
 	$dir=resolveMysqlDir();
-	 
+
 	$info['dir']=$dir;
 
 	$prefix='';
@@ -431,29 +445,29 @@ function create_restore_stmt($targetfile)
 	{
 		$prefix .= "./";
 	}
-	  
+
 	if (@stat($dbSocket) !== false)
 	{
 		$mechanism="--socket=\"$dbSocket\"";
 	}
-	else 
+	else
 	{
 		$mechanism="--port=\"$dbPort\"";
 	}
-	
+
 	$tmpdir=resolveTempDir();
-	
+
 	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br>";
 	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br>";
-	
-	
+
+
 	$stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
 	$info['display']=$stmt;
 
-	 
+
 	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
 	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
-	 
+
 	$stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
 	$info['cmd']=$stmt;
 	return $info;
@@ -470,18 +484,18 @@ function title($title)
 
 function resolveTempDir()
 {
- 
+
 	if (OS_UNIX)
 	{
-		$dir='/tmp/kt-db-backup'; 
+		$dir='/tmp/kt-db-backup';
 	}
-	else 
+	else
 	{
-		$dir='c:/kt-db-backup'; 
+		$dir='c:/kt-db-backup';
 	}
 	$oKTConfig =& KTConfig::getSingleton();
 	$dir = $oKTConfig->get('backup/backupDirectory',$dir);
-	
+
 	if (!is_dir($dir))
 	{
 			mkdir($dir);
@@ -504,14 +518,14 @@ function upgradeConfirm()
 	}
 ?>
 <p>
-We are about to start the upgrade process.  
+We are about to start the upgrade process.
 <P>
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradePreview')"> 
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradePreview')">
 
 <?php
-	
+
 }
 
 
@@ -520,14 +534,14 @@ function backupConfirm()
 	title('Confirm Backup');
 	$stmt=create_backup_stmt();
 	$_SESSION['backupFile'] = $stmt['target'];
-	
+
 	$dir=$stmt['dir'];
 	if ($dir != '')
 	{
 ?>
- 
+
 Are you sure you want to perform the backup?
- 
+
 <P>
 Your mysql installation has been resolved. Manually, you would do the following:
 <P>
@@ -536,7 +550,7 @@ Your mysql installation has been resolved. Manually, you would do the following:
 <td>
 <nobr>cd "<?php echo $dir;?>"</nobr>
 <br>
-<?php	
+<?php
 	}
 	else
 	{
@@ -555,15 +569,15 @@ You can continue to do the backup manually using the following process:
 <nobr><?php echo $stmt['display'];?>
 </table>
 <P>
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp; 
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> &nbsp;&nbsp; &nbsp; &nbsp;
 
 <?php
 if ($dir != '')
 {
 ?>
 
-<input type=button value="next" onclick="javascript:do_start('Backup')"> 
+<input type=button value="next" onclick="javascript:do_start('Backup')">
 
 
 <?php
@@ -573,13 +587,13 @@ if ($dir != '')
 function restoreSelect()
 {
 	title('Select Backup to Restore');
-	
+
 	$dir = resolveTempDir();
-	
+
 	$files = array();
-	if ($dh = opendir($dir)) 
+	if ($dh = opendir($dir))
 	{
-        while (($file = readdir($dh)) !== false) 
+        while (($file = readdir($dh)) !== false)
         {
 			if (!preg_match('/kt-backup.+\.sql/',$file))
 			{
@@ -589,14 +603,14 @@ function restoreSelect()
         }
         closedir($dh);
     }
-    
+
     if (count($files) == 0)
     {
  ?>
  	There don't seem to be any backups to restore from the <i>"<?php echo $dir;?>"</i> directory.
  <?php
     }
-    else 
+    else
     {
  ?>
  	<P>
@@ -617,22 +631,22 @@ function restoreSelect()
 	$i=0;
 	foreach($files as $file)
 	{
-		$color=((($i++)%2)==0)?'white':'lightgrey';		
+		$color=((($i++)%2)==0)?'white':'lightgrey';
 ?>
 		<tr bgcolor="<?php echo $color;?>">
 			<td><?php echo $file;?>
 			<td><?php echo filesize($dir . '/'.$file);?>
 			<td><input type=button value="restore" onclick="javascript:selectRestore('<?php echo $file;?>')">
-<?php		
+<?php
 	}
 ?>
  	</table>
- <?php   	
+ <?php
     }
    ?>
 
    <p>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
    <?php
 
 }
@@ -640,7 +654,7 @@ function restoreSelect()
 function restoreSelected()
 {
 	$file=$_REQUEST['file'];
-	
+
 	$dir = resolveTempDir();
 	$_SESSION['backupFile'] = $dir . '/' . $file;
 ?>
@@ -658,10 +672,10 @@ function restoreConfirm()
 		restoreSelect();
 		exit;
 	}
-		
+
 	title('Confirm Restore');
 	$status = $_SESSION['backupStatus'];
-	$filename=$_SESSION['backupFile'];	
+	$filename=$_SESSION['backupFile'];
 	$stmt=create_restore_stmt($filename);
 
 	$dir=$stmt['dir'];
@@ -677,7 +691,7 @@ Manually, you would do the following to restore the backup:
 <td>
 <nobr>cd "<?php echo $dir;?>"</nobr>
 <br>
-<?php	
+<?php
 	}
 	else
 	{
@@ -706,9 +720,9 @@ Press <i>continue to restore</i> to attempt the command(s) above.
 <?php
 }
 ?>
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup" onclick="javascript:do_start('RestoreSelect')"> 
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="select another backup" onclick="javascript:do_start('RestoreSelect')">
 
 <?php
 if ($dir != '')
@@ -723,7 +737,7 @@ function restore()
 	}
 }
 </script>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:restore()"> 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:restore()">
 
 
 <?php
@@ -738,7 +752,7 @@ function backupDone()
 	title('Backup Status');
 	$status = $_SESSION['backupStatus'];
 	$filename=$_SESSION['backupFile'];
-	 
+
 	if ($status)
 	{
 		$stmt=create_restore_stmt($filename);
@@ -757,7 +771,7 @@ function backupDone()
 					<td>
 						<nobr>cd <?php echo $stmt['dir'];?></nobr>
 						<br>
-		<?php	
+		<?php
 			}
 			else
 			{
@@ -774,10 +788,10 @@ function backupDone()
 		?>
 						<nobr><?php echo $stmt['display'];?>
 				</table>
-			
+
 <?php
 	}
-	else 
+	else
 	{
 ?>
 It appears as though <font color=red>the backup process has failed</font>.<P></P> Unfortunately, it is difficult to diagnose these problems automatically
@@ -791,19 +805,19 @@ We appologise for the inconvenience.
 <?php echo $_SESSION['backupOutput'];?>
 </table>
 <?php
-		
+
 	}
 ?>
-<br>				
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
+<br>
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
 <?php
 	if ($status)
 	{
 		?>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm')"> 
-	
-<?php	
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm')">
+
+<?php
 	}
 }
 function restoreDone()
@@ -813,21 +827,21 @@ function restoreDone()
 	title('Restore Status');
 	$status = $_SESSION['restoreStatus'];
 	 $filename=$_SESSION['backupFile'];
-	 
+
 	if ($status)
 	{
-		 
+
 ?>
-		The restore of <nobr><I>"<?php echo $filename;?>"</i></nobr> has been completed. 
+		The restore of <nobr><I>"<?php echo $filename;?>"</i></nobr> has been completed.
 		<P>
 		It appears as though the <font color=green>restore has been successful</font>.
 		<P>
 
 
-				
+
 <?php
 	}
-	else 
+	else
 	{
 ?>
 It appears as though <font color=red>the restore process has failed</font>. <P>
@@ -842,16 +856,16 @@ We appologise for the inconvenience.
 <?php echo $_SESSION['restoreOutput'];?>
 </table>
 <?php
-		
+
 	}
 ?>
 
-<br>				
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
+<br>
 
-<?php	
-	
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
+
+<?php
+
 }
 
 function set_state($value)
@@ -881,8 +895,8 @@ function backup()
 	$dir=$stmt['dir'];
 
 
-	 
-	
+
+
 	if (is_file($dir . '/mysqladmin') || is_file($dir . '/mysqladmin.exe'))
 	{
 		ob_flush();
@@ -904,18 +918,18 @@ function backup()
 		$_SESSION['backupOutput']=$read;
 		$dir=resolveTempDir();
 		$_SESSION['backupFile'] =   $stmt['target'];
-		
+
 			if (OS_UNIX)
 			{
 				chmod($stmt['target'],0600);
 			}
-		
+
 		if (is_file($stmt['target']) && filesize($stmt['target']) > 0)
 		{
 			$_SESSION['backupStatus'] = true;
-	
+
 		}
-		else 
+		else
 		{
 			$_SESSION['backupStatus'] = false;
 		}
@@ -923,18 +937,18 @@ function backup()
 			<script>
 			document.location="?go=BackupDone";
 			</script>
-<?php	
-		
-		 
+<?php
+
+
 	}
-	else 
+	else
 	{
 ?>
 <P>
 	The <i>mysqldump</i> utility was not found in the <?php echo $dir;?> subdirectory.
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-<?php		
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
+<?php
 	}
 
 
@@ -948,31 +962,31 @@ function restore()
 	set_state(5);
 	title('Restore In Progress');
 	$status = $_SESSION['backupStatus'];
-	$filename=$_SESSION['backupFile'];	
+	$filename=$_SESSION['backupFile'];
 	$stmt=create_restore_stmt($filename);
 	$dir=$stmt['dir'];
 
-	
-	
-	
+
+
+
 	if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
 	{
-		 
+
 ?>
 		The restore is now underway. Please wait till it completes.
 <?php
 		print "\n";
 
-		 
+
 		$curdir=getcwd();
 		chdir($dir);
-		 
+
 
 		$ok=true;
 		$stmts=explode("\n",$stmt['cmd']);
 		foreach($stmts as $stmt)
 		{
-			 
+
 			$handle = popen($stmt, 'r');
 			if ($handle=='false')
 			{
@@ -983,30 +997,30 @@ function restore()
 			pclose($handle);
 			$_SESSION['restoreOutput']=$read;
 		}
-		 
-		
-		 
-		
-		 
+
+
+
+
+
 			$_SESSION['restoreStatus'] = $ok;
-	
-		 
+
+
 ?>
 			<script>
 			document.location="?go=RestoreDone";
 			</script>
-<?php	
-		
-		 
+<?php
+
+
 	}
-	else 
+	else
 	{
 ?>
 <P>
 	The <i>mysql</i> utility was not found in the <?php echo $dir;?> subdirectory.
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')"> 
-<?php		
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
+<?php
 	}
 
 
@@ -1028,12 +1042,12 @@ You will not be able to log into <?php echo APP_NAME;?> until your the database 
 <P>
 If you have already done this, you may skip this step can continue directly to the upgrade.
 <P>
- 
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="cancel" onclick="document.location='..';"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup now" onclick="javascript:do_start('BackupConfirm');"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm');"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');"> 
+
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="cancel" onclick="document.location='..';">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup now" onclick="javascript:do_start('BackupConfirm');">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm');">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');">
 
 
 <?php
@@ -1054,10 +1068,10 @@ function UpgradePreview()
         $upgradeTable = generateUpgradeTable();
 	print $upgradeTable;
 	?>
-	<br> 
- 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('Upgrade')"> 
+	<br>
+
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('Upgrade')">
 	<?php
 
 }
@@ -1065,21 +1079,21 @@ function UpgradePreview()
 
 function Upgrade()
 {
-	title('Upgrade In Progress');	
+	title('Upgrade In Progress');
 	global $default;
 ?>
         <p>The table below describes the upgrades that have occurred to
         upgrade your <?php echo APP_NAME;?> installation to <strong><?php echo $default->systemVersion;?></strong>.
- 
+
   <?php
     $pre_res = performPreUpgradeActions();
-	if (PEAR::isError($pre_res)) 
+	if (PEAR::isError($pre_res))
 	{
 ?>
 <font color="red">Pre-Upgrade actions failed.</font><br>
 <?php
-	} 
-	else 
+	}
+	else
 	{
 ?>
 <p>
@@ -1090,13 +1104,13 @@ function Upgrade()
 <p>
   <?php
 	$res = performAllUpgrades();
-	if (PEAR::isError($res) || PEAR::isError($pres)) 
+	if (PEAR::isError($res) || PEAR::isError($pres))
 	{
 ?>
 <font color="red">Upgrade failed.</font>
 <?php
-	} 
-	else 
+	}
+	else
 	{
 ?>
 <p>
@@ -1107,13 +1121,13 @@ function Upgrade()
 <p>
   <?php
     $post_pres = performPostUpgradeActions();
-	if (PEAR::isError($post_res)) 
+	if (PEAR::isError($post_res))
 	{
 ?>
 <font color="red">Post-Upgrade actions failed.</font><br><br>
 <?php
-	} 
-	else 
+	}
+	else
 	{
 ?>
 <p>
@@ -1125,14 +1139,14 @@ function Upgrade()
 	}
 ?>
 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')"> 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';"> 
-<?php	 
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';">
+<?php
 }
 
 ?>
 <tr>
-<td height=80 <?php 
+<td height=80 <?php
   	if($oKTConfig->get('ui/poweredByDisabled') == '0'){
   		?> align="right"><img src="<?php echo $oKTConfig->get('ui/powerLogo');?>"></td>
   	<?php }else{ ?>

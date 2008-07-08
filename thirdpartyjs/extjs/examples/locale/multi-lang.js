@@ -1,17 +1,17 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
-/* multi-lang.js extscript */
+
 Ext.onReady(function(){
-	Ext.QuickTips.init();
-	Ext.form.Field.prototype.msgTarget = 'side';
-	
-	/* Language chooser combobox  */
+    Ext.QuickTips.init();
+    Ext.form.Field.prototype.msgTarget = 'side';
+    
+    /* Language chooser combobox  */
     var store = new Ext.data.SimpleStore({
         fields: ['code', 'language', 'charset'],
         data : Ext.exampledata.languages // from languages.js
@@ -28,7 +28,7 @@ Ext.onReady(function(){
 	    window.location.search = Ext.urlEncode({"lang":record.get("code"),"charset":record.get("charset")});
 	}
     });
-    combo.applyTo('languages');
+    combo.render('languages');
 
     // get the selected language code parameter from url (if exists)
     var params = Ext.urlDecode(window.location.search.substring(1));
@@ -38,6 +38,7 @@ Ext.onReady(function(){
 	    if (item.data.code==params.lang){
 		return true;
 	    }
+	    return false;
 	});
 	// if language was found in store assign it as current value in combobox
 	if (record) {
@@ -45,32 +46,52 @@ Ext.onReady(function(){
 	}
     }
 
-	/* Email field */
-	var efield = new Ext.form.Form({ labelWidth: 75 });
-	efield.add(new Ext.form.TextField({
-		fieldLabel: 'Email',
-		name: 'email',
-		vtype: 'email',
-		width: 175
-	}));
-	efield.render('form-ct');
+    /* Email field */
+    var emailfield = new Ext.FormPanel({
+        labelWidth: 100, // label settings here cascade unless overridden
+        frame:true,
+        title: 'Email Field',
+        bodyStyle:'padding:5px 5px 0',
+        width: 360,
+        defaults: {width: 220},
+        defaultType: 'textfield',
 
-	/* Datepicker */
-	var efield = new Ext.form.Form({ labelWidth: 75 });
-	efield.add(new Ext.form.DateField({
-		fieldLabel: 'Date',
-		name: 'date',
-		width: 175
-	}));
-	efield.render('form-ct2');
-});
+        items: [{
+                fieldLabel: 'Email',
+                name: 'email',
+                vtype:'email'
+            }
+        ]
+    });
+    emailfield.render('emailfield');
 
-Ext.onReady(function(){
+    /* Datepicker */
+    var datefield = new Ext.FormPanel({
+        labelWidth: 100, // label settings here cascade unless overridden
+        frame:true,
+        title: 'Datepicker',
+        bodyStyle:'padding:5px 5px 0',
+        width: 360,
+        defaults: {width: 220},
+        defaultType: 'datefield',
+
+        items: [{
+                fieldLabel: 'Date',
+                name: 'date'
+            }
+        ]
+    });
+    datefield.render('datefield');
+    
     // shorthand alias
     var fm = Ext.form, Ed = Ext.grid.GridEditor;
-    // the column model has information about grid columns
-    // dataIndex maps the column to the specific data field in
-    // the data store (created below)
+    var monthArray = Date.monthNames.map(function (e) { return [e]; });    
+    var ds = new Ext.data.Store({
+		proxy: new Ext.data.PagingMemoryProxy(monthArray),
+		reader: new Ext.data.ArrayReader({}, [
+			{name: 'month'}
+		])
+    });
     var cm = new Ext.grid.ColumnModel([{
            header: "Months of the year",
            dataIndex: 'month',
@@ -79,46 +100,24 @@ Ext.onReady(function(){
            })),
            width: 240
         }]);
-
-    // by default columns are sortable
     cm.defaultSortable = true;
+    var grid = new Ext.grid.GridPanel({
+	el:'grid',
+	width: 360,
+	height: 203,
+	title:'Month Browser',
+	store: ds,
+	cm: cm,
+	sm: new Ext.grid.RowSelectionModel({selectRow:Ext.emptyFn}),
 
-	var monthArray = Date.monthNames.map(function (e) { return [e]; });
-
-    // create the Data Store
-    var ds = new Ext.data.Store({
-		proxy: new Ext.data.PagingMemoryProxy(monthArray),
-		reader: new Ext.data.ArrayReader({}, [
-			{name: 'month'}
-		])
-    });
-
-    // create the editor grid
-    var grid = new Ext.grid.EditorGrid('editor-grid', {
-        ds: ds,
-        cm: cm,
-        selModel: new Ext.grid.RowSelectionModel(),
-        enableColLock:false
-    });
-
-    var layout = Ext.BorderLayout.create({
-        center: {
-            margins:{left:3,top:3,right:3,bottom:3},
-            panels: [new Ext.GridPanel(grid)]
-        }
-    }, 'grid-panel');
-
-    // render it
+	bbar: new Ext.PagingToolbar({
+            pageSize: 6,
+            store: ds,
+            displayInfo: true
+        })
+    })
     grid.render();
 
-    var gridFoot = grid.getView().getFooterPanel(true);
-
-    // add a paging toolbar to the grid's footer
-    var paging = new Ext.PagingToolbar(gridFoot, ds, {
-        pageSize: 6,
-        displayInfo: false
-    });
-
     // trigger the data store load
-    ds.load({params:{start:0, limit:6}});
+    ds.load({params:{start:0, limit:6}});    
 });

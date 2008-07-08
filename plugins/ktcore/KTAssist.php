@@ -3,35 +3,36 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -186,7 +187,7 @@ class KTAssistNotification extends KTNotificationHandler {
         $oTemplate =& $oTemplating->loadTemplate('ktcore/assist/assist_notification');
 
         $oDoc = Document::get($oKTNotification->getIntData1());
-        $isBroken = (PEAR::isError($oDoc) || ($oDoc->getStatusID() != LIVE));
+        $isBroken = (PEAR::isError($oDoc) || ($oDoc->getStatusID() != LIVE && $oDoc->getStatusID() != ARCHIVED));
 
         $oTemplate->setData(array(
             'context' => $this,
@@ -210,10 +211,14 @@ class KTAssistNotification extends KTNotificationHandler {
     }
 
     function notify_main() {
+        $this->aBreadcrumbs = array(array('action' => 'dashboard', 'name' => _kt('Dashboard')));
+        $this->oPage->setBreadcrumbDetails(_kt('Help request'));
+
         $oTemplating =& KTTemplating::getSingleton();
         $oKTNotification =& $this->oNotification;
         $oDoc = Document::get($oKTNotification->getIntData1());
         $isBroken = (PEAR::isError($oDoc) || ($oDoc->getStatusID() != LIVE));
+        $isArchived = ($oDoc->getStatusID() == ARCHIVED)? true : false;
 
         $oTemplate =& $oTemplating->loadTemplate('ktcore/assist/assist_notification_details');
         $oTemplate->setData(array(
@@ -226,7 +231,8 @@ class KTAssistNotification extends KTNotificationHandler {
             'details' => $oKTNotification->getTextData1(),
             'document' => $oDoc,
             'is_broken' => $isBroken,
-            
+            'is_archived' => $isArchived,
+
         ));
         return $oTemplate->render();
     }
@@ -242,6 +248,70 @@ class KTAssistNotification extends KTNotificationHandler {
         $url = generateControllerLink('viewDocument', $params);
         // $this->oNotification->delete(); // clear the alert.
         exit(redirect($url));
+    }
+
+    function notify_restore() {
+        $iDocId = $this->oNotification->getIntData1();
+        $res = $this->restore($iDocId);
+        if(PEAR::isError($res) || !$res){
+            $msg = _kt('Document could not be restored');
+            if($res){
+                $msg .= ': '.$res->getMessage();
+            }
+            $this->addErrorMessage($msg);
+        }else{
+            $this->addInfoMessage(_kt('The document has been successfully restored.'));
+        }
+
+        $notify_id = $_REQUEST['id'];
+        $url = KTUtil::ktLink("notify.php", '', "id=$notify_id");
+        exit(redirect($url));
+    }
+
+    function restore($iDocId) {
+        // Get the document object
+        $oDoc = Document::get($iDocId);
+
+        if (PEAR::isError($oDoc) || ($oDoc === false)) {
+            return $oDoc;
+        }
+
+        $this->startTransaction();
+        $iRestoreFolder = $oDoc->getRestoreFolderId();
+        $oFolder = Folder::get($iRestoreFolder);
+
+        // move to root if parent no longer exists.
+        if (PEAR::isError($oFolder)) {
+            $oDoc->setFolderId(1);
+            $oFolder = Folder::get(1);
+        } else {
+            $oDoc->setFolderId($iRestoreFolder);
+        }
+
+        $oStorage = KTStorageManagerUtil::getSingleton();
+
+        if ($oStorage->restore($oDoc)) {
+            $oDoc = Document::get($iDocId); // storage path has changed for most recent object...
+            $oDoc->setStatusId(LIVE);
+            $oDoc->setPermissionObjectId($oFolder->getPermissionObjectId());
+            $res = $oDoc->update();
+
+            if (PEAR::isError($res) || ($res == false)) {
+                return $res;
+            }
+
+            $res = KTPermissionUtil::updatePermissionLookup($oDoc);
+
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
+            // create a doc-transaction.
+            $oTransaction = new DocumentTransaction($oDoc, sprintf(_kt("Restored from deleted state by %s"), $this->oUser->getName()), 'ktcore.transactions.update');
+            $oTransaction->create();
+        }
+        $this->commitTransaction();
+        return true;
     }
 }
 

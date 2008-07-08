@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 var TreeTest = function(){
@@ -13,8 +13,10 @@ var TreeTest = function(){
     return {
         init : function(){
             // yui-ext tree
-            var tree = new Tree.TreePanel('tree', {
+            var tree = new Tree.TreePanel({
+                el:'tree',
                 animate:true, 
+                autoScroll:true,
                 loader: new Tree.TreeLoader({dataUrl:'get-nodes.php'}),
                 enableDD:true,
                 containerScroll: true,
@@ -40,8 +42,10 @@ var TreeTest = function(){
             //-------------------------------------------------------------
             
             // YUI tree            
-            var tree2 = new Tree.TreePanel('tree2', {
-                animate:true, 
+            var tree2 = new Tree.TreePanel({
+                el:'tree2',
+                animate:true,
+                autoScroll:true,
                 //rootVisible: false,
                 loader: new Ext.tree.TreeLoader({
                     dataUrl:'get-nodes.php',
@@ -57,7 +61,7 @@ var TreeTest = function(){
             
             // add the root node
             var root2 = new Tree.AsyncTreeNode({
-                text: 'Yahoo! UI Source', 
+                text: 'My Files', 
                 draggable:false, 
                 id:'yui'
             });

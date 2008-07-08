@@ -21,11 +21,17 @@ Ext.exampledata.languages = [
 ];
 """
 
+
+lang_dubs = {}
 def lang_name(file):
     language = os.path.basename(file)
     m = regexp_language.search(open(file).read(512))
     if m:
 	language = m.groups()[0]
+	if not lang_dubs.has_key(language):
+	    lang_dubs[language] = file
+	else:
+	    raise Exception('Duplicate language '+language+' for file '+file)
     return language
 
 def print_locale(lang_code):

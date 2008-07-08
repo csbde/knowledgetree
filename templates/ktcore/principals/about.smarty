@@ -1,26 +1,27 @@
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
 <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
-<p>{i18n}&copy; 2004-2008 <a href=" http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Limited</a> <a href="http://www.knowledgetree.com/About/legal/license">View License Agreement</a>{/i18n}<br />
-{if ($smallVersion == 'OSS')}
-	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
-{else}
+<p>{i18n}&copy; 2008 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
+{if ($smallVersion !== 'Community Edition')}
 	{i18n}All rights reserved.{/i18n}<br>
 {/if}
-KnowledgeTree&trade; is a <a href="http://www.knowledgetree.com/About/legal/trademark_usage_grant">trademark</a> of The Jam Warehouse Software (Pty) Ltd.
+
+{i18n}Portions copyright The Jam Warehouse Software (Pty) Limited.{/i18n}
+<br>
+{if ($smallVersion == 'Community Edition')}
+	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>
+	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>, 
+	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>, 
+	and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.{/i18n}<br>
+	{i18n}Please contact the <a href="mailto:sales@knowledgetree.com">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.{/i18n}<br>
+{else}
+	<br>
+	{i18n}This is a professionally supported edition of KnowledgeTree.{/i18n} <br>
+	{i18n}Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.{/i18n}<br>
+	
+{/if}
 </p>
-<p>
-<strong>KnowledgeTree is a business unit of The Jam Warehouse Software (Pty) Ltd.</strong><br />
-<a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
-</p>
-<p>
-<strong>KnowledgeTree Sales</strong><br />
-To purchase support and extended features for KnowledgeTree or to license KnowledgeTree for use in your own application, please contact our sales team:
-</p>
-<p>
-Email Sales: <a href="mailto:sales@knowledgetree.com">sales@knowledgetree.com</a><br />
-Call Sales: +1 415 670-9759
-</p>
+<br>
 <p><strong>Join the KnowledgeTree Community</strong>
 <ul>
 	<li><a href="http://forge.knowledgetree.com/">KTForge</a>: Collaborate and develop KnowledgeTree extensions</li>
@@ -70,7 +71,13 @@ Call Sales: +1 415 670-9759
 	    Michael Knight	
 	</li>
 	<li>
+		Jeongkyu Kim
+	</li>
+	<li>
 		Rogerio Kohler
+	</li>
+	<li>
+        Piotr Krawiecki 	
 	</li>
 	<li>
 		Ola Larsson
@@ -103,6 +110,9 @@ Call Sales: +1 415 670-9759
 		David Nalley
 	</li>
 	<li>
+		Marco Napetti
+	</li>
+	<li>
 		Manuela Patrono
 	</li>
 	<li>
@@ -118,10 +128,16 @@ Call Sales: +1 415 670-9759
 		Antonio Rizzelli
 	</li>
 	<li>
+		Greg Rundlett
+	</li>
+	<li>
 		Leonardo Russo
 	</li>
 	<li>
 		Ricardo Silva
+	</li>
+	<li>
+		Mario Steinhoff
 	</li>
 	<li>
 		Phillip Steinbachs
@@ -152,21 +168,6 @@ Call Sales: +1 415 670-9759
 
 <p><small>[If you feel you should be here too, please let us know at <a href="mailto:contributions@knowledgetree.com">contributions@knowledgetree.com</a>]</small></p>
 
-<p><strong>Third Party Software</strong></p>
-<table border="0" cellpadding="10">
-	<tr align="center">
-		<td><a href="http://pear.php.net/"><div style="background-color:#339900; width:104px;"><img src="{$rootUrl}/resources/graphics/thirdparty/pear.gif" border="0"/></div></a></td>
-		<td><a href="http://phpmailer.sourceforge.net/"><img src="{$rootUrl}/resources/graphics/thirdparty/phpmailer.gif" border="0"/></a></td>
-		<td><a href="http://smarty.php.net/"><img src="{$rootUrl}/resources/graphics/thirdparty/smarty.gif" border="0"/></a></td>
-	</tr>
-	<tr align="center">
-		<td><a href="http://sourceforge.net/projects/jscalendar">JSCalendar</a></td>
-		<td><a href="http://mochikit.com/"><img src="{$rootUrl}/resources/graphics/thirdparty/mochikit.gif" border="0"/></a></td>
-		<td><a href="http://tinymce.moxiecode.com/"><img src="{$rootUrl}/resources/graphics/thirdparty/tinymce.gif" border="0"/></a></td>
-	</tr>
-	<tr align="center">
-		<td><a href="http://developer.yahoo.com/yui/"><img src="{$rootUrl}/resources/graphics/thirdparty/yui.gif" border="0"/></a></td>
-		<td></td>
-		<td></td>
-	</tr>
-</table>
+
+<p>This software utilizes third-party software from <a set="yes" linkindex="11" href="http://pear.php.net/">Pear</a>, <a set="yes" linkindex="12" href="http://phpmailer.sourceforge.net/">PHPMailer</a>, <a set="yes" linkindex="13" href="http://smarty.php.net/">Smarty Template Engine</a>, <a set="yes" linkindex="14" href="http://sourceforge.net/projects/jscalendar">JSCalendar</a>, <a set="yes" linkindex="15" href="http://mochikit.com/">Mochikit</a>, <a set="yes" linkindex="16" href="http://tinymce.moxiecode.com/">Moxiecode Systems</a>, <a set="yes" linkindex="17" href="http://developer.yahoo.com/yui/">Yahoo Developer Network</a>.</p>
+	

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: customerrorpage.php 8391 2008-04-23 10:12:34Z jonathan_byrne $
+ * $Id$
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple

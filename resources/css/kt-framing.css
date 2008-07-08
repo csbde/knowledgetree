@@ -54,6 +54,7 @@ body
     height: auto;
     background-image: url(../../resources/graphics/page_bg.png);
     background-repeat: repeat-x;
+    z-index: 1;
 }
 
 #bodyPad {
@@ -2118,6 +2119,7 @@ body #content #add_dashlet
     top: 400px;
     left: 500px;
     display: block;
+    z-index: 2;
 }
 
 /*contenttype_href class style is used to stop underline error on a hyperlink in IE*/
@@ -2134,6 +2136,81 @@ body #content #add_dashlet
 
 .role_allocation
 {
-	overflow:auto; 
-	
+	overflow:auto;
+
+}
+
+.kt_config
+{
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+.kt_config td {
+    padding: 0.25em 0.5em;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.kt_config th{
+
+	border-bottom:1px solid #888888;
+	padding: 0.5em 0.5em;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+/* Search widget - override ExtJS CSS */
+
+.x-toolbar{
+    border: none;
+    display: block;
+	padding: 2px;
+    background: transparent;
+    position: relative;
+    zoom: 1;
+}
+
+.x-btn {
+	padding: 2px;
+}
+
+.x-toolbar .x-btn-left{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 0;
+}
+
+.x-toolbar .x-btn-right{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -21px;
+}
+.x-toolbar .x-btn-center{
+	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -42px;
+}
+
+.x-toolbar .x-btn-over .x-btn-left{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 0;
+}
+.x-toolbar .x-btn-over .x-btn-right{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -21px;
+}
+.x-toolbar .x-btn-over .x-btn-center{
+	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -42px;
+}
+
+.x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -63px;
+}
+.x-toolbar .x-btn-click .x-btn-right, .x-toolbar .x-btn-pressed .x-btn-right, .x-toolbar .x-btn-menu-active .x-btn-right{
+	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -84px;
+}
+
+.x-toolbar .x-btn-click .x-btn-center, .x-toolbar .x-btn-pressed .x-btn-center, .x-toolbar .x-btn-menu-active .x-btn-center{
+	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -105px;
+}
+
+.x-menu {
+	border: 1px solid #718bb7;
+	z-index: 15000;
+	zoom: 1;
+	background: #FDFDFD;
+	padding: 2px;
 }

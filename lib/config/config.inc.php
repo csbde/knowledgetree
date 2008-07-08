@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -38,35 +39,58 @@
 require_once("Config.php");
 
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once (KT_LIB_DIR. '/database/dbutil.inc');
 
 class KTConfig {
     var $conf = array();
     var $aSectionFile;
-    var $aFileRoot;
     var $flat = array();
     var $flatns = array();
+    var $expanded = array();
+    var $expanding = array();
+
+    /**
+     * Get the path to the cache file for the config settings
+     *
+     * @return string
+     */
+    static function getCacheFilename()
+    {
+        $pathFile = KT_DIR .  '/config/cache-path';
+
+        if(!file_exists($pathFile)){
+            return false;
+        }
+
+        // Get the directory containing the file, append the file name
+        $cacheFile = trim(file_get_contents($pathFile));
+        $cacheFile .= '/configcache';
+
+        // Ensure path is absolute
+        $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;
+
+        return $cacheFile;
+    }
 
     // FIXME nbm:  how do we cache errors here?
-    function loadCache($filename) {
+    function loadCache() {
+        $filename = $this->getCacheFilename();
+        if($filename === false){
+            return false;
+        }
+
         $config_str = file_get_contents($filename);
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
         $this->flatns = $config_cache['flatns'];
         $this->expanded = $config_cache['expanded'];
         $this->expanding = $config_cache['expanding'];
-        /*
-        print "----- Me\n";
-        unset($this->aFileRoot);
-        unset($this->aSectionFile);
-        var_dump($this);
-        print "----- Cache\n";
-        var_dump($config_cache);
-        */
-
         return true;
     }
 
-    function createCache($filename) {
+    function createCache() {
+        $filename = $this->getCacheFilename();
+
         $config_cache = array();
         $config_cache['flat'] = $this->flat;
         $config_cache['flatns'] = $this->flatns;
@@ -74,37 +98,137 @@ class KTConfig {
         $config_cache['expanding'] = $this->expanding;
 
         file_put_contents($filename, serialize($config_cache));
-
-
     }
 
-    function loadFile($filename, $bDefault = false) {
-        $c = new Config;
+    /**
+     * Delete the cache so it can be refreshed on the next page load
+     *
+     * @param string $filename
+     */
+    function clearCache()
+    {
+        $filename = $this->getCacheFilename();
+        if($filename !== false && file_exists($filename)){
+            @unlink($filename);
+        }
+    }
+
+	// {{{ readConfig
+    function readConfig () {
+        global $default;
+
+        //Load config data from the database
+        $sQuery = 'select group_name, item, value, default_value from config_settings';
+        $confResult = DBUtil::getResultArray($sQuery);
+
+        foreach ($confResult as $confItem)
+        {
+            if(!isset($this->flatns[$confItem['group_name'].'/'.$confItem['item']])){
+                $this->setns($confItem['group_name'], $confItem['item'], $confItem['value'], $confItem['default_value']);
+            }
+        }
+
+        // Populate the global $default array
+        foreach($this->flatns as $sGroupItem => $sValue)
+        {
+        	$aGroupItemArray = explode('/', $sGroupItem);
+        	$default->$aGroupItemArray[1] = $this->expand($this->flatns[$sGroupItem]);
+        }
+
+    }
+    // }}}
+
+	// {{{ readDBConfig()
+	function readDBConfig()
+	{
+		$sConfigFile = trim(file_get_contents(KT_DIR .  '/config/config-path'));
+        if (KTUtil::isAbsolutePath($sConfigFile)) {
+            $res = $this->loadDBFile($sConfigFile);
+        } else {
+            $res = $this->loadDBFile(sprintf('%s/%s', KT_DIR, $sConfigFile));
+        }
+	}
+	// }}}
+
+	// {{{ loadDBFile()
+	function loadDBFile($filename, $bDefault = false)
+	{
+		$c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
 
         if (PEAR::isError($root)) {
             return $root;
         }
 
-        $this->aFileRoot[$filename] =& $root;
+        $conf = $root->toArray();
 
-        $conf =& $root->toArray();
-        foreach ($conf["root"] as $seck => $secv) {
-            $aSectionFile[$seck] = $filename;
-            if (is_array($secv)) {
-                foreach ($secv as $k => $v) {
-                    $this->setns($seck, $k, $v);
+        // Populate the flat and flatns array with the settings from the config file
+        // These setting will be overwritten with the settings from the database.
+        if(isset($conf['root']) && !empty($conf['root'])){
+            foreach($conf['root'] as $group => $item){
+                foreach ($item as $key => $value){
+                    $this->setns($group, $key, $value, false);
                 }
-            } else {
-                $this->setns(null, $seck, $secv);
             }
         }
-        $this->conf = kt_array_merge($this->conf, $conf["root"]);
+	}
+	// }}}
+
+	function setupDB () {
+
+        global $default;
+
+        require_once('DB.php');
+
+        // DBCompat allows phplib API compatibility
+        require_once(KT_LIB_DIR . '/database/dbcompat.inc');
+        $default->db = new DBCompat;
+
+        // DBUtil is the preferred database abstraction
+        require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
+        // KTEntity is the database-backed base class
+        require_once(KT_LIB_DIR . '/ktentity.inc');
+
+        $prefix = defined('USE_DB_ADMIN_USER')?'Admin':'';
+
+		$sUser = 'db/dbUser';
+		$sPass = 'db/dbPass';
+
+		if ($prefix == 'Admin')
+		{
+			$sUser = 'db/dbAdminUser';
+			$sPass = 'db/dbAdminPass';
+		}
+		$dsn = array(
+            'phptype'  => $this->flatns['db/dbType'],
+            'username' => $this->flatns[$sUser],
+            'password' => $this->flatns[$sPass],
+            'hostspec' => $this->flatns['db/dbHost'],
+            'database' => $this->flatns['db/dbName'],
+            'port' => $this->flatns['db/dbPort']
+        );
+
+        $options = array(
+            'debug'       => 2,
+            'portability' => DB_PORTABILITY_ERRORS,
+            'seqname_format' => 'zseq_%s',
+        );
+
+        $default->_db = &DB::connect($dsn, $options);
+        if (PEAR::isError($default->_db)) {
+            // return PEAR error
+            return $default->_db;
+        }
+        $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
     }
 
     function setns($seck, $k, $v, $bDefault = false) {
         if ($v === "default") {
-            return;
+            if($bDefault === false){
+                return;
+            }
+            $v = $bDefault;
         } elseif ($v === "true") {
             $v = true;
         } elseif ($v === "false") {
@@ -121,8 +245,6 @@ class KTConfig {
         return $this->setns($seck, $k, $v, true);
     }
 
-    var $expanded = array();
-    var $expanding = array();
     function expand($val) {
         if (strpos($val, '$') === false) {
             return $val;
@@ -141,7 +263,7 @@ class KTConfig {
     }
 
     function get($var, $oDefault = null) {
-        if (array_key_exists($var, $this->flatns)) {
+	    if (array_key_exists($var, $this->flatns)) {
             return $this->expand($this->flatns[$var]);
         }
         if (array_key_exists($var, $this->flat)) {
@@ -157,15 +279,22 @@ class KTConfig {
      */
     static function getConfigFilename()
     {
-    	$configPath = file_get_contents(KT_DIR . '/config/config-path');
+        $pathFile = KT_DIR . '/config/config-path';
+        $configFile = trim(file_get_contents($pathFile));
 
-    	if (is_file($configPath))
+        $configFile = (!KTUtil::isAbsolutePath($configFile)) ? sprintf('%s/%s', KT_DIR, $configFile) : $configFile;
+
+        // Remove any double slashes
+        $configFile = str_replace('//', '/', $configFile);
+        $configFile = str_replace('\\\\', '\\', $configFile);
+
+    	if (file_exists($configFile))
     	{
-    		return $configPath;
+    		return $configFile;
     	}
     	else
     	{
-    		return KT_DIR . '/' . $configPath;
+    		return KT_DIR . DIRECTORY_SEPARATOR . $configFile;
     	}
     }
 

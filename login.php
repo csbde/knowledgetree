@@ -5,9 +5,10 @@
  * This page handles logging a user into the dms.
  * This page displays the login form, and performs the business logic login processing.
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -21,8 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -200,7 +201,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
 	      	  'disclaimer' => $sDisclaimer,
-			  'smallVersion' => substr($default->versionName, 0, 3),
+			  'smallVersion' => substr($default->versionName,-17),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -341,9 +342,24 @@ class LoginPageDispatcher extends KTDispatcher {
             $url = $redirect;
         // else redirect to the dashboard if there is none
         } else {
-            $url = KTUtil::kt_url().'/dashboard.php';
-        }
+            $url = KTUtil::kt_url();
 
+            $config = KTConfig::getSingleton();
+            $redirectToBrowse = $config->get('KnowledgeTree/redirectToBrowse', false);
+            $redirectToDashboardList = $config->get('KnowledgeTree/redirectToBrowseExceptions', '');
+
+            if ($redirectToBrowse)
+            {
+                $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
+                $user = User::get($_SESSION['userID']);
+                $username = $user->getUserName();
+                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':'/browse.php';
+            }
+            else
+            {
+                $url .=  '/dashboard.php';
+            }
+        }
         exit(redirect($url));
     }
 }

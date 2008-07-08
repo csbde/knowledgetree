@@ -1,25 +1,27 @@
-<p class="descriptiveText">
+<h2>Request Assistance</h2>
+<p class="descriptiveText" style="padding-top: 5px;">
     {i18n arg_name=$document_name|sanitize arg_state=$state_name arg_user=$actor->getName()}A
     user, <b>#user#</b>, has requested help on the document <b>#name#</b>, and you are
     the owner or an admin of this document.{/i18n}
 </p>
 
-<dl>
-<dt>{i18n}Subject{/i18n}</dt>
-<dd>{$subject|sanitize}</dd>
-<dt>{i18n}Details{/i18n}</dt>
-<dd>{$details|sanitize} </dd>
-</dl>
+<p style="padding-top: 5px;"><b>{i18n}Subject{/i18n}</b><br /> {$subject|sanitize}</p>
+<p style="padding-top: 5px;"><b>{i18n}Details{/i18n}</b><br />
+{$details|sanitize} </p>
 
-    <div class="actionoptions">
+    <div class="actionoptions" style="padding-top: 10px;">
         <div style="float:left; position: relative;">
+        {if $is_archived}
+            <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=restore"}'>{i18n}Restore Document{/i18n}</a>
+        {else}
             <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=view"}'>{i18n}View Document{/i18n}</a>
+        {/if}
             &nbsp;|&nbsp;
         </div>
 
         <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}'
                  kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}"
-                 class="ktAction ktInline ktDelete" style="position: relative;" >{i18n}Clear Alert{/i18n}</a>
+                 class="ktAction ktInline ktDelete" style="position: relative;" ></a>
 
         <a href='{ktLink base="notify.php" query="id=`$notify_id`&notify_action=clear"}'
             kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}"">{i18n}Clear Alert{/i18n}</a>

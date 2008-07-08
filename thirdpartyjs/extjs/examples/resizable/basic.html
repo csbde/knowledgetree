@@ -4,12 +4,16 @@
 <title>Resizable Examples</title>
 <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
 
-   <!-- GC --> <!-- LIBS -->     <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>     <!-- ENDLIBS -->
+   <!-- GC -->
+ 	<!-- LIBS -->
+ 	<script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+ 	<!-- ENDLIBS -->
+
     <script type="text/javascript" src="../../ext-all.js"></script>
 <script language="javascript" src="basic.js"></script>
 
 <!-- Common Styles for the examples -->
-<link rel="stylesheet" type="text/css" href="../examples.css" />
+<link rel="stylesheet" type="text/css" href="../shared/examples.css" />
 <style type="text/css">
 #basic, #animated {
     border:1px solid #c3daf9;
@@ -44,7 +48,7 @@
 </head>
 
 <body>
-<script type="text/javascript" src="../examples.js"></script><!-- EXAMPLES -->
+<script type="text/javascript" src="../shared/examples.js"></script><!-- EXAMPLES -->
 <h1>Resizable Examples</h1>
 <p>These examples show how to apply a floating (default) and pinned Resizable component to a standard element.</p>
 <p>Note that the js is not minified so it is readable. See <a href="basic.js">basic.js</a> for the full source code.</p>
@@ -65,7 +69,7 @@
 <p>
     <b>Wrapped Elements</b><br />
     Some elements such as images and textareas don't allow child elements. In the past, you had
-    to wrap these elements and set up a Resizable with resize child. As of yui-ext .33 RC2, Resizable will
+    to wrap these elements and set up a Resizable with resize child. Resizable will
     wrap the element, calculate adjustments for borders/padding and offset the handles for you. All you have to
     do is set "wrap:true". The manual way of specifying a "resizeChild" is still supported as well.
 </p><p>

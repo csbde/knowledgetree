@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 Ext.onReady(function(){
@@ -26,11 +26,11 @@ Ext.onReady(function(){
     });
 
     // Custom rendering Template
-    var resultTpl = new Ext.Template(
-        '<div class="search-item">',
+    var resultTpl = new Ext.XTemplate(
+        '<tpl for="."><div class="search-item">',
             '<h3><span>{lastPost:date("M j, Y")}<br />by {author}</span>{title}</h3>',
             '{excerpt}',
-        '</div>'
+        '</div></tpl>'
     );
     
     var search = new Ext.form.ComboBox({
@@ -42,11 +42,11 @@ Ext.onReady(function(){
         pageSize:10,
         hideTrigger:true,
         tpl: resultTpl,
+        applyTo: 'search',
+        itemSelector: 'div.search-item',
         onSelect: function(record){ // override default onSelect to do redirect
             window.location =
                 String.format('http://extjs.com/forum/showthread.php?t={0}&p={1}', record.data.topicId, record.id);
         }
     });
-    // apply it to the exsting input element
-    search.applyTo('search');
 });

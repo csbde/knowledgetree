@@ -1,41 +1,55 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
-var TabsExample = {
-    init : function(){
-        // basic tabs 1, built from existing content
-        var tabs = new Ext.TabPanel('tabs1');
-        tabs.addTab('script', "View Script");
-        tabs.addTab('markup', "View Markup");
-        tabs.activate('script');
-    
-        // second tabs built from JS
-        var jtabs = new Ext.TabPanel('jtabs');
-        jtabs.addTab('jtabs-1', "Normal Tab", "My content was added during construction.");
-    
-        var tab2 = jtabs.addTab('jtabs-2', "Ajax Tab 1");
-        var updater = tab2.getUpdateManager();
-        updater.setDefaultUrl('ajax1.htm');
-        tab2.on('activate', updater.refresh, updater, true);
-    
-        var tab3 = jtabs.addTab('jtabs-3', "Ajax Tab 2");
-        tab3.setUrl('ajax2.htm', null, true);
-    
-        var tab4 = jtabs.addTab('jtabs-4', "Event Tab");
-        tab4.setContent("I am tab 4's content. My content was set with setContent() after I was created. I also have an event listener attached.");
-        tab4.on('activate', function(){
-            alert('Tab 4 was activated.');
-        });
-    
-        jtabs.addTab('tabs1-5', "Disabled Tab", "Can't see me cause I'm disabled");
-        jtabs.disableTab('tabs1-5');
-    
-        jtabs.activate('jtabs-1');
+Ext.onReady(function(){
+    // basic tabs 1, built from existing content
+    var tabs = new Ext.TabPanel({
+        renderTo: 'tabs1',
+        width:450,
+        activeTab: 0,
+        frame:true,
+        defaults:{autoHeight: true},
+        items:[
+            {contentEl:'script', title: 'Short Text'},
+            {contentEl:'markup', title: 'Long Text'}
+        ]
+    });
+
+    // second tabs built from JS
+    var tabs2 = new Ext.TabPanel({
+        renderTo: document.body,
+        activeTab: 0,
+        width:600,
+        height:250,
+        plain:true,
+        defaults:{autoScroll: true},
+        items:[{
+                title: 'Normal Tab',
+                html: "My content was added during construction."
+            },{
+                title: 'Ajax Tab 1',
+                autoLoad:'ajax1.htm'
+            },{
+                title: 'Ajax Tab 2',
+                autoLoad: {url: 'ajax2.htm', params: 'foo=bar&wtf=1'}
+            },{
+                title: 'Event Tab',
+                listeners: {activate: handleActivate},
+                html: "I am tab 4's content. I also have an event listener attached."
+            },{
+                title: 'Disabled Tab',
+                disabled:true,
+                html: "Can't see me cause I'm disabled"
+            }
+        ]
+    });
+
+    function handleActivate(tab){
+        alert(tab.title + ' was activated.');
     }
-}
-Ext.EventManager.onDocumentReady(TabsExample.init, TabsExample, true);
+});

@@ -7,9 +7,10 @@
  * Simplifies and canonicalises operations such as adding, updating, and
  * deleting documents from the repository.
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -23,8 +24,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -76,7 +77,15 @@ class KTDocumentUtil {
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
-        if ( !$oStorage->upload( $oDocument, $sFilename)) {
+		$md5hash = md5_file($sFilename);
+        $content = $oDocument->_oDocumentContentVersion;
+        $content->setStorageHash($md5hash);
+        $content->update();
+
+        if (empty($aOptions)) $aOptions = array();
+        $aOptions['md5hash'] = $md5hash;
+
+        if (!$oStorage->upload($oDocument, $sFilename, $aOptions)) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
 
@@ -728,6 +737,14 @@ class KTDocumentUtil {
         if(empty($sFilename)){
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
+
+        $md5hash = md5_file($sFilename);
+        $content = $oDocument->_oDocumentContentVersion;
+        $content->setStorageHash($md5hash);
+        $content->update();
+
+        if (empty($aOptions)) $aOptions = array();
+        $aOptions['md5hash'] = $md5hash;
 
         $sType = KTMime::getMimeTypeFromFile($sFilename);
         $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());

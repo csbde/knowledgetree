@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -200,6 +201,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aActiveUsers = array();
 
         $aUsers = User::getList();
+
 
         foreach ($aPermissions as $oPermission) {
             $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
@@ -457,41 +459,41 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
-		
+
 		/*
-		--- This section has been commented out to remove these checks when permissions 
+		--- This section has been commented out to remove these checks when permissions
 		--- are updated.
 		---------------------------------------------------------------------------------
-		
+
 		//-------------------
         //This section is used to make sure that a user doesn't disable the admin groups
         //Manage security permission or the Manage Security permission of a group they
-        //are currently a member of.  
-		
+        //are currently a member of.
+
         // Check which groups have permission to manage security
         $aNewGroups = (isset($aFoo[4]['group']) ? $aFoo[4]['group'] : array());
         $aNewRoles = (isset($aFoo[4]['role']) ? $aFoo[4]['role'] : array());
-        
+
         $iUserId = $this->oUser->getId();
-        
-        //Check that they aren't removing the sys admin Manage Security permission 
-        //1 in this case is the admin group.        
+
+        //Check that they aren't removing the sys admin Manage Security permission
+        //1 in this case is the admin group.
         if(!in_array('1', $aNewGroups))
         {
         	$this->addErrorMessage(_kt('You cannot remove the Manage Security permission from the System Administrators Group'));
             $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
-        
-        
+
+
         //Check that they aren't removing the Manage Security permission from a group
-        //They are a member of. 
+        //They are a member of.
         if(!GroupUtil::checkUserInGroups($iUserId, array(1)))
-        {        
+        {
 	        //Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
 	        if(!in_array(-3, $aNewRoles))
 	        {
-	            
+
 	            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups))
 	            {
 	                // If user no longer has permission, return an error.
@@ -499,18 +501,18 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
 	                exit(0);
 	            }
-	        
+
 	        }
         }
 		//-----------------
         */
-        
+
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
 
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
-			
+
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }

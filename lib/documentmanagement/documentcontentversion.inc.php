@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ * California 94120-7775, or email info@knowledgetree.com.
  * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -30,7 +31,7 @@
  * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
@@ -61,6 +62,8 @@ class KTDocumentContentVersion extends KTEntity {
     /** Where in the storage this file can be found */
     var $sStoragePath;
 
+    var $md5hash;
+
     var $_aFieldToSelect = array(
         "iId" => "id",
 
@@ -72,13 +75,14 @@ class KTDocumentContentVersion extends KTEntity {
         "iMajorVersion" => 'major_version',
         "iMinorVersion" => 'minor_version',
         "sStoragePath" => 'storage_path',
+        'md5hash' => 'md5hash'
     );
-
     function KTDocumentContentVersion() {
     }
 
     function getFileName() { return $this->sFileName; }
     function setFileName($sNewValue) { $this->sFileName = $sNewValue; }
+    function getDocumentId() { return $this->iDocumentId; }
     function getFileSize() { return $this->iSize; }
     function setFileSize($iNewValue) { $this->iSize = $iNewValue; }
     function getSize() { return $this->iSize; }
@@ -91,6 +95,8 @@ class KTDocumentContentVersion extends KTEntity {
     function setMinorVersionNumber($iNewValue) { $this->iMinorVersion = $iNewValue; }
     function getStoragePath() { return $this->sStoragePath; }
     function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
+    function getStorageHash() { return $this->md5hash; }
+    function setStorageHash($sNewValue) { $this->md5hash = $sNewValue; }
 
     function getVersion() {
         return sprintf("%s.%s", $this->getMajorVersionNumber(), $this->getMinorVersionNumber());
@@ -101,8 +107,11 @@ class KTDocumentContentVersion extends KTEntity {
     }
 
     function &createFromArray($aOptions) {
-        return KTEntityUtil::createFromArray('KTDocumentContentVersion', $aOptions);
+        return  KTEntityUtil::createFromArray('KTDocumentContentVersion', $aOptions);
     }
+
+
+
 
     function create() {
         if (empty($this->iSize)) {

@@ -19,10 +19,11 @@ function formatBytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI
    elseif($p !== false) $val = round($val, $digits-$p);
    return round($val, $digits) . " " . $symbols[$i] . $bB;
 }
-$dir = $_REQUEST['lib'] == 'yui' ? '../../../' : '../../';
-$node = $_REQUEST['node'];
+
+$dir = isset($_REQUEST['lib'])&&$_REQUEST['lib'] == 'yui' ? '../../../' : '../../';
+$node = isset($_REQUEST['node'])?$_REQUEST['node']:"";
 if(strpos($node, '..') !== false){
-	die('Nice try buddy.');
+    die('Nice try buddy.');
 }
 $nodes = array();
 $d = dir($dir.$node);
@@ -30,12 +31,12 @@ while($f = $d->read()){
     if($f == '.' || $f == '..' || substr($f, 0, 1) == '.')continue;
     $lastmod = date('M j, Y, g:i a',filemtime($dir.$node.'/'.$f));
     if(is_dir($dir.$node.'/'.$f)){
-    	$qtip = 'Type: Folder<br />Last Modified: '.$lastmod;
-    	$nodes[] = array('text'=>$f, id=>$node.'/'.$f/*, qtip=>$qtip*/, cls=>'folder');
+        $qtip = 'Type: Folder<br />Last Modified: '.$lastmod;
+        $nodes[] = array('text'=>$f, 'id'=>$node.'/'.$f/*, 'qtip'=>$qtip*/, 'cls'=>'folder');
     }else{
-    	$size = formatBytes(filesize($dir.$node.'/'.$f), 2);
-    	$qtip = 'Type: JavaScript File<br />Last Modified: '.$lastmod.'<br />Size: '.$size;
-    	$nodes[] = array('text'=>$f, id=>$node.'/'.$f, leaf=>true/*, qtip=>$qtip, qtipTitle=>$f */, cls=>'file');
+        $size = formatBytes(filesize($dir.$node.'/'.$f), 2);
+        $qtip = 'Type: JavaScript File<br />Last Modified: '.$lastmod.'<br />Size: '.$size;
+        $nodes[] = array('text'=>$f, 'id'=>$node.'/'.$f, 'leaf'=>true/*, 'qtip'=>$qtip, 'qtipTitle'=>$f */, 'cls'=>'file');
     }
 }
 $d->close();

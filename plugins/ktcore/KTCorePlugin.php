@@ -2,34 +2,35 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- *
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- *
+ * 
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ * California 94120-7775, or email info@knowledgetree.com.
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original
+ * must display the words "Powered by KnowledgeTree" and retain the original 
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -236,6 +237,8 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows.'));
         $this->registerAdminCategory('search', _kt('Search and Indexing'),
             _kt('Search and Indexing Settings'));
+		$this->registerAdminCategory('config', _kt('System Configuration'),
+            _kt('System Configuration Settings'));            
         $this->registerAdminCategory('misc', _kt('Miscellaneous'),
             _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));
 
@@ -313,7 +316,31 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
             _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
             '../search2/reporting/RescheduleDocuments.php', null);
-
+		//config
+		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
+            _kt('Email Settings'), _kt('Manage Email Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'config',
+            _kt('User Interface Settings'), _kt('Manage User Interface Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'config',
+            _kt('Search and Indexing Settings'), _kt('Manage Search and Indexing Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'config',
+            _kt('Client Tools Settings'), _kt('Manage Client Tools Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
+            _kt('General Settings'), _kt('Manage General Settings'),
+            '/admin/configsettings.php', null);
+            
+        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
+            _kt('Internationalisation Settings'), _kt('Manage Internationalisation Settings'),
+            '/admin/configsettings.php', null);
+		
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
             _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),

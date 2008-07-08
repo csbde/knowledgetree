@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -102,15 +103,10 @@ class KTPage {
 
         /* default css files initialisation */
         $aCSS = Array(
+           "thirdpartyjs/extjs/resources/css/ext-all.css",
            "resources/css/kt-framing.css",
            "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css",
-//           "thirdpartyjs/extjs/resources/css/xtheme-kt.css",
-           "thirdpartyjs/extjs/resources/css/ext-all.css",
-           "thirdpartyjs/extjs/examples/examples.css",
- //          "thirdpartyjs/extjs/examples/menu/menu.css",
-           "thirdpartyjs/extjs/examples/lib.css",
-//           "skins/kt-toolbar.css"
+           "resources/css/kt-headings.css"
         );
         $this->requireCSSResources($aCSS);
 
@@ -125,30 +121,15 @@ class KTPage {
         /* default js files initialisation */
         $aJS = Array();
 
-		$aJS[] = 'thirdpartyjs/yui/yahoo/yahoo.js';
-		$aJS[] = 'thirdpartyjs/yui/utilities/utilities.js';
-        /*
-        $aJS[] = 'thirdpartyjs/MochiKit/MochiKit.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/New.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/DragAndDrop.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/Sortable.js';
-	$aJS[] = 'thirdpartyjs/MochiKit/Style.js';
-        */
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
         $aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
         $aJS[] = 'resources/js/loader.js';
-        $aJS[] = 'thirdpartyjs/yui/tools/tools.js';
-        $aJS[] = 'thirdpartyjs/yui/connection/connection-min.js';
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'thirdpartyjs/extjs/examples/examples.js';
         $aJS[] = 'resources/js/search2widget.js';
-
-        //$aJS[] = 'thirdpartyjs/MochiKit/.js';
-        //$aJS[] = 'resources/js/translate.js';
 
         $this->requireJSResources($aJS);
 

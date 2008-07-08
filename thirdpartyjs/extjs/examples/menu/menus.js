@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 Ext.onReady(function(){
@@ -16,7 +16,6 @@ Ext.onReady(function(){
         }
     });
 
-    // Menus can be prebuilt and passed by reference
     var colorMenu = new Ext.menu.ColorMenu({
         handler : function(cm, color){
             Ext.example.msg('Color Selected', 'You chose {0}.', color);
@@ -26,52 +25,52 @@ Ext.onReady(function(){
     var menu = new Ext.menu.Menu({
         id: 'mainMenu',
         items: [
-            new Ext.menu.CheckItem({
+            {
                 text: 'I like Ext',
-                checked: true,
+                checked: true,       // when checked has a boolean value, it is assumed to be a CheckItem
                 checkHandler: onItemCheck
-            }),
-            new Ext.menu.CheckItem({
+            },
+            {
                 text: 'Ext for jQuery',
                 checked: true,
                 checkHandler: onItemCheck
-            }),
-            new Ext.menu.CheckItem({
+            },
+            {
                 text: 'I donated!',
                 checked:false,
                 checkHandler: onItemCheck
-            }), '-', {
+            }, '-', {
                 text: 'Radio Options',
                 menu: {        // <-- submenu by nested config object
                     items: [
                         // stick any markup in a menu
                         '<b class="menu-title">Choose a Theme</b>',
-                        new Ext.menu.CheckItem({
+                        {
                             text: 'Aero Glass',
                             checked: true,
                             group: 'theme',
                             checkHandler: onItemCheck
-                        }),
-                        new Ext.menu.CheckItem({
+                        }, {
                             text: 'Vista Black',
+                            checked: false,
                             group: 'theme',
                             checkHandler: onItemCheck
-                        }),
-                        new Ext.menu.CheckItem({
+                        }, {
                             text: 'Gray Theme',
+                            checked: false,
                             group: 'theme',
                             checkHandler: onItemCheck
-                        }),
-                        new Ext.menu.CheckItem({
+                        }, {
                             text: 'Default Theme',
+                            checked: false,
                             group: 'theme',
                             checkHandler: onItemCheck
-                        })
+                        }
                     ]
                 }
             },{
                 text: 'Choose a Date',
-                cls: 'calendar',
+                iconCls: 'calendar',
                 menu: dateMenu // <-- submenu by reference
             },{
                 text: 'Choose a Color',
@@ -80,17 +79,19 @@ Ext.onReady(function(){
         ]
     });
 
-    var tb = new Ext.Toolbar('toolbar');
+    var tb = new Ext.Toolbar();
+    tb.render('toolbar');
+
     tb.add({
-            cls: 'x-btn-text-icon bmenu', // icon and text class
             text:'Button w/ Menu',
+            iconCls: 'bmenu',  // <-- icon
             menu: menu  // assign menu by instance
         }, 
         new Ext.Toolbar.MenuButton({
             text: 'Split Button',
             handler: onButtonClick,
             tooltip: {text:'This is a QuickTip with autoHide set to false and a title', title:'Tip Title', autoHide:false},
-            cls: 'x-btn-text-icon blist',
+            iconCls: 'blist',
             // Menus can be built/referenced by using nested menu config objects
             menu : {items: [
                         {text: '<b>Bold</b>', handler: onItemClick},
@@ -171,4 +172,5 @@ Ext.onReady(function(){
     function onItemToggle(item, pressed){
         Ext.example.msg('Button Toggled', 'Button "{0}" was toggled to {1}.', item.text, pressed);
     }
+
 });

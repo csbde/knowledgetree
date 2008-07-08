@@ -89,7 +89,7 @@ class HouseKeeper
             preg_match('/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%\s+(.*)/', $line, $matches);
             list($line, $filesystem, $size, $used, $avail, $usedp, $mount) = $matches;
 
-            if ($size === 0) continue;
+            if ($size === 0 || empty($size)) continue;
 
             if(strtolower(PHP_OS) == 'darwin'){
                 $size = $size * 1024;

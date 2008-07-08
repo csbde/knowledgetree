@@ -8,11 +8,108 @@
 <body>
 <h2>Manage Users</h2>
 <p>
-You use the <b>Manage Users</b> section of <b>Users</b> and <b>Groups</b> to add or remove users from the KnowledgeTree Document Management System. You can also search for user details, or view a list of all the users that exist in the system.
+<h3>In DMS Administration >> User and Groups >> Manage Users you can:</h3>
+<ul>
+<li>add new users (add users manually, or import user details from an external authentication source)</li>
+<li>search for users</li>
+<li>view a list of all users that exist in the system</li>
+<li>enable, disable, or delete users</li>
+<li>edit users (add and edit login name, username, email address, mobile number, enable/disable email notification, password, maximum login sessions)</li>
+<li>view, add, and edit a user's group membership</li>
+</ul>
 </p>
+<br />
 <p>
-The system uses the information you specified when you added the user or group, to retrieve their details from the authentication source. This allows verification of the user or group's login rights, and of the permissions they have for accessing information in the repository. 
+<h2>Adding Users</h2>
+<h3>Adding New Users (manually)</h3>
+<ul>
+<li>1.	Click Add a new user.</li>
+<li>2.	Add details for the user:</li>
+</ul>
+<ul>
+<li>login name</li>
+<li>full name</li>
+<li>email address</li>
+<li>define whether to enable email enable notifications</li>
+<li>password</li>
+<li>mobile number</li>
+<li>maximum login sessions (prevents multiple users logging in on the same account)</li>
+</ul>
+<li>3.	Click create user.</li>
+</ul>
 </p>
-
+<br />
+<h3>Adding New Users (From External Authentication Source)</h3>
+<p>
+KnowledgeTree uses the information you specified when adding the user or group to retrieve their details from the specified authentication source. The user or group's login details and permissions are verified when they first log in to the DMS.
+</p>
+<br />
+<p>
+<b>Note:</b> You can't change the authentication source for a user after adding the user from a selected authentication source.
+</p>
+<br />
+<p>
+Prerequisites:
+<ul>
+<li>Add the authentication source to KnowledgeTree</li>
+<li>Ensure the authentication provider plugin is registered and enabled</li>
+</ul>
+</p>
+<br />
+<p>
+<ul> 
+<li>1.	In the Add User From Authentication Source section, select an authentication source from the pick list.</li>
+<li>2.	Click Add from Source to open the Search for user page for the authentication source you selected; then, do one of the following:</li>
+<ul>
+<li>search for the user</li>
+<li>select Mass Import (adds all users from the authentication source); then, click search for users.</li>
+</ul>
+</ul>
+</p>
+<br />
+<p>
+<b>Note:</b> You won't be able to verify the details of individual users added through Mass Import. When bulk adding users, users that already exist in the system are duplicated in KnowledgeTree with 'duplicate' appended to the username.
+</p>
+<br />
+<p>
+<h3>Display All Users</h3>
+<ul>
+<li>1. In Search for Users, click View All Users. A list of all users displays at the bottom of the page.</li>
+</ul>
+</p>
+<br />
+<p>
+<h3>Search for Users</h3>
+<ul>
+<li>1.	In Search for Users, enter all or part of the username in the Username field.</li>
+<li>2.	Click Search for Users to display the user's details.</li>
+</ul>
+</p>
+<br />
+<p>
+<h3>Enable / Disable User</h3>
+<ul>
+<li>1.	Search for the user.</li>
+<li>2.	Select the user; then, click Enable or Disable as required.</li>
+</ul>
+</p>
+<br />
+<p>
+<h3>Edit User Details</h3>
+<ul>
+<li>1.	Search for the user to display the user's details.</li>
+<li>2.	Click the Edit icon for the user to open the Edit User Details page.</li>
+<li>3.	Make the required changes; then, save your changes.</li>
+</ul>
+</p>
+<br />
+<p>
+<h3>Edit User's Group Membership</h3>
+<ul>
+<li>1.	Search for the user.</li>
+<li>2.	Click Manage Groups for the relevant user to open the Change [username] Groups page.</li>
+<li>3.	Make the required changes (add user to groups, remove user from groups).</li>
+<li>4.	Save your changes. </li>
+</ul>
 </body>
 </html>

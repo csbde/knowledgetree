@@ -1,0 +1,1 @@
+ALTER TABLE document_fields ADD `position` int(11) NOT NULL default '0';

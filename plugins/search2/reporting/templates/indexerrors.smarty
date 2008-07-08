@@ -6,7 +6,12 @@
 		hiddenVal.value = rescheduleAction;
 		document.scheduleForm.submit();
 	}
-
+	function nextSearchPage(value)
+	{
+		var hiddenPageVal = document.getElementById("pageValue");
+		hiddenPageVal.value = value;
+		document.scheduleForm.submit();
+	}
 </script>
 {/literal}
 
@@ -14,10 +19,11 @@
 <p class="descriptiveText">{i18n}This report will help to diagnose problems with document indexing.{/i18n}</p>
 
 <br>
-{if $index_errors}
+{if $indexErrors}
 
 <form name="scheduleForm" action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="rescheduleValue" id="rescheduleValue" value="" />
+<input type="hidden" name="pageValue" id="pageValue" value="" />
 
 <table class=kt_collection>
 <thead>
@@ -31,7 +37,7 @@
 </thead>
 
 <tbody>
-{foreach key=key from=$index_errors item=indexError}
+{foreach key=key from=$indexErrors item=indexError}
 <tr>
 	<td class="centered"><input type="checkbox" name="index_error[{$indexError.document_id}]" value="1"/></td>
 	<td><a href="/view.php?fDocumentId={$indexError.document_id}">{$indexError.filename|truncate:40:'...'}</a></td>
@@ -41,14 +47,29 @@
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td colspan=4><pre>{$indexError.status_msg}</pre></td>
+	<td colspan="4"><pre>{$indexError.status_msg}</pre></td>
 </tr>
 
 
 {/foreach}
 
 </tbody>
-
+<tfoot>
+<tr>
+<td colspan="4">
+<div align="center">
+{foreach item=page from=$pageList}
+<a id="pageButton{$page}" href="#" onclick="nextSearchPage({$page});">{$page}</a>
+{/foreach}
+</div>
+</td>
+</tr>
+<tr>
+<td  colspan="4">
+<div> {$itemCount} items, {$itemsPerPage} items per page.</div>
+</td>
+</tr>
+</tfoot>
 </table>
 
 <br>

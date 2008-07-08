@@ -27,6 +27,9 @@
 					{else}
 						<img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="{$appname}" class="logoimage" height="50" width="252"/><br />
 					{/if}
+					{if $smallVersion == 'Community Edition'}
+						<span class="communityLabel"><h2>{i18n}Community Edition{/i18n}</h2></span>
+					{/if}
 			        {if ($errorMessage == null)}
 					    <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
 					{else}
@@ -60,10 +63,11 @@
 			</div>
 			{/if}
 			<p class="descriptiveText version">
+		    	    <br>
 		    	    {i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
                     {i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
-                    {i18n}&copy; 2004-2008 <a href="http://www.knowledgetree.com/">The Jam Warehouse Software (Pty) Limited</a>{/i18n}<br><br>
-                    {if ($smallVersion == 'OSS')}
+                    {i18n}&copy; 2008 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n}<br><br>
+                    {if ($smallVersion == 'Community Edition')}
                         {i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
                     {else}
                         {i18n}All rights reserved.{/i18n}<br>

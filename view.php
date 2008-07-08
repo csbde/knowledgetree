@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -127,7 +128,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
             if ($oDocument->getStatusID() == ARCHIVED) {
                 $this->oPage->addError(_kt('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
-                return $this->do_error();
+                return $this->do_request($oDocument);
             } else if ($oDocument->getStatusID() == DELETED) {
                 $this->oPage->addError(_kt('This document has been deleted.  Please contact the system administrator to have it restored if it is still needed.'));
                 return $this->do_error();
@@ -394,6 +395,73 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     function do_error() {
         return '&nbsp;'; // don't actually do anything.
     }
+
+    function do_request($oDocument) {
+        // Display form for sending a request through the the sys admin to unarchive the document
+        // name, document, request, submit
+
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt('Request restoration of document'),
+            'submit_label' => _kt('Send request'),
+            'identifier' => '',
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($oFolder),
+            'fail_action' => 'main',
+            'context' => $this,
+        ));
+
+        $oForm->addWidget(
+                array('ktcore.widgets.text', array(
+                    'label' => _kt('Reason'),
+                    'name' => 'reason',
+                    'required' => true,
+                ))
+            );
+
+        $data = isset($_REQUEST['data']) ? $_REQUEST['data'] : array();
+
+        $iFolderId = $oDocument->getFolderID();
+        $oFolder = Folder::get($iFolderId);
+        $sFolderUrl = KTBrowseUtil::getUrlForFolder($oFolder);
+
+        if(!empty($data)){
+            $res = $oForm->validate();
+            if (!empty($res['errors'])) {
+                return $oForm->handleError('', $aError);
+            }
+
+            $aAdminGroups = Group::getAdministratorGroups();
+            if(!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)){
+                foreach ($aAdminGroups as $oGroup) {
+                    $aGroupUsers = $oGroup->getMembers();
+
+                    // ensure unique users
+                    foreach ($aGroupUsers as $oUser){
+                        $aUsers[$oUser->getId()] = $oUser;
+                    }
+                }
+
+                $sSubject = _kt('Request for an archived document to be restored');
+                $sDetails = $data['reason'];
+
+                // Send request
+                foreach ($aUsers as $oU) {
+                    if (!PEAR::isError($oU)) {
+                        include_once(KT_DIR.'/plugins/ktcore/KTAssist.php');
+                        KTAssistNotification::newNotificationForDocument($oDocument, $oU, $this->oUser, $sSubject, $sDetails);
+                    }
+                }
+
+                // Redirect to folder
+                $this->addInfoMessage(_kt('The System Administrators have been notified of your request.'));
+                redirect($sFolderUrl);
+                exit();
+            }
+        }
+
+        return $oForm->renderPage(_kt('Archived document request') . ': '.$oDocument->getName());
+    }
+
 
 
     function getUserForId($iUserId) {

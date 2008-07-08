@@ -6,9 +6,10 @@
  * It contains a high level overview of the users subscriptions, checked out
  * document, pending approval routing documents, etc.
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -22,8 +23,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -95,13 +96,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         }
 
         // javascript
-        // yahoo
-        $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
+        $this->oPage->requireJSResource('thirdpartyjs/extjs/adapter/yui/yui-utilities.js');
         $this->oPage->requireJSResource('resources/js/DDList.js');
-
 
         $this->oUser->refreshDashboadState();
 

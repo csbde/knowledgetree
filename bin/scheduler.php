@@ -1,10 +1,11 @@
 <?php
 /**
- * $Id: scheduler.php 8245 2008-03-11 13:06:57Z megan_w $
+ * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -40,6 +41,15 @@ require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 // Set the time limit to 0 to prevent the script timing out
 set_time_limit(0);
+
+global $default;
+
+// Check the lock file before starting
+$lock = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+if(file_exists($lock)){
+    $default->log->debug('Scheduler: can\'t start - lock file exists');
+    exit(0);
+}
 
 
 /* ** Set up functions ** */
@@ -106,10 +116,7 @@ function getTaskList() {
     return $result;
 }
 
-
 /* ** Scheduler script ** */
-
-global $default;
 
 $default->log->debug('Scheduler: starting');
 

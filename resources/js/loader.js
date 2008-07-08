@@ -8,9 +8,9 @@ window.onload = function()
       antiAlias: true,
       autoPad: false
     }
-    
-    var browser = $T.getBrowserAgent();
-	
+
+    var browser = navigator.userAgent.toLowerCase();
+
 	if(browser.msie && browser.version == '6.0'){
 		var pageBody = document.getElementById("pageBody");
 		pageBody.style.backgroundPosition="bottom left";
@@ -20,7 +20,7 @@ window.onload = function()
 	    var pageBlock = new curvyCorners(settings, pageBody);
 	    pageBlock.applyCornersToAll();
 	    pageBody.style.backgroundPosition="bottom left";
-	    
+
 	    // footer
 	    var footer = document.getElementById("copyrightbarBorder");
 	    var footerBlock = new curvyCorners(settings, footer);
@@ -28,7 +28,7 @@ window.onload = function()
 	}
 	Loader();
   }
-  
+
   window.onsubmit = function(){
   	if(typeof disable_loader == "undefined"){
 	  	var myElem = document.getElementById("modalDiv");
@@ -36,7 +36,7 @@ window.onload = function()
 	}
   }
   function Loader()
-{ 
+{
 	var myElem = document.getElementById("modalDiv");
 	myElem.style.display = "none";
 }

@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 #container {
@@ -12,6 +12,23 @@
     border:3px solid #c3daf9;
 }
 
-.calendar .x-menu-item-icon {
-    background-image:url(../../resources/images/default/shared/calendar.gif);
+.calendar {
+    background-image:url(../../resources/images/default/shared/calendar.gif) !important;
+}
+
+.blist {
+    background-image: url(list-items.gif) !important;
+}
+
+.bmenu {
+    background-image: url(menu-show.gif) !important;
+}
+
+.menu-title{
+    background: #ebeadb url(../../resources/images/default/grid/grid3-hrow.gif) repeat-x;
+    border-bottom:1px solid #99bbe8;
+    color:#15428b;
+    font:bold 10px tahoma,arial,verdana,sans-serif;
+    display:block;
+    padding:3px;
 }

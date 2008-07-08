@@ -1,17 +1,17 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 Ext.onReady(function(){
 
     // create the Data Store
-    var ds = new Ext.data.Store({
+    var store = new Ext.data.Store({
         // load using HTTP
-        proxy: new Ext.data.HttpProxy({url: 'sheldon.xml'}),
+        url: 'sheldon.xml',
 
         // the return will be XML, so lets set up a reader
         reader: new Ext.data.XmlReader({
@@ -27,20 +27,19 @@ Ext.onReady(function(){
            ])
     });
 
-    var cm = new Ext.grid.ColumnModel([
-	    {header: "Author", width: 120, dataIndex: 'Author'},
-		{header: "Title", width: 180, dataIndex: 'Title'},
-		{header: "Manufacturer", width: 115, dataIndex: 'Manufacturer'},
-		{header: "Product Group", width: 100, dataIndex: 'ProductGroup'}
-	]);
-    cm.defaultSortable = true;
-
     // create the grid
-    var grid = new Ext.grid.Grid('example-grid', {
-        ds: ds,
-        cm: cm
+    var grid = new Ext.grid.GridPanel({
+        store: store,
+        columns: [
+            {header: "Author", width: 120, dataIndex: 'Author', sortable: true},
+            {header: "Title", width: 180, dataIndex: 'Title', sortable: true},
+            {header: "Manufacturer", width: 115, dataIndex: 'Manufacturer', sortable: true},
+            {header: "Product Group", width: 100, dataIndex: 'ProductGroup', sortable: true}
+        ],
+        renderTo:'example-grid',
+        width:540,
+        height:200
     });
-    grid.render();
 
-    ds.load();
+    store.load();
 });

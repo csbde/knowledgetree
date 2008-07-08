@@ -1,20 +1,25 @@
 /*
- * Ext JS Library 1.1 Beta 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 Ext.onReady(function(){
     // shorthand
     var Tree = Ext.tree;
     
-    var tree = new Tree.TreePanel('tree-div', {
-        animate:true, 
-        loader: new Tree.TreeLoader({dataUrl:'get-nodes.php'}),
+    var tree = new Tree.TreePanel({
+        el:'tree-div',
+        useArrows:true,
+        autoScroll:true,
+        animate:true,
         enableDD:true,
-        containerScroll: true
+        containerScroll: true, 
+        loader: new Tree.TreeLoader({
+            dataUrl:'get-nodes.php'
+        })
     });
 
     // set the root node

@@ -4,9 +4,14 @@
     <title>Custom Fields</title>
     <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
 
-    <!-- GC --> <!-- LIBS -->     <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>     <!-- ENDLIBS -->
+    <!-- GC -->
+ 	<!-- LIBS -->
+ 	<script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+ 	<!-- ENDLIBS -->
+
     <script type="text/javascript" src="../../ext-all.js"></script>
 
+    <script type="text/javascript" src="SearchField.js"></script>
     <script type="text/javascript" src="custom.js"></script>
     <link rel="stylesheet" type="text/css" href="combos.css" />
 
@@ -37,25 +42,19 @@
     </style>
 
     <!-- Common Styles for the examples -->
-    <link rel="stylesheet" type="text/css" href="../examples.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/examples.css" />
 </head>
 <body>
-<script type="text/javascript" src="../examples.js"></script><!-- EXAMPLES -->
+<script type="text/javascript" src="../shared/examples.js"></script><!-- EXAMPLES -->
 <p>
-    <b>Custom Form Feilds</b><br />
+    <b>Custom Form Fields</b><br />
     Ext provides many types of form fields to build interactive and rich forms. However, it also
     provides a complete framework for building new types of fields quickly. The search field below
     is an example.
 </p>
 <p>The js is not minified so it is readable. See <a href="custom.js">custom.js</a>.</p>
 
-<div style="width:600px;position:static;" class="x-layout-panel">
-    <div class="x-layout-panel-hd">
-        <div class="x-layout-panel-hd-text">Forum Posts</div>
-    </div>
-    <div id="search-tb"></div>
-    <div id="search-results"></div>
-    <div id="page-tb"></div>
+<div style="width:600px;" id="search-panel">
 </div>
 
 </body>

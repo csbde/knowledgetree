@@ -2,27 +2,20 @@
 
 require_once('test.php');
 
-class UnitTests extends GroupTest {
+class UnitTests extends TestSuite {
     function UnitTests() {
-        $this->GroupTest('Unit tests');
-        //$this->addTestFile('api/authentication.php');
-        //$this->addTestFile('api/document.php');
-        //$this->addTestFile('api/folder.php');
-        $this->addTestFile('SQLFile/test_sqlfile.php');
-        $this->addTestFile('cache/testCache.php');
-        $this->addTestFile('config/testConfig.php');
-        $this->addTestFile('document/testDocument.php');
-        $this->addTestFile('document/testDocumentUtil.php');
-        $this->addTestFile('folder/testFolder.php');
-        $this->addTestFile('browseutil/testBrowseUtil.php');
-        $this->addTestFile('filelike/testStringFileLike.php');
-    }
-
-    function addTestFile($file) {
-        if (!KTUtil::isAbsolutePath($file)) {
-            $file = sprintf('%s/%s', dirname(__FILE__), $file);
-        }
-        return parent::addTestFile($file);
+        $this->TestSuite('Unit tests');
+        $this->addFile('api/testAuthentication.php');
+        $this->addFile('api/testDocument.php');
+        $this->addFile('api/testFolder.php');
+        $this->addFile('SQLFile/test_sqlfile.php');
+        $this->addFile('cache/testCache.php');
+        $this->addFile('config/testConfig.php');
+        $this->addFile('document/testDocument.php');
+        $this->addFile('document/testDocumentUtil.php');
+        $this->addFile('folder/testFolder.php');
+//        $this->addFile('browseutil/testBrowseUtil.php');
+        $this->addFile('filelike/testStringFileLike.php');
     }
 }
 

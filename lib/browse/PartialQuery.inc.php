@@ -2,54 +2,55 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
- * 
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
- * 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
- * copyright notice. 
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
  * Contributor( s): ______________________________________
  *
  */
 
 /* Partial Query
- * 
+ *
  * Each of the different partial queries handles generating a document and folder
  * list.  Also handles sorting.
  *
  */
- 
-// FIXME API how to handle indicating which other rows need joining 
+
+// FIXME API how to handle indicating which other rows need joining
 
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
- 
-define('XXX_HARDCODE_SIMPLE_FOLDER_SEARCH', true); 
- 
+
+define('XXX_HARDCODE_SIMPLE_FOLDER_SEARCH', true);
+
 // Abstract base class.
 class PartialQuery {
     var $sPermissionName = 'ktcore.permissions.read';
@@ -61,29 +62,29 @@ class PartialQuery {
     // no batching.  just use count.
     function getFolderCount() { return 0; }
     function getDocumentCount() { return 0; }
-    
+
     /* Generating the items for the collection requires generating the core of the
-     * query, and then adding the columns and tables that are needed to make the 
-     * the sorting work.  naturally, this could be somewhat complex, so in order 
+     * query, and then adding the columns and tables that are needed to make the
+     * the sorting work.  naturally, this could be somewhat complex, so in order
      * to make everything clear, a number of "namespaces" are reserved in the simple
      * case.  The SearchQuery needs a number of others, and those are discussed there.
-     * 
+     *
      *   the sort column should be joined as "sort_col."
      *   the documents column is joined as "D."
      *   the folders column is joined as "F."
      *
-     * In order to allow the additional table-joins, etc, the "$sJoinClause, $aJoinParams" 
+     * In order to allow the additional table-joins, etc, the "$sJoinClause, $aJoinParams"
      * should be passed through.  This should _completely_ handle the join, and should depend only
      * on columns that are known to be there.
      *
-     * Browse currently has no way to specify additional constraints.  For that, 
+     * Browse currently has no way to specify additional constraints.  For that,
      * use SearchQuery or create a new PartialQuery object.
      *
-     * The abstraction is not complete, and some amount of understanding about the specific 
-     * query being _created_ is required.  Once this is done, minimal changes in the view 
+     * The abstraction is not complete, and some amount of understanding about the specific
+     * query being _created_ is required.  Once this is done, minimal changes in the view
      * object should be required.
-     */        
-     
+     */
+
     // with batching.
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }
@@ -105,7 +106,7 @@ class BrowseQuery extends PartialQuery{
             $this->oUser = null;
         }
     }
-    
+
     function _getDocumentQuery($aOptions = null) {
         $res = KTSearchUtil::permissionToSQL($this->oUser, $this->sPermissionName);
         if (PEAR::isError($res)) {
@@ -175,16 +176,16 @@ class BrowseQuery extends PartialQuery{
 	        if (strpos($sWhere,'WHERE') == 0)
 	        {
 	        	$sWhere	.= ' WHERE ';
-	        }        	
-	        else 
+	        }
+	        else
 	        	$sWhere .= ' AND ';
-	        	
+
 	        $sWhere .= 'F.id NOT IN (' . implode(',',$this->exclude_folders) . ')';
 	     //   print $sWhere;
         }
-        
-        
-        
+
+
+
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
 
         $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . " AS F $sPermissionJoin $sWhere ";
@@ -193,19 +194,19 @@ class BrowseQuery extends PartialQuery{
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
-    
-    function getFolderCount() { 
+
+    function getFolderCount() {
         $aOptions = array(
             'select' => 'count(F.id) AS cnt',
         );
         $aQuery = $this->_getFolderQuery($aOptions);
         if (PEAR::isError($aQuery)) { return 0; }
-       
+
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
-    
-    function getDocumentCount() { 
+
+    function getDocumentCount() {
         $aOptions = array(
             'select' => 'count(D.id) AS cnt',
         );
@@ -214,72 +215,66 @@ class BrowseQuery extends PartialQuery{
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
-    
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         $res = $this->_getFolderQuery();
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
         $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
+        $sQuery .= " LIMIT $iBatchStart, $iBatchSize";
 
-        $sQuery .= ' LIMIT ?, ?';
-        $aParams[] = $iBatchStart;
-        $aParams[] = $iBatchSize;
-    
         $q = array($sQuery, $aParams);
-        
-        $res = DBUtil::getResultArray($q); 
-        
+
+        $res = DBUtil::getResultArray($q);
+
         return $res;
     }
-    
-    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         $this->sDocumentJoinClause = $sJoinClause;
         $this->aDocumentJoinParams = $aJoinParams;
         $res = $this->_getDocumentQuery();
-        if (PEAR::isError($res)) { return array(); } // no permissions 
+        if (PEAR::isError($res)) { return array(); } // no permissions
         list($sQuery, $aParams) = $res;
         $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
+        $sQuery .= " LIMIT $iBatchStart, $iBatchSize";
 
-        $sQuery .= ' LIMIT ?, ?';
-        $aParams[] = $iBatchStart;
-        $aParams[] = $iBatchSize;
-        
         $q = array($sQuery, $aParams);
-        
-        $res = DBUtil::getResultArray($q); 
-         
-        
-        
+
+        $res = DBUtil::getResultArray($q);
+
+
+
         return $res;
     }
 }
 
 // testing class - puts docs/folders into testdocs, testfolders.
 class TestQuery extends PartialQuery{
-    
+
     var $testdocs;
     var $testfolders;
 
-    function TestQuery() { 
+    function TestQuery() {
         $this->testdocs = array(array('id' => 2), array('id' => 3),
         );
         $this->testfolders = array(array('id' => 3),);
     }
-    
+
     function getFolderCount() { count($this->testfolders); }
     function getDocumentCount() { count($this->testdocs); }
-    
+
     // with batching.
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder) { 
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder) {
         return array_slice($this->testfolders, $iBatchStart, $iBatchSize);
     }
-    
-    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder) { 
+
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder) {
         return array_slice($this->testdocs, $iBatchStart, $iBatchSize);
     }
 }
 
-class SimpleSearchQuery extends PartialQuery {  
+class SimpleSearchQuery extends PartialQuery {
     // FIXME cache permission lookups, etc.
     var $searchable_text;
 
@@ -296,10 +291,10 @@ class SimpleSearchQuery extends PartialQuery {
            return $res;
         }
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
-        
+
 		$temp = str_replace('%', '', $this->searchable_text);
 		$keywords = explode(' ', $temp);
-		
+
 		for($i=0; $i<count($keywords); $i++){
 			if($keywords[$i] == ' ' or $keywords[$i] == ''){
 				continue;
@@ -308,7 +303,7 @@ class SimpleSearchQuery extends PartialQuery {
 			}
 		}
 		$keywords = $keywords_temp;
-		
+
 		if(count($keywords) > 1){
 			for($i=0; $i<count($keywords); $i++){
 				$keywords[$i] = '%'.$keywords[$i].'%';
@@ -320,7 +315,7 @@ class SimpleSearchQuery extends PartialQuery {
 		}else{
 			$aPotentialWhereString = 'FST.folder_text LIKE ? ';
 		}
-		
+
         $aPotentialWhere = array($sPermissionString, $aPotentialWhereString);
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
@@ -339,24 +334,24 @@ class SimpleSearchQuery extends PartialQuery {
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
 
-        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . ' AS F 
-        LEFT JOIN ' . KTUtil::getTableName('folder_searchable_text') . " AS FST ON (F.id = FST.folder_id) 
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . ' AS F
+        LEFT JOIN ' . KTUtil::getTableName('folder_searchable_text') . " AS FST ON (F.id = FST.folder_id)
         $sPermissionJoin $sWhere ";
         if(count($keywords) > 1){
         	$aParams = $keywords;
         }else{
         	$aParams = array($this->searchable_text);
         }
-        
+
         $aParams = kt_array_merge($aPermissionParams, $aParams);
-          
+
         return array($sQuery, $aParams);
     }
-    
-    function getFolderCount() { 
+
+    function getFolderCount() {
         // use hack to get folders, if included.
         if (!XXX_HARDCODE_SIMPLE_FOLDER_SEARCH) { return 0; }
-        
+
         $aOptions = array(
             'select' => 'count(F.id) AS cnt',
         );
@@ -366,22 +361,19 @@ class SimpleSearchQuery extends PartialQuery {
         return $iRet;
     }
 
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         if (!XXX_HARDCODE_SIMPLE_FOLDER_SEARCH) { return array(); }
-        
+
         $res = $this->_getFolderQuery();
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
         $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
+        $sQuery .= " LIMIT $iBatchStart, $iBatchSize";
 
-        $sQuery .= ' LIMIT ?, ?';
-        $aParams[] = $iBatchStart;
-        $aParams[] = $iBatchSize;
-    
         $q = array($sQuery, $aParams);
-        
-        $res = DBUtil::getResultArray($q); 
-        
+
+        $res = DBUtil::getResultArray($q);
+
         return $res;
     }
 
@@ -400,8 +392,8 @@ class SimpleSearchQuery extends PartialQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
     }
-    
-    function getDocumentCount() { 
+
+    function getDocumentCount() {
         $aOptions = array(
             'select' => 'count(DISTINCT D.id) AS cnt',
         );
@@ -410,13 +402,13 @@ class SimpleSearchQuery extends PartialQuery {
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
-    
-    
+
+
     // search needs some special stuff... this should probably get folded into a more complex criteria-driven thing
     // later.
     //
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
-    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         $this->sDocumentJoinClause = $sJoinClause;
         $this->aDocumentJoinParams = $aJoinParams;
         $aOptions = array(
@@ -427,14 +419,11 @@ class SimpleSearchQuery extends PartialQuery {
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
         $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
-        $sQuery .= ' LIMIT ?, ?';
-
-        $aParams[] = $iBatchStart;
-        $aParams[] = $iBatchSize;
+        $sQuery .= " LIMIT $iBatchStart, $iBatchSize";
 
         $q = array($sQuery, $aParams);
 
-        $res = DBUtil::getResultArray($q); 
+        $res = DBUtil::getResultArray($q);
 
         return $res;
     }
@@ -442,7 +431,7 @@ class SimpleSearchQuery extends PartialQuery {
 
 class TypeBrowseQuery extends SimpleSearchQuery {
     var $iDocType;
-    
+
     function TypeBrowseQuery($oDocType) {
         $this->iDocType = $oDocType->getId();
     }
@@ -462,17 +451,17 @@ class TypeBrowseQuery extends SimpleSearchQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
     }
-    
+
     // don't do folder searching
     function getFolderCount() { return 0; }
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }        
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }
 }
 
 class ValueBrowseQuery extends SimpleSearchQuery {
     var $sFieldNamespace;
     var $sValueName;
-    
-    function ValueBrowseQuery($oField, $oValue) {	
+
+    function ValueBrowseQuery($oField, $oValue) {
         $this->sFieldNamespace = $oField->getNamespace();
         $this->sValueName = $oValue->getName();
     }
@@ -492,24 +481,24 @@ class ValueBrowseQuery extends SimpleSearchQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
     }
-    
+
     // don't do folder searching
     function getFolderCount() { return 0; }
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }        
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { return array(); }
 }
 
-class BooleanSearchQuery extends PartialQuery {  
+class BooleanSearchQuery extends PartialQuery {
     // FIXME cache permission lookups, etc.
     var $datavars;
 
     function BooleanSearchQuery($datavars) { $this->datavars = $datavars; }
-    
-    function getFolderCount() { 
+
+    function getFolderCount() {
         // never any folders, given the current fulltext environ.
         return 0;
     }
 
-    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         return array();
     }
 
@@ -517,8 +506,8 @@ class BooleanSearchQuery extends PartialQuery {
         $oUser = User::get($_SESSION['userID']);
         return KTSearchUtil::criteriaToQuery($this->datavars, $oUser, 'ktcore.permissions.read', $aOptions);
     }
-    
-    function getDocumentCount() { 
+
+    function getDocumentCount() {
         $aOptions = array(
             'select' => 'count(DISTINCT D.id) AS cnt',
         );
@@ -527,13 +516,13 @@ class BooleanSearchQuery extends PartialQuery {
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
-    
-    
+
+
     // search needs some special stuff... this should probably get folded into a more complex criteria-driven thing
     // later.
     //
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
-    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
         $this->sDocumentJoinClause = $sJoinClause;
         $this->aDocumentJoinParams = $aJoinParams;
         $aOptions = array(
@@ -544,14 +533,11 @@ class BooleanSearchQuery extends PartialQuery {
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
         $sQuery .= ' ORDER BY ' . $sSortColumn . ' ' . $sSortOrder . ' ';
-        $sQuery .= ' LIMIT ?, ?';
+        $sQuery .= " LIMIT $iBatchStart, $iBatchSize";
 
-        $aParams[] = $iBatchStart;
-        $aParams[] = $iBatchSize;
-        
         $q = array($sQuery, $aParams);
-        $res = DBUtil::getResultArray($q); 
-        
+        $res = DBUtil::getResultArray($q);
+
         return $res;
     }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE document_content_version ADD md5hash char(32);

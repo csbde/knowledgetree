@@ -5,17 +5,18 @@ div#error-container {
 	font-family: Verdana, Arial, sans-serif;
 	margin:2em auto;
 	padding:10px;
-	width:470px;
+	width:600px;
 }
 div#error-container div {
 	height: 150px;
 }
 div#error-container h1 {
-	font-weight: lighter;
-	font-size: 22px;
+	
+	font-size: 18px;
 	margin-left: 100px;
 }
 div#error-container p {
+	font-size: 12px;
 	margin-left: 100px;
 }
 

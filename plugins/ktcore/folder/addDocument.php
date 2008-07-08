@@ -2,9 +2,10 @@
 /**
  * $Id$
  *
- * KnowledgeTree Open Source Edition
+ * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2004 - 2008 The Jam Warehouse Software (Pty) Limited
+ * Copyright (C) 2008 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * You can contact The Jam Warehouse Software (Pty) Limited, Unit 1, Tramber Place,
- * Blake Street, Observatory, 7925 South Africa. or email info@knowledgetree.com.
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -95,19 +96,23 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         // Onchange gets the name of the file and inserts it as the document title.
         $sFileOnchange = "javascript:
-            var arrPath=this.value.split('/');
-            if(arrPath.length == 1){
-                var arrPath=this.value.split('\\\');
-            }
-            var name=arrPath[arrPath.length-1];
-            var name=name.split('.');
+            var doc = document.getElementById('document_name');
+            if(doc.value == ''){
+                var arrPath=this.value.split('/');
+                if(arrPath.length == 1){
+                    var arrPath=this.value.split('\\\');
+                }
+                var name=arrPath[arrPath.length-1];
+                var name=name.split('.');
                 var len = name.length;
                 if(len > 1){
                     if(name[len-1].length <= 4){
                         name.pop();
                     }
-            var title=name.join('.');
-            document.getElementById('document_name').value=title;";
+                }
+                var title=name.join('.');
+                doc.value=title;
+            }";
 
         $oForm->setWidgets(array(
             array('ktcore.widgets.file',array(
@@ -119,7 +124,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             )),
             array('ktcore.widgets.string',array(
                 'label' => _kt('Document Title'),
-                'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s&trade;.'), APP_NAME),
+                'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s.'), APP_NAME),
                 'name' => 'document_name',
                 'required' => true,
                 'id' => 'document_name',
@@ -184,7 +189,10 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
-            return $oForm->handleError();
+            if(!isset($res['errors']['file'])){
+                $aError['file'] = array(_kt('Please reselect the file to upload.'));
+            }
+            return $oForm->handleError('', $aError);
         }
         $data = $res['results'];
         $key = KTUtil::randomString(32);
