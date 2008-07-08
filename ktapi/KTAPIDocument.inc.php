@@ -113,7 +113,27 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		return ($this->document->getStatusID() == 3);
 	}
+	
+	/**
+	 * Checks if the document is a shortcut
+	 *
+	 * @return boolean
+	 */
+	function is_shortcut()
+	{
+		return $this->document->isSymbolicLink();
+	}
 
+	/**
+	 * Retrieves the shortcuts linking to this document
+	 *
+	 */
+	function get_shortcuts()
+	{
+		return $this->document->getSymbolicLinks();
+	}
+	
+	
 	/**
 	 * This is the constructor for the KTAPI_Folder.
 	 *
@@ -1478,7 +1498,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$detail = array();
 		$document = $this->document;
-
+	
 		// get the document id
 		$detail['document_id'] = (int) $document->getId();
 
@@ -1601,6 +1621,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$detail['version'] = (float) $detail['version'];
 		}
+		
+		//might be unset at the bottom in case of old webservice version
+		//make sure we're using the real document for this one
+		$this->document->switchToRealCore();
+		$detail['linked_document_id'] = $document->getLinkedDocumentId();
+		$this->document->switchToLinkedCore();
 
 		// check immutability
 		$detail['is_immutable'] = (bool) $document->getImmutable();
@@ -1651,7 +1677,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 			unset($detail['updated_by']);
 			unset($detail['updated_date']);
 		}
-
+		if($wsversion < 3){
+			unset($detail['linked_document_id']);
+		}
+		
 		return $detail;
 	}
 

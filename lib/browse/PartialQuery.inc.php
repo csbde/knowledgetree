@@ -94,14 +94,16 @@ class BrowseQuery extends PartialQuery{
     // FIXME cache permission lookups, etc.
     var $folder_id = -1;
     var $exclude_folders=array();
+    var $exclude_shortcuts = false;
 
-    function BrowseQuery($iFolderId, $oUser = null, $aOptions = null) {
+    function BrowseQuery($iFolderId, $oUser = null, $aOptions = null, $excludeShortcuts = false) {
         $this->folder_id = $iFolderId;
         if (is_null($oUser)) {
             $oUser = User::get($_SESSION['userID']);
         }
         $this->oUser =& $oUser;
         $this->aOptions = $aOptions;
+        $this->exclude_shortcuts = $excludeShortcuts;
         if (KTUtil::arrayGet($aOptions, 'ignorepermissions')) {
             $this->oUser = null;
         }
@@ -116,6 +118,10 @@ class BrowseQuery extends PartialQuery{
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
         $aPotentialWhere = array($sPermissionString, 'D.folder_id = ?', 'D.status_id = 1');
         $aWhere = array();
+		//check if symlinks should be excluded
+        if($this->exclude_shortcuts == true){
+        	$aWhere[] = "linked_document_id IS NULL";
+        }
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
                 continue;
@@ -157,6 +163,10 @@ class BrowseQuery extends PartialQuery{
 
         $aPotentialWhere = array($sPermissionString, 'F.parent_id = ?');
         $aWhere = array();
+		//check if symlinks should be excluded
+    	if($this->exclude_shortcuts == true){
+        	$aWhere[] = "linked_folder_id IS NULL";
+        }
         foreach ($aPotentialWhere as $sWhere) {
             if (empty($sWhere)) {
                 continue;

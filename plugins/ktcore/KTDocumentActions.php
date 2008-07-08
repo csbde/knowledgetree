@@ -853,15 +853,31 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][]= _kt('This document can\'t be deleted because it is checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
-        }
+        }      
+        
         return true;
     }
 
+	function form_confirm() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt('Are you sure?'),
+            'description' => _kt('There are shortcuts linking to this document; deleting the document will automatically delete them. Would you like to continue?'),
+            'action' => 'main',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt('Delete Document'),
+            'context' => &$this,
+        ));
+       
 
+        return $oForm;
+    }
+    
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Delete Document'),
+			'label' => _kt('Delete Document'),
             'action' => 'delete',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -888,11 +904,24 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Delete'));
+    	//check if we need confirmation for symblolic links linking to this document
+		if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
+        	$this->redirectTo("confirm");
+        }
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
-
         $oForm = $this->form_main();
-
         $oTemplate->setData(array(
+            'context' => &$this,
+            'form' => $oForm,
+        ));
+        return $oTemplate->render();
+    }
+    
+    function do_confirm(){
+    	$this->oPage->setBreadcrumbDetails(_kt('Confirm delete'));
+    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete_confirm');
+        $oForm = $this->form_confirm();
+    	$oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));
@@ -1346,6 +1375,22 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         return parent::getInfo();
     }
 
+	function form_confirm() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt('Are you sure?'),
+            'description' => _kt('There are shortcuts linking to this document; archiving the document automatically will delete them. Would you like to continue?'),
+            'action' => 'main',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'submit_label' => _kt('Archive Document'),
+            'context' => &$this,
+        ));
+       
+
+        return $oForm;
+    }
+    
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -1375,12 +1420,27 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     }
 
     function do_main() {
+		//if there are symbolic links linking to this document we need confirmation
+    	if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
+        	$this->redirectTo("confirm");
+        }
         $this->oPage->setBreadcrumbDetails(_kt('Archive Document'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
 
         $oForm = $this->form_main();
 
         $oTemplate->setData(array(
+            'context' => &$this,
+            'form' => $oForm,
+        ));
+        return $oTemplate->render();
+    }
+    
+	function do_confirm(){
+    	$this->oPage->setBreadcrumbDetails(_kt('Confirm archive'));
+    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive_confirm');
+        $oForm = $this->form_confirm();
+    	$oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));

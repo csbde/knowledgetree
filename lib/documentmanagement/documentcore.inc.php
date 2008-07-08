@@ -84,6 +84,9 @@ class KTDocumentCore extends KTEntity {
     var $dCheckedOut;
 
     var $sOemNo;
+    
+    /** ID of the document this document links to(if any) */
+    var $iLinkedDocumentId;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -118,7 +121,8 @@ class KTDocumentCore extends KTEntity {
         'sRestoreFolderPath' => 'restore_folder_path',
 
         'dCheckedOut'=>'checkedout',
-        'sOemNo'=>'oem_no'
+        'sOemNo'=>'oem_no',
+    	'iLinkedDocumentId' => 'linked_document_id'
     );
 
     function KTDocumentCore() {
@@ -173,6 +177,46 @@ class KTDocumentCore extends KTEntity {
 
     function getRestoreFolderPath() { return $this->sRestoreFolderPath; }
     function setRestoreFolderPath($sValue) { $this->sRestoreFolderPath = $sValue; }
+    
+    function getLinkedDocumentId(){ return $this->iLinkedDocumentId;}
+    function setLinkedDocumentId($iNewValue){ $this->iLinkedDocumentId = $iNewValue;}
+    
+    /**
+     * Returns the ID of the real document.
+     *
+     * @return int the ID
+     */
+    function getRealDocumentId(){ 
+    	$realDocument = $this->getRealDocument();
+    	return $realDocument->getId();
+    }
+    
+    /**
+     * Retrieves the real document (which is a shortcut that links to the linked document)
+     *
+     */
+    function getRealDocument()
+    {
+        if (is_null($this->getLinkedDocumentId()))
+        {
+            return Document::get($this->getId());
+        }
+
+        $document = Document::get($this->getLinkedDocumentId());
+        return $document->getRealDocument();
+    }
+
+    /**
+     * Checks if this is a shortcut
+     *
+     * @return boolean
+     */
+    function isSymbolicLink()
+    {
+        return !is_null($this->getLinkedDocumentId());
+    }
+    
+    
     // }}}
 
     // {{{ getParentId
@@ -291,7 +335,7 @@ class KTDocumentCore extends KTEntity {
     // {{{ update
     function update($bPathMove = false) {
         //var_dump($this); exit(0);
-        $res = parent::update();
+       	$res = parent::update();
 
         if (($res === true) && ($bPathMove === true)) {
             KTPermissionUtil::updatePermissionLookup($this);

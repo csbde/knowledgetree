@@ -151,7 +151,13 @@ class KTBulkAction extends KTStandardDispatcher {
 
             foreach($aIds as $id) {
                 $oE =& call_user_func($aFunc, $id);
-                $aNames[] = $oE->getName();
+                $name = array();
+                $name['name'] = $oE->getName();
+                //add shortcut notice if the entity is a shortcut
+                if($oE->isSymbolicLink()){
+                	$name['notice'] = _kt("Shortcut");
+                }
+                $aNames[] = $name;
             }
             return $aNames;
         } else {
@@ -159,7 +165,52 @@ class KTBulkAction extends KTStandardDispatcher {
         }
     }
 
-
+    /**
+     * Checks if there are symlinks that are linking to items in the current list
+     * Useful if you want to prompt the user with a confirmation because they're
+     * automatically deleted when their targets are deleted or archived.
+     *
+     * @return boolean
+     */
+	function symlinksLinkingToCurrentList(){
+		$symlinksPresent = false;
+        foreach($this->oActiveEntityList->getDocumentIds() as $iDocument){
+        	$oDocument = Document::get($iDocument);
+        	if(count($oDocument->getSymbolicLinks()) > 0){
+        		$symlinksPresent = true;
+        		break;
+        	}
+        }
+        if($symlinksPresent == false){
+	        foreach($this->oActiveEntityList->getFolderIds() as $iFolder){
+	        	$oStartFolder = Folder::get($iFolder);
+	        	$aRemainingFolders = array($oStartFolder->getId());
+	        	while (!empty($aRemainingFolders)) {
+	        		$iFolderId = array_pop($aRemainingFolders);
+	        		$oFolder = Folder::get($iFolderId);
+	        			
+		        	if(count($oFolder->getSymbolicLinks()) > 0){
+		        		$symlinksPresent = true;
+		        		break;
+		        	}
+	        			
+	        		$aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
+	        		foreach ($aChildDocs as $oDoc) {
+				        if(count($oDoc->getSymbolicLinks()) > 0){
+			        		$symlinksPresent = true;
+			        		break;
+			        	}
+	        		}
+	        			
+	        		$aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
+            		$aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
+	        	}
+	        }
+        }
+        return $symlinksPresent;
+	}
+    
+    
     // doesn't actually do checks, as they have to be performed per-entity
     function check() {
         // not necessarily coming from a folder...
@@ -249,11 +300,17 @@ class KTBulkAction extends KTStandardDispatcher {
             }
 
             $res = $this->perform_action($oDocument);
-
+			
+            //check for shortcut notice
+            $notice = null;
+            if($oDocument->isSymbolicLink()){
+            	$notice = _kt("Shortcut");
+            }
+            
             if(PEAR::isError($res)) {
-                $this->aActionResults['documents'][] = array($sName, $res->getMessage());
+                $this->aActionResults['documents'][] = array($sName, $res->getMessage(), $notice);
             } else {
-                $this->aActionResults['documents'][] = array($sName, _kt('Success'));
+                $this->aActionResults['documents'][] = array($sName, _kt('Success'), $notice);
             }
         }
 
@@ -267,10 +324,16 @@ class KTBulkAction extends KTStandardDispatcher {
 
             $res = $this->perform_action($oFolder);
 
+        	//check for shortcut notice
+            $notice = null;
+            if($oFolder->isSymbolicLink()){
+            	$notice = _kt("Shortcut");
+            }
+            
             if(PEAR::isError($res)) {
-                $this->aActionResults['folders'][] = array($sName, $res->getMessage());
+                $this->aActionResults['folders'][] = array($sName, $res->getMessage(), $notice);
             } else {
-                $this->aActionResults['folders'][] = array($sName, _kt('Success'));
+                $this->aActionResults['folders'][] = array($sName, _kt('Success'), $notice);
             }
         }
     }

@@ -1,0 +1,21 @@
+<h2>{i18n}Add Shortcut{/i18n}</h2>
+
+
+<p class="descriptiveText">{i18n}Select a document or folder to make a shortcut to.{/i18n}
+</p>
+
+{foreach from=$breadcrumbs item=breadcrumb name=bc}
+    {if !$smarty.foreach.bc.last}
+        <a href="{$breadcrumb.url}">{$breadcrumb.name|sanitize}</a> &raquo;
+    {else}
+        {$breadcrumb.name|sanitize}
+    {/if}
+{/foreach}
+
+<form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$folder->getId()}">
+{$collection->render()}
+<div class="form_actions">
+<input type="hidden" name="action" value="add" />
+<input type="submit" name="submit[addshortcut]" value="{i18n}Add shortcut{/i18n}" />
+</div>
+</form>
