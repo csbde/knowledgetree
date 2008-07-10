@@ -110,6 +110,8 @@ class Document {
 
     function getOemNo() { return $this->_oDocumentCore->getOemNo(); }
 
+	function getLinkedDocumentId(){ return $this->_oDocumentCore->getLinkedDocumentId();}
+    function setLinkedDocumentId($iNewValue){ $this->_oDocumentCore->setLinkedDocumentId($iNewValue);}
 
     // Document Metadata Items
 
@@ -167,7 +169,81 @@ class Document {
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
+    
 
+
+    /**
+     * Returns the symlink document instance
+     *
+     * @return Document the real document
+     */
+    function getRealDocument() 
+    {
+        return $this->_oDocumentCore->getRealDocument();
+    }
+
+    /**
+     * Checks if this document is a symbolic link to an other doc.
+     *
+     * @return boolean
+     */
+    function isSymbolicLink() 
+    {
+        $documentCore = KTDocumentCore::get($this->getId());
+        return $documentCore->isSymbolicLink();
+    }
+
+    /**
+     * Switches the core of this document to the core of the real doc.
+     *
+     */
+    function switchToRealCore() 
+    {
+        if ($this->isSymbolicLink())
+        {
+             $this->_oDocumentCore = KTDocumentCore::get($this->getId());
+        }
+    }
+
+    /**
+     * Retrieves the ID of the real document
+     *
+     * @return int the ID
+     */
+    function getRealDocumentId() 
+    {
+         $document = $this->getRealDocument();
+         if (PEAR::isError($document)) { return $document; }
+         return $document->getId();
+    }
+
+    /**
+     * Switches this documents core to the core of the document this document is linking to.
+     *
+     */
+    function switchToLinkedCore() 
+    { 
+    	if ($this->isSymbolicLink())
+        {
+            $document = $this->getRealDocument();
+            if (PEAR::isError($document)) { return $document; }
+            $this->_oDocumentCore = $document->_oDocumentCore;
+            //also load metadata
+            $this->_oDocumentMetadataVersion = $document->_oDocumentMetadataVersion;
+        }
+    }
+    
+    /**
+     * Retrieves all symbolic links linking to this document
+     *
+     */
+    function getSymbolicLinks(){
+    	$sQuery = 'SELECT * FROM documents ' .
+				'WHERE documents.linked_document_id =  '.$this->getId();
+    	return DButil::getResultArray($sQuery);
+    }  
+    
+    
     // }}}
 
     // {{{ getParentID
@@ -233,11 +309,18 @@ class Document {
     // }}}
 
     // {{{ load
-    function load($iId, $iMetadataVersionId = null) {
+	 function load($iId, $iMetadataVersionId = null) {
         $this->iId = $iId;
         $this->_oDocumentCore = KTDocumentCore::get($iId);
         if (PEAR::isError($this->_oDocumentCore)) { return $this->_oDocumentCore; }
 
+    	//Automatically load the information of the document this document links to, if any.
+        $res = $this->switchToLinkedCore();             
+        if (PEAR::isError($res))
+        {
+            return $res;
+        }
+        
         // FIXME add error $res if MDV > $_oDC->getMDV
         if (is_null($iMetadataVersionId)) {
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId());

@@ -45,6 +45,7 @@ require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 require_once(KT_LIB_DIR . '/foldermanagement/foldertransaction.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
@@ -401,7 +402,17 @@ class KTFolderUtil {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('Failure deleting folders.'));
         }
-
+        
+        //delete all folder shortcuts
+        foreach($aFolderIds as $iFolder){
+        	$oFolder = Folder::get($iFolder);
+	        $aSymlinks = $oFolder->getSymbolicLinks();
+	      
+	        foreach($aSymlinks as $aSymlink){       	
+	        	KTFolderUtil::deleteSymbolicLink($aSymlink['id']);
+	        }
+        }
+        
         // purge caches
         KTEntityUtil::clearAllCaches('Folder');
 
@@ -573,6 +584,125 @@ class KTFolderUtil {
 
         return true;
     }
+    
+/**
+     * Create a symbolic link in the target folder
+     *
+     * @param Folder $sourceFolder Folder to create a link to
+     * @param Folder $targetFolder Folder to place the link in
+     * @param User $user current user
+     * @return Folder the link
+     */
+    static function createSymbolicLink($sourceFolder, $targetFolder, $user = null) // added/
+    {
+    	//validate input
+        if (is_numeric($sourceFolder))
+        {
+            $sourceFolder = Folder::get($sourceFolder);
+        }
+        if (!$sourceFolder instanceof Folder)
+        {
+            return PEAR::raiseError(_kt('Source folder not specified'));
+        }
+        if (is_numeric($targetFolder))
+        {
+            $targetFolder = Folder::get($targetFolder);
+        }
+        if (!$targetFolder instanceof Folder)
+        {
+            return PEAR::raiseError(_kt('Target folder not specified'));
+        }
+        if (is_null($user))
+        {
+            $user = $_SESSION['userID'];
+        }
+        if (is_numeric($user))
+        {
+            $user = User::get($user);
+        }
+
+        //check for permissions
+        $oWritePermission =& KTPermission::getByName("ktcore.permissions.write");
+		$oReadPermission =& KTPermission::getByName("ktcore.permissions.read");
+		if (!KTBrowseUtil::inAdminMode($user, $targetFolder)) {
+            if(!KTPermissionUtil::userHasPermissionOnItem($user, $oWritePermission, $targetFolder)){
+        		return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
+       		}
+        }
+        if (!KTBrowseUtil::inAdminMode($user, $sourceFolder)) {
+        	if(!KTPermissionUtil::userHasPermissionOnItem($user, $oReadPermission, $sourceFolder)){
+        		return PEAR::raiseError(_kt('You\'re not authorized to create a shortcut to this folder'));
+       		}
+        }
+        
+    	//check if the shortcut doesn't already exists in the target folder
+        $aSymlinks = $sourceFolder->getSymbolicLinks();
+        foreach($aSymlinks as $iSymlink){
+        	$oSymlink = Folder::get($iSymlink['id']);
+        	if($oSymlink->getParentID() == $targetFolder->getID()){
+        		return PEAR::raiseError(_kt('There already is a shortcut to this folder in the target folder.'));
+        	}
+        }
+        
+        //Create the link
+        $oSymlink = Folder::createFromArray(array(
+            'iParentID' => $targetFolder->getId(),
+            'iCreatorID' => $user->getId(),
+            'sFullPath' => $targetFolder->getFullPath(),
+            'sParentFolderIDs' => $targetFolder->getParentFolderIDs(),
+            'iPermissionObjectID' => $targetFolder->getPermissionObjectID(),
+            'iPermissionLookupID' => $targetFolder->getPermissionLookupID(),
+        	'iLinkedFolderId' => $sourceFolder->getId(),
+        ));
+        return $oSymlink;
+    }
+
+    /**
+     * Deletes a symbolic link folder
+     *
+     * @param Folder $folder tthe symbolic link folder to delete
+     * @param User $user the current user
+     * @return unknown
+     */
+    static function deleteSymbolicLink($folder, $user = null) // added/
+    {
+    	//validate input
+        if (is_numeric($folder))
+        {
+            $folder = Folder::get($folder);
+        }
+        if (!$folder instanceof Folder)
+        {
+            return PEAR::raiseError(_kt('Folder not specified'));
+        }
+        if (!$folder->isSymbolicLink())
+        {
+            return PEAR::raiseError(_kt('Focument must be a symbolic link entity'));
+        }
+        if (is_null($user))
+        {
+            $user = $_SESSION['userID'];
+        }
+        if (is_numeric($user))
+        {
+            $user = User::get($user);
+        }
+
+        //check if the user has sufficient permissions
+		$oPerm = KTPermission::getByName('ktcore.permissions.delete');
+    	if (!KTBrowseUtil::inAdminMode($user, $folder)) {
+            if(!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $folder)){
+        		return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
+       		}
+        }
+        
+        // we only need to delete the folder entry for the link
+        $sql = "DELETE FROM folders WHERE id=?";
+        DBUtil::runQuery(array($sql, array($folder->getId())));
+
+    }
+    
+    
 }
 
 ?>

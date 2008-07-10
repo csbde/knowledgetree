@@ -65,6 +65,8 @@ class Folder extends KTEntity {
     var $iPermissionLookupID;
     /** whether to restrict to only certain document types */
     var $bRestrictDocumentTypes = false;
+    /** ID of the folder this is a shortcut to(if any) */
+    var $iLinkedFolderId;
 
     // {{{ KTEntity stuff
     var $_aFieldToSelect = array(
@@ -79,6 +81,7 @@ class Folder extends KTEntity {
         'iPermissionObjectID' => 'permission_object_id',
         'iPermissionLookupID' => 'permission_lookup_id',
         'bRestrictDocumentTypes' => 'restrict_document_types',
+    	'iLinkedFolderId' => 'linked_folder_id',
     );
     // }}}
 
@@ -104,6 +107,11 @@ class Folder extends KTEntity {
 	function getRestrictDocumentTypes() { return $this->bRestrictDocumentTypes; }
 	function setRestrictDocumentTypes($bRestrictDocumentTypes) { $this->bRestrictDocumentTypes = $bRestrictDocumentTypes; }
 
+	function getLinkedFolderId(){ return $this->iLinkedFolderId;}
+	function setLinkedFolderId($iNewValue){ $this->iLinkedFolderId = $iNewValue;}
+	
+	
+	
     // {{{ create()
     function create () {
         $oParentFolder =& Folder::get($this->iParentID);
@@ -116,6 +124,18 @@ class Folder extends KTEntity {
     }
     // }}}
 
+    function loadFromArray ($aOptions) {
+    	parent::loadFromArray($aOptions);
+
+    	//now load fields from the folder this folder is linking to, if any.
+    	if($this->isSymbolicLink()){
+    		$oLinkedFolder = $this->getLinkedFolder();
+    		$this->sName = $oLinkedFolder->getName();
+    		$this->sDescription = $oLinkedFolder->getDescription();
+    	}
+    	
+    }
+        
         /**
          * Returns a comma delimited string containing the parent folder ids, strips leading /
          *
@@ -308,6 +328,63 @@ class Folder extends KTEntity {
         return ($res != 0); // handle pre-existing duplicates gracefully.
 	}
 
+	/**
+	 * Checks if this folder is a symbolic link
+	 *
+	 * @return boolean
+	 */
+	function isSymbolicLink()
+    {
+        return !is_null($this->getLinkedFolderId());
+    }
+	
+    /**
+     * Retrieves the folder this folder links to, if any.
+     *
+     * @return Folder
+     */
+    function getLinkedFolder(){
+    	if($this->isSymbolicLink()){
+    		return Folder::get($this->getLinkedFolderId());
+    	}
+    }
+    
+    /**
+     * Returns the "Symbolic link" folder
+     *
+     * @return Folder the folder
+     */
+	function getRealFolder(){
+		if (is_null($this->getLinkedFolderId()))
+        {
+            return Folder::get($this->getId());
+        }
+
+        $oFolder = Folder::get($this->getLinkedFolderId());
+        return $oFolder->getRealFolder();
+	}
+	
+	/**
+	 * Returns the ID of the "Symbolic link" folder
+	 *
+	 * @return int the ID
+	 */
+	function getRealFolderId(){ 
+    	$oRealFolder = $this->getRealFolder();
+    	return $oRealFolder->getId();
+    }
+    
+    /**
+     * Returns the symbolic links linking to this folder
+     *
+     * @return Array array with folder IDs
+     */
+    function getSymbolicLinks(){
+    	$sQuery = 'SELECT * FROM folders ' .
+				'WHERE folders.linked_folder_id =  '.$this->getId();
+    	return DButil::getResultArray($sQuery);
+    }  
+	
 	/**
     * Static function
     * Get a list of Documents

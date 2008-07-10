@@ -1,0 +1,5 @@
+{i18n}The following shortcut is no longer valid as the target document has been archived. Please note that it has been automatically removed from the repository:{/i18n}<br>
+<br>
+<a href="{$url}">{$title}</a><br>
+<br>
+{i18n}Target document archived by:{/i18n} {$user_name}<br>

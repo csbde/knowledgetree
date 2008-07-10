@@ -92,14 +92,68 @@ class KTBulkDeleteAction extends KTBulkAction {
         return $oForm;
     }
 
+    /**
+     * build the confirmation form that is shown when symlinks are affected by this action.
+     *
+     * @return KTForm the form
+     */
+	function form_confirm() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt('Are you sure?'),
+            'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
+            'action' => 'collectinfo',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'submit_label' => _kt('Continue'),
+            'context' => $this,
+        ));
+
+        $oForm->setWidgets(array(
+        array('ktcore.widgets.hidden',array(
+        	'name' => 'delete_confirmed',
+        	'value' => '1'
+        ))));
+
+        return $oForm;
+    }
+
+    /**
+     * Shows the confirmation form if symlinks are affected by the current action
+     *
+     * @return Template HTML
+     */
+	function do_confirm(){
+		$this->store_lists();
+        $this->get_lists();
+    	$this->oPage->setBreadcrumbDetails(_kt('Confirm delete'));
+    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/bulk_action_confirm');
+        $oForm = $this->form_confirm();
+    	$oTemplate->setData(array(
+            'context' => &$this,
+            'form' => $oForm,
+        ));
+        return $oTemplate->render();
+    }
+
     // info collection step
     function do_collectinfo() {
         $this->store_lists();
         $this->get_lists();
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
-        return $oTemplate->render(array('context' => $this,
-                                        'form' => $this->form_collectinfo()));
+
+     	//check if a the symlinks deletion confirmation has been passed yet
+		if(KTutil::arrayGet($_REQUEST['data'],'delete_confirmed') != 1){
+			//check if there are actually any symlinks involved.
+        	if($this->symlinksLinkingToCurrentList()){
+        		$this->redirectTo("confirm");
+        	}
+        }
+
+        //render template
+		$oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+	        return $oTemplate->render(array('context' => $this,
+	                                        'form' => $this->form_collectinfo()));
     }
 
 
@@ -464,15 +518,71 @@ class KTBulkArchiveAction extends KTBulkAction {
         if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
                 return PEAR::raiseError(_kt('Document cannot be archived'));
         }
+        if($oEntity->isSymbolicLink()){
+        	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document or folder instead."));
+        }
         return parent::check_entity($oEntity);
+    }
+
+	/**
+     * build the confirmation form that is shown when symlinks are affected by this action.
+     *
+     * @return KTForm the form
+     */
+	function form_confirm() {
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+            'label' => _kt('Are you sure?'),
+            'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
+            'action' => 'collectinfo',
+            'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'submit_label' => _kt('Continue'),
+            'context' => $this,
+        ));
+
+        $oForm->setWidgets(array(
+        array('ktcore.widgets.hidden',array(
+        	'name' => 'archive_confirmed',
+        	'value' => '1'
+        ))));
+
+        return $oForm;
+    }
+
+    /**
+     * Shows the confirmation form if symlinks are affected by the current action
+     *
+     * @return Template HTML
+     */
+	function do_confirm(){
+		$this->store_lists();
+        $this->get_lists();
+    	$this->oPage->setBreadcrumbDetails(_kt('Confirm archive'));
+    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/bulk_action_confirm');
+        $oForm = $this->form_confirm();
+    	$oTemplate->setData(array(
+            'context' => &$this,
+            'form' => $oForm,
+        ));
+        return $oTemplate->render();
     }
 
     // info collection step
     function do_collectinfo() {
         $this->store_lists();
         $this->get_lists();
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+
+        //check if a the symlinks deletion confirmation has been passed yet
+		if(KTutil::arrayGet($_REQUEST['data'],'archive_confirmed') != 1){
+			//check if there are actually any symlinks involved.
+        	if($this->symlinksLinkingToCurrentList()){
+        		$this->redirectTo("confirm");
+        	}
+        }
+
+		$oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
         return $oTemplate->render(array('context' => $this,
                                         'form' => $this->form_collectinfo()));
     }
@@ -637,6 +747,9 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         if(is_a($oEntity, 'Document')) {
 
 			$oDocument = $oEntity;
+	        if($oDocument->isSymbolicLink()){
+	    		$oDocument->switchToLinkedCore();
+	    	}
 
             if ($this->bNoisy) {
                 $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
@@ -932,7 +1045,6 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         return $ret;
                     }
                 }
-
                 $this->oZip->addDocumentToZip($oEntity);
             }
 

@@ -17,7 +17,10 @@
 <tbody>
 {foreach from=$list.folders item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0|sanitize}</td>
+        <td>{$item.0|sanitize}
+        {if $item.2}
+        	<b>({$item.2})</b>
+        {/if}</td>
         <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
@@ -42,7 +45,10 @@
 
 {foreach from=$list.documents item=item}
     <tr class="{cycle values=even,odd}">
-        <td>{$item.0|sanitize}</td>
+        <td>{$item.0|sanitize}
+        {if $item.2}
+        	<b>({$item.2})</b>
+        {/if}</td>
         <td>{$item.1|sanitize}</td>
     </tr>
 {/foreach}
