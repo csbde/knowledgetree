@@ -1741,6 +1741,12 @@ gettext("Folder is no longer available");
 /* ./templates/kt3/notifications/subscriptions.AddFolder.smarty */
 gettext("Clear Alert");
 
+/* ./templates/kt3/notifications/notification.SymbolicLinkDeleted.smarty */
+gettext("The following shortcut is no longer valid as the target document has been deleted. Please note that it has been automatically removed from the repository:");
+
+/* ./templates/kt3/notifications/notification.SymbolicLinkDeleted.smarty */
+gettext("Target document deleted by:");
+
 /* ./templates/kt3/notifications/subscriptions.RemoveChildDocument.smarty */
 gettext("The document \"#object_name#\" has been removed");
 
@@ -1797,6 +1803,12 @@ gettext("by #actor_name#");
 
 /* ./templates/kt3/notifications/subscriptions.ArchivedDocument.smarty */
 gettext("Clear Alert");
+
+/* ./templates/kt3/notifications/notification.SymbolicLinkArchived.smarty */
+gettext("The following shortcut is no longer valid as the target document has been archived. Please note that it has been automatically removed from the repository:");
+
+/* ./templates/kt3/notifications/notification.SymbolicLinkArchived.smarty */
+gettext("Target document archived by:");
 
 /* ./templates/kt3/notifications/subscriptions.MoveDocument.smarty */
 gettext("The document \"#object_name#\" has been moved");
@@ -3551,7 +3563,7 @@ gettext("Refresh");
 gettext("Search Criteria Editor");
 
 /* ./templates/ktcore/search2/adv_query_search.smarty */
-gettext("The search criteria editor allows you to utilise the full power of the KnowledgeTree search engine by allowing you to perform more complicated searches by using the free text criteria format.");
+gettext("The search criteria editor allows you to utilise the full power of the search engine by allowing you to perform more complicated searches by using the free text criteria format.");
 
 /* ./templates/ktcore/search2/adv_query_search.smarty */
 gettext("The #options# may also be used to perform searches.");
@@ -4114,6 +4126,9 @@ gettext("Groups");
 /* ./templates/ktcore/action/view_roles.smarty */
 gettext("No roles defined in the Role Administration area.");
 
+/* ./templates/ktcore/action/archive_confirm.smarty */
+gettext("Archive Document");
+
 /* ./templates/ktcore/action/move.smarty */
 gettext("Moving a document relocates the document within the document repository.");
 
@@ -4158,6 +4173,9 @@ gettext("Archive Document");
 
 /* ./templates/ktcore/action/archive.smarty */
 gettext("Archiving a document changes the document's state to invisible to non-administrative users. Only an Administrator may unarchive a document. Please note that this is a non-permanent change and does not delete the document from the repository.");
+
+/* ./templates/ktcore/action/delete_confirm.smarty */
+gettext("Delete Document");
 
 /* ./templates/ktcore/action/checkin.smarty */
 gettext("Checkin Document");
@@ -4689,6 +4707,15 @@ gettext("Allowed");
 
 /* ./templates/ktcore/folder/resolved_permissions_user.smarty */
 gettext("Denied");
+
+/* ./templates/ktcore/folder/shortcut.smarty */
+gettext("Add Shortcut");
+
+/* ./templates/ktcore/folder/shortcut.smarty */
+gettext("Select a document or folder to make a shortcut to.");
+
+/* ./templates/ktcore/folder/shortcut.smarty */
+gettext("Add shortcut");
 
 /* ./templates/ktcore/folder/permissions.smarty */
 gettext("No roles or groups have been defined.  Permissions can only be allocated to roles and groups.");

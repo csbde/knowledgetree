@@ -1,7 +1,7 @@
 <h2>{i18n}Search Criteria Editor{/i18n}</h2>
 
 <p class="descriptiveText">
-{i18n}The search criteria editor allows you to utilise the full power of the KnowledgeTree search engine by allowing you to perform more complicated searches by using the free text criteria format.{/i18n}
+{i18n}The search criteria editor allows you to utilise the full power of the search engine by allowing you to perform more complicated searches by using the free text criteria format.{/i18n}
 
 {capture assign=options}
 <a href="{$rootUrl}/search2.php?action=guiBuilder">Advanced Search</a>

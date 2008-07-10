@@ -17,8 +17,6 @@ function _(trans_string) {
 
 
 
-// strings for file: resources/js/DDList.js
-
 // strings for file: resources/js/add_document.js
 
 // strings for file: resources/js/browsehelper.js
@@ -61,15 +59,17 @@ i18n['Add Dashlet'] = '{i18n}Add Dashlet{/i18n}';
 i18n['Add Dashlets'] = '{i18n}Add Dashlets{/i18n}';
 i18n['close'] = '{i18n}close{/i18n}';
 
+// strings for file: resources/js/DDList.js
+
 // strings for file: resources/js/expungeList.js
 
 // strings for file: resources/js/help.js
 
 // strings for file: resources/js/jsonlookup.js
 
-// strings for file: resources/js/kt-utility.js
-
 // strings for file: resources/js/kt3calendar.js
+
+// strings for file: resources/js/kt-utility.js
 
 // strings for file: resources/js/loader.js
 
@@ -83,6 +83,8 @@ i18n['Role or Group'] = '{i18n}Role or Group{/i18n}';
 // strings for file: resources/js/scheduler.js
 
 // strings for file: resources/js/search2widget.js
+
+// strings for file: resources/js/singleselect.js
 
 // strings for file: resources/js/taillog.js
 
