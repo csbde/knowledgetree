@@ -684,6 +684,12 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
                 return PEAR::raiseError(_kt('Document cannot be exported'));
         }
+        //we need to do an extra folder permission check in case of a shortcut
+        if(is_a($oEntity,'Folder') && $oEntity->isSymbolicLink()){
+	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
+	            return PEAR::raiseError(_kt('You do not have the required permissions'));
+	        }
+        }
         return parent::check_entity($oEntity);
     }
 
@@ -768,6 +774,10 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         }else if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
             $oFolder = $oEntity;
+
+            if($oFolder->isSymbolicLink()){
+            	$oFolder = $oFolder->getLinkedFolder();
+            }
             $sFolderId = $oFolder->getId();
             $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
 
@@ -784,6 +794,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
+			$aLinkingFolders = $this->getLinkingEntities($aFolderList);
+            $aFolderList = array_merge($aFolderList,$aLinkingFolders);
 
             $aFolderObjects = array();
             $aFolderObjects[$sFolderId] = $oFolder;
@@ -791,16 +803,21 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             // Export the folder structure to ensure the export of empty directories
             if(!empty($aFolderList)){
                 foreach($aFolderList as $k => $oFolderItem){
-                    // Get documents for each folder
-                    $sFolderItemId = $oFolderItem->getID();
-                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
+                	if(Permission::userHasFolderReadPermission($oFolderItem)){
+	                    // Get documents for each folder
+	                    if($oFolderItem->isSymbolicLink()){
+	                    	$oFolderItem = $oFolderItem->getLinkedFolder();
+	                    }
+	                    $sFolderItemId = $oFolderItem->getID();
+	                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
 
-                    if(!empty($sFolderItemDocs)){
-                        $aFolderDocs = explode(',', $sFolderItemDocs);
-                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
-                    }
-                    $this->oZip->addFolderToZip($oFolderItem);
-                    $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
+	                    if(!empty($sFolderItemDocs)){
+	                        $aFolderDocs = explode(',', $sFolderItemDocs);
+	                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
+	                    }
+	                    $this->oZip->addFolderToZip($oFolderItem);
+	                    $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
+                	}
                 }
             }
 
@@ -808,6 +825,9 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             if(!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
+                 	if($oDocument->isSymbolicLink()){
+	    				$oDocument->switchToLinkedCore();
+	    			}
                     $sDocFolderId = $oDocument->getFolderID();
                     $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
 
@@ -873,6 +893,12 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             }
         }else if(!is_a($oEntity, 'Folder')) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
+        }
+    	//we need to do an extra folder permission check in case of a shortcut
+        if(is_a($oEntity,'Folder') && $oEntity->isSymbolicLink()){
+	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
+	            return PEAR::raiseError(_kt('You do not have the required permissions'));
+	        }
         }
         return parent::check_entity($oEntity);
     }
@@ -1053,6 +1079,9 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             $aDocuments = array();
             $oFolder = $oEntity;
 
+        	if($oFolder->isSymbolicLink()){
+            	$oFolder = $oFolder->getLinkedFolder();
+            }
             $sFolderId = $oFolder->getId();
             $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
 
@@ -1067,28 +1096,36 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
+			$aLinkingFolders = $this->getLinkingEntities($aFolderList);
+            $aFolderList = array_merge($aFolderList,$aLinkingFolders);
+
 
             $aFolderObjects = array();
             $aFolderObjects[$sFolderId] = $oFolder;
 
             // Get the documents within the folder
             if(!empty($aFolderList)){
-                foreach($aFolderList as $k => $oFolderItem){
-                    // Get documents for each folder
-                    $sFolderItemId = $oFolderItem->getID();
-                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
+	                foreach($aFolderList as $k => $oFolderItem){
+	                	if(Permission::userHasFolderReadPermission($oFolderItem)){
+	                    // Get documents for each folder
+	              		if($oFolderItem->isSymbolicLink()){
+            				$oFolderItem = $oFolderItem->getLinkedFolder();
+            			}
+	                    $sFolderItemId = $oFolderItem->getID();
+	                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
 
-                    if(!empty($sFolderItemDocs)){
-                        $aFolderDocs = explode(',', $sFolderItemDocs);
-                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
-                    }
+	                    if(!empty($sFolderItemDocs)){
+	                        $aFolderDocs = explode(',', $sFolderItemDocs);
+	                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
+	                    }
 
-                    // Add the folder to the zip file
-                    if($this->bDownload){
-                        $this->oZip->addFolderToZip($oFolderItem);
-                        $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
-                    }
-                }
+	                    // Add the folder to the zip file
+	                    if($this->bDownload){
+	                        $this->oZip->addFolderToZip($oFolderItem);
+	                        $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
+	                    }
+	                }
+            	}
             }
 
             // Checkout each document within the folder structure
@@ -1100,6 +1137,9 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         $this->addErrorMessage($oDocument->getName().': '.$oDocument->getMessage());
                         continue;
                     }
+               		if($oDocument->isSymbolicLink()){
+	    				$oDocument->switchToLinkedCore();
+	    			}
 
                     // Check if the action is restricted by workflow on the document
                     if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
@@ -1149,8 +1189,6 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                                 return $ret;
                             }
                         }
-
-                        $oDocument->setFileName('innerfile.pdf');
 
                         $sDocFolderId = $oDocument->getFolderID();
                         $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
