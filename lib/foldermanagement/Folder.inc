@@ -8,31 +8,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -109,9 +109,9 @@ class Folder extends KTEntity {
 
 	function getLinkedFolderId(){ return $this->iLinkedFolderId;}
 	function setLinkedFolderId($iNewValue){ $this->iLinkedFolderId = $iNewValue;}
-	
-	
-	
+
+
+
     // {{{ create()
     function create () {
         $oParentFolder =& Folder::get($this->iParentID);
@@ -133,9 +133,9 @@ class Folder extends KTEntity {
     		$this->sName = $oLinkedFolder->getName();
     		$this->sDescription = $oLinkedFolder->getDescription();
     	}
-    	
+
     }
-        
+
         /**
          * Returns a comma delimited string containing the parent folder ids, strips leading /
          *
@@ -302,7 +302,7 @@ class Folder extends KTEntity {
      */
     function getDocumentIDs($iFolderID) {
 		$sTable = KTUtil::getTableName('documents');
-		$aQuery = array("SELECT id FROM {$sTable} WHERE folder_id = ?", array($iFolderID));
+		$aQuery = array("SELECT id FROM {$sTable} WHERE folder_id = ? AND status_id = ?", array($iFolderID, LIVE));
 		$res = DBUtil::getResultArrayKey($aQuery,'id');
 		if (PEAR::isError($res)) {
 		    return $res;
@@ -337,7 +337,7 @@ class Folder extends KTEntity {
     {
         return !is_null($this->getLinkedFolderId());
     }
-	
+
     /**
      * Retrieves the folder this folder links to, if any.
      *
@@ -348,7 +348,7 @@ class Folder extends KTEntity {
     		return Folder::get($this->getLinkedFolderId());
     	}
     }
-    
+
     /**
      * Returns the "Symbolic link" folder
      *
@@ -363,17 +363,17 @@ class Folder extends KTEntity {
         $oFolder = Folder::get($this->getLinkedFolderId());
         return $oFolder->getRealFolder();
 	}
-	
+
 	/**
 	 * Returns the ID of the "Symbolic link" folder
 	 *
 	 * @return int the ID
 	 */
-	function getRealFolderId(){ 
+	function getRealFolderId(){
     	$oRealFolder = $this->getRealFolder();
     	return $oRealFolder->getId();
     }
-    
+
     /**
      * Returns the symbolic links linking to this folder
      *
@@ -383,8 +383,8 @@ class Folder extends KTEntity {
     	$sQuery = 'SELECT * FROM folders ' .
 				'WHERE folders.linked_folder_id =  '.$this->getId();
     	return DButil::getResultArray($sQuery);
-    }  
-	
+    }
+
 	/**
     * Static function
     * Get a list of Documents
