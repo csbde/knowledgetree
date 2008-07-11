@@ -229,7 +229,7 @@ class KTDocumentUtil {
         	
         	//send an email to the owner of the shortcut
         	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
-        		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkDeleted",array('user_name'=>$this->oUser->getName(),
+        		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkArchived",array('user_name'=>$this->oUser->getName(),
         			'url'=>KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($oShortcutDocument)),
         			'title' =>$oShortcutDocument->getName()));
         		$email = new EmailAlert($oOwnerUser->getEmail(),_kt("KnowledgeTree Notification"),$emailTemplate->getBody());
