@@ -210,6 +210,53 @@ class KTBulkAction extends KTStandardDispatcher {
         return $symlinksPresent;
 	}
     
+/**
+     * checks a folderList for shortcuts and queries the repositories for all folders
+     * that are somehow connected to these folders. 
+     */
+    function getLinkingEntities($aFolderList){
+    	$aSearchFolders = array();
+    	if(!empty($aFolderList)){
+            foreach($aFolderList as $oFolderItem){
+            	if(Permission::userHasFolderReadPermission($oFolderItem)){ 
+	                // If it is a shortcut, we should do some more searching
+	                if($oFolderItem->isSymbolicLink()){
+	                    $oFolderItem = $oFolderItem->getLinkedFolder();
+	                    $aSearchFolders[] = $oFolderItem->getID();
+	                }
+            	}
+             }
+        }
+    	$aLinkingFolders = array();
+    	$aSearchCompletedFolders = array();
+    	$count = 0;
+        while(count($aSearchFolders)>0){
+        	$count++;
+        	$oFolder = Folder::get(array_pop($aSearchFolders));
+        	$sFolderId = $oFolder->getId();
+        	 // Get all the folders within the current folder
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aFolderList = $this->oFolder->getList($sWhereClause);
+            foreach($aFolderList as $oFolderItem){
+	            if($oFolderItem->isSymbolicLink()){
+	            	$oFolderItem = $oFolderItem->getLinkedFolder();
+	            }
+				if(Permission::userHasFolderReadPermission($oFolderItem)){            
+		            if($aSearchCompletedFolders[$oFolderItem->getID()] != true){
+	            		$aSearchFolders[] = $oFolderItem->getID();
+	            		$aSearchCompletedFolders[$oFolderItem->getID()] = true;
+	            	}
+				}
+            } 
+            if(!isset($aLinkingFolders[$oFolder->getId()])){
+            	$aLinkingFolders[$oFolder->getId()] = $oFolder;
+            }
+        }
+        return $aLinkingFolders;
+    }
     
     // doesn't actually do checks, as they have to be performed per-entity
     function check() {
