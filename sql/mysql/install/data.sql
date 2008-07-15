@@ -630,7 +630,7 @@ UNLOCK TABLES;
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
 INSERT INTO `folders` VALUES
-(1,'Root Folder','Root Document Folder',NULL,1,0,NULL,NULL,1,5,0,1);
+(1,'Root Folder','Root Document Folder',NULL,1,0,NULL,NULL,1,5,0,1,NULL);
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
