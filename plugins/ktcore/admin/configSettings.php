@@ -196,9 +196,8 @@ class GeneralConfigPageDispatcher extends BaseConfigDispatcher
     function do_main() {
 
         //get config settings from db
-        $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where
-        		item = \'schedulerInterval\' or item = \'fakeMimetype\'
-        		or item = \'browseToUnitFolder\' order by group_name';
+        $sQuery = 'select id, group_name, item, type, value, helptext, default_value from config_settings where item = \'schedulerInterval\' or item = \'fakeMimetype\' 
+        or item = \'browseToUnitFolder\' or item = \'redirectToBrowse\' or item = \'redirectToBrowseExceptions\' order by group_name';
         return parent::do_main($sQuery);
     }
 }
