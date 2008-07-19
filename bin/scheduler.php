@@ -51,6 +51,17 @@ if(file_exists($lock)){
     exit(0);
 }
 
+// If this is *nix and we are root then make sure file permisions are correct
+if(!OS_WINDOWS && (get_current_user() == 'root'))
+{
+    // The log files... 
+    try {
+        $default->log->debug( 'Scheduler: setting owner to nobody on - '.$default->logDirectory);
+        exec('chown -R nobody:0 '.escapeshellcmd($default->logDirectory));
+    } catch(Exception $e) {
+        $default->log->debug('Scheduler: can\'t set owner to nobody - '.$e);
+    }
+}
 
 /* ** Set up functions ** */
 
