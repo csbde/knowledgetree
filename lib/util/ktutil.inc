@@ -59,13 +59,13 @@ class KTUtil {
     static function save_base_kt_url()
     {
     	global $default;
-		$config = KTConfig::getSingleton();
-		$cacheDir = $config->get('cache/cacheDirectory');
-
+		$cacheDir = $default->cacheDirectory;
+		$rootUrl = $default->rootUrl;
 		$protocol  = $default->sslEnabled ? 'https' : 'http';
 		$port = $_SERVER['SERVER_PORT']+0;
+		$serverName = $_SERVER['SERVER_NAME'];
 
-		$base_url = $protocol . '://' . $_SERVER['SERVER_NAME'];
+		$base_url = $protocol . '://' . $serverName;
 
 		if (($protocol == 'http' && $port == 80) || ($protocol == 'https' && $port == 443))
 		{
@@ -76,6 +76,9 @@ class KTUtil {
 			$base_url .= ':' . $port;
 		}
 
+		// Add the root url
+		$base_url .= $rootUrl;
+
 		@file_put_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE, $base_url);
     }
 
@@ -85,30 +88,35 @@ class KTUtil {
 		global $default;
 		static $base_url = null;
 
-		$config = KTConfig::getSingleton();
-		$cacheDir = $config->get('cache/cacheDirectory');
+		$cacheDir = $default->cacheDirectory;
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
 
-		$rootUrl = $config->get( 'KnowledgeTree/rootUrl');
+		$default->log->debug("kt_url: base url - $base_url");
+
 		if (false !== $base_url)
 		{
-			return $base_url . $rootUrl;
+			return $base_url;
 		}
 
+		$config = KTConfig::getSingleton();
 		$serverName = $config->get('knowledgeTree/serverName', $_SERVER['HTTP_HOST']);
+		$rootUrl = $default->rootUrl;
 
-		return ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $rootUrl;
+		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $rootUrl;
+
+		$default->log->debug("kt_url: base url - $base_url");
+
+		return $base_url;
 
 	}
 
 	static function call_page($path)
 	{
-		$config = KTConfig::getSingleton();
-		$cacheDir = $config->get('cache/cacheDirectory');
+	    global $default;
+		$cacheDir = $default->cacheDirectory;
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
-		global $default;
 
 		if (false == $base_url)
 		{
