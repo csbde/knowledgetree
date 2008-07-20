@@ -12,7 +12,7 @@ text-decoration: none;
 
 {if empty($tags)}
 
-There are no tags defined or accessible.
+{i18n}There are no tags defined or accessible.{/i18n}
 
 {else}
 <div id=tagcloud>
