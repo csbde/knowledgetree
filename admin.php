@@ -103,6 +103,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $aCategory = $oRegistry->getCategory($category);		
         
         $aItems = $oRegistry->getItemsForCategory($category);
+        asort($aItems);
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 
         
