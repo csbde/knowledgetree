@@ -197,7 +197,8 @@ class Session {
 
         if ($default->systemVersion != $version) {
             if (KTLOG_CACHE) $default->log->info("Session::verify : Database not upgraded");
-            return PEAR::raiseError(sprintf(_kt('Database incompatibility error: <br> Please ensure that you have completed the database upgrade procedure. <br> Please <a href=%s>click here</a> to complete.'),'setup/upgrade.php' ));
+            $_SESSION['errormessage']['login'] = sprintf(_kt('Database incompatibility error: <br> Please ensure that you have completed the database upgrade procedure. <br> Please <a href=%s>click here</a> to complete.'),'setup/upgrade.php');
+            return PEAR::raiseError($_SESSION['errormessage']['login']);
         }
 
         if (empty($sessionID)) {
