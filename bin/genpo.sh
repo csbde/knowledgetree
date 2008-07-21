@@ -6,12 +6,14 @@ cd ..
 pwd
 
 #pull in comm stuff
+cp -a ../Commercial-Plugins-DEV-trunk/alerts plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/conditional-metadata plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/custom-numbering plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/documentcomparison plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/documentpreview plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/network plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/professional-reporting plugins/
+cp -a ../Commercial-Plugins-DEV-trunk/shortcuts plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/wintools plugins/
 
 rm -f i18n/templates.c
@@ -21,10 +23,14 @@ find . -type f -name "*.php" -o -name "*.inc" | sort | xgettext --no-wrap -d kno
 echo i18n/templates.c i18n/transactions.c i18n/permissions.c | xargs -n 1 | sort | xgettext --no-wrap -d knowledgeTree -j -s -f - -o i18n/knowledgeTree.pot
 
 #remove comm stuff again
+rm -rf plugins/alerts
 rm -rf plugins/conditional-metadata
 rm -rf plugins/custom-numbering
 rm -rf plugins/documentcomparison
 rm -rf plugins/documentpreview
 rm -rf plugins/network
 rm -rf plugins/professional-reporting
+rm -rf plugins/shortcuts
 rm -rf plugins/wintools
+
+#alerts  conditional-metadata  custom-numbering  documentcomparison  documentpreview  i18n  network  professional-reporting  shortcuts  wintools
