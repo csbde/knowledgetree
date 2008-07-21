@@ -5,7 +5,7 @@
 		{if $internalrss}
 			<option selected='selected' value='{$internalrss}'>{i18n arg_appname="$appname"}#appname# RSS{/i18n}</option>
 		{else}
-			<option selected='selected' value='null'>Select External RSS Feed</option>
+			<option selected='selected' value='null'>{i18n}Select External RSS Feed{/i18n}</option>
 		{/if}
 		{if $feedlist}
 		{section name=feed loop=$feedlist}
@@ -42,7 +42,12 @@
 				{if $action.description}title="{$action.description}"{/if}>{$action.name}</a><br>{else}{$action.name}
 	    	{/if}
     	{/if}
-		<br>{i18n}No internal{/i18n} {if !$feedlist}{i18n}or external{/i18n} {/if}{i18n}feeds available{/i18n}.
+		<br>
+		{if !$feedlist}
+		    {i18n}No internal or external feeds available{/i18n}
+        {else}
+		    {i18n}No internal feeds available{/i18n}.
+		{/if}
 		<br>
 		<br>
 	{/if}
