@@ -271,6 +271,123 @@ gettext("You have no orphaned folders.");
 /* ./plugins/browseabledashlet/templates/browseabledashlet/dashlet.smarty */
 gettext("Title");
 
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("#app#: #name# alert triggered");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("An alert was triggered on the following document");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("Comment");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("View document");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("Document is no longer available");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("Clear alert");
+
+/* ./plugins/alerts/templates/alertNotification.smarty */
+gettext("View all alerts on this document");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("An alert on the document \"#object_name#\" has been added or modified");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("in the folder \"#location_name#\"");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("by #actor_name#");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("View Document");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("Document is no longer available");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("Clear Alert");
+
+/* ./plugins/alerts/templates/alertSubscription.smarty */
+gettext("View all alerts on this document");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Configure an Alert for this Document");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("This page will allow you to configure an alert for this document.");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Alert");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Alert in");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("days");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("weeks");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("months");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("years");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Alert on");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Comment");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("A message for those who receive the document");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Alert other people..");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Save");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Cancel");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("Alerts configured for this Document");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("This page lists the alerts that have been configured for this document.");
+
+/* ./plugins/alerts/templates/alerts.smarty */
+gettext("No alerts have been configured for this document.");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#app#: #name# has been deleted");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#app#: #name# has been archived");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#user# has deleted a document of which you are the owner");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#user# has archived a document of which you are the owner");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#user# has deleted a document on which you have an alert");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("#user# has archived a document on which you have an alert");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("Comment");
+
+/* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
+gettext("Clear alert");
+
 /* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
 gettext("There are no quicklinks.");
 
