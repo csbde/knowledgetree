@@ -122,13 +122,13 @@ gettext("Cancel");
 gettext("#appname# RSS");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/dashlet.smarty */
-gettext("No internal");
+gettext("Select External RSS Feed");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/dashlet.smarty */
-gettext("or external");
+gettext("No internal or external feeds available");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/dashlet.smarty */
-gettext("feeds available");
+gettext("No internal feeds available");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/dedicated_dashlet.smarty */
 gettext("RSS feed unavailable.");
@@ -798,6 +798,9 @@ gettext("Location");
 
 /* ./plugins/network/topdownloads/templates/topdownloads/dashlet.smarty */
 gettext("Downloads");
+
+/* ./plugins/tagcloud/templates/TagCloud/dashlet.smarty */
+gettext("There are no tags defined or accessible.");
 
 /* ./plugins/tagcloud/templates/TagCloud/portlet.smarty */
 gettext("There are no tags defined or accessible.");
