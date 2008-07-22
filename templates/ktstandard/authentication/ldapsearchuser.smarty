@@ -30,7 +30,7 @@ begin.{/i18n}</p>
 <table class="listing">
 <thead>
    <tr>
-      <th style="width:2em"><input type="checkbox" onclick="toggleSelectFor(this, 'id')" title="toggle all" /></th>
+      <th style="width:2em">{if $massimport}<input type="checkbox" onclick="toggleSelectFor(this, 'id')" title="toggle all" />{/if}</th>
       <th>{i18n}Name{/i18n}</th>
       <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
    </tr>
