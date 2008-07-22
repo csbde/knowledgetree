@@ -410,11 +410,15 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         if (!is_array($submit)) {
             $submit = array();
         }
+        // Check if its a mass import
+        $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
+        $isMassImport = ($massimport == 'on') ? true : false;
+
         if (KTUtil::arrayGet($submit, 'chosen')) {
             $id = KTUtil::arrayGet($_REQUEST, 'id');
-            $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
+
             if (!empty($id)) {
-                if ($massimport) {
+                if ($isMassImport) {
                     return $this->_do_massCreateUsers();
                 } else {
                     return $this->_do_editUserFromSource();
@@ -431,11 +435,15 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt("User's name"), _kt("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt("Mass import"), _kt("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)"), 'massimport', false, $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt("Mass import"),
+        _kt("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)").'.<br>'.
+        _kt('The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
+        , 'massimport', $isMassImport, $this->oPage, true);
 
         $oAuthenticator = $this->getAuthenticator($oSource);
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
-        if (!empty($name)) {
+
+        if (!empty($name) || $isMassImport) {
             $aSearchResults = $oAuthenticator->searchUsers($name, array('cn', 'dn', $sIdentifierField));
             if (PEAR::isError($aSearchResults)) {
                 $this->oPage->addError($aSearchResults->getMessage());
@@ -467,8 +475,6 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                 }
             }
         }
-
-        $massimport = KTUtil::arrayGet($_REQUEST, 'massimport');
 
         $aTemplateData = array(
             'context' => &$this,
@@ -910,7 +916,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         foreach ($this->aSearchAttributes as $sSearchAttribute) {
             $sSearchAttributes .= sprintf('(%s=*%s*)', trim($sSearchAttribute), $sSearch);
         }
-        $sFilter = sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes);
+        $sFilter = !empty($sSearch) ? sprintf('(&(%s)(%s))', $sObjectClasses, $sSearchAttributes) : null;
         $default->log->debug("Search filter is: " . $sFilter);
 
         $oResult = $this->oLdap->search($rootDn, $sFilter, $aParams);
