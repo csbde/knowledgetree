@@ -339,6 +339,8 @@ abstract class DocumentExtractor
  */
 abstract class ExternalDocumentExtractor extends DocumentExtractor
 {
+    protected $allowOutput = false;
+
 	/**
 	 * Initialise the extractor.
 	 *
@@ -347,6 +349,14 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 	{
 		parent::__construct();
 		putenv('LANG=en_US.UTF-8');
+
+		$config = KTConfig::getSingleton();
+		putenv('ooProgramPath=' . $config->get('openoffice/ProgramPath', '/usr/lib64/ooo-2.0/program2'));
+	}
+
+	public function setAllowOutput($allowOutput)
+	{
+	    $this->allowOutput = $allowOutput;
 	}
 
 	/**
@@ -419,7 +429,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 			@unlink($script_out);
 		}
 
-		return ($res == 0) && empty($this->output);
+		return ($res == 0) && (empty($this->output) || $this->allowOutput);
 	}
 
 	/**
