@@ -329,10 +329,13 @@ class KTPluginUtil {
                     if(isset($aParams[3])){
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
+                    $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $aParams);
         	        break;
 
         	    case 'admin_category':
+    	            $aParams[1] = _kt($aParams[1]);
+    	            $aParams[2] = _kt($aParams[2]);
         	        call_user_func_array(array(&$oAdminRegistry, 'registerCategory'), $aParams);
         	        break;
 
@@ -340,6 +343,8 @@ class KTPluginUtil {
                     if(isset($aParams[5])){
                         $aParams[5] = KTPluginUtil::getFullPath($aParams[5]);
                     }
+                    $aParams[3] = _kt($aParams[3]);
+                    $aParams[4] = _kt($aParams[4]);
         	        call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $aParams);
         	        break;
 
@@ -350,18 +355,21 @@ class KTPluginUtil {
         	        call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $aParams);
         	        break;
 
-        	    case 'i18n':
-                    if(isset($aParams[1])){
-                        $aParams[1] = KTPluginUtil::getFullPath($aParams[1]);
-                    }
-        	        call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $aParams);
-        	        break;
-
         	    case 'i18nlang':
                     if(isset($aParams[2]) && $aParams[2] != 'default'){
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $aParams);
+
+
+        	    case 'i18n':
+                    if(isset($aParams[2])){
+                        $aParams[1] = $aParams[2];
+                        unset($aParams[2]);
+                    } else {
+                        $aParams[1] = KTPluginUtil::getFullPath($aParams[1]);
+                    }
+        	        call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $aParams);
         	        break;
 
         	    case 'language':
@@ -386,10 +394,12 @@ class KTPluginUtil {
                     if(isset($aParams[3])){
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
+                    $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $aParams);
         	        break;
 
         	    case 'view':
+        	        $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oColumnRegistry, 'registerView'), $aParams);
         	        break;
 
@@ -482,12 +492,15 @@ class KTPluginUtil {
                 require_once($sFile);
             }
         }
+
+        global $default;
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aRegistryList = $oRegistry->getPlugins();
         foreach ($aRegistryList as $oPlugin) {
             $res = $oPlugin->register();
             if (PEAR::isError($res)) {
-                var_dump($res);
+                //var_dump($res);
+                $default->log->debug('Register of plugin failed: ' . $res->getMessage());
             }
         }
 
