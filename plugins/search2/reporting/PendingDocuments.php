@@ -68,7 +68,7 @@ class PendingDocumentsDispatcher extends KTAdminDispatcher
  			$aPendingDocs[$key] = $doc;
  		}
 
-        $oTemplating =& KTTempating::getSingleton();
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplating->addLocation('Pending Documents', '/plugins/search2/reporting/templates');
         $oTemplate =& $oTemplating->loadTemplate('pendingdocuments');
 
