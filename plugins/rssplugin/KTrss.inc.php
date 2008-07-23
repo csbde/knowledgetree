@@ -325,7 +325,7 @@ class KTrss{
 
     // Takes in an array as a parameter and returns rss2.0 compatible xml
     function arrayToXML($aItems){
-    	$hostPath = KTUtil::kt_url() . DIRECTORY_SEPARATOR;
+    	$hostPath = KTUtil::kt_url() . '/';
 
     	$head = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n
     	       <rss version=\"2.0\">\n
