@@ -7,20 +7,32 @@
 # Copyright (C) 2007 Mirko Nasato <mirko@artofsolving.com>
 # Licensed under the GNU LGPL v2.1 - http://www.gnu.org/licenses/lgpl.html
 #
-# Modified by Kevin Fourie <kevin@knowledgetree.com> - 2007-10-18
+# Modified by Kevin Fourie <kevin@knowledgetree.com>
+# Contributions by Xavier Duret, Conrad Vermeulen
 
 #DEFAULT_OPENOFFICE_PORT = 8100
 
-import sys
-import os
+import os, sys, glob
+
+extrapaths = glob.glob('/usr/lib*/openoffice*/program/') + glob.glob('/usr/lib*/ooo*/program') + [ '/Applications/NeoOffice.app/Contents/program', 'c:/program files/ktdms/openoffice/program' ]
 
 ooProgramPath = os.environ.get('ooProgramPath')
-if ooProgramPath is None:
-    ooProgramPath = "/usr/lib64/ooo-2.0/program"
+if not ooProgramPath is None:
+    extrapaths = [ ooProgramPath ] + extrapaths
 
-sys.path.append(ooProgramPath)
+for path in extrapaths:
+    try:
+        sys.path.append(path)
+        import uno
+        os.environ['PATH'] = '%s:' % path + os.environ['PATH']
+        break
+    except ImportError:
+        sys.path.remove(path)
+        continue
+else:
+    print >>sys.stderr, "PyODConverter: Cannot find the pyuno.so library in sys.path and known paths."
+    sys.exit(1)
 
-import uno
 from os.path import abspath, splitext
 from com.sun.star.beans import PropertyValue
 from com.sun.star.connection import NoConnectException
