@@ -247,7 +247,9 @@ INSERT INTO `config_settings` VALUES
 (107,'urls','varDirectory','','default','','${fileSystemRoot}/var',1),
 (108,'urls','documentRoot','','default','','${varDirectory}/Documents',0),
 (109,'KnowledgeTree','redirectToBrowse','boolean','default','set to true to redirect to browse screen ','0',1),
-(110,'KnowledgeTree','redirectToBrowseExceptions','','default','if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. \r\nredirectToBrowseExceptions = admin, joebloggs ','',1);
+(110,'KnowledgeTree','redirectToBrowseExceptions','','default','if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. \r\nredirectToBrowseExceptions = admin, joebloggs ','',1),
+(111,'openoffice','programPath','','default','The Open Office program directory.','../openoffice/program',1);
+
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
