@@ -86,7 +86,6 @@ while(!$bTableExists){
         	$bTableExists = true;
         	continue;
         default:
-        	win32_set_service_status(WIN32_ERROR_CALL_NOT_IMPLEMENTED); // Add more cases to handle other service calls
     }
 
 	$default->log->info("Scheduler Service: Checking if the scheduler_tasks table exists.");
@@ -126,7 +125,6 @@ while ($loop)
         	$loop = false; // Terminate script
         	continue;
         default:
-        	win32_set_service_status(WIN32_ERROR_CALL_NOT_IMPLEMENTED); // Add more cases to handle other service calls
     }
     // Run the scheduler script
     $cmd = "\"$phpPath\" \"$dir/scheduler.php\"";
