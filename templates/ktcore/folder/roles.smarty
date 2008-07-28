@@ -30,8 +30,8 @@ role allocations may take a some time, depending on the number of folders below 
               <strong>{i18n}inherited from parent folder.{/i18n}</strong><br />
               <span class="descriptiveText">
            {/if}
-           {if ($aRole.users != null)}<strong>{i18n}Users{/i18n}:</strong> {$aRole.users}<br />{/if}
-           {if ($aRole.groups != null)}<strong>{i18n}Groups{/i18n}:</strong> {$aRole.groups}{/if}
+           {if ($aRole.users != null)}<div style="white-space:normal; overflow:auto"><strong>{i18n}Users{/i18n}:</strong> {$aRole.users}</div>{/if}
+           {if ($aRole.groups != null)}<div style="white-space:normal; overflow:auto"><strong>{i18n}Groups{/i18n}:</strong> {$aRole.groups}</div>{/if}
            {if ($aRole.allocation_id === null)}
               </span class="descriptiveText">
            {/if}
