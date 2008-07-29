@@ -294,20 +294,33 @@ class LoginPageDispatcher extends KTDispatcher {
         if (empty($aExtra)) {
             $aExtra = array();
         }
-        $res = KTAuthenticationUtil::autoSignup($username, $password, $aExtra);
-        if (empty($res)) {
-            return $res;
+
+        // Check if the user has been deleted before allowing auto-signup
+        $delUser = User::checkDeletedUser($username);
+
+        if($delUser){
+            return ;
         }
-        if (is_a($res, 'User')) {
-            $this->performLogin($res);
-        }
-        if (is_a($res, 'KTAuthenticationSource')) {
-            $_SESSION['autosignup'] = $aExtra;
-            $this->redirectTo('autoSignup', array(
-                'source_id' => $res->getId(),
-                'username' => $username,
-            ));
-            exit(0);
+
+        $oKTConfig = KTConfig::getSingleton();
+        $allow = $oKTConfig->get('session/allowAutoSignup', true);
+
+        if($allow){
+            $res = KTAuthenticationUtil::autoSignup($username, $password, $aExtra);
+            if (empty($res)) {
+                return $res;
+            }
+            if (is_a($res, 'User')) {
+                $this->performLogin($res);
+            }
+            if (is_a($res, 'KTAuthenticationSource')) {
+                $_SESSION['autosignup'] = $aExtra;
+                $this->redirectTo('autoSignup', array(
+                    'source_id' => $res->getId(),
+                    'username' => $username,
+                ));
+                exit(0);
+            }
         }
     }
 
