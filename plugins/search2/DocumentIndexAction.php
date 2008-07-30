@@ -46,16 +46,20 @@ class DocumentIndexAction extends KTDocumentAction
    		$docid=$doc->getId();
 		if (Permission::userIsSystemAdministrator())
     	{
+    	    $full_path = $doc->getFullPath();
     		if (Indexer::isDocumentScheduled($docid))
     		{
     			Indexer::unqueueDocument($docid);
+    		    $this->addInfoMessage(sprintf(_kt("Document '%s' has been removed from the indexing queue."), $full_path));
     		}
     		else
     		{
     			Indexer::index($doc, 'A');
+    		    $this->addInfoMessage(sprintf(_kt("Document '%s' has been added from the indexing queue."), $full_path));
     		}
     	}
     	redirect("view.php?fDocumentId=$docid");
+    	exit;
     }
 }
 
