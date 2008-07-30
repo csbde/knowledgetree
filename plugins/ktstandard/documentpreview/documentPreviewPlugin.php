@@ -86,7 +86,7 @@ class PreviewColumn extends AdvancedColumn {
 }
 
 class DocumentPreviewPlugin extends KTPlugin {
-    var $sNamespace = 'document.preview.plugin';
+    var $sNamespace = 'ktstandard.preview.plugin';
 
     function DocumentPreviewPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
@@ -99,10 +99,10 @@ class DocumentPreviewPlugin extends KTPlugin {
 
         require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('documentpreview', '/plugins/ktstandard/documentpreview/templates', 'document.preview.plugin');
+        $oTemplating->addLocation('documentpreview', '/plugins/ktstandard/documentpreview/templates', 'ktstandard.preview.plugin');
     }
 }
 
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('DocumentPreviewPlugin', 'document.preview.plugin', __FILE__);
+$oPluginRegistry->registerPlugin('DocumentPreviewPlugin', 'ktstandard.preview.plugin', __FILE__);
 ?>
