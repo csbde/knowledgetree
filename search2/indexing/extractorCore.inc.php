@@ -351,7 +351,10 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 		putenv('LANG=en_US.UTF-8');
 
 		$config = KTConfig::getSingleton();
-		putenv('ooProgramPath=' . $config->get('openoffice/ProgramPath', '/usr/lib64/ooo-2.0/program2'));
+
+		$default = realpath(str_replace('\\','/',KT_ROOT_DIR . '/../openoffice/program'));
+
+		putenv('ooProgramPath=' . $config->get('openoffice/programPath', $default));
 	}
 
 	public function setAllowOutput($allowOutput)
@@ -461,6 +464,119 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 		return $this->exec($cmdline);
 	}
 
+}
+
+abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
+{
+    protected $cmd;
+    protected $params;
+
+    /**
+     * Enter description here...
+     *
+     * @var StarOfficeExtractor
+     */
+    protected $oo;
+
+    public function __construct($cmd, $params)
+    {
+        parent::__construct();
+        $this->cmd = KTUtil::findCommand('externalBinary/' . $cmd, false);
+
+        $config = KTConfig::getSingleton();
+        $this->params = $config->get('indexer/' . $cmd . 'cmdline', $params);
+        $this->useOO = $config->get('indexer/useOpenOffice', true);
+        if (!$config->get('indexer/use_' . $cmd, true))
+        {
+            $this->cmd = false;
+        }
+
+        if ($this->useOO)
+        {
+            require_once('extractors/StarOfficeExtractor.inc.php');
+            $this->oo = new StarOfficeExtractor();
+        }
+    }
+
+	public function needsIntermediateSourceFile()
+	{
+		// we need the intermediate file because it
+		// has the correct extension. documentConverter uses the extension to determine mimetype
+
+		return ($this->useOO);
+	}
+
+	protected function getCommandLine()
+	{
+		$sourcefile = $this->sourcefile;
+		$targetfile = $this->targetfile;
+		$escape = '"';
+
+        $cmd = $this->cmd;
+
+		$cmdline = $this->params;
+		$cmdline = eval("return \"$cmdline\";");
+
+		$cmdline = str_replace('\\','/',$cmdline);
+
+		return $cmdline;
+	}
+
+
+    public function extractTextContent()
+    {
+        if ($this->cmd !== false)
+        {
+            // so we have catppt or something
+            $result = parent::extractTextContent();
+            if ($result !== false)
+            {
+                // if it returns true, we can bail
+                return true;
+            }
+
+            // if failure, fallthrough, and attempt OO
+        }
+
+        if ($this->useOO)
+        {
+            $this->oo->setSourceFile($this->sourcefile);
+            $this->oo->setMimeType($this->mimetype);
+            $this->oo->setExtension($this->extension);
+            $this->oo->setTargetFile($this->targetfile);
+            $this->oo->setDocument($this->document);
+            $this->oo->setIndexingStatus(null);
+            $this->oo->setExtractionStatus(null);
+
+            $result = $this->oo->extractTextContent();
+
+            $this->setIndexingStatus($this->oo->getIndexingStatus());
+            $this->setExtractionStatus($this->oo->getExtractionStatus());
+
+            return $result;
+        }
+        else
+        {
+            global $default;
+            $docId = $this->document->getId();
+            $cmd = $this->cmd;
+            $default->log->info("The document {$docId} cannot be indexed as {$cmd} is not available and OpenOffice is not in use.");
+            file_put_contents($this->targetfile, '');
+            return true;
+        }
+    }
+
+    public function diagnose()
+    {
+        if ($this->cmd !== false || !$this->useOO)
+        {
+            // cmd is found. we don't care about oo.
+            // if we can't use oo, well, not much we can do....
+            return null;
+        }
+
+        return $this->oo->diagnose();
+    }
 }
 
 /**
