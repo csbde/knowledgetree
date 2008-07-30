@@ -10,7 +10,6 @@ cp -a ../Commercial-Plugins-DEV-trunk/alerts plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/conditional-metadata plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/custom-numbering plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/documentcomparison plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/documentpreview plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/network plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/professional-reporting plugins/
 cp -a ../Commercial-Plugins-DEV-trunk/shortcuts plugins/
@@ -27,10 +26,9 @@ rm -rf plugins/alerts
 rm -rf plugins/conditional-metadata
 rm -rf plugins/custom-numbering
 rm -rf plugins/documentcomparison
-rm -rf plugins/documentpreview
 rm -rf plugins/network
 rm -rf plugins/professional-reporting
 rm -rf plugins/shortcuts
 rm -rf plugins/wintools
 
-#alerts  conditional-metadata  custom-numbering  documentcomparison  documentpreview  i18n  network  professional-reporting  shortcuts  wintools
+#alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools
