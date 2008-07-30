@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-21 14:46+0200\n"
+"POT-Creation-Date: 2008-07-30 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,7 +238,7 @@ msgstr ""
 msgid "%s is not an archived document. Aborting restore."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:732
+#: search2/indexing/indexerCore.inc.php:748
 #, php-format
 msgid "%s problem: %s"
 msgstr ""
@@ -396,7 +396,7 @@ msgstr ""
 msgid "A fieldset is a collection of fields that comprise a defined set of document metadata. You may add, edit or delete members of this fieldset collection below."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:382
+#: plugins/ktcore/admin/documentFieldsv2.php:400
 msgid "A fieldset with that name already exists."
 msgstr ""
 
@@ -409,7 +409,7 @@ msgid "A full description of the assistance that you with to receive.  Provide a
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:127
-#: plugins/ktcore/admin/documentFieldsv2.php:339
+#: plugins/ktcore/admin/documentFieldsv2.php:357
 msgid "A generic fieldset is one that is available for every document by default. These fieldsets will be available for users to edit and add for every document in the document management system."
 msgstr ""
 
@@ -418,7 +418,15 @@ msgstr ""
 msgid "A good description can be the difference between useful metadata and poor metadata.  At the same time, overly long descriptions are far less valuable than concise ones."
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:399 i18n/templates.c:347
+#: i18n/templates.c:362
+msgid "A list of existing alerts for this document"
+msgstr ""
+
+#: i18n/templates.c:347
+msgid "A message for those who receive the alert notification"
+msgstr ""
+
+#: plugins/ktstandard/KTEmail.php:399
 msgid "A message for those who receive the document"
 msgstr ""
 
@@ -434,7 +442,7 @@ msgstr ""
 msgid "A particular workflow state can override some, all, or none of the permissions that would normally apply to a document.  In this way you can (for example) let the folder's permissions decide who can see the document (with <strong>Read</strong> permissions), while having the workflow restrict access to the \"edit\" permission."
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:174
+#: plugins/ktstandard/documentpreview/documentPreview.php:174
 msgid "A problem occured while loading the document preview."
 msgstr ""
 
@@ -524,11 +532,11 @@ msgstr ""
 msgid "Action Restrictions"
 msgstr ""
 
-#: lib/actions/bulkaction.php:527
+#: lib/actions/bulkaction.php:528
 msgid "Action component not implemented"
 msgstr ""
 
-#: lib/actions/bulkaction.php:547
+#: lib/actions/bulkaction.php:548
 msgid "Action is disabled by workflow"
 msgstr ""
 
@@ -849,7 +857,7 @@ msgstr ""
 msgid "Add new values"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:250
+#: plugins/ktcore/KTCorePlugin.php:251
 msgid "Add or remove groups from the system."
 msgstr ""
 
@@ -861,7 +869,7 @@ msgstr ""
 msgid "Add or remove users for this role."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:247
+#: plugins/ktcore/KTCorePlugin.php:248
 msgid "Add or remove users from the system."
 msgstr ""
 
@@ -966,6 +974,10 @@ msgstr ""
 msgid "Alert"
 msgstr ""
 
+#: i18n/templates.c:344
+msgid "Alert Message"
+msgstr ""
+
 #: plugins/alerts/alerts.php:560
 msgid "Alert cannot be found: "
 msgstr ""
@@ -995,7 +1007,7 @@ msgid "Alert on"
 msgstr ""
 
 #: i18n/templates.c:350
-msgid "Alert other people.."
+msgid "Alert other people?"
 msgstr ""
 
 #: plugins/alerts/alerts.php:532 plugins/alerts/alerts.php:724
@@ -1003,7 +1015,7 @@ msgid "Alerts"
 msgstr ""
 
 #: i18n/templates.c:359
-msgid "Alerts configured for this Document"
+msgid "Alerts for this Document"
 msgstr ""
 
 #: i18n/templates.c:548 i18n/templates.c:647 i18n/templates.c:725
@@ -1013,6 +1025,11 @@ msgstr ""
 
 #: search2/indexing/bin/recreateIndex.php:105
 msgid "All documents are scheduled for indexing."
+msgstr ""
+
+#: plugins/search2/FolderIndexAction.php:52
+#, php-format
+msgid "All documents under the folder '%s' have been scheduled for indexing."
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:800
@@ -1097,7 +1114,7 @@ msgstr ""
 msgid "Allocation changed."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:434
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:439
 msgid "Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)"
 msgstr ""
 
@@ -1109,7 +1126,7 @@ msgstr ""
 msgid "Allowed"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:358
+#: plugins/ktcore/KTCorePlugin.php:359
 msgid "Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)"
 msgstr ""
 
@@ -1211,7 +1228,7 @@ msgstr ""
 msgid "An unexpected error has occured."
 msgstr ""
 
-#: lib/session/Session.inc:232 thirdparty/pear/PEAR.php:883
+#: lib/session/Session.inc:233 thirdparty/pear/PEAR.php:883
 msgid "Anonymous logins are no longer allowed by the system administrator.  Please login."
 msgstr ""
 
@@ -1264,7 +1281,7 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:293
+#: plugins/ktcore/KTCorePlugin.php:294
 msgid "Archived Document Restoration"
 msgstr ""
 
@@ -1386,7 +1403,7 @@ msgstr ""
 msgid "Assign blocked actions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:231
+#: plugins/ktcore/KTCorePlugin.php:232
 msgid "Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."
 msgstr ""
 
@@ -1447,7 +1464,7 @@ msgid "Attempting to index %d %s but it is not available."
 msgstr ""
 
 #: plugins/ktcore/authentication/authenticationadminpage.inc.php:50
-#: plugins/ktcore/KTCorePlugin.php:116 i18n/templates.c:6008
+#: plugins/ktcore/KTCorePlugin.php:117 i18n/templates.c:6008
 msgid "Authentication"
 msgstr ""
 
@@ -1606,7 +1623,7 @@ msgid "Browse"
 msgstr ""
 
 #: lib/templating/kt3template.inc.php:156
-#: lib/templating/kt3template.inc.php:278 plugins/ktcore/KTCorePlugin.php:147
+#: lib/templating/kt3template.inc.php:278 plugins/ktcore/KTCorePlugin.php:148
 msgid "Browse Documents"
 msgstr ""
 
@@ -1679,7 +1696,7 @@ msgstr ""
 msgid "By default, #appname# controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:116
+#: plugins/ktcore/KTCorePlugin.php:117
 #, php-format
 msgid "By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data."
 msgstr ""
@@ -1771,17 +1788,17 @@ msgstr ""
 msgid "Cannot find the notification you requested.  Notification may already have been cleared."
 msgstr ""
 
-#: search2/indexing/extractors/OOTextExtractor.inc.php:193
+#: search2/indexing/extractors/StarOfficeExtractor.inc.php:208
 msgid "Cannot locate DocumentConverter.py"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:544
+#: search2/indexing/extractorCore.inc.php:670
 #, php-format
 msgid "Cannot locate binary for %s (%s)."
 msgstr ""
 
 #: plugins/documentcomparison/DocumentComparison.php:96
-#: search2/indexing/extractors/OOTextExtractor.inc.php:188
+#: search2/indexing/extractors/StarOfficeExtractor.inc.php:203
 msgid "Cannot locate python"
 msgstr ""
 
@@ -1794,6 +1811,7 @@ msgstr ""
 msgid "Cannot locate trigger class '%s' for action '%s' slot '%s'."
 msgstr ""
 
+#: search2/indexing/extractors/OpenOfficeTextExtractor.inc.php:132
 #: search2/indexing/extractors/OpenXmlTextExtractor.inc.php:310
 #, php-format
 msgid "Cannot locate unzip: %s."
@@ -1852,7 +1870,7 @@ msgstr ""
 msgid "Change Document Type"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:308
+#: plugins/ktcore/admin/documentFieldsv2.php:326
 msgid "Change Fieldset Details"
 msgstr ""
 
@@ -1926,7 +1944,7 @@ msgstr ""
 msgid "Change the <strong><a href=\"#link#\">document type</a></strong>. The current type is \"#name#\""
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:346
+#: plugins/ktcore/KTCorePlugin.php:347
 msgid "Change the help files that are displayed to users."
 msgstr ""
 
@@ -2037,7 +2055,7 @@ msgstr ""
 msgid "Checked Out"
 msgstr ""
 
-#: plugins/ktcore/KTColumns.inc.php:468 plugins/ktcore/KTCorePlugin.php:138
+#: plugins/ktcore/KTColumns.inc.php:468 plugins/ktcore/KTCorePlugin.php:139
 #: search2/search/fields/CheckedOutByField.inc.php:44
 msgid "Checked Out By"
 msgstr ""
@@ -2046,7 +2064,7 @@ msgstr ""
 msgid "Checked Out Delta"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:289
+#: plugins/ktcore/KTCorePlugin.php:290
 msgid "Checked Out Document Control"
 msgstr ""
 
@@ -2062,7 +2080,7 @@ msgstr ""
 msgid "Checked out by:"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:249
+#: plugins/ktstandard/documentpreview/documentPreview.php:249
 msgid "Checked out by: "
 msgstr ""
 
@@ -2172,7 +2190,7 @@ msgid "Clicking on a given behaviour below will show you which fields and values
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:153
-#: plugins/ktcore/KTCorePlugin.php:333
+#: plugins/ktcore/KTCorePlugin.php:334
 msgid "Client Tools Settings"
 msgstr ""
 
@@ -2205,9 +2223,9 @@ msgid "Command line search"
 msgstr ""
 
 #: plugins/ktstandard/KTEmail.php:398 i18n/templates.c:281
-#: i18n/templates.c:344 i18n/templates.c:386 i18n/templates.c:590
-#: i18n/templates.c:689 i18n/templates.c:767 i18n/templates.c:857
-#: i18n/templates.c:1706 i18n/templates.c:7280
+#: i18n/templates.c:386 i18n/templates.c:590 i18n/templates.c:689
+#: i18n/templates.c:767 i18n/templates.c:857 i18n/templates.c:1706
+#: i18n/templates.c:7280
 msgid "Comment"
 msgstr ""
 
@@ -2332,11 +2350,7 @@ msgstr ""
 msgid "Configure Workflows for this Folder"
 msgstr ""
 
-#: i18n/templates.c:317
-msgid "Configure an Alert for this Document"
-msgstr ""
-
-#: plugins/ktcore/KTCorePlugin.php:284
+#: plugins/ktcore/KTCorePlugin.php:285
 msgid "Configure automated Workflows that map to document life-cycles."
 msgstr ""
 
@@ -2344,7 +2358,7 @@ msgstr ""
 msgid "Configure how documents are allocated to workflows."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:237
+#: plugins/ktcore/KTCorePlugin.php:238
 msgid "Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows."
 msgstr ""
 
@@ -2435,11 +2449,11 @@ msgstr ""
 msgid "Control"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:253
+#: plugins/ktcore/KTCorePlugin.php:254
 msgid "Control Units"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:229
+#: plugins/ktcore/KTCorePlugin.php:230
 msgid "Control which users can log in, and are part of which groups and organisational units, from these management panels."
 msgstr ""
 
@@ -2551,7 +2565,7 @@ msgstr ""
 msgid "Core: Write"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:407
+#: search2/indexing/extractorCore.inc.php:420
 msgid "Could change permission on exec script: "
 msgstr ""
 
@@ -2582,7 +2596,7 @@ msgstr ""
 msgid "Could not create document type"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:393
+#: search2/indexing/extractorCore.inc.php:406
 msgid "Could not create exec script: "
 msgstr ""
 
@@ -2590,7 +2604,7 @@ msgstr ""
 msgid "Could not create folder in the document management system"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1199
+#: search2/indexing/indexerCore.inc.php:1217
 #, php-format
 msgid "Could not create intermediate file from document %d"
 msgstr ""
@@ -2618,7 +2632,7 @@ msgstr ""
 msgid "Could not delete document link"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:299
+#: plugins/ktcore/admin/documentFieldsv2.php:317
 msgid "Could not delete fieldset"
 msgstr ""
 
@@ -2641,7 +2655,7 @@ msgstr ""
 msgid "Could not enable document type"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1277
+#: search2/indexing/indexerCore.inc.php:1295
 #, php-format
 msgid "Could not extract contents from document %d"
 msgstr ""
@@ -2710,8 +2724,8 @@ msgstr ""
 msgid "Could not save document type changes"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:401
-#: plugins/ktcore/admin/documentFieldsv2.php:411
+#: plugins/ktcore/admin/documentFieldsv2.php:419
+#: plugins/ktcore/admin/documentFieldsv2.php:429
 msgid "Could not save fieldset changes"
 msgstr ""
 
@@ -2719,7 +2733,7 @@ msgstr ""
 msgid "Could not to complete"
 msgstr ""
 
-#: lib/storage/ondiskpathstoragemanager.inc.php:137
+#: lib/storage/ondiskpathstoragemanager.inc.php:160
 msgid "Couldn't create folder"
 msgstr ""
 
@@ -2865,6 +2879,10 @@ msgstr ""
 msgid "Create a rss feed which will be displayed on the dashboard"
 msgstr ""
 
+#: i18n/templates.c:317
+msgid "Create an Alert for this Document"
+msgstr ""
+
 #: plugins/ktcore/admin/groupManagement.php:544
 msgid "Create group"
 msgstr ""
@@ -2873,11 +2891,11 @@ msgstr ""
 msgid "Create new Fieldset"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:258
+#: plugins/ktcore/KTCorePlugin.php:259
 msgid "Create or delete permissions."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:260
+#: plugins/ktcore/KTCorePlugin.php:261
 msgid "Create or delete roles"
 msgstr ""
 
@@ -2918,11 +2936,11 @@ msgstr ""
 msgid "Created by"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:206
+#: plugins/ktstandard/documentpreview/documentPreview.php:206
 msgid "Created by: "
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:584
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:590
 msgid "Created new group"
 msgstr ""
 
@@ -2952,12 +2970,12 @@ msgstr ""
 msgid "Creating transaction"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:139
+#: plugins/ktcore/KTCorePlugin.php:140
 msgid "Creation Date"
 msgstr ""
 
 #: lib/browse/Criteria.inc:379 plugins/ktcore/KTColumns.inc.php:325
-#: plugins/ktcore/KTCorePlugin.php:141 i18n/templates.c:2096
+#: plugins/ktcore/KTCorePlugin.php:142 i18n/templates.c:2096
 msgid "Creator"
 msgstr ""
 
@@ -3239,7 +3257,7 @@ msgid "Describe why this document qualifies to be changed from its current state
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:98
-#: plugins/ktcore/admin/documentFieldsv2.php:328
+#: plugins/ktcore/admin/documentFieldsv2.php:346
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:119
 #: plugins/ktcore/admin/fieldsets/basic.inc.php:234
 #: plugins/ktstandard/KTDocumentLinks.php:477
@@ -3377,6 +3395,16 @@ msgstr ""
 msgid "Document \"%s\" renamed."
 msgstr ""
 
+#: plugins/search2/DocumentIndexAction.php:58
+#, php-format
+msgid "Document '%s' has been added from the indexing queue."
+msgstr ""
+
+#: plugins/search2/DocumentIndexAction.php:53
+#, php-format
+msgid "Document '%s' has been removed from the indexing queue."
+msgstr ""
+
 #: plugins/alerts/alerts.php:125 plugins/alerts/alerts.php:157
 msgid "Document Alert Modified"
 msgstr ""
@@ -3418,7 +3446,7 @@ msgstr ""
 msgid "Document Fields"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:273 i18n/templates.c:2471
+#: plugins/ktcore/KTCorePlugin.php:274 i18n/templates.c:2471
 #: i18n/templates.c:2714
 msgid "Document Fieldsets"
 msgstr ""
@@ -3428,7 +3456,7 @@ msgstr ""
 msgid "Document Filename"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:192
+#: plugins/ktstandard/documentpreview/documentPreview.php:192
 msgid "Document Filename: "
 msgstr ""
 
@@ -3443,7 +3471,7 @@ msgid "Document History for #appname# New UI Presentation"
 msgstr ""
 
 #: lib/browse/Criteria.inc:332 plugins/ktcore/KTColumns.inc.php:552
-#: plugins/ktcore/KTCorePlugin.php:143
+#: plugins/ktcore/KTCorePlugin.php:144
 #: search2/search/fields/DocumentIdField.inc.php:46 i18n/templates.c:38
 #: i18n/templates.c:893 i18n/templates.c:1418 i18n/templates.c:1466
 msgid "Document ID"
@@ -3453,7 +3481,7 @@ msgstr ""
 msgid "Document ID:"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:256
+#: plugins/ktstandard/documentpreview/documentPreview.php:256
 msgid "Document ID: "
 msgstr ""
 
@@ -3462,6 +3490,7 @@ msgid "Document Index"
 msgstr ""
 
 #: plugins/search2/DocumentIndexAction.php:20
+#: plugins/search2/FolderIndexAction.php:20
 msgid "Document Indexer"
 msgstr ""
 
@@ -3481,7 +3510,7 @@ msgstr ""
 msgid "Document Indexer Status"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:309
+#: plugins/ktcore/KTCorePlugin.php:310
 #: plugins/search2/reporting/IndexErrors.php:48 i18n/templates.c:194
 msgid "Document Indexing Diagnostics"
 msgstr ""
@@ -3504,7 +3533,7 @@ msgid "Document Metadata allows you to provide additional, important information
 msgstr ""
 
 #: plugins/ktcore/admin/manageConditionals.php:60
-#: plugins/ktcore/KTCorePlugin.php:236 i18n/templates.c:977
+#: plugins/ktcore/KTCorePlugin.php:237 i18n/templates.c:977
 #: i18n/templates.c:4970
 msgid "Document Metadata and Workflow Configuration"
 msgstr ""
@@ -3530,11 +3559,11 @@ msgstr ""
 msgid "Document Permissions"
 msgstr ""
 
-#: plugins/documentpreview/documentPreviewPlugin.php:93
+#: plugins/ktstandard/documentpreview/documentPreviewPlugin.php:93
 msgid "Document Preview Plugin"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:234
+#: plugins/ktcore/KTCorePlugin.php:235
 msgid "Document Storage"
 msgstr ""
 
@@ -3565,7 +3594,7 @@ msgstr ""
 #: lib/browse/Criteria.inc:530 plugins/ktcore/folder/addDocument.php:133
 #: plugins/ktcore/folder/BulkImport.php:83
 #: plugins/ktcore/folder/BulkUpload.php:89
-#: plugins/ktcore/KTColumns.inc.php:498 plugins/ktcore/KTCorePlugin.php:145
+#: plugins/ktcore/KTColumns.inc.php:498 plugins/ktcore/KTCorePlugin.php:146
 #: plugins/ktcore/KTPortlets.php:96
 #: search2/search/fields/DocumentTypeField.inc.php:44 i18n/templates.c:29
 #: i18n/templates.c:50 i18n/templates.c:947 i18n/templates.c:1001
@@ -3581,11 +3610,11 @@ msgstr ""
 msgid "Document Type Management"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:229
+#: plugins/ktstandard/documentpreview/documentPreview.php:229
 msgid "Document Type: "
 msgstr ""
 
-#: browse.php:234 plugins/ktcore/KTCorePlugin.php:269 i18n/templates.c:938
+#: browse.php:234 plugins/ktcore/KTCorePlugin.php:270 i18n/templates.c:938
 #: i18n/templates.c:2492 i18n/templates.c:2741 i18n/templates.c:4931
 #: i18n/templates.c:4976
 msgid "Document Types"
@@ -3609,7 +3638,7 @@ msgstr ""
 msgid "Document Version History"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:202
+#: plugins/ktstandard/documentpreview/documentPreview.php:202
 msgid "Document Version: "
 msgstr ""
 
@@ -3710,7 +3739,7 @@ msgstr ""
 msgid "Document deleted: "
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1304
+#: search2/indexing/indexerCore.inc.php:1322
 #, php-format
 msgid "Document docid: %d was not removed from the queue as it looks like there was a problem with the extraction process"
 msgstr ""
@@ -3741,7 +3770,7 @@ msgstr ""
 msgid "Document info"
 msgstr ""
 
-#: lib/actions/bulkaction.php:551
+#: lib/actions/bulkaction.php:552
 msgid "Document is archived or deleted"
 msgstr ""
 
@@ -3947,7 +3976,7 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1300
+#: search2/indexing/indexerCore.inc.php:1318
 #, php-format
 msgid "Done indexing docid: %d"
 msgstr ""
@@ -3977,7 +4006,7 @@ msgstr ""
 msgid "Download Document"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:142
+#: plugins/ktcore/KTCorePlugin.php:143
 #: plugins/ktcore/KTDocumentActions.php:427
 msgid "Download File"
 msgstr ""
@@ -3998,7 +4027,7 @@ msgstr ""
 msgid "Due Today"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:263 i18n/templates.c:4724
+#: plugins/ktcore/KTCorePlugin.php:264 i18n/templates.c:4724
 #: i18n/templates.c:6566
 msgid "Dynamic Conditions"
 msgstr ""
@@ -4033,7 +4062,7 @@ msgid "Each behaviour can cause a number of other behaviours &mdash; in the fiel
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:95
-#: plugins/ktcore/admin/documentFieldsv2.php:324
+#: plugins/ktcore/admin/documentFieldsv2.php:342
 msgid "Each fieldset needs a unique name."
 msgstr ""
 
@@ -4116,7 +4145,7 @@ msgstr ""
 msgid "Edit Field"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:369 i18n/templates.c:4061
+#: plugins/ktcore/admin/documentFieldsv2.php:387 i18n/templates.c:4061
 #: i18n/templates.c:6731
 msgid "Edit Fieldset"
 msgstr ""
@@ -4138,7 +4167,7 @@ msgstr ""
 msgid "Edit Groups"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:346
+#: plugins/ktcore/KTCorePlugin.php:347
 msgid "Edit Help files"
 msgstr ""
 
@@ -4361,7 +4390,7 @@ msgstr ""
 msgid "Email Attachment"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:279 i18n/templates.c:983
+#: plugins/ktcore/KTCorePlugin.php:280 i18n/templates.c:983
 msgid "Email Document Types"
 msgstr ""
 
@@ -4381,7 +4410,7 @@ msgid "Email Plugin"
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:173
-#: plugins/ktcore/KTCorePlugin.php:321
+#: plugins/ktcore/KTCorePlugin.php:322
 msgid "Email Settings"
 msgstr ""
 
@@ -4461,7 +4490,7 @@ msgstr ""
 msgid "Equal to"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:66
+#: plugins/ktstandard/documentpreview/documentPreview.php:66
 msgid "Error"
 msgstr ""
 
@@ -4575,6 +4604,10 @@ msgstr ""
 
 #: i18n/templates.c:74
 msgid "Example"
+msgstr ""
+
+#: search2/indexing/extractors/ExcelExtractor.inc.php:12
+msgid "Excel Extractor"
 msgstr ""
 
 #: search2/indexing/extractors/ExifExtractor.inc.php:44
@@ -4701,7 +4734,7 @@ msgstr ""
 msgid "External link <b>from</b> this document"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1216
+#: search2/indexing/indexerCore.inc.php:1234
 #, php-format
 msgid "Extra Info docid: %d Source File: '%s' Target File: '%s'"
 msgstr ""
@@ -4714,7 +4747,7 @@ msgstr ""
 msgid "Extractor"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:305
+#: plugins/ktcore/KTCorePlugin.php:306
 #: plugins/search2/reporting/ExtractorInfo.php:49 i18n/templates.c:170
 msgid "Extractor Information"
 msgstr ""
@@ -4829,6 +4862,7 @@ msgstr ""
 msgid "Failed to delete state: %s"
 msgstr ""
 
+#: search2/indexing/extractors/OpenOfficeTextExtractor.inc.php:100
 #: search2/indexing/extractors/OpenXmlTextExtractor.inc.php:164
 #: search2/indexing/extractors/OpenXmlTextExtractor.inc.php:210
 msgid "Failed to execute command: "
@@ -4838,6 +4872,7 @@ msgstr ""
 msgid "Failed to expunge"
 msgstr ""
 
+#: search2/indexing/extractors/OpenOfficeTextExtractor.inc.php:107
 #: search2/indexing/extractors/OpenXmlTextExtractor.inc.php:171
 msgid "Failed to find file: "
 msgstr ""
@@ -5036,7 +5071,7 @@ msgid "Fieldset"
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:92
-#: plugins/ktcore/admin/documentFieldsv2.php:321
+#: plugins/ktcore/admin/documentFieldsv2.php:339
 msgid "Fieldset Name"
 msgstr ""
 
@@ -5052,11 +5087,11 @@ msgstr ""
 msgid "Fieldset created."
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:301
+#: plugins/ktcore/admin/documentFieldsv2.php:319
 msgid "Fieldset deleted"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:415
+#: plugins/ktcore/admin/documentFieldsv2.php:433
 msgid "Fieldset details updated."
 msgstr ""
 
@@ -5103,7 +5138,7 @@ msgstr ""
 msgid "File is a"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:196
+#: plugins/ktstandard/documentpreview/documentPreview.php:196
 msgid "File is a: "
 msgstr ""
 
@@ -5343,7 +5378,7 @@ msgid "General Metadata"
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:191
-#: plugins/ktcore/KTCorePlugin.php:337
+#: plugins/ktcore/KTCorePlugin.php:338
 msgid "General Settings"
 msgstr ""
 
@@ -5363,7 +5398,7 @@ msgid "Generate PDF of"
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:125
-#: plugins/ktcore/admin/documentFieldsv2.php:337 i18n/templates.c:2483
+#: plugins/ktcore/admin/documentFieldsv2.php:355 i18n/templates.c:2483
 #: i18n/templates.c:2657 i18n/templates.c:2732 i18n/templates.c:4451
 msgid "Generic"
 msgstr ""
@@ -5452,7 +5487,7 @@ msgstr ""
 #: plugins/ktcore/admin/groupManagement.php:87
 #: plugins/ktcore/admin/groupManagement.php:127
 #: plugins/ktcore/admin/groupManagement.php:553
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:543
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:549
 #: i18n/templates.c:2300 i18n/templates.c:6047
 msgid "Group Name"
 msgstr ""
@@ -5470,7 +5505,7 @@ msgstr ""
 msgid "Group details updated."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:506
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:512
 msgid "Group's name"
 msgstr ""
 
@@ -5689,6 +5724,10 @@ msgstr ""
 msgid "If you specify an automatic workflow, new documents will automatically enter that workflow's starting state.  Setting this to \"No Automatic Workflow\" will mean that users can choose the appropriate workflow."
 msgstr ""
 
+#: plugins/alerts/alerts.php:741
+msgid "If you would like other users or groups to be alerted, please select them below"
+msgstr ""
+
 #: i18n/templates.c:1031
 msgid "If you've purchased a new key from <a href=\"http://www.knowledgetree.com\">KnowledgeTree.com</a> or one of our partners,     you can upload it here."
 msgstr ""
@@ -5722,7 +5761,7 @@ msgid "In many cases, workflow actions will be assigned to certain <strong>roles
 msgstr ""
 
 #: plugins/ktcore/admin/documentFieldsv2.php:101
-#: plugins/ktcore/admin/documentFieldsv2.php:331
+#: plugins/ktcore/admin/documentFieldsv2.php:349
 msgid "In order to ensure that the data that users enter is useful, it is essential that you provide a good example."
 msgstr ""
 
@@ -5806,7 +5845,7 @@ msgstr ""
 msgid "Indexer Status"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:714
+#: search2/indexing/indexerCore.inc.php:730
 msgid "Indexer problem: "
 msgstr ""
 
@@ -5814,7 +5853,7 @@ msgstr ""
 msgid "Indexing coverage percentage may vary from total - not all documents contain text."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1100
+#: search2/indexing/indexerCore.inc.php:1118
 #, php-format
 msgid "Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"
 msgstr ""
@@ -5835,7 +5874,7 @@ msgstr ""
 msgid "Inform Which Users?"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:352
+#: plugins/ktcore/KTCorePlugin.php:353
 msgid "Information about this system and how to get support."
 msgstr ""
 
@@ -5888,7 +5927,7 @@ msgid "Inter-document linking"
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:210
-#: plugins/ktcore/KTCorePlugin.php:341
+#: plugins/ktcore/KTCorePlugin.php:342
 msgid "Internationalisation Settings"
 msgstr ""
 
@@ -6049,7 +6088,7 @@ msgstr ""
 msgid "Is Immutable"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:741
+#: search2/indexing/indexerCore.inc.php:757
 msgid "Issues with the indexer have been resolved!"
 msgstr ""
 
@@ -6140,6 +6179,10 @@ msgstr ""
 msgid "Keywords which are directly below the   <strong>Root</strong> are considered \"free\" &mdash; they are not attached to   a subcategory.  Only free keywords can be associated with a subcategory.  To   free a keyword, click on the \"unlink\" command next to it in the preview tree below.   Deleting a subcategory will automatically unlink all keywords below it (including   those in subcategories of the subcategory)."
 msgstr ""
 
+#: i18n/templates.c:320
+msgid "KnowledgeTree Alerts will notify you of an event on a particular date or within a specified period of time. When an alert is triggered you will receive a notification email and message on your Dashboard"
+msgstr ""
+
 #: i18n/templates.c:6314
 msgid "KnowledgeTree Community Edition is supplied with <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a>, \t<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a>, \tand <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>."
 msgstr ""
@@ -6162,7 +6205,7 @@ msgid "LDAP Authentication Plugin"
 msgstr ""
 
 #: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:295
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:542
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:548
 msgid "LDAP DN"
 msgstr ""
 
@@ -6218,7 +6261,7 @@ msgstr ""
 msgid "Last update by"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:222
+#: plugins/ktstandard/documentpreview/documentPreview.php:222
 msgid "Last updated by: "
 msgstr ""
 
@@ -6331,7 +6374,7 @@ msgstr ""
 msgid "Loading Dependencies for value \""
 msgstr ""
 
-#: plugins/documentpreview/documentPreviewPlugin.php:69
+#: plugins/ktstandard/documentpreview/documentPreviewPlugin.php:69
 msgid "Loading..."
 msgstr ""
 
@@ -6463,7 +6506,7 @@ msgstr ""
 msgid "Manage Actions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:333
+#: plugins/ktcore/KTCorePlugin.php:334
 msgid "Manage Client Tools Settings"
 msgstr ""
 
@@ -6471,7 +6514,7 @@ msgstr ""
 msgid "Manage Conditional Behaviours"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:321
+#: plugins/ktcore/KTCorePlugin.php:322
 msgid "Manage Email Settings"
 msgstr ""
 
@@ -6492,11 +6535,11 @@ msgstr ""
 msgid "Manage Field: #field_name#"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:337
+#: plugins/ktcore/KTCorePlugin.php:338
 msgid "Manage General Settings"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:250 i18n/templates.c:6494
+#: plugins/ktcore/KTCorePlugin.php:251 i18n/templates.c:6494
 msgid "Manage Groups"
 msgstr ""
 
@@ -6509,7 +6552,7 @@ msgstr ""
 msgid "Manage Groups for Role \"%s\""
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:341
+#: plugins/ktcore/KTCorePlugin.php:342
 msgid "Manage Internationalisation Settings"
 msgstr ""
 
@@ -6577,7 +6620,7 @@ msgstr ""
 msgid "Manage Saved Searches"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:329
+#: plugins/ktcore/KTCorePlugin.php:330
 msgid "Manage Search and Indexing Settings"
 msgstr ""
 
@@ -6593,7 +6636,7 @@ msgstr ""
 msgid "Manage Sub-Groups in #name#"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:115
+#: plugins/ktcore/KTCorePlugin.php:116
 msgid "Manage Task Scheduler"
 msgstr ""
 
@@ -6609,11 +6652,11 @@ msgstr ""
 msgid "Manage Transitions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:325
+#: plugins/ktcore/KTCorePlugin.php:326
 msgid "Manage User Interface Settings"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:247 i18n/templates.c:6059
+#: plugins/ktcore/KTCorePlugin.php:248 i18n/templates.c:6059
 #: i18n/templates.c:6077
 msgid "Manage Users"
 msgstr ""
@@ -6630,7 +6673,7 @@ msgstr ""
 msgid "Manage Views"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:235
+#: plugins/ktcore/KTCorePlugin.php:236
 msgid "Manage checked-out, archived and deleted documents."
 msgstr ""
 
@@ -6652,7 +6695,7 @@ msgstr ""
 msgid "Manage conditions."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:264
+#: plugins/ktcore/KTCorePlugin.php:265
 msgid "Manage criteria which determine whether a user is permitted to perform a system action."
 msgstr ""
 
@@ -6674,7 +6717,7 @@ msgstr ""
 msgid "Manage members of group %s"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:349
+#: plugins/ktcore/KTCorePlugin.php:350
 msgid "Manage plugins"
 msgstr ""
 
@@ -6697,15 +6740,15 @@ msgstr ""
 msgid "Manage subscriptions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:280
+#: plugins/ktcore/KTCorePlugin.php:281
 msgid "Manage the addition of Email document types to the system."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:270
+#: plugins/ktcore/KTCorePlugin.php:271
 msgid "Manage the different classes of document which can be added to the system."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:274
+#: plugins/ktcore/KTCorePlugin.php:275
 msgid "Manage the different types of information that can be associated with classes of documents."
 msgstr ""
 
@@ -6717,11 +6760,11 @@ msgstr ""
 msgid "Manage the keys you have purchased."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:115
+#: plugins/ktcore/KTCorePlugin.php:116
 msgid "Manage the task scheduler"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:358
+#: plugins/ktcore/KTCorePlugin.php:359
 msgid "Manage views"
 msgstr ""
 
@@ -6733,7 +6776,7 @@ msgstr ""
 msgid "Many \"lookup\" fields make sense in a hierachy: countries are part of continents and sub-continents, school classes are part of grades and programs, Powerbooks are Apple Macs, while Thinkpads are made by Lenovo.  This page will allow you to arrange the lookups in the field in a hierachy.  All changes are immediately stored, so when you are done simply navigate back to the field menu."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:434
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:438
 msgid "Mass import"
 msgstr ""
 
@@ -6795,7 +6838,7 @@ msgstr ""
 msgid "Mime Type"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:301 i18n/templates.c:185
+#: plugins/ktcore/KTCorePlugin.php:302 i18n/templates.c:185
 #: i18n/templates.c:3233
 msgid "Mime Types"
 msgstr ""
@@ -6804,7 +6847,7 @@ msgstr ""
 msgid "Minutes"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:242
+#: plugins/ktcore/KTCorePlugin.php:243
 msgid "Miscellaneous"
 msgstr ""
 
@@ -6814,7 +6857,7 @@ msgstr ""
 msgid "Mobile Number"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:140
+#: plugins/ktcore/KTCorePlugin.php:141
 msgid "Modification Date"
 msgstr ""
 
@@ -6919,8 +6962,8 @@ msgid "Must select a field to edit."
 msgstr ""
 
 #: plugins/search2/MigrationDashlet.php:81
-#: search2/indexing/indexerCore.inc.php:909
-#: search2/indexing/indexerCore.inc.php:923 i18n/templates.c:1139
+#: search2/indexing/indexerCore.inc.php:927
+#: search2/indexing/indexerCore.inc.php:941 i18n/templates.c:1139
 msgid "N/A"
 msgstr ""
 
@@ -7302,7 +7345,7 @@ msgstr ""
 msgid "No entity class specified."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1116
+#: search2/indexing/indexerCore.inc.php:1134
 #, php-format
 msgid "No extractor for docid: %d"
 msgstr ""
@@ -7717,11 +7760,11 @@ msgstr ""
 msgid "No users have permissions on this item."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:496
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:502
 msgid "No valid LDAP group chosen"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:423
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:427
 msgid "No valid LDAP user chosen"
 msgstr ""
 
@@ -7770,8 +7813,8 @@ msgstr ""
 msgid "Normal (String)"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:953
-#: search2/indexing/indexerCore.inc.php:961
+#: search2/indexing/indexerCore.inc.php:971
+#: search2/indexing/indexerCore.inc.php:979
 #: search2/indexing/indexers/JavaXMLRPCLuceneIndexer.inc.php:262
 msgid "Not Available"
 msgstr ""
@@ -7794,24 +7837,25 @@ msgstr ""
 #: lib/filelike/filelike.inc.php:91 lib/filelike/filelike.inc.php:98
 #: lib/filelike/filelike.inc.php:105 lib/import/importstorage.inc.php:43
 #: lib/import/importstorage.inc.php:47 lib/import/importstorage.inc.php:51
-#: lib/storage/storagemanager.inc.php:52 lib/storage/storagemanager.inc.php:61
-#: lib/storage/storagemanager.inc.php:69 lib/storage/storagemanager.inc.php:78
-#: lib/storage/storagemanager.inc.php:94
-#: lib/storage/storagemanager.inc.php:102
-#: lib/storage/storagemanager.inc.php:106
-#: lib/storage/storagemanager.inc.php:114
-#: lib/storage/storagemanager.inc.php:122
-#: lib/storage/storagemanager.inc.php:136
-#: lib/storage/storagemanager.inc.php:144
-#: lib/storage/storagemanager.inc.php:148
-#: lib/storage/storagemanager.inc.php:152
-#: lib/storage/storagemanager.inc.php:156
-#: lib/storage/storagemanager.inc.php:160
-#: lib/storage/storagemanager.inc.php:164
+#: lib/storage/storagemanager.inc.php:52 lib/storage/storagemanager.inc.php:63
+#: lib/storage/storagemanager.inc.php:72 lib/storage/storagemanager.inc.php:80
+#: lib/storage/storagemanager.inc.php:89
+#: lib/storage/storagemanager.inc.php:105
+#: lib/storage/storagemanager.inc.php:113
+#: lib/storage/storagemanager.inc.php:117
+#: lib/storage/storagemanager.inc.php:125
+#: lib/storage/storagemanager.inc.php:133
+#: lib/storage/storagemanager.inc.php:147
+#: lib/storage/storagemanager.inc.php:155
+#: lib/storage/storagemanager.inc.php:159
+#: lib/storage/storagemanager.inc.php:163
+#: lib/storage/storagemanager.inc.php:167
+#: lib/storage/storagemanager.inc.php:171
+#: lib/storage/storagemanager.inc.php:175
 msgid "Not implemented"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1112
+#: search2/indexing/indexerCore.inc.php:1130
 #, php-format
 msgid "Not indexing docid: %d content because extractor could not be resolve. Still indexing discussion."
 msgstr ""
@@ -7915,6 +7959,10 @@ msgstr ""
 msgid "Object no longer exists"
 msgstr ""
 
+#: search2/indexing/extractors/PowerpointExtractor.inc.php:12
+msgid "Office Powerpoint Text Extractor"
+msgstr ""
+
 #: i18n/templates.c:7190
 msgid "On deleting a document version the version history will remain but the document will be <b>permanently</b> deleted."
 msgstr ""
@@ -7954,24 +8002,28 @@ msgstr ""
 msgid "Only the standard database authentication is currently available. If you need to use a different authentication type (e.g. LDAP) you will need to ensure that the Plugin is enabled."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:144
+#: plugins/ktcore/KTCorePlugin.php:145
 msgid "Open Containing Folder"
+msgstr ""
+
+#: search2/indexing/extractors/OpenOfficeTextExtractor.inc.php:59
+msgid "Open Office Text Extractor"
 msgstr ""
 
 #: search2/indexing/extractors/OpenXmlTextExtractor.inc.php:60
 msgid "Open Xml Text Extractor"
 msgstr ""
 
-#: search2/indexing/extractors/OOPresentationExtractor.inc.php:54
+#: search2/indexing/extractors/OOPresentationExtractor.inc.php:44
 msgid "OpenOffice Presentation Extractor"
 msgstr ""
 
-#: search2/indexing/extractors/OOSpreadsheetExtractor.inc.php:46
+#: search2/indexing/extractors/OOSpreadsheetExtractor.inc.php:44
 msgid "OpenOffice Spreadsheet Extractor"
 msgstr ""
 
-#: search2/indexing/extractors/OOTextExtractor.inc.php:67
-msgid "OpenOffice Text Extractor"
+#: search2/indexing/extractors/OOTextExtractor.inc.php:44
+msgid "OpenOffice Writer Extractor"
 msgstr ""
 
 #: plugins/ktcore/KTColumns.inc.php:583
@@ -8030,7 +8082,7 @@ msgstr ""
 msgid "Override permissions from parent"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:290
+#: plugins/ktcore/KTCorePlugin.php:291
 msgid "Override the checked-out status of documents if a user has failed to do so."
 msgstr ""
 
@@ -8046,7 +8098,7 @@ msgstr ""
 msgid "Owned by"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:213
+#: plugins/ktstandard/documentpreview/documentPreview.php:213
 msgid "Owned by: "
 msgstr ""
 
@@ -8120,7 +8172,7 @@ msgstr ""
 msgid "Path is not a folder"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:313
+#: plugins/ktcore/KTCorePlugin.php:314
 #: plugins/search2/reporting/PendingDocuments.php:47 i18n/templates.c:245
 msgid "Pending Documents Indexing Queue"
 msgstr ""
@@ -8142,7 +8194,7 @@ msgstr ""
 msgid "Perform Transition: %s"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:355
+#: plugins/ktcore/KTCorePlugin.php:356
 msgid "Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk)."
 msgstr ""
 
@@ -8177,7 +8229,7 @@ msgstr ""
 #: plugins/ktcore/folder/Permissions.php:56
 #: plugins/ktcore/folder/Permissions.php:60
 #: plugins/ktcore/folder/Permissions.php:193
-#: plugins/ktcore/KTCorePlugin.php:258 plugins/ktcore/KTPermissions.php:68
+#: plugins/ktcore/KTCorePlugin.php:259 plugins/ktcore/KTPermissions.php:68
 #: plugins/ktcore/KTPermissions.php:195 i18n/templates.c:4568
 msgid "Permissions"
 msgstr ""
@@ -8282,7 +8334,7 @@ msgstr ""
 msgid "Please enter a list of transitions, one per line.  Transition names must be unique."
 msgstr ""
 
-#: i18n/templates.c:3515
+#: i18n/templates.c:3506
 msgid "Please enter a name for the search expression."
 msgstr ""
 
@@ -8555,7 +8607,7 @@ msgstr ""
 msgid "Post reply"
 msgstr ""
 
-#: search2/indexing/extractors/PSExtractor.inc.php:47
+#: search2/indexing/extractors/PSExtractor.inc.php:50
 msgid "PostScript Text Extractor"
 msgstr ""
 
@@ -8601,15 +8653,16 @@ msgstr ""
 msgid "Prevents users who do not have the specified role from using this transition."
 msgstr ""
 
-#: plugins/documentpreview/documentPreviewPlugin.php:85 i18n/templates.c:2642
+#: plugins/ktstandard/documentpreview/documentPreviewPlugin.php:85
+#: i18n/templates.c:2642
 msgid "Preview"
 msgstr ""
 
-#: plugins/documentpreview/documentPreviewPlugin.php:68
+#: plugins/ktstandard/documentpreview/documentPreviewPlugin.php:68
 msgid "Preview Document"
 msgstr ""
 
-#: plugins/documentpreview/documentPreviewPlugin.php:98
+#: plugins/ktstandard/documentpreview/documentPreviewPlugin.php:98
 msgid "Preview File"
 msgstr ""
 
@@ -8633,18 +8686,18 @@ msgstr ""
 msgid "Problem assigning role users"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1236
 #: search2/indexing/indexerCore.inc.php:1254
+#: search2/indexing/indexerCore.inc.php:1272
 #, php-format
 msgid "Problem filtering document %d"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1263
+#: search2/indexing/indexerCore.inc.php:1281
 #, php-format
 msgid "Problem indexing document %d - indexDocument"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1244
+#: search2/indexing/indexerCore.inc.php:1262
 #, php-format
 msgid "Problem indexing document %d - indexDocumentAndDiscussion"
 msgstr ""
@@ -8653,7 +8706,7 @@ msgstr ""
 msgid "Problem retrieving quicklinks"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1137
+#: search2/indexing/indexerCore.inc.php:1155
 #, php-format
 msgid "Processing docid: %d.\n"
 msgstr ""
@@ -8760,7 +8813,7 @@ msgstr ""
 msgid "RSS for folder"
 msgstr ""
 
-#: search2/indexing/extractors/RTFExtractor.inc.php:46
+#: search2/indexing/extractors/RTFExtractor.inc.php:44
 msgid "RTF Extractor"
 msgstr ""
 
@@ -8851,7 +8904,7 @@ msgstr ""
 msgid "Regenerate On Checkin"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:349
+#: plugins/ktcore/KTCorePlugin.php:350
 msgid "Register new plugins, disable plugins, and so forth"
 msgstr ""
 
@@ -8906,7 +8959,7 @@ msgstr ""
 msgid "Removed from groups"
 msgstr ""
 
-#: search2/indexing/extractors/OOTextExtractor.inc.php:164
+#: search2/indexing/extractors/StarOfficeExtractor.inc.php:170
 #, php-format
 msgid "Removing document from queue: documentId %d"
 msgstr ""
@@ -9031,7 +9084,7 @@ msgstr ""
 msgid "Reschedule All Documents"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:317
+#: plugins/ktcore/KTCorePlugin.php:318
 #: plugins/search2/reporting/RescheduleDocuments.php:47
 msgid "Reschedule all documents"
 msgstr ""
@@ -9060,15 +9113,15 @@ msgstr ""
 msgid "Restore To"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:293
+#: plugins/ktcore/KTCorePlugin.php:294
 msgid "Restore old (archived) documents, usually at a user's request."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:296
+#: plugins/ktcore/KTCorePlugin.php:297
 msgid "Restore or Expunge Deleted Documents"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:296
+#: plugins/ktcore/KTCorePlugin.php:297
 msgid "Restore previously deleted documents, or permanently expunge them."
 msgstr ""
 
@@ -9090,7 +9143,7 @@ msgstr ""
 msgid "Restriction Type"
 msgstr ""
 
-#: lib/actions/bulkaction.php:461
+#: lib/actions/bulkaction.php:462
 msgid "Return"
 msgstr ""
 
@@ -9189,7 +9242,7 @@ msgid "Role: %s"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:2165
-#: plugins/ktcore/KTCorePlugin.php:260 i18n/templates.c:5714
+#: plugins/ktcore/KTCorePlugin.php:261 i18n/templates.c:5714
 #: i18n/templates.c:5828
 msgid "Roles"
 msgstr ""
@@ -9293,6 +9346,8 @@ msgstr ""
 
 #: plugins/search2/DocumentIndexAction.php:15
 #: plugins/search2/DocumentIndexAction.php:36
+#: plugins/search2/FolderIndexAction.php:15
+#: plugins/search2/FolderIndexAction.php:30
 msgid "Schedule Indexing"
 msgstr ""
 
@@ -9317,7 +9372,7 @@ msgstr ""
 msgid "Script Extractor"
 msgstr ""
 
-#: lib/templating/kt3template.inc.php:284 plugins/ktcore/KTCorePlugin.php:148
+#: lib/templating/kt3template.inc.php:284 plugins/ktcore/KTCorePlugin.php:149
 #: plugins/ktcore/KTPortlets.php:45 plugins/search2/Search2Portlet.php:8
 #: search/booleanSearch.php:238 i18n/templates.c:2423 i18n/templates.c:2468
 #: i18n/templates.c:3710 i18n/templates.c:4013 i18n/templates.c:4058
@@ -9371,12 +9426,12 @@ msgstr ""
 msgid "Search User"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:238
+#: plugins/ktcore/KTCorePlugin.php:239
 msgid "Search and Indexing"
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:229
-#: plugins/ktcore/KTCorePlugin.php:239 plugins/ktcore/KTCorePlugin.php:329
+#: plugins/ktcore/KTCorePlugin.php:240 plugins/ktcore/KTCorePlugin.php:330
 msgid "Search and Indexing Settings"
 msgstr ""
 
@@ -9441,7 +9496,7 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:230
+#: plugins/ktcore/KTCorePlugin.php:231
 msgid "Security Management"
 msgstr ""
 
@@ -9551,10 +9606,6 @@ msgstr ""
 msgid "Select document types allowed in folder"
 msgstr ""
 
-#: plugins/alerts/alerts.php:741
-msgid "Select other users or groups to alert."
-msgstr ""
-
 #: i18n/templates.c:4862 i18n/templates.c:5123
 msgid "Select roles and groups for whom you wish to change permission assignment from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'."
 msgstr ""
@@ -9609,7 +9660,7 @@ msgstr ""
 msgid "Select which users, groups and roles to be notified."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:135
+#: plugins/ktcore/KTCorePlugin.php:136
 msgid "Selection"
 msgstr ""
 
@@ -9633,7 +9684,7 @@ msgstr ""
 msgid "Session has expired."
 msgstr ""
 
-#: lib/session/Session.inc:245 lib/session/Session.inc:271
+#: lib/session/Session.inc:246 lib/session/Session.inc:272
 #: thirdparty/pear/PEAR.php:880
 msgid "Session timed out"
 msgstr ""
@@ -9705,13 +9756,13 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:129
 #: plugins/ktcore/admin/groupManagement.php:561
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:545
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:551
 msgid "Should all the members of this group be given <strong>system</strong> administration privileges?"
 msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:128
 #: plugins/ktcore/admin/groupManagement.php:593
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:544
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:550
 msgid "Should all the members of this group be given <strong>unit</strong> administration privileges?"
 msgstr ""
 
@@ -9799,7 +9850,7 @@ msgstr ""
 msgid "Since you are a system administrator, you can see this message. Please click \"edit\" below here to create some welcome content, since there is no welcome content available in your language."
 msgstr ""
 
-#: plugins/ktcore/KTColumns.inc.php:429 plugins/ktcore/KTCorePlugin.php:136
+#: plugins/ktcore/KTColumns.inc.php:429 plugins/ktcore/KTCorePlugin.php:137
 msgid "Single Selection"
 msgstr ""
 
@@ -9909,7 +9960,7 @@ msgstr ""
 msgid "Specify which group the user will require in order to perform this transition."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:253
+#: plugins/ktcore/KTCorePlugin.php:254
 msgid "Specify which organisational units are available within the repository."
 msgstr ""
 
@@ -9931,6 +9982,10 @@ msgstr ""
 
 #: i18n/templates.c:6713
 msgid "Standard configuration"
+msgstr ""
+
+#: search2/indexing/extractors/StarOfficeExtractor.inc.php:69
+msgid "StarOffice Text Extractor"
 msgstr ""
 
 #: i18n/templates.c:5108
@@ -10066,7 +10121,7 @@ msgstr ""
 msgid "Support and System Information"
 msgstr ""
 
-#: plugins/ktcore/admin/techsupport.php:50 plugins/ktcore/KTCorePlugin.php:352
+#: plugins/ktcore/admin/techsupport.php:50 plugins/ktcore/KTCorePlugin.php:353
 msgid "Support and System information"
 msgstr ""
 
@@ -10080,7 +10135,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:129
 #: plugins/ktcore/admin/groupManagement.php:560
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:545
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:551
 msgid "System Administrators"
 msgstr ""
 
@@ -10088,11 +10143,11 @@ msgstr ""
 msgid "System Cache"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:240
+#: plugins/ktcore/KTCorePlugin.php:241
 msgid "System Configuration"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:241
+#: plugins/ktcore/KTCorePlugin.php:242
 msgid "System Configuration Settings"
 msgstr ""
 
@@ -10568,7 +10623,7 @@ msgstr ""
 msgid "The group required for this trigger has been deleted, so anyone can perform this action."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:506
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:512
 msgid "The group's name, or part thereof, to find the group that you wish to add"
 msgstr ""
 
@@ -10609,11 +10664,15 @@ msgstr ""
 msgid "The license has expired. Please contact sales@knowledgetree.com for a new license."
 msgstr ""
 
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:440
+msgid "The list may be long and take some time to load if the search is not filtered and there are a number of users in the system."
+msgstr ""
+
 #: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:163
 msgid "The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:542
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:548
 msgid "The location of the group within the LDAP directory."
 msgstr ""
 
@@ -10648,7 +10707,7 @@ msgstr ""
 msgid "The name that you supplied did not end with the word 'Email'."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:543
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:549
 #, php-format
 msgid "The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>"
 msgstr ""
@@ -10778,7 +10837,7 @@ msgstr ""
 msgid "The search criteria has been saved."
 msgstr ""
 
-#: i18n/templates.c:3506
+#: i18n/templates.c:3509
 msgid "The search expression has been saved."
 msgstr ""
 
@@ -10883,7 +10942,7 @@ msgstr ""
 msgid "The user will require the <strong>%s</strong> role."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:433
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:437
 msgid "The user's name, or part thereof, to find the user that you wish to add"
 msgstr ""
 
@@ -10996,7 +11055,7 @@ msgstr ""
 msgid "There has been a parsing problem. Please check the search expression."
 msgstr ""
 
-#: i18n/templates.c:3512 i18n/templates.c:3701
+#: i18n/templates.c:3515 i18n/templates.c:3701
 msgid "There is a problem communicating with the server."
 msgstr ""
 
@@ -11005,7 +11064,7 @@ msgstr ""
 msgid "There is a problem parsing the expression '%s'"
 msgstr ""
 
-#: i18n/templates.c:3509
+#: i18n/templates.c:3512
 msgid "There is a problem saving the expression expression."
 msgstr ""
 
@@ -11236,7 +11295,7 @@ msgstr ""
 msgid "This folder does not override its permissions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:317 i18n/templates.c:230
+#: plugins/ktcore/KTCorePlugin.php:318 i18n/templates.c:230
 msgid "This function allows you to re-index your entire repository."
 msgstr ""
 
@@ -11317,10 +11376,6 @@ msgstr ""
 msgid "This page did not produce any content"
 msgstr ""
 
-#: i18n/templates.c:362
-msgid "This page lists the alerts that have been configured for this document."
-msgstr ""
-
 #: i18n/templates.c:1328
 msgid "This page lists versions of document content and allows you to compare a content version with another content version."
 msgstr ""
@@ -11353,10 +11408,6 @@ msgstr ""
 msgid "This page shows the permissions that individual users have on this folder.  Only the users which have permissions assigned are shown."
 msgstr ""
 
-#: i18n/templates.c:320
-msgid "This page will allow you to configure an alert for this document."
-msgstr ""
-
 #: i18n/templates.c:2582
 msgid "This page will allow you to manage the different aspects of this particular field."
 msgstr ""
@@ -11373,20 +11424,20 @@ msgstr ""
 msgid "This report lists all mime types and extensions that can be identified by #appname#."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:301
+#: plugins/ktcore/KTCorePlugin.php:302
 #, php-format
 msgid "This report lists all mime types and extensions that can be identified by %s."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:313 i18n/templates.c:248
+#: plugins/ktcore/KTCorePlugin.php:314 i18n/templates.c:248
 msgid "This report lists documents that are waiting to be indexed."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:305 i18n/templates.c:173
+#: plugins/ktcore/KTCorePlugin.php:306 i18n/templates.c:173
 msgid "This report lists the text extractors and their supported mime types."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:309 i18n/templates.c:197
+#: plugins/ktcore/KTCorePlugin.php:310 i18n/templates.c:197
 msgid "This report will help to diagnose problems with document indexing."
 msgstr ""
 
@@ -11443,7 +11494,7 @@ msgid "Time taken to complete"
 msgstr ""
 
 #: lib/browse/BrowseColumns.inc.php:106 plugins/ktcore/KTColumns.inc.php:58
-#: plugins/ktcore/KTCorePlugin.php:134 plugins/rssplugin/manageRSSFeeds.php:87
+#: plugins/ktcore/KTCorePlugin.php:135 plugins/rssplugin/manageRSSFeeds.php:87
 #: plugins/rssplugin/manageRSSFeeds.php:133
 #: search2/search/fields/TitleField.inc.php:45 i18n/templates.c:92
 #: i18n/templates.c:272 i18n/templates.c:5054 i18n/templates.c:6815
@@ -12065,7 +12116,7 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:128
 #: plugins/ktcore/admin/groupManagement.php:592
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:544
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:550
 msgid "Unit Administrators"
 msgstr ""
 
@@ -12201,7 +12252,7 @@ msgstr ""
 msgid "Update Field"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:309
+#: plugins/ktcore/admin/documentFieldsv2.php:327
 msgid "Update Fieldset"
 msgstr ""
 
@@ -12396,7 +12447,7 @@ msgid "User Information: #username# in \"#folder#\""
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:135
-#: plugins/ktcore/KTCorePlugin.php:325
+#: plugins/ktcore/KTCorePlugin.php:326
 msgid "User Interface Settings"
 msgstr ""
 
@@ -12453,7 +12504,7 @@ msgstr ""
 msgid "User will need to change password on next login."
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:433
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:437
 msgid "User's name"
 msgstr ""
 
@@ -12491,7 +12542,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:228
+#: plugins/ktcore/KTCorePlugin.php:229
 msgid "Users and Groups"
 msgstr ""
 
@@ -12528,11 +12579,11 @@ msgstr ""
 msgid "Values"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:243
+#: plugins/ktcore/KTCorePlugin.php:244
 msgid "Various settings which do not fit into the other categories, including managing help and saved searches."
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:355
+#: plugins/ktcore/KTCorePlugin.php:356
 msgid "Verify Document Storage"
 msgstr ""
 
@@ -12787,6 +12838,10 @@ msgstr ""
 msgid "Within a given fieldset, each field needs a unique name."
 msgstr ""
 
+#: search2/indexing/extractors/WordExtractor.inc.php:12
+msgid "Word Extractor"
+msgstr ""
+
 #: plugins/ktcore/KTDocumentActions.php:1488
 #: search2/search/fields/WorkflowField.inc.php:44 i18n/templates.c:32
 #: i18n/templates.c:1460 i18n/templates.c:2243 i18n/templates.c:5084
@@ -12875,7 +12930,7 @@ msgid "Workflow Plugins"
 msgstr ""
 
 #: lib/browse/Criteria.inc:814 plugins/ktcore/KTColumns.inc.php:439
-#: plugins/ktcore/KTCorePlugin.php:137
+#: plugins/ktcore/KTCorePlugin.php:138
 #: search2/search/fields/WorkflowStateField.inc.php:44
 msgid "Workflow State"
 msgstr ""
@@ -12957,7 +13012,7 @@ msgstr ""
 msgid "Workflow:"
 msgstr ""
 
-#: plugins/documentpreview/documentPreview.php:238
+#: plugins/ktstandard/documentpreview/documentPreview.php:238
 msgid "Workflow: "
 msgstr ""
 
@@ -12966,7 +13021,7 @@ msgid "Workflow: #name#"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:127
-#: plugins/ktcore/KTCorePlugin.php:284 i18n/templates.c:5882
+#: plugins/ktcore/KTCorePlugin.php:285 i18n/templates.c:5882
 msgid "Workflows"
 msgstr ""
 
@@ -13001,7 +13056,7 @@ msgstr ""
 msgid "You are already subscribed to that folder"
 msgstr ""
 
-#: lib/session/Session.inc:239 thirdparty/pear/PEAR.php:882
+#: lib/session/Session.inc:240 thirdparty/pear/PEAR.php:882
 msgid "You are coming from a different IP address than the session requires"
 msgstr ""
 
@@ -13142,7 +13197,7 @@ msgstr ""
 msgid "You do not have sufficient permissions to delete a link"
 msgstr ""
 
-#: lib/actions/bulkaction.php:563 plugins/ktcore/KTBulkActions.php:690
+#: lib/actions/bulkaction.php:564 plugins/ktcore/KTBulkActions.php:690
 #: plugins/ktcore/KTBulkActions.php:900
 msgid "You do not have the required permissions"
 msgstr ""
@@ -13236,7 +13291,7 @@ msgstr ""
 msgid "You must have at least 1 new lookup value."
 msgstr ""
 
-#: login.php:336
+#: login.php:349
 msgid "You must have cookies enabled to use the document management system."
 msgstr ""
 
@@ -13293,7 +13348,7 @@ msgstr ""
 msgid "You must select at least one fieldset"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:563
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:569
 msgid "You must specify a name for the group."
 msgstr ""
 
@@ -13331,7 +13386,7 @@ msgstr ""
 msgid "You need to have at least 1 condition."
 msgstr ""
 
-#: lib/session/Session.inc:205 lib/session/Session.inc:217
+#: lib/session/Session.inc:206 lib/session/Session.inc:218
 #: thirdparty/pear/PEAR.php:881
 msgid "You need to login to access this page"
 msgstr ""
@@ -13709,32 +13764,32 @@ msgstr ""
 msgid "deleting a link type will delete <strong>all</strong> links of that type within the system."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1545
+#: search2/indexing/indexerCore.inc.php:1563
 #, php-format
 msgid "diagnose(): '%s' is not of type DocumentExtractor"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1523
+#: search2/indexing/indexerCore.inc.php:1541
 #, php-format
 msgid "diagnose: '%s' does not have extension '%s'."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1130
+#: search2/indexing/indexerCore.inc.php:1148
 #, php-format
 msgid "diagnose: Not indexing docid: %d because extractor '%s' is disabled."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1532
+#: search2/indexing/indexerCore.inc.php:1550
 #, php-format
 msgid "diagnose: class '%s' does not exist."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1552
+#: search2/indexing/indexerCore.inc.php:1570
 #, php-format
 msgid "diagnose: class '%s' does not support any types."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1538
+#: search2/indexing/indexerCore.inc.php:1556
 #, php-format
 msgid "diagnose: extractor '%s' is disabled."
 msgstr ""
@@ -13762,7 +13817,7 @@ msgstr ""
 msgid "edit field"
 msgstr ""
 
-#: plugins/ktcore/admin/documentFieldsv2.php:368
+#: plugins/ktcore/admin/documentFieldsv2.php:386
 msgid "edit fieldset"
 msgstr ""
 
@@ -13830,7 +13885,7 @@ msgstr ""
 msgid "fDocumentId=%d"
 msgstr ""
 
-#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:577
+#: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:583
 msgid "failed to create group."
 msgstr ""
 
@@ -13867,7 +13922,7 @@ msgstr ""
 msgid "from the folder \"#location_name#\""
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:433
+#: search2/indexing/extractorCore.inc.php:446
 msgid "getCommandLine is not implemented"
 msgstr ""
 
@@ -13917,22 +13972,22 @@ msgstr ""
 msgid "in the folder \"#location_name#\""
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1143
+#: search2/indexing/indexerCore.inc.php:1161
 #, php-format
 msgid "indexDocuments: Cannot resolve document id %d: %s."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1158
+#: search2/indexing/indexerCore.inc.php:1176
 #, php-format
 msgid "indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1176
+#: search2/indexing/indexerCore.inc.php:1194
 #, php-format
 msgid "indexDocuments: extractor '%s' is not a document extractor class."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1187
+#: search2/indexing/indexerCore.inc.php:1205
 #, php-format
 msgid "indexDocuments: source file '%s' for document %d does not exist."
 msgstr ""
@@ -14029,51 +14084,51 @@ msgstr ""
 msgid "metadata"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1400
+#: search2/indexing/indexerCore.inc.php:1418
 #, php-format
 msgid "migrateDocuments: Cannot write to '%s' for document id %d"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1434
+#: search2/indexing/indexerCore.inc.php:1452
 msgid "migrateDocuments: Completed!"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1390
+#: search2/indexing/indexerCore.inc.php:1408
 #, php-format
 msgid "migrateDocuments: Could not get document %d's document! Removing content!"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1437
+#: search2/indexing/indexerCore.inc.php:1455
 msgid "migrateDocuments: Disabling 'Index Migration' task by removing scheduler entry."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1417
+#: search2/indexing/indexerCore.inc.php:1435
 #, php-format
 msgid "migrateDocuments: Problem indexing document %d"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1369
+#: search2/indexing/indexerCore.inc.php:1387
 msgid "migrateDocuments: db error"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1315
+#: search2/indexing/indexerCore.inc.php:1333
 msgid "migrateDocuments: starting"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1319
+#: search2/indexing/indexerCore.inc.php:1337
 msgid "migrateDocuments: stopping - diagnostics problem. The dashboard will provide more information."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1431
+#: search2/indexing/indexerCore.inc.php:1449
 #, php-format
 msgid "migrateDocuments: stopping - done in %d seconds!"
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1325
+#: search2/indexing/indexerCore.inc.php:1343
 msgid "migrateDocuments: stopping - migration is complete."
 msgstr ""
 
-#: search2/indexing/indexerCore.inc.php:1338
+#: search2/indexing/indexerCore.inc.php:1356
 msgid "migrateDocuments: stopping - migration lockfile detected."
 msgstr ""
 
