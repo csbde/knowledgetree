@@ -37,163 +37,19 @@
  *
  */
 
-class OOTextExtractor extends ExternalDocumentExtractor
+class OOTextExtractor extends TextExtractor
 {
-	protected $python;
-	protected $documentConverter;
-	protected $ooHost;
-	protected $ooPort;
-	protected $targetExtension;
-
-	public function __construct($targetExtension='html')
-	{
-		parent::__construct();
-		$this->targetExtension = $targetExtension;
-		$config =& KTConfig::getSingleton();
-
-		$this->python = KTUtil::findCommand('externalBinary/python');
-		$this->ooHost = $config->get('openoffice/host');
-		$this->ooPort = $config->get('openoffice/port');
-
-		$this->documentConverter = KT_DIR . '/bin/openoffice/DocumentConverter.py';
-		if (!is_file($this->documentConverter))
-		{
-			$this->documentConverter = false;
-		}
-	}
-
 	public function getDisplayName()
 	{
-		return _kt('OpenOffice Text Extractor');
+		return _kt('OpenOffice Writer Extractor');
 	}
 
 	public function getSupportedMimeTypes()
 	{
 		return array(
-			'application/msword',
-			'application/vnd.sun.xml.writer',
-			'application/vnd.sun.xml.writer.template',
-			'application/vnd.sun.xml.writer.global',
-			'application/vnd.oasis.opendocument.text',
-			'application/vnd.oasis.opendocument.text-template',
-			'application/vnd.oasis.opendocument.text-master'
+		  // don't do anything
+		  // this extractor is replaced by StarOfficeExtractor
 		);
-	}
-
-	public function needsIntermediateSourceFile()
-	{
-		// we need the intermediate file because it
-		// has the correct extension. documentConverter uses the extension to determine mimetype
-		return true;
-	}
-
-	protected function getCommandLine()
-	{
-		$sourcefile = $this->sourcefile;
-
-		unlink($this->targetfile);
-		$this->targetfile .= '.' . $this->targetExtension;
-		$targetfile = $this->targetfile;
-
-		$escape = '"';
-
-		$cmdline = "{$escape}{$this->python}{$escape} {$escape}{$this->documentConverter}{$escape} {$escape}{$sourcefile}{$escape} {$escape}{$targetfile}{$escape} {$this->ooHost} {$this->ooPort}";
-		$cmdline = str_replace('\\','/',$cmdline);
-
-		return $cmdline;
-	}
-
-	protected function filter($text)
-	{
-		 $text = preg_replace ("@(</?[^>]*>)+@", '', $text);
-
-		 do
-		 {
-			 $old = $text;
-
-			 $text= preg_replace("@([\r\n])[\s]+@",'\1', $text);
-
-			 $text = preg_replace('@\ \ @',' ', $text);
-			 $text = preg_replace("@\n\n@","\n", $text);
-		 }
-		 while ($old != $text);
-
-		 return $text;
-	}
-
-	public function extractTextContent()
-	{
-	    global $default;
-
-        $docId = $this->document->getId();
-
-	    if (empty($this->extension))
-	    {
-	        $default->log->info("DocumentId: $docId - Document does not have an extension");
-            Indexer::unqueueDocument($docId, sprintf(("Removing document from queue: documentId %d"),$docId));
-	        return false;
-	    }
-
-	    // Open Office does not support the following files
-	    if (in_array($this->extension, array('xlt')))
-	    {
-	        $default->log->info("DocumentId: $docId - Document does not have an extension");
-	        Indexer::unqueueDocument($docId, sprintf(("Removing document from queue: documentId %d"),$docId));
-	        return false;
-	    }
-
-        if (false === parent::extractTextContent())
-		{
-		    if (strpos($this->output, 'OpenOffice process not found or not listening') !== false)
-		    {
-		        $indexer = Indexer::get();
-                $indexer->restartBatch();
-                return false;
-		    }
-		    elseif (strpos($this->output, 'Unexpected connection closure') !== false
-		    || strpos($this->output, '\'NoneType\' object has no attribute \'storeToURL\'') !== false
-		    || strpos($this->output, 'The document could not be opened for conversion. This could indicate an unsupported mimetype.') !== false
-		    || strpos($this->output, 'URL seems to be an unsupported one.') !== false
-		    || strpos($this->output, '__main__.com.sun.star.task.ErrorCodeIOException') !== false)
-		    {
-                $default->log->info("DocumentId: $docId - Suspect the file cannot be indexed by Open Office.");
-                file_put_contents($this->targetfile, '');
-                $indexer = Indexer::get();
-                $indexer->restartBatch();
-
-                Indexer::unqueueDocument($docId, sprintf(_kt("Removing document from queue: documentId %d"),$docId));
-	           return true;
-		    }
-			return false;
-		}
-
-		if ($this->targetExtension != 'html')
-		{
-		    file_put_contents($this->targetfile, '');
-			return true;
-		}
-		$content = file_get_contents($this->targetfile);
-
-        $this->setTargetFile($this->targetfile . '.txt');
-
-		return file_put_contents($this->targetfile, $this->filter($content));
-
-	}
-
-
-	public function diagnose()
-	{
-		if (false === $this->python)
-		{
-			return _kt('Cannot locate python');
-		}
-
-		if (false === $this->documentConverter)
-		{
-			return _kt('Cannot locate DocumentConverter.py');
-		}
-
-		return SearchHelper::checkOpenOfficeAvailablity();
 	}
 }
 
