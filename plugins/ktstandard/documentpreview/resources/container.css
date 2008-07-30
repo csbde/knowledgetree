@@ -1,0 +1,131 @@
+
+/* The containing div's, in which the dialog window is created */
+
+.panel {
+	visibility:hidden;
+	position:relative;
+	left:0px;top:0px;
+	font:1em Arial;
+	background-color:transparent;
+	overflow:hidden;
+	line-height: 1.6em;
+}
+
+#info-preview {
+    padding: 10px;
+}
+
+#info-dlg {
+    visibility: hidden;
+    position: absolute;
+    top: 0px;
+}
+
+/* Styling for the dialog content */
+
+.preview {
+    padding-right: 10px;
+    padding-bottom: 0px;
+    cursor: pointer;
+    height: 250px;
+    overflow: hidden;
+    clear: both;
+}
+
+.previewhd {
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    visibility: visible;
+}
+
+.previewhd h4 {
+    padding-top: 0;
+    margin-top: 0;
+    line-height: 110%;
+}
+
+.previewhd h2 {
+    padding-top: 0;
+    margin-top: 0;
+    font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
+    border-width: 0 0 0 0;
+    border-style: solid;
+    border-color: #eee;
+    font-size: large;
+    color: #333;
+}
+
+.previewhd img {
+    height: 40px;
+    width: 40px;
+}
+
+/* Override ExtJS CSS */
+
+.x-window-tc {
+	background: url(../../../resources/graphics/portlet_bg.png) repeat-x 0 0;
+	overflow:hidden;
+    zoom:1;
+}
+
+.x-window-tl {
+	background: url(../../../resources/graphics/portlet_corner_topleft.png) no-repeat 0 0;
+	padding-left:6px;
+    zoom:1;
+    z-index:1;
+    position:relative;
+}
+
+.x-window-tr {
+	background: url(graphics/portlet_corner_topright.png) no-repeat right 0;
+	padding-right:6px;
+}
+
+.x-window-bc {
+	background: #FFF;
+    zoom:1;
+}
+.x-window-bl {
+    border-left:1px solid #AFAFAF;
+    border-bottom:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-left:6px;
+    zoom:1;
+}
+.x-window-br {
+    border-right:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-right:6px;
+    zoom:1;
+}
+
+.x-window-ml {
+    border-left:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-left:6px;
+    zoom:1;
+}
+.x-window-mr {
+    border-right:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-right:6px;
+    zoom:1;
+}
+
+.x-window-mc {
+    border:1px solid #FFF;
+    border-top:1px solid #FFF;
+    padding:0;
+    margin:0;
+    font: normal 11px tahoma,arial,helvetica,sans-serif;
+    background:#FFF;
+}
+
+.x-window-body {
+    border-left:1px solid #FFF;
+    border-top:1px solid #FFF;
+    border-bottom:1px solid #FFF;
+    border-right:1px solid #FFF;
+    background: transparent;
+}
