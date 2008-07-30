@@ -47,7 +47,15 @@ var gotSearchParseStatus = function callBack(o)
 				var txtQuery = document.getElementById('txtAdvQuery');
 				url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?iSavedId={/literal}{$iSavedSearchId}{literal}&txtQuery='+txtQuery.value;
 				//alert(url);
-				YAHOO.util.Connect.asyncRequest('GET',url, searchCallback);
+
+				Ext.Ajax.request(
+				{
+				    url: url,
+				    method: 'GET',
+				    success:gotSearchParseStatus,
+	                failure:gotNoStatus
+				});
+
 			}
 			else if (actionAfterParse == 'saveCompleted')
 			{
@@ -73,11 +81,6 @@ var gotNoStatus = function callBack(o)
 	alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
 }
 
-var searchCallback =
-{
-	success:gotSearchParseStatus,
-	failure:gotNoStatus
-}
 function startParsing()
 {
 	if (!parseSuccess)
@@ -87,7 +90,14 @@ function startParsing()
 	}
 	var txtQuery = document.getElementById('txtAdvQuery');
 	url='{/literal}{$rootUrl}{literal}/search2/ajax/parseExpr.php?txtQuery='+txtQuery.value;
-	YAHOO.util.Connect.asyncRequest('GET',url, searchCallback);
+
+	Ext.Ajax.request(
+	{
+	    url: url,
+	    method: 'GET',
+	    success:gotSearchParseStatus,
+	    failure:gotNoStatus
+	});
 }
 function butParseClick()
 {
