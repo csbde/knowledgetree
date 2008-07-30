@@ -551,6 +551,22 @@ abstract class Indexer
     	DBUtil::runQuery($sql);
     }
 
+    public static function indexFolder($folder)
+    {
+        $userid=$_SESSION['userID'];
+    	if (empty($userid)) $userid=1;
+
+        if (!$folder instanceof Folder && !$folder instanceof FolderProxy)
+        {
+            throw new Exception('Folder expected');
+        }
+
+        $full_path = $folder->getFullPath();
+
+    	$sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
+    	DBUtil::runQuery($sql);
+    }
+
     /**
      * Clearout the scheduling of documents that no longer exist.
      *
@@ -780,6 +796,8 @@ abstract class Indexer
     		DBUtil::runQuery($sql);
     		$default->log->info("checkForRegisteredTypes: disabled '$extractor'");
     	}
+
+        $this->loadExtractorStatus();
 
     	if ($this->debug) $default->log->debug('checkForRegisteredTypes: done');
     	KTUtil::setSystemSetting('mimeTypesRegistered', true);
