@@ -7,31 +7,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -188,12 +188,12 @@ class KTBulkAction extends KTStandardDispatcher {
 	        	while (!empty($aRemainingFolders)) {
 	        		$iFolderId = array_pop($aRemainingFolders);
 	        		$oFolder = Folder::get($iFolderId);
-	        			
+
 		        	if(count($oFolder->getSymbolicLinks()) > 0){
 		        		$symlinksPresent = true;
 		        		break;
 		        	}
-	        			
+
 	        		$aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
 	        		foreach ($aChildDocs as $oDoc) {
 				        if(count($oDoc->getSymbolicLinks()) > 0){
@@ -201,7 +201,7 @@ class KTBulkAction extends KTStandardDispatcher {
 			        		break;
 			        	}
 	        		}
-	        			
+
 	        		$aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
             		$aRemainingFolders = kt_array_merge($aRemainingFolders, $aCFIds);
 	        	}
@@ -209,16 +209,16 @@ class KTBulkAction extends KTStandardDispatcher {
         }
         return $symlinksPresent;
 	}
-    
+
 /**
      * checks a folderList for shortcuts and queries the repositories for all folders
-     * that are somehow connected to these folders. 
+     * that are somehow connected to these folders.
      */
     function getLinkingEntities($aFolderList){
     	$aSearchFolders = array();
     	if(!empty($aFolderList)){
             foreach($aFolderList as $oFolderItem){
-            	if(Permission::userHasFolderReadPermission($oFolderItem)){ 
+            	if(Permission::userHasFolderReadPermission($oFolderItem)){
 	                // If it is a shortcut, we should do some more searching
 	                if($oFolderItem->isSymbolicLink()){
 	                    $oFolderItem = $oFolderItem->getLinkedFolder();
@@ -244,20 +244,20 @@ class KTBulkAction extends KTStandardDispatcher {
 	            if($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
 	            }
-				if(Permission::userHasFolderReadPermission($oFolderItem)){            
+				if(Permission::userHasFolderReadPermission($oFolderItem)){
 		            if($aSearchCompletedFolders[$oFolderItem->getID()] != true){
 	            		$aSearchFolders[] = $oFolderItem->getID();
 	            		$aSearchCompletedFolders[$oFolderItem->getID()] = true;
 	            	}
 				}
-            } 
+            }
             if(!isset($aLinkingFolders[$oFolder->getId()])){
             	$aLinkingFolders[$oFolder->getId()] = $oFolder;
             }
         }
         return $aLinkingFolders;
     }
-    
+
     // doesn't actually do checks, as they have to be performed per-entity
     function check() {
         // not necessarily coming from a folder...
@@ -347,13 +347,13 @@ class KTBulkAction extends KTStandardDispatcher {
             }
 
             $res = $this->perform_action($oDocument);
-			
+
             //check for shortcut notice
             $notice = null;
             if($oDocument->isSymbolicLink()){
             	$notice = _kt("Shortcut");
             }
-            
+
             if(PEAR::isError($res)) {
                 $this->aActionResults['documents'][] = array($sName, $res->getMessage(), $notice);
             } else {
@@ -376,7 +376,7 @@ class KTBulkAction extends KTStandardDispatcher {
             if($oFolder->isSymbolicLink()){
             	$notice = _kt("Shortcut");
             }
-            
+
             if(PEAR::isError($res)) {
                 $this->aActionResults['folders'][] = array($sName, $res->getMessage(), $notice);
             } else {
@@ -418,6 +418,7 @@ class KTBulkAction extends KTStandardDispatcher {
             'targeturl' => $this->getURL(),
             'action' => 'collectinfo',
             'fail_action' => 'main',
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
             'noframe' => true,
             'extraargs' => array('fListCode' => $sListCode,
                                  'fActiveListCode' => $sActiveListCode,
