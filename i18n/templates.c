@@ -314,10 +314,10 @@ gettext("Clear Alert");
 gettext("View all alerts on this document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Configure an Alert for this Document");
+gettext("Create an Alert for this Document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("This page will allow you to configure an alert for this document.");
+gettext("KnowledgeTree Alerts will notify you of an event on a particular date or within a specified period of time. When an alert is triggered you will receive a notification email and message on your Dashboard");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("Alert");
@@ -341,13 +341,13 @@ gettext("years");
 gettext("Alert on");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Comment");
+gettext("Alert Message");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("A message for those who receive the document");
+gettext("A message for those who receive the alert notification");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Alert other people..");
+gettext("Alert other people?");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("Save");
@@ -356,10 +356,10 @@ gettext("Save");
 gettext("Cancel");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Alerts configured for this Document");
+gettext("Alerts for this Document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("This page lists the alerts that have been configured for this document.");
+gettext("A list of existing alerts for this document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("No alerts have been configured for this document.");
@@ -3503,6 +3503,9 @@ gettext("Manage Saved Search Criteria");
 gettext("To delete this saved search criteria or to edit other saved search criteria, #options#.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
+gettext("Please enter a name for the search expression.");
+
+/* ./templates/ktcore/search2/search_results.smarty */
 gettext("The search expression has been saved.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
@@ -3510,9 +3513,6 @@ gettext("There is a problem saving the expression expression.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
 gettext("There is a problem communicating with the server.");
-
-/* ./templates/ktcore/search2/search_results.smarty */
-gettext("Please enter a name for the search expression.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
 gettext("You can save this search:");
