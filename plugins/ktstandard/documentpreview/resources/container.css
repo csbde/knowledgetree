@@ -64,13 +64,13 @@
 /* Override ExtJS CSS */
 
 .x-window-tc {
-	background: url(../../../resources/graphics/portlet_bg.png) repeat-x 0 0;
+	background: url(../../../../resources/graphics/portlet_bg.png) repeat-x 0 0;
 	overflow:hidden;
     zoom:1;
 }
 
 .x-window-tl {
-	background: url(../../../resources/graphics/portlet_corner_topleft.png) no-repeat 0 0;
+	background: url(../../../../resources/graphics/portlet_corner_topleft.png) no-repeat 0 0;
 	padding-left:6px;
     zoom:1;
     z-index:1;
