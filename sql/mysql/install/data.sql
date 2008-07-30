@@ -1278,6 +1278,7 @@ INSERT INTO `plugins` VALUES
 (19,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0),
 (20,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0),
 (21,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0);
+(22,'ktstandard.preview.plugin','plugins/ktstandard/documentpreview/documentPreviewPlugin.php',0,0,NULL,0,'Document Preview Plugin',0),
 /*!40000 ALTER TABLE `plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2474,7 +2475,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_plugins` WRITE;
 /*!40000 ALTER TABLE `zseq_plugins` DISABLE KEYS */;
 INSERT INTO `zseq_plugins` VALUES
-(21);
+(22);
 /*!40000 ALTER TABLE `zseq_plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
