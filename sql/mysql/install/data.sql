@@ -1676,7 +1676,15 @@ INSERT INTO `upgrades` VALUES
 (181,'sql*3.5.2*0*3.5.2/mime_type_update.sql','Update MIME types.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (182,'sql*3.5.2*0*3.5.2/zdashboard_tasks.sql','Update Dashboard tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
 (183,'sql*3.5.2*0*3.5.2/zdashboard_tasks2.sql','Update more Dashboard tasks.','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
-(184,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2');
+(184,'upgrade*3.5.2*99*upgrade3.5.2','Upgrade from version 3.5.1 to 3.5.2','2007-11-21 00:00:00',1,'upgrade*3.5.2*99*upgrade3.5.2'),
+(185,'sql*3.5.3*0*3.5.3/add_autoinc.sql','Add autoincrement.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(186,'sql*3.5.3*0*3.5.3/content_md5hash.sql','Add Content md5 hash.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(187,'sql*3.5.3*0*3.5.3/document_field_position.sql','Document field postion update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(188,'sql*3.5.3*0*3.5.3/shortcuts.sql','Shortcuts update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(189,'sql*3.5.3*0*3.5.3/config_settings.sql','Configuration settings update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(190,'sql*3.5.3*0*3.5.3/doc_checked_out_user_id.sql','Checkedout user ID update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(191,'sql*3.5.3*0*3.5.3/indexer_updates.sql','Indexer updates.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(192,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-03-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2607,7 +2615,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(184);
+(192);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
