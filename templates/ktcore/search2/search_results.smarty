@@ -1,4 +1,3 @@
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 
 <div class="collapsible">
@@ -35,35 +34,6 @@
 {/if}
 {literal}
 <script language="javascript">
-var savesearch_gotStatus = function callBack(o)
-{
-	if (o.responseText != '{}')
-	{
-		var resp = eval('(' + o.responseText + ')');
-
-		if (resp.status == 0)
-		{
-			parseSuccess = true;
-			$('saveSearch').style.display='none';
-			$('savedSearch').style.display='block';
-			//alert('{/literal}{i18n}The search expression has been saved.{/i18n}{literal}');
-		}
-		else
-		{
-			 alert('{/literal}{i18n}There is a problem saving the expression expression.{/i18n}{literal}\n\n' + resp.message );
-		}
-	}
-}
-var savesearch_gotNoStatus = function callBack(o)
-{
-	alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
-}
-
-var saveSearchCallback =
-{
-	success:savesearch_gotStatus,
-	failure:savesearch_gotNoStatus
-}
 function saveSearch()
 {
 	var txtName = $('txtSaveName');
@@ -74,7 +44,35 @@ function saveSearch()
 		return;
 	}
 	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?txtName='+ txtName.value +'&txtQuery={/literal}{$txtQuery|escape:'quotes'}{literal}';
-	YAHOO.util.Connect.asyncRequest('GET',url, saveSearchCallback);
+
+	Ext.Ajax.request(
+	{
+	    url: url,
+	    method: 'GET',
+	    success: function callBack(o)
+	    {
+	        if (o.responseText != '{}')
+	        {
+	            var resp = eval('(' + o.responseText + ')');
+
+	            if (resp.status == 0)
+	            {
+	                parseSuccess = true;
+	                $('saveSearch').style.display='none';
+	                $('savedSearch').style.display='block';
+	                //alert('{/literal}{i18n}The search expression has been saved.{/i18n}{literal}');
+	            }
+	            else
+	            {
+	                alert('{/literal}{i18n}There is a problem saving the expression expression.{/i18n}{literal}\n\n' + resp.message );
+	            }
+	        }
+	    },
+	    failure: function(o)
+	    {
+	        alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
+	    }
+	});
 }
 
 function onSelectAll()
