@@ -374,6 +374,22 @@ class SOAP_Base extends SOAP_Base_Object
             'http://schemas.xmlsoap.org/soap/encoding/' => 'SOAP-ENC');
     }
 
+    function isValidField($fieldname, $type)
+    {
+        foreach($this->_wsdl->complexTypes as $nss)
+        {
+            foreach($nss as $ns)
+            {
+                if (array_key_exists($fieldname, $ns['elements']))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Sets the schema version used in the SOAP message.
      *
@@ -473,7 +489,10 @@ class SOAP_Base extends SOAP_Base_Object
                             $xmlout_value .= $this->_serializeValue(get_object_vars($vars[$k]), $k, false, $this->_section5 ? null : $elNamespace);
                         }
                     } else {
-                        $xmlout_value .= $this->_serializeValue($vars[$k], $k, false, $this->_section5 ? null : $elNamespace);
+                        if ($this->isValidField($k, $type))
+                        {
+                            $xmlout_value .= $this->_serializeValue($vars[$k], $k, false, $this->_section5 ? null : $elNamespace);
+                        }
                     }
                 }
             }
