@@ -126,20 +126,20 @@ function onShowAll(showall)
 
 {else}
 
-	<form method=post action="action.php">
+	<form method=post action="{$rootUrl}/action.php">
 	<table border=0 cellpadding="1" cellspacing="1" width="100%" align=center>
 	{assign var=cbid value=0}
 
 	{foreach item=document from=$results}
 		<tr><td>
-		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr>&nbsp;&nbsp;<a href="view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title|truncate:80}</b></a>
+		<input type="checkbox" name="selection_d[]" id="cb{$cbid}" value="{$document->DocumentID}"><nobr>&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$document->DocumentID}"><B>{$document->Title|truncate:80}</b></a>
 		{if $document->Title != $document->Filename}
 			&nbsp;&nbsp;
 			<font style=" color: green "> - Filename: {$document->Filename|truncate:40}</font>
 		{/if}
 		{if $document->IsAvailable}
 		    &nbsp;&nbsp;
-            <img src="/resources/graphics/download.png" title="Download Document" onclick="document.location='/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId={$document->DocumentID}';"></a>
+            <img src="{$rootUrl}/resources/graphics/download.png" title="Download Document" onclick="document.location='{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId={$document->DocumentID}';"></a>
 
 		{/if}
 
@@ -224,7 +224,7 @@ function onShowAll(showall)
 		{if $move == $startMovement}
 			<td></td>
 		{/if}
-			<td><a href="search2.php?action=searchResults&pageOffset={$move}">{$move}</a></td>
+			<td><a href="{$rootUrl}/search2.php?action=searchResults&pageOffset={$move}">{$move}</a></td>
 		{if $move == $endMovement}
 			<td></td>
 		{/if}
