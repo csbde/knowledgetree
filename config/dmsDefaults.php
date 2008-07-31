@@ -469,6 +469,8 @@ class KTInit {
 
         if(PEAR::isError($dbSetup))
         {
+        	/* We need to setup the language handler to display this error correctly */
+        	$this->setupI18n();
         	$this->handleInitError($dbSetup);
         }
 
