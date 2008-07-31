@@ -157,17 +157,33 @@ CREATE TABLE `comment_searchable_text` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `config_groups`
+--
+
+CREATE TABLE `config_groups` (
+  `id` int(255) unsigned NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `display_name` varchar(255),
+  `description` mediumtext,
+  `category` varchar(255),
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `config_settings`
 --
 
 CREATE TABLE `config_settings` (
   `id` int(11) NOT NULL auto_increment,
-  `group_name` varchar(255) NOT NULL default '0',
-  `item` varchar(255) NOT NULL default '0',
-  `type` varchar(255) NOT NULL default '0',
+  `group_name` varchar(255) NOT NULL,
+  `display_name` varchar(255),
+  `description` mediumtext,
+  `item` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL default 'default',
-  `helptext` varchar(255) NOT NULL default '0',
-  `default_value` varchar(255) NOT NULL default 'default',
+  `default_value` varchar(255) NOT NULL,
+  `type` enum('boolean','string','numeric_string','numeric','radio','dropdown') default 'string',
+  `options` mediumtext,
   `can_edit` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
