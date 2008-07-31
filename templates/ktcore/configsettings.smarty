@@ -1,48 +1,59 @@
+<script type='text/javascript'>
+{literal}
+    function toggleSettingsDisplay(id)
+    {
+        var el = document.getElementById(id);
+        var visible = el.style.visibility;
+
+        if(visible == 'visible'){
+            el.style.visibility = 'hidden';
+            el.style.display = 'none';
+        }else{
+            el.style.visibility = 'visible';
+            el.style.display = 'block';
+        }
+    }
+{/literal}
+</script>
+
+<h2>{$section}</h2>
+
 <form name="manageConfigSettings" action="{$smarty.server.PHP_SELF}" method="POST">
 
-<table class="kt_config">
-	<tbody>
-		{foreach from=$results item=settings}
-			<tr>
-				<td>
-					<b>{$settings.group_name}</b> : {$settings.item}
-				</td>
-				<td>
-					{if ($settings.value != 'default')}
-						{if ($settings.type) == 'boolean'}
-							{if ($settings.value == '1')}
-								<input name="configArray[{$settings.id}]" value="true" size="40">
-							{else}
-								<input name="configArray[{$settings.id}]" value="false" size="40">
-							{/if}
-						{else}
-							<input name="configArray[{$settings.id}]" value="{$settings.value}" size="40">
-						{/if}
-					{else}
-						{if ($settings.type) == 'boolean'}
-							{if ($settings.default_value == '1')}
-								<input name="configArray[{$settings.id}]" value="true" size="40">
-							{else}
-								<input name="configArray[{$settings.id}]" value="false" size="40">
-							{/if}
-						{else}
-							<input name="configArray[{$settings.id}]" value="{$settings.default_value}" size="40">
-						{/if}
-					{/if}
-				</td>
-			</tr>
-			<tr>
-				<td class="descriptiveText" style="font-size:0.85em;">
-					{$settings.helptext}
-				</td>
-			</tr>
-		{/foreach}
-	
-	</tbody>
-	
-</table>
+{if $groupList}
 
-<br>
+    {* <!-- Display the group name and description --> *}
+    {foreach from=$groupList item=groupItem}
+        {assign var=group value=$groupItem.name}
+
+        <h3><span onclick='javascript: toggleSettingsDisplay("{$groupItem.id}");' style='cursor: hand;'>{$group}</span></h3>
+        <span class='descriptiveText'>{$groupItem.description}</span>
+
+        <div id='{$groupItem.id}' style='visibility: visible'>
+            <fieldset>
+
+            {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
+            {foreach from=$groupSettings.$group item=settings}
+
+                <p style='padding-bottom: 15px;'>
+                    {$settings.display_name}<br>
+                    {if $settings.description}
+                        <span class='descriptiveText'>{$settings.description}</span><br>
+                    {/if}
+                    {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
+                </p>
+
+            {/foreach}
+
+            </fieldset>
+        </div>
+        <br>
+
+    {/foreach}
+
+{/if}
+
+
 <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
 
 </form>
