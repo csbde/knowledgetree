@@ -1,0 +1,78 @@
+{literal}
+<script type="text/javascript">
+
+function showTooltip()
+{
+	document.getElementById("KTLiveDropBoxTooltip").style.display="block";
+}
+
+function hideTooltip()
+{
+	document.getElementById("KTLiveDropBoxTooltip").style.display="none";
+}
+</script>
+<style type="text/css">
+
+#MyDropDocumentsDashlet 
+{
+	display: block;
+}
+
+
+#KTLiveDropBoxTooltip
+{
+	display: none;
+	position: absolute;
+	height: 18px;
+	width: 328px;
+	bottom: -35px;
+	right: 0px;
+	padding: 5px;
+	border: 1px solid #CCCCCC;
+	background-color: #F5F6BE;
+}
+
+#MyDropDocumentsHeader 
+{ 
+	font-weight: bold; 
+	margin-left: 25px;
+}
+			   
+#MyDropDocumentsBlock { 
+	padding: 0 25px;
+}
+#MyDropDocumentsFooter 
+{
+	position: absolute;
+	bottom: 10px;
+	right: 35px;	
+	width: 50%;
+	
+	
+}
+
+.drop_box{
+	width: 100%;
+}
+
+</style>
+
+{/literal}
+<div>
+<div id="MyDropDocumentsHeader">
+		
+</div>
+<div id="MyDropDocumentsBlock" name="MyDropDocumentsBlock">
+	Checking My Drop Documents
+	<br>
+	<br>
+	<br>
+</div>
+
+<div id="MyDropDocumentsFooter">
+			
+</div>
+
+</div>
+<script type="text/javascript">var MY_DROP_DOCUMENTS = "{$url}";</script>
+<script type="text/javascript">CheckFolderExists();</script>
