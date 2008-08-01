@@ -13,7 +13,7 @@
     {/capture}
 	{i18n arg_options=$options}Use the #options# to extend your search criteria.{/i18n}
 {/if}
-{if !empty($iSavedID)}
+{if !$search2_anonymous && !empty($iSavedID)}
 	{capture assign=options}
     	<a href="{addQS}action=queryBuilder&fSavedSearchId={$iSavedID}{/addQS}">Query Editor</a>
     {/capture}
@@ -22,7 +22,7 @@
 	<font color=brown><div id="savedSearch" style="display: none">{i18n}The search criteria has been saved.{/i18n}</div></font>
 </fieldset>
 <br>
-{if !empty($iSavedID)}
+{if !$search2_anonymous && !empty($iSavedID)}
 <fieldset>
 	<legend>{i18n}Saved Search{/i18n}</legend>
 	{i18n}This is the saved search criteria:{/i18n} {$txtSavedName}. <br/>
@@ -98,7 +98,7 @@ function onShowAll(showall)
 {/literal}
 </div>
 </div>
-{if empty($iSavedID)}
+{if !$search2_anonymous && empty($iSavedID)}
 <div id="saveSearch">
 <fieldset>
 	<legend>{i18n}You can save this search:{/i18n}</legend>

@@ -4,7 +4,9 @@
 <ul class="actionlist">
 <li><a href="{$rootUrl}/search2.php?action=guiBuilder">{i18n}Advanced Search{/i18n}</a></li>
 <li><a href="{$rootUrl}/search2.php?action=queryBuilder">{i18n}Search Criteria Editor{/i18n}</a></li>
+{if !$search2_anonymous}
 <li><a href="{$rootUrl}/search2.php?action=manage"><nobr>{i18n}Manage Saved Search{/i18n}</a></li>
+{/if}
 </ul>
 
 {if (count($savedSearches) > 0)}
