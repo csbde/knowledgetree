@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -61,6 +61,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
+            '3.5.3' => array('moveConfigSettingsToDB')
             );
 
     var $descriptions = array(
@@ -90,7 +91,8 @@ class UpgradeFunctions {
             'createPrimaryKeys'=>'Recreate db integrity:Create primary keys on the database',
             'createForeignKeys'=>'Recreate db integrity:Create foreign keys on the database',
             'createIndexes'=>'Recreate db integrity:Create indexes on the database',
-            'removeSlashesFromObjects'=>'Remove slashes from documents and folders'
+            'removeSlashesFromObjects'=>'Remove slashes from documents and folders',
+            'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -108,6 +110,69 @@ class UpgradeFunctions {
             'createForeignKeys'=>6,
             'createIndexes'=>7,
             );
+
+    function moveConfigSettingsToDB()
+    {
+        require_once('Config.php');
+
+        // Get config settings from config.ini
+        $oKTConfig = KTConfig::getSingleton();
+        $configPath = $oKTConfig->getConfigFilename();
+
+		$c = new Config;
+        $root =& $c->parseConfig($configPath, "IniCommented");
+
+        if (PEAR::isError($root)) {
+            return $root;
+        }
+
+        $confRoot = $root->toArray();
+        $conf = $confRoot['root'];
+
+        // Get the default settings from the database
+        $query = "SELECT id, s.group_name, s.item, s.value, s.default_value
+            FROM config_settings s
+            ORDER BY group_name, item";
+
+		$settings = DBUtil::getResultArray($query);
+
+		if(PEAR::isError($settings)){
+		    return $settings;
+		}
+
+        // update the settings in the database if not set to default or equal to the default value
+        foreach ($settings as $item){
+            if(!isset($conf[$item['group_name']][$item['item']])){
+                continue; // Don't overwrite the default with a null value
+            }
+
+            $confValue = $conf[$item['group_name']][$item['item']];
+
+            if($confValue == 'default'){
+                continue; // skip over if its set to default
+            }
+
+            if($confValue == $item['value']){
+                continue; // skip over if it already has the same value
+            }
+
+            if($confValue == $item['default_value']){
+                if($item['value'] == 'default' || $item['value'] == $item['default_value']){
+                    continue; // skip over if it has the same value as the default value
+                }
+                // Set the value to default
+                $confValue = 'default';
+            }
+
+            // Update the setting
+            $res = DBUtil::autoUpdate('config_settings', array('value' => $confValue), $item['id']);
+
+            if(PEAR::isError($res)){
+                return $res;
+            }
+        }
+        return true;
+    }
 
     function dropForeignKeys()
     {
@@ -1154,7 +1219,7 @@ class UpgradeFunctions {
 
             $ini->write();
         }
-*/        
+*/
     }
       // }}}
 
