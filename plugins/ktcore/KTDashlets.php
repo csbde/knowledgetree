@@ -94,8 +94,13 @@ class KTInfoDashlet extends KTBaseDashlet {
                 return false;
             }
         } else {
-            // We now check for substitute help files.  try to generate an error.
+            // We now check for substitute help files.  try to generate an error.\
+            // This function can return a PEAR Error object, we will need to check it
             $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
+            if(PEAR::isError($aHelpInfo))
+            {
+            	return false;
+            }
         }
         
         // NORMAL users never see edit-option.
