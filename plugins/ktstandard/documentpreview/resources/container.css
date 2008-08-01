@@ -62,6 +62,9 @@
 }
 
 /* Override ExtJS CSS */
+.x-window-tl .x-window-header {
+    color: #FFF;
+}
 
 .x-window-tc {
 	background: url(../../../../resources/graphics/portlet_bg.png) repeat-x 0 0;
