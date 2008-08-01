@@ -130,12 +130,14 @@ class DBUtil {
 
     function logQueryError($query, $result) {
         global $default;
-        if (!$default->queryLog->isDebugEnabled())
+        if (isset($default->queryLog) && !$default->queryLog->isDebugEnabled())
         {
             // if debug is enabled, the query is already logged.
             $default->queryLog->error($query);
         }
-        $default->log->error('Query error: ' . $result->getMessage());
+        if(isset($default->log)){
+            $default->log->error('Query error: ' . $result->getMessage());
+        }
     }
 
     function runQueries($aQueries, $db = null) {

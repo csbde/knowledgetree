@@ -85,6 +85,11 @@ class KTConfig {
         $this->flatns = $config_cache['flatns'];
         $this->expanded = $config_cache['expanded'];
         $this->expanding = $config_cache['expanding'];
+
+        if(empty($this->flatns)){
+            return false;
+        }
+        $this->populateDefault();
         return true;
     }
 
@@ -115,44 +120,43 @@ class KTConfig {
 
 	// {{{ readConfig
     function readConfig () {
-        global $default;
-
         //Load config data from the database
         $sQuery = 'select group_name, item, value, default_value from config_settings';
         $confResult = DBUtil::getResultArray($sQuery);
 
-        foreach ($confResult as $confItem)
-        {
-            if(!isset($this->flatns[$confItem['group_name'].'/'.$confItem['item']])){
-                $this->setns($confItem['group_name'], $confItem['item'], $confItem['value'], $confItem['default_value']);
-            }
+        if(PEAR::isError($confResult)){
+            return $confResult;
         }
 
-        // Populate the global $default array
+        // Update the config array - overwrite the current settings with the settings in the database.
+        foreach ($confResult as $confItem)
+        {
+            $this->setns($confItem['group_name'], $confItem['item'], $confItem['value'], $confItem['default_value']);
+        }
+        $this->populateDefault();
+    }
+    // }}}
+
+    /**
+     * Populate the global default array
+     *
+     */
+    function populateDefault()
+    {
+        global $default;
+
         foreach($this->flatns as $sGroupItem => $sValue)
         {
         	$aGroupItemArray = explode('/', $sGroupItem);
         	$default->$aGroupItemArray[1] = $this->expand($this->flatns[$sGroupItem]);
         }
-
     }
-    // }}}
 
 	// {{{ readDBConfig()
 	function readDBConfig()
 	{
-		$sConfigFile = trim(file_get_contents(KT_DIR .  '/config/config-path'));
-        if (KTUtil::isAbsolutePath($sConfigFile)) {
-            $res = $this->loadDBFile($sConfigFile);
-        } else {
-            $res = $this->loadDBFile(sprintf('%s/%s', KT_DIR, $sConfigFile));
-        }
-	}
-	// }}}
+        $filename = $this->getConfigFilename();
 
-	// {{{ loadDBFile()
-	function loadDBFile($filename, $bDefault = false)
-	{
 		$c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
 
@@ -171,6 +175,7 @@ class KTConfig {
                 }
             }
         }
+        $this->populateDefault();
 	}
 	// }}}
 
@@ -224,16 +229,23 @@ class KTConfig {
     }
 
     function setns($seck, $k, $v, $bDefault = false) {
-        if ($v === "default") {
+        // If the value is default then set it to the default value
+        if ($v === 'default') {
+            // If there is no default then ignore the value
             if($bDefault === false){
                 return;
             }
             $v = $bDefault;
-        } elseif ($v === "true") {
+        }
+
+        // If the value is true / false, set it as a boolean true / false
+        if ($v === 'true') {
             $v = true;
-        } elseif ($v === "false") {
+        } elseif ($v === 'false') {
             $v = false;
         }
+
+        // Set the config arrays
         $this->flat[$k] = $v;
         if (!is_null($seck)) {
             $this->flatns["$seck/$k"] = $v;

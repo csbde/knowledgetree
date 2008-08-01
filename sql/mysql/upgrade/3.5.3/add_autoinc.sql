@@ -4,7 +4,6 @@ alter table archiving_settings change `id` `id` int (11)  NOT NULL AUTO_INCREMEN
 alter table archiving_type_lookup change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table authentication_sources change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table column_entries change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
-alter table config_settings change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table dashlet_disables change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table data_types change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table discussion_comments change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;

@@ -151,6 +151,10 @@ function performPostUpgradeActions() {
         unlink($lockFile);
     }
 
+    // Clear the configuration cache, it'll regenerate on next load
+    $oKTConfig = new KTConfig();
+    $oKTConfig->clearCache();
+
     // Clean out the plugin_helper table
     $sql = "DELETE FROM plugin_helper";
     $res = DBUtil::runQuery($sql);
