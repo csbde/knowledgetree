@@ -455,16 +455,18 @@ class KTInit {
             }
 
             if ($use_cache) {
-                $oKTConfig->loadCache($cachePath);
-
-                foreach ($oKTConfig->flat as $k => $v) {
-                    $default->$k = $oKTConfig->get($k);
-                }
+                $use_cache = $oKTConfig->loadCache($cachePath);
             }
         }
 
-        //Read in DB settings and config settings
-        if(!$use_cache) $oKTConfig->readDBConfig();
+        if(!$use_cache) {
+            // Get default server url settings
+            $this->getDynamicConfigSettings();
+
+            //Read in DB settings and config settings
+            $oKTConfig->readDBConfig();
+        }
+
         $dbSetup = $oKTConfig->setupDB();
 
         if(PEAR::isError($dbSetup))
@@ -473,9 +475,6 @@ class KTInit {
         	$this->setupI18n();
         	$this->handleInitError($dbSetup);
         }
-
-        // Get default server url settings
-        if(!$use_cache) $this->getDynamicConfigSettings();
 
         // Read in the config settings from the database
         // Create the global $default array

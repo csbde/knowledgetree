@@ -40,7 +40,8 @@ INSERT INTO `config_groups` VALUES
 (21, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
 (22, 'urls', 'Urls', 'KnowledgeTree server and filesystem paths (Advanced users only).', 'User Interface Settings'),
 (23, 'user_prefs', 'User Preferences', 'User interface preferences', 'User Interface Settings'),
-(24, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service. ', 'Client Tools Settings');
+(24, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service. ', 'Client Tools Settings'),
+(25, 'ldapAuthentication', 'LDAP Authentication', 'Configuration of the ldap authentication.', 'General Settings');
 
 -- --------------------------------------------------------
 
@@ -173,9 +174,9 @@ INSERT INTO `config_settings` VALUES
 (104, 'cache', 'Cache Enabled', 'Plugin cache configuration', 'cacheEnabled', 'default', 'false', 'boolean', NULL, 1),
 (105, 'cache', 'Cache Directory', 'Plugin cache path', 'cacheDirectory', 'default', '${varDirectory}/cache', '', NULL, 1),
 (106, 'cache', 'Cache Plugins', 'Plugins cache', 'cachePlugins', 'default', 'true', 'boolean', NULL, 1),
-(107, 'urls', 'Var Directory', 'Path to var directory', 'varDirectory', 'default', '${fileSystemRoot}/var', '', NULL, 1),
-(108, 'openoffice', 'Program Path', 'The Open Office program directory.', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
-(109, 'urls', 'documentRoot', '', 'documentRoot', 'default', '${varDirectory}/Documents', '', NULL, 0),
-(110, 'KnowledgeTree', 'redirectToBrowse', 'set to true to redirect to browse screen ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
-(111, 'KnowledgeTree', 'redirectToBrowseExceptions', 'if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. redirectToBrowseExceptions = admin, joebloggs ', 'redirectToBrowseExceptions', 'default', '', '', NULL, 1),
-(112, 'session', 'Allow automatic sign in', 'If a user doesn''t exist in the system, the account will be created on first login.', 'allowAutoSignup', 'default', 'false', 'boolean', '', 1);
+(107, 'openoffice', 'Program Path', 'The Open Office program directory.', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
+(108, 'urls', 'documentRoot', '', 'documentRoot', 'default', '${varDirectory}/Documents', '', NULL, 0),
+(109, 'KnowledgeTree', 'redirectToBrowse', 'set to true to redirect to browse screen ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
+(110, 'KnowledgeTree', 'redirectToBrowseExceptions', 'if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. redirectToBrowseExceptions = admin, joebloggs ', 'redirectToBrowseExceptions', 'default', '', '', NULL, 1),
+(111, 'session', 'Allow automatic sign in', 'If a user doesn''t exist in the system, the account will be created on first login.', 'allowAutoSignup', 'default', 'false', 'boolean', '', 1),
+(112, 'ldapAuthentication', 'Automatic group creation', 'Automatically create the ldap groups.', 'autoGroupCreation', 'default', 'false', 'boolean', '', 1);
