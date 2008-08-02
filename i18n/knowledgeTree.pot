@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-30 17:05+0200\n"
+"POT-Creation-Date: 2008-08-02 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,22 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/util/ktutil.inc:154
+#: lib/util/ktutil.inc:162
 #, php-format
 msgid " %d day(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:155
+#: lib/util/ktutil.inc:163
 #, php-format
 msgid " %d hour(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:156
+#: lib/util/ktutil.inc:164
 #, php-format
 msgid " %d minute(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:157
+#: lib/util/ktutil.inc:165
 #, php-format
 msgid " %d second(s)"
 msgstr ""
@@ -43,6 +43,10 @@ msgstr ""
 
 #: plugins/ktcore/admin/groupManagement.php:196
 msgid " Note: group is set as unit administrator, but is not assigned to a unit."
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:319
+msgid " View All"
 msgstr ""
 
 #: lib/browse/Criteria.inc:964
@@ -264,7 +268,7 @@ msgstr ""
 msgid "(Closed at metadata version: #ver#)"
 msgstr ""
 
-#: config/dmsDefaults.php:601
+#: config/dmsDefaults.php:602
 msgid "(Community Edition)"
 msgstr ""
 
@@ -319,6 +323,11 @@ msgstr ""
 msgid ""
 "<p>The folder given below is where the unit folder will be created. Use the folder collection and path below to browse to the folder you wish to create the unit folder into.</p><p>The unit administrators have additional rights within that portion of the document management system.\n"
 "</p>"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:204
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:248
+msgid "<span class=\"descriptiveText\"> You do not have any dropped documents </span><br><br><br>"
 msgstr ""
 
 #: i18n/templates.c:2540
@@ -1553,7 +1562,7 @@ msgstr ""
 msgid "Available Workflows"
 msgstr ""
 
-#: lib/util/ktutil.inc:205
+#: lib/util/ktutil.inc:213
 msgid "B"
 msgstr ""
 
@@ -2189,7 +2198,8 @@ msgstr ""
 msgid "Clicking on a given behaviour below will show you which fields and values can be selected when the clicked behaviour is active."
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:153
+#: plugins/ktcore/admin/configSettings.php:277
+#: plugins/ktcore/admin/configSettings.php:281
 #: plugins/ktcore/KTCorePlugin.php:334
 msgid "Client Tools Settings"
 msgstr ""
@@ -2569,16 +2579,16 @@ msgstr ""
 msgid "Could change permission on exec script: "
 msgstr ""
 
-#: setup/upgrade.php:297
+#: setup/upgrade.php:301
 msgid "Could not authenticate administrative user"
 msgstr ""
 
-#: lib/util/ktutil.inc:596 lib/util/ktutil.inc:627 lib/util/ktutil.inc:632
+#: lib/util/ktutil.inc:604 lib/util/ktutil.inc:635 lib/util/ktutil.inc:640
 #, php-format
 msgid "Could not copy to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:503
+#: lib/util/ktutil.inc:511
 #, php-format
 msgid "Could not create destination directory: %s"
 msgstr ""
@@ -2677,12 +2687,12 @@ msgstr ""
 msgid "Could not find user in LDAP server"
 msgstr ""
 
-#: lib/util/ktutil.inc:605
+#: lib/util/ktutil.inc:613
 #, php-format
 msgid "Could not move to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:499
+#: lib/util/ktutil.inc:507
 #, php-format
 msgid "Could not open source directory: %s"
 msgstr ""
@@ -2706,7 +2716,7 @@ msgstr ""
 msgid "Could not remove link"
 msgstr ""
 
-#: lib/util/ktutil.inc:600
+#: lib/util/ktutil.inc:608
 #, php-format
 msgid "Could not remove source: %s"
 msgstr ""
@@ -2737,17 +2747,17 @@ msgstr ""
 msgid "Couldn't create folder"
 msgstr ""
 
-#: lib/util/ktutil.inc:589
+#: lib/util/ktutil.inc:597
 #, php-format
 msgid "Couldn't move file to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:584 lib/util/ktutil.inc:622
+#: lib/util/ktutil.inc:592 lib/util/ktutil.inc:630
 #, php-format
 msgid "Couldn't stat destination location: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:580 lib/util/ktutil.inc:618
+#: lib/util/ktutil.inc:588 lib/util/ktutil.inc:626
 #, php-format
 msgid "Couldn't stat source file: %s"
 msgstr ""
@@ -3074,6 +3084,10 @@ msgstr ""
 msgid "Date Created Delta"
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:260
+msgid "Date Dropped"
+msgstr ""
+
 #: lib/browse/Criteria.inc:713
 msgid "Date Modified"
 msgstr ""
@@ -3267,11 +3281,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: lib/util/ktutil.inc:480
+#: lib/util/ktutil.inc:488
 msgid "Destination directory already exists."
 msgstr ""
 
-#: lib/util/ktutil.inc:494
+#: lib/util/ktutil.inc:502
 msgid "Destination of move is within source"
 msgstr ""
 
@@ -3379,6 +3393,7 @@ msgstr ""
 msgid "Do you still wish to continue with deleting this item?"
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:259
 #: i18n/templates.c:476 i18n/templates.c:578 i18n/templates.c:677
 #: i18n/templates.c:755 i18n/templates.c:845 i18n/templates.c:911
 #: i18n/templates.c:7103
@@ -3824,6 +3839,7 @@ msgstr ""
 msgid "Document must be a symbolic link entity"
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:516
 #: plugins/network/extendedtransactioninfo/adminReports.php:243
 #: plugins/network/extendedtransactioninfo/latestchanges.php:78
 #: plugins/network/extendedtransactioninfo/latestchanges.php:91
@@ -4409,7 +4425,8 @@ msgstr ""
 msgid "Email Plugin"
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:173
+#: plugins/ktcore/admin/configSettings.php:291
+#: plugins/ktcore/admin/configSettings.php:295
 #: plugins/ktcore/KTCorePlugin.php:322
 msgid "Email Settings"
 msgstr ""
@@ -4588,6 +4605,39 @@ msgstr ""
 #: plugins/ktcore/admin/userManagement.php:737
 #: plugins/ktcore/admin/userManagement.php:751
 msgid "Error updating user"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:480
+msgid "Error: Cannot create WorkSpaceOwner role allocation on personal folder"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:92
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:136
+msgid "Error: Failed to create WorkSpaceOwner Role"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:218
+msgid "Error: WorkSpaceOwner Role does not exist"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:177
+msgid "Error: WorkSpaceOwner Role not setup, cannot assign to Personal Folder"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:383
+msgid "Error: cannot create WorkSpaceOwner role allocation"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:424
+msgid "Error: cannot find WorkSpaceOwner role allocation"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:191
+msgid "Error: cannot set personal folder role permissions: more than one role named 'WorkSpaceOwner' exists"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:109
+msgid "Error: cannot set user role permissions: more than one role named 'WorkSpaceOwner' exists"
 msgstr ""
 
 #: i18n/templates.c:3596
@@ -4989,6 +5039,7 @@ msgid "Failure resolving child folder with id = %d."
 msgstr ""
 
 #: plugins/ktcore/KTPermissions.php:787
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:631
 msgid "Failure to generate folderlisting."
 msgstr ""
 
@@ -5365,7 +5416,7 @@ msgstr ""
 msgid "Full-text Content Indexing"
 msgstr ""
 
-#: lib/util/ktutil.inc:193
+#: lib/util/ktutil.inc:201
 msgid "GB"
 msgstr ""
 
@@ -5377,7 +5428,8 @@ msgstr ""
 msgid "General Metadata"
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:191
+#: plugins/ktcore/admin/configSettings.php:305
+#: plugins/ktcore/admin/configSettings.php:309
 #: plugins/ktcore/KTCorePlugin.php:338
 msgid "General Settings"
 msgstr ""
@@ -5841,7 +5893,7 @@ msgstr ""
 msgid "Index Date"
 msgstr ""
 
-#: plugins/ktcore/KTDashlets.php:221
+#: plugins/ktcore/KTDashlets.php:226
 msgid "Indexer Status"
 msgstr ""
 
@@ -5926,7 +5978,8 @@ msgstr ""
 msgid "Inter-document linking"
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:210
+#: plugins/ktcore/admin/configSettings.php:319
+#: plugins/ktcore/admin/configSettings.php:323
 #: plugins/ktcore/KTCorePlugin.php:342
 msgid "Internationalisation Settings"
 msgstr ""
@@ -6118,7 +6171,7 @@ msgstr ""
 msgid "Item updated"
 msgstr ""
 
-#: plugins/ktcore/KTDashlets.php:135 plugins/ktcore/KTMiscPages.php:82
+#: plugins/ktcore/KTDashlets.php:140 plugins/ktcore/KTMiscPages.php:82
 #: i18n/templates.c:2375
 msgid "Items that require your attention"
 msgstr ""
@@ -6147,7 +6200,7 @@ msgstr ""
 msgid "Jump To Document"
 msgstr ""
 
-#: lib/util/ktutil.inc:201
+#: lib/util/ktutil.inc:209
 msgid "KB"
 msgstr ""
 
@@ -6474,7 +6527,7 @@ msgstr ""
 msgid "Lucene Migration Status"
 msgstr ""
 
-#: lib/util/ktutil.inc:197
+#: lib/util/ktutil.inc:205
 msgid "MB"
 msgstr ""
 
@@ -6482,7 +6535,7 @@ msgstr ""
 msgid "MD5 Checksum of files (used to ensure files have not been tampered with)"
 msgstr ""
 
-#: plugins/ktcore/KTDashlets.php:288
+#: plugins/ktcore/KTDashlets.php:293
 msgid "Mail Server Status"
 msgstr ""
 
@@ -6961,6 +7014,14 @@ msgstr ""
 msgid "Must select a field to edit."
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php:41
+msgid "My Drop Documents"
+msgstr ""
+
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsDashlet.php:44
+msgid "My Dropped Documents"
+msgstr ""
+
 #: plugins/search2/MigrationDashlet.php:81
 #: search2/indexing/indexerCore.inc.php:927
 #: search2/indexing/indexerCore.inc.php:941 i18n/templates.c:1139
@@ -7260,7 +7321,7 @@ msgstr ""
 msgid "No body provided"
 msgstr ""
 
-#: lib/templating/smartytemplate.inc.php:328
+#: lib/templating/smartytemplate.inc.php:330
 msgid "No breadcrumbs available"
 msgstr ""
 
@@ -7781,7 +7842,7 @@ msgstr ""
 msgid "No workflow selected."
 msgstr ""
 
-#: lib/util/ktutil.inc:658 lib/util/ktutil.inc:665 lib/util/ktutil.inc:678
+#: lib/util/ktutil.inc:666 lib/util/ktutil.inc:673 lib/util/ktutil.inc:686
 msgid "Non-entity object"
 msgstr ""
 
@@ -7797,7 +7858,7 @@ msgstr ""
 msgid "Non-true and non-error return value"
 msgstr ""
 
-#: lib/templating/smartytemplate.inc.php:199
+#: lib/templating/smartytemplate.inc.php:201
 #: plugins/ktcore/admin/documentFieldsv2.php:235
 #: plugins/rssplugin/KTrss.inc.php:362
 msgid "None"
@@ -8110,7 +8171,7 @@ msgstr ""
 msgid "Ownership changed."
 msgstr ""
 
-#: lib/util/ktutil.inc:185
+#: lib/util/ktutil.inc:193
 msgid "PB"
 msgstr ""
 
@@ -8884,6 +8945,10 @@ msgstr ""
 msgid "Recently Added/Changed Documents"
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:254
+msgid "Recently Dropped Documents"
+msgstr ""
+
 #: plugins/network/userhistory/UserHistoryDashlet.inc.php:34
 msgid "Recently Viewed Items"
 msgstr ""
@@ -9430,7 +9495,8 @@ msgstr ""
 msgid "Search and Indexing"
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:229
+#: plugins/ktcore/admin/configSettings.php:333
+#: plugins/ktcore/admin/configSettings.php:337
 #: plugins/ktcore/KTCorePlugin.php:240 plugins/ktcore/KTCorePlugin.php:330
 msgid "Search and Indexing Settings"
 msgstr ""
@@ -10171,7 +10237,7 @@ msgstr ""
 msgid "System Temporary Folder"
 msgstr ""
 
-#: lib/util/ktutil.inc:189
+#: lib/util/ktutil.inc:197
 msgid "TB"
 msgstr ""
 
@@ -10383,6 +10449,10 @@ msgstr ""
 
 #: plugins/ktcore/KTWorkflowTriggers.inc.php:430
 msgid "The condition required for this trigger has been deleted, so it is always available."
+msgstr ""
+
+#: plugins/ktcore/admin/configSettings.php:233
+msgid "The configuration settings have been updated."
 msgstr ""
 
 #: plugins/ktcore/folder/addDocument.php:120
@@ -11932,6 +12002,10 @@ msgstr ""
 msgid "Unable to find workflow trigger: %s"
 msgstr ""
 
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:647
+msgid "Unable to get documents in folder "
+msgstr ""
+
 #: plugins/ktcore/KTPermissions.php:801
 #, php-format
 msgid "Unable to get documents in folder %s: %s"
@@ -11951,6 +12025,7 @@ msgid "Unable to load trigger."
 msgstr ""
 
 #: plugins/ktcore/KTPermissions.php:795
+#: plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php:640
 msgid "Unable to locate folder: "
 msgstr ""
 
@@ -12006,7 +12081,7 @@ msgstr ""
 msgid "Unable to retrieve parent folder."
 msgstr ""
 
-#: lib/util/ktutil.inc:1076
+#: lib/util/ktutil.inc:1084
 #, php-format
 msgid "Unable to retrieve system setting %s: %s"
 msgstr ""
@@ -12186,15 +12261,15 @@ msgstr ""
 msgid "Unknown op: %s"
 msgstr ""
 
-#: lib/database/dbutil.inc:175
+#: lib/database/dbutil.inc:177
 msgid "Unknown return value for autoInsert"
 msgstr ""
 
-#: lib/database/dbutil.inc:191
+#: lib/database/dbutil.inc:193
 msgid "Unknown return value for autoUpdate"
 msgstr ""
 
-#: lib/database/dbutil.inc:216
+#: lib/database/dbutil.inc:218
 msgid "Unknown return value for whereUpdate"
 msgstr ""
 
@@ -12446,7 +12521,7 @@ msgstr ""
 msgid "User Information: #username# in \"#folder#\""
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:135
+#: plugins/ktcore/admin/configSettings.php:263
 #: plugins/ktcore/KTCorePlugin.php:326
 msgid "User Interface Settings"
 msgstr ""
@@ -12775,11 +12850,15 @@ msgstr ""
 msgid "Warning: Database is inconsistent with the contents of the repository."
 msgstr ""
 
+#: plugins/ktstandard/KTWebDAVDashletPlugin.php:66
+msgid "WebDAV Connection Information"
+msgstr ""
+
 #: plugins/ktstandard/KTWebDAVDashletPlugin.php:50
 msgid "WebDAV Dashlet Plugin"
 msgstr ""
 
-#: lib/util/ktutil.inc:364
+#: lib/util/ktutil.inc:372
 msgid "Weird WhereClause passed"
 msgstr ""
 
@@ -13422,7 +13501,7 @@ msgstr ""
 msgid "You're not authorized to delete this shortcut"
 msgstr ""
 
-#: plugins/ktcore/KTDashlets.php:181
+#: plugins/ktcore/KTDashlets.php:186
 msgid "Your Checked-out Documents"
 msgstr ""
 
@@ -13554,7 +13633,7 @@ msgstr ""
 msgid "after "
 msgstr ""
 
-#: lib/util/ktutil.inc:145
+#: lib/util/ktutil.inc:153
 msgid "ago"
 msgstr ""
 
