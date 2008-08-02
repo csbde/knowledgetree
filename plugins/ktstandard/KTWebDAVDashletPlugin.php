@@ -63,7 +63,7 @@ class KTWebDAVDashlet extends KTBaseDashlet {
     var $sClass = "ktInfo";
     
     function KTWebDAVDashlet( ) {
-        $this->sTitle = "WebDAV Connection Information";
+        $this->sTitle = _kt('WebDAV Connection Information');
     }
 
     function render() {
