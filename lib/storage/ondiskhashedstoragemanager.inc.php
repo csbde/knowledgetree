@@ -162,9 +162,9 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             $path = sprintf('%s/%s', $path, $sDirPart);
             $createPath = sprintf('%s%s', $sDocumentRoot, $path);
             if (!file_exists($createPath)) {
-                $res = @mkdir(sprintf('%s%s', $sDocumentRoot, $path));
+                $res = @mkdir($createPath, 0777, true);
                 if ($res === false) {
-                    return PEAR::raiseError(_kt("Could not create directory for storage"));
+                    return PEAR::raiseError(_kt("Could not create directory for storage" .': ' . $createPath));
                 }
             }
         }
