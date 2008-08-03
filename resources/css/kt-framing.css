@@ -1172,6 +1172,85 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 
 
+/* upload / download buttons */
+
+.portlet_button {
+    padding: 2px;
+    padding-bottom: 0;
+    height: 40px;
+}
+
+.portlet_button a .btn_text {
+    color: #F8A00C;
+    padding-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    float: left;
+}
+
+
+.portlet_button a:hover .btn_text {
+    color: #F8B01C;
+}
+
+
+#portletbar .portlet .portlet_button a:hover {
+    color: #FFAA00;
+    border: 0px;
+    text-decoration: none;
+}
+
+.portlet_button a .arrow_download {
+    background: transparent url(../../resources/graphics/download_arrow.gif) top right no-repeat;
+    width: 27px;
+    height: 47px;
+    float: right;
+}
+
+.portlet_button a .arrow_upload {
+    background: transparent url(../../resources/graphics/upload_arrow.gif) top right no-repeat;
+    width: 27px;
+    height: 47px;
+    float: right;
+}
+
+.portlet_button a .big_btn_left {
+    background: transparent url(../../resources/graphics/btn_left.gif) top left no-repeat;
+    width: 10px;
+    height: 47px;
+    float: left;
+}
+
+.portlet_button a .big_btn_middle {
+    background: transparent url(../../resources/graphics/btn_middle.gif) repeat-x;
+    height: 47px;
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    align: center;
+    width: 89%;
+}
+
+.portlet_button a .big_btn_right {
+    background: transparent url(../../resources/graphics/btn_right.gif) top right no-repeat;
+    float: left;
+    width: 10px;
+    height: 47px;
+}
+
+.portlet_button a:hover .big_btn_left {
+    background: transparent url(../../resources/graphics/btn_left_ro.gif) top left no-repeat;
+}
+
+.portlet_button a:hover .big_btn_middle {
+    background: transparent url(../../resources/graphics/btn_middle_ro.gif) repeat-x;
+}
+
+.portlet_button a:hover .big_btn_right {
+    background: transparent url(../../resources/graphics/btn_right_ro.gif) top right no-repeat;
+}
+
+
 /* =========== standard listings. */
 
 
@@ -2160,7 +2239,7 @@ body #content #add_dashlet
     vertical-align: top;
 }
 
-/* Search widget - override ExtJS CSS */
+/* ================= Search widget - override ExtJS CSS ================= */
 
 .x-toolbar{
     border: none;
