@@ -36,12 +36,12 @@
  *
  */
 
+require_once("config/dmsDefaults.php");
 require_once(KT_DIR .  "/ktapi/ktapi.inc.php");
 require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php"); 
 require_once(KT_LIB_DIR . "/dashboard/dashlet.inc.php");
 require_once(KT_DIR . "/plugins/ktcore/KTFolderActions.php");
-require_once(KT_DIR . "/plugins/network/extendedtransactioninfo/simpletransactionutil.inc.php");
 require_once(KT_DIR . "/ktapi/KTAPIFolder.inc.php");
 require_once(KT_LIB_DIR . "/roles/Role.inc");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
@@ -655,5 +655,64 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 		}
 	}
     
+     /*
+         attempt to abstract the transaction-matching query.
+
+         tables that are already defined (other than sec ones):
+
+         - Documents (D)
+         - Users (U)
+         - TransactionTypes (DTT)
+         - Document Transactions (DT)
+
+         so where clausess can take advantage of those.   
+
+      */
+    function getTransactionsMatchingQuery($oUser, $sJoinClause, $aExternalWhereClauses, $aExternalWhereParams, $aOptions = null) {
+
+        $sSelectItems = 'DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime, D.id as document_id, DT.transaction_namespace as namespace';    
+        $sBaseJoin =  "FROM " . KTUtil::getTableName("document_transactions") . " AS DT " .
+            "INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
+            "INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " .
+            "INNER JOIN " . KTUtil::getTableName("documents") . " AS D ON D.id = DT.document_id ";
+
+        // now we're almost at partialquery like status.
+        $perm_res = KTSearchUtil::permissionToSQL($oUser, 'ktcore.permissions.read');
+        if (PEAR::isError($perm_res)) {
+            return $perm_res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $perm_res;
+
+        // compile the final list
+        $aFinalWhere = kt_array_merge(array($sPermissionString,'D.creator_id IS NOT NULL'), $aExternalWhereClauses, array('D.status_id = ?'));
+        $aFinalWhereParams = kt_array_merge($aPermissionParams, $aExternalWhereParams, array(LIVE));
+
+        if (!is_array($aOptions)) {
+            $aOptions = (array) $aOptions;
+        }        
+        $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby', 'DT.datetime DESC');
+
+        // compile these.
+        // NBM: do we need to wrap these in ()?
+        $sWhereClause = implode(' AND ', $aFinalWhere);
+        if (!empty($sWhereClause)) {
+            $sWhereClause = 'WHERE ' . $sWhereClause;
+        }
+
+        $sQuery = sprintf("SELECT %s %s %s %s %s ORDER BY %s",
+            $sSelectItems,
+            $sBaseJoin,
+            $sPermissionJoin,
+            $sJoinClause,
+            $sWhereClause,
+            $sOrderBy
+        );
+
+        //var_dump(array($sQuery, $aFinalWhereParams));
+
+        $res = DBUtil::getResultArray(array($sQuery, $aFinalWhereParams));
+        //var_dump($res); exit(0);
+        return $res;
+    }
 }
 ?>
