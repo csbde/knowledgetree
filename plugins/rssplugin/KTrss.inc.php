@@ -393,18 +393,18 @@ class KTrss{
 
         	    	      <table width='95%'>\n
         	    	          <tr>\n
-        	    	              <td>"._kt('Filename').": ".$aItem[0][0][filename]."</td>\n
+        	    	              <td>"._kt('Filename').": ".htmlspecialchars($aItem[0][0][filename], ENT_QUOTES, 'UTF-8')."</td>\n
         	    	          </tr>\n
         	    	          <tr>\n
-        	    	              <td>"._kt('Author').": ".$aItem[0][0][author]."</td>\n
+        	    	              <td>"._kt('Author').": ".htmlspecialchars($aItem[0][0][author], ENT_QUOTES, 'UTF-8')."</td>\n
         	    	          </tr>\n
         	    	          <tr>\n
-            	    	          <td>"._kt('Owner').": ".$owner."</td>\n
+            	    	          <td>"._kt('Owner').": ".htmlspecialchars($owner, ENT_QUOTES, 'UTF-8')."</td>\n
             	    	          <td></td>\n
         	    	          </tr>\n
         	    	          ".$type."\n
         	    	          <tr>\n
-        	    	              <td>"._kt('Workflow status').": ".$workflow."</td>\n
+        	    	              <td>"._kt('Workflow status').": ".htmlspecialchars($workflow, ENT_QUOTES, 'UTF-8')."</td>\n
         	    	              <td></td>\n
         	    	          </tr>\n
         	    	      </table><br>\n
@@ -417,19 +417,19 @@ class KTrss{
                         	    	foreach($aItem[1] as $item){
                         	    	    $htmlItem .= "<tr>\n
                             	    	        <td>".$item[type]." name:</td>\n
-                            	    	        <td>".$item[name]."</td>\n
+                            	    	        <td>".htmlspecialchars($item[name], ENT_QUOTES, 'UTF-8')."</td>\n
                         	    	        </tr>\n
                         	    	        <tr>\n
                         	    	            <td>Path:</td>\n
-                        	    	            <td>".$item[fullpath]."</td>\n
+                        	    	            <td>".htmlspecialchars($item[fullpath], ENT_QUOTES, 'UTF-8')."</td>\n
                         	    	        </tr>\n
                         	    	        <tr>\n
                         	    	            <td>Transaction:</td>\n
-                        	    	            <td>".$item[transaction_name]."</td>\n
+                        	    	            <td>".htmlspecialchars($item[transaction_name], ENT_QUOTES, 'UTF-8')."</td>\n
                         	    	        </tr>\n
                         	    	        <tr>\n
                         	    	            <td>Comment:</td>\n
-                        	    	            <td>".$item[comment]."</td>\n
+                        	    	            <td>".htmlspecialchars($item[comment], ENT_QUOTES, 'UTF-8')."</td>\n
 											</tr>\n
 											<tr>\n";
 
@@ -444,7 +444,7 @@ class KTrss{
                         	    	        </tr>\n
                         	    	        <tr>\n
                         	    	            <td>User:</td>\n
-                        	    	            <td>".$item[user_name]."</td>\n
+                        	    	            <td>".htmlspecialchars($item[user_name], ENT_QUOTES, 'UTF-8')."</td>\n
                         	    	        </tr>\n
                         	    	        <tr>\n
                         	    	            <td colspan='2'><hr width='100' align='left'></td>\n
