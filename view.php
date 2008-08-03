@@ -96,6 +96,18 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
         $oPortlet = new KTActionPortlet(sprintf(_kt('Document actions'), $this->oDocument->getName()));
         $oPortlet->setActions($this->actions, $currentaction);
+
+        // Set download / checkin button
+        if($this->oDocument->getIsCheckedOut() && $this->oDocument->getCheckedOutUserID() == $this->oUser->getId()){
+            $btn = 'document_checkin';
+            $aNames = array('ktcore.actions.document.checkin');
+            $btnAction = KTDocumentActionUtil::getDocumentActionsByNames($aNames, 'documentaction', $this->oDocument, $this->oUser);
+        }else {
+            $btn = 'document_download';
+            $aNames = array('ktcore.actions.document.view');
+            $btnAction = KTDocumentActionUtil::getDocumentActionsByNames($aNames, 'documentinfo', $this->oDocument, $this->oUser);
+        }
+        $oPortlet->setButton($btnAction, $btn);
         $this->oPage->addPortlet($oPortlet);
     }
 
@@ -152,7 +164,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         );
 
         $this->oDocument =& $oDocument;
-        
+
         //Figure out if we came here by navigating trough a shortcut.
         //If we came here from a shortcut, the breadcrumbspath should be relative
         //to the shortcut folder.
@@ -165,7 +177,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }else{
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
-        
+
         $this->oPage->setBreadcrumbDetails(_kt('document details'));
         $this->addPortlets('Document Details');
 

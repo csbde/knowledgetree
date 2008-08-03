@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -116,6 +116,7 @@ class KTActionPortlet extends KTPortlet {
     var $actions = array();
 
     var $bActive = true;
+    var $btn = '';
 
     // current action is the one we are currently on.
     function setActions($actions, $currentaction) {
@@ -131,8 +132,64 @@ class KTActionPortlet extends KTPortlet {
             }
         }
         ksort($this->actions);
+    }
 
-        //echo '<pre>'; print_r($this->actions);
+    /**
+     * Display a button for a given action
+     *
+     * @param array $action
+     * @param string $btn
+     * @return boolean
+     */
+    function setButton($action, $btn) {
+        // Ensure action is set
+        if(!isset($action[0])){
+            return false;
+        }
+
+        $info = $action[0]->getInfo();
+
+        // Ensure user has permission on / access to the action
+        if(empty($info)){
+            return false;
+        }
+
+        $link = $info['url'];
+        $text = $info['name'];
+
+        switch($btn){
+            case 'document_checkin':
+                $text = _kt('Checkin Document');
+                $class = 'arrow_upload';
+                break;
+            case 'folder_upload':
+                $text = _kt('Upload Document');
+                $class = 'arrow_upload';
+                break;
+            case 'document_download':
+                $text = _kt('Download Document');
+                $class = 'arrow_download';
+                break;
+            default:
+                return false;
+        }
+
+        // Create button html
+        $button = "<div class='portlet_button'>
+            <a href='$link'>
+                <div class='big_btn_left'></div>
+                <div class='big_btn_middle'>
+                    <div class='btn_text'>{$text}
+                    </div>
+                    <div class='{$class}'>
+                    </div>
+                </div>
+                <div class='big_btn_right'></div>
+            </a>
+        </div>";
+
+        $this->btn = $button;
+        return true;
     }
 
     function render() {
@@ -140,10 +197,16 @@ class KTActionPortlet extends KTPortlet {
             return null;
         }
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
+        $oTemplate = $oTemplating->loadTemplate('kt3/portlets/actions_portlet');
         $aTemplateData = array(
-            "context" => $this,
+            'context' => $this,
         );
+
+        // Display a button above the action list
+        if(isset($this->btn) && !empty($this->btn)){
+            $aTemplateData['showBtn'] = true;
+            $aTemplateData['btn'] = $this->btn;
+        }
 
         return $oTemplate->render($aTemplateData);
     }
