@@ -320,27 +320,27 @@ class KTCorePlugin extends KTPlugin {
 		//config
 		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
             _kt('Email Settings'), _kt('Manage Email Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'config',
             _kt('User Interface Settings'), _kt('Manage User Interface Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'config',
             _kt('Search and Indexing Settings'), _kt('Manage Search and Indexing Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'config',
             _kt('Client Tools Settings'), _kt('Manage Client Tools Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
             _kt('General Settings'), _kt('Manage General Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
             _kt('Internationalisation Settings'), _kt('Manage Internationalisation Settings'),
-            '/admin/configSettings.php', null);
+            'admin/configSettings.php', null);
 
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
