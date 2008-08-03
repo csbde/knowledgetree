@@ -241,7 +241,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 			$aExternalWhereParams[] = 'ktcore.transactions.event';
 			
         	
-        	$aDocumentTransactions = getTransactionsMatchingQuery($oUser, '', $aExternalWhereClauses, $aExternalWhereParams);
+        	$aDocumentTransactions = $this->getTransactionsMatchingQuery($oUser, '', $aExternalWhereClauses, $aExternalWhereParams);
 			if (empty($aDocumentTransactions))
 			{ 
 				$this->session->logout();
