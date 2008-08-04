@@ -7,5 +7,4 @@
 <tr><td valign=top><I>{$resource.name}</td><td>{$resource.status}</td>
 <tr ><td colspan=2><hr></tr>
 {/foreach}
-<tr><td colspan=2 align=right><a href="{$url}/search2.php?action=refreshDashboardStatus" align=right>{i18n}Refresh{/i18n}</a></tr>
 </table>
