@@ -118,7 +118,8 @@ INSERT INTO `column_entries` VALUES
 (11,'ktcore.columns.creationdate','ktcore.views.search','',3,0),
 (12,'ktcore.columns.modificationdate','ktcore.views.search','',4,0),
 (13,'ktcore.columns.creator','ktcore.views.search','',5,0),
-(14,'ktcore.columns.workflow_state','ktcore.views.search','',6,0);
+(14,'ktcore.columns.workflow_state','ktcore.views.search','',6,0),
+(15,'ktcore.columns.preview','ktcore.views.browse','a:0:{}',3,0);
 /*!40000 ALTER TABLE `column_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
