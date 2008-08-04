@@ -78,10 +78,5 @@ toggle.style.display = 'none';
 <tr><td valign=top>*<td><i>{i18n}To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.{/i18n}
 {/if}
 </table>
-<table width="100%">
-<tr><td colspan=2 align=right><a href="{$rootUrl}/search2.php?action=refreshLuceneStats" align=right>{i18n}Refresh{/i18n}</a></tr>
-</table>
-
-
 </body>
 </html>
