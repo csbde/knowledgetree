@@ -57,9 +57,9 @@
 CREATE TABLE `active_sessions` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) default NULL,
-  `session_id` char(255) default NULL,
+  `session_id` varchar(32) default NULL,
   `lastused` datetime default NULL,
-  `ip` char(30) default NULL,
+  `ip` varchar(15) default NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `session_id` (`session_id`),
@@ -108,7 +108,7 @@ CREATE TABLE `archiving_settings` (
 
 CREATE TABLE `archiving_type_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) default NULL,
+  `name` varchar(100) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -118,7 +118,7 @@ CREATE TABLE `archiving_type_lookup` (
 
 CREATE TABLE `authentication_sources` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(50) NOT NULL default '',
+  `name` varchar(50) NOT NULL,
   `namespace` varchar(255) NOT NULL default '',
   `authentication_provider` varchar(255) NOT NULL default '',
   `config` mediumtext NOT NULL,
@@ -163,9 +163,9 @@ CREATE TABLE `comment_searchable_text` (
 CREATE TABLE `config_groups` (
   `id` int(255) unsigned NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  `display_name` varchar(255),
+  `display_name` varchar(255) default NULL,
   `description` mediumtext,
-  `category` varchar(255),
+  `category` varchar(255) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -177,7 +177,7 @@ CREATE TABLE `config_groups` (
 CREATE TABLE `config_settings` (
   `id` int(11) NOT NULL auto_increment,
   `group_name` varchar(255) NOT NULL,
-  `display_name` varchar(255),
+  `display_name` varchar(255) default NULL,
   `description` mediumtext,
   `item` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL default 'default',
@@ -208,7 +208,7 @@ CREATE TABLE `dashlet_disables` (
 
 CREATE TABLE `data_types` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(255) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -286,12 +286,12 @@ CREATE TABLE `document_content_version` (
   `mime_id` int(11) default '9',
   `major_version` int(11) NOT NULL default '0',
   `minor_version` int(11) NOT NULL default '0',
-  `storage_path` varchar(250) default NULL,
+  `storage_path` varchar(1024) default NULL,
   `md5hash` char(32) default NULL,
   PRIMARY KEY  (`id`),
   KEY `document_id` (`document_id`),
   KEY `mime_id` (`mime_id`),
-  KEY `storage_path` (`storage_path`),
+  KEY `storage_path` (`storage_path`(255)),
   KEY `filename` (`filename`(255)),
   KEY `size` (`size`),
   CONSTRAINT `document_content_version_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -310,7 +310,7 @@ CREATE TABLE `document_fields` (
   `has_lookup` tinyint(1) default NULL,
   `has_lookuptree` tinyint(1) default NULL,
   `parent_fieldset` int(11) default NULL,
-  `is_mandatory` tinyint(4) NOT NULL default '0',
+  `is_mandatory` tinyint(1) NOT NULL default '0',
   `description` mediumtext NOT NULL,
   `position` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -371,9 +371,9 @@ CREATE TABLE `document_link` (
 
 CREATE TABLE `document_link_types` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) NOT NULL default '',
-  `reverse_name` char(100) NOT NULL default '',
-  `description` char(255) NOT NULL default '',
+  `name` varchar(100) NOT NULL,
+  `reverse_name` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -387,7 +387,7 @@ CREATE TABLE `document_metadata_version` (
   `content_version_id` int(11) NOT NULL default '0',
   `document_type_id` int(11) NOT NULL default '0',
   `name` mediumtext NOT NULL,
-  `description` varchar(200) NOT NULL default '',
+  `description` varchar(255) default NULL,
   `status_id` int(11) default NULL,
   `metadata_version` int(11) NOT NULL default '0',
   `version_created` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -461,12 +461,12 @@ CREATE TABLE `document_subscriptions` (
 --
 
 CREATE TABLE `document_tags` (
-  `document_id` int(10) NOT NULL,
-  `tag_id` int(10) NOT NULL,
+  `document_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
   PRIMARY KEY  (`document_id`,`tag_id`),
   KEY `tag_id` (`tag_id`),
-  CONSTRAINT `document_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag_words` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `document_tags_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `document_tags_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag_words` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -498,7 +498,7 @@ CREATE TABLE `document_transaction_text` (
 CREATE TABLE `document_transaction_types_lookup` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL default '',
-  `namespace` varchar(250) NOT NULL default '',
+  `namespace` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `namespace` (`namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -562,8 +562,8 @@ CREATE TABLE `document_type_fieldsets_link` (
 
 CREATE TABLE `document_types_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) default NULL,
-  `disabled` tinyint(4) NOT NULL default '0',
+  `name` varchar(100) default NULL,
+  `disabled` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -594,7 +594,7 @@ CREATE TABLE `documents` (
   `restore_folder_path` text,
   `checkedout` datetime default NULL,
   `oem_no` varchar(255) default NULL,
-  `linked_document_id` int(11),
+  `linked_document_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `folder_id` (`folder_id`),
@@ -658,8 +658,8 @@ CREATE TABLE `field_behaviour_options` (
 
 CREATE TABLE `field_behaviours` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(255) NOT NULL default '',
-  `human_name` char(100) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
+  `human_name` varchar(100) NOT NULL,
   `field_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `field_id` (`field_id`),
@@ -709,7 +709,7 @@ CREATE TABLE `fieldsets` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `namespace` varchar(255) NOT NULL default '',
-  `mandatory` tinyint(4) NOT NULL default '0',
+  `mandatory` tinyint(1) NOT NULL default '0',
   `is_conditional` tinyint(1) NOT NULL default '0',
   `master_field` int(11) default NULL,
   `is_generic` tinyint(1) NOT NULL default '0',
@@ -717,7 +717,7 @@ CREATE TABLE `fieldsets` (
   `is_complete` tinyint(1) NOT NULL default '1',
   `is_system` tinyint(1) unsigned NOT NULL default '0',
   `description` mediumtext NOT NULL,
-  `disabled` tinyint(4) NOT NULL default '0',
+  `disabled` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `master_field` (`master_field`),
   KEY `is_generic` (`is_generic`),
@@ -790,9 +790,9 @@ CREATE TABLE `folder_transactions` (
   `folder_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
-  `ip` char(30) default NULL,
-  `comment` char(255) NOT NULL default '',
-  `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
+  `ip` varchar(15) default NULL,
+  `comment` varchar(255) NOT NULL,
+  `transaction_namespace` varchar(255) NOT NULL,
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -830,7 +830,7 @@ CREATE TABLE `folders` (
   `permission_lookup_id` int(11) default NULL,
   `restrict_document_types` tinyint(1) NOT NULL default '0',
   `owner_id` int(11) default NULL,
-  `linked_folder_id` int(11),
+  `linked_folder_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `permission_object_id` (`permission_object_id`),
@@ -956,8 +956,8 @@ CREATE TABLE `interceptor_instances` (
 
 CREATE TABLE `links` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) NOT NULL default '',
-  `url` char(100) NOT NULL default '',
+  `name` varchar(100) NOT NULL,
+  `url` varchar(100) NOT NULL,
   `rank` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -969,9 +969,9 @@ CREATE TABLE `links` (
 CREATE TABLE `metadata_lookup` (
   `id` int(11) NOT NULL auto_increment,
   `document_field_id` int(11) NOT NULL default '0',
-  `name` char(255) default NULL,
+  `name` varchar(255) default NULL,
   `treeorg_parent` int(11) default NULL,
-  `disabled` tinyint(3) unsigned NOT NULL default '0',
+  `disabled` tinyint(1) NOT NULL default '0',
   `is_stuck` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `document_field_id` (`document_field_id`),
@@ -986,7 +986,7 @@ CREATE TABLE `metadata_lookup` (
 CREATE TABLE `metadata_lookup_tree` (
   `id` int(11) NOT NULL auto_increment,
   `document_field_id` int(11) NOT NULL default '0',
-  `name` char(255) default NULL,
+  `name` varchar(255) default NULL,
   `metadata_lookup_tree_parent` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `document_field_id` (`document_field_id`),
@@ -1025,7 +1025,7 @@ CREATE TABLE `mime_documents` (
 CREATE TABLE `mime_extractors` (
   `id` mediumint(9) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL,
-  `active` tinyint(4) NOT NULL default '0',
+  `active` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1035,10 +1035,10 @@ CREATE TABLE `mime_extractors` (
 
 CREATE TABLE `mime_types` (
   `id` int(11) NOT NULL auto_increment,
-  `filetypes` char(100) NOT NULL default '',
-  `mimetypes` char(100) NOT NULL default '',
-  `icon_path` char(255) default NULL,
-  `friendly_name` char(255) default '',
+  `filetypes` varchar(100) NOT NULL,
+  `mimetypes` varchar(100) NOT NULL,
+  `icon_path` varchar(255) default NULL,
+  `friendly_name` varchar(255) NOT NULL default '',
   `extractor_id` mediumint(9) default NULL,
   `mime_document_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
@@ -1095,7 +1095,7 @@ CREATE TABLE `notifications` (
 
 CREATE TABLE `organisations_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) NOT NULL default '',
+  `name` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1242,9 +1242,9 @@ CREATE TABLE `permission_objects` (
 
 CREATE TABLE `permissions` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) NOT NULL default '',
-  `human_name` char(100) NOT NULL default '',
-  `built_in` tinyint(4) NOT NULL default '0',
+  `name` varchar(100) NOT NULL,
+  `human_name` varchar(100) NOT NULL,
+  `built_in` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1325,7 +1325,7 @@ CREATE TABLE `role_allocations` (
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(255) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1336,8 +1336,8 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `saved_searches` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(50) NOT NULL default '',
-  `namespace` varchar(250) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
+  `namespace` varchar(255) NOT NULL,
   `is_condition` tinyint(1) NOT NULL default '0',
   `is_complete` tinyint(1) NOT NULL default '0',
   `user_id` int(10) default NULL,
@@ -1357,7 +1357,7 @@ CREATE TABLE `scheduler_tasks` (
   `task` varchar(50) NOT NULL,
   `script_url` varchar(255) NOT NULL,
   `script_params` varchar(255) default NULL,
-  `is_complete` tinyint(4) NOT NULL default '0',
+  `is_complete` tinyint(1) NOT NULL default '0',
   `frequency` varchar(25) default NULL,
   `run_time` datetime default NULL,
   `previous_run_time` datetime default NULL,
@@ -1424,7 +1424,7 @@ CREATE TABLE `search_saved_events` (
 
 CREATE TABLE `status_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(255) default NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1434,7 +1434,7 @@ CREATE TABLE `status_lookup` (
 
 CREATE TABLE `system_settings` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(255) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
@@ -1469,7 +1469,7 @@ CREATE TABLE `time_period` (
 
 CREATE TABLE `time_unit_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) default NULL,
+  `name` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1502,7 +1502,7 @@ CREATE TABLE `type_workflow_map` (
 
 CREATE TABLE `units_lookup` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(100) NOT NULL default '',
+  `name` varchar(100) NOT NULL,
   `folder_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
@@ -1531,11 +1531,11 @@ CREATE TABLE `units_organisations_link` (
 
 CREATE TABLE `upgrades` (
   `id` int(11) NOT NULL auto_increment,
-  `descriptor` char(100) NOT NULL default '',
-  `description` char(255) NOT NULL default '',
+  `descriptor` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `date_performed` datetime NOT NULL default '0000-00-00 00:00:00',
-  `result` tinyint(4) NOT NULL default '0',
-  `parent` char(40) default NULL,
+  `result` tinyint(1) NOT NULL default '0',
+  `parent` varchar(40) default NULL,
   PRIMARY KEY  (`id`),
   KEY `descriptor` (`descriptor`),
   KEY `parent` (`parent`)
@@ -1635,7 +1635,7 @@ CREATE TABLE `users_groups_link` (
 
 CREATE TABLE `workflow_actions` (
   `workflow_id` int(11) NOT NULL default '0',
-  `action_name` char(255) NOT NULL default '',
+  `action_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`workflow_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1661,7 +1661,7 @@ CREATE TABLE `workflow_documents` (
 
 CREATE TABLE `workflow_state_actions` (
   `state_id` int(11) NOT NULL default '0',
-  `action_name` char(255) NOT NULL default '0',
+  `action_name` varchar(255) NOT NULL,
   KEY `state_id` (`state_id`),
   CONSTRAINT `workflow_state_actions_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1672,7 +1672,7 @@ CREATE TABLE `workflow_state_actions` (
 
 CREATE TABLE `workflow_state_disabled_actions` (
   `state_id` int(11) NOT NULL default '0',
-  `action_name` char(255) NOT NULL default '0',
+  `action_name` varchar(255) NOT NULL,
   KEY `state_id` (`state_id`),
   CONSTRAINT `workflow_state_disabled_actions_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1715,11 +1715,11 @@ CREATE TABLE `workflow_state_transitions` (
 CREATE TABLE `workflow_states` (
   `id` int(11) NOT NULL auto_increment,
   `workflow_id` int(11) NOT NULL default '0',
-  `name` char(255) NOT NULL default '',
-  `human_name` char(100) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
+  `human_name` varchar(100) NOT NULL,
   `inform_descriptor_id` int(11) default NULL,
-  `manage_permissions` int(1) unsigned NOT NULL default '0',
-  `manage_actions` int(1) unsigned NOT NULL default '0',
+  `manage_permissions` tinyint(1) NOT NULL default '0',
+  `manage_actions` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `workflow_id` (`workflow_id`),
   KEY `name` (`name`),
@@ -1735,8 +1735,8 @@ CREATE TABLE `workflow_states` (
 CREATE TABLE `workflow_transitions` (
   `id` int(11) NOT NULL auto_increment,
   `workflow_id` int(11) NOT NULL default '0',
-  `name` char(255) NOT NULL default '',
-  `human_name` char(100) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
+  `human_name` varchar(255) NOT NULL,
   `target_state_id` int(11) NOT NULL default '0',
   `guard_permission_id` int(11) default '0',
   `guard_group_id` int(11) default '0',
@@ -1765,7 +1765,7 @@ CREATE TABLE `workflow_transitions` (
 CREATE TABLE `workflow_trigger_instances` (
   `id` int(11) NOT NULL auto_increment,
   `workflow_transition_id` int(11) NOT NULL default '0',
-  `namespace` char(255) NOT NULL default '',
+  `namespace` varchar(255) NOT NULL,
   `config_array` text,
   PRIMARY KEY  (`id`),
   KEY `workflow_transition_id` (`workflow_transition_id`),
@@ -1779,10 +1779,10 @@ CREATE TABLE `workflow_trigger_instances` (
 
 CREATE TABLE `workflows` (
   `id` int(11) NOT NULL auto_increment,
-  `name` char(250) NOT NULL default '',
-  `human_name` char(100) NOT NULL default '',
+  `name` varchar(255) NOT NULL,
+  `human_name` varchar(100) NOT NULL,
   `start_state_id` int(11) default NULL,
-  `enabled` int(1) unsigned NOT NULL default '1',
+  `enabled` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `start_state_id` (`start_state_id`),
@@ -2524,4 +2524,4 @@ CREATE TABLE `zseq_workflows` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2008-06-26 13:51:01
+-- Dump completed on 2008-08-04 15:00:09
