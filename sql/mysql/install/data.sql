@@ -1941,7 +1941,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_column_entries` WRITE;
 /*!40000 ALTER TABLE `zseq_column_entries` DISABLE KEYS */;
 INSERT INTO `zseq_column_entries` VALUES
-(14);
+(15);
 /*!40000 ALTER TABLE `zseq_column_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
