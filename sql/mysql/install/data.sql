@@ -1722,8 +1722,8 @@ INSERT INTO `upgrades` VALUES
 (189,'sql*3.5.3*0*3.5.3/config_settings.sql','Configuration settings update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (190,'sql*3.5.3*0*3.5.3/doc_checked_out_user_id.sql','Checkedout user ID update.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (191,'sql*3.5.3*0*3.5.3/indexer_updates.sql','Indexer updates.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(191,'sql*3.5.3*0*3.5.3/db_optimizations.sql','Database optimizations.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(192,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-03-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
+(192,'sql*3.5.3*0*3.5.3/db_optimizations.sql','Database optimizations.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(193,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-03-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2654,7 +2654,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(192);
+(193);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
