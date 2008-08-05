@@ -132,16 +132,28 @@ function step_sort_func ($obj1, $obj2) {
     if ($obj2->name === "2.0.6/create_upgrade_table.sql") {
         return 1;
     }
+
+    // Priority upgrades run first
+    if ($obj1->getPriority() < $obj2->getPriority()) {
+        return 1;
+    }
+    if ($obj1->getPriority() > $obj2->getPriority()) {
+        return -1;
+    }
+
+    // early version run first
     $res = compare_version($obj1->getVersion(), $obj2->getVersion());
     if ($res !== 0) {
         return $res;
     }
+    // Order by phase
     if ($obj1->getPhase() > $obj2->getPhase()) {
         return 1;
     }
     if ($obj1->getPhase() < $obj2->getPhase()) {
         return -1;
     }
+    // Order by name
     if ($obj1->name < $obj2->name) {
         return -1;
     }
