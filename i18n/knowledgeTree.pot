@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-05 17:17+0200\n"
+"POT-Creation-Date: 2008-08-05 18:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10242,6 +10242,7 @@ msgid "Tag"
 msgstr ""
 
 #: lib/browse/Criteria.inc:894 plugins/tagcloud/TagCloudDashlet.php:55
+#: plugins/tagcloud/TagCloudPlugin.php:112
 #: plugins/tagcloud/TagCloudPortlet.php:55
 msgid "Tag Cloud"
 msgstr ""
@@ -10677,6 +10678,10 @@ msgstr ""
 
 #: i18n/templates.c:1865
 msgid "The following shortcut is no longer valid as the target document has been deleted. Please note that it has been automatically removed from the repository:"
+msgstr ""
+
+#: plugins/tagcloud/TagCloudPlugin.php:113
+msgid "The following tags are associated with your document"
 msgstr ""
 
 #: plugins/ktcore/admin/userManagement.php:156
