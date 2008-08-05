@@ -3676,9 +3676,6 @@ gettext("Queue coverage indicates percentage of documents currently queued for i
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.");
 
-/* ./templates/ktcore/search2/lucene_statistics.smarty */
-gettext("Refresh");
-
 /* ./templates/ktcore/search2/adv_query_search.smarty */
 gettext("Search Criteria Editor");
 
@@ -3756,9 +3753,6 @@ gettext("Resource");
 
 /* ./templates/ktcore/search2/external_resources.smarty */
 gettext("Status");
-
-/* ./templates/ktcore/search2/external_resources.smarty */
-gettext("Refresh");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("Manage Saved Search Criteria");

@@ -171,7 +171,7 @@ class DocumentPreview {
      */
     function renderPreview(){
         if($this->_oDocument === false){
-            return '<p>'._kt('A problem occured while loading the document preview.').'</p>';
+            return '<p>'._kt('A problem occured while loading the property preview.').'</p>';
         }
 
         $sInfo = $this->getMetadata();
