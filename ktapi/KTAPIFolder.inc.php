@@ -105,7 +105,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		return $this->folder->isSymbolicLink();
 	}
-	
+
 	/**
 	 * Retrieves the shortcuts linking to this folder
 	 *
@@ -114,7 +114,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		return $this->folder->getSymbolicLinks();
 	}
-	
+
 	/**
 	 * This is the constructor for the KTAPI_Folder.
 	 *
@@ -150,10 +150,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function get_detail()
 	{
 		$this->clearCache();
-		
+
 		$config = KTConfig::getSingleton();
 		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
-		
+
 		$detail = array(
 			'id'=>(int) $this->folderid,
 			'folder_name'=>$this->get_folder_name(),
@@ -165,7 +165,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if($wsversion<3){
 			unset($detail['linked_folder_id']);
 		}
-		
+
 		return $detail;
 	}
 
@@ -387,8 +387,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$contents = array();
 
-		
-		
+		if (strpos($what,'F') !== false)
+		{
+
 			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
 
 			foreach ($folder_children as $folder)
@@ -450,7 +451,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 
 					);
-					
+
 						if($wsversion>=3){
 							$array['linked_folder_id'] = $folder->getLinkedFolderId();
 							if($folder->isSymbolicLink()){
@@ -488,8 +489,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 				}
 			}
-		
-		
+
+		}
+
+		if (strpos($what,'D') !== false)
+		{
 			$document_children = Document::getList(array('folder_id = ? AND status_id = 1',  $this->folderid));
 
 			// I hate that KT doesn't cache things nicely...
@@ -599,10 +603,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 									$array['item_type'] = "S";
 								}
 							}
-					
+
 							$array['items']=array();
-							
-					
+
+
 							if($wsversion<3 || (strpos($what,'D') !== false && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && strpos($what,'S') !== false)){
 								$contents[] = $array;
 							}
@@ -634,15 +638,15 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					}
 				}
 			}
+		}
 
-		
 
 		return $contents;
 	}
 
 	/**
 	 * This adds a shortcut to an existing document to the current folder
-	 * 
+	 *
 	 * @param int $document_id The ID of the document to create a shortcut to
 	 *
 	 */
@@ -656,7 +660,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if(PEAR::isError($oDocument)){
 			return $oDocument;
 		}
-		
+
 		$user = $this->can_user_access_object_requiring_permission($oDocument, KTAPI_PERMISSION_READ);
 		if (PEAR::isError($user))
 		{
@@ -667,13 +671,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $document->getMessage());
 		}
-		
+
 		return new KTAPI_Document($this->ktapi,$this,$document);
 	}
-	
+
 	/**
 	 * This adds a shortcut pointing to an existing folder to the current folder
-	 * 
+	 *
 	 * @param int $folder_id The ID of the folder to create a shortcut to
 	 *
 	 */
@@ -687,7 +691,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if(PEAR::isError($oFolder)){
 			return $oFolder;
 		}
-		
+
 		$user = $this->can_user_access_object_requiring_permission($oFolder, KTAPI_PERMISSION_READ);
 		if (PEAR::isError($user))
 		{
@@ -698,10 +702,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $folder->getMessage());
 		}
-		
+
 		return new KTAPI_Folder($this->ktapi,$folder);
 	}
-	
+
 	/**
 	 * This adds a document to the current folder.
 	 *

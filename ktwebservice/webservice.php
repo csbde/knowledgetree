@@ -2056,7 +2056,7 @@ class KTWebService
     		}
     		else
     		{
-    			$detail['metadata'] = KTWebService::_encode_metadata_fields($detail['metadata']);
+    			$detail['metadata'] = KTWebService::_encode_metadata_fieldsets($detail['metadata']);
     		}
 
     		if (stripos($detailstr,'L') !== false)
@@ -2824,10 +2824,16 @@ class KTWebService
     {
     	$this->debug("undo_document_checkout('$session_id',$document_id,'$reason')");
 
+    	$responseType = 'kt_response';
+    	if ($this->version >= 2)
+    	{
+    		$responseType = 'kt_document_detail';
+    	}
+
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $kt);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $kt);
     	}
 
 		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
@@ -2837,7 +2843,7 @@ class KTWebService
     	{
     		$response['message'] = $document->getMessage();
     		$this->debug("undo_document_checkout - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$result = $document->undo_checkout($reason);
@@ -2847,7 +2853,7 @@ class KTWebService
 
     		$this->debug("undo_document_checkout - cannot undo checkout - "  . $result->getMessage(), $session_id);
 
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    		return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
@@ -2857,7 +2863,7 @@ class KTWebService
 			return $this->get_document_detail($session_id, $document_id);
 		}
 
-    	return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+    	return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     }
 
     /**
