@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -67,6 +67,7 @@ class UpgradeItem {
     var $version;
     var $description;
     var $phase;
+    var $priority = 0;
     var $parent;
     var $date;
     var $result;
@@ -102,6 +103,10 @@ class UpgradeItem {
 
     function getPhase() {
         return $this->phase;
+    }
+
+    function getPriority() {
+        return $this->priority;
     }
 
     function getType() {
@@ -173,7 +178,7 @@ class UpgradeItem {
         } else {
             $parentid = null;
         }
-        return DBUtil::autoInsert("upgrades", array( 
+        return DBUtil::autoInsert("upgrades", array(
             "descriptor" => $this->getDescriptor(),
             "description" => $this->description,
             "date_performed" => $this->date,
@@ -189,8 +194,9 @@ class UpgradeItem {
 }
 
 class SQLUpgradeItem extends UpgradeItem {
-    function SQLUpgradeItem($path, $version = null, $description = null, $phase = null) {
+    function SQLUpgradeItem($path, $version = null, $description = null, $phase = null, $priority = null) {
         $this->type = "sql";
+        $this->priority = 0;
         $details = $this->_getDetailsFromFileName($path);
         if (is_null($version)) {
             $version = $details[1];
@@ -200,6 +206,9 @@ class SQLUpgradeItem extends UpgradeItem {
         }
         if (is_null($phase)) {
             $phase = $details[3];
+        }
+        if (is_null($priority)) {
+            $this->priority = isset($details[4]) ? $details[4] : 0;
         }
         $this->UpgradeItem($path, $version, $description, $phase);
     }
@@ -297,14 +306,24 @@ class SQLUpgradeItem extends UpgradeItem {
             return array($fromVersion, $toVersion, $description, $phase);
         }
         $matched = preg_match('#^([\d.]*)/(?:(\d*)-)?(.*)\.sql$#', $path, $matches);
+        //$matched = preg_match('#^([\d.]*)/(?:(\d*)-)?(.*):(?:(\d*))\.sql$#', $path, $matches);
         if ($matched != 0) {
             $fromVersion = $matches[1];
             $toVersion = $matches[1];
             $in = array('_');
             $out = array(' ');
             $phase = (int)$matches[2];
+
+            //$priority = (int)$matches[4];
+            $priority = 0;
+            $iPriority = preg_match('#^(.*)-(\d*)$#', $matches[3], $priorities);
+            if($iPriority != 0){
+                $priority = $priorities[2];
+                $matches[3] = $priorities[1];
+            }
+
             $description = "Database upgrade to version $toVersion: " . ucfirst(str_replace($in, $out, $matches[3]));
-            return array($fromVersion, $toVersion, $description, $phase);
+            return array($fromVersion, $toVersion, $description, $phase, $priority);
         }
         // XXX: handle new format
         return null;
@@ -388,7 +407,7 @@ class RecordUpgradeItem extends UpgradeItem {
 
     function _performUpgrade() {
         $this->_deleteSmartyFiles();
-        $this->_deleteProxyFiles();        
+        $this->_deleteProxyFiles();
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
         $oCache =& KTCache::getSingleton();
         $oCache->deleteAllCaches();
@@ -414,7 +433,7 @@ class RecordUpgradeItem extends UpgradeItem {
         $query = "UPDATE system_settings SET value = ? WHERE name = ?";
         $aParams = array($systemVersion, "knowledgetreeVersion");
         DBUtil::runQuery(array($query, $aParams));
-        
+
         $query = "UPDATE system_settings SET value = ? WHERE name = ?";
         $aParams = array($this->version, "databaseVersion");
         return DBUtil::runQuery(array($query, $aParams));
@@ -441,12 +460,12 @@ class RecordUpgradeItem extends UpgradeItem {
             @unlink($sFile);
         }
     }
-    
+
 
     function _deleteProxyFiles() {
         $oKTConfig =& KTConfig::getSingleton();
-        
-        
+
+
         // from ktentityutil::_proxyCreate
         $sDirectory = $oKTConfig->get('cache/proxyCacheDirectory');
 
@@ -460,14 +479,14 @@ class RecordUpgradeItem extends UpgradeItem {
         if (!file_exists($sDirectory)) {
             return ;
         }
-        
+
         $dh = @opendir($sDirectory);
         if (empty($dh)) {
             return;
         }
         $aFiles = array();
         while (false !== ($sFilename = readdir($dh))) {
-  
+
             if (substr($sFilename, -8) == ".inc.php") {
                $aFiles[] = sprintf('%s/%s', $sDirectory, $sFilename);
             }
@@ -476,7 +495,7 @@ class RecordUpgradeItem extends UpgradeItem {
         foreach ($aFiles as $sFile) {
             @unlink($sFile);
         }
-    }    
+    }
 }
 
 ?>
