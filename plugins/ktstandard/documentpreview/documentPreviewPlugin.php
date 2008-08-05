@@ -48,7 +48,7 @@ class PreviewColumn extends AdvancedColumn {
         // Get the CSS to render the pop-up
         $main->requireCSSResource($this->sPluginPath.'/resources/container.css');
 
-        // Get the javascript to render the document preview
+        // Get the javascript to render the property preview
         $main->requireJSResource($this->sPluginPath.'/resources/preview.js');
 
         return '&nbsp;';
@@ -65,7 +65,7 @@ class PreviewColumn extends AdvancedColumn {
         $iDelay = 1000; // milliseconds
 
         $iDocumentId = $aDataRow['document']->getId();
-        $sTitle = _kt('Preview Document');
+        $sTitle = _kt('Property Preview');
         $sLoading = _kt('Loading...');
 
 
@@ -82,7 +82,7 @@ class PreviewColumn extends AdvancedColumn {
         return $link.$sTitle.'</a>';
     }
 
-    function getName() { return _kt('Preview'); }
+    function getName() { return _kt('Property Preview'); }
 }
 
 class DocumentPreviewPlugin extends KTPlugin {
@@ -90,12 +90,12 @@ class DocumentPreviewPlugin extends KTPlugin {
 
     function DocumentPreviewPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Document Preview Plugin');
+        $this->sFriendlyName = _kt('Property Preview Plugin');
         return $res;
     }
 
     function setup() {
-        $this->registerColumn(_kt('Preview File'), 'ktcore.columns.preview', 'PreviewColumn', 'documentPreviewPlugin.php');
+        $this->registerColumn(_kt('Property Preview'), 'ktcore.columns.preview', 'PreviewColumn', 'documentPreviewPlugin.php');
 
         require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         $oTemplating =& KTTemplating::getSingleton();
