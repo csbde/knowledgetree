@@ -109,8 +109,8 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
     function createFieldset(){
     	// create the fieldsets entry
     	$oFieldset = KTFieldset::createFromArray(array(
-            'name' => 'Tag Cloud',
-	    	'description' => 'Tag Cloud',
+            'name' => _kt('Tag Cloud'),
+	    	'description' => _kt('The following tags are associated with your document'),
             'namespace' => 'tagcloud',
             'mandatory' => false,
 	    	'isConditional' => false,
