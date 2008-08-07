@@ -266,13 +266,12 @@ INSERT INTO `config_settings` VALUES
 (92, 'urls', 'Stopwords File', 'Path to stopword file', 'stopwordsFile', 'default', '${fileSystemRoot}/config/stopwords.txt', '', NULL, 1),
 (93, 'cache', 'Cache Enabled', 'Plugin cache configuration', 'cacheEnabled', 'default', 'false', 'boolean', NULL, 1),
 (94, 'cache', 'Cache Directory', 'Plugin cache path', 'cacheDirectory', 'default', '${varDirectory}/cache', '', NULL, 1),
-(95, 'cache', 'Cache Plugins', 'Plugins cache', 'cachePlugins', 'default', 'true', 'boolean', NULL, 1),
-(96, 'openoffice', 'Program Path', 'The Open Office program directory.', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
-(97, 'urls', 'documentRoot', '', 'documentRoot', 'default', '${varDirectory}/Documents', '', NULL, 0),
-(98, 'KnowledgeTree', 'redirectToBrowse', 'set to true to redirect to browse screen ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
-(99, 'KnowledgeTree', 'redirectToBrowseExceptions', 'if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. redirectToBrowseExceptions = admin, joebloggs ', 'redirectToBrowseExceptions', 'default', '', '', NULL, 1),
-(100, 'session', 'Allow automatic sign in', 'If a user doesn''t exist in the system, the account will be created on first login.', 'allowAutoSignup', 'default', 'false', 'boolean', '', 1),
-(101, 'ldapAuthentication', 'Automatic group creation', 'Automatically create the ldap groups.', 'autoGroupCreation', 'default', 'false', 'boolean', '', 1);
+(95, 'openoffice', 'Program Path', 'The Open Office program directory.', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
+(96, 'urls', 'documentRoot', '', 'documentRoot', 'default', '${varDirectory}/Documents', '', NULL, 0),
+(97, 'KnowledgeTree', 'redirectToBrowse', 'set to true to redirect to browse screen ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
+(98, 'KnowledgeTree', 'redirectToBrowseExceptions', 'if redirectToBrowse is true, adding usernames to this list will force specific users to be redirected to dashboard e.g. redirectToBrowseExceptions = admin, joebloggs ', 'redirectToBrowseExceptions', '', '', '', NULL, 1),
+(99, 'session', 'Allow automatic sign in', 'If a user doesn''t exist in the system, the account will be created on first login.', 'allowAutoSignup', 'default', 'false', 'boolean', '', 1),
+(100, 'ldapAuthentication', 'Automatic group creation', 'Automatically create the ldap groups.', 'autoGroupCreation', 'default', 'false', 'boolean', '', 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
