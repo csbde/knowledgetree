@@ -604,7 +604,7 @@ if ($checkup !== true) {
 }
 if (!extension_loaded('mbstring'))
 {
-	require_once(KT_LIB_DIR . '/lib/mbstring.inc.php');
+	require_once(KT_LIB_DIR . '/mbstring.inc.php');
 }
 
 
