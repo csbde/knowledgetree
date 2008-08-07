@@ -319,27 +319,27 @@ class KTCorePlugin extends KTPlugin {
             '../search2/reporting/RescheduleDocuments.php', null);
 		//config
 		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
-            _kt('Email Settings'), _kt('Manage Email Settings'),
+            _kt('Email'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'config',
-            _kt('User Interface Settings'), _kt('Manage User Interface Settings'),
+            _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'config',
-            _kt('Search and Indexing Settings'), _kt('Manage Search and Indexing Settings'),
+            _kt('Search and Indexing'), _kt('View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.'),
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'config',
-            _kt('Client Tools Settings'), _kt('Manage Client Tools Settings'),
+            _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
-            _kt('General Settings'), _kt('Manage General Settings'),
+            _kt('General Settings'), _kt('View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display \'Your Checked-out Documents\' dashlet.'),
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
-            _kt('Internationalisation Settings'), _kt('Manage Internationalisation Settings'),
+            _kt('Internationalization'), _kt('View and modify the default language.'),
             'admin/configSettings.php', null);
 
         // misc
