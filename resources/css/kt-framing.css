@@ -2246,7 +2246,7 @@ body #content #add_dashlet
 .x-toolbar{
     border: none;
     display: block;
-	padding: 2px;
+	padding: 0 0 0 15px;
     background: transparent;
     position: relative;
     zoom: 1;
