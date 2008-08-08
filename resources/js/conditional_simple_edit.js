@@ -1,6 +1,6 @@
 /* Model Functions
  *
- * Perform various and sundry operations on the edit-page. 
+ * Perform various and sundry operations on the edit-page.
  */
 
 
@@ -44,7 +44,7 @@ function setActiveFields(active_fields) {
         var column = getColumnForField(active_fields[i]);
         setElementClass(column, 'active');
     }
-    
+
 }
 
 // takes a field, and sets all items in active_lookups to be active.  other items are deleted.
@@ -94,17 +94,17 @@ function getActiveLookups() {
                 }
             }
         }
-    }    
+    }
     return active_lookups;
 }
 
 /** Simple edit: AJAX component */
 // extract the "fixed" field, and identify which fields (if any) are active.
 function updateActiveFields() {
-   
+
    simpleLog('DEBUG','function updateActiveFields called.');
    var req = getXMLHttpRequest();
-   
+
    req.open('GET',getTargetUrl()+'?action=updateActiveFields&active_field='+current_fixed, true);
    var deferred = sendXMLHttpRequest(req);
    deferred.addCallback(do_updateActiveFields);
@@ -117,7 +117,7 @@ function do_handleAjaxError(err_source, err) {
 
 // from a selected_lookup, get the fixed_field and pass through, getting the items that selection currently activates.
 function updateActiveLookups(selected_lookup, lookup_label) {
-   
+
    simpleLog('DEBUG','function updateActiveLookups called.');
    var req = getXMLHttpRequest();
    req.open('GET',getTargetUrl()+'?action=updateActiveLookups&active_field='+current_fixed+'&selected_lookup='+selected_lookup, true);
@@ -127,9 +127,9 @@ function updateActiveLookups(selected_lookup, lookup_label) {
 }
 
 // send a "save" request to the backend, asking it to make the child_lookups the only items parented
-// to the selected_lookup (include field_id for selected, and fieldset). 
+// to the selected_lookup (include field_id for selected, and fieldset).
 function storeRelationship(selected_lookup, child_lookups) {
-  
+
   var formKeys = Array();
   var formValues = Array();
 
@@ -170,7 +170,7 @@ function storeRelationship(selected_lookup, child_lookups) {
   // inform the user that something has happened.
   // FIXME this isn't i18n friendly.
   addInformationNote(_('Dependencies saved. (at ') + new Date() + ')');
-  
+
   deferred.addCallback(do_updateActiveLookups);
   deferred.addErrback(partial(do_handleAjaxError, 'storeRelationship'));
 }
@@ -185,7 +185,7 @@ function addInformationNote(message) {
     var sH = secondHeaders[0];
     contentBox.insertBefore(dynamicMessage, sH);
   }
-  
+
   var newStr = createDOM('P',null,message);
   replaceChildNodes(dynamicMessage, newStr);
 }
@@ -197,20 +197,20 @@ function do_updateActiveFields(req) {
    var incoming_fields = req.responseXML.getElementsByTagName('active');
    for (var i=0; i<incoming_fields.length; i++) {
         active_fields.push(incoming_fields[i].getAttribute('field_id'));
-   }    
+   }
    simpleLog('DEBUG','do_updateActiveFields found active fields: '+repr(active_fields));
    setActiveFields(active_fields);
 }
 
-// should receive a simple-enough set of "field" elements, 
-// filled with "lookup" items. 
+// should receive a simple-enough set of "field" elements,
+// filled with "lookup" items.
 function do_updateActiveLookups(label, req) {
    simpleLog('DEBUG','AJAX function do_updateActiveLookups triggered');
    var active_fields = Array();
    var incoming_fields = req.responseXML.getElementsByTagName('field');
    for (var i=0; i<incoming_fields.length; i++) {
         var field = incoming_fields[i];
-        
+
         var field_id = field.getAttribute('field_id');
         simpleLog('DEBUG','found field: '+field_id);
         var infoset = {'field_id':field_id, 'lookups':new Array()};
@@ -228,7 +228,7 @@ function do_updateActiveLookups(label, req) {
             setActiveLookupsForField(active_fields[i].field_id, active_fields[i].lookups);
         }
    }
-   
+
    addInformationNote(_('Dependencies for value "')+label+('" loaded.(at ') + new Date() + ')');
 }
 
@@ -253,7 +253,7 @@ function setExclusiveEditing(field_id) {
     var column = getColumnForField(field_id);
     simpleLog('DEBUG','setExclusiveEditing found column' + column + ' for id ' + field_id);
     setElementClass(column, 'active editing');
-    var item_list = getElementsByTagAndClassName('SELECT','item_list',column)[0];   // FIXME catch potential failure here (pathalogical)            
+    var item_list = getElementsByTagAndClassName('SELECT','item_list',column)[0];   // FIXME catch potential failure here (pathalogical)
     item_list.multiple = false;
     updateNodeAttributes(item_list, {'onchange':partial(handleChangedSelection, field_id, item_list)});
 
@@ -287,8 +287,8 @@ function saveSimpleField(field_id) {
     if (item_list_select.length == 0) {
         simpleLog('ERROR','no item_list select found in field '+field_id);
         return false;
-    } 
-    // else 
+    }
+    // else
     var selected_lookup = item_list_select[0].value;
     simpleLog('DEBUG','extracted selected lookup of '+selected_lookup);
 
@@ -318,8 +318,11 @@ function handleChangedSelection(field_id, select_input) {
 var undoStack = Array();        // stores the field_ids.
 var current_fixed = null;       // current fixed.  saves a bit of time...
 function pushUndoStack(field_id) {
-    simpleLog('DEBUG','untested function pushUndoStack called.');   
-    if (current_fixed == null) { 
+    current_fixed = field_id;
+    return false;
+
+    simpleLog('DEBUG','untested function pushUndoStack called.');
+    if (current_fixed == null) {
         current_fixed = field_id;
         return false;
         // pre-initialisation.
@@ -332,23 +335,23 @@ function pushUndoStack(field_id) {
     } else {
         return false; // pass
     }
-    simpleLog('DEBUG','undoStack is now: '+repr(undoStack));   
+    simpleLog('DEBUG','undoStack is now: '+repr(undoStack));
     current_fixed=field_id;
 }
 
-function popUndoStack() { 
-    simpleLog('DEBUG','function popUndoStack called.');       
+function popUndoStack() {
+    simpleLog('DEBUG','function popUndoStack called.');
     if (undoStack.length == 0 ) {
-        simpleLog('ERROR','undo stack popped at 0.  This should be impossible');       
+        simpleLog('ERROR','undo stack popped at 0.  This should be impossible');
         return false;
     }
     var targetFixed = undoStack.pop();
     current_fixed = targetFixed;
     setExclusiveEditing(targetFixed);
-    updateActiveFields(); // trigger an update of the backend.    
+    updateActiveFields(); // trigger an update of the backend.
     if (undoStack.length == 0) {
         undoStack.push(targetFixed);
-        simpleLog('ERROR','undo stack popped to 0, re-pushing this last item. ');       
+        simpleLog('ERROR','undo stack popped to 0, re-pushing this last item. ');
     }
-    simpleLog('DEBUG','undoStack is now: '+repr(undoStack));   
+    simpleLog('DEBUG','undoStack is now: '+repr(undoStack));
 }
