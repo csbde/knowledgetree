@@ -20,10 +20,10 @@ td { vertical-align: top; }
 .buttonset.inactive { background: transparent; }
 
 .inactive { background: #ccc; }
-.inactive .fixed_message, 
+.inactive .fixed_message,
 .inactive .unassigned_items,
 .inactive .available_behaviours,
-.inactive .behaviour_edit_options 
+.inactive .behaviour_edit_options
 {
    display: none;
 }
@@ -61,9 +61,9 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 <h2>{i18n}Editing Fieldset Rules (Simple){/i18n}</h2>
 
-<p class="descriptiveText">{i18n}To make a value in a <strong>child field</strong> available to the user when another value is 
-selected in a <strong>parent field</strong>, first ensure that the parent field is being edited (it will have "save" and "done" 
-as the buttons at the bottom of the column) and then select the value for the parent field.  Now select the value(s) in 
+<p class="descriptiveText">{i18n}To make a value in a <strong>child field</strong> available to the user when another value is
+selected in a <strong>parent field</strong>, first ensure that the parent field is being edited (it will have "save" and "done"
+as the buttons at the bottom of the column) and then select the value for the parent field.  Now select the value(s) in
 the child column(s) you wish to be available to the user when the parent field's value is selected,
 and click "save".  Note you that you can use Ctrl-&lt;click&gt; to select multiple child values
 at the same time.{/i18n}</p>
@@ -98,7 +98,7 @@ refresh the page.{/i18n}</p>
      </div>
   </td>
 {/foreach}
-  
+
 </tr>
 </tbody>
 <tfoot>
@@ -108,12 +108,9 @@ refresh the page.{/i18n}</p>
          <div class="form_actions">{capture assign=fid}{$oField->getId()}{/capture}
              {if (!empty($ordering.$fid))}<input type="button" value="{i18n}edit field{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />{/if}
              <input type="button" value="{i18n}save this dependency{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
-			 {if ($iMasterFieldId != $oField->getId())} {* Only for non-initial fields. *}
-             <input type="button" value="{i18n}finished with this field{/i18n}" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
-			 {/if}
          </div>
    </td>
-{/foreach}		 
+{/foreach}
 </tr>
 </tfoot>
 </table>
