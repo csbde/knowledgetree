@@ -72,6 +72,11 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 		);
 	}
 
+	public function needsIntermediateSourceFile()
+	{
+		return true;
+	}
+
 	protected function filter($text)
 	{
 		 return preg_replace ("@(</?[^>]*>)+@", " ", $text);
@@ -83,7 +88,7 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 		$temp_dir = $config->get('urls/tmpDirectory');
 
 		$docid = $this->document->getId();
-		$time = 'openoffice_'. time() . '-' . $docid;
+		$time = 'ktindexer_openoffice_'. time() . '-' . $docid;
 		$this->openxml_dir = $temp_dir . '/' . $time;
 
 		$this->sourcefile = str_replace('\\','/',$this->sourcefile);
@@ -108,14 +113,7 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 			return false;
 		}
 
-		$result = @rename($filename, $this->targetfile);
-
-		if ($result === false)
-		{
-		    return false;
-		}
-
-        $result = file_put_contents($this->targetfile, $this->filter(file_get_contents($this->targetfile)));
+        $result = file_put_contents($this->targetfile, $this->filter(file_get_contents($filename)));
 
 		return $result !== false;
 	}
