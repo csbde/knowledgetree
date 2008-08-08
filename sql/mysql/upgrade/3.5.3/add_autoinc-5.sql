@@ -1,5 +1,7 @@
-update plugins set id = id + 1;
-update upgrades set id = id + 1;
+select @id :=max(id)+1 from plugins;
+update plugins set id = @id where id = 0;
+select @id :=max(id)+1 from upgrades;
+update upgrades set id = @id where id = 0;
 alter table active_sessions change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table archive_restoration_request change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
 alter table archiving_settings change `id` `id` int (11)  NOT NULL AUTO_INCREMENT;
