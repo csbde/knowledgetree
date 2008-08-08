@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-05 18:04+0200\n"
+"POT-Creation-Date: 2008-08-08 11:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2200,9 +2200,12 @@ msgstr ""
 msgid "Clicking on a given behaviour below will show you which fields and values can be selected when the clicked behaviour is active."
 msgstr ""
 
+#: plugins/ktcore/KTCorePlugin.php:334
+msgid "Client Tools"
+msgstr ""
+
 #: plugins/ktcore/admin/configSettings.php:277
 #: plugins/ktcore/admin/configSettings.php:281
-#: plugins/ktcore/KTCorePlugin.php:334
 msgid "Client Tools Settings"
 msgstr ""
 
@@ -2703,7 +2706,7 @@ msgstr ""
 msgid "Could not perform key maintenance successfully"
 msgstr ""
 
-#: ktwebservice/webservice.php:4269 search2.php:222
+#: ktwebservice/webservice.php:4275 search2.php:222
 #: search2/search/search.inc.php:623
 msgid "Could not process query."
 msgstr ""
@@ -3109,6 +3112,10 @@ msgstr ""
 
 #: i18n/templates.c:1082
 msgid "De-allocate Key"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:322
+msgid "Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree."
 msgstr ""
 
 #: plugins/ktcore/KTBulkActions.php:51 plugins/ktcore/KTBulkActions.php:69
@@ -4390,7 +4397,8 @@ msgstr ""
 msgid "Either select a range in which to view the users actions, or specify the       number of days into the past to view."
 msgstr ""
 
-#: plugins/ktstandard/KTEmail.php:346 i18n/templates.c:2183
+#: plugins/ktcore/KTCorePlugin.php:322 plugins/ktstandard/KTEmail.php:346
+#: i18n/templates.c:2183
 msgid "Email"
 msgstr ""
 
@@ -4426,7 +4434,6 @@ msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:291
 #: plugins/ktcore/admin/configSettings.php:295
-#: plugins/ktcore/KTCorePlugin.php:322
 msgid "Email Settings"
 msgstr ""
 
@@ -5979,8 +5986,11 @@ msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:319
 #: plugins/ktcore/admin/configSettings.php:323
-#: plugins/ktcore/KTCorePlugin.php:342
 msgid "Internationalisation Settings"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:342
+msgid "Internationalization"
 msgstr ""
 
 #: plugins/wintools/key.inc.php:145 plugins/wintools/key.inc.php:157
@@ -6558,16 +6568,8 @@ msgstr ""
 msgid "Manage Actions"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:334
-msgid "Manage Client Tools Settings"
-msgstr ""
-
 #: i18n/templates.c:3002 i18n/templates.c:3005
 msgid "Manage Conditional Behaviours"
-msgstr ""
-
-#: plugins/ktcore/KTCorePlugin.php:322
-msgid "Manage Email Settings"
 msgstr ""
 
 #: i18n/templates.c:6962
@@ -6587,10 +6589,6 @@ msgstr ""
 msgid "Manage Field: #field_name#"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:338
-msgid "Manage General Settings"
-msgstr ""
-
 #: plugins/ktcore/KTCorePlugin.php:251 i18n/templates.c:6488
 msgid "Manage Groups"
 msgstr ""
@@ -6602,10 +6600,6 @@ msgstr ""
 #: plugins/ktcore/KTPermissions.php:605
 #, php-format
 msgid "Manage Groups for Role \"%s\""
-msgstr ""
-
-#: plugins/ktcore/KTCorePlugin.php:342
-msgid "Manage Internationalisation Settings"
 msgstr ""
 
 #: plugins/wintools/baobabKeyManagement.php:50
@@ -6672,10 +6666,6 @@ msgstr ""
 msgid "Manage Saved Searches"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:330
-msgid "Manage Search and Indexing Settings"
-msgstr ""
-
 #: plugins/ktcore/admin/workflowsv2.php:963 i18n/templates.c:5525
 msgid "Manage State"
 msgstr ""
@@ -6702,10 +6692,6 @@ msgstr ""
 
 #: i18n/templates.c:5657 i18n/templates.c:5915
 msgid "Manage Transitions"
-msgstr ""
-
-#: plugins/ktcore/KTCorePlugin.php:326
-msgid "Manage User Interface Settings"
 msgstr ""
 
 #: plugins/ktcore/KTCorePlugin.php:248 i18n/templates.c:6053
@@ -9487,13 +9473,13 @@ msgstr ""
 msgid "Search User"
 msgstr ""
 
-#: plugins/ktcore/KTCorePlugin.php:239
+#: plugins/ktcore/KTCorePlugin.php:239 plugins/ktcore/KTCorePlugin.php:330
 msgid "Search and Indexing"
 msgstr ""
 
 #: plugins/ktcore/admin/configSettings.php:333
 #: plugins/ktcore/admin/configSettings.php:337
-#: plugins/ktcore/KTCorePlugin.php:240 plugins/ktcore/KTCorePlugin.php:330
+#: plugins/ktcore/KTCorePlugin.php:240
 msgid "Search and Indexing Settings"
 msgstr ""
 
@@ -9517,7 +9503,7 @@ msgstr ""
 msgid "Search for users"
 msgstr ""
 
-#: ktwebservice/webservice.php:4262
+#: ktwebservice/webservice.php:4268
 msgid "Search has not been implemented for this version of KnowledgeTree"
 msgstr ""
 
@@ -12526,8 +12512,11 @@ msgstr ""
 msgid "User Information: #username# in \"#folder#\""
 msgstr ""
 
-#: plugins/ktcore/admin/configSettings.php:263
 #: plugins/ktcore/KTCorePlugin.php:326
+msgid "User Interface"
+msgstr ""
+
+#: plugins/ktcore/admin/configSettings.php:263
 msgid "User Interface Settings"
 msgstr ""
 
@@ -12760,6 +12749,26 @@ msgstr ""
 
 #: i18n/templates.c:2123
 msgid "View all threads"
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:334
+msgid "View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:338
+msgid "View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display 'Your Checked-out Documents' dashlet."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:326
+msgid "View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, 'open' from downloads, sort metadata, and skinning."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:342
+msgid "View and modify the default language."
+msgstr ""
+
+#: plugins/ktcore/KTCorePlugin.php:330
+msgid "View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page."
 msgstr ""
 
 #: i18n/templates.c:7145
