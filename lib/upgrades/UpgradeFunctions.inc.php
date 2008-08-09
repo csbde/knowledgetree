@@ -1265,7 +1265,7 @@ class UpgradeFunctions {
         global $default;
         $oldPath = KT_DIR . "/plugins/ktstandard/AdminVersionPlugin";
 
-        if(file_exists($oldFile)) return rmdir($oldFile);
+        if(file_exists($oldPath)) return rmdir($oldPath);
     }
     // }}}
 }
