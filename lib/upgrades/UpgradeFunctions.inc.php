@@ -61,7 +61,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
-            '3.5.3' => array('moveConfigSettingsToDB')
+            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier')
             );
 
     var $descriptions = array(
@@ -93,6 +93,7 @@ class UpgradeFunctions {
             'createIndexes'=>'Recreate db integrity:Create indexes on the database',
             'removeSlashesFromObjects'=>'Remove slashes from documents and folders',
             'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.'
+            'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -1258,6 +1259,15 @@ class UpgradeFunctions {
 		$oScheduler->registerTask();
     }
      // }}}
+    
+    // {{{  removeAdminVersionNotifier
+    function removeAdminVersionNotifier() {
+        global $default;
+        $oldPath = KT_DIR . "/plugins/ktstandard/AdminVersionPlugin";
+
+        if(file_exists($oldPath)) return rmdir($oldPath);
+    }
+    // }}}
 }
 
 ?>
