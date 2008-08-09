@@ -2496,7 +2496,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_plugins` WRITE;
 /*!40000 ALTER TABLE `zseq_plugins` DISABLE KEYS */;
 INSERT INTO `zseq_plugins` VALUES
-(23);
+(22);
 /*!40000 ALTER TABLE `zseq_plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
