@@ -2956,9 +2956,6 @@ gettext("edit field");
 /* ./templates/ktcore/metadata/conditional/editsimple.smarty */
 gettext("save this dependency");
 
-/* ./templates/ktcore/metadata/conditional/editsimple.smarty */
-gettext("finished with this field");
-
 /* ./templates/ktcore/metadata/conditional/conditional_overview.smarty */
 gettext("Conditional Metadata Overview");
 
@@ -5939,10 +5936,7 @@ gettext("Support and System Information");
 gettext("#appname# Issue Tracker");
 
 /* ./templates/ktcore/support.smarty */
-gettext("Visit the #tracker#");
-
-/* ./templates/ktcore/support.smarty */
-gettext("first if you believe you have found a bug.  Always check for known issues relating to the version you are using &mdash; we may already have found the problem you're referring to, and may have fixed it in a newer version.");
+gettext("Visit the #tracker# first if you believe you have found a bug.  Always check for known issues relating to the version you are using &mdash; we may already have found the problem you're referring to, and may have fixed it in a newer version.");
 
 /* ./templates/ktcore/support.smarty */
 gettext("The following download action allows you to download a zip archive of information that may assist the #appname# team to diagnose problems on your system. This archive contains:");
