@@ -1,8 +1,8 @@
 <h2>{i18n}Support and System Information{/i18n}</h2>
 
 {capture assign=kt_tracker_location}<a href="http://support.knowledgetree.com/">{i18n arg_appname="$appname"}#appname# Issue Tracker{/i18n}</a>{/capture}
-<p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker#{/i18n}</a>
-{i18n}first if you believe you have found a bug.  Always check for known issues relating
+<p class="descriptiveText">{i18n arg_tracker=$kt_tracker_location}Visit the #tracker# 
+first if you believe you have found a bug.  Always check for known issues relating
 to the version you are using &mdash; we may already have found the problem you're referring to,
 and may have fixed it in a newer version. {/i18n}</p>
 <p class="descriptiveText">
