@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-09 12:10+0200\n"
+"POT-Creation-Date: 2008-08-09 16:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -923,10 +923,6 @@ msgstr ""
 
 #: i18n/templates.c:7283
 msgid "Additional Information about this Document"
-msgstr ""
-
-#: plugins/ktstandard/AdminVersionPlugin/AdminVersionPlugin.php:51
-msgid "Admin Version Notifier"
 msgstr ""
 
 #: admin.php:52 admin.php:141 config/siteMap.inc:62 lib/dispatcher.inc.php:526
@@ -7125,10 +7121,6 @@ msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:916
 msgid "New Transitions Created."
-msgstr ""
-
-#: plugins/ktstandard/AdminVersionPlugin/AdminVersionDashlet.php:45
-msgid "New Version Available"
 msgstr ""
 
 #: plugins/ktcore/admin/workflowsv2.php:2006
