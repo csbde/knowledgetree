@@ -92,7 +92,7 @@ class UpgradeFunctions {
             'createForeignKeys'=>'Recreate db integrity:Create foreign keys on the database',
             'createIndexes'=>'Recreate db integrity:Create indexes on the database',
             'removeSlashesFromObjects'=>'Remove slashes from documents and folders',
-            'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.'
+            'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.',
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.'
             );
     var $phases = array(
