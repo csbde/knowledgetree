@@ -61,7 +61,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
-            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','addAutoIncrementToTables')
+            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables')
             );
 
     var $descriptions = array(
@@ -94,6 +94,7 @@ class UpgradeFunctions {
             'removeSlashesFromObjects'=>'Remove slashes from documents and folders',
             'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.',
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
+            'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all db tables to use auto_increment.'
             );
     var $phases = array(
@@ -1305,6 +1306,21 @@ class UpgradeFunctions {
         $oldPath = KT_DIR . "/plugins/ktstandard/AdminVersionPlugin";
 
         if(file_exists($oldPath)) return rmdir($oldPath);
+    }
+    // }}}
+    
+    // {{{  removeOldSearchPlugins
+    function removeOldSearchPlugins() {
+        global $default;
+        $oldPath1 = KT_DIR . "/templates/ktstandard/searchdashlet";
+        if(file_exists($oldPath1)) return rmdir($oldPath1);
+        $oldPath2 = KT_DIR . "/plugins/generalmetadata";
+        if(file_exists($oldPath2)) return rmdir($oldPath2);
+        
+        $oldFile1 = KT_DIR . "/plugins/ktstandard/SearchDashletPlugin.php";
+        if(file_exists($oldFile1)) return unlink($oldFile1);
+        $oldFile2 = KT_DIR . "/plugins/ktstandard/SearchDashlet.php";
+        if(file_exists($oldFile2)) return unlink($oldFile2);
     }
     // }}}
 }
