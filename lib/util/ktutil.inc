@@ -91,11 +91,11 @@ class KTUtil {
 		$cacheDir = $default->cacheDirectory;
 
 		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
-		
+
 		/* We are checking if the object exists because we could have an error pre oor during initialization */
-		if(is_object($default->log)) 
+		if(is_object($default->log))
 		{
-			$default->log->debug("kt_url: base url - $base_url");	
+			$default->log->debug("kt_url: base url - $base_url");
 		}
 
 		if (false !== $base_url)
@@ -108,12 +108,12 @@ class KTUtil {
 		$rootUrl = $default->rootUrl;
 
 		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $rootUrl;
-		
-		if(is_object($default->log)) 
+
+		if(is_object($default->log))
 		{
-			$default->log->debug("kt_url: base url - $base_url");	
+			$default->log->debug("kt_url: base url - $base_url");
 		}
-		
+
 
 		return $base_url;
 
@@ -790,7 +790,7 @@ class KTUtil {
 
     	switch ($configCommand)
     	{
-    		case 'externalBinary/xls2cvs':
+    		case 'externalBinary/xls2csv':
     			if (OS_WINDOWS)
 				{
 					$script = $stackPath . '/bin/catdoc/xls2csv.exe';
