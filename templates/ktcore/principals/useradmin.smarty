@@ -94,7 +94,7 @@ very slow if you have many users).{/i18n}</p>
       <th>{i18n}Username{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
       <th>{i18n}Enabled{/i18n}</th>
-       
+
       <th>{i18n}Group Memberships{/i18n}</th>
       <th>{i18n}Current Groups{/i18n}</th>
    </tr>
@@ -108,25 +108,25 @@ very slow if you have many users).{/i18n}</p>
 		{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
 		{else}&mdash;{/if}
 		</td>
-	        <td class="centered">
+	        <td>
 		{$oUser->getName()}</td>
 	        <td>{$oUser->getUsername()}</td>
 	        <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 	        <td class="centered">
 	        {if ($oUser->getDisabled() == 1)}
-	            <span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</a>        
+	            <span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</a>
 	        {else}
 	            <span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</a>
 	        {/if}
 	        </td>
-	
-	        
-	        
-	
-	        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>  
+
+
+
+
+	        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>
 	        <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
 	     </tr>
-     {/if}   
+     {/if}
      {/foreach}
 
 </tbody>
