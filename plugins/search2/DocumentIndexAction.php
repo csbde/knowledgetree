@@ -55,7 +55,7 @@ class DocumentIndexAction extends KTDocumentAction
     		else
     		{
     			Indexer::index($doc, 'A');
-    		    $this->addInfoMessage(sprintf(_kt("Document '%s' has been added from the indexing queue."), $full_path));
+    		    $this->addInfoMessage(sprintf(_kt("Document '%s' has been added to the indexing queue."), $full_path));
     		}
     	}
     	redirect("view.php?fDocumentId=$docid");
