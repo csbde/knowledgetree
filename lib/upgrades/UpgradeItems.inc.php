@@ -72,7 +72,7 @@ class UpgradeItem {
     var $date;
     var $result;
 
-    function UpgradeItem($name, $version, $description = null, $phase = 0) {
+    function UpgradeItem($name, $version, $description = null, $phase = 0, $priority = 0) {
         $this->name = $name;
         $this->version = $version;
         if (is_null($description)) {
@@ -80,6 +80,7 @@ class UpgradeItem {
         }
         $this->description = $description;
         $this->phase = $phase;
+        $this->priority = $priority;
     }
 
     function setParent($parent) {
@@ -208,9 +209,9 @@ class SQLUpgradeItem extends UpgradeItem {
             $phase = $details[3];
         }
         if (is_null($priority)) {
-            $this->priority = isset($details[4]) ? $details[4] : 0;
+            $priority = isset($details[4]) ? $details[4] : 0;
         }
-        $this->UpgradeItem($path, $version, $description, $phase);
+        $this->UpgradeItem($path, $version, $description, $phase, $priority);
     }
 
     /**
@@ -338,7 +339,7 @@ class SQLUpgradeItem extends UpgradeItem {
 }
 
 class FunctionUpgradeItem extends UpgradeItem {
-    function FunctionUpgradeItem ($func, $version, $description = null, $phase = null) {
+    function FunctionUpgradeItem ($func, $version, $description = null, $phase = null, $priority = null) {
         $this->type = "func";
         if (is_null($description)) {
             $aUpgradeFunctions = new UpgradeFunctions;
@@ -347,7 +348,10 @@ class FunctionUpgradeItem extends UpgradeItem {
         if (is_null($phase)) {
             $phase = 0;
         }
-        $this->UpgradeItem($func, $version, $description, $phase);
+        if(is_null($priority)){
+            $priority = 0;
+        }
+        $this->UpgradeItem($func, $version, $description, $phase, $priority);
     }
 
     function getUpgrades($origVersion, $currVersion) {
@@ -364,7 +368,8 @@ class FunctionUpgradeItem extends UpgradeItem {
             }
             foreach ($funcs as $func) {
                 $iPhase = KTUtil::arrayGet($aUpgradeFunctions->phases, $func, 0);
-                $ret[] = new FunctionUpgradeItem($func, $version, $aUpgradeFunctions->descriptions[$func], $iPhase);
+                $iPriority = KTUtil::arrayGet($aUpgradeFunctions->priority, $func, 0);
+                $ret[] = new FunctionUpgradeItem($func, $version, $aUpgradeFunctions->descriptions[$func], $iPhase, $iPriority);
             }
         }
         return $ret;
