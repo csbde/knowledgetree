@@ -61,7 +61,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
-            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier')
+            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','addAutoIncrementToTables')
             );
 
     var $descriptions = array(
@@ -93,7 +93,8 @@ class UpgradeFunctions {
             'createIndexes'=>'Recreate db integrity:Create indexes on the database',
             'removeSlashesFromObjects'=>'Remove slashes from documents and folders',
             'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.',
-            'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.'
+            'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
+            'addAutoIncrementToTables' => 'Update all db tables to use auto_increment.'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -109,9 +110,47 @@ class UpgradeFunctions {
             'dropIndexes'=>4,
             'createPrimaryKeys'=>5,
             'createForeignKeys'=>6,
-            'createIndexes'=>7,
+            'createIndexes'=>7
             );
 
+    var $priority = array(
+            'addAutoIncrementToTables'=>1
+            );
+
+    /**
+     * Set all tables in the DB to auto increment, thereby removing the use of the zseq tables
+     */
+    function addAutoIncrementToTables()
+    {
+        global $default;
+		DBUtil::setupAdminDatabase();
+		$db = $default->_admindb;
+
+        // Get all tables in the database
+        $query = 'SHOW TABLES';
+        $tableList = DBUtil::getResultArray($query, $db);
+
+        // Ensure that if there is a zero id on plugins and upgrades it is updated
+        $query = "UPDATE plugins SET id = (SELECT max(id)+1 FROM plugins) WHERE id = 0";
+        DBUtil::runQuery($query, $db);
+
+        $query = "UPDATE upgrades SET id = (SELECT max(id)+1 FROM plugins) WHERE id = 0";
+        DBUtil::runQuery($query, $db);
+
+        // Loop through tables and add auto increment
+        foreach ($tableList as $tableArr){
+            $key = key($tableArr);
+            $tableName = $tableArr[$key];
+
+            // Some tables don't have an id column, we ignore those errors and continue
+            $query = "ALTER TABLE {$tableName} CHANGE `id` `id` int (11) NOT NULL AUTO_INCREMENT";
+            DBUtil::runQuery($query, $db);
+        }
+    }
+
+    /**
+     * Copy the modified config values from the config.ini to the appropriate setting in the database
+     */
     function moveConfigSettingsToDB()
     {
         require_once('Config.php');
@@ -1259,7 +1298,7 @@ class UpgradeFunctions {
 		$oScheduler->registerTask();
     }
      // }}}
-    
+
     // {{{  removeAdminVersionNotifier
     function removeAdminVersionNotifier() {
         global $default;
