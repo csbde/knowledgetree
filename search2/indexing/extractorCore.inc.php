@@ -340,6 +340,7 @@ abstract class DocumentExtractor
 abstract class ExternalDocumentExtractor extends DocumentExtractor
 {
     protected $allowOutput = false;
+    protected $pipeStdoutToDevNull = false;
 
 	/**
 	 * Initialise the extractor.
@@ -396,7 +397,15 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 			$script = "#!/bin/sh\n";
 			$script .= "# This is an auto generated file. \n";
-			$script .= $cmd . ' 2>>"' . $script_out . "\" >/dev/null\n";
+			$script .= $cmd . ' 2>>"' . $script_out . "\"";
+
+			if ($this->pipeStdoutToDevNull)
+			{
+			    $script .= " >/dev/null";
+			}
+
+			$script .= "\n";
+
 			$script .= "exit $?\n";
 		}
 
@@ -552,6 +561,7 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
 
             $this->setIndexingStatus($this->oo->getIndexingStatus());
             $this->setExtractionStatus($this->oo->getExtractionStatus());
+            $this->setTargetFile($this->oo->getTargetFile());
 
             return $result;
         }
