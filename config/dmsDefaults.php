@@ -457,6 +457,24 @@ class KTInit {
             if ($use_cache) {
                 $use_cache = $oKTConfig->loadCache($cachePath);
             }
+        }else{
+            if(!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])){
+                // If the http_host server variable is not set then the serverName gets set to localhost
+                // We don't want to store this setting so we set store_cache to false
+                $store_cache = false;
+
+                /*
+                // Check if serverName.txt is set and use that
+                $pathFile = KT_DIR .  '/config/cache-path';
+                $cachePath = trim(file_get_contents($pathFile));
+                $serverNamePath = $cachePath . '/' . KTUtil::SERVER_NAME_FILE;
+
+                if(file_exists($serverNamePath)){
+                    $serverName = @file_get_contents($serverNamePath);
+                    $_SERVER['HTTP_HOST'] = $serverName;
+                }
+                */
+            }
         }
 
         if(!$use_cache) {
