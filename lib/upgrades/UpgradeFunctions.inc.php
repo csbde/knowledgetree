@@ -1312,19 +1312,44 @@ class UpgradeFunctions {
     // {{{  removeOldSearchPlugins
     function removeOldSearchPlugins() {
         global $default;
-        $oldPath1 = KT_DIR . "/templates/ktstandard/searchdashlet";
-        if(file_exists($oldPath1)) rmdir($oldPath1);
-        $oldPath2 = KT_DIR . "/plugins/generalmetadata";
-        if(file_exists($oldPath2)) rmdir($oldPath2);
+        $oldFile = KT_DIR . "/plugins/ktstandard/SearchDashletPlugin.php";
+        if(file_exists($oldFile)) unlink($oldFile);
+        $oldFile = KT_DIR . "/plugins/ktstandard/SearchDashlet.php";
+        if(file_exists($oldFile)) unlink($oldFile);
+
+        // Files MUST be removed before folders and folders MUST be empty
+        $oldPath1 = KT_DIR . "/templates/ktstandard/searchdashlet/";
+        rm_recursive($oldPath1);
+        $oldPath2 = KT_DIR . "/plugins/generalmetadata/";
+        rm_recursive($oldPath2);
         
-        $oldFile1 = KT_DIR . "/plugins/ktstandard/SearchDashletPlugin.php";
-        if(file_exists($oldFile1)) unlink($oldFile1);
-        $oldFile2 = KT_DIR . "/plugins/ktstandard/SearchDashlet.php";
-        if(file_exists($oldFile2)) unlink($oldFile2);
-
-        // FIXME: We should check that they all succeded
+        // FIXME: We should check that they all worked
         return true;
+    }
 
+    function rm_recursive($filepath)
+    {
+        if (is_dir($filepath) && !is_link($filepath))
+        {
+            if ($dh = opendir($filepath))
+            {
+                while (($sf = readdir($dh)) !== false)
+                {
+                    if ($sf == '.' || $sf == '..')
+                    {
+                        continue;
+                    }
+                    if (!rm_recursive($filepath.'/'.$sf))
+                    {
+                        //throw new Exception( $filepath.'/'.$sf.' could not be deleted.');
+                        return false;
+                    }
+                }
+                closedir($dh);
+            }
+            return rmdir($filepath);
+        }
+        return unlink($filepath);
     }
     // }}}
 }
