@@ -48,6 +48,8 @@ class DiskUsageDashlet extends KTBaseDashlet
 
     function is_active($oUser)
     {
+        if (OS_WINDOWS && ((float) php_uname('r') >= 6)) return false;
+
         $usage = KTUtil::getSystemSetting('DiskUsage');
         if (empty($usage)) return false;
         $usage = unserialize($usage);
