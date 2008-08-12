@@ -495,7 +495,7 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
         $config = KTConfig::getSingleton();
         $this->params = $config->get('indexer/' . $cmd . 'cmdline', $params);
         $this->useOO = $config->get('indexer/useOpenOffice', true);
-        if (!$config->get('indexer/use_' . $cmd, true))
+        if (!$config->get('indexer/use_' . $cmd, true) || OS_WINDOWS)
         {
             $this->cmd = false;
         }
