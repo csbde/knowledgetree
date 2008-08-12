@@ -6554,7 +6554,7 @@ gettext("Cancel");
 gettext("Dynamic Conditions");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
-gettext("Dynamic Conditions give the administrator the capability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section.");
+gettext("Creating a Dynamic Condition involves setting up criteria that filters content in the DMS for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management page in Browse Documents. Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows.");
 
 /* ./templates/ktcore/search/administration/conditions.smarty */
 gettext("Create a new condition");
