@@ -1319,9 +1319,9 @@ class UpgradeFunctions {
 
         // Files MUST be removed before folders and folders MUST be empty
         $oldPath1 = KT_DIR . "/templates/ktstandard/searchdashlet/";
-        rm_recursive($oldPath1);
+        $this->rm_recursive($oldPath1);
         $oldPath2 = KT_DIR . "/plugins/generalmetadata/";
-        rm_recursive($oldPath2);
+        $this->rm_recursive($oldPath2);
         
         // FIXME: We should check that they all worked
         return true;
