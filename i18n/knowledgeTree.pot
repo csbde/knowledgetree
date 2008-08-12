@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-09 16:08+0200\n"
+"POT-Creation-Date: 2008-08-12 14:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,7 +268,7 @@ msgstr ""
 msgid "(Closed at metadata version: #ver#)"
 msgstr ""
 
-#: config/dmsDefaults.php:602
+#: config/dmsDefaults.php:620
 msgid "(Community Edition)"
 msgstr ""
 
@@ -1798,7 +1798,7 @@ msgstr ""
 msgid "Cannot locate DocumentConverter.py"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:670
+#: search2/indexing/extractorCore.inc.php:680
 #, php-format
 msgid "Cannot locate binary for %s (%s)."
 msgstr ""
@@ -2576,7 +2576,7 @@ msgstr ""
 msgid "Core: Write"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:420
+#: search2/indexing/extractorCore.inc.php:429
 msgid "Could change permission on exec script: "
 msgstr ""
 
@@ -2607,7 +2607,7 @@ msgstr ""
 msgid "Could not create document type"
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:406
+#: search2/indexing/extractorCore.inc.php:415
 msgid "Could not create exec script: "
 msgstr ""
 
@@ -2971,6 +2971,10 @@ msgstr ""
 
 #: plugins/ktcore/admin/manageHelp.php:174
 msgid "Created replacement."
+msgstr ""
+
+#: i18n/templates.c:6557
+msgid "Creating a Dynamic Condition involves setting up criteria that filters content in the DMS for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management page in Browse Documents. Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows."
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:290
@@ -3417,7 +3421,7 @@ msgstr ""
 
 #: plugins/search2/DocumentIndexAction.php:58
 #, php-format
-msgid "Document '%s' has been added from the indexing queue."
+msgid "Document '%s' has been added to the indexing queue."
 msgstr ""
 
 #: plugins/search2/DocumentIndexAction.php:53
@@ -4048,10 +4052,6 @@ msgstr ""
 #: plugins/ktcore/KTCorePlugin.php:264 i18n/templates.c:4715
 #: i18n/templates.c:6554
 msgid "Dynamic Conditions"
-msgstr ""
-
-#: i18n/templates.c:6557
-msgid "Dynamic Conditions give the administrator the capability to define what permissions are applied to document within a folder based on a set of rules. These rules may be applied to the document's metadata, contents, or transactional information. Dynamic Conditions are applied on a per folder basis and may be setup from the folder's permissions section."
 msgstr ""
 
 #: plugins/ktcore/admin/conditions.php:100
@@ -13999,7 +13999,7 @@ msgstr ""
 msgid "from the folder \"#location_name#\""
 msgstr ""
 
-#: search2/indexing/extractorCore.inc.php:446
+#: search2/indexing/extractorCore.inc.php:455
 msgid "getCommandLine is not implemented"
 msgstr ""
 
