@@ -1313,14 +1313,18 @@ class UpgradeFunctions {
     function removeOldSearchPlugins() {
         global $default;
         $oldPath1 = KT_DIR . "/templates/ktstandard/searchdashlet";
-        if(file_exists($oldPath1)) return rmdir($oldPath1);
+        if(file_exists($oldPath1)) rmdir($oldPath1);
         $oldPath2 = KT_DIR . "/plugins/generalmetadata";
-        if(file_exists($oldPath2)) return rmdir($oldPath2);
+        if(file_exists($oldPath2)) rmdir($oldPath2);
         
         $oldFile1 = KT_DIR . "/plugins/ktstandard/SearchDashletPlugin.php";
-        if(file_exists($oldFile1)) return unlink($oldFile1);
+        if(file_exists($oldFile1)) unlink($oldFile1);
         $oldFile2 = KT_DIR . "/plugins/ktstandard/SearchDashlet.php";
-        if(file_exists($oldFile2)) return unlink($oldFile2);
+        if(file_exists($oldFile2)) unlink($oldFile2);
+
+        // FIXME: We should check that they all succeded
+        return true;
+
     }
     // }}}
 }
