@@ -289,8 +289,9 @@ class KTInit {
     function handleInitError($oError) {
         global $checkup;
         if ($checkup === true) {
-            return;
+            //return;
         }
+
         if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
             require_once(KT_LIB_DIR . '/dispatcher.inc.php');
             $oDispatcher =new KTErrorDispatcher($oError);
