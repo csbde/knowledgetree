@@ -43,25 +43,37 @@ require_once(realpath('../../config/dmsDefaults.php'));
 $config = KTConfig::getSingleton();
 $temp_dir =$config->get("urls/tmpDirectory");
 
-
 cleanupTempDirectory($temp_dir);
 
-function cleanupTempDirectory($dir)
+function cleanupTempDirectory($dir, $force = false)
 {
-    if (!is_dir($dir))
-    {
-        return;
-    }
     $dir = str_replace('\\','/', $dir);
 
     $dh = opendir($dir);
     while (($name = readdir($dh)) !== false)
     {
-        if (substr($name, 0, 9) != 'ktindexer')
+        if (substr($name, 0, 1) == '.') continue;
+
+        $kti = (substr($name, 0, 3) == 'kti');   // remove files starting with kti (indexer temp files created by open office)
+
+        $fullname = $dir . '/' . $name;
+
+        if (!$kti && !$force)
         {
-            continue;
+            $info = stat($fullname);
+            if ($info['ctime'] >= time() - 24 * 60 * 60) continue; // remove files that have been accessed in the last 24 hours
         }
-        unlink($dir . '/' . $name);
+
+        if (is_dir($fullname))
+        {
+            cleanupTempDirectory($fullname, true);
+            rmdir($fullname);
+        }
+        else
+        {
+            unlink($fullname);
+        }
+
     }
     closedir($dh);
 }
