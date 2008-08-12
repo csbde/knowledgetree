@@ -49,6 +49,8 @@ function cleanupTempDirectory($dir, $force = false)
 {
     $dir = str_replace('\\','/', $dir);
 
+    if (strpos($dir, '/tmp') === false) return;
+
     $dh = opendir($dir);
     while (($name = readdir($dh)) !== false)
     {
