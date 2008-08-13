@@ -3239,7 +3239,7 @@ gettext("No indicated problem.");
 gettext("Email has not been configured on this server.  Emailing of documents and sending of notifications are disabled.");
 
 /* ./templates/ktcore/dashlets/mailserver.smarty */
-gettext("Edit the [email] section of the config.ini file to set your email server and the sending address of the #appname# server.");
+gettext("Edit the Email Settings in DMS Administration >> System Configuration to set up emailing on this server.");
 
 /* ./templates/ktcore/dashlets/admintutorial.smarty */
 gettext("#appname# administrator's Guide");
