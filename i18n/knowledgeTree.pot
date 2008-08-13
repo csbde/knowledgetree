@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-12 14:53+0200\n"
+"POT-Creation-Date: 2008-08-13 15:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,7 +268,7 @@ msgstr ""
 msgid "(Closed at metadata version: #ver#)"
 msgstr ""
 
-#: config/dmsDefaults.php:620
+#: config/dmsDefaults.php:613
 msgid "(Community Edition)"
 msgstr ""
 
@@ -965,7 +965,7 @@ msgstr ""
 msgid "Advanced Query"
 msgstr ""
 
-#: config/siteMap.inc:65 search2.php:575 search2.php:576
+#: config/siteMap.inc:65 search2.php:578 search2.php:579
 #: search/booleanSearch.php:67 search/booleanSearch.php:251
 #: i18n/templates.c:1493 i18n/templates.c:1589 i18n/templates.c:1991
 #: i18n/templates.c:3605 i18n/templates.c:3761 i18n/templates.c:3947
@@ -4328,7 +4328,7 @@ msgid "Edit state properties"
 msgstr ""
 
 #: i18n/templates.c:3242
-msgid "Edit the [email] section of the config.ini file to set your email server and the sending address of the #appname# server."
+msgid "Edit the Email Settings in DMS Administration >> System Configuration to set up emailing on this server."
 msgstr ""
 
 #: i18n/templates.c:3344
@@ -6658,7 +6658,7 @@ msgstr ""
 msgid "Manage Saved Search Criteria"
 msgstr ""
 
-#: search2.php:494 search2.php:495
+#: search2.php:497 search2.php:498
 msgid "Manage Saved Searches"
 msgstr ""
 
@@ -7366,7 +7366,7 @@ msgstr ""
 msgid "No documents have been selected."
 msgstr ""
 
-#: plugins/tagcloud/TagCloudRedirectPage.php:138 search2.php:343
+#: plugins/tagcloud/TagCloudRedirectPage.php:138 search2.php:346
 #: search/booleanSearch.php:314 search/simpleSearch.php:179
 msgid "No documents or folders match this query."
 msgstr ""
@@ -8780,7 +8780,7 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
-#: search2.php:607 search2.php:608
+#: search2.php:610 search2.php:611
 msgid "Query Editor"
 msgstr ""
 
@@ -9455,8 +9455,8 @@ msgstr ""
 msgid "Search Password"
 msgstr ""
 
-#: plugins/tagcloud/TagCloudRedirectPage.php:114 search2.php:318
-#: search2.php:319 search2.php:398 search2.php:399
+#: plugins/tagcloud/TagCloudRedirectPage.php:114 search2.php:321
+#: search2.php:322 search2.php:401 search2.php:402
 #: search/booleanSearch.php:252 i18n/templates.c:3521
 msgid "Search Results"
 msgstr ""
@@ -10220,7 +10220,7 @@ msgid "Tag"
 msgstr ""
 
 #: lib/browse/Criteria.inc:894 plugins/tagcloud/TagCloudDashlet.php:55
-#: plugins/tagcloud/TagCloudPlugin.php:112
+#: plugins/tagcloud/TagCloudPlugin.php:110
 #: plugins/tagcloud/TagCloudPortlet.php:55
 msgid "Tag Cloud"
 msgstr ""
@@ -10658,7 +10658,7 @@ msgstr ""
 msgid "The following shortcut is no longer valid as the target document has been deleted. Please note that it has been automatically removed from the repository:"
 msgstr ""
 
-#: plugins/tagcloud/TagCloudPlugin.php:113
+#: plugins/tagcloud/TagCloudPlugin.php:111
 msgid "The following tags are associated with your document"
 msgstr ""
 
@@ -10850,23 +10850,23 @@ msgstr ""
 msgid "The role required for this trigger has been deleted, so anyone can perform this action."
 msgstr ""
 
-#: search2.php:534
+#: search2.php:537
 msgid "The saved search can only be seen by you."
 msgstr ""
 
-#: search2.php:298
+#: search2.php:301
 msgid "The saved search could not be resolved."
 msgstr ""
 
-#: search2.php:285 search2.php:524 search2.php:558
+#: search2.php:288 search2.php:527 search2.php:561
 msgid "The saved search id was not passed correctly."
 msgstr ""
 
-#: search2.php:539
+#: search2.php:542
 msgid "The saved search is now visible to all users."
 msgstr ""
 
-#: search2.php:569
+#: search2.php:572
 msgid "The saved search was deleted successfully."
 msgstr ""
 
@@ -10890,7 +10890,7 @@ msgstr ""
 msgid "The search expression has been saved."
 msgstr ""
 
-#: search2.php:528
+#: search2.php:531
 msgid "The sharing option was not passed correctly."
 msgstr ""
 
