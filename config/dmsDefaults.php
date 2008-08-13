@@ -289,6 +289,8 @@ class KTInit {
     function handleInitError($oError) {
         global $checkup;
         if ($checkup === true) {
+            echo $oError->toString();
+            exit(0);
             //return;
         }
 
@@ -358,25 +360,15 @@ class KTInit {
 
 	function catchFatalErrors()
 	{
+		ini_set('display_errors','On');
+	    $phperror='><div id="phperror" style="display:none">';
+		ini_set('error_prepend_string',$phperror);
 
-		$CustomErrorPage = KTCustomErrorViewer::getCustomErrorRedirectPage();
-		if($CustomErrorPage != '0')
-		{
-			ini_set('display_errors','On');
-		    $phperror='><div id="phperror" style="display:none">';
-			ini_set('error_prepend_string',$phperror);
+		$CustomErrorPage = KTUtil::kt_url().'/customerrorpage.php';
 
-			$sUrl = KTInit::guessRootUrl();
-			global $default;
-			$sRootUrl = ($default->sslEnabled ? 'https' : 'http') .'://'.$_SERVER['HTTP_HOST'].$sUrl;
-
-			$CustomErrorPage = basename($CustomErrorPage);
-
-			$phperror='</div>><form name="catcher" action="'.$sRootUrl.'/'.$CustomErrorPage.'" method="post" ><input type="hidden" name="fatal" value=""></form>
-			<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
-			ini_set('error_append_string',$phperror);
-		}
-
+		$phperror='</div>><form name="catcher" action="'.$CustomErrorPage.'" method="post" ><input type="hidden" name="fatal" value=""></form>
+		<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
+		ini_set('error_append_string',$phperror);
 	}
 
 
