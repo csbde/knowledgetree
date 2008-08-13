@@ -155,7 +155,7 @@ class KTInit {
         $properties['log4php.appender.default.layout.conversionPattern'] = '%d{Y-m-d | H:i:s} | %p | %t | %r | %X{userid} | %X{db} | %c | %M | %m%n';
         $properties['log4php.appender.default.datePattern'] = 'Y-m-d';
         $logDir = $oKTConfig->get('urls/logDirectory');
-        $properties['log4php.appender.default.file'] = $logDir . '/kt%s.log.txt';
+        $properties['log4php.appender.default.file'] = $logDir . '/kt%s.' . KTUtil::running_user() .  '.log.txt';
 
         session_start();
         $configurator->doConfigureProperties($properties, $repository);
