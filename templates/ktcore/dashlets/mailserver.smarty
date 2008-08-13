@@ -2,6 +2,5 @@
 documents and sending of notifications are disabled.{/i18n}</p>
 
 {if $admin}
-<p>{i18n arg_appname="$appname"}Edit the [email] section of the config.ini file to set your email
-server and the sending address of the #appname# server.{/i18n}</p>
+<p>{i18n arg_appname="$appname"}Edit the Email Settings in DMS Administration >> System Configuration to set up emailing on this server.{/i18n}</p>
 {/if}
