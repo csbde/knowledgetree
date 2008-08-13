@@ -61,7 +61,7 @@ class UpgradeFunctions {
             '3.1.6.3' => array('cleanupGroupMembership'),
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
-            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables')
+            '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2')
             );
 
     var $descriptions = array(
@@ -95,7 +95,8 @@ class UpgradeFunctions {
             'moveConfigSettingsToDB' => 'Move the configuration settings from the config.ini file into the new database table.',
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
-            'addAutoIncrementToTables' => 'Update all db tables to use auto_increment.'
+            'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
+            'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -115,37 +116,67 @@ class UpgradeFunctions {
             );
 
     var $priority = array(
-            'addAutoIncrementToTables'=>1
+            'addAutoIncrementToTables'=>1,
+            'addAutoIncrementToTables2'=>-1
             );
+
+    function addAutoIncrementToTables2()
+    {
+        return self::addAutoIncrementToTables();
+    }
 
     /**
      * Set all tables in the DB to auto increment, thereby removing the use of the zseq tables
      */
     function addAutoIncrementToTables()
     {
+        static $doneTables = array();
+
         global $default;
 		DBUtil::setupAdminDatabase();
 		$db = $default->_admindb;
 
         // Get all tables in the database
-        $query = 'SHOW TABLES';
+        $query = "SHOW TABLES";
         $tableList = DBUtil::getResultArray($query, $db);
-
-        // Ensure that if there is a zero id on plugins and upgrades it is updated
-        $query = "UPDATE plugins SET id = (SELECT max(id)+1 FROM plugins) WHERE id = 0";
-        DBUtil::runQuery($query, $db);
-
-        $query = "UPDATE upgrades SET id = (SELECT max(id)+1 FROM plugins) WHERE id = 0";
-        DBUtil::runQuery($query, $db);
 
         // Loop through tables and add auto increment
         foreach ($tableList as $tableArr){
             $key = key($tableArr);
             $tableName = $tableArr[$key];
 
-            // Some tables don't have an id column, we ignore those errors and continue
+            if(in_array($tableName, $doneTables)){
+                // already been set - skip
+                continue;
+            }
+
+
+            $doneTables[] = $tableName;
+
+            if(strpos($tableName, 'zseq_', 0) !== false){
+                // ignore zseq tables
+                continue;
+            }
+
+            $query = "SELECT max(id) FROM {$tableName}";
+            $aId = DBUtil::getOneResult($query);
+
+            if(PEAR::isError($aId)){
+                // Means that the table doesn't have an id column
+                continue;
+            }
+
+            // If there's no result, then the table may be empty
+            if(!empty($aId)){
+                $id = (int)$aId['max(id)'] + 1;
+
+                $query = "UPDATE {$tableName} SET id = {$id} WHERE id = 0";
+                $res = DBUtil::runQuery($query, $db);
+            }
+
+            // Update the table, set id to auto_increment
             $query = "ALTER TABLE {$tableName} CHANGE `id` `id` int (11) NOT NULL AUTO_INCREMENT";
-            DBUtil::runQuery($query, $db);
+            $res = DBUtil::runQuery($query, $db);
         }
     }
 
@@ -1308,7 +1339,7 @@ class UpgradeFunctions {
         if(file_exists($oldPath)) return rmdir($oldPath);
     }
     // }}}
-    
+
     // {{{  removeOldSearchPlugins
     function removeOldSearchPlugins() {
         global $default;
@@ -1322,7 +1353,7 @@ class UpgradeFunctions {
         UpgradeFunctions::rm_recursive($oldPath1);
         $oldPath2 = KT_DIR . "/plugins/generalmetadata/";
         UpgradeFunctions::rm_recursive($oldPath2);
-        
+
         // FIXME: We should check that they all worked
         return true;
     }
