@@ -13,7 +13,7 @@ function hideTooltip()
 </script>
 <style type="text/css">
 
-#MyDropDocumentsDashlet 
+#MyDropDocumentsDashlet
 {
 	display: block;
 }
@@ -32,23 +32,23 @@ function hideTooltip()
 	background-color: #F5F6BE;
 }
 
-#MyDropDocumentsHeader 
-{ 
-	font-weight: bold; 
+#MyDropDocumentsHeader
+{
+	font-weight: bold;
 	margin-left: 25px;
 }
-			   
-#MyDropDocumentsBlock { 
+
+#MyDropDocumentsBlock {
 	padding: 0 25px;
 }
-#MyDropDocumentsFooter 
+#MyDropDocumentsFooter
 {
 	position: absolute;
 	bottom: 10px;
-	right: 35px;	
+	right: 35px;
 	width: 50%;
-	
-	
+
+
 }
 
 .drop_box{
@@ -60,7 +60,7 @@ function hideTooltip()
 {/literal}
 <div>
 <div id="MyDropDocumentsHeader">
-		
+
 </div>
 <div id="MyDropDocumentsBlock" name="MyDropDocumentsBlock">
 	Checking My Drop Documents
@@ -70,9 +70,14 @@ function hideTooltip()
 </div>
 
 <div id="MyDropDocumentsFooter">
-			
+
 </div>
 
 </div>
 <script type="text/javascript">var MY_DROP_DOCUMENTS = "{$url}";</script>
-<script type="text/javascript">CheckFolderExists();</script>
+<script type="text/javascript">
+Ext.onReady(function()
+{
+    CheckFolderExists();
+});
+</script>
