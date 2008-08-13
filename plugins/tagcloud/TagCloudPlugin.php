@@ -77,10 +77,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
         // Check if the tagcloud fielset entry exists, if not, create it
         $iFieldsetId = TagCloudPlugin::tagFieldsetExists();
-        if(PEAR::isError($iFieldsetId)){
-            return false;
-        }
-        if($iFieldsetId !== false){
+        if($iFieldsetId === false){
         	$oFieldset = TagCloudPlugin::createFieldset();
         	if (PEAR::isError($oFieldset) || is_null($oFieldset)) {
 	            return false;
@@ -91,10 +88,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
         // Check if the tagcloud document field entry exists, if not, create it
         $fExists = TagCloudPlugin::tagFieldExists();
-        if(PEAR::isError($fExists)){
-            return false;
-        }
-        if($fExists !== false){
+        if($fExists === false){
         	$oField = TagCloudPlugin::createDocumentField($iFieldsetId);
         	if (PEAR::isError($oField) || is_null($oField)) {
 	            return false;
@@ -160,12 +154,9 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 		$sTag = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($sTag)) {
-            global $default;
-            $default->log->error('Error resolving Tag Cloud field: '. $sTag->getMessage());
-            return $sTag;
-
+            return false;
         }
-        if(!is_null($sTag)){
+        if(!is_numeric($sTag)){
         	return $sTag;
         }else{
         	return false;
@@ -183,12 +174,9 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 		$iFieldset = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($iFieldset)) {
-            global $default;
-            $default->log->error('Error resolving Tag Cloud fieldset: '. $iFieldset->getMessage());
-            return $iFieldset;
-
+            return false;
         }
-        if(!is_null($iFieldset)){
+        if(!is_numeric($iFieldset)){
         	return $iFieldset;
         }else{
         	return false;
