@@ -150,7 +150,6 @@ class UpgradeFunctions {
                 continue;
             }
 
-
             $doneTables[] = $tableName;
 
             if(strpos($tableName, 'zseq_', 0) !== false){
@@ -161,22 +160,27 @@ class UpgradeFunctions {
             $query = "SELECT max(id) FROM {$tableName}";
             $aId = DBUtil::getOneResult($query);
 
-            if(PEAR::isError($aId)){
-                // Means that the table doesn't have an id column
-                continue;
-            }
-
             // If there's no result, then the table may be empty
-            if(!empty($aId)){
+            if(!PEAR::isError($aId)){
                 $id = (int)$aId['max(id)'] + 1;
 
                 $query = "UPDATE {$tableName} SET id = {$id} WHERE id = 0";
                 $res = DBUtil::runQuery($query, $db);
+            }else{
+                $default->log->error('Add auto_increment, fail on get max id: '.$aId->getMessage());
             }
 
             // Update the table, set id to auto_increment
             $query = "ALTER TABLE {$tableName} CHANGE `id` `id` int (11) NOT NULL AUTO_INCREMENT";
             $res = DBUtil::runQuery($query, $db);
+
+            if(PEAR::isError($res)){
+                $default->log->error('Add auto_increment, fail on change id to auto_increment: '.$res->getMessage());
+
+                // try again with mediumint
+                $query = "ALTER TABLE {$tableName} CHANGE `id` `id` mediumint (9) NOT NULL AUTO_INCREMENT";
+                $res = DBUtil::runQuery($query, $db);
+            }
         }
     }
 
