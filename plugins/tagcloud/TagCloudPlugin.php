@@ -156,7 +156,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         if (PEAR::isError($sTag)) {
             return false;
         }
-        if(!is_numeric($sTag)){
+        if(is_numeric($sTag)){
         	return $sTag;
         }else{
         	return false;
@@ -176,7 +176,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         if (PEAR::isError($iFieldset)) {
             return false;
         }
-        if(!is_numeric($iFieldset)){
+        if(is_numeric($iFieldset)){
         	return $iFieldset;
         }else{
         	return false;
