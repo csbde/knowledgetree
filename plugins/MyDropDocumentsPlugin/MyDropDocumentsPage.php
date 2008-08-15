@@ -249,7 +249,6 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 			}
 
         	$maxcount = 5;
-        	$aDocumentTransactions = array_slice($aDocumentTransactions, 0, $maxcount);
 
        		$sReturnTable =  '<span class="descriptiveText">'._kt('Recently Dropped Documents').'</span>
        				<table width="100%" class="kt_collection drop_box" cellspacing="0">
@@ -264,52 +263,40 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 
 			$sOddorEven = '';
 			$count = 1;
+			$rendered = array();
 			foreach ($aDocumentTransactions as $aRow)
 			{
-    			$oDocument = Document::get($aRow[document_id]);
-				$aParentFolders = explode('/',$oDocument->getFullPath());
-				$sPath = '';
+			    $documentId = $aRow['document_id'];
+			    if (in_array($documentId, $rendered))
+			    {
+			        continue;
+			    }
 
-				for($i = 0; $i < count($aParentFolders); $i++)
-				{
-					if ($i > 2)
-					{
-						$sPath  .= '/'.$aParentFolders[$i];
-					}
-				}
+			    $rendered[] = $documentId;
+    			$oDocument = Document::get($documentId);
 
 				$sContentType = KTMime::getIconPath($oDocument->getMimeTypeID());
-				$aAnchorData = $this->getDocInfo($aRow[document_id]);
+				$aAnchorData = $this->getDocInfo($documentId);
 				$sLink = $aAnchorData[0];
 				$sDocName = $aAnchorData[1];
-				$sShortDocName = $sDocName;
-				if(strlen($sPath) > 0)
-				{
-					$sDocName = $sPath.'/'.$sDocName;
-				}
 
-				$sFullDocName = $sDocName;
 				$iDocLength = strlen($sDocName);
-				if ( $iDocLength > 30 )
+				$iMax = 40;
+				if ( $iDocLength > $iMax )
 				{
-					$sDocName = substr($sDocName, ($iDocLength - 30), $iDocLength);
-					$sDocName = '...'.$sDocName;
+					$sShortDocName = substr($sDocName, 0, $iMax) . '...';
 				}
 
-				if($count%2 == 0)
-				{
-					$sOddorEven = 'even';
-				}
-				else
-				{
-					$sOddorEven = 'odd';
-				}
+				$sOddorEven = ($count%2 == 0)?'even':'odd';
 
     			$sReturnTable .= '<tr class="'.$sOddorEven.'">'.
-        						 '<td width="100%"><span class="contenttype '.$sContentType.'"><a title="'.$sShortDocName.'" href='.$sLink.'>'.$sDocName.'</a></span></td>'.
-        						 '<td width="1%">'.$aRow[datetime].'</td>'.
+        						 '<td width="100%"><span class="contenttype '.$sContentType.'"><a title="'.$sDocName.'" href='.$sLink.'>'.$sShortDocName.'</a></span></td>'.
+        						 '<td width="1%">'.$aRow['datetime'].'</td>'.
     							 '</tr>';
-    			$count ++;
+    			if (++$count > 5)
+    			{
+    			    break;
+    			}
 			}
 
 			$location = 'browse.php?fFolderId='.$iMyDocsFolderID;
