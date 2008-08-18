@@ -154,7 +154,9 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 		$sTag = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($sTag)) {
-            return false;
+            global $default;
+            $default->log->error('Tag Cloud plugin - error checking tag field: '.$sTag->getMessage());
+            return $sTag;
         }
         if(is_numeric($sTag)){
         	return $sTag;
@@ -174,7 +176,9 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 		$iFieldset = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($iFieldset)) {
-            return false;
+            global $default;
+            $default->log->error('Tag Cloud plugin - error checking tag fieldset: '.$iFieldset->getMessage());
+            return $iFieldset;
         }
         if(is_numeric($iFieldset)){
         	return $iFieldset;
