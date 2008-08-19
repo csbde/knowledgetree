@@ -3,14 +3,16 @@
     function toggleSettingsDisplay(id)
     {
         var el = document.getElementById(id);
-        var visible = el.style.visibility;
+        var head = document.getElementById(id+'_head');
 
-        if(visible == 'visible'){
+        if(el.style.visibility == 'visible'){
             el.style.visibility = 'hidden';
             el.style.display = 'none';
+            head.className = 'collapse';
         }else{
             el.style.visibility = 'visible';
             el.style.display = 'block';
+            head.className = 'expand';
         }
     }
 {/literal}
@@ -26,10 +28,12 @@
     {foreach from=$groupList item=groupItem}
         {assign var=group value=$groupItem.name}
 
-        <h3><span onclick='javascript: toggleSettingsDisplay("{$groupItem.id}");' style='cursor: hand;'>{$group}</span></h3>
+        <h4 style='margin-top: 20px;'><span class="expand" id='{$groupItem.id}_head' onclick='javascript: toggleSettingsDisplay("{$groupItem.id}");' style='cursor: pointer;'>
+            {$group}
+        </span></h3>
         <span class='descriptiveText'>{$groupItem.description}</span>
 
-        <div id='{$groupItem.id}' style='visibility: visible'>
+        <div id='{$groupItem.id}' style='visibility: visible;'>
             <fieldset>
 
             {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
@@ -47,13 +51,12 @@
 
             </fieldset>
         </div>
-        <br>
 
     {/foreach}
 
 {/if}
 
-
+<br><hr>
 <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
 
 </form>

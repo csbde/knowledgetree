@@ -1,7 +1,7 @@
-/* 
+/*
     Getting Mime-type CSS right is a bit tricky here.
     the idea is that you apply these to a span, as follows:
-    
+
     <span class="contenttype presentation">My Filename</span>
 */
 .contenttype {
@@ -17,15 +17,25 @@
 }
 
 .contenttype.office { background-image: url(../../resources/mimetypes/office.png); }
+.contenttype.office.shortcut { background-image: url(../../resources/mimetypes/shortcuts/office.png); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.png); }
+.contenttype.word.shortcut { background-image: url(../../resources/mimetypes/shortcuts/word.png); }
 .contenttype.database { background-image: url(../../resources/mimetypes/database.png); }
+.contenttype.database.shortcut { background-image: url(../../resources/mimetypes/shortcuts/database.png); }
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.png); }
+.contenttype.excel.shortcut { background-image: url(../../resources/mimetypes/shortcuts/excel.png); }
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.png); }
+.contenttype.openoffice.shortcut { background-image: url(../../resources/mimetypes/shortcuts/openoffice.png); }
 .contenttype.opendocument { background-image: url(../../resources/mimetypes/openoffice.png); }
+.contenttype.opendocument.shortcut { background-image: url(../../resources/mimetypes/shortcuts/openoffice.png); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.png); }
+.contenttype.pdf.shortcut { background-image: url(../../resources/mimetypes/shortcuts/pdf.png); }
 .contenttype.image { background-image: url(../../resources/mimetypes/image.png); }
+.contenttype.image.shortcut { background-image: url(../../resources/mimetypes/shortcuts/image.png); }
 .contenttype.compressed { background-image: url(../../resources/mimetypes/zip.png); }
+.contenttype.compressed.shortcut { background-image: url(../../resources/mimetypes/shortcuts/zip.png); }
 .contenttype.html { background-image: url(../../resources/mimetypes/html.png); }
+.contenttype.html.shortcut { background-image: url(../../resources/mimetypes/shortcuts/html.png); }
 
 .contenttype.txt,
 .contenttype.text,
