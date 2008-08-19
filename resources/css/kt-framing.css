@@ -2019,6 +2019,21 @@ hr {
     display: block;
 }
 
+.collapse
+{
+    padding-left: 20px;
+    border: 0px;
+    background: url(../graphics/plus.gif) no-repeat;
+}
+
+
+.expand
+{
+    padding-left: 20px;
+    border: 0px;
+    background: url(../graphics/minus.gif) no-repeat;
+}
+
 
 
 /* -------------------------- iframe browse ------------------------ */
