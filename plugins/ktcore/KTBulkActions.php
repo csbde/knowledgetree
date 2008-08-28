@@ -62,6 +62,8 @@ class KTBulkDeleteAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.delete.form',
@@ -69,7 +71,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             'submit_label' => _kt('Delete'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
-            'cancel_action' => 'main',
+            'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
         $oForm->setWidgets(array(
@@ -195,6 +197,8 @@ class KTBulkMoveAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.move.form',
@@ -202,7 +206,7 @@ class KTBulkMoveAction extends KTBulkAction {
             'submit_label' => _kt('Move'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
-            'cancel_action' => 'main',
+            'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
 
@@ -339,6 +343,8 @@ class KTBulkCopyAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.copy.form',
@@ -346,7 +352,7 @@ class KTBulkCopyAction extends KTBulkAction {
             'submit_label' => _kt('Copy'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
-            'cancel_action' => 'main',
+            'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
 
@@ -483,6 +489,8 @@ class KTBulkArchiveAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.archive.form',
@@ -490,7 +498,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             'submit_label' => _kt('Archive'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
-            'cancel_action' => 'main',
+            'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
 
@@ -904,6 +912,8 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.checkout.form',
@@ -911,7 +921,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             'submit_label' => _kt('Checkout'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
-            'cancel_action' => 'main',
+            'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
 
