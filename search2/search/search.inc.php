@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -59,6 +59,11 @@ function search_alias_compare($a, $b)
 {
 	if ($a['alias'] == $b['alias']) return 0;
 	return ($a['alias'] < $b['alias'])?-1:1;
+}
+
+function searchfix($str)
+{
+    return str_replace(array("\n","\r"), array('',''), addslashes($str));
 }
 
 class SearchHelper
@@ -109,7 +114,7 @@ class SearchHelper
 		{
 			if ($dt++ > 0) $documenttypes_str .= ',';
 			$id=$user['id'];
-			$name=(addslashes($user['name']));
+			$name=searchfix($user['name']);
 
 			$documenttypes_str .= "\n\t{id: \"$id\", name: \"$name\"}";
 		}
@@ -152,7 +157,7 @@ class SearchHelper
 		{
 			if ($uo++ > 0) $users_str .= ',';
 			$id=$user['id'];
-			$name=(addslashes($user['name']));
+			$name=searchfix($user['name']);
 
 			$users_str .= "\n\t{id: \"$id\", name: \"$name\"}";
 		}
@@ -172,8 +177,8 @@ class SearchHelper
 		foreach($fields as $field)
 		{
 			if ($fo++ > 0) $fields_str .= ',';
-			$alias = (addslashes($field['alias']));
-			$display = (addslashes($field['display']));
+			$alias = searchfix($field['alias']);
+			$display = searchfix($field['display']);
 			$type = $field['type'];
 			$fields_str .= "\n\t{alias: \"$alias\", name: \"$display\", type:\"$type\"}";
 		}
@@ -195,7 +200,7 @@ class SearchHelper
         {
         	if ($wo++ > 0) $workflow_str .= ',';
         	$wid = $workflow['id'];
-        	$name = (addslashes($workflow['name']));
+        	$name = searchfix($workflow['name']);
 
         	$workflow_str .= "\n\t{id:\"$wid\", name: \"$name\", states: [ ";
 
@@ -207,7 +212,7 @@ class SearchHelper
         	{
         		if ($so++>0) $workflow_str .= ',';
 				$sid = $state['id'];
-				$name=(addslashes($state['name']));
+				$name=searchfix($state['name']);
 				$result['workflows'][$wid]['states'][$sid] = $state;
 				$workflow_str .= "\n\t\t{id:\"$wid\", name: \"$name\"}";
         	}
@@ -230,8 +235,8 @@ class SearchHelper
         foreach($fieldsets as $fieldset)
         {
         	$fsid=$fieldset['id'];
-        	$name = (addslashes($fieldset['name']));
-        	$desc = (addslashes($fieldset['description']));
+        	$name = searchfix($fieldset['name']);
+        	$desc = searchfix($fieldset['description']);
         	if ($fso++>0) $fieldset_str .= ',';
         	$fieldset_str .= "\n\t{id:\"$fsid\",name:\"$name\",description:\"$desc\", fields: [";
 
@@ -244,8 +249,8 @@ class SearchHelper
         	{
         		if ($fo++ >0) $fieldset_str .= ',';
 				$fid = $field['id'];
-				$name= (addslashes($field['name']));
-				$desc = (addslashes($field['description']));
+				$name= searchfix($field['name']);
+				$desc = searchfix($field['description']);
 				$datatype=$field['datatype'];
 				$control=$field['control'];
         		$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";
@@ -259,7 +264,7 @@ class SearchHelper
         		{
         			if ($oo++ > 0) $fieldset_str .= ',';
         			$oid = $option['id'];
-					$name= (addslashes($option['name']));
+					$name= searchfix($option['name']);
         			$fieldset_str .= "\n\t\t\t{id: \"$oid\", name: \"$name\"}";
         		}
         		$fieldset_str .= ']}';
