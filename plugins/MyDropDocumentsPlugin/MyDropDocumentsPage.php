@@ -278,7 +278,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 				$sContentType = KTMime::getIconPath($oDocument->getMimeTypeID());
 				$aAnchorData = $this->getDocInfo($documentId);
 				$sLink = $aAnchorData[0];
-				$sDocName = $aAnchorData[1];
+				$sShortDocName = $sDocName = $aAnchorData[1];
 
 				$iDocLength = strlen($sDocName);
 				$iMax = 40;
