@@ -43,7 +43,9 @@ function saveSearch()
 		txtName.focus();
 		return;
 	}
-	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?txtName='+ txtName.value +'&txtQuery={/literal}{$txtQuery|escape:'quotes'}{literal}';
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?txtName='+ escape(txtName.value) +
+	                                                           '&txtQuery=' + escape('{/literal}{$txtQuery|escape:'quotes'}{literal}');
+
 
 	Ext.Ajax.request(
 	{

@@ -892,6 +892,11 @@ class TextQueryBuilder implements QueryBuilder
             $value = addslashes($right->getValue());
 
             $not = $expr->not()?' NOT ':'';
+            if (empty($value))
+            {
+                // minor hack to prevent the case of 'field:'. results are no 'field:""'
+                $value = ' ';
+            }
 
             if (strpos($value, ' ') === false)
             {
