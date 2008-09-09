@@ -134,8 +134,8 @@ class KTDownloadManager
 	 */
 	function download($document_id, $hash, $version = null)
 	{
-		$sql = "SELECT 1 FROM download_files WHERE hash='$hash' AND session='$this->session' AND document_id=$document_id";
-		$rows = DBUtil::getResultArray($sql);
+		$sql = "SELECT 1 FROM download_files WHERE hash=? AND session=? AND document_id=?";
+		$rows = DBUtil::getResultArray(array($sql, array($hash, $this->session, $document_id)));
 		if (PEAR::isError($rows))
 		{
 			return $rows;
