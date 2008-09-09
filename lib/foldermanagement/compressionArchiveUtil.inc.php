@@ -265,13 +265,11 @@ class ZipFolder {
             return PEAR::raiseError(_kt('The ZIP file can only be downloaded once - if you cancel the download, you will need to reload the page.'));
         }
 
-        header("Content-Type: application/zip; charset=utf-8");
-        header("Content-Length: ". filesize($sZipFile));
-        header("Content-Disposition: attachment; filename=\"" . $this->sZipFileName . ".zip" . "\"");
-        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: must-revalidate");
-        readfile($sZipFile);
+        $mimeType = 'application/zip; charset=utf-8;';
+        $fileSize = filesize($sZipFile);
+        $fileName = $this->sZipFileName . '.zip';
+
+        KTUtil::download($sZipFile, $mimeType, $fileSize, $fileName);
         KTUtil::deleteDirectory($sTmpPath);
         return true;
     }
