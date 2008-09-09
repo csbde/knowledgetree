@@ -11,4 +11,11 @@
         <li><a href="{$info.url}">{$info.name}</a></li>
     {/foreach}
     </ul>
+	
+	{if !is_null($comment)}
+		<br />
+		<h3>{i18n}Last Comment{/i18n}</h3>
+		<i>"{$comment}"</i>
+		<br />
+	{/if}
 </div>
