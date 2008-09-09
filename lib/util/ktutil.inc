@@ -1245,6 +1245,36 @@ class KTUtil {
         return $aBreadcrumbs;
     }
 
+    /**
+     * Generates the correct headers for downloading a document
+     */
+    function download($path, $mimeType, $fileSize, $fileName, $displayType = 'attachment')
+    {
+        if (file_exists($path)) {
+            // IE7 adds underscores to filenames: fix
+            $browser = $_SERVER['HTTP_USER_AGENT'];
+            if ( strpos( strtoupper( $browser), 'MSIE 7') !== false) {
+                $fileName = rawurlencode($fileName);
+            }
+
+            // Set the correct headers
+            header("Content-Type: {$mimeType}");
+            header("Content-Length: {$fileSize}");
+            header("Content-Disposition: {$displayType}; filename=\"{$fileName}\"");
+            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+
+            // Document must be cached in order to open it
+            header("Cache-Control: must-revalidate");
+
+            // Allows the file to be downloaded, otherwise it attempts the download as "action.php?..."
+            header("Pragma: public");
+
+            readfile($path);
+        }else {
+            return false;
+        }
+    }
 }
 
 /**

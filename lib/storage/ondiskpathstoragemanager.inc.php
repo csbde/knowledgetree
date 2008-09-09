@@ -132,20 +132,12 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         //get the path to the document on the server
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
-        if (file_exists($sPath)) {
-            //set the correct headers
-            header("Content-Type: " .
-                    KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
-            header("Content-Length: ". $oDocument->getFileSize());
-            header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Cache-Control: must-revalidate");
 
-            readfile($sPath);
-        } else {
-            return false;
-        }
+        $mimeType = KTMime::getMimeTypeName($oDocument->getMimeTypeID());
+        $fileSize = $oDocument->getFileSize();
+        $fileName = $oDocument->getFileName();
+
+        return KTUtil::download($sPath, $mimeType, $fileSize, $fileName);
     }
 
     function createFolder($oFolder) {
@@ -185,20 +177,12 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
         $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
-        if (file_exists($sPath)) {
-            //set the correct headers
-            header("Content-Type: " .
-                    KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
-            header("Content-Length: ".  filesize($sPath));
-            // prefix the filename presented to the browser to preserve the document extension
-            header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Cache-Control: must-revalidate");
-            readfile($sPath);
-        } else {
-            return false;
-        }
+
+        $mimeType = KTMime::getMimeTypeName($oContentVersion->getMimeTypeID());
+        $fileSize = $oContentVersion->getFileSize();
+        $fileName = $sVersion.'-'.$oContentVersion->getFileName();
+
+        return KTUtil::download($sPath, $mimeType, $fileSize, $fileName);
     }
 
 	/**

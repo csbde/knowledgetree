@@ -9,31 +9,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -56,25 +56,17 @@ class PhysicalDocumentManager {
 	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
 	*/
 	function downloadPhysicalDocument($iDocumentID) {
-            //get the document
-            $oDocument = & Document::get($iDocumentID);
-            //get the path to the document on the server
-            $sDocumentFileSystemPath = $oDocument->getPath();
-            if (file_exists($sDocumentFileSystemPath)) {
-                //set the correct headers
-                header("Content-Type: " .
-                        KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
-                header("Content-Length: ". $oDocument->getFileSize());
-                header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
-                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-                header("Cache-Control: must-revalidate");
-                header("Content-Location: ".$oDocument->getFileName());
+	    //get the document
+	    $oDocument = & Document::get($iDocumentID);
+	    //get the path to the document on the server
+	    $sDocumentFileSystemPath = $oDocument->getPath();
 
-                readfile($sDocumentFileSystemPath);
-            } else {
-        	return false;
-            }
+	    $mimeType = KTMime::getMimeTypeName($oDocument->getMimeTypeID());
+	    $fileSize = $oDocument->getFileSize();
+	    $fileName = $oDocument->getFileName();
+
+	    return KTUtil::download($sDocumentFileSystemPath, $mimeType, $fileSize, $fileName);
+
 	}
 
     /**
@@ -85,26 +77,17 @@ class PhysicalDocumentManager {
 	 * @return int number of bytes read from file on success or false otherwise;
  	 */
 	function downloadVersionedPhysicalDocument($iDocumentID, $sVersion) {
-            //get the document
-            $oDocument = & Document::get($iDocumentID);
-            //get the path to the document on the server
-            $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
-            if (file_exists($sDocumentFileSystemPath)) {
-                //set the correct headers
-                header("Content-Type: " .
-                        KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
-                header("Content-Length: ".  filesize($sDocumentFileSystemPath));
-                // prefix the filename presented to the browser to preserve the document extension
-                header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
-                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-                header("Cache-Control: must-revalidate");
-                header("Content-Location: ".$oDocument->getFileName());
-                readfile($sDocumentFileSystemPath);
-            } else {
-                return false;
-            }
-        }
+        //get the document
+        $oDocument = & Document::get($iDocumentID);
+        //get the path to the document on the server
+        $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
+
+	    $mimeType = KTMime::getMimeTypeName($oDocument->getMimeTypeID());
+	    $fileSize = $oDocument->getFileSize();
+	    $fileName = $sVersion.'-'.$oDocument->getFileName();
+
+	    return KTUtil::download($sDocumentFileSystemPath, $mimeType, $fileSize, $fileName);
+    }
 
 	/**
  	 * Move a document to a new folder
@@ -300,9 +283,9 @@ class PhysicalDocumentManager {
         global $default;
         $iContentId = $oVersion->getContentVersionId();
         $oContentVersion = KTDocumentContentVersion::get($iContentId);
-        
+
 	    $sFullPath = $default->documentRoot.'/'.$oContentVersion->getStoragePath();
-	   
+
 	    if (file_exists($sFullPath)) {
             if(@unlink($sFullPath)){
                 $default->log->info("PhysicalDocumentManager::deleteVersion  unlinked $sFullPath");

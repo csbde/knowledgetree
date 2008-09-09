@@ -182,36 +182,27 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     }
 
     function download($oDocument, $bIsCheckout = false) {
+        global $default;
+
         //get the path to the document on the server
-        $oConfig =& KTConfig::getSingleton();
-        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
-        $mimetype = KTMime::getMimeTypeName($oDocument->getMimeTypeID());
+        $docRoot = $default->documentRoot;
+        $path = $docRoot .'/'. $oDocument->getStoragePath();
 
-        if ($bIsCheckout && $oConfig->get('ui/fakeMimetype' ,false)) {
-            $mimetype = 'application/x-download';
-            // note this does not work for "image" types in some browsers
-            // go web.
-        }
+        // Ensure the file exists
+        if (file_exists($path)) {
+            // Get the mime type
+            $mimeId = $oDocument->getMimeTypeID();
+            $mimetype = KTMime::getMimeTypeName($mimeId);
 
-        if (file_exists($sPath)) {
-            $sFileName = $oDocument->getFileName( );
-
-            //set the correct headers
-            header("Content-Type: " . $mimetype);
-            header("Content-Length: ". $oDocument->getFileSize());
-            header('Content-Disposition: attachment; filename="' . $sFileName . '"');
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            // HTTP/1.1
-            if ( strpos( strtoupper( $browser), 'MSIE') == false) {
-            	header("Cache-Control: no-store, no-cache, must-revalidate");
-            	header("Cache-Control: post-check=0, pre-check=0", false);
+            if ($bIsCheckout && $default->fakeMimetype) {
+                // note this does not work for "image" types in some browsers
+                $mimetype = 'application/x-download';
             }
-            // HTTP/1.0
-            //header("Pragma: no-cache"); // Don't send this header! It breaks IE.
 
+            $sFileName = $oDocument->getFileName( );
+            $iFileSize = $oDocument->getFileSize();
 
-            readfile($sPath);
+            KTUtil::download($path, $mimetype, $iFileSize, $sFileName);
         } else {
             return false;
         }
@@ -239,19 +230,14 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
         $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
         if (file_exists($sPath)) {
-            //set the correct headers
-            header("Content-Type: " .
-                    KTMime::getMimeTypeName($oContentVersion->getMimeTypeID()));
-            header("Content-Length: ".  filesize($sPath));
-            // prefix the filename presented to the browser to preserve the document extension
-            header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oContentVersion->getFileName() . '"');
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Cache-Control: must-revalidate");
+            // Get the mime type
+            $mimeId = $oContentVersion->getMimeTypeID();
+            $mimetype = KTMime::getMimeTypeName($mimeId);
 
-            readfile($sPath);
-            //$oFile = new KTFSFileLike($sPath);
-            //KTFileLikeUtil::send_contents($oFile);
+            $sFileName = $sVersion.'-'.$oContentVersion->getFileName( );
+            $iFileSize = $oContentVersion->getFileSize();
+
+            KTUtil::download($sPath, $mimetype, $iFileSize, $sFileName);
         } else {
             return false;
         }
