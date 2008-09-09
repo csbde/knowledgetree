@@ -77,11 +77,34 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
             }
         }
         
+		//Retreive the comment for the previous transition
+		$aCommentQuery = array(
+        "SELECT comment FROM document_transactions where transaction_namespace='ktcore.transactions.workflow_state_transition' ORDER BY id DESC LIMIT 1;"
+		);
+		$aTransitionComments = DBUtil::getResultArray($aCommentQuery);
+		$oLatestTransitionComment = null; 
+		if(!empty($aTransitionComments))
+		{
+			$aRow = $aTransitionComments[0];
+			$oLatestTransitionComment = $aRow['comment'];
+			$iCommentPosition = strpos($oLatestTransitionComment,':'); //comment found after first colon in string
+			
+			if($iCommentPosition>0) //if comment found
+			{
+				$oLatestTransitionComment = substr($oLatestTransitionComment, $iCommentPosition+2, (strlen($oLatestTransitionComment)-$iCommentPosition));	
+			}
+			else //if no comment found - i.e. first state in workflow		
+			{
+				$oLatestTransitionComment = null;
+			}
+		}
+		
         $oTemplate->setData(array(
             'context' => $this,
             'bIsCheckedOut' => $bIsCheckedOut,
             'transitions' => $aDisplayTransitions,
             'state_name' => $oWorkflowState->getName(),
+			'comment' => $oLatestTransitionComment,
         ));        
         return $oTemplate->render();
     }
