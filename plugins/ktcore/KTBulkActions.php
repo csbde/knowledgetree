@@ -884,6 +884,11 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
+            if($oEntity->getImmutable())
+            {
+            	return PEAR::raiseError(_kt('Document cannot be checked out as it is immutable'));
+            }
+
             // Check that the document isn't already checked out
             if ($oEntity->getIsCheckedOut()) {
                 $checkedOutUser = $oEntity->getCheckedOutUserID();
@@ -1045,6 +1050,11 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         if(is_a($oEntity, 'Document')) {
 
+            if($oEntity->getImmutable())
+            {
+            	return PEAR::raiseError($oEntity->getName() .': '. _kt('Document cannot be checked out as it is immutable'));
+            }
+
             if($oEntity->getIsCheckedOut()){
                 $checkedOutUser = $oEntity->getCheckedOutUserID();
                 $sUserId = $_SESSION['userID'];
@@ -1150,6 +1160,12 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                		if($oDocument->isSymbolicLink()){
 	    				$oDocument->switchToLinkedCore();
 	    			}
+
+                    if($oDocument->getImmutable())
+                    {
+                    	$this->addErrorMessage($oDocument->getName() .': '. _kt('Document cannot be checked out as it is immutable'));
+                    	continue;
+                    }
 
                     // Check if the action is restricted by workflow on the document
                     if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
