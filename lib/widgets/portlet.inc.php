@@ -116,7 +116,7 @@ class KTActionPortlet extends KTPortlet {
     var $actions = array();
 
     var $bActive = true;
-    var $btn = '';
+    var $btns = '';
 
     // current action is the one we are currently on.
     function setActions($actions, $currentaction) {
@@ -128,85 +128,76 @@ class KTActionPortlet extends KTPortlet {
                     unset($aInfo["url"]);
                     $aInfo['active'] = true;
                 }
-                $this->actions[$aInfo['name']] = $aInfo;
+                $aBtn = $action->getButton();
+
+                if($aBtn){
+                    $this->btns[$aInfo['name']] = array_merge($aInfo, $aBtn);
+                }else{
+                    $this->actions[$aInfo['name']] = $aInfo;
+                }
             }
         }
         ksort($this->actions);
+        ksort($this->btns);
     }
 
     /**
-     * Display a button for a given action
+     * Render a button for a given action
      *
-     * @param array $action
-     * @param string $btn
-     * @return boolean
+     * @param string $text
+     * @param string $link
+     * @param string $class
+     * @return unknown
      */
-    function setButton($action, $btn) {
-        // Ensure action is set
-        if(!isset($action[0])){
-            return false;
-        }
-
-        $info = $action[0]->getInfo();
-
-        // Ensure user has permission on / access to the action
-        if(empty($info)){
-            return false;
-        }
-
-        $link = $info['url'];
-        $text = $info['name'];
-
-        switch($btn){
-            case 'document_checkin':
-                $text = _kt('Checkin Document');
-                $class = 'arrow_upload';
-                break;
-            case 'folder_upload':
-                $text = _kt('Upload Document');
-                $class = 'arrow_upload';
-                break;
-            case 'document_download':
-                $text = _kt('Download Document');
-                $class = 'arrow_download';
-                break;
-            default:
-                return false;
-        }
+    function renderBtn($text, $link, $class) {
 
         // Create button html
         $button = "<div class='portlet_button'>
             <a href='$link'>
                 <div class='big_btn_left'></div>
                 <div class='big_btn_middle'>
-                    <div class='btn_text'>{$text}
-                    </div>
-                    <div class='{$class}'>
-                    </div>
+                    <div class='btn_text'>{$text}</div>
+                    <div class='{$class}'></div>
                 </div>
                 <div class='big_btn_right'></div>
             </a>
         </div>";
 
-        $this->btn = $button;
-        return true;
+        return $button;
+    }
+
+    /**
+     * Render the specified actions as buttons
+     */
+    function showButtons() {
+        if(empty($this->btns)){
+            return '';
+        }
+
+        $rendered = '';
+        foreach ($this->btns as $btn){
+            $text = !empty($btn['display_text']) ? $btn['display_text'] : $btn['name'];
+            $link = $btn['url'];
+            $class = $btn['arrow_class'];
+            $rendered .= $this->renderBtn($text, $link, $class);
+        }
+
+        return $rendered;
     }
 
     function render() {
         if (empty($this->actions)) {
             return null;
         }
+
+        $btn = $this->showButtons();
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/portlets/actions_portlet');
         $aTemplateData = array(
             'context' => $this,
+            'btn' => $btn
         );
-
-        // Display a button above the action list
-        if(isset($this->btn) && !empty($this->btn)){
-            $aTemplateData['showBtn'] = true;
-            $aTemplateData['btn'] = $this->btn;
-        }
 
         return $oTemplate->render($aTemplateData);
     }

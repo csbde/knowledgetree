@@ -54,6 +54,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return _kt('Add Document');
     }
 
+    function getButton(){
+        $btn = array();
+        $btn['display_text'] = _kt('Upload Document');
+        $btn['arrow_class'] = 'arrow_upload';
+        return $btn;
+    }
+
     function check() {
         $res = parent::check();
         if (empty($res)) {

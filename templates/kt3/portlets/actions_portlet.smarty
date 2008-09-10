@@ -1,4 +1,4 @@
-{if $showBtn}
+{if $btn}
 <div style='width: 100%;'>{$btn}</div>
 {/if}
 <ul class="actionlist">
