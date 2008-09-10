@@ -18,7 +18,7 @@ text-decoration: none;
 <div id=tagcloud>
 {foreach from=$tags key=tag item=size}
 
-	<a  href="{$url}&tag={$tag|urlencode}" style="font-size: {$size}px">{$tag|sanitize}</a>&nbsp;
+	<a  href="{$url}&tag={$tag|urlencode}" style="font-size: {$size}px">{$tag|sanitize_input}</a>&nbsp;
 
 {/foreach}
 </div>
