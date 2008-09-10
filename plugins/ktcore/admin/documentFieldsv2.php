@@ -223,21 +223,26 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     }
 
 	function getTypesForFieldset($oFieldset) {
+	    global $default;
 	    if ($oFieldset->getIsGeneric()) {
 		    return _kt('All types use this generic fieldset.');
 		}
 
 	    $types = $oFieldset->getAssociatedTypes();
 		if (PEAR::isError($types)) {
+		    $default->log->debug('Fieldsets admin: Error retrieving list of associated document types.');
 		    return _kt('Error retrieving list of types.');
 		}
 		if (empty($types)) {
 		    return _kt('None');
 		}
+
 		$aNames = array();
 		foreach ($types as $oType) {
 		    if (!PEAR::isError($oType)) {
     		    $aNames[] = $oType->getName();
+    		}else{
+    		    $default->log->debug('Fieldsets admin: Document type gives error: '.$oType->getMessage());
     		}
 		}
 
@@ -247,9 +252,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		if($length < 50){
 		    return $list;
 		}
+		$default->log->debug('Fieldsets admin: wrapping the list of doc types from length '.$length);
 
+		// Wrap the list to 50 characters per line
 		$wrapList = '';
-		while ($length > 50){
+		$cut = 0;
+		while ($length > 50 && $cut !== false){
 		    $cut = strpos($list, ' ', 50);
 		    $wrapList .= mb_strcut($list, 0, $cut);
 		    $wrapList .= '<br />';
