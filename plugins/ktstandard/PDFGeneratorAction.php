@@ -66,6 +66,7 @@ class PDFGeneratorAction extends KTDocumentAction {
     function getDisplayName() {
 		$cmdpath = KTUtil::findCommand('externalBinary/python');
         // Check if openoffice and python are available
+
         if($cmdpath != false && file_exists($cmdpath) && !empty($cmdpath)) {
             $sDocType = $this->getMimeExtension();
             // make sure that the selected document is of an acceptable extension
@@ -178,6 +179,8 @@ class PDFGeneratorAction extends KTDocumentAction {
         $oDocument = $this->oDocument;
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oConfig =& KTConfig::getSingleton();
+        $default = realpath(str_replace('\\','/',KT_DIR . '/../openoffice/program'));
+        putenv('ooProgramPath=' . $oConfig->get('openoffice/programPath', $default));
 		$cmdpath = KTUtil::findCommand('externalBinary/python');
         // Check if openoffice and python are available
         if($cmdpath == false || !file_exists($cmdpath) || empty($cmdpath)) {

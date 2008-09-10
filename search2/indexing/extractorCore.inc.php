@@ -353,7 +353,7 @@ abstract class ExternalDocumentExtractor extends DocumentExtractor
 
 		$config = KTConfig::getSingleton();
 
-		$default = realpath(str_replace('\\','/',KT_ROOT_DIR . '/../openoffice/program'));
+		$default = realpath(str_replace('\\','/',KT_DIR . '/../openoffice/program'));
 
 		putenv('ooProgramPath=' . $config->get('openoffice/programPath', $default));
 	}
