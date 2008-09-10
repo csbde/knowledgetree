@@ -98,7 +98,7 @@ class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
         if (is_null($iDocTypeId)) { return null; }
 
         // Link to the workflows table to ensure disabled workflows aren't associated
-        $sQuery = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('type_workflow_map');
+        $sQuery = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('type_workflow_map') .' m';
         $sQuery .= ' LEFT JOIN workflows w ON w.id = m.workflow_id
             WHERE document_type_id = ? AND w.enabled = 1';
 
