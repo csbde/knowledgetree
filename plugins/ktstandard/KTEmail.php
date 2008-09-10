@@ -143,11 +143,11 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
     $sMessage = '<font face="arial" size="2">';
 	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
 	$sMessage .= " \n";
-	$sMessage .= _kt('Click on the hyperlink below to view it');
+	$sMessage .= _kt('Click on the hyperlink below to view it.') . '<br><br>';
     $sMsgEnd = '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
 	$sMsgEnd .= '</font>';
 
-	$sTitle = sprintf(_kt("Link: %s from %s"), $sDocumentName, $oSendingUser->getName());
+	$sTitle = sprintf(_kt("Link (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
 
 	$sEmail = null;
     $sEmailFrom = null;
@@ -170,6 +170,8 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
             $oDownloadManager = new KTDownloadManager();
             $oDownloadManager->set_session($session);
             $link = $oDownloadManager->allow_download($iDocumentID);
+
+            $link = "<a href=\"{$link}\">{$link}</a>";
 
             $sMsg = $sMessage.$link.$sMsgEnd;
             $res = $oEmail->send(array($sAddress), $sTitle, $sMsg);
@@ -220,7 +222,7 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
 	if (strlen($sComment) > 0) {
 		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
 	}
-    $sTitle = sprintf(_kt("Document: %s from %s"), $sDocumentName, $oSendingUser->getName());
+    $sTitle = sprintf(_kt("Document (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
 
     $sEmail = null;
     $sEmailFrom = null;
@@ -278,7 +280,7 @@ function sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $s
     */
 	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
 	$sMessage .= " \n";
-	$sMessage .= _kt('Click on the hyperlink below to view it.');
+	$sMessage .= _kt('Click on the hyperlink below to view it.') . '<br>';
 	// add the link to the document to the mail
 	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add optional comment
@@ -286,7 +288,7 @@ function sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $s
 		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . $sComment;
 	}
 	$sMessage .= '</font>';
-	$sTitle = sprintf(_kt("Link: %s from %s"), $sDocumentName, $oSendingUser->getName());
+	$sTitle = sprintf(_kt("Link (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
 	//email the hyperlink
     //
     $sEmail = null;
