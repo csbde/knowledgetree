@@ -66,7 +66,7 @@ class KTDocumentUtil {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $sFilename);
 
         $iFileSize = filesize($sFilename);
 
@@ -224,9 +224,9 @@ class KTDocumentUtil {
         foreach($aSymlinks as $aSymlink){
         	$oShortcutDocument = Document::get($aSymlink['id']);
         	$oOwnerUser = User::get($oShortcutDocument->getOwnerID());
-        	
+
         	KTDocumentUtil::deleteSymbolicLink($aSymlink['id']);
-        	
+
         	//send an email to the owner of the shortcut
         	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
         		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkArchived",array('user_name'=>$this->oUser->getName(),
@@ -236,7 +236,7 @@ class KTDocumentUtil {
         		$email->send();
         	}
         }
-        
+
         $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
@@ -331,7 +331,7 @@ class KTDocumentUtil {
      * Create a symbolic link in the target folder
      *
      * @param Document $sourceDocument the document to create a link to
-     * @param Folder $targetFolder the folder to place the link in 
+     * @param Folder $targetFolder the folder to place the link in
      * @param User $user current user
      */
     static function createSymbolicLink($sourceDocument, $targetFolder, $user = null) // added/
@@ -375,7 +375,7 @@ class KTDocumentUtil {
         		return PEAR::raiseError(_kt('You\'re not authorized to create a shortcut to this document'));
        		}
         }
-        
+
         //check if the shortcut doesn't already exists in the target folder
         $aSymlinks = $sourceDocument->getSymbolicLinks();
         foreach($aSymlinks as $iSymlink){
@@ -385,13 +385,13 @@ class KTDocumentUtil {
         		return PEAR::raiseError(_kt('There already is a shortcut to this document in the target folder.'));
         	}
         }
-       
+
 		//create the actual shortcut
         $oCore = KTDocumentCore::createFromArray(array(
             'iCreatorId'=>$user->getId(),
             'iFolderId'=>$targetFolder->getId(),
             'iLinkedDocumentId'=>$sourceDocument->getId(),
-            'sFullPath'=> $targetFolder->getFullPath() . '/' . 
+            'sFullPath'=> $targetFolder->getFullPath() . '/' .
 $sourceDocument->getName(),
             'iPermissionObjectId'=>$targetFolder->getPermissionObjectID(),
             'iPermissionLookupId'=>$targetFolder->getPermissionLookupID(),
@@ -399,9 +399,9 @@ $sourceDocument->getName(),
             'iMetadataVersionId'=>$sourceDocument->getMetadataVersionId(),
 
         ));
-        
+
         $document = Document::get($oCore->getId());
-        
+
         return $document;
     }
 
@@ -449,8 +449,8 @@ $sourceDocument->getName(),
         DBUtil::runQuery(array($sql, array($document->getId())));
 
     }
-    
-    
+
+
     // Overwrite the document
     function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
         //$oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false
@@ -991,7 +991,7 @@ $sourceDocument->getName(),
         {
             return KTDocumentUtil::deleteSymbolicLink($oDocument);
         }
-    	   	
+
         $oDocument =& KTUtil::getObject('Document', $oDocument);
         if (is_null($iDestFolderId)) {
             $iDestFolderId = $oDocument->getFolderID();
@@ -1063,9 +1063,9 @@ $sourceDocument->getName(),
         foreach($aSymlinks as $aSymlink){
         	$oShortcutDocument = Document::get($aSymlink['id']);
         	$oOwnerUser = User::get($oShortcutDocument->getOwnerID());
-        	
+
         	KTDocumentUtil::deleteSymbolicLink($aSymlink['id']);
-        	
+
         	//send an email to the owner of the shortcut
         	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
         		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkDeleted",array('user_name'=>$this->oUser->getName(),
@@ -1075,7 +1075,7 @@ $sourceDocument->getName(),
         		$email->send();
         	}
         }
-        
+
         $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
 
@@ -1375,7 +1375,7 @@ $sourceDocument->getName(),
 	            return $res; // we failed, bail.
 	        }
         }
-	        
+
         $sMoveMessage = sprintf(_kt("Moved from %s/%s to %s/%s. %s"),
             $oOriginalFolder->getFullPath(),
             $oOriginalFolder->getName(),
