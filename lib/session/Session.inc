@@ -8,31 +8,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -149,35 +149,60 @@ class Session {
      *
      * @param int the userID to remove stale sessions for
      */
-    function removeStaleSessions() {
+    function removeStaleSessions($iUserId = null) {
         global $default;
         $time = time() - $default->sessionTimeout;
 
+        // for web service sessions, we will expire after a month.
+        $monthPeriod = 30 * 24 * 60 * 60;
+        $wsTimeout = time() - $monthPeriod;
+
+        if (is_null($iUserId))
+        {
+            $iUserId = $_SESSION['userID'];
+            // if the userid cannot be resolved, we will cleanup the entire sessions table
+            if (empty($iUserId))
+            {
+                $iUserId = 0;
+            }
+        }
+
         $sTable = KTUtil::getTableName('sessions');
+        $mintime = formatDateTime($time);
+        $mintime2 = formatDateTime($wsTimeout);
         $aQuery = array(
-            sprintf('SELECT id, lastused, user_id FROM %s WHERE lastused <= ?', $sTable),
-            array(formatDateTime($time)),
+            sprintf("SELECT id, lastused, apptype FROM %s WHERE (user_id = $iUserId OR $iUserId = 0) AND ( (lastused <= '$mintime' and apptype == 'webapp') or (lastused <= '$mintime2' and apptype !='webapp') )", $sTable)
         );
 
         $aSessions = DBUtil::getResultArray($aQuery);
+        $sSessionId = session_id();
+
+        $deleteIds = array();
 
         foreach ($aSessions as $aSessionData) {
             $iId = $aSessionData['id'];
             $dLastUsed = $aSessionData['lastused'];
-            $iUserId = $aSessionData['user_id'];
             $iTime = strtotime($dLastUsed);
-            $iTime = $iTime + $default->sessionTimeout;
+
+            $iTime = $iTime + ($aSessionData['apptype'] == 'ws')?$monthPeriod:$default->sessionTimeout;
             $aParams = array(
                 'userid' => $iUserId,
                 'datetime' => formatDateTime($iTime),
                 'actionnamespace' => 'ktcore.user_history.timeout',
                 'comments' => 'Session timed out',
-                'sessionid' => $_SESSION['sessionID'],
+                'sessionid' => $sSessionId,
             );
             require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
             $res = KTUserHistory::createFromArray($aParams);
 
-            DBUtil::whereDelete($sTable, array('id' => $iId));
+            $deleteIds[] = $iId;
+        }
+
+        if (!empty($deleteIds))
+        {
+            $deleteIds = implode(',',$deleteIds);
+            $sql = "delete from active_sessions where id in ($deleteIds)";
+            DBUtil::runQuery($sql);
         }
     }
 
