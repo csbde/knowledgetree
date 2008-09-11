@@ -65,9 +65,6 @@ class KTDocumentUtil {
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
-        $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $sFilename);
-
         $iFileSize = filesize($sFilename);
 
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
@@ -103,18 +100,18 @@ class KTDocumentUtil {
         }
         $oDocument->setFileSize($iFileSize);
 
-        $sFilename = $oDocument->getFileName();
-
         if(is_array($aOptions)) {
             $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
-            if(strlen($sFilename)) {
-        	global $default;
-        	$oDocument->setFileName($sFilename);
-        	$default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
+            if(!empty($sFilename)) {
+                global $default;
+                $oDocument->setFileName($sFilename);
+                $default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
+
+                // If the filename has changed then update the mime type
+                $iMimeTypeId = KTMime::getMimeTypeID('', $sFilename);
+                $oDocument->setMimeTypeId($iMimeTypeId);
             }
         }
-
-        $oDocument->setMimeTypeId($iMimeTypeId);
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
