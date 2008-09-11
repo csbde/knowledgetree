@@ -132,6 +132,10 @@ class KTFolderAction extends KTStandardDispatcher {
         return sanitizeForSQLtoHTML($this->sDescription);
     }
 
+    function getButton(){
+        return false;
+    }
+
     function customiseInfo($aInfo) {
         return $aInfo;
     }
@@ -157,16 +161,6 @@ class KTFolderAction extends KTStandardDispatcher {
         $portlet = new KTActionPortlet(sprintf(_kt('Actions on this folder')));
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
         $portlet->setActions($aActions,$this->sName);
-        // Set upload button
-		$btnName = _kt('Add Document');
-		$btnAction = '';
-		foreach ($aActions as $item){
-		    if($item->getDisplayName() == $btnName){
-		        $btnAction = array($item);
-		        break;
-		    }
-		}
-		$portlet->setButton($btnAction, 'folder_upload');
         $this->oPage->addPortlet($portlet);
 
         if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $this->oFolder)) {

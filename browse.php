@@ -176,16 +176,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$portlet = new KTActionPortlet(sprintf(_kt('Actions on this folder')));
 			$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 			$portlet->setActions($aActions,null);
-            // Set upload button
-			$btnName = _kt('Add Document');
-			$btnAction = '';
-			foreach ($aActions as $item){
-			    if($item->getDisplayName() == $btnName){
-			        $btnAction = array($item);
-			        break;
-			    }
-			}
-			$portlet->setButton($btnAction, 'folder_upload');
 			$this->oPage->addPortlet($portlet);
 
 
