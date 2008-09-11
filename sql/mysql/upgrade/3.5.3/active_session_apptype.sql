@@ -1,0 +1,1 @@
+alter table active_sessions add apptype varchar(15) default 'webapp' NOT NULL;
