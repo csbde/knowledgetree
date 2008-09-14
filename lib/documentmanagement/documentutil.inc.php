@@ -76,16 +76,10 @@ class KTDocumentUtil {
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
-		$md5hash = md5_file($sFilename);
-        $content = $oDocument->_oDocumentContentVersion;
-        $content->setStorageHash($md5hash);
-        $content->update();
-
-        if (empty($aOptions)) $aOptions = array();
-        $aOptions['md5hash'] = $md5hash;
-
-        if (!$oStorage->upload($oDocument, $sFilename, $aOptions)) {
-            return PEAR::raiseError(_kt('An error occurred while storing the new file'));
+        $aOptions['temp_file'] = $sFilename;
+        $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
         }
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
@@ -107,6 +101,7 @@ class KTDocumentUtil {
                 $oDocument->setFileName($sFilename);
                 $default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
 
+                // detection of mime types needs to be refactored. this stuff is damn messy!
                 // If the filename has changed then update the mime type
                 $iMimeTypeId = KTMime::getMimeTypeID('', $sFilename);
                 $oDocument->setMimeTypeId($iMimeTypeId);
@@ -871,14 +866,6 @@ $sourceDocument->getName(),
 
         $sFilename = (isset($aOptions['temp_file'])) ? $aOptions['temp_file'] : '';
 
-//        $oOutputFile = new KTFSFileLike($sFilename);
-//        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
-//        if (($res === false)) {
-//            return PEAR::raiseError(_kt("Couldn't store contents, and no reason given."));
-//        } else if (PEAR::isError($res)) {
-//            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $res->getMessage()));
-//        }
-
         if(empty($sFilename)){
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
@@ -891,8 +878,9 @@ $sourceDocument->getName(),
         if (empty($aOptions)) $aOptions = array();
         $aOptions['md5hash'] = $md5hash;
 
+        // detection of mime types needs to be refactored. this stuff is damn messy!
         $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName(), $sFilename);
         $oDocument->setMimeTypeId($iMimeTypeId);
 
         $res = $oStorage->upload($oDocument, $sFilename, $aOptions);
