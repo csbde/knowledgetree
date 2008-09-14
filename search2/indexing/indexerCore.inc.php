@@ -951,11 +951,11 @@ abstract class Indexer
 	    $docsInIndex = $index->getDocumentsInIndex();
 
 	    // we are only interested in documents that are active
-	    $docsInQueue = $index->getIndexingQueue(false);
-	    $docsInQueue = count($docsInQueue);
+	    $sql = "SELECT count(*) as docsInQueue FROM index_files";
+	    $docsInQueue = DBUtil::getOneResultKey($sql, 'docsInQueue');
 
-	    $errorsInQueue = $index->getIndexingQueue(true);
-	    $errorsInQueue = count($errorsInQueue);
+	    $sql = "SELECT count(*) as errorsInQueue FROM index_files where status_msg is not null or status_msg <> ''";
+	    $errorsInQueue = DBUtil::getOneResultKey($sql, 'errorsInQueue');
 
 	    $sql = "SELECT count(*) as docsInRepository FROM documents";
 	    $docsInRepository = DBUtil::getOneResultKey($sql, 'docsInRepository');
