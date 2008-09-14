@@ -171,7 +171,7 @@ class Session {
         $mintime = formatDateTime($time);
         $mintime2 = formatDateTime($wsTimeout);
         $aQuery = array(
-            sprintf("SELECT id, lastused, apptype FROM %s WHERE (user_id = $iUserId OR $iUserId = 0) AND ( (lastused <= '$mintime' and apptype == 'webapp') or (lastused <= '$mintime2' and apptype !='webapp') )", $sTable)
+            sprintf("SELECT id, lastused, apptype FROM %s WHERE (user_id = $iUserId OR $iUserId = 0) AND ( (lastused <= '$mintime' and apptype = 'webapp') or (lastused <= '$mintime2' and apptype !='webapp') )", $sTable)
         );
 
         $aSessions = DBUtil::getResultArray($aQuery);
@@ -184,7 +184,7 @@ class Session {
             $dLastUsed = $aSessionData['lastused'];
             $iTime = strtotime($dLastUsed);
 
-            $iTime = $iTime + ($aSessionData['apptype'] == 'ws')?$monthPeriod:$default->sessionTimeout;
+            $iTime = $iTime + ($aSessionData['apptype'] != 'webapp')?$monthPeriod:$default->sessionTimeout;
             $aParams = array(
                 'userid' => $iUserId,
                 'datetime' => formatDateTime($iTime),
