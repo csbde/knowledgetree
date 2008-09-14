@@ -60,6 +60,13 @@ class KTUtil {
     {
     	global $default;
 		$cacheDir = $default->cacheDirectory;
+
+		$serverFilename = $cacheDir . '/' . KTUtil::SERVER_NAME_FILE;
+		if (file_exists($serverFilename))
+		{
+		    return;
+		}
+
 		$rootUrl = $default->rootUrl;
 		$protocol  = $default->sslEnabled ? 'https' : 'http';
 		$port = $_SERVER['SERVER_PORT']+0;
@@ -79,7 +86,7 @@ class KTUtil {
 		// Add the root url
 		$base_url .= $rootUrl;
 
-		@file_put_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE, $base_url);
+		@file_put_contents($serverFilename, $base_url);
     }
 
 
@@ -87,6 +94,11 @@ class KTUtil {
 	{
 		global $default;
 		static $base_url = null;
+
+		if (!is_null($base_url))
+		{
+		    return $base_url;
+		}
 
 		$cacheDir = $default->cacheDirectory;
 
@@ -100,6 +112,7 @@ class KTUtil {
 
 		if (false !== $base_url)
 		{
+		    $base_url = str_replace(array("\n","\r"), array('',''), $base_url);
 			return $base_url;
 		}
 
@@ -113,10 +126,7 @@ class KTUtil {
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
-
-
 		return $base_url;
-
 	}
 
 	static function call_page($path)
