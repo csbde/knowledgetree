@@ -784,19 +784,20 @@ abstract class Indexer
     	$this->registerTypes(true);
 
     	$disable = array(
-    		OS_WINDOWS=>array('PSExtractor'),
-    		OS_UNIX => array()
+    		'windows'=>array('PSExtractor'),
+    		'unix' => array()
     	);
 
-    	$disableForOS = OS_WINDOWS?$disable[OS_WINDOWS]:$disable[OS_UNIX];
+    	$disableForOS = OS_WINDOWS?$disable['windows']:$disable['unix'];
 
-		foreach($disableForOS as $extractor)
-		{
-    		$sql = "UPDATE mime_extractors SET active=0 WHERE name='$extractor'";
+    	if (!empty($disableForOS))
+    	{
+    	   $disableForOS = '\'' . implode("','", $disableForOS) .'\'';
+
+    		$sql = "UPDATE mime_extractors SET active=0 WHERE name in ($disableForOS)";
     		DBUtil::runQuery($sql);
     		$default->log->info("checkForRegisteredTypes: disabled '$extractor'");
     	}
-
         $this->loadExtractorStatus();
 
     	if ($this->debug) $default->log->debug('checkForRegisteredTypes: done');
