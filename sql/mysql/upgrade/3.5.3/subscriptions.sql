@@ -1,0 +1,1 @@
+ALTER TABLE folder_subscriptions ADD COLUMN with_subfolders TINYINT(1) NOT NULL default 0;

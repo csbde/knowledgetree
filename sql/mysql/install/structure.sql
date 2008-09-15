@@ -511,7 +511,7 @@ CREATE TABLE `document_transaction_types_lookup` (
 CREATE TABLE `document_transactions` (
   `id` int(11) NOT NULL auto_increment,
   `document_id` int(11) default NULL,
-  `version` float default NULL,
+  `version` varchar(10),
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   `ip` varchar(15) default NULL,
@@ -775,6 +775,7 @@ CREATE TABLE `folder_subscriptions` (
   `user_id` int(11) NOT NULL default '0',
   `folder_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
+  `with_subfolders` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `folder_id` (`folder_id`),
