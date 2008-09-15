@@ -811,11 +811,11 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             // Export the folder structure to ensure the export of empty directories
             if(!empty($aFolderList)){
                 foreach($aFolderList as $k => $oFolderItem){
+                    if($oFolderItem->isSymbolicLink()){
+                    	$oFolderItem = $oFolderItem->getLinkedFolder();
+                    }
                 	if(Permission::userHasFolderReadPermission($oFolderItem)){
 	                    // Get documents for each folder
-	                    if($oFolderItem->isSymbolicLink()){
-	                    	$oFolderItem = $oFolderItem->getLinkedFolder();
-	                    }
 	                    $sFolderItemId = $oFolderItem->getID();
 	                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
 
@@ -836,21 +836,23 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                  	if($oDocument->isSymbolicLink()){
 	    				$oDocument->switchToLinkedCore();
 	    			}
-                    $sDocFolderId = $oDocument->getFolderID();
-                    $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
+	    			if(Permission::userHasDocumentReadPermission($oDocument)){
+                        $sDocFolderId = $oDocument->getFolderID();
+                        $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
 
-                    if ($this->bNoisy) {
-                        $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
-                        $oDocumentTransaction->create();
-                    }
+                        if ($this->bNoisy) {
+                            $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
+                            $oDocumentTransaction->create();
+                        }
 
-                    // fire subscription alerts for the downloaded document
-                    if($this->bNotifications){
-                        $oSubscriptionEvent = new SubscriptionEvent();
-                        $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
-                    }
+                        // fire subscription alerts for the downloaded document
+                        if($this->bNotifications){
+                            $oSubscriptionEvent = new SubscriptionEvent();
+                            $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
+                        }
 
-                    $this->oZip->addDocumentToZip($oDocument, $oFolder);
+                        $this->oZip->addDocumentToZip($oDocument, $oFolder);
+	    			}
                 }
             }
         }

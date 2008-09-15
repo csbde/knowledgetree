@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -74,17 +74,15 @@ class KTBulkExportAction extends KTFolderAction {
         $this->oZip = new ZipFolder($folderName);
 
         if(!$this->oZip->checkConvertEncoding()) {
-            redirect(KTBrowseUtil::getUrlForFolder($oFolder));
+            redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         }
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
-        $aQuery = $this->buildQuery();
-        $this->oValidator->notError($aQuery);
-        $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
+        $oKTConfig =& KTConfig::getSingleton();
+        $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
+        $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
 
-        /* Modified 07/09/2007 by megan_w */
-        // Get all the folders within the current folder
+        // Get all folders and sub-folders
         $sCurrentFolderId = $this->oFolder->getId();
         $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}' OR
         parent_folder_ids LIKE '{$sCurrentFolderId},%' OR
@@ -92,36 +90,51 @@ class KTBulkExportAction extends KTFolderAction {
         parent_folder_ids LIKE '%,{$sCurrentFolderId}'";
 
         $aFolderList = $this->oFolder->getList($sWhereClause);
-        /* End modified */
 
-        $this->startTransaction();
+        // Get any folder shortcuts within the folders
+		$aLinkedFolders = KTBulkAction::getLinkingEntities($aFolderList);
+		$aFolderList = array_merge($aFolderList, $aLinkedFolders);
 
-        $oKTConfig =& KTConfig::getSingleton();
-        $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
-        $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
+        // Add the folders to the zip file
+        $aFolderObjects = array($sCurrentFolderId => $this->oFolder);
+        if(!empty($aFolderList)){
+            foreach ($aFolderList as $oFolderItem){
+                $itemId = $oFolderItem->getId();
+                $linkedFolder = $oFolderItem->getLinkedFolderId();
+                // If the folder has been added or is a shortcut then skip
+                // The shortcut folders don't need to be added as their targets will be added.
+                if(array_key_exists($itemId, $aFolderObjects) || !empty($linkedFolder)){
+                    continue;
+                }
+                $this->oZip->addFolderToZip($oFolderItem);
+                $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
+            }
+        }
+
+        // Get the list of folder ids
+        $aFolderIds = array_keys($aFolderObjects);
+
+        // Get all documents in the folder list
+        $aQuery = $this->buildQuery($aFolderIds);
+        $aDocumentIds = DBUtil::getResultArrayKey($aQuery, 'id');
+
+        if(PEAR::isError($aDocumentIds)){
+            $this->addErrorMessage(_kt('There was a problem exporting the documents: ').$aDocumentIds->getMessage());
+            redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
+            exit(0);
+        }
 
         // Redirect if there are no documents and no folders to export
         if (empty($aDocumentIds) && empty($aFolderList)) {
             $this->addErrorMessage(_kt("No documents found to export"));
-            redirect(KTBrowseUtil::getUrlForFolder($oFolder));
+            redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         }
 
         $this->oPage->template = "kt3/minimal_page";
         $this->handleOutput("");
 
-        // Create associative array of folder items for use by the contained documents
-        $aFolderObjects = array();
-        $aFolderObjects[$sCurrentFolderId] = $this->oFolder;
-
-        // Export the folder structure to ensure the export of empty directories
-        if(!empty($aFolderList)){
-            foreach($aFolderList as $k => $oFolderItem){
-                $this->oZip->addFolderToZip($oFolderItem);
-                $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
-            }
-        }
-
+        // Add the documents to the zip file
         if(!empty($aDocumentIds)){
             foreach ($aDocumentIds as $iId) {
                 $oDocument = Document::get($iId);
@@ -167,55 +180,45 @@ class KTBulkExportAction extends KTFolderAction {
 
                 </script>', $url);
 
-        $this->commitTransaction();
         exit(0);
     }
 
-    function buildQuery() {
+    function buildQuery($aFolderIds) {
+        $sFolderList = implode(', ', $aFolderIds);
+
+        // First we get any document shortcuts
+        $query = "SELECT linked_document_id FROM documents
+            WHERE linked_document_id IS NOT NULL
+            AND folder_id IN ({$sFolderList})";
+
+        $aLinkedDocIds = DBUtil::getResultArrayKey($query, 'linked_document_id');
+        if(PEAR::isError($aLinkedDocIds) || empty($aLinkedDocIds)){
+            $sDocList = '';
+        }else{
+            $sDocList = implode(', ', $aLinkedDocIds);
+        }
+
+        // Get the permissions sql
         $oUser = User::get($_SESSION['userID']);
         $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
         if (PEAR::isError($res)) {
             return $res;
         }
+
         list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
-        $aPotentialWhere = array($sPermissionString, 'D.folder_id = ? OR D.parent_folder_ids = ? OR D.parent_folder_ids LIKE ?', 'D.status_id = 1');
-        $aWhere = array();
-        foreach ($aPotentialWhere as $sWhere) {
-            if (empty($sWhere)) {
-                continue;
-            }
-            if ($sWhere == "()") {
-                continue;
-            }
-            $aWhere[] = sprintf("(%s)", $sWhere);
-        }
-        $sWhere = "";
-        if ($aWhere) {
-            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
-        }
 
-        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
+        // Create the "where" criteria
+        $sWhere = "WHERE {$sPermissionString} AND (D.folder_id IN ({$sFolderList})";
+        $sWhere .= (!empty($sDocList)) ? " OR D.id IN ({$sDocList}))" : ')';
+        $sWhere .= ' AND D.status_id = 1 AND linked_document_id IS NULL';
 
-        $sQuery = sprintf("SELECT %s FROM %s AS D
-                LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
-                LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
-                %s %s",
-                $sSelect, KTUtil::getTableName("documents"),
-                KTUtil::getTableName("document_metadata_version"),
-                KTUtil::getTableName("document_content_version"),
-                $sPermissionJoin, $sWhere);
-        $aParams = array();
-        $aParams = kt_array_merge($aParams,  $aPermissionParams);
-        $aParentFolderIds = split(',', $this->oFolder->getParentFolderIds());
-        $aParentFolderIds[] = $this->oFolder->getId();
-        if ($aParentFolderIds[0] == 0) {
-            array_shift($aParentFolderIds);
-        }
-        $sParentFolderIds = join(',', $aParentFolderIds);
-        $aParams[] = $this->oFolder->getId();
-        $aParams[] = $sParentFolderIds;
-        $aParams[] = $sParentFolderIds . ",%";
-        return array($sQuery, $aParams);
+        // Create the query
+        $sQuery = "SELECT DISTINCT(D.id) FROM documents AS D
+                LEFT JOIN document_metadata_version AS DM ON D.metadata_version_id = DM.id
+                LEFT JOIN document_content_version AS DC ON DM.content_version_id = DC.id
+                $sPermissionJoin $sWhere";
+
+        return array($sQuery, $aPermissionParams);
     }
 
     function do_downloadZipFile() {
@@ -225,7 +228,7 @@ class KTBulkExportAction extends KTFolderAction {
         $this->oZip = new ZipFolder($folderName);
 
         $res = $this->oZip->downloadZipFile($sCode);
-        
+
         if(PEAR::isError($res)){
         	$this->addErrorMessage($res->getMessage());
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
