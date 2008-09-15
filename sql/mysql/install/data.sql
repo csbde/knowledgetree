@@ -1714,7 +1714,9 @@ INSERT INTO `upgrades` VALUES
 (198,'func*3.5.3*0*addAutoIncrementToTables','Add auto increment.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (199,'sql*3.5.3*0*3.5.3/length_config_setting.sql','Add configurable name length.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (200,'sql*3.5.3*0*3.5.3/active_session_apptype.sql','Add active session application type.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(201,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
+(201,'sql*3.5.3*0*3.5.3/subscriptions.sql','Extending subscription to subfolders.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(202,'sql*3.5.3*0*3.5.3/doc_transactions.sql','Fix versions in transaction history.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(203,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2645,7 +2647,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(201);
+(203);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
