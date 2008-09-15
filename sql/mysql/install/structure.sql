@@ -775,6 +775,7 @@ CREATE TABLE `folder_subscriptions` (
   `user_id` int(11) NOT NULL default '0',
   `folder_id` int(11) NOT NULL default '0',
   `is_alerted` tinyint(1) default NULL,
+  `with_subfolders` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `folder_id` (`folder_id`),

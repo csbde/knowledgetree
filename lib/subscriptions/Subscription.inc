@@ -4,31 +4,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -61,6 +61,10 @@ class Subscription extends KTEntity {
      * Whether this subscription is triggered
      */
     var $bIsAlerted;
+    /**
+     * Whether subfolders should be included
+     */
+    var $bWithSubFolders;
     /**
      * The subscription database table to use
      */
@@ -155,6 +159,24 @@ class Subscription extends KTEntity {
     }
 
     /**
+    * Get the depth of the subscription
+    *
+    * @return boolean the depth of this subscription
+    */
+    function getWithSubFolders() {
+        return $this->bWithSubFolders;
+    }
+
+    /**
+    * Set the depth of the subscription
+    *
+    * @param boolean new depth status
+    */
+    function setWithSubFolders($iNewValue) {
+        $this->bWithSubFolders = $iNewValue;
+    }
+
+    /**
      * Returns the display path to the subscription content
      */
     function getContentDisplayPath() {
@@ -217,11 +239,15 @@ class Subscription extends KTEntity {
     }
 
     function _fieldValues () {
-        return array(
+        $fields =  array(
             'user_id' => $this->iUserID,
             $this->sIdFieldName => $this->iExternalID,
             'is_alerted' => KTUtil::anyToBool($this->bIsAlerted),
         );
+        if($this->sIdFieldName == 'folder_id'){
+            $fields['with_subfolders'] = KTUtil::anyToBool($this->bWithSubFolders);
+        }
+        return $fields;
     }
 
     function _table () {
