@@ -148,9 +148,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $oTemplate = $this->oValidator->validateTemplate('ktcore/document/metadata_history');
 
-        $aActions = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view'), 'documentinfo');
+        $aActions = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view'));
         $oAction = $aActions[0];
-
         $oAction->setDocument($this->oDocument);
 
         // create delete action if user is sys admin or folder admin
