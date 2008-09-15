@@ -1,0 +1,1 @@
+ALTER TABLE `document_transactions` MODIFY COLUMN `version` VARCHAR(10);
