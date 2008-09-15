@@ -1080,7 +1080,7 @@ class SQLQueryBuilder implements QueryBuilder
 			$offset = $this->resolveMetadataOffset($expr) + 1;
 
 			$fieldset = $left->getField();
-			$query = '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), false) . ')';
+			$query = '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), $expr->not()) . ')';
 
 		}
 		else
