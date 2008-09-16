@@ -1401,7 +1401,7 @@ CREATE TABLE `search_ranking` (
 CREATE TABLE `search_saved` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(100) NOT NULL,
-  `expression` tinytext NOT NULL,
+  `expression` mediumtext NOT NULL,
   `user_id` int(11) NOT NULL,
   `type` enum('S','C','W','B') NOT NULL default 'S' COMMENT 'S=saved search, C=permission, w=workflow, B=subscription',
   `shared` tinyint(4) NOT NULL default '0',

@@ -1,0 +1,1 @@
+ALTER TABLE `search_saved` MODIFY COLUMN `expression` mediumtext NOT NULL;
