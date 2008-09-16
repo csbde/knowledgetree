@@ -70,26 +70,21 @@ class KTWebDAVDashlet extends KTBaseDashlet {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktstandard/ktwebdavdashlet/dashlet');
 
-	$oConfig =& KTConfig::getSingleton();
-	$bSSL = $oConfig->get('sslEnabled', false);
-	$sRoot = $oConfig->get('rootUrl');
+        $sURL = KTUtil::kt_url();
 
-	if($bSSL) { $sProtocol = 'https'; }
-	else { $sProtocol = 'http'; }
-
-	$sURL = $sProtocol . '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $sRoot . "/";
-
-	// Check if this is a commercial installation - before displaying the KT Tools webdav link
-	// Shortcut: Check if the the wintools plugin exists and set to true.
-	// Long way: Check that a license is installed - this is only text so having a license is not a requirement.
-	$isComm = false;
-    $keyUtil = KT_DIR . '/plugins/wintools/baobabkeyutil.inc.php';
-	if(file_exists($keyUtil)){
-	    $isComm = true;
-	}
+        // Check if this is a commercial installation - before displaying the KT Tools webdav link
+        // Shortcut: Check if the the wintools plugin exists and set to true.
+        // Long way: Check that a license is installed - this is only text so having a license is not a requirement.
+        $isComm = false;
+        $keyUtil = KT_DIR . '/plugins/wintools/baobabkeyutil.inc.php';
+        if(file_exists($keyUtil)){
+            $isComm = true;
+        }
+        $webdavUrl = $sURL.'/ktwebdav/ktwebdav.php';
 
         $aTemplateData = array(
             'url' => $sURL,
+            'webdav_url' => $webdavUrl,
             'hasLicense' => $isComm
         );
         return $oTemplate->render($aTemplateData);
