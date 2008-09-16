@@ -288,18 +288,29 @@ class KTInit {
     // {{{ handleInitError()
     function handleInitError($oError) {
         global $checkup;
+        $msg = $oError->toString();
+
         if ($checkup === true) {
-            echo $oError->toString();
+            echo $msg;
             exit(0);
             //return;
         }
 
         if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
+            session_start();
+            $_SESSION['sErrorMessage'] = $msg;
+
+			$url = KTUtil::kt_url().'/customerrorpage.php';
+			// Redirect to custom error page
+			header('Location: '.$url.$qs);
+
+            /* A lot of steps to display the error page ... are they really needed?
             require_once(KT_LIB_DIR . '/dispatcher.inc.php');
             $oDispatcher =new KTErrorDispatcher($oError);
             $oDispatcher->dispatch();
+            */
         } else {
-            print $oError->toString() . "\n";
+            print $msg . "\n";
         }
         exit(0);
     }
@@ -549,7 +560,8 @@ if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
 
 if (phpversion()<5){
 
-	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].'/'.'customerrorpage.php';
+    $rootUrl = $KTInit->guessRootUrl();
+	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].$rootUrl.'/'.'customerrorpage.php';
 
 	session_start();
 
@@ -557,7 +569,7 @@ if (phpversion()<5){
 
 
 	header('location:'. $sErrorPage ) ;
-
+	exit(0);
 }
 $KTInit->setupServerVariables();
 
