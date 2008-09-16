@@ -1075,19 +1075,30 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		$left = $expr->left();
 		$right = $expr->right();
+		$isNot = $expr->not();
 		if ($left->isMetadataField())
 		{
 			$offset = $this->resolveMetadataOffset($expr) + 1;
 
 			$fieldset = $left->getField();
-			$query = '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), $expr->not()) . ')';
+            $query = '(';
+
+            if ($isNot)
+            {
+                $query .= "df$offset.name IS NULL OR ";
+            }
+
+			$query .= '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), $isNot) . ')';
+
+
+			$query .= ')';
 
 		}
 		else
 		{
 			$fieldname = $this->getFieldnameFromExpr($expr);
 
-			$query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $expr->not());;
+			$query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
 		}
 		return $query;
 	}
