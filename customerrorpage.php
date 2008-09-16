@@ -35,25 +35,11 @@
  * Contributor( s): ______________________________________
  */
 
-if (array_key_exists('fatal', $_POST))
-{
-	$posted = $_POST['fatal'];
-
-}
-
-if (array_key_exists('Error_MessageOne', $_POST) && array_key_exists('Error_MessageTwo', $_POST))
-{
-	$sErrorMessage = $_POST['Error_MessageOne'].''.$_POST['Error_MessageTwo'];
-
-}
-
 session_start();
 
-
-if (array_key_exists('sErrorMessage', $_SESSION))
-{
-	$phperror = $_SESSION['sErrorMessage'];
-}
+// Get the error message
+$error = isset($_POST['fatal']) ? $_POST['fatal'] : '';
+$error = isset($_SESSION['sErrorMessage']) ? $_SESSION['sErrorMessage'] : $error;
 
 //Finding root Url
 $sHost = $_SERVER['HTTP_HOST'];
@@ -61,47 +47,38 @@ $sScriptName = dirname($_SERVER['SCRIPT_NAME']);
 $sRoot = $sHost.$sScriptName;
 $sLastChar = substr($sScriptName, -1, 1);
 $sScriptName = ($sLastChar == '\\' || $sLastChar == '/') ? substr($sScriptName, 0, -1) : $sScriptName;
-$bSSLEnabled = false;
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-{
-	$bSSLEnabled = true;
-}
+$bSSLEnabled = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? true : false;
 $sRootUrl = ($bSSLEnabled ? 'https://' : 'http://').$sRoot;
 
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 	<head>
 		<title>Knowledgetree - Desklet</title>
 		<link rel="stylesheet" type="text/css" href="<?php echo $sRootUrl ?>/resources/css/errors.css" />
 
-	<script type="text/javascript">
-
-function Click()
-{
-	var open = document.getElementById('exp');
-	open.style.display = 'block';
-	var border = document.getElementById('error-container');
-	border.style.height = '220px';
-}
-
-</script>
-
+    	<script type="text/javascript">
+            function Click()
+            {
+            	var open = document.getElementById('exp');
+            	open.style.display = 'block';
+            	var border = document.getElementById('error-container');
+            	border.style.height = '220px';
+            }
+        </script>
 	</head>
 	<body>
-
 		<div id="error-container">
-
 			<div id="acc-error">
-
 
 				<h1>An Has Error Occurred</h1>
 				<p>You have encountered a problem with your document management system.</p>
 				<p>Please contact your systems administrator.</p>
-				<p>For more information on the error click here: <img src="<?php echo $sRootUrl ?>/resources/graphics/info.gif" style="cursor: pointer;" onclick="Click()" /><div id ="exp" style="display: none; "> <?php if(isset($sErrorMessage)){ echo $sErrorMessage;  }else  if(isset($posted)){ echo $posted; } else if($phperror){ echo $phperror; } ?></div></p>
+				<p>For more information on the error click here: <img src="<?php echo $sRootUrl ?>/resources/graphics/info.gif" style="cursor: pointer;" onclick="Click()" />
+				    <div id ="exp" style="display: none; "> <?php echo $error; ?></div>
+			    </p>
 
 			</div>
 		</div>
-
 	</body>
 </html>
