@@ -270,7 +270,9 @@ INSERT INTO `config_settings` VALUES
 (96, 'KnowledgeTree', 'Redirect To Browse View: Exceptions', 'Specifies that, when \'Redirect To Browse\' is set to \'True\' all users, except for the users listed in the text field below are redirected to the Browse view on log in. The users listed for this setting are directed to the KnowledgeTree Dashboard. To define exceptions, add user names in the text field as follows, e.g. admin, joebloggs, etc.', 'redirectToBrowseExceptions', '', '', '', NULL, 1),
 (97, 'session', 'Allow Automatic Sign In', 'Defines whether to automatically create a user account on first login for any user who does not yet exist in the system. Default is \'False\'.', 'allowAutoSignup', 'default', 'false', 'boolean', '', 1),
 (98, 'ldapAuthentication', 'Create Groups Automatically', 'Defines whether to allow LDAP groups to be created automatically. Default is \'False\'.', 'autoGroupCreation', 'default', 'false', 'boolean', '', 1),
-(99, 'browse', 'Truncate Document and Folder Titles in Browse View', 'Defines the length of the document or folder title displayed in the browse view.', 'titleCharLength', 'default', '40', 'numeric_string', '', 1);
+(99, 'browse', 'Truncate Document and Folder Titles in Browse View', 'Defines the length of the document or folder title displayed in the browse view.', 'titleCharLength', 'default', '40', 'numeric_string', '', 1),
+(100, 'import', 'Disable Bulk Import', 'Disable the bulk import plugin', 'disableBulkImport', 'default', 'false', 'string', NULL, 1),
+(101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1716,7 +1718,8 @@ INSERT INTO `upgrades` VALUES
 (200,'sql*3.5.3*0*3.5.3/active_session_apptype.sql','Add active session application type.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (201,'sql*3.5.3*0*3.5.3/subscriptions.sql','Extending subscription to subfolders.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (202,'sql*3.5.3*0*3.5.3/doc_transactions.sql','Fix versions in transaction history.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(203,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
+(203,'sql*3.5.3*0*3.5.3/saved_search.sql','Fix saved search table to support long expressions.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(204,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2647,7 +2650,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(203);
+(204);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

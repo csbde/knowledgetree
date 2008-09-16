@@ -59,6 +59,11 @@ class KTBulkImportFolderAction extends KTFolderAction {
     }
 
     function getInfo() {
+        global $default;
+        if($default->disableBulkImport){
+        	return null;
+        }
+
         if (!Permission::userIsSystemAdministrator($this->oUser->getId())) {
             return null;
 
