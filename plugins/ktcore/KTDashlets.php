@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -55,14 +55,14 @@ class KTInfoDashlet extends KTBaseDashlet {
         global $default;
         $this->sTitle = sprintf(_kt('Welcome to %s'), APP_NAME);
         $versionName = substr($default->versionName, -17);
-        
+
         if($versionName != 'Community Edition')
         {
         	$this->helpLocation = 'ktcore/welcomeCommercial.html';
         }
-	    
+
 	    //This check is for non english language packs which might not have
-	    //a commercial welcome page.    
+	    //a commercial welcome page.
 	    $oHelpCheck = KTHelp::getHelpInfo($this->helpLocation);
 	    if(PEAR::isError($oHelpCheck))
         {
@@ -74,11 +74,11 @@ class KTInfoDashlet extends KTBaseDashlet {
         // FIXME help is a little too mixed.
         $aHelpInfo = array();
         $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
-               
+
         $help_path = KTHelp::_getLocationInfo($this->helpLocation, null, true);
-        
+
         //var_dump($help_path);
-        
+
         if (PEAR::isError($help_path) || empty($help_path['external'])) {
             if ($can_edit) {
                 // give it a go.
@@ -102,28 +102,28 @@ class KTInfoDashlet extends KTBaseDashlet {
             	return false;
             }
         }
-        
+
         // NORMAL users never see edit-option.
         if (!$can_edit) {
             if (empty($aHelpInfo)) {
                 return false;
             }
-        } 
-        
+        }
+
         $this->aHelpInfo = $aHelpInfo;
         $this->canEdit = $can_edit;
-        $this->sTitle = str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['title']);
-        
+        $this->sTitle = str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['title']);
+
         return true;
     }
-    
+
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/kt3release');
-              
+
         $aTemplateData = array(
-            'title' => str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['title']),
-            'body' => str_replace('KnowledgeTree', APP_NAME, $this->aHelpInfo['body']),
+            'title' => str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['title']),
+            'body' => str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['body']),
             'can_edit' => $this->canEdit,
             'target_name' => $this->helpLocation,
             'help_id' => $this->aHelpInfo['help_id'],
@@ -135,7 +135,7 @@ class KTInfoDashlet extends KTBaseDashlet {
 
 class KTNotificationDashlet extends KTBaseDashlet {
     var $oUser;
-    
+
     function KTNotificationDashlet() {
         $this->sTitle = _kt('Items that require your attention');
     }
@@ -146,23 +146,23 @@ class KTNotificationDashlet extends KTBaseDashlet {
         if (empty($notifications)) { return false; }
         return true;
     }
-    
+
     function render() {
-        
+
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         $num_notifications = count($notifications);
-        
+
         $_MAX_NOTIFICATIONS = 5;
-        
+
         // FIXME in lieu of pagination, we slice.
         if ($num_notifications > $_MAX_NOTIFICATIONS) {
             $notifications = array_slice($notifications, 0, $_MAX_NOTIFICATIONS);
         }
-        
+
         $oPluginRegistry =& KTPluginRegistry::getSingleton();
         $oPlugin =& $oPluginRegistry->getPlugin('ktcore.plugin');
         $link = $oPlugin->getPagePath('notifications');
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/notifications');
         $aTemplateData = array(
@@ -181,7 +181,7 @@ class KTNotificationDashlet extends KTBaseDashlet {
 class KTCheckoutDashlet extends KTBaseDashlet {
 
     var $oUser;
-    
+
     function KTCheckoutDashlet() {
         $this->sTitle = _kt('Your Checked-out Documents');
     }
@@ -194,17 +194,17 @@ class KTCheckoutDashlet extends KTBaseDashlet {
         global $default;
     	$oConfig =& KTConfig::getSingleton();
     	if($oConfig->get('dashboard/alwaysShowYCOD')) return true;
-        
+
         return (!empty($this->checked_out_documents));
     }
-    
+
     function getDocumentLink($oDocument) {
         return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
     }
-    
+
     function render() {
-        
-        
+
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/checkedout');
         $aTemplateData = array(
@@ -230,11 +230,11 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
         if (!Permission::userIsSystemAdministrator($oUser)) {
             return false;
         }
-        
+
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-        
+
         $noTransforms = false;
-        
+
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         $aTriggerSet = array();
@@ -247,13 +247,13 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                     require_once($aTrigger[1]);
                 }
                 $oTrigger = new $sTrigger;
-                
+
                 $sDiagnostic = $oTrigger->getDiagnostic();
                 // empty is OK.
                 if (is_null($sDiagnostic) || ($sDiagnostic == false)) {
                     continue;
                 }
-                
+
                 $aTypes = (array) $oTrigger->mimetypes;
                 $aTypesStr = array();
                 foreach ($aTypes as $sTypeName => $v) {
@@ -261,19 +261,19 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                         $aTypesStr[KTMime::getFriendlyNameForString($sTypeName)] = 1;
                     //}
                 }
-                
+
                 $aTriggerSet[] = array('types' => $aTypesStr, 'diagnostic' => $sDiagnostic);
             }
-        }     
+        }
         $this->aTriggerSet = $aTriggerSet;
-        $this->noTransforms = $noTransforms;   
+        $this->noTransforms = $noTransforms;
 
         return ($noTransforms || !empty($aTriggerSet)); // no diags and have some transforms.
     }
-    
-    function render() {	
-        
-        
+
+    function render() {
+
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/indexer_status');
         $aTemplateData = array(
@@ -304,8 +304,8 @@ class KTMailServerDashlet extends KTBaseDashlet {
         }
         return false;
     }
-    
-    function render() {	
+
+    function render() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/mailserver');
         $admin = Permission::userIsSystemAdministrator($_SESSION['userID']);
