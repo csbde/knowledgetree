@@ -79,9 +79,10 @@ while(!$bTableExists){
         case WIN32_SERVICE_CONTROL_CONTINUE:
         	break; // Continue server routine
         case WIN32_SERVICE_CONTROL_INTERROGATE:
-        	win32_set_service_status(WIN32_NO_ERROR);
+        	win32_set_service_status(WIN32_SERVICE_RUNNING);
         	break; // Respond with status
-        case WIN32_SERVICE_CONTROL_STOP: win32_set_service_status(WIN32_SERVICE_STOPPED);
+        case WIN32_SERVICE_CONTROL_STOP:
+            win32_set_service_status(WIN32_SERVICE_STOPPED);
         	$loop = false; // Terminate script
         	$bTableExists = true;
         	continue;
@@ -119,9 +120,10 @@ while ($loop)
         case WIN32_SERVICE_CONTROL_CONTINUE:
         	break; // Continue server routine
         case WIN32_SERVICE_CONTROL_INTERROGATE:
-        	win32_set_service_status(WIN32_NO_ERROR);
+        	win32_set_service_status(WIN32_SERVICE_RUNNING);
         	break; // Respond with status
-        case WIN32_SERVICE_CONTROL_STOP: win32_set_service_status(WIN32_SERVICE_STOPPED);
+        case WIN32_SERVICE_CONTROL_STOP:
+            win32_set_service_status(WIN32_SERVICE_STOPPED);
         	$loop = false; // Terminate script
         	continue;
         default:

@@ -313,12 +313,19 @@ class KTBulkMoveAction extends KTBulkAction {
 
         // does it exists
         if(PEAR::isError($this->oTargetFolder)) {
-            return PEAR::raiseError(_kt('Invalid target folder selected'));
+            $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected'));
+            exit(0);
+        }
+
+        if($this->iTargetFolderId == $this->oFolder->getId()){
+            $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected: Target folder is the same as the current folder.'));
+            exit(0);
         }
 
         // does the user have write permission
         if(!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
             $this->errorRedirectTo('collectinfo', _kt('You do not have permission to move items to this location'));
+            exit(0);
         }
 
         return parent::do_performaction();
