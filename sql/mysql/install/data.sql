@@ -272,7 +272,8 @@ INSERT INTO `config_settings` VALUES
 (98, 'ldapAuthentication', 'Create Groups Automatically', 'Defines whether to allow LDAP groups to be created automatically. Default is \'False\'.', 'autoGroupCreation', 'default', 'false', 'boolean', 'string', 1),
 (99, 'browse', 'Truncate Document and Folder Titles in Browse View', 'Defines the length of the document or folder title displayed in the browse view.', 'titleCharLength', 'default', '40', 'numeric_string', 'string', 1),
 (100, 'import', 'Disable Bulk Import', 'Disable the bulk import plugin', 'disableBulkImport', 'default', 'false', 'string', NULL, 1),
-(101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0);
+(101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0),
+(102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
