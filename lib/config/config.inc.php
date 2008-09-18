@@ -254,7 +254,10 @@ class KTConfig {
     }
 
     function setdefaultns($seck, $k, $v) {
-        return $this->setns($seck, $k, $v, true);
+        $this->setns($seck, $k, $v, true);
+
+        global $default;
+        $default->$k = $this->expand($this->flatns["$seck/$k"]);
     }
 
     function expand($val) {
