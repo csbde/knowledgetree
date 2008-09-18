@@ -1,0 +1,1 @@
+INSERT INTO `column_entries` (column_namespace, view_namespace, position, required) VALUES ('ktcore.columns.preview','ktcore.views.browse',2,0);
