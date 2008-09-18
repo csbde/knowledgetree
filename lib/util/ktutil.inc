@@ -50,7 +50,7 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
-    const SERVER_NAME_FILE = 'serverName.txt';
+    const SERVER_NAME_SETTING = 'server_name';
 
     /**
      * Used to resolve the server name
@@ -59,18 +59,22 @@ class KTUtil {
     static function save_base_kt_url()
     {
     	global $default;
-		$cacheDir = $default->cacheDirectory;
 
-		$serverFilename = $cacheDir . '/' . KTUtil::SERVER_NAME_FILE;
-		if (file_exists($serverFilename))
-		{
-		    return;
-		}
+    	$serverName = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
+    	if($serverName !== false){
+    	    return $serverName;
+    	}
 
 		$rootUrl = $default->rootUrl;
 		$protocol  = $default->sslEnabled ? 'https' : 'http';
 		$port = $_SERVER['SERVER_PORT']+0;
 		$serverName = $_SERVER['SERVER_NAME'];
+
+		// We don't want to set the servername to localhost, it should be set to the url that will be used normally
+		if($serverName == 'localhost' || $serverName == '127.0.0.1')
+		{
+		    return false;
+		}
 
 		$base_url = $protocol . '://' . $serverName;
 
@@ -86,7 +90,8 @@ class KTUtil {
 		// Add the root url
 		$base_url .= $rootUrl;
 
-		@file_put_contents($serverFilename, $base_url);
+		// Save as system setting
+		KTUtil::setSystemSetting(SERVER_NAME_SETTING, $base_url);
     }
 
 
@@ -100,28 +105,34 @@ class KTUtil {
 		    return $base_url;
 		}
 
-		$cacheDir = $default->cacheDirectory;
-
-		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
-
-		/* We are checking if the object exists because we could have an error pre oor during initialization */
-		if(is_object($default->log))
-		{
-			$default->log->debug("kt_url: base url - $base_url");
-		}
-
-		if (false !== $base_url)
-		{
-		    $base_url = str_replace(array("\n","\r"), array('',''), $base_url);
-			return $base_url;
-		}
-
 		$config = KTConfig::getSingleton();
 		$serverName = $config->get('knowledgeTree/serverName', $_SERVER['HTTP_HOST']);
-		$rootUrl = $default->rootUrl;
 
-		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $rootUrl;
+		// $serverName gets set in dmsDefaults, if $_SERVER['HTTP_HOST'] is empty, it gets set to localhost
+		// we want to avoid this if possible
+		if(empty($serverName) || $serverName == 'localhost')
+		{
+		    // The host has not been set - check if the serverName setting exists
+		    $base_url = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
 
+		    if (false !== $base_url)
+    		{
+    		    /* We are checking if the object exists because we could have an error pre oor during initialization */
+        		if(is_object($default->log))
+        		{
+        			$default->log->debug("kt_url: base url - $base_url");
+        		}
+
+    		    $base_url = str_replace(array("\n","\r"), array('',''), $base_url);
+    			return $base_url;
+    		}
+
+    		// TODO: Check if the $_SERVER['SERVER_NAME'] variable is set.
+    		$serverName = 'localhost';
+		}
+
+		// build up the url
+		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $default->rootUrl;
 		if(is_object($default->log))
 		{
 			$default->log->debug("kt_url: base url - $base_url");
@@ -132,11 +143,10 @@ class KTUtil {
 	static function call_page($path)
 	{
 	    global $default;
-		$cacheDir = $default->cacheDirectory;
 
-		$base_url = @file_get_contents($cacheDir . '/' . KTUtil::SERVER_NAME_FILE);
+		$base_url = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
 
-		if (false == $base_url)
+		if (false === $base_url)
 		{
 			$default->log->info("call_page: $path - cannot call script until user logs in for the first time!");
 			return;

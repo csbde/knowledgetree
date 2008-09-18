@@ -273,8 +273,7 @@ class KTInit {
             $_SERVER['PATH_INFO'] = $kt_path_info;
         }
 
-        $oConfig =& KTConfig::getSingleton();
-        $sServerName = $oConfig->get('KnowledgeTree/serverName');
+        $sServerName = $oKTConfig->get('KnowledgeTree/serverName');
         $_SERVER['HTTP_HOST'] = $sServerName;
     }
     // }}}
@@ -423,10 +422,10 @@ class KTInit {
 
         $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
         $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
-        $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 0);
+        $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 'false');
         if (array_key_exists('HTTPS', $_SERVER)) {
             if (strtolower($_SERVER['HTTPS']) === 'on') {
-                $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 1);
+                $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 'true');
             }
         }
         $oKTConfig->setdefaultns('KnowledgeTree', 'rootUrl', $this->guessRootUrl());
@@ -466,25 +465,10 @@ class KTInit {
                 // If the http_host server variable is not set then the serverName gets set to localhost
                 // We don't want to store this setting so we set store_cache to false
                 $store_cache = false;
-
-                /*
-                // Check if serverName.txt is set and use that
-                $pathFile = KT_DIR .  '/config/cache-path';
-                $cachePath = trim(file_get_contents($pathFile));
-                $serverNamePath = $cachePath . '/' . KTUtil::SERVER_NAME_FILE;
-
-                if(file_exists($serverNamePath)){
-                    $serverName = @file_get_contents($serverNamePath);
-                    $_SERVER['HTTP_HOST'] = $serverName;
-                }
-                */
             }
         }
 
         if(!$use_cache) {
-            // Get default server url settings
-            $this->getDynamicConfigSettings();
-
             //Read in DB settings and config settings
             $oKTConfig->readDBConfig();
         }
@@ -502,6 +486,8 @@ class KTInit {
         // Create the global $default array
         if(!$use_cache) $res = $oKTConfig->readConfig();
 
+        // Get default server url settings
+        $this->getDynamicConfigSettings();
 
         if($store_cache && isset($cachePath)){
             @touch($cachePath);
