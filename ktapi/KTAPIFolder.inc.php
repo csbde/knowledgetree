@@ -365,6 +365,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			$perms .= 'W';
 		}
+		if (Permission::userHasAddFolderPermission($folder))
+		{
+			$perms .= 'A';
+		}
 		return $perms;
 	}
 
