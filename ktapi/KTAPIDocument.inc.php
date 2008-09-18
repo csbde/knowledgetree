@@ -376,9 +376,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return $user;
 		}
 
-		if ($this->document->getIsCheckedOut())
+		//if the document is checked-out by the current user, just return
+		//as no need to check-out again BUT we do need to download
+		//returning here will allow download, but skip check-out
+		if ( ($this->document->getIsCheckedOut()) && 
+			($this->document->getCheckedOutUserID() == $_SESSION['userID']) )
 		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_CHECKED_OUT);
+			return;
 		}
 
 		DBUtil::startTransaction();
