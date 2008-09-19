@@ -76,7 +76,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                     global $default;
     	            $sHostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/";
                     // create image
-                    $icon = "<img src='".$sHostPath."resources/mimetypes/pdf.png' alt='PDF' border=0/>";
+                    $icon = "<img src='".$sHostPath."resources/mimetypes/pdf.gif' alt='PDF' border=0/>";
                     return _kt('Generate PDF') . "&nbsp;<a href=\"" . KTUtil::ktLink( 'action.php', 'ktstandard.pdf.generate', array( "fDocumentId" => $this->oDocument->getId(), "action" => "pdfdownload") ) . "\" $icon</a>";
                 }
             }
