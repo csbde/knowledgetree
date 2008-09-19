@@ -121,6 +121,21 @@ class Permission {
         return KTPermissionUtil::userHasPermissionOnItem($oUser,
                 $oPermission, $oFolder);
     }
+	
+	/**
+    * Checks if the current user has add folder permission for a specific folder
+    *
+    * @param $oFolder     Folder object to check
+    *
+    * @return boolean true if the user has add folder permission, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function userHasAddFolderPermission($oFolder) {
+        $oUser = User::get($_SESSION["userID"]);
+        $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
+
+        return KTPermissionUtil::userHasPermissionOnItem($oUser,
+                $oPermission, $oFolder);
+    }
 
     /**
     * Check if the current user is a system administrator
