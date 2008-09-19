@@ -10,20 +10,19 @@ text-decoration: none;
 </style>
 {/literal}
 
-{if empty($tags)}
-<p>
-    {i18n}There are no tags defined or accessible.{/i18n}
-</p>
-
-{else}
-<div id=tagcloud>
-{foreach from=$tags key=tag item=size}
-
-	<a  href="{$url}&tag={$tag|urlencode}" style="color: #333; font-size: {$size}px">{$tag|sanitize}</a>&nbsp;
-
-{/foreach}
+<div style="padding: 5px;">
+    {if empty($tags)}
+        <p>
+            {i18n}There are no tags defined or accessible.{/i18n}
+        </p>
+    {else}
+        <div id=tagcloud>
+            {foreach from=$tags key=tag item=size}
+            	<a  href="{$url}&tag={$tag|urlencode}" style="color: #333; font-size: {$size}px">{$tag|sanitize_input}</a>&nbsp;
+            {/foreach}
+        </div>
+    {/if}
 </div>
-{/if}
 
 <br>
 <br>

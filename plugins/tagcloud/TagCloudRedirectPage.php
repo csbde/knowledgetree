@@ -63,7 +63,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 	 */
     function do_main() {
         // Clear the session for a new search
-        $url = isset($_REQUEST['tag']) ? 'tag='.$_REQUEST['tag'] : '';
+        $url = isset($_REQUEST['tag']) ? 'tag='.urlencode($_REQUEST['tag']).'&decode=true' : '';
         $_SESSION['tagList'] = array();
         $this->redirectTo('search', $url);
     }
@@ -81,12 +81,17 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $_SESSION['tagList'] = $tagList;
 
-        $this->redirectTo('search', 'tag='.$tag);
+        $url = 'tag='.urlencode($tag).'&decode=true';
+        $this->redirectTo('search', $url);
     }
 
     function do_search() {
         // Get the tag to search for and create search query
         $tag = isset($_REQUEST['tag']) ? $_REQUEST['tag'] : '';
+        $decode = isset($_REQUEST['decode']) ? $_REQUEST['decode'] : '';
+        if($decode == 'true'){
+            $tag = urldecode($tag);
+        }
 
         $iUserId = $_SESSION['userID'];
         $oUser = User::get($iUserId);
@@ -102,7 +107,10 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
             $base = KTUtil::addQueryString('TagCloudRedirection&action=recall', null);
             foreach($aTagTree as $key => $item){
-                $url = $base.'&tag='.$item.'&pos='.$key;
+                if($tag == $item){
+                    continue;
+                }
+                $url = $base.'&tag='.urlencode($item).'&pos='.$key;
                 $this->aBreadcrumbs[] = array('url' => $url, 'name' => $item);
             }
         }
@@ -134,7 +142,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
 
-        $aOptions['return_url'] = KTUtil::addQueryString('TagCloudRedirection&action=search&tag='. $tag, false );
+        $aOptions['return_url'] = KTUtil::addQueryString('TagCloudRedirection&action=search&tag='. urlencode($tag), false );
         $aOptions['empty_message'] = _kt('No documents or folders match this query.');
         $aOptions['is_browse'] = true;
 
