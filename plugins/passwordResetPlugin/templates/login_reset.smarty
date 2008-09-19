@@ -120,11 +120,6 @@
 			{/if}
 			<p class='descriptiveText version'>
 		    	    <br>
-		    	    {* Added for live *}
-		    	    {i18n}Access to this service is subject to the KnowledgeTreeLive <a href="http://www.knowledgetree.com/about/legal/live">Terms and Conditions</a> of use.{/i18n}<br/>
-				    {i18n}&copy; 2008 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a> All Rights Reserved{/i18n}
-
-				    {* Removed for live
 		    	    {i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
                     {i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
                     {i18n}&copy; 2008 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n}<br><br>
@@ -133,7 +128,6 @@
                     {else}
                         {i18n}All rights reserved.{/i18n}<br>
                     {/if}
-                    *}
             </p>
             <br />
 	        <div id='bottomspacer'></div>
