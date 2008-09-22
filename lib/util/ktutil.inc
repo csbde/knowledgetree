@@ -1272,8 +1272,9 @@ class KTUtil {
     {
         if (file_exists($path)) {
             // IE7 adds underscores to filenames: fix
+            // IE6 displays characters incorrectly
             $browser = $_SERVER['HTTP_USER_AGENT'];
-            if ( strpos( strtoupper( $browser), 'MSIE 7') !== false) {
+            if ( strpos( strtoupper( $browser), 'MSIE') !== false) {
                 $fileName = rawurlencode($fileName);
             }
 
