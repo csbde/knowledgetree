@@ -43,7 +43,7 @@
                             {if ($document->getMimeTypeID() != $oVersion->getMimeTypeID())}
                                 <span class='descriptiveText'>{i18n}mime types do not match{/i18n}</span>
                             {else}
-                                <a style="cursor:hand;" onclick='window.open("{$sUrl}&action=downloadComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}", "Document_Diffs");'>{i18n}Content{/i18n}</a>
+                                <a style="cursor:hand;" onclick='window.open("{$sUrl}&action=downloadComparison&fDocumentId={$document->getId()}&fBaseVersion={$document->getCurrentMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}", "Document_Diffs");'>{i18n}Content{/i18n}</a>
                             {/if}
                         {/if}
                     {else}
