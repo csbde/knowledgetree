@@ -1,5 +1,5 @@
-.ktInfo p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) center left no-repeat; }
-.ktError p { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
+.ktInfo .info_item { background: transparent url(../../thirdparty/icon-theme/16x16/status/dialog-information.gif) top left no-repeat; }
+.ktError .err_item { background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat; }
 .ktHelp { background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.gif) top left no-repeat; }
 .ktBlock {
 	background-color: white;
@@ -50,15 +50,15 @@
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
 
 /* IE is woefully unable to */
-#portletbar { 
+#portletbar {
 	width: 200px;
 }
 #portlet-search-text { width: 150px; }
 /* #content { padding-left: 220px; } */
 
-#content { 
+#content {
     float: left;
-    padding: 0 25px 0 0;    
+    padding: 0 25px 0 0;
 }
 
 #pageBody {
@@ -130,18 +130,18 @@
     background: url(../../resources/graphics/menu_divider.gif) top left no-repeat;
 }
 
-#content .dashboard_block .action_rollup 
-{ 
+#content .dashboard_block .action_rollup
+{
     background-image: url(../graphics/bullet_toggle_minus.gif);
 }
 
-#content .dashboard_block.rolled-up .action_rollup 
-{ 
+#content .dashboard_block.rolled-up .action_rollup
+{
     background-image: url(../graphics/bullet_toggle_plus.gif);
 }
 
-#content .dashboard_block .action_close 
-{ 
+#content .dashboard_block .action_close
+{
     background-image: url(../graphics/bullet_toggle_close.gif);
 }
 
@@ -149,13 +149,13 @@
 /* NO CHILD SELECTORS IN IE! */
 
 .kt_treenodes li.treenode a.pathnode
-{ 
+{
   padding-left: 15px;
 }
 
 .kt_treenodes li.treenode.active a.pathnode {
    background: transparent url(../graphics/minus.png) center left no-repeat;
-                                              
+
 }
 
 .kt_treenodes li.treenode.inactive a.pathnode {
@@ -214,12 +214,12 @@
     display: none;
 }
 
-.dashboard_block_handle { 
+.dashboard_block_handle {
     margin: 0.2em -0.5em 0.5em 1em;
 }
 
 .ktBlock .dashboard_block_body
-{ 
+{
     margin: 8px 0 10px 1em;
 }
 
@@ -272,6 +272,10 @@
 }
 
 .error_dashlet_rightrepeat_top {
+    display: none;
+}
+
+.error_dashlet_rightrepeat_top_small {
     display: none;
 }
 
@@ -335,6 +339,10 @@
     display: none;
 }
 
+.info_dashlet_rightrepeat_top_small {
+    display: none;
+}
+
 .info_dashlet_rightrepeat_bottom {
     display: none;
 }
@@ -344,7 +352,7 @@
 }
 
 .dashboard_block.rolled-up .error_dashlet_toprepeat
-{ 
+{
     height: 38px;
 }
 
@@ -354,7 +362,7 @@
     top:0;
     left:35px;
     width: 520px;
-    height: 3px; 
+    height: 3px;
 }
 
 #loginbox.hasDisclaimer #loginboxBottomMiddle {
@@ -389,7 +397,7 @@
 
 .workflow_step2
 {
-	overflow:scroll; 
+	overflow:scroll;
 	width:700px;
 }
 

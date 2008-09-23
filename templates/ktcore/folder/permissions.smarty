@@ -34,7 +34,7 @@
 
   <p class="descriptiveText">{i18n}Select roles and groups for whom you wish to change permission assignment from the box on the left, and move them over to the box on the right using the button with right-pointing arrows. You can then allocate or remove permissions from these entities and save by pressing the 'Update Permission Assignments' button'.{/i18n}</p>
 
-<table>
+<table width="60%">
 
 <thead>
     <tr>

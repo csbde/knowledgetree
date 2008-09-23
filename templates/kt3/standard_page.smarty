@@ -140,7 +140,7 @@
 	                            <!-- user menu -->
 	                            <li class="pref">
 	                                {if ($page->user)}
-	                                    <span class="ktLoggedInUser">{$page->user->getName()|truncate:65:"..."}</span>
+	                                    <span class="ktLoggedInUser">{$page->user->getName()|mb_truncate:40:"..."}</span>
 	                                {/if}
 	                                {if !empty($page->userMenu)}
 	                                    &middot;
@@ -268,15 +268,17 @@
 				    	<div class="error_dashlet_leftrepeat_top"></div>
 				    	<div class="error_dashlet_rightrepeat_bottom"></div>
 				    	<div class="error_dashlet_leftrepeat_bottom"></div>
+				    	<div class="err_list">
                         {foreach item=sError from=$page->errStack}
-
-                          {if ($page->booleanLink == '0')}
-                            <p>{$sError|sanitize}</p>
-                          {else}
-                            <p>{$sError}</p>
-                          {/if}
-
+                            <div class="err_item">
+                              {if ($page->booleanLink == '0')}
+                                {$sError|sanitize}
+                              {else}
+                                {$sError}
+                              {/if}
+                            </div>
                         {/foreach}
+                        </div>
                         <div class="error_dashlet_topleft_small"></div>
 			            <div class="error_dashlet_toprepeat_small"></div>
 			        	<div class="error_dashlet_topright_small"></div>
@@ -290,12 +292,14 @@
                 {if (!empty($page->infoStack))}
                     <div class="ktInfo">
                     	<div class="info_dashlet_rightrepeat_top_small"></div>
-				    	<div class="info_dashlet_leftrepeat_top"></div>
                     	<div class="info_dashlet_rightrepeat_bottom"></div>
+                    	<div class="info_dashlet_leftrepeat_top"></div>
 				    	<div class="info_dashlet_leftrepeat_bottom"></div>
+				    	<div class="info_list">
                         {foreach item=sInfo from=$page->infoStack}
-                            <p>{$sInfo|sanitize}</p>
+                            <div class="info_item">{$sInfo|sanitize}</div>
                         {/foreach}
+                        </div>
                         <div class="info_dashlet_topleft_small"></div>
 			            <div class="info_dashlet_toprepeat_small"></div>
 			        	<div class="info_dashlet_topright_small"></div>
