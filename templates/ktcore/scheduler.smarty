@@ -9,6 +9,7 @@
 </span>
 </p>
 
+<div style="overflow: auto; width: 730px;">
 <table class="kt_collection" cellspacing = "0" cellpadding = "4">
 
 {if $aHeadings}
@@ -73,6 +74,7 @@
     </tr>
 {/if}
 </table>
+</div>
 
 <div id="formDiv" style="display: none; visibility: hidden;">
     <form name="changefreq" id="changefreq" method="post" action="{$sUrl}">
