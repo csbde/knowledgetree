@@ -169,7 +169,7 @@ function storeRelationship(selected_lookup, child_lookups) {
 
   // inform the user that something has happened.
   // FIXME this isn't i18n friendly.
-  addInformationNote(_('Dependencies saved. (at ') + new Date() + ')');
+  addInformationNote(_('Dependencies saved (') + new Date() + ')');
 
   deferred.addCallback(do_updateActiveLookups);
   deferred.addErrback(partial(do_handleAjaxError, 'storeRelationship'));
@@ -229,7 +229,7 @@ function do_updateActiveLookups(label, req) {
         }
    }
 
-   addInformationNote(_('Dependencies for value "')+label+('" loaded.(at ') + new Date() + ')');
+   addInformationNote(_('Dependencies for value "')+label+('" loaded (') + new Date() + ')');
 }
 
 
@@ -307,7 +307,7 @@ function finishSimpleField(field_id) {
 
 // called when a single-view dropdown is activated.
 function handleChangedSelection(field_id, select_input) {
-    addInformationNote(_('Loading Dependencies for value "')+scrapeText(select_input.options[select_input.selectedIndex])+'"(at ' + new Date() + ')');
+    addInformationNote(_('Loading Dependencies for value "')+scrapeText(select_input.options[select_input.selectedIndex])+'" (' + new Date() + ')');
     updateActiveLookups(select_input.value, scrapeText(select_input.options[select_input.selectedIndex]));    // handles everything for us.
 }
 
