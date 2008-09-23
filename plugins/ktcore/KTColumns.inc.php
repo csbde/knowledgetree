@@ -92,7 +92,7 @@ class AdvancedTitleColumn extends AdvancedColumn {
         }
 
         if($this->link_folders) {
-            $outStr = '<a class="contenttype_href" href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
+            $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
         }
         return $outStr;
     }
@@ -170,9 +170,9 @@ class AdvancedTitleColumn extends AdvancedColumn {
            $contenttype = 'folder';
            $link = $this->renderFolderLink($aDataRow);
            if($aDataRow['folder']->isSymbolicLink()){
-           		return sprintf('<span class="contenttype %s">%s<img src="resources/tango-icons/shortcut.png" /></span>', $contenttype, $link);
+           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>&nbsp;<img src='resources/tango-icons/shortcut.png' />";
            }else{
-           		return sprintf('<span class="contenttype %s">%s</span>', $contenttype, $link);
+           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div>$link";
            }
         } else {
         	$contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId());
@@ -180,10 +180,10 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
            	//Render an image instead of the size in case of a shortcut
            if($aDataRow['document']->isSymbolicLink()){
-               return sprintf('<span class="contenttype %s shortcut">%s</span>', $contenttype, $link);
+               return "<div style='float: left' class='contenttype $contenttype shortcut'>&nbsp;</div>$link";
            }else{
           		 $size = $this->prettySize($aDataRow["document"]->getSize());
-           		return sprintf('<span class="contenttype %s">%s (%s)</span>', $contenttype, $link, $size);
+           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>&nbsp;($size)";
            }
         }
     }
