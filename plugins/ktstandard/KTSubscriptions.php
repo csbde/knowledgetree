@@ -88,6 +88,22 @@ class KTSubscriptionPlugin extends KTPlugin {
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
 
+function wrapString($str, $length = 20){
+    // Wrap string to given character length (content rendered from ajax doesn't render correctly in ie)
+    $len = mb_strlen($str);
+    $out = '';
+    $pos = 0;
+    while($len > $length && $pos !== false){
+        $pos = mb_strpos($str, ' ', $length);
+        $line = mb_strcut($str, 0, $pos+1);
+        $str = mb_strcut($str, $pos+1);
+        $len = mb_strlen($str);
+        $out .= $line.'<br>';
+    }
+    $out .= $str;
+    return $out;
+}
+
 // {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
     function KTSubscriptionPortlet() {
@@ -170,13 +186,11 @@ class KTSubscriptionPortlet extends KTPortlet {
         if(isset($aInfo['subaction'])){
             $subInfo = array();
             $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: doSubscribe(\"add_subfolders\")'>{$aInfo['subaction']}</a>";
-
-//            $script .= "<br>&nbsp;&nbsp;&nbsp;<input type='checkbox' id='subfolders' /> {$aInfo['subaction']}";
             $this->actions[] = $subInfo;
         }
 
         $this->actions[] = array("name" => _kt("Manage subscriptions"), "url" => $this->oPlugin->getPagePath('manage'));
-        $btn = '<div id="response" style="padding: 2px; margin-right: 10px; margin-left: 10px; word-wrap: normal; background: #CCC; display:none;"></div>';
+        $btn = '<div id="response" style="padding: 2px; margin-right: 10px; margin-left: 10px; background: #CCC; display:none;"></div>';
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
@@ -208,16 +222,18 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
     function do_ajax() {
         $iSubscriptionType = SubscriptionEvent::subTypes('Document');
         if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            echo _kt('You are already subscribed to that document');
+            $str = _kt('You are already subscribed to that document');
         } else {
             $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
             $res = $oSubscription->create();
             if ($res) {
-                echo _kt('You have been subscribed to this document');
+                $str = _kt('You have been subscribed to this document');
             } else {
-                echo _kt('There was a problem subscribing you to this document');
+                $str = _kt('There was a problem subscribing you to this document');
             }
         }
+        $str = wrapString($str);
+        echo $str;
         exit(0);
     }
 
@@ -259,16 +275,18 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
     function do_ajax() {
         $iSubscriptionType = SubscriptionEvent::subTypes('Document');
         if (!Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            echo _kt('You are not subscribed to this document');
+            $str = _kt('You are not subscribed to this document');
         } else {
             $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
             $res = $oSubscription->create();
             if ($res) {
-                echo _kt('You have been unsubscribed from this document');
+                $str = _kt('You have been unsubscribed from this document');
             } else {
-                echo _kt('There was a problem unsubscribing you from this document');
+                $str = _kt('There was a problem unsubscribing you from this document');
             }
         }
+        $str = wrapString($str);
+        echo $str;
         exit(0);
     }
 
@@ -430,7 +448,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
             $aInfo['active'] = 'no';
         }
         // return the url to the action for subfolders - display the Subscribe link, on clicking, display the include subfolders link.
-        $aInfo['subaction'] = _kt('Subscribe to folder and subfolders');
+        $aInfo['subaction'] = _kt('Subscribe to folder and <br>subfolders');
         return $aInfo;
     }
 
@@ -445,7 +463,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
     function subscribe($incSubFolders = false) {
         $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
         if (Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
-            echo _kt('You are already subscribed to this folder');
+            $str = _kt('You are already subscribed to this folder');
         } else {
             $oSubscription = new Subscription($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
 
@@ -456,14 +474,15 @@ class KTFolderSubscriptionAction extends KTFolderAction {
             $res = $oSubscription->create();
             if ($res) {
                 if($incSubFolders){
-                    echo _kt('You have been subscribed to this folder and its subfolders');
+                    $str = _kt('You have been subscribed to this folder and its subfolders');
                 }else{
-                    echo _kt('You have been subscribed to this folder');
+                    $str = _kt('You have been subscribed to this folder');
                 }
             } else {
-                echo _kt('There was a problem subscribing you to this folder');
+                $str = _kt('There was a problem subscribing you to this folder');
             }
         }
+        echo wrapString($str);
         exit(0);
     }
 
@@ -505,16 +524,17 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
     function do_ajax() {
         $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
         if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
-            echo _kt('You were not subscribed to that folder');
+            $str = _kt('You were not subscribed to that folder');
         } else {
             $oSubscription = & Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
             $res = $oSubscription->delete();
             if ($res) {
-                echo _kt('You have been unsubscribed from this folder');
+                $str = _kt('You have been unsubscribed from this folder');
             } else {
-                echo _kt('There was a problem unsubscribing you from this folder');
+                $str = _kt('There was a problem unsubscribing you from this folder');
             }
         }
+        echo wrapString($str);
         exit(0);
     }
 
