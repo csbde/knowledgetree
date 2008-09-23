@@ -2,17 +2,17 @@
 
 {$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
 
-<p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p> 
+<p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform">
    <input type="hidden" name="action" value="setRoleUsers" />
    <input type="hidden" name="allocation_id" value="{$edit_rolealloc->getId()}" />
    <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
-   
+
    <input type="hidden" name="userFinal" />
-   
-   
+
+
    <fieldset>
       <legend>{i18n}Allocate User to Role{/i18n}</legend>
       <p class="descriptiveText">{i18n}
@@ -53,11 +53,11 @@ Use the Ctrl key to multi-select user names.{/i18n}</p>
       </tr>
       <tr>
          <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(userSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
+            <input name="filterUG" id="ug-filter" onkeyup="var x = this.value; if(x.length > 2) optGroup.sortSelectMatch(userSelect, x);" type="text">
          </td>
          <td>&nbsp;</td>
          <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenUsers, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
+            <input name="filterOG" id="og-filter" onkeyup="var x = this.value; if(x.length > 2) optGroup.sortSelectMatch(chosenUsers, x);" type="text">
          </td>
       </tr>
 </tbody></table>
