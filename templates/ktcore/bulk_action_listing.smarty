@@ -1,54 +1,55 @@
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{$context->getDisplayName()}</h2>
 
+{if count($failed.folders) || (count($failed.documents))}
 <p class="descriptiveText">{i18n}The following list shows documents and folders in your list which cannot be acted on by this bulk action{/i18n}:</p>
 
-{if count($failed.folders)}
-<table class="kt_collection">
-<thead>
-<tr>
-    <th colspan="2">{i18n}Folders{/i18n}</th>
-</tr>
-<tr>
-    <th width="20%">{i18n}Name{/i18n}</th>
-    <th>{i18n}Reason for failure{/i18n}</th>
-</tr>
-</thead>
+    {if count($failed.folders)}
+        <table class="kt_collection">
+        <thead>
+        <tr>
+            <th colspan="2">{i18n}Folders{/i18n}</th>
+        </tr>
+        <tr>
+            <th width="20%">{i18n}Name{/i18n}</th>
+            <th>{i18n}Reason for failure{/i18n}</th>
+        </tr>
+        </thead>
 
-<tbody>
-{foreach from=$failed.folders item=item}
-    <tr class="{cycle values=even,odd}">
-        <td>{$item.0|sanitize}</td>
-        <td>{$item.1|sanitize}</td>
-    </tr>
-{/foreach}
-</tbody>
-</table>
-<br/>
-{/if}
+        <tbody>
+        {foreach from=$failed.folders item=item}
+            <tr class="{cycle values=even,odd}">
+                <td>{$item.0|sanitize}</td>
+                <td>{$item.1|sanitize}</td>
+            </tr>
+        {/foreach}
+        </tbody>
+        </table>
+        <br/>
+    {/if}
 
-{if (count($failed.documents))}
+    {if (count($failed.documents))}
+        <table class="kt_collection">
+        <thead>
+        <tr>
+            <th colspan="2">{i18n}Documents{/i18n}</th>
+        </tr>
+        <tr>
+            <th width="20%">{i18n}Name{/i18n}</th>
+            <th>{i18n}Reason for failure{/i18n}</th>
+        </tr>
+        </thead>
 
-<table class="kt_collection">
-<thead>
-<tr>
-    <th colspan="2">{i18n}Documents{/i18n}</th>
-</tr>
-<tr>
-    <th width="20%">{i18n}Name{/i18n}</th>
-    <th>{i18n}Reason for failure{/i18n}</th>
-</tr>
-</thead>
+        <tbody>
 
-<tbody>
-
-{foreach from=$failed.documents item=item}
-    <tr class="{cycle values=even,odd}">
-        <td>{$item.0|sanitize}</td>
-        <td>{$item.1|sanitize}</td>
-    </tr>
-{/foreach}
-</tbody>
-</table>
+        {foreach from=$failed.documents item=item}
+            <tr class="{cycle values=even,odd}">
+                <td>{$item.0|sanitize}</td>
+                <td>{$item.1|sanitize}</td>
+            </tr>
+        {/foreach}
+        </tbody>
+        </table>
+    {/if}
 {/if}
 
 
