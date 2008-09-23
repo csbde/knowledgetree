@@ -299,7 +299,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
 	// permissions in JS format
 	$aPermissionsToJSON = array();
-	foreach(KTPermission::getList() as $oP) {
+	$aPermList = KTPermission::getList();
+	foreach($aPermList as $oP) {
 	    $aPermissionsToJSON[] = array('id'=>$oP->getId(), 'name'=>$oP->getHumanName());
 	}
 
@@ -315,7 +316,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         $bCanInherit = ($this->oFolder->getId() != 1);
 
-        $perms = KTPermission::getList();
+        $perms = $aPermList;
         $docperms = KTPermission::getDocumentRelevantList();
 
         $aTemplateData = array(
@@ -330,7 +331,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 	        'edit' => true,
 	        'permissions' => $perms,
 	        'document_permissions' => $docperms,
-	        'can_inherit' => $bCanInherit,
+	        'can_inherit' => $bCanInherit
         );
         return $oTemplate->render($aTemplateData);
     }

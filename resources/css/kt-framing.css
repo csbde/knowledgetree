@@ -1029,24 +1029,36 @@ a.main_nav_item {
     margin: 1em 0 0 0.5em;
 }
 
-.ktError p {
+.ktError .err_list {
+    background: #ffdd80;
+    padding-left: 10px;
+    margin-top: 20px;
+}
+
+.ktError .err_item {
     padding-left: 25px;
     background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
-    margin-top: 20px;
+    padding-bottom: 3px;
 }
 
 /* block level. */
 .ktInfo {
     padding: 0.1em 1em 1em 1em;
-    margin: 1em 0 0 0.5em;
+    margin: 1em 0 1em 0.5em;
 }
 
-.ktInfo p {
-    padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
+
+.ktInfo .info_list {
+    background: #DEDEDE;
+    padding-left: 10px;
     margin-top: 20px;
 }
 
+.ktInfo .info_item {
+    padding-left: 25px;
+    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
+    padding-bottom: 3px;
+}
 
 .ktBlock {
 	position: relative;
