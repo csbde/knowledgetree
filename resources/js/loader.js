@@ -13,18 +13,24 @@ window.onload = function()
 
 	if(browser.msie && browser.version == '6.0'){
 		var pageBody = document.getElementById("pageBody");
-		pageBody.style.backgroundPosition="bottom left";
+		if(pageBody != null){
+		    pageBody.style.backgroundPosition="bottom left";
+		}
 	}else{
 		// pageBody
 	    var pageBody = document.getElementById("pageBody");
-	    var pageBlock = new curvyCorners(settings, pageBody);
-	    pageBlock.applyCornersToAll();
-	    pageBody.style.backgroundPosition="bottom left";
+	    if(pageBody != null){
+    	    var pageBlock = new curvyCorners(settings, pageBody);
+    	    pageBlock.applyCornersToAll();
+    	    pageBody.style.backgroundPosition="bottom left";
+	    }
 
 	    // footer
 	    var footer = document.getElementById("copyrightbarBorder");
-	    var footerBlock = new curvyCorners(settings, footer);
-	    footerBlock.applyCornersToAll();
+	    if(footer != null){
+    	    var footerBlock = new curvyCorners(settings, footer);
+    	    footerBlock.applyCornersToAll();
+	    }
 	}
 	Loader();
   }
@@ -32,11 +38,15 @@ window.onload = function()
   window.onsubmit = function(){
   	if(typeof disable_loader == "undefined"){
 	  	var myElem = document.getElementById("modalDiv");
-		myElem.style.display = "block";
+	  	if(myElem != null){
+		    myElem.style.display = "block";
+	  	}
 	}
   }
   function Loader()
 {
 	var myElem = document.getElementById("modalDiv");
-	myElem.style.display = "none";
+	if(myElem != null){
+	     myElem.style.display = "none";
+	}
 }
