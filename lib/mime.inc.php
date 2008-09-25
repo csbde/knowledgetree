@@ -183,13 +183,17 @@ class KTMime {
         return null;
     }
 
-    function getIconPath($iMimeTypeId) {
-        $cached = KTUtil::arrayGet($GLOBALS['_KT_icon_path_cache'], $iMimeTypeId);
-        if (!empty($cached)) {
-            return $cached;
+    function getIconPath($iMimeTypeId, $type = null) {
+        $icon = KTUtil::arrayGet($GLOBALS['_KT_icon_path_cache'], $iMimeTypeId);
+        if (empty($icon)) {
+            $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId] = KTMime::_getIconPath($iMimeTypeId);
+            $icon = $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId];
         }
-        $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId] = KTMime::_getIconPath($iMimeTypeId);
-        return $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId];
+
+        if(!empty($type)){
+            $icon .= '_'.$type;
+        }
+        return $icon;
     }
 
     function _getIconPath($iMimeTypeId) {

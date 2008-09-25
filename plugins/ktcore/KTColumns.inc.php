@@ -166,25 +166,33 @@ class AdvancedTitleColumn extends AdvancedColumn {
 
     // use inline, since its just too heavy to even _think_ about using smarty.
     function renderData($aDataRow) {
-       if ($aDataRow["type"] == "folder") {
-           $contenttype = 'folder';
-           $link = $this->renderFolderLink($aDataRow);
-           if($aDataRow['folder']->isSymbolicLink()){
-           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>&nbsp;<img src='resources/tango-icons/shortcut.png' />";
-           }else{
-           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div>$link";
-           }
-        } else {
-        	$contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId());
-           	$link = $this->renderDocumentLink($aDataRow);
+        if ($aDataRow["type"] == "folder") {
+            $contenttype = 'folder';
+            $link = $this->renderFolderLink($aDataRow);
 
-           	//Render an image instead of the size in case of a shortcut
-           if($aDataRow['document']->isSymbolicLink()){
-               return "<div style='float: left' class='contenttype $contenttype shortcut'>&nbsp;</div>$link";
-           }else{
-          		 $size = $this->prettySize($aDataRow["document"]->getSize());
-           		return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>&nbsp;($size)";
-           }
+            // If folder is a shortcut display the shortcut mime icon
+            if($aDataRow['folder']->isSymbolicLink()){
+                $contenttype .= '_shortcut';
+            }
+            // Separate the link from the mime icon to allow for right-to-left languages
+            return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div>$link";
+        } else {
+            $type = '';
+            $size = '';
+            if($aDataRow['document']->isSymbolicLink()){
+                // If document is a shortcut - display the shortcut mime type
+                $type = 'shortcut';
+            }else{
+                // Display the document size if it is not a shortcut
+                $size = $this->prettySize($aDataRow["document"]->getSize());
+                $size = "&nbsp;($size)";
+            }
+
+            $link = $this->renderDocumentLink($aDataRow);
+            $contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId(), $type);
+
+            // Separate the link from the mime icon and the size to allow for right-to-left languages
+            return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>$size";
         }
     }
 
@@ -197,9 +205,9 @@ class AdvancedTitleColumn extends AdvancedColumn {
         return $finalSize . $label;
     }
 
-    function _mimeHelper($iMimeTypeId) {
+    function _mimeHelper($iMimeTypeId, $type = null) {
         require_once(KT_LIB_DIR . '/mime.inc.php');
-        return KTMime::getIconPath($iMimeTypeId);
+        return KTMime::getIconPath($iMimeTypeId, $type);
     }
 }
 
