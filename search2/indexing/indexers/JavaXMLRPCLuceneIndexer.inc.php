@@ -191,7 +191,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
 
     					if ($item->CanBeReadByUser)
     					{
-    						$results['docs'][$document_id] = $item;
+    						$results[$document_id] = $item;
     					}
     				}
     				catch(IndexerInconsistencyException $ex)
