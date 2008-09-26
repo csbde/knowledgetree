@@ -48,7 +48,7 @@
  }
 
  // Check if the feed matches a url
- if(!preg_match("/^http:\/\/([^\/]+)(.*)$/", $feed, $matches)){
+ if(!preg_match("/^http[s]?:\/\/([^\/]+)(.*)$/", $feed, $matches)){
  	// If not, it is an internal feed
  	$aRSSArray = KTrss::getInternalFeed($user);
  }else{
