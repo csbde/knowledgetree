@@ -28,7 +28,7 @@
     padding-bottom: 0px;
     cursor: pointer;
     height: 250px;
-    overflow: hidden;
+    overflow: auto;
     clear: both;
 }
 
