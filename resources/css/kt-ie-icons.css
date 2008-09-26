@@ -34,11 +34,14 @@
 .ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.gif); }
 .ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.gif); }
 .ktBlock {margin: 0.5em 0;}
+
+/* Mime type icons */
 .contenttype.office { background-image: url(../../resources/mimetypes/office.gif); }
 .contenttype.word { background-image: url(../../resources/mimetypes/word.gif); }
 .contenttype.database { background-image: url(../../resources/mimetypes/database.gif); }
 .contenttype.excel { background-image: url(../../resources/mimetypes/excel.gif); }
 .contenttype.openoffice { background-image: url(../../resources/mimetypes/openoffice.gif); }
+.contenttype.opendocument { background-image: url(../../resources/mimetypes/openoffice.gif); }
 .contenttype.pdf { background-image: url(../../resources/mimetypes/pdf.gif); }
 .contenttype.image { background-image: url(../../resources/mimetypes/image.gif); }
 .contenttype.compressed { background-image: url(../../resources/mimetypes/zip.gif); }
@@ -48,6 +51,25 @@
 .contenttype.text,
 .contenttype.unspecified_type { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/text-x-generic.gif); }
 .contenttype.folder { background-image: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.gif); }
+
+/* Mime type short cut icons - IE gets confused if the last class is the same for multiple selection so we append _shortcut instead of
+using .shortcut */
+.contenttype.txt_shortcut,
+.contenttype.text_shortcut,
+.contenttype.unspecified_type_shortcut { background-image: url(../../resources/mimetypes/shortcuts/text-x-generic.gif); }
+.contenttype.folder_shortcut { background-image: url(../../resources/mimetypes/shortcuts/x-directory-normal.gif); }
+
+.contenttype.html_shortcut { background-image: url(../../resources/mimetypes/shortcuts/html.gif); }
+.contenttype.office_shortcut { background-image: url(../../resources/mimetypes/shortcuts/office.gif); }
+.contenttype.word_shortcut { background-image: url(../../resources/mimetypes/shortcuts/word.gif); }
+.contenttype.database_shortcut { background-image: url(../../resources/mimetypes/shortcuts/database.gif); }
+.contenttype.excel_shortcut { background-image: url(../../resources/mimetypes/shortcuts/excel.gif); }
+.contenttype.openoffice_shortcut { background-image: url(../../resources/mimetypes/shortcuts/openoffice.gif); }
+.contenttype.opendocument_shortcut { background-image: url(../../resources/mimetypes/shortcuts/openoffice.gif); }
+.contenttype.pdf_shortcut { background-image: url(../../resources/mimetypes/shortcuts/pdf.gif); }
+.contenttype.image_shortcut { background-image: url(../../resources/mimetypes/shortcuts/image.gif); }
+.contenttype.compressed_shortcut { background-image: url(../../resources/mimetypes/shortcuts/zip.gif); }
+
 
 /* IE is woefully unable to */
 #portletbar {
