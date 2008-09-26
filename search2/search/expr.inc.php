@@ -382,7 +382,7 @@ class FieldExpr extends Expr
      */
     public function __toString()
     {
-        return $this->alias;
+        return $this->display;
     }
 
     public function toViz(&$str, $phase)
@@ -1872,7 +1872,8 @@ class OpExpr extends Expr
      */
     public function __toString()
     {
-        $expr = $this->left_expr . ' ' . $this->op .' ' .  $this->right_expr;
+        // _kt may not translate well here.
+        $expr = $this->left_expr . ' ' . _kt($this->op) .' ' .  $this->right_expr;
 
         if (is_null($this->parent))
         {
