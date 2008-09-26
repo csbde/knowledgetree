@@ -71,7 +71,7 @@
                         {i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
                     {else}
                         {i18n}All rights reserved.{/i18n}<br>
-                    {/if} 
+                    {/if}
             </p>
 	        <div id="bottomspacer"></div>
 	        <div class="floatClear"></div>
