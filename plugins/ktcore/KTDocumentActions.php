@@ -599,7 +599,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $major_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber()+1, 0);
         $minor_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber(), $this->oDocument->getMinorVersionNumber()+1);
 
-        $oForm->setWidgets(array(
+        // Set the widgets for the form
+        $aWidgets = array(
             array('ktcore.widgets.file', array(
                 'label' => _kt('File'),
                 'description' => sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
@@ -618,14 +619,10 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'description' => _kt('Please describe the changes you made to the document.  Bear in mind that you can use a maximum of <strong>250</strong> characters.'),
                 'name' => 'reason',
             )),
-            array('ktcore.widgets.boolean',array(
-                'label' => _kt('Force Original Filename'),
-                'description' => sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
-                'name' => 'forcefilename',
-                'value' => true,
-            )),
-        ));
-        $oForm->setValidators(array(
+        );
+
+        // Set the validators for the widgets
+        $aValidators = array(
             array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'max_length' => 250,
@@ -639,12 +636,27 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'test' => 'file',
                 'output' => 'file',
             )),
-            array('ktcore.validators.boolean', array(
+        );
+
+        // Add the "Force Original Filename" option if applicable
+        global $default;
+        if(!$default->disableForceFilenameOption){
+            $aWidgets[] = array('ktcore.widgets.boolean',array(
+                'label' => _kt('Force Original Filename'),
+                'description' => sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
+                'name' => 'forcefilename',
+                'value' => true,
+            ));
+
+            $aValidators[] = array('ktcore.validators.boolean', array(
                 'test' => 'forcefilename',
                 'output' => 'forcefilename',
-            )),
-        ));
+            ));
+        }
 
+        // Add widgets and validators to the form
+        $oForm->setWidgets($aWidgets);
+        $oForm->setValidators($aValidators);
         return $oForm;
     }
 
@@ -669,8 +681,16 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         $extra_errors = array();
 
-        if ($data['forcefilename'] && ($data['file']['name'] != $this->oDocument->getFilename())) {
-            $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". If you wish to change the filename, please set "Force Original Filename" below to false. '), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        // If the filename is different to the original check if "Force Original Filename" is set and return an error if it is.
+        $docFileName = $this->oDocument->getFilename();
+        if($data['file']['name'] != $docFileName){
+            global $default;
+
+            if($default->disableForceFilenameOption){
+                $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". The file must have the same name as the original file.'), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
+            }else if ($data['forcefilename']) {
+                $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". If you wish to change the filename, please set "Force Original Filename" below to false. '), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
+            }
         }
 
         if (!empty($res['errors']) || !empty($extra_errors)) {
@@ -679,7 +699,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         $sReason = $data['reason'];
 
-        $sCurrentFilename = $this->oDocument->getFileName();
+        $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
 
         $aOptions = array();
