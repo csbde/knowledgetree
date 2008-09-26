@@ -1879,7 +1879,7 @@ class OpExpr extends Expr
         {
         	if ($this->not())
         	{
-            	 $expr = "NOT $expr";
+            	 $expr = _kt('NOT') . $expr;
         	}
             return $expr;
         }
