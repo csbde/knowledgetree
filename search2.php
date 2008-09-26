@@ -35,15 +35,20 @@
  * Contributor( s): ______________________________________
  */
 
+// TODO: do we have to serialise/unserialise the results. this is not optimal!!!
+
 session_start();
 require_once("config/dmsDefaults.php");
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
+
 require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_LIB_DIR . "/actions/bulkaction.php");
-require_once(KT_DIR . '/search2/search/search.inc.php');
+
+require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
@@ -117,7 +122,6 @@ function search2QuerySort($sSortColumn, $sSortOrder)
 			return;
 	}
 
-
 	$results = unserialize($_SESSION['search2_results']);
 
 	usort($results, 'search2queryCompare');
@@ -132,38 +136,70 @@ function search2QuerySort($sSortColumn, $sSortOrder)
  */
 class Search2Query extends PartialQuery
 {
-    function getFolderCount() { return 0; }
+    function _count($type)
+    {
+        $count = 0;
+        $results = unserialize($_SESSION['search2_results']);
+
+        switch ($type)
+        {
+            case 'Document':
+                return count($results['docs']) + count($results['shortdocs']);
+            case 'Folder':
+                return count($results['folders']) + count($results['shortfolders']);
+            default:
+                return 0;
+        }
+    }
+
+    function getFolderCount()
+    {
+        return $this->_count('Folder');
+    }
     function getDocumentCount()
     {
-        $results = $_SESSION['search2_results'];
-        if(isset($results) && !empty($results)){
-            return count(unserialize($results));
+        return $this->_count('Document');
+    }
+
+    function getItems($type, $iStart, $iSize, $sSortColumn, $sSortOrder)
+    {
+        // TODO: quick hack. do this more optimally!!!!
+        $results = unserialize($_SESSION['search2_results']);
+
+        switch ($type)
+        {
+            case 'Document':
+                $type = 'docs';
+                break;
+            case 'Folder':
+                $type = 'folders';
+                break;
         }
-    	return 0;
+
+        $resultArray = $results[$type];
+        foreach($results['short' . $type] as $rec)
+        {
+            $resultArray[] = $rec;
+        }
+
+        $resultArray = array_slice($resultArray, $iStart, $iSize);
+        $results = array();
+        foreach($resultArray as $rec)
+        {
+            $results[] = array('id'=>$rec->Id);
+        }
+
+        return $results;
     }
 
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null)
   	{
-  		return array();
+  	    return $this->getItems('Folder', $iBatchStart, $iBatchSize, $sSortColumn, $sSortOrder);
   	}
 
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null)
     {
-    	search2QuerySort($_GET['sort_on'], $_GET['sort_order']);
-    	$results = unserialize($_SESSION['search2_results']);
-
-    	$batch = array();
-
-    	$no_results = count($results);
-    	for($i=0;$i<$no_results;$i++)
-    	{
-			if ($i < $iBatchStart) continue;
-			if ($i > $iBatchStart + $iBatchSize) continue;
-
-			$batch[] = array('id'=>$results[$i]->DocumentID);
-    	}
-
-    	return $batch;
+  	    return $this->getItems('Document', $iBatchStart, $iBatchSize, $sSortColumn, $sSortOrder);
     }
 }
 
@@ -208,10 +244,12 @@ class SearchDispatcher extends KTStandardDispatcher {
     	{
     		$expr = parseExpression($query);
 
-    		$result = $expr->evaluate();
-    		usort($result, 'rank_compare');
+    		$results = $expr->evaluate();
+    		$results = resolveSearchShortcuts($results);
 
-    		$_SESSION['search2_results'] = serialize($result);
+    		usort($result['docs'], 'rank_compare');
+
+    		$_SESSION['search2_results'] = serialize($results);
     		$_SESSION['search2_query'] = $query;
     		$_SESSION['search2_sort'] = 'rank';
 
@@ -409,6 +447,15 @@ class SearchDispatcher extends KTStandardDispatcher {
        KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
 
         $results = unserialize($_SESSION['search2_results']);
+
+        // NOTE: sorting results (when it is implemented) might have to be done per section, as it is done with the browse view
+
+        $resultArray = $results['docs'];
+        foreach($results['folders'] as $f) $resultArray[] = $f;
+        foreach($results['shortdocs'] as $d) $resultArray[] = $d;
+        foreach($results['shortfolders'] as $f) $resultArray[] = $f;
+
+        $results = $resultArray;
 
         if (!is_array($results)  || count($results) == 0)
         {

@@ -41,17 +41,142 @@ define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 
-
 class IndexerInconsistencyException extends Exception {};
+
+// TODO: Query Result Items code should be moved into the Search section. It has less to do with indexing...
 
 class QueryResultItem
 {
-	protected $document_id;
+    protected $id;
 	protected $title;
 	protected $rank;
 	protected $text;
-	protected $filesize;
 	protected $fullpath;
+
+	public function __construct($id, $title, $rank, $text, $fullpath)
+	{
+	    $this->id = $id;
+	    $this->title = $title;
+	    $this->rank = $rank;
+	    $this->text = $text;
+	    $this->fullpath = $fullpath;
+	}
+
+    public function getId() { return $this->id; }
+
+    public function getIsProxy() { return $this instanceof ProxyResultItem; }
+    public function getIsFolder() { return substr(get_class($this), 0, 6) == 'Folder' ; }
+    public function getIsDocument() { return substr(get_class($this), 0, 8) == 'Document' ; }
+
+	public function setRank($value)
+	{
+	   $this->rank = number_format($value,2,'.',',');
+	}
+
+	public function getIsLive()
+	{
+	    return true;
+	}
+
+	public function setTitle($value)
+	{
+	    $this->title = $value;
+	}
+
+	public function setText($value)
+	{
+	    $this->text = $value;
+	}
+
+	public function getRelevance() { return (float) $this->rank; }
+	public function getRank() { return $this->getRelevance(); }
+	public function getText() { return (string) $this->text; }
+	public function getTitle() { return (string) $this->title; }
+	public function getFullPath() { return (string)  $this->fullpath; }
+
+	protected function __get($property)
+	{
+        if (empty($property))
+        {
+            return '';
+        }
+
+        $method = 'get' . $property;
+        if (method_exists($this, $method))
+        {
+            return $this->$method();
+        }
+        return $this->getUnknown();
+	}
+
+	protected function getUnknown()
+	{
+	    return _kt('n/a');
+	}
+
+	protected function __set($property, $value)
+	{
+	    if (empty($property))
+        {
+            return '';
+        }
+
+        $method = 'set' . $property;
+        if (method_exists($this, $method))
+        {
+            return $this->$method($value);
+        }
+        throw new Exception("Unknown property '$property' to set on QueryResultItem");
+	}
+}
+
+class ProxyResultItem extends QueryResultItem
+{
+    protected $proxy;
+    protected $proxyId;
+
+    public function __construct($proxyId, $proxy)
+    {
+        parent::__construct($proxyId, $proxy->getTitle, $proxy->getRank(), $proxy->getText(), $proxy->getFullPath());
+        $this->proxyId = $proxyId;
+        $this->proxy = $proxy;
+    }
+
+    public function getId() { return $this->proxyId; }
+    public function getTitle() { return $this->proxy->getTitle(); }
+    public function getRealId() { return $this->proxy->getId(); }
+
+	protected function __get($property)
+	{
+        $method = 'get' . $property;
+
+        if (method_exists($this, $method))
+        {
+            return $this->$method();
+        }
+        else
+        {
+            return $this->proxy->$method();
+        }
+	}
+
+	protected function __set($property, $value)
+	{
+        $method = 'set' . $property;
+        if (method_exists($this, $method))
+        {
+            return $this->$method($value);
+        }
+        else
+        {
+            return $this->proxy->$method($value);
+        }
+	}
+}
+
+class DocumentResultItem extends QueryResultItem
+{
+	protected $filesize;
 	protected $live;
 	protected $version;
 	protected $mimeType;
@@ -78,17 +203,14 @@ class QueryResultItem
 	protected $mimeDisplay;
 	protected $oemDocumentNo;
 
-	public function __construct($document_id, $rank=null, $title=null, $text=null)
+	public function __construct($document_id, $rank=null, $title=null, $text=null, $fullpath = null)
 	{
-		$this->document_id=(int) $document_id;
-		$this->rank= $rank;
-		$this->title=$title;
-		$this->text = $text;
+	    parent::__construct($document_id, $title, $rank, $text, $fullpath);
 		$this->live = true;
 		$this->loadDocumentInfo();
 	}
 
-	protected function __isset($property)
+	/*protected function __isset($property)
 	{
 		switch($property)
 		{
@@ -101,8 +223,9 @@ class QueryResultItem
 				throw new Exception("Unknown property '$property' to get on QueryResultItem");
 		}
 		return true; // should not be reached
-	}
+	}*/
 
+	// TODO: this is bad. must refactor to do the query on the group of documents.
 	public function loadDocumentInfo()
 	{
 		global $default;
@@ -127,7 +250,7 @@ class QueryResultItem
 					LEFT JOIN users cbu ON d.creator_id=cbu.id
 					LEFT JOIN users ou ON d.owner_id=ou.id
 				WHERE
-					d.id=$this->document_id";
+					d.id=$this->id";
 
 		$result = DBUtil::getOneResult($sql);
 
@@ -186,107 +309,116 @@ class QueryResultItem
 
 		$this->mimeType = $result['mimetype'];
 		$this->mimeIconPath = $result['mime_icon_path'];
+		if (empty($this->mimeIconPath))
+		{
+		    $this->mimeIconPath = 'unspecified_type';
+		}
 		$this->mimeDisplay = $result['mime_display'];
 
 		$this->storagePath = $result['storage_path'];
 		$this->status = Document::getStatusString($result['status_id']);
 	}
 
-	protected function __get($property)
-	{
-		switch($property)
-		{
-			case null: return '';
-			case 'DocumentID': return  (int) $this->document_id;
-			case 'Relevance':
-			case 'Rank': return (float) $this->rank;
-			case 'Text': return (string) $this->text;
-			case 'Title': return (string) $this->title;
-			case 'FullPath': return (string)  $this->fullpath;
-			case 'IsLive': return (bool) $this->live;
-			case 'Filesize': return $this->filesize;
-			case 'Version': return (string) $this->version;
-			case 'Filename': return (string)$this->filename;
-			case 'FolderId': return (int)$this->folderId;
-			case 'OemDocumentNo': return (string) $this->oemDocumentNo;
-			case 'Document':
-					if (is_null($this->document))
+    public function getDocumentID() { return $this->getId(); }
+	public function getIsLive() { return (bool) $this->live; }
+	public function getFilesize() { return $this->filesize; }
+	public function getVersion() { return (string) $this->version; }
+	public function getFilename() { return (string)$this->filename; }
+	public function getFolderId() { return (int)$this->folderId; }
+	public function getOemDocumentNo() { return (string) $this->oemDocumentNo; }
+	public function getDocument() { if (is_null($this->document))
 					{
-						$this->document = Document::get($this->document_id);
+						$this->document = Document::get($this->id);
 					}
-					return $this->document;
-			case 'IsAvailable':
-				return $this->Document->isLive();
-			case 'CheckedOutUser':
-			case 'CheckedOutBy':
-				return  (string) $this->checkedOutUser;
-			case 'WorkflowOnly':
-			case 'Workflow':
-				return (string)$this->workflow;
-			case 'WorkflowStateOnly':
-			case 'WorkflowState':
-				return (string)$this->workflowState;
-			case 'WorkflowAndState':
-				if (is_null($this->workflow))
+					return $this->document; }
+	public function getIsAvailable() { return $this->Document->isLive(); }
+	public function getCheckedOutUser() { return (string) $this->checkedOutUser; }
+	public function getCheckedOutByr() { return $this->getCheckedOutUser(); }
+	public function getWorkflowOnly() { return (string)$this->workflow; }
+	public function getWorkflow() { return $this->getWorkflow(); }
+	public function getWorkflowStateOnly() { return (string)$this->workflowState; }
+	public function getWorkflowState() { return $this->getWorkflowStateOnly(); }
+	public function getWorkflowAndState() { if (is_null($this->workflow))
 				{
 					return '';
 				}
-				return "$this->workflow - $this->workflowState";
-			case 'MimeType':
-				return (string) $this->mimeType;
-			case 'MimeIconPath':
-				return (string) $this->mimeIconPath;
-			case 'MimeDisplay':
-				return (string) $this->mimeDisplay;
-			case 'DateCheckedOut':
-				return (string) $this->dateCheckedout;
-			case 'ModifiedBy':
-				return (string) $this->modifiedBy;
-			case 'DateModified':
-				return (string) $this->dateModified;
-			case 'CreatedBy':
-				return (string) $this->createdBy;
-			case 'DateCreated':
-				return (string) $this->dateCreated;
-			case 'Owner':
-			case 'OwnedBy':
-				return (string) $this->owner;
-			case 'IsImmutable':
-			case 'Immutable':
-				return (bool) $this->immutable;
-			case 'Status':
-				return $this->status;
-			case 'StoragePath':
-				return $this->storagePath;
-			case 'DocumentType':
-				return $this->documentType;
-			case 'Permissions':
-				return 'not available';
-			case 'CanBeReadByUser':
-				if (!$this->live)
+				return "$this->workflow - $this->workflowState"; }
+	public function getMimeType() { return (string) $this->mimeType; }
+	public function getMimeIconPath() { return (string) $this->mimeIconPath; }
+	public function getMimeDisplay() { return (string) $this->mimeDisplay; }
+	public function getDateCheckedOut() { return (string) $this->dateCheckedout; }
+	public function getModifiedBy() { return (string) $this->modifiedBy; }
+	public function getDateModified() { return (string) $this->dateModified; }
+	public function getCreatedBy() { return (string) $this->createdBy; }
+	public function getDateCreated() { return (string) $this->dateCreated; }
+	public function getOwner() { return (string) $this->owner; }
+	public function getOwnedBy() { return $this->getOwner(); }
+	public function getIsImmutable() { return (bool) $this->immutable; }
+	public function getImmutable() { return $this->getIsImmutable(); }
+	public function getStatus() { return $this->status; }
+	public function getStoragePath() { return $this->storagePath; }
+	public function getDocumentType() { return $this->documentType; }
+	public function getPermissions() { return 'not available'; }
+	public function getCanBeReadByUser() { if (!$this->live)
 					return false;
 				if (Permission::userHasDocumentReadPermission($this->Document))
 					return true;
 				if (Permission::adminIsInAdminMode())
 					return true;
-				return false;
-			default:
-				throw new Exception("Unknown property '$property' to get on QueryResultItem");
-		}
-		return ''; // Should not be reached
+				return false; }
+
+
+}
+
+class FolderResultItem extends QueryResultItem
+{
+	protected $folder;
+	protected $createdBy;
+	protected $parentId;
+
+	public function __construct($folder_id, $rank=null, $title=null, $text=null, $fullpath = null)
+	{
+	    parent::__construct($folder_id, $title, $rank, $text, $fullpath);
+		$this->loadDocumentInfo();
 	}
 
-	protected function __set($property, $value)
+    public function getFolderID() { return $this->getId(); }
+    public function getParentID() { return $this->parentId; }
+    public function getCreatedBy() { return $this->createdBy; }
+    public function getMimeIconPath() { return 'folder'; }
+	public function getFolder() {
+					return $this->folder; }
+
+    public function loadDocumentInfo()
 	{
-		switch($property)
+		global $default;
+		$this->folder = $folder = Folder::get($this->getFolderID());
+		if (PEAR::isError($folder))
 		{
-			case 'Rank': $this->rank = number_format($value,2,'.',','); break;
-			case 'Title': $this->title = $value; break;
-			case 'Text': $this->text = $value; break;
-			default:
-				throw new Exception("Unknown property '$property' to set on QueryResultItem");
+		    throw new Exception('Database exception! There appears to be an error in the system: ' .$result->getMessage());
 		}
+		$this->title = $folder->getName();
+		$this->fullpath = '/' . $folder->getFullPath();
+		$this->parentId = $folder->getParentId();
+
+		$user = User::get($folder->getCreatorID());
+		$this->createdBy = (PEAR::isError($user))?_kt('Unknown'):$user->getName();
 	}
+
+}
+
+class DocumentShortcutResultItem extends ProxyResultItem
+{
+    public function getDocumentID() { return $this->getId(); }
+    public function getMimeIconPath() { return $this->proxy->getMimeIconPath() . '_shortcut'; }
+
+}
+
+class FolderShortcutResultItem extends ProxyResultItem
+{
+    public function getFolderID() { return $this->getId(); }
+    public function getMimeIconPath() { return 'folder_shortcut'; }
+
 }
 
 function MatchResultCompare($a, $b)
