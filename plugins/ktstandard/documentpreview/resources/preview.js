@@ -15,7 +15,7 @@ var showInfo = function(iDocId, sUrl, sDir, loading){
             modal: true,
             plain: false,
             width: 500,
-            height: 300,
+            height: 360,
             minWidth: 300,
             minHeight: 250
     });

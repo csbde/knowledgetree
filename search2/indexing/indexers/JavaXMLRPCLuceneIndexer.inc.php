@@ -187,10 +187,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     			{
     				try
     				{
-    					$item = new QueryResultItem($document_id);
-    					$item->Title = $hit->Title;
-    					$item->Text = $hit->Content;
-    					$item->Rank = $hit->Rank;
+    					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content);
 
     					if ($item->CanBeReadByUser)
     					{

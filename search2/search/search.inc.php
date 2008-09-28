@@ -42,6 +42,8 @@ require_once('search/fieldRegistry.inc.php');
 require_once('search/expr.inc.php');
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 
+// TODO: move standalone functions into a class.... what was I thinking?
+
 function rank_compare($a, $b)
 {
 	if ($a->Rank == $b->Rank)
@@ -65,6 +67,8 @@ function searchfix($str)
 {
     return str_replace(array("\n","\r"), array('',''), addslashes($str));
 }
+
+// TODO: replace manual json construction with json_encode().
 
 class SearchHelper
 {
@@ -366,8 +370,6 @@ class SearchHelper
 						dtfl.document_type_id=$documentTypeID
 					ORDER BY
 						df.name";
-
-
 		}
 		else
 		{
@@ -566,7 +568,8 @@ function processSearchExpression($query)
     	{
     		$expr = parseExpression($query);
 
-    		$rs = $expr->evaluate();
+    		$rs = $expr->evaluate(ExprContext::DOCUMENT);
+    		$rs = $rs['docs'];
     		usort($rs, 'rank_compare');
 
     		$results = array();
@@ -627,6 +630,59 @@ function processSearchExpression($query)
     	{
     		return new PEAR_Error(_kt('Could not process query.')  . $e->getMessage());
     	}
+}
+
+function resolveSearchShortcuts($result)
+{
+    $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+    $permId = $oPermission->getID();
+
+    $oUser = User::get($_SESSION['userID']);
+    $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+    $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
+
+    $documentIds = implode(',',array_keys($result['docs']));
+    $linkedDocuments = array();
+    if (!empty($documentIds))
+    {
+        $sql = "SELECT d.id, d.linked_document_id from documents d ";
+        $sql .= 'INNER JOIN permission_lookups AS PL ON d.permission_lookup_id = PL.id '. "\n";
+        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
+        $sql .= " WHERE d.linked_document_id in ($documentIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+
+        $rs = DBUtil::getResultArray($sql);
+
+        foreach($rs as $row)
+        {
+            $id = $row['id'];
+            $linked_id = $row['linked_document_id'];
+
+            $result['shortdocs'][$id] = new DocumentShortcutResultItem($id, $result['docs'][$linked_id]);
+        }
+    }
+
+    $folderIds = implode(',',array_keys($result['folders']));
+    $linkedFolders = array();
+
+    if (!empty($folderIds))
+    {
+
+        $sql = "SELECT f.id, f.linked_folder_id from folders f ";
+        $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
+        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
+        $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+
+        $rs = DBUtil::getResultArray($sql);
+
+        foreach($rs as $row)
+        {
+            $id = $row['id'];
+            $linked_id = $row['linked_folder_id'];
+
+            $result['shortfolders'][$id] = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
+        }
+    }
+    return $result;
 }
 
 ?>

@@ -43,6 +43,8 @@
  *
  */
 
+// TODO: search expression evaluation needs some optimisation
+
 require_once('indexing/indexerCore.inc.php');
 require_once('search/fieldRegistry.inc.php');
 require_once('search/exprConstants.inc.php');
@@ -157,9 +159,26 @@ class Expr
 
     protected $expr_id;
 
+    protected $context;
+
     public function __construct()
     {
         $this->expr_id = Expr::$node_id++;
+    }
+
+    public function appliesToContext()
+    {
+        return ExprContext::DOCUMENT;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 
     public function getExprId()
@@ -363,7 +382,7 @@ class FieldExpr extends Expr
      */
     public function __toString()
     {
-        return $this->alias;
+        return $this->display;
     }
 
     public function toViz(&$str, $phase)
@@ -405,6 +424,14 @@ class FieldExpr extends Expr
 		}
     }
 }
+
+class ExprContext
+{
+    const DOCUMENT = 1;
+    const FOLDER = 2;
+    const DOCUMENT_AND_FOLDER = 3;
+}
+
 
 class DBFieldExpr extends FieldExpr
 {
@@ -966,24 +993,43 @@ class SQLQueryBuilder implements QueryBuilder
 	private $sql;
 	private $db;
 	private $metadata;
+	private $context;
 
-	public function __construct()
+	public function __construct($context)
 	{
-		$this->used_tables = array(
-            'documents'=>1,
-            'document_metadata_version'=>1,
-            'document_content_version'=>0,
-            'tag_words'=>0,
-            'document_fields_link'=>0
-        );
+	    $this->context = $context;
 
-        $this->aliases = array(
-                    'documents'=>'d',
-                    'document_metadata_version'=>'dmv',
-                    'document_content_version'=>'dcv',
-                    'tag_words'=>'tw',
-                    'document_fields_link'=>'pdfl'
-                    );
+	    switch ($context)
+	    {
+	        case ExprContext::DOCUMENT:
+	            $this->used_tables = array(
+	               'documents'=>1,
+	               'document_metadata_version'=>1,
+	               'document_content_version'=>0,
+	               'tag_words'=>0,
+	               'document_fields_link'=>0
+	            );
+
+	            $this->aliases = array(
+	               'documents'=>'d',
+	               'document_metadata_version'=>'dmv',
+	               'document_content_version'=>'dcv',
+	               'tag_words'=>'tw',
+	               'document_fields_link'=>'pdfl'
+	            );
+	            break;
+	        case ExprContext::FOLDER:
+	            $this->used_tables = array(
+	               'folders'=>1,
+	            );
+
+	            $this->aliases = array(
+	               'folders'=>'f',
+	            );
+	            break;
+	        default:
+	            throw new Exception('This was not expected - Context = ' . $context);
+	    }
 
 		$this->sql = '';
 		$this->db = array();
@@ -1013,8 +1059,15 @@ class SQLQueryBuilder implements QueryBuilder
 		}
 		elseif ($expr->isDBExpr())
 		{
-			$this->db[]  = & $parent;
-			$this->used_tables[$expr->getTable()]++;
+		    if (($this->context & $expr->appliesToContext()) == $this->context)
+		    {
+		        $this->db[]  = & $parent;
+		        $tablename = $expr->getTable();
+		        if (array_key_exists($tablename, $this->used_tables))
+		        {
+		            $this->used_tables[$tablename]++;
+		        }
+		    }
 		}
 		elseif ($expr->isOpExpr())
 		{
@@ -1042,12 +1095,16 @@ class SQLQueryBuilder implements QueryBuilder
 
             if ($field->isMetadataField())
             {
-            	$this->metadata[] = $expr->getParent();
+                $this->metadata[] = $expr->getParent();
             }
             elseif ($field->isDBExpr())
             {
-            	$this->db[]  = $expr->getParent();
-            	$this->used_tables[$field->getTable()]++;
+                $this->db[]  = $expr->getParent();
+                $tablename = $field->getTable();
+                if (array_key_exists($tablename, $this->used_tables))
+                {
+                    $this->used_tables[$tablename]++;
+                }
             }
         }
 	}
@@ -1076,29 +1133,40 @@ class SQLQueryBuilder implements QueryBuilder
 		$left = $expr->left();
 		$right = $expr->right();
 		$isNot = $expr->not();
-		if ($left->isMetadataField())
+		if ($left->isMetadataField() )
 		{
-			$offset = $this->resolveMetadataOffset($expr) + 1;
+		    if ($this->context == ExprContext::DOCUMENT)
+		    {
+		        $offset = $this->resolveMetadataOffset($expr) + 1;
 
-			$fieldset = $left->getField();
-            $query = '(';
+		        $fieldset = $left->getField();
+		        $query = '(';
 
-            if ($isNot)
-            {
-                $query .= "df$offset.name IS NULL OR ";
-            }
+		        if ($isNot)
+		        {
+		            $query .= "df$offset.name IS NULL OR ";
+		        }
 
-			$query .= '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), $isNot) . ')';
+		        $query .= '(' . "df$offset.name='$fieldset' AND " .  $right->getSQL($left, "dfl$offset.value", $expr->op(), $isNot) . ')';
 
-
-			$query .= ')';
-
+		        $query .= ')';
+		    }
+		    else
+		    {
+		        $query = 'false';
+		    }
 		}
 		else
 		{
-			$fieldname = $this->getFieldnameFromExpr($expr);
-
-			$query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
+		    if ($this->context == ExprContext::FOLDER && $left->getContext() != ExprContext::FOLDER)
+		    {
+		        $query = 'false';
+		    }
+		    else
+		    {
+			    $fieldname = $this->getFieldnameFromExpr($expr);
+			    $query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
+		    }
 		}
 		return $query;
 	}
@@ -1107,17 +1175,30 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		if (count($this->metadata) + count($this->db) == 0)
         {
-            throw new Exception('nothing to do');
+            // return empty result set
+            return 'select 1 from documents where false';
         }
-
-        // we are doing this because content table is dependant on metadata table
-        if ($this->used_tables['document_content_version'] > 0)  $this->used_tables['document_metadata_version']++;
 
 		$sql =
             'SELECT ' . "\n";
 
-        $sql .=
+        if ($this->context == ExprContext::DOCUMENT)
+        {
+            // we are doing this because content table is dependant on metadata table
+            if ($this->used_tables['document_content_version'] > 0)
+            {
+                $this->used_tables['document_metadata_version']++;
+            }
+
+            $sql .=
             ' DISTINCT d.id, dmv.name as title';
+        }
+        else
+        {
+            $sql .=
+            ' DISTINCT f.id, f.name as title';
+        }
+
 
         $offset=0;
         foreach($this->db as $expr)
@@ -1133,26 +1214,36 @@ class SQLQueryBuilder implements QueryBuilder
         }
 
         $sql .=
-            "\n" . 'FROM ' ."\n" .
-            ' documents d ' ."\n";
+            "\n" . 'FROM ' ."\n";
 
-        if ($this->used_tables['document_metadata_version'] > 0)
+        if ($this->context == ExprContext::DOCUMENT)
         {
-        	$sql .= ' INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id' . "\n";
-        }
-        if ($this->used_tables['document_content_version'] > 0)
-        {
-        	$sql .= ' INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id ' . "\n";
-        }
-        if ($this->used_tables['document_fields_link'] > 0)
-        {
-        	$sql .= ' LEFT JOIN document_fields_link pdfl ON dmv.id=pdfl.metadata_version_id ' . "\n";
-        }
+            $primaryAlias = 'd';
+            $sql .= ' documents d ' ."\n";
 
-        if ($this->used_tables['tag_words'] > 0)
+            if ($this->used_tables['document_metadata_version'] > 0)
+            {
+                $sql .= ' INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id' . "\n";
+            }
+            if ($this->used_tables['document_content_version'] > 0)
+            {
+                $sql .= ' INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id ' . "\n";
+            }
+            if ($this->used_tables['document_fields_link'] > 0)
+            {
+                $sql .= ' LEFT JOIN document_fields_link pdfl ON dmv.id=pdfl.metadata_version_id ' . "\n";
+            }
+
+            if ($this->used_tables['tag_words'] > 0)
+            {
+                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" .
+                ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
+            }
+        }
+        else
         {
-            $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" .
-            		' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
+            $primaryAlias = 'f';
+            $sql .= ' folders f ' ."\n";
         }
 
 		$offset = 0;
@@ -1171,17 +1262,18 @@ class SQLQueryBuilder implements QueryBuilder
         	$offset++;
         }
 
-
-
-        $offset=0;
-        foreach($this->metadata as $expr)
+        if ($this->context == ExprContext::DOCUMENT)
         {
-            $offset++;
-            $field = $expr->left();
+            $offset=0;
+            foreach($this->metadata as $expr)
+            {
+                $offset++;
+                $field = $expr->left();
 
-            $fieldid = $field->getFieldId();
-            $sql .= " LEFT JOIN document_fields_link dfl$offset ON dfl$offset.metadata_version_id=d.metadata_version_id AND dfl$offset.document_field_id=$fieldid" . "\n";
-            $sql .= " LEFT JOIN document_fields df$offset ON df$offset.id=dfl$offset.document_field_id" . "\n";
+                $fieldid = $field->getFieldId();
+                $sql .= " LEFT JOIN document_fields_link dfl$offset ON dfl$offset.metadata_version_id=d.metadata_version_id AND dfl$offset.document_field_id=$fieldid" . "\n";
+                $sql .= " LEFT JOIN document_fields df$offset ON df$offset.id=dfl$offset.document_field_id" . "\n";
+            }
         }
 
         // Add permissions sql for read access
@@ -1189,15 +1281,16 @@ class SQLQueryBuilder implements QueryBuilder
         $permId = $oPermission->getID();
         $oUser = User::get($_SESSION['userID']);
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-        $sPermissionDescriptors = (!empty($aPermissionDescriptors)) ? implode(',', $aPermissionDescriptors) : '';
+        $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
 
-        $sql .= 'LEFT JOIN folders f ON d.folder_id = f.id '. "\n";
-
-        $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
+        $sql .= "INNER JOIN permission_lookups AS PL ON $primaryAlias.permission_lookup_id = PL.id\n";
         $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
+        $sql .= "WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND ";
 
-        $sql .= "WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND dmv.status_id=1 AND d.status_id=1 AND  \n ";
-
+        if ($this->context == ExprContext::DOCUMENT)
+        {
+             $sql .= "dmv.status_id=1 AND d.status_id=1 AND  \n ";
+        }
        	return $sql;
 	}
 
@@ -1222,8 +1315,6 @@ class SQLQueryBuilder implements QueryBuilder
 
 	private function resolveJoinOffset($expr)
 	{
-
-
 		$offset=0;
 		foreach($this->db as $item)
 		{
@@ -1242,11 +1333,18 @@ class SQLQueryBuilder implements QueryBuilder
         $right = $expr->right();
 		if (DefaultOpCollection::isBoolean($expr))
 		{
-			$query = '(' . $this->buildCoreSQLExpr($left) . ' ' . $expr->op() . ' ' . $this->buildCoreSQLExpr($right)  . ')';
+		  $query = '(' . $this->buildCoreSQLExpr($left) . ' ' . $expr->op() . ' ' . $this->buildCoreSQLExpr($right)  . ')';
 		}
 		else
 		{
-			$query = $this->getSQLEvalExpr($expr);
+		    if (($this->context & $expr->appliesToContext()) == $this->context)
+		    {
+		        $query = $this->getSQLEvalExpr($expr);
+		    }
+		    else
+		    {
+		        $query = 'false';
+		    }
 		}
 
 		return $query;
@@ -1259,7 +1357,11 @@ class SQLQueryBuilder implements QueryBuilder
 
 		$sql = $this->buildCoreSQL();
 
-		$sql .= $this->buildCoreSQLExpr($expr);
+		$expr = $this->buildCoreSQLExpr($expr);
+		if ($expr != 'false')
+		{
+		    $sql .= $expr;
+		}
 
 		return $sql;
 	}
@@ -1299,19 +1401,22 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= $value->getSQL($field, $left->modifyName($fieldname), $expr->op(), $expr->not());
         }
 
-        $moffset=0;
-        foreach($this->metadata as $expr)
+        if ($this->context == ExprContext::DOCUMENT)
         {
-            $moffset++;
-            if ($offset++)
+            $moffset=0;
+            foreach($this->metadata as $expr)
             {
-                $sql .= " $op\n " ;
+                $moffset++;
+                if ($offset++)
+                {
+                    $sql .= " $op\n " ;
+                }
+
+                $field = $expr->left();
+                $value = $expr->right();
+
+                $sql .= $value->getSQL($field, "dfl$moffset.value", $expr->getOp());
             }
-
-            $field = $expr->left();
-            $value = $expr->right();
-
-            $sql .= $value->getSQL($field, "dfl$moffset.value", $expr->getOp());
         }
 
         return $sql;
@@ -1331,7 +1436,6 @@ class SQLQueryBuilder implements QueryBuilder
 
 			if (substr($col, 0, 4) == 'expr' && is_numeric(substr($col, 4)))
 			{
-
 				$exprno = substr($col, 4);
 				if ($exprno <= count($this->db))
 				{
@@ -1379,8 +1483,6 @@ class SQLQueryBuilder implements QueryBuilder
 		}
 		return '(' . implode(') AND (', $text) . ')';
 	}
-
-
 }
 
 
@@ -1442,6 +1544,13 @@ class OpExpr extends Expr
     public function setHasText($value=true)
     {
         $this->has_text=$value;
+    }
+
+    public function setContext($context)
+    {
+        parent::setContext($context);
+        $this->left()->setContext($context);
+        $this->right()->setContext($context);
     }
 
     public function getHasDb()
@@ -1619,7 +1728,6 @@ class OpExpr extends Expr
 
         $point = null;
 
-
         if ($left_op_match && $right_op_match) { $point = 'point'; }
 
 		$left_op_match_flex  = $left_op_match || ($left->isOpExpr());
@@ -1680,6 +1788,11 @@ class OpExpr extends Expr
     private function isDBandText()
     {
     	return $this->getHasDb() && $this->getHasText();
+    }
+
+    public function appliesToContext()
+    {
+        return $this->left()->appliesToContext() | $this->right()->appliesToContext();
     }
 
     /**
@@ -1759,13 +1872,14 @@ class OpExpr extends Expr
      */
     public function __toString()
     {
-        $expr = $this->left_expr . ' ' . $this->op .' ' .  $this->right_expr;
+        // _kt may not translate well here.
+        $expr = $this->left_expr . ' ' . _kt($this->op) .' ' .  $this->right_expr;
 
         if (is_null($this->parent))
         {
         	if ($this->not())
         	{
-            	 $expr = "NOT $expr";
+            	 $expr = _kt('NOT') . $expr;
         	}
             return $expr;
         }
@@ -1805,7 +1919,7 @@ class OpExpr extends Expr
      * @param array $rightres
      * @return array
      */
-	protected static function intersect($leftres, $rightres)
+	protected static function _intersect($leftres, $rightres)
     {
     	if (empty($leftres) || empty($rightres))
     	{
@@ -1814,7 +1928,7 @@ class OpExpr extends Expr
     	$result = array();
     	foreach($leftres as $item)
     	{
-    		$document_id = $item->DocumentID;
+    		$document_id = $item->Id;
 
     		if (!$item->IsLive)
     		{
@@ -1831,6 +1945,22 @@ class OpExpr extends Expr
     	return $result;
     }
 
+	protected static function intersect($leftres, $rightres)
+    {
+        return array(
+            'docs'=>self::_intersect($leftres['docs'],$rightres['docs']),
+            'folders'=>self::_intersect($leftres['folders'],$rightres['folders'])
+        );
+    }
+
+	protected static function union($leftres, $rightres)
+    {
+        return array(
+            'docs'=>self::_union($leftres['docs'],$rightres['docs']),
+            'folders'=>self::_union($leftres['folders'],$rightres['folders'])
+        );
+    }
+
     /**
      * The objective of this function is to merge the results so that there is a union of the results,
      * but there should be no duplicates.
@@ -1839,7 +1969,7 @@ class OpExpr extends Expr
      * @param array $rightres
      * @return array
      */
-    protected static function union($leftres, $rightres)
+    protected static function _union($leftres, $rightres)
     {
     	if (empty($leftres))
     	{
@@ -1855,15 +1985,15 @@ class OpExpr extends Expr
     	{
 			if ($item->IsLive)
     		{
-    			$result[$item->DocumentID] = $item;
+    			$result[$item->Id] = $item;
     		}
     	}
 
     	foreach($rightres as $item)
     	{
-    		if (!array_key_exists($item->DocumentID, $result) || $item->Rank > $result[$item->DocumentID]->Rank)
+    		if (!array_key_exists($item->Id, $result) || $item->Rank > $result[$item->Id]->Rank)
     		{
-    			$result[$item->DocumentID] = $item;
+    			$result[$item->Id] = $item;
     		}
     	}
     	return $result;
@@ -1996,7 +2126,7 @@ class OpExpr extends Expr
     {
     	if (empty($group)) { return array(); }
 
-    	$exprbuilder = new SQLQueryBuilder();
+    	$exprbuilder = new SQLQueryBuilder($this->getContext());
 
     	if (count($group) == 1)
     	{
@@ -2020,11 +2150,18 @@ class OpExpr extends Expr
 
     	foreach($rs as $item)
     	{
-    		$document_id = $item['id'];
+    		$id = $item['id'];
     		$rank = $exprbuilder->getRanking($item);
-    		if (!array_key_exists($document_id, $results) || $rank > $results[$document_id]->Rank)
+    		if (!array_key_exists($id, $results) || $rank > $results[$id]->Rank)
     		{
-    			$results[$document_id] = new QueryResultItem($document_id, $rank, $item['title'], $exprbuilder->getResultText($item));
+    		    if ($this->context == ExprContext::DOCUMENT)
+    		    {
+    		        $results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item));
+    		    }
+    		    else
+    		    {
+    		        $results[$id] = new FolderResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item));
+    		    }
     		}
     	}
 
@@ -2034,7 +2171,10 @@ class OpExpr extends Expr
 
     private function exec_text_query($op, $group)
     {
-    	if (empty($group)) { return array(); }
+        if (($this->getContext() != ExprContext::DOCUMENT) || empty($group))
+        {
+            return array();
+        }
 
     	$exprbuilder = new TextQueryBuilder();
 
@@ -2060,12 +2200,21 @@ class OpExpr extends Expr
     	}
 
     	return $results;
-
-
     }
 
-	public function evaluate()
+	public function evaluate($context = ExprContext::DOCUMENT_AND_FOLDER)
 	{
+	    if ($context == ExprContext::DOCUMENT_AND_FOLDER)
+	    {
+	       $docs = $this->evaluate(ExprContext::DOCUMENT);
+ 	       $folders = $this->evaluate(ExprContext::FOLDER);
+
+	       return array(
+	           'docs' => $docs['docs'],
+	           'folders' => $folders['folders']);
+	    }
+	    $this->setContext($context);
+
 		$left = $this->left();
         $right = $this->right();
         $op = $this->op();
@@ -2075,12 +2224,12 @@ class OpExpr extends Expr
         {
         	$point = 'point';
         }
+		$resultContext = ($this->getContext() == ExprContext::DOCUMENT)?'docs':'folders';
 
 		if ($point == 'merge')
 		{
-
-			$leftres = $left->evaluate();
-			$rightres = $right->evaluate();
+			$leftres = $left->evaluate($context);
+			$rightres = $right->evaluate($context);
 			switch ($op)
 			{
 				case ExprOp::OP_AND:
@@ -2099,31 +2248,33 @@ class OpExpr extends Expr
 		{
 			if ($this->isDBonly())
 			{
-				$result = $this->exec_db_query($op, array($this));
+				$result[$resultContext] = $this->exec_db_query($op, array($this));
 			}
 			elseif ($this->isTextOnly())
 			{
-				$result = $this->exec_text_query($op, array($this));
+				$result[$resultContext] = $this->exec_text_query($op, array($this));
 			}
 			elseif (in_array($op, array(ExprOp::OP_OR, ExprOp::OP_AND)))
 			{
+			    // do we get to this???
+			    // TODO: remove me please.... the simpleQuery stuff should go???
 				$db_group = array();
 				$text_group = array();
 				$this->explore($left, $right, $db_group, 'db');
 				$this->explore($left, $right, $text_group, 'text');
 
-				$db_result = $this->exec_db_query($op, $db_group);
-				$text_result = $this->exec_text_query($op, $text_group);
+				$db_result[$resultContext] = $this->exec_db_query($op, $db_group);
+				$text_result[$resultContext] = $this->exec_text_query($op, $text_group);
 
 				switch ($op)
 				{
 					case ExprOp::OP_AND:
 						if ($this->debug) print "\n\npoint: intersect\n\n";
-						$result = OpExpr::intersect($db_result, $text_result);
+						$result[$resultContext] = OpExpr::intersect($db_result, $text_result);
 						break;
 					case ExprOp::OP_OR:
 						if ($this->debug) print "\n\nmerge: union\n\n";
-						$result = OpExpr::union($db_result, $text_result);
+						$result[$resultContext] = OpExpr::union($db_result, $text_result);
 						break;
 					default:
 						throw new Exception('how did this happen??');
@@ -2141,9 +2292,9 @@ class OpExpr extends Expr
 		}
 
 		$permResults = array();
-		foreach($result as $idx=>$item)
+		foreach($result[$resultContext] as $idx=>$item)
 		{
-			$permResults[$idx] = $item;
+			$permResults[$resultContext][$idx] = $item;
 		}
 
 		return $permResults;
