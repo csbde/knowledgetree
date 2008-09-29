@@ -1033,6 +1033,7 @@ a.main_nav_item {
     background: #ffdd80;
     padding-left: 10px;
     margin-top: 20px;
+    padding-bottom: 8px;
 }
 
 .ktError .err_item {
@@ -1052,6 +1053,7 @@ a.main_nav_item {
     background: #DEDEDE;
     padding-left: 10px;
     margin-top: 20px;
+    padding-bottom: 8px;
 }
 
 .ktInfo .info_item {
