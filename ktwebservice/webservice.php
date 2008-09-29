@@ -148,7 +148,7 @@ class KTWebService
 
     	$config = &KTConfig::getSingleton();
     	$this->version = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
-    	$this->mustDebug = $config->get('webservice/debug', false);
+    	$this->mustDebug = $config->get('webservice/debug', 0);
     	$this->ktapi = null;
 
     	$this->namespace = 'KnowledgeTree';
@@ -1238,7 +1238,7 @@ class KTWebService
 
     function debug($msg, $function = null, $level=0)
     {
-    	if ($this->mustDebug === false) return;
+    	if ($this->mustDebug == 0) return;
     	if ($this->mustDebug >= $level)
     	{
     		global $default;
