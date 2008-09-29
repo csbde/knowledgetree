@@ -133,29 +133,12 @@ class KTDocumentUtil {
             }
         }
 
-        // NEW SEARCH
-
         Indexer::index($oDocument);
-
-        /*
-        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            if ($aTrigger[1]) {
-                require_once($aTrigger[1]);
-            }
-            $oTrigger = new $sTrigger;
-            $oTrigger->setDocument($oDocument);
-            $oTrigger->transform();
-        }
-        */
 
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
-
-        KTDocumentUtil::updateSearchableText($oDocument);
 
         return true;
     }
@@ -513,7 +496,6 @@ $sourceDocument->getName(),
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
 
-        KTDocumentUtil::updateSearchableText($oDocument);
 */
         return true;
     }
@@ -602,7 +584,6 @@ $sourceDocument->getName(),
             }
         }
         KTDocumentUtil::setComplete($oDocument, 'metadata');
-        KTDocumentUtil::updateSearchableText($oDocument);
         DocumentFieldLink::clearAllCaches();
         return true;
     }
@@ -772,7 +753,6 @@ $sourceDocument->getName(),
             $ret = $oTrigger->postValidate();
 
         }
-        KTDocumentUtil::updateSearchableText($oDocument, true);
 
         DBUtil::commit();
 
@@ -897,75 +877,6 @@ $sourceDocument->getName(),
         }
 
         return true;
-    }
-    // }}}
-
-    // {{{ updateTransactionText
-    function updateTransactionText($oDocument) {
-
-        // NEW SEARCH
-
-        return;
-
-        $iDocumentId = KTUtil::getId($oDocument);
-        $aTransactions = DocumentTransaction::getByDocument($iDocumentId);
-        foreach ($aTransactions as $oTransaction) {
-            $aComments[] = $oTransaction->getComment();
-        }
-        $sAllComments = join("\n\n", $aComments);
-        $sTable = KTUtil::getTableName('document_transaction_text');
-        $aQuery = array("DELETE FROM $sTable WHERE document_id = ?", array($iDocumentId));
-        $res = DBUtil::runQuery($aQuery);
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-        $aInsert = array(
-            'document_id' => $iDocumentId,
-            'document_text' => $sAllComments,
-        );
-        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
-    }
-    // }}}
-
-    // {{{ updateSearchableText
-    function updateSearchableText($oDocument, $bOverride = false) {
-
-        // NEW SEARCH
-        return;
-
-        if (isset($GLOBALS['_IN_ADD']) && empty($bOverride)) {
-            return;
-        }
-        $sMetadata = KTUtil::arrayGet( $_REQUEST, 'metadata_2');
-        $oDocument = KTUtil::getObject('Document', $oDocument);
-        $iDocumentId = $oDocument->getId();
-        $sTable = KTUtil::getTableName('document_transaction_text');
-        $aQuery = array("SELECT document_text FROM $sTable WHERE
-                document_id = ?", array($iDocumentId));
-        $sAllComments = DBUtil::getOneResultKey($aQuery, 'document_text');
-        $sTable = KTUtil::getTableName('document_text');
-        $aQuery = array("SELECT document_text FROM $sTable WHERE
-                document_id = ?", array($iDocumentId));
-        $sAllDocumentText = DBUtil::getOneResultKey($aQuery, 'document_text');
-        $aFieldLinks = DocumentFieldLink::getByDocument($iDocumentId);
-        $aFieldValues = array();
-        foreach ($aFieldLinks as $oFieldLink) {
-            $aFieldValues[] = $oFieldLink->getValue();
-        }
-        $sAllFieldText = join(' ', $aFieldValues);
-        $sDocumentFilename = $oDocument->getFilename();
-        $sDocumentTitle = $oDocument->getName();
-        $sSearchableText = $sAllDocumentText . ' ' . $sAllFieldText . ' ' . $sAllComments . ' ' . $sDocumentFilename . ' ' . $sDocumentTitle . ' ' . $sMetadata;
-        $sTable = KTUtil::getTableName('document_searchable_text');
-        $aDelete = array(
-            'document_id' => $iDocumentId,
-        );
-        DBUtil::whereDelete($sTable, $aDelete);
-        $aInsert = array(
-            'document_id' => $iDocumentId,
-            'document_text' => $sSearchableText,
-        );
-        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
     // }}}
 
@@ -1098,25 +1009,7 @@ $sourceDocument->getName(),
 
     function reindexDocument($oDocument) {
 
-        // NEW SEARCH
-
         Indexer::index($oDocument);
-
-        return;
-
-        /*
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            if ($aTrigger[1]) {
-                require_once($aTrigger[1]);
-            }
-            $oTrigger = new $sTrigger;
-            $oTrigger->setDocument($oDocument);
-            $oTrigger->transform();
-        }
-        KTDocumentUtil::updateSearchableText($oDocument);*/
     }
 
 
@@ -1144,6 +1037,7 @@ $sourceDocument->getName(),
         $aCoreRow = DBUtil::getOneResult(array($sQuery, $aParams));
         unset($aCoreRow['id']);
 
+        $aCoreRow['modified'] = date('Y-m-d H:i:s');
         $aCoreRow['folder_id'] = $oDestinationFolder->getId(); // new location.
         $id = DBUtil::autoInsert($sTable, $aCoreRow);
         if (PEAR::isError($id)) { return $id; }
@@ -1221,23 +1115,6 @@ $sourceDocument->getName(),
         $res = $oNewDocument->update();
         if (PEAR::isError($res)) { return $res; }
 
-        // NEW SEARCH
-
-
-        /*
-
-        $sTable = KTUtil::getTableName('document_text');
-        $aQuery = array("SELECT document_text FROM $sTable WHERE document_id = ?", array($oDocument->getId()));
-        $sData = DBUtil::getOneResultKey($aQuery, 'document_text');
-
-        $aInsertValues = array(
-            'document_id' => $oNewDocument->getId(),
-            'document_text' => $contents,
-        );
-        DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
-
-        */
-        KTDocumentUtil::updateSearchableText($oNewDocument);
         KTPermissionUtil::updatePermissionLookup($oNewDocument);
 
         if (is_null($sReason)) {
