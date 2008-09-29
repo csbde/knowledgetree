@@ -72,12 +72,12 @@ class PDFGeneratorAction extends KTDocumentAction {
             // make sure that the selected document is of an acceptable extension
             foreach($this->aAcceptedMimeTypes as $acceptType){
                 if($acceptType == $sDocType){
-    	            // built server path
-                    global $default;
-    	            $sHostPath = "http" . ($default->sslEnabled ? "s" : "") . "://".$_SERVER['HTTP_HOST']."/".$GLOBALS['KTRootUrl']."/";
+    	            // build server path
+    	            $sHostPath = KTUtil::kt_url();
                     // create image
-                    $icon = "<img src='".$sHostPath."resources/mimetypes/pdf.gif' alt='PDF' border=0/>";
-                    return _kt('Generate PDF') . "&nbsp;<a href=\"" . KTUtil::ktLink( 'action.php', 'ktstandard.pdf.generate', array( "fDocumentId" => $this->oDocument->getId(), "action" => "pdfdownload") ) . "\" $icon</a>";
+                    $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
+                    $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
+                    return _kt('Generate PDF') . "&nbsp;<a href=\"{$link}\">{$icon}</a>";
                 }
             }
         }
