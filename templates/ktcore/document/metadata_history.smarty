@@ -37,7 +37,7 @@
                    <strong>{i18n}current version{/i18n}</strong>
                 {else}
                     {if ($oVersion->getMetadataStatusID() != VERSION_DELETED)}
-                        <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$oVersion->getMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}Metadata{/i18n}</a>
+                        <a href="{addQS}action=viewComparison&fDocumentId={$document->getId()}&fBaseVersion={$document->getCurrentMetadataVersionId()}&fComparisonVersion={$oVersion->getCurrentMetadataVersionId()}{/addQS}">{i18n}Metadata{/i18n}</a>
                         {if ($bShowCompare)}
                             &nbsp;|&nbsp;
                             {if ($document->getMimeTypeID() != $oVersion->getMimeTypeID())}
