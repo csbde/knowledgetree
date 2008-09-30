@@ -741,6 +741,10 @@ class KTLDAPBaseAuthenticator extends Authenticator {
      */
     function checkPassword($oUser, $sPassword) {
         $dn = $oUser->getAuthenticationDetails();
+        if (is_null($dn))
+        {
+            return new PEAR_Error(_kt('Please consult your system administrator. The authentication parameters are corrupt. (authentication_detail_s1 is null)'));
+        }
         $config = array(
             'host' => $this->sLdapServer,
             'base' => $this->sBaseDN,
@@ -796,10 +800,14 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             return $aResults;
         }
         foreach($aResults as $aEntry){
-            if($aEntry['sAMAccountName'] == $sName){
+            if (strcasecmp($aEntry['sAMAccountName'], $sName) == 0) {
                 $newDn = $aEntry['dn'];
                 break;
             }
+        }
+        if (empty($newDn))
+        {
+            return false;
         }
 
         $res = $this->oLdap->reBind($newDn, $sPassword);
