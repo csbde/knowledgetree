@@ -1289,8 +1289,13 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-             $sql .= "dmv.status_id=1 AND d.status_id=1 AND  \n ";
+             $sql .= "dmv.status_id=1 AND d.status_id=1 AND d.linked_document_id is null";
         }
+        else
+        {
+            $sql .= "f.linked_folder_id is null";
+        }
+        $sql .= ' AND ';
        	return $sql;
 	}
 
