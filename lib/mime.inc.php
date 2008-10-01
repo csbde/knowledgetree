@@ -154,13 +154,35 @@ class KTMime {
     */
     function getMimeTypeFromFile($sFileName) {
         if (extension_loaded('fileinfo')) {
-        	$oKTConfig =& KTConfig::getSingleton();
-        	$magicDatabase = $oKTConfig->get('magicDatabase', '/usr/share/file/magic');
-        	$res = finfo_open(FILEINFO_MIME, $magicDatabase);
-            $sType = finfo_file($res, $sFileName);
+            // NOTE: fileinfo doesn't like all magic files. ensure it is pointing to a compatible one if it does not work.
+
+            // first check the path in the stack
+        	$defaultMagicPath = KT_DIR . '/../php/extras/magic';
+        	$defaultMagicPath = realpath($defaultMagicPath);
+
+        	// if not available, attempt path from config
+        	if ($defaultMagicPath === false) {
+        	    $oKTConfig =& KTConfig::getSingleton();
+        	    $defaultMagicPath = $oKTConfig->get('magicDatabase');
+
+        	    if (!file_exists($defaultMagicPath)) {
+        	        $defaultMagicPath = false;
+        	    }
+        	}
+
+        	// attempt file info if magic file is resolved
+        	if ($defaultMagicPath) {
+        	    $res = @finfo_open(FILEINFO_MIME, $defaultMagicPath);
+                $sType = @finfo_file($res, $sFileName);
+
+                // saw mention that finfo_file() can return empty string under windows
+                if (empty($sType)) {
+                    $sType = false;
+                }
+        	}
         }
 
-        if (!$sType) {
+        if (!$sType && OS_UNIX) {
             if (file_exists('/usr/bin/file')) {
                 $aCmd = array('/usr/bin/file', '-bi', $sFileName);
                 $sCmd = KTUtil::safeShellString($aCmd);
