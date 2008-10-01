@@ -37,14 +37,14 @@
 function saveSearch()
 {
 	var txtName = $('txtSaveName');
+	var txtQuery = '{/literal}{$txtQuery|escape:'quotes'}{literal}';
 	if (txtName.value == '')
 	{
 		alert('{/literal}{i18n}Please enter a name for the search expression.{/i18n}{literal}');
 		txtName.focus();
 		return;
 	}
-	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?txtName='+ escape(txtName.value) +
-	                                                           '&txtQuery=' + escape('{/literal}{$txtQuery|escape:'quotes'}{literal}');
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php';
 
 	Ext.Ajax.request(
 	{
@@ -61,7 +61,6 @@ function saveSearch()
 	                parseSuccess = true;
 	                $('saveSearch').style.display='none';
 	                $('savedSearch').style.display='block';
-	                //alert('{/literal}{i18n}The search expression has been saved.{/i18n}{literal}');
 	            }
 	            else
 	            {
@@ -72,6 +71,10 @@ function saveSearch()
 	    failure: function(o)
 	    {
 	        alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
+	    },
+	    params: {
+	        txtName: txtName.value,
+	        txtQuery: txtQuery
 	    }
 	});
 }

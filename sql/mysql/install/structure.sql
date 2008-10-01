@@ -523,6 +523,7 @@ CREATE TABLE `document_transactions` (
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `document_id` (`document_id`),
+  KEY `user_id` (`user_id`),
   KEY `datetime` (`datetime`,`transaction_namespace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
