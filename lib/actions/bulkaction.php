@@ -402,14 +402,50 @@ class KTBulkAction extends KTStandardDispatcher {
         $this->persistParams(array('fListCode', 'fActiveListCode', 'fFolderId', 'fReturnData', 'fReturnAction'));
     }
 
+    /**
+     * Get the return url based on the return action and data
+     */
+    function getReturnUrl()
+    {
+        $sReturnAction = $_REQUEST['fReturnAction'];
+        $sReturnData = $_REQUEST['fReturnData'];
+        $sAction = 'main';
+        $qs = '';
 
+        switch ($sReturnAction){
+            case 'browse':
+                $sReturnData = (empty($sReturnData)) ? $_REQUEST['fFolderId'] : $sReturnData;
+                $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
+                break;
+            case 'simpleSearch':
+                $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
+                $extra = 'fSearchableText='.$sReturnData;
+                break;
+            case 'booleanSearch':
+                $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
+                $sAction = 'performSearch';
+                $extra = 'boolean_search_id='.$sReturnData;
+                break;
+            case 'search2':
+                $sTargetUrl = KTBrowseUtil::getSearchResultURL();
+                $sAction = 'searchResults';
+                break;
+        }
 
+        $qs = 'action='.$sAction;
+        $qs .= (!empty($extra))? '&'.$extra : '';
+        $sTargetUrl = KTUtil::addQueryString($sTargetUrl, $qs);
+
+        return $sTargetUrl;
+    }
 
     // forms
     // form to list the entites after checking each one
     function form_listing() {
         $sListCode = $this->oEntityList->getCode();
         $sActiveListCode = $this->oActiveEntityList->getCode();
+
+        $sTargetUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -418,7 +454,7 @@ class KTBulkAction extends KTStandardDispatcher {
             'targeturl' => $this->getURL(),
             'action' => 'collectinfo',
             'fail_action' => 'main',
-            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'cancel_url' => $sTargetUrl,
             'noframe' => true,
             'extraargs' => array('fListCode' => $sListCode,
                                  'fActiveListCode' => $sActiveListCode,
@@ -437,23 +473,24 @@ class KTBulkAction extends KTStandardDispatcher {
         $sReturnData = KTUtil::arrayGet($_REQUEST, 'fReturnData');
         $sAction = 'main';
 
-        if($sReturnAction == 'browse') {
-        	if ($sReturnData == '')
-        	{
-        		$sReturnData = KTUtil::arrayGet($_REQUEST, 'fFolderId');
-        	}
-            $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
-        } elseif($sReturnAction == 'simpleSearch') {
-            $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
-            $extraargs = array('fSearchableText'=>$sReturnData);
-        } elseif($sReturnAction == 'booleanSearch') {
-            $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
-            $sAction = 'performSearch';
-            $extraargs = array('boolean_search_id'=>$sReturnData);
-        }
-        elseif($sReturnAction == 'search2') {
-            $sTargetUrl = KTBrowseUtil::getSearchResultURL();
-            $sAction = 'searchResults';
+        switch ($sReturnAction){
+            case 'browse':
+                $sReturnData = (empty($sReturnData)) ? $_REQUEST['fFolderId'] : $sReturnData;
+                $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
+                break;
+            case 'simpleSearch': // do we use this?
+                $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
+                $extraargs = array('fSearchableText'=>$sReturnData);
+                break;
+            case 'booleanSearch': // do we use this?
+                $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
+                $sAction = 'performSearch';
+                $extraargs = array('boolean_search_id'=>$sReturnData);
+                break;
+            case 'search2':
+                $sTargetUrl = KTBrowseUtil::getSearchResultURL();
+                $sAction = 'searchResults';
+                break;
         }
 
         $oForm = new KTForm;
@@ -480,8 +517,8 @@ class KTBulkAction extends KTStandardDispatcher {
         // gives us $this->aFailed
         $iActiveCount = $this->check_entities();
 
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_listing');
+    	$oTemplating =& KTTemplating::getSingleton();
+    	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_listing');
 
         $this->store_lists();
 

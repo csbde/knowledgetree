@@ -65,7 +65,7 @@ class KTBulkDeleteAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
-        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -200,7 +200,7 @@ class KTBulkMoveAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
-        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -353,7 +353,7 @@ class KTBulkCopyAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
-        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -499,7 +499,7 @@ class KTBulkArchiveAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
-        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -723,7 +723,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->oZip = new ZipFolder($folderName);
         $res = $this->oZip->checkConvertEncoding();
 
-        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $folderurl = $this->getReturnUrl();
         $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
 
         if(PEAR::isError($res)){
@@ -757,7 +757,6 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
         $str = sprintf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $url);
-        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
         $str .= sprintf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
         //$str .= sprintf("</div></div></body></html>\n");
         $str .= sprintf('<script language="JavaScript">
@@ -890,7 +889,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
-            redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
+            $redirectUrl = $this->getReturnUrl();
+            redirect($redirectUrl);
         }
         exit(0);
     }
@@ -940,7 +940,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
-        $cancelUrl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
