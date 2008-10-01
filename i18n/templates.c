@@ -314,10 +314,10 @@ gettext("Clear Alert");
 gettext("View all alerts on this document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Create an Alert for this Document");
+gettext("Add an Alert on this Document");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("KnowledgeTree Alerts will notify you of an event on a particular date or within a specified period of time. When an alert is triggered you will receive a notification email and message on your Dashboard");
+gettext("Create an alert to receive a dashboard notification and an email when action is required on this document.");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("Alert");
@@ -344,10 +344,10 @@ gettext("Alert on");
 gettext("Alert Message");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("A message for those who receive the alert notification");
+gettext("Add a message for this alert");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Alert other people?");
+gettext("<a>Add other users to this alert...</a>");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("Save");
@@ -356,7 +356,7 @@ gettext("Save");
 gettext("Cancel");
 
 /* ./plugins/alerts/templates/alerts.smarty */
-gettext("Alerts for this Document");
+gettext("Existing Alerts");
 
 /* ./plugins/alerts/templates/alerts.smarty */
 gettext("A list of existing alerts for this document");
@@ -387,6 +387,81 @@ gettext("Comment");
 
 /* ./plugins/alerts/templates/archiveDeleteNotification.smarty */
 gettext("Clear alert");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Login | #appname#");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Community Edition");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Please enter your details below to login.");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Username");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Password");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Language");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Login");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Forgot your password?");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Enter your username and email address. A link will be mailed to you in order to verify your email address.");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Username");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Email Address");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Send password link");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Back");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Please enter your username and email address.");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Username");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Email Address");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("New password");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Confirm new password");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Reset password");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Cancel");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("#appname# Version");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("All rights reserved.");
 
 /* ./plugins/network/quicklinks/templates/Quicklinks/dashlet.smarty */
 gettext("There are no quicklinks.");
@@ -1523,10 +1598,10 @@ gettext("Browse view format");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("#appname# Version: #version#");
+gettext("#appname# Version: #version# is licensed free of charge and supplied with 							<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a>, 							<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a> 							and <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>.");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("is licensed free of charge and supplied with 									<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a> 									, <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a> 									, and <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>.");
+gettext("#appname# Version: #version#");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("Request created in #timing#s");
@@ -1592,7 +1667,7 @@ gettext("Advanced Search");
 gettext("What is admin mode?");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
-gettext("Administrator mode is enabled.");
+gettext("Administrator mode is <br>enabled.");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
 gettext("Disable Admin Mode");
@@ -1604,7 +1679,7 @@ gettext("Disable Admin Mode");
 gettext("What is admin mode?");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
-gettext("Administrator mode is not currently enabled.");
+gettext("Administrator mode is <br>not currently enabled.");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
 gettext("Enable Admin Mode");
@@ -3392,7 +3467,7 @@ gettext("Finish with this column's behaviours.");
 gettext("Assuming this field has behaviour \"");
 
 /* ./templates/ktcore/javascript_i18n.smarty */
-gettext("Dependencies saved. (at");
+gettext("Dependencies saved (");
 
 /* ./templates/ktcore/javascript_i18n.smarty */
 gettext("Dependencies for value \"");
@@ -3503,9 +3578,6 @@ gettext("To delete this saved search criteria or to edit other saved search crit
 gettext("Please enter a name for the search expression.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
-gettext("The search expression has been saved.");
-
-/* ./templates/ktcore/search2/search_results.smarty */
 gettext("There is a problem saving the expression expression.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
@@ -3530,6 +3602,12 @@ gettext("Search Criteria Editor");
 gettext("Use the #options# to extend this query.");
 
 /* ./templates/ktcore/search2/search_results.smarty */
+gettext("Search results found: #count#");
+
+/* ./templates/ktcore/search2/search_results.smarty */
+gettext("Filename:");
+
+/* ./templates/ktcore/search2/search_results.smarty */
 gettext("NOT AVAILABLE");
 
 /* ./templates/ktcore/search2/search_results.smarty */
@@ -3537,6 +3615,9 @@ gettext("Document ID:");
 
 /* ./templates/ktcore/search2/search_results.smarty */
 gettext("Version:");
+
+/* ./templates/ktcore/search2/search_results.smarty */
+gettext("Folder ID:");
 
 /* ./templates/ktcore/search2/search_results.smarty */
 gettext("Created By:");
@@ -7407,6 +7488,9 @@ gettext("The document is currently in state \"#name#\"");
 
 /* ./templates/ktcore/document/viewlets/workflow.smarty */
 gettext("No transitions are available while the document is checked out.");
+
+/* ./templates/ktcore/document/viewlets/workflow.smarty */
+gettext("Last Comment");
 
 /* ./templates/ktcore/manage_lookuptrees.smarty */
 gettext("Manage Lookup Trees");
