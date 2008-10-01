@@ -1,0 +1,1 @@
+alter table `ktdms`.`document_transactions` add index `user_id` (`user_id`);

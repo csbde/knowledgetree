@@ -1724,7 +1724,8 @@ INSERT INTO `upgrades` VALUES
 (203,'sql*3.5.3*0*3.5.3/saved_search.sql','Fix saved search table to support long expressions.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (204,'sql*3.5.3*0*3.5.3/preview_column.sql','Adjust Preview Column.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (205,'sql*3.5.3*0*3.5.3/tag_cloud.sql','Update TagCloud descritption.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(206,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
+(206,'sql*3.5.3*0*3.5.3/doc_tran_user_index.sql','Add index on user_id to document transactions table.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
+(207,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2655,7 +2656,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(206);
+(207);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
