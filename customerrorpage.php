@@ -40,7 +40,7 @@ session_start();
 // Get the error message
 $error = isset($_POST['fatal']) ? $_POST['fatal'] : '';
 $error = isset($_SESSION['sErrorMessage']) ? $_SESSION['sErrorMessage'] : $error;
-
+unset($_SESSION['sErrorMessage']);
 //Finding root Url
 $sHost = $_SERVER['HTTP_HOST'];
 $sScriptName = dirname($_SERVER['SCRIPT_NAME']);
