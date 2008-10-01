@@ -40,6 +40,7 @@
 define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
+require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 class IndexerInconsistencyException extends Exception {};
 
@@ -211,21 +212,6 @@ class DocumentResultItem extends QueryResultItem
 		$this->loadDocumentInfo();
 	}
 
-	/*protected function __isset($property)
-	{
-		switch($property)
-		{
-			case 'DocumentID': return isset($this->document_id);
-			case 'Rank': return isset($this->rank);
-			case 'Text': return isset($this->text);
-			case 'Title': return isset($this->title);
-			case null: break;
-			default:
-				throw new Exception("Unknown property '$property' to get on QueryResultItem");
-		}
-		return true; // should not be reached
-	}*/
-
 	// TODO: this is bad. must refactor to do the query on the group of documents.
 	public function loadDocumentInfo()
 	{
@@ -327,11 +313,7 @@ class DocumentResultItem extends QueryResultItem
 	public function getFilename() { return (string)$this->filename; }
 	public function getFolderId() { return (int)$this->folderId; }
 	public function getOemDocumentNo() { return (string) $this->oemDocumentNo; }
-	public function getDocument() { if (is_null($this->document))
-					{
-						$this->document = Document::get($this->id);
-					}
-					return $this->document; }
+	public function getDocument() { return Document::get($this->id); }
 	public function getIsAvailable() { return $this->Document->isLive(); }
 	public function getCheckedOutUser() { return (string) $this->checkedOutUser; }
 	public function getCheckedOutByr() { return $this->getCheckedOutUser(); }
@@ -339,11 +321,13 @@ class DocumentResultItem extends QueryResultItem
 	public function getWorkflow() { return $this->getWorkflow(); }
 	public function getWorkflowStateOnly() { return (string)$this->workflowState; }
 	public function getWorkflowState() { return $this->getWorkflowStateOnly(); }
-	public function getWorkflowAndState() { if (is_null($this->workflow))
-				{
-					return '';
-				}
-				return "$this->workflow - $this->workflowState"; }
+	public function getWorkflowAndState() {
+	    if (is_null($this->workflow))
+	    {
+	        return '';
+	    }
+	    return "$this->workflow - $this->workflowState";
+	}
 	public function getMimeType() { return (string) $this->mimeType; }
 	public function getMimeIconPath() { return (string) $this->mimeIconPath; }
 	public function getMimeDisplay() { return (string) $this->mimeDisplay; }
@@ -359,16 +343,16 @@ class DocumentResultItem extends QueryResultItem
 	public function getStatus() { return $this->status; }
 	public function getStoragePath() { return $this->storagePath; }
 	public function getDocumentType() { return $this->documentType; }
-	public function getPermissions() { return 'not available'; }
-	public function getCanBeReadByUser() { if (!$this->live)
-					return false;
-				if (Permission::userHasDocumentReadPermission($this->Document))
-					return true;
-				if (Permission::adminIsInAdminMode())
-					return true;
-				return false; }
-
-
+	public function getPermissions() { return KTAPI_Document::get_permission_string($this->Document); }
+	public function getCanBeReadByUser() {
+	    if (!$this->live)
+	       return false;
+	    if (Permission::userHasDocumentReadPermission($this->Document))
+	       return true;
+	    if (Permission::adminIsInAdminMode())
+	       return true;
+	    return false;
+	}
 }
 
 class FolderResultItem extends QueryResultItem
@@ -380,20 +364,20 @@ class FolderResultItem extends QueryResultItem
 	public function __construct($folder_id, $rank=null, $title=null, $text=null, $fullpath = null)
 	{
 	    parent::__construct($folder_id, $title, $rank, $text, $fullpath);
-		$this->loadDocumentInfo();
+		$this->loadFolderInfo();
 	}
 
     public function getFolderID() { return $this->getId(); }
     public function getParentID() { return $this->parentId; }
     public function getCreatedBy() { return $this->createdBy; }
     public function getMimeIconPath() { return 'folder'; }
-	public function getFolder() {
-					return $this->folder; }
+	public function getFolder() { return Folder::get($this->getFolderID()); }
+    public function getPermissions() { return KTAPI_Folder::get_permission_string($this->Folder); }
 
-    public function loadDocumentInfo()
+    public function loadFolderInfo()
 	{
 		global $default;
-		$this->folder = $folder = Folder::get($this->getFolderID());
+		$folder = $this->getFolder();
 		if (PEAR::isError($folder))
 		{
 		    throw new Exception('Database exception! There appears to be an error in the system: ' .$result->getMessage());
