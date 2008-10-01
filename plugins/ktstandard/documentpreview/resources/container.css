@@ -27,8 +27,8 @@
     padding-right: 10px;
     padding-bottom: 0px;
     cursor: pointer;
-    height: 250px;
-    overflow: auto;
+    /*height: 250px;
+    overflow: auto;*/
     clear: both;
 }
 
@@ -131,4 +131,5 @@
     border-bottom:1px solid #FFF;
     border-right:1px solid #FFF;
     background: transparent;
+    overflow: auto;
 }
