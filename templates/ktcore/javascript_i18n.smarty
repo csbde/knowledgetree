@@ -30,7 +30,7 @@ i18n['Assuming this field has behaviour "'] = '{i18n}Assuming this field has beh
 // strings for file: resources/js/conditional_selection.js
 
 // strings for file: resources/js/conditional_simple_edit.js
-i18n['Dependencies saved. (at '] = '{i18n}Dependencies saved. (at {/i18n}';
+i18n['Dependencies saved ('] = '{i18n}Dependencies saved ({/i18n}';
 i18n['Dependencies for value "'] = '{i18n}Dependencies for value "{/i18n}';
 i18n['Now editing field "'] = '{i18n}Now editing field "{/i18n}';
 i18n['Loading Dependencies for value "'] = '{i18n}Loading Dependencies for value "{/i18n}';

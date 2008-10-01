@@ -908,6 +908,10 @@ $sourceDocument->getName(),
             return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName()));
         }
 
+        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')){
+            return PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
+        }
+
         // IF we're deleted ...
         if ($oDocument->getStatusID() == DELETED) {
             return true;

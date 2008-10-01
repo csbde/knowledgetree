@@ -63,6 +63,7 @@ class QueryResultItem
 	}
 
     public function getId() { return $this->id; }
+    public function getRealId() { return $this->id; }
 
     public function getIsProxy() { return $this instanceof ProxyResultItem; }
     public function getIsFolder() { return substr(get_class($this), 0, 6) == 'Folder' ; }

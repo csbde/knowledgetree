@@ -57,6 +57,9 @@ class KTBulkDeleteAction extends KTBulkAction {
             {
             	return PEAR::raiseError(_kt('Document cannot be deleted as it is immutable'));
             }
+            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.delete')){
+                return PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
+            }
         }
         return parent::check_entity($oEntity);
     }
@@ -705,6 +708,11 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	            return PEAR::raiseError(_kt('You do not have the required permissions'));
 	        }
         }
+        if(is_a($oEntity, 'Document')){
+            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.view')){
+                return PEAR::raiseError(_kt('Document cannot be exported as it is restricted by the workflow.'));
+            }
+        }
         return parent::check_entity($oEntity);
     }
 
@@ -844,6 +852,12 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	    				$oDocument->switchToLinkedCore();
 	    			}
 	    			if(Permission::userHasDocumentReadPermission($oDocument)){
+
+                        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.view')){
+                            $this->addErrorMessage($oDocument->getName().': '._kt('Document cannot be exported as it is restricted by the workflow.'));
+                            continue;
+                        }
+
                         $sDocFolderId = $oDocument->getFolderID();
                         $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
 
