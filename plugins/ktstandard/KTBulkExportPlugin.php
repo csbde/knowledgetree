@@ -140,6 +140,11 @@ class KTBulkExportAction extends KTFolderAction {
                 $oDocument = Document::get($iId);
                 $sFolderId = $oDocument->getFolderID();
 
+                if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.view')){
+                    $this->addErrorMessage($oDocument->getName().': '._kt('Document cannot be exported as it is restricted by the workflow.'));
+                    continue;
+                }
+
                 $oFolder = isset($aFolderObjects[$sFolderId]) ? $aFolderObjects[$sFolderId] : Folder::get($sFolderId);
 
                 if ($bNoisy) {
