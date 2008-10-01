@@ -1,1 +1,1 @@
-alter table `ktdms`.`document_transactions` add index `user_id` (`user_id`);
+ALTER TABLE `document_transactions` ADD INDEX `user_id` (`user_id`);
