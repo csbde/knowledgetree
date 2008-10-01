@@ -59,10 +59,6 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
-    function getName() {
-        return 'PDF Generator';
-    }
-
     function getDisplayName() {
 		$cmdpath = KTUtil::findCommand('externalBinary/python');
         // Check if openoffice and python are available
@@ -79,6 +75,10 @@ class PDFGeneratorAction extends KTDocumentAction {
                     $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
                     return _kt('Generate PDF') . "&nbsp;<a href=\"{$link}\">{$icon}</a>";
                 }
+            }
+            // If the document is empty then we are probably in the workflow admin - action restrictions section, so we can display the name.
+            if(empty($this->oDocument)){
+                return _kt('Generate PDF');
             }
         }
         return '';
