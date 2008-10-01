@@ -1,6 +1,6 @@
 <h2>{i18n}Assign blocked actions{/i18n}</h2>
 
-<p class="descriptiveText important">{i18n}Actions which are checked on this page will 
+<p class="descriptiveText important">{i18n}Actions which are checked on this page will
 <strong>not</strong> be available to users.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
@@ -14,26 +14,26 @@
     <thead>
         <th>{i18n}State{/i18n}</th>
       {foreach from=$actions item=oAction}
-        <th>
-        	{if $oAction->getDisplayName() != ''}
+    	{if $oAction->getDisplayName() != ''}
+        	<th>
         		{$oAction->getDisplayName()}
-        	{else}	
-        		{$oAction->getName()}
-        	{/if}
-        </th>  
+            </th>
+    	{/if}
       {/foreach}
     </thead>
-    
+
     <tbody>
       {foreach from=$states item=oState}
       {assign value=$oState->getId() var=state_id}
         <tr>
             <td>{$oState->getName()}</td>
             {foreach from=$actions item=oAction}
-            {assign value=$oAction->getName() var=action_id}
-                <td class="centered">            
-              <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
-                </td>
+                {if ($oAction->getDisplayName() != '')}
+                {assign value=$oAction->getName() var=action_id}
+                    <td class="centered">
+                        <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
+                    </td>
+                {/if}
             {/foreach}
         </tr>
       {/foreach}
