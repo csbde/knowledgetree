@@ -1726,7 +1726,8 @@ INSERT INTO `upgrades` VALUES
 (205,'sql*3.5.3*0*3.5.3/tag_cloud.sql','Update TagCloud descritption.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (206,'sql*3.5.3*0*3.5.3/doc_tran_user_index.sql','Add index on user_id to document transactions table.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (207,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
-(208,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
+(208,'func*3.5.4*7*createIndexes','Recreate db integrity:Create indexes on the database','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(209,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2657,7 +2658,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(208);
+(209);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
