@@ -1176,7 +1176,7 @@ class SQLQueryBuilder implements QueryBuilder
 		if (count($this->metadata) + count($this->db) == 0)
         {
             // return empty result set
-            return 'select 1 from documents where false';
+            return '';
         }
 
 		$sql =
@@ -1361,12 +1361,13 @@ class SQLQueryBuilder implements QueryBuilder
 		$this->exploreExprs($expr);
 
 		$sql = $this->buildCoreSQL();
+		if (empty($sql))
+		{
+		    return '';
+		}
 
 		$expr = $this->buildCoreSQLExpr($expr);
-		if ($expr != 'false')
-		{
-		    $sql .= $expr;
-		}
+		$sql .= $expr;
 
 		return $sql;
 	}
@@ -2142,8 +2143,12 @@ class OpExpr extends Expr
 			$sql = $exprbuilder->buildSimpleQuery($op, $group);
     	}
 
-    	$results = array();
+    	if (empty($sql))
+    	{
+    	    return array();
+    	}
 
+    	$results = array();
     	global $default;
     	$default->log->debug("SEARCH SQL: $sql");
     	$rs = DBUtil::getResultArray($sql);
@@ -2190,6 +2195,11 @@ class OpExpr extends Expr
     	else
     	{
 			$query = $exprbuilder->buildSimpleQuery($op, $group);
+    	}
+
+    	if (empty($query))
+    	{
+    	    return array();
     	}
 
     	$indexer = Indexer::get();
