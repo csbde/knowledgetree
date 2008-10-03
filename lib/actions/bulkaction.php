@@ -430,9 +430,12 @@ class KTBulkAction extends KTStandardDispatcher {
                 $sTargetUrl = KTBrowseUtil::getSearchResultURL();
                 $sAction = 'searchResults';
                 break;
+            default:
+                $sTargetUrl = $sReturnAction;
+                $sAction = '';
         }
 
-        $qs = 'action='.$sAction;
+        $qs = (!empty($sAction))? 'action='.$sAction : '';
         $qs .= (!empty($extra))? '&'.$extra : '';
         $sTargetUrl = KTUtil::addQueryString($sTargetUrl, $qs);
 
@@ -489,7 +492,7 @@ class KTBulkAction extends KTStandardDispatcher {
                 break;
             case 'search2':
                 $sTargetUrl = KTBrowseUtil::getSearchResultURL();
-                $sAction = 'searchResults';
+                $sAction = 'refresh';
                 break;
         }
 

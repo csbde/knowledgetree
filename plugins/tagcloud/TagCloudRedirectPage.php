@@ -142,7 +142,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
 
-        $aOptions['return_url'] = KTUtil::addQueryString('TagCloudRedirection&action=search&tag='. urlencode($tag), false );
+        $returnUrl = KTUtil::addQueryString('TagCloudRedirection&action=search&tag='. urlencode($tag), false);
+        $aOptions['return_url'] = $returnUrl;
         $aOptions['empty_message'] = _kt('No documents or folders match this query.');
         $aOptions['is_browse'] = true;
 
@@ -159,8 +160,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'boolean_search' => $sSearch,
             'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
             'browseutil' => new KTBrowseUtil(),
-            'returnaction' => 'booleanSearch',
-            'returndata' => $sSearch,
+            'returnaction' => $returnUrl,
         );
         return $oTemplate->render($aTemplateData);
     }

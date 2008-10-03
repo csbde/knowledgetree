@@ -475,6 +475,64 @@ class KTPluginUtil {
      * This is called by the 'Re-read plugins' action in the web interface.
      */
     function registerPlugins () {
+        global $default;
+
+        // Path to lock file
+        $cacheDir = $default->cacheDirectory . DIRECTORY_SEPARATOR;
+        $lockFile = $cacheDir.'plugin_register.lock';
+
+        // Check if the lock file exists
+        if(KTPluginUtil::doCheck($lockFile)){
+            return true;
+        }
+
+        // Create the lock file, run through the plugin registration and then delete the lock file
+        touch($lockFile);
+        KTPluginUtil::doPluginRegistration();
+        @unlink($lockFile);
+    }
+
+    /**
+     * Check the lockfile
+     */
+    function doCheck($lockFile)
+    {
+        if(file_exists($lockFile)){
+            // If it does exist, do a stat on it to check when it was created.
+            // if it was accessed more than 5 minutes ago then delete it and proceed with the plugin registration
+            // otherwise wait till lock file is deleted signalling that the registration is complete and return.
+
+            $stat = stat($lockFile);
+
+            $time = time() - (60 * 5);
+            if($stat['mtime'] > $time){
+
+                $cnt = 0;
+
+                while(file_exists($lockFile)){
+                    $cnt++;
+                    sleep(2);
+
+                    // if we've been waiting too long - typically it should only take a few seconds so 2 mins is too much time.
+                    if($cnt > 60){
+                        @unlink($lockFile);
+                        return false;
+                    }
+                }
+                return true;
+            }
+            @unlink($lockFile);
+        }
+        return false;
+    }
+
+    /**
+     * Read the plugins directory and register all plugins in the database.
+     */
+    function doPluginRegistration()
+    {
+        global $default;
+
         KTPluginUtil::_deleteSmartyFiles();
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
         $oCache =& KTCache::getSingleton();
@@ -493,7 +551,6 @@ class KTPluginUtil {
             }
         }
 
-        global $default;
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aRegistryList = $oRegistry->getPlugins();
         foreach ($aRegistryList as $oPlugin) {

@@ -8,31 +8,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -392,6 +392,14 @@ class KTFolderUtil {
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->removeFolderTree($oStartFolder);
 
+        // Check for symbolic links to the folder and its sub folders
+        $aSymlinks = array();
+        foreach($aFolderIds as $iFolder){
+        	$oFolder = Folder::get($iFolder);
+	        $aLinks = $oFolder->getSymbolicLinks();
+	        array_merge($aSymlinks, $aLinks);
+        }
+
         // documents all cleared.
         $sQuery = 'DELETE FROM ' . KTUtil::getTableName('folders') . ' WHERE id IN (' . DBUtil::paramArray($aFolderIds) . ')';
         $aParams = $aFolderIds;
@@ -402,17 +410,22 @@ class KTFolderUtil {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('Failure deleting folders.'));
         }
-        
-        //delete all folder shortcuts
-        foreach($aFolderIds as $iFolder){
-        	$oFolder = Folder::get($iFolder);
-	        $aSymlinks = $oFolder->getSymbolicLinks();
-	      
-	        foreach($aSymlinks as $aSymlink){       	
-	        	KTFolderUtil::deleteSymbolicLink($aSymlink['id']);
-	        }
+
+        // now that the folder has been deleted we delete all the shortcuts
+        if(!empty($aSymlinks)){
+            $links = array();
+            foreach($aSymlinks as $link){
+                $links[] = $link['id'];
+            }
+            $linkIds = implode(',', $links);
+
+            $query = "DELETE FROM folders WHERE id IN ($linkIds)";
         }
-        
+
+        foreach($aSymlinks as $aSymlink){
+        	KTFolderUtil::deleteSymbolicLink($aSymlink['id']);
+        }
+
         // purge caches
         KTEntityUtil::clearAllCaches('Folder');
 
@@ -584,7 +597,7 @@ class KTFolderUtil {
 
         return true;
     }
-    
+
 /**
      * Create a symbolic link in the target folder
      *
@@ -634,7 +647,7 @@ class KTFolderUtil {
         		return PEAR::raiseError(_kt('You\'re not authorized to create a shortcut to this folder'));
        		}
         }
-        
+
     	//check if the shortcut doesn't already exists in the target folder
         $aSymlinks = $sourceFolder->getSymbolicLinks();
         foreach($aSymlinks as $iSymlink){
@@ -643,7 +656,7 @@ class KTFolderUtil {
         		return PEAR::raiseError(_kt('There already is a shortcut to this folder in the target folder.'));
         	}
         }
-        
+
         //Create the link
         $oSymlink = Folder::createFromArray(array(
             'iParentID' => $targetFolder->getId(),
@@ -677,7 +690,7 @@ class KTFolderUtil {
         }
         if (!$folder->isSymbolicLink())
         {
-            return PEAR::raiseError(_kt('Focument must be a symbolic link entity'));
+            return PEAR::raiseError(_kt('Folder must be a symbolic link entity'));
         }
         if (is_null($user))
         {
@@ -692,17 +705,17 @@ class KTFolderUtil {
 		$oPerm = KTPermission::getByName('ktcore.permissions.delete');
     	if (!KTBrowseUtil::inAdminMode($user, $folder)) {
             if(!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $folder)){
-        		return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
+        		return PEAR::raiseError(_kt('You\'re not authorized to delete shortcuts'));
        		}
         }
-        
+
         // we only need to delete the folder entry for the link
         $sql = "DELETE FROM folders WHERE id=?";
         DBUtil::runQuery(array($sql, array($folder->getId())));
 
     }
-    
-    
+
+
 }
 
 ?>
