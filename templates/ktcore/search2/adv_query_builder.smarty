@@ -583,6 +583,35 @@ function addField(groupid, display, exprname, type)
 	el.dom.innerHTML = html;
 	el.appendTo('criteria_fields' + groupid);
 
+	var el = $('field' + groupid + '_' + fid + 'start');
+
+    if (el != null)
+    {
+		var map = new Ext.KeyMap(el,
+				{
+				    stopEvent: true,
+					key: Ext.EventObject.ENTER,
+					fn: function() {
+					    butSearchClick();
+					}
+				});
+    }
+
+    var el = $('field' + groupid + '_' + fid + 'end');
+
+    if (el != null)
+    {
+		var map = new Ext.KeyMap(el,
+				{
+				    stopEvent: true,
+					key: Ext.EventObject.ENTER,
+					fn: function() {
+					    butSearchClick();
+					}
+				});
+    }
+
+
 	if (rec.init != null)
 	{
 		rec.init(groupid, fid);
@@ -795,7 +824,7 @@ function butSearchClick()
 		<br>
 
 		<div id="criteria0">
-		<form id="form0">
+		<form id="form0" onsubmit="return false;">
 
 			<table width="100%">
 			<tr>
