@@ -492,7 +492,7 @@ class KTBulkAction extends KTStandardDispatcher {
                 break;
             case 'search2':
                 $sTargetUrl = KTBrowseUtil::getSearchResultURL();
-                $sAction = 'searchResults';
+                $sAction = 'refresh';
                 break;
         }
 

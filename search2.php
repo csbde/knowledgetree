@@ -274,6 +274,14 @@ class SearchDispatcher extends KTStandardDispatcher {
     	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 
+    function do_refresh(){
+        // Get query from session
+        $query = $_SESSION['search2_query'];
+
+        $this->processQuery($query);
+        $this->redirectTo('searchResults');
+    }
+
     /**
      * Processes a query sent by HTTP POST in searchQuery.
      *
