@@ -194,6 +194,11 @@ class KTDocumentUtil {
             return PEAR::raiseError(_kt('There was a database error while trying to archive this file'));
         }
 
+        // Ensure the action is not blocked
+        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')){
+            return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
+        }
+
     	//delete all shortcuts linking to this document
         $aSymlinks = $oDocument->getSymbolicLinks();
         foreach($aSymlinks as $aSymlink){

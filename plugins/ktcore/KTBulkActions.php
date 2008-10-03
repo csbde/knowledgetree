@@ -103,13 +103,15 @@ class KTBulkDeleteAction extends KTBulkAction {
      * @return KTForm the form
      */
 	function form_confirm() {
+	    $cancelUrl = $this->getReturnUrl();
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
             'action' => 'collectinfo',
             'fail_action' => 'main',
-            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'cancel_url' => $cancelUrl,
             'submit_label' => _kt('Continue'),
             'context' => $this,
         ));
@@ -539,6 +541,11 @@ class KTBulkArchiveAction extends KTBulkAction {
         if($oEntity->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document or folder instead."));
         }
+        if(is_a($oEntity, 'Document')){
+            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.archive')){
+                return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
+            }
+        }
         return parent::check_entity($oEntity);
     }
 
@@ -548,13 +555,15 @@ class KTBulkArchiveAction extends KTBulkAction {
      * @return KTForm the form
      */
 	function form_confirm() {
+	    $cancelUrl = $this->getReturnUrl();
+
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
             'action' => 'collectinfo',
             'fail_action' => 'main',
-            'cancel_url' => KTBrowseUtil::getUrlForFolder($this->oFolder),
+            'cancel_url' => $cancelUrl,
             'submit_label' => _kt('Continue'),
             'context' => $this,
         ));
@@ -640,7 +649,7 @@ class KTBulkArchiveAction extends KTBulkAction {
 
             // Get documents in folder
             $sDocuments = $oFolder->getDocumentIDs($sFolderId);
-            $aDocuments = explode(',', $sDocuments);
+            $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
 
             // Get all the folders within the folder
             $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
@@ -680,6 +689,8 @@ class KTBulkArchiveAction extends KTBulkAction {
                         return $res;
                     }
                 }
+            }else {
+                return PEAR::raiseError(_kt('The folder contains no documents to archive.'));
             }
             return true;
         }
