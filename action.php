@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -85,6 +85,42 @@ class KTActionDispatcher extends KTStandardDispatcher {
 	return $this->do_main();
     }
 
+    function getBulkReturnUrl(){
+        $sReturnAction = $_REQUEST['fReturnAction'];
+        $sReturnData = $_REQUEST['fReturnData'];
+        $sAction = 'main';
+        $qs = '';
+
+        switch ($sReturnAction){
+            case 'browse':
+                $sReturnData = (empty($sReturnData)) ? $_REQUEST['fFolderId'] : $sReturnData;
+                $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
+                break;
+            case 'simpleSearch':
+                $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
+                $extra = 'fSearchableText='.$sReturnData;
+                break;
+            case 'booleanSearch':
+                $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
+                $sAction = 'performSearch';
+                $extra = 'boolean_search_id='.$sReturnData;
+                break;
+            case 'search2':
+                $sTargetUrl = KTBrowseUtil::getSearchResultURL();
+                $sAction = 'searchResults';
+                break;
+            default:
+                $sTargetUrl = $sReturnAction;
+                $sAction = '';
+        }
+
+        $qs = (!empty($sAction))? 'action='.$sAction : '';
+        $qs .= (!empty($extra))? '&'.$extra : '';
+        $sTargetUrl = KTUtil::addQueryString($sTargetUrl, $qs);
+
+        return $sTargetUrl;
+    }
+
     function do_bulkaction() {
         $act = (array) KTUtil::arrayGet($_REQUEST, 'submit',null);
 
@@ -101,11 +137,23 @@ class KTActionDispatcher extends KTStandardDispatcher {
 
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) {
+            $redirectUrl = $this->getBulkReturnUrl();
+            if(!empty($redirectUrl)){
+                $this->addErrorMessage(_kt('Invalid folder selected.'));
+                redirect($redirectUrl);
+                exit(0);
+            }
             $this->errorRedirectToBrowse(_kt('Invalid folder selected.'));
             exit(0);
         }
 
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
+            $redirectUrl = $this->getBulkReturnUrl();
+            if(!empty($redirectUrl)){
+                $this->addErrorMessage(_kt('Please select documents or folders first.'));
+                redirect($redirectUrl);
+                exit(0);
+            }
             $this->errorRedirectToBrowse(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }
