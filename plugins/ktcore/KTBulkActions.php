@@ -282,6 +282,7 @@ class KTBulkMoveAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
+
         if(is_a($oEntity, 'Document')) {
             if(!KTDocumentUtil::canBeMoved($oEntity)) {
                 return PEAR::raiseError(_kt('Document cannot be moved'));
@@ -322,9 +323,11 @@ class KTBulkMoveAction extends KTBulkAction {
             exit(0);
         }
 
-        if($this->iTargetFolderId == $this->oFolder->getId()){
-            $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected: Target folder is the same as the current folder.'));
-            exit(0);
+        if ($_REQUEST['fReturnAction'] != 'search2') {
+            if($this->iTargetFolderId == $this->oFolder->getId()){
+                $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected: Target folder is the same as the current folder.'));
+                exit(0);
+            }
         }
 
         // does the user have write permission
