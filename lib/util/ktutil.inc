@@ -46,7 +46,7 @@ class KTUtil {
 	const DAY_IN_SECS = 86400;
 	const KB = 1024;
     const MB = 1048576;
-    const GB = 1073741824;
+    const GB = 1000000000;
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
@@ -182,8 +182,16 @@ class KTUtil {
 		if ($days > 0) $str .= sprintf(_kt(' %d day(s)'), $days);
 		if ($hours > 0) $str .= sprintf(_kt(' %d hour(s)'), $hours);
 		if ($mins > 0) $str .= sprintf(_kt(' %d minute(s)'), $mins);
-		if ($secs > 0) $str .= sprintf(_kt(' %d second(s)'), $secs);
 
+		// lets loose some granularity. the string does get quite long...
+		if ($days == 0 && $hours == 0 && $mins == 0 && $secs > 0)
+		{
+		    $str .= sprintf(_kt(' %d second(s)'), $secs);
+		}
+		if (empty($str))
+		{
+		    return _kt('never');
+		}
 		$str .= " $suffix";
 
 		if ($returnArray)
