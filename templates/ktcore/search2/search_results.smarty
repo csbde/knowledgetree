@@ -40,7 +40,7 @@ function saveSearch()
 	var txtQuery = '{/literal}{$txtQuery|escape:'quotes'}{literal}';
 	if (txtName.value == '')
 	{
-		alert('{/literal}{i18n}Please enter a name for the search expression.{/i18n}{literal}');
+		alert("{/literal}{i18n}Please enter a name for the search expression.{/i18n}{literal}");
 		txtName.focus();
 		return;
 	}
@@ -64,13 +64,13 @@ function saveSearch()
 	            }
 	            else
 	            {
-	                alert('{/literal}{i18n}There is a problem saving the expression expression.{/i18n}{literal}\n\n' + resp.message );
+	                alert("{/literal}{i18n}There is a problem saving the expression expression.{/i18n}{literal}\n\n" + resp.message );
 	            }
 	        }
 	    },
 	    failure: function(o)
 	    {
-	        alert('{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}' +  o.responseText);
+	        alert("{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}" +  o.responseText);
 	    },
 	    params: {
 	        txtName: txtName.value,
