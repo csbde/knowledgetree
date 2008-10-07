@@ -1312,8 +1312,15 @@ $sourceDocument->getName(),
         $oContentVersion = KTDocumentContentVersion::get($iContentId);
 
         if (PEAR::isError($oContentVersion) || ($oContentVersion == false)) {
-            DBUtil::rollback();
             return PEAR::raiseError(_kt('Invalid document content version object.'));
+        }
+
+        // Check that the document content is not the same as the current content version
+        $sDocStoragePath = $oDocument->getStoragePath();
+        $sVersionStoragePath = $oContentVersion->getStoragePath();
+
+        if($sDocStoragePath == $sVersionStoragePath){
+            return PEAR::raiseError(_kt("Can't delete version: content is the same as the current document content."));
         }
 
         DBUtil::startTransaction();
