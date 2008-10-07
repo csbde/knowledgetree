@@ -200,6 +200,9 @@ class KTFolderUtil {
             return $res;
         }
 
+        // Regenerate the folder object - ensure the updated information is taken into account
+        $oFolder = Folder::get($oFolder->getID());
+
         $res = $oStorage->moveFolder($oFolder, $oNewParentFolder);
         if (PEAR::isError($res)) {
             return $res;
@@ -450,6 +453,19 @@ class KTFolderUtil {
             return PEAR::raiseError(_kt('You are not allowed to create folders in the destination.'));
         }
 
+        // Check if the source folder inherits its permissions
+        // Get source PO id and its parent PO id
+        $iSrcPoId = $oSrcFolder->getPermissionObjectID();
+        $oSrcParent = Folder::get($oSrcFolder->getParentID());
+        $iSrcParentPoId = $srcParent->getPermissionObjectID();
+
+        // If the folder defines its own permissions then we leave it
+        // If the source folder inherits permissions we must change it to inherit from the new parent folder
+        $bInheritPermissions = false;
+        if($iSrcPoId == $iSrcParentPoId){
+            $bInheritPermissions = true;
+        }
+
         $aFolderIds = array(); // of oFolder
         $aDocuments = array(); // of oDocument
         $aFailedDocuments = array(); // of String
@@ -590,6 +606,14 @@ class KTFolderUtil {
                 DBUtil::rollback();
                 return PEAR::raiseError(_kt('Delete Aborted. Unexpected failure to copydocument: ') . $oDocument->getName() . $res->getMessage());
             }
+        }
+
+        // If the folder inherits its permissions then we set it to inherit from the new parent folder and update permissions
+        if($bInheritPermissions){
+            $aOptions = array(
+                'evenifnotowner' => true, // Inherit from parent folder, even though not permission owner
+                );
+            KTPermissionUtil::inheritPermissionObject($oNewBaseFolder, $aOptions);
         }
 
         // and store
