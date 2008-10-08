@@ -1369,6 +1369,11 @@ class SQLQueryBuilder implements QueryBuilder
 		$expr = $this->buildCoreSQLExpr($expr);
 		$sql .= $expr;
 
+		$config = KTConfig::getSingleton();
+		$maxSqlResults = $config->get('search/maxSqlResults', 1000);
+
+		$sql .= "limit $maxSqlResults";
+
 		return $sql;
 	}
 
@@ -1424,6 +1429,11 @@ class SQLQueryBuilder implements QueryBuilder
                 $sql .= $value->getSQL($field, "dfl$moffset.value", $expr->getOp());
             }
         }
+
+		$config = KTConfig::getSingleton();
+		$maxSqlResults = $config->get('search/maxSqlResults', 1000);
+
+		$sql .= "limit $maxSqlResults";
 
         return $sql;
 	}
