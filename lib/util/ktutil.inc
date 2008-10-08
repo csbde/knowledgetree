@@ -148,7 +148,7 @@ class KTUtil {
 
 		if (false === $base_url)
 		{
-			$default->log->info("call_page: $path - cannot call script until user logs in for the first time!");
+			$default->log->info("call_page: $path - cannot call script until user logs in from a url other than localhost or 127.0.0.1!");
 			return;
 		}
 
