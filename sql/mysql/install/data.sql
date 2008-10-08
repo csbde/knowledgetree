@@ -275,7 +275,8 @@ INSERT INTO `config_settings` VALUES
 (101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0),
 (102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1),
 (103, 'tweaks', 'Always Force Original Filename on Checkin', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
-(104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '/usr/share/file/magic', 'string', NULL, 1);
+(104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '/usr/share/file/magic', 'string', NULL, 1),
+(105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '1000', 'numeric_string', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1727,7 +1728,8 @@ INSERT INTO `upgrades` VALUES
 (206,'sql*3.5.3*0*3.5.3/doc_tran_user_index.sql','Add index on user_id to document transactions table.','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (207,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (208,'func*3.5.4*7*createIndexes','Recreate db integrity:Create indexes on the database','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
-(209,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
+(209,'sql*3.5.4*0*3.5.4/max_sql_search_results.sql','Add configurable maximum results for SQL search queries.','2008-07-30 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(210,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2658,7 +2660,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(209);
+(210);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
