@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -113,7 +113,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		return ($this->document->getStatusID() == 3);
 	}
-	
+
 	/**
 	 * Checks if the document is a shortcut
 	 *
@@ -132,8 +132,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		return $this->document->getSymbolicLinks();
 	}
-	
-	
+
+
 	/**
 	 * This is the constructor for the KTAPI_Folder.
 	 *
@@ -379,7 +379,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		//if the document is checked-out by the current user, just return
 		//as no need to check-out again BUT we do need to download
 		//returning here will allow download, but skip check-out
-		if ( ($this->document->getIsCheckedOut()) && 
+		if ( ($this->document->getIsCheckedOut()) &&
 			($this->document->getCheckedOutUserID() == $_SESSION['userID']) )
 		{
 			return;
@@ -517,6 +517,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return $result;
 		}
 
+        $tgt_folder = $target_folder->get_folder();
+
 		$name = $this->document->getName();
 		$clash = KTDocumentUtil::nameExists($target_folder, $name);
         if ($clash && !is_null($newname))
@@ -526,7 +528,14 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
         if ($clash)
         {
-        	return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
+            if (is_null($newname))
+            {
+                $name = KTDocumentUtil::getUniqueDocumentName($tgt_folder, $name);
+            }
+            else
+            {
+                return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
+            }
         }
 
         $filename=$this->document->getFilename();
@@ -539,7 +548,14 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
         if ($clash)
         {
-        	return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
+            if (is_null($newfilename))
+            {
+                $filename = KTDocumentUtil::getUniqueFilename($tgt_folder, $newfilename);
+            }
+            else
+            {
+        	   return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
+            }
         }
 
 		DBUtil::startTransaction();
@@ -1502,7 +1518,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$detail = array();
 		$document = $this->document;
-	
+
 		// get the document id
 		$detail['document_id'] = (int) $document->getId();
 
@@ -1625,7 +1641,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$detail['version'] = (float) $detail['version'];
 		}
-		
+
 		//might be unset at the bottom in case of old webservice version
 		//make sure we're using the real document for this one
 		$this->document->switchToRealCore();
@@ -1684,7 +1700,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if($wsversion < 3){
 			unset($detail['linked_document_id']);
 		}
-		
+
 		return $detail;
 	}
 

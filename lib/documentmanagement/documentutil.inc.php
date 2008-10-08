@@ -683,20 +683,37 @@ $sourceDocument->getName(),
     }
     // }}}
 
+    function getUniqueFilename($oFolder, $sFilename) {
+        // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
+        // quite a lot of queries.
+        $iFolderId = $oFolder->getId();
+        while (KTDocumentUtil::fileExists($oFolder, $sFilename)) {
+          $oDoc = Document::getByFilenameAndFolder($sFilename, $iFolderId);
+          $sFilename = KTDocumentUtil::generateNewDocumentFilename($oDoc->getFileName());
+        }
+        return $sFilename;
+    }
+
+    function getUniqueDocumentName($oFolder, $sFilename)
+    {
+        // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
+        // quite a lot of queries.
+        $iFolderId = $oFolder->getId();
+        while(KTDocumentUtil::nameExists($oFolder, $sFilename)) {
+          $oDoc = Document::getByNameAndFolder($sFilename, $iFolderId);
+          $sFilename = KTDocumentUtil::generateNewDocumentName($oDoc->getName());
+        }
+        return $sFilename;
+    }
 
     // {{{ _in_add
     function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
         $aOrigOptions = $aOptions;
-        while(KTDocumentUtil::fileExists($oFolder, $sFilename)) {
-          $oDoc = Document::getByFilenameAndFolder($sFilename, $oFolder->getId());
-          $sFilename = KTDocumentUtil::generateNewDocumentFilename($oDoc->getFileName());
-        }
+
+        $sFilename = KTDocumentUtil::getUniqueFilename($oFolder, $sFilename);
         $sName = KTUtil::arrayGet($aOptions, 'description', $sFilename);
-        while(KTDocumentUtil::nameExists($oFolder, $sName)) {
-          $oDoc = Document::getByNameAndFolder($sName, $oFolder->getId());
-          $aOptions['description'] = KTDocumentUtil::generateNewDocumentName($oDoc->getName());
-          $sName = KTDocumentUtil::generateNewDocumentName($oDoc->getName());
-        }
+        $sName = KTDocumentUtil::getUniqueDocumentName($oFolder, $sName);
+        $aOptions['description'] = $sName;
 
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
@@ -780,43 +797,48 @@ $sourceDocument->getName(),
     }
     // }}}
 
-	function generateNewDocumentFilename($sDocFilename){
-		if(preg_match("/\([0-9]+\)(\.[^\.]+){1,}$/", $sDocFilename)){
-		  preg_match("/\([0-9]+\)\./", $sDocFilename, $matches);
-		  $new_one = substr($matches[0], 1);
-		  $new_two = explode(')', $new_one);
-		  $new = $new_two[0]+1;
+    function incrementNameCollissionNumbering($sDocFilename, $skipExtension = false){
 
-		  $pattern[0] = '/\([0-9]+\)\./';
-		  $replacement[0] = ' ('.$new.').';
-		  $sFilename = preg_replace($pattern, $replacement, $sDocFilename);
-		}else{
-		  $matches = explode('.', $sDocFilename);
-		  $prefix = $matches[0].' (2)';
-		  for($i = 1; $i < count($matches); $i++ ){
-		    $suffix .= '.'.$matches[$i];
-		  }
-		  $sFilename = $prefix.$suffix;
-		}
+        $iDot = strpos($sDocFilename, '.');
+        if ($skipExtension || $iDot === false)
+        {
+            if(preg_match("/\(([0-9]+)\)$/", $sDocFilename, $matches, PREG_OFFSET_CAPTURE)) {
 
-		return $sFilename;
+                $iCount = $matches[1][0];
+                $iPos = $matches[1][1];
+
+                $iNewCount = $iCount + 1;
+                $sDocFilename = substr($sDocFilename, 0, $iPos) . $iNewCount .  substr($sDocFilename, $iPos + strlen($iCount));
+            }
+            else {
+                $sDocFilename = $sDocFilename . '(1)';
+            }
+        }
+        else
+        {
+            if(preg_match("/\(([0-9]+)\)(\.[^\.]+)+$/", $sDocFilename, $matches, PREG_OFFSET_CAPTURE)) {
+
+                $iCount = $matches[1][0];
+                $iPos = $matches[1][1];
+
+                $iNewCount = $iCount + 1;
+                $sDocFilename = substr($sDocFilename, 0, $iPos) . $iNewCount .  substr($sDocFilename, $iPos + strlen($iCount));
+            }
+            else {
+                $sDocFilename = substr($sDocFilename, 0, $iDot) . '(1)' . substr($sDocFilename, $iDot);
+            }
+        }
+        return $sDocFilename;
+    }
+
+
+	function generateNewDocumentFilename($sDocFilename) {
+	    return self::incrementNameCollissionNumbering($sDocFilename, false);
 	}
 
 	function generateNewDocumentName($sDocName){
-		if(preg_match("/\([0-9]+\)$/", $sDocName)){
-		  preg_match("/\([0-9]+\)$/", $sDocName, $matches);
-		  $new_one = substr($matches[0], 1);
-		  $new_two = explode(')', $new_one);
-		  $new = $new_two[0]+1;
+	    return self::incrementNameCollissionNumbering($sDocName, true);
 
-		  $pattern[0] = '/\([0-9]+\)$/';
-		  $replacement[0] = '('.$new.')';
-		  $sName = preg_replace($pattern, $replacement, $sDocName);
-		}else{
-		  $sName =  $sDocName.' (2)';
-		}
-
-		return $sName;
 	}
 
     // {{{ fileExists
@@ -1039,61 +1061,89 @@ $sourceDocument->getName(),
 		//print '--------------------------------- BEFORE';
         //print_r($oDocument);
 
-        // grab the "source "data
-        $sTable = KTUtil::getTableName('documents');
-        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
+        // TODO: this is not optimal. we have get() functions that will do SELECT when we already have the data in arrays
+
+        // get the core record to be copied
+        $sDocumentTable = KTUtil::getTableName('documents');
+        $sQuery = 'SELECT * FROM ' . $sDocumentTable . ' WHERE id = ?';
         $aParams = array($oDocument->getId());
         $aCoreRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        // we unset the id as a new one will be created on insert
         unset($aCoreRow['id']);
 
-        $aCoreRow['modified'] = date('Y-m-d H:i:s');
-        $aCoreRow['folder_id'] = $oDestinationFolder->getId(); // new location.
-        $id = DBUtil::autoInsert($sTable, $aCoreRow);
-        if (PEAR::isError($id)) { return $id; }
-        // we still have a bogus md_version, but integrity holds, so fix it now.
-        $oCore = KTDocumentCore::get($id);
-
-        // Get the metadata version for the source document
-        $sTable = KTUtil::getTableName('document_metadata_version');
-        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
-        $aParams = array($oDocument->getMetadataVersionId());
+        // get a copy of the latest metadata version for the copied document
+        $iOldMetadataId = $aCoreRow['metadata_version_id'];
+        $sMetadataTable = KTUtil::getTableName('document_metadata_version');
+        $sQuery = 'SELECT * FROM ' . $sMetadataTable . ' WHERE id = ?';
+        $aParams = array($iOldMetadataId);
         $aMDRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        // we unset the id as a new one will be created on insert
         unset($aMDRow['id']);
 
-        // Copy the source metadata into the destination document
-        $aMDRow['document_id'] = $oCore->getId();
-        if(!empty($sDestinationDocName)){
-            $aMDRow['name'] = $sDestinationDocName;
-            $aMDRow['description'] = $sDestinationDocName;
+        // set the name for the document, possibly using name collission
+        if (empty($sDestinationDocName)){
+            $aMDRow['name'] = KTDocumentUtil::getUniqueDocumentName($oDestinationFolder, $aMDRow['name']);
         }
-        $id = DBUtil::autoInsert($sTable, $aMDRow);
-        if (PEAR::isError($id)) { return $id; }
-        $oCore->setMetadataVersionId($id);
-        $oMDV = KTDocumentMetadataVersion::get($id);
+        else {
+            $aMDRow['name'] = $sDestinationDocName;
+        }
 
-        // Get the content version for the source document
-        $sTable = KTUtil::getTableName('document_content_version');
-        $sQuery = 'SELECT * FROM ' . $sTable . ' WHERE id = ?';
-        $aParams = array($oDocument->_oDocumentContentVersion->getId());
+        // get a copy of the latest content version for the copied document
+        $iOldContentId = $aMDRow['content_version_id'];
+        $sContentTable = KTUtil::getTableName('document_content_version');
+        $sQuery = 'SELECT * FROM ' . $sContentTable . ' WHERE id = ?';
+        $aParams = array($iOldContentId);
         $aContentRow = DBUtil::getOneResult(array($sQuery, $aParams));
+        // we unset the id as a new one will be created on insert
         unset($aContentRow['id']);
 
-        // Copy the source content into the destination document
-        $aContentRow['document_id'] = $oCore->getId();
-        if(!empty($sDestinationDocName)){
+        // set the filename for the document, possibly using name collission
+        if(empty($sDestinationDocName)) {
+            $aContentRow['filename'] = KTDocumentUtil::getUniqueFilename($oDestinationFolder, $aContentRow['filename']);
+        }
+        else {
             $aContentRow['filename'] = $sDestinationDocName;
         }
-        $id = DBUtil::autoInsert($sTable, $aContentRow);
-        if (PEAR::isError($id)) { return $id; }
-        $oMDV->setContentVersionId($id);
 
-        $res = $oCore->update();
+        // create the new document record
+        $aCoreRow['modified'] = date('Y-m-d H:i:s');
+        $aCoreRow['folder_id'] = $oDestinationFolder->getId(); // new location.
+        $id = DBUtil::autoInsert($sDocumentTable, $aCoreRow);
+        if (PEAR::isError($id)) { return $id; }
+        $iNewDocumentId = $id;
+
+        // create the new metadata record
+        $aMDRow['document_id'] = $iNewDocumentId;
+        $aMDRow['description'] = $aMDRow['name'];
+        $id = DBUtil::autoInsert($sMetadataTable, $aMDRow);
+        if (PEAR::isError($id)) { return $id; }
+        $iNewMetadataId = $id;
+
+        // the document metadata version is still pointing to the original
+        $aCoreUpdate = array();
+        $aCoreUpdate['metadata_version_id'] = $iNewMetadataId;
+        $aCoreUpdate['metadata_version'] = 0;
+
+        // create the new content version
+        $aContentRow['document_id'] = $iNewDocumentId;
+        $id = DBUtil::autoInsert($sContentTable, $aContentRow);
+        if (PEAR::isError($id)) { return $id; }
+        $iNewContentId = $id;
+
+        // the metadata content version is still pointing to the original
+        $aMetadataUpdate = array();
+        $aMetadataUpdate['content_version_id'] = $iNewContentId;
+        $aMetadataUpdate['metadata_version'] = 0;
+
+        // apply the updates to the document and metadata records
+        $res = DBUtil::autoUpdate($sDocumentTable, $aCoreUpdate, $iNewDocumentId);
         if (PEAR::isError($res)) { return $res; }
-        $res = $oMDV->update();
+
+        $res = DBUtil::autoUpdate($sMetadataTable, $aMetadataUpdate, $iNewMetadataId);
         if (PEAR::isError($res)) { return $res; }
 
         // now, we have a semi-sane document object. get it.
-        $oNewDocument = Document::get($oCore->getId());
+        $oNewDocument = Document::get($iNewDocumentId);
 
         //print '--------------------------------- AFTER';
         //print_r($oDocument);
@@ -1101,7 +1151,7 @@ $sourceDocument->getName(),
         //print_r($oNewDocument);
 
         // copy the metadata from old to new.
-        $res = KTDocumentUtil::copyMetadata($oNewDocument, $oDocument->getMetadataVersionId());
+        $res = KTDocumentUtil::copyMetadata($oNewDocument, $iOldMetadataId);
         if (PEAR::isError($res)) { return $res; }
 
         // Ensure the copied document is not checked out
@@ -1111,7 +1161,6 @@ $sourceDocument->getName(),
         // finally, copy the actual file.
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $res = $oStorage->copy($oDocument, $oNewDocument);
-
 
         $oOriginalFolder = Folder::get($oDocument->getFolderId());
         $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();
@@ -1227,11 +1276,16 @@ $sourceDocument->getName(),
 
         //put the document in the new folder
         $oDocument->setFolderID($oFolder->getId());
+        $sName = $oDocument->getName();
+        $sFilename = $oDocument->getFileName();
+
+        $oDocument->setFileName(KTDocumentUtil::getUniqueFilename($oToFolder, $sFilename));
+        $oDocument->setName(KTDocumentUtil::getUniqueDocumentName($oToFolder, $sName));
+
         $res = $oDocument->update();
         if (PEAR::isError($res)) {
             return $res;
         }
-
 
         //move the document on the file system(not if it's a symlink)
         if(!$oDocument->isSymbolicLink()){
