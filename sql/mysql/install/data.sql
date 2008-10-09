@@ -1443,7 +1443,8 @@ LOCK TABLES `system_settings` WRITE;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
 (2,'knowledgeTreeVersion','3.5.4'),
-(3,'databaseVersion','3.5.4');
+(3,'databaseVersion','3.5.4'),
+(4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
