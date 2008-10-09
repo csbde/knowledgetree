@@ -50,8 +50,6 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
-    const SERVER_NAME_SETTING = 'server_name';
-
     /**
      * Used to resolve the server name
      *
@@ -60,8 +58,8 @@ class KTUtil {
     {
     	global $default;
 
-    	$serverName = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
-    	if($serverName !== false){
+    	$serverName = KTUtil::getSystemSetting('server_name', false);
+    	if($serverName !== false && !empty($serverName)){
     	    return $serverName;
     	}
 
@@ -91,7 +89,7 @@ class KTUtil {
 		$base_url .= $rootUrl;
 
 		// Save as system setting
-		KTUtil::setSystemSetting(SERVER_NAME_SETTING, $base_url);
+		KTUtil::setSystemSetting('server_name', $base_url);
     }
 
 
@@ -113,11 +111,11 @@ class KTUtil {
 		if(empty($serverName) || $serverName == 'localhost')
 		{
 		    // The host has not been set - check if the serverName setting exists
-		    $base_url = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
+		    $base_url = KTUtil::getSystemSetting('server_name', false);
 
-		    if (false !== $base_url)
+		    if (false !== $base_url && !empty($base_url))
     		{
-    		    /* We are checking if the object exists because we could have an error pre oor during initialization */
+    		    /* We are checking if the object exists because we could have an error pre or during initialization */
         		if(is_object($default->log))
         		{
         			$default->log->debug("kt_url: base url - $base_url");
@@ -144,9 +142,9 @@ class KTUtil {
 	{
 	    global $default;
 
-		$base_url = KTUtil::getSystemSetting(SERVER_NAME_SETTING, false);
+		$base_url = KTUtil::getSystemSetting('server_name', false);
 
-		if (false === $base_url)
+		if (false === $base_url || empty($base_url))
 		{
 			$default->log->info("call_page: $path - cannot call script until user logs in from a url other than localhost or 127.0.0.1!");
 			return;
