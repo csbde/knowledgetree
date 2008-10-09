@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-06 12:27+0200\n"
+"POT-Creation-Date: 2008-10-09 10:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,27 +16,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/util/ktutil.inc:182
+#: lib/util/ktutil.inc:180
 #, php-format
 msgid " %d day(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:183
+#: lib/util/ktutil.inc:181
 #, php-format
 msgid " %d hour(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:184
+#: lib/util/ktutil.inc:182
 #, php-format
 msgid " %d minute(s)"
 msgstr ""
 
-#: lib/util/ktutil.inc:185
+#: lib/util/ktutil.inc:187
 #, php-format
 msgid " %d second(s)"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:210
+#: lib/foldermanagement/folderutil.inc.php:213
 #, php-format
 msgid " (reason: %s)"
 msgstr ""
@@ -1049,7 +1049,7 @@ msgstr ""
 msgid "All documents under the folder '%s' have been scheduled for indexing."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:777
+#: lib/documentmanagement/documentutil.inc.php:794
 msgid "All done..."
 msgstr ""
 
@@ -1212,13 +1212,13 @@ msgid "An error occurred while sending the email, please try again or contact th
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:446
-#: lib/documentmanagement/documentutil.inc.php:1179
+#: lib/documentmanagement/documentutil.inc.php:1228
 msgid "An error occurred while storing the new file"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:116
 #: lib/documentmanagement/documentutil.inc.php:474
-#: lib/documentmanagement/documentutil.inc.php:1196
+#: lib/documentmanagement/documentutil.inc.php:1245
 msgid "An error occurred while storing this document in the database"
 msgstr ""
 
@@ -1274,7 +1274,7 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:500 plugins/ktcore/KTBulkActions.php:510
+#: plugins/ktcore/KTBulkActions.php:503 plugins/ktcore/KTBulkActions.php:513
 #: plugins/ktcore/KTDocumentActions.php:1401
 msgid "Archive"
 msgstr ""
@@ -1287,7 +1287,7 @@ msgstr ""
 msgid "Archive Document"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:509
+#: plugins/ktcore/KTBulkActions.php:512
 msgid "Archive Items"
 msgstr ""
 
@@ -1365,7 +1365,7 @@ msgstr ""
 msgid "Are you sure you wish to remove this role allocation?"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:110 plugins/ktcore/KTBulkActions.php:562
+#: plugins/ktcore/KTBulkActions.php:110 plugins/ktcore/KTBulkActions.php:565
 #: plugins/ktcore/KTDocumentActions.php:897
 #: plugins/ktcore/KTDocumentActions.php:1414
 msgid "Are you sure?"
@@ -1575,7 +1575,7 @@ msgstr ""
 msgid "Available Workflows"
 msgstr ""
 
-#: lib/util/ktutil.inc:233
+#: lib/util/ktutil.inc:239
 msgid "B"
 msgstr ""
 
@@ -1755,6 +1755,10 @@ msgstr ""
 msgid "Can't delete built-in permission"
 msgstr ""
 
+#: lib/documentmanagement/documentutil.inc.php:1377
+msgid "Can't delete version: content is the same as the current document content."
+msgstr ""
+
 #: lib/authentication/interceptorregistry.inc.php:78
 #, php-format
 msgid "Can't find interceptor: %s"
@@ -1855,7 +1859,7 @@ msgstr ""
 msgid "Cannot move root folder!"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:338
+#: lib/foldermanagement/folderutil.inc.php:341
 #, php-format
 msgid "Cannot remove unit folder: %s."
 msgstr ""
@@ -2132,11 +2136,11 @@ msgstr ""
 msgid "Checking out a document reserves it for your exclusive use.  This ensures that you can edit the document without anyone else changing the document and placing it into the document management system."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:764
+#: lib/documentmanagement/documentutil.inc.php:781
 msgid "Checking permissions..."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:916 plugins/ktcore/KTBulkActions.php:960
+#: plugins/ktcore/KTBulkActions.php:919 plugins/ktcore/KTBulkActions.php:963
 #: plugins/ktcore/KTDocumentActions.php:386
 #: plugins/ktcore/KTDocumentActions.php:419
 msgid "Checkout"
@@ -2150,7 +2154,7 @@ msgstr ""
 msgid "Checkout Guard"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:959
+#: plugins/ktcore/KTBulkActions.php:962
 msgid "Checkout Items"
 msgstr ""
 
@@ -2158,7 +2162,7 @@ msgstr ""
 msgid "Checkout document"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:939 plugins/ktcore/KTBulkActions.php:1206
+#: plugins/ktcore/KTBulkActions.php:942 plugins/ktcore/KTBulkActions.php:1209
 msgid "Checkout is restricted by the workflow state."
 msgstr ""
 
@@ -2431,7 +2435,7 @@ msgstr ""
 msgid "Confirm Restore of %d documents"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:588
+#: plugins/ktcore/KTBulkActions.php:591
 #: plugins/ktcore/KTDocumentActions.php:1473
 msgid "Confirm archive"
 msgstr ""
@@ -2479,7 +2483,7 @@ msgid "Content version"
 msgstr ""
 
 #: lib/actions/bulkaction.php:456 plugins/ktcore/KTBulkActions.php:115
-#: plugins/ktcore/KTBulkActions.php:567
+#: plugins/ktcore/KTBulkActions.php:570
 msgid "Continue"
 msgstr ""
 
@@ -2523,12 +2527,12 @@ msgstr ""
 msgid "Convert to Trees."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1137
+#: lib/documentmanagement/documentutil.inc.php:1186
 #, php-format
 msgid "Copied from original in folder \"%s\". %s"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1133
+#: lib/documentmanagement/documentutil.inc.php:1182
 #, php-format
 msgid "Copied to folder \"%s\". %s"
 msgstr ""
@@ -2541,7 +2545,7 @@ msgstr ""
 msgid "Copies the document to another folder."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:354 plugins/ktcore/KTBulkActions.php:364
+#: plugins/ktcore/KTBulkActions.php:357 plugins/ktcore/KTBulkActions.php:367
 #: plugins/ktcore/KTDocumentActions.php:1204
 #: plugins/ktcore/KTDocumentActions.php:1235
 #: plugins/ktcore/KTDocumentActions.php:1319 i18n/templates.c:4391
@@ -2555,7 +2559,7 @@ msgstr ""
 msgid "Copy Document"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:363
+#: plugins/ktcore/KTBulkActions.php:366
 msgid "Copy Items"
 msgstr ""
 
@@ -2611,12 +2615,12 @@ msgstr ""
 msgid "Could not authenticate administrative user"
 msgstr ""
 
-#: lib/util/ktutil.inc:624 lib/util/ktutil.inc:655 lib/util/ktutil.inc:660
+#: lib/util/ktutil.inc:630 lib/util/ktutil.inc:661 lib/util/ktutil.inc:666
 #, php-format
 msgid "Could not copy to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:531
+#: lib/util/ktutil.inc:537
 #, php-format
 msgid "Could not create destination directory: %s"
 msgstr ""
@@ -2715,12 +2719,12 @@ msgstr ""
 msgid "Could not find user in LDAP server"
 msgstr ""
 
-#: lib/util/ktutil.inc:633
+#: lib/util/ktutil.inc:639
 #, php-format
 msgid "Could not move to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:527
+#: lib/util/ktutil.inc:533
 #, php-format
 msgid "Could not open source directory: %s"
 msgstr ""
@@ -2744,7 +2748,7 @@ msgstr ""
 msgid "Could not remove link"
 msgstr ""
 
-#: lib/util/ktutil.inc:628
+#: lib/util/ktutil.inc:634
 #, php-format
 msgid "Could not remove source: %s"
 msgstr ""
@@ -2775,25 +2779,25 @@ msgstr ""
 msgid "Couldn't create folder"
 msgstr ""
 
-#: lib/util/ktutil.inc:617
+#: lib/util/ktutil.inc:623
 #, php-format
 msgid "Couldn't move file to destination: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:612 lib/util/ktutil.inc:650
+#: lib/util/ktutil.inc:618 lib/util/ktutil.inc:656
 #, php-format
 msgid "Couldn't stat destination location: %s"
 msgstr ""
 
-#: lib/util/ktutil.inc:608 lib/util/ktutil.inc:646
+#: lib/util/ktutil.inc:614 lib/util/ktutil.inc:652
 #, php-format
 msgid "Couldn't stat source file: %s"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:843
-#: lib/documentmanagement/documentutil.inc.php:855
-#: lib/documentmanagement/documentutil.inc.php:873
-#: lib/documentmanagement/documentutil.inc.php:876
+#: lib/documentmanagement/documentutil.inc.php:865
+#: lib/documentmanagement/documentutil.inc.php:877
+#: lib/documentmanagement/documentutil.inc.php:895
+#: lib/documentmanagement/documentutil.inc.php:898
 #, php-format
 msgid "Couldn't store contents: %s"
 msgstr ""
@@ -3008,7 +3012,7 @@ msgstr ""
 msgid "Creating database entry"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:731
+#: lib/documentmanagement/documentutil.inc.php:748
 msgid "Creating transaction"
 msgstr ""
 
@@ -3170,11 +3174,11 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:591
+#: lib/foldermanagement/folderutil.inc.php:607
 msgid "Delete Aborted. Unexpected failure to copydocument: "
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:388
+#: lib/foldermanagement/folderutil.inc.php:391
 msgid "Delete Aborted. Unexpected failure to delete document: "
 msgstr ""
 
@@ -3273,8 +3277,8 @@ msgstr ""
 msgid "Deletion Comment"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:905
-#: lib/documentmanagement/documentutil.inc.php:1300
+#: lib/documentmanagement/documentutil.inc.php:927
+#: lib/documentmanagement/documentutil.inc.php:1354
 msgid "Deletion requires a reason"
 msgstr ""
 
@@ -3317,11 +3321,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: lib/util/ktutil.inc:508
+#: lib/util/ktutil.inc:514
 msgid "Destination directory already exists."
 msgstr ""
 
-#: lib/util/ktutil.inc:522
+#: lib/util/ktutil.inc:528
 msgid "Destination of move is within source"
 msgstr ""
 
@@ -3713,31 +3717,31 @@ msgstr ""
 msgid "Document archived."
 msgstr ""
 
-#: ktapi/KTAPIDocument.inc.php:816
+#: ktapi/KTAPIDocument.inc.php:832
 #: lib/documentmanagement/documentutil.inc.php:220
 #, php-format
 msgid "Document archived: %s"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:539
+#: plugins/ktcore/KTBulkActions.php:542
 msgid "Document cannot be archived"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:199
-#: plugins/ktcore/KTBulkActions.php:546
+#: plugins/ktcore/KTBulkActions.php:549
 msgid "Document cannot be archived as it is restricted by the workflow."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:942
+#: plugins/ktcore/KTBulkActions.php:945
 msgid "Document cannot be checked out"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:923 plugins/ktcore/KTBulkActions.php:1089
-#: plugins/ktcore/KTBulkActions.php:1200
+#: plugins/ktcore/KTBulkActions.php:926 plugins/ktcore/KTBulkActions.php:1092
+#: plugins/ktcore/KTBulkActions.php:1203
 msgid "Document cannot be checked out as it is immutable"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:440
+#: plugins/ktcore/KTBulkActions.php:443
 msgid "Document cannot be copied"
 msgstr ""
 
@@ -3745,21 +3749,21 @@ msgstr ""
 msgid "Document cannot be deleted as it is immutable"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:917
+#: lib/documentmanagement/documentutil.inc.php:939
 #: plugins/ktcore/KTBulkActions.php:61
 msgid "Document cannot be deleted as it is restricted by the workflow."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:714
+#: plugins/ktcore/KTBulkActions.php:717
 msgid "Document cannot be exported"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:724 plugins/ktcore/KTBulkActions.php:867
+#: plugins/ktcore/KTBulkActions.php:727 plugins/ktcore/KTBulkActions.php:870
 #: plugins/ktstandard/KTBulkExportPlugin.php:144
 msgid "Document cannot be exported as it is restricted by the workflow."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:287
+#: plugins/ktcore/KTBulkActions.php:288
 msgid "Document cannot be moved"
 msgstr ""
 
@@ -3794,7 +3798,7 @@ msgstr ""
 msgid "Document copy emailed to %s. "
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:1226
+#: plugins/ktcore/KTBulkActions.php:1229
 msgid "Document could not be checked out. "
 msgstr ""
 
@@ -3802,12 +3806,12 @@ msgstr ""
 msgid "Document could not be restored"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:706
-#: lib/documentmanagement/documentutil.inc.php:734
+#: lib/documentmanagement/documentutil.inc.php:723
+#: lib/documentmanagement/documentutil.inc.php:751
 msgid "Document created"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:984
+#: lib/documentmanagement/documentutil.inc.php:1006
 msgid "Document deleted: "
 msgstr ""
 
@@ -3825,8 +3829,8 @@ msgstr ""
 msgid "Document expunged"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:933 plugins/ktcore/KTBulkActions.php:1098
-#: plugins/ktcore/KTBulkActions.php:1218
+#: plugins/ktcore/KTBulkActions.php:936 plugins/ktcore/KTBulkActions.php:1101
+#: plugins/ktcore/KTBulkActions.php:1221
 msgid "Document has already been checked out by "
 msgstr ""
 
@@ -3928,7 +3932,7 @@ msgstr ""
 msgid "Document removed"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1200
+#: lib/documentmanagement/documentutil.inc.php:1249
 msgid "Document renamed"
 msgstr ""
 
@@ -4027,8 +4031,8 @@ msgstr ""
 msgid "Documents with Indexing Problems:"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:375
-#: lib/foldermanagement/folderutil.inc.php:497
+#: lib/foldermanagement/folderutil.inc.php:378
+#: lib/foldermanagement/folderutil.inc.php:513
 msgid "Documents: "
 msgstr ""
 
@@ -4066,7 +4070,7 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:707
+#: plugins/ktcore/KTBulkActions.php:710
 msgid "Download All"
 msgstr ""
 
@@ -4080,7 +4084,7 @@ msgstr ""
 msgid "Download File"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:976
+#: plugins/ktcore/KTBulkActions.php:979
 msgid "Download Files"
 msgstr ""
 
@@ -5081,12 +5085,12 @@ msgstr ""
 msgid "Failed to update your details."
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:411
+#: lib/foldermanagement/folderutil.inc.php:414
 msgid "Failure deleting folders."
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:332
-#: lib/foldermanagement/folderutil.inc.php:468
+#: lib/foldermanagement/folderutil.inc.php:335
+#: lib/foldermanagement/folderutil.inc.php:484
 #, php-format
 msgid "Failure resolving child folder with id = %d."
 msgstr ""
@@ -5361,12 +5365,12 @@ msgstr ""
 msgid "Folder is no longer available"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:208
+#: lib/foldermanagement/folderutil.inc.php:211
 #, php-format
 msgid "Folder moved from %s to %s"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:693
+#: lib/foldermanagement/folderutil.inc.php:717
 msgid "Folder must be a symbolic link entity"
 msgstr ""
 
@@ -5374,7 +5378,7 @@ msgstr ""
 msgid "Folder name"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:689
+#: lib/foldermanagement/folderutil.inc.php:713
 msgid "Folder not specified"
 msgstr ""
 
@@ -5395,7 +5399,7 @@ msgid "Folder transactions"
 msgstr ""
 
 #: lib/foldermanagement/folderutil.inc.php:126
-#: lib/foldermanagement/folderutil.inc.php:441
+#: lib/foldermanagement/folderutil.inc.php:444
 msgid "Folder with the same name already exists in the new parent folder"
 msgstr ""
 
@@ -5408,8 +5412,8 @@ msgstr ""
 msgid "Folders are one way of organising documents in the document management system.  Folders provide meaning in the traditional file storage way - through a file path."
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:378
-#: lib/foldermanagement/folderutil.inc.php:500
+#: lib/foldermanagement/folderutil.inc.php:381
+#: lib/foldermanagement/folderutil.inc.php:516
 msgid "Folders: "
 msgstr ""
 
@@ -5481,7 +5485,7 @@ msgstr ""
 msgid "Full-text Content Indexing"
 msgstr ""
 
-#: lib/util/ktutil.inc:221
+#: lib/util/ktutil.inc:227
 msgid "GB"
 msgstr ""
 
@@ -5549,7 +5553,7 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:1064
+#: plugins/ktcore/KTBulkActions.php:1067
 #, php-format
 msgid "Go <a href=\"%s\">here</a> to download the zip file if you are not automatically redirected there"
 msgstr ""
@@ -5976,7 +5980,7 @@ msgstr ""
 msgid "Indexing will not continue until all issues have been resolved."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:977
+#: plugins/ktcore/KTBulkActions.php:980
 msgid "Indicate whether you would like to download these file as part of the checkout."
 msgstr ""
 
@@ -6070,7 +6074,7 @@ msgstr ""
 msgid "Invalid criteria specified."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1316
+#: lib/documentmanagement/documentutil.inc.php:1369
 msgid "Invalid document content version object."
 msgstr ""
 
@@ -6093,8 +6097,8 @@ msgstr ""
 msgid "Invalid document link selected."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:909
-#: lib/documentmanagement/documentutil.inc.php:1304
+#: lib/documentmanagement/documentutil.inc.php:931
+#: lib/documentmanagement/documentutil.inc.php:1358
 msgid "Invalid document object."
 msgstr ""
 
@@ -6111,7 +6115,7 @@ msgstr ""
 msgid "Invalid document type provided"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1308
+#: lib/documentmanagement/documentutil.inc.php:1362
 msgid "Invalid document version object."
 msgstr ""
 
@@ -6181,7 +6185,7 @@ msgstr ""
 msgid "Invalid return key from help system."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:321 plugins/ktcore/KTBulkActions.php:474
+#: plugins/ktcore/KTBulkActions.php:322 plugins/ktcore/KTBulkActions.php:477
 msgid "Invalid target folder selected"
 msgstr ""
 
@@ -6189,7 +6193,7 @@ msgstr ""
 msgid "Invalid target folder selected."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:326
+#: plugins/ktcore/KTBulkActions.php:328
 msgid "Invalid target folder selected: Target folder is the same as the current folder."
 msgstr ""
 
@@ -6214,7 +6218,7 @@ msgstr ""
 msgid "Issues with the indexer have been resolved!"
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:542
+#: plugins/ktcore/KTBulkActions.php:545
 msgid "It is not possible to archive a shortcut. Please archive the target document or folder instead."
 msgstr ""
 
@@ -6269,7 +6273,7 @@ msgstr ""
 msgid "Jump To Document"
 msgstr ""
 
-#: lib/util/ktutil.inc:229
+#: lib/util/ktutil.inc:235
 msgid "KB"
 msgstr ""
 
@@ -6306,7 +6310,7 @@ msgid "KnowledgeTree Community Edition is supplied with <a href=\"http://www.kno
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:215
-#: lib/documentmanagement/documentutil.inc.php:979
+#: lib/documentmanagement/documentutil.inc.php:1001
 msgid "KnowledgeTree Notification"
 msgstr ""
 
@@ -6600,7 +6604,7 @@ msgstr ""
 msgid "Lucene Migration Status"
 msgstr ""
 
-#: lib/util/ktutil.inc:225
+#: lib/util/ktutil.inc:231
 msgid "MB"
 msgstr ""
 
@@ -7022,7 +7026,7 @@ msgstr ""
 msgid "Move Items"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1250
+#: lib/documentmanagement/documentutil.inc.php:1304
 #, php-format
 msgid "Moved from %s/%s to %s/%s. %s"
 msgstr ""
@@ -7077,7 +7081,7 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: lib/browse/Criteria.inc:96 search2/search/expr.inc.php:1888
+#: lib/browse/Criteria.inc:96 search2/search/expr.inc.php:1898
 msgid "NOT"
 msgstr ""
 
@@ -7651,7 +7655,7 @@ msgstr ""
 msgid "No problems found - database is consistent with the contents of the repository."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:873
+#: lib/documentmanagement/documentutil.inc.php:895
 msgid "No reason given"
 msgstr ""
 
@@ -7891,7 +7895,7 @@ msgstr ""
 msgid "No workflow selected."
 msgstr ""
 
-#: lib/util/ktutil.inc:686 lib/util/ktutil.inc:693 lib/util/ktutil.inc:706
+#: lib/util/ktutil.inc:692 lib/util/ktutil.inc:699 lib/util/ktutil.inc:712
 msgid "Non-entity object"
 msgstr ""
 
@@ -8081,7 +8085,7 @@ msgstr ""
 msgid "On deleting a document version the version history will remain but the document will be <b>permanently</b> deleted."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:1066
+#: plugins/ktcore/KTBulkActions.php:1069
 #, php-format
 msgid "Once downloaded, return to the original <a href=\"%s\">folder</a>"
 msgstr ""
@@ -8094,7 +8098,7 @@ msgstr ""
 msgid "Once you've selected the permissions you want to control for this workflow state, you should allocate these to the appropriate groups and roles."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:771
+#: plugins/ktcore/KTBulkActions.php:774
 #: plugins/ktstandard/KTBulkExportPlugin.php:178
 #, php-format
 msgid "Once your download is complete, click <a href=\"%s\">here</a> to return to the original folder"
@@ -8224,7 +8228,7 @@ msgstr ""
 msgid "Ownership changed."
 msgstr ""
 
-#: lib/util/ktutil.inc:213
+#: lib/util/ktutil.inc:219
 msgid "PB"
 msgstr ""
 
@@ -8388,7 +8392,7 @@ msgstr ""
 msgid "Please be aware that - depending on your selections - new values may become available."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:1352
+#: lib/documentmanagement/documentutil.inc.php:1413
 msgid "Please be sure to enter information for all the Required fields below"
 msgstr ""
 
@@ -8678,7 +8682,7 @@ msgstr ""
 msgid "Please specify why you are cancelling this document's checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:971
+#: plugins/ktcore/KTBulkActions.php:974
 msgid "Please specify why you are checking out these documents. It will assist other users in understanding why you have locked these files."
 msgstr ""
 
@@ -8980,8 +8984,8 @@ msgid "Read the admin introduction."
 msgstr ""
 
 #: plugins/ktcore/KTBulkActions.php:83 plugins/ktcore/KTBulkActions.php:267
-#: plugins/ktcore/KTBulkActions.php:420 plugins/ktcore/KTBulkActions.php:520
-#: plugins/ktcore/KTBulkActions.php:970
+#: plugins/ktcore/KTBulkActions.php:423 plugins/ktcore/KTBulkActions.php:523
+#: plugins/ktcore/KTBulkActions.php:973
 #: plugins/ktcore/KTDocumentActions.php:428
 #: plugins/ktcore/KTDocumentActions.php:618
 #: plugins/ktcore/KTDocumentActions.php:799
@@ -9119,7 +9123,7 @@ msgstr ""
 msgid "Rename folder"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:281
+#: lib/foldermanagement/folderutil.inc.php:284
 #, php-format
 msgid "Renamed from \"%s\" to \"%s\""
 msgstr ""
@@ -9307,7 +9311,7 @@ msgstr ""
 msgid "Return items which match &nbsp;#options# of the criteria specified."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:738 plugins/ktcore/KTBulkActions.php:1026
+#: plugins/ktcore/KTBulkActions.php:741 plugins/ktcore/KTBulkActions.php:1029
 #, php-format
 msgid "Return to the original <a href=\"%s\">folder</a>"
 msgstr ""
@@ -9476,7 +9480,7 @@ msgstr ""
 msgid "Saving metadata"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:711
+#: lib/documentmanagement/documentutil.inc.php:728
 msgid "Scanning file"
 msgstr ""
 
@@ -9817,7 +9821,7 @@ msgstr ""
 msgid "Send request"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:741
+#: lib/documentmanagement/documentutil.inc.php:758
 msgid "Sending subscriptions"
 msgstr ""
 
@@ -10037,7 +10041,7 @@ msgstr ""
 msgid "Source document not specified"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:618
+#: lib/foldermanagement/folderutil.inc.php:642
 msgid "Source folder not specified"
 msgstr ""
 
@@ -10324,7 +10328,7 @@ msgstr ""
 msgid "System Temporary Folder"
 msgstr ""
 
-#: lib/util/ktutil.inc:217
+#: lib/util/ktutil.inc:223
 msgid "TB"
 msgstr ""
 
@@ -10355,7 +10359,7 @@ msgid "Target"
 msgstr ""
 
 #: plugins/ktcore/admin/unitManagement.php:128
-#: plugins/ktcore/KTBulkActions.php:253 plugins/ktcore/KTBulkActions.php:406
+#: plugins/ktcore/KTBulkActions.php:253 plugins/ktcore/KTBulkActions.php:409
 #: plugins/ktcore/KTDocumentActions.php:1050
 #: plugins/ktcore/KTDocumentActions.php:1252
 msgid "Target Folder"
@@ -10370,7 +10374,7 @@ msgid "Target document deleted by:"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:334
-#: lib/foldermanagement/folderutil.inc.php:626
+#: lib/foldermanagement/folderutil.inc.php:650
 msgid "Target folder not specified"
 msgstr ""
 
@@ -10607,7 +10611,7 @@ msgstr ""
 msgid "The document has been successfully restored."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:913
+#: lib/documentmanagement/documentutil.inc.php:935
 #, php-format
 msgid "The document is checked out and cannot be deleted: %s"
 msgstr ""
@@ -10716,7 +10720,7 @@ msgstr ""
 msgid "The folder %s is already present in %s.  Adding files into pre-existing folder."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:693
+#: plugins/ktcore/KTBulkActions.php:696
 msgid "The folder contains no documents to archive."
 msgstr ""
 
@@ -10953,11 +10957,11 @@ msgstr ""
 msgid "The process a document follows is controlled by the way that the transitions between states are setup.  A document starts the workflow in the initial state, and then follows transitions between states.  Which users can perform these transitions can be configured in the \"Security\" section."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:521
+#: plugins/ktcore/KTBulkActions.php:524
 msgid "The reason for archiving these documents and folders, for historical purposes."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:421
+#: plugins/ktcore/KTBulkActions.php:424
 msgid "The reason for copying these documents and folders, for historical purposes."
 msgstr ""
 
@@ -11076,7 +11080,7 @@ msgstr ""
 msgid "The type of source (e.g. <strong>LDAP</strong>)"
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:855
+#: lib/documentmanagement/documentutil.inc.php:877
 msgid "The uploaded file does not exist."
 msgstr ""
 
@@ -11151,7 +11155,7 @@ msgstr ""
 msgid "There already is a shortcut to this document in the target folder."
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:656
+#: lib/foldermanagement/folderutil.inc.php:680
 msgid "There already is a shortcut to this folder in the target folder."
 msgstr ""
 
@@ -11211,7 +11215,7 @@ msgstr ""
 msgid "There are no tags defined or accessible."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:111 plugins/ktcore/KTBulkActions.php:563
+#: plugins/ktcore/KTBulkActions.php:111 plugins/ktcore/KTBulkActions.php:566
 msgid "There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?"
 msgstr ""
 
@@ -11284,12 +11288,12 @@ msgstr ""
 msgid "There was a problem checking out the document."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:963
-#: lib/documentmanagement/documentutil.inc.php:1335
+#: lib/documentmanagement/documentutil.inc.php:985
+#: lib/documentmanagement/documentutil.inc.php:1396
 msgid "There was a problem deleting the document from storage."
 msgstr ""
 
-#: lib/documentmanagement/documentutil.inc.php:941
+#: lib/documentmanagement/documentutil.inc.php:963
 msgid "There was a problem deleting the document from the database."
 msgstr ""
 
@@ -12203,7 +12207,7 @@ msgstr ""
 msgid "Unable to retrieve parent folder."
 msgstr ""
 
-#: lib/util/ktutil.inc:1104
+#: lib/util/ktutil.inc:1110
 #, php-format
 msgid "Unable to retrieve system setting %s: %s"
 msgstr ""
@@ -12598,7 +12602,7 @@ msgstr ""
 msgid "Use the folder collection and path below to browse to the folder containing the documents you wish to restore."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:407
+#: plugins/ktcore/KTBulkActions.php:410
 #: plugins/ktcore/KTDocumentActions.php:1253
 msgid "Use the folder collection and path below to browse to the folder you wish to copy the documents into."
 msgstr ""
@@ -13013,7 +13017,7 @@ msgstr ""
 msgid "WebDAV Dashlet Plugin"
 msgstr ""
 
-#: lib/util/ktutil.inc:392
+#: lib/util/ktutil.inc:398
 msgid "Weird WhereClause passed"
 msgstr ""
 
@@ -13312,7 +13316,7 @@ msgstr ""
 msgid "You are here"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:450
+#: lib/foldermanagement/folderutil.inc.php:453
 msgid "You are not allowed to create folders in the destination."
 msgstr ""
 
@@ -13403,7 +13407,7 @@ msgstr ""
 msgid "You do not have permission to close this thread"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:502
+#: lib/foldermanagement/folderutil.inc.php:518
 msgid "You do not have permission to copy these items. "
 msgstr ""
 
@@ -13416,11 +13420,11 @@ msgstr ""
 msgid "You do not have permission to delete that quicklink."
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:380
+#: lib/foldermanagement/folderutil.inc.php:383
 msgid "You do not have permission to delete these items. "
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:332 plugins/ktcore/KTBulkActions.php:479
+#: plugins/ktcore/KTBulkActions.php:335 plugins/ktcore/KTBulkActions.php:482
 msgid "You do not have permission to move items to this location"
 msgstr ""
 
@@ -13437,8 +13441,8 @@ msgstr ""
 msgid "You do not have sufficient permissions to delete a link"
 msgstr ""
 
-#: lib/actions/bulkaction.php:604 plugins/ktcore/KTBulkActions.php:719
-#: plugins/ktcore/KTBulkActions.php:947
+#: lib/actions/bulkaction.php:604 plugins/ktcore/KTBulkActions.php:722
+#: plugins/ktcore/KTBulkActions.php:950
 msgid "You do not have the required permissions"
 msgstr ""
 
@@ -13663,16 +13667,16 @@ msgstr ""
 msgid "You're not authorized to create a shortcut to this document"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:647
+#: lib/foldermanagement/folderutil.inc.php:671
 msgid "You're not authorized to create a shortcut to this folder"
 msgstr ""
 
 #: lib/documentmanagement/documentutil.inc.php:350
-#: lib/foldermanagement/folderutil.inc.php:642
+#: lib/foldermanagement/folderutil.inc.php:666
 msgid "You're not authorized to create shortcuts"
 msgstr ""
 
-#: lib/foldermanagement/folderutil.inc.php:708
+#: lib/foldermanagement/folderutil.inc.php:732
 msgid "You're not authorized to delete shortcuts"
 msgstr ""
 
@@ -13732,7 +13736,7 @@ msgstr ""
 msgid "Your documents have been added to this folder and not the folder structure within the upload file because you do not have permission to add any folders."
 msgstr ""
 
-#: plugins/ktcore/KTBulkActions.php:770
+#: plugins/ktcore/KTBulkActions.php:773
 #: plugins/ktstandard/KTBulkExportPlugin.php:176
 #, php-format
 msgid "Your download will begin shortly. If you are not automatically redirected to your download, please click <a href=\"%s\">here</a> "
@@ -13824,7 +13828,7 @@ msgstr ""
 msgid "after "
 msgstr ""
 
-#: lib/util/ktutil.inc:173
+#: lib/util/ktutil.inc:171
 msgid "ago"
 msgstr ""
 
@@ -14425,6 +14429,10 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
+#: lib/util/ktutil.inc:191
+msgid "never"
+msgstr ""
+
 #: i18n/templates.c:1754 i18n/templates.c:1757
 msgid "next"
 msgstr ""
@@ -14753,4 +14761,9 @@ msgstr ""
 
 #: plugins/ktstandard/KTDocumentLinksColumns.php:65
 msgid "you cannot link to the source document"
+msgstr ""
+ 
+msgid "By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data."
+msgstr ""
+msgid "This report lists all mime types and extensions that can be identified by KnowledgeTree."
 msgstr ""
