@@ -135,7 +135,6 @@ namespace MonoTests.KnowledgeTree
 		[Test]
 		public void CopyFolder()
 		{
-
 	    		kt_folder_detail response = this._kt.create_folder(this._session, 1, "kt_unit_test2");
 		       	Assert.AreEqual(0,response.status_code);
 

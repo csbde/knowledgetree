@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using System.Net;
-using System.IO; 
+using System.IO;
 using System.Collections;
 using System.Data;
-using System.Data.Odbc;  
+using System.Data.Odbc;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Messaging;
@@ -14,7 +14,6 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web.Services.Protocols;
 using System.Reflection;
-using Interception;
 using System.Web;
 using System.Xml;
 using System.Web.Services;
@@ -30,24 +29,24 @@ using System.Web.Services.Protocols;
 namespace MonoTests.KnowledgeTree
 {
 
-	
 
-	[System.Web.Services.WebServiceBinding(Name="KnowledgeTreePort", Namespace="urn:KnowledgeTree")] 
+
+	[System.Web.Services.WebServiceBinding(Name="KnowledgeTreePort", Namespace="urn:KnowledgeTree")]
 	public class KTWebService : KnowledgeTreeService
  	{
 		public KTWebService() : base()
 		{
 			this.Url = Environment.GetEnvironmentVariable("KT_ROOT_URL") + "/ktwebservice/webservice.php";
 		}
- 	} 
-	
+ 	}
+
 	public class MySoapHttpClientProtocol : SoapHttpClientProtocol
 	{
 		public MySoapHttpClientProtocol() : base() {}
-		
+
 		public  object [] ReceiveResponse (WebResponse response, SoapClientMessage message, SoapExtension[] extensions)
 		{
-			
+
 			StreamReader sr = new StreamReader(response.GetResponseStream());
 			String content = sr.ReadToEnd();
 			System.Console.WriteLine(content);
@@ -55,39 +54,39 @@ namespace MonoTests.KnowledgeTree
 			return null;
 		}
 	}
-	
+
 	public class KTTest
     	{
 		protected KTWebService 	_kt;
 		protected String 			_session;
-		protected bool	_verbose;  
+		protected bool	_verbose;
 
-	
+
 		public KTTest()
 		{
 			this._kt = new KTWebService();
 			kt_response response = this._kt.login("admin","admin","127.0.0.1");
 			this._session = response.message;
-			this._verbose = false;   
-			this.setupDb(); 
-			
-			//System.Web.Services.Protocols.SoapHttpClientProtocol.ReceiveResponse 
-		} 
-		
+			this._verbose = false;
+			this.setupDb();
+
+			//System.Web.Services.Protocols.SoapHttpClientProtocol.ReceiveResponse
+		}
+
 		void setupDb()
 		{
-			 
+
 			String connectionString = "DSN=ktdms;" + "UID=root;" + "PWD=";
 			try
 	  		{
        				IDbConnection dbcon = new OdbcConnection(connectionString);
-       				if (dbcon == null) 
+       				if (dbcon == null)
 				{
 					System.Console.WriteLine("Cannot create connection");
        				}
 				dbcon.Open();
        				IDbCommand dbcmd = dbcon.CreateCommand();
-         			if (dbcmd == null) 
+         			if (dbcmd == null)
 				{
 					System.Console.WriteLine("Cannot create command");
 				}
@@ -110,15 +109,15 @@ namespace MonoTests.KnowledgeTree
        			{
        				System.Console.WriteLine(ex.Message);
        			}
-		}		
-		
+		}
+
 		~KTTest()
 		{
-	   		this._kt.logout(this._session); 
+	   		this._kt.logout(this._session);
 		}
 	}
 
-	
+
 
 	public class FileUploader
 	{
@@ -133,11 +132,11 @@ namespace MonoTests.KnowledgeTree
 			System.Console.WriteLine("Using upload URL: " + uri);
 			this.boundary = "----" + DateTime.Now.Ticks.ToString("x");
 		}
-		
+
 		public FileUploader() : this(Environment.GetEnvironmentVariable("KT_ROOT_URL") + "/ktwebservice/upload.php")
 		{
 		}
-		
+
 
 		public String getFilename()
 		{
@@ -246,8 +245,8 @@ namespace MonoTests.KnowledgeTree
 		}
 
 	}
-	
-	 
+
+
 
 	public class Document
 	{

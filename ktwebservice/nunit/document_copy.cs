@@ -57,7 +57,6 @@ namespace MonoTests.KnowledgeTree
 		       	Assert.AreEqual(0,response2.status_code);
 		        int folderId =    response2.id;
 
-
 			kt_document_detail linkresp = this._kt.copy_document(this._session, this._doc1.docId, folderId, "copy", "");
 			Assert.AreEqual(0, linkresp.status_code);
 			Assert.AreEqual("kt_unit_test1.txt", linkresp.filename);
