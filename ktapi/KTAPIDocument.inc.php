@@ -517,8 +517,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return $result;
 		}
 
-        $tgt_folder = $target_folder->get_folder();
-
 		$name = $this->document->getName();
 		$clash = KTDocumentUtil::nameExists($target_folder, $name);
         if ($clash && !is_null($newname))
@@ -530,7 +528,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         {
             if (is_null($newname))
             {
-                $name = KTDocumentUtil::getUniqueDocumentName($tgt_folder, $name);
+                $name = KTDocumentUtil::getUniqueDocumentName($target_folder, $name);
             }
             else
             {
@@ -550,7 +548,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         {
             if (is_null($newfilename))
             {
-                $filename = KTDocumentUtil::getUniqueFilename($tgt_folder, $newfilename);
+                $filename = KTDocumentUtil::getUniqueFilename($target_folder, $newfilename);
             }
             else
             {
