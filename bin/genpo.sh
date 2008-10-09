@@ -32,3 +32,11 @@ rm -rf plugins/shortcuts
 rm -rf plugins/wintools
 
 #alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools
+
+# Manually append some strings with #appname# issues
+echo ' ' >> i18n/knowledgeTree.pot
+echo 'msgid "By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS. These <strong>Authentication Sources</strong> allow the system administrator to specify additional sources of authentication data."' >> i18n/knowledgeTree.pot
+echo 'msgstr ""' >> i18n/knowledgeTree.pot
+
+echo 'msgid "This report lists all mime types and extensions that can be identified by KnowledgeTree."' >> i18n/knowledgeTree.pot
+echo 'msgstr ""' >> i18n/knowledgeTree.pot
