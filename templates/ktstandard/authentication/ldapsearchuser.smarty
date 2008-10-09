@@ -2,7 +2,7 @@
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <p class="descriptiveText">{i18n}Since there may be many users in the
-system, please provider a few letters from the person's user name to
+system, please provide a few letters from the person's user name to
 begin.{/i18n}</p>
 
 <input type="hidden" name="action" value="addUserFromSource" />

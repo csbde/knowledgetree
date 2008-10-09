@@ -1,6 +1,6 @@
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <p class="descriptiveText">{i18n}Since there may be many groups in the
-system, please provider a few letters from the groups's name to
+system, please provide a few letters from the groups's name to
 begin.{/i18n}</p>
 
 <input type="hidden" name="action" value="addGroupFromSource" />

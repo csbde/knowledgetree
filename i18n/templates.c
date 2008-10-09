@@ -2324,7 +2324,7 @@ gettext("No automatic workflow");
 gettext("Apply");
 
 /* ./templates/ktstandard/authentication/ldapsearchuser.smarty */
-gettext("Since there may be many users in the system, please provider a few letters from the person's user name to begin.");
+gettext("Since there may be many users in the system, please provide a few letters from the person's user name to begin.");
 
 /* ./templates/ktstandard/authentication/ldapsearchuser.smarty */
 gettext("Search for user");
@@ -2360,7 +2360,7 @@ gettext("Cancel");
 gettext("Save");
 
 /* ./templates/ktstandard/authentication/ldapsearchgroup.smarty */
-gettext("Since there may be many groups in the system, please provider a few letters from the groups's name to begin.");
+gettext("Since there may be many groups in the system, please provide a few letters from the groups's name to begin.");
 
 /* ./templates/ktstandard/authentication/ldapsearchgroup.smarty */
 gettext("Search for group");
@@ -3750,6 +3750,9 @@ gettext("Queue Coverage :");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("Queue coverage indicates percentage of documents currently queued for indexing in relation to total repository size.");
+
+/* ./templates/ktcore/search2/lucene_statistics.smarty */
+gettext("Refresh");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.");
