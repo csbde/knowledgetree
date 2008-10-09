@@ -79,7 +79,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("n/a", response.items[0].owned_by);
 			Assert.AreEqual("n/a", response.items[0].version);
 			Assert.AreEqual("n/a", response.items[0].is_immutable);
-			Assert.AreEqual("RW", response.items[0].permissions);
+			Assert.AreEqual("RWA", response.items[0].permissions);
 			Assert.AreEqual("n/a", response.items[0].workflow);
 			Assert.AreEqual("n/a", response.items[0].workflow_state);
 			Assert.AreEqual("folder", response.items[0].mime_type);

@@ -88,7 +88,7 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual("text", response.mime_icon_path);
 			Assert.AreEqual("Plain Text", response.mime_display);
 			Assert.IsTrue("" != response.storage_path);
-			Assert.AreEqual(3, response.metadata.Length);
+			Assert.AreEqual(2, response.metadata.Length);
 			Assert.AreEqual(null, response.links);
 
 			Assert.AreEqual(1, response.transaction_history.Length);

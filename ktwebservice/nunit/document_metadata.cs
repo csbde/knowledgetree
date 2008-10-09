@@ -96,11 +96,11 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, update_resp.status_code);
 			Assert.AreEqual("General information", update_resp.metadata[1].fieldset);
 
-			Assert.AreEqual("Category", update_resp.metadata[1].fields[0].name);
-			Assert.AreEqual("Technical", update_resp.metadata[1].fields[0].value);
+			Assert.AreEqual("Category", update_resp.metadata[1].fields[1].name);
+			Assert.AreEqual("Technical", update_resp.metadata[1].fields[1].value);
 
-			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[1].name);
-			Assert.AreEqual("Joe Soap", update_resp.metadata[1].fields[1].value);
+			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[0].name);
+			Assert.AreEqual("Joe Soap", update_resp.metadata[1].fields[0].value);
 
 			Assert.AreEqual("Media Type", update_resp.metadata[1].fields[2].name);
 			Assert.AreEqual("Text", update_resp.metadata[1].fields[2].value);
@@ -131,12 +131,12 @@ namespace MonoTests.KnowledgeTree
 			Assert.AreEqual(0, update_resp.status_code);
 			Assert.AreEqual("General information", update_resp.metadata[1].fieldset);
 
-			Assert.AreEqual("Category", update_resp.metadata[1].fields[0].name);
-			Assert.AreEqual("Tec/hn\\ical/", update_resp.metadata[1].fields[0].value);
+			Assert.AreEqual("Category", update_resp.metadata[1].fields[1].name);
+			Assert.AreEqual("Tec/hn\\ical/", update_resp.metadata[1].fields[1].value);
 
 
-			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[1].name);
-			Assert.AreEqual("Joe \\Soap", update_resp.metadata[1].fields[1].value);
+			Assert.AreEqual("Document Author", update_resp.metadata[1].fields[0].name);
+			Assert.AreEqual("Joe \\Soap", update_resp.metadata[1].fields[0].value);
 
 
 			Assert.AreEqual("Media Type", update_resp.metadata[1].fields[2].name);
