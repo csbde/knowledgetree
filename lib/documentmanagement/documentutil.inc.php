@@ -1249,6 +1249,21 @@ $sourceDocument->getName(),
         $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('renameDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $oDocument
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
+
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
