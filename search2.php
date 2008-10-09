@@ -263,7 +263,9 @@ class SearchDispatcher extends KTStandardDispatcher {
 
     function do_refreshLuceneStats()
     {
-    	session_unregister('LuceneStats');
+    	$indexer = Indexer::get();
+    	$indexer->updateIndexStats();
+
     	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 

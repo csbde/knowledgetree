@@ -69,11 +69,11 @@ toggle.style.display = 'none';
 </div>
 
 </td><td>{$stats.queueCoverage}</td></tr>
-
 </table>
-
-<table>
-
+<table width="100%">
+<tr>
+<td align=right><a href="{rootUrl}/search2.php?action=refreshLuceneStats">{i18n}Refresh{/i18n}</a></td>
+</tr>
 {if $stats.noOptimisation}
 <tr><td valign=top>*<td><i>{i18n}To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.{/i18n}
 {/if}
