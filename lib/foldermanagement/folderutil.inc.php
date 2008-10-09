@@ -457,9 +457,9 @@ class KTFolderUtil {
         // Get source PO id and its parent PO id
         $iSrcPoId = $oSrcFolder->getPermissionObjectID();
         $oSrcParent = Folder::get($oSrcFolder->getParentID());
-        $iSrcParentPoId = $srcParent->getPermissionObjectID();
+        $iSrcParentPoId = $oSrcParent->getPermissionObjectID();
 
-        // If the folder defines its own permissions then we leave it
+        // If the folder defines its own permissions then we copy the permission object
         // If the source folder inherits permissions we must change it to inherit from the new parent folder
         $bInheritPermissions = false;
         if($iSrcPoId == $iSrcParentPoId){
@@ -609,11 +609,14 @@ class KTFolderUtil {
         }
 
         // If the folder inherits its permissions then we set it to inherit from the new parent folder and update permissions
+        // If it defines its own then copy the permission object over
         if($bInheritPermissions){
             $aOptions = array(
                 'evenifnotowner' => true, // Inherit from parent folder, even though not permission owner
                 );
             KTPermissionUtil::inheritPermissionObject($oNewBaseFolder, $aOptions);
+        }else{
+            KTPermissionUtil::copyPermissionObject($oNewBaseFolder);
         }
 
         // and store
