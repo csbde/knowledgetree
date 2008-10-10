@@ -522,7 +522,7 @@ function addMetadataField(groupid)
 
 	html += "<td width=\"55\">";
 
-	html += "<input type=\"button\" value=\"remove\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+	html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
 
 	html += "</table>";
 
@@ -574,7 +574,7 @@ function addField(groupid, display, exprname, type)
 	html += rec.html;
 
 	html += "<td width=\"55\" valign=top>";
-	html += "<input type=\"button\" value=\"remove\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+	html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
 	html += "</table>";
 
 	var el = new Ext.Element(document.createElement('div'));
@@ -793,7 +793,7 @@ function butSearchClick()
 	<legend>{i18n}Advanced Search{/i18n}</legend>
 
 {capture assign=options}
-<a href="{$rootUrl}/search2.php?action=queryBuilder">Search Criteria Editor</a>
+<a href="{$rootUrl}/search2.php?action=queryBuilder">{i18n}Search Criteria Editor{/i18n}</a>
 {/capture}
 
 {i18n arg_options=$options}The #options# may also be used to create more complex search criteria expressions.{/i18n}
