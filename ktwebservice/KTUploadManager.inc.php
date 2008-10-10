@@ -54,7 +54,7 @@ class KTUploadManager
 
 		$this->age = $config->get('webservice/uploadExpiry',60);
 		$this->temp_dir = $config->get('webservice/uploadDirectory');
-		$this->temp_dir = strtolower(str_replace('\\','/', $this->temp_dir));
+		$this->temp_dir = str_replace('\\','/', $this->temp_dir);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class KTUploadManager
 	function is_valid_temporary_file($tempfilename)
 	{
 		$tempdir = substr($tempfilename,0,strlen($this->temp_dir));
-		$tempdir = strtolower(str_replace('\\','/', $tempdir));
+		$tempdir = str_replace('\\','/', $tempdir);
 		return ($tempdir == $this->temp_dir);
 	}
 
