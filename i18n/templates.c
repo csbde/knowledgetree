@@ -3764,6 +3764,9 @@ gettext("Search Criteria Editor");
 gettext("The search criteria editor allows you to utilise the full power of the search engine by allowing you to perform more complicated searches by using the free text criteria format.");
 
 /* ./templates/ktcore/search2/adv_query_search.smarty */
+gettext("Advanced Search");
+
+/* ./templates/ktcore/search2/adv_query_search.smarty */
 gettext("The #options# may also be used to perform searches.");
 
 /* ./templates/ktcore/search2/adv_query_search.smarty */
@@ -6686,7 +6689,7 @@ gettext("No Conditions have been defined.");
 gettext("Saved searches");
 
 /* ./templates/ktcore/search/administration/savedsearches.smarty */
-gettext("Saved searches are searches which are particular to your location For example, you could define a search which returns all documents in a particular workflow state, or all documents which are considered \"common\" within your organisation (leave policy, newsletters, etc.) based on a category or fieldset value.");
+gettext("Saved searches are searches which are particular to your location.  For example, you could define a search which returns all documents in a particular workflow state, or all documents which are considered \"common\" within your organisation (leave policy, newsletters, etc.) based on a category or fieldset value.");
 
 /* ./templates/ktcore/search/administration/savedsearches.smarty */
 gettext("Create a new saved search");
