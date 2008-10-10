@@ -49,10 +49,11 @@ function onSearchClick(sender)
 
 	var suffix = sender.id.substring(12);
 
-	var text = Ext.get('txtSearchBar' + suffix).getValue(false);
+	var text = Ext.get('txtSearchBar' + suffix).getValue(false).trim();
 
 	if (text == sSearchTranslations[12] || text == '')
 	{
+	    Ext.getCmp('txtSearchBar' + suffix).setValue('');
 //		Ext.example.msg(sSearchTranslations[3], sSearchTranslations[4]); /* Hint, Please enter some search criteria!  */
 		return;
 	}
