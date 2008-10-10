@@ -1,7 +1,7 @@
 <h2>{i18n}Saved searches{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Saved searches are searches which are particular to your location
-For example, you could define a search which returns all documents in a particular workflow state,
+<p class="descriptiveText">{i18n}Saved searches are searches which are particular to your location.
+ For example, you could define a search which returns all documents in a particular workflow state,
 or all documents which are considered "common" within your organisation (leave policy,
 newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
