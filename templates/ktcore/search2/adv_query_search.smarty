@@ -4,7 +4,7 @@
 {i18n}The search criteria editor allows you to utilise the full power of the search engine by allowing you to perform more complicated searches by using the free text criteria format.{/i18n}
 
 {capture assign=options}
-<a href="{$rootUrl}/search2.php?action=guiBuilder">Advanced Search</a>
+<a href="{$rootUrl}/search2.php?action=guiBuilder">{i18n}Advanced Search{/i18n}</a>
 {/capture}
 <p>
 {i18n arg_options=$options}The #options# may also be used to perform searches.{/i18n}
