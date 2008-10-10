@@ -8,7 +8,7 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
 <p class="descriptiveText">
 {capture assign=options}
-<a href="{addQS}action=guiBuilder{/addQS}">{i18n}Advanced Search{/i18n}</a> {i18n}or{/i18n} <a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Critiera Editor{/i18n}</a>
+<a href="{addQS}action=guiBuilder{/addQS}">{i18n}Advanced Search{/i18n}</a> {i18n}or{/i18n} <a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Criteria Editor{/i18n}</a>
 {/capture}
 
 
