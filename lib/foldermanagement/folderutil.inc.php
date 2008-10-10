@@ -608,6 +608,19 @@ class KTFolderUtil {
             }
         }
 
+        $sComment = sprintf(_kt("Folder copied from %s to %s"), $oSrcFolder->getFullPath(), $oDestFolder->getFullPath());
+        if($sReason !== null) {
+            $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
+        }
+
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $oFolder->getId(),
+            'comment' => $sComment,
+            'transactionNS' => 'ktcore.transactions.copy',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
+        ));
+
         // If the folder inherits its permissions then we set it to inherit from the new parent folder and update permissions
         // If it defines its own then copy the permission object over
         if($bInheritPermissions){
