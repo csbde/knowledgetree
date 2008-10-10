@@ -4025,10 +4025,22 @@ gettext("True");
 gettext("False");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("Please select some search criteria");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("Advanced Search");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Search Criteria Editor");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("The #options# may also be used to create more complex search criteria expressions.");
