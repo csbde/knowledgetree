@@ -9,7 +9,7 @@
 	<br>
 {if empty($iSavedID)}
 	{capture assign=options}
-    	<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Critieria Editor{/i18n}</a>
+    	<a href="{addQS}action=queryBuilder{/addQS}">{i18n}Search Criteria Editor{/i18n}</a>
     {/capture}
 	{i18n arg_options=$options}Use the #options# to extend your search criteria.{/i18n}
 {/if}
