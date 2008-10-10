@@ -3551,7 +3551,7 @@ gettext("Search Criteria");
 gettext("Search Criteria");
 
 /* ./templates/ktcore/search2/search_results.smarty */
-gettext("Search Critieria Editor");
+gettext("Search Criteria Editor");
 
 /* ./templates/ktcore/search2/search_results.smarty */
 gettext("Use the #options# to extend your search criteria.");
@@ -3848,7 +3848,7 @@ gettext("Advanced Search");
 gettext("or");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
-gettext("Search Critiera Editor");
+gettext("Search Criteria Editor");
 
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("Create a new saved search using #options#.");
@@ -4023,9 +4023,6 @@ gettext("True");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("False");
-
-/* ./templates/ktcore/search2/adv_query_builder.smarty */
-gettext("remove");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("remove");
