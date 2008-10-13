@@ -5,7 +5,7 @@
 <li><a href="{$rootUrl}/search2.php?action=guiBuilder">{i18n}Advanced Search{/i18n}</a></li>
 <li><a href="{$rootUrl}/search2.php?action=queryBuilder">{i18n}Search Criteria Editor{/i18n}</a></li>
 {if !$search2_anonymous}
-<li><a href="{$rootUrl}/search2.php?action=manage"><nobr>{i18n}Manage Saved Search{/i18n}</a></li>
+<li><a href="{$rootUrl}/search2.php?action=manage">{i18n}Manage Saved Search{/i18n}</a></li>
 {/if}
 </ul>
 
@@ -13,7 +13,7 @@
 	<hr />
 	<ul class="actionlist" style="top: -30px">
 		{foreach item=searchitem from=$savedSearches}
-			<li><a href="{$rootUrl}/search2.php?action=processSaved&fSavedSearchId={$searchitem.id}"> {$searchitem.name|sanitize}</a>
+			<li><a href="{$rootUrl}/search2.php?action=processSaved&fSavedSearchId={$searchitem.id}"> {$searchitem.name|sanitize}</a></li>
 		{/foreach}
 	</ul>
 {/if}
