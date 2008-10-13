@@ -494,6 +494,9 @@ class KTBulkAction extends KTStandardDispatcher {
                 $sTargetUrl = KTBrowseUtil::getSearchResultURL();
                 $sAction = 'refresh';
                 break;
+            default:
+                $sTargetUrl = $sReturnAction;
+                $sAction = '';
         }
 
         $oForm = new KTForm;
