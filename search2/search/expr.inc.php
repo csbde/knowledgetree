@@ -630,7 +630,7 @@ class ValueExpr extends Expr
     	$val = $this->getValue();
     	if (strpos($val, '*') !== false || strpos($val, '?') !== false)
     	{
-			$val = str_replace(array('?','*'), array('%','%'), $val);
+			$val = str_replace(array('?','*'), array('_','%'), $val);
     	}
 
     	switch($op)
