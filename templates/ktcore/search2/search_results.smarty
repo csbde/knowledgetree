@@ -37,8 +37,9 @@
 function saveSearch()
 {
 	var txtName = $('txtSaveName');
+	var text = txtName.value.trim();
 	var txtQuery = '{/literal}{$txtQuery|escape:'quotes'}{literal}';
-	if (txtName.value == '')
+	if (text == '')
 	{
 		alert("{/literal}{i18n}Please enter a name for the search expression.{/i18n}{literal}");
 		txtName.focus();
@@ -73,7 +74,7 @@ function saveSearch()
 	        alert("{/literal}{i18n}There is a problem communicating with the server.{/i18n}{literal}" +  o.responseText);
 	    },
 	    params: {
-	        txtName: txtName.value,
+	        txtName: text,
 	        txtQuery: txtQuery
 	    }
 	});
