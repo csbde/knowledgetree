@@ -145,10 +145,10 @@ function onShowAll(showall)
 	    <span class="contenttype {$hit->MimeIconPath}">
 
 		{if $hit->IsDocument}
-		&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$hit->Id}"><B>{$hit->Title|truncate:80}</b></a>
+		&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$hit->Id}"><B>{$hit->Title|mb_truncate:30:'...':true}</b></a>
 		{if $hit->Title != $hit->Filename}
 			&nbsp;&nbsp;
-			<font style=" color: green "> - {i18n}Filename:{/i18n} {$hit->Filename|truncate:40}</font>
+			<font style=" color: green "> - {i18n}Filename:{/i18n} {$hit->Filename|mb_truncate:30:'...':true}</font>
 		{/if}
 		{if $hit->IsAvailable}
 		    &nbsp;&nbsp;
@@ -163,7 +163,7 @@ function onShowAll(showall)
 		{/if}
 
 		{else}
-		&nbsp;&nbsp;<a href="{$rootUrl}/browse.php?fFolderId={$hit->RealId}{if $hit->IsProxy}&fShortcutFolder={$hit->Id}{/if}"><B>{$hit->Title|truncate:80}</b></a>
+		&nbsp;&nbsp;<a href="{$rootUrl}/browse.php?fFolderId={$hit->RealId}{if $hit->IsProxy}&fShortcutFolder={$hit->Id}{/if}"><B>{$hit->Title|mb_truncate:30:'...':true}</b></a>
 
         {/if}
 
@@ -180,9 +180,9 @@ function onShowAll(showall)
 		<tr><td colspan=2>{$hit->Text}</td></tr>
 		<tr><td>
 		{if $hit->IsDocument}
-		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|truncate:40}</a>/{$hit->Title|truncate:40} - {$hit->Filesize}</font>
+		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a>/{$hit->Title|mb_truncate:30:'...':true} - {$hit->Filesize}</font>
 		{else}
-		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|truncate:40}</a></font>
+		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a></font>
 		{/if}
 		</td>
 			<td align=right><nobr>
@@ -192,6 +192,7 @@ function onShowAll(showall)
 				{i18n}on{/i18n} {$hit->DateCreated}
 				{/if}
 				</font>
+				</nobr>
 			</td>
 	    {if $hit->IsDocument}
 		<tr><td>
@@ -209,6 +210,7 @@ function onShowAll(showall)
 					{i18n}on{/i18n} {$hit->DateModified}
 				{/if}
 				</font>
+				</nobr>
 			</td>
 		{/if}
 
