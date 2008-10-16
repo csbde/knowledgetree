@@ -163,16 +163,6 @@ function performPostUpgradeActions() {
 
 }
 
-function failWritablePath($name, $path) {
-	if (!is_writable($path)) {
-		sprintf("The path for setting %s, which is set to %s, can not be written to.  Correct this situation before continuing.", $name, $path);
-		exit(1);
-	}
-}
-
-failWritablePath('Log directory', $default->logDirectory);
-failWritablePath('Document directory', $default->documentRoot);
-
 if (PEAR::isError($loggingSupport)) {
 	print '<p><font color="red">Logging support is not currently working.  Check post-installation checkup.</font></p>';
 	exit(1);
