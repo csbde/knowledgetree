@@ -97,7 +97,8 @@ class UpgradeFunctions {
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
-            'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.'
+            'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
+            'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.'
             );
     var $phases = array(
             "setPermissionFolder" => 1,

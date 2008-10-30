@@ -1730,7 +1730,9 @@ INSERT INTO `upgrades` VALUES
 (207,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (208,'func*3.5.4*7*createIndexes','Recreate db integrity:Create indexes on the database','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
 (209,'sql*3.5.4*0*3.5.4/max_sql_search_results.sql','Add configurable maximum results for SQL search queries.','2008-07-30 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
-(210,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
+(210,'sql*3.5.4*0*3.5.4/server_name.sql','Update the server name.','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(211,'func*3.5.4*0*removeOldFilesAndFolders354','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(212,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2661,7 +2663,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(210);
+(212);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
