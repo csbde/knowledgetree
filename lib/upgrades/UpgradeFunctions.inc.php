@@ -62,7 +62,7 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes')
+            '3.5.4' => array('createIndexes','removeOldFilesAndFolders354')
             );
 
     var $descriptions = array(
@@ -1358,6 +1358,20 @@ class UpgradeFunctions {
         UpgradeFunctions::rm_recursive($oldPath1);
         $oldPath2 = KT_DIR . "/plugins/generalmetadata/";
         UpgradeFunctions::rm_recursive($oldPath2);
+
+        // FIXME: We should check that they all worked
+        return true;
+    }
+
+    // {{{  removeOldFilesAndFolders354
+    function removeOldFilesAndFolders354() {
+        global $default;
+        $oldFile = KT_DIR . "/lib/sanitize.inc";
+        if(file_exists($oldFile)) unlink($oldFile);
+
+        // Files MUST be removed before folders and folders MUST be empty
+        $oldPath1 = KT_DIR . "/plugins/toolsdashlet/";
+        UpgradeFunctions::rm_recursive($oldPath1);
 
         // FIXME: We should check that they all worked
         return true;
