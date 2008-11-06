@@ -361,7 +361,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	function get_permission_string($folder)
 	{
-		$perms = 'R';
+		$perms = '';
+		if (Permission::userHasFolderReadPermission($folder))
+		{
+			$perms .= 'R';
+		}
 		if (Permission::userHasFolderWritePermission($folder))
 		{
 			$perms .= 'W';
