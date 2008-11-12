@@ -37,6 +37,7 @@
  *
  */
 
+/* NOTE - This Dashlet has been moved to an Admin Page - File can be removed */
 class ExternalResourceStatusDashlet extends KTBaseDashlet
 {
 	var $resources = array();

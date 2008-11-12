@@ -1,5 +1,3 @@
-<html>
-<head>
 {literal}
 <script type="text/javascript">
 
@@ -27,9 +25,10 @@ toggle.style.display = 'none';
 
 </script>
 {/literal}
-</head>
 
-<body>
+<h2>{i18n}Document Indexer Statistics{/i18n}</h2>
+
+{if $stats}
 <table>
 <tr><td></td><td>{i18n}Last Optimization Date:{/i18n}</td><td>{$stats.optimisationDate}</td></tr>
 <tr><td></td><td>{i18n}Period Since Last Optimization:{/i18n}</td><td>{$stats.optimisationPeriod}</td></tr>
@@ -71,12 +70,10 @@ toggle.style.display = 'none';
 </td><td>{$stats.queueCoverage}</td></tr>
 </table>
 <table width="100%">
-<tr>
-<td align=right><a href="{rootUrl}/search2.php?action=refreshLuceneStats">{i18n}Refresh{/i18n}</a></td>
-</tr>
 {if $stats.noOptimisation}
 <tr><td valign=top>*<td><i>{i18n}To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.{/i18n}
 {/if}
 </table>
-</body>
-</html>
+{else}
+{i18n}Indexing has not run yet. Please check that the KTScheduler is running.{/i18n}
+{/if}

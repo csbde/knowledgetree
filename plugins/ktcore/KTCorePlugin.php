@@ -107,10 +107,15 @@ class KTCorePlugin extends KTPlugin {
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
         $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
         $this->registerDashlet('KTMailServerDashlet', 'ktcore.dashlet.mail_server', 'KTDashlets.php');
-        $this->registerDashlet('ExternalResourceStatusDashlet', 'ktcore.dashlet.resource_status', KT_DIR . '/plugins/search2/ExternalDashlet.php');
         $this->registerDashlet('LuceneMigrationDashlet', 'ktcore.dashlet.lucene_migration', KT_DIR . '/plugins/search2/MigrationDashlet.php');
-        $this->registerDashlet('IndexingStatusDashlet', 'ktcore.dashlet.indexing_status', KT_DIR . '/plugins/search2/IndexingStatusDashlet.php');
-        $this->registerDashlet('LuceneStatisticsDashlet', 'ktcore.dashlet.indexing_statss', KT_DIR . '/plugins/search2/LuceneStatisticsDashlet.php');
+        
+        
+        // THESE THREE DASHLETS HAVE BEEN MOVED TO ADMIN PAGES
+        
+        //$this->registerDashlet('ExternalResourceStatusDashlet', 'ktcore.dashlet.resource_status', KT_DIR . '/plugins/search2/ExternalDashlet.php');
+        //$this->registerDashlet('IndexingStatusDashlet', 'ktcore.dashlet.indexing_status', KT_DIR . '/plugins/search2/IndexingStatusDashlet.php');
+        //$this->registerDashlet('LuceneStatisticsDashlet', 'ktcore.dashlet.indexing_statss', KT_DIR . '/plugins/search2/LuceneStatisticsDashlet.php');
+        
         $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
 
         $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'misc', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
@@ -317,6 +322,20 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
             _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
             '../search2/reporting/RescheduleDocuments.php', null);
+        
+        
+        // Admin Pages for Previous Dashlets
+        $this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'search',
+            _kt('Document Indexer and External Resource Dependancy Status'), _kt('This report will show the status of external dependencies and the document indexer.'),
+            '../search2/reporting/IndexingStatus.php', null);
+        
+        $this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'search',
+            _kt('Document Indexer Statistics'), _kt('This report will show the Lucene Document Indexing Statistics '),
+            '../search2/reporting/LuceneStatistics.php', null);
+        
+        
+        
+        
 		//config
 		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
             _kt('Email'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),

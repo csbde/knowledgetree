@@ -37,6 +37,8 @@
  *
  */
 
+
+/* NOTE - This Dashlet has been moved to an Admin Page - File can be removed */
 class IndexingStatusDashlet extends KTBaseDashlet
 {
 	var $indexerName;
