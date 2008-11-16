@@ -2,7 +2,7 @@
 
 /**
  *
- * $Id:$
+ * $Id$
  *
  * KTUploadManager manages files in the uploaded_files table.
  *

@@ -2,7 +2,7 @@
 
 /**
  *
- * $Id:$
+ * $Id$
  *
  * Cleans up the download_files table.
  *

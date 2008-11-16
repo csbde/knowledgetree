@@ -2,7 +2,7 @@
 
 /**
  *
- * $Id:$
+ * $Id$
  *
  * A wrapper for webservice.php
  *

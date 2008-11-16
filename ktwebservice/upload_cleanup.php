@@ -2,7 +2,7 @@
 
 /**
  *
- * $Id:$
+ * $Id$
  *
  * Cleans up the uploaded_files table and the upload.
  *
