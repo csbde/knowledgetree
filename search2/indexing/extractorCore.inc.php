@@ -494,7 +494,7 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
 
         $config = KTConfig::getSingleton();
         $this->params = $config->get('indexer/' . $cmd . 'cmdline', $params);
-        $this->useOO = $config->get('indexer/useOpenOffice', true);
+        $this->useOO = false; //$config->get('indexer/useOpenOffice', true);
         if (!$config->get('indexer/use_' . $cmd, true) || OS_WINDOWS)
         {
             $this->cmd = false;
@@ -502,8 +502,8 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
 
         if ($this->useOO)
         {
-            require_once('extractors/StarOfficeExtractor.inc.php');
-            $this->oo = new StarOfficeExtractor();
+//            require_once('extractors/StarOfficeExtractor.inc.php');
+//            $this->oo = new StarOfficeExtractor();
         }
     }
 
@@ -547,6 +547,7 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
             // if failure, fallthrough, and attempt OO
         }
 
+        /*
         if ($this->useOO)
         {
             $this->oo->setSourceFile($this->sourcefile);
@@ -567,25 +568,26 @@ abstract class OOFallbackDocumentExtractor extends ExternalDocumentExtractor
         }
         else
         {
+        */
             global $default;
             $docId = $this->document->getId();
             $cmd = $this->cmd;
             $default->log->info("The document {$docId} cannot be indexed as {$cmd} is not available and OpenOffice is not in use.");
             file_put_contents($this->targetfile, '');
             return true;
-        }
+        //}
     }
 
     public function diagnose()
     {
-        if ($this->cmd !== false || !$this->useOO)
+        if ($this->cmd !== false) // || !$this->useOO)
         {
             // cmd is found. we don't care about oo.
             // if we can't use oo, well, not much we can do....
             return null;
         }
 
-        return $this->oo->diagnose();
+        return false; //$this->oo->diagnose();
     }
 }
 

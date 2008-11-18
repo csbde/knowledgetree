@@ -71,6 +71,8 @@ class StarOfficeExtractor extends ExternalDocumentExtractor
 
 	public function getSupportedMimeTypes()
 	{
+	    // disable
+	    return array();
 		$supported = array();
 
         if ($this->useOO)
