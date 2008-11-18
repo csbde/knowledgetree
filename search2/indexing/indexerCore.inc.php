@@ -1129,43 +1129,43 @@ abstract class Indexer
 	    KTUtil::setSystemSetting('extractorDiagnostics', serialize($extractorDiagnosis));
 	}
 
-    /**
-     * The main function that may be called repeatedly to index documents.
-     *
-     * @param int $max Default 20
-     */
-    public function indexDocuments($max=null)
-    {
-    	global $default;
-    	$config =& KTConfig::getSingleton();
+	/**
+	 * Perform diagnostics and pre-indexing setup
+	 * Refactored from indexDocuments()
+	 */
+	public function preIndexingSetup()
+	{
+	    global $default;
 
-    	/*$indexLockFile = $config->get('cache/cacheDirectory') . '/main.index.lock';
-    	if (is_file($indexLockFile))
-    	{
-			$default->log->info('indexDocuments: main.index.lock seems to exist. it could be that the indexing is still underway.');
-			$default->log->info('indexDocuments: Remove "' . $indexLockFile . '" if the indexing is not running or extend the frequency at which the background task runs!');
-			return;
-    	}
-    	touch($indexLockFile);*/
-
-
+    	// Check mimetypes and load the text extractors
     	$this->checkForRegisteredTypes();
 
-    	if ($this->debug) $default->log->debug('indexDocuments: start');
+    	// Check diagnostics on extractors
     	if (!$this->doesDiagnosticsPass())
     	{
     		//unlink($indexLockFile);
-    		if ($this->debug) $default->log->debug('indexDocuments: stopping - diagnostics problem. The dashboard will provide more information.');
-    		return;
+    		if ($this->debug) $default->log->debug('indexDocuments: stopping - diagnostics problem. The administration section will provide more information.');
+    		return false;
     	}
 
-    	if (is_null($max))
-    	{
-			$max = $config->get('indexer/batchDocuments',20);
-    	}
-
+    	// Load extractor hooks
     	$this->loadExtractorHooks();
 
+        $this->storageManager = KTStorageManagerUtil::getSingleton();
+
+        // Config setting - urls/tmpDirectory
+        $this->tempPath = $default->tmpDirectory;
+	}
+
+	/**
+	 * Get the queue of documents for processing
+	 * Refactored from indexDocuments()
+	 */
+	public function getDocumentsQueue($max = null)
+	{
+	    global $default;
+
+	    // Cleanup the queue
     	Indexer::clearoutDeleted();
 
     	$date = date('Y-m-d H:i:s');
@@ -1184,6 +1184,7 @@ abstract class Indexer
  					(iff.processdate IS NULL or iff.processdate < date_sub('$date', interval 1 day)) AND dmv.status_id=1
 				ORDER BY indexdate
  					LIMIT $max";
+
         $result = DBUtil::getResultArray($sql);
         if (PEAR::isError($result))
         {
@@ -1215,233 +1216,249 @@ abstract class Indexer
         $sql = "UPDATE index_files SET processdate='$date' WHERE document_id in ($ids)";
         DBUtil::runQuery($sql);
 
-        $extractorCache = array();
-        $storageManager = KTStorageManagerUtil::getSingleton();
+        return $result;
+	}
 
-        $tempPath = $config->get("urls/tmpDirectory");
+	/**
+	 * Process a document - extract text and index it
+	 * Refactored from indexDocuments()
+	 *
+	 * @param unknown_type $docinfo
+	 */
+	public function processDocument($document, $docinfo)
+	{
+	    global $default;
+	    static $extractorCache = array();
 
-        foreach($result as $docinfo)
-        {
-        // increment indexed documents count
-        Indexer::incrementCount();
+	    // increment indexed documents count
+	    Indexer::incrementCount();
 
-        	$docId=$docinfo['document_id'];
-        	$extension=$docinfo['filetypes'];
-        	$mimeType=$docinfo['mimetypes'];
-        	$extractorClass=$docinfo['extractor'];
-        	$indexDocument = in_array($docinfo['what'], array('A','C'));
-        	$indexDiscussion = in_array($docinfo['what'], array('A','D'));
-			$this->indexingHistory = '';
+	    $docId = $docinfo['document_id'];
+	    $extension = $docinfo['filetypes'];
+	    $mimeType = $docinfo['mimetypes'];
+	    $extractorClass = $docinfo['extractor'];
+	    $indexDocument = in_array($docinfo['what'], array('A','C'));
+	    $indexDiscussion = in_array($docinfo['what'], array('A','D'));
+	    $this->indexingHistory = '';
+	    $tempPath = $this->tempPath;
 
-        	$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass), 'debug');
+	    $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Indexing docid: %d extension: '%s' mimetype: '%s' extractor: '%s'"), $docId, $extension,$mimeType,$extractorClass), 'debug');
 
-        	if (empty($extractorClass))
+	    if (empty($extractorClass))
+	    {
+	        /*
+	        if no extractor is found and we don't need to index discussions, then we can remove the item from the queue.
+	        */
+	        if ($indexDiscussion)
+	        {
+	            $indexDocument = false;
+	            $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Not indexing docid: %d content because extractor could not be resolve. Still indexing discussion."), $docId), 'info');
+	        }
+	        else
+	        {
+	            Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
+	            return ;
+	        }
+	    }
+	    else
+	    {
+	        /*
+	        If an extractor is available, we must ensure it is enabled.
+	        */
+	        if (!$this->isExtractorEnabled($extractorClass))
+	        {
+	            $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass), 'info');
+	            return ;
+	        }
+	    }
+
+	    if ($this->debug)
+	    {
+	        $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Processing docid: %d.\n"),$docId), 'info');
+	    }
+
+	    if ($this->restartCurrentBatch)
+	    {
+	        Indexer::unqueueDocument($docId);
+	        Indexer::index($docId, 'A');
+	        return ;
+	    }
+
+	    $filename = $document->getFileName();
+	    if (substr($filename,0,1) == '~' || substr($filename,-1) == '~')
+	    {
+	        Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
+	        return ;
+	    }
+
+	    $removeFromQueue = true;
+	    if ($indexDocument)
+	    {
+	        if (array_key_exists($extractorClass, $extractorCache))
+	        {
+	            $extractor = $extractorCache[$extractorClass];
+	        }
+	        else
+	        {
+	            $extractor = $extractorCache[$extractorClass] = $this->getExtractor($extractorClass);
+	        }
+
+	        if (!($extractor instanceof DocumentExtractor))
+	        {
+	            $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("indexDocuments: extractor '%s' is not a document extractor class."),$extractorClass), 'error');
+	            return ;
+	        }
+
+	        $version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
+	        $sourceFile = $this->storageManager->temporaryFile($document);
+
+	        if (empty($sourceFile) || !is_file($sourceFile))
+	        {
+	            Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId), 'error');
+	            continue;
+	        }
+
+	        if ($extractor->needsIntermediateSourceFile())
+	        {
+	            //$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
+
+	            $intermediate = $tempPath . '/'. $docId . '.' . $extension;
+	            $result = @copy($sourceFile, $intermediate);
+	            if ($result === false)
+	            {
+	                $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not create intermediate file from document %d"),$docId), 'error');
+	                // problem. lets try again later. probably permission related. log the issue.
+	                continue;
+	            }
+	            $sourceFile = $intermediate;
+	        }
+
+	        $extractor->setSourceFile($sourceFile);
+	        $extractor->setMimeType($mimeType);
+	        $extractor->setExtension($extension);
+	        $extractor->setDocument($document);
+	        $extractor->setIndexingStatus(null);
+	        $extractor->setExtractionStatus(null);
+
+            $targetFile = tempnam($tempPath, 'ktindexer');
+            $extractor->setTargetFile($targetFile);
+
+	        $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile), 'debug');
+
+	        $this->executeHook($extractor, 'pre_extract');
+	        $this->executeHook($extractor, 'pre_extract', $mimeType);
+	        $removeFromQueue = false;
+
+	        if ($extractor->extractTextContent())
+	        {
+	            // the extractor may need to create another target file
+	            $targetFile = $extractor->getTargetFile();
+
+	            $extractor->setExtractionStatus(true);
+	            $this->executeHook($extractor, 'pre_index');
+	            $this->executeHook($extractor, 'pre_index', $mimeType);
+
+	            $title = $document->getName();
+	            if ($indexDiscussion)
+	            {
+	                if (!$this->filterText($targetFile))
+	                {
+	                    $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
+	                }
+	                else
+	                {
+	                    $indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
+	                    $removeFromQueue = $indexStatus;
+	                    if (!$indexStatus)
+	                    {
+	                        $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
+	                    }
+
+	                    $extractor->setIndexingStatus($indexStatus);
+	                }
+	            }
+	            else
+	            {
+	                if (!$this->filterText($targetFile))
+	                {
+	                    $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
+	                }
+	                else
+	                {
+	                    $indexStatus = $this->indexDocument($docId, $targetFile, $title, $version);
+	                    $removeFromQueue = $indexStatus;
+
+	                    if (!$indexStatus)
+	                    {
+	                        $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocument"),$docId), 'error');
+	                        $this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
+	                    }
+
+	                    $extractor->setIndexingStatus($indexStatus);
+	                }
+	            }
+	            $this->executeHook($extractor, 'post_index', $mimeType);
+	            $this->executeHook($extractor, 'post_index');
+	        }
+	        else
+	        {
+	            $extractor->setExtractionStatus(false);
+	            $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not extract contents from document %d"),$docId), 'error');
+	            $this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
+	        }
+
+	        $this->executeHook($extractor, 'post_extract', $mimeType);
+	        $this->executeHook($extractor, 'post_extract');
+
+	        if ($extractor->needsIntermediateSourceFile())
+	        {
+	            @unlink($sourceFile);
+	        }
+
+	        @unlink($targetFile);
+	    }
+	    else
+	    {
+	        $indexStatus = $this->indexDiscussion($docId);
+	        $removeFromQueue = $indexStatus;
+	    }
+
+	    if ($removeFromQueue)
+	    {
+	        Indexer::unqueueDocument($docId, sprintf(_kt("Done indexing docid: %d"),$docId));
+	    }
+	    else
+	    {
+	        if ($this->debug) $default->log->debug(sprintf(_kt("Document docid: %d was not removed from the queue as it looks like there was a problem with the extraction process"),$docId));
+	    }
+	}
+
+    /**
+     * The main function that may be called repeatedly to index documents.
+     *
+     * @param int $max Default 20
+     */
+    public function indexDocuments($max=null)
+    {
+        global $default;
+        if($default->enableIndexing){
+            $this->preIndexingSetup();
+
+        	if (is_null($max))
         	{
-        		/*
-
-        		if no extractor is found and we don't need to index discussions, then we can remove the item from the queue.
-
-        		*/
-        		if ($indexDiscussion)
-        		{
-        			$indexDocument = false;
-        			$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Not indexing docid: %d content because extractor could not be resolve. Still indexing discussion."), $docId), 'info');
-        		}
-        		else
-        		{
-        			Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
-        			continue;
-        		}
-        	}
-        	else
-        	{
-        		/*
-
-        		If an extractor is available, we must ensure it is enabled.
-
-        		 */
-
-	        	if (!$this->isExtractorEnabled($extractorClass))
-				{
-					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("diagnose: Not indexing docid: %d because extractor '%s' is disabled."), $docId, $extractorClass), 'info');
-					continue;
-				}
+    			$max = $default->batchDocuments;
         	}
 
-        	if ($this->debug)
-        	{
-        		$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Processing docid: %d.\n"),$docId), 'info');
-        	}
+            $queue = $this->getDocumentsQueue($max);
 
-        	$document = Document::get($docId);
-        	if (PEAR::isError($document))
-        	{
-        		Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Cannot resolve document id %d: %s."),$docId, $document->getMessage()), 'error');
-        		continue;
-        	}
-
-        	if ($this->restartCurrentBatch)
-			{
-			    Indexer::unqueueDocument($docId);
-        		Indexer::index($docId, 'A');
-			    continue;
-			}
-
-
-        	$filename = $document->getFileName();
-        	if (substr($filename,0,1) == '~' || substr($filename,-1) == '~')
-        	{
-        		Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
-        		continue;
-        	}
-
-        	$removeFromQueue = true;
-        	if ($indexDocument)
-        	{
-        		if (array_key_exists($extractorClass, $extractorCache))
-        		{
-        			$extractor = $extractorCache[$extractorClass];
-        		}
-        		else
-        		{
-        			$extractor = $extractorCache[$extractorClass] = $this->getExtractor($extractorClass);
-        		}
-
-				if (!($extractor instanceof DocumentExtractor))
-				{
-					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("indexDocuments: extractor '%s' is not a document extractor class."),$extractorClass), 'error');
-					continue;
-				}
-
-
-
-        		$version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
-        		$sourceFile = $storageManager->temporaryFile($document);
-
-        		if (empty($sourceFile) || !is_file($sourceFile))
-        		{
-        			Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId), 'error');
-        			continue;
-        		}
-
-        		if ($extractor->needsIntermediateSourceFile())
-        		{
-        			//$extension =  pathinfo($document->getFileName(), PATHINFO_EXTENSION);
-
-        			$intermediate = $tempPath . '/'. $docId . '.' . $extension;
-        			$result = @copy($sourceFile, $intermediate);
-        			if ($result === false)
-        			{
-        				$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not create intermediate file from document %d"),$docId), 'error');
-        				// problem. lets try again later. probably permission related. log the issue.
-        				continue;
-        			}
-        			$sourceFile = $intermediate;
-        		}
-
-        		$targetFile = tempnam($tempPath, 'ktindexer');
-
-        		$extractor->setSourceFile($sourceFile);
-        		$extractor->setMimeType($mimeType);
-        		$extractor->setExtension($extension);
-        		$extractor->setTargetFile($targetFile);
-        		$extractor->setDocument($document);
-        		$extractor->setIndexingStatus(null);
-        		$extractor->setExtractionStatus(null);
-
-        		$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Extra Info docid: %d Source File: '%s' Target File: '%s'"),$docId,$sourceFile,$targetFile), 'debug');
-
-        		$this->executeHook($extractor, 'pre_extract');
-				$this->executeHook($extractor, 'pre_extract', $mimeType);
-				$removeFromQueue = false;
-
-        		if ($extractor->extractTextContent())
-        		{
-        			// the extractor may need to create another target file
-        			$targetFile = $extractor->getTargetFile();
-
-        			$extractor->setExtractionStatus(true);
-        			$this->executeHook($extractor, 'pre_index');
-					$this->executeHook($extractor, 'pre_index', $mimeType);
-
-					$title = $document->getName();
-        			if ($indexDiscussion)
-        			{
-        				if (!$this->filterText($targetFile))
-        				{
-        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
-        				}
-						else
-						{
-	        				$indexStatus = $this->indexDocumentAndDiscussion($docId, $targetFile, $title, $version);
-    	    				$removeFromQueue = $indexStatus;
-        					if (!$indexStatus)
-        					{
-        						$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocumentAndDiscussion"),$docId), 'error');
-        					}
-
-        					$extractor->setIndexingStatus($indexStatus);
-						}
-        			}
-        			else
-        			{
-        				if (!$this->filterText($targetFile))
-        				{
-        					$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem filtering document %d"),$docId), 'error');
-        				}
-						else
-						{
-							$indexStatus = $this->indexDocument($docId, $targetFile, $title, $version);
-							$removeFromQueue = $indexStatus;
-
-							if (!$indexStatus)
-							{
-								$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Problem indexing document %d - indexDocument"),$docId), 'error');
-								$this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
-							}
-
-        					$extractor->setIndexingStatus($indexStatus);
-						}
-        			}
-
-					$this->executeHook($extractor, 'post_index', $mimeType);
-        			$this->executeHook($extractor, 'post_index');
-        		}
-        		else
-        		{
-        			$extractor->setExtractionStatus(false);
-        			$this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not extract contents from document %d"),$docId), 'error');
-					$this->logPendingDocumentInfoStatus($docId, '<output>' . $extractor->output . '</output>', 'error');
-        		}
-
-				$this->executeHook($extractor, 'post_extract', $mimeType);
-        		$this->executeHook($extractor, 'post_extract');
-
-        		if ($extractor->needsIntermediateSourceFile())
-        		{
-        			@unlink($sourceFile);
-        		}
-
-        		@unlink($targetFile);
-
-        	}
-        	else
-        	{
-				$indexStatus = $this->indexDiscussion($docId);
-				$removeFromQueue = $indexStatus;
-        	}
-
-        	if ($removeFromQueue)
-        	{
-        		Indexer::unqueueDocument($docId, sprintf(_kt("Done indexing docid: %d"),$docId));
-        	}
-        	else
-        	{
-        		if ($this->debug) $default->log->debug(sprintf(_kt("Document docid: %d was not removed from the queue as it looks like there was a problem with the extraction process"),$docId));
-        	}
+            // Process queue
+            foreach($queue as $item){
+                // index document
+                $this->processDocument($item);
+            }
         }
         if ($this->debug) $default->log->debug('indexDocuments: done');
-        //unlink($indexLockFile);
+        return;
     }
 
     public function migrateDocuments($max=null)

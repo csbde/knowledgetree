@@ -1350,7 +1350,7 @@ UNLOCK TABLES;
 LOCK TABLES `scheduler_tasks` WRITE;
 /*!40000 ALTER TABLE `scheduler_tasks` DISABLE KEYS */;
 INSERT INTO `scheduler_tasks` VALUES
-(1,'Indexing','search2/bin/cronIndexer.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'system'),
+(1,'Document Processor','search2/documentProcessor/bin/documentProcessor.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'system'),
 (2,'Index Migration','search2/bin/cronMigration.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'system'),
 (3,'Index Optimization','search2/bin/cronOptimize.php','',0,'weekly','2007-10-01 00:00:00',NULL,0,'system'),
 (4,'Periodic Document Expunge','bin/expungeall.php','',0,'weekly','2007-10-01 00:00:00',NULL,0,'disabled'),
@@ -1358,8 +1358,6 @@ INSERT INTO `scheduler_tasks` VALUES
 (6,'OpenOffice test','bin/checkopenoffice.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'enabled'),
 (7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'enabled'),
 (8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'enabled'),
-(9,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'daily','2007-10-01 00:00:00',NULL,0,'enabled'),
-(10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'daily','2007-10-01 00:00:00',NULL,0,'enabled');
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 

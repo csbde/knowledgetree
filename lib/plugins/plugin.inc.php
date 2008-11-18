@@ -306,6 +306,20 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'interceptor');
     }
 
+    /**
+     * Register a new document processor class
+     * See Search2/DocumentProcessor
+     */
+    function registerProcessor($sClassname, $sNamespace, $sPath)
+    {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
+
+        // Register helper in DB
+        $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'process', 'processor');
+    }
+
     /* ** Refactor into another class ** */
     /**
      * Register the plugin in the DB
