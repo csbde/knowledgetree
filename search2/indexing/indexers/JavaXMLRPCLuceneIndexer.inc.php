@@ -57,7 +57,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
 
 		$config =& KTConfig::getSingleton();
 		$javaServerUrl = $config->get('indexer/javaLuceneURL');
-		$this->lucene = new XmlRpcLucene($javaServerUrl);
+		$this->lucene = XmlRpcLucene::get($javaServerUrl);
 	}
 
 	/**

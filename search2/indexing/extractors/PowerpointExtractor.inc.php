@@ -14,6 +14,7 @@ class PowerpointExtractor extends OOFallbackDocumentExtractor
 
 	public function getSupportedMimeTypes()
 	{
+	    return array();
 		return array(
 			'application/vnd.ms-powerpoint'
 		);

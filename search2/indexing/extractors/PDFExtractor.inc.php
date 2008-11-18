@@ -49,6 +49,7 @@ class PDFExtractor extends ApplicationExtractor
 
 	public function getSupportedMimeTypes()
 	{
+	    return array();
 		return array('application/pdf');
 	}
 

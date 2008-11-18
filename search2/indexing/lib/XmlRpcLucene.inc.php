@@ -79,6 +79,16 @@ class XmlRpcLucene
 		$this->ktid = $config->get('indexer/luceneID','');
 	}
 
+	public static function get($url)
+	{
+	    static $singleton = null;
+
+	    if(is_null($singleton)){
+	        $singleton = new XmlRpcLucene($url);
+	    }
+        return $singleton;
+	}
+
 	/**
 	 * Set a level for debugging.
 	 *
@@ -273,6 +283,96 @@ class XmlRpcLucene
 		}
 		return php_xmlrpc_decode($result->value()) == 0;
 	}
+
+	/**
+	 * Extracts the text from a given document stream
+	 *
+	 * @return unknown
+	 */
+	function extractTextContent($content)
+    {
+        $function = new xmlrpcmsg('textextraction.getText',
+            array(
+                new xmlrpcval($content, 'base64'))
+            );
+        $result =& $this->client->send($function);
+
+        unset($buffer);
+
+        if($result->faultCode()) {
+            $this->error($result, 'extractTextContent');
+            return false;
+        }
+
+        $obj = php_xmlrpc_decode($result->value());
+
+        $extractedText = trim($obj['text']);
+        return $extractedText;
+    }
+
+    /**
+     * Write custom properties into the document content
+     *
+     * @param stream $content
+     * @param array $properties
+     * @return boolean
+     */
+    function writeProperties($content, $properties)
+    {
+        $function = new xmlrpcmsg('metadata.writeCustomProperties',
+        array(
+            new xmlrpcval($content, 'base64'),
+            new xmlrpcval("mimetype placeholder", "string"),
+            php_xmlrpc_encode($properties)
+        ));
+
+        $result =& $this->client->send($function);
+
+        unset($content);
+
+        if($result->faultCode()) {
+            $this->error($result, 'writeProperties');
+            return false;
+        }
+
+        $obj = php_xmlrpc_decode($result->value());
+
+        if($obj['status'] != '0') {
+            return false;
+        }
+        return $obj['data'];
+    }
+
+    /**
+     * Read the document properties
+     *
+     * @param stream $content
+     * @return unknown
+     */
+    function readProperties($content)
+    {
+        $function = new xmlrpcmsg('metadata.readMetaData',
+        array(
+            new xmlrpcval($content, 'base64')
+        ));
+
+        $result =& $this->client->send($function);
+
+        unset($buffer);
+
+        if($result->faultCode()) {
+            $this->error($result, 'readProperties');
+            return false;
+        }
+
+        $obj = php_xmlrpc_decode($result->value());
+
+        if($obj['status'] != '0') {
+            return false;
+        }
+
+        return $obj['metadata'];
+    }
 
 	function shutdown()
 	{

@@ -14,6 +14,7 @@ class WordExtractor extends OOFallbackDocumentExtractor
 
 	public function getSupportedMimeTypes()
 	{
+	    return array();
 		return array(
 			'application/msword',
 			'text/rtf'
