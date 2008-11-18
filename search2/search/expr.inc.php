@@ -2191,6 +2191,13 @@ class OpExpr extends Expr
 
     private function exec_text_query($op, $group)
     {
+    	global $default;
+    	// if the indexer has been disabled, return an empty array
+    	if(!$default->enableIndexing){
+    	    $default->log->debug("SEARCH LUCENE: indexer has been disabled.");
+    	    return array();
+    	}
+
         if (($this->getContext() != ExprContext::DOCUMENT) || empty($group))
         {
             return array();
@@ -2213,7 +2220,6 @@ class OpExpr extends Expr
     	}
 
     	$indexer = Indexer::get();
-    	global $default;
     	$default->log->debug("SEARCH LUCENE: $query");
 
     	$results = $indexer->query($query);
@@ -2317,9 +2323,12 @@ class OpExpr extends Expr
 		}
 
 		$permResults = array();
-		foreach($result[$resultContext] as $idx=>$item)
+		if(isset($result[$resultContext]))
 		{
-			$permResults[$resultContext][$idx] = $item;
+    		foreach($result[$resultContext] as $idx=>$item)
+    		{
+    			$permResults[$resultContext][$idx] = $item;
+    		}
 		}
 
 		return $permResults;
