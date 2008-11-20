@@ -48,27 +48,27 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
     * Dispatch function
     */
     function do_main() {
-        
+
         // Load Templating Engine
         $oTemplating =& KTTemplating::getSingleton();
         // Set Template to use
-        $oTemplate = $oTemplating->loadTemplate('ktcore/search2/indexing_status2');
-        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/search2/indexing_status');
+
         // Do a runtime Service Resource Check
         $checker = new ResourceChecker();
         $checker->check();
-        
+
         // Get Results
         $serviceErrors = KTUtil::getSystemSetting('externalResourceIssues');
-        
+
         $serviceErrors = unserialize($serviceErrors);
-        
+
         // Array to Hold Items not working
         $this->serviceErrors = array();
         // A reference array to use with extractors that depend on the service
         $errorReference = array();
-        
-        
+
+
         if (count($serviceErrors) > 0) {
             // Add Service Errors
             foreach($serviceErrors as $error)
@@ -78,27 +78,27 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
                         'status'=>$error['status'],
                         'help'=> IndexingHelp::getHelp($error['name'])
                     );
-                
+
                 // Create Reference to the array
                 $errorReference[$error['status']] =& $this->serviceErrors[$error['name']];
             }
         }
-        
-        
-        
+
+
+
         // ---------------------------
-        
+
         // Do a run time check for extractors not working
         Indexer::updateIndexStats();
-        
+
         // Get Results
         $extractorDiagnosis = KTUtil::getSystemSetting('extractorDiagnostics');
-        
+
         if (!empty($extractorDiagnosis)) $extractorDiagnosis = unserialize($extractorDiagnosis);
-        
+
         // Create an Array to store errors
         $this->extractorErrors = array();
-        
+
         if (count($extractorDiagnosis > 0)) {
             foreach ($extractorDiagnosis as $extractor=>$props)
             {
@@ -107,7 +107,7 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
                     // One service may affect multiple extractors
                     $errorReference[$props['diagnosis']]['alsoaffects'] = array(array('extractor'=>$props['name'], 'affectedtypes'=> IndexingHelp::affectedTypes($extractor)));
                 } else {
-                    
+
                     // Else list as normal extractor error
                     $this->extractorErrors[$extractor] = array(
                             'name'=> $props['name'],
@@ -118,12 +118,12 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
                 }
             }
         }
-        
-        
-        
+
+
+
         // Create URL to Send to Template
         $url = KTUtil::kt_url();
-        
+
         // Prepare Template Data
         $aTemplateData = array(
                 'context' => $this,
@@ -131,10 +131,10 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
                 'extractorErrors' => $this->extractorErrors,
                 'url' => $url
             );
-        
+
         // Send to template and render
         return $oTemplate->render($aTemplateData);
-        
+
     }
 }
 ?>
