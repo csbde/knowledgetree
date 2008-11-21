@@ -1,1 +1,0 @@
-INSERT INTO system_settings (name, value) VALUES ('server_name','127.0.0.1');
