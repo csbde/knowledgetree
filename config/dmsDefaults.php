@@ -157,6 +157,11 @@ class KTInit {
         $logDir = $oKTConfig->get('urls/logDirectory');
         $properties['log4php.appender.default.file'] = $logDir . '/kt%s.' . KTUtil::running_user() .  '.log.txt';
 
+        // get the log level set in the configuration settings to override the level set in ktlog.ini
+        // for the default / main logging. Additional logging can be configured through the ini file
+        $logLevel = $oKTConfig->get('KnowledgeTree/logLevel');
+        $properties['log4php.rootLogger'] = $logLevel . ', default';
+
         session_start();
         $configurator->doConfigureProperties($properties, $repository);
 
@@ -422,7 +427,8 @@ class KTInit {
 
         $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
         $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
-        $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 'false');
+
+        // Set ssl to enabled if using https - if the server variable is not set, allow the config setting to take precedence
         if (array_key_exists('HTTPS', $_SERVER)) {
             if (strtolower($_SERVER['HTTPS']) === 'on') {
                 $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 'true');
