@@ -155,6 +155,13 @@ function performPostUpgradeActions() {
     $oKTConfig = new KTConfig();
     $oKTConfig->clearCache();
 
+    // Clear out all caches and proxies - they need to be regenerated with the new code
+    $proxyDir = $default->proxyCacheDirectory;
+    KTUtil::deleteDirectory($proxyDir);
+
+    $oKTCache = new KTCache();
+    $oKTCache->deleteAllCaches();
+
     // Clean out the plugin_helper table
     $sql = "DELETE FROM plugin_helper";
     $res = DBUtil::runQuery($sql);
@@ -560,7 +567,7 @@ You can continue to do the backup manually using the following process:
 
 	}
 ?>
-<nobr><?php echo $stmt['display'];?>
+<nobr><?php echo $stmt['display'];?></nobr>
 </table>
 <P>
 
@@ -701,7 +708,7 @@ You can continue to do the restore manually using the following command(s):
 
 	}
 ?>
-<nobr><?php echo $stmt['display'];?>
+<nobr><?php echo $stmt['display'];?></nobr>
 </table>
 <P>
 <?php
@@ -780,7 +787,7 @@ function backupDone()
 		<?php
 			}
 		?>
-						<nobr><?php echo $stmt['display'];?>
+						<nobr><?php echo $stmt['display'];?></nobr>
 				</table>
 
 <?php
