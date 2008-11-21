@@ -155,6 +155,13 @@ function performPostUpgradeActions() {
     $oKTConfig = new KTConfig();
     $oKTConfig->clearCache();
 
+    // Clear out all caches and proxies - they need to be regenerated with the new code
+    $proxyDir = $default->proxyCacheDirectory;
+    KTUtil::deleteDirectory($proxyDir);
+
+    $oKTCache = new KTCache();
+    $oKTCache->deleteAllCaches();
+
     // Clean out the plugin_helper table
     $sql = "DELETE FROM plugin_helper";
     $res = DBUtil::runQuery($sql);
