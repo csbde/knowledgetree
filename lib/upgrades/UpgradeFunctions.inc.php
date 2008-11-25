@@ -62,7 +62,7 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes','removeOldFilesAndFolders354')
+            '3.5.4' => array('createIndexes','removeOldFilesAndFolders354', 'updateServerConfigSettings')
             );
 
     var $descriptions = array(
@@ -98,7 +98,8 @@ class UpgradeFunctions {
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
             'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
-            'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.'
+            'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.',
+            'updateServerConfigSettings' => 'Update the configuration settings for the server with the correct port'
             );
     var $phases = array(
             "setPermissionFolder" => 1,
@@ -1376,6 +1377,17 @@ class UpgradeFunctions {
 
         // FIXME: We should check that they all worked
         return true;
+    }
+
+    function updateServerConfigSettings() {
+        global $default;
+        $port = $_SERVER['SERVER_PORT']+0;
+
+        if($port > 0){
+            DBUtil::whereUpdate('config_settings',
+                array('value' => $port),
+                array('item' => 'internal_server_port', 'group_name' => 'server'));
+        }
     }
 
     function rm_recursive($filepath)

@@ -58,40 +58,76 @@ class KTUtil {
     {
     	global $default;
 
-    	$serverName = KTUtil::getSystemSetting('server_name', false);
-    	if($serverName !== false && !empty($serverName)){
-    	    return $serverName;
+    	$serverName = $default->server_name;
+    	$serverPort = $default->server_port;
+
+    	$pos = strpos($serverName, '://');
+        if($pos !== false){
+            $serverName = substr($serverName, $pos + 3);
+        }
+
+    	$server = $_SERVER['SERVER_NAME'];
+    	$port = $_SERVER['SERVER_PORT']+0;
+
+    	// If server_name exists, exit
+    	if(!empty($serverName)){
+    	    // check that it hasn't changed and update if it has - disabled because it should be set by the system administrator and may have unforeseen consequences
+    	    //if($port == $serverPort && $server == $serverName){
+    	       return true;
+    	    //}
     	}
 
-		$rootUrl = $default->rootUrl;
-		$protocol  = $default->sslEnabled ? 'https' : 'http';
-		$port = $_SERVER['SERVER_PORT']+0;
-		$serverName = $_SERVER['SERVER_NAME'];
-
-		// We don't want to set the servername to localhost, it should be set to the url that will be used normally
-		if($serverName == 'localhost' || $serverName == '127.0.0.1')
+    	// We don't want to set the servername to localhost, it should be set to the url that will be used normally
+		if($server == 'localhost' || $server == '127.0.0.1')
 		{
 		    return false;
 		}
 
-		$base_url = $protocol . '://' . $serverName;
+		// If the servername is empty and not localhost - update it
 
-		if (($protocol == 'http' && $port == 80) || ($protocol == 'https' && $port == 443))
-		{
-			// don't need to do anything
-		}
-		else
-		{
-			$base_url .= ':' . $port;
-		}
+		// Save the server name and port
+		DBUtil::whereUpdate('config_settings',
+            array('value' => $server),
+            array('item' => 'server_name', 'group_name' => 'server'));
 
-		// Add the root url
-		$base_url .= $rootUrl;
+        if($port > 0){
+            DBUtil::whereUpdate('config_settings',
+                array('value' => $port),
+                array('item' => 'server_port', 'group_name' => 'server'));
+        }
 
-		// Save as system setting
-		KTUtil::setSystemSetting('server_name', $base_url);
+        // Save the rootUrl
+    	$rootUrl = $default->rootUrl;
+        if(!empty($rootUrl)){
+    		DBUtil::whereUpdate('config_settings',
+                array('value' => $rootUrl),
+                array('item' => 'rootUrl', 'group_name' => 'KnowledgeTree'));
+        }
+        return true;
     }
 
+    static function getServerName()
+    {
+        static $host = null;
+
+        if(!is_null($host)){
+            return $host;
+        }
+
+        $host = $_SERVER['HTTP_HOST'];
+
+        if(empty($host)){
+            global $default;
+            $host = (!empty($default->server_name)) ? $default->server_name : '127.0.0.1';
+            $host .= !empty($default->server_port) ? ':'.$default->server_port : '';
+
+            $pos = strpos($host, '://');
+            if($pos !== false){
+                $host = substr($host, $pos + 3);
+            }
+        }
+        return $host;
+    }
 
     static function kt_url()
 	{
@@ -103,30 +139,13 @@ class KTUtil {
 		    return $base_url;
 		}
 
-		$config = KTConfig::getSingleton();
-		$serverName = $config->get('knowledgeTree/serverName', $_SERVER['HTTP_HOST']);
+    	$serverName = $_SERVER['HTTP_HOST'];
 
-		// $serverName gets set in dmsDefaults, if $_SERVER['HTTP_HOST'] is empty, it gets set to localhost
-		// we want to avoid this if possible
-		if(empty($serverName) || $serverName == 'localhost')
+		// $serverName gets set in dmsDefaults using KTUtil::getServerName();
+		if(empty($serverName))
 		{
-		    // The host has not been set - check if the serverName setting exists
-		    $base_url = KTUtil::getSystemSetting('server_name', false);
-
-		    if (false !== $base_url && !empty($base_url))
-    		{
-    		    /* We are checking if the object exists because we could have an error pre or during initialization */
-        		if(is_object($default->log))
-        		{
-        			$default->log->debug("kt_url: base url - $base_url");
-        		}
-
-    		    $base_url = str_replace(array("\n","\r"), array('',''), $base_url);
-    			return $base_url;
-    		}
-
-    		// TODO: Check if the $_SERVER['SERVER_NAME'] variable is set.
-    		$serverName = 'localhost';
+		    // The host has not been set - check if server_name is set in the config_settings
+		    $serverName = KTUtil::getServerName();
 		}
 
 		// build up the url
@@ -138,23 +157,45 @@ class KTUtil {
 		return $base_url;
 	}
 
+	static function kt_internal_url()
+	{
+	    global $default;
+	    static $internal_url = null;
+
+	    if(!is_null($internal_url)){
+	        return $internal_url;
+	    }
+
+	    // build url
+	    $internal_url = !empty($default->internal_server_name) ? $default->internal_server_name : '127.0.0.1';
+	    $internal_url .= !empty($default->internal_server_port) ? ':' . $default->internal_server_port : '';
+	    $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
+
+	    $pos = strpos($internal_url, '://');
+        if($pos === false){
+            $port = $default->internal_server_port;
+            $internal_url = (($port == 443 || $port == 8443) ? 'https://' : 'http://') . $internal_url;
+        }
+
+	    return $internal_url;
+	}
+
 	static function call_page($path)
 	{
 	    global $default;
 
-		$base_url = KTUtil::getSystemSetting('server_name', false);
+	    // Using curl so we want to run using the internal url
+		$base_url = KTUtil::kt_internal_url();
 
 		if (false === $base_url || empty($base_url))
 		{
-			$default->log->info("call_page: $path - cannot call script until user logs in from a url other than localhost or 127.0.0.1!");
+			$default->log->info("call_page: $path - cannot call script, there is a problem with the internal url. Please check the configuration settings for General Settings => Server Settings.");
 			return;
 		}
 
-		$kt_url = KTUtil::kt_url();
+		$full_url = $base_url . '/' . $path;
 
-		$full_url = $kt_url . '/' . $path;
-
-		$default->log->debug("call_page: calling $full_url");
+		$default->log->debug("call_page: calling curl with - $full_url");
 
 		$ch = curl_init($full_url);
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
