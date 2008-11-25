@@ -425,8 +425,8 @@ class KTInit {
 	{
 		$oKTConfig =& KTConfig::getSingleton();
 
+		// Override the config setting - KT_DIR is resolved on page load
         $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
-        $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
 
         // Set ssl to enabled if using https - if the server variable is not set, allow the config setting to take precedence
         if (array_key_exists('HTTPS', $_SERVER)) {
@@ -434,9 +434,34 @@ class KTInit {
                 $oKTConfig->setdefaultns('KnowledgeTree', 'sslEnabled', 'true');
             }
         }
-        $oKTConfig->setdefaultns('KnowledgeTree', 'rootUrl', $this->guessRootUrl());
-        $oKTConfig->setdefaultns('KnowledgeTree', 'execSearchPath', $_SERVER['PATH']);
-        $oKTConfig->setdefaultns('KnowledgeTree', 'magicDatabase', KTInit::detectMagicFile());
+
+        $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', $_SERVER['HTTP_HOST']);
+
+        // Check for the config setting before overriding with the resolved setting
+        $serverName = $oKTConfig->get('KnowledgeTree/serverName');
+        $rootUrl = $oKTConfig->get('KnowledgeTree/rootUrl');
+        $execSearchPath = $oKTConfig->get('KnowledgeTree/execSearchPath');
+        $magicDatabase = $oKTConfig->get('KnowledgeTree/magicDatabase');
+
+        // base server name
+        if(empty($serverName) || $serverName == 'default'){
+            $oKTConfig->setdefaultns('KnowledgeTree', 'serverName', KTUtil::getServerName());
+        }
+
+        // the sub directory or root url
+        if(empty($rootUrl) || $rootUrl == 'default'){
+            $oKTConfig->setdefaultns('KnowledgeTree', 'rootUrl', $this->guessRootUrl());
+        }
+
+        // path to find the executable binaries
+        if(empty($execSearchPath) || $execSearchPath == 'default'){
+            $oKTConfig->setdefaultns('KnowledgeTree', 'execSearchPath', $_SERVER['PATH']);
+        }
+
+        // path to magic database
+        if(empty($magicDatabase) || $magicDatabase == 'default'){
+            $oKTConfig->setdefaultns('KnowledgeTree', 'magicDatabase', KTInit::detectMagicFile());
+        }
 	}
 	// }}}
 

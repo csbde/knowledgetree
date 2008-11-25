@@ -161,7 +161,8 @@ INSERT INTO `config_groups` VALUES
 (20, 'urls', 'Urls', 'The paths to the KnowledgeTree server and filesystem. <br>Full values are specific to your installation (Windows or Linux). Only advanced users should change these settings.', 'General Settings'),
 (21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'General Settings'),
 (22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Client Tools Settings'),
-(23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'General Settings');
+(23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'General Settings'),
+(24, 'server', 'Server Settings', 'Configuration settings for the server', 'General Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,7 +277,12 @@ INSERT INTO `config_settings` VALUES
 (102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1),
 (103, 'tweaks', 'Always Force Original Filename on Checkin', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
 (104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '/usr/share/file/magic', 'string', NULL, 1),
-(105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '1000', 'numeric_string', NULL, 1);
+(105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '1000', 'numeric_string', NULL, 1),
+(106, 'server', 'Internal Server IP', 'The internal IP for the server, this is usually set to 127.0.0.1.', 'internal_server_name', 'default', '127.0.0.1', 'string', NULL, 1),
+(107, 'server', 'Internal Server port', 'The internal port for the server.', 'internal_server_port', 'default', '80', 'numeric_string', NULL, 1),
+(108, 'server', 'External Server IP', 'The external IP for the server.', 'server_name', 'default', '', 'string', NULL, 1),
+(109, 'server', 'External Server port', 'The external port for the server.', 'server_port', 'default', '', 'numeric_string', NULL, 1),
+(110, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '', '', 'string', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
