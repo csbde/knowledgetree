@@ -313,6 +313,38 @@ class KTConfig {
     	}
     }
 
+    /**
+     * Load a config file
+     * Used for the unit tests
+     *
+     * @param unknown_type $filename
+     * @param unknown_type $bDefault
+     * @return unknown
+     */
+    function loadFile($filename, $bDefault = false) {
+        $c = new Config;
+        $root =& $c->parseConfig($filename, "IniCommented");
+
+        if (PEAR::isError($root)) {
+            return $root;
+        }
+
+        $this->aFileRoot[$filename] =& $root;
+
+        $conf =& $root->toArray();
+        foreach ($conf["root"] as $seck => $secv) {
+            $aSectionFile[$seck] = $filename;
+            if (is_array($secv)) {
+                foreach ($secv as $k => $v) {
+                    $this->setns($seck, $k, $v);
+                }
+            } else {
+                $this->setns(null, $seck, $secv);
+            }
+        }
+        $this->conf = kt_array_merge($this->conf, $conf["root"]);
+    }
+
     static function &getSingleton() {
     	static $singleton = null;
 

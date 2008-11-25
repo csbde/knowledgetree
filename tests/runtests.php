@@ -16,6 +16,10 @@ class UnitTests extends TestSuite {
         $this->addFile('folder/testFolder.php');
 //        $this->addFile('browseutil/testBrowseUtil.php');
         $this->addFile('filelike/testStringFileLike.php');
+
+        $this->addFile('documentProcessor/testExtracters.php');
+        //$this->addFile('documentProcessor/testIndexer.php');
+        $this->addFile('documentProcessor/testGuidInserter.php');
     }
 }
 
