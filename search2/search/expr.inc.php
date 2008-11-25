@@ -2317,9 +2317,12 @@ class OpExpr extends Expr
 		}
 
 		$permResults = array();
-		foreach($result[$resultContext] as $idx=>$item)
+		if(isset($result[$resultContext]))
 		{
-			$permResults[$resultContext][$idx] = $item;
+    		foreach($result[$resultContext] as $idx=>$item)
+    		{
+    			$permResults[$resultContext][$idx] = $item;
+    		}
 		}
 
 		return $permResults;

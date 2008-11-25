@@ -570,6 +570,11 @@ function processSearchExpression($query)
 
     		$rs = $expr->evaluate(ExprContext::DOCUMENT);
     		$rs = $rs['docs'];
+
+    		if(empty($rs)){
+    		    return array();
+    		}
+
     		usort($rs, 'rank_compare');
 
     		$results = array();

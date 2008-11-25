@@ -61,7 +61,7 @@ class FullPathField extends DBFieldExpr
         }
     }
 
-    public function appliesToContext($context)
+    public function appliesToContext()
     {
         return ExprContext::DOCUMENT | ExprContext::FOLDER;
     }
