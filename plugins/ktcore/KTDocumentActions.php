@@ -341,6 +341,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
+        session_write_close();
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
             $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
