@@ -62,9 +62,10 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes', 'updateServerConfigSettings')
+            '3.5.4' => array('createIndexes'),
+            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354')
             );
-
+            
     var $descriptions = array(
             "rebuildSearchPermissions" => "Rebuild search permissions with updated algorithm",
             "setPermissionFolder" => "Set permission folder for each folder for simplified permissions management",
@@ -97,6 +98,7 @@ class UpgradeFunctions {
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
+            'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.',
             'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
             'updateServerConfigSettings' => 'Update the configuration settings for the server with the correct port'
             );
@@ -1364,6 +1366,20 @@ class UpgradeFunctions {
         return true;
     }
 
+    // {{{  removeOldFilesAndFolders354
+    function removeOldFilesAndFolders354() {
+        global $default;
+        $oldFile = KT_DIR . "/lib/sanitize.inc";
+        if(file_exists($oldFile)) unlink($oldFile);
+
+        // Files MUST be removed before folders and folders MUST be empty
+        $oldPath1 = KT_DIR . "/plugins/toolsdashlet/";
+        UpgradeFunctions::rm_recursive($oldPath1);
+
+        // FIXME: We should check that they all worked
+        return true;
+    }
+
     function updateServerConfigSettings() {
         global $default;
         $port = $_SERVER['SERVER_PORT']+0;
@@ -1374,6 +1390,7 @@ class UpgradeFunctions {
                 array('item' => 'internal_server_port', 'group_name' => 'server'));
         }
     }
+
 
     function rm_recursive($filepath)
     {
