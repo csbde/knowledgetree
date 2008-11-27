@@ -1736,7 +1736,10 @@ INSERT INTO `upgrades` VALUES
 (207,'upgrade*3.5.3*99*upgrade3.5.3','Upgrade from version 3.5.2 to 3.5.3','2008-07-30 00:00:00',1,'upgrade*3.5.3*99*upgrade3.5.3'),
 (208,'func*3.5.4*7*createIndexes','Recreate db integrity:Create indexes on the database','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
 (209,'sql*3.5.4*0*3.5.4/max_sql_search_results.sql','Add configurable maximum results for SQL search queries.','2008-07-30 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
-(210,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
+(210,'sql*3.5.4*0*3.5.4/server_config_settings.sql','Create the configuration settings for the servers IP and port','2008-11-25 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(211,'func*3.5.4*0*removeOldFilesAndFolders354','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(212,'func*3.5.4*0*updateServerConfigSettings','Update the configuration settings for the server with the correct port','2008-11-25 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
+(213,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
