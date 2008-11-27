@@ -250,12 +250,12 @@ class KTInit {
             $path_info = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
             $orig_path_info = KTUtil::arrayGet($_SERVER, 'ORIG_PATH_INFO');
             if (empty($path_info) && !empty($orig_path_info)) {
-                $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+                $_SERVER['PATH_INFO'] = strip_tags($_SERVER['ORIG_PATH_INFO']);
                 $_SERVER['PHP_SELF'] .= $_SERVER['PATH_INFO'];
             }
             $env_path_info = KTUtil::arrayGet($_SERVER, 'REDIRECT_kt_path_info');
             if (empty($path_info) && !empty($env_path_info)) {
-                $_SERVER['PATH_INFO'] = $env_path_info;
+                $_SERVER['PATH_INFO'] = strip_tags($env_path_info);
                 $_SERVER['PHP_SELF'] .= $_SERVER['PATH_INFO'];
             }
 
@@ -263,16 +263,19 @@ class KTInit {
             // set REQUEST_URI.  Fake it.
             $request_uri = KTUtil::arrayGet($_SERVER, 'REQUEST_URI');
             if (empty($request_uri)) {
-                $_SERVER['REQUEST_URI'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
+                $_SERVER['REQUEST_URI'] = strip_tags(KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']));
             }
         } else {
             unset($_SERVER['PATH_INFO']);
         }
 
-        $script_name = KTUtil::arrayGet($_SERVER, 'SCRIPT_NAME');
-        $php_self = KTUtil::arrayGet($_SERVER, 'PHP_SELF');
+        $script_name = strip_tags(KTUtil::arrayGet($_SERVER, 'SCRIPT_NAME'));
+        $php_self = strip_tags(KTUtil::arrayGet($_SERVER, 'PHP_SELF'));
 
-        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
+        $_SERVER['SCRIPT_NAME'] = $script_name;
+        $_SERVER['PHP_SELF'] = $php_self;
+
+        $kt_path_info = strip_tags(KTUtil::arrayGet($_REQUEST, 'kt_path_info'));
         if (!empty($kt_path_info)) {
             $_SERVER['PHP_SELF'] .= '?kt_path_info=' . $kt_path_info;
             $_SERVER['PATH_INFO'] = $kt_path_info;

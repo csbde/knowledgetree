@@ -40,6 +40,11 @@ require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
+// Strip html tags out of the request action to prevent XSS attacks
+// This is done here to ensure that it is done for all places that use the variables.
+$_REQUEST['fReturnAction'] = strip_tags($_REQUEST['fReturnAction']);
+$_REQUEST['fReturnData'] = strip_tags($_REQUEST['fReturnData']);
+
 /*
  * Using KTStandardDispatcher for errorPage, overriding handleOutput as
  * the document action dispatcher will handle that.
