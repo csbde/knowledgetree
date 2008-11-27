@@ -94,7 +94,7 @@ class loginUtil
             return $sessionID;
         }
 
-		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;

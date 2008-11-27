@@ -62,7 +62,7 @@ class LoginPageDispatcher extends KTDispatcher {
             }
             else {
                 // User is already logged in - get the redirect
-                $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+                $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
                 $cookietest = KTUtil::randomString();
                 setcookie("CookieTestCookie", $cookietest, 0);
@@ -117,7 +117,7 @@ class LoginPageDispatcher extends KTDispatcher {
             return $sessionID;
         }
 
-		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;
@@ -167,7 +167,7 @@ class LoginPageDispatcher extends KTDispatcher {
 
         $errorMessageConfirm = $_SESSION['errormessage']['login'];
 
-        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         $oReg =& KTi18nregistry::getSingleton();
         $aRegisteredLangs = $oReg->geti18nLanguages('knowledgeTree');
@@ -241,12 +241,12 @@ class LoginPageDispatcher extends KTDispatcher {
         }
         setcookie("kt_language", $language, 2147483647, '/');
 
-        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         $url = $_SERVER["PHP_SELF"];
         $queryParams = array();
 
-        if ($redirect !== null) {
+        if (!empty($redirect)) {
             $queryParams[] = 'redirect=' . urlencode($redirect);
         }
 
@@ -338,9 +338,9 @@ class LoginPageDispatcher extends KTDispatcher {
 
         $url = $_SERVER["PHP_SELF"];
         $queryParams = array();
-        $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
-        if ($redirect !== null) {
+        if (!empty($redirect)) {
             $queryParams[] = 'redirect='. urlencode($redirect);
         }
 
@@ -351,7 +351,7 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         // check for a location to forward to
-        if ($redirect !== null) {
+        if (!empty($redirect)) {
             $url = $redirect;
         // else redirect to the dashboard if there is none
         } else {
