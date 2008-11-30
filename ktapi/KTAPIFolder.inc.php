@@ -953,6 +953,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 		return new PEAR_Error('TODO');
 	}
+
+	public function getObject()
+	{
+	    return $this->folder;
+	}
 }
 
 ?>

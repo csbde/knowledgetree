@@ -1857,6 +1857,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		DBUtil::commit();
 	}
+
+	public function getObject()
+	{
+	    return $this->document;
+	}
+
 }
 
 ?>

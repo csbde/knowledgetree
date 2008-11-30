@@ -52,8 +52,9 @@ require_once(KTAPI_DIR .'/KTAPIConstants.inc.php');
 require_once(KTAPI_DIR .'/KTAPISession.inc.php');
 require_once(KTAPI_DIR .'/KTAPIFolder.inc.php');
 require_once(KTAPI_DIR .'/KTAPIDocument.inc.php');
+require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 
-class KTAPI_FolderItem
+abstract class KTAPI_FolderItem
 {
 	/**
 	 * This is a reference to the core KTAPI controller
@@ -67,6 +68,8 @@ class KTAPI_FolderItem
 	{
 		return $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
 	}
+
+	public abstract function getObject();
 }
 
 class KTAPI_Error extends PEAR_Error
@@ -267,6 +270,11 @@ class KTAPI
 	}
 
 
+	/**
+	 * start a root session.
+	 *
+	 * @return KTAPI_SystemSession
+	 */
 	function & start_system_session()
 	{
 		$user = User::get(1);

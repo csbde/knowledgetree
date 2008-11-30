@@ -270,7 +270,7 @@ class KTAPI_UserSession extends KTAPI_Session
         if (is_null($ip))
         {
         	//$ip = '127.0.0.1';
-        	$ip = KTAPI_Session::resolveIP();
+        	$ip = KTAPI_UserSession::resolveIP();
         }
 
         $result = KTAPI_UserSession::_check_session($user, $ip, $app);
