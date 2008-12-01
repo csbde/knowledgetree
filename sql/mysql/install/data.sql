@@ -276,7 +276,7 @@ INSERT INTO `config_settings` VALUES
 (101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0),
 (102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1),
 (103, 'tweaks', 'Always Force Original Filename on Checkin', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
-(104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '/usr/share/file/magic', 'string', NULL, 1),
+(104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '${fileSystemRoot}/../common/share/file/magic', 'string', NULL, 1),
 (105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '1000', 'numeric_string', NULL, 1),
 (106, 'indexer', 'Enable the Document Indexer', 'Enables the indexing of document content for full text searching.', 'enableIndexing', 'default', 'true', 'boolean', NULL, 1),
 (107, 'server', 'Internal Server IP', 'The internal IP for the server, this is usually set to 127.0.0.1.', 'internal_server_name', 'default', '127.0.0.1', 'string', NULL, 1),
