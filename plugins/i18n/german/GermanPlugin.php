@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class GermanPlugin extends KTPlugin {
  	var $sNamespace = 'ktcore.i18.de_DE.plugin';
+    var $autoRegister = true;
  	
  	function GermanPlugin($sFilename = null)
  	{
