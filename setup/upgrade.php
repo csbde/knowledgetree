@@ -145,15 +145,11 @@ function performPostUpgradeActions() {
 
     global $default;
 
-    // Unlock the scheduler
-    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
-    if(file_exists($lockFile)){
-        unlink($lockFile);
-    }
+    // Ensure all plugins are registered.
+    $sql = "DELETE FROM plugin_helper";
+    $res = DBUtil::runQuery($sql);
 
-    // Clear the configuration cache, it'll regenerate on next load
-    $oKTConfig = new KTConfig();
-    $oKTConfig->clearCache();
+    KTPluginUtil::registerPlugins();
 
     // Clear out all caches and proxies - they need to be regenerated with the new code
     $proxyDir = $default->proxyCacheDirectory;
@@ -162,11 +158,17 @@ function performPostUpgradeActions() {
     $oKTCache = new KTCache();
     $oKTCache->deleteAllCaches();
 
-    // Clean out the plugin_helper table
-    $sql = "DELETE FROM plugin_helper";
-    $res = DBUtil::runQuery($sql);
+    // Clear the configuration cache, it'll regenerate on next load
+    $oKTConfig = new KTConfig();
+    $oKTConfig->clearCache();
 
-    return $res;
+    // Unlock the scheduler
+    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+    if(file_exists($lockFile)){
+        @unlink($lockFile);
+    }
+
+    return true;
 
 }
 
