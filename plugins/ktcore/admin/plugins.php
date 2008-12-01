@@ -148,6 +148,8 @@ class KTPluginDispatcher extends KTAdminDispatcher {
             }
         }
 
+        // we reregister the plugins to ensure they are in the correct order
+        KTPluginUtil::registerPlugins();
         $this->successRedirectToMain(_kt('Plugins updated'));
     }
 
