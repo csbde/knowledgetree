@@ -1105,28 +1105,48 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function update_metadata($metadata)
 	{
-		global $default;
-		if (empty($metadata))
-		{
-			return;
-		}
+	    global $default;
+	    if (empty($metadata))
+	    {
+	        return;
+	    }
 
-		 $packed = $this->get_packed_metadata($metadata);
+	    $packed = $this->get_packed_metadata($metadata);
 
-		 DBUtil::startTransaction();
-		 $result = KTDocumentUtil::saveMetadata($this->document, $packed, array('novalidate'=>true));
+	    DBUtil::startTransaction();
 
-		 if (is_null($result))
-		 {
-		 	DBUtil::rollback();
-		 	return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': Null result returned but not expected.');
-		 }
-		 if (PEAR::isError($result))
-		 {
-		 	DBUtil::rollback();
-		 	return new KTAPI_Error('Unexpected validation failure', $result);
-		 }
-		 DBUtil::commit();
+	    $user = $this->ktapi->get_user();
+	    $this->document->setLastModifiedDate(getCurrentDateTime());
+	    $this->document->setModifiedUserId($user->getId());
+
+	    // Update the content version / document version
+	    if($default->updateContentVersion){
+	        $this->document->startNewContentVersion($user);
+	        $this->document->setMinorVersionNumber($this->document->getMinorVersionNumber()+1);
+	    }else {
+	        $this->document->startNewMetadataVersion($user);
+	    }
+
+	    $res = $this->document->update();
+	    if (PEAR::isError($res))
+	    {
+	        DBUtil::rollback();
+	        return new KTAPI_Error('Unexpected failure updating document', $res);
+	    }
+
+	    $result = KTDocumentUtil::saveMetadata($this->document, $packed, array('novalidate'=>true));
+
+	    if (is_null($result))
+	    {
+	        DBUtil::rollback();
+	        return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': Null result returned but not expected.');
+	    }
+	    if (PEAR::isError($result))
+	    {
+	        DBUtil::rollback();
+	        return new KTAPI_Error('Unexpected validation failure', $result);
+	    }
+	    DBUtil::commit();
 
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();

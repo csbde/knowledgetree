@@ -208,6 +208,8 @@ class KTDocumentEditAction extends KTDocumentAction {
         if($default->updateContentVersion){
             $this->oDocument->startNewContentVersion($this->oUser);
             $this->oDocument->setMinorVersionNumber($this->oDocument->getMinorVersionNumber()+1);
+        }else {
+            $this->oDocument->startNewMetadataVersion($this->oUser);
         }
 
         $res = $this->oDocument->update();
