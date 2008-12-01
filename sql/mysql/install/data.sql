@@ -266,7 +266,7 @@ INSERT INTO `config_settings` VALUES
 (91, 'cache', 'Cache Enabled', 'Enables the KnowledgeTree cache. Default is \'False\'.', 'cacheEnabled', 'default', 'false', 'boolean', NULL, 1),
 (92, 'cache', 'Cache Directory', 'The location of the KnowledgeTree cache.', 'cacheDirectory', 'default', '${varDirectory}/cache', 'string', NULL, 1),
 (93, 'openoffice', 'Program Path', 'Defines the path to the OpenOffice program directory. ', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
-(94, 'urls', 'documentRoot', '', 'documentRoot', 'default', '${varDirectory}/Documents', 'string', NULL, 0),
+(94, 'urls', 'Document Directory', 'The path to the documents directory', 'documentRoot', 'default', '${varDirectory}/Documents', 'string', NULL, 0),
 (95, 'KnowledgeTree', 'Redirect To Browse View', 'Defines whether to redirect to the Browse view (Browse Documemts) on login, instead of the Dashboard.<br>Default is \'False\'. ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
 (96, 'KnowledgeTree', 'Redirect To Browse View: Exceptions', 'Specifies that, when \'Redirect To Browse\' is set to \'True\' all users, except for the users listed in the text field below are redirected to the Browse view on log in. The users listed for this setting are directed to the KnowledgeTree Dashboard. To define exceptions, add user names in the text field as follows, e.g. admin, joebloggs, etc.', 'redirectToBrowseExceptions', '', '', 'string', NULL, 1),
 (97, 'session', 'Allow Automatic Sign In', 'Defines whether to automatically create a user account on first login for any user who does not yet exist in the system. Default is \'False\'.', 'allowAutoSignup', 'default', 'false', 'boolean', 'string', 1),
@@ -283,7 +283,8 @@ INSERT INTO `config_settings` VALUES
 (108, 'server', 'Internal Server port', 'The internal port for the server.', 'internal_server_port', 'default', '80', 'numeric_string', NULL, 1),
 (109, 'server', 'External Server IP', 'The external IP for the server.', 'server_name', 'default', '', 'string', NULL, 1),
 (110, 'server', 'External Server port', 'The external port for the server.', 'server_port', 'default', '', 'numeric_string', NULL, 1),
-(111, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '', '', 'string', NULL, 1);
+(111, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '', '', 'string', NULL, 1),
+(112, 'urls', 'Var Directory', 'The path to the var directory.', 'varDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
