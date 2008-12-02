@@ -283,7 +283,7 @@ INSERT INTO `config_settings` VALUES
 (108, 'server', 'Internal Server port', 'The internal port for the server.', 'internal_server_port', 'default', '80', 'numeric_string', NULL, 1),
 (109, 'server', 'External Server IP', 'The external IP for the server.', 'server_name', 'default', '', 'string', NULL, 1),
 (110, 'server', 'External Server port', 'The external port for the server.', 'server_port', 'default', '', 'numeric_string', NULL, 1),
-(111, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '', '', 'string', NULL, 1),
+(111, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '/', '', 'string', NULL, 1),
 (112, 'urls', 'Var Directory', 'The path to the var directory.', 'varDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
