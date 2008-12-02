@@ -169,7 +169,7 @@ class KTUtil {
 	    // build url
 	    $internal_url = !empty($default->internal_server_name) ? $default->internal_server_name : '127.0.0.1';
 	    $internal_url .= !empty($default->internal_server_port) ? ':' . $default->internal_server_port : '';
-	    $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
+	    //$internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
 
 	    $pos = strpos($internal_url, '://');
         if($pos === false){
