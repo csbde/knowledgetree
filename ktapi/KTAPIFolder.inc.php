@@ -160,6 +160,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			'parent_id'=>(int) $this->get_parent_folder_id(),
 			'full_path'=>$this->get_full_path(),
 			'linked_folder_id'=>$this->folder->getLinkedFolderId(),
+			'permissions' => KTAPI_Folder::get_permission_string($this->folder),
 		);
 
 		if($wsversion<3){
