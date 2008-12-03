@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 class FrenchPlugin extends KTPlugin {
  	var $sNamespace = 'ktcore.i18.fr_FR.plugin';
     var $autoRegister = true;
+    var $iOrder = -50;
  	
  	function FrenchPlugin($sFilename = null)
  	{
