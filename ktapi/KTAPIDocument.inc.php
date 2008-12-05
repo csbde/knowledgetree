@@ -979,7 +979,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
             foreach ($fields as $field)
             {
-                $value = 'n/a';
+                $value = '';
 
 				$fieldvalue = DocumentFieldLink::getByDocumentAndField($this->document, $field);
                 if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
@@ -1013,7 +1013,8 @@ class KTAPI_Document extends KTAPI_FolderItem
                 $fieldsresult[] = array(
                 	'name' => $field->getName(),
                 	'required' => $field->getIsMandatory(),
-                	'value' => $value,
+                    'value' => $value == '' ? 'n/a' : $value,
+                    'blankvalue' => $value=='' ? '1' : '0', 
                     'description' => $field->getDescription(),
                     'control_type' => $controltype,
                     'selection' => $selection
