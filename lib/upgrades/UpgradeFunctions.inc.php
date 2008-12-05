@@ -62,7 +62,7 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes','removeOldFilesAndFolders354', 'updateServerConfigSettings')
+            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354')
             );
 
     var $descriptions = array(
@@ -97,8 +97,8 @@ class UpgradeFunctions {
             'removeAdminVersionNotifier' => 'Remove the old Admin Version Notifier Plugin.',
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
-            'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
             'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.',
+            'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
             'updateServerConfigSettings' => 'Update the configuration settings for the server with the correct port'
             );
     var $phases = array(
@@ -1389,6 +1389,7 @@ class UpgradeFunctions {
                 array('item' => 'internal_server_port', 'group_name' => 'server'));
         }
     }
+
 
     function rm_recursive($filepath)
     {
