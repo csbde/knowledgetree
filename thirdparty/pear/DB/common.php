@@ -2030,6 +2030,22 @@ class DB_common extends PEAR
     }
 
     // }}}
+    
+    // {{{ getLastId()
+
+    /**
+     * Returns the last insert ID
+     *
+     * @return int
+     *
+     * @access public
+     */
+    function getLastId()
+    {
+        return $this->_getLastId();
+    }
+
+    // }}}
 }
 
 /*

@@ -168,7 +168,7 @@ class DBUtil {
             if ($bNoId)
                 return;
             else
-                return mysql_insert_id();
+                return $db->getLastId();
         }
         if (PEAR::isError($res)) {
         	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);

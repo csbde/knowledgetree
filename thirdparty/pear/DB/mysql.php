@@ -904,6 +904,22 @@ class DB_mysql extends DB_common
 
     // }}}
 
+	// {{{ _getLastId()
+
+	/**
+     * Returns the last insert ID
+     *
+     * @return int
+     *
+     * @access private
+     */
+	function _getLastId()
+	{
+		return mysql_insert_id($this->connection);
+	}
+
+	// }}}
+
 }
 
 /*
