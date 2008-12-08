@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/compressionArchiveUtil.inc.php');
+require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 class KTBulkExportPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.bulkexport.plugin";
