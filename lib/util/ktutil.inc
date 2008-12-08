@@ -1343,6 +1343,16 @@ class KTUtil {
             return false;
         }
     }
+    
+    static
+    function camelize($string) {
+    	$result = "";
+    	$parts = explode("_", $string);
+    	for($i=0;$i<count($parts);$i++) {
+    		$result .= ucfirst($parts[$i]);
+    	}
+    	return $result;
+    }
 }
 
 /**
