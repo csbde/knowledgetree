@@ -121,7 +121,8 @@ class UpgradeFunctions {
 
     var $priority = array(
             'addAutoIncrementToTables'=>1,
-            'addAutoIncrementToTables2'=>-1
+            'addAutoIncrementToTables2'=>-1,
+            'removeOldFilesAndFolders354'=>1
             );
 
     function addAutoIncrementToTables2()
