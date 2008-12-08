@@ -9,3 +9,4 @@ plugins/professional-reporting/
 plugins/shortcuts/
 plugins/wintools/
 plugins/updatesandmessages/
+var/cache/configcache
