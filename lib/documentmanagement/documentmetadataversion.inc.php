@@ -72,26 +72,9 @@ class KTDocumentMetadataVersion extends KTEntity {
     var $iWorkflowId;
     var $iWorkflowStateId;
 
-    var $_aFieldToSelect = array(
-        "iId" => "id",
-
-        "iDocumentId" => 'document_id',
-        "iMetadataVersion" => 'metadata_version',
-        "iContentVersionId" => 'content_version_id',
-
-        "iDocumentTypeId" => 'document_type_id',
-
-        "sName" => 'name',
-        "sDescription" => 'description',
-
-        "iStatusId" => 'status_id',
-
-        "dVersionCreated" => 'version_created',
-        "iVersionCreatorId" => 'version_creator_id',
-
-        "iWorkflowId" => 'workflow_id',
-        "iWorkflowStateId" => 'workflow_state_id',
-    );
+    var $_aFieldToSelect;
+    
+    public static $_versionFields = null;
 
     // {{{ getters/setters
     function getDocumentId() { return $this->iDocumentId; }
@@ -118,6 +101,41 @@ class KTDocumentMetadataVersion extends KTEntity {
     function getWorkflowStateId() { return $this->iWorkflowStateId; }
     function setWorkflowStateId($mValue) { $this->iWorkflowStateId = $mValue; }
     // }}}
+    
+    function __construct() {
+    	$this->_aFieldToSelect = KTDocumentMetaDataVersion::getFieldsToSelect();
+    }
+    
+    static 
+    function getFieldsToSelect() {
+    	if(self::$_versionFields == null) {
+    		$sTable = KTUtil::getTableName('document_metadata_version');
+    		$aFields = DBUtil::getResultArray(array("DESCRIBE $sTable"));
+    		$result = array();
+    		for($i=0;$i<count($aFields);$i++) {
+    			$result[KTDocumentMetaDataVersion::getFieldType($aFields[$i]['Type']).KTUtil::camelize($aFields[$i]['Field'])] = $aFields[$i]['Field'];
+    		}
+    		self::$_versionFields = $result;
+    	}
+    	return self::$_versionFields; 	
+    }
+    
+    static
+    function getFieldType($dbType) {
+    	/* Integer test */
+    	if(strpos($dbType, "int") !== FALSE) {
+    		return "i";
+    	}
+    	
+    	/* Time test */
+    	if(strpos($dbType, "time") !== FALSE) {
+    		return "d";
+    	}
+    	
+    	/* Default */
+    	return "s";
+    }
+    
 
     function &createFromArray($aOptions) {
         return KTEntityUtil::createFromArray('KTDocumentMetadataVersion', $aOptions);
