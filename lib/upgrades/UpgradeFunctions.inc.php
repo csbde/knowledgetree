@@ -62,7 +62,7 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354')
+            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354','removeOldFilesAndFolders354a')
             );
 
     var $descriptions = array(
@@ -98,6 +98,7 @@ class UpgradeFunctions {
             'removeOldSearchPlugins' => 'Remove the old Search Plugins.',
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
             'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.',
+            'removeOldFilesAndFolders354a' => 'Remove old files and folders that are no longer needed.',
             'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
             'updateServerConfigSettings' => 'Update the configuration settings for the server with the correct port'
             );
@@ -121,7 +122,7 @@ class UpgradeFunctions {
     var $priority = array(
             'addAutoIncrementToTables'=>1,
             'addAutoIncrementToTables2'=>-1,
-            'removeOldFilesAndFolders354'=>1
+            'removeOldFilesAndFolders354a'=>1
             );
 
     function addAutoIncrementToTables2()
@@ -1377,6 +1378,15 @@ class UpgradeFunctions {
         UpgradeFunctions::rm_recursive($oldPath1);
 
         // FIXME: We should check that they all worked
+        return true;
+    }
+
+    // {{{  removeOldFilesAndFolders354a
+    function removeOldFilesAndFolders354a() {
+        global $default;
+        $oldFile = KT_DIR . "/sql/mysql/upgrade/3.5.4/server_name.sql";
+        if(file_exists($oldFile)) unlink($oldFile);
+
         return true;
     }
 
