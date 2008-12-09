@@ -10,3 +10,5 @@ plugins/shortcuts/
 plugins/wintools/
 plugins/updatesandmessages/
 var/cache/configcache
+bin/luceneserver/lucene.pid
+plugins/.gitignore
