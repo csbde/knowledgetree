@@ -106,7 +106,6 @@ class KTDocumentMetadataVersion extends KTEntity {
     	$this->_aFieldToSelect = KTDocumentMetaDataVersion::getFieldsToSelect();
     }
     
-    static 
     function getFieldsToSelect() {
     	if(self::$_versionFields == null) {
     		$sTable = KTUtil::getTableName('document_metadata_version');
@@ -120,7 +119,6 @@ class KTDocumentMetadataVersion extends KTEntity {
     	return self::$_versionFields; 	
     }
     
-    static
     function getFieldType($dbType) {
     	/* Integer test */
     	if(strpos($dbType, "int") !== FALSE) {
