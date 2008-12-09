@@ -743,6 +743,10 @@ class KTEntityUtil {
         $allcode[] = sprintf('var $cacheGlobal = null;%s', "\n");
 
         foreach ($methods as $sMethod) {
+        	if(substr($sMethod, 0, 2) == '__') {
+				/* We don't want magic functions in our proxy classes */
+				continue;
+			}
             if ($sMethod == 'getid') {
                 $code = sprintf('function getId() { return $this->iId; }');
     		} else if ($sMethod == '_table' || $sMethod == 'update' ) {
