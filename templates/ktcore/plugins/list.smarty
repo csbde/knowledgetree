@@ -21,6 +21,7 @@ must be re-read from the filesystem{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="reread" />
+<input type="hidden" name="_force_plugin_truncate" value="1" />
 <input type="submit" name="submit" value="{i18n}Reread plugins{/i18n}" />
 </form>
 

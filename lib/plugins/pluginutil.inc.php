@@ -180,7 +180,7 @@ class KTPluginUtil {
         }
 
         // Check that there are plugins and if not, register them
-        if (empty($aPluginHelpers)) {
+        if (empty($aPluginHelpers) || (isset($_POST['_force_plugin_truncate']))) {
             DBUtil::startTransaction();
             KTPluginUtil::registerPlugins();
             DBUtil::commit();
