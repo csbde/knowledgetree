@@ -440,6 +440,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             )),
