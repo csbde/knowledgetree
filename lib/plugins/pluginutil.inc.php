@@ -180,7 +180,7 @@ class KTPluginUtil {
         }
 
         // Check that there are plugins and if not, register them
-        if (empty($aPluginHelpers)) {
+        if (empty($aPluginHelpers) || (isset($_POST['_force_plugin_truncate']))) {
             DBUtil::startTransaction();
             KTPluginUtil::registerPlugins();
             DBUtil::commit();
@@ -525,6 +525,22 @@ class KTPluginUtil {
         }
         return false;
     }
+    
+    /* Get the priority of the plugin */
+    function getPluginPriority($sFile) {
+    	$defaultPriority = 10;
+    	$priority = array(
+    		"ktcore" => 1,
+    		"ktstandard" => 2,
+    		"i18n" => 3
+    	);
+    	foreach($priority as $pattern => $priority) {
+    		if(ereg($pattern, $sFile)) {
+    			return $priority;
+    		}
+    	}
+    	return $defaultPriority;
+    }
 
     /**
      * Read the plugins directory and register all plugins in the database.
@@ -539,17 +555,31 @@ class KTPluginUtil {
         $oCache->deleteAllCaches();
 
         // Remove all entries from the plugin_helper table and refresh it.
-        $query = "DELETE FROM plugin_helper";
+        $query = "TRUNCATE plugin_helper";
         DBUtil::runQuery($query);
 
         $files = array();
+        $plugins = array();
+        
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
             $plugin_ending = "Plugin.php";
             if (substr($sFile, -strlen($plugin_ending)) === $plugin_ending) {
-                require_once($sFile);
+            	/* Set default priority */
+            	$plugins[$sFile] = KTPluginUtil::getPluginPriority($sFile);
             }
         }
+        
+        /* Sort the plugins by priority */
+        asort($plugins);
+        
+        foreach($plugins as $sFile => $priority) {
+        	require_once($sFile);
+        }
+        
+        
+       
+       
 
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aRegistryList = $oRegistry->getPlugins();

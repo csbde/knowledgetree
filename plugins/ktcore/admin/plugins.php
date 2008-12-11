@@ -154,7 +154,11 @@ class KTPluginDispatcher extends KTAdminDispatcher {
     }
 
     function do_reread() {
-        KTPluginUtil::registerPlugins();
+        /**
+         * The plugin re-register is now handled by the super global _force_plugin_truncate
+         * in pluginutil.inc.php
+         * KTPluginUtil::registerPlugins();
+        */
         $this->successRedirectToMain(_kt('Plugins read from the filesystem'));
     }
 }
