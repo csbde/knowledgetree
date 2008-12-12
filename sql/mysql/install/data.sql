@@ -1451,8 +1451,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.5.4a'),
-(3,'databaseVersion','3.5.4a'),
+(2,'knowledgeTreeVersion','3.5.5'),
+(3,'databaseVersion','3.5.5'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1744,6 +1744,7 @@ INSERT INTO `upgrades` VALUES
 (212,'func*3.5.4*0*updateServerConfigSettings','Update the configuration settings for the server with the correct port','2008-11-25 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
 (213,'upgrade*3.5.4*99*upgrade3.5.4','Upgrade from version 3.5.3 to 3.5.4','2008-10-01 00:00:00',1,'upgrade*3.5.4*99*upgrade3.5.4'),
 (214,'upgrade*3.5.4a*99*upgrade3.5.4a','Upgrade from version 3.5.4 to 3.5.4a','2008-12-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a');
+(215,'upgrade*3.5.5*99*upgrade3.5.5','Upgrade from version 3.5.4a to 3.5.5','2009-01-01 00:00:00',1,'upgrade*3.5.5*99*upgrade3.5.5');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2674,7 +2675,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(214);
+(215);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
