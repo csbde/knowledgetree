@@ -1213,24 +1213,40 @@ $sourceDocument->getName(),
     }
 
     function rename($oDocument, $sNewFilename, $oUser) {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
-
+        $oStorage =& KTStorageManagerUtil::getSingleton();    
+        
+        $oKTConfig = KTConfig::getSingleton();
+        $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);    
+        
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oOldContentVersion = $oDocument->_oDocumentContentVersion;
-        $bSuccess = $oDocument->startNewContentVersion($oUser);
-        if (PEAR::isError($bSuccess)) {
-            return $bSuccess;
+
+        if($updateVersion) // We only need to start a new content version if the version is in fact changing.
+        {
+        	$bSuccess = $oDocument->startNewContentVersion($oUser);
+
+        	if (PEAR::isError($bSuccess)) {
+        		return $bSuccess;
+        	}
+
+        	KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
         }
-        KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
+        
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
 
         if (!$res) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
+        
+        
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
         $oDocument->setModifiedUserId($oUser->getId());
-        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+        
+        if($updateVersion) { // Update version number
+        	$oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+        }
+        
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
 
 		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
