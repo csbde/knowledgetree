@@ -298,6 +298,7 @@ class SearchDispatcher extends KTStandardDispatcher {
 
     	// Strip out returns - they cause a js error [unterminated string literal]
     	$query = str_replace(array("\r\n", "\r", "\n"), array(' ', ' ', ' '), $query);
+    	$query = strip_tags($query);
 
     	$_SESSION['search2_quick'] = 0;
     	$_SESSION['search2_general'] = 0;
