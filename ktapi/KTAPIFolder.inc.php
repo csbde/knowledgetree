@@ -738,7 +738,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			return $user;
 		}
 
-		$title = KTUtil::replaceInvalidCharacters($title);
+		//KTS-4016: removed the replacing of special characters from the title as they should be allowed there
+		//$title = KTUtil::replaceInvalidCharacters($title);
 		$filename = basename($filename);
 		$filename = KTUtil::replaceInvalidCharacters($filename);
 		$documenttypeid = KTAPI::get_documenttypeid($documenttype);
