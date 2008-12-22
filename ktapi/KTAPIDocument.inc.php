@@ -739,7 +739,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		if ($this->document->getDocumentTypeId() != $doctypeid)
 		{
+			// Get the current document type, fieldsets and metadata
+			$iOldDocTypeID = $this->document->getDocumentTypeID();
+			$fieldsets = KTMetadataUtil::fieldsetsForDocument($this->document, $iOldDocTypeID);
+			$mdlist = DocumentFieldLink::getByDocument($this->document);
+	
+			$field_values = array();
+			foreach ($mdlist as $oFieldLink) {
+				$field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+			}
+			
 			DBUtil::startTransaction();
+			$this->document->startNewMetadataVersion($user);
 			$this->document->setDocumentTypeId($doctypeid);
 			$res = $this->document->update();
 
@@ -750,7 +761,42 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 
 
-			$metadata = $this->get_packed_metadata();
+			// Ensure all values for fieldsets common to both document types are retained
+			$fs_ids = array();
+	
+			$doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
+			foreach($doctype_fieldsets as $fieldset)
+			{
+				$fs_ids[] = $fieldset->getId();
+			}
+	
+			$MDPack = array();
+			foreach ($fieldsets as $oFieldset)
+			{
+				if ($oFieldset->getIsGeneric() || in_array($oFieldset->getId(), $fs_ids))
+				{
+					$fields = $oFieldset->getFields();
+	
+					foreach ($fields as $oField)
+					{
+						$val = isset($field_values[$oField->getId()]) ? $field_values[$oField->getId()] : '';
+	
+						if (!empty($val))
+						{
+							$MDPack[] = array($oField, $val);
+						}
+					}
+				}
+			}
+	
+			$core_res = KTDocumentUtil::saveMetadata($this->document, $MDPack, array('novalidate' => true));
+	
+			if (PEAR::isError($core_res)) {
+				DBUtil::rollback();
+				return $core_res;
+			}
+			
+			
 
 		    $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
             $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
