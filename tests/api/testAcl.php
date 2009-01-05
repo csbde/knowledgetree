@@ -123,30 +123,47 @@ class APIAclTestCase extends KTUnitTestCase {
     function testRoleAllocation()
     {
         $root = $this->ktapi->get_root_folder();
+        $folder = $this->ktapi->get_folder_by_name('/test123');
 
-        $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $root);
+        $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $folder);
 
+        $role2 = KTAPI_Role::getByName('Reviewer');
         $role = KTAPI_Role::getByName('Publisher');
         $user = KTAPI_User::getByUsername('admin');
         $user2 = KTAPI_User::getByUsername('anonymous');
         $group = KTAPI_Group::getByName('System Administrators');
 
+//        $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
+//        $this->assertTrue($allocation->doesRoleHaveMember($role2, $user));
+
+
+
+        $allocation->add($role2, $user);
         $allocation->add($role, $user);
-        $allocation->add($role, $user2);
+        $allocation->add($role, $group);
+        $allocation->save();
+/*        $allocation->add($role, $user2);
         $allocation->add($role, $user2); // yup. this is a dup. just to test.
         $allocation->add($role, $group);
 
-        $this->assertTrue($allocation->doesRoleHasMember($role, $user));
+        $this->assertTrue($allocation->doesRoleHaveMember($role, $user));
 
         $allocation->remove($role, $user);
 
-        $this->assertFalse($allocation->doesRoleHasMember($role, $user));
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
 
         $allocation->remove($role, $user2);
 
-        $this->assertFalse($allocation->doesRoleHasMember($role, $user2));
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user2));
 
         $allocation->save();
+
+        // now, just overwrite the allocation variable, and check that the assertions still hold.
+
+        $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $root);
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user2));*/
+
     }
 
     /**
@@ -156,6 +173,7 @@ class APIAclTestCase extends KTUnitTestCase {
     function testPermissionAllocation()
     {
         $root = $this->ktapi->get_root_folder();
+        $folder = $this->ktapi->get_folder_by_name('/test123');
 
         $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $root);
 
@@ -163,10 +181,14 @@ class APIAclTestCase extends KTUnitTestCase {
         $user = KTAPI_User::getByUsername('anonymous');
         $read = KTAPI_Permission::getByNamespace('ktcore.permissions.read');
         $write = KTAPI_Permission::getByNamespace('ktcore.permissions.write');
+        $addFolder = KTAPI_Permission::getByNamespace('ktcore.permissions.addFolder');
+        $security = KTAPI_Permission::getByNamespace('ktcore.permissions.security');
 
         $allocation->add($user, $read);
         $allocation->add($user, $write);
-        $allocation->delete($group, $write);
+        $allocation->add($user, $addFolder);
+        $allocation->add($user, $security);
+        $allocation->remove($group, $write);
 
         $allocation->save();
 
