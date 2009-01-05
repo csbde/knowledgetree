@@ -959,6 +959,46 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 	    return $this->folder;
 	}
+
+	public function isSubscribed()
+	{
+        $subscriptionType = SubscriptionEvent::subTypes('Folder');
+        $user = $this->ktapi->get_user();
+        $folder = $this->folder;
+
+        return Subscription::exists($user->getId(), $folder->getId(), $subscriptionType);
+	}
+
+	public function unsubscribe()
+	{
+        if (!$this->isSubscribed())
+        {
+            return;
+        }
+
+        $subscriptionType = SubscriptionEvent::subTypes('Folder');
+        $user = $this->ktapi->get_user();
+        $folder = $this->folder;
+
+        $subscription = & Subscription::getByIDs($user->getId(), $folder->getId(), $subscriptionType);
+        $subscription->delete();
+	}
+
+	public function subscribe()
+	{
+        if ($this->isSubscribed())
+        {
+            return;
+        }
+
+        $subscriptionType = SubscriptionEvent::subTypes('Folder ');
+        $user = $this->ktapi->get_user();
+        $folder = $this->folder;
+
+        $subscription = new Subscription($user->getId(), $folder->getId(), $subscriptionType);
+        $subscription->create();
+	}
+
 }
 
 ?>

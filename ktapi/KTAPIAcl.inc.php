@@ -1252,6 +1252,15 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
         $map['role']['role'][$roleId] = $role->Name;
 
         $allocation = $type . 'Allocation';
+        if (!array_key_exists($roleId, $map['role'][$allocation]))
+        {
+            $map['role'][$allocation][$roleId] = array();
+        }
+        if (array_key_exists($memberId, $map['role'][$allocation][$roleId]))
+        {
+            // if the key exists, we don't have to do anything.
+            return;
+        }
         $map['role'][$allocation][$roleId][$memberId] = $memberId;
 
         $this->changed = true;
@@ -1284,7 +1293,7 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     }
 
     public
-    function doesRoleHasMember(KTAPI_Role $role, KTAPI_Member $member)
+    function doesRoleHaveMember(KTAPI_Role $role, KTAPI_Member $member)
     {
         $map = & $this->map;
 
@@ -1293,6 +1302,11 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 
         $type = $this->_getMemberType($member);
         $allocation = $type . 'Allocation';
+
+        if (!array_key_exists($roleId, $map['role'][$allocation]))
+        {
+            return false;
+        }
 
         $array = & $map['role'][$allocation][$roleId];
 
@@ -1341,56 +1355,46 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     {
         $roleId = $role->Id;
 
+        $object = $this->folderItem->getObject();
+        $objectId = $object->getId();
+        $parentId = $object->getParentID();
+
         // FIXME do we need to check that this role _isn't_ allocated?
-        $oRoleAllocation = new RoleAllocation();
-        $oRoleAllocation->setFolderId($this->oFolder->getId());
-        $oRoleAllocation->setRoleId($role_id);
+        $roleAllocation = new RoleAllocation();
+        $roleAllocation->setFolderId($objectId);
+        $roleAllocation->setRoleId($roleId);
 
         // create a new permission descriptor.
         // FIXME we really want to duplicate the original (if it exists)
 
-        $aAllowed = array(); // no-op, for now.
-		$this->startTransaction();
-
-        $oRoleAllocation->setAllowed($aAllowed);
-        $res = $oRoleAllocation->create();
-
-		if (PEAR::isError($res) || ($res == false)) {
-			$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
-		}
+        $allowed = array(); // no-op, for now.
+        $roleAllocation->setAllowed($allowed);
+        $res = $roleAllocation->create();
 
 		$this->_logTransaction(_kt('Override parent allocation'), 'ktcore.transactions.role_allocations_change');
 
+
         // inherit parent permissions
-        $oParentAllocation = RoleAllocation::getAllocationsForFolderAndRole($this->oFolder->getParentID(), $role_id);
-        if (!is_null($oParentAllocation) && !PEAR::isError($oParentAllocation))
+        $parentAllocation = RoleAllocation::getAllocationsForFolderAndRole($parentId, $roleId);
+        if (!is_null($parentAllocation) && !PEAR::isError($parentAllocation))
         {
-        	$oPD = $oParentAllocation->getPermissionDescriptor();
+        	$descriptor = $parentAllocation->getPermissionDescriptor();
 
-        	$aAllowed = $oPD->getAllowed();
-        	$userids=$aAllowed['user'];
-        	$groupids=$aAllowed['group'];
+        	$allowed = $descriptor->getAllowed();
 
-        	// now lets update for the new allocation
-        	$oPD = $oRoleAllocation->getPermissionDescriptor();
+        	$allowed = array(
+        	   'user' => $allowed['user'],
+        	   'group' => $allowed['group'],
+        	);
 
-        	$aAllowed = $oPD->getAllowed();
+        	$roleAllocation->setAllowed($allowed);
+        	$res = $roleAllocation->update();
 
-        	$aAllowed['user'] = $userids;
-        	$aAllowed['group'] = $groupids;
-
-        	$oRoleAllocation->setAllowed($aAllowed);
-        	$res = $oRoleAllocation->update();
-
-        	if (PEAR::isError($res) || ($res == false))
-        	{
-				$this->errorRedirectToMain(_kt('Failed to create the role allocation.') . print_r($res, true), sprintf('fFolderId=%d', $this->oFolder->getId()));
-			}
         }
 
         // regenerate permissions
 
-		$this->renegeratePermissionsForRole($oRoleAllocation->getRoleId());
+		$this->renegeratePermissionsForRole($roleId);
     }
 
     /**
@@ -1400,10 +1404,26 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     public
     function inheritAllocation()
     {
+        if (!$this->canInheritRoleAllocation())
+        {
+            return;
+        }
+
+        $this->_logTransaction(_kt('Use parent allocation'), 'ktcore.transactions.role_allocations_change');
+
         foreach($this->map['role']['role'] as $roleId=>$roleName)
         {
-            $this->inheritRoleAllocation(KTAPI_Role::getById($roleId));
+            $this->inheritRoleAllocation(KTAPI_Role::getById($roleId), false);
         }
+    }
+
+    public
+    function canInheritRoleAllocation()
+    {
+        $object = $this->folderItem->getObject();
+        $objectId = $object->getId();
+
+        return ($objectId != 1);
     }
 
     /**
@@ -1412,13 +1432,21 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
      * @param KTAPI_Role $role
      */
     public
-    function inheritRoleAllocation(KTAPI_Role $role)
+    function inheritRoleAllocation(KTAPI_Role $role, $log = true)
     {
-        $roleId = $role->Id;
-        $this->_logTransaction(_kt('Use parent allocation'), 'ktcore.transactions.role_allocations_change');
+        if (!$this->canInheritRoleAllocation())
+        {
+            return;
+        }
 
         $object = $this->folderItem->getObject();
         $objectId = $object->getId();
+
+        $roleId = $role->Id;
+        if ($log)
+        {
+            $this->_logTransaction(_kt('Use parent allocation'), 'ktcore.transactions.role_allocations_change');
+        }
 
         $roleAllocation = RoleAllocation::getAllocationsForFolderAndRole($objectId, $roleId);
 
@@ -1510,9 +1538,50 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     public
     function save()
     {
+        if (!$this->changed)
+        {
+            // we don't have to do anything if nothing has changed.
+            return;
+        }
 
+        $map = & $this->map;
+        $folderId = $this->folderItem->getObject()->getId();
+
+        foreach($map['role']['role'] as $roleId => $roleName)
+        {
+             $roleAllocation = RoleAllocation::getAllocationsForFolderAndRole($folderId, $roleId);
+
+             $allowed = array();
+
+             $userIds = array();
+             $groupIds = array();
+             if (array_key_exists($roleId, $map['role']['userAllocation']))
+             {
+                foreach($map['role']['userAllocation'][$roleId] as $userId)
+                {
+                    $userIds[] = $userId;
+                }
+             }
+             if (array_key_exists($roleId, $map['role']['groupAllocation']))
+             {
+                foreach($map['role']['groupAllocation'][$roleId] as $groupId)
+                {
+                    $groupIds[] = $groupId;
+                }
+             }
+
+             $allowed['user'] = $userIds;
+             $allowed['group'] = $groupIds;
+
+             if (is_null($roleAllocation))
+             {
+                 $roleAllocation = $this->overrideRoleAllocation(KTAPI_Role::getById($roleId));
+             }
+
+             $roleAllocation->setAllowed($allowed);
+		     $roleAllocation->update();
+        }
     }
-
 }
 
 ?>

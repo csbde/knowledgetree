@@ -70,6 +70,13 @@ abstract class KTAPI_FolderItem
 	}
 
 	public abstract function getObject();
+
+	public abstract function isSubscribed();
+
+	public abstract function unsubscribe();
+
+	public abstract function subscribe();
+
 }
 
 class KTAPI_Error extends PEAR_Error

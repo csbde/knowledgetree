@@ -1930,6 +1930,113 @@ class KTAPI_Document extends KTAPI_FolderItem
 	    return $this->document;
 	}
 
+	public function isSubscribed()
+	{
+        $subscriptionType = SubscriptionEvent::subTypes('Document');
+        $user = $this->ktapi->get_user();
+        $document = $this->document;
+
+        return Subscription::exists($user->getId(), $document->getId(), $subscriptionType);
+	}
+
+	public function unsubscribe()
+	{
+        if (!$this->isSubscribed())
+        {
+            return;
+        }
+
+        $subscriptionType = SubscriptionEvent::subTypes('Document');
+        $user = $this->ktapi->get_user();
+        $document = $this->document;
+
+        $subscription = & Subscription::getByIDs($user->getId(), $document->getId(), $subscriptionType);
+        $subscription->delete();
+	}
+
+	public function subscribe()
+	{
+        if ($this->isSubscribed())
+        {
+            return;
+        }
+
+        $subscriptionType = SubscriptionEvent::subTypes('Document');
+        $user = $this->ktapi->get_user();
+        $document = $this->document;
+
+        $subscription = new Subscription($user->getId(), $document->getId(), $subscriptionType);
+        $subscription->create();
+	}
+
+
+	public function isImmutable()
+	{
+	    return $this->document->getImmutable();
+	}
+
+	public function immute()
+	{
+        $this->document->setImmutable(true);
+        $this->document->update();
+	}
+
+	public function unimmute()
+	{
+        $this->document->setImmutable(false);
+        $this->document->update();
+	}
+
+	public function email($members, $title, $comment, $attachDocument = true)
+	{
+	    if (empty($members))
+	    {
+	        return;
+	    }
+
+	    $userIds = array();
+	    $groupIds = array();
+	    $emailAddrs = array();
+
+	    foreach($members as $member)
+	    {
+	        if ($member instanceof KTAPI_User)
+	        {
+	            $userIds[] = $member->Id;
+	        }
+	        elseif ($member instanceof KTAPI_Group)
+	        {
+	            $groupIds[] = $member->Id;
+	        }
+	        elseif (is_string($member))
+	        {
+	            $emailAddrs[] = $member;
+	        }
+	    }
+
+        $config = KTConfig::getSingleton();
+        $allowAttachment = $config->get('email/allowAttachment', false);
+        $allowEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
+
+        $emailErrors = array();
+        $userEmails = array();
+
+        sendGroupEmails($groupIds, $userEmails, $emailErrors);
+
+        sendUserEmails($userIds, $userEmails, $emailErrors);
+
+        if ($attachDocument)
+        {
+            sendManualEmails($aEmailAddresses, $userEmails, $emailErrors);
+        }
+        else
+        {
+            sendExternalEmails($aEmailAddresses, $this->document->getID(), $this->document->getName(), $comment, $emailErrors);
+        }
+
+        sendEmail($aListEmails, $this->document->getID(), $this->document->getName(), $comment, (boolean)$fAttachDocument, $aEmailErrors);
+
+    }
 }
 
 ?>
