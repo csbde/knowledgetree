@@ -8,7 +8,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
  * 
  * This program is free software; you can redistribute it and/or modify it under
