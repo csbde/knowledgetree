@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * Implements the functions run during upgrades
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -32,8 +32,11 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
  *
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree
  */
 
 //debugger_start_debug();
@@ -62,7 +65,7 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354','removeOldFilesAndFolders354a')
+            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354','removeOldFilesAndFolders354a','removeOldFilesAndFolders354a1')
             );
 
     var $descriptions = array(
@@ -99,6 +102,7 @@ class UpgradeFunctions {
             'addAutoIncrementToTables' => 'Update all current db tables to use auto_increment.',
             'removeOldFilesAndFolders354' => 'Remove old files and folders that are no longer needed.',
             'removeOldFilesAndFolders354a' => 'Remove old files and folders that are no longer needed.',
+            'removeOldFilesAndFolders354a1' => 'Remove old files and folders that are no longer needed.',
             'addAutoIncrementToTables2' => 'Update all new db tables to use auto_increment.',
             'updateServerConfigSettings' => 'Update the configuration settings for the server with the correct port'
             );
@@ -1387,6 +1391,35 @@ class UpgradeFunctions {
         $oldFile = KT_DIR . "/sql/mysql/upgrade/3.5.4/server_name.sql";
         if(file_exists($oldFile)) unlink($oldFile);
 
+        return true;
+    }
+
+    // {{{  removeOldFilesAndFolders354a1
+    function removeOldFilesAndFolders354a1() {
+        global $default;
+
+        $oldFile1 = KT_DIR . "/baobab/tests/BaobabServer.test.php matches"
+        if(file_exists($oldFile1)) unlink($oldFile1);
+
+        $oldPath1 = KT_DIR . "/ktwsapi/"
+        UpgradeFunctions::rm_recursive($oldPath1);
+
+        $oldFile2 = KT_DIR . "/lib/Log.inc"
+        if(file_exists($oldFile2)) unlink($oldFile2);
+
+        $oldFile3 = KT_DIR . "/tests/api/authentication.php"
+        if(file_exists($oldFile3)) unlink($oldFile3);
+
+        $oldFile4 = KT_DIR . "/tests/api/folder.php"
+        if(file_exists($oldFile4)) unlink($oldFile4);
+
+        $oldFile5 = KT_DIR . "/tests/api/document.php"
+        if(file_exists($oldFile5)) unlink($oldFile5);
+
+        $oldPath2 = KT_DIR . "/thirdparty/pear/HTTP/WebDAV/"
+        UpgradeFunctions::rm_recursive($oldPath2);
+
+        // FIXME: We should check that they all worked
         return true;
     }
 
