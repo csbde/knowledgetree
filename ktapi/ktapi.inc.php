@@ -1,42 +1,44 @@
 <?php
 /**
- * $Id$
- *
- * Implements a cleaner wrapper API for KnowledgeTree.
- *
- * KnowledgeTree Community Edition
- * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * Portions copyright The Jam Warehouse Software (Pty) Limited
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 3 as published by the
- * Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
- * California 94120-7775, or email info@knowledgetree.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the
- * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original
- * copyright notice.
- * Contributor( s): ______________________________________
- *
- */
+* Implements a cleaner wrapper API for KnowledgeTree.
+*
+* KnowledgeTree Community Edition
+* Document Management Made Simple
+* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software (Pty) Limited
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License version 3 as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+* California 94120-7775, or email info@knowledgetree.com.
+*
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU General Public License version 3.
+*
+* In accordance with Section 7(b) of the GNU General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* KnowledgeTree" logo and retain the original copyright notice. If the display of the
+* logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+* must display the words "Powered by KnowledgeTree" and retain the original
+* copyright notice.
+*
+* @copyright 2008-2009, KnowledgeTree Inc.
+* @license GNU General Public License version 3
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
 
 $_session_id = session_id();
 if (empty($_session_id)) session_start();
@@ -54,19 +56,38 @@ require_once(KTAPI_DIR .'/KTAPIFolder.inc.php');
 require_once(KTAPI_DIR .'/KTAPIDocument.inc.php');
 require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 
+/**
+* This class defines functions that MUST exist in the inheriting class
+*
+* @abstract
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
 abstract class KTAPI_FolderItem
 {
 	/**
-	 * This is a reference to the core KTAPI controller
-	 *
-	 * @access protected
-	 * @var KTAPI
-	 */
-	var $ktapi;
+	* This is a reference to the core KTAPI controller
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object $ktapi The KTAPI object
+	*/
+	protected $ktapi;
 
-	function &can_user_access_object_requiring_permission(&$object, $permission)
+ 	/**
+ 	* This checks if a user can access an object with a certain permission.
+ 	*
+ 	* @author KnowledgeTree Team
+	* @access public
+ 	* @param object $object The object the user is trying to access
+ 	* @param string $permission The permissions string
+ 	* @return object $user The User object
+ 	*/
+	public function &can_user_access_object_requiring_permission(&$object, $permission)
 	{
-		return $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
+		$user = $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
+		return $user;
 	}
 
 	public abstract function getObject();
@@ -79,9 +100,23 @@ abstract class KTAPI_FolderItem
 
 }
 
+/**
+* This class extends the PEAR_Error class for errors in the KTAPI class
+*
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
 class KTAPI_Error extends PEAR_Error
 {
-	function KTAPI_Error($msg, $obj = null)
+ 	/**
+ 	* This method determines if there is an error in the object itself or just a common error
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @return VOID
+ 	*/
+	public function KTAPI_Error($msg, $obj = null)
 	{
 		if (PEAR::isError($obj))
 		{
@@ -94,195 +129,238 @@ class KTAPI_Error extends PEAR_Error
 	}
 }
 
-class KTAPI_DocumentTypeError extends KTAPI_Error {}
+/**
+* This class extends the KTAPI_Error class for errors in the KTAPI Document class
+*
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
+class KTAPI_DocumentTypeError extends KTAPI_Error
+{
+	
+}
+
+/**
+* This is the main KnowledgeTree API class
+*
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
 
 class KTAPI
 {
 	/**
-	 * This is the current session.
-	 *
-	 * @access private
-	 * @var KTAPI_Session
-	 */
-	var $session = null;
+	* This is the current session.
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var object $session The KTAPI_Session object
+	*/
+	private $session = null;
 
  	/**
- 	 * This returns the current session.
- 	 *
- 	 * @access public
- 	 * @return KTAPI_Session
- 	 */
- 	function &get_session()
+ 	* This returns the current session.
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @return object $session The KTAPI_Session object
+ 	*/
+ 	public function &get_session()
  	{
- 		return $this->session;
+ 		$session = $this->session;
+ 		return $session;
  	}
 
  	/**
- 	 * This returns the session user.
- 	 *
- 	 * @access public
- 	 * @return User
- 	 */
- 	function & get_user()
+	* This returns the session user object or an error object.
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @return object $user SUCCESS - The User object | FAILURE - an error object
+ 	*/
+ 	public function & get_user()
  	{
  		$ktapi_session = $this->get_session();
 		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
 		{
-			return new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
+			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
+			return $error;
 		}
 
 		$user = $ktapi_session->get_user();
 		if (is_null($user) || PEAR::isError($user))
 		{
-			return new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			$error =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return $error;
 		}
-
 		return $user;
  	}
 
  	/**
- 	 * This returns a permission.
- 	 *
- 	 * @static
- 	 * @access public
- 	 * @param string $permission
- 	 * @return KTPermission
- 	 */
- 	function &get_permission($permission)
+ 	* This returns a permission object or an error object.
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @param string $permission The permissions string
+ 	* @return object $permissions SUCCESS - The KTPermission object | FAILURE - an error object
+ 	*/
+ 	public function &get_permission($permission)
  	{
-		$permission = & KTPermission::getByName($permission);
-		if (is_null($permission) || PEAR::isError($permission))
+		$permissions = & KTPermission::getByName($permission);
+		if (is_null($permissions) || PEAR::isError($permissions))
 		{
-			return new PEAR_Error(KTAPI_ERROR_PERMISSION_INVALID);
-		}
-
-		return $permission;
+			$error =  new PEAR_Error(KTAPI_ERROR_PERMISSION_INVALID);
+			return $error;
+		}		
+		return $permissions;
  	}
 
  	/**
- 	 * This checks if a user can access an object with a certain permission.
- 	 *
- 	 * @access public
- 	 * @param object $object
- 	 * @param string $permission
- 	 * @return User
- 	 */
- 	function can_user_access_object_requiring_permission(&$object, $permission)
+ 	* This checks if a user can access an object with a certain permission.
+ 	*
+ 	* @author KnowledgeTree Team
+	* @access public
+ 	* @param object $object The object to check permissions on
+ 	* @param string $permission The permissions string
+ 	* @return object $user SUCCESS - The User object | FAILURE - an error object
+ 	*/
+ 	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
 		assert(!is_null($object));
  		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
 
- 		$permission = &KTAPI::get_permission($permission);
-		if (is_null($permission) || PEAR::isError($permission))
+ 		$permissions = &KTAPI::get_permission($permission);
+		if (is_null($permissions) || PEAR::isError($permissions))
 		{
-			return $permission;
+			$error = $permissions;
+			return $error;
 		}
 
  		$user = &KTAPI::get_user();
 		if (is_null($user) || PEAR::isError($user))
 		{
-			return $user;
+			$error = $user;
+			return $error;
 		}
 
 		if (!KTPermissionUtil::userHasPermissionOnItem($user, $permission, $object))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+			$error = new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+			return $error;
 		}
 
 		return $user;
  	}
 
  	/**
- 	 * Search for documents matching the oem_no.
- 	 *
- 	 * Note that oem_no is associated with a document and not with version of file (document content).
- 	 * oem_no is set on a document using document::update_sysdata().
- 	 *
- 	 * @param string $oem_no
- 	 * @param boolean idsOnly Defaults to true
- 	 * @return array
- 	 */
- 	function get_documents_by_oem_no($oem_no, $idsOnly=true)
+ 	* Search for documents matching the oem_no.
+ 	*
+ 	* Note that oem_no is associated with a document and not with version of file (document content).
+ 	* oem_no is set on a document using document::update_sysdata().
+ 	*
+	* @author KnowledgeTree Team
+	* @access public
+ 	* @param string $oem_no The oem number
+ 	* @param boolean $idsOnly Defaults to true
+ 	* @return array|object $results SUCCESS - the list of documents | FAILURE - and error object
+ 	*/
+ 	public function get_documents_by_oem_no($oem_no, $idsOnly=true)
  	{
 		$sql = array("SELECT id FROM documents WHERE oem_no=?",$oem_no);
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-
-		$result = array();
-		foreach($rows as $row)
+		else
 		{
-			$documentid = $row['id'];
-
-			$result[] = $idsOnly?$documentid:KTAPI_Document::get($this, $documentid);
+			$results = array();	
+			foreach($rows as $row)
+			{
+				$documentid = $row['id'];
+	
+				$results[] = $idsOnly?$documentid:KTAPI_Document::get($this, $documentid);
+			}
 		}
-
- 		return $result;
+ 		return $results;
  	}
 
 	/**
-	 * This returns a session object based on a session string.
-	 *
-	 * @access public
-	 * @param string $session
-	 * @return KTAPI_Session
-	 */
-	function & get_active_session($session, $ip=null, $app='ws')
+	* This returns a session object based on a session id.
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $session The sesssion id
+	* @param string $ip The users ip address
+	* @param string $app The originating application type Webservices|Webdav|Webapp
+	* @return object $session_object SUCCESS - The KTAPI_Session object | FAILURE - an error object
+	*/
+	public function & get_active_session($session, $ip=null, $app='ws')
 	{
 		if (!is_null($this->session))
 		{
-			return new PEAR_Error('A session is currently active.');
+			$error = new PEAR_Error('A session is currently active.');
+			return $error;
 		}
 
-		$session = &KTAPI_UserSession::get_active_session($this, $session, $ip, $app);
+		$session_object = &KTAPI_UserSession::get_active_session($this, $session, $ip, $app);
 
 		if (is_null($session) || PEAR::isError($session))
 		{
-			return new PEAR_Error('Session is invalid');
+			$error = new PEAR_Error('Session is invalid');
+			return $error;
 		}
 
-		$this->session = &$session;
-		return $session;
+		$this->session = &$session_object;
+		return $session_object;
 	}
 
 	/**
-	 * This returns a session object based on authentication credentials.
-	 *
-	 * @access public
-	 * @param string $username
-	 * @param string $password
-	 * @return KTAPI_Session
-	 */
-	function & start_session($username, $password, $ip=null, $app='ws')
+    * Creates a session and returns the session object based on authentication credentials.
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $username The users username
+	* @param string $password The password of the user
+	* @param string $ip The users ip address
+	* @param string $app The originating application type Webservices|Webdav|Webapp
+	* @return object $session SUCCESS - The KTAPI_Session object | FAILURE - an error object
+	*/
+	public function & start_session($username, $password, $ip=null, $app='ws')
 	{
 		if (!is_null($this->session))
 		{
-			return new PEAR_Error('A session is currently active.');
+			$error = new PEAR_Error('A session is currently active.');
+			return $error;
 		}
 
 		$session = &KTAPI_UserSession::start_session($this, $username, $password, $ip, $app);
 		if (is_null($session))
 		{
-			return new PEAR_Error('Session is null.');
+			$error = new PEAR_Error('Session is null.');
+			return $error;
 		}
 		if (PEAR::isError($session))
 		{
-			return new PEAR_Error('Session is invalid. ' . $session->getMessage());
+			$error = new PEAR_Error('Session is invalid. ' . $session->getMessage());
+			return $error;
 		}
+		
 		$this->session = &$session;
-
 		return $session;
 	}
 
 
 	/**
-	 * start a root session.
-	 *
-	 * @return KTAPI_SystemSession
-	 */
-	function & start_system_session()
+	* start a root session.
+	*
+	* @author KnowledgeTree Team
+	* @access public 
+	* @return object $session The KTAPI_SystemSession
+	*/
+	public function & start_system_session()
 	{
 		$user = User::get(1);
 
@@ -295,160 +373,207 @@ class KTAPI
 
 
 	/**
-	 * Starts an anonymous session.
-	 *
-	 * @param string $ip
-	 * @return KTAPI_Session
-	 */
+	* Starts an anonymous session.
+ 	*
+	* @author KnowledgeTree Team
+	* @param string $ip The users ip address
+	* @return object $session SUCCESS - The KTAPI_Session object | FAILURE - an error object
+	*/
 	function &start_anonymous_session($ip=null)
 	{
 		if (!is_null($this->session))
 		{
-			return new PEAR_Error('A session is currently active.');
+			$error = new PEAR_Error('A session is currently active.');
+			return $error;
 		}
 
 		$session = &KTAPI_AnonymousSession::start_session($this, $ip);
 		if (is_null($session))
 		{
-			return new PEAR_Error('Session is null.');
+			$error = new PEAR_Error('Session is null.');
+			return $error;
 		}
 		if (PEAR::isError($session))
 		{
-			return new PEAR_Error('Session is invalid. ' . $session->getMessage());
+			$error = new PEAR_Error('Session is invalid. ' . $session->getMessage());
+			return $error;
 		}
+		
 		$this->session = &$session;
-
 		return $session;
 	}
 
 
 	/**
-	 * Obtains the root folder.
-	 *
-	 * @access public
-	 * @return KTAPI_Folder
-	 */
-	function &get_root_folder()
+	* Gets the root folder.
+	* Root folder id is always equal to '1'
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return object $folder The KTAPI_Folder object
+	*/
+	public function &get_root_folder()
 	{
-		return $this->get_folder_by_id(1);
+		$folder = $this->get_folder_by_id(1);
+		return $folder;
 	}
 
 	/**
-	 * Obtains the folder using a folder id.
-	 *
-	 * @access public
-	 * @param int $folderid
-	 * @return KTAPI_Folder
-	 */
-	function &get_folder_by_id($folderid)
+	* Obtains the folder using a folder id.
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param integer $folderid The id of the folder
+	* @return object $session SUCCESS - The KTAPI_Folder object | FAILURE - an error object
+	*/
+	public function &get_folder_by_id($folderid)
 	{
 		if (is_null($this->session))
 		{
-			return new PEAR_Error('A session is not active');
+			$error = new PEAR_Error('A session is not active');
+			return $error;
 		}
 
-		return KTAPI_Folder::get($this, $folderid);
+		$folder = KTAPI_Folder::get($this, $folderid);
+		return $folder;
 	}
 
-	function &get_folder_by_name($foldername)
+    /**
+    * Gets the the folder object based on the folder name
+    * 
+    * @author KnowledgeTree Team
+    * @access public
+	* @param string $foldername The folder name
+	* @return object $folder The KTAPI_Folder object
+    */
+	public function &get_folder_by_name($foldername)
 	{
-		return KTAPI_Folder::_get_folder_by_name($this, $foldername, 1);
+		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, 1);
+		return $folder;
 	}
 
 	/**
-	 * This returns a refererence to a document based on document id.
-	 *
-	 * @access public
-	 * @param int $documentid
-	 * @return KTAPI_Document
-	 */
-	function &get_document_by_id($documentid)
+	* This returns a refererence to a document based on document id.
+	*
+    * @author KnowledgeTree Team
+    * @access public
+	* @param integer $documentid The document id
+	* @return object $document The KTAPI_Document object
+	*/
+	public function &get_document_by_id($documentid)
 	{
-		return KTAPI_Document::get($this, $documentid);
+		$document = KTAPI_Document::get($this, $documentid);
+		return $document;
 	}
 
 	/**
-	 * This returns a document type id based on the name.
-	 *
-	 * @static
-	 * @access public
-	 * @param string $documenttype
-	 * @return int
-	 */
-	function get_documenttypeid($documenttype)
+    * This returns a document type id based on the name or an error object.
+	*
+    * @author KnowledgeTree Team
+    * @access public
+	* @param string $documenttype The document type
+	* @return integer|object $result SUCCESS - the document type id | FAILURE - an error object
+	*/
+	public function get_documenttypeid($documenttype)
 	{
 		$sql = array("SELECT id FROM document_types_lookup WHERE name=? and disabled=0", $documenttype);
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
-			return new KTAPI_DocumentTypeError(KTAPI_ERROR_DOCUMENT_TYPE_INVALID, $row);
+			$result = new KTAPI_DocumentTypeError(KTAPI_ERROR_DOCUMENT_TYPE_INVALID, $row);
 		}
-		$documenttypeid = $row['id'];
-		return $documenttypeid;
+		else
+		{
+			$result = $row['id'];
+		}
+		return $result;
 	}
 
-	function get_link_type_id($linktype)
+	/**
+    * Returns the id for a link type or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @param string $linktype The link type
+	* @return integer|object $result SUCCESS - the link type id | FAILURE - an error object
+	*/
+	public function get_link_type_id($linktype)
 	{
 		$sql = array("SELECT id FROM document_link_types WHERE name=?",$linktype);
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID);
+			$result = new PEAR_Error(KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID);
 		}
-		$typeid = $row['id'];
-		return $typeid;
+		else
+		{
+			$result = $row['id'];
+		}
+		return $result;
 	}
 
 	/**
-	 * Returns an array of document types.
-	 *
-	 * @static
-	 * @access public
-	 * @return array
-	 */
-	function get_documenttypes()
+    * Returns an array of document types or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @return array|object $results SUCCESS - the array of document types | FAILURE - an error object
+	*/
+	public function get_documenttypes()
 	{
 		$sql = "SELECT name FROM document_types_lookup WHERE disabled=0";
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-
-		$result = array();
-		foreach($rows as $row)
+		else
 		{
-			$result[] = $row['name'];
+			$results = array();
+			foreach($rows as $row)
+			{
+				$results[] = $row['name'];
+			}	
 		}
-
-		return $result;
+		return $results;
 	}
 
-	function get_document_link_types()
+	/**
+    * Returns an array of document link types or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @return array|object $results SUCCESS - the array of document link types | FAILURE - an error object
+	*/
+	public function get_document_link_types()
 	{
 		$sql = "SELECT name FROM document_link_types order by name";
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-
-		$result = array();
-		foreach($rows as $row)
+		else
 		{
-			$result[] = $row['name'];
+			$results = array();
+			foreach($rows as $row)
+			{
+				$results[] = $row['name'];
+			}
 		}
-
-		return $result;
+		return $results;
 	}
 
 	/**
-	 * This should actually not be in ktapi, but in webservice
-	 *
-	 * @param unknown_type $document_type
-	 * @return unknown
-	 */
-	function get_document_type_metadata($document_type='Default')
+	* This should actually not be in ktapi, but in webservice
+	* This method gets metadata fieldsets based on the document type
+	*
+    * @author KnowledgeTree Team
+    * @access public
+	* @param string $document_type The type of document
+	* @return mixed Error object|SOAP object|Array of fieldsets
+	*/
+	public function get_document_type_metadata($document_type='Default')
 	{
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
@@ -541,116 +666,125 @@ class KTAPI
 	}
 
 
-
 	/**
-	 * Returns an array of username/name combinations.
-	 *
-	 * @static
-	 * @access public
-	 * @return array
-	 */
-	function get_users()
+    * Returns an array of username/name combinations or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @return array|object $results SUCCESS - the array of all username/name combinations | FAILURE - an error object
+	*/
+	public function get_users()
 	{
 		$sql = "SELECT username, name FROM users WHERE disabled=0";
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-		return $rows;
+		else
+		{
+			$results = $rows;
+		}
+		return $results;
 	}
 
 	/**
-	 * This returns an array for a lookup.
-	 *
-	 * @static
-	 * @access public
-	 * @param int $fieldid
-	 * @return array
-	 */
-	function get_metadata_lookup($fieldid)
+	* This returns an array for a metadata tree lookup or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @param integer $fieldid The field id to get metadata for
+	* @return array|object $results SUCCESS - the array of metedata for the field | FAILURE - an error object
+	*/
+	public function get_metadata_lookup($fieldid)
 	{
 		$sql = "SELECT name FROM metadata_lookup WHERE disabled=0 AND document_field_id=$fieldid ORDER BY name";
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-		$results=array();
-		foreach($rows as $row)
+		else
 		{
-			$results[] = $row['name'];
+			$results = array();
+			foreach($rows as $row)
+			{
+				$results[] = $row['name'];
+			}
 		}
 		return $results;
 	}
 
 	/**
-	 * This returns a metadata tree.
-	 *
-	 * @access private
-	 * @param int $fieldid
-	 * @param int $parentid
-	 * @return array
-	 */
-	function _load_metadata_tree($fieldid, $parentid=0)
-		{
-			return KTAPI::get_metadata_lookup($fieldid);
-			/*
-			$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
-			$rows = DBUtil::getResultArray($sql);
-			if (is_null($rows) || PEAR::isError($rows))
-			{
-				return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
-			}
-			$results=array();
-			foreach($rows as $row)
-			{
-				$result=array(
-					'name' => $row['name'],
-					'children' => load($fieldid, $row['id'])
-				);
-				$results[] = $result;
-			}
-			return $results;*/
-		}
-
-	/**
-	 * This returns a metadata tree.
-	 *
-	 * @static
-	 * @access public
-	 * @param int $fieldid
-	 * @return array
-	 */
-	function get_metadata_tree($fieldid)
+	* This returns a metadata tree or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access private
+	* @param integer $fieldid The field id of the document to get data for
+	* @param integer $parentid The id of the parent of the metadata tree
+	* @return array|object $results SUCCESS - the array of metadata for the field | FAILURE - an error object
+	*/
+	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		return KTAPI::_load_metadata_tree($fieldid);
+		$results = KTAPI::get_metadata_lookup($fieldid);
+		return $results;
+		/*
+		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
+		$rows = DBUtil::getResultArray($sql);
+		if (is_null($rows) || PEAR::isError($rows))
+		{
+			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+		}
+		$results=array();
+		foreach($rows as $row)
+		{
+			$result=array(
+				'name' => $row['name'],
+				'children' => load($fieldid, $row['id'])
+			);
+			$results[] = $result;
+		}
+		return $results;*/
 	}
 
 	/**
-	 * Returns a list of workflows that are active.
-	 *
-	 * @static
-	 * @access public
-	 * @return array
-	 */
-	function get_workflows()
+	* This returns a metadata tree or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @param integer $fieldid The id of the tree field to get the metadata for
+	* @return array|object $results SUCCESS - the array of metadata for the field | FAILURE - an error object
+	*/
+	public function get_metadata_tree($fieldid)
+	{
+		$results = KTAPI::_load_metadata_tree($fieldid);
+		return $results;
+	}
+
+	/**
+	* Returns a list of active workflows or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @return array|object $results SUCCESS - the array of active workflows | FAILURE - an error object
+	*/
+	public function get_workflows()
 	{
 		$sql = "SELECT name FROM workflows WHERE enabled=1";
 		$rows=DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+			$results =  new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
 		}
-		$results=array();
-		foreach($rows as $row)
+		else
 		{
-			$results[] = $row['name'];
+			$results = array();
+			foreach($rows as $row)
+			{
+				$results[] = $row['name'];
+			}
 		}
 		return $results;
 	}
-
-
 }
-
 ?>
