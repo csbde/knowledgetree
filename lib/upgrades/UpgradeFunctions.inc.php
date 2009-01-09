@@ -1398,7 +1398,7 @@ class UpgradeFunctions {
     function removeOldFilesAndFolders354a1() {
         global $default;
 
-        $oldFile1 = KT_DIR . "/baobab/tests/BaobabServer.test.php matches"
+        $oldFile1 = KT_DIR . "/baobab/tests/BaobabServer.test.php"
         if(file_exists($oldFile1)) unlink($oldFile1);
 
         $oldPath1 = KT_DIR . "/ktwsapi/"
