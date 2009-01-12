@@ -161,6 +161,8 @@ class Expr
 
     protected $context;
 
+    protected $incl_status = true;
+
     public function __construct()
     {
         $this->expr_id = Expr::$node_id++;
@@ -184,6 +186,11 @@ class Expr
     public function getExprId()
     {
         return $this->expr_id;
+    }
+
+    public function setIncludeStatus($incl = true)
+    {
+        $this->incl_status = $incl;
     }
 
     /**
@@ -994,6 +1001,7 @@ class SQLQueryBuilder implements QueryBuilder
 	private $db;
 	private $metadata;
 	private $context;
+	private $incl_status = true;
 
 	public function __construct($context)
 	{
@@ -1034,6 +1042,11 @@ class SQLQueryBuilder implements QueryBuilder
 		$this->sql = '';
 		$this->db = array();
 		$this->metadata = array();
+	}
+
+	public function setIncludeStatus($incl)
+	{
+	    $this->incl_status = $incl;
 	}
 
 	/**
@@ -1289,7 +1302,11 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-             $sql .= "dmv.status_id=1 AND d.status_id=1 AND d.linked_document_id is null";
+             $sql .= "d.linked_document_id is null";
+
+             if($this->incl_status){
+                $sql .= " AND dmv.status_id=1 AND d.status_id=1";
+             }
         }
         else
         {
@@ -2143,6 +2160,7 @@ class OpExpr extends Expr
     	if (empty($group)) { return array(); }
 
     	$exprbuilder = new SQLQueryBuilder($this->getContext());
+    	$exprbuilder->setIncludeStatus($this->incl_status);
 
     	if (count($group) == 1)
     	{
@@ -2176,7 +2194,7 @@ class OpExpr extends Expr
     		{
     		    if ($this->context == ExprContext::DOCUMENT)
     		    {
-    		        $results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item));
+    		        $results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
     		    }
     		    else
     		    {
@@ -2220,6 +2238,8 @@ class OpExpr extends Expr
     	}
 
     	$indexer = Indexer::get();
+    	$indexer->setIncludeStatus($this->incl_status);
+
     	$default->log->debug("SEARCH LUCENE: $query");
 
     	$results = $indexer->query($query);
@@ -2247,7 +2267,9 @@ class OpExpr extends Expr
 	    $this->setContext($context);
 
 		$left = $this->left();
+		$left->setIncludeStatus($this->incl_status);
         $right = $this->right();
+        $right->setIncludeStatus($this->incl_status);
         $op = $this->op();
         $point = $this->getPoint();
         $result = array();

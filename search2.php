@@ -242,12 +242,18 @@ class SearchDispatcher extends KTStandardDispatcher {
     {
     	try
     	{
-    		$expr = parseExpression($query);
+     		$expr = parseExpression($query);
+
+    		// bit of a hack
+    		// check for the isDeleted and isArchived keywords affecting status in the query
+    		if(strpos($query, 'IsDeleted') !== false || strpos($query, 'IsArchived') !== false){
+    		    $expr->setIncludeStatus(false);
+    		}
 
     		$results = $expr->evaluate();
     		$results = resolveSearchShortcuts($results);
 
-    		usort($result['docs'], 'rank_compare');
+    		usort($results['docs'], 'rank_compare');
 
     		$_SESSION['search2_results'] = serialize($results);
     		$_SESSION['search2_query'] = $query;

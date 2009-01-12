@@ -76,7 +76,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
 	 * @param string $textfile
 	 * @return boolean
 	 */
-    protected function indexDocument($docid, $textfile, $title, $version)
+    public function indexDocument($docid, $textfile, $title, $version)
     {
     	try
     	{
@@ -187,7 +187,7 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     			{
     				try
     				{
-    					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content);
+    					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
 
     					if ($item->CanBeReadByUser)
     					{
@@ -196,8 +196,12 @@ class JavaXMLRPCLuceneIndexer extends Indexer
     				}
     				catch(IndexerInconsistencyException $ex)
     				{
-    					$this->deleteDocument($document_id);
-    					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
+    				    // if the status is not set to 1 (LIVE) and the document is not in the DB then delete from the index
+    				    // if the status is set to 1 then the document may be archived or deleted in the DB so leave in the index
+    				    if(!$this->inclStatus){
+        					$this->deleteDocument($document_id);
+        					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
+    				    }
     				}
     			}
     		}

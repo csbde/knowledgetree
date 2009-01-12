@@ -204,11 +204,13 @@ class DocumentResultItem extends QueryResultItem
 	protected $mimeIconPath;
 	protected $mimeDisplay;
 	protected $oemDocumentNo;
+	protected $inclStatus = true;
 
-	public function __construct($document_id, $rank=null, $title=null, $text=null, $fullpath = null)
+	public function __construct($document_id, $rank=null, $title=null, $text=null, $fullpath = null, $inclStatus = true)
 	{
 	    parent::__construct($document_id, $title, $rank, $text, $fullpath);
 		$this->live = true;
+		$this->inclStatus = $inclStatus;
 		$this->loadDocumentInfo();
 	}
 
@@ -238,6 +240,10 @@ class DocumentResultItem extends QueryResultItem
 					LEFT JOIN users ou ON d.owner_id=ou.id
 				WHERE
 					d.id=$this->id";
+
+		if($this->inclStatus){
+		    $sql .= " AND d.status_id = 1";
+		}
 
 		$result = DBUtil::getOneResult($sql);
 
@@ -457,6 +463,8 @@ abstract class Indexer
 
 	private $enabledExtractors;
 
+	protected $inclStatus = true;
+
 	/**
 	 * Initialise the indexer
 	 *
@@ -493,6 +501,16 @@ abstract class Indexer
 	private function isExtractorEnabled($extractor)
 	{
 		return in_array($extractor, $this->enabledExtractors);
+	}
+
+	/**
+	 * Set whether to use status of 1 for live documents only or return deleted and archived documents as well
+	 *
+	 * @param bool $incl
+	 */
+	public function setIncludeStatus($incl)
+	{
+	    $this->inclStatus = $incl;
 	}
 
 	/**
