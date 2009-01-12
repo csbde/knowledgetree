@@ -1,0 +1,1 @@
+UPDATE config_settings SET value = 10000 WHERE item = 'maxSqlResults';
