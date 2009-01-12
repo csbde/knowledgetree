@@ -26,7 +26,78 @@ class APIFolderTestCase extends KTUnitTestCase {
             $folder2->delete('because');
         }
     }
-    function testCreateFolders() {
+    
+    function testAddDocument() {
+    	$tmpfname = tempnam("/tmp", "KTUNIT");
+    	$fp = fopen($tmpfname, "w");
+    	fwrite($fp, "Hello");
+    	fclose($fp);
+    	
+    	$folder = $this->ktapi->get_root_folder();
+    	$res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
+    	$this->assertEntity($res, 'KTAPI_Document');
+    	
+    	
+    	
+    	$res = $res->delete("Test deletion");
+    	
+    	
+    	
+    }
+    
+    function testDeleteFolder() {
+    	$folder = $this->ktapi->get_root_folder();
+    	$folder = $folder->add_folder('temp1');
+        $this->assertEntity($folder, 'KTAPI_Folder');
+        $folder->delete('because');
+        
+        $folder = $this->ktapi->get_folder_by_name('temp1');
+        $this->assertError($folder);
+    }
+    
+   
+/*    function testRename() {
+        $root = $this->ktapi->get_root_folder();
+        $this->assertEntity($root, 'KTAPI_Folder');
+        // add a sample folder
+        $folder = $root->add_folder('newFolder');
+        $this->assertEntity($folder, 'KTAPI_Folder');
+        $folderid = $folder->get_folderid();
+        // rename the folder
+        $response = $folder->rename('renamedFolder');
+        $this->assertEntity($response, 'PEAR_Error');
+        // get the folder by id
+        $folder = $this->ktapi->get_folder_by_id($folderid);
+        $this->assertEntity($folder, 'KTAPI_Folder');
+        $this->assertEqual($folder->get_folder_name(), 'renamedFolder');
+        $folder->delete('cleanup');
+    }*/
+
+	function testGet() {
+		$root = $this->ktapi->get_root_folder();
+		$folder = $root->get_folder();
+		$this->assertEntity($folder, 'Folder');
+		
+		$folder = $this->ktapi->get_folder_by_name("NONAMEFOLDER");
+		$this->assertError($folder);
+		
+		$junk = pack("H*", "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
+		$junk = $junk.$junk.$junk.$junk.$junk.$junk.$junk.$junk.$junk;
+		$folder = $this->ktapi->get_folder_by_name($junk);
+		$this->assertError($folder);
+		
+	}
+	
+	function testListing() {
+		$root = $this->ktapi->get_root_folder();
+		$listing = $root->get_listing();
+		$this->assertExpectedResults(true, is_array($listing));
+		foreach($listing as $key => $val) {
+				
+		}
+	}
+	
+	 function testCreateFolders() {
         $root = $this->ktapi->get_root_folder();
         $this->assertEntity($root, 'KTAPI_Folder');
         $folder = $root->add_folder('temp1');
@@ -61,22 +132,14 @@ class APIFolderTestCase extends KTUnitTestCase {
             $this->assertEntity($folder, 'PEAR_Error');
         }
     }
-/*    function testRename() {
-        $root = $this->ktapi->get_root_folder();
-        $this->assertEntity($root, 'KTAPI_Folder');
-        // add a sample folder
-        $folder = $root->add_folder('newFolder');
-        $this->assertEntity($folder, 'KTAPI_Folder');
-        $folderid = $folder->get_folderid();
-        // rename the folder
-        $response = $folder->rename('renamedFolder');
-        $this->assertEntity($response, 'PEAR_Error');
-        // get the folder by id
-        $folder = $this->ktapi->get_folder_by_id($folderid);
-        $this->assertEntity($folder, 'KTAPI_Folder');
-        $this->assertEqual($folder->get_folder_name(), 'renamedFolder');
-        $folder->delete('cleanup');
-    }*/
+	
+	
+	function testPermission() {
+		$root = $this->ktapi->get_root_folder();
+		$perm = $root->get_permissions();
+		/* Not yet implemented */
+	}
+
     function getSystemListing() {
         // TODO .. can do anything as admin...
         
@@ -90,13 +153,32 @@ class APIFolderTestCase extends KTUnitTestCase {
         // TODO
         
     }
-    function copy() {
-        // TODO
+    function testCopy() {
+    	$root = $this->ktapi->get_root_folder();
+    	$folder = $root->add_folder("Test folder2");
+    	$new_folder = $root->add_folder("New test folder2");
+    	$res = $folder->copy($new_folder, "Unit test copy2");
+    	
+    	$folder->delete("Clean up test");
+    	$new_folder->delete("Clean up test");
+    	
+    	$this->assertNull($res, "Error returned");
+        
         
     }
-    function move() {
-        // TODO
+   function testMove() {
+    	$root = $this->ktapi->get_root_folder();
+    	$folder = $root->add_folder("Test folder2");
+    	$new_folder = $root->add_folder("New test folder2");
+    	$res = $folder->move($new_folder, "Unit test copy2");
+    	
+    	$folder->delete("Clean up test");
+    	$new_folder->delete("Clean up test");
+    	
+    	$this->assertNull($res, "Error returned");
+        
         
     }
+
 }
 ?>
