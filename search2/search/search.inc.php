@@ -283,6 +283,51 @@ class SearchHelper
 	}
 
 
+	/**
+	* This method returns a list of saved searches based on the name of the search
+	*
+	* @author KnowledgeTree Tean
+	* @access public
+	* @static
+	* @param string $name The name of the saved search
+	* @return array|MIXED $results SUCCESS - The list of searches | FAILURE - a pear error object
+	*/
+	public static function checkForSavedSearch($name)
+	{
+		$txtName = sanitizeForSQL($name);
+		$sql = "select 1 from search_saved where name='$txtName'";
+		$results = DBUtil::getResultArray($sql);
+
+		return $results;
+	}
+
+	/**
+	* This method saves the search query to the database
+	*
+	* @author KnowledgeTree Tean
+	* @access public
+	* @static
+	* @param string $name The name of the saved search query
+	* @param string $query The query string
+	* @param string $userID The id of the user saving the query
+	* @return string|object $result SUCCESS - The id of the record inserted | FAILURE - a pear error object
+	*/
+	public static function saveSavedSearch($name, $query, $userID)
+	{
+		// autoInsert does escaping...
+		$values = array(
+		'name'=>$name,
+		'expression'=>$query,
+		'type'=>'S',
+		'shared'=>0,
+		'user_id' => $userID
+		);
+
+		$result = DBUtil::autoInsert('search_saved', $values);
+
+		return $result;
+	}
+
 	public static function getSavedSearches($userID)
 	{
 
