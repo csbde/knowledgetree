@@ -138,7 +138,7 @@ class KTAPI_Error extends PEAR_Error
 */
 class KTAPI_DocumentTypeError extends KTAPI_Error
 {
-	
+
 }
 
 /**
@@ -213,7 +213,7 @@ class KTAPI
 		{
 			$error =  new PEAR_Error(KTAPI_ERROR_PERMISSION_INVALID);
 			return $error;
-		}		
+		}
 		return $permissions;
  	}
 
@@ -276,11 +276,11 @@ class KTAPI
 		}
 		else
 		{
-			$results = array();	
+			$results = array();
 			foreach($rows as $row)
 			{
 				$documentid = $row['id'];
-	
+
 				$results[] = $idsOnly?$documentid:KTAPI_Document::get($this, $documentid);
 			}
 		}
@@ -347,7 +347,7 @@ class KTAPI
 			$error = new PEAR_Error('Session is invalid. ' . $session->getMessage());
 			return $error;
 		}
-		
+
 		$this->session = &$session;
 		return $session;
 	}
@@ -357,7 +357,7 @@ class KTAPI
 	* start a root session.
 	*
 	* @author KnowledgeTree Team
-	* @access public 
+	* @access public
 	* @return object $session The KTAPI_SystemSession
 	*/
 	public function & start_system_session()
@@ -398,7 +398,7 @@ class KTAPI
 			$error = new PEAR_Error('Session is invalid. ' . $session->getMessage());
 			return $error;
 		}
-		
+
 		$this->session = &$session;
 		return $session;
 	}
@@ -440,7 +440,7 @@ class KTAPI
 
     /**
     * Gets the the folder object based on the folder name
-    * 
+    *
     * @author KnowledgeTree Team
     * @access public
 	* @param string $foldername The folder name
@@ -533,7 +533,7 @@ class KTAPI
 			foreach($rows as $row)
 			{
 				$results[] = $row['name'];
-			}	
+			}
 		}
 		return $results;
 	}
@@ -785,6 +785,84 @@ class KTAPI
 			}
 		}
 		return $results;
+	}
+}
+
+/*
+* This class handles the saved searches
+*
+* @author KnowledgeTree Team
+* @package KnowledgeTree API
+* @version Version 0.9
+*/
+class savedSearch
+{
+	/**
+	* This method creates the saved search
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $name The name of the search
+	* @param string $query The query string to be saved
+	* @return string|object $result SUCCESS - The id of the saved search | FAILURE - an error object
+	*/
+	public function create($name, $query)
+	{
+		$user = KTAPI::get_user();
+		if (is_null($user) || PEAR::isError($user))
+		{
+			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return $result;
+		}
+		$userID = $user->getId();
+
+		$result = SearchHelper::saveQuery($name, $query, $userID);
+		return $result;
+	}
+
+	/**
+	* This method gets a list of saved searches
+	*
+	* @author KnowledgeTree Tean
+	* @access public
+	* @return array|object $list SUCESS - The list of saved searches | FAILURE - an error object
+	*/
+	public function getList()
+	{
+		$user = KTAPI::get_user();
+		if (is_null($user) || PEAR::isError($user))
+		{
+			$list =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return $list;
+		}
+		$userID = $user->getId();
+
+		$list = SearchHelper::getSavedSearches($userID);
+		return $list;
+	}
+
+	/**
+	* This method deletes the saved search
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return void
+	*/
+	public function delete()
+	{
+		SearchDispatcher::do_delete();
+	}
+
+	/**
+	* This method runs the saved search
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return void
+	*/
+	public function runSavedSearch()
+	{
+		SearchDispatcher::do_processSaved();
 	}
 }
 ?>
