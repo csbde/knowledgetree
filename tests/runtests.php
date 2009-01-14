@@ -4,6 +4,7 @@ require_once('test.php');
 
 class UnitTests extends TestSuite {
     function UnitTests() {
+
         $this->TestSuite('Unit tests');
         $this->addFile('api/testAuthentication.php');
         $this->addFile('api/testDocument.php');
@@ -13,13 +14,14 @@ class UnitTests extends TestSuite {
         $this->addFile('config/testConfig.php');
         $this->addFile('document/testDocument.php');
         $this->addFile('document/testDocumentUtil.php');
-        $this->addFile('folder/testFolder.php');
+//        $this->addFile('folder/testFolder.php');
 //        $this->addFile('browseutil/testBrowseUtil.php');
-        $this->addFile('filelike/testStringFileLike.php');
+//        $this->addFile('filelike/testStringFileLike.php');
 
         $this->addFile('documentProcessor/testExtracters.php');
-        //$this->addFile('documentProcessor/testIndexer.php');
+//        $this->addFile('documentProcessor/testIndexer.php');
         $this->addFile('documentProcessor/testGuidInserter.php');
+        $this->addFile('search2/testSearch.php');
     }
 }
 
