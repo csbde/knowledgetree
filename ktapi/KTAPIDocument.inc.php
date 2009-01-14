@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * Document API for KnowledgeTree
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -32,33 +32,56 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
  *
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version Version 0.9
  */
 
-//require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
+require_once(KT_DIR . '/ktwebservice/KTDownloadManager.inc.php');
 
+/**
+ * API for the handling document operations within KnowledgeTree
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 class KTAPI_Document extends KTAPI_FolderItem
 {
 	/**
 	 * This is a reference to the internal document object.
 	 *
-	 * @var Document
+	 * @access protected
+	 * @var object of Document
 	 */
 	var $document;
+
 	/**
 	 * This is the id of the document.
 	 *
+	 * @access protected
 	 * @var int
 	 */
 	var $documentid;
+
 	/**
 	 * This is a reference to the parent folder.
 	 *
-	 * @var KTAPI_Folder
+	 * @access protected
+	 * @var object of KTAPI_Folder
 	 */
 	var $ktapi_folder;
 
+	/**
+	 * Gets the id of the current document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return string The document id
+	 */
 	function get_documentid()
 	{
 		return $this->documentid;
@@ -67,11 +90,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This is used to get a document based on document id.
 	 *
+	 * @author KnowledgeTree Team
 	 * @static
 	 * @access public
-	 * @param KTAPI $ktapi
-	 * @param int $documentid
-	 * @return KTAPI_Document
+	 * @param KTAPI $ktapi The ktapi object
+	 * @param int $documentid The document id
+	 * @return KTAPI_Document The document object
 	 */
 	function &get(&$ktapi, $documentid)
 	{
@@ -109,6 +133,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
 	}
 
+	/**
+	 * Checks if a document has been deleted
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return boolean TRUE if deleted | FALSE if in a different state
+	 */
 	function is_deleted()
 	{
 		return ($this->document->getStatusID() == 3);
@@ -117,7 +148,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * Checks if the document is a shortcut
 	 *
-	 * @return boolean
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return boolean TRUE if it is a shortcut | FALSE if not
 	 */
 	function is_shortcut()
 	{
@@ -127,6 +160,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * Retrieves the shortcuts linking to this document
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array The shortcuts linked to the document
 	 */
 	function get_shortcuts()
 	{
@@ -135,17 +171,19 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 
 	/**
-	 * This is the constructor for the KTAPI_Folder.
+	 * This is the constructor for the KTAPI_Document
 	 *
+	 * @author KnowledgeTree Team
 	 * @access private
-	 * @param KTAPI $ktapi
-	 * @param Document $document
+	 * @param KTAPI $ktapi The KTAPI object
+	 * @param KTAPI_Folder $ktapi_folder The parent folder object
+	 * @param Document $document The internal document object
 	 * @return KTAPI_Document
 	 */
 	function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
 	{
-		assert(is_a($ktapi,'KTAPI'));
-		assert(is_null($ktapi_folder) || is_a($ktapi_folder,'KTAPI_Folder'));
+		assert($ktapi instanceof KTAPI);   //is_a($ktapi,'KTAPI'));
+		assert(is_null($ktapi_folder) || $ktapi_folder instanceof KTAPI_Folder); //is_a($ktapi_folder,'KTAPI_Folder'));
 
 		$this->ktapi = &$ktapi;
 		$this->ktapi_folder = &$ktapi_folder;
@@ -154,12 +192,23 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This checks a document into the repository
+	 * This checks a document into the repository.
 	 *
-	 * @param string $filename
-	 * @param string $reason
-	 * @param string $tempfilename
-	 * @param bool $major_update
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+     * if($document->is_checked_out()){
+     *     $document->checkin('filename.txt', 'Reason for checkin', '/tmp/filename');
+     * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $filename The name of the file
+	 * @param string $reason The reason for checking the document in
+	 * @param string $tempfilename The location of the temporary file
+	 * @param bool $major_update Determines if the version number should have a major increment (+1) or a minor increment (+0.1)
 	 */
 	function checkin($filename, $reason, $tempfilename, $major_update=false)
 	{
@@ -203,6 +252,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		KTUploadManager::temporary_file_imported($tempfilename);
 	}
 
+	/**
+	 * Removes the update notification for the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	function removeUpdateNotification()
 	{
 		$sql =  "DELETE FROM notifications WHERE data_int_1=$this->documentid AND data_str_1='ModifyDocument'";
@@ -210,16 +265,21 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * Link a document to another
+	 * Creates a link between two documents
 	 *
-	 * @param KTAPI_Document $document
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI_Document $document The document object
+	 * @param string $type The link relationship type: depended on|Attachment|Reference|Copy|Default
+	 * @return PEAR_Error|void Returns nothing on success | a PEAR_Error object on failure
+	 *
 	 */
 	function link_document($document, $type)
 	{
 		$typeid = $this->ktapi->get_link_type_id($type);
 		if (PEAR::isError($typeid))
 		{
-			return $result;
+			return $typeid;
 		}
 
 		$link = new DocumentLink($this->get_documentid(), $document->get_documentid(), $typeid );
@@ -231,9 +291,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * Unlink a document to another
+	 * Removes the link between two documents
 	 *
-	 * @param KTAPI_Document $document
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI_Document $document The document object
+	 * @return PEAR_Error|void Returns nothing on success | a PEAR_Error object on failure
 	 */
 	function unlink_document($document)
 	{
@@ -247,8 +310,22 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 
 	/**
+	 * Checks whether the document has been checked out.
 	 *
-	 * @return boolean
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+     * if($document->is_checked_out()){
+     *     continue;
+     * }else{
+     *     $document->checkout('Reason for document checkout');
+     * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return boolean TRUE if checked out | FALSE if not
 	 */
 	function is_checked_out()
 	{
@@ -256,9 +333,21 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This reverses the checkout process.
+	 * Cancels the checkout on a document
 	 *
-	 * @param string $reason
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+     * if($document->is_checked_out()){
+     *     $document->undo_checkout('Reason for cancelling checkout');
+     * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $reason The reason for cancelling
+	 * @return PEAR_Error|void Returns nothing on success | a PEAR_Error on failure
 	 */
 	function undo_checkout($reason)
 	{
@@ -294,6 +383,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		DBUtil::commit();
 	}
+
+	/**
+	 * Gets a list of linked documents
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array|PEAR_Error Returns a list of linked documents on success | a PEAR_Error on failure
+	 */
 
 	function get_linked_documents()
 	{
@@ -361,11 +458,23 @@ class KTAPI_Document extends KTAPI_FolderItem
 		return $result;
 	}
 
-
 	/**
-	 * This returns a URL to the file that can be downloaded.
+	 * Checks out a document
 	 *
-	 * @param string $reason
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+     * $document->checkout('Reason for document checkout');
+     * if($document->is_checked_out()){
+     *     continue;
+     * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $reason The reason for checking out the document
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function checkout($reason)
 	{
@@ -397,9 +506,19 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This deletes a document from the folder.
+	 * Deletes a document from the folder.
 	 *
-	 * @param string $reason
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $document->delete('Reason for deletion');
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $reason The reason for deleting the document
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function delete($reason)
 	{
@@ -427,9 +546,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This changes the owner of the file.
+	 * Changes the owner of a document and updates its permissions.
 	 *
-	 * @param string $ktapi_newuser
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $newusername The username of the new owner
+	 * @param string $reason The reason for changing the owner
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function change_owner($newusername, $reason='Changing of owner.')
 	{
@@ -479,18 +602,28 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This copies the document to another folder.
+	 * Copies the document from one folder to another.
 	 *
-	 * @param KTAPI_Folder $ktapi_target_folder
-	 * @param string $reason
-	 * @param string $newname
-	 * @param string $newfilename
-	 * @return KTAPI_Document
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $newFolder = $this->root->add_folder("New folder");
+	 * $copyOfDoc = $document->copy($newFolder, 'Reason for copying document');
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI_Folder $ktapi_target_folder The new parent folder where the document is being copied into
+	 * @param string $reason The reason for the copy
+	 * @param string $newname Optional. The title of the document to be used in the case of a name clash
+	 * @param string $newfilename Optional. The filename of the document to be used in the case of a name clash
+	 * @return KTAPI_Document|PEAR_Error Returns the new KTAPI Document object | a PEAR_Error on failure
 	 */
 	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_FOLDER);    //is_a($ktapi_target_folder,'KTAPI_Folder'));
 
 		if (empty($newname))
 		{
@@ -510,7 +643,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$target_folder = &$ktapi_target_folder->get_folder();
 
-		$result = $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
+		$result = $this->can_user_access_object_requiring_permission($target_folder, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($result))
 		{
@@ -597,17 +730,28 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This moves the document to another folder.
+	 * Moves the document from one folder to another.
 	 *
-	 * @param KTAPI_Folder $ktapi_target_folder
-	 * @param string $reason
-	 * @param string $newname
-	 * @param string $newfilename
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $newFolder = $this->root->add_folder("New folder");
+	 * $document->move($newFolder, 'Reason for moving the document');
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI_Folder $ktapi_target_folder The folder object where the document is being moved into
+	 * @param string $reason The reason for the move
+	 * @param string $newname Optional. The title of the document to be used in the case of a name clash
+	 * @param string $newfilename Optional. The filename of the document to be used in the case of a name clash
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);  // is_a($ktapi_target_folder,'KTAPI_Folder'));
 
 		if (empty($newname))
 		{
@@ -693,9 +837,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This changes the filename of the document.
+	 * Changes the filename of the document.
+	 * If the filename contains any invalid characters they are replaced with a dash (-). For example: ?, *, %, \, /
 	 *
-	 * @param string $newname
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $newname The new filename
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function renameFile($newname)
 	{
@@ -718,9 +866,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This changes the document type of the document.
+	 * Changes the document type of the document.
 	 *
-	 * @param string $newname
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $documenttype The new document type
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function change_document_type($documenttype)
 	{
@@ -743,12 +894,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$iOldDocTypeID = $this->document->getDocumentTypeID();
 			$fieldsets = KTMetadataUtil::fieldsetsForDocument($this->document, $iOldDocTypeID);
 			$mdlist = DocumentFieldLink::getByDocument($this->document);
-	
+
 			$field_values = array();
 			foreach ($mdlist as $oFieldLink) {
 				$field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
 			}
-			
+
 			DBUtil::startTransaction();
 			$this->document->startNewMetadataVersion($user);
 			$this->document->setDocumentTypeId($doctypeid);
@@ -763,24 +914,24 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 			// Ensure all values for fieldsets common to both document types are retained
 			$fs_ids = array();
-	
+
 			$doctype_fieldsets = KTFieldSet::getForDocumentType($doctypeid);
 			foreach($doctype_fieldsets as $fieldset)
 			{
 				$fs_ids[] = $fieldset->getId();
 			}
-	
+
 			$MDPack = array();
 			foreach ($fieldsets as $oFieldset)
 			{
 				if ($oFieldset->getIsGeneric() || in_array($oFieldset->getId(), $fs_ids))
 				{
 					$fields = $oFieldset->getFields();
-	
+
 					foreach ($fields as $oField)
 					{
 						$val = isset($field_values[$oField->getId()]) ? $field_values[$oField->getId()] : '';
-	
+
 						if (!empty($val))
 						{
 							$MDPack[] = array($oField, $val);
@@ -788,15 +939,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 					}
 				}
 			}
-	
+
 			$core_res = KTDocumentUtil::saveMetadata($this->document, $MDPack, array('novalidate' => true));
-	
+
 			if (PEAR::isError($core_res)) {
 				DBUtil::rollback();
 				return $core_res;
 			}
-			
-			
+
+
 
 		    $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
             $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
@@ -819,9 +970,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This changes the title of the document.
+	 * Changes the title of the document.
+	 * If the title contains any invalid characters they are replaced with a dash (-). For example: ?, *, %, \, /
 	 *
-	 * @param string $newname
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $newname The new document title
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function rename($newname)
 	{
@@ -850,9 +1005,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This flags the document as 'archived'.
+	 * Sets the status of the document to 'archived'.
 	 *
-	 * @param string $reason
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $reason The reason for archiving the document
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function archive($reason)
 	{
@@ -893,9 +1051,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This starts a workflow on a document.
+	 * Starts a workflow on a document.
 	 *
-	 * @param string $workflow
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $workflow The workflow being applied
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function start_workflow($workflow)
 	{
@@ -932,6 +1093,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This deletes the workflow on the document.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function delete_workflow()
 	{
@@ -959,10 +1123,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This performs a transition on the workflow
+	 * This performs a transition to a new state of the workflow on the document
 	 *
-	 * @param string $transition
-	 * @param string $reason
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $transition The transition to perform
+	 * @param string $reason The reason for transitioning the document to a new state
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function perform_workflow_transition($transition, $reason)
 	{
@@ -995,12 +1162,26 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::commit();
 	}
 
-
-
 	/**
 	 * This returns all metadata for the document.
 	 *
-	 * @return array
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $metadata = $document->get_metadata();
+	 * foreach($metadata as $fieldset){
+	 *     echo '<br><br>Fieldset: '.$fieldset['fieldset'];
+	 *
+	 *     foreach($fieldset['fields'] as $field){
+	 *         echo '<br>Field name: '.$field['name'] . ' Value: '. $field['value'];
+	 *     }
+	 * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array An array of metadata fieldsets and fields
 	 */
 	function get_metadata()
 	{
@@ -1060,7 +1241,7 @@ class KTAPI_Document extends KTAPI_FolderItem
                 	'name' => $field->getName(),
                 	'required' => $field->getIsMandatory(),
                     'value' => $value == '' ? 'n/a' : $value,
-                    'blankvalue' => $value=='' ? '1' : '0', 
+                    'blankvalue' => $value=='' ? '1' : '0',
                     'description' => $field->getDescription(),
                     'control_type' => $controltype,
                     'selection' => $selection
@@ -1075,6 +1256,26 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 return $results;
 	}
 
+	/**
+	 * Gets a simple array of document metadata fields
+	 *
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $metadata = $document->get_packed_metadata();
+	 * foreach($metadata as $field){
+	 *     echo '<br><br>Fieldset: ' . $field[0]->getParentFieldset();
+	 *     echo '<br>Field name: ' .$field[0]->getName();
+	 *     echo ' Value: ' . $field[1];
+	 * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param array $metadata The full metadata fieldsets and fields
+	 * @return array An array of metadata field object and value pairs
+	 */
 	function get_packed_metadata($metadata=null)
 	{
 		global $default;
@@ -1093,7 +1294,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		$fieldsetname=$fieldset_metadata['fieldset'];
 		 		$fields=$fieldset_metadata['fields'];
 		 	}
-		 	elseif (is_a($fieldset_metadata, 'stdClass'))
+		 	elseif ($fieldset_metadata instanceof stdClass)  //is_a($fieldset_metadata, 'stdClass'))
 		 	{
 		 		$fieldsetname=$fieldset_metadata->fieldset;
 		 		$fields=$fieldset_metadata->fields;
@@ -1105,7 +1306,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	}
 
 		 	$fieldset = KTFieldset::getByName($fieldsetname);
-		 	if (is_null($fieldset) || PEAR::isError($fieldset) || is_a($fieldset, 'KTEntityNoObjects'))
+		 	if (is_null($fieldset) || PEAR::isError($fieldset) || $fieldset instanceof KTEntityNoObjects)  //is_a($fieldset, 'KTEntityNoObjects'))
 		 	{
 		 		$default->log->debug("could not resolve fieldset: $fieldsetname for document id: $this->documentid");
 		 		// exit graciously
@@ -1119,7 +1320,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 			$fieldname = $fieldinfo['name'];
 		 			$value = $fieldinfo['value'];
 		 		}
-		 		elseif (is_a($fieldinfo, 'stdClass'))
+		 		elseif ($fieldinfo instanceof stdClass)   // is_a($fieldinfo, 'stdClass'))
 		 		{
 		 			$fieldname = $fieldinfo->name;
 		 			$value = $fieldinfo->value;
@@ -1146,9 +1347,31 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This updates the metadata on the file. This includes the 'title'.
+	 * This updates the metadata on the document. This includes the 'title'.
 	 *
-	 * @param array This is an array containing the metadata to be associated with the file.
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $metadata = $document->get_metadata();
+	 * foreach($metadata as $key => $fieldset){
+	 *     if($fieldset['fieldset'] == 'XYZ'){
+	 *
+	 *         foreach($fieldset['fields'] as $k => $field){
+	 *             if($field['name'] == 'ABC'){
+	 *                 $metadata[$key][fields][$k]['value'] = 'new value';
+	 *             }
+	 *         }
+	 *     }
+	 * }
+	 *
+	 * $res = $document->update_metadata($metadata);
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param array This is an array containing the metadata to be associated with the document.
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function update_metadata($metadata)
 	{
@@ -1215,7 +1438,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This updates the system metadata on the document.
 	 *
-	 * @param array $sysdata
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param array $sysdata The system metadata to be applied
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function update_sysdata($sysdata)
 	{
@@ -1402,6 +1628,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 	}
 
+	/**
+	 * Clears the cached data on the document and refreshes the document object.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	function clearCache()
 	{
 		// TODO: we should only clear the cache for the document we are working on
@@ -1424,6 +1656,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$this->document = &Document::get($this->documentid);
 	}
 
+	/**
+	 * Merge new metadata with previous metadata version
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
+	 */
 	function mergeWithLastMetadataVersion()
 	{
 		// keep latest metadata version
@@ -1481,9 +1720,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This returns a workflow transition
+	 * This returns the workflow transitions available for the user on the document
 	 *
-	 * @return array
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array|PEAR_Error Array of the workflow transitions | a PEAR_Error on failure
 	 */
 	function get_workflow_transitions()
 	{
@@ -1518,11 +1759,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This returns the current workflow state
 	 *
-	 * @return string
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return string Returns the name of the state | a PEAR_Error on failure
 	 */
 	function get_workflow_state()
 	{
-		$user = $this->can_user_access_object_requiring_permission(  $this->document, KTAPI_PERMISSION_WORKFLOW);
+		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WORKFLOW);
 
 		if (PEAR::isError($user))
 		{
@@ -1549,6 +1792,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	}
 
+	/**
+	 * Get the available permissions on the document.
+	 * R = read, W = write, E = edit - if the document is checked out by the user.
+	 * The method assumes read permissions is available.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param Document $document The internal document object
+	 * @return string The available permissions
+	 */
 	function get_permission_string($document)
 	{
 		$perms = 'R';
@@ -1570,7 +1823,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This returns detailed information on the document.
 	 *
-	 * @return array
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array The document information
 	 */
 	function get_detail()
 	{
@@ -1769,21 +2024,56 @@ class KTAPI_Document extends KTAPI_FolderItem
 		return $detail;
 	}
 
+	/**
+	 * Gets the title of the document
+	 *
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * $title = $document->get_title();
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return string The document title
+	 */
 	function get_title()
 	{
 		return $this->document->getDescription();
 	}
 
 	/**
-	 * This does a download of a version of the document.
+	 * Gets the url which can be used to download the document.
 	 *
-	 * @param string $version
+	 * @param int $version Not implemented. The content version of the document
 	 */
-	function download($version=null)
+	function get_download_url($version = null)
+	{
+	    $session = $this->ktapi->get_session();
+
+	    // Create the url that can be used to download the document
+    	$download_manager = new KTDownloadManager();
+    	$download_manager->set_session($session->session);
+    	$download_manager->cleanup();
+    	$url = $download_manager->allow_download($this);
+
+    	// Log the transaction
+    	$this->download();
+
+    	return $url;
+	}
+
+	/**
+	 * Logs the document transaction for a download.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	function download()
 	{
 		$storage =& KTStorageManagerUtil::getSingleton();
         $options = array();
-
 
         $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
@@ -1792,7 +2082,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This returns the transaction history for the document.
 	 *
-	 * @return array
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array The list of transactions | a PEAR_Error on failure
 	 */
 	function get_transaction_history()
 	{
@@ -1821,7 +2113,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This returns the version history on the document.
 	 *
-	 * @return array
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array The version history
 	 */
 	function get_version_history()
 	{
@@ -1862,7 +2156,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * This expunges a document from the system.
 	 *
+	 * <code>
+	 * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+	 * $document = $ktapi->get_document_by_id($documentid);
+	 * if($document->is_deleted()){
+     *     $document->expunge();
+     * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
 	 * @access public
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function expunge()
 	{
@@ -1888,8 +2193,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This expunges a document from the system.
+	 * Restores a deleted document
 	 *
+	 * @author KnowledgeTree Team
 	 * @access public
 	 */
 	function restore()
@@ -1925,11 +2231,25 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::commit();
 	}
 
+	/**
+	 * Returns the internal document object
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return Document The document object
+	 */
 	public function getObject()
 	{
 	    return $this->document;
 	}
 
+	/**
+	 * Checks if the user is subscribed to the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return bool TRUE if subscribed | FALSE if not
+	 */
 	public function isSubscribed()
 	{
         $subscriptionType = SubscriptionEvent::subTypes('Document');
@@ -1939,6 +2259,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         return Subscription::exists($user->getId(), $document->getId(), $subscriptionType);
 	}
 
+	/**
+	 * Removes the users subscription to the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	public function unsubscribe()
 	{
         if (!$this->isSubscribed())
@@ -1954,6 +2280,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         $subscription->delete();
 	}
 
+	/**
+	 * Subscribes the user to the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	public function subscribe()
 	{
         if ($this->isSubscribed())
@@ -1969,25 +2301,54 @@ class KTAPI_Document extends KTAPI_FolderItem
         $subscription->create();
 	}
 
-
+	/**
+	 * Checks if the document is immutable
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return bool TRUE if it is immutable | FALSE if not
+	 */
 	public function isImmutable()
 	{
 	    return $this->document->getImmutable();
 	}
 
+	/**
+	 * Sets a document to be immutable
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	public function immute()
 	{
         $this->document->setImmutable(true);
         $this->document->update();
 	}
 
+	/**
+	 * Removes the immutability of a document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	public function unimmute()
 	{
         $this->document->setImmutable(false);
         $this->document->update();
 	}
 
-	public function email($members, $title, $comment, $attachDocument = true)
+	/**
+	 * Emails a document as an attachment or hyperlink to a list of users, groups or external email addresses.
+	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent allowing the recipient a window period in which to download the document.
+	 * The period is set through the webservices config option webservice/downloadExpiry. Defaults to 30 minutes.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param array $members The email recipients - KTPAI_Users, KTAPI_Groups or email addresses
+	 * @param string $comment Content to be appended to the email
+	 * @param bool $attachDocument TRUE if document is an attachment | FALSE if using a hyperlink to the document
+	 */
+	public function email($members, $comment, $attachDocument = true)
 	{
 	    if (empty($members))
 	    {
@@ -2020,6 +2381,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         $emailErrors = array();
         $userEmails = array();
+        $listEmails = array();
 
         sendGroupEmails($groupIds, $userEmails, $emailErrors);
 
@@ -2034,7 +2396,12 @@ class KTAPI_Document extends KTAPI_FolderItem
             sendExternalEmails($aEmailAddresses, $this->document->getID(), $this->document->getName(), $comment, $emailErrors);
         }
 
-        sendEmail($aListEmails, $this->document->getID(), $this->document->getName(), $comment, (boolean)$fAttachDocument, $aEmailErrors);
+        if(empty($userEmails)){
+            return;
+        }
+
+        $listEmails = array_keys($userEmails);
+        sendEmail($listEmails, $this->document->getID(), $this->document->getName(), $comment, (boolean)$fAttachDocument, $aEmailErrors);
 
     }
 }
