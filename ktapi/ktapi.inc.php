@@ -47,6 +47,8 @@ unset($_session_id);
 require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
+require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
+require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
 
 define('KTAPI_DIR',KT_DIR . '/ktapi');
 
@@ -55,6 +57,7 @@ require_once(KTAPI_DIR .'/KTAPISession.inc.php');
 require_once(KTAPI_DIR .'/KTAPIFolder.inc.php');
 require_once(KTAPI_DIR .'/KTAPIDocument.inc.php');
 require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
+require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
@@ -196,6 +199,18 @@ class KTAPI
 			return $error;
 		}
 		return $user;
+ 	}
+ 	
+ 	function get_columns_for_view($view = 'ktcore.views.browse') {
+ 		$ktapi_session = $this->get_session();
+		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
+		{
+			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
+			return $error;
+		}
+		
+ 		$collection = new KTAPI_Collection();
+ 		return $collection->get_columns($view);
  	}
 
  	/**
