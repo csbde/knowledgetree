@@ -376,7 +376,7 @@ class XmlRpcLucene
 
 	function shutdown()
 	{
-		$function=new xmlrpcmsg('indexer.shutdown',array(
+		$function=new xmlrpcmsg('control.shutdown',array(
 				php_xmlrpc_encode((string) $this->ktid),
 				php_xmlrpc_encode((string) $this->authToken)));
 
