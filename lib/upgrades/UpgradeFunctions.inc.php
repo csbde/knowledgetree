@@ -1398,25 +1398,25 @@ class UpgradeFunctions {
     function removeOldFilesAndFolders354a1() {
         global $default;
 
-        $oldFile1 = KT_DIR . "/baobab/tests/BaobabServer.test.php"
+        $oldFile1 = KT_DIR . "/baobab/tests/BaobabServer.test.php";
         if(file_exists($oldFile1)) unlink($oldFile1);
 
-        $oldPath1 = KT_DIR . "/ktwsapi/"
+        $oldPath1 = KT_DIR . "/ktwsapi/";
         UpgradeFunctions::rm_recursive($oldPath1);
 
-        $oldFile2 = KT_DIR . "/lib/Log.inc"
+        $oldFile2 = KT_DIR . "/lib/Log.inc";
         if(file_exists($oldFile2)) unlink($oldFile2);
 
-        $oldFile3 = KT_DIR . "/tests/api/authentication.php"
+        $oldFile3 = KT_DIR . "/tests/api/authentication.php";
         if(file_exists($oldFile3)) unlink($oldFile3);
 
-        $oldFile4 = KT_DIR . "/tests/api/folder.php"
+        $oldFile4 = KT_DIR . "/tests/api/folder.php";
         if(file_exists($oldFile4)) unlink($oldFile4);
 
-        $oldFile5 = KT_DIR . "/tests/api/document.php"
+        $oldFile5 = KT_DIR . "/tests/api/document.php";
         if(file_exists($oldFile5)) unlink($oldFile5);
 
-        $oldPath2 = KT_DIR . "/thirdparty/pear/HTTP/WebDAV/"
+        $oldPath2 = KT_DIR . "/thirdparty/pear/HTTP/WebDAV/";
         UpgradeFunctions::rm_recursive($oldPath2);
 
         // FIXME: We should check that they all worked
