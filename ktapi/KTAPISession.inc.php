@@ -1,8 +1,5 @@
 <?php
-
 /**
- * $Id$
- *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
@@ -33,19 +30,80 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
  *
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version Version 0.9
  */
 
+/**
+ * API for the handling the KnowledgeTree session
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 class KTAPI_Session
 {
-	var $ktapi;
-	var $user = null;
-	var $session = '';
-	var $sessionid = -1;
-	var $active;
-	var $origUserId;
+    /**
+	 * This is a reference to the ktapi object.
+	 *
+	 * @access protected
+	 * @var KTAPI
+	 */
+    var $ktapi;
 
+    /**
+	 * This is a reference to the user object.
+	 *
+	 * @access protected
+	 * @var User
+	 */
+    var $user = null;
+
+    /**
+	 * This is a reference to the internal session object.
+	 *
+	 * @access protected
+	 * @var Session
+	 */
+    var $session = '';
+
+    /**
+	 * The sessionid from the database
+	 *
+	 * @access protected
+	 * @var int
+	 */
+    var $sessionid = -1;
+
+    /**
+	 * Indicates if the session is active and the user is logged in
+	 *
+	 * @access protected
+	 * @var bool
+	 */
+    var $active;
+
+    /**
+	 * The users id of the user logged in before a new user session was initiated.
+	 *
+	 * @access protected
+	 * @var int
+	 */
+    var $origUserId;
+
+    /**
+	 * Creates a new KTAPI_Session, sets up the internal variables.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI $ktapi Instance of the KTAPI object
+	 * @param User $user Instance of the USER object
+	 * @return KTAPI_Session
+	 */
 	function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
@@ -61,9 +119,11 @@ class KTAPI_Session
 	}
 
 	/**
-	 * return the session string
+	 * Returns the internal session object
 	 *
-	 * @return string
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return Session
 	 */
 	function get_session()
 	{
@@ -73,6 +133,8 @@ class KTAPI_Session
 	/**
 	 * This returns the sessionid in the database.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @return int
 	 */
 	function get_sessionid()
@@ -81,8 +143,10 @@ class KTAPI_Session
 	}
 
 	/**
-	 * Return the user
+	 * Returns the user object
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @return User
 	 */
 	function &get_user()
@@ -90,6 +154,12 @@ class KTAPI_Session
 		 return $this->user;
 	}
 
+	/**
+	 * Logs the user out of the session. Sets the session userid back to the original userid
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
 	function logout()
 	{
 		$_SESSION['userID'] = $this->origUserId;
@@ -97,6 +167,13 @@ class KTAPI_Session
 		// don't need to do anything really
 	}
 
+	/**
+	 * Checks whether the session is active
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return bool TRUE if active | FALSE if not
+	 */
 	function is_active()
 	{
 		return $this->active;
@@ -104,10 +181,36 @@ class KTAPI_Session
 
 }
 
+/**
+ * API for the handling a users session in KnowledgeTree
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 class KTAPI_UserSession extends KTAPI_Session
 {
+
+    /**
+	 * The users ip address
+	 *
+	 * @access protected
+	 * @var int
+	 */
 	var $ip = null;
 
+	/**
+	 * Create a KTAPI_Session for the current user
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI $ktapi The KTAPI object
+	 * @param USER $user The User object
+	 * @param SESSION $session The current session object
+	 * @param int $sessionid The id for the current session
+	 * @param int $ip The users IP address
+	 * @return KTAPI_UserSession
+	 */
 	function KTAPI_UserSession(&$ktapi, &$user, $session, $sessionid, $ip)
 	{
 		parent::KTAPI_Session($ktapi, $user);
@@ -125,8 +228,9 @@ class KTAPI_UserSession extends KTAPI_Session
 	}
 
 	/**
-	 * This resolves the user's ip
+	 * This resolves the user's ip address
 	 *
+	 * @author KnowledgeTree Team
 	 * @access private
 	 * @return string
 	 */
@@ -155,10 +259,15 @@ class KTAPI_UserSession extends KTAPI_Session
 	}
 
 	/**
+	 * Checks whether a session exists for the given user and creates a new one or updates the existing one.
 	 *
+	 * @author KnowledgeTree Team
 	 * @access protected
 	 * @static
-	 * @param User $user
+	 * @param User $user The User object
+	 * @param int $ip The users IP address
+	 * @param string $app The originating application type - ws => webservices | webapp => web application | webdav
+	 * @return array|PEAR_Error Returns the session string and session id (DB) | a PEAR_Error on failure
 	 */
 	function _check_session(&$user, $ip, $app)
 	{
@@ -235,11 +344,15 @@ class KTAPI_UserSession extends KTAPI_Session
 	/**
 	 * This returns a session object based on authentication credentials.
 	 *
+	 * @author KnowledgeTree Team
 	 * @access public
 	 * @static
-	 * @param string $username
-	 * @param string $password
-	 * @return KTAPI_Session
+	 * @param KTAPI $ktapi Instance of the KTAPI object
+	 * @param string $username The users username
+	 * @param string $password The users password
+	 * @param string $ip Optional. The users IP address - if null, the method will attempt to resolve it
+	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
+	 * @return KTAPI_Session|PEAR_Error Returns the KATPI_UserSession | a PEAR_Error on failure
 	 */
 	function &start_session(&$ktapi, $username, $password, $ip=null, $app='ws')
 	{
@@ -277,7 +390,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
         if (PEAR::isError($result))
         {
-        	return $sessionid;
+        	return $result;
         }
 
         list($session,$sessionid) = $result;
@@ -288,12 +401,15 @@ class KTAPI_UserSession extends KTAPI_Session
 	}
 
 	/**
-	 * This returns an active session.
+	 * Returns an active session based on the session string and the ip address if supplied.
 	 *
-	 * @param KTAPI $ktapi
-	 * @param string $session
-	 * @param string $ip
-	 * @return KTAPI_Session
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI $ktapi Instance of the KTAPI object
+	 * @param string $session The session string
+	 * @param string $ip The users ip address
+	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
+	 * @return KTAPI_Session|PEAR_Error Returns the session object | a PEAR_Error on failure
 	 */
 	function &get_active_session(&$ktapi, $session, $ip, $app='ws')
 	{
@@ -330,8 +446,11 @@ class KTAPI_UserSession extends KTAPI_Session
 	}
 
 	/**
-	 * This closes the current session.
+	 * Ends the current session.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function logout()
 	{
@@ -350,8 +469,25 @@ class KTAPI_UserSession extends KTAPI_Session
 
 }
 
+/**
+ * API for the handling the session for an anonymous user in KnowledgeTree
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 class KTAPI_AnonymousSession extends KTAPI_UserSession
 {
+    /**
+     * Creates a session for an anonymous user
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param KTAPI $ktapi Instance of the KTAPI object
+	 * @param string $ip The users ip address
+	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
+     * @return KTAPI_Session|PEAR_Error Returns a session object | a PEAR_Error on failure
+     */
 	function &start_session(&$ktapi, $ip=null, $app = 'ws')
 	{
 		$user =& User::get(-2);
@@ -388,8 +524,24 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
 	}
 }
 
+/**
+ * API for the handling the system in KnowledgeTree
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 class KTAPI_SystemSession extends KTAPI_Session
 {
+    /**
+     * Creates a system session
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param KTAPI $ktapi Instance of the KTAPI object
+     * @param USER $user Instance of the user object
+     * @return KTAPI_SystemSession
+     */
 	function KTAPI_SystemSession(&$ktapi, &$user)
 	{
 		parent::KTAPI_Session($ktapi, $user);
