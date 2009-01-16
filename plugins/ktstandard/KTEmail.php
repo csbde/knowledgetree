@@ -158,13 +158,14 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
     }
     $oEmail = new Email($sEmail, $sEmailFrom);
 
+    $iCounter = 0;
     foreach ($aEmailAddresses as $sAddress){
         if(validateEmailAddress($sAddress)){
             // Add to list of addresses
             $sDestEmails .= (empty($sDestEmails)) ? $sAddress : ', '.$sAddress;
 
-            // Create temporary session id
-            $session = 'ktext_'.$iDocumentID.time();
+            // Create uniqueish temporary session id
+            $session = 'ktext_'.$iDocumentID.time().$iCounter++;
 
             // Create download link
             $oDownloadManager = new KTDownloadManager();
