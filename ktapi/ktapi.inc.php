@@ -158,10 +158,10 @@ class KTAPI
 	* This is the current session.
 	*
 	* @author KnowledgeTree Team
-	* @access private
+	* @access protected
 	* @var object $session The KTAPI_Session object
 	*/
-	private $session = null;
+	protected $session = null;
 
  	/**
  	* This returns the current session.
@@ -172,7 +172,7 @@ class KTAPI
  	*/
  	public function &get_session()
  	{
- 		$session = $this->session;
+ 	    $session = $this->session;
  		return $session;
  	}
 
@@ -186,7 +186,7 @@ class KTAPI
  	public function & get_user()
  	{
  		$ktapi_session = $this->get_session();
-		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
+ 		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
 		{
 			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
 			return $error;
@@ -200,7 +200,7 @@ class KTAPI
 		}
 		return $user;
  	}
- 	
+
  	function get_columns_for_view($view = 'ktcore.views.browse') {
  		$ktapi_session = $this->get_session();
 		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
@@ -208,7 +208,7 @@ class KTAPI
 			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
 			return $error;
 		}
-		
+
  		$collection = new KTAPI_Collection();
  		return $collection->get_columns($view);
  	}
@@ -237,14 +237,23 @@ class KTAPI
  	*
  	* @author KnowledgeTree Team
 	* @access public
- 	* @param object $object The object to check permissions on
+ 	* @param object $object The internal document object or a folder object
  	* @param string $permission The permissions string
  	* @return object $user SUCCESS - The User object | FAILURE - an error object
  	*/
  	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
-		assert(!is_null($object));
- 		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+		//assert(!is_null($object));
+ 		//assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+        if(is_null($object) || PEAR::isError($object)){
+            $error = $object;
+            return $object;
+        }
+
+        if(!is_a($object,'DocumentProxy') && !is_a($object,'FolderProxy') && !is_a($object,'Document') && !is_a($object,'Folder')){
+            $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+            return $error;
+        }
 
  		$permissions = &KTAPI::get_permission($permission);
 		if (is_null($permissions) || PEAR::isError($permissions))
@@ -322,7 +331,7 @@ class KTAPI
 
 		$session_object = &KTAPI_UserSession::get_active_session($this, $session, $ip, $app);
 
-		if (is_null($session) || PEAR::isError($session))
+		if (is_null($session_object) || PEAR::isError($session_object))
 		{
 			$error = new PEAR_Error('Session is invalid');
 			return $error;
@@ -801,17 +810,7 @@ class KTAPI
 		}
 		return $results;
 	}
-}
 
-/*
-* This class handles the saved searches
-*
-* @author KnowledgeTree Team
-* @package KnowledgeTree API
-* @version Version 0.9
-*/
-class savedSearch
-{
 	/**
 	* This method creates the saved search
 	*
@@ -831,8 +830,22 @@ class savedSearch
 		}
 		$userID = $user->getId();
 
-		$result = SearchHelper::saveQuery($name, $query, $userID);
+		$result = SearchHelper::saveSavedSearch($name, $query, $userID);
 		return $result;
+	}
+
+	/**
+	* This method gets a saved searche based on the id
+	*
+	* @author KnowledgeTree Tean
+	* @access public
+	* @param integer $searchID The id of the saved search
+	* @return array|object $search SUCESS - The saved search data | FAILURE - a pear error object
+	*/
+	public function getSavedSearch($searchID)
+	{
+		$search = SearchHelper::getSavedSearch($searchID);
+		return $search;
 	}
 
 	/**
@@ -861,23 +874,33 @@ class savedSearch
 	*
 	* @author KnowledgeTree Team
 	* @access public
+	* @param string $searchID The id of the saved search
 	* @return void
 	*/
-	public function delete()
+	public function delete($searchID)
 	{
-		SearchDispatcher::do_delete();
+        SearchHelper::deleteSavedSearch($searchID);
 	}
 
 	/**
-	* This method runs the saved search
+	* This method runs the saved search bsed on the id of the saved search
 	*
 	* @author KnowledgeTree Team
 	* @access public
-	* @return void
+	* @param integer $searchID The id of the saved search
+	* @return array|object $results SUCCESS - The results of the saved serach | FAILURE - a pear error object
 	*/
-	public function runSavedSearch()
+	public function runSavedSearch($searchID)
 	{
-		SearchDispatcher::do_processSaved();
+		$search = KTAPI::getSavedSearch($searchID);
+		if(is_null($search) || PEAR::isError($search)){
+		    $results = new PEAR_Error('Invalid saved search');
+		    return $results;
+		}
+		$query = $search[0]['expression'];
+
+	    $results = processSearchExpression($query);
+		return $results;
 	}
 }
 ?>
