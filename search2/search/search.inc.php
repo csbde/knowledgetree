@@ -284,6 +284,28 @@ class SearchHelper
 
 
 	/**
+	* This method deletes the saved search based on the saved search id
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @static
+	* @param integer $searchID The id of the saved search
+	* @return void
+	*/
+	public static function deleteSavedSearch($searchID)
+	{
+		$sysAdmin=Permission::userIsSystemAdministrator();
+
+		$sql = "DELETE FROM search_saved WHERE type='S' AND id=$searchID";
+		if (!$sysAdmin)
+		{
+			$sql .= " AND user_id='".$_SESSION['userID']."'";
+		}
+
+		DBUtil::runQuery($sql);
+	}
+
+	/**
 	* This method returns a list of saved searches based on the name of the search
 	*
 	* @author KnowledgeTree Tean
@@ -299,6 +321,30 @@ class SearchHelper
 		$results = DBUtil::getResultArray($sql);
 
 		return $results;
+	}
+
+	/**
+	* This method gets the saved search based on the id
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @static
+	* @param integer $searchID The saved search id
+	* @return array|object $result SUCCESS - The saved search | FAILURE - a pear error object
+	*/public static function getSavedSearch($searchID)
+	{
+		// need to test for broken db configuration so that the queries dont fail
+		// and so that we can be redirected to the db error page
+		global $default;
+		if (is_null($default->_db) || PEAR::isError($default->_db)) return array();
+
+		$sql = "SELECT id, name, expression FROM search_saved WHERE id='$searchID'";
+
+		$result = DBUtil::getResultArray($sql);
+		if(is_null($result) || PEAR::isError($result)){
+		    $result = new PEAR_Error('Invalid saved search result');
+		}
+		return $result;
 	}
 
 	/**
