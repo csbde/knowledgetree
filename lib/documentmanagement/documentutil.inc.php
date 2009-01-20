@@ -152,6 +152,15 @@ class KTDocumentUtil {
             return PEAR::raiseError(_kt('Already checked out.'));
         }
 
+        if($oDocument->getImmutable()){
+        	return PEAR::raiseError(_kt('Document cannot be checked out as it is immutable'));
+        }
+
+        // Check if the action is restricted by workflow on the document
+        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
+            return PEAR::raiseError(_kt('Checkout is restricted by the workflow state.'));
+        }
+
         // FIXME at the moment errors this _does not_ rollback.
 
         $oDocument->setIsCheckedOut(true);
@@ -186,17 +195,20 @@ class KTDocumentUtil {
 
     function archive($oDocument, $sReason) {
 
-        $this->startTransaction();
-        $oDocument->setStatusID(ARCHIVED);
-        $res = $oDocument->update();
-
-        if (PEAR::isError($res) || ($res === false)) {
-            return PEAR::raiseError(_kt('There was a database error while trying to archive this file'));
+        if($oDocument->isSymbolicLink()){
+        	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document."));
         }
 
         // Ensure the action is not blocked
         if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')){
             return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
+        }
+
+        $oDocument->setStatusID(ARCHIVED);
+        $res = $oDocument->update();
+
+        if (PEAR::isError($res) || ($res === false)) {
+            return PEAR::raiseError(_kt('There was a database error while trying to archive this file'));
         }
 
     	//delete all shortcuts linking to this document
@@ -219,8 +231,6 @@ class KTDocumentUtil {
 
         $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
-
-        $this->commitTransaction();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
@@ -1213,11 +1223,11 @@ $sourceDocument->getName(),
     }
 
     function rename($oDocument, $sNewFilename, $oUser) {
-        $oStorage =& KTStorageManagerUtil::getSingleton();    
-        
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
         $oKTConfig = KTConfig::getSingleton();
-        $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);    
-        
+        $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
+
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oOldContentVersion = $oDocument->_oDocumentContentVersion;
 
@@ -1231,22 +1241,22 @@ $sourceDocument->getName(),
 
         	KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
         }
-        
+
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
 
         if (!$res) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
-        
-        
+
+
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
         $oDocument->setModifiedUserId($oUser->getId());
-        
+
         if($updateVersion) { // Update version number
         	$oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
-        
+
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
 
 		$sType = KTMime::getMimeTypeFromFile($sNewFilename);

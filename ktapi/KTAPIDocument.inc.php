@@ -711,6 +711,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         DBUtil::commit();
 
+        /*
         // FIXME do we need to refactor all trigger usage into the util function?
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('copyDocument', 'postValidate');
@@ -725,6 +726,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
+        */
 
         return KTAPI_Document::get($this->ktapi, $new_document->getId());
 	}
@@ -1021,6 +1023,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return $user;
 		}
 
+		DBUtil::startTransaction();
+		$res = KTDocumentUtil::archive($this->document, $reason);
+
+        if(PEAR::isError($res)){
+            DBUtil::rollback();
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
+        }
+        DBUtil::commit();
+
+		/*
 		list($permission, $user) = $perm_and_user;
 
 		DBUtil::startTransaction();
@@ -1048,6 +1060,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
+        */
 	}
 
 	/**
@@ -2321,6 +2334,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function immute()
 	{
+	    if($this->is_checked_out()){
+	        return new PEAR_Error('Document is checked out and can\'t be set to immutable.');
+	    }
         $this->document->setImmutable(true);
         $this->document->update();
 	}

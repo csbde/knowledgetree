@@ -6,18 +6,24 @@ class UnitTests extends TestSuite {
     function UnitTests() {
 
         $this->TestSuite('Unit tests');
+
+        // KTAPI
         $this->addFile('api/testAuthentication.php');
         $this->addFile('api/testDocument.php');
         $this->addFile('api/testFolder.php');
-        $this->addFile('SQLFile/test_sqlfile.php');
-        $this->addFile('cache/testCache.php');
-        $this->addFile('config/testConfig.php');
-        $this->addFile('document/testDocument.php');
-        $this->addFile('document/testDocumentUtil.php');
+        $this->addFile('api/testBulkActions.php');
+        $this->addFile('api/testCollection.php');
+
+//        $this->addFile('SQLFile/test_sqlfile.php');
+//        $this->addFile('cache/testCache.php');
+//        $this->addFile('config/testConfig.php');
+//        $this->addFile('document/testDocument.php');
+//        $this->addFile('document/testDocumentUtil.php');
 //        $this->addFile('folder/testFolder.php');
 //        $this->addFile('browseutil/testBrowseUtil.php');
 //        $this->addFile('filelike/testStringFileLike.php');
 
+        // Search (2) and indexing
         $this->addFile('documentProcessor/testExtracters.php');
 //        $this->addFile('documentProcessor/testIndexer.php');
         $this->addFile('documentProcessor/testGuidInserter.php');
