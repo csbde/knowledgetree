@@ -115,6 +115,9 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
             $extractors[$res['name']] = $extractor;
         }
 
+        $this->assertNotNull($extractor);
+        if(empty($extractor)) return;
+
         // Extract content
         $targetFile = tempnam($this->tempPath, 'ktindexer');
 
