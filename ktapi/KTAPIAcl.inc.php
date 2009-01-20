@@ -94,6 +94,9 @@ abstract class KTAPI_Dynamic
 /**
  * The KTAPIMember class is a base class for KTAPI_User, KTAPI_Group and KTAPI_Role.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 abstract class KTAPI_Member extends KTAPI_Dynamic
 {
@@ -105,6 +108,9 @@ abstract class KTAPI_Member extends KTAPI_Dynamic
 /**
  * Encapsulates functionality around a user.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 class KTAPI_User extends KTAPI_Member
 {
@@ -271,6 +277,9 @@ class KTAPI_User extends KTAPI_Member
 /**
  * Encapsulates functionality around a group.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 class KTAPI_Group extends KTAPI_Member
 {
@@ -388,8 +397,10 @@ class KTAPI_Group extends KTAPI_Member
 /**
  * Encapsulates functionality around a role.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
-
 class KTAPI_Role extends KTAPI_Member
 {
     /**
@@ -501,6 +512,9 @@ class KTAPI_Role extends KTAPI_Member
 /**
  * Encapsulation functionality around a permission.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 class KTAPI_Permission extends KTAPI_Dynamic
 {
@@ -615,6 +629,13 @@ class KTAPI_Permission extends KTAPI_Dynamic
     function getNamespace() { return $this->permission->getName(); }
 }
 
+/**
+ * AllocationBase.
+ *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
+ */
 abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
 {
     /**
@@ -762,6 +783,9 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
 /**
  * Manages functionality arround permission allocation on a specific folder item.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
 {
@@ -1195,6 +1219,9 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
 /**
  * Manages functionality arround role allocation on a specific folder item.
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 {
