@@ -6,7 +6,7 @@ require_once (KT_DIR . '/ktapi/ktapi.inc.php');
  * Unit tests for the KTAPI_BulkActions class
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class APIBulkActionsTestCase extends KTUnitTestCase {

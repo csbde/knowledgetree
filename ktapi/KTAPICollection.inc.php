@@ -37,7 +37,7 @@
  * @copyright 2008-2009, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version Version 0.9
  */
 
@@ -45,7 +45,7 @@
  * API for the handling collections within KnowledgeTree
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_Collection {

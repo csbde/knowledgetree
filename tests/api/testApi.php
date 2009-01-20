@@ -3,7 +3,7 @@ require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 
 /**
-* These are the unit tests for the main KnowledgeTree API class
+* These are the unit tests for the main KTAPI class
 *
 */
 class APITestCase extends KTUnitTestCase {

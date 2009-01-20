@@ -36,7 +36,7 @@
  * @copyright 2008-2009, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version Version 0.9
  */
 
@@ -46,7 +46,7 @@ require_once(KT_DIR . '/ktwebservice/KTDownloadManager.inc.php');
  * API for the handling document operations within KnowledgeTree
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_Document extends KTAPI_FolderItem

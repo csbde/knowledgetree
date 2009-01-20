@@ -36,7 +36,7 @@
  * @copyright 2008-2009, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version Version 0.9
  */
 
@@ -44,7 +44,7 @@
  * API for the handling the KnowledgeTree session
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_Session
@@ -187,7 +187,7 @@ class KTAPI_Session
  * API for the handling a users session in KnowledgeTree
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_UserSession extends KTAPI_Session
@@ -475,7 +475,7 @@ class KTAPI_UserSession extends KTAPI_Session
  * API for the handling the session for an anonymous user in KnowledgeTree
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_AnonymousSession extends KTAPI_UserSession
@@ -530,7 +530,7 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
  * API for the handling the system in KnowledgeTree
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class KTAPI_SystemSession extends KTAPI_Session

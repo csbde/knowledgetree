@@ -36,7 +36,7 @@
  * @copyright 2008-2009, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version Version 0.9
 */
 
@@ -48,7 +48,7 @@ require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
  * This class handles folder related operations
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version Version 0.9
  * 
 */

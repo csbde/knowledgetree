@@ -6,7 +6,7 @@ require_once (KT_DIR . '/ktapi/ktapi.inc.php');
  * Helper class for the KTAPI_Document unit tests
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class APIDocumentHelper {
@@ -23,7 +23,7 @@ class APIDocumentHelper {
  * Unit tests for the KTAPI_Document class
  *
  * @author KnowledgeTree Team
- * @package KnowledgeTree API
+ * @package KTAPI
  * @version 0.9
  */
 class APIDocumentTestCase extends KTUnitTestCase {

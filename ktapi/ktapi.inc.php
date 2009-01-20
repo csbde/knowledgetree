@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package KnowledgeTree API
+* @package KTAPI
 * @version Version 0.9
 */
 
@@ -65,7 +65,7 @@ require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 *
 * @abstract
 * @author KnowledgeTree Team
-* @package KnowledgeTree API
+* @package KTAPI
 * @version Version 0.9
 */
 abstract class KTAPI_FolderItem
@@ -108,7 +108,7 @@ abstract class KTAPI_FolderItem
 * This class extends the PEAR_Error class for errors in the KTAPI class
 *
 * @author KnowledgeTree Team
-* @package KnowledgeTree API
+* @package KTAPI
 * @version Version 0.9
 */
 class KTAPI_Error extends PEAR_Error
@@ -137,7 +137,7 @@ class KTAPI_Error extends PEAR_Error
 * This class extends the KTAPI_Error class for errors in the KTAPI Document class
 *
 * @author KnowledgeTree Team
-* @package KnowledgeTree API
+* @package KTAPI
 * @version Version 0.9
 */
 class KTAPI_DocumentTypeError extends KTAPI_Error
@@ -146,10 +146,10 @@ class KTAPI_DocumentTypeError extends KTAPI_Error
 }
 
 /**
-* This is the main KnowledgeTree API class
+* This is the main KTAPI class
 *
 * @author KnowledgeTree Team
-* @package KnowledgeTree API
+* @package KTAPI
 * @version Version 0.9
 */
 
