@@ -1,5 +1,7 @@
 <?php
 /**
+ * API for the handling the KnowledgeTree session
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.

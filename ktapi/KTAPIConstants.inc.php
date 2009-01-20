@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * Generic error messages used in KTAPI.
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -32,8 +32,12 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original 
  * copyright notice.
- * Contributor( s): ______________________________________
  *
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version Version 0.9
  */
 
 // Generic error messages used in the API. There may be some others specific to functionality

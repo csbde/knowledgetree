@@ -33,8 +33,12 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
  *
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version Version 0.9
  */
 
 /**
@@ -43,6 +47,9 @@
  * To create a getter property XXX, implement functions called getXXX().
  * To create a setter property XXX, implement function called setXXX($property).
  *
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree API
+ * @version 0.9
  */
 abstract class KTAPI_Dynamic
 {
